@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecomputegalleryimage.v1alpha1;
 
-// **AzureComputeGalleryImageStackOutputs** captures the outputs from
+// **AzureComputeGalleryImageOutputs** captures the outputs from
 // provisioning a gallery image definition and its versions.
-message AzureComputeGalleryImageStackOutputs {
+message AzureComputeGalleryImageOutputs {
   // The image definition's Azure Resource Manager ID. VMs deploying
   // from it get the image's latest (non-excluded) version.
   string image_id = 1;

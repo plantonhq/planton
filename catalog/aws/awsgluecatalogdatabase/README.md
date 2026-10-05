@@ -53,7 +53,7 @@ manifest validation).
   1-255 characters; AWS rejects uppercase letters.
 - **`catalog_id`** and **`target_database`** — fixed at creation.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

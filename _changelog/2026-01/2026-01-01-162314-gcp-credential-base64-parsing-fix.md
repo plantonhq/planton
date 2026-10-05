@@ -15,11 +15,11 @@ GCP Cloud SQL deployments were consistently failing with a cryptic proto syntax 
 ```
 error: an unhandled error occurred: program failed:
 1 error occurred:
-  * failed to load stack-input: failed to load json into proto message:
+  * failed to load iac-input: failed to load json into proto message:
     proto: syntax error (line 1:3754): unexpected token "planton-testing"
 ```
 
-This error occurred during the Pulumi module execution phase, specifically when unmarshalling the stack input YAML into proto messages. The deployment worked correctly when running the backend locally but failed consistently in Docker containers.
+This error occurred during the Pulumi module execution phase, specifically when unmarshalling the IaC input YAML into proto messages. The deployment worked correctly when running the backend locally but failed consistently in Docker containers.
 
 ### Pain Points
 
@@ -40,7 +40,7 @@ Added `sanitizeGcpBase64Key()` function that:
 - Trims all trailing whitespace (including newlines)
 - Re-encodes to clean base64 string
 
-**File**: `pkg/iac/stackinput/stackinputproviderconfig/user_provider.go`
+**File**: `pkg/iac/iacinput/iacinputproviderconfig/user_provider.go`
 
 ```go
 func sanitizeGcpBase64Key(base64Key string) (string, error) {
@@ -147,12 +147,12 @@ This explained why local worked but Docker failed - Docker was cloning old code 
 
 ### Files Modified
 
-1. **pkg/iac/stackinput/stackinputproviderconfig/user_provider.go**
+1. **pkg/iac/iacinput/iacinputproviderconfig/user_provider.go**
    - Added `sanitizeGcpBase64Key()` function
    - Integrated sanitization into `createGcpProviderConfigFileFromProto()`
    - Uses camelCase field name for YAML output
 
-2. **pkg/iac/stackinput/stack_input.go**
+2. **pkg/iac/iacinput/iac_input.go**
    - Updated field name formatting to use camelCase
    - Removed unused fmt import
 
@@ -163,7 +163,7 @@ This explained why local worked but Docker failed - Docker was cloning old code 
    - Added branch checkout logic after git clone
    - Branch checkout takes priority over version tags
 
-5. **pkg/iac/pulumi/pulumimodule/stackinput/load_stack_input.go**
+5. **pkg/iac/pulumi/pulumimodule/iacinput/load_iac_input.go**
    - Removed debug logging (clean production code)
 
 6. **app/backend/internal/service/credential_resolver.go**
@@ -174,7 +174,7 @@ This explained why local worked but Docker failed - Docker was cloning old code 
 ### For Deployments
 
 - ✅ **GCP deployments work**: All GCP Cloud SQL and other GCP resource deployments now succeed
-- ✅ **No proto errors**: Eliminated "proto: syntax error" failures during stack input parsing
+- ✅ **No proto errors**: Eliminated "proto: syntax error" failures during IaC input parsing
 - ✅ **Automatic sanitization**: All GCP credentials are automatically cleaned before use
 - ✅ **Backward compatible**: Existing credentials work without manual intervention
 

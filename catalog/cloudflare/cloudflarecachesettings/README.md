@@ -60,7 +60,7 @@ Each field names the file extension of the original asset; the list carries the 
 | `tiff` | repeated string | Variant content types for `.tiff` assets |
 | `webp` | repeated string | Variant content types for `.webp` assets |
 
-### Stack Outputs
+### Outputs
 
 After successful deployment, the following outputs are available:
 

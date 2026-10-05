@@ -4,7 +4,7 @@ A Cloud TPU VM -- a slice of Google's AI accelerators (v2 through v6e / Trillium
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `tpu.googleapis.com` on the project (never disabled on destroy)
 - **TPU VM** -- a `tpu_v2_vm` (google-beta) with the chosen accelerator, runtime, network, identity, scheduling, disks, and labels
@@ -75,7 +75,7 @@ planton apply -f tpu-vm.yaml
 - At most one of `acceleratorType` and `acceleratorConfig`; at most one of `networkConfig` and `networkConfigs`.
 - `cidrBlock` is an IPv4 /29; `zone` is a zone.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -104,7 +104,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpTpuQueuedResource** -- request TPU capacity that waits in Google's queue
 - **GcpVpcNetwork** / **GcpSubnetwork** -- the TPU's network

@@ -4,7 +4,7 @@ package dev.planton.gcp.gcpcomputemig.v1alpha1;
 
 // Outputs produced after provisioning a Compute Engine managed instance
 // group.
-message GcpComputeMigStackOutputs {
+message GcpComputeMigOutputs {
   // The full URL of the group's INSTANCE GROUP — the load-balancer
   // backend handle: a GcpBackendService backend's group takes exactly
   // this value.

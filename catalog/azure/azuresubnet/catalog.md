@@ -4,7 +4,7 @@ Deploys a standalone Azure Subnet within an existing Virtual Network -- the comp
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Subnet** -- a subnet within the referenced VNet using self-planned address prefixes or a delegated Azure Network Manager IPAM allocation
 - **Attachments** -- associations to a route table, network security group, and/or NAT gateway when the corresponding IDs are provided
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **A Virtual Network** -- the subnet is an ARM child of an existing VNet. Provide the VNet's ARM ID directly or reference an AzureVirtualNetwork Cloud Resource via ValueFromRef. The network's ID carries the resource group and region, so the subnet models neither.
+- **A Virtual Network** -- the subnet is an ARM child of an existing VNet. Provide the VNet's ARM ID directly or reference an AzureVirtualNetwork Infra Component via ValueFromRef. The network's ID carries the resource group and region, so the subnet models neither.
 - **CIDR planning** -- every `addressPrefixes` block must fall within the VNet's address space and must not overlap other subnets. Azure reserves 5 IPs per subnet for internal use.
 
 ## Deploy
@@ -56,7 +56,7 @@ spec:
 planton apply -f azure-subnet.yaml
 ```
 
-This creates a /24 subnet with service endpoints for Storage and Key Vault. No delegation, attachments, or custom network policies are configured. A Stack Job tracks the provisioning in real time.
+This creates a /24 subnet with service endpoints for Storage and Key Vault. No delegation, attachments, or custom network policies are configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,7 +92,7 @@ These are the most important decisions when configuring a subnet. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -101,9 +101,9 @@ These are the most important decisions when configuring a subnet. Explore the fu
 | **AzureNetworkSecurityGroup** (optional) | `networkSecurityGroupId` | `status.outputs.network_security_group_id` |
 | **AzureNatGateway** (optional) | `natGatewayId` | `status.outputs.nat_gateway_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,7 +124,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Virtual Network**](/cloud-catalog/azure-virtual-network) -- the parent network the subnet partitions
-- [**Azure Network Security Group**](/cloud-catalog/azure-network-security-group) -- filters the subnet's traffic when attached
-- [**Azure Route Table**](/cloud-catalog/azure-route-table) -- steers the subnet's egress when attached
-- [**Azure NAT Gateway**](/cloud-catalog/azure-nat-gateway) -- owns the subnet's outbound connectivity when attached
+- [**Azure Virtual Network**](/infra-catalog/azure-virtual-network) -- the parent network the subnet partitions
+- [**Azure Network Security Group**](/infra-catalog/azure-network-security-group) -- filters the subnet's traffic when attached
+- [**Azure Route Table**](/infra-catalog/azure-route-table) -- steers the subnet's egress when attached
+- [**Azure NAT Gateway**](/infra-catalog/azure-nat-gateway) -- owns the subnet's outbound connectivity when attached

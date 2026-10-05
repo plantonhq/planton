@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureContainerAppStackOutputs** captures the outputs of provisioning
+// **AzureContainerAppOutputs** captures the outputs of provisioning
 // an Azure Container App.
 //
 // The primary user-facing outputs are `ingress_fqdn` (the app's endpoint)
@@ -37,7 +37,7 @@ const (
 // system-assigned identity; `custom_domain_verification_id` is the TXT
 // record value that proves domain ownership when binding a custom domain
 // to the app.
-type AzureContainerAppStackOutputs struct {
+type AzureContainerAppOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Container App.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/containerApps/{name}
@@ -76,20 +76,20 @@ type AzureContainerAppStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureContainerAppStackOutputs) Reset() {
-	*x = AzureContainerAppStackOutputs{}
+func (x *AzureContainerAppOutputs) Reset() {
+	*x = AzureContainerAppOutputs{}
 	mi := &file_catalog_azure_azurecontainerapp_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureContainerAppStackOutputs) String() string {
+func (x *AzureContainerAppOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureContainerAppStackOutputs) ProtoMessage() {}
+func (*AzureContainerAppOutputs) ProtoMessage() {}
 
-func (x *AzureContainerAppStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureContainerAppOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecontainerapp_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -101,61 +101,61 @@ func (x *AzureContainerAppStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureContainerAppStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureContainerAppStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureContainerAppOutputs.ProtoReflect.Descriptor instead.
+func (*AzureContainerAppOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerapp_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureContainerAppStackOutputs) GetContainerAppId() string {
+func (x *AzureContainerAppOutputs) GetContainerAppId() string {
 	if x != nil {
 		return x.ContainerAppId
 	}
 	return ""
 }
 
-func (x *AzureContainerAppStackOutputs) GetContainerAppName() string {
+func (x *AzureContainerAppOutputs) GetContainerAppName() string {
 	if x != nil {
 		return x.ContainerAppName
 	}
 	return ""
 }
 
-func (x *AzureContainerAppStackOutputs) GetLatestRevisionName() string {
+func (x *AzureContainerAppOutputs) GetLatestRevisionName() string {
 	if x != nil {
 		return x.LatestRevisionName
 	}
 	return ""
 }
 
-func (x *AzureContainerAppStackOutputs) GetLatestRevisionFqdn() string {
+func (x *AzureContainerAppOutputs) GetLatestRevisionFqdn() string {
 	if x != nil {
 		return x.LatestRevisionFqdn
 	}
 	return ""
 }
 
-func (x *AzureContainerAppStackOutputs) GetOutboundIpAddresses() []string {
+func (x *AzureContainerAppOutputs) GetOutboundIpAddresses() []string {
 	if x != nil {
 		return x.OutboundIpAddresses
 	}
 	return nil
 }
 
-func (x *AzureContainerAppStackOutputs) GetIngressFqdn() string {
+func (x *AzureContainerAppOutputs) GetIngressFqdn() string {
 	if x != nil {
 		return x.IngressFqdn
 	}
 	return ""
 }
 
-func (x *AzureContainerAppStackOutputs) GetCustomDomainVerificationId() string {
+func (x *AzureContainerAppOutputs) GetCustomDomainVerificationId() string {
 	if x != nil {
 		return x.CustomDomainVerificationId
 	}
 	return ""
 }
 
-func (x *AzureContainerAppStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureContainerAppOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -166,8 +166,8 @@ var File_catalog_azure_azurecontainerapp_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_azure_azurecontainerapp_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/azure/azurecontainerapp/v1alpha1/outputs.proto\x12,dev.planton.azure.azurecontainerapp.v1alpha1\"\xa9\x03\n" +
-	"\x1dAzureContainerAppStackOutputs\x12(\n" +
+	"6catalog/azure/azurecontainerapp/v1alpha1/outputs.proto\x12,dev.planton.azure.azurecontainerapp.v1alpha1\"\xa4\x03\n" +
+	"\x18AzureContainerAppOutputs\x12(\n" +
 	"\x10container_app_id\x18\x01 \x01(\tR\x0econtainerAppId\x12,\n" +
 	"\x12container_app_name\x18\x02 \x01(\tR\x10containerAppName\x120\n" +
 	"\x14latest_revision_name\x18\x03 \x01(\tR\x12latestRevisionName\x120\n" +
@@ -192,7 +192,7 @@ func file_catalog_azure_azurecontainerapp_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_azure_azurecontainerapp_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecontainerapp_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureContainerAppStackOutputs)(nil), // 0: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppStackOutputs
+	(*AzureContainerAppOutputs)(nil), // 0: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppOutputs
 }
 var file_catalog_azure_azurecontainerapp_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

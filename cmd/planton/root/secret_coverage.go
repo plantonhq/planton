@@ -16,7 +16,7 @@ import (
 var SecretCoverage = &cobra.Command{
 	Use:   "secret-coverage",
 	Short: "Report secure-by-default coverage of `sensitive` fields across all resource kinds",
-	Long: `Walk every production cloud-resource kind and classify each string-bearing field as:
+	Long: `Walk every production catalog kind and classify each string-bearing field as:
   covered  -- annotated (dev.planton.shared.options.sensitive) = true
   exempt   -- annotated (dev.planton.shared.options.sensitive_exempt_reason) = "..."
   gap      -- looks like a secret by name but is not annotated

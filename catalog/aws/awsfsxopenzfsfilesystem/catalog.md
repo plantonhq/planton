@@ -4,7 +4,7 @@ Deploys a fully managed NFS file system on Amazon FSx for OpenZFS with configura
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **FSx OpenZFS File System** -- an NFS file system with configurable deployment type (SINGLE_AZ_1, SINGLE_AZ_2, MULTI_AZ_1), SSD storage, throughput capacity, and optional disk IOPS configuration
 - **Root Volume** -- automatically created with the file system; configurable compression (ZSTD, LZ4, or none), NFS export settings, record size, read-only mode, and per-user/group storage quotas
@@ -17,14 +17,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **One or two subnets** in the target VPC. Single-AZ deployments require exactly one subnet. Multi-AZ (MULTI_AZ_1) requires two subnets in different Availability Zones, plus a `preferredSubnetId`, `endpointIpAddressRange`, and `routeTableIds`. Provide subnet IDs directly or reference AwsSubnet Cloud Resources via ValueFromRef.
-- **A security group** that allows NFS traffic between the file system and its clients: TCP port 111 (portmapper), TCP port 2049 (NFS), and TCP ports 20001-20003 (NFS mount). Provide the ID directly or reference an AwsSecurityGroup Cloud Resource.
-- **A KMS key** (optional) -- for customer-managed encryption at rest instead of the default AWS-managed FSx key. Provide the ARN directly or reference an AwsKmsKey Cloud Resource.
+- **One or two subnets** in the target VPC. Single-AZ deployments require exactly one subnet. Multi-AZ (MULTI_AZ_1) requires two subnets in different Availability Zones, plus a `preferredSubnetId`, `endpointIpAddressRange`, and `routeTableIds`. Provide subnet IDs directly or reference AwsSubnet Infra Components via ValueFromRef.
+- **A security group** that allows NFS traffic between the file system and its clients: TCP port 111 (portmapper), TCP port 2049 (NFS), and TCP ports 20001-20003 (NFS mount). Provide the ID directly or reference an AwsSecurityGroup Infra Component.
+- **A KMS key** (optional) -- for customer-managed encryption at rest instead of the default AWS-managed FSx key. Provide the ARN directly or reference an AwsKmsKey Infra Component.
 
 ## Deploy
 
@@ -58,7 +58,7 @@ spec:
 planton apply -f fsx-openzfs.yaml
 ```
 
-This creates a single-AZ OpenZFS file system with 256 GiB SSD storage, 160 MB/s throughput, default root volume settings (no compression, 128 KiB record size), no backups, and automatic IOPS scaling. A Stack Job tracks the provisioning in real time.
+This creates a single-AZ OpenZFS file system with 256 GiB SSD storage, 160 MB/s throughput, default root volume settings (no compression, 128 KiB record size), no backups, and automatic IOPS scaling. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -103,7 +103,7 @@ These are the most important decisions when configuring an FSx OpenZFS file syst
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -112,9 +112,9 @@ These are the most important decisions when configuring an FSx OpenZFS file syst
 | **AwsSecurityGroup** (optional) | `securityGroupIds` | `status.outputs.security_group_id` |
 | **AwsKmsKey** (optional) | `kmsKeyId` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -140,6 +140,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- provides subnets for file system network interface placement
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- controls NFS traffic (TCP 111, 2049, 20001-20003) access to the file system
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for encryption at rest
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- provides subnets for file system network interface placement
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- controls NFS traffic (TCP 111, 2049, 20001-20003) access to the file system
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for encryption at rest

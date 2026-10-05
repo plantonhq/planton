@@ -12,8 +12,8 @@ type Locals struct {
 	GcpApiKey *gcpapikeyv1alpha1.GcpApiKey
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpapikeyv1alpha1.GcpApiKeyStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpapikeyv1alpha1.GcpApiKeyIacInput) *Locals {
 	return &Locals{
-		GcpApiKey: stackInput.Target,
+		GcpApiKey: iacInput.Target,
 	}
 }

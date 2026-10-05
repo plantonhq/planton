@@ -11,12 +11,12 @@ type Locals struct {
 	CertificateId                 string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurecontainerappcustomdomainv1alpha1.AzureContainerAppCustomDomainStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurecontainerappcustomdomainv1alpha1.AzureContainerAppCustomDomainIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureContainerAppCustomDomain = stackInput.Target
+	locals.AzureContainerAppCustomDomain = iacInput.Target
 
-	target := stackInput.Target
+	target := iacInput.Target
 
 	// container_app_id and the optional certificate id are
 	// StringValueOrRef fields. The platform middleware resolves valueFrom

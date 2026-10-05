@@ -23,11 +23,11 @@ const (
 )
 
 // *
-// **KubernetesIngressStackInput** defines the input structure for deploying a
+// **KubernetesIngressIacInput** defines the input structure for deploying a
 // Kubernetes Ingress. It carries the target Ingress specification and the
 // Kubernetes cluster configuration the IaC modules (Pulumi and Terraform) need
 // to reach the cluster.
-type KubernetesIngressStackInput struct {
+type KubernetesIngressIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The target Ingress resource to be created.
@@ -42,20 +42,20 @@ type KubernetesIngressStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesIngressStackInput) Reset() {
-	*x = KubernetesIngressStackInput{}
+func (x *KubernetesIngressIacInput) Reset() {
+	*x = KubernetesIngressIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesingress_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesIngressStackInput) String() string {
+func (x *KubernetesIngressIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesIngressStackInput) ProtoMessage() {}
+func (*KubernetesIngressIacInput) ProtoMessage() {}
 
-func (x *KubernetesIngressStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesIngressIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesingress_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,19 +67,19 @@ func (x *KubernetesIngressStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesIngressStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesIngressStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesIngressIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesIngressIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesingress_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesIngressStackInput) GetTarget() *KubernetesIngress {
+func (x *KubernetesIngressIacInput) GetTarget() *KubernetesIngress {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesIngressStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesIngressIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -90,8 +90,8 @@ var File_catalog_kubernetes_kubernetesingress_v1alpha1_input_proto protoreflect.
 
 const file_catalog_kubernetes_kubernetesingress_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/kubernetes/kubernetesingress/v1alpha1/input.proto\x121dev.planton.kubernetes.kubernetesingress.v1alpha1\x1a7catalog/kubernetes/kubernetesingress/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd6\x01\n" +
-	"\x1bKubernetesIngressStackInput\x12\\\n" +
+	"9catalog/kubernetes/kubernetesingress/v1alpha1/input.proto\x121dev.planton.kubernetes.kubernetesingress.v1alpha1\x1a7catalog/kubernetes/kubernetesingress/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd4\x01\n" +
+	"\x19KubernetesIngressIacInput\x12\\\n" +
 	"\x06target\x18\x01 \x01(\v2D.dev.planton.kubernetes.kubernetesingress.v1alpha1.KubernetesIngressR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"5com.dev.planton.kubernetes.kubernetesingress.v1alpha1B\n" +
@@ -111,13 +111,13 @@ func file_catalog_kubernetes_kubernetesingress_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetesingress_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesingress_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesIngressStackInput)(nil),         // 0: dev.planton.kubernetes.kubernetesingress.v1alpha1.KubernetesIngressStackInput
+	(*KubernetesIngressIacInput)(nil),           // 0: dev.planton.kubernetes.kubernetesingress.v1alpha1.KubernetesIngressIacInput
 	(*KubernetesIngress)(nil),                   // 1: dev.planton.kubernetes.kubernetesingress.v1alpha1.KubernetesIngress
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesingress_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesingress.v1alpha1.KubernetesIngressStackInput.target:type_name -> dev.planton.kubernetes.kubernetesingress.v1alpha1.KubernetesIngress
-	2, // 1: dev.planton.kubernetes.kubernetesingress.v1alpha1.KubernetesIngressStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesingress.v1alpha1.KubernetesIngressIacInput.target:type_name -> dev.planton.kubernetes.kubernetesingress.v1alpha1.KubernetesIngress
+	2, // 1: dev.planton.kubernetes.kubernetesingress.v1alpha1.KubernetesIngressIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

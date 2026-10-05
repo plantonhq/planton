@@ -6,7 +6,7 @@
 
 ## Summary
 
-Deep-rebuilt `GcpCloudSql` (604) to the released-provider floor with full dual-engine parity, forged `GcpCloudSqlDatabase` (637) and `GcpCloudSqlUser` (638) as first-class composable kinds, extended the GCP E2E harness with a `sqladmin` client and three verifiers, and reworked both consuming infra charts onto the new spec shape — including fixing the `cloud-run-environment` chart's missing private-services-access chain.
+Deep-rebuilt `GcpCloudSql` (604) to the released-provider floor with full dual-engine parity, forged `GcpCloudSqlDatabase` (637) and `GcpCloudSqlUser` (638) as first-class composable kinds, extended the GCP E2E harness with a `sqladmin` client and three verifiers, and reworked both consuming Infra Charts onto the new spec shape — including fixing the `cloud-run-environment` chart's missing private-services-access chain.
 
 ## Problem Statement / Motivation
 
@@ -21,7 +21,7 @@ The data wave's first consumer of the session-011 PSA pair needed a deep instanc
 - Full released-floor `settings` surface: engine enum incl. SQL Server, disk, `ip_configuration` (private network ref → `GcpVpc.network_id`, SSL, PSC, authorized networks), backup/PITR, maintenance + deny window, insights, password policy, data cache, flags, CMEK ref, replica arm, dual deletion protection.
 - `root_password` marked `(sensitive)` with Pulumi `ToSecret`; TF on `google ~> 6.0`; `sqladmin.googleapis.com` enablement; converter-contract plain-string refs; ambient-project fallback.
 - Registry `prerequisites: [GcpServiceNetworkingConnection]` for private-IP composition.
-- Three rewritten presets (Postgres private-IP production, MySQL HA, Postgres read replica); extended stack outputs (`service_account_email`, `dns_name`, `psc_service_attachment_link`).
+- Three rewritten presets (Postgres private-IP production, MySQL HA, Postgres read replica); extended outputs (`service_account_email`, `dns_name`, `psc_service_attachment_link`).
 
 ### `GcpCloudSqlDatabase` (637, `gcpsqldb`)
 

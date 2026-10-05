@@ -25,9 +25,9 @@ const (
 // Input for the KubernetesBackendTlsPolicy IaC stack. The platform resolves
 // all StringValueOrRef references (namespace, target Service names, CA
 // ConfigMap names) to literal strings before passing this to the IaC engine.
-type KubernetesBackendTlsPolicyStackInput struct {
+type KubernetesBackendTlsPolicyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Target cloud-resource.
+	// the catalog object to deploy.
 	Target *KubernetesBackendTlsPolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// Kubernetes provider configuration (cluster credentials).
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesBackendTlsPolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesBackendTlsPolicyStackInput) Reset() {
-	*x = KubernetesBackendTlsPolicyStackInput{}
+func (x *KubernetesBackendTlsPolicyIacInput) Reset() {
+	*x = KubernetesBackendTlsPolicyIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesbackendtlspolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesBackendTlsPolicyStackInput) String() string {
+func (x *KubernetesBackendTlsPolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesBackendTlsPolicyStackInput) ProtoMessage() {}
+func (*KubernetesBackendTlsPolicyIacInput) ProtoMessage() {}
 
-func (x *KubernetesBackendTlsPolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesBackendTlsPolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesbackendtlspolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *KubernetesBackendTlsPolicyStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesBackendTlsPolicyStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesBackendTlsPolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesBackendTlsPolicyIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesBackendTlsPolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesbackendtlspolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesBackendTlsPolicyStackInput) GetTarget() *KubernetesBackendTlsPolicy {
+func (x *KubernetesBackendTlsPolicyIacInput) GetTarget() *KubernetesBackendTlsPolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesBackendTlsPolicyStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesBackendTlsPolicyIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_kubernetes_kubernetesbackendtlspolicy_v1alpha1_input_proto prot
 
 const file_catalog_kubernetes_kubernetesbackendtlspolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/kubernetes/kubernetesbackendtlspolicy/v1alpha1/input.proto\x12:dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1\x1a@catalog/kubernetes/kubernetesbackendtlspolicy/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xf1\x01\n" +
-	"$KubernetesBackendTlsPolicyStackInput\x12n\n" +
+	"Bcatalog/kubernetes/kubernetesbackendtlspolicy/v1alpha1/input.proto\x12:dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1\x1a@catalog/kubernetes/kubernetesbackendtlspolicy/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xef\x01\n" +
+	"\"KubernetesBackendTlsPolicyIacInput\x12n\n" +
 	"\x06target\x18\x01 \x01(\v2V.dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1.KubernetesBackendTlsPolicyR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xd1\x03\n" +
 	">com.dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_kubernetes_kubernetesbackendtlspolicy_v1alpha1_input_proto_raw
 
 var file_catalog_kubernetes_kubernetesbackendtlspolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesbackendtlspolicy_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesBackendTlsPolicyStackInput)(nil), // 0: dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1.KubernetesBackendTlsPolicyStackInput
-	(*KubernetesBackendTlsPolicy)(nil),           // 1: dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1.KubernetesBackendTlsPolicy
-	(*kubernetes.KubernetesProviderConfig)(nil),  // 2: dev.planton.kubernetes.KubernetesProviderConfig
+	(*KubernetesBackendTlsPolicyIacInput)(nil),  // 0: dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1.KubernetesBackendTlsPolicyIacInput
+	(*KubernetesBackendTlsPolicy)(nil),          // 1: dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1.KubernetesBackendTlsPolicy
+	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesbackendtlspolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1.KubernetesBackendTlsPolicyStackInput.target:type_name -> dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1.KubernetesBackendTlsPolicy
-	2, // 1: dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1.KubernetesBackendTlsPolicyStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1.KubernetesBackendTlsPolicyIacInput.target:type_name -> dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1.KubernetesBackendTlsPolicy
+	2, // 1: dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1.KubernetesBackendTlsPolicyIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

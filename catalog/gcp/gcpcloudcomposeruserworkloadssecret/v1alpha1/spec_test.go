@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpCloudComposerUserWorkloadsSecretSpec", func() {
 		return &GcpCloudComposerUserWorkloadsSecret{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudComposerUserWorkloadsSecret",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "airflow-db-credentials",
 			},
 			Spec: &GcpCloudComposerUserWorkloadsSecretSpec{

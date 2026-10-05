@@ -22,8 +22,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsStepFunctionStackInput is the input envelope passed to IaC modules for provisioning.
-type AwsStepFunctionStackInput struct {
+// AwsStepFunctionIacInput is the input envelope passed to IaC modules for provisioning.
+type AwsStepFunctionIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the fully-specified AwsStepFunction resource to provision.
 	Target *AwsStepFunction `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AwsStepFunctionStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsStepFunctionStackInput) Reset() {
-	*x = AwsStepFunctionStackInput{}
+func (x *AwsStepFunctionIacInput) Reset() {
+	*x = AwsStepFunctionIacInput{}
 	mi := &file_catalog_aws_awsstepfunction_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsStepFunctionStackInput) String() string {
+func (x *AwsStepFunctionIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsStepFunctionStackInput) ProtoMessage() {}
+func (*AwsStepFunctionIacInput) ProtoMessage() {}
 
-func (x *AwsStepFunctionStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsStepFunctionIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsstepfunction_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsStepFunctionStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsStepFunctionStackInput.ProtoReflect.Descriptor instead.
-func (*AwsStepFunctionStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsStepFunctionIacInput.ProtoReflect.Descriptor instead.
+func (*AwsStepFunctionIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsstepfunction_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsStepFunctionStackInput) GetTarget() *AwsStepFunction {
+func (x *AwsStepFunctionIacInput) GetTarget() *AwsStepFunction {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsStepFunctionStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsStepFunctionIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awsstepfunction_v1alpha1_input_proto protoreflect.FileDescr
 
 const file_catalog_aws_awsstepfunction_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awsstepfunction/v1alpha1/input.proto\x12(dev.planton.aws.awsstepfunction.v1alpha1\x1a.catalog/aws/awsstepfunction/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xbb\x01\n" +
-	"\x19AwsStepFunctionStackInput\x12Q\n" +
+	"0catalog/aws/awsstepfunction/v1alpha1/input.proto\x12(dev.planton.aws.awsstepfunction.v1alpha1\x1a.catalog/aws/awsstepfunction/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb9\x01\n" +
+	"\x17AwsStepFunctionIacInput\x12Q\n" +
 	"\x06target\x18\x01 \x01(\v29.dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xda\x02\n" +
 	",com.dev.planton.aws.awsstepfunction.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_aws_awsstepfunction_v1alpha1_input_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsstepfunction_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsstepfunction_v1alpha1_input_proto_goTypes = []any{
-	(*AwsStepFunctionStackInput)(nil), // 0: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStackInput
-	(*AwsStepFunction)(nil),           // 1: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunction
-	(*aws.AwsProviderConfig)(nil),     // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsStepFunctionIacInput)(nil), // 0: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionIacInput
+	(*AwsStepFunction)(nil),         // 1: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunction
+	(*aws.AwsProviderConfig)(nil),   // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsstepfunction_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStackInput.target:type_name -> dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunction
-	2, // 1: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionIacInput.target:type_name -> dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunction
+	2, // 1: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

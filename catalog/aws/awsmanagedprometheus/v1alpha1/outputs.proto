@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsmanagedprometheus.v1alpha1;
 
-// AwsManagedPrometheusStackOutputs captures the observable state of
+// AwsManagedPrometheusOutputs captures the observable state of
 // the workspace and its satellites after apply.
-message AwsManagedPrometheusStackOutputs {
+message AwsManagedPrometheusOutputs {
   // The workspace's ID (the provider's import ID for the workspace
   // and most satellites).
   string workspace_id = 1;

@@ -10,7 +10,7 @@ import (
 	kubernetesdeploymentv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesdeployment/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadpod"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -40,11 +40,11 @@ type Locals struct {
 	ImagePullSecretData map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesdeploymentv1alpha1.KubernetesDeploymentStackInput) (*Locals, error) {
+func initializeLocals(ctx *pulumi.Context, iacInput *kubernetesdeploymentv1alpha1.KubernetesDeploymentIacInput) (*Locals, error) {
 	locals := &Locals{}
 
-	locals.KubernetesDeployment = stackInput.Target
-	target := stackInput.Target
+	locals.KubernetesDeployment = iacInput.Target
+	target := iacInput.Target
 
 	if target.Spec.Container == nil || target.Spec.Container.App == nil || target.Spec.Container.App.Image == nil {
 		return nil, errors.New("spec.container.app.image is required")
@@ -59,7 +59,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesdeploymentv1alp
 		"app":                            target.Metadata.Name,
 		kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
 		kuberneteslabelkeys.ResourceName: target.Metadata.Name,
-		kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesDeployment.String(),
+		kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesDeployment.String(),
 	}
 
 	// The deployment track (deploy-target contract: pipelines set spec.version from

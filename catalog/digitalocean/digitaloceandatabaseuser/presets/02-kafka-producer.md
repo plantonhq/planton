@@ -16,4 +16,4 @@ This preset creates a Kafka cluster user scoped to producing on a topic prefix, 
 
 ## What You Get
 
-A Kafka user whose topic rights match the manifest exactly, with the mTLS credential pair and password exported as secret stack outputs.
+A Kafka user whose topic rights match the manifest exactly, with the mTLS credential pair and password exported as secret outputs.

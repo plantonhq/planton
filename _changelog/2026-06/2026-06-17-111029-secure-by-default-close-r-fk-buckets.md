@@ -6,7 +6,7 @@
 
 ## Summary
 
-Annotates 8 more cloud-resource secret fields with `(dev.planton.shared.options.sensitive) = true`, closing two of the four deferral buckets from the big-bang annotation sweep: **R** (secrets nested in repeated rows, 7 fields) and **FK** (a secret that is also a foreign-key reference, 1 field). With these, a sensitive field can never hold a plaintext literal — only a managed-secret reference resolved just-in-time on the runner. The secret-coverage baseline shrinks from 20 deferred gaps to **12** (only the C env-secret-maps and D secret-holder-kind buckets remain).
+Annotates 8 more infra-component secret fields with `(dev.planton.shared.options.sensitive) = true`, closing two of the four deferral buckets from the big-bang annotation sweep: **R** (secrets nested in repeated rows, 7 fields) and **FK** (a secret that is also a foreign-key reference, 1 field). With these, a sensitive field can never hold a plaintext literal — only a managed-secret reference resolved just-in-time on the runner. The secret-coverage baseline shrinks from 20 deferred gaps to **12** (only the C env-secret-maps and D secret-holder-kind buckets remain).
 
 ## Problem Statement / Motivation
 

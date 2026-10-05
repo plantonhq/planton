@@ -25,7 +25,7 @@ resources referencing this network's outputs.
 
 ## Inputs
 
-The module receives an `AzureVirtualNetworkStackInput` containing:
+The module receives an `AzureVirtualNetworkIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the network's ARM identity (references resolved to literals by the platform)
 - `target.spec.address_spaces` OR `target.spec.ip_address_pools` -- exactly one address source (self-managed CIDRs or Network Manager IPAM delegation)

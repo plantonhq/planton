@@ -15,7 +15,7 @@ OpenTofu module that declares one Stripe v2 event destination. Stripe kinds run 
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `name`, `event_payload`, `enabled_events` (required); exactly one of `webhook_endpoint`, `amazon_eventbridge`, `azure_event_grid`; `description`, `events_from`, `snapshot_api_version`, `metadata` (optional) |
 
 ## Outputs

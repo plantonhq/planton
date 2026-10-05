@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureVirtualHubConnectionStackInput is the input to the IaC modules
+// AzureVirtualHubConnectionIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureVirtualHubConnectionStackInput struct {
+type AzureVirtualHubConnectionIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Virtual Hub Connection resource to deploy.
 	Target *AzureVirtualHubConnection `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureVirtualHubConnectionStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureVirtualHubConnectionStackInput) Reset() {
-	*x = AzureVirtualHubConnectionStackInput{}
+func (x *AzureVirtualHubConnectionIacInput) Reset() {
+	*x = AzureVirtualHubConnectionIacInput{}
 	mi := &file_catalog_azure_azurevirtualhubconnection_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVirtualHubConnectionStackInput) String() string {
+func (x *AzureVirtualHubConnectionIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVirtualHubConnectionStackInput) ProtoMessage() {}
+func (*AzureVirtualHubConnectionIacInput) ProtoMessage() {}
 
-func (x *AzureVirtualHubConnectionStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureVirtualHubConnectionIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevirtualhubconnection_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureVirtualHubConnectionStackInput) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVirtualHubConnectionStackInput.ProtoReflect.Descriptor instead.
-func (*AzureVirtualHubConnectionStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVirtualHubConnectionIacInput.ProtoReflect.Descriptor instead.
+func (*AzureVirtualHubConnectionIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualhubconnection_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVirtualHubConnectionStackInput) GetTarget() *AzureVirtualHubConnection {
+func (x *AzureVirtualHubConnectionIacInput) GetTarget() *AzureVirtualHubConnection {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureVirtualHubConnectionStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureVirtualHubConnectionIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurevirtualhubconnection_v1alpha1_input_proto protorefle
 
 const file_catalog_azure_azurevirtualhubconnection_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/azure/azurevirtualhubconnection/v1alpha1/input.proto\x124dev.planton.azure.azurevirtualhubconnection.v1alpha1\x1a:catalog/azure/azurevirtualhubconnection/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xdf\x01\n" +
-	"#AzureVirtualHubConnectionStackInput\x12g\n" +
+	"<catalog/azure/azurevirtualhubconnection/v1alpha1/input.proto\x124dev.planton.azure.azurevirtualhubconnection.v1alpha1\x1a:catalog/azure/azurevirtualhubconnection/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xdd\x01\n" +
+	"!AzureVirtualHubConnectionIacInput\x12g\n" +
 	"\x06target\x18\x01 \x01(\v2O.dev.planton.azure.azurevirtualhubconnection.v1alpha1.AzureVirtualHubConnectionR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xac\x03\n" +
 	"8com.dev.planton.azure.azurevirtualhubconnection.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azurevirtualhubconnection_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_azure_azurevirtualhubconnection_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurevirtualhubconnection_v1alpha1_input_proto_goTypes = []any{
-	(*AzureVirtualHubConnectionStackInput)(nil), // 0: dev.planton.azure.azurevirtualhubconnection.v1alpha1.AzureVirtualHubConnectionStackInput
-	(*AzureVirtualHubConnection)(nil),           // 1: dev.planton.azure.azurevirtualhubconnection.v1alpha1.AzureVirtualHubConnection
-	(*azure.AzureProviderConfig)(nil),           // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureVirtualHubConnectionIacInput)(nil), // 0: dev.planton.azure.azurevirtualhubconnection.v1alpha1.AzureVirtualHubConnectionIacInput
+	(*AzureVirtualHubConnection)(nil),         // 1: dev.planton.azure.azurevirtualhubconnection.v1alpha1.AzureVirtualHubConnection
+	(*azure.AzureProviderConfig)(nil),         // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurevirtualhubconnection_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurevirtualhubconnection.v1alpha1.AzureVirtualHubConnectionStackInput.target:type_name -> dev.planton.azure.azurevirtualhubconnection.v1alpha1.AzureVirtualHubConnection
-	2, // 1: dev.planton.azure.azurevirtualhubconnection.v1alpha1.AzureVirtualHubConnectionStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurevirtualhubconnection.v1alpha1.AzureVirtualHubConnectionIacInput.target:type_name -> dev.planton.azure.azurevirtualhubconnection.v1alpha1.AzureVirtualHubConnection
+	2, // 1: dev.planton.azure.azurevirtualhubconnection.v1alpha1.AzureVirtualHubConnectionIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

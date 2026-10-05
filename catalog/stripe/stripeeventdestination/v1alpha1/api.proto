@@ -7,7 +7,7 @@ import "catalog/stripe/stripeeventdestination/v1alpha1/outputs.proto";
 import "catalog/stripe/stripeeventdestination/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// StripeEventDestination is a component that declares where a Stripe account sends its events
+// StripeEventDestination is a kind that declares where a Stripe account sends its events
 // through Stripe's v2 event destinations: a webhook URL, an Amazon EventBridge event bus, or an
 // Azure Event Grid partner topic, as thin or snapshot events.
 //
@@ -43,12 +43,12 @@ message StripeEventDestination {
   // Must be "StripeEventDestination" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'StripeEventDestination'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the resource within Planton
   // - org: Organization that owns it
   // - env: Environment it is deployed from
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains where events go and which events are sent.
   StripeEventDestinationSpec spec = 4 [(buf.validate.field).required = true];
@@ -60,6 +60,6 @@ message StripeEventDestination {
 // StripeEventDestinationStatus represents the current state of a StripeEventDestination
 // resource. Populated by the deployment system.
 message StripeEventDestinationStatus {
-  // outputs contains the stack outputs: the destination's id, signing secret and cloud source.
-  StripeEventDestinationStackOutputs outputs = 1;
+  // outputs contains the outputs: the destination's id, signing secret and cloud source.
+  StripeEventDestinationOutputs outputs = 1;
 }

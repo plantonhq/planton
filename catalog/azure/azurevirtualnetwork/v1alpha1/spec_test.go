@@ -37,7 +37,7 @@ func validResource() *AzureVirtualNetwork {
 	return &AzureVirtualNetwork{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureVirtualNetwork",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-network",
 		},
 		Spec: &AzureVirtualNetworkSpec{

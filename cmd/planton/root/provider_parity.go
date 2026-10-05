@@ -10,9 +10,9 @@ import (
 	"sort"
 
 	"github.com/plantonhq/planton/internal/cli/cliprint"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/providerparity"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/spf13/cobra"
 )
 
@@ -36,11 +36,11 @@ through, at the exact pinned version, and check TOTAL accounting:
              dispositions ledger.
 
 This is PROVIDER parity -- a different axis from the cross-engine parity the
-component audit's --parity focus checks (one kind's two IaC modules
+kind audit's --parity focus checks (one kind's two IaC modules
 implementing the same contract).
 
 Run from the repository root. Default output is a per-kind accounting
-summary; --kind details one kind (what the component audit invokes);
+summary; --kind details one kind (what the kind audit invokes);
 --output json emits the full accounting (what the public parity report
 renders from); --check gates against the burn-down baseline for CI;
 --write-baseline regenerates the baseline after judged work;
@@ -81,8 +81,8 @@ func providerParityHandler(cmd *cobra.Command, _ []string) {
 	// Accepts the catalog directory name ("gcp", "digitalocean") as well as
 	// the registry enum name ("digital_ocean") -- the same resolution the
 	// committed pages' embedded parameters go through.
-	provider := crkreflect.ProviderFromString(providerName)
-	if provider == cloudresourcekind.CloudResourceProvider_cloud_resource_provider_unspecified {
+	provider := catalogkindreflect.ProviderFromString(providerName)
+	if provider == catalogkind.CatalogProvider_catalog_provider_unspecified {
 		cliprint.PrintError(fmt.Sprintf("unknown cloud provider %q", providerName))
 		os.Exit(1)
 	}

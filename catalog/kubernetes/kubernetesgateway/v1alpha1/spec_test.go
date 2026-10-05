@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -25,7 +25,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -53,7 +53,7 @@ var _ = ginkgo.Describe("KubernetesGateway Validation Tests", func() {
 		input = &KubernetesGateway{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesGateway",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-gateway",
 			},
 			Spec: &KubernetesGatewaySpec{
@@ -129,8 +129,8 @@ var _ = ginkgo.Describe("KubernetesGateway Validation Tests", func() {
 
 		ginkgo.Context("with namespace and gateway_class_name resolved via valueFrom references", func() {
 			ginkgo.It("should not return a validation error", func() {
-				input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "ingress-ns", "spec.name")
-				input.Spec.GatewayClassName = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesGatewayClass, "istio", "status.outputs.gateway_class_name")
+				input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "ingress-ns", "spec.name")
+				input.Spec.GatewayClassName = valueFrom(catalogkind.CatalogKind_KubernetesGatewayClass, "istio", "status.outputs.gateway_class_name")
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 		})

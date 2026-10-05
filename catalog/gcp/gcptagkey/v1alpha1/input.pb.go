@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpTagKeyStackInput struct {
+type GcpTagKeyIacInput struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Target         *GcpTagKey             `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpTagKeyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpTagKeyStackInput) Reset() {
-	*x = GcpTagKeyStackInput{}
+func (x *GcpTagKeyIacInput) Reset() {
+	*x = GcpTagKeyIacInput{}
 	mi := &file_catalog_gcp_gcptagkey_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpTagKeyStackInput) String() string {
+func (x *GcpTagKeyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpTagKeyStackInput) ProtoMessage() {}
+func (*GcpTagKeyIacInput) ProtoMessage() {}
 
-func (x *GcpTagKeyStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpTagKeyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcptagkey_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpTagKeyStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpTagKeyStackInput.ProtoReflect.Descriptor instead.
-func (*GcpTagKeyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpTagKeyIacInput.ProtoReflect.Descriptor instead.
+func (*GcpTagKeyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcptagkey_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpTagKeyStackInput) GetTarget() *GcpTagKey {
+func (x *GcpTagKeyIacInput) GetTarget() *GcpTagKey {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpTagKeyStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpTagKeyIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcptagkey_v1alpha1_input_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcptagkey_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"*catalog/gcp/gcptagkey/v1alpha1/input.proto\x12\"dev.planton.gcp.gcptagkey.v1alpha1\x1a(catalog/gcp/gcptagkey/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xa9\x01\n" +
-	"\x13GcpTagKeyStackInput\x12E\n" +
+	"*catalog/gcp/gcptagkey/v1alpha1/input.proto\x12\"dev.planton.gcp.gcptagkey.v1alpha1\x1a(catalog/gcp/gcptagkey/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xa7\x01\n" +
+	"\x11GcpTagKeyIacInput\x12E\n" +
 	"\x06target\x18\x01 \x01(\v2-.dev.planton.gcp.gcptagkey.v1alpha1.GcpTagKeyR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xb0\x02\n" +
 	"&com.dev.planton.gcp.gcptagkey.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcptagkey_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcptagkey_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcptagkey_v1alpha1_input_proto_goTypes = []any{
-	(*GcpTagKeyStackInput)(nil),   // 0: dev.planton.gcp.gcptagkey.v1alpha1.GcpTagKeyStackInput
+	(*GcpTagKeyIacInput)(nil),     // 0: dev.planton.gcp.gcptagkey.v1alpha1.GcpTagKeyIacInput
 	(*GcpTagKey)(nil),             // 1: dev.planton.gcp.gcptagkey.v1alpha1.GcpTagKey
 	(*gcp.GcpProviderConfig)(nil), // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcptagkey_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcptagkey.v1alpha1.GcpTagKeyStackInput.target:type_name -> dev.planton.gcp.gcptagkey.v1alpha1.GcpTagKey
-	2, // 1: dev.planton.gcp.gcptagkey.v1alpha1.GcpTagKeyStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcptagkey.v1alpha1.GcpTagKeyIacInput.target:type_name -> dev.planton.gcp.gcptagkey.v1alpha1.GcpTagKey
+	2, // 1: dev.planton.gcp.gcptagkey.v1alpha1.GcpTagKeyIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

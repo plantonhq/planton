@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.stripe.stripepromotioncode.v1alpha1;
 
-// StripePromotionCodeStackOutputs identifies the promotion code.
+// StripePromotionCodeOutputs identifies the promotion code.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/promotion_code
-message StripePromotionCodeStackOutputs {
+message StripePromotionCodeOutputs {
   // id is the promotion code's Stripe id (promo_...). It changes when the code is replaced.
   string id = 1;
 

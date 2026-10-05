@@ -5,9 +5,9 @@ package dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1;
 import "catalog/aws/awsredshiftserverlessworkgroup/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// aws-redshift-serverless-workgroup stack-input
-message AwsRedshiftServerlessWorkgroupStackInput {
-  // target cloud-resource
+// aws-redshift-serverless-workgroup iac-input
+message AwsRedshiftServerlessWorkgroupIacInput {
+  // the catalog object to deploy
   AwsRedshiftServerlessWorkgroup target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

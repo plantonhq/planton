@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-redshift-serverless-namespace stack-input
-type AwsRedshiftServerlessNamespaceStackInput struct {
+// aws-redshift-serverless-namespace iac-input
+type AwsRedshiftServerlessNamespaceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsRedshiftServerlessNamespace `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-credential
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsRedshiftServerlessNamespaceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsRedshiftServerlessNamespaceStackInput) Reset() {
-	*x = AwsRedshiftServerlessNamespaceStackInput{}
+func (x *AwsRedshiftServerlessNamespaceIacInput) Reset() {
+	*x = AwsRedshiftServerlessNamespaceIacInput{}
 	mi := &file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRedshiftServerlessNamespaceStackInput) String() string {
+func (x *AwsRedshiftServerlessNamespaceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRedshiftServerlessNamespaceStackInput) ProtoMessage() {}
+func (*AwsRedshiftServerlessNamespaceIacInput) ProtoMessage() {}
 
-func (x *AwsRedshiftServerlessNamespaceStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsRedshiftServerlessNamespaceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsRedshiftServerlessNamespaceStackInput) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRedshiftServerlessNamespaceStackInput.ProtoReflect.Descriptor instead.
-func (*AwsRedshiftServerlessNamespaceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRedshiftServerlessNamespaceIacInput.ProtoReflect.Descriptor instead.
+func (*AwsRedshiftServerlessNamespaceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRedshiftServerlessNamespaceStackInput) GetTarget() *AwsRedshiftServerlessNamespace {
+func (x *AwsRedshiftServerlessNamespaceIacInput) GetTarget() *AwsRedshiftServerlessNamespace {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsRedshiftServerlessNamespaceStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsRedshiftServerlessNamespaceIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_input_proto protore
 
 const file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/aws/awsredshiftserverlessnamespace/v1alpha1/input.proto\x127dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1\x1a=catalog/aws/awsredshiftserverlessnamespace/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe8\x01\n" +
-	"(AwsRedshiftServerlessNamespaceStackInput\x12o\n" +
+	"?catalog/aws/awsredshiftserverlessnamespace/v1alpha1/input.proto\x127dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1\x1a=catalog/aws/awsredshiftserverlessnamespace/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe6\x01\n" +
+	"&AwsRedshiftServerlessNamespaceIacInput\x12o\n" +
 	"\x06target\x18\x01 \x01(\v2W.dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1.AwsRedshiftServerlessNamespaceR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xc3\x03\n" +
 	";com.dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_input_proto_rawDes
 
 var file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_input_proto_goTypes = []any{
-	(*AwsRedshiftServerlessNamespaceStackInput)(nil), // 0: dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1.AwsRedshiftServerlessNamespaceStackInput
-	(*AwsRedshiftServerlessNamespace)(nil),           // 1: dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1.AwsRedshiftServerlessNamespace
-	(*aws.AwsProviderConfig)(nil),                    // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsRedshiftServerlessNamespaceIacInput)(nil), // 0: dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1.AwsRedshiftServerlessNamespaceIacInput
+	(*AwsRedshiftServerlessNamespace)(nil),         // 1: dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1.AwsRedshiftServerlessNamespace
+	(*aws.AwsProviderConfig)(nil),                  // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1.AwsRedshiftServerlessNamespaceStackInput.target:type_name -> dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1.AwsRedshiftServerlessNamespace
-	2, // 1: dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1.AwsRedshiftServerlessNamespaceStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1.AwsRedshiftServerlessNamespaceIacInput.target:type_name -> dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1.AwsRedshiftServerlessNamespace
+	2, // 1: dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1.AwsRedshiftServerlessNamespaceIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

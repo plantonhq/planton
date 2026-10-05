@@ -18,20 +18,20 @@ import (
 //  3. the PerconaXtraDBCluster resource itself (an untyped CustomResource
 //     whose spec body twins the Terraform module's mysql_manifest —
 //     cluster.go records why the typed crd2pulumi path is unusable),
-//  4. stack outputs for composition (proxy Services, root password Secret).
+//  4. outputs for composition (proxy Services, root password Secret).
 //
 // Ordering matters only for the namespace (everything is namespaced)
 // and for credential Secrets (the operator reads them at reconcile time).
-func Resources(ctx *pulumi.Context, stackInput *kubernetesmysqlv1alpha1.KubernetesMysqlStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesmysqlv1alpha1.KubernetesMysqlIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
 
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

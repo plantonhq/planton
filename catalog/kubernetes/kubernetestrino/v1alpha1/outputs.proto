@@ -5,12 +5,12 @@ package dev.planton.kubernetes.kubernetestrino.v1alpha1;
 import "catalog/kubernetes/kubernetes.proto";
 
 /**
- * **KubernetesTrinoStackOutputs** — the composition handles a
+ * **KubernetesTrinoOutputs** — the composition handles a
  * deployed Trino exports. SQL clients (the trino CLI, JDBC/ODBC,
  * BI tools like a KubernetesSuperset) point at the coordinator
  * endpoint; the admin credential is exported as a Secret handle.
  */
-message KubernetesTrinoStackOutputs {
+message KubernetesTrinoOutputs {
   // Namespace Trino runs in.
   string namespace = 1;
 

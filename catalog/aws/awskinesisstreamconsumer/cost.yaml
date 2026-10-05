@@ -1,13 +1,13 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate model: a registered consumer commits real spend (a dedicated
 # read pipe billed per shard per hour), but the shard count lives on the
 # referenced AwsKinesisStream -- invisible in this manifest, so a dollar
 # figure here would be a guess wearing a dollar sign.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awskinesisstreamconsumer
 spec:
@@ -23,7 +23,7 @@ spec:
       pricing_unit: consumer-shard-hours
       impact: The only lever this manifest holds -- which stream the consumer registers with decides how many shards multiply the hourly fee. A 10-shard stream makes this consumer five times the committed cost of a 2-shard one.
   estimate_exclusions:
-    - the consumer-shard-hour quantity is the referenced AwsKinesisStream's shard count times the hours in the month -- this manifest names the stream, never its size, which is why no estimate document exists for this component
+    - the consumer-shard-hour quantity is the referenced AwsKinesisStream's shard count times the hours in the month -- this manifest names the stream, never its size, which is why no estimate document exists for this kind
     - enhanced fan-out data retrieval bills per GB delivered through SubscribeToShard and follows read traffic
     - the referenced stream's own shard-hours, retention, and data charges bill on its AwsKinesisStream component
   notes: "The honest estimate lives at composition time: the consumer registration from this manifest, the shard count from the referenced stream, the rate from the price book. Each piece is verified data -- only their join is deferred, to the surface that sees both components together."

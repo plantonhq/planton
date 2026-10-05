@@ -1,7 +1,7 @@
 # Harbor — the private registry at the center of the supply chain: OCI
 # images and charts, projects with role-based access, replication, and
 # Trivy vulnerability scanning (on by default — this chart leaves the
-# component's secure default alone). Every data arm composes from the
+# kind's secure default alone). Every data arm composes from the
 # first-class kinds declared beside it; nothing stateful lives inside
 # Harbor's own pods, which is what makes every Harbor component
 # horizontally scalable later. The module generates the admin credential

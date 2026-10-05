@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -64,7 +64,7 @@ var _ = ginkgo.Describe("KubernetesMlflow Validation Tests", func() {
 		input = &KubernetesMlflow{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesMlflow",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "mlflow",
 			},
 			Spec: &KubernetesMlflowSpec{
@@ -79,7 +79,7 @@ var _ = ginkgo.Describe("KubernetesMlflow Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "mlflow", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "mlflow", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -95,8 +95,8 @@ var _ = ginkgo.Describe("KubernetesMlflow Validation Tests", func() {
 
 		ginkgo.It("postgres backend composed from a KubernetesPostgres should be valid", func() {
 			pg := testMlflowPostgres()
-			pg.Host = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "mlflow-pg", "status.outputs.rw_service")
-			pg.PasswordSecret.SecretName = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "mlflow-pg", "status.outputs.password_secret.name")
+			pg.Host = valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "mlflow-pg", "status.outputs.rw_service")
+			pg.PasswordSecret.SecretName = valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "mlflow-pg", "status.outputs.password_secret.name")
 			input.Spec.BackendStore = &KubernetesMlflowBackendStore{
 				Backend: &KubernetesMlflowBackendStore_Postgres{Postgres: pg},
 			}
@@ -128,8 +128,8 @@ var _ = ginkgo.Describe("KubernetesMlflow Validation Tests", func() {
 
 		ginkgo.It("s3-compatible artifacts composed from a KubernetesSeaweedFs should be valid", func() {
 			s3 := testS3Compatible()
-			s3.Endpoint = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesSeaweedFs, "artifacts", "status.outputs.s3_endpoint")
-			s3.CredentialsSecret.SecretName = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesSeaweedFs, "artifacts", "status.outputs.s3_credentials_secret_name")
+			s3.Endpoint = valueFrom(catalogkind.CatalogKind_KubernetesSeaweedFs, "artifacts", "status.outputs.s3_endpoint")
+			s3.CredentialsSecret.SecretName = valueFrom(catalogkind.CatalogKind_KubernetesSeaweedFs, "artifacts", "status.outputs.s3_credentials_secret_name")
 			s3.Prefix = "runs"
 			input.Spec.ArtifactStore = &KubernetesMlflowArtifactStore{
 				Backend: &KubernetesMlflowArtifactStore_S3Compatible{S3Compatible: s3},

@@ -26,7 +26,7 @@ resources, so they carry no tags.
 
 ## Inputs
 
-The module receives an `AzureVirtualNetworkPeeringStackInput` containing:
+The module receives an `AzureVirtualNetworkPeeringIacInput` containing:
 
 - `target.spec.name` -- the peering's name, unique within the local network
 - `target.spec.virtual_network_id` -- ARM ID of the LOCAL network (reference resolved to a literal by the platform); resource group and network name are parsed from it

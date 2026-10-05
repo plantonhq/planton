@@ -1,6 +1,6 @@
 # GcpFirestoreDatabase - Terraform Module
 
-Terraform implementation for the GcpFirestoreDatabase Planton component.
+Terraform implementation for the GcpFirestoreDatabase Planton catalog kind.
 
 ## Resources Created
 

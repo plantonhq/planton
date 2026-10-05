@@ -7,19 +7,19 @@ decision plus its access rules, attached to applications by reference.
 
 ```
 iac/pulumi/
-├── main.go            # entrypoint (loads stack-input, calls module.Resources)
+├── main.go            # entrypoint (loads iac-input, calls module.Resources)
 ├── Pulumi.yaml
 ├── Makefile
 └── module/
     ├── main.go            # Resources(): provider setup + policy()
-    ├── locals.go          # stack-input references
+    ├── locals.go          # iac-input references
     ├── policy.go          # the cloudflare.ZeroTrustAccessPolicy + rule mappers
     └── outputs.go         # output constant names
 ```
 
 ## Inputs
 
-A `CloudflareZeroTrustAccessPolicyStackInput` (target + provider config). Required:
+A `CloudflareZeroTrustAccessPolicyIacInput` (target + provider config). Required:
 `account_id`, `name`, `decision`, and at least one `include` rule.
 
 ## Outputs

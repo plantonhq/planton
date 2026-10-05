@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezerotrustaccessapplication
 spec:
@@ -18,7 +18,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: application_id
       derivations:
-        - from_stack_output: application_id
+        - from_output: application_id
       where_to_find: >-
         Zero Trust dashboard -> Access -> Applications -> the application
         (the Application ID / AUD on its overview), or

@@ -22,12 +22,12 @@ import (
 // when set -- unset lets Azure assign the next free value in creation
 // order (the service owns that default). Weight defaults to 1 and is
 // always sent, so both engines send identical wire shapes.
-func Resources(ctx *pulumi.Context, stackInput *azuretrafficmanagerendpointv1alpha1.AzureTrafficManagerEndpointStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuretrafficmanagerendpointv1alpha1.AzureTrafficManagerEndpointIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -45,7 +45,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuretrafficmanagerendpointv1alp
 	}
 
 	// Exactly one endpoint resource materializes; its ARM id and name
-	// flatten onto the same stack outputs regardless of type.
+	// flatten onto the same outputs regardless of type.
 	var endpointId pulumi.StringOutput
 	var endpointName pulumi.StringOutput
 

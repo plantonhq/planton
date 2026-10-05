@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awss3tablebucket
 spec:
@@ -40,4 +40,4 @@ spec:
     - compaction bills $0.002 per 1,000 objects and $0.005 per GB processed (default binpack) -- zero until there are small files to combine
     - replication (when configured) bills destination PUT requests, $0.010 per 1,000 table updates, inter-Region Data Transfer OUT per GB for cross-region destinations, and the destination bucket's own storage and monitoring
     - an aws:kms encryption choice routes KMS request and key charges to the referenced AwsKmsKey -- including the maintenance service's GenerateDataKey/Decrypt calls during compaction
-  notes: "The maintenance meters are the class's signature: AWS continuously optimizes the lake (compaction, snapshot expiry, orphan removal) and bills per unit of work processed -- so the bill tracks ingest churn, not just size at rest, and every maintenance meter is exactly zero on an empty or idle bucket. Both presets create empty tables, so committed cost is zero; the KMS key and replication role the second preset references bill and are authored as their own kinds."
+  notes: "The maintenance meters are the class's signature: AWS continuously optimizes the lake (compaction, snapshot expiry, orphan removal) and bills per unit of work processed -- so the bill tracks ingest churn, not just size at rest, and every maintenance meter is exactly zero on an empty or idle bucket. Both presets create empty tables, so committed cost is zero; the KMS key and replication role the second preset references bill and are authored as their own components."

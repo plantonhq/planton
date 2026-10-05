@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureeventhubschemagroup.v1alpha1;
 
-// **AzureEventHubSchemaGroupStackOutputs** captures the outputs of
+// **AzureEventHubSchemaGroupOutputs** captures the outputs of
 // provisioning a schema group.
-message AzureEventHubSchemaGroupStackOutputs {
+message AzureEventHubSchemaGroupOutputs {
   // The Azure Resource Manager ID of the schema group.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{ns}/schemagroups/{name}
   string schema_group_id = 1;

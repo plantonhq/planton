@@ -10,11 +10,11 @@ Provisions a Spaces access-key pair with optional per-bucket grants -- the compl
 
 ## Inputs
 
-`DigitalOceanSpacesKeyStackInput`: the target `DigitalOceanSpacesKey` resource and the DigitalOcean provider config (API token).
+`DigitalOceanSpacesKeyIacInput`: the target `DigitalOceanSpacesKey` resource and the DigitalOcean provider config (API token).
 
 ## Outputs
 
-Exactly the `DigitalOceanSpacesKeyStackOutputs` contract: `access_key`, `secret_key` (exported through `pulumi.ToSecret` -- the SDK does not secret-flag it).
+Exactly the `DigitalOceanSpacesKeyOutputs` contract: `access_key`, `secret_key` (exported through `pulumi.ToSecret` -- the SDK does not secret-flag it).
 
 ## Behavior notes
 

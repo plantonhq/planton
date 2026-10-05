@@ -1,13 +1,13 @@
 # DigitalOcean DNS Zone -- Pulumi Module
 
-Deploys a `digitalocean:index/domain:Domain` plus one `digitalocean:index/dnsRecord:DnsRecord` per managed record value from a `DigitalOceanDnsZone` stack input: the zone itself, the create-only `ip_address` convenience, and the inline records with their per-type fields on presence semantics. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete provider argument surface for both resources — no PARITY-EXCEPTION guards. (The SDK renames the domain's `urn` attribute to `DomainUrn`; the module exports it under the contract's `urn` key.)
+Deploys a `digitalocean:index/domain:Domain` plus one `digitalocean:index/dnsRecord:DnsRecord` per managed record value from a `DigitalOceanDnsZone` IaC input: the zone itself, the create-only `ip_address` convenience, and the inline records with their per-type fields on presence semantics. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete provider argument surface for both resources — no PARITY-EXCEPTION guards. (The SDK renames the domain's `urn` attribute to `DomainUrn`; the module exports it under the contract's `urn` key.)
 
 ## Module structure
 
-- `main.go` -- Pulumi program entry point reading the stack input
+- `main.go` -- Pulumi program entry point reading the IaC input
 - `module/main.go` -- `Resources()`: locals, provider, zone
-- `module/locals.go` -- stack-input references and the standard Planton label map
-- `module/dns_zone.go` -- the domain resource, the per-value record fan-out, and stack-output exports
+- `module/locals.go` -- iac-input references and the standard Planton label map
+- `module/dns_zone.go` -- the domain resource, the per-value record fan-out, and output exports
 - `module/outputs.go` -- output key constants (the kind's outputs.proto contract)
 
 ## Behavior notes
@@ -18,4 +18,4 @@ Deploys a `digitalocean:index/domain:Domain` plus one `digitalocean:index/dnsRec
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Terraform module: `zone_name`, `zone_id`, `nameservers`, `urn`, and `record_ids` (the inline records' numeric ids keyed by the resource name `name-index-valueIndex` — the second half of each record's `{domain},{record_id}` import id).
+Exactly the kind's output contract, identical to the Terraform module: `zone_name`, `zone_id`, `nameservers`, `urn`, and `record_ids` (the inline records' numeric ids keyed by the resource name `name-index-valueIndex` — the second half of each record's `{domain},{record_id}` import id).

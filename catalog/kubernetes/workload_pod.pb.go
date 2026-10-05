@@ -920,7 +920,7 @@ type WorkloadPodAffinityTerm struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Labels of the pods to match against — for self-anti-affinity, the workload's own
-	// selector labels (exported as the `selector_labels` stack output).
+	// selector labels (exported as the `selector_labels` output).
 	MatchLabels map[string]string `protobuf:"bytes,1,rep,name=match_labels,json=matchLabels,proto3" json:"match_labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// *
 	// Node label defining the domain: "kubernetes.io/hostname" separates by node,

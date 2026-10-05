@@ -49,7 +49,7 @@ The previous two sessions (copywriting overhaul + structural overhaul) updated c
 6. **CLI install URL**: Fabricated `get.planton.ai` replaced with real `brew install plantonhq/tap/planton`
 7. **CLI version**: `v0.15.0` removed, version-agnostic display
 8. **CLI upgrade command**: `self-update` corrected to `upgrade`
-9. **Open Source forge**: `openmcf forge init` replaced with real component directory structure and 20-step workflow description
+9. **Open Source forge**: `openmcf forge init` replaced with real kind directory structure and 20-step workflow description
 10. **Runner AWS ARN**: 3-digit account ID corrected to 12-digit
 11. **Runner docs link**: `https://docs.planton.ai/runner` corrected to `/docs/runner`
 12. **Resource count**: Standardized to "350+" across overview and detail pages
@@ -101,7 +101,7 @@ Every code example was cross-referenced against:
 - `planton/ops/organizations/`: Real service manifests for ServiceHub
 - `planton/apis/ai/planton/servicehub/service/v1/api.proto`: Service API definition
 - `planton.ai/public/docs/cli.md`: Real CLI commands, install methods, version
-- `openmcf/` repo: Forge workflow, apiVersion patterns, component structure
+- `openmcf/` repo: Forge workflow, apiVersion patterns, kind structure
 
 ### Files Changed
 

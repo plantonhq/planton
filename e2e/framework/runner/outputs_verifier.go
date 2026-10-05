@@ -4,15 +4,15 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/outputs"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // VerifyOutputTransformation validates that raw IaC engine outputs can be
-// correctly transformed into a typed StackOutputs proto message.
+// correctly transformed into a typed Outputs proto message.
 //
 // The pipeline uses TransformRaw which supports module-directory overrides:
 //   - transform-outputs executable (highest priority)
@@ -21,10 +21,10 @@ import (
 //
 // Returns the populated proto message on success, or an error if any step fails.
 // Unknown output fields are logged as warnings by Transform() but do not cause failure.
-func VerifyOutputTransformation(component string, rawOutputs map[string]interface{}, moduleDir string) (proto.Message, map[string]string, error) {
-	kind := crkreflect.KindFromString(component)
-	if kind == cloudresourcekind.CloudResourceKind_unspecified {
-		return nil, nil, errors.Errorf("cannot resolve CloudResourceKind from component name %q", component)
+func VerifyOutputTransformation(kindDir string, rawOutputs map[string]interface{}, moduleDir string) (proto.Message, map[string]string, error) {
+	kind := catalogkindreflect.KindFromString(kindDir)
+	if kind == catalogkind.CatalogKind_unspecified {
+		return nil, nil, errors.Errorf("cannot resolve CatalogKind from kind name %q", kindDir)
 	}
 
 	var opts *outputs.TransformOptions
@@ -34,16 +34,16 @@ func VerifyOutputTransformation(component string, rawOutputs map[string]interfac
 
 	msg, flatOutputs, err := outputs.TransformRaw(kind, rawOutputs, opts)
 	if err != nil {
-		return nil, flatOutputs, errors.Wrapf(err, "output transformation failed for %s (kind=%s)", component, kind.String())
+		return nil, flatOutputs, errors.Wrapf(err, "output transformation failed for %s (kind=%s)", kindDir, kind.String())
 	}
 
-	logTransformationSummary(component, kind, flatOutputs, msg)
+	logTransformationSummary(kindDir, kind, flatOutputs, msg)
 
 	return msg, flatOutputs, nil
 }
 
 // logTransformationSummary prints how many proto fields were populated vs available.
-func logTransformationSummary(component string, kind cloudresourcekind.CloudResourceKind, flatOutputs map[string]string, msg proto.Message) {
+func logTransformationSummary(kindDir string, kind catalogkind.CatalogKind, flatOutputs map[string]string, msg proto.Message) {
 	ref := msg.ProtoReflect()
 	totalFields := ref.Descriptor().Fields().Len()
 
@@ -54,5 +54,5 @@ func logTransformationSummary(component string, kind cloudresourcekind.CloudReso
 	})
 
 	fmt.Printf("  [outputs] %s (%s): %d/%d proto fields populated from %d raw outputs\n",
-		component, kind.String(), populated, totalFields, len(flatOutputs))
+		kindDir, kind.String(), populated, totalFields, len(flatOutputs))
 }

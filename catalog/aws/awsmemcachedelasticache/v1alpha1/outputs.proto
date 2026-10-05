@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsmemcachedelasticache.v1alpha1;
 
-// AwsMemcachedElasticacheStackOutputs captures observable identifiers and
+// AwsMemcachedElasticacheOutputs captures observable identifiers and
 // endpoints from a provisioned ElastiCache Memcached cluster. These outputs
 // are used by downstream resources to wire dependencies via StringValueOrRef.
-message AwsMemcachedElasticacheStackOutputs {
+message AwsMemcachedElasticacheOutputs {
   // The identifier of the ElastiCache cluster.
   string cluster_id = 1;
 

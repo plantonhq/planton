@@ -5,7 +5,7 @@ import (
 
 	azuremssqlelasticpoolv1alpha1 "github.com/plantonhq/planton/catalog/azure/azuremssqlelasticpool/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -63,11 +63,11 @@ var licenseTypeStrings = map[azuremssqlelasticpoolv1alpha1.AzureMssqlElasticPool
 	azuremssqlelasticpoolv1alpha1.AzureMssqlElasticPoolLicenseType_LICENSE_INCLUDED: "LicenseIncluded",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremssqlelasticpoolv1alpha1.AzureMssqlElasticPoolStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremssqlelasticpoolv1alpha1.AzureMssqlElasticPoolIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMssqlElasticPool = stackInput.Target
-	target := stackInput.Target
+	locals.AzureMssqlElasticPool = iacInput.Target
+	target := iacInput.Target
 
 	serverIdParts := strings.Split(target.Spec.ServerId.GetValue(), "/")
 	if len(serverIdParts) >= 9 {
@@ -78,7 +78,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azuremssqlelasticpoolv1al
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureMssqlElasticPool.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureMssqlElasticPool.String()),
 	}
 
 	if target.Metadata.Id != "" {

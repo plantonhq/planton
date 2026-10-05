@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurebastionhost
 spec:
@@ -7,7 +7,7 @@ spec:
   values:
     - name: bastion_host_id
       derivations:
-        - from_stack_output: bastion_host_id
+        - from_output: bastion_host_id
       where_to_find: >-
         `az network bastion show -g <resource-group> -n <name> --query
-        id`, or the component's own bastion_host_id stack output.
+        id`, or the component's own bastion_host_id output.

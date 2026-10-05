@@ -5,7 +5,7 @@ package dev.planton.gcp.gcpworkflow.v1alpha1;
 import "catalog/gcp/gcpworkflow/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-message GcpWorkflowStackInput {
+message GcpWorkflowIacInput {
   GcpWorkflow target = 1;
   dev.planton.gcp.GcpProviderConfig provider_config = 2;
 }

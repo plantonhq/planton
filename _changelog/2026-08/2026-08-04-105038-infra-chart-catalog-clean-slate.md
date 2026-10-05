@@ -11,16 +11,16 @@ The entire infra-chart catalog — 64 charts across 10 providers — was removed
 in one deliberate stroke to make room for a demand-curated catalog designed
 from first principles. The replacement catalog admits a chart only when its
 name and pitch alone invoke "I want this" in a practitioner: complete,
-real-world platform architectures composed exclusively from components whose
+real-world platform architectures composed exclusively from kinds whose
 schemas and modules meet the catalog's full depth bar. The `charts/` README
 now carries the catalog doctrine the new collection is built under.
 
 ## Problem Statement / Motivation
 
 The catalog had accumulated charts of very different vintages: some composed
-component schemas that no longer exist (the legacy Civo, DigitalOcean, and
+kind schemas that no longer exist (the legacy Civo, DigitalOcean, and
 Scaleway environment charts templated addon specs from retired API shapes),
-some targeted providers whose component catalogs predate the current depth
+some targeted providers whose kind catalogs predate the current depth
 bar, and the collection as a whole was assembled provider-by-provider rather
 than designed as one catalog with one desirability standard. A user browsing
 the catalog judged the platform by its weakest entry.
@@ -73,7 +73,7 @@ the catalog judged the platform by its weakest entry.
 ## Related Work
 
 The new catalog's first entries are authored chart-by-chart under the forge
-rule's full quality bar — densely commented templates, component-docs-grade
+rule's full quality bar — densely commented templates, kind-docs-grade
 READMEs, typed params, verified icons, and the offline validation gate.
 
 ---

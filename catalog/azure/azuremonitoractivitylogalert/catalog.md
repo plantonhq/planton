@@ -4,7 +4,7 @@ Deploys an Azure Monitor Activity Log Alert -- the control-plane watchdog. It fi
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Activity Log Alert** -- a `Microsoft.Insights/activityLogAlerts` resource carrying the scopes, the category-driven matching criteria, and the action-group wiring. The definition defaults to the global location (the alert evaluates the subscription-global Activity Log regardless)
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically, merged with any user tags (user values win on key conflicts)
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the alert definition will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the alert definition will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **An action group** to notify (optional but recommended) -- an alert with no actions records matches but notifies nobody.
 
 ## Deploy
@@ -65,7 +65,7 @@ spec:
 planton apply -f activity-alert.yaml
 ```
 
-This creates a deletion watch: any successful VM delete under the production resource group notifies the governance action group. A Stack Job tracks the provisioning in real time.
+This creates a deletion watch: any successful VM delete under the production resource group notifies the governance action group. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,7 +102,7 @@ These are the most important decisions when configuring an activity log alert. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -110,9 +110,9 @@ These are the most important decisions when configuring an activity log alert. E
 | **AzureResourceGroup** | `scopes[]` | `status.outputs.resource_group_id` |
 | **AzureMonitorActionGroup** | `actions[].actionGroupId` | `status.outputs.action_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-The alert is a leaf in the dependency graph: `status.outputs` carries only the alert's own identifiers (`activity_log_alert_id`, `activity_log_alert_name`) for audit and CLI reference -- no downstream Cloud Resource consumes them.
+The alert is a leaf in the dependency graph: `status.outputs` carries only the alert's own identifiers (`activity_log_alert_id`, `activity_log_alert_name`) for audit and CLI reference -- no downstream Infra Component consumes them.
 
 ## Common Patterns
 
@@ -124,5 +124,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Monitor Action Group**](/cloud-catalog/azure-monitor-action-group) -- the notification hub the alert fires into
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- both the definition's home and the classic watch scope
+- [**Azure Monitor Action Group**](/infra-catalog/azure-monitor-action-group) -- the notification hub the alert fires into
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- both the definition's home and the classic watch scope

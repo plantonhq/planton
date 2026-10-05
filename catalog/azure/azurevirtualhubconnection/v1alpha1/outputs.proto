@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurevirtualhubconnection.v1alpha1;
 
-// **AzureVirtualHubConnectionStackOutputs** captures the outputs of
+// **AzureVirtualHubConnectionOutputs** captures the outputs of
 // provisioning a Virtual Hub Connection.
-message AzureVirtualHubConnectionStackOutputs {
+message AzureVirtualHubConnectionOutputs {
   // The Azure Resource Manager ID of the connection -- what a hub BGP
   // peering references as its virtual_network_connection_id.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualHubs/{hub}/hubVirtualNetworkConnections/{name}

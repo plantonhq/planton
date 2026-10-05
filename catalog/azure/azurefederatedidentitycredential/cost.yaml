@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurefederatedidentitycredential
 spec:
   billing_model: free
   free_tier: A federated identity credential is a keyless trust rule written on a user-assigned managed identity -- three strings (issuer, subject, audience) Azure AD matches against incoming OIDC tokens. Managed identities and their federated credentials are a free platform capability; the trust rule, and every token exchange it authorizes, never bills.
-  notes: "No field of this spec buys anything: name, the parent identity reference, issuer, subject, and audience are all trust metadata evaluated by Azure AD at no charge. The credential conveys no permissions and runs nothing -- the real spend lives in the external workload doing the authenticating (a GitHub runner, an AKS pod) and in the Azure resources the identity's separate role assignments unlock, each billing as its own catalog kind."
+  notes: "No field of this spec buys anything: name, the parent identity reference, issuer, subject, and audience are all trust metadata evaluated by Azure AD at no charge. The credential conveys no permissions and runs nothing -- the real spend lives in the external workload doing the authenticating (a GitHub runner, an AKS pod) and in the Azure resources the identity's separate role assignments unlock, each billing as its own component."

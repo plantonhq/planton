@@ -114,7 +114,7 @@ func renderFieldTree(b *strings.Builder, f Field, depth int, expandEnumDocs bool
 					writeIndented(b, v.Doc, body+2)
 				}
 			}
-		// Catalog-scale enums (the cloud-resource kind list is 400+) would
+		// Catalog-scale enums (the catalog kind list is 400+) would
 		// bury every other field in a tree view; name the count and the
 		// drill-down instead.
 		case len(f.Enum) > 15:

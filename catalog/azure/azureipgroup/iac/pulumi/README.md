@@ -1,8 +1,8 @@
 # AzureIpGroup -- Pulumi Module
 
-Creates an Azure IP Group (`network.IPGroup`, pulumi-azure classic v6) in the referenced resource group, carrying the spec's address set and merged governance tags. Behaviorally identical to the Terraform module for the same stack input.
+Creates an Azure IP Group (`network.IPGroup`, pulumi-azure classic v6) in the referenced resource group, carrying the spec's address set and merged governance tags. Behaviorally identical to the Terraform module for the same IaC input.
 
-The entrypoint (`main.go`) loads the stack input and delegates to `module.Resources`, which builds the Azure provider through the shared credential builder (static client secret, keyless web identity, or ambient chain).
+The entrypoint (`main.go`) loads the IaC input and delegates to `module.Resources`, which builds the Azure provider through the shared credential builder (static client secret, keyless web identity, or ambient chain).
 
 Key behaviors, documented inline in `module/main.go`:
 

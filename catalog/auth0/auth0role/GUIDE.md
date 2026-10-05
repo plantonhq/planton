@@ -3,7 +3,7 @@
 ## Security
 ## Platform Security Posture
 
-The certifications below are Auth0's own published claims about their hosted platform (verify current status on Auth0's compliance page). They describe the vendor's service — never this Planton component, and never your deployment: configuring this resource does not make your application certified, authorized, or compliant with any framework.
+The certifications below are Auth0's own published claims about their hosted platform (verify current status on Auth0's compliance page). They describe the vendor's service — never this catalog kind, and never your deployment: configuring this resource does not make your application certified, authorized, or compliant with any framework.
 
 Auth0's published certifications and security standards:
 
@@ -30,7 +30,7 @@ Roles are the primary mechanism for enforcing least privilege in Auth0 RBAC. Gra
 
 ### Authoritative Permission Management
 
-This component manages a role's permission set authoritatively. A permission removed from the spec is removed from the role on the next apply. This is a security strength: the manifest is the single source of truth, so out-of-band privilege escalation (a scope added directly in the dashboard) is reconciled away on the next deployment. Review changes to the `permissions` list with the same rigor as any access-control change.
+This kind manages a role's permission set authoritatively. A permission removed from the spec is removed from the role on the next apply. This is a security strength: the manifest is the single source of truth, so out-of-band privilege escalation (a scope added directly in the dashboard) is reconciled away on the next deployment. Review changes to the `permissions` list with the same rigor as any access-control change.
 
 ### Permissions Are References, Not Grants of New Capability
 
@@ -76,12 +76,12 @@ read:roles create:roles update:roles delete:roles read:resource_servers
 
 ## Prerequisite Scopes Must Exist
 
-The scopes referenced by a role's permissions must already be defined on their resource servers before they can be assigned. This component does not create scopes — use the `Auth0ResourceServer` component (or define scopes directly in Auth0) first. The M2M application does not need write access to resource servers to assign existing scopes to a role; `read:resource_servers` is sufficient.
+The scopes referenced by a role's permissions must already be defined on their resource servers before they can be assigned. This kind does not create scopes — use the `Auth0ResourceServer` component (or define scopes directly in Auth0) first. The M2M application does not need write access to resource servers to assign existing scopes to a role; `read:resource_servers` is sufficient.
 
 ## Compliance
 ## Regulatory Frameworks
 
-The table below records Auth0's own published compliance posture for their hosted platform, as Auth0 states it (verify current status in Auth0's trust documentation). These are vendor facts about the service this component configures — not properties of the component or of your deployment, and nothing here transfers to your application without your own assessment.
+The table below records Auth0's own published compliance posture for their hosted platform, as Auth0 states it (verify current status in Auth0's trust documentation). These are vendor facts about the service this catalog kind configures — not properties of the catalog kind or of your deployment, and nothing here transfers to your application without your own assessment.
 
 Auth0's published framework posture:
 
@@ -113,11 +113,11 @@ The authoritative permission model means the deployed state matches the reviewed
 
 ### Audit Trail
 
-All role CRUD operations (create, update, delete) and permission changes are recorded in Auth0 tenant logs. Log retention depends on plan tier (2 days free, up to 30 days enterprise). For long-term retention, stream tenant logs to an external SIEM (see the `Auth0EventStream` component).
+All role CRUD operations (create, update, delete) and permission changes are recorded in Auth0 tenant logs. Log retention depends on plan tier (2 days free, up to 30 days enterprise). For long-term retention, stream tenant logs to an external SIEM (see the `Auth0EventStream` kind).
 
 ### Separation of Definition and Assignment
 
-This component defines roles and their permissions but does not assign roles to users. User-to-role assignment is governed separately, supporting separation-of-duties controls between infrastructure and identity administration.
+This kind defines roles and their permissions but does not assign roles to users. User-to-role assignment is governed separately, supporting separation-of-duties controls between infrastructure and identity administration.
 
 ## Cost
 ## Pricing Model

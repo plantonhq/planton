@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -33,7 +33,7 @@ func minimalSpec() *AzureStorageObjectReplication {
 	return &AzureStorageObjectReplication{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureStorageObjectReplication",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-object-replication",
 		},
 		Spec: &AzureStorageObjectReplicationSpec{
@@ -62,7 +62,7 @@ var _ = ginkgo.Describe("AzureStorageObjectReplicationSpec Validation Tests", fu
 			input.Spec.SourceStorageAccountId = &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind:      cloudresourcekind.CloudResourceKind_AzureStorageAccount,
+						Kind:      catalogkind.CatalogKind_AzureStorageAccount,
 						Name:      "primary-storage",
 						FieldPath: "status.outputs.storage_account_id",
 					},
@@ -76,7 +76,7 @@ var _ = ginkgo.Describe("AzureStorageObjectReplicationSpec Validation Tests", fu
 			input.Spec.Rules[0].SourceContainerName = &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind:      cloudresourcekind.CloudResourceKind_AzureStorageContainer,
+						Kind:      catalogkind.CatalogKind_AzureStorageContainer,
 						Name:      "invoices",
 						FieldPath: "status.outputs.container_name",
 					},

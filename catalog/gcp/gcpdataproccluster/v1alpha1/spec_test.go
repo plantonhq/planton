@@ -29,7 +29,7 @@ var _ = ginkgo.Describe("GcpDataprocClusterSpec", func() {
 		return &GcpDataprocCluster{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpDataprocCluster",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-dataproc",
 			},
 			Spec: &GcpDataprocClusterSpec{

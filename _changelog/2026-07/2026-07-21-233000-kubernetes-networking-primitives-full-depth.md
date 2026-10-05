@@ -1,7 +1,7 @@
 # Kubernetes networking primitives at full configuration depth: Service rebuilt, Ingress and NetworkPolicy forged
 
 **Date**: 2026-07-21
-**Scope**: `apis/dev/planton/provider/kubernetes` (kubernetesservice rebuilt; kubernetesingress + kubernetesnetworkpolicy new), `apis/dev/planton/iac/componentimportmap`, `apis/dev/planton/iac/providerimportcatalog`, `pkg/iac/importmap`, `pkg/outputs`, `aa_import`, `aa_e2e`, `e2e/framework/runner`, Makefile E2E tiers, site catalog, `_rules/deployment-component/forge`
+**Scope**: `apis/dev/planton/provider/kubernetes` (kubernetesservice rebuilt; kubernetesingress + kubernetesnetworkpolicy new), `apis/dev/planton/iac/catalogkindimportmap`, `apis/dev/planton/iac/providerimportcatalog`, `pkg/iac/importmap`, `pkg/outputs`, `aa_import`, `aa_e2e`, `e2e/framework/runner`, Makefile E2E tiers, site catalog, `_rules/catalog-kind/forge`
 
 ## What changed
 
@@ -58,7 +58,7 @@ distinction.
 
 Both engines deliberately create the Ingress WITHOUT blocking on an ingress
 controller (Terraform `wait_for_load_balancer = false`, Pulumi `skipAwait`):
-an Ingress is a valid object with no controller installed, and infra charts
+an Ingress is a valid object with no controller installed, and Infra Charts
 routinely deploy workload + exposure before the controller wave. The
 load-balancer address handles (`load_balancer_ip`, `load_balancer_hostname`)
 surface through outputs as soon as a controller reconciles the object;
@@ -101,7 +101,7 @@ been round-trip-proven):
   StatefulSet importer does not read back): the round-trip oracle prunes
   exactly that sub-path from both plan sides and requires the remainder
   identical, so sibling drift inside the same attribute still fails.
-- New `from_metadata_name_suffix` derivation in the component import-map
+- New `from_metadata_name_suffix` derivation in the catalog kind import map
   vocabulary: convention-named satellites (a workload's
   `<name>-env-secrets` Secret) are now blind-derivable without exporting
   their names as outputs. The deployment map's HPA recipe was also
@@ -126,7 +126,7 @@ been round-trip-proven):
 
 ### Docs, presets, catalog
 
-Full four-doc set per kind (component README, research doc, per-engine
+Full four-doc set per kind (kind README, research doc, per-engine
 module READMEs), catalog pages, and four presets each (Service: ClusterIP
 app / public LB / headless StatefulSet / ExternalName; Ingress: single host
 / TLS with cert-manager / fanout / default backend; NetworkPolicy:

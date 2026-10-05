@@ -48,8 +48,8 @@ var captureAuthStrings = map[azureeventhubv1alpha1.AzureEventHubCaptureStorageAu
 	azureeventhubv1alpha1.AzureEventHubCaptureStorageAuthenticationType_USER_ASSIGNED:                                                   "UserAssigned",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureeventhubv1alpha1.AzureEventHubStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureeventhubv1alpha1.AzureEventHubIacInput) *Locals {
 	locals := &Locals{}
-	locals.AzureEventHub = stackInput.Target
+	locals.AzureEventHub = iacInput.Target
 	return locals
 }

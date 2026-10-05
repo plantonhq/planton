@@ -12,10 +12,10 @@ type Locals struct {
 	CloudflareNotificationWebhook *cloudflarenotificationwebhookv1alpha1.CloudflareNotificationWebhook
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarenotificationwebhookv1alpha1.CloudflareNotificationWebhookStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarenotificationwebhookv1alpha1.CloudflareNotificationWebhookIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareNotificationWebhook = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareNotificationWebhook = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

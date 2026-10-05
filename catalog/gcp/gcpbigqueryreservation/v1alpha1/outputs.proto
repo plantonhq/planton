@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpbigqueryreservation.v1alpha1;
 
-// GcpBigQueryReservationStackOutputs captures the reservation's identity
+// GcpBigQueryReservationOutputs captures the reservation's identity
 // and its assignments.
-message GcpBigQueryReservationStackOutputs {
+message GcpBigQueryReservationOutputs {
   // Full resource name --
   // projects/{project}/locations/{location}/reservations/{reservation_name}.
   string name = 1;

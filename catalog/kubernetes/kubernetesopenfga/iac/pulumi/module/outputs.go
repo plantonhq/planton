@@ -4,7 +4,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output name constants — one per KubernetesOpenFgaStackOutputs field.
+// Output name constants — one per KubernetesOpenFgaOutputs field.
 const (
 	OpNamespace           = "namespace"
 	OpService             = "service"

@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpCloudFunctionStackOutputs contains the output values from a deployed Cloud Function.
+// GcpCloudFunctionOutputs contains the output values from a deployed Cloud Function.
 // These outputs provide essential information about the deployed function, including
 // its URL, identity, and status.
-type GcpCloudFunctionStackOutputs struct {
+type GcpCloudFunctionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The fully qualified resource name of the deployed function.
 	// Format: projects/{project}/locations/{region}/functions/{function-name}
@@ -64,20 +64,20 @@ type GcpCloudFunctionStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCloudFunctionStackOutputs) Reset() {
-	*x = GcpCloudFunctionStackOutputs{}
+func (x *GcpCloudFunctionOutputs) Reset() {
+	*x = GcpCloudFunctionOutputs{}
 	mi := &file_catalog_gcp_gcpcloudfunction_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudFunctionStackOutputs) String() string {
+func (x *GcpCloudFunctionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudFunctionStackOutputs) ProtoMessage() {}
+func (*GcpCloudFunctionOutputs) ProtoMessage() {}
 
-func (x *GcpCloudFunctionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudFunctionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudfunction_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -89,75 +89,75 @@ func (x *GcpCloudFunctionStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudFunctionStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudFunctionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudFunctionOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudFunctionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudfunction_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudFunctionStackOutputs) GetFunctionId() string {
+func (x *GcpCloudFunctionOutputs) GetFunctionId() string {
 	if x != nil {
 		return x.FunctionId
 	}
 	return ""
 }
 
-func (x *GcpCloudFunctionStackOutputs) GetFunctionUrl() string {
+func (x *GcpCloudFunctionOutputs) GetFunctionUrl() string {
 	if x != nil {
 		return x.FunctionUrl
 	}
 	return ""
 }
 
-func (x *GcpCloudFunctionStackOutputs) GetServiceAccountEmail() string {
+func (x *GcpCloudFunctionOutputs) GetServiceAccountEmail() string {
 	if x != nil {
 		return x.ServiceAccountEmail
 	}
 	return ""
 }
 
-func (x *GcpCloudFunctionStackOutputs) GetState() string {
+func (x *GcpCloudFunctionOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
 	return ""
 }
 
-func (x *GcpCloudFunctionStackOutputs) GetCloudRunServiceId() string {
+func (x *GcpCloudFunctionOutputs) GetCloudRunServiceId() string {
 	if x != nil {
 		return x.CloudRunServiceId
 	}
 	return ""
 }
 
-func (x *GcpCloudFunctionStackOutputs) GetEventarcTriggerId() string {
+func (x *GcpCloudFunctionOutputs) GetEventarcTriggerId() string {
 	if x != nil {
 		return x.EventarcTriggerId
 	}
 	return ""
 }
 
-func (x *GcpCloudFunctionStackOutputs) GetName() string {
+func (x *GcpCloudFunctionOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpCloudFunctionStackOutputs) GetUri() string {
+func (x *GcpCloudFunctionOutputs) GetUri() string {
 	if x != nil {
 		return x.Uri
 	}
 	return ""
 }
 
-func (x *GcpCloudFunctionStackOutputs) GetEnvironment() string {
+func (x *GcpCloudFunctionOutputs) GetEnvironment() string {
 	if x != nil {
 		return x.Environment
 	}
 	return ""
 }
 
-func (x *GcpCloudFunctionStackOutputs) GetUpdateTime() string {
+func (x *GcpCloudFunctionOutputs) GetUpdateTime() string {
 	if x != nil {
 		return x.UpdateTime
 	}
@@ -168,8 +168,8 @@ var File_catalog_gcp_gcpcloudfunction_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpcloudfunction_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpcloudfunction/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpcloudfunction.v1alpha1\"\xf6\x02\n" +
-	"\x1cGcpCloudFunctionStackOutputs\x12\x1f\n" +
+	"3catalog/gcp/gcpcloudfunction/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpcloudfunction.v1alpha1\"\xf1\x02\n" +
+	"\x17GcpCloudFunctionOutputs\x12\x1f\n" +
 	"\vfunction_id\x18\x01 \x01(\tR\n" +
 	"functionId\x12!\n" +
 	"\ffunction_url\x18\x02 \x01(\tR\vfunctionUrl\x122\n" +
@@ -199,7 +199,7 @@ func file_catalog_gcp_gcpcloudfunction_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpcloudfunction_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudfunction_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudFunctionStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionStackOutputs
+	(*GcpCloudFunctionOutputs)(nil), // 0: dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionOutputs
 }
 var file_catalog_gcp_gcpcloudfunction_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

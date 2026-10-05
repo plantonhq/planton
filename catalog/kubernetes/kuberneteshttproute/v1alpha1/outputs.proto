@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kuberneteshttproute.v1alpha1;
 
-// KubernetesHttpRouteStackOutputs captures observable outputs after the
+// KubernetesHttpRouteOutputs captures observable outputs after the
 // HTTPRoute is created on the target cluster. Controller-managed status (the
 // per-parent Accepted/ResolvedRefs conditions) is reconciled asynchronously by
 // the Gateway implementation and read via kubectl, so it is intentionally not
 // stored here.
-message KubernetesHttpRouteStackOutputs {
+message KubernetesHttpRouteOutputs {
   // Name of the created HTTPRoute (equals metadata.name). In InfraCharts this
   // orders the route after the Gateway and backends it references.
   string route_name = 1;

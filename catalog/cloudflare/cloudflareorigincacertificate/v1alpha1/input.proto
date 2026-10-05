@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1;
 import "catalog/cloudflare/cloudflareorigincacertificate/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-origin-ca-certificate stack-input
-message CloudflareOriginCaCertificateStackInput {
-  //target cloud-resource
+//cloudflare-origin-ca-certificate iac-input
+message CloudflareOriginCaCertificateIacInput {
+  // the catalog object to deploy
   CloudflareOriginCaCertificate target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

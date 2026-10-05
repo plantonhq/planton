@@ -34,7 +34,7 @@ type KubernetesGatewayApiCrds struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesGatewayApiCrdsSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *KubernetesGatewayApiCrds) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesGatewayApiCrds) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesGatewayApiCrds) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *KubernetesGatewayApiCrds) GetStatus() *KubernetesGatewayApiCrdsStatus {
 // installation.
 type KubernetesGatewayApiCrdsStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesGatewayApiCrdsStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesGatewayApiCrdsOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*KubernetesGatewayApiCrdsStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesGatewayApiCrdsStatus) GetOutputs() *KubernetesGatewayApiCrdsStackOutputs {
+func (x *KubernetesGatewayApiCrdsStatus) GetOutputs() *KubernetesGatewayApiCrdsOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_api_proto_rawDes
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18KubernetesGatewayApiCrdsR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
 	"\x04spec\x18\x04 \x01(\v2V.dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12p\n" +
-	"\x06status\x18\x05 \x01(\v2X.dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsStatusR\x06status\"\x9a\x01\n" +
-	"\x1eKubernetesGatewayApiCrdsStatus\x12x\n" +
-	"\aoutputs\x18\x01 \x01(\v2^.dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsStackOutputsR\aoutputsB\xc1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2X.dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsStatusR\x06status\"\x95\x01\n" +
+	"\x1eKubernetesGatewayApiCrdsStatus\x12s\n" +
+	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsOutputsR\aoutputsB\xc1\x03\n" +
 	"<com.dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1B\bApiProtoP\x01Zrgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesgatewayapicrds/v1alpha1;kubernetesgatewayapicrdsv1alpha1\xa2\x02\x04DPKK\xaa\x028Dev.Planton.Kubernetes.Kubernetesgatewayapicrds.V1alpha1\xca\x028Dev\\Planton\\Kubernetes\\Kubernetesgatewayapicrds\\V1alpha1\xe2\x02DDev\\Planton\\Kubernetes\\Kubernetesgatewayapicrds\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Kubernetes::Kubernetesgatewayapicrds::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_api_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesGatewayApiCrds)(nil),             // 0: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrds
-	(*KubernetesGatewayApiCrdsStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesGatewayApiCrdsSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsSpec
-	(*KubernetesGatewayApiCrdsStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsStackOutputs
+	(*KubernetesGatewayApiCrds)(nil),        // 0: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrds
+	(*KubernetesGatewayApiCrdsStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesGatewayApiCrdsSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsSpec
+	(*KubernetesGatewayApiCrdsOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsOutputs
 }
 var file_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrds.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrds.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrds.spec:type_name -> dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsSpec
 	1, // 2: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrds.status:type_name -> dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsStatus
-	4, // 3: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

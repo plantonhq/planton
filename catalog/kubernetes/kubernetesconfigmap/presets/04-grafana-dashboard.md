@@ -6,7 +6,7 @@ This preset ships one Grafana dashboard as code: a ConfigMap labeled `grafana_da
 
 - Dashboards that must survive a Grafana restart or rebuild, and change only through review
 - A team shipping its own dashboard next to its workload, without editing the Grafana resource
-- An infra chart that declares its operator screens beside the components they watch
+- An Infra Chart that declares its operator screens beside the components they watch
 
 ## Key Configuration Choices
 
@@ -16,13 +16,13 @@ This preset ships one Grafana dashboard as code: a ConfigMap labeled `grafana_da
 - **The datasource named by `uid`** (`prometheus`): pin the same uid on the `KubernetesGrafana` datasource, and the dashboard survives that datasource moving to another Prometheus.
 - **`schemaVersion` matching the running Grafana** (42 on Grafana 13.1): a lower version is migrated in the browser on every load, so Grafana's copy would drift from the file.
 - **`editable: false`**: hides the edit affordances; Grafana already refuses to save over a provisioned dashboard ("Cannot save provisioned dashboard"), even for an Admin.
-- **Pretty-printed JSON in an infra chart**: chart templates are rendered, and a Prometheus legend format with double braces collides with the engine. Pretty-printing keeps closing braces apart; name series with a `displayName: "${__field.labels.<label>}"` field override instead of a legend format.
+- **Pretty-printed JSON in an Infra Chart**: chart templates are rendered, and a Prometheus legend format with double braces collides with the engine. Pretty-printing keeps closing braces apart; name series with a `displayName: "${__field.labels.<label>}"` field override instead of a legend format.
 
 ## Placeholders to Replace
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<your-grafana-namespace>` | Any namespace: the sidecar searches all of them. In an infra chart, reference the chart's `KubernetesNamespace` with `valueFrom` instead of a literal | Your namespace management |
+| `<your-grafana-namespace>` | Any namespace: the sidecar searches all of them. In an Infra Chart, reference the chart's `KubernetesNamespace` with `valueFrom` instead of a literal | Your namespace management |
 
 Also replace the one panel with your dashboard's panels. Each panel's `description` is the question it answers, and the dashboard's `title` is the question the whole screen answers.
 

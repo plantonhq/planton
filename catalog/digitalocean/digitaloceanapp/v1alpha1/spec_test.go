@@ -20,7 +20,7 @@ func validImageApp() *DigitalOceanApp {
 	return &DigitalOceanApp{
 		ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 		Kind:       "DigitalOceanApp",
-		Metadata:   &shared.CloudResourceMetadata{Name: "demo-app"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "demo-app"},
 		Spec: &DigitalOceanAppSpec{
 			AppName: "demo-app",
 			Region:  digitalocean.DigitalOceanAppRegion_nyc,

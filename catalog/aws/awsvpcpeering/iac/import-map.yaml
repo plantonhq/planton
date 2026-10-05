@@ -1,7 +1,7 @@
-# Where each placeholder in this component's import-ID formats comes
+# Where each placeholder in this kind's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml).
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsvpcpeering
 spec:
@@ -11,7 +11,7 @@ spec:
   values:
     - name: peering_connection_id
       derivations:
-        - from_stack_output: peering_connection_id
+        - from_output: peering_connection_id
         - from_arn_part: resource_id
       where_to_find: >-
         VPC console -> Peering connections (the pcx-... ID column), or

@@ -4,7 +4,7 @@ Manages the account's default Cloudflare WARP device profile: the settings every
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Default Device Profile** — a `cloudflare_zero_trust_device_default_profile`, a PATCH upsert of the account singleton. Unset spec fields are never sent, leaving the live value (or Cloudflare's default) untouched
 - **Local-DNS Fallback List** — created only when `fallbackDomains` is declared, a `cloudflare_zero_trust_device_default_profile_local_domain_fallback` that replaces the account's whole list on every apply
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. The zone-certificates fold additionally needs Zone → SSL and Certificates → Edit. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. The zone-certificates fold additionally needs Zone → SSL and Certificates → Edit. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -51,11 +51,11 @@ spec:
 planton apply -f default-profile.yaml
 ```
 
-This patches the account's default profile so users cannot turn WARP off or unenroll, and a user-disabled client reconnects on its own after ten minutes. Every other setting keeps its live value. A Stack Job tracks the provisioning in real time.
+This patches the account's default profile so users cannot turn WARP off or unenroll, and a user-disabled client reconnects on its own after ten minutes. Every other setting keeps its live value. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire virtual network scoping and the certificate zone to resources managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, wire virtual network scoping and the certificate zone to resources managed by other Infra Components:
 
 ```yaml
 spec:
@@ -101,7 +101,7 @@ These are the most important decisions when configuring the default device profi
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -109,9 +109,9 @@ These are the most important decisions when configuring the default device profi
 | CloudflareZeroTrustTunnelVirtualNetwork | `spec.virtualNetworks.defaultVirtualNetworkId` | `status.outputs.virtual_network_id` |
 | CloudflareDnsZone | `spec.zoneCertificates.zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -131,7 +131,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust Device Custom Profile**](/cloud-catalog/cloudflare-zero-trust-device-custom-profile) — group-specific overrides of this baseline; lowest precedence wins.
-- [**Cloudflare Zero Trust Device Posture Rule**](/cloud-catalog/cloudflare-zero-trust-device-posture-rule) — the health checks Access and Gateway policies demand from these devices.
-- [**Cloudflare Zero Trust Tunnel Virtual Network**](/cloud-catalog/cloudflare-zero-trust-tunnel-virtual-network) — the routing segments `virtualNetworks` scopes device access to.
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — the zone `zoneCertificates` provisions WARP client certificates from.
+- [**Cloudflare Zero Trust Device Custom Profile**](/infra-catalog/cloudflare-zero-trust-device-custom-profile) — group-specific overrides of this baseline; lowest precedence wins.
+- [**Cloudflare Zero Trust Device Posture Rule**](/infra-catalog/cloudflare-zero-trust-device-posture-rule) — the health checks Access and Gateway policies demand from these devices.
+- [**Cloudflare Zero Trust Tunnel Virtual Network**](/infra-catalog/cloudflare-zero-trust-tunnel-virtual-network) — the routing segments `virtualNetworks` scopes device access to.
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — the zone `zoneCertificates` provisions WARP client certificates from.

@@ -27,7 +27,7 @@ func minimalValidEntry() *AwsEksAccessEntry {
 	return &AwsEksAccessEntry{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsEksAccessEntry",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "platform-viewers",
 		},
 		Spec: &AwsEksAccessEntrySpec{

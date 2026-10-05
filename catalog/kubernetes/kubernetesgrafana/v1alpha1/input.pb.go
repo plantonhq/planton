@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// grafana-kubernetes stack-input
-type KubernetesGrafanaStackInput struct {
+// grafana-kubernetes iac-input
+type KubernetesGrafanaIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *KubernetesGrafana `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesGrafanaStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesGrafanaStackInput) Reset() {
-	*x = KubernetesGrafanaStackInput{}
+func (x *KubernetesGrafanaIacInput) Reset() {
+	*x = KubernetesGrafanaIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesGrafanaStackInput) String() string {
+func (x *KubernetesGrafanaIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesGrafanaStackInput) ProtoMessage() {}
+func (*KubernetesGrafanaIacInput) ProtoMessage() {}
 
-func (x *KubernetesGrafanaStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesGrafanaIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesGrafanaStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesGrafanaStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesGrafanaStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesGrafanaIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesGrafanaIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgrafana_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesGrafanaStackInput) GetTarget() *KubernetesGrafana {
+func (x *KubernetesGrafanaIacInput) GetTarget() *KubernetesGrafana {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesGrafanaStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesGrafanaIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesgrafana_v1alpha1_input_proto protoreflect.
 
 const file_catalog_kubernetes_kubernetesgrafana_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/kubernetes/kubernetesgrafana/v1alpha1/input.proto\x121dev.planton.kubernetes.kubernetesgrafana.v1alpha1\x1a7catalog/kubernetes/kubernetesgrafana/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd6\x01\n" +
-	"\x1bKubernetesGrafanaStackInput\x12\\\n" +
+	"9catalog/kubernetes/kubernetesgrafana/v1alpha1/input.proto\x121dev.planton.kubernetes.kubernetesgrafana.v1alpha1\x1a7catalog/kubernetes/kubernetesgrafana/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd4\x01\n" +
+	"\x19KubernetesGrafanaIacInput\x12\\\n" +
 	"\x06target\x18\x01 \x01(\v2D.dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"5com.dev.planton.kubernetes.kubernetesgrafana.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesgrafana_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesGrafanaStackInput)(nil),         // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStackInput
+	(*KubernetesGrafanaIacInput)(nil),           // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaIacInput
 	(*KubernetesGrafana)(nil),                   // 1: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafana
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStackInput.target:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafana
-	2, // 1: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaIacInput.target:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafana
+	2, // 1: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

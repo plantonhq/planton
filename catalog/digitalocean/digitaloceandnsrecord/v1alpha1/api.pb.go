@@ -32,7 +32,7 @@ type DigitalOceanDnsRecord struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *DigitalOceanDnsRecordSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -85,7 +85,7 @@ func (x *DigitalOceanDnsRecord) GetKind() string {
 	return ""
 }
 
-func (x *DigitalOceanDnsRecord) GetMetadata() *shared.CloudResourceMetadata {
+func (x *DigitalOceanDnsRecord) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -109,8 +109,8 @@ func (x *DigitalOceanDnsRecord) GetStatus() *DigitalOceanDnsRecordStatus {
 // DigitalOceanDnsRecordStatus represents the observed state of a DigitalOcean DNS record.
 type DigitalOceanDnsRecordStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *DigitalOceanDnsRecordStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *DigitalOceanDnsRecordOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -145,7 +145,7 @@ func (*DigitalOceanDnsRecordStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *DigitalOceanDnsRecordStatus) GetOutputs() *DigitalOceanDnsRecordStackOutputs {
+func (x *DigitalOceanDnsRecordStatus) GetOutputs() *DigitalOceanDnsRecordOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -163,11 +163,11 @@ const file_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_api_proto_rawDesc
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15DigitalOceanDnsRecordR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
 	"\x04spec\x18\x04 \x01(\v2R.dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12l\n" +
-	"\x06status\x18\x05 \x01(\v2T.dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordStatusR\x06status\"\x93\x01\n" +
-	"\x1bDigitalOceanDnsRecordStatus\x12t\n" +
-	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordStackOutputsR\aoutputsB\xb8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2T.dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordStatusR\x06status\"\x8e\x01\n" +
+	"\x1bDigitalOceanDnsRecordStatus\x12o\n" +
+	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordOutputsR\aoutputsB\xb8\x03\n" +
 	";com.dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1B\bApiProtoP\x01Zngithub.com/plantonhq/planton/catalog/digitalocean/digitaloceandnsrecord/v1alpha1;digitaloceandnsrecordv1alpha1\xa2\x02\x04DPDD\xaa\x027Dev.Planton.Digitalocean.Digitaloceandnsrecord.V1alpha1\xca\x027Dev\\Planton\\Digitalocean\\Digitaloceandnsrecord\\V1alpha1\xe2\x02CDev\\Planton\\Digitalocean\\Digitaloceandnsrecord\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Digitalocean::Digitaloceandnsrecord::V1alpha1b\x06proto3"
 
 var (
@@ -184,17 +184,17 @@ func file_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_api_proto_rawDescG
 
 var file_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_api_proto_goTypes = []any{
-	(*DigitalOceanDnsRecord)(nil),             // 0: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecord
-	(*DigitalOceanDnsRecordStatus)(nil),       // 1: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*DigitalOceanDnsRecordSpec)(nil),         // 3: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordSpec
-	(*DigitalOceanDnsRecordStackOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordStackOutputs
+	(*DigitalOceanDnsRecord)(nil),        // 0: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecord
+	(*DigitalOceanDnsRecordStatus)(nil),  // 1: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*DigitalOceanDnsRecordSpec)(nil),    // 3: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordSpec
+	(*DigitalOceanDnsRecordOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordOutputs
 }
 var file_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecord.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecord.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecord.spec:type_name -> dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordSpec
 	1, // 2: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecord.status:type_name -> dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordStatus
-	4, // 3: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordStackOutputs
+	4, // 3: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

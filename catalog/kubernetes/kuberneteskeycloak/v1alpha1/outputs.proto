@@ -3,11 +3,11 @@ syntax = "proto3";
 package dev.planton.kubernetes.kuberneteskeycloak.v1alpha1;
 
 /**
- * **KubernetesKeycloakStackOutputs** — the composition handles a
+ * **KubernetesKeycloakOutputs** — the composition handles a
  * deployed Keycloak exports. Child names follow the operator's own
  * naming contract (all derived from this resource's name).
  */
-message KubernetesKeycloakStackOutputs {
+message KubernetesKeycloakOutputs {
   /**
    * Namespace the server runs in.
    */

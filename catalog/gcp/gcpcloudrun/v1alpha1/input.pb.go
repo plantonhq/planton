@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-cloud-run stack-input
-type GcpCloudRunStackInput struct {
+// gcp-cloud-run iac-input
+type GcpCloudRunIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpCloudRun `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpCloudRunStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpCloudRunStackInput) Reset() {
-	*x = GcpCloudRunStackInput{}
+func (x *GcpCloudRunIacInput) Reset() {
+	*x = GcpCloudRunIacInput{}
 	mi := &file_catalog_gcp_gcpcloudrun_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudRunStackInput) String() string {
+func (x *GcpCloudRunIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudRunStackInput) ProtoMessage() {}
+func (*GcpCloudRunIacInput) ProtoMessage() {}
 
-func (x *GcpCloudRunStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudRunIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudrun_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpCloudRunStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudRunStackInput.ProtoReflect.Descriptor instead.
-func (*GcpCloudRunStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudRunIacInput.ProtoReflect.Descriptor instead.
+func (*GcpCloudRunIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudrun_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudRunStackInput) GetTarget() *GcpCloudRun {
+func (x *GcpCloudRunIacInput) GetTarget() *GcpCloudRun {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpCloudRunStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpCloudRunIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpcloudrun_v1alpha1_input_proto protoreflect.FileDescripto
 
 const file_catalog_gcp_gcpcloudrun_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	",catalog/gcp/gcpcloudrun/v1alpha1/input.proto\x12$dev.planton.gcp.gcpcloudrun.v1alpha1\x1a*catalog/gcp/gcpcloudrun/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xaf\x01\n" +
-	"\x15GcpCloudRunStackInput\x12I\n" +
+	",catalog/gcp/gcpcloudrun/v1alpha1/input.proto\x12$dev.planton.gcp.gcpcloudrun.v1alpha1\x1a*catalog/gcp/gcpcloudrun/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xad\x01\n" +
+	"\x13GcpCloudRunIacInput\x12I\n" +
 	"\x06target\x18\x01 \x01(\v21.dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xbe\x02\n" +
 	"(com.dev.planton.gcp.gcpcloudrun.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpcloudrun_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpcloudrun_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudrun_v1alpha1_input_proto_goTypes = []any{
-	(*GcpCloudRunStackInput)(nil), // 0: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunStackInput
+	(*GcpCloudRunIacInput)(nil),   // 0: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunIacInput
 	(*GcpCloudRun)(nil),           // 1: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRun
 	(*gcp.GcpProviderConfig)(nil), // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpcloudrun_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunStackInput.target:type_name -> dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRun
-	2, // 1: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunIacInput.target:type_name -> dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRun
+	2, // 1: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

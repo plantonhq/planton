@@ -135,7 +135,7 @@ func queue(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*sqs.Qu
 		return nil, errors.Wrap(err, "failed to create SQS queue")
 	}
 
-	// Export outputs matching AwsSqsQueueStackOutputs.
+	// Export outputs matching AwsSqsQueueOutputs.
 	ctx.Export(OpQueueUrl, q.Url)
 	ctx.Export(OpQueueArn, q.Arn)
 	ctx.Export(OpQueueName, q.Name)

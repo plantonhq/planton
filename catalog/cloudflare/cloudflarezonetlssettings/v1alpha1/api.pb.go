@@ -34,7 +34,7 @@ type CloudflareZoneTlsSettings struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareZoneTlsSettingsSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *CloudflareZoneTlsSettings) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareZoneTlsSettings) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareZoneTlsSettings) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *CloudflareZoneTlsSettings) GetStatus() *CloudflareZoneTlsSettingsStatus
 // CloudflareZoneTlsSettingsStatus represents the observed state of a zone's TLS settings.
 type CloudflareZoneTlsSettingsStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareZoneTlsSettingsStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareZoneTlsSettingsOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*CloudflareZoneTlsSettingsStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezonetlssettings_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareZoneTlsSettingsStatus) GetOutputs() *CloudflareZoneTlsSettingsStackOutputs {
+func (x *CloudflareZoneTlsSettingsStatus) GetOutputs() *CloudflareZoneTlsSettingsOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_cloudflare_cloudflarezonetlssettings_v1alpha1_api_proto_rawDe
 	"apiVersion\x124\n" +
 	"\x04kind\x18\x02 \x01(\tB \xbaH\x1dr\x1b\n" +
 	"\x19CloudflareZoneTlsSettingsR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12t\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12t\n" +
 	"\x04spec\x18\x04 \x01(\v2X.dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12r\n" +
-	"\x06status\x18\x05 \x01(\v2Z.dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsStatusR\x06status\"\x9d\x01\n" +
-	"\x1fCloudflareZoneTlsSettingsStatus\x12z\n" +
-	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsStackOutputsR\aoutputsB\xc8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Z.dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsStatusR\x06status\"\x98\x01\n" +
+	"\x1fCloudflareZoneTlsSettingsStatus\x12u\n" +
+	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsOutputsR\aoutputsB\xc8\x03\n" +
 	"=com.dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1B\bApiProtoP\x01Ztgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarezonetlssettings/v1alpha1;cloudflarezonetlssettingsv1alpha1\xa2\x02\x04DPCC\xaa\x029Dev.Planton.Cloudflare.Cloudflarezonetlssettings.V1alpha1\xca\x029Dev\\Planton\\Cloudflare\\Cloudflarezonetlssettings\\V1alpha1\xe2\x02EDev\\Planton\\Cloudflare\\Cloudflarezonetlssettings\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Cloudflare::Cloudflarezonetlssettings::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_cloudflare_cloudflarezonetlssettings_v1alpha1_api_proto_rawDes
 
 var file_catalog_cloudflare_cloudflarezonetlssettings_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarezonetlssettings_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareZoneTlsSettings)(nil),             // 0: dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettings
-	(*CloudflareZoneTlsSettingsStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsStatus
-	(*shared.CloudResourceMetadata)(nil),          // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareZoneTlsSettingsSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsSpec
-	(*CloudflareZoneTlsSettingsStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsStackOutputs
+	(*CloudflareZoneTlsSettings)(nil),        // 0: dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettings
+	(*CloudflareZoneTlsSettingsStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsStatus
+	(*shared.CatalogObjectMetadata)(nil),     // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareZoneTlsSettingsSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsSpec
+	(*CloudflareZoneTlsSettingsOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsOutputs
 }
 var file_catalog_cloudflare_cloudflarezonetlssettings_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettings.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettings.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettings.spec:type_name -> dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsSpec
 	1, // 2: dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettings.status:type_name -> dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsStatus
-	4, // 3: dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

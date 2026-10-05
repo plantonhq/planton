@@ -14,7 +14,6 @@
  *
  * Content pages (docs, blog, changelog, tutorials) are walked from their
  * markdown folders by those same scripts; only their index pages appear here.
- * Retired paths live in ./retired-routes.ts.
  *
  * Relative imports carry their `.ts` extension so Node can execute this file
  * for the build-time generators without a bundler.
@@ -120,7 +119,7 @@ export const SITE_PAGES: readonly SitePage[] = [
     path: '/trust/verified-before-deploy',
     title: 'Verified Before Deploy',
     description:
-      'Before anything is created, Planton states the monthly cost with its coverage, the least-privilege permissions, and the controls each component enforces.',
+      'Before anything is created, Planton states the monthly cost with its coverage, the least-privilege permissions, and the controls each kind enforces.',
     group: 'trust',
     chapters: ['verified-before-it-exists'],
   },
@@ -136,7 +135,7 @@ export const SITE_PAGES: readonly SitePage[] = [
     path: '/trust/the-record',
     title: 'The Record',
     description:
-      'Every infrastructure change is one stack job, kept and queryable with its configuration, cost fact, verdicts, approvals, and the snapshot of what exists afterward.',
+      'Every infrastructure change is one Infra Job, kept and queryable with its configuration, cost fact, verdicts, approvals, and the snapshot of what exists afterward.',
     group: 'trust',
     chapters: ['every-deployment-leaves-a-record'],
   },
@@ -144,7 +143,7 @@ export const SITE_PAGES: readonly SitePage[] = [
     path: '/trust/security-posture',
     title: 'Security Posture',
     description:
-      'Seventeen technical controls with evidence per component, crosswalked to four frameworks, stated honestly: a component enforces controls; it is never called compliant.',
+      'Seventeen technical controls with evidence per kind, crosswalked to four frameworks, stated honestly: a kind enforces controls; it is never called compliant.',
     group: 'trust',
     chapters: ['verified-before-it-exists', 'runs-where-you-decide'],
   },
@@ -201,7 +200,7 @@ export const SITE_PAGES: readonly SitePage[] = [
   {
     path: '/product/catalog',
     title: 'Catalog',
-    description: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} component kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, each with a cost fact sheet, a control posture with evidence, and least-privilege permissions; ${PLATFORM_STATS.INFRA_CHART_COUNT} Infra Charts.`,
+    description: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} catalog kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, each with a cost fact sheet, a control posture with evidence, and least-privilege permissions; ${PLATFORM_STATS.INFRA_CHART_COUNT} Infra Charts.`,
     group: 'product',
     chapters: ['proof-it-works', 'verified-before-it-exists', 'your-rules-hold'],
   },

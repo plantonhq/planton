@@ -4,7 +4,7 @@ package dev.planton.digitalocean.digitaloceanfunction.v1alpha1;
 
 // Outputs of a DigitalOceanFunction. The provider has no standalone
 // Functions resource, so function_id is the App Platform app UUID.
-message DigitalOceanFunctionStackOutputs {
+message DigitalOceanFunctionOutputs {
   // App Platform app UUID that hosts the functions component. Used to
   // import the digitalocean_app resource.
   string function_id = 1;

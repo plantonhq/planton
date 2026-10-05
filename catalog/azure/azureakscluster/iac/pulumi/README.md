@@ -1,10 +1,8 @@
-**Note:** This module is not completely implemented as the API resource specification is currently empty.
-
-# Azure Azure AKS Cluster Pulumi Module
+# Azure AKS Cluster Pulumi Module
 
 ## Introduction
 
-This Pulumi module provides a standardized way to manage Azure Kubernetes Service (AKS) clusters using our Unified APIs that mimic Kubernetes' resource modeling. It allows developers to define infrastructure configurations in a YAML file, simplifying the deployment and management of complex cloud resources across multiple providers.
+This Pulumi module provides a standardized way to manage Azure Kubernetes Service (AKS) clusters using our Unified APIs that mimic Kubernetes' resource modeling. It allows developers to define infrastructure configurations in a YAML file, simplifying the deployment and management of complex infrastructure across multiple providers.
 
 ## Key Features
 
@@ -17,50 +15,52 @@ This Pulumi module provides a standardized way to manage Azure Kubernetes Servic
 
 ## Usage
 
-Refer to the example section for usage instructions.
+Deploy from a manifest with the planton CLI. From this directory (it holds `Pulumi.yaml`, so the CLI runs this module):
+
+```bash
+planton pulumi init --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack>
+planton pulumi preview --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack> -p azure-provider-config.yaml
+planton pulumi update --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack> -p azure-provider-config.yaml
+```
+
+The CLI builds the `AzureAksClusterIacInput` (the manifest as `target`, the `-p` file as `provider_config`) and hands it to the module through `IAC_INPUT_YAML_FILE`. The module also reads that input from the Pulumi config key `planton:iac-input` or from `IAC_INPUT_YAML` (YAML content).
 
 ## Module Details
 
 ### API Resource Specification
 
-The module expects an `api-resource.yaml` file defining the desired state of the AKS cluster. The key components of this file include:
+The module reads an `AzureAksClusterIacInput` with two fields:
 
-- **`azure_credential_id`** (required): The identifier for the Azure credentials used to authenticate with Azure services.
-- **`environment_info`**: Contains environment-specific information (currently not implemented).
-- **`stack_job_settings`**: Settings related to the stack-update execution (currently not implemented).
+- **`target`** (required): the `AzureAksCluster` manifest. Its `spec` carries, among others:
+  - **`resource_group`** (required): the resource group, as a literal name or a reference to an `AzureResourceGroup`
+  - **`region`**, **`name`** (required), **`dns_prefix`**, **`kubernetes_version`**, **`sku_tier`**, **`support_plan`**
+  - **`default_node_pool`** (required): the system pool; every other pool is a separate `AzureAksNodePool`
+  - **`identity`**, **`kubelet_identity`**, **`oidc_issuer_enabled`**, **`workload_identity_enabled`**
+  - **`private_cluster_enabled`**, **`api_server_access_profile`**, **`network_profile`**, Entra ID RBAC, upgrade channels, maintenance windows, and add-ons
+- **`provider_config`**: the Azure credentials (an `AzureProviderConfig`)
 
 ### Pulumi Module Functionality
 
-The core functionality of this module revolves around setting up the Azure provider within the Pulumi context using the provided Azure credentials. This setup is essential for any subsequent resource creation and management within Azure.
+The module sets up the Azure provider from the supplied credentials, then provisions the resource from the spec and exports its outputs.
 
 #### Steps Performed:
 
 1. **Azure Provider Initialization**:  
-   Initializes the Azure provider in Pulumi using credentials supplied in the `AzureAksClusterStackInput`. The credentials required are:
+   Initializes the Azure provider from the `provider_config` in the `AzureAksClusterIacInput`:
 
-   - `ClientId`
-   - `ClientSecret`
-   - `SubscriptionId`
-   - `TenantId`
+   - `client_id`, `tenant_id`, `subscription_id` (required)
+   - `client_secret` for a service principal, or `web_identity.web_identity_token` for keyless federation; with neither, the provider uses the ambient Azure credential chain
 
 2. **Resource Provisioning**:  
-   *(Not yet implemented)* The module will provision the AKS cluster and any associated resources based on the specifications provided in the `api-resource.yaml` file.
+   Creates the AKS cluster with its default node pool, identity, network profile, maintenance windows, add-ons, and platform profiles from the spec.
 
 3. **Output Handling**:  
-   *(Not yet implemented)* Captures the outputs from the Pulumi stack execution and stores them in `status.outputs` for later reference.
+   Exports `cluster_id`, `cluster_name`, `fqdn`, `private_fqdn`, `portal_fqdn`, `oidc_issuer_url`, `node_resource_group`, `node_resource_group_id`, `cluster_kubeconfig`, `cluster_ca_certificate`, `cluster_identity_principal_id`, `kubelet_identity_object_id`, `kubelet_identity_client_id`, `current_kubernetes_version`, and `entra_integration_enabled`; Planton stores them in `status.outputs`.
 
 ## Limitations
 
-- **Incomplete Implementation**: The module currently does not implement resource creation due to the empty API resource specification.
-- **Unused Spec Fields**: Fields like `environment_info` and `stack_job_settings` are included in the spec but are not utilized in the current implementation.
-- **No Error Handling**: Advanced error handling and validation mechanisms are yet to be implemented.
-
-## Future Enhancements
-
-- **Implement Resource Creation**: Extend the module to create AKS clusters and related Azure resources based on the provided specifications.
-- **Utilize Spec Fields**: Make use of `environment_info` and `stack_job_settings` to allow for more granular control over the deployment environment and stack-update configurations.
-- **Enhance Output Management**: Capture and expose essential output parameters such as cluster endpoints, credentials, and configuration details.
-- **Error Handling and Validation**: Introduce comprehensive error handling and input validation to improve reliability and user experience.
+- **One system pool**: the cluster carries only its default node pool; add every other pool as a separate `AzureAksNodePool` resource.
+- **Resource group changes replace the cluster**: changing `resource_group` creates a new cluster.
 
 ## Documentation
 

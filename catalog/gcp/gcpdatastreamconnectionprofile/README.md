@@ -4,7 +4,7 @@ Where one source database or destination is, and how Datastream signs in. Exactl
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `datastream.googleapis.com` on the project (never disabled on destroy)
 - **Connection profile** -- a `datastream_connection_profile` with its one profile type
@@ -78,7 +78,7 @@ planton apply -f datastream-connection-profile.yaml
 - TLS: a MySQL or MongoDB client certificate needs its key and the CA certificate; PostgreSQL takes at most one verification mode.
 - Ports are 1-65535; empty uses the engine's default.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -105,7 +105,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpDatastreamStream** -- streams read and write through profiles
 - **GcpDatastreamPrivateConnection** -- private reachability

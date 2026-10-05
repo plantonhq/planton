@@ -2,7 +2,7 @@
 # prerequisite (usage-plan stage coverage, domain base-path mappings).
 # Deliberately dependency-free: a single MOCK health route needs no
 # Lambda chain, so consumers pay the minimum fixture cost. The
-# component's own richer lane lives in scenarios/full-surface.yaml.
+# kind's own richer lane lives in scenarios/full-surface.yaml.
 apiVersion: aws.planton.dev/v1alpha1
 kind: AwsRestApiGateway
 metadata:
@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsrestapigateway
+    e2e-catalog-kind: awsrestapigateway
   annotations:
     planton.dev/e2e: "true"
   tags:

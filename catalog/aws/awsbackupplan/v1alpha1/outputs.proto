@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbackupplan.v1alpha1;
 
-// AwsBackupPlanStackOutputs captures the observable state of the
+// AwsBackupPlanOutputs captures the observable state of the
 // backup plan after apply.
-message AwsBackupPlanStackOutputs {
+message AwsBackupPlanOutputs {
   // The plan's AWS-generated ID (a UUID - also the provider's import
   // ID; the plan's name is NOT its identity at AWS).
   string plan_id = 1;

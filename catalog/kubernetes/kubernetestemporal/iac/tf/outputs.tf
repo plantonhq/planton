@@ -1,4 +1,4 @@
-# Stack outputs — identical names and derivations in the Pulumi module's
+# Outputs — identical names and derivations in the Pulumi module's
 # outputs.go / main.go exports.
 #
 # The frontend Service is `<name>-frontend` and the Web UI Service

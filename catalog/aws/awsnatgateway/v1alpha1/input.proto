@@ -5,10 +5,10 @@ package dev.planton.aws.awsnatgateway.v1alpha1;
 import "catalog/aws/awsnatgateway/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsNatGatewayStackInput is the input to the IaC modules (Pulumi / Terraform)
+// AwsNatGatewayIacInput is the input to the IaC modules (Pulumi / Terraform)
 // that deploy an AwsNatGateway resource.
-message AwsNatGatewayStackInput {
-  // target cloud-resource
+message AwsNatGatewayIacInput {
+  // the catalog object to deploy
   AwsNatGateway target = 1;
   // provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

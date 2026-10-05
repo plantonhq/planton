@@ -13,7 +13,7 @@ import (
 	"github.com/plantonhq/planton/pkg/explain"
 )
 
-// catalogPathPrefix roots every cloud-component proto file; the provider is
+// catalogPathPrefix roots every catalog-kind proto file; the provider is
 // the path segment right after it. Deriving both the provider and the output
 // directory from the descriptor's source path keeps this generator agnostic
 // to the version segment (v1alpha1 today, later channels tomorrow) -- never
@@ -113,11 +113,11 @@ func Generate(repoRoot string) (*Summary, error) {
 
 		entry := kindEntry{name: name, protoDir: protoDir, provider: provider, report: report}
 		// protoDir is the version directory (the versioned contract);
-		// the living component -- GUIDE.md, README.md, e2e/, iac/ -- sits
-		// one level up at the component root.
-		componentDir := filepath.Dir(filepath.Join(repoRoot, protoDir))
-		entry.hasGuide = hasGuide(componentDir)
-		switch example, err := loadValidatedExample(res, componentDir); {
+		// the living kind -- GUIDE.md, README.md, e2e/, iac/ -- sits
+		// one level up at the kind root.
+		kindPath := filepath.Dir(filepath.Join(repoRoot, protoDir))
+		entry.hasGuide = hasGuide(kindPath)
+		switch example, err := loadValidatedExample(res, kindPath); {
 		case err != nil:
 			summary.InvalidManifests = append(summary.InvalidManifests, InvalidManifest{Kind: name, Err: err})
 		case example == "":
@@ -150,11 +150,11 @@ func Generate(repoRoot string) (*Summary, error) {
 
 	// Pass 3: render every page and the catalog-level files.
 	for _, entry := range entries {
-		componentDir := filepath.Dir(filepath.Join(repoRoot, entry.protoDir))
+		kindPath := filepath.Dir(filepath.Join(repoRoot, entry.protoDir))
 		opts := explain.MarkdownOptions{
 			ExampleYAML:  entry.example,
 			ReferencedBy: inbound[entry.name],
-			SeeAlso:      seeAlso(componentDir),
+			SeeAlso:      seeAlso(kindPath),
 			HasGuide:     entry.hasGuide,
 		}
 		summary.Files[filepath.Join(entry.protoDir, "reference.md")] = explain.RenderMarkdown(entry.report, opts)
@@ -192,7 +192,7 @@ func renderProviderIndexes(summary *Summary, entries []kindEntry) {
 	}
 	for provider, kinds := range byProvider {
 		var b strings.Builder
-		fmt.Fprintf(&b, "# %s Components -- Reference Index\n\n", provider)
+		fmt.Fprintf(&b, "# %s Kinds -- Reference Index\n\n", provider)
 		generatedBanner(&b, "Kind facts come from the protobuf schemas.")
 		fmt.Fprintf(&b, "%d kinds. Shared manifest grammar and the search grammar of every page:\n[reference-commons.md](../_docs/reference-commons.md). Cross-kind wiring:\n[reference-graph.yaml](../_docs/reference-graph.yaml).\n\n", len(kinds))
 		// The Example and Guide columns double as coverage x-rays: a blank
@@ -241,7 +241,7 @@ func renderRootIndex(summary *Summary, entries []kindEntry, repoRoot string) {
 	sort.Strings(names)
 
 	var b strings.Builder
-	b.WriteString("# Cloud Component Catalog -- Reference Index\n\n")
+	b.WriteString("# Infra Catalog -- Reference Index\n\n")
 	generatedBanner(&b, "Kind facts come from the protobuf schemas.")
 	fmt.Fprintf(&b, "%d kinds across %d providers. Every kind has a `reference.md` co-located\nwith its protos: the complete spec field reference, validation rules,\noutputs, cross-kind references (both directions), and a validated example.\n\nStart with:\n\n", len(entries), len(names))
 	docsRoot := filepath.Join(repoRoot, catalogPathPrefix, "_docs")
@@ -295,8 +295,8 @@ func indexCell(text string) string {
 	return strings.ReplaceAll(text, "|", "\\|")
 }
 
-// loadValidatedExample reads the component's base test manifest
-// (e2e/manifest.yaml at the component root -- the same manifest the E2E
+// loadValidatedExample reads the kind's base test manifest
+// (e2e/manifest.yaml at the kind root -- the same manifest the E2E
 // framework deploys) and admits it as the page's example only after every
 // document round-trips into its typed message and passes protovalidate. A
 // manifest may legitimately hold several documents (a kind deployed with its
@@ -305,8 +305,8 @@ func indexCell(text string) string {
 // catalog tooling. At least one document must declare the page's own kind.
 // An empty string with nil error means no manifest exists (graceful
 // degradation); an error means the manifest exists and is broken.
-func loadValidatedExample(res explain.Resource, componentDir string) (string, error) {
-	path := filepath.Join(componentDir, "e2e", "manifest.yaml")
+func loadValidatedExample(res explain.Resource, kindPath string) (string, error) {
+	path := filepath.Join(kindPath, "e2e", "manifest.yaml")
 	raw, err := os.ReadFile(path)
 	if os.IsNotExist(err) {
 		return "", nil
@@ -337,21 +337,21 @@ func loadValidatedExample(res explain.Resource, componentDir string) (string, er
 	return string(raw), nil
 }
 
-// hasGuide reports whether an authored GUIDE.md sits at the component root.
+// hasGuide reports whether an authored GUIDE.md sits at the kind root.
 // Guide presence flows into the page head and the indexes; the freshness gate
 // makes adding or removing a guide without regenerating a visible failure
 // instead of silent staleness.
-func hasGuide(componentDir string) bool {
-	_, err := os.Stat(filepath.Join(componentDir, "GUIDE.md"))
+func hasGuide(kindPath string) bool {
+	_, err := os.Stat(filepath.Join(kindPath, "GUIDE.md"))
 	return err == nil
 }
 
 // seeAlso links the page to the kind's hand-written prose when it exists.
 // Reference pages link to essays, never duplicate them. The README sits at
-// the component root, one level above the version dir that holds the page.
-func seeAlso(componentDir string) []explain.MarkdownLink {
+// the kind root, one level above the version dir that holds the page.
+func seeAlso(kindPath string) []explain.MarkdownLink {
 	var links []explain.MarkdownLink
-	if _, err := os.Stat(filepath.Join(componentDir, "README.md")); err == nil {
+	if _, err := os.Stat(filepath.Join(kindPath, "README.md")); err == nil {
 		links = append(links, explain.MarkdownLink{Title: "Overview", Path: "../README.md"})
 	}
 	return links

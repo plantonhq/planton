@@ -2,7 +2,7 @@
 
 # Cloudflare R2 Bucket
 
-A Planton component for deploying and managing Cloudflare R2 buckets - S3-compatible object storage with **zero egress fees**, strong consistency, and global performance powered by Cloudflare's network.
+A catalog kind for deploying and managing Cloudflare R2 buckets - S3-compatible object storage with **zero egress fees**, strong consistency, and global performance powered by Cloudflare's network.
 
 ## Overview
 
@@ -290,7 +290,7 @@ R2 bills on three dimensions, and the shape of the pricing is the story:
 
 A free monthly allotment covers small buckets (storage and both operation classes) before any charge accrues.
 
-The verified per-preset figures live in the component's generated estimate at `catalog/_pricing/estimates/cloudflarer2bucket.yaml`, computed from the pinned, source-dated price book — current rates belong there and on Cloudflare's published pricing page, never hand-typed in this document.
+The verified per-preset figures live in the kind's generated estimate at `catalog/_pricing/estimates/cloudflarer2bucket.yaml`, computed from the pinned, source-dated price book — current rates belong there and on Cloudflare's published pricing page, never hand-typed in this document.
 
 ## Migration from S3
 

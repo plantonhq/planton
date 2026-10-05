@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: stripepaymentlink
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: payment_link_id
       derivations:
-        - from_stack_output: id
+        - from_output: id
       where_to_find: >-
         Stripe Dashboard -> Payment Links (the link's id, plink_..., on its page), or `GET
         /v1/payment_links`.

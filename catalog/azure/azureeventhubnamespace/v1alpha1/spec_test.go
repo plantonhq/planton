@@ -26,7 +26,7 @@ func minimalNamespace() *AzureEventHubNamespace {
 	return &AzureEventHubNamespace{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureEventHubNamespace",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-eh",
 		},
 		Spec: &AzureEventHubNamespaceSpec{

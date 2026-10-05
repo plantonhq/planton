@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsTransitGateway (R25) as a new cloud resource kind in Planton, providing a complete deployment component for AWS Transit Gateway with bundled VPC attachments. This is the final Phase 2 component in the AWS resource expansion project, bringing the total to 29 AWS resource kinds.
+Added AwsTransitGateway (R25) as a new catalog kind in Planton, providing a complete catalog kind for AWS Transit Gateway with bundled VPC attachments. This is the final Phase 2 kind in the AWS resource expansion project, bringing the total to 29 AWS resource kinds.
 
 ## Problem Statement / Motivation
 
@@ -21,23 +21,23 @@ Organizations with multiple VPCs need a centralized networking hub to replace co
 
 ## Solution / What's New
 
-A complete AwsTransitGateway deployment component that bundles the Transit Gateway with inline VPC attachments, following the same pattern as AwsNetworkLoadBalancer (bundled listeners) and AwsSnsTopic (bundled subscriptions).
+A complete AwsTransitGateway catalog kind that bundles the Transit Gateway with inline VPC attachments, following the same pattern as AwsNetworkLoadBalancer (bundled listeners) and AwsSnsTopic (bundled subscriptions).
 
 ### Key Design Decisions
 
-- **Bundled VPC attachments**: VPC attachments are `repeated` fields in the spec rather than separate components, because a TGW without attachments is useless and the 80% use case is a single team managing both
+- **Bundled VPC attachments**: VPC attachments are `repeated` fields in the spec rather than separate kinds, because a TGW without attachments is useless and the 80% use case is a single team managing both
 - **Boolean feature toggles**: AWS uses "enable"/"disable" strings; the proto uses clean bools with `recommended_default` annotations, and the IaC modules convert internally
-- **80/20 scoping**: Excludes custom route tables, static routes, cross-region peering, and multicast domains from v1 -- these are specialized features that can be added as separate components later
-- **Rich outputs**: Exports route table IDs so future components can add static routes without modifying the TGW itself
+- **80/20 scoping**: Excludes custom route tables, static routes, cross-region peering, and multicast domains from v1 -- these are specialized features that can be added as separate kinds later
+- **Rich outputs**: Exports route table IDs so future kinds can add static routes without modifying the TGW itself
 
 ## Implementation Details
 
 ### Proto API (4 files)
 
 - `spec.proto` -- 11 spec fields + nested `AwsTransitGatewayVpcAttachment` message with 8 fields
-- `stack_outputs.proto` -- 6 outputs including `vpc_attachment_ids` map
+- `outputs.proto` -- 6 outputs including `vpc_attachment_ids` map
 - `api.proto` -- KRM envelope with `aws.planton.dev/v1` API version
-- `stack_input.proto` -- Standard AWS stack input with provider config
+- `iac_input.proto` -- Standard AWS IaC input with provider config
 
 ### Validations
 
@@ -60,12 +60,12 @@ A complete AwsTransitGateway deployment component that bundles the Transit Gatew
 - `main.tf` -- Transit Gateway + VPC attachments via `for_each`
 - `variables.tf` -- Typed input variables matching the proto spec
 - `locals.tf` -- Tag merging and enable/disable lookup map
-- `outputs.tf` -- All 6 outputs matching stack_outputs.proto
+- `outputs.tf` -- All 6 outputs matching outputs.proto
 - `provider.tf` -- AWS provider with credential passthrough
 
 ### Registration
 
-- Enum `AwsTransitGateway = 282` with `id_prefix: "awstgw"` in `cloud_resource_kind.proto`
+- Enum `AwsTransitGateway = 282` with `id_prefix: "awstgw"` in `catalog_kind.proto`
 
 ## Benefits
 
@@ -77,13 +77,13 @@ A complete AwsTransitGateway deployment component that bundles the Transit Gatew
 ## Impact
 
 - **AWS resource coverage**: 29 resource kinds (28 previously completed + Transit Gateway)
-- **Phase 2 completion**: All 10 Phase 2 (Important Services) components are now done
-- **Infra charts**: Enables multi-VPC hub patterns in future infra chart compositions
+- **Phase 2 completion**: All 10 Phase 2 (Important Services) kinds are now done
+- **Infra Charts**: Enables multi-VPC hub patterns in future Infra Chart compositions
 
 ## Related Work
 
 - Part of `20260215.02.sp.aws-resource-expansion` (parent: `20260212.01.planton-cloud-provider-expansion`)
-- Phase 3 (7 specialized components) and existing component fixes (7) remain
+- Phase 3 (7 specialized kinds) and existing kind fixes (7) remain
 - Reference patterns: AwsNetworkLoadBalancer (bundled listeners), AwsElasticIp (simple networking)
 
 ---

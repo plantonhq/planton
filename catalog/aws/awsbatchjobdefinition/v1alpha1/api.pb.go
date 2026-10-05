@@ -34,7 +34,7 @@ type AwsBatchJobDefinition struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, environment,
 	// labels) and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration of the job definition.
 	Spec *AwsBatchJobDefinitionSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds post-deployment information.
@@ -87,7 +87,7 @@ func (x *AwsBatchJobDefinition) GetKind() string {
 	return ""
 }
 
-func (x *AwsBatchJobDefinition) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsBatchJobDefinition) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,7 +114,7 @@ type AwsBatchJobDefinitionStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the observable values returned by Pulumi/Terraform
 	// after provisioning.
-	Outputs       *AwsBatchJobDefinitionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsBatchJobDefinitionOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AwsBatchJobDefinitionStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbatchjobdefinition_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsBatchJobDefinitionStatus) GetOutputs() *AwsBatchJobDefinitionStackOutputs {
+func (x *AwsBatchJobDefinitionStatus) GetOutputs() *AwsBatchJobDefinitionOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_aws_awsbatchjobdefinition_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15AwsBatchJobDefinitionR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
 	"\x04spec\x18\x04 \x01(\v2I.dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionStatusR\x06status\"\x8a\x01\n" +
-	"\x1bAwsBatchJobDefinitionStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionStackOutputsR\aoutputsB\x82\x03\n" +
+	"\x06status\x18\x05 \x01(\v2K.dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionStatusR\x06status\"\x85\x01\n" +
+	"\x1bAwsBatchJobDefinitionStatus\x12f\n" +
+	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionOutputsR\aoutputsB\x82\x03\n" +
 	"2com.dev.planton.aws.awsbatchjobdefinition.v1alpha1B\bApiProtoP\x01Zegithub.com/plantonhq/planton/catalog/aws/awsbatchjobdefinition/v1alpha1;awsbatchjobdefinitionv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Aws.Awsbatchjobdefinition.V1alpha1\xca\x02.Dev\\Planton\\Aws\\Awsbatchjobdefinition\\V1alpha1\xe2\x02:Dev\\Planton\\Aws\\Awsbatchjobdefinition\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Aws::Awsbatchjobdefinition::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_aws_awsbatchjobdefinition_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsbatchjobdefinition_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbatchjobdefinition_v1alpha1_api_proto_goTypes = []any{
-	(*AwsBatchJobDefinition)(nil),             // 0: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinition
-	(*AwsBatchJobDefinitionStatus)(nil),       // 1: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsBatchJobDefinitionSpec)(nil),         // 3: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionSpec
-	(*AwsBatchJobDefinitionStackOutputs)(nil), // 4: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionStackOutputs
+	(*AwsBatchJobDefinition)(nil),        // 0: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinition
+	(*AwsBatchJobDefinitionStatus)(nil),  // 1: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsBatchJobDefinitionSpec)(nil),    // 3: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionSpec
+	(*AwsBatchJobDefinitionOutputs)(nil), // 4: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionOutputs
 }
 var file_catalog_aws_awsbatchjobdefinition_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinition.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinition.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinition.spec:type_name -> dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionSpec
 	1, // 2: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinition.status:type_name -> dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionStatus
-	4, // 3: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionStatus.outputs:type_name -> dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionStackOutputs
+	4, // 3: dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionStatus.outputs:type_name -> dev.planton.aws.awsbatchjobdefinition.v1alpha1.AwsBatchJobDefinitionOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -4,7 +4,7 @@ A Colab Enterprise runtime template -- the machine, disk, network, image, and se
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project (Colab Enterprise's API; never disabled on destroy)
 - **Runtime template** -- a `colab_runtime_template` with the declared machine, disk, network, idle, security, and software settings
@@ -75,7 +75,7 @@ planton apply -f colab-runtime-template.yaml
 - `acceleratorType` needs `acceleratorCount`; `diskSizeGb` needs `diskType`.
 - Environment variable names are C identifiers.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -104,7 +104,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpColabRuntime** -- a runtime assigned to a user from this template
 - **GcpColabSchedule** -- scheduled notebook runs on this template's machine

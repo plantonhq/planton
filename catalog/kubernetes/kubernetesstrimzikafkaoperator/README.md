@@ -9,7 +9,7 @@ on Kubernetes — the controller that reconciles `Kafka` and
 an actual Kafka cluster, deploy this first, then declare a
 KubernetesKafka.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a Kafka cluster** — that is KubernetesKafka; this
   component is the operator it requires.

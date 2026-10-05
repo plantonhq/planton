@@ -1,16 +1,16 @@
 # Estimate model: the authored capacity footprints of this cluster-capacity
-# component's presets. A hand model instead of a capacity derivation because
+# kind's presets. A hand model instead of a capacity derivation because
 # the chart ships REAL resource defaults (1 CPU / 2Gi, requests = limits --
 # the upstream-tested JVM sizing, verified in both modules' sources) that
 # stand whenever spec.resources is unset, and neither committed preset sets
 # resources -- a mechanical derivation reading only the spec would replay
 # both presets to a zero footprint while the pods actually reserve a full
 # CPU and 2Gi each. These footprints state the chart-default reservation
-# explicitly. Cluster-capacity components carry no priced lines -- the
+# explicitly. Cluster-capacity kinds carry no priced lines -- the
 # dollar value of the reservation is the target cluster's node economics.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: kubernetessparkoperator
 spec:

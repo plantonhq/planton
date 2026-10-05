@@ -22,8 +22,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsAthenaWorkgroupStackInput is the input envelope passed to IaC modules for provisioning.
-type AwsAthenaWorkgroupStackInput struct {
+// AwsAthenaWorkgroupIacInput is the input envelope passed to IaC modules for provisioning.
+type AwsAthenaWorkgroupIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the fully-specified AwsAthenaWorkgroup resource to provision.
 	Target *AwsAthenaWorkgroup `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AwsAthenaWorkgroupStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsAthenaWorkgroupStackInput) Reset() {
-	*x = AwsAthenaWorkgroupStackInput{}
+func (x *AwsAthenaWorkgroupIacInput) Reset() {
+	*x = AwsAthenaWorkgroupIacInput{}
 	mi := &file_catalog_aws_awsathenaworkgroup_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsAthenaWorkgroupStackInput) String() string {
+func (x *AwsAthenaWorkgroupIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsAthenaWorkgroupStackInput) ProtoMessage() {}
+func (*AwsAthenaWorkgroupIacInput) ProtoMessage() {}
 
-func (x *AwsAthenaWorkgroupStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsAthenaWorkgroupIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsathenaworkgroup_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsAthenaWorkgroupStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsAthenaWorkgroupStackInput.ProtoReflect.Descriptor instead.
-func (*AwsAthenaWorkgroupStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsAthenaWorkgroupIacInput.ProtoReflect.Descriptor instead.
+func (*AwsAthenaWorkgroupIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsathenaworkgroup_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsAthenaWorkgroupStackInput) GetTarget() *AwsAthenaWorkgroup {
+func (x *AwsAthenaWorkgroupIacInput) GetTarget() *AwsAthenaWorkgroup {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsAthenaWorkgroupStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsAthenaWorkgroupIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awsathenaworkgroup_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_aws_awsathenaworkgroup_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awsathenaworkgroup/v1alpha1/input.proto\x12+dev.planton.aws.awsathenaworkgroup.v1alpha1\x1a1catalog/aws/awsathenaworkgroup/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc4\x01\n" +
-	"\x1cAwsAthenaWorkgroupStackInput\x12W\n" +
+	"3catalog/aws/awsathenaworkgroup/v1alpha1/input.proto\x12+dev.planton.aws.awsathenaworkgroup.v1alpha1\x1a1catalog/aws/awsathenaworkgroup/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc2\x01\n" +
+	"\x1aAwsAthenaWorkgroupIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xef\x02\n" +
 	"/com.dev.planton.aws.awsathenaworkgroup.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_aws_awsathenaworkgroup_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awsathenaworkgroup_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsathenaworkgroup_v1alpha1_input_proto_goTypes = []any{
-	(*AwsAthenaWorkgroupStackInput)(nil), // 0: dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupStackInput
-	(*AwsAthenaWorkgroup)(nil),           // 1: dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroup
-	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsAthenaWorkgroupIacInput)(nil), // 0: dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupIacInput
+	(*AwsAthenaWorkgroup)(nil),         // 1: dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroup
+	(*aws.AwsProviderConfig)(nil),      // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsathenaworkgroup_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupStackInput.target:type_name -> dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroup
-	2, // 1: dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupIacInput.target:type_name -> dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroup
+	2, // 1: dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

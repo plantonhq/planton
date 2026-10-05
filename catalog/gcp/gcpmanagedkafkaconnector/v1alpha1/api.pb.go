@@ -31,7 +31,7 @@ type GcpManagedKafkaConnector struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpManagedKafkaConnectorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpManagedKafkaConnector) GetKind() string {
 	return ""
 }
 
-func (x *GcpManagedKafkaConnector) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpManagedKafkaConnector) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpManagedKafkaConnector) GetStatus() *GcpManagedKafkaConnectorStatus {
 // gcp-managed-kafka-connector status
 type GcpManagedKafkaConnectorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpManagedKafkaConnectorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpManagedKafkaConnectorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpManagedKafkaConnectorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmanagedkafkaconnector_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpManagedKafkaConnectorStatus) GetOutputs() *GcpManagedKafkaConnectorStackOutputs {
+func (x *GcpManagedKafkaConnectorStatus) GetOutputs() *GcpManagedKafkaConnectorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpmanagedkafkaconnector_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18GcpManagedKafkaConnectorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
 	"\x04spec\x18\x04 \x01(\v2O.dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12i\n" +
-	"\x06status\x18\x05 \x01(\v2Q.dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorStatusR\x06status\"\x93\x01\n" +
-	"\x1eGcpManagedKafkaConnectorStatus\x12q\n" +
-	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorStackOutputsR\aoutputsB\x97\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Q.dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorStatusR\x06status\"\x8e\x01\n" +
+	"\x1eGcpManagedKafkaConnectorStatus\x12l\n" +
+	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorOutputsR\aoutputsB\x97\x03\n" +
 	"5com.dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1B\bApiProtoP\x01Zkgithub.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkaconnector/v1alpha1;gcpmanagedkafkaconnectorv1alpha1\xa2\x02\x04DPGG\xaa\x021Dev.Planton.Gcp.Gcpmanagedkafkaconnector.V1alpha1\xca\x021Dev\\Planton\\Gcp\\Gcpmanagedkafkaconnector\\V1alpha1\xe2\x02=Dev\\Planton\\Gcp\\Gcpmanagedkafkaconnector\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Gcp::Gcpmanagedkafkaconnector::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpmanagedkafkaconnector_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_gcp_gcpmanagedkafkaconnector_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpmanagedkafkaconnector_v1alpha1_api_proto_goTypes = []any{
-	(*GcpManagedKafkaConnector)(nil),             // 0: dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnector
-	(*GcpManagedKafkaConnectorStatus)(nil),       // 1: dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpManagedKafkaConnectorSpec)(nil),         // 3: dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorSpec
-	(*GcpManagedKafkaConnectorStackOutputs)(nil), // 4: dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorStackOutputs
+	(*GcpManagedKafkaConnector)(nil),        // 0: dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnector
+	(*GcpManagedKafkaConnectorStatus)(nil),  // 1: dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpManagedKafkaConnectorSpec)(nil),    // 3: dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorSpec
+	(*GcpManagedKafkaConnectorOutputs)(nil), // 4: dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorOutputs
 }
 var file_catalog_gcp_gcpmanagedkafkaconnector_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnector.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnector.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnector.spec:type_name -> dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorSpec
 	1, // 2: dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnector.status:type_name -> dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorStatus
-	4, // 3: dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorStatus.outputs:type_name -> dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorStackOutputs
+	4, // 3: dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorStatus.outputs:type_name -> dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

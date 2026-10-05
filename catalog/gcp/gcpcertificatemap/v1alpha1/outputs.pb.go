@@ -23,7 +23,7 @@ const (
 
 // Outputs produced after provisioning a Certificate Manager certificate
 // map.
-type GcpCertificateMapStackOutputs struct {
+type GcpCertificateMapOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The full map resource name
 	// (projects/{project}/locations/global/certificateMaps/{name}).
@@ -38,20 +38,20 @@ type GcpCertificateMapStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCertificateMapStackOutputs) Reset() {
-	*x = GcpCertificateMapStackOutputs{}
+func (x *GcpCertificateMapOutputs) Reset() {
+	*x = GcpCertificateMapOutputs{}
 	mi := &file_catalog_gcp_gcpcertificatemap_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCertificateMapStackOutputs) String() string {
+func (x *GcpCertificateMapOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCertificateMapStackOutputs) ProtoMessage() {}
+func (*GcpCertificateMapOutputs) ProtoMessage() {}
 
-func (x *GcpCertificateMapStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCertificateMapOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcertificatemap_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *GcpCertificateMapStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCertificateMapStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCertificateMapStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCertificateMapOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCertificateMapOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcertificatemap_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCertificateMapStackOutputs) GetMapId() string {
+func (x *GcpCertificateMapOutputs) GetMapId() string {
 	if x != nil {
 		return x.MapId
 	}
 	return ""
 }
 
-func (x *GcpCertificateMapStackOutputs) GetMapUri() string {
+func (x *GcpCertificateMapOutputs) GetMapUri() string {
 	if x != nil {
 		return x.MapUri
 	}
 	return ""
 }
 
-func (x *GcpCertificateMapStackOutputs) GetMapName() string {
+func (x *GcpCertificateMapOutputs) GetMapName() string {
 	if x != nil {
 		return x.MapName
 	}
@@ -93,8 +93,8 @@ var File_catalog_gcp_gcpcertificatemap_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_gcp_gcpcertificatemap_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpcertificatemap/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpcertificatemap.v1alpha1\"j\n" +
-	"\x1dGcpCertificateMapStackOutputs\x12\x15\n" +
+	"4catalog/gcp/gcpcertificatemap/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpcertificatemap.v1alpha1\"e\n" +
+	"\x18GcpCertificateMapOutputs\x12\x15\n" +
 	"\x06map_id\x18\x01 \x01(\tR\x05mapId\x12\x17\n" +
 	"\amap_uri\x18\x02 \x01(\tR\x06mapUri\x12\x19\n" +
 	"\bmap_name\x18\x03 \x01(\tR\amapNameB\xea\x02\n" +
@@ -114,7 +114,7 @@ func file_catalog_gcp_gcpcertificatemap_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_gcp_gcpcertificatemap_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcertificatemap_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCertificateMapStackOutputs)(nil), // 0: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapStackOutputs
+	(*GcpCertificateMapOutputs)(nil), // 0: dev.planton.gcp.gcpcertificatemap.v1alpha1.GcpCertificateMapOutputs
 }
 var file_catalog_gcp_gcpcertificatemap_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

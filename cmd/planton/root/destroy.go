@@ -30,8 +30,8 @@ This command has 'delete' as an alias for kubectl-like experience.`,
 	planton delete -f manifest.yaml
 	planton destroy --manifest manifest.yaml
 
-	# Destroy with stack input file (extracts manifest from target field)
-	planton destroy -i stack-input.yaml
+	# Destroy with IaC input file (extracts manifest from target field)
+	planton destroy -i iac-input.yaml
 
 	# Destroy with kustomize
 	planton destroy --kustomize-dir _kustomize --overlay prod

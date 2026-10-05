@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareTurnstileWidgetStackOutputs captures the outputs after provisioning a
+// CloudflareTurnstileWidgetOutputs captures the outputs after provisioning a
 // Turnstile widget.
-type CloudflareTurnstileWidgetStackOutputs struct {
+type CloudflareTurnstileWidgetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The public site key. Embed this in the page's frontend Turnstile widget.
 	Sitekey string `protobuf:"bytes,1,opt,name=sitekey,proto3" json:"sitekey,omitempty"`
@@ -39,20 +39,20 @@ type CloudflareTurnstileWidgetStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareTurnstileWidgetStackOutputs) Reset() {
-	*x = CloudflareTurnstileWidgetStackOutputs{}
+func (x *CloudflareTurnstileWidgetOutputs) Reset() {
+	*x = CloudflareTurnstileWidgetOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareTurnstileWidgetStackOutputs) String() string {
+func (x *CloudflareTurnstileWidgetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareTurnstileWidgetStackOutputs) ProtoMessage() {}
+func (*CloudflareTurnstileWidgetOutputs) ProtoMessage() {}
 
-func (x *CloudflareTurnstileWidgetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareTurnstileWidgetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *CloudflareTurnstileWidgetStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareTurnstileWidgetStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareTurnstileWidgetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareTurnstileWidgetOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareTurnstileWidgetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareTurnstileWidgetStackOutputs) GetSitekey() string {
+func (x *CloudflareTurnstileWidgetOutputs) GetSitekey() string {
 	if x != nil {
 		return x.Sitekey
 	}
 	return ""
 }
 
-func (x *CloudflareTurnstileWidgetStackOutputs) GetSecret() string {
+func (x *CloudflareTurnstileWidgetOutputs) GetSecret() string {
 	if x != nil {
 		return x.Secret
 	}
 	return ""
 }
 
-func (x *CloudflareTurnstileWidgetStackOutputs) GetCreatedOn() string {
+func (x *CloudflareTurnstileWidgetOutputs) GetCreatedOn() string {
 	if x != nil {
 		return x.CreatedOn
 	}
 	return ""
 }
 
-func (x *CloudflareTurnstileWidgetStackOutputs) GetModifiedOn() string {
+func (x *CloudflareTurnstileWidgetOutputs) GetModifiedOn() string {
 	if x != nil {
 		return x.ModifiedOn
 	}
@@ -101,8 +101,8 @@ var File_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_outputs_proto pro
 
 const file_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/cloudflare/cloudflareturnstilewidget/v1alpha1/outputs.proto\x129dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1\x1a\x1cshared/options/options.proto\"\x9f\x01\n" +
-	"%CloudflareTurnstileWidgetStackOutputs\x12\x18\n" +
+	"Ccatalog/cloudflare/cloudflareturnstilewidget/v1alpha1/outputs.proto\x129dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1\x1a\x1cshared/options/options.proto\"\x9a\x01\n" +
+	" CloudflareTurnstileWidgetOutputs\x12\x18\n" +
 	"\asitekey\x18\x01 \x01(\tR\asitekey\x12\x1c\n" +
 	"\x06secret\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\x06secret\x12\x1d\n" +
 	"\n" +
@@ -125,7 +125,7 @@ func file_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_outputs_proto_ra
 
 var file_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareTurnstileWidgetStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetStackOutputs
+	(*CloudflareTurnstileWidgetOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetOutputs
 }
 var file_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

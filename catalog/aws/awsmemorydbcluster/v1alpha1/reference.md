@@ -35,7 +35,7 @@ restore sources. Everything else (node type, shard/replica counts, ACL,
 engine and version, parameter group, windows, SNS topic) updates in place.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

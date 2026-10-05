@@ -5,9 +5,9 @@ package dev.planton.aws.awsekscluster.v1alpha1;
 import "catalog/aws/awsekscluster/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-eks-cluster stack-input
-message AwsEksClusterStackInput {
-  //target cloud-resource
+//aws-eks-cluster iac-input
+message AwsEksClusterIacInput {
+  // the catalog object to deploy
   AwsEksCluster target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

@@ -111,7 +111,7 @@ Extract meaningful keywords from the user's query related to Planton:
 
 **CLI & Commands**:
 - CLI, command, flags, subcommand, handler
-- `pulumi`, `preview`, `up`, `destroy`, `stack-outputs`
+- `pulumi`, `preview`, `up`, `destroy`, `outputs`
 - `kubectl`, `apply`, `delete`
 
 **IAC & Execution**:

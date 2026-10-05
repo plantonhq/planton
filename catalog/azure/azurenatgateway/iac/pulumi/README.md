@@ -28,7 +28,7 @@ it, briefly interrupting egress for every attached subnet.
 
 ## Inputs
 
-The module receives an `AzureNatGatewayStackInput` containing:
+The module receives an `AzureNatGatewayIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the gateway's ARM identity (references resolved to literals by the platform)
 - `target.spec.sku_name` -- STANDARD (Azure's default, zonal) or STANDARD_V2 (zone-redundant automatically, requires StandardV2 addresses and empty zones)

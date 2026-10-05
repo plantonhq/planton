@@ -1,4 +1,4 @@
-# Namespace Creation Control for Kubernetes Components
+# Namespace Creation Control for Kubernetes Kinds
 
 **Date**: December 16, 2025
 **Type**: Feature | Enhancement
@@ -6,20 +6,20 @@
 
 ## Summary
 
-Added `create_namespace` boolean flag to all 38 Kubernetes components, giving users explicit control over namespace creation. Components now support two namespace management modes: automatic namespace creation or using pre-existing namespaces. This enhancement builds on the recent namespace standardization work and provides critical flexibility for multi-component deployments and enterprise environments with strict namespace lifecycle management.
+Added `create_namespace` boolean flag to all 38 Kubernetes kinds, giving users explicit control over namespace creation. Kinds now support two namespace management modes: automatic namespace creation or using pre-existing namespaces. This enhancement builds on the recent namespace standardization work and provides critical flexibility for multi-kind deployments and enterprise environments with strict namespace lifecycle management.
 
 ## Problem Statement / Motivation
 
-Following the [November 23, 2025 namespace standardization](../2025-11/2025-11-23-220641-standardize-kubernetes-components-target-cluster-namespace.md), all Kubernetes components began requiring a `namespace` field and automatically creating that namespace during deployment. While this simplified single-component deployments, it created challenges in real-world scenarios:
+Following the [November 23, 2025 namespace standardization](../2025-11/2025-11-23-220641-standardize-kubernetes-kinds-target-cluster-namespace.md), all Kubernetes kinds began requiring a `namespace` field and automatically creating that namespace during deployment. While this simplified single-kind deployments, it created challenges in real-world scenarios:
 
 ### Pain Points
 
-- **Multi-component deployments**: When deploying multiple components to the same namespace (e.g., multiple workloads in `backend-services`), all components would attempt to create the same namespace, causing conflicts and deployment failures
-- **Pre-existing namespace management**: Organizations with existing namespace management practices (GitOps, separate namespace provisioning pipelines) couldn't leverage Planton components without workarounds
-- **Namespace ownership ambiguity**: Unclear which component "owns" a shared namespace, complicating lifecycle management and deletion
-- **Resource policy enforcement**: Namespaces with pre-configured ResourceQuotas, NetworkPolicies, or LimitRanges couldn't be used by Planton components
-- **Compliance and security**: Enterprises with namespace creation restricted to platform teams needed a way to deploy components without namespace creation privileges
-- **Dependency ordering**: No way to ensure namespace is created first with proper labels/annotations before deploying components
+- **Multi-kind deployments**: When deploying multiple kinds to the same namespace (e.g., multiple workloads in `backend-services`), all kinds would attempt to create the same namespace, causing conflicts and deployment failures
+- **Pre-existing namespace management**: Organizations with existing namespace management practices (GitOps, separate namespace provisioning pipelines) couldn't leverage Planton kinds without workarounds
+- **Namespace ownership ambiguity**: Unclear which kind "owns" a shared namespace, complicating lifecycle management and deletion
+- **Resource policy enforcement**: Namespaces with pre-configured ResourceQuotas, NetworkPolicies, or LimitRanges couldn't be used by Planton kinds
+- **Compliance and security**: Enterprises with namespace creation restricted to platform teams needed a way to deploy kinds without namespace creation privileges
+- **Dependency ordering**: No way to ensure namespace is created first with proper labels/annotations before deploying kinds
 
 ### Real-World Example
 
@@ -49,25 +49,25 @@ spec:
 
 ## Solution / What's New
 
-Introduced a `create_namespace` boolean field in all Kubernetes component specs, enabling two distinct namespace management modes:
+Introduced a `create_namespace` boolean field in all Kubernetes kind specs, enabling two distinct namespace management modes:
 
 ### Namespace Management Modes
 
 **Mode 1: Automatic Creation (`create_namespace: true`)**
-- Component creates the namespace if it doesn't exist
-- Namespace is labeled with component metadata (resource_id, resource_kind, organization, environment)
-- Namespace becomes a child resource of the component in the Pulumi/Terraform dependency graph
-- Ideal for single-component namespaces or first component in a shared namespace
+- Kind creates the namespace if it doesn't exist
+- Namespace is labeled with kind metadata (resource_id, resource_kind, organization, environment)
+- Namespace becomes a child resource of the kind in the Pulumi/Terraform dependency graph
+- Ideal for single-kind namespaces or first kind in a shared namespace
 
 **Mode 2: Use Existing (`create_namespace: false`)**
-- Component assumes namespace already exists
+- Kind assumes namespace already exists
 - No namespace creation attempted
-- Component resources reference the namespace name directly
-- Ideal for shared namespaces, pre-provisioned namespaces, or multi-component deployments
+- Kind resources reference the namespace name directly
+- Ideal for shared namespaces, pre-provisioned namespaces, or multi-kind deployments
 
 ### Proto Schema Addition
 
-Added to all 38 Kubernetes component specs (example shown for `KubernetesElasticOperator`):
+Added to all 38 Kubernetes kind specs (example shown for `KubernetesElasticOperator`):
 
 ```protobuf
 message KubernetesElasticOperatorSpec {
@@ -84,7 +84,7 @@ message KubernetesElasticOperatorSpec {
   // flag to indicate if the namespace should be created
   bool create_namespace = 3;
 
-  // ... rest of component-specific fields
+  // ... rest of kind-specific fields
 }
 ```
 
@@ -92,7 +92,7 @@ message KubernetesElasticOperatorSpec {
 - Field position: Always field #3 (after `target_cluster` and `namespace`)
 - Type: `bool` (defaults to `false` in proto3)
 - No validation annotations (optional flag)
-- Consistent naming across all components
+- Consistent naming across all kinds
 
 ### Behavior Matrix
 
@@ -110,9 +110,9 @@ message KubernetesElasticOperatorSpec {
 **Date**: December 16, 2025 (commit `82e92d3b`)  
 **Files changed**: 108 files (spec.proto, generated Go stubs, generated TypeScript stubs)
 
-Added `bool create_namespace = 3;` field to all Kubernetes component specs:
+Added `bool create_namespace = 3;` field to all Kubernetes kind specs:
 
-**Components updated** (38 total):
+**Kinds updated** (38 total):
 - kubernetesaltinityoperator
 - kubernetesargocd
 - kubernetescertmanager
@@ -151,7 +151,7 @@ Added `bool create_namespace = 3;` field to all Kubernetes component specs:
 - kuberneteszalandopostgresoperator
 - ... and 2 more
 
-**Note**: `kubernetesnamespace` component itself was NOT modified (it creates namespaces by definition).
+**Note**: `kubernetesnamespace` kind itself was NOT modified (it creates namespaces by definition).
 
 **Code generation**: Protobuf stubs regenerated for both Go and TypeScript.
 
@@ -159,29 +159,29 @@ Added `bool create_namespace = 3;` field to all Kubernetes component specs:
 
 Updated all Pulumi modules to implement conditional namespace creation logic.
 
-#### Pattern 1: Component-Specific Resources (e.g., KubernetesDeployment)
+#### Pattern 1: Kind-Specific Resources (e.g., KubernetesDeployment)
 
-Used for components that create multiple Kubernetes resources that depend on the namespace.
+Used for kinds that create multiple Kubernetes resources that depend on the namespace.
 
 **File**: `iac/pulumi/module/main.go`
 
 ```go
-func Resources(ctx *pulumi.Context, stackInput *kubernetesdeploymentv1.KubernetesDeploymentStackInput) error {
-	locals, err := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesdeploymentv1.KubernetesDeploymentIacInput) error {
+	locals, err := initializeLocals(ctx, iacInput)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize locals")
 	}
 
 	// Create kubernetes provider
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// Conditionally create namespace resource based on create_namespace flag
 	var createdNamespace *kubernetescorev1.Namespace
-	if stackInput.Target.Spec.CreateNamespace {
+	if iacInput.Target.Spec.CreateNamespace {
 		createdNamespace, err = kubernetescorev1.NewNamespace(ctx,
 			locals.Namespace,
 			&kubernetescorev1.NamespaceArgs{
@@ -245,9 +245,9 @@ func deployment(ctx *pulumi.Context, locals *locals,
 }
 ```
 
-#### Pattern 2: Helm-Based Components (e.g., KubernetesElasticOperator)
+#### Pattern 2: Helm-Based Kinds (e.g., KubernetesElasticOperator)
 
-Used for components deployed via Helm charts.
+Used for kinds deployed via Helm charts.
 
 **File**: `iac/pulumi/module/kubernetes_elastic_operator.go`
 
@@ -316,9 +316,9 @@ func kubernetesElasticOperator(ctx *pulumi.Context, locals *Locals,
 - Sets `CreateNamespace: pulumi.Bool(false)` in Helm release (we manage namespace separately)
 - Exports namespace output for stack consumers
 
-**Files updated per component**:
+**Files updated per kind**:
 - `iac/pulumi/module/main.go` - Entry point with conditional namespace creation
-- `iac/pulumi/module/<component>.go` - Resource functions accepting namespace parameter (where applicable)
+- `iac/pulumi/module/<kind>.go` - Resource functions accepting namespace parameter (where applicable)
 - `iac/pulumi/module/locals.go` - No changes (namespace extraction already handled via `.GetValue()`)
 
 ### Phase 3: Terraform Module Implementation
@@ -332,7 +332,7 @@ Updated all Terraform modules with conditional resource creation using `count` p
 # Namespace Resource
 #
 # Creates a dedicated Kubernetes namespace for the
-# component deployment when create_namespace is true.
+# kind deployment when create_namespace is true.
 #
 # When create_namespace is false, assumes the namespace
 # already exists and will be referenced by name.
@@ -376,9 +376,9 @@ resource "kubernetes_deployment" "app" {
 
 ### Phase 4: Documentation Updates
 
-Updated documentation across all 38 components to explain namespace management clearly.
+Updated documentation across all 38 kinds to explain namespace management clearly.
 
-#### Documentation Files Updated (per component)
+#### Documentation Files Updated (per kind)
 
 1. **Pulumi Examples** (`iac/pulumi/examples.md`)
    - Added `create_namespace` field to all YAML examples
@@ -389,7 +389,7 @@ Updated documentation across all 38 components to explain namespace management c
    - Updated Terraform configurations to include `create_namespace`
    - Showed variable declaration and usage patterns
 
-3. **Component README** (`v1/README.md` or `v1/examples.md`)
+3. **Kind README** (`v1/README.md` or `v1/examples.md`)
    - Updated basic examples with new field
    - Added namespace management guidance
 
@@ -397,7 +397,7 @@ Updated documentation across all 38 components to explain namespace management c
 
 All documentation now includes:
 
-**Basic Example (standalone component)**:
+**Basic Example (standalone kind)**:
 ```yaml
 apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
@@ -408,13 +408,13 @@ spec:
     cluster_name: "my-gke-cluster"
   namespace:
     value: "minimal-example"
-  create_namespace: true  # Create namespace for this component
+  create_namespace: true  # Create namespace for this kind
   # ... rest of spec
 ```
 
-**Multi-Component Example** (shown in relevant docs):
+**Multi-Kind Example** (shown in relevant docs):
 ```yaml
-# First component - creates namespace
+# First kind - creates namespace
 apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
@@ -424,11 +424,11 @@ spec:
     cluster_name: "prod-cluster"
   namespace:
     value: "ecommerce-backend"
-  create_namespace: true  # First component creates namespace
+  create_namespace: true  # First kind creates namespace
   # ... spec
 
 ---
-# Additional components - use existing namespace
+# Additional kinds - use existing namespace
 apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesDeployment
 metadata:
@@ -442,28 +442,28 @@ spec:
   # ... spec
 ```
 
-**Namespace Management Guidance** (added to component docs):
+**Namespace Management Guidance** (added to kind docs):
 
 > **Namespace Management**
 >
-> The `create_namespace` field controls whether this component should create the Kubernetes namespace:
+> The `create_namespace` field controls whether this kind should create the Kubernetes namespace:
 >
-> - **`create_namespace: true`** (default for new deployments): The component creates the namespace if it doesn't exist. Use this for:
->   - Standalone component deployments
->   - First component in a shared namespace
+> - **`create_namespace: true`** (default for new deployments): The kind creates the namespace if it doesn't exist. Use this for:
+>   - Standalone kind deployments
+>   - First kind in a shared namespace
 >   - Development/testing environments
 >
-> - **`create_namespace: false`**: The component assumes the namespace already exists. Use this for:
->   - Additional components sharing a namespace
+> - **`create_namespace: false`**: The kind assumes the namespace already exists. Use this for:
+>   - Additional kinds sharing a namespace
 >   - Pre-provisioned namespaces with custom ResourceQuotas or NetworkPolicies
 >   - Environments where namespace creation requires elevated privileges
 >   - GitOps workflows with separate namespace management
 >
-> **Multi-Component Deployments**: When deploying multiple components to the same namespace, set `create_namespace: true` only for the first component or create the namespace separately.
+> **Multi-Kind Deployments**: When deploying multiple kinds to the same namespace, set `create_namespace: true` only for the first kind or create the namespace separately.
 
 ### Phase 5: Testing and Validation
 
-Updated test fixtures across all components to include the new field.
+Updated test fixtures across all kinds to include the new field.
 
 **File**: `v1/spec_test.go` (example pattern)
 
@@ -534,57 +534,57 @@ func TestKubernetesElasticOperatorSpec_Validate(t *testing.T) {
 
 **Build validation**:
 ```bash
-# For each component (example)
+# For each kind (example)
 cd apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1
 go test ./...
 go build ./...
 ```
 
-**Results**: All 38 components pass tests and build successfully.
+**Results**: All 38 kinds pass tests and build successfully.
 
 ## Benefits
 
-### 1. Multi-Component Deployment Support
+### 1. Multi-Kind Deployment Support
 
-**Before**: Deployment failures when multiple components share a namespace
+**Before**: Deployment failures when multiple kinds share a namespace
 
 ```yaml
-# Component 1
+# Kind 1
 spec:
   namespace:
     value: "shared-backend"
 # Attempts to create namespace
 
-# Component 2  
+# Kind 2  
 spec:
   namespace:
     value: "shared-backend"
 # Conflicts trying to create same namespace!
 ```
 
-**After**: Clean multi-component deployments
+**After**: Clean multi-kind deployments
 
 ```yaml
-# Component 1 - creates namespace
+# Kind 1 - creates namespace
 spec:
   namespace:
     value: "shared-backend"
   create_namespace: true
 
-# Component 2 - uses existing
+# Kind 2 - uses existing
 spec:
   namespace:
     value: "shared-backend"
   create_namespace: false
 
-# Component 3 - uses existing
+# Kind 3 - uses existing
 spec:
   namespace:
     value: "shared-backend"
   create_namespace: false
 ```
 
-**Impact**: Enables true microservices architectures with multiple components per namespace.
+**Impact**: Enables true microservices architectures with multiple kinds per namespace.
 
 ### 2. Pre-Existing Namespace Integration
 
@@ -603,7 +603,7 @@ kubectl apply -f resource-quota.yaml
 kubectl apply -f network-policy.yaml
 kubectl apply -f limit-range.yaml
 
-# Development team deploys components
+# Development team deploys kinds
 planton apply -f cart-service.yaml     # create_namespace: false
 planton apply -f order-service.yaml    # create_namespace: false
 planton apply -f payment-service.yaml  # create_namespace: false
@@ -612,18 +612,18 @@ planton apply -f payment-service.yaml  # create_namespace: false
 ### 3. Enterprise Compliance and Security
 
 **RBAC-restricted environments**:
-- Developers can deploy components without `create namespace` permissions
+- Developers can deploy kinds without `create namespace` permissions
 - Platform teams control namespace lifecycle separately
 - Clear separation of concerns between infrastructure and application teams
 
 **Audit and compliance**:
-- Namespace creation events separate from component deployments
+- Namespace creation events separate from kind deployments
 - Easier to track who created namespaces vs. who deployed components
 - Supports least-privilege access models
 
 ### 4. GitOps and IaC Workflow Compatibility
 
-**Scenario**: Namespaces managed by one Git repository, components by another
+**Scenario**: Namespaces managed by one Git repository, kinds by another
 
 ```
 infrastructure-repo/
@@ -657,7 +657,7 @@ metadata:
 spec:
   # ... namespace config with quotas, policies
 
-# Step 2: Deploy components to pre-configured namespace
+# Step 2: Deploy kinds to pre-configured namespace
 apiVersion: kubernetes.planton.dev/v1  
 kind: KubernetesPostgres
 metadata:
@@ -682,7 +682,7 @@ spec:
 ### Who Benefits
 
 **Development Teams**:
-- Simplified multi-component deployments
+- Simplified multi-kind deployments
 - No more namespace conflict errors
 - Clear control over namespace lifecycle
 
@@ -723,7 +723,7 @@ spec:
   create_namespace: false
 ```
 
-**Pattern 2: Namespace Component + Workloads**
+**Pattern 2: Namespace Kind + Workloads**
 ```yaml
 # Dedicated namespace resource
 kind: KubernetesNamespace
@@ -765,9 +765,9 @@ spec:
   create_namespace: false
 ```
 
-### Components Affected
+### Kinds Affected
 
-**All 38 Kubernetes components** (excluding `kubernetesnamespace`):
+**All 38 Kubernetes kinds** (excluding `kubernetesnamespace`):
 
 **Operators & Add-ons** (13):
 - kubernetesaltinityoperator
@@ -815,11 +815,11 @@ spec:
 **⚠️ Behavioral Change**
 
 **Previous behavior** (after Nov 23 namespace standardization):
-- All components **always created** the namespace specified in `spec.namespace`
+- All kinds **always created** the namespace specified in `spec.namespace`
 - No way to disable namespace creation
 
 **New behavior**:
-- Components create namespace **only if** `create_namespace: true`
+- Kinds create namespace **only if** `create_namespace: true`
 - Default value is `false` (proto3 default for boolean)
 - Existing deployments may fail if namespace doesn't exist and flag not set
 
@@ -843,42 +843,42 @@ kubectl create namespace my-namespace
 
 **For new deployments**:
 
-**Single component per namespace**:
+**Single kind per namespace**:
 ```yaml
 spec:
-  create_namespace: true  # Component creates its own namespace
+  create_namespace: true  # Kind creates its own namespace
 ```
 
-**Multiple components per namespace**:
+**Multiple kinds per namespace**:
 ```yaml
-# First component
+# First kind
 spec:
   create_namespace: true
 
-# Subsequent components
+# Subsequent kinds
 spec:
   create_namespace: false
 ```
 
 **Pre-provisioned namespaces**:
 ```yaml
-# All components
+# All kinds
 spec:
   create_namespace: false  # Assume namespace exists
 ```
 
 ## Implementation Timeline
 
-This feature was implemented across multiple work sessions using the `complete-planton-component` rule:
+This feature was implemented across multiple work sessions using the `complete-catalog-kind` rule:
 
 ### Initial Development
 - **Date**: December 16, 2025
-- **Proto changes**: Manual addition of `create_namespace` field to 38 component specs
-- **Commit**: `82e92d3b` - "added create_namespace field to all kubernetes components"
+- **Proto changes**: Manual addition of `create_namespace` field to 38 kind specs
+- **Commit**: `82e92d3b` - "added create_namespace field to all kubernetes kinds"
 - **Files changed**: 108 (proto definitions, Go stubs, TypeScript stubs)
 
-### Component Updates (38 separate sessions)
-- **Approach**: One conversation per component using `@complete-planton-component` rule
+### Kind Updates (38 separate sessions)
+- **Approach**: One conversation per kind using `@complete-catalog-kind` rule
 - **Scope per session**:
   - Updated Pulumi modules with conditional namespace creation
   - Updated Terraform modules with `count` parameter
@@ -886,7 +886,7 @@ This feature was implemented across multiple work sessions using the `complete-p
   - Updated test fixtures (spec_test.go)
   - Compiled and validated (Go, Pulumi, Terraform)
   
-**Components processed**: All 38 Kubernetes components (excluding namespace)
+**Kinds processed**: All 38 Kubernetes kinds (excluding namespace)
 
 ### Verification
 - ✅ All proto validations pass
@@ -898,19 +898,19 @@ This feature was implemented across multiple work sessions using the `complete-p
 
 ## Code Metrics
 
-- **Proto files changed**: 38 (one per component spec.proto)
+- **Proto files changed**: 38 (one per kind spec.proto)
 - **Generated Go files changed**: 38 (spec.pb.go)
 - **Generated TypeScript files changed**: 38 (spec_pb.ts)
-- **Pulumi module files updated**: ~76 (main.go and component files)
+- **Pulumi module files updated**: ~76 (main.go and kind files)
 - **Terraform module files updated**: ~38 (main.tf)
-- **Documentation files updated**: ~114 (examples.md, README.md per component)
-- **Test files updated**: 38 (spec_test.go per component)
+- **Documentation files updated**: ~114 (examples.md, README.md per kind)
+- **Test files updated**: 38 (spec_test.go per kind)
 - **Total files modified**: ~380
 - **Lines added**: ~1,499
 - **Lines removed**: ~776
 - **Net change**: ~+723 lines
 
-**Proto change pattern** (consistent across all 38 components):
+**Proto change pattern** (consistent across all 38 kinds):
 ```diff
 + // flag to indicate if the namespace should be created
 + bool create_namespace = 3;
@@ -920,8 +920,8 @@ This feature was implemented across multiple work sessions using the `complete-p
 
 ### Foundation
 
-**[Namespace Standardization (Nov 23, 2025)](../2025-11/2025-11-23-220641-standardize-kubernetes-components-target-cluster-namespace.md)**:
-- Added required `target_cluster` and `namespace` fields to all components
+**[Namespace Standardization (Nov 23, 2025)](../2025-11/2025-11-23-220641-standardize-kubernetes-kinds-target-cluster-namespace.md)**:
+- Added required `target_cluster` and `namespace` fields to all kinds
 - Standardized namespace as `StringValueOrRef` type
 - Established consistent field ordering
 
@@ -935,10 +935,10 @@ This feature was implemented across multiple work sessions using the `complete-p
 **Foreign Key Support**:
 - `namespace` field supports both literal values and references
 - Enables referencing `KubernetesNamespace` resource
-- Future: Could support cross-component namespace dependencies
+- Future: Could support cross-kind namespace dependencies
 
 **Target Cluster Selection**:
-- All components have standardized cluster targeting
+- All kinds have standardized cluster targeting
 - Combined with namespace control, enables precise deployment control
 - Foundation for multi-cluster deployments
 
@@ -947,13 +947,13 @@ This feature was implemented across multiple work sessions using the `complete-p
 This feature enables:
 
 **1. Namespace Lifecycle Policies**
-- Components could respect namespace deletion policies
+- Kinds could respect namespace deletion policies
 - Cascade deletion or orphan resources based on policy
 - Integration with Kubernetes finalizers
 
 **2. Namespace Templates**
 - Predefined namespace configurations (dev, staging, prod)
-- Component references template, gets consistent policies
+- Kind references template, gets consistent policies
 - Reduces configuration duplication
 
 **3. Multi-Tenancy Support**
@@ -963,7 +963,7 @@ This feature enables:
 
 **4. GitOps Integration**
 - Dedicated namespace sync waves (ArgoCD, Flux)
-- Namespace creation in wave 0, components in wave 1+
+- Namespace creation in wave 0, kinds in wave 1+
 - Better progressive delivery support
 
 **5. Cost Allocation**
@@ -975,7 +975,7 @@ This feature enables:
 
 ### Example 1: Microservices Application (Shared Namespace)
 
-Deploying a full microservices application with multiple components to a single `ecommerce` namespace:
+Deploying a full microservices application with multiple kinds to a single `ecommerce` namespace:
 
 ```yaml
 # 1. API Gateway (creates namespace)
@@ -988,7 +988,7 @@ spec:
     cluster_name: "prod-gke-us-central1"
   namespace:
     value: "ecommerce"
-  create_namespace: true  # First component creates namespace
+  create_namespace: true  # First kind creates namespace
   version: main
   container:
     app:
@@ -1091,7 +1091,7 @@ EOF
 ```
 
 ```yaml
-# Development team deploys Elastic components
+# Development team deploys Elastic kinds
 ---
 # Elastic Operator
 apiVersion: kubernetes.planton.dev/v1
@@ -1245,25 +1245,25 @@ Error: namespaces "my-namespace" not found
 **Solutions**:
 - Set `create_namespace: true` to auto-create
 - Pre-create namespace: `kubectl create namespace my-namespace`
-- Deploy a component with `create_namespace: true` first
+- Deploy a kind with `create_namespace: true` first
 
 ---
 
-**Issue 2: Multiple components trying to create same namespace**
+**Issue 2: Multiple kinds trying to create same namespace**
 
 ```
 Error: namespace "shared-namespace" already exists
 ```
 
-**Cause**: Multiple components with `create_namespace: true` targeting same namespace
+**Cause**: Multiple kinds with `create_namespace: true` targeting same namespace
 
-**Solution**: Set `create_namespace: true` only on the first component:
+**Solution**: Set `create_namespace: true` only on the first kind:
 ```yaml
-# First component
+# First kind
 spec:
   create_namespace: true
 
-# Other components  
+# Other kinds  
 spec:
   create_namespace: false
 ```
@@ -1285,33 +1285,33 @@ Error: namespaces is forbidden: User "developer" cannot create resource "namespa
 
 ---
 
-**Issue 4: Namespace deletion removes all components**
+**Issue 4: Namespace deletion removes all kinds**
 
-**Cause**: When namespace is created by a component, deleting that component may delete the namespace (and all resources in it)
+**Cause**: When namespace is created by a kind, deleting that kind may delete the namespace (and all resources in it)
 
 **Solutions**:
 - Use dedicated `KubernetesNamespace` resource for shared namespaces
-- Set `create_namespace: false` on all components using shared namespace
+- Set `create_namespace: false` on all kinds using shared namespace
 - Document namespace ownership clearly
 
 ## Best Practices
 
 ### 1. Namespace Ownership
 
-**✅ Do**: Clearly document which component creates the namespace
+**✅ Do**: Clearly document which kind creates the namespace
 ```yaml
-# Namespace creator (designated "anchor" component)
+# Namespace creator (designated "anchor" kind)
 metadata:
   name: api-gateway
   annotations:
-    description: "Creates 'api-services' namespace for all API components"
+    description: "Creates 'api-services' namespace for all API kinds"
 spec:
   create_namespace: true
 ```
 
-**❌ Don't**: Have multiple components creating the same namespace
+**❌ Don't**: Have multiple kinds creating the same namespace
 ```yaml
-# Multiple components with create_namespace: true → conflicts
+# Multiple kinds with create_namespace: true → conflicts
 ```
 
 ### 2. Production Environments
@@ -1323,12 +1323,12 @@ kubectl apply -f production-namespaces.yaml
 ```
 
 ```yaml
-# Components use existing
+# Kinds use existing
 spec:
   create_namespace: false
 ```
 
-**❌ Don't**: Auto-create production namespaces from components
+**❌ Don't**: Auto-create production namespaces from kinds
 ```yaml
 # Risky in production - bypasses governance
 spec:
@@ -1344,33 +1344,33 @@ spec:
   create_namespace: true
 ```
 
-### 4. Multi-Component Applications
+### 4. Multi-Kind Applications
 
 **✅ Do**: Use consistent namespace strategy
 ```yaml
-# Option A: First component creates
-component1: create_namespace: true
-component2: create_namespace: false
-component3: create_namespace: false
+# Option A: First kind creates
+kind1: create_namespace: true
+kind2: create_namespace: false
+kind3: create_namespace: false
 
 # Option B: Dedicated namespace resource
 namespace: KubernetesNamespace
-component1: create_namespace: false
-component2: create_namespace: false
-component3: create_namespace: false
+kind1: create_namespace: false
+kind2: create_namespace: false
+kind3: create_namespace: false
 ```
 
 **❌ Don't**: Inconsistent namespace creation
 ```yaml
 # Confusing - who owns the namespace?
-component1: create_namespace: true
-component2: create_namespace: true
-component3: create_namespace: false
+kind1: create_namespace: true
+kind2: create_namespace: true
+kind3: create_namespace: false
 ```
 
 ### 5. GitOps Workflows
 
-**✅ Do**: Separate namespace and component manifests
+**✅ Do**: Separate namespace and kind manifests
 ```
 infrastructure/namespaces/  → sync wave 0
 applications/               → sync wave 1+
@@ -1387,10 +1387,10 @@ spec:
 
 ### What Worked Well
 
-1. **Consistent proto pattern**: Adding field #3 in the same position across all 38 components made implementation predictable
+1. **Consistent proto pattern**: Adding field #3 in the same position across all 38 kinds made implementation predictable
 2. **Minimal comment**: Simple proto comment "flag to indicate if the namespace should be created" was clear without over-documentation
-3. **Two implementation patterns**: Having clear patterns for resource-based (Deployment) vs. Helm-based (operators) components simplified coding
-4. **Parallel component processing**: Using separate conversations per component allowed parallel work and isolated issues
+3. **Two implementation patterns**: Having clear patterns for resource-based (Deployment) vs. Helm-based (operators) kinds simplified coding
+4. **Parallel kind processing**: Using separate conversations per kind allowed parallel work and isolated issues
 5. **Comprehensive documentation**: Updating examples to show both `true` and `false` scenarios helped clarify usage
 
 ### Challenges Overcome
@@ -1398,14 +1398,14 @@ spec:
 1. **Dependency tracking**: Ensuring resources properly depend on namespace when created required careful nil-checking in Pulumi code
 2. **Terraform count semantics**: Understanding Terraform's `count = 0` behavior (resource doesn't exist vs. creates nothing) was critical
 3. **Documentation consistency**: Ensuring all 38 × 3 = 114 documentation files had consistent explanations required systematic approach
-4. **Test fixture updates**: Remembering to add field to test fixtures in all 38 components required checklist discipline
+4. **Test fixture updates**: Remembering to add field to test fixtures in all 38 kinds required checklist discipline
 
 ### Recommendations for Similar Changes
 
 1. **Proto defaults matter**: Boolean fields default to `false` in proto3 - consider if this matches desired default behavior
-2. **Document migration**: Clear migration guide prevents production issues when changing component behavior
-3. **Test both modes**: Validate components work with both `create_namespace: true` and `false`
-4. **Use automation rules**: Leveraging `@complete-planton-component` rule ensured consistent updates across components
+2. **Document migration**: Clear migration guide prevents production issues when changing kind behavior
+3. **Test both modes**: Validate kinds work with both `create_namespace: true` and `false`
+4. **Use automation rules**: Leveraging `@complete-catalog-kind` rule ensured consistent updates across kinds
 5. **Separate concerns**: Keeping proto changes in one commit, implementation in separate conversations simplified tracking
 
 ## Future Considerations
@@ -1413,33 +1413,33 @@ spec:
 ### Potential Enhancements
 
 **1. Default Value Configuration**
-- Allow system-wide or component-level defaults for `create_namespace`
+- Allow system-wide or kind-level defaults for `create_namespace`
 - Environment-specific defaults (auto-create in dev, require existing in prod)
 
 **2. Namespace Configuration**
-- When creating namespace, apply component-specific labels/annotations
-- Support namespace resource quotas from component spec
-- Enable namespace network policies from component spec
+- When creating namespace, apply kind-specific labels/annotations
+- Support namespace resource quotas from kind spec
+- Enable namespace network policies from kind spec
 
 **3. Validation Improvements**
-- Warn if multiple components in same stack have `create_namespace: true` for same namespace
+- Warn if multiple kinds in same stack have `create_namespace: true` for same namespace
 - Validate namespace exists when `create_namespace: false` (pre-flight check)
 - Suggest `create_namespace: false` when detecting shared namespaces
 
 **4. Documentation Generation**
 - Auto-generate namespace ownership documentation from manifests
-- Visualize namespace-to-component relationships
+- Visualize namespace-to-kind relationships
 - Detect orphaned namespaces (created but no longer referenced)
 
 **5. Lifecycle Management**
-- Support namespace retention policies (delete with component or orphan)
+- Support namespace retention policies (delete with kind or orphan)
 - Integrate with Kubernetes finalizers for safer deletion
-- Provide namespace migration commands (move components between namespaces)
+- Provide namespace migration commands (move kinds between namespaces)
 
 ---
 
 **Status**: ✅ Production Ready  
-**Impact**: All 38 Kubernetes components support flexible namespace management  
-**Testing**: Validated across all components - Pulumi, Terraform, and documentation  
-**Timeline**: Proto changes December 16, 2025; Implementation across 38 separate component update sessions  
+**Impact**: All 38 Kubernetes kinds support flexible namespace management  
+**Testing**: Validated across all kinds - Pulumi, Terraform, and documentation  
+**Timeline**: Proto changes December 16, 2025; Implementation across 38 separate kind update sessions  
 **Migration Required**: Existing deployments should add `create_namespace: true` or pre-create namespaces

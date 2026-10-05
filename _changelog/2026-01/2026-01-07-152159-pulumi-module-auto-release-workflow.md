@@ -6,13 +6,13 @@
 
 ## Summary
 
-Implemented a comprehensive GitHub Actions workflow system for automatically building and releasing pre-compiled Pulumi module binaries. The system detects code changes in provider directories, computes date-based versions (`YYYYMMDD.N`), creates Git tags, and uploads binaries as GitHub Release artifacts. Additionally, created 11 per-provider workflows that build all components on semantic version tags (`v*`), replacing the monolithic runner approach.
+Implemented a comprehensive GitHub Actions workflow system for automatically building and releasing pre-compiled Pulumi module binaries. The system detects code changes in provider directories, computes date-based versions (`YYYYMMDD.N`), creates Git tags, and uploads binaries as GitHub Release artifacts. Additionally, created 11 per-provider workflows that build all kinds on semantic version tags (`v*`), replacing the monolithic runner approach.
 
 ## Problem Statement
 
 ### Background
 
-The IaC Runner service executes Pulumi stack jobs for infrastructure deployments. Previous approaches all had significant trade-offs:
+The IaC Runner service executes Pulumi Infra Jobs for infrastructure deployments. Previous approaches all had significant trade-offs:
 
 | Approach            | Image Size | Cold Start | Build Complexity |
 | ------------------- | ---------- | ---------- | ---------------- |
@@ -28,19 +28,19 @@ The 15.7GB pre-warmed cache image was impractical for self-hosted deployments. W
 - **Runtime compilation** - Even with warm caches, adds 15-30 seconds per job
 - **Cold start variance** - Cache misses cause 2-5 minute delays
 - **Complex cache management** - PVC storage, self-hosted runners, DinD required
-- **All-or-nothing builds** - No way to release individual components
+- **All-or-nothing builds** - No way to release individual kinds
 
 ## Solution
 
-### Per-Component Binary Releases
+### Per-Kind Binary Releases
 
-Each Pulumi deployment component is now built as an independent binary and published as a GitHub Release artifact:
+Each Pulumi catalog kind is now built as an independent binary and published as a GitHub Release artifact:
 
 ```mermaid
 flowchart TB
     subgraph AutoRelease ["Auto-Release (push to main)"]
         A[Push code] --> B{Changes in<br/>apis/**/iac/pulumi/**?}
-        B -->|Yes| C[Detect changed components]
+        B -->|Yes| C[Detect changed kinds]
         C --> D[Compute version<br/>YYYYMMDD.N]
         D --> E[Build binary]
         E --> F[Create tag + release]
@@ -48,7 +48,7 @@ flowchart TB
 
     subgraph FullBuild ["Full Build (v* tag)"]
         G[git tag v1.0.0] --> H[All 11 provider<br/>workflows trigger]
-        H --> I[~130 components built<br/>in parallel]
+        H --> I[~130 kinds built<br/>in parallel]
     end
 ```
 
@@ -57,7 +57,7 @@ flowchart TB
 Date-based versioning for easy identification:
 
 ```
-pulumi-module-{component}-{YYYYMMDD}.{N}
+pulumi-module-{kind}-{YYYYMMDD}.{N}
 ```
 
 **Examples**:
@@ -75,17 +75,17 @@ Created 12 workflow files:
 ```
 .github/workflows/
 ├── pulumi-module-auto-release.yml    # Auto-detect & release
-├── pulumi-modules-atlas.yml          # 1 component
-├── pulumi-modules-auth0.yml          # 3 components
-├── pulumi-modules-aws.yml            # 22 components
-├── pulumi-modules-azure.yml          # 7 components
-├── pulumi-modules-civo.yml           # 11 components
-├── pulumi-modules-cloudflare.yml     # 7 components
-├── pulumi-modules-confluent.yml      # 1 component
-├── pulumi-modules-digitalocean.yml   # 14 components
-├── pulumi-modules-gcp.yml            # 17 components
-├── pulumi-modules-kubernetes.yml     # 45 components
-└── pulumi-modules-snowflake.yml      # 1 component
+├── pulumi-modules-atlas.yml          # 1 kind
+├── pulumi-modules-auth0.yml          # 3 kinds
+├── pulumi-modules-aws.yml            # 22 kinds
+├── pulumi-modules-azure.yml          # 7 kinds
+├── pulumi-modules-civo.yml           # 11 kinds
+├── pulumi-modules-cloudflare.yml     # 7 kinds
+├── pulumi-modules-confluent.yml      # 1 kind
+├── pulumi-modules-digitalocean.yml   # 14 kinds
+├── pulumi-modules-gcp.yml            # 17 kinds
+├── pulumi-modules-kubernetes.yml     # 45 kinds
+└── pulumi-modules-snowflake.yml      # 1 kind
 ```
 
 ### Auto-Release Workflow
@@ -93,7 +93,7 @@ Created 12 workflow files:
 The `pulumi-module-auto-release.yml` workflow:
 
 1. **Triggers on push to main** with changes in `apis/**/iac/pulumi/**`
-2. **Detects changed components** by analyzing git diff
+2. **Detects changed kinds** by analyzing git diff
 3. **Computes next version** using date + sequential number
 4. **Builds binary** with `CGO_ENABLED=0 GOOS=linux GOARCH=amd64`
 5. **Creates Git tag** (e.g., `pulumi-module-awsecsservice-20260107.0`)
@@ -102,8 +102,8 @@ The `pulumi-module-auto-release.yml` workflow:
 Key detection logic:
 
 ```yaml
-# Extract provider/component pairs from changed files
-# Pattern: apis/dev/planton/provider/{provider}/{component}/v1/iac/pulumi
+# Extract provider/kind pairs from changed files
+# Pattern: apis/dev/planton/provider/{provider}/{kind}/v1/iac/pulumi
 PULUMI_DIRS=$(echo "$CHANGED_FILES" | \
 grep -E '^apis/dev/planton/provider/[^/]+/[^/]+/v[0-9]+/iac/pulumi/' | \
 sed 's|\(apis/dev/planton/provider/[^/]*/[^/]*/v[0-9]*/iac/pulumi\)/.*|\1|' | \
@@ -114,7 +114,7 @@ Version computation:
 
 ```bash
 # Find next version for today
-TAG_PREFIX="pulumi-module-${COMPONENT}-${TODAY}"
+TAG_PREFIX="pulumi-module-${KIND}-${TODAY}"
 LATEST_TAG=$(git tag -l "${TAG_PREFIX}.*" | sort -t. -k2 -n | tail -1)
 
 if [ -z "$LATEST_TAG" ]; then
@@ -131,7 +131,7 @@ Each provider workflow:
 
 - Triggers on `v*` tags only
 - Uses matrix strategy for parallel builds
-- Builds all components for that provider
+- Builds all kinds for that provider
 - Uploads artifacts for downstream consumption
 
 Example matrix for AWS:
@@ -139,11 +139,11 @@ Example matrix for AWS:
 ```yaml
 matrix:
   include:
-    - component: awsalb
+    - kind: awsalb
       path: apis/dev/planton/provider/aws/awsalb/v1/iac/pulumi
-    - component: awsecsservice
+    - kind: awsecsservice
       path: apis/dev/planton/provider/aws/awsecsservice/v1/iac/pulumi
-    # ... 20 more AWS components
+    # ... 20 more AWS kinds
 ```
 
 ### Binary Build Configuration
@@ -153,7 +153,7 @@ All binaries built with optimized settings:
 ```bash
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
   -ldflags="-s -w" \
-  -o binaries/${PROVIDER}/${COMPONENT} \
+  -o binaries/${PROVIDER}/${KIND} \
   ./${PATH}
 ```
 
@@ -174,8 +174,8 @@ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
 
 ### For Development
 
-- **Incremental releases** - Only changed components are rebuilt
-- **Independent versioning** - Each component can evolve separately
+- **Incremental releases** - Only changed kinds are rebuilt
+- **Independent versioning** - Each kind can evolve separately
 - **Auditable history** - Git tags map 1:1 to releases
 - **Self-hosted friendly** - Customers pull small images + binaries
 
@@ -183,7 +183,7 @@ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
 
 - **Simplified runner image** - Just Pulumi CLI, no Go toolchain
 - **Predictable execution** - No compilation variance
-- **Easy rollback** - Pin to specific component versions
+- **Easy rollback** - Pin to specific kind versions
 - **Reduced storage** - ~2GB total vs 15GB image
 
 ## Impact
@@ -205,9 +205,9 @@ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
 | `.github/workflows/pulumi-modules-digitalocean.yml` | DigitalOcean provider builds |
 | `.github/workflows/pulumi-modules-snowflake.yml`    | Snowflake provider builds    |
 
-### Component Coverage
+### Kind Coverage
 
-| Provider     | Components | Binary Size |
+| Provider     | Kinds | Binary Size |
 | ------------ | ---------- | ----------- |
 | AWS          | 22         | 9-14 MB     |
 | GCP          | 17         | 9-12 MB     |
@@ -243,7 +243,7 @@ git push origin main
 # 3. Builds binary and creates release
 ```
 
-### Full Build (All Components)
+### Full Build (All Kinds)
 
 Tag a version to build everything:
 
@@ -252,24 +252,24 @@ git tag v1.0.0
 git push origin v1.0.0
 
 # All 11 provider workflows trigger
-# ~130 components built in parallel
+# ~130 kinds built in parallel
 # Artifacts available for download
 ```
 
 ### Manual Dispatch
 
-Trigger specific provider or component builds:
+Trigger specific provider or kind builds:
 
 ```bash
 # Via GitHub Actions UI or gh CLI
 gh workflow run pulumi-module-auto-release.yml \
   -f provider=aws \
-  -f component=awsecsservice
+  -f kind=awsecsservice
 ```
 
 ## Related Work
 
-- **ADR**: `planton/docs/adr/2026-01/2026-01-07-150453-per-component-binary-releases-for-pulumi-modules.md`
+- **ADR**: `planton/docs/adr/2026-01/2026-01-07-150453-per-kind-binary-releases-for-pulumi-modules.md`
 - **Previous approach**: `_changelog/2026-01/2026-01-07-120202-iac-runner-base-image-with-prewarmed-go-caches.md`
 - **IaC Runner Distribution Strategy**: `planton/_projects/2026-01/20260107.01.iac-runner-distribution-strategy/`
 

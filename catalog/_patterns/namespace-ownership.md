@@ -17,7 +17,7 @@ pattern is the judgment call: who owns the namespace.
 Kubernetes workload kinds (KubernetesPostgres, KubernetesValkey, and their
 siblings) declare their target namespace the same way: a required
 `spec.namespace` reference, plus a `createNamespace` boolean. When the flag is
-true, the component's IaC module creates the namespace as its OWN resource:
+true, the kind's IaC module creates the namespace as its OWN resource:
 it enters that component's state, and — as the spec documents — it is
 **deleted with the resource**.
 
@@ -89,7 +89,7 @@ race.
 
 | Choice | What it buys | What it costs / risks |
 |---|---|---|
-| Dedicated KubernetesNamespace + references | One owner in one state; teardown of any workload never deletes the namespace; the namespace's own surface opens up (resource quotas, default-deny network policies, pod security standards, service-mesh injection); **renders as a visible node on the architecture diagram** with reference edges from each workload | One more component to declare |
+| Dedicated KubernetesNamespace + references | One owner in one state; teardown of any workload never deletes the namespace; the namespace's own surface opens up (resource quotas, default-deny network policies, pod security standards, service-mesh injection); **renders as a visible node on the architecture diagram** with reference edges from each workload | One more kind to declare |
 | `createNamespace: true` on a single workload | One less manifest for a genuinely single-tenant namespace | The workload owns the namespace: destroying it deletes the namespace; a second component with the flag fails on already-exists; namespace stays bare (no quotas, no network policies — nothing beyond the standard governance labels the module applies); **invisible on the diagram** — the namespace exists in the cluster but appears nowhere in the architecture |
 | `createNamespace: true` on several components sharing a namespace | Nothing | The failure in "The problem" — first deploy wins, second fails |
 
@@ -108,7 +108,7 @@ Use the dedicated component the moment a second tenant appears or the
 namespace itself needs configuration.
 
 The canonical instances of this case are the cluster's shared
-infrastructure components — an ingress controller in "ingress-nginx",
+Infra Components — an ingress controller in "ingress-nginx",
 cert-manager in "cert-manager", ExternalDNS, a shared-chart operator in a
 namespace of its own. Each conventionally owns a dedicated namespace no
 other tenant will ever join, so the flag is the NORMAL shape there, not a

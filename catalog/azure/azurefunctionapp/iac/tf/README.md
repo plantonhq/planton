@@ -1,6 +1,6 @@
 # AzureFunctionApp Terraform Module
 
-This directory contains the Terraform IaC implementation for the `AzureFunctionApp` component.
+This directory contains the Terraform IaC implementation for the `AzureFunctionApp` kind.
 
 ## Structure
 

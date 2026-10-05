@@ -4,7 +4,7 @@ Deploys a cross-region failover group pairing an Azure SQL logical server (the p
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SQL Failover Group** -- created ON the primary server, spanning the partner server(s), with the group name becoming the listener DNS prefix (`{name}.database.windows.net`)
 - **Database Replication** -- a maintained replica of every listed database on every partner server
@@ -68,7 +68,7 @@ spec:
 planton apply -f mssql-failover-group.yaml
 ```
 
-This creates an automatic-failover group replicating one database to the partner, with listeners at `appdb-dr.database.windows.net` (read-write) and `appdb-dr.secondary.database.windows.net` (read-only). A Stack Job tracks the provisioning in real time.
+This creates an automatic-failover group replicating one database to the partner, with listeners at `appdb-dr.database.windows.net` (read-write) and `appdb-dr.secondary.database.windows.net` (read-only). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -111,7 +111,7 @@ These are the most important decisions when configuring a failover group. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -119,16 +119,16 @@ These are the most important decisions when configuring a failover group. Explor
 | **AzureMssqlServer** | `partnerServers[].serverId` | `status.outputs.server_id` |
 | **AzureMssqlDatabase** | `databaseIds` | `status.outputs.database_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `read_write_listener_endpoint` | The listener that follows the primary | Application connection strings |
 | `read_only_listener_endpoint` | The listener pointed at the secondary | Reporting/read-intent connection strings |
 
-`status.outputs` also carries `failover_group_id` and `failover_group_name`, but no catalog component consumes a failover group by reference — the listeners are what downstream configuration actually uses.
+`status.outputs` also carries `failover_group_id` and `failover_group_name`, but no catalog kind consumes a failover group by reference — the listeners are what downstream configuration actually uses.
 
 ## Common Patterns
 
@@ -140,5 +140,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure MSSQL Server**](/cloud-catalog/azure-mssql-server) -- the primary and every partner
-- [**Azure MSSQL Database**](/cloud-catalog/azure-mssql-database) -- the databases that replicate through the group
+- [**Azure MSSQL Server**](/infra-catalog/azure-mssql-server) -- the primary and every partner
+- [**Azure MSSQL Database**](/infra-catalog/azure-mssql-database) -- the databases that replicate through the group

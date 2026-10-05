@@ -84,12 +84,12 @@ toolchain automatically -- the developer command surface (`make protos`,
 
 ### Rule drift fix (forge-planton-provider)
 
-`_rules/deployment-component/forge/forge-planton-provider.mdc` still instructed
+`_rules/catalog-kind/forge/forge-planton-provider.mdc` still instructed
 agents to build the removed webapp layer: backend credential CRUD and frontend
 credential UI phases targeting `app/backend`/`app/frontend` paths, TypeScript-stub
 generation steps, a removed credential proto (`apis/dev/planton/app/credential/v1/api.proto`),
 and reference files pointing at deleted code. The rule was rewritten to the current
-4-layer architecture (proto definitions, CLI guidance, stack input / env vars,
+4-layer architecture (proto definitions, CLI guidance, IaC input / env vars,
 provider detection): 11 phases reduced to 9, checkpoints from 3 to 2, and all
 references now point at files that exist.
 

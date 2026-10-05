@@ -6,7 +6,7 @@
 
 The site is data first. Every sentence that states what Planton is or does lives in `src/data/` and names the chapter of the story it mirrors; pages render records and state nothing of their own. The story is `company/marketing/positioning/the-planton-story.md` in the company repository, mirrored as `src/data/story.ts`; the page records are `trust.ts`, `product.ts`, `distributions.ts`, `personas.ts`, `compare.ts`, `desktop.ts`; the vocabulary is `positioning.ts` (the umbrella never wears an analogy; each hub has exactly one); doors are `doors.ts`; prices are `pricing.ts`; counts are `platform-stats.ts`; quotes are `testimonials.ts`. Read `README.md` at the site root before the first draft; it names every law the words obey.
 
-A copy change is therefore one of three things: a sentence in a record changes; a chapter of the story changes (and the record follows); or a new record is written for a new page. Never a sentence typed into a component.
+A copy change is therefore one of three things: a sentence in a record changes; a chapter of the story changes (and the record follows); or a new record is written for a new page. Never a sentence typed into a kind.
 
 ## Before drafting
 
@@ -18,7 +18,7 @@ A copy change is therefore one of three things: a sentence in a record changes; 
 
 Create `content/copywriting/_stage-area/YYYY-MM-DD-<slug>/draft-1.md`. For every sentence the page will say, write the sentence and, beside it, what backs it: the chapter and proof index (`ch 3, proof 0`), the positioning key, the pricing or counts constant, or the public document (`public/docs/...`) or knowledge article it restates. A sentence with nothing beside it is a new claim, and a new claim is a story change first (below) or it is cut.
 
-Conventions: titles, labels, and buttons in Title Case; everything read as prose in sentence case. Numbers carry their unit and their source, and appear only through `platform-stats.ts` or `pricing.ts`. No dollar-savings figure. No component called compliant. Competitors described, never named. Nothing from the story's last chapter (what is next) on a page. Doors by key from `doors.ts`, never a new button label.
+Conventions: titles, labels, and buttons in Title Case; everything read as prose in sentence case. Numbers carry their unit and their source, and appear only through `platform-stats.ts` or `pricing.ts`. No dollar-savings figure. No kind called compliant. Competitors described, never named. Nothing from the story's last chapter (what is next) on a page. Doors by key from `doors.ts`, never a new button label.
 
 There is no HTML preview. The built page under the capture harness (`make capture`) is the preview, and the independent reviewer grades pixels.
 

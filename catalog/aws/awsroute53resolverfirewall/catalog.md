@@ -4,7 +4,7 @@ Deploys a Route 53 Resolver DNS Firewall rule group — the filtering policy for
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DNS Firewall Rule Group** — the container the rules and associations hang off; its name is fixed for life (the group's only update path is tags)
 - **Firewall Domain Lists** — one per `domainLists` entry, owned by this group's lifecycle and keyed by name. Both engines store every domain as a trailing-dot FQDN, matching AWS's canonical form
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Route 53 Resolver permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Route 53 Resolver permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -68,7 +68,7 @@ spec:
 planton apply -f resolver-firewall.yaml
 ```
 
-This creates a rule group with one owned blocklist whose matches answer with a CNAME to your sinkhole host instead of resolving, active in the app VPC. A Stack Job tracks the provisioning in real time.
+This creates a rule group with one owned blocklist whose matches answer with a CNAME to your sinkhole host instead of resolving, active in the app VPC. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -118,7 +118,7 @@ These are the most important decisions when configuring a DNS Firewall rule grou
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -126,9 +126,9 @@ These are the most important decisions when configuring a DNS Firewall rule grou
 
 Rules can also reference an external or AWS-managed domain list, but those travel as literal `rslvr-fdl-...` IDs in `domainListId`, not as typed references.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -148,6 +148,6 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) — the VPCs the policy filters, wired via `vpcAssociations[].vpcId`
-- [**AWS Route 53 Resolver Query Logging**](/cloud-catalog/aws-route53-resolver-query-log) — the only way to see what fired: query logs carry the firewall's rule verdicts, and the firewall itself logs nothing
-- [**AWS Route 53 Resolver Endpoint**](/cloud-catalog/aws-route53-resolver-endpoint) — hybrid-DNS forwarding for the same VPCs; the firewall evaluates queries before they forward
+- [**AWS VPC**](/infra-catalog/aws-vpc) — the VPCs the policy filters, wired via `vpcAssociations[].vpcId`
+- [**AWS Route 53 Resolver Query Logging**](/infra-catalog/aws-route53-resolver-query-log) — the only way to see what fired: query logs carry the firewall's rule verdicts, and the firewall itself logs nothing
+- [**AWS Route 53 Resolver Endpoint**](/infra-catalog/aws-route53-resolver-endpoint) — hybrid-DNS forwarding for the same VPCs; the firewall evaluates queries before they forward

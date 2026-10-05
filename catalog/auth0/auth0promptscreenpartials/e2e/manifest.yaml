@@ -1,5 +1,5 @@
 # Auth0 Prompt Screen Partials Test Manifest
-# This file is used for testing the Auth0PromptScreenPartials component.
+# This file is used for testing the Auth0PromptScreenPartials kind.
 #
 # Applying it REPLACES every partial of the tenant's signup prompt: run it
 # only against a test tenant nobody signs up through.

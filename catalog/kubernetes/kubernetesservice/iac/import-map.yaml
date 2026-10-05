@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesservice
 spec:
@@ -8,13 +8,13 @@ spec:
   values:
     - name: service_name
       derivations:
-        - from_stack_output: service_name
+        - from_output: service_name
         - from_spec_field: name
       where_to_find: >-
         `kubectl get services -A` (NAME column).
     - name: service_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `kubectl get services -A` (NAMESPACE column); "default" when the

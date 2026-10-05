@@ -4,7 +4,7 @@ Deploys a Front Door route -- the rule that connects client traffic arriving at 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Front Door Route** -- a named child of an endpoint matching URL patterns and forwarding to an origin group
 - **Protocol posture** -- supported client protocols (HTTP/HTTPS), the origin-leg forwarding protocol, and the edge HTTPS redirect
@@ -71,7 +71,7 @@ spec:
 planton apply -f front-door-route.yaml
 ```
 
-This creates a catch-all route accepting both protocols with the default HTTPS redirect on -- HTTP arrives only to be 301'd to HTTPS -- and caching off until a `cache` block is declared. A Stack Job tracks the provisioning in real time.
+This creates a catch-all route accepting both protocols with the default HTTPS redirect on -- HTTP arrives only to be 301'd to HTTPS -- and caching off until a `cache` block is declared. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -124,7 +124,7 @@ These are the most important decisions when configuring a route. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -134,9 +134,9 @@ These are the most important decisions when configuring a route. Explore the ful
 | **AzureFrontDoorCustomDomain** | `customDomainIds[]` | `status.outputs.custom_domain_id` |
 | **AzureFrontDoorRuleSet** | `ruleSetIds[]` | `status.outputs.rule_set_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -159,8 +159,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Front Door Endpoint**](/cloud-catalog/azure-front-door-endpoint) -- the public entry hostname the route attaches to (ForceNew)
-- [**Azure Front Door Origin Group**](/cloud-catalog/azure-front-door-origin-group) -- the backend pool matched traffic forwards to
-- [**Azure Front Door Origin**](/cloud-catalog/azure-front-door-origin) -- listed in `originIds` so the route waits for backends to exist
-- [**Azure Front Door Custom Domain**](/cloud-catalog/azure-front-door-custom-domain) -- branded hostnames this route serves
-- [**Azure Front Door Rule Set**](/cloud-catalog/azure-front-door-rule-set) -- request/response transforms applied to traffic on this route
+- [**Azure Front Door Endpoint**](/infra-catalog/azure-front-door-endpoint) -- the public entry hostname the route attaches to (ForceNew)
+- [**Azure Front Door Origin Group**](/infra-catalog/azure-front-door-origin-group) -- the backend pool matched traffic forwards to
+- [**Azure Front Door Origin**](/infra-catalog/azure-front-door-origin) -- listed in `originIds` so the route waits for backends to exist
+- [**Azure Front Door Custom Domain**](/infra-catalog/azure-front-door-custom-domain) -- branded hostnames this route serves
+- [**Azure Front Door Rule Set**](/infra-catalog/azure-front-door-rule-set) -- request/response transforms applied to traffic on this route

@@ -6,15 +6,15 @@
 
 ## Summary
 
-Established the complete foundation for the Planton presets system -- production-quality, directly deployable YAML configuration templates for all 213 deployment components. Created the authoritative convention document, AI reference, three Cursor rules for preset lifecycle management (create, audit, validate), a forge flow rule for automatic preset generation during component creation, and a pilot preset for AwsAlb to validate the convention.
+Established the complete foundation for the Planton presets system -- production-quality, directly deployable YAML configuration templates for all 213 catalog kinds. Created the authoritative convention document, AI reference, three Cursor rules for preset lifecycle management (create, audit, validate), a forge flow rule for automatic preset generation during kind creation, and a pilot preset for AwsAlb to validate the convention.
 
 ## Problem Statement / Motivation
 
-Planton provides a consistent KRM-style structure for deploying infrastructure across any cloud provider, but early adopters report a recurring gap: knowing *what configuration to actually deploy* for a given component. Each component's `spec.proto` defines many fields, and users must synthesize provider documentation, `examples.md`, and `docs/README.md` to determine the right combination for their use case.
+Planton provides a consistent KRM-style structure for deploying infrastructure across any cloud provider, but early adopters report a recurring gap: knowing *what configuration to actually deploy* for a given kind. Each kind's `spec.proto` defines many fields, and users must synthesize provider documentation, `examples.md`, and `docs/README.md` to determine the right combination for their use case.
 
 ### Pain Points
 
-- Users face analysis paralysis when configuring components with 10+ fields
+- Users face analysis paralysis when configuring kinds with 10+ fields
 - No ready-made starting points ranked by real-world deployment frequency
 - Existing `examples.md` files are documentation (embedded YAML with prose), not deployable artifacts
 - Existing `iac/hack/manifest.yaml` files are minimal test fixtures, not production-quality
@@ -22,7 +22,7 @@ Planton provides a consistent KRM-style structure for deploying infrastructure a
 
 ## Solution / What's New
 
-A presets system that provides ranked, deployable YAML manifests paired with companion markdown documentation for every Planton deployment component. The foundation includes convention documents, Cursor rules, and integration into the existing forge workflow.
+A presets system that provides ranked, deployable YAML manifests paired with companion markdown documentation for every Planton catalog kind. The foundation includes convention documents, Cursor rules, and integration into the existing forge workflow.
 
 ### Architecture
 
@@ -35,7 +35,7 @@ flowchart TB
         RAudit["audit-planton-presets.mdc"]
         RValidate["validate-planton-presets.mdc"]
         ForgeFlow["022-presets.mdc\n(Forge Flow Rule)"]
-        ForgeOrch["forge-planton-component.mdc\n(Updated Orchestrator)"]
+        ForgeOrch["forge-catalog-kind.mdc\n(Updated Orchestrator)"]
     end
 
     subgraph Presets["Preset Files (T02-T08 -- future sessions)"]
@@ -59,17 +59,17 @@ flowchart TB
 
 ### Files Created (8 new)
 
-- **`architecture/presets.md`** (~595 lines) -- Authoritative convention document defining what presets are, file naming and ranking conventions, YAML and markdown format specifications, placeholder conventions, and the relationship to existing artifacts (examples.md, hack manifests). Matches the depth and tone of `architecture/deployment-component.md`.
+- **`architecture/presets.md`** (~595 lines) -- Authoritative convention document defining what presets are, file naming and ranking conventions, YAML and markdown format specifications, placeholder conventions, and the relationship to existing artifacts (examples.md, hack manifests). Matches the depth and tone of `architecture/catalog-kind.md`.
 
 - **`.cursor/info/presets.md`** (~116 lines) -- Concise AI reference for Cursor agents. Follows the directive, no-philosophy style of existing `.cursor/info/` docs. Includes YAML/MD skeletons, CORRECT vs WRONG patterns for StringValueOrRef fields, and ranking guidelines.
 
-- **`_rules/deployment-component/presets/create-planton-preset.mdc`** -- Action rule for creating new presets. Reads spec.proto, api.proto, examples.md, and docs/README.md to craft production-quality presets with proper StringValueOrRef handling.
+- **`_rules/catalog-kind/presets/create-planton-preset.mdc`** -- Action rule for creating new presets. Reads spec.proto, api.proto, examples.md, and docs/README.md to craft production-quality presets with proper StringValueOrRef handling.
 
-- **`_rules/deployment-component/presets/audit-planton-presets.mdc`** -- Action rule for scanning components and generating a coverage report identifying missing presets with prioritized recommendations.
+- **`_rules/catalog-kind/presets/audit-planton-presets.mdc`** -- Action rule for scanning kinds and generating a coverage report identifying missing presets with prioritized recommendations.
 
-- **`_rules/deployment-component/presets/validate-planton-presets.mdc`** -- Action rule for validating preset files against conventions (naming, KRM envelope, StringValueOrRef usage, companion files, required sections).
+- **`_rules/catalog-kind/presets/validate-planton-presets.mdc`** -- Action rule for validating preset files against conventions (naming, KRM envelope, StringValueOrRef usage, companion files, required sections).
 
-- **`_rules/deployment-component/forge/flow/022-presets.mdc`** -- Forge flow rule that generates 2-3 initial presets during component creation. Follows the uppercase section header format of existing flow rules (001-021).
+- **`_rules/catalog-kind/forge/flow/022-presets.mdc`** -- Forge flow rule that generates 2-3 initial presets during kind creation. Follows the uppercase section header format of existing flow rules (001-021).
 
 - **`apis/.../aws/awsalb/v1/presets/01-internet-facing-https.yaml`** -- Pilot preset validating the convention. Internet-facing ALB with HTTPS, DNS management, deletion protection, and the recommended 60-second idle timeout.
 
@@ -77,7 +77,7 @@ flowchart TB
 
 ### Files Modified (1 existing)
 
-- **`_rules/deployment-component/forge/forge-planton-component.mdc`** -- Added Phase 7 (Presets/Rule 022) between Terraform implementation and final validation. Renumbered validation to Phase 8 (steps 19-20). Updated total from 19 to 20 rules. Added presets to "What Forge Creates" and "Success Criteria" sections.
+- **`_rules/catalog-kind/forge/forge-catalog-kind.mdc`** -- Added Phase 7 (Presets/Rule 022) between Terraform implementation and final validation. Renumbered validation to Phase 8 (steps 19-20). Updated total from 19 to 20 rules. Added presets to "What Forge Creates" and "Success Criteria" sections.
 
 ### Key Design Decisions
 
@@ -90,24 +90,24 @@ flowchart TB
 
 ## Benefits
 
-- **Standardized convention** -- Every preset across all 213 components will follow the same structure
+- **Standardized convention** -- Every preset across all 213 kinds will follow the same structure
 - **AI-assisted creation** -- Cursor rules enable rapid, convention-compliant preset creation
-- **Forge integration** -- New components automatically get initial presets during creation
+- **Forge integration** -- New kinds automatically get initial presets during creation
 - **Quality enforcement** -- Validate rule catches convention violations before they accumulate
 - **Coverage visibility** -- Audit rule identifies gaps and prioritizes recommendations
 
 ## Impact
 
-- **End users**: Will get ready-to-deploy configuration templates for every Planton component (starting T02)
+- **End users**: Will get ready-to-deploy configuration templates for every Planton kind (starting T02)
 - **AI agents**: Have clear authoring guides and rules for creating consistent presets
-- **Component authors**: Forge now generates presets as step 18 of the 20-step sequence
+- **Kind authors**: Forge now generates presets as step 18 of the 20-step sequence
 - **Platform maintainers**: Convention document serves as the single source of truth for the presets system
 
 ## Related Work
 
-- **T02-T08**: Future sessions will create presets for all 213 components by provider (AWS, GCP, Azure, Kubernetes, OpenStack, Scaleway, remaining)
-- **`architecture/deployment-component.md`**: The presets convention extends the existing ideal state definition
-- **Forge orchestrator**: Presets are now part of the component creation workflow (step 18/20)
+- **T02-T08**: Future sessions will create presets for all 213 kinds by provider (AWS, GCP, Azure, Kubernetes, OpenStack, Scaleway, remaining)
+- **`architecture/catalog-kind.md`**: The presets convention extends the existing ideal state definition
+- **Forge orchestrator**: Presets are now part of the kind creation workflow (step 18/20)
 
 ---
 

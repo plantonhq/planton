@@ -6,12 +6,12 @@ import (
 
 	awsbedrockagentcoreevaluationv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsbedrockagentcoreevaluation/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 type Locals struct {
 	Target *awsbedrockagentcoreevaluationv1alpha1.AwsBedrockAgentCoreEvaluation
 	Spec   *awsbedrockagentcoreevaluationv1alpha1.AwsBedrockAgentCoreEvaluationSpec
@@ -19,7 +19,7 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, in *awsbedrockagentcoreevaluationv1alpha1.AwsBedrockAgentCoreEvaluationStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awsbedrockagentcoreevaluationv1alpha1.AwsBedrockAgentCoreEvaluationIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec
@@ -32,7 +32,7 @@ func initializeLocals(_ *pulumi.Context, in *awsbedrockagentcoreevaluationv1alph
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsBedrockAgentCoreEvaluation.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsBedrockAgentCoreEvaluation.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

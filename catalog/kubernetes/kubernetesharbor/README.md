@@ -6,7 +6,7 @@
 registry that stores, signs, and scans OCI artifacts, from the official
 `harbor` chart (1.19.x = Harbor 2.15+), on a data plane you pick.
 
-Not the right component when:
+Not the right kind when:
 
 - **You want a managed registry** — point your clusters at it and
   deploy nothing here (ECR, GCR, Artifact Registry, Docker Hub).

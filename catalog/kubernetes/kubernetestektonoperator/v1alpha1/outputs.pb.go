@@ -23,7 +23,7 @@ const (
 
 // *
 // Outputs exported after installing the Tekton Operator.
-type KubernetesTektonOperatorStackOutputs struct {
+type KubernetesTektonOperatorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace the operator runs in — always `tekton-operator` (fixed
@@ -60,20 +60,20 @@ type KubernetesTektonOperatorStackOutputs struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *KubernetesTektonOperatorStackOutputs) Reset() {
-	*x = KubernetesTektonOperatorStackOutputs{}
+func (x *KubernetesTektonOperatorOutputs) Reset() {
+	*x = KubernetesTektonOperatorOutputs{}
 	mi := &file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesTektonOperatorStackOutputs) String() string {
+func (x *KubernetesTektonOperatorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesTektonOperatorStackOutputs) ProtoMessage() {}
+func (*KubernetesTektonOperatorOutputs) ProtoMessage() {}
 
-func (x *KubernetesTektonOperatorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesTektonOperatorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -85,47 +85,47 @@ func (x *KubernetesTektonOperatorStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesTektonOperatorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesTektonOperatorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesTektonOperatorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesTektonOperatorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesTektonOperatorStackOutputs) GetNamespace() string {
+func (x *KubernetesTektonOperatorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesTektonOperatorStackOutputs) GetImageRegistry() string {
+func (x *KubernetesTektonOperatorOutputs) GetImageRegistry() string {
 	if x != nil {
 		return x.ImageRegistry
 	}
 	return ""
 }
 
-func (x *KubernetesTektonOperatorStackOutputs) GetEntrypointImage() string {
+func (x *KubernetesTektonOperatorOutputs) GetEntrypointImage() string {
 	if x != nil {
 		return x.EntrypointImage
 	}
 	return ""
 }
 
-func (x *KubernetesTektonOperatorStackOutputs) GetNopImage() string {
+func (x *KubernetesTektonOperatorOutputs) GetNopImage() string {
 	if x != nil {
 		return x.NopImage
 	}
 	return ""
 }
 
-func (x *KubernetesTektonOperatorStackOutputs) GetWorkingdirinitImage() string {
+func (x *KubernetesTektonOperatorOutputs) GetWorkingdirinitImage() string {
 	if x != nil {
 		return x.WorkingdirinitImage
 	}
 	return ""
 }
 
-func (x *KubernetesTektonOperatorStackOutputs) GetSidecarlogresultsImage() string {
+func (x *KubernetesTektonOperatorOutputs) GetSidecarlogresultsImage() string {
 	if x != nil {
 		return x.SidecarlogresultsImage
 	}
@@ -136,8 +136,8 @@ var File_catalog_kubernetes_kubernetestektonoperator_v1alpha1_outputs_proto prot
 
 const file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/kubernetes/kubernetestektonoperator/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetestektonoperator.v1alpha1\"\x9f\x02\n" +
-	"$KubernetesTektonOperatorStackOutputs\x12\x1c\n" +
+	"Bcatalog/kubernetes/kubernetestektonoperator/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetestektonoperator.v1alpha1\"\x9a\x02\n" +
+	"\x1fKubernetesTektonOperatorOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12%\n" +
 	"\x0eimage_registry\x18\x02 \x01(\tR\rimageRegistry\x12)\n" +
 	"\x10entrypoint_image\x18\x03 \x01(\tR\x0fentrypointImage\x12\x1b\n" +
@@ -160,7 +160,7 @@ func file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_outputs_proto_raw
 
 var file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesTektonOperatorStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorStackOutputs
+	(*KubernetesTektonOperatorOutputs)(nil), // 0: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

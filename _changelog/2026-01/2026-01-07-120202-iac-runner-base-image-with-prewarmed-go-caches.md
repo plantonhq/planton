@@ -12,7 +12,7 @@ Built and published the first production-ready IaC Runner base image (`ghcr.io/p
 
 ### Background
 
-The IaC Runner service executes Pulumi and OpenTofu stack jobs. After optimizing the binary size from ~2GB to 91MB by switching from statically-linked Pulumi programs to git-cloned modules at runtime, we introduced a new problem: **cold start compilation times**.
+The IaC Runner service executes Pulumi and OpenTofu Infra Jobs. After optimizing the binary size from ~2GB to 91MB by switching from statically-linked Pulumi programs to git-cloned modules at runtime, we introduced a new problem: **cold start compilation times**.
 
 ### Pain Points
 
@@ -24,7 +24,7 @@ The IaC Runner service executes Pulumi and OpenTofu stack jobs. After optimizing
 ### Scale of the Problem
 
 - 11 cloud providers: AWS, GCP, Azure, Kubernetes, Cloudflare, DigitalOcean, MongoDB Atlas, Confluent, Snowflake, Auth0, Civo
-- Hundreds of deployment components per provider
+- Hundreds of catalog kinds per provider
 - Provider SDKs are large (AWS SDK alone is ~500MB+ of dependencies)
 
 ## Solution

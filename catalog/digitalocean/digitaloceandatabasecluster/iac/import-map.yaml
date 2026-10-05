@@ -1,14 +1,14 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceandatabasecluster
 spec:
   # The cluster's identity is its API UUID, which the module exports as the
-  # cluster_id stack output -- zero user input when state is present.
+  # cluster_id output -- zero user input when state is present.
   values:
     - name: cluster_id
       derivations:
-        - from_stack_output: cluster_id
+        - from_output: cluster_id
       where_to_find: >-
         DigitalOcean control panel -> Databases -> the cluster -> the UUID
         in the cluster's page URL, or `doctl databases list` (the ID

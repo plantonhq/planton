@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpColabRuntimeSpec", func() {
 		return &GcpColabRuntime{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpColabRuntime",
-			Metadata:   &shared.CloudResourceMetadata{Name: "alice-gpu"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "alice-gpu"},
 			Spec: &GcpColabRuntimeSpec{
 				Location:        "us-central1",
 				RuntimeTemplate: litRef("projects/ml-project/locations/us-central1/notebookRuntimeTemplates/gpu-t4"),

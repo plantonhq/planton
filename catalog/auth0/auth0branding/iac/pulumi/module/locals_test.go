@@ -9,10 +9,10 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func stackInput(spec *auth0brandingv1alpha1.Auth0BrandingSpec) *auth0brandingv1alpha1.Auth0BrandingStackInput {
-	return &auth0brandingv1alpha1.Auth0BrandingStackInput{
+func iacInput(spec *auth0brandingv1alpha1.Auth0BrandingSpec) *auth0brandingv1alpha1.Auth0BrandingIacInput {
+	return &auth0brandingv1alpha1.Auth0BrandingIacInput{
 		Target: &auth0brandingv1alpha1.Auth0Branding{
-			Metadata: &shared.CloudResourceMetadata{Name: "branding"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "branding"},
 			Spec:     spec,
 		},
 	}
@@ -145,7 +145,7 @@ func TestManageBranding(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			if got := initializeLocals(stackInput(tc.spec)).ManageBranding; got != tc.want {
+			if got := initializeLocals(iacInput(tc.spec)).ManageBranding; got != tc.want {
 				t.Errorf("got %v, want %v", got, tc.want)
 			}
 		})

@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	fkv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ var _ = ginkgo.Describe("AwsCloudwatchCompositeAlarmSpec validations", func() {
 		input := &AwsCloudwatchCompositeAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchCompositeAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "shared-cause",
 			},
 			Spec: &AwsCloudwatchCompositeAlarmSpec{
@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("AwsCloudwatchCompositeAlarmSpec validations", func() {
 		input := &AwsCloudwatchCompositeAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchCompositeAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "dependency-aware",
 			},
 			Spec: &AwsCloudwatchCompositeAlarmSpec{
@@ -63,7 +63,7 @@ var _ = ginkgo.Describe("AwsCloudwatchCompositeAlarmSpec validations", func() {
 		input := &AwsCloudwatchCompositeAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchCompositeAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "prod-outage",
 			},
 			Spec: &AwsCloudwatchCompositeAlarmSpec{
@@ -77,7 +77,7 @@ var _ = ginkgo.Describe("AwsCloudwatchCompositeAlarmSpec validations", func() {
 					Alarm: &fkv1.StringValueOrRef{
 						LiteralOrRef: &fkv1.StringValueOrRef_ValueFrom{
 							ValueFrom: &fkv1.ValueFromRef{
-								Kind: cloudresourcekind.CloudResourceKind_AwsCloudwatchAlarm,
+								Kind: catalogkind.CatalogKind_AwsCloudwatchAlarm,
 								Name: "maintenance-window",
 							},
 						},
@@ -95,7 +95,7 @@ var _ = ginkgo.Describe("AwsCloudwatchCompositeAlarmSpec validations", func() {
 		input := &AwsCloudwatchCompositeAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchCompositeAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "silent-composite",
 			},
 			Spec: &AwsCloudwatchCompositeAlarmSpec{
@@ -116,7 +116,7 @@ var _ = ginkgo.Describe("AwsCloudwatchCompositeAlarmSpec validations", func() {
 		input := &AwsCloudwatchCompositeAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchCompositeAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "no-rule",
 			},
 			Spec: &AwsCloudwatchCompositeAlarmSpec{
@@ -131,7 +131,7 @@ var _ = ginkgo.Describe("AwsCloudwatchCompositeAlarmSpec validations", func() {
 		input := &AwsCloudwatchCompositeAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchCompositeAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "no-region",
 			},
 			Spec: &AwsCloudwatchCompositeAlarmSpec{
@@ -154,7 +154,7 @@ var _ = ginkgo.Describe("AwsCloudwatchCompositeAlarmSpec validations", func() {
 		input := &AwsCloudwatchCompositeAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchCompositeAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "too-many-actions",
 			},
 			Spec: &AwsCloudwatchCompositeAlarmSpec{
@@ -179,7 +179,7 @@ var _ = ginkgo.Describe("AwsCloudwatchCompositeAlarmSpec validations", func() {
 		input := &AwsCloudwatchCompositeAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchCompositeAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "too-many-ok-actions",
 			},
 			Spec: &AwsCloudwatchCompositeAlarmSpec{
@@ -204,7 +204,7 @@ var _ = ginkgo.Describe("AwsCloudwatchCompositeAlarmSpec validations", func() {
 		input := &AwsCloudwatchCompositeAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchCompositeAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "too-many-insufficient-actions",
 			},
 			Spec: &AwsCloudwatchCompositeAlarmSpec{
@@ -221,7 +221,7 @@ var _ = ginkgo.Describe("AwsCloudwatchCompositeAlarmSpec validations", func() {
 		input := &AwsCloudwatchCompositeAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchCompositeAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "suppressor-no-alarm",
 			},
 			Spec: &AwsCloudwatchCompositeAlarmSpec{
@@ -241,7 +241,7 @@ var _ = ginkgo.Describe("AwsCloudwatchCompositeAlarmSpec validations", func() {
 		input := &AwsCloudwatchCompositeAlarm{
 			ApiVersion: "wrong.planton.dev/v1",
 			Kind:       "AwsCloudwatchCompositeAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "wrong-api-version",
 			},
 			Spec: &AwsCloudwatchCompositeAlarmSpec{
@@ -257,7 +257,7 @@ var _ = ginkgo.Describe("AwsCloudwatchCompositeAlarmSpec validations", func() {
 		input := &AwsCloudwatchCompositeAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCompositeAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "wrong-kind",
 			},
 			Spec: &AwsCloudwatchCompositeAlarmSpec{
@@ -286,7 +286,7 @@ var _ = ginkgo.Describe("AwsCloudwatchCompositeAlarmSpec validations", func() {
 		input := &AwsCloudwatchCompositeAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchCompositeAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "no-spec",
 			},
 		}

@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePromotionCodeStackInput is the input to the StripePromotionCode IaC module.
+// StripePromotionCodeIacInput is the input to the StripePromotionCode IaC module.
 // It contains the target resource and the Stripe provider configuration.
-type StripePromotionCodeStackInput struct {
+type StripePromotionCodeIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripePromotionCode resource to be deployed.
 	Target *StripePromotionCode `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripePromotionCodeStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripePromotionCodeStackInput) Reset() {
-	*x = StripePromotionCodeStackInput{}
+func (x *StripePromotionCodeIacInput) Reset() {
+	*x = StripePromotionCodeIacInput{}
 	mi := &file_catalog_stripe_stripepromotioncode_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripePromotionCodeStackInput) String() string {
+func (x *StripePromotionCodeIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripePromotionCodeStackInput) ProtoMessage() {}
+func (*StripePromotionCodeIacInput) ProtoMessage() {}
 
-func (x *StripePromotionCodeStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripePromotionCodeIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripepromotioncode_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripePromotionCodeStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripePromotionCodeStackInput.ProtoReflect.Descriptor instead.
-func (*StripePromotionCodeStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripePromotionCodeIacInput.ProtoReflect.Descriptor instead.
+func (*StripePromotionCodeIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripepromotioncode_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripePromotionCodeStackInput) GetTarget() *StripePromotionCode {
+func (x *StripePromotionCodeIacInput) GetTarget() *StripePromotionCode {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripePromotionCodeStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripePromotionCodeIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripepromotioncode_v1alpha1_input_proto protoreflect.Fi
 
 const file_catalog_stripe_stripepromotioncode_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/stripe/stripepromotioncode/v1alpha1/input.proto\x12/dev.planton.stripe.stripepromotioncode.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a5catalog/stripe/stripepromotioncode/v1alpha1/api.proto\"\xd0\x01\n" +
-	"\x1dStripePromotionCodeStackInput\x12\\\n" +
+	"7catalog/stripe/stripepromotioncode/v1alpha1/input.proto\x12/dev.planton.stripe.stripepromotioncode.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a5catalog/stripe/stripepromotioncode/v1alpha1/api.proto\"\xce\x01\n" +
+	"\x1bStripePromotionCodeIacInput\x12\\\n" +
 	"\x06target\x18\x01 \x01(\v2D.dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\x88\x03\n" +
 	"3com.dev.planton.stripe.stripepromotioncode.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripepromotioncode_v1alpha1_input_proto_rawDescGZIP() 
 
 var file_catalog_stripe_stripepromotioncode_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripepromotioncode_v1alpha1_input_proto_goTypes = []any{
-	(*StripePromotionCodeStackInput)(nil), // 0: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeStackInput
-	(*StripePromotionCode)(nil),           // 1: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCode
-	(*stripe.StripeProviderConfig)(nil),   // 2: dev.planton.stripe.StripeProviderConfig
+	(*StripePromotionCodeIacInput)(nil), // 0: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeIacInput
+	(*StripePromotionCode)(nil),         // 1: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCode
+	(*stripe.StripeProviderConfig)(nil), // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripepromotioncode_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeStackInput.target:type_name -> dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCode
-	2, // 1: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeIacInput.target:type_name -> dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCode
+	2, // 1: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

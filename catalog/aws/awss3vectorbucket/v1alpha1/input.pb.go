@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsS3VectorBucketStackInput is the input for the IaC modules that
+// AwsS3VectorBucketIacInput is the input for the IaC modules that
 // manage an S3 vector bucket and its indexes.
-type AwsS3VectorBucketStackInput struct {
+type AwsS3VectorBucketIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsS3VectorBucket resource to deploy.
 	Target *AwsS3VectorBucket `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsS3VectorBucketStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsS3VectorBucketStackInput) Reset() {
-	*x = AwsS3VectorBucketStackInput{}
+func (x *AwsS3VectorBucketIacInput) Reset() {
+	*x = AwsS3VectorBucketIacInput{}
 	mi := &file_catalog_aws_awss3vectorbucket_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsS3VectorBucketStackInput) String() string {
+func (x *AwsS3VectorBucketIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsS3VectorBucketStackInput) ProtoMessage() {}
+func (*AwsS3VectorBucketIacInput) ProtoMessage() {}
 
-func (x *AwsS3VectorBucketStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsS3VectorBucketIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awss3vectorbucket_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsS3VectorBucketStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsS3VectorBucketStackInput.ProtoReflect.Descriptor instead.
-func (*AwsS3VectorBucketStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsS3VectorBucketIacInput.ProtoReflect.Descriptor instead.
+func (*AwsS3VectorBucketIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awss3vectorbucket_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsS3VectorBucketStackInput) GetTarget() *AwsS3VectorBucket {
+func (x *AwsS3VectorBucketIacInput) GetTarget() *AwsS3VectorBucket {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsS3VectorBucketStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsS3VectorBucketIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awss3vectorbucket_v1alpha1_input_proto protoreflect.FileDes
 
 const file_catalog_aws_awss3vectorbucket_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awss3vectorbucket/v1alpha1/input.proto\x12*dev.planton.aws.awss3vectorbucket.v1alpha1\x1a0catalog/aws/awss3vectorbucket/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc1\x01\n" +
-	"\x1bAwsS3VectorBucketStackInput\x12U\n" +
+	"2catalog/aws/awss3vectorbucket/v1alpha1/input.proto\x12*dev.planton.aws.awss3vectorbucket.v1alpha1\x1a0catalog/aws/awss3vectorbucket/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xbf\x01\n" +
+	"\x19AwsS3VectorBucketIacInput\x12U\n" +
 	"\x06target\x18\x01 \x01(\v2=.dev.planton.aws.awss3vectorbucket.v1alpha1.AwsS3VectorBucketR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xe8\x02\n" +
 	".com.dev.planton.aws.awss3vectorbucket.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awss3vectorbucket_v1alpha1_input_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awss3vectorbucket_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awss3vectorbucket_v1alpha1_input_proto_goTypes = []any{
-	(*AwsS3VectorBucketStackInput)(nil), // 0: dev.planton.aws.awss3vectorbucket.v1alpha1.AwsS3VectorBucketStackInput
-	(*AwsS3VectorBucket)(nil),           // 1: dev.planton.aws.awss3vectorbucket.v1alpha1.AwsS3VectorBucket
-	(*aws.AwsProviderConfig)(nil),       // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsS3VectorBucketIacInput)(nil), // 0: dev.planton.aws.awss3vectorbucket.v1alpha1.AwsS3VectorBucketIacInput
+	(*AwsS3VectorBucket)(nil),         // 1: dev.planton.aws.awss3vectorbucket.v1alpha1.AwsS3VectorBucket
+	(*aws.AwsProviderConfig)(nil),     // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awss3vectorbucket_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awss3vectorbucket.v1alpha1.AwsS3VectorBucketStackInput.target:type_name -> dev.planton.aws.awss3vectorbucket.v1alpha1.AwsS3VectorBucket
-	2, // 1: dev.planton.aws.awss3vectorbucket.v1alpha1.AwsS3VectorBucketStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awss3vectorbucket.v1alpha1.AwsS3VectorBucketIacInput.target:type_name -> dev.planton.aws.awss3vectorbucket.v1alpha1.AwsS3VectorBucket
+	2, // 1: dev.planton.aws.awss3vectorbucket.v1alpha1.AwsS3VectorBucketIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

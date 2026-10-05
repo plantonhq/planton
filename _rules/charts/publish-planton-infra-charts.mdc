@@ -6,13 +6,13 @@ alwaysApply: false
 
 # Rule: Publish InfraCharts (action)
 
-Purpose: When invoked, publish all InfraCharts to the Planton platform so they appear in the InfraChart catalog and can be used to create Infra Projects.
+Purpose: When invoked, publish all InfraCharts to the Planton platform so they appear in the InfraChart catalog and can be used to create Infra Stacks.
 
 Usage: Invoke explicitly as `@publish-planton-infra-charts` when charts need to be published to the platform.
 
 ## What Publishing Does
 
-Publishing uploads a chart definition (Chart.yaml, values.yaml, templates) to the Planton platform. Once published, the chart appears in the platform's InfraChart catalog and users can create Infra Projects from it — configured instances of the chart with their own parameter values that trigger Infra Pipelines.
+Publishing uploads a chart definition (Chart.yaml, values.yaml, templates) to the Planton platform. Once published, the chart appears in the platform's InfraChart catalog and users can create Infra Stacks from it — configured instances of the chart with their own parameter values that trigger Infra Pipelines.
 
 Publishing is **idempotent**. Running it again for the same chart updates the existing catalog entry. The command is:
 

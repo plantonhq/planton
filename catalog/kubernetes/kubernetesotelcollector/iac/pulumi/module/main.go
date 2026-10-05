@@ -18,8 +18,8 @@ import (
 //
 // PREREQUISITE: a KubernetesOtelOperator on the cluster (it watches
 // every namespace).
-func Resources(ctx *pulumi.Context, stackInput *kubernetesotelcollectorv1alpha1.KubernetesOtelCollectorStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesotelcollectorv1alpha1.KubernetesOtelCollectorIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// FAIL LOUDLY on names past the operator's naming budget: the
 	// operator derives child names by suffixing
@@ -36,12 +36,12 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesotelcollectorv1alpha1.
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
 
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

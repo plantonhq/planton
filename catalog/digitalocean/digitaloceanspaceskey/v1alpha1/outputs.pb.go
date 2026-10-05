@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanSpacesKeyStackOutputs captures the key outputs after
+// DigitalOceanSpacesKeyOutputs captures the key outputs after
 // provisioning a Spaces access key.
-type DigitalOceanSpacesKeyStackOutputs struct {
+type DigitalOceanSpacesKeyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The access key ID (also the resource's API identity). Pairs with
 	// secret_key as S3-style credentials against the Spaces endpoint.
@@ -38,20 +38,20 @@ type DigitalOceanSpacesKeyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanSpacesKeyStackOutputs) Reset() {
-	*x = DigitalOceanSpacesKeyStackOutputs{}
+func (x *DigitalOceanSpacesKeyOutputs) Reset() {
+	*x = DigitalOceanSpacesKeyOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanSpacesKeyStackOutputs) String() string {
+func (x *DigitalOceanSpacesKeyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanSpacesKeyStackOutputs) ProtoMessage() {}
+func (*DigitalOceanSpacesKeyOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanSpacesKeyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanSpacesKeyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *DigitalOceanSpacesKeyStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanSpacesKeyStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanSpacesKeyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanSpacesKeyOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanSpacesKeyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanSpacesKeyStackOutputs) GetAccessKey() string {
+func (x *DigitalOceanSpacesKeyOutputs) GetAccessKey() string {
 	if x != nil {
 		return x.AccessKey
 	}
 	return ""
 }
 
-func (x *DigitalOceanSpacesKeyStackOutputs) GetSecretKey() string {
+func (x *DigitalOceanSpacesKeyOutputs) GetSecretKey() string {
 	if x != nil {
 		return x.SecretKey
 	}
@@ -86,8 +86,8 @@ var File_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_outputs_proto proto
 
 const file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/digitalocean/digitaloceanspaceskey/v1alpha1/outputs.proto\x127dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1\x1a\x1cshared/options/options.proto\"g\n" +
-	"!DigitalOceanSpacesKeyStackOutputs\x12\x1d\n" +
+	"Acatalog/digitalocean/digitaloceanspaceskey/v1alpha1/outputs.proto\x127dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1\x1a\x1cshared/options/options.proto\"b\n" +
+	"\x1cDigitalOceanSpacesKeyOutputs\x12\x1d\n" +
 	"\n" +
 	"access_key\x18\x01 \x01(\tR\taccessKey\x12#\n" +
 	"\n" +
@@ -108,7 +108,7 @@ func file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_outputs_proto_rawD
 
 var file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanSpacesKeyStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyStackOutputs
+	(*DigitalOceanSpacesKeyOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1.DigitalOceanSpacesKeyOutputs
 }
 var file_catalog_digitalocean_digitaloceanspaceskey_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

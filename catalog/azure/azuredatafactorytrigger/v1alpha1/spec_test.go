@@ -39,7 +39,7 @@ func validResource() *AzureDataFactoryTrigger {
 	return &AzureDataFactoryTrigger{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureDataFactoryTrigger",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-adf-trigger",
 		},
 		Spec: &AzureDataFactoryTriggerSpec{

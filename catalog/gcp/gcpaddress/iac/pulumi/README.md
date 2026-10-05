@@ -29,7 +29,7 @@ iac/pulumi/
     ├── main.go       # Module coordinator
     ├── address.go    # Regional address resource creation
     ├── locals.go     # Local values and labels
-    └── outputs.go    # Stack output constants
+    └── outputs.go    # Output constants
 ```
 
 ## Quick Start
@@ -43,7 +43,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the regional address specification:
+Provide a `iac-input.yaml` with the regional address specification:
 
 ```yaml
 target:
@@ -83,7 +83,7 @@ pulumi stack output region
 
 ## Inputs
 
-The module consumes `GcpAddressStackInput`, which includes:
+The module consumes `GcpAddressIacInput`, which includes:
 
 | Field | Required | Description |
 |-------|----------|-------------|

@@ -31,7 +31,7 @@ func minimalSpec() *AzureFrontDoorOriginGroup {
 	return &AzureFrontDoorOriginGroup{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFrontDoorOriginGroup",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-front-door-origin-group",
 		},
 		Spec: &AzureFrontDoorOriginGroupSpec{

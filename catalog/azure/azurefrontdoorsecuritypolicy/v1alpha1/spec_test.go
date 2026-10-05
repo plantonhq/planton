@@ -36,7 +36,7 @@ func minimalSpec() *AzureFrontDoorSecurityPolicy {
 	return &AzureFrontDoorSecurityPolicy{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFrontDoorSecurityPolicy",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-front-door-security-policy",
 		},
 		Spec: &AzureFrontDoorSecurityPolicySpec{

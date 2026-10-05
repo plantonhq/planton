@@ -4,11 +4,11 @@ package dev.planton.gcp.gcphavpnconnection.v1alpha1;
 
 import "shared/options/options.proto";
 
-// GcpHaVpnConnectionStackOutputs captures the identities of everything the
+// GcpHaVpnConnectionOutputs captures the identities of everything the
 // connection created, and the keys the modules generated. The tunnel lists
 // are index-aligned with spec.tunnels -- the one place a repeated output
 // is right, because the tunnels are the connection's own many.
-message GcpHaVpnConnectionStackOutputs {
+message GcpHaVpnConnectionOutputs {
   // The self links of the tunnels, in spec order.
   repeated string tunnel_self_links = 1;
 

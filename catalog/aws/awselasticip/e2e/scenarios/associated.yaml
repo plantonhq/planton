@@ -20,7 +20,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awselasticip
+    e2e-catalog-kind: awselasticip
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/aws/awselasticip/e2e/fixture-instance.yaml"

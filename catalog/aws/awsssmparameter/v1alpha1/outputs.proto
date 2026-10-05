@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsssmparameter.v1alpha1;
 
-// AwsSsmParameterStackOutputs captures the observable state of the
+// AwsSsmParameterOutputs captures the observable state of the
 // parameter after apply.
-message AwsSsmParameterStackOutputs {
+message AwsSsmParameterOutputs {
   // The parameter's name (also the provider's import ID; ARNs import
   // too).
   string parameter_name = 1;

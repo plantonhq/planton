@@ -31,7 +31,7 @@ type GcpGkeNodePool struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpGkeNodePoolSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpGkeNodePool) GetKind() string {
 	return ""
 }
 
-func (x *GcpGkeNodePool) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpGkeNodePool) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpGkeNodePool) GetStatus() *GcpGkeNodePoolStatus {
 // gcp-gke-node-pool status.
 type GcpGkeNodePoolStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpGkeNodePoolStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpGkeNodePoolOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpGkeNodePoolStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgkenodepool_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpGkeNodePoolStatus) GetOutputs() *GcpGkeNodePoolStackOutputs {
+func (x *GcpGkeNodePoolStatus) GetOutputs() *GcpGkeNodePoolOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpgkenodepool_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eGcpGkeNodePoolR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolStatusR\x06status\"u\n" +
-	"\x14GcpGkeNodePoolStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolStackOutputsR\aoutputsB\xd1\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolStatusR\x06status\"p\n" +
+	"\x14GcpGkeNodePoolStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolOutputsR\aoutputsB\xd1\x02\n" +
 	"+com.dev.planton.gcp.gcpgkenodepool.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/gcp/gcpgkenodepool/v1alpha1;gcpgkenodepoolv1alpha1\xa2\x02\x04DPGG\xaa\x02'Dev.Planton.Gcp.Gcpgkenodepool.V1alpha1\xca\x02'Dev\\Planton\\Gcp\\Gcpgkenodepool\\V1alpha1\xe2\x023Dev\\Planton\\Gcp\\Gcpgkenodepool\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Gcp::Gcpgkenodepool::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_gcp_gcpgkenodepool_v1alpha1_api_proto_msgTypes = make([]protoim
 var file_catalog_gcp_gcpgkenodepool_v1alpha1_api_proto_goTypes = []any{
 	(*GcpGkeNodePool)(nil),               // 0: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePool
 	(*GcpGkeNodePoolStatus)(nil),         // 1: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpGkeNodePoolSpec)(nil),           // 3: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSpec
-	(*GcpGkeNodePoolStackOutputs)(nil),   // 4: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolStackOutputs
+	(*GcpGkeNodePoolOutputs)(nil),        // 4: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolOutputs
 }
 var file_catalog_gcp_gcpgkenodepool_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePool.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePool.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePool.spec:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSpec
 	1, // 2: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePool.status:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolStatus
-	4, // 3: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolStatus.outputs:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolStackOutputs
+	4, // 3: dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolStatus.outputs:type_name -> dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -4,7 +4,7 @@ Deploys one dataset inside an Azure Data Factory -- a named view of data telling
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions exactly one dataset of the shape the spec's variant block declares:
+When you deploy this Infra Component, the IaC module provisions exactly one dataset of the shape the spec's variant block declares:
 
 - **File formats** -- delimited text (CSV), JSON, Parquet, binary, and the flat Azure Blob form, each locating its files through a location block (blob storage, Data Lake Gen2, an HTTP server, or SFTP for binary)
 - **HTTP** -- a file served by an HTTP endpoint, through a web linked service
@@ -70,7 +70,7 @@ spec:
 planton apply -f data-factory-dataset.yaml
 ```
 
-This creates one delimited text dataset named `orders-csv` in the factory, reading `landing/raw/orders/orders.csv` through the blob linked service with Azure's default parse settings (`,` delimiter, `"` quote, `\` escape). A Stack Job tracks the provisioning in real time.
+This creates one delimited text dataset named `orders-csv` in the factory, reading `landing/raw/orders/orders.csv` through the blob linked service with Azure's default parse settings (`,` delimiter, `"` quote, `\` escape). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -110,7 +110,7 @@ These are the most important decisions when configuring a dataset. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -119,9 +119,9 @@ These are the most important decisions when configuring a dataset. Explore the f
 | **AzureDataFactoryLinkedService** (azureSqlTable variant) | `azureSqlTable.linkedServiceId` | `status.outputs.linked_service_id` |
 | **AzureDataFactoryLinkedService** (custom variant) | `custom.linkedService.name` | `status.outputs.linked_service_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -142,8 +142,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Data Factory**](/cloud-catalog/azure-data-factory) -- the factory the dataset lives in, referenced by `dataFactoryId`
-- [**Azure Data Factory Linked Service**](/cloud-catalog/azure-data-factory-linked-service) -- the connection every dataset reads through
-- [**Azure Data Factory Pipeline**](/cloud-catalog/azure-data-factory-pipeline) -- copy and transform activities read from and write to datasets by name
-- [**Azure Data Factory Data Flow**](/cloud-catalog/azure-data-factory-data-flow) -- data flow sources and sinks bind to datasets
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- where blob and Data Lake Gen2 dataset locations physically live
+- [**Azure Data Factory**](/infra-catalog/azure-data-factory) -- the factory the dataset lives in, referenced by `dataFactoryId`
+- [**Azure Data Factory Linked Service**](/infra-catalog/azure-data-factory-linked-service) -- the connection every dataset reads through
+- [**Azure Data Factory Pipeline**](/infra-catalog/azure-data-factory-pipeline) -- copy and transform activities read from and write to datasets by name
+- [**Azure Data Factory Data Flow**](/infra-catalog/azure-data-factory-data-flow) -- data flow sources and sinks bind to datasets
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- where blob and Data Lake Gen2 dataset locations physically live

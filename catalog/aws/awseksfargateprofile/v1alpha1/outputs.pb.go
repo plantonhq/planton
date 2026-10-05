@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEksFargateProfileStackOutputs describes the values returned after
+// AwsEksFargateProfileOutputs describes the values returned after
 // provisioning an EKS Fargate profile.
-type AwsEksFargateProfileStackOutputs struct {
+type AwsEksFargateProfileOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// fargate_profile_arn is the Amazon Resource Name of the profile --
 	// arn:aws:eks:<region>:<account>:fargateprofile/<cluster>/<name>/<uuid>.
@@ -37,20 +37,20 @@ type AwsEksFargateProfileStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsEksFargateProfileStackOutputs) Reset() {
-	*x = AwsEksFargateProfileStackOutputs{}
+func (x *AwsEksFargateProfileOutputs) Reset() {
+	*x = AwsEksFargateProfileOutputs{}
 	mi := &file_catalog_aws_awseksfargateprofile_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEksFargateProfileStackOutputs) String() string {
+func (x *AwsEksFargateProfileOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEksFargateProfileStackOutputs) ProtoMessage() {}
+func (*AwsEksFargateProfileOutputs) ProtoMessage() {}
 
-func (x *AwsEksFargateProfileStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEksFargateProfileOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awseksfargateprofile_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *AwsEksFargateProfileStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEksFargateProfileStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEksFargateProfileStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEksFargateProfileOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEksFargateProfileOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseksfargateprofile_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEksFargateProfileStackOutputs) GetFargateProfileArn() string {
+func (x *AwsEksFargateProfileOutputs) GetFargateProfileArn() string {
 	if x != nil {
 		return x.FargateProfileArn
 	}
 	return ""
 }
 
-func (x *AwsEksFargateProfileStackOutputs) GetFargateProfileName() string {
+func (x *AwsEksFargateProfileOutputs) GetFargateProfileName() string {
 	if x != nil {
 		return x.FargateProfileName
 	}
 	return ""
 }
 
-func (x *AwsEksFargateProfileStackOutputs) GetStatus() string {
+func (x *AwsEksFargateProfileOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
@@ -92,8 +92,8 @@ var File_catalog_aws_awseksfargateprofile_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_aws_awseksfargateprofile_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/aws/awseksfargateprofile/v1alpha1/outputs.proto\x12-dev.planton.aws.awseksfargateprofile.v1alpha1\"\x9c\x01\n" +
-	" AwsEksFargateProfileStackOutputs\x12.\n" +
+	"7catalog/aws/awseksfargateprofile/v1alpha1/outputs.proto\x12-dev.planton.aws.awseksfargateprofile.v1alpha1\"\x97\x01\n" +
+	"\x1bAwsEksFargateProfileOutputs\x12.\n" +
 	"\x13fargate_profile_arn\x18\x01 \x01(\tR\x11fargateProfileArn\x120\n" +
 	"\x14fargate_profile_name\x18\x02 \x01(\tR\x12fargateProfileName\x12\x16\n" +
 	"\x06status\x18\x03 \x01(\tR\x06statusB\xff\x02\n" +
@@ -113,7 +113,7 @@ func file_catalog_aws_awseksfargateprofile_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_aws_awseksfargateprofile_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awseksfargateprofile_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEksFargateProfileStackOutputs)(nil), // 0: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileStackOutputs
+	(*AwsEksFargateProfileOutputs)(nil), // 0: dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileOutputs
 }
 var file_catalog_aws_awseksfargateprofile_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureCognitiveAccountProjectStackInput is the input to the IaC
+// AzureCognitiveAccountProjectIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-type AzureCognitiveAccountProjectStackInput struct {
+type AzureCognitiveAccountProjectIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AI Foundry project resource to deploy.
 	Target *AzureCognitiveAccountProject `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureCognitiveAccountProjectStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureCognitiveAccountProjectStackInput) Reset() {
-	*x = AzureCognitiveAccountProjectStackInput{}
+func (x *AzureCognitiveAccountProjectIacInput) Reset() {
+	*x = AzureCognitiveAccountProjectIacInput{}
 	mi := &file_catalog_azure_azurecognitiveaccountproject_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureCognitiveAccountProjectStackInput) String() string {
+func (x *AzureCognitiveAccountProjectIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureCognitiveAccountProjectStackInput) ProtoMessage() {}
+func (*AzureCognitiveAccountProjectIacInput) ProtoMessage() {}
 
-func (x *AzureCognitiveAccountProjectStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureCognitiveAccountProjectIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecognitiveaccountproject_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureCognitiveAccountProjectStackInput) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureCognitiveAccountProjectStackInput.ProtoReflect.Descriptor instead.
-func (*AzureCognitiveAccountProjectStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureCognitiveAccountProjectIacInput.ProtoReflect.Descriptor instead.
+func (*AzureCognitiveAccountProjectIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecognitiveaccountproject_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureCognitiveAccountProjectStackInput) GetTarget() *AzureCognitiveAccountProject {
+func (x *AzureCognitiveAccountProjectIacInput) GetTarget() *AzureCognitiveAccountProject {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureCognitiveAccountProjectStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureCognitiveAccountProjectIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurecognitiveaccountproject_v1alpha1_input_proto protore
 
 const file_catalog_azure_azurecognitiveaccountproject_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azurecognitiveaccountproject/v1alpha1/input.proto\x127dev.planton.azure.azurecognitiveaccountproject.v1alpha1\x1a=catalog/azure/azurecognitiveaccountproject/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe8\x01\n" +
-	"&AzureCognitiveAccountProjectStackInput\x12m\n" +
+	"?catalog/azure/azurecognitiveaccountproject/v1alpha1/input.proto\x127dev.planton.azure.azurecognitiveaccountproject.v1alpha1\x1a=catalog/azure/azurecognitiveaccountproject/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe6\x01\n" +
+	"$AzureCognitiveAccountProjectIacInput\x12m\n" +
 	"\x06target\x18\x01 \x01(\v2U.dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xc1\x03\n" +
 	";com.dev.planton.azure.azurecognitiveaccountproject.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azurecognitiveaccountproject_v1alpha1_input_proto_rawDes
 
 var file_catalog_azure_azurecognitiveaccountproject_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecognitiveaccountproject_v1alpha1_input_proto_goTypes = []any{
-	(*AzureCognitiveAccountProjectStackInput)(nil), // 0: dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectStackInput
-	(*AzureCognitiveAccountProject)(nil),           // 1: dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProject
-	(*azure.AzureProviderConfig)(nil),              // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureCognitiveAccountProjectIacInput)(nil), // 0: dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectIacInput
+	(*AzureCognitiveAccountProject)(nil),         // 1: dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProject
+	(*azure.AzureProviderConfig)(nil),            // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurecognitiveaccountproject_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectStackInput.target:type_name -> dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProject
-	2, // 1: dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectIacInput.target:type_name -> dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProject
+	2, // 1: dev.planton.azure.azurecognitiveaccountproject.v1alpha1.AzureCognitiveAccountProjectIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

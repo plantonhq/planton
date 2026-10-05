@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpIamCustomRoleStackInput struct {
+type GcpIamCustomRoleIacInput struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Target         *GcpIamCustomRole      `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpIamCustomRoleStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpIamCustomRoleStackInput) Reset() {
-	*x = GcpIamCustomRoleStackInput{}
+func (x *GcpIamCustomRoleIacInput) Reset() {
+	*x = GcpIamCustomRoleIacInput{}
 	mi := &file_catalog_gcp_gcpiamcustomrole_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpIamCustomRoleStackInput) String() string {
+func (x *GcpIamCustomRoleIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpIamCustomRoleStackInput) ProtoMessage() {}
+func (*GcpIamCustomRoleIacInput) ProtoMessage() {}
 
-func (x *GcpIamCustomRoleStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpIamCustomRoleIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpiamcustomrole_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpIamCustomRoleStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpIamCustomRoleStackInput.ProtoReflect.Descriptor instead.
-func (*GcpIamCustomRoleStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpIamCustomRoleIacInput.ProtoReflect.Descriptor instead.
+func (*GcpIamCustomRoleIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpiamcustomrole_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpIamCustomRoleStackInput) GetTarget() *GcpIamCustomRole {
+func (x *GcpIamCustomRoleIacInput) GetTarget() *GcpIamCustomRole {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpIamCustomRoleStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpIamCustomRoleIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpiamcustomrole_v1alpha1_input_proto protoreflect.FileDesc
 
 const file_catalog_gcp_gcpiamcustomrole_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/gcp/gcpiamcustomrole/v1alpha1/input.proto\x12)dev.planton.gcp.gcpiamcustomrole.v1alpha1\x1a/catalog/gcp/gcpiamcustomrole/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xbe\x01\n" +
-	"\x1aGcpIamCustomRoleStackInput\x12S\n" +
+	"1catalog/gcp/gcpiamcustomrole/v1alpha1/input.proto\x12)dev.planton.gcp.gcpiamcustomrole.v1alpha1\x1a/catalog/gcp/gcpiamcustomrole/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xbc\x01\n" +
+	"\x18GcpIamCustomRoleIacInput\x12S\n" +
 	"\x06target\x18\x01 \x01(\v2;.dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xe1\x02\n" +
 	"-com.dev.planton.gcp.gcpiamcustomrole.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpiamcustomrole_v1alpha1_input_proto_rawDescGZIP() []byte
 
 var file_catalog_gcp_gcpiamcustomrole_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpiamcustomrole_v1alpha1_input_proto_goTypes = []any{
-	(*GcpIamCustomRoleStackInput)(nil), // 0: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleStackInput
-	(*GcpIamCustomRole)(nil),           // 1: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRole
-	(*gcp.GcpProviderConfig)(nil),      // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpIamCustomRoleIacInput)(nil), // 0: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleIacInput
+	(*GcpIamCustomRole)(nil),         // 1: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRole
+	(*gcp.GcpProviderConfig)(nil),    // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpiamcustomrole_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleStackInput.target:type_name -> dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRole
-	2, // 1: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleIacInput.target:type_name -> dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRole
+	2, // 1: dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

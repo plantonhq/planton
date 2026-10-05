@@ -31,7 +31,7 @@ type GcpDeployTarget struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpDeployTargetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpDeployTarget) GetKind() string {
 	return ""
 }
 
-func (x *GcpDeployTarget) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpDeployTarget) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpDeployTarget) GetStatus() *GcpDeployTargetStatus {
 // gcp-deploy-target status
 type GcpDeployTargetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpDeployTargetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpDeployTargetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpDeployTargetStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdeploytarget_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpDeployTargetStatus) GetOutputs() *GcpDeployTargetStackOutputs {
+func (x *GcpDeployTargetStatus) GetOutputs() *GcpDeployTargetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpdeploytarget_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fGcpDeployTargetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Y\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Y\n" +
 	"\x04spec\x18\x04 \x01(\v2=.dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12W\n" +
-	"\x06status\x18\x05 \x01(\v2?.dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetStatusR\x06status\"x\n" +
-	"\x15GcpDeployTargetStatus\x12_\n" +
-	"\aoutputs\x18\x01 \x01(\v2E.dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetStackOutputsR\aoutputsB\xd8\x02\n" +
+	"\x06status\x18\x05 \x01(\v2?.dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetStatusR\x06status\"s\n" +
+	"\x15GcpDeployTargetStatus\x12Z\n" +
+	"\aoutputs\x18\x01 \x01(\v2@.dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetOutputsR\aoutputsB\xd8\x02\n" +
 	",com.dev.planton.gcp.gcpdeploytarget.v1alpha1B\bApiProtoP\x01ZYgithub.com/plantonhq/planton/catalog/gcp/gcpdeploytarget/v1alpha1;gcpdeploytargetv1alpha1\xa2\x02\x04DPGG\xaa\x02(Dev.Planton.Gcp.Gcpdeploytarget.V1alpha1\xca\x02(Dev\\Planton\\Gcp\\Gcpdeploytarget\\V1alpha1\xe2\x024Dev\\Planton\\Gcp\\Gcpdeploytarget\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Gcp::Gcpdeploytarget::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_gcp_gcpdeploytarget_v1alpha1_api_proto_msgTypes = make([]protoi
 var file_catalog_gcp_gcpdeploytarget_v1alpha1_api_proto_goTypes = []any{
 	(*GcpDeployTarget)(nil),              // 0: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTarget
 	(*GcpDeployTargetStatus)(nil),        // 1: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpDeployTargetSpec)(nil),          // 3: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetSpec
-	(*GcpDeployTargetStackOutputs)(nil),  // 4: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetStackOutputs
+	(*GcpDeployTargetOutputs)(nil),       // 4: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetOutputs
 }
 var file_catalog_gcp_gcpdeploytarget_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTarget.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTarget.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTarget.spec:type_name -> dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetSpec
 	1, // 2: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTarget.status:type_name -> dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetStatus
-	4, // 3: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetStatus.outputs:type_name -> dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetStackOutputs
+	4, // 3: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetStatus.outputs:type_name -> dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

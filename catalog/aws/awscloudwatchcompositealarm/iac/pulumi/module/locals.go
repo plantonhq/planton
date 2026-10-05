@@ -5,7 +5,7 @@ import (
 
 	awscloudwatchcompositealarmv1alpha1 "github.com/plantonhq/planton/catalog/aws/awscloudwatchcompositealarm/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -16,16 +16,16 @@ type Locals struct {
 	AwsTags                     map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *awscloudwatchcompositealarmv1alpha1.AwsCloudwatchCompositeAlarmStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awscloudwatchcompositealarmv1alpha1.AwsCloudwatchCompositeAlarmIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsCloudwatchCompositeAlarm = stackInput.Target
+	locals.AwsCloudwatchCompositeAlarm = iacInput.Target
 
 	locals.AwsTags = map[string]string{
 		awstagkeys.Name:         locals.AwsCloudwatchCompositeAlarm.Metadata.Name,
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsCloudwatchCompositeAlarm.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsCloudwatchCompositeAlarm.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsCloudwatchCompositeAlarm.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsCloudwatchCompositeAlarm.String(),
 		awstagkeys.ResourceId:   locals.AwsCloudwatchCompositeAlarm.Metadata.Id,
 	}
 

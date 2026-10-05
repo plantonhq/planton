@@ -33,17 +33,17 @@ import (
 // Deliberately NO gateway release: istiod implements the Kubernetes Gateway
 // API, so north-south gateways are composed from KubernetesGateway resources
 // (gateway_class_name: istio) and istiod provisions their deployments itself.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesistiov1alpha1.KubernetesIstioStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesistiov1alpha1.KubernetesIstioIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

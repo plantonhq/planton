@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesPlantonOperatorStackOutputs by
+# Outputs — flattened onto KubernetesPlantonOperatorOutputs by
 # the platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

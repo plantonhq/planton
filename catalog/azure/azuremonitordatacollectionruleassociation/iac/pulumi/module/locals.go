@@ -19,11 +19,11 @@ type Locals struct {
 // The association carries NO tags argument on the provider (ARM
 // extension resources are untagged), so this module derives no tag map.
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremonitordatacollectionruleassociationv1alpha1.AzureMonitorDataCollectionRuleAssociationStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremonitordatacollectionruleassociationv1alpha1.AzureMonitorDataCollectionRuleAssociationIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMonitorDataCollectionRuleAssociation = stackInput.Target
-	target := stackInput.Target
+	locals.AzureMonitorDataCollectionRuleAssociation = iacInput.Target
+	target := iacInput.Target
 
 	locals.TargetResourceId = target.Spec.TargetResourceId.GetValue()
 	locals.DataCollectionRuleId = target.Spec.DataCollectionRuleId.GetValue()

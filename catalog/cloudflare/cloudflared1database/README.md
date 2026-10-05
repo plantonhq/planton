@@ -6,7 +6,7 @@ Provision and manage Cloudflare D1 databases using Planton's unified API.
 
 Cloudflare D1 is a serverless SQLite database built for edge compute. Unlike traditional connection-based databases, D1 integrates seamlessly with Cloudflare Workers through bindings, offering a genuinely serverless experience with pay-per-query pricing and no idle costs.
 
-This component provides a clean, protobuf-defined API for provisioning D1 databases, following the **80/20 principle**: exposing only the essential configuration fields that 80% of users need while keeping the API simple.
+This kind provides a clean, protobuf-defined API for provisioning D1 databases, following the **80/20 principle**: exposing only the essential configuration fields that 80% of users need while keeping the API simple.
 
 ## Key Features
 
@@ -114,11 +114,10 @@ After deployment, the following outputs are available:
 A Worker reaches D1 through its `d1` binding (referencing `database_id`); there is
 no connection string.
 
-Access outputs:
+Read the outputs from the deployed resource; they are under `status.outputs` (`databaseId`, `databaseName`, `version`):
 
 ```bash
-planton output database_id
-planton output database_name
+planton get CloudflareD1Database my-dev-db -o yaml
 ```
 
 ## Schema Management
@@ -211,7 +210,7 @@ spec:
 5. **Version Control Configs**: Store database manifests in git alongside application code
 6. **Use Wrangler for Schema**: Manage schema via Wrangler migrations, not at the database resource level
 
-## What This Component Does NOT Include
+## What This Kind Does NOT Include
 
 Following the 80/20 principle, these fields are **intentionally excluded**:
 
@@ -269,7 +268,7 @@ For in-depth architectural guidance, deployment methods comparison, and producti
 
 ## Terraform and Pulumi
 
-This component supports both Pulumi (default) and Terraform:
+This kind supports both Pulumi (default) and Terraform:
 
 - **Pulumi**: `iac/pulumi/` - Go-based implementation
 - **Terraform**: `iac/tf/` - HCL-based implementation
@@ -284,7 +283,7 @@ Both produce identical infrastructure. Choose based on your team's preference.
 
 ## License
 
-This component is part of Planton and follows the same license.
+This kind is part of Planton and follows the same license.
 
 
 ---

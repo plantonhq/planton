@@ -34,7 +34,7 @@ type AzureMonitorMetricAlert struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureMonitorMetricAlertSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureMonitorMetricAlert) GetKind() string {
 	return ""
 }
 
-func (x *AzureMonitorMetricAlert) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureMonitorMetricAlert) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureMonitorMetricAlert) GetStatus() *AzureMonitorMetricAlertStatus {
 // AzureMonitorMetricAlertStatus holds the deployment status and outputs.
 type AzureMonitorMetricAlertStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureMonitorMetricAlertStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureMonitorMetricAlertOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureMonitorMetricAlertStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremonitormetricalert_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureMonitorMetricAlertStatus) GetOutputs() *AzureMonitorMetricAlertStackOutputs {
+func (x *AzureMonitorMetricAlertStatus) GetOutputs() *AzureMonitorMetricAlertOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azuremonitormetricalert_v1alpha1_api_proto_rawDesc = ""
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17AzureMonitorMetricAlertR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
 	"\x04spec\x18\x04 \x01(\v2O.dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12i\n" +
-	"\x06status\x18\x05 \x01(\v2Q.dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertStatusR\x06status\"\x92\x01\n" +
-	"\x1dAzureMonitorMetricAlertStatus\x12q\n" +
-	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertStackOutputsR\aoutputsB\x9c\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Q.dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertStatusR\x06status\"\x8d\x01\n" +
+	"\x1dAzureMonitorMetricAlertStatus\x12l\n" +
+	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertOutputsR\aoutputsB\x9c\x03\n" +
 	"6com.dev.planton.azure.azuremonitormetricalert.v1alpha1B\bApiProtoP\x01Zkgithub.com/plantonhq/planton/catalog/azure/azuremonitormetricalert/v1alpha1;azuremonitormetricalertv1alpha1\xa2\x02\x04DPAA\xaa\x022Dev.Planton.Azure.Azuremonitormetricalert.V1alpha1\xca\x022Dev\\Planton\\Azure\\Azuremonitormetricalert\\V1alpha1\xe2\x02>Dev\\Planton\\Azure\\Azuremonitormetricalert\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Azure::Azuremonitormetricalert::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azuremonitormetricalert_v1alpha1_api_proto_rawDescGZIP()
 
 var file_catalog_azure_azuremonitormetricalert_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremonitormetricalert_v1alpha1_api_proto_goTypes = []any{
-	(*AzureMonitorMetricAlert)(nil),             // 0: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlert
-	(*AzureMonitorMetricAlertStatus)(nil),       // 1: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureMonitorMetricAlertSpec)(nil),         // 3: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertSpec
-	(*AzureMonitorMetricAlertStackOutputs)(nil), // 4: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertStackOutputs
+	(*AzureMonitorMetricAlert)(nil),        // 0: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlert
+	(*AzureMonitorMetricAlertStatus)(nil),  // 1: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureMonitorMetricAlertSpec)(nil),    // 3: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertSpec
+	(*AzureMonitorMetricAlertOutputs)(nil), // 4: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertOutputs
 }
 var file_catalog_azure_azuremonitormetricalert_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlert.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlert.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlert.spec:type_name -> dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertSpec
 	1, // 2: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlert.status:type_name -> dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertStatus
-	4, // 3: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertStatus.outputs:type_name -> dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertStackOutputs
+	4, // 3: dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertStatus.outputs:type_name -> dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -34,10 +34,10 @@ type AzureApplicationInsightsStandardWebTest struct {
 	// Resource kind. Must be "AzureApplicationInsightsStandardWebTest".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Standard web test specification.
 	Spec *AzureApplicationInsightsStandardWebTestSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureApplicationInsightsStandardWebTestStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -87,7 +87,7 @@ func (x *AzureApplicationInsightsStandardWebTest) GetKind() string {
 	return ""
 }
 
-func (x *AzureApplicationInsightsStandardWebTest) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureApplicationInsightsStandardWebTest) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureApplicationInsightsStandardWebTest) GetStatus() *AzureApplicationI
 // AzureApplicationInsightsStandardWebTestStatus holds the deployment outputs.
 type AzureApplicationInsightsStandardWebTestStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureApplicationInsightsStandardWebTestStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureApplicationInsightsStandardWebTestOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureApplicationInsightsStandardWebTestStatus) Descriptor() ([]byte, []in
 	return file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureApplicationInsightsStandardWebTestStatus) GetOutputs() *AzureApplicationInsightsStandardWebTestStackOutputs {
+func (x *AzureApplicationInsightsStandardWebTestStatus) GetOutputs() *AzureApplicationInsightsStandardWebTestOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_api_pr
 	"apiVersion\x12B\n" +
 	"\x04kind\x18\x02 \x01(\tB.\xbaH+r)\n" +
 	"'AzureApplicationInsightsStandardWebTestR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8b\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8b\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2o.dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x89\x01\n" +
-	"\x06status\x18\x05 \x01(\v2q.dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestStatusR\x06status\"\xc3\x01\n" +
-	"-AzureApplicationInsightsStandardWebTestStatus\x12\x91\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2w.dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestStackOutputsR\aoutputsB\x8d\x04\n" +
+	"\x06status\x18\x05 \x01(\v2q.dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestStatusR\x06status\"\xbe\x01\n" +
+	"-AzureApplicationInsightsStandardWebTestStatus\x12\x8c\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2r.dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestOutputsR\aoutputsB\x8d\x04\n" +
 	"Fcom.dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1B\bApiProtoP\x01Z\x8b\x01github.com/plantonhq/planton/catalog/azure/azureapplicationinsightsstandardwebtest/v1alpha1;azureapplicationinsightsstandardwebtestv1alpha1\xa2\x02\x04DPAA\xaa\x02BDev.Planton.Azure.Azureapplicationinsightsstandardwebtest.V1alpha1\xca\x02BDev\\Planton\\Azure\\Azureapplicationinsightsstandardwebtest\\V1alpha1\xe2\x02NDev\\Planton\\Azure\\Azureapplicationinsightsstandardwebtest\\V1alpha1\\GPBMetadata\xea\x02FDev::Planton::Azure::Azureapplicationinsightsstandardwebtest::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_api_pro
 
 var file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_api_proto_goTypes = []any{
-	(*AzureApplicationInsightsStandardWebTest)(nil),             // 0: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTest
-	(*AzureApplicationInsightsStandardWebTestStatus)(nil),       // 1: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestStatus
-	(*shared.CloudResourceMetadata)(nil),                        // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureApplicationInsightsStandardWebTestSpec)(nil),         // 3: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestSpec
-	(*AzureApplicationInsightsStandardWebTestStackOutputs)(nil), // 4: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestStackOutputs
+	(*AzureApplicationInsightsStandardWebTest)(nil),        // 0: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTest
+	(*AzureApplicationInsightsStandardWebTestStatus)(nil),  // 1: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestStatus
+	(*shared.CatalogObjectMetadata)(nil),                   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureApplicationInsightsStandardWebTestSpec)(nil),    // 3: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestSpec
+	(*AzureApplicationInsightsStandardWebTestOutputs)(nil), // 4: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestOutputs
 }
 var file_catalog_azure_azureapplicationinsightsstandardwebtest_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTest.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTest.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTest.spec:type_name -> dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestSpec
 	1, // 2: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTest.status:type_name -> dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestStatus
-	4, // 3: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestStatus.outputs:type_name -> dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestStackOutputs
+	4, // 3: dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestStatus.outputs:type_name -> dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1.AzureApplicationInsightsStandardWebTestOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

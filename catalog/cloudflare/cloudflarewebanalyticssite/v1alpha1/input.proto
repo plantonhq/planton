@@ -5,10 +5,10 @@ package dev.planton.cloudflare.cloudflarewebanalyticssite.v1alpha1;
 import "catalog/cloudflare/cloudflarewebanalyticssite/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-// CloudflareWebAnalyticsSiteStackInput is the input to the IaC module. It
+// CloudflareWebAnalyticsSiteIacInput is the input to the IaC module. It
 // contains the target resource and provider configuration.
-message CloudflareWebAnalyticsSiteStackInput {
-  // target cloud-resource to be deployed
+message CloudflareWebAnalyticsSiteIacInput {
+  // the catalog object to deploy to be deployed
   CloudflareWebAnalyticsSite target = 1;
   // provider-config for Cloudflare authentication
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

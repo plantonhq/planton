@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesOpenSearchOperatorStackOutputs
+# Outputs — flattened onto KubernetesOpenSearchOperatorOutputs
 # by the platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

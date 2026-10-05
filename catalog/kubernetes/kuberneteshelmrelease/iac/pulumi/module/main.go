@@ -34,18 +34,18 @@ import (
 // templates stay Helm's, refused unless the chart keeps them itself or
 // crds.allow_helm_managed accepts them. A chart without CRDs (most charts)
 // is ordinary: nothing is applied.
-func Resources(ctx *pulumi.Context, stackInput *kuberneteshelmreleasev1alpha1.KubernetesHelmReleaseStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kuberneteshelmreleasev1alpha1.KubernetesHelmReleaseIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Create kubernetes provider from the credential in the stack-input
+	// Create kubernetes provider from the credential in the iac-input
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}
@@ -90,7 +90,7 @@ func Resources(ctx *pulumi.Context, stackInput *kuberneteshelmreleasev1alpha1.Ku
 		Namespace:       locals.Namespace,
 		Install:         crds == nil || crds.Install == nil || crds.GetInstall(),
 		KeepOnUninstall: crds == nil || crds.KeepOnUninstall == nil || crds.GetKeepOnUninstall(),
-		ProviderConfig:  stackInput.ProviderConfig,
+		ProviderConfig:  iacInput.ProviderConfig,
 		ProviderName:    "kubernetes-crd-upsert",
 	})
 	if err != nil {

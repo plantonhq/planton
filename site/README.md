@@ -61,7 +61,6 @@ The site is data first. Every sentence that states what Planton is or does lives
 | `src/data/doors.ts` | Every call to action once: label and destination by key; the user's pair and the buyer's pair. | the `Doors` primitive; a record names its pair |
 | `src/data/page-shapes.ts` | The shapes the page records share: a proof point, a record or commands artifact, a step; and the one footer vocabulary every illustrated record uses (`illustratedFooter`). | `trust.ts`, `product.ts`, `distributions.ts`, `compare.ts` |
 | `src/data/site-pages.ts` | The route registry: every non-content page with its title, description, group, chapters, and index flag; and the heading each group gets in `llms.txt` (`PAGE_GROUP_HEADINGS`), so a new group cannot be forgotten by the index. | `sitemap.ts`, `robots.ts`, `lib/page-metadata.ts`, `generate-llms.mjs`, `check-apex-routing.mjs` |
-| `src/data/retired-routes.ts` | Every retired path and the page that answers for it. | `RetiredRoute`, the link gate, the edge redirect declared in the estate |
 | `src/data/pricing.ts` | Every price, cap, and free tier. | the pricing page and any sentence that names a price |
 | `src/data/platform-stats.ts` | The counts a page prints, with how each was counted. | the proof strip, `llms.txt` |
 | `src/data/testimonials.ts` | Customer quotes, verbatim, attributed, with approval on record; `testimonial(name)` throws on a name not on record. | the proof section, the persona pages and decks |
@@ -80,10 +79,9 @@ Decks run on one engine, `src/components/deck/` (hash navigation, keyboard, touc
 2. **Public sentences are verified.** No dollar-savings figure. No component called compliant (a component enforces controls). No analogy for the umbrella; each hub has exactly one. Testimonials verbatim and attributed to a person. Competitors described, never named. Nothing unshipped presented as live; illustrated records say they are illustrations and mark example figures `est.`.
 3. **Numbers come from `platform-stats.ts` and prices from `pricing.ts`.** A literal in prose is a defect.
 4. **Colors come from the palette.** Role classes only; no hex in a component; semantic hues only where they carry meaning.
-5. **Every page is registered.** A new route goes into `site-pages.ts` (or `retired-routes.ts`) or the build fails.
-6. **Every new top-level path is three declarations**: the registry, the router's website list (`site_roots` in planton-platform's `infrastructure/desktop/Infra.foundation.InfraProject.foundation-apex-router.yaml`, applied before the page merges), and the platform's reserved handles. The apex guard names what is missing.
-7. **A retired route is whole.** Every retired path has an eight-line stub, forwards to a live registered page (never to another retired path), and nothing in the export links to it: the forward exists for the outside world, our own links point at the live page. The link gate enforces all three.
-8. **Nothing merges without the founder.** Build, lint, typecheck, the guards, the screenshot compare for a zero-visual-change commit, and a design review that reads the page as the visitor and as a copywriter.
+5. **Every page is registered.** A new route goes into `site-pages.ts` or the build fails; a removed page leaves the registry with it, and the site's 404 answers its address.
+6. **Every new top-level path is three declarations**: the registry, the router's website list (`site_roots` in planton-platform's `infrastructure/desktop/Infra.foundation.InfraStack.foundation-apex-router.yaml`, applied before the page merges), and the platform's reserved handles. The apex guard names what is missing.
+7. **Nothing merges without the founder.** Build, lint, typecheck, the guards, the screenshot compare for a zero-visual-change commit, and a design review that reads the page as the visitor and as a copywriter.
 
 ## Where things live
 
@@ -103,7 +101,6 @@ src/components/distributions/ the Distributions template and index
 src/components/deck/     the deck engine, bindSlide, the palette-native slide frame, and the meeting decks' older slide kit
 src/components/meetings/ meeting decks and their registry
 src/components/decks/    the persona decks: six generic slides and the registry that binds each persona's record to them
-src/components/site/     site mechanics (RetiredRoute)
 src/data/                every claim, price, count, route
 src/lib/                 page-metadata, content-routes, assets, console-handoff
 scripts/                 the guards and generators (below)
@@ -119,7 +116,7 @@ packages/website-shell/  the header, footer, navigation, palette, and theme the 
 | `scripts/check-displayed-vs-enforced.mjs` | every displayed plan limit and entitlement matches what the platform enforces |
 | `scripts/check-apex-routing.mjs` | every top-level path is in the router's website list and reserved as a platform handle (reads the sibling `planton-platform` checkout; skips loudly without it) |
 | `next build` with `tsc --noEmit` and `eslint --max-warnings 0` before it | types hold, and the accessibility, image, and no-`any` rules hold everywhere with zero warnings |
-| `scripts/check-internal-links.mjs` | every internal link in `out/` resolves to a page or a static file, and every retired route is whole (stub present, target live, nothing links to it) |
+| `scripts/check-internal-links.mjs` | every internal link in `out/` resolves to a page or a static file, |
 | `scripts/generate-llms.mjs` | `llms.txt`, `llms-full.txt`, and one Markdown per marketing page from the same data; fails when an exported route is unregistered |
 
 ## Proving a change
@@ -150,7 +147,6 @@ What a day-one architect would not have done, and which work retires it. The bui
 | The meeting decks' slide kit types its own colors and gradients (`deck/primitives.tsx`, `meets/meets.css`) | `components/deck/primitives.tsx`, `app/(standalone)/meets/meets.css` | the meeting decks' convergence onto `SlideFrame` and the marketing primitives, the way the persona decks already compose them |
 | Images under `public/_site/` instead of the asset CDN; 87 literal `/_site/` paths, in the rollback landings (`v3`, `v4`), the investor pages, the meeting decks, and the content pages | `public/_site/images`, `src/**` | v3 and v4 with their deletion; invest and the meeting decks with their convergence slices; the content pages with the docs follow-up; the Open Graph posters and the logo stay under the prefix `lib/assets.ts` names once |
 | The `/_site` asset prefix and the post-build copy of the bundle | `next.config.ts`, `Makefile` | the apex routing decision |
-| Retired paths served by a client-side forward only | `RetiredRoute` | the founder's Cloudflare ruleset change, from the route list printed from `retired-routes.ts` and the registry |
 | MUI's styles ship in `@layer mui` and Tailwind v3's preflight ships unlayered, and an unlayered rule beats a layered one, so every border MUI declares (`sx` borders, `Divider`, outlined `Paper`) computes to zero on this site; the shell draws its edges with inline styles for that reason, and the footer's dividers and pricing's outlined panels are lost | `src/app/globals.css`, `src/providers/theme.tsx`, every MUI border on the site | Tailwind v4, whose border utilities carry their own style and whose layers order `theme, base, mui, components, utilities`; lowering the v3 preflight below MUI was tried and breaks every Tailwind border on a MUI button and every `all: unset` heading, so it is not the fix |
 | The Windows install step that warns about SmartScreen is rendered as prose under the button it concerns; the download data's install-step shape has no warning kind | `src/data/desktop-download.ts`, `components/desktop/DownloadHero.tsx` | a `kind: 'warning'` on the step and a callout in the card, one small slice |
 

@@ -11,12 +11,12 @@ import (
 // arm), its data sources, the arm's satellites (types, functions,
 // resolvers, cache, channel namespaces), API keys, the custom domain,
 // and MERGED source-API associations, and exports outputs.
-func Resources(ctx *pulumi.Context, stackInput *awsappsyncapiv1alpha1.AwsAppSyncApiStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsappsyncapiv1alpha1.AwsAppSyncApiIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

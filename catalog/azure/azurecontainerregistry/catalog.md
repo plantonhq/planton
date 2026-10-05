@@ -4,7 +4,7 @@ Deploys an Azure Container Registry (ACR): the managed, private OCI registry tha
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Container Registry** -- an Azure Container Registry in the specified region and resource group, with the chosen SKU tier, access posture (admin account, anonymous pull, public network access, export policy), and trusted-services bypass
 - **Geo-Replications** -- created only on the Premium SKU when `georeplications` entries are configured; each replica serves pulls locally in its region, with per-replica zone redundancy, an explicit global-endpoint-routing choice, and its own tags
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the Container Registry will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the Container Registry will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **A globally unique registry name** (5-50 characters, lowercase letters and numbers only -- no hyphens, no uppercase). The name becomes the login server hostname: `{name}.azurecr.io`. Renaming replaces the registry and its images do not migrate.
 - **For CMK encryption** (Premium): an AzureUserAssignedIdentity holding get/wrapKey/unwrapKey on the key's vault, and an AzureKeyVaultKey -- both must exist before the registry.
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f container-registry.yaml
 ```
 
-This creates a Standard-tier Container Registry with the admin account disabled and no geo-replication; authentication is handled via Microsoft Entra (service principals, managed identities, repo-scoped tokens). A Stack Job tracks the provisioning in real time.
+This creates a Standard-tier Container Registry with the admin account disabled and no geo-replication; authentication is handled via Microsoft Entra (service principals, managed identities, repo-scoped tokens). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,7 +89,7 @@ These are the most important decisions when configuring a Container Registry. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -98,9 +98,9 @@ These are the most important decisions when configuring a Container Registry. Ex
 | **AzureUserAssignedIdentity** | `encryption.identityClientId` | `status.outputs.client_id` |
 | **AzureKeyVaultKey** | `encryption.keyVaultKeyId` | `status.outputs.versionless_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,8 +124,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the Container Registry is created
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- attached to the registry and unwraps the CMK encryption key
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the customer-managed encryption key (reference its versionless ID so rotation propagates)
-- [**Azure AKS Cluster**](/cloud-catalog/azure-aks-cluster) -- attaches to the registry by referencing `container_registry_id` for AcrPull image access
-- [**Azure Private Endpoint**](/cloud-catalog/azure-private-endpoint) -- private connectivity for a registry with public network access disabled
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the Container Registry is created
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- attached to the registry and unwraps the CMK encryption key
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the customer-managed encryption key (reference its versionless ID so rotation propagates)
+- [**Azure AKS Cluster**](/infra-catalog/azure-aks-cluster) -- attaches to the registry by referencing `container_registry_id` for AcrPull image access
+- [**Azure Private Endpoint**](/infra-catalog/azure-private-endpoint) -- private connectivity for a registry with public network access disabled

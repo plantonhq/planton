@@ -53,7 +53,7 @@ export const POSITIONING = {
     whatItAdds: [
       'A typed catalog, not memory: schema lookups and validation run offline, so a wrong field fails before it touches your cloud.',
       'Verified before created: the monthly cost with its coverage stated, and the least-privilege permission policy derived from what is composed.',
-      'A record, not a transcript: every deploy is a stack job with a live log and a revision history; state sits under a path you can list.',
+      'A record, not a transcript: every deploy is an Infra Job with a live log and a revision history; state sits under a path you can list.',
       'Secrets the agent never reads: encrypted locally, key in your OS keychain, resolved on the runner at the moment of use.',
       'Push-to-deploy from your laptop: it watches GitHub, builds in a pod, deploys to your cloud, and writes the status back.',
       'What you built becomes a template: an Infra Chart redeploys into the next environment; agent commands do not compose.',

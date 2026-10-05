@@ -30,12 +30,12 @@ var domainControlValidationWireValues = map[string]string{
 //   - Azure attaches the issued certificate to the matching
 //     AzureContainerAppCustomDomain binding asynchronously -- the binding
 //     deploys certificate-less first, then Azure fills it in.
-func Resources(ctx *pulumi.Context, stackInput *azurecontainerappenvironmentmanagedcertificatev1alpha1.AzureContainerAppEnvironmentManagedCertificateStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurecontainerappenvironmentmanagedcertificatev1alpha1.AzureContainerAppEnvironmentManagedCertificateIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -50,7 +50,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerappenvironmentmana
 	}
 
 	// Unspecified deploys HTTP -- Azure's own default; sending it
-	// explicitly keeps both engines identical on stack-input paths.
+	// explicitly keeps both engines identical on iac-input paths.
 	if wire, ok := domainControlValidationWireValues[spec.DomainControlValidation.String()]; ok {
 		certificateArgs.DomainControlValidation = pulumi.String(wire)
 	} else {

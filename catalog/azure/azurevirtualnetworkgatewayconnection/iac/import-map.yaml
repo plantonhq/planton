@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurevirtualnetworkgatewayconnection
 spec:
@@ -8,7 +8,7 @@ spec:
   values:
     - name: connection_id
       derivations:
-        - from_stack_output: connection_id
+        - from_output: connection_id
       where_to_find: >-
         Portal -> the virtual network gateway -> Connections -> the
         connection -> Properties -> Resource ID, or `az network

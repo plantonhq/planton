@@ -8,7 +8,7 @@
 # (the resource-manager path) while the Pulumi module passes the account
 # NAME parsed from the same ARM id -- pulumi-azure v6 has not yet bridged
 # the table's storage_account_id input (verified at v6.38, the latest v6).
-# The created table is identical and all stack outputs match byte-for-byte
+# The created table is identical and all outputs match byte-for-byte
 # (both engines export the same resource_manager_id); only the provider's
 # internal addressing differs. Re-align the Pulumi module when a bridge
 # release carries storageAccountId on storage.Table.

@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awssnstopic.v1alpha1;
 
-// AwsSnsTopicStackOutputs captures observable identifiers from a provisioned SNS topic.
+// AwsSnsTopicOutputs captures observable identifiers from a provisioned SNS topic.
 // These outputs are used by downstream resources (e.g., AwsSnsSubscription topic
 // references, EventBridge targets, CloudWatch alarm actions) to wire dependencies
 // via StringValueOrRef.
-message AwsSnsTopicStackOutputs {
+message AwsSnsTopicOutputs {
   // The Amazon Resource Name (ARN) of the SNS topic. This is the primary
   // identifier used for IAM policies, cross-service permissions, subscription
   // wiring (AwsSnsSubscription.topic_arn), and as a target reference in other

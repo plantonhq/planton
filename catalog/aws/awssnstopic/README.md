@@ -16,7 +16,7 @@ The **AwsSnsTopic** resource provides a standardized way to provision and manage
 - **delivery_feedback**: Per-protocol (application/firehose/http/lambda/sqs) delivery-status logging with success/failure IAM roles and a success sample rate.
 - **tracing_config / signature_version**: X-Ray tracing and SHA1/SHA256 message signing.
 
-## Stack outputs
+## Outputs
 
 - **topic_arn**: Topic ARN — the reference target for `AwsSnsSubscription.topic_arn`, EventBridge targets, and CloudWatch alarm actions.
 - **topic_name**: Topic name (with `.fifo` suffix for FIFO topics).

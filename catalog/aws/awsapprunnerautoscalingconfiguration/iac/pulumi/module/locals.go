@@ -5,7 +5,7 @@ import (
 
 	awsapprunnerautoscalingconfigurationv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsapprunnerautoscalingconfiguration/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -16,16 +16,16 @@ type Locals struct {
 	AwsTags                              map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *awsapprunnerautoscalingconfigurationv1alpha1.AwsAppRunnerAutoScalingConfigurationStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awsapprunnerautoscalingconfigurationv1alpha1.AwsAppRunnerAutoScalingConfigurationIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsAppRunnerAutoScalingConfiguration = stackInput.Target
+	locals.AwsAppRunnerAutoScalingConfiguration = iacInput.Target
 
 	locals.AwsTags = map[string]string{
 		awstagkeys.Name:         locals.AwsAppRunnerAutoScalingConfiguration.Metadata.Name,
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsAppRunnerAutoScalingConfiguration.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsAppRunnerAutoScalingConfiguration.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsAppRunnerAutoScalingConfiguration.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsAppRunnerAutoScalingConfiguration.String(),
 		awstagkeys.ResourceId:   locals.AwsAppRunnerAutoScalingConfiguration.Metadata.Id,
 	}
 

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurevpngatewayconnection
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: connection_id
       derivations:
-        - from_stack_output: connection_id
+        - from_output: connection_id
       where_to_find: >-
         Compose from the gateway's Resource ID plus
         /vpnConnections/<name>, or `az network vpn-gateway connection

@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEcsTaskDefinitionStackOutputs captures the observable outputs of a
+// AwsEcsTaskDefinitionOutputs captures the observable outputs of a
 // registered task definition revision, for ECS services and scheduled tasks
 // to reference.
-type AwsEcsTaskDefinitionStackOutputs struct {
+type AwsEcsTaskDefinitionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The full ARN of the registered revision, including the revision number
 	// (e.g. "arn:aws:ecs:us-west-2:123456789012:task-definition/api:7"). The
@@ -55,20 +55,20 @@ type AwsEcsTaskDefinitionStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsEcsTaskDefinitionStackOutputs) Reset() {
-	*x = AwsEcsTaskDefinitionStackOutputs{}
+func (x *AwsEcsTaskDefinitionOutputs) Reset() {
+	*x = AwsEcsTaskDefinitionOutputs{}
 	mi := &file_catalog_aws_awsecstaskdefinition_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEcsTaskDefinitionStackOutputs) String() string {
+func (x *AwsEcsTaskDefinitionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEcsTaskDefinitionStackOutputs) ProtoMessage() {}
+func (*AwsEcsTaskDefinitionOutputs) ProtoMessage() {}
 
-func (x *AwsEcsTaskDefinitionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEcsTaskDefinitionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsecstaskdefinition_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -80,47 +80,47 @@ func (x *AwsEcsTaskDefinitionStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEcsTaskDefinitionStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEcsTaskDefinitionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEcsTaskDefinitionOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEcsTaskDefinitionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsecstaskdefinition_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEcsTaskDefinitionStackOutputs) GetTaskDefinitionArn() string {
+func (x *AwsEcsTaskDefinitionOutputs) GetTaskDefinitionArn() string {
 	if x != nil {
 		return x.TaskDefinitionArn
 	}
 	return ""
 }
 
-func (x *AwsEcsTaskDefinitionStackOutputs) GetArnWithoutRevision() string {
+func (x *AwsEcsTaskDefinitionOutputs) GetArnWithoutRevision() string {
 	if x != nil {
 		return x.ArnWithoutRevision
 	}
 	return ""
 }
 
-func (x *AwsEcsTaskDefinitionStackOutputs) GetFamily() string {
+func (x *AwsEcsTaskDefinitionOutputs) GetFamily() string {
 	if x != nil {
 		return x.Family
 	}
 	return ""
 }
 
-func (x *AwsEcsTaskDefinitionStackOutputs) GetRevision() int64 {
+func (x *AwsEcsTaskDefinitionOutputs) GetRevision() int64 {
 	if x != nil {
 		return x.Revision
 	}
 	return 0
 }
 
-func (x *AwsEcsTaskDefinitionStackOutputs) GetLogGroupName() string {
+func (x *AwsEcsTaskDefinitionOutputs) GetLogGroupName() string {
 	if x != nil {
 		return x.LogGroupName
 	}
 	return ""
 }
 
-func (x *AwsEcsTaskDefinitionStackOutputs) GetLogGroupArn() string {
+func (x *AwsEcsTaskDefinitionOutputs) GetLogGroupArn() string {
 	if x != nil {
 		return x.LogGroupArn
 	}
@@ -131,8 +131,8 @@ var File_catalog_aws_awsecstaskdefinition_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_aws_awsecstaskdefinition_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/aws/awsecstaskdefinition/v1alpha1/outputs.proto\x12-dev.planton.aws.awsecstaskdefinition.v1alpha1\"\x82\x02\n" +
-	" AwsEcsTaskDefinitionStackOutputs\x12.\n" +
+	"7catalog/aws/awsecstaskdefinition/v1alpha1/outputs.proto\x12-dev.planton.aws.awsecstaskdefinition.v1alpha1\"\xfd\x01\n" +
+	"\x1bAwsEcsTaskDefinitionOutputs\x12.\n" +
 	"\x13task_definition_arn\x18\x01 \x01(\tR\x11taskDefinitionArn\x120\n" +
 	"\x14arn_without_revision\x18\x02 \x01(\tR\x12arnWithoutRevision\x12\x16\n" +
 	"\x06family\x18\x03 \x01(\tR\x06family\x12\x1a\n" +
@@ -155,7 +155,7 @@ func file_catalog_aws_awsecstaskdefinition_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_aws_awsecstaskdefinition_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsecstaskdefinition_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEcsTaskDefinitionStackOutputs)(nil), // 0: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionStackOutputs
+	(*AwsEcsTaskDefinitionOutputs)(nil), // 0: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionOutputs
 }
 var file_catalog_aws_awsecstaskdefinition_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

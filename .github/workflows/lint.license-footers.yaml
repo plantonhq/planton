@@ -1,18 +1,18 @@
 # =============================================================================
 # License Footer Guard
 # =============================================================================
-# Fails the PR if any component README (catalog/<provider>/<component>/
+# Fails the PR if any kind README (catalog/<provider>/<kind>/
 # README.md), infra chart README (charts/<provider>/<name>/README.md), or helm
 # chart README (helm/<chart>/README.md) does not end with the canonical
 # license footer:
 #
 #   © Planton. Licensed under [Apache-2.0](<absolute URL to LICENSE>).
 #
-# The realistic unit of copying for this catalog is one component directory,
+# The realistic unit of copying for this catalog is one kind directory,
 # and the repo-root LICENSE does not travel with a copied directory -- the
-# component's README does. The footer is the attribution that travels; its
+# kind's README does. The footer is the attribution that travels; its
 # link is an absolute URL so the pointer survives copies, zips, and forks.
-# Components are forged continuously, so the invariant lives in CI, not in
+# Kinds are forged continuously, so the invariant lives in CI, not in
 # anyone's memory. See hack/guards/ensure_license_footers.sh for the contract.
 # =============================================================================
 

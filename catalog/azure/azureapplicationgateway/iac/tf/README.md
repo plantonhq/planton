@@ -1,7 +1,7 @@
 # AzureApplicationGateway - Terraform Module
 
-Terraform implementation for the AzureApplicationGateway deployment
-component.
+Terraform implementation for the AzureApplicationGateway
+kind.
 
 ## Resources Created
 

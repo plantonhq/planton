@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsAppRunnerServiceStackOutputs captures the observable identifiers of a
+// AwsAppRunnerServiceOutputs captures the observable identifiers of a
 // deployed App Runner service -- the join keys downstream resources and
 // operators reference, plus the DNS material custom domains need.
-type AwsAppRunnerServiceStackOutputs struct {
+type AwsAppRunnerServiceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The full ARN of the App Runner service (e.g. "arn:aws:apprunner:
 	// us-west-2:123456789012:service/my-api/abc123"). The handle IAM
@@ -57,20 +57,20 @@ type AwsAppRunnerServiceStackOutputs struct {
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *AwsAppRunnerServiceStackOutputs) Reset() {
-	*x = AwsAppRunnerServiceStackOutputs{}
+func (x *AwsAppRunnerServiceOutputs) Reset() {
+	*x = AwsAppRunnerServiceOutputs{}
 	mi := &file_catalog_aws_awsapprunnerservice_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsAppRunnerServiceStackOutputs) String() string {
+func (x *AwsAppRunnerServiceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsAppRunnerServiceStackOutputs) ProtoMessage() {}
+func (*AwsAppRunnerServiceOutputs) ProtoMessage() {}
 
-func (x *AwsAppRunnerServiceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsAppRunnerServiceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsapprunnerservice_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,54 +82,54 @@ func (x *AwsAppRunnerServiceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsAppRunnerServiceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsAppRunnerServiceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsAppRunnerServiceOutputs.ProtoReflect.Descriptor instead.
+func (*AwsAppRunnerServiceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsapprunnerservice_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsAppRunnerServiceStackOutputs) GetServiceArn() string {
+func (x *AwsAppRunnerServiceOutputs) GetServiceArn() string {
 	if x != nil {
 		return x.ServiceArn
 	}
 	return ""
 }
 
-func (x *AwsAppRunnerServiceStackOutputs) GetServiceId() string {
+func (x *AwsAppRunnerServiceOutputs) GetServiceId() string {
 	if x != nil {
 		return x.ServiceId
 	}
 	return ""
 }
 
-func (x *AwsAppRunnerServiceStackOutputs) GetServiceUrl() string {
+func (x *AwsAppRunnerServiceOutputs) GetServiceUrl() string {
 	if x != nil {
 		return x.ServiceUrl
 	}
 	return ""
 }
 
-func (x *AwsAppRunnerServiceStackOutputs) GetServiceName() string {
+func (x *AwsAppRunnerServiceOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *AwsAppRunnerServiceStackOutputs) GetServiceStatus() string {
+func (x *AwsAppRunnerServiceOutputs) GetServiceStatus() string {
 	if x != nil {
 		return x.ServiceStatus
 	}
 	return ""
 }
 
-func (x *AwsAppRunnerServiceStackOutputs) GetCustomDomains() []*AwsAppRunnerServiceCustomDomainOutput {
+func (x *AwsAppRunnerServiceOutputs) GetCustomDomains() []*AwsAppRunnerServiceCustomDomainOutput {
 	if x != nil {
 		return x.CustomDomains
 	}
 	return nil
 }
 
-func (x *AwsAppRunnerServiceStackOutputs) GetVpcIngressConnections() []*AwsAppRunnerServiceVpcIngressConnectionOutput {
+func (x *AwsAppRunnerServiceOutputs) GetVpcIngressConnections() []*AwsAppRunnerServiceVpcIngressConnectionOutput {
 	if x != nil {
 		return x.VpcIngressConnections
 	}
@@ -362,8 +362,8 @@ var File_catalog_aws_awsapprunnerservice_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_aws_awsapprunnerservice_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awsapprunnerservice/v1alpha1/outputs.proto\x12,dev.planton.aws.awsapprunnerservice.v1alpha1\"\xde\x03\n" +
-	"\x1fAwsAppRunnerServiceStackOutputs\x12\x1f\n" +
+	"6catalog/aws/awsapprunnerservice/v1alpha1/outputs.proto\x12,dev.planton.aws.awsapprunnerservice.v1alpha1\"\xd9\x03\n" +
+	"\x1aAwsAppRunnerServiceOutputs\x12\x1f\n" +
 	"\vservice_arn\x18\x01 \x01(\tR\n" +
 	"serviceArn\x12\x1d\n" +
 	"\n" +
@@ -409,14 +409,14 @@ func file_catalog_aws_awsapprunnerservice_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsapprunnerservice_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_catalog_aws_awsapprunnerservice_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsAppRunnerServiceStackOutputs)(nil),                // 0: dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceStackOutputs
+	(*AwsAppRunnerServiceOutputs)(nil),                     // 0: dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceOutputs
 	(*AwsAppRunnerServiceVpcIngressConnectionOutput)(nil),  // 1: dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceVpcIngressConnectionOutput
 	(*AwsAppRunnerServiceCustomDomainOutput)(nil),          // 2: dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceCustomDomainOutput
 	(*AwsAppRunnerServiceCertificateValidationRecord)(nil), // 3: dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceCertificateValidationRecord
 }
 var file_catalog_aws_awsapprunnerservice_v1alpha1_outputs_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceStackOutputs.custom_domains:type_name -> dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceCustomDomainOutput
-	1, // 1: dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceStackOutputs.vpc_ingress_connections:type_name -> dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceVpcIngressConnectionOutput
+	2, // 0: dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceOutputs.custom_domains:type_name -> dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceCustomDomainOutput
+	1, // 1: dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceOutputs.vpc_ingress_connections:type_name -> dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceVpcIngressConnectionOutput
 	3, // 2: dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceCustomDomainOutput.certificate_validation_records:type_name -> dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceCertificateValidationRecord
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type

@@ -22,7 +22,7 @@ message AzureEventgridSystemTopic {
   string kind = 2 [(buf.validate.field).string.const = 'AzureEventgridSystemTopic'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   AzureEventgridSystemTopicSpec spec = 4 [(buf.validate.field).required = true];
@@ -34,7 +34,7 @@ message AzureEventgridSystemTopic {
 // AzureEventgridSystemTopicStatus represents the status of an Azure
 // Event Grid system topic deployment.
 message AzureEventgridSystemTopicStatus {
-  //stack-outputs
-  //  azure-eventgrid-system-topic stack-outputs
-  AzureEventgridSystemTopicStackOutputs outputs = 1;
+  //outputs
+  //  azure-eventgrid-system-topic outputs
+  AzureEventgridSystemTopicOutputs outputs = 1;
 }

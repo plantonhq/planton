@@ -10,7 +10,7 @@ spec:
   # ingestion pipeline and the retrieval service both cross service
   # boundaries — unauthenticated is a dev-only posture. The key lives
   # in the chart-owned <name>-apikey Secret (key `api-key`), exported
-  # in the stack outputs.
+  # in the outputs.
   api_key:
     generate: true
   # Sized for a typical RAG corpus: Qdrant keeps hot segments and

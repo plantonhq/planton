@@ -1,5 +1,5 @@
 # AzurePrivateDnsResolver install profile used as a prerequisite by
-# dependent components (declared via prerequisites:
+# dependent kinds (declared via prerequisites:
 # [AzurePrivateDnsResolver] in the kind registry -- the forwarding
 # ruleset is the consumer). The harness deploys this document after its
 # own prerequisite chain (fixture resource group -> fixture network ->
@@ -21,7 +21,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureprivatednsresolver
+    e2e-catalog-kind: azureprivatednsresolver
   annotations:
     planton.dev/e2e: "true"
   tags:

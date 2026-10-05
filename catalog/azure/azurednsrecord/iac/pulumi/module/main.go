@@ -34,12 +34,12 @@ var caaTagWireValues = map[string]string{
 // sync with the referenced resource -- no drift window when a Public IP's
 // address changes, and a way to point the zone APEX at an Azure resource
 // where DNS itself forbids CNAME.
-func Resources(ctx *pulumi.Context, stackInput *azurednsrecordv1alpha1.AzureDnsRecordStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurednsrecordv1alpha1.AzureDnsRecordIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -48,14 +48,14 @@ func Resources(ctx *pulumi.Context, stackInput *azurednsrecordv1alpha1.AzureDnsR
 
 	// The platform materializes the proto default (300) before the module
 	// runs; the presence guard is a same-value safety net for direct
-	// stack-input paths, never a different fallback.
+	// iac-input paths, never a different fallback.
 	ttl := 300
 	if spec.TtlSeconds != nil {
 		ttl = int(*spec.TtlSeconds)
 	}
 
 	// Exactly one record resource materializes; both its ARM id and its
-	// fqdn flatten onto the same stack outputs regardless of type.
+	// fqdn flatten onto the same outputs regardless of type.
 	var recordId pulumi.StringOutput
 	var fqdn pulumi.StringOutput
 

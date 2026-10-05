@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added AzureLoadBalancer as a new deployment component in Planton, providing Layer 4 (TCP/UDP) load balancing for Azure workloads. The component bundles the load balancer with backend pools, health probes, and load balancing rules. This is R09 in the Azure resource expansion project (10th of 24 Azure resources).
+Added AzureLoadBalancer as a new catalog kind in Planton, providing Layer 4 (TCP/UDP) load balancing for Azure workloads. The kind bundles the load balancer with backend pools, health probes, and load balancing rules. This is R09 in the Azure resource expansion project (10th of 24 Azure resources).
 
 ## Problem Statement / Motivation
 
-The Azure resource expansion project aims to grow Azure coverage from 10 to 33 cloud resource kinds. AzureLoadBalancer is a core networking resource required by the enterprise-network-foundation infra chart and serves as the Layer 4 traffic distribution mechanism for production Azure deployments.
+The Azure resource expansion project aims to grow Azure coverage from 10 to 33 catalog kinds. AzureLoadBalancer is a core networking resource required by the enterprise-network-foundation Infra Chart and serves as the Layer 4 traffic distribution mechanism for production Azure deployments.
 
 ### Pain Points
 
@@ -20,9 +20,9 @@ The Azure resource expansion project aims to grow Azure coverage from 10 to 33 c
 
 ## Solution / What's New
 
-### Complete Deployment Component
+### Complete Catalog Kind
 
-The AzureLoadBalancer component follows the forge pattern with full proto API, dual IaC (Pulumi + Terraform), comprehensive documentation, and 28 validation tests.
+The AzureLoadBalancer kind follows the forge pattern with full proto API, dual IaC (Pulumi + Terraform), comprehensive documentation, and 28 validation tests.
 
 ```mermaid
 flowchart TB
@@ -55,16 +55,16 @@ Eight corrections were applied during deep provider research:
 ### Proto API (4 proto files + tests)
 
 - `spec.proto` -- AzureLoadBalancerSpec with 3 sub-messages (AzureBackendPool, AzureHealthProbe, AzureLoadBalancingRule)
-- `stack_outputs.proto` -- 5 outputs (lb_id, lb_name, frontend_ip_address, frontend_ip_configuration_id, backend_pool_id)
+- `outputs.proto` -- 5 outputs (lb_id, lb_name, frontend_ip_address, frontend_ip_configuration_id, backend_pool_id)
 - `api.proto` -- KRM wiring with api_version `azure.planton.dev/v1`
-- `stack_input.proto` -- IaC module input
+- `iac_input.proto` -- IaC module input
 - `spec_test.go` -- 28 validation tests (8 valid + 20 invalid scenarios)
 
 ### Pulumi Module (azure classic v6)
 
 ```mermaid
 flowchart LR
-    si[StackInput] --> locals[initializeLocals]
+    si[IacInput] --> locals[initializeLocals]
     locals --> res[Resources]
     res --> lbr[lb.LoadBalancer]
     res --> bap[lb.BackendAddressPool]
@@ -99,16 +99,16 @@ flowchart LR
 ## Benefits
 
 - **Enterprise-ready**: Standard SKU with zone redundancy, HA ports, floating IP
-- **Infra chart composable**: All cross-resource references use StringValueOrRef
+- **Infra Chart composable**: All cross-resource references use StringValueOrRef
 - **Dual IaC**: Pulumi and Terraform with full feature parity
 - **Well-tested**: 28 validation tests covering all constraint boundaries
-- **Production docs**: 7 YAML examples covering minimal, internal, multi-pool, SQL AlwaysOn, and infra chart patterns
+- **Production docs**: 7 YAML examples covering minimal, internal, multi-pool, SQL AlwaysOn, and Infra Chart patterns
 
 ## Impact
 
 - **New capability**: Layer 4 load balancing for Azure in Planton
-- **Enum registration**: `AzureLoadBalancer = 417` in cloud_resource_kind.proto
-- **Infra chart enablement**: Unlocks enterprise-network-foundation chart component
+- **Enum registration**: `AzureLoadBalancer = 417` in catalog_kind.proto
+- **Infra Chart enablement**: Unlocks enterprise-network-foundation chart component
 - **Files created**: ~30 files across proto, Go, HCL, YAML, and Markdown
 
 ## Related Work
@@ -117,7 +117,7 @@ flowchart LR
 - **R05 AzureSubnet** -- Provides subnet for internal LBs
 - **R06 AzureNetworkSecurityGroup** -- Established bundled sub-resource pattern
 - **R10 AzureApplicationGateway** -- Next in queue (Layer 7 complement)
-- **Enterprise-network-foundation infra chart** -- T03, will compose LB + AppGW + NSG + PublicIP
+- **Enterprise-network-foundation Infra Chart** -- T03, will compose LB + AppGW + NSG + PublicIP
 
 ---
 

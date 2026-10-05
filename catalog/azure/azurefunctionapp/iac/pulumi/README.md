@@ -1,12 +1,12 @@
 # AzureFunctionApp Pulumi Module
 
-This directory contains the Pulumi IaC implementation for the `AzureFunctionApp` component.
+This directory contains the Pulumi IaC implementation for the `AzureFunctionApp` kind.
 
 ## Structure
 
 ```
 pulumi/
-├── main.go          # Entrypoint (loads stack input, calls module)
+├── main.go          # Entrypoint (loads IaC input, calls module)
 ├── Pulumi.yaml      # Pulumi project configuration
 ├── Makefile         # Build/test targets
 ├── debug.sh         # Debug build script

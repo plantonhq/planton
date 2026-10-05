@@ -4,7 +4,7 @@ Gets a customer-managed encryption key from Cloud KMS Autokey for a resource you
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `cloudkms.googleapis.com` on the handle's project
 - **Key handle** -- one `kms.KeyHandle`, and through it the Autokey key
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with permission to create key handles in the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with permission to create key handles in the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -44,7 +44,7 @@ spec:
 planton apply -f kms-key-handle.yaml
 ```
 
-This returns a key the orders bucket can use for CMEK. A Stack Job tracks the provisioning in real time.
+This returns a key the orders bucket can use for CMEK. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -62,15 +62,15 @@ These are the most important decisions when configuring a key handle. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -87,7 +87,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP KMS Autokey Config**](/cloud-catalog/gcp-kms-autokey-config) -- turns Autokey on
-- [**GCP Cloud Storage Bucket**](/cloud-catalog/gcp-gcs-bucket) -- a common consumer of the key
-- [**GCP BigQuery Dataset**](/cloud-catalog/gcp-bigquery-dataset) -- a dataset's default key
-- [**GCP Compute Disk**](/cloud-catalog/gcp-compute-disk) -- a disk's key
+- [**GCP KMS Autokey Config**](/infra-catalog/gcp-kms-autokey-config) -- turns Autokey on
+- [**GCP Cloud Storage Bucket**](/infra-catalog/gcp-gcs-bucket) -- a common consumer of the key
+- [**GCP BigQuery Dataset**](/infra-catalog/gcp-bigquery-dataset) -- a dataset's default key
+- [**GCP Compute Disk**](/infra-catalog/gcp-compute-disk) -- a disk's key

@@ -15,7 +15,7 @@ planton tofu apply --manifest ../../e2e/manifest.yaml --auto-approve
 planton tofu destroy --manifest ../../e2e/manifest.yaml --auto-approve
 ```
 
-Credentials are passed via the stack input through the CLI, not in `spec`.
+Credentials are passed via the IaC input through the CLI, not in `spec`.
 
 ## Files
 
@@ -33,7 +33,7 @@ Credentials are passed via the stack input through the CLI, not in `spec`.
 - `endpoint_access.tf` — managed VPC endpoints from `spec.endpoint_accesses`
 - `endpoint_authorization.tf` — grantor-side cross-account access grants
 - `snapshot_schedule.tf` — the singular snapshot-schedule association
-- `outputs.tf` — outputs matching `AwsRedshiftClusterStackOutputs`
+- `outputs.tf` — outputs matching `AwsRedshiftClusterOutputs`
 
 ## Conditional Resources
 

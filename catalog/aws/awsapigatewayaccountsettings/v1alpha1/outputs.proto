@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsapigatewayaccountsettings.v1alpha1;
 
-// AwsApiGatewayAccountSettingsStackOutputs captures the observable
+// AwsApiGatewayAccountSettingsOutputs captures the observable
 // state of the region's API Gateway account object after apply.
-message AwsApiGatewayAccountSettingsStackOutputs {
+message AwsApiGatewayAccountSettingsOutputs {
   // The 12-digit AWS account ID the settings belong to (also the
   // provider's import ID for this singleton).
   string account_id = 1;

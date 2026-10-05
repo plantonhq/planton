@@ -7,15 +7,15 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Resources applies the tenant settings from the stack input to the tenant the
+// Resources applies the tenant settings from the IaC input to the tenant the
 // provider's credential belongs to.
-func Resources(ctx *pulumi.Context, stackInput *auth0tenantsettingsv1alpha1.Auth0TenantSettingsStackInput) error {
-	locals := initializeLocals(stackInput)
+func Resources(ctx *pulumi.Context, iacInput *auth0tenantsettingsv1alpha1.Auth0TenantSettingsIacInput) error {
+	locals := initializeLocals(iacInput)
 
 	// Setup Auth0 provider with credentials from provider config.
 	var provider *auth0.Provider
 	var err error
-	providerConfig := stackInput.ProviderConfig
+	providerConfig := iacInput.ProviderConfig
 
 	if providerConfig == nil {
 		// Use default provider (assumes credentials from environment variables).

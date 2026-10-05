@@ -4,7 +4,7 @@ Deploys an AWS Cloud Map namespace — the service-discovery registry ECS servic
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloud Map Namespace** — exactly one of the three provider resources per `type` (HTTP, private DNS, or public DNS), named after `metadata.name`. DNS namespaces also get a Route 53 hosted zone created by Cloud Map itself — private zones associated to `vpcId`, public zones live on the internet
 - **Cloud Map Services** — one per `services` entry, keyed by name: the DNS records instances publish (A/AAAA/SRV/CNAME with TTL, multivalue or weighted routing), Route 53 health checks (public namespaces only), or the custom-health marker
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Cloud Map (`servicediscovery`) permissions, plus Route 53 permissions when the namespace type creates a hosted zone. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Cloud Map (`servicediscovery`) permissions, plus Route 53 permissions when the namespace type creates a hosted zone. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -70,7 +70,7 @@ spec:
 planton apply -f cloud-map-namespace.yaml
 ```
 
-This creates the `corp.internal` private zone in the app VPC with an `api` service for runtime platforms to register into and a `db` service resolving to the database endpoint by CNAME. A Stack Job tracks the provisioning in real time.
+This creates the `corp.internal` private zone in the app VPC with an `api` service for runtime platforms to register into and a `db` service resolving to the database endpoint by CNAME. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -116,7 +116,7 @@ These are the most important decisions when configuring a Cloud Map namespace. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -124,9 +124,9 @@ These are the most important decisions when configuring a Cloud Map namespace. E
 | **AwsAlb** | `services[].instances[].aliasDnsName` | `status.outputs.load_balancer_dns_name` |
 | **AwsEc2Instance** | `services[].instances[].ec2InstanceId` | `status.outputs.instance_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -147,7 +147,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) — where a private namespace's zone is visible, wired via `vpcId`
-- [**AWS ECS Service**](/cloud-catalog/aws-ecs-service) — registers its tasks into a service here via the `service_arns` output
-- [**AWS ALB**](/cloud-catalog/aws-alb) — the load balancer an alias registration points at, wired via `aliasDnsName`
-- [**AWS EC2 Instance**](/cloud-catalog/aws-ec2-instance) — registered by id via `ec2InstanceId`; AWS derives the address
+- [**AWS VPC**](/infra-catalog/aws-vpc) — where a private namespace's zone is visible, wired via `vpcId`
+- [**AWS ECS Service**](/infra-catalog/aws-ecs-service) — registers its tasks into a service here via the `service_arns` output
+- [**AWS ALB**](/infra-catalog/aws-alb) — the load balancer an alias registration points at, wired via `aliasDnsName`
+- [**AWS EC2 Instance**](/infra-catalog/aws-ec2-instance) — registered by id via `ec2InstanceId`; AWS derives the address

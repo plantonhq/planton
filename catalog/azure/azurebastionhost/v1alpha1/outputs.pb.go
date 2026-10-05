@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureBastionHostStackOutputs** captures the outputs of
+// **AzureBastionHostOutputs** captures the outputs of
 // provisioning a Bastion host.
-type AzureBastionHostStackOutputs struct {
+type AzureBastionHostOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The host's ARM resource ID
 	// (.../providers/Microsoft.Network/bastionHosts/{name}).
@@ -41,20 +41,20 @@ type AzureBastionHostStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureBastionHostStackOutputs) Reset() {
-	*x = AzureBastionHostStackOutputs{}
+func (x *AzureBastionHostOutputs) Reset() {
+	*x = AzureBastionHostOutputs{}
 	mi := &file_catalog_azure_azurebastionhost_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureBastionHostStackOutputs) String() string {
+func (x *AzureBastionHostOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureBastionHostStackOutputs) ProtoMessage() {}
+func (*AzureBastionHostOutputs) ProtoMessage() {}
 
-func (x *AzureBastionHostStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureBastionHostOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurebastionhost_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,33 +66,33 @@ func (x *AzureBastionHostStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureBastionHostStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureBastionHostStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureBastionHostOutputs.ProtoReflect.Descriptor instead.
+func (*AzureBastionHostOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurebastionhost_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureBastionHostStackOutputs) GetBastionHostId() string {
+func (x *AzureBastionHostOutputs) GetBastionHostId() string {
 	if x != nil {
 		return x.BastionHostId
 	}
 	return ""
 }
 
-func (x *AzureBastionHostStackOutputs) GetBastionHostName() string {
+func (x *AzureBastionHostOutputs) GetBastionHostName() string {
 	if x != nil {
 		return x.BastionHostName
 	}
 	return ""
 }
 
-func (x *AzureBastionHostStackOutputs) GetDnsName() string {
+func (x *AzureBastionHostOutputs) GetDnsName() string {
 	if x != nil {
 		return x.DnsName
 	}
 	return ""
 }
 
-func (x *AzureBastionHostStackOutputs) GetPrivateOnlyEnabled() bool {
+func (x *AzureBastionHostOutputs) GetPrivateOnlyEnabled() bool {
 	if x != nil {
 		return x.PrivateOnlyEnabled
 	}
@@ -103,8 +103,8 @@ var File_catalog_azure_azurebastionhost_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_azure_azurebastionhost_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/azure/azurebastionhost/v1alpha1/outputs.proto\x12+dev.planton.azure.azurebastionhost.v1alpha1\"\xbf\x01\n" +
-	"\x1cAzureBastionHostStackOutputs\x12&\n" +
+	"5catalog/azure/azurebastionhost/v1alpha1/outputs.proto\x12+dev.planton.azure.azurebastionhost.v1alpha1\"\xba\x01\n" +
+	"\x17AzureBastionHostOutputs\x12&\n" +
 	"\x0fbastion_host_id\x18\x01 \x01(\tR\rbastionHostId\x12*\n" +
 	"\x11bastion_host_name\x18\x02 \x01(\tR\x0fbastionHostName\x12\x19\n" +
 	"\bdns_name\x18\x03 \x01(\tR\adnsName\x120\n" +
@@ -125,7 +125,7 @@ func file_catalog_azure_azurebastionhost_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_azure_azurebastionhost_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurebastionhost_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureBastionHostStackOutputs)(nil), // 0: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostStackOutputs
+	(*AzureBastionHostOutputs)(nil), // 0: dev.planton.azure.azurebastionhost.v1alpha1.AzureBastionHostOutputs
 }
 var file_catalog_azure_azurebastionhost_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesOtelOperatorStackOutputs by the
+# Outputs — flattened onto KubernetesOtelOperatorOutputs by the
 # platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

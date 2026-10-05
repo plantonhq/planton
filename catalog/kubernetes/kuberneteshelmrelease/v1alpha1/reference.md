@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesHelmReleaseSpec** installs an upstream Helm chart as a real
 Helm release — the catalog's sole intentional passthrough. Both engines
@@ -14,11 +14,11 @@ perform an actual `helm install`: hooks run, the release secret is
 written, and `helm list` shows the release exactly as if installed by the
 Helm CLI.
 
-WHEN NOT TO USE THIS: a first-class catalog component always wins. Typed
-components validate their configuration before deploy, export composable
+WHEN NOT TO USE THIS: a first-class catalog kind always wins. Typed
+kinds validate their configuration before deploy, export composable
 outputs, and teach their trade-offs field by field — a generic chart
 install does none of that. Reach for KubernetesHelmRelease only when the
-catalog has no component for the chart you need.
+catalog has no kind for the chart you need.
 
 VALUES MODEL (Helm's own): `values_yaml` is the values file; `set`,
 `set_string`, and `set_sensitive` are the `--set`-style overrides applied

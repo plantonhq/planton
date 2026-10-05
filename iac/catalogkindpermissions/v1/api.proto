@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package dev.planton.iac.catalogkindpermissions.v1;
+
+import "iac/catalogkindpermissions/v1/spec.proto";
+import "shared/metadata.proto";
+
+// CatalogKindPermissions declares the least-privilege permissions the IaC
+// runner's cloud principal needs to provision, update, and destroy this
+// kind with the OFFICIAL modules. This is the data behind "download
+// the exact IAM policy your runner needs" -- the air-gapped enterprise's
+// first-day question, answered per kind and unioned per stack.
+// Follows the KRM pattern (apiVersion + kind + metadata + spec).
+// Lives at catalog/{provider}/{kind}/iac/permissions.yaml, beside the
+// modules whose behavior it describes.
+//
+// Every entry carries provenance: `derived` (static analysis of the module
+// sources) or `proven` (observed from live provisioning runs). The
+// distinction is itself a trust feature -- consumers show it, and the e2e
+// harness upgrades entries from derived to proven as capture lanes land.
+// Deployments using customized modules must be presented as
+// "official-module baseline; verify against your customization".
+//
+// Example:
+//   apiVersion: iac.planton.dev/v1
+//   kind: CatalogKindPermissions
+//   metadata:
+//     name: awsdynamodb
+//   spec:
+//     aws:
+//       statements:
+//         - sid: ManageTable
+//           actions: [dynamodb:CreateTable, dynamodb:DeleteTable]
+//           resources: ["arn:aws:dynamodb:*:*:table/*"]
+//           provenance: derived
+message CatalogKindPermissions {
+  string api_version = 1;
+  string kind = 2;
+  dev.planton.shared.CatalogObjectMetadata metadata = 3;
+  CatalogKindPermissionsSpec spec = 4;
+}

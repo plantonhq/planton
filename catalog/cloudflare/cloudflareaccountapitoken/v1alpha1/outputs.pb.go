@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareAccountApiTokenStackOutputs captures the observable outputs
+// CloudflareAccountApiTokenOutputs captures the observable outputs
 // after creating the token.
-type CloudflareAccountApiTokenStackOutputs struct {
+type CloudflareAccountApiTokenOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned token ID (the token's identity for management
 	// calls -- NOT the credential itself).
@@ -55,20 +55,20 @@ type CloudflareAccountApiTokenStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *CloudflareAccountApiTokenStackOutputs) Reset() {
-	*x = CloudflareAccountApiTokenStackOutputs{}
+func (x *CloudflareAccountApiTokenOutputs) Reset() {
+	*x = CloudflareAccountApiTokenOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareAccountApiTokenStackOutputs) String() string {
+func (x *CloudflareAccountApiTokenOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareAccountApiTokenStackOutputs) ProtoMessage() {}
+func (*CloudflareAccountApiTokenOutputs) ProtoMessage() {}
 
-func (x *CloudflareAccountApiTokenStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareAccountApiTokenOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -80,33 +80,33 @@ func (x *CloudflareAccountApiTokenStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareAccountApiTokenStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareAccountApiTokenStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareAccountApiTokenOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareAccountApiTokenOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareAccountApiTokenStackOutputs) GetTokenId() string {
+func (x *CloudflareAccountApiTokenOutputs) GetTokenId() string {
 	if x != nil {
 		return x.TokenId
 	}
 	return ""
 }
 
-func (x *CloudflareAccountApiTokenStackOutputs) GetValue() string {
+func (x *CloudflareAccountApiTokenOutputs) GetValue() string {
 	if x != nil {
 		return x.Value
 	}
 	return ""
 }
 
-func (x *CloudflareAccountApiTokenStackOutputs) GetR2AccessKeyId() string {
+func (x *CloudflareAccountApiTokenOutputs) GetR2AccessKeyId() string {
 	if x != nil {
 		return x.R2AccessKeyId
 	}
 	return ""
 }
 
-func (x *CloudflareAccountApiTokenStackOutputs) GetR2SecretAccessKey() string {
+func (x *CloudflareAccountApiTokenOutputs) GetR2SecretAccessKey() string {
 	if x != nil {
 		return x.R2SecretAccessKey
 	}
@@ -117,8 +117,8 @@ var File_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_outputs_proto pro
 
 const file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/cloudflare/cloudflareaccountapitoken/v1alpha1/outputs.proto\x129dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1\x1a\x1cshared/options/options.proto\"\xbe\x01\n" +
-	"%CloudflareAccountApiTokenStackOutputs\x12\x19\n" +
+	"Ccatalog/cloudflare/cloudflareaccountapitoken/v1alpha1/outputs.proto\x129dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1\x1a\x1cshared/options/options.proto\"\xb9\x01\n" +
+	" CloudflareAccountApiTokenOutputs\x12\x19\n" +
 	"\btoken_id\x18\x01 \x01(\tR\atokenId\x12\x1a\n" +
 	"\x05value\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\x05value\x12'\n" +
 	"\x10r2_access_key_id\x18\x03 \x01(\tR\rr2AccessKeyId\x125\n" +
@@ -139,7 +139,7 @@ func file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_outputs_proto_ra
 
 var file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareAccountApiTokenStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1.CloudflareAccountApiTokenStackOutputs
+	(*CloudflareAccountApiTokenOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1.CloudflareAccountApiTokenOutputs
 }
 var file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

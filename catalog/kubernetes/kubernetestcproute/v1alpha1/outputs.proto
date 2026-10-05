@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetestcproute.v1alpha1;
 
-// KubernetesTcpRouteStackOutputs captures observable outputs after the TCPRoute
+// KubernetesTcpRouteOutputs captures observable outputs after the TCPRoute
 // is created on the target cluster. Controller-managed status (the per-parent
 // Accepted/ResolvedRefs conditions) is reconciled asynchronously by the Gateway
 // implementation and read via kubectl, so it is intentionally not stored here.
-message KubernetesTcpRouteStackOutputs {
+message KubernetesTcpRouteOutputs {
   // Name of the created TCPRoute (equals metadata.name). In InfraCharts this
   // orders the route after the Gateway and backends it references.
   string route_name = 1;

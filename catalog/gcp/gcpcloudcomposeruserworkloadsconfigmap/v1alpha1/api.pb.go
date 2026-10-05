@@ -31,7 +31,7 @@ type GcpCloudComposerUserWorkloadsConfigMap struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpCloudComposerUserWorkloadsConfigMapSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpCloudComposerUserWorkloadsConfigMap) GetKind() string {
 	return ""
 }
 
-func (x *GcpCloudComposerUserWorkloadsConfigMap) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpCloudComposerUserWorkloadsConfigMap) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpCloudComposerUserWorkloadsConfigMap) GetStatus() *GcpCloudComposerUs
 // gcp-cloud-composer-user-workloads-config-map status
 type GcpCloudComposerUserWorkloadsConfigMapStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpCloudComposerUserWorkloadsConfigMapStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpCloudComposerUserWorkloadsConfigMapOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpCloudComposerUserWorkloadsConfigMapStatus) Descriptor() ([]byte, []int
 	return file_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpCloudComposerUserWorkloadsConfigMapStatus) GetOutputs() *GcpCloudComposerUserWorkloadsConfigMapStackOutputs {
+func (x *GcpCloudComposerUserWorkloadsConfigMapStatus) GetOutputs() *GcpCloudComposerUserWorkloadsConfigMapOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_api_proto
 	"apiVersion\x12A\n" +
 	"\x04kind\x18\x02 \x01(\tB-\xbaH*r(\n" +
 	"&GcpCloudComposerUserWorkloadsConfigMapR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x87\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x87\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2k.dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x85\x01\n" +
-	"\x06status\x18\x05 \x01(\v2m.dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapStatusR\x06status\"\xbe\x01\n" +
-	",GcpCloudComposerUserWorkloadsConfigMapStatus\x12\x8d\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2s.dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapStackOutputsR\aoutputsB\xfa\x03\n" +
+	"\x06status\x18\x05 \x01(\v2m.dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapStatusR\x06status\"\xb9\x01\n" +
+	",GcpCloudComposerUserWorkloadsConfigMapStatus\x12\x88\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2n.dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapOutputsR\aoutputsB\xfa\x03\n" +
 	"Ccom.dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1B\bApiProtoP\x01Z\x87\x01github.com/plantonhq/planton/catalog/gcp/gcpcloudcomposeruserworkloadsconfigmap/v1alpha1;gcpcloudcomposeruserworkloadsconfigmapv1alpha1\xa2\x02\x04DPGG\xaa\x02?Dev.Planton.Gcp.Gcpcloudcomposeruserworkloadsconfigmap.V1alpha1\xca\x02?Dev\\Planton\\Gcp\\Gcpcloudcomposeruserworkloadsconfigmap\\V1alpha1\xe2\x02KDev\\Planton\\Gcp\\Gcpcloudcomposeruserworkloadsconfigmap\\V1alpha1\\GPBMetadata\xea\x02CDev::Planton::Gcp::Gcpcloudcomposeruserworkloadsconfigmap::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_api_proto_
 
 var file_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_api_proto_goTypes = []any{
-	(*GcpCloudComposerUserWorkloadsConfigMap)(nil),             // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMap
-	(*GcpCloudComposerUserWorkloadsConfigMapStatus)(nil),       // 1: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapStatus
-	(*shared.CloudResourceMetadata)(nil),                       // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpCloudComposerUserWorkloadsConfigMapSpec)(nil),         // 3: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapSpec
-	(*GcpCloudComposerUserWorkloadsConfigMapStackOutputs)(nil), // 4: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapStackOutputs
+	(*GcpCloudComposerUserWorkloadsConfigMap)(nil),        // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMap
+	(*GcpCloudComposerUserWorkloadsConfigMapStatus)(nil),  // 1: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapStatus
+	(*shared.CatalogObjectMetadata)(nil),                  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpCloudComposerUserWorkloadsConfigMapSpec)(nil),    // 3: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapSpec
+	(*GcpCloudComposerUserWorkloadsConfigMapOutputs)(nil), // 4: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapOutputs
 }
 var file_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMap.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMap.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMap.spec:type_name -> dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapSpec
 	1, // 2: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMap.status:type_name -> dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapStatus
-	4, // 3: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapStatus.outputs:type_name -> dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapStackOutputs
+	4, // 3: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapStatus.outputs:type_name -> dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

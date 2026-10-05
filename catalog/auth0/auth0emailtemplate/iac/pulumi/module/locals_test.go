@@ -7,21 +7,21 @@ import (
 	"github.com/plantonhq/planton/shared"
 )
 
-func stackInput(spec *auth0emailtemplatev1alpha1.Auth0EmailTemplateSpec) *auth0emailtemplatev1alpha1.Auth0EmailTemplateStackInput {
+func iacInput(spec *auth0emailtemplatev1alpha1.Auth0EmailTemplateSpec) *auth0emailtemplatev1alpha1.Auth0EmailTemplateIacInput {
 	spec.Template = "verify_email"
 	spec.From = "Planton <no-reply@planton.ai>"
 	spec.Subject = "Verify your email for Planton"
 	spec.Body = `<a href="{{ url }}">Verify</a>`
-	return &auth0emailtemplatev1alpha1.Auth0EmailTemplateStackInput{
+	return &auth0emailtemplatev1alpha1.Auth0EmailTemplateIacInput{
 		Target: &auth0emailtemplatev1alpha1.Auth0EmailTemplate{
-			Metadata: &shared.CloudResourceMetadata{Name: "verify-email"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "verify-email"},
 			Spec:     spec,
 		},
 	}
 }
 
 func TestDefaults(t *testing.T) {
-	locals := initializeLocals(stackInput(&auth0emailtemplatev1alpha1.Auth0EmailTemplateSpec{}))
+	locals := initializeLocals(iacInput(&auth0emailtemplatev1alpha1.Auth0EmailTemplateSpec{}))
 	if locals.Syntax != "liquid" {
 		t.Errorf("syntax: got %q, want liquid", locals.Syntax)
 	}
@@ -38,7 +38,7 @@ func TestSetValuesAreSent(t *testing.T) {
 	disabled := false
 	lifetime := int32(3600)
 	include := false
-	locals := initializeLocals(stackInput(&auth0emailtemplatev1alpha1.Auth0EmailTemplateSpec{
+	locals := initializeLocals(iacInput(&auth0emailtemplatev1alpha1.Auth0EmailTemplateSpec{
 		ResultUrl:              "https://planton.ai",
 		UrlLifetimeInSeconds:   &lifetime,
 		Enabled:                &disabled,

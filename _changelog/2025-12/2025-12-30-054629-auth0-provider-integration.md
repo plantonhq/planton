@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added Auth0 as a new cloud provider to Planton, enabling users to manage Auth0 identity resources through the platform. This implementation spans all layers of the system—from protobuf definitions through CLI flags, stack input processing, Tofu/Terraform environment configuration, backend credential management, and frontend credential forms—maintaining full consistency with existing provider patterns.
+Added Auth0 as a new cloud provider to Planton, enabling users to manage Auth0 identity resources through the platform. This implementation spans all layers of the system—from protobuf definitions through CLI flags, IaC input processing, Tofu/Terraform environment configuration, backend credential management, and frontend credential forms—maintaining full consistency with existing provider patterns.
 
 ## Problem Statement / Motivation
 
@@ -18,7 +18,7 @@ Planton needed to expand its provider ecosystem to include Auth0, a popular iden
 
 ### Pain Points
 
-- No Auth0 provider in the `CloudResourceProvider` enum
+- No Auth0 provider in the `CatalogProvider` enum
 - No credential storage or management for Auth0
 - No CLI flags to pass Auth0 credentials during deployments
 - No Tofu/Terraform environment variable configuration for Auth0
@@ -33,7 +33,7 @@ Implemented comprehensive Auth0 provider support across all system layers, follo
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                       Proto Layer                                │
-│  cloud_resource_provider.proto → auth0 = 21                     │
+│  catalog_provider.proto → auth0 = 21                     │
 │  provider/auth0/provider.proto → Auth0ProviderConfig            │
 │  credential/v1/api.proto → AUTH0 enum + oneof case              │
 └─────────────────────────────────────────────────────────────────┘
@@ -45,7 +45,7 @@ Implemented comprehensive Auth0 provider support across all system layers, follo
 └─────────────────────────────────────────────────────────────────┘
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Stack Input Layer                             │
+│                    IaC Input Layer                             │
 │  options.go → Auth0ProviderConfig field + builder functions     │
 │  auth0_provider.go → Load/Add functions                         │
 │  user_provider.go → createAuth0ProviderConfigFileFromProto      │
@@ -81,7 +81,7 @@ Implemented comprehensive Auth0 provider support across all system layers, follo
 
 ### 1. Proto Definitions
 
-**CloudResourceProvider enum** (`cloud_resource_provider.proto`):
+**CatalogProvider enum** (`catalog_provider.proto`):
 ```protobuf
 auth0 = 21 [(provider_meta) = {
   group: "auth0.planton.dev"
@@ -115,11 +115,11 @@ Apply.PersistentFlags().String(string(flag.Auth0ProviderConfig), "",
     "path of the auth0-credential file")
 ```
 
-### 3. Stack Input Processing
+### 3. IaC Input Processing
 
-**StackInputProviderConfigOptions** now includes Auth0:
+**IacInputProviderConfigOptions** now includes Auth0:
 ```go
-type StackInputProviderConfigOptions struct {
+type IacInputProviderConfigOptions struct {
     AtlasProviderConfig      string
     Auth0ProviderConfig      string  // New
     AwsProviderConfig        string
@@ -128,14 +128,14 @@ type StackInputProviderConfigOptions struct {
 ```
 
 **New auth0_provider.go**:
-- `AddAuth0ProviderConfig()` - Reads and adds Auth0 config to stack input
+- `AddAuth0ProviderConfig()` - Reads and adds Auth0 config to IaC input
 - `LoadAuth0ProviderConfig()` - Loads Auth0 config from input directory
 
 ### 4. Tofu/Terraform Environment Variables
 
 **New auth0_provider.go** in tofumodule/providerconfig:
 ```go
-func AddAuth0ProviderConfigEnvVars(stackInputContentMap map[string]interface{},
+func AddAuth0ProviderConfigEnvVars(iacInputContentMap map[string]interface{},
     providerConfigEnvVars map[string]string) (map[string]string, error) {
     // Sets AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET
 }
@@ -190,9 +190,9 @@ export function Auth0CredentialForm({ register, disabled }: Auth0CredentialFormP
 
 | Layer | Files |
 |-------|-------|
-| Proto | `cloud_resource_provider.proto`, `provider/auth0/provider.proto`, `credential/v1/api.proto` |
+| Proto | `catalog_provider.proto`, `provider/auth0/provider.proto`, `credential/v1/api.proto` |
 | CLI | `flag.go`, `apply.go`, `plan.go`, `init.go`, `destroy.go`, `refresh.go` |
-| Stack Input | `options.go`, `auth0_provider.go` (new), `user_provider.go`, `providers.go` |
+| IaC Input | `options.go`, `auth0_provider.go` (new), `user_provider.go`, `providers.go` |
 | Tofu | `auth0_provider.go` (new), `providers.go` |
 | Backend | `credential.go`, `credential_repo.go`, `credential_service.go`, `credential_resolver.go`, `stack_update_service.go` |
 | Frontend | `auth0.tsx` (new), `types.ts`, `index.ts`, `credential-drawer.tsx`, `utils.ts` |
@@ -224,7 +224,7 @@ export function Auth0CredentialForm({ register, disabled }: Auth0CredentialFormP
 - Frontend displays Auth0 in credential provider dropdown
 
 ### Future Work Enabled
-- Auth0Connection deployment component
+- Auth0Connection catalog kind
 - Auth0 resource types (applications, APIs, rules, etc.)
 - Auth0 tenant management workflows
 
@@ -253,7 +253,7 @@ planton apply --manifest auth0-connection.yaml \
 
 ## Related Work
 
-- This lays the foundation for Auth0Connection deployment component
+- This lays the foundation for Auth0Connection catalog kind
 - Follows the same patterns established by existing providers (Confluent, Atlas, Snowflake)
 - Integrates with the credential resolution system for automated deployments
 

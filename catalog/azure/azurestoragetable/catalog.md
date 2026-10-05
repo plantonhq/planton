@@ -4,7 +4,7 @@ Deploys a Storage table inside an Azure Storage Account -- the serverless NoSQL 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Storage Table** -- a table on the referenced storage account (by ARM ID -- the control-plane path), with optional stored access policies (signed identifiers) anchoring revocable SAS tokens
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -50,7 +50,7 @@ spec:
 planton apply -f table.yaml
 ```
 
-This creates a table with no stored access policies -- applications reach it with data-plane RBAC or account keys. A Stack Job tracks the provisioning in real time.
+This creates a table with no stored access policies -- applications reach it with data-plane RBAC or account keys. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -78,15 +78,15 @@ These are the most important decisions when configuring a table. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureStorageAccount** | `storageAccountId` | `status.outputs.storage_account_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -108,6 +108,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the parent account and the source of the table endpoint clients compose addresses from
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- table-scoped data-plane grants targeting `table_id`
-- [**Azure Cosmos DB Account**](/cloud-catalog/azure-cosmosdb-account) -- the premium sibling when the workload outgrows Table Storage's SLAs
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the parent account and the source of the table endpoint clients compose addresses from
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- table-scoped data-plane grants targeting `table_id`
+- [**Azure Cosmos DB Account**](/infra-catalog/azure-cosmosdb-account) -- the premium sibling when the workload outgrows Table Storage's SLAs

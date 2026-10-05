@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsrestapigateway
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: rest_api_id
       derivations:
-        - from_stack_output: rest_api_id
+        - from_output: rest_api_id
       where_to_find: >-
         API Gateway console -> APIs -> the REST API (the ID), or
         `aws apigateway get-rest-apis` (id).
@@ -23,29 +23,29 @@ spec:
     # with "/", route keys with the HTTP method).
     - name: resource_id
       derivations:
-        - from_stack_output_keyed_by_address: resource_ids
-        - from_stack_output_keyed_by_address: route_resource_ids
-        - from_stack_output_keyed_by_address: response_resource_ids
+        - from_output_keyed_by_address: resource_ids
+        - from_output_keyed_by_address: route_resource_ids
+        - from_output_keyed_by_address: response_resource_ids
       where_to_find: >-
         `aws apigateway get-resources --rest-api-id <id>` lists resource
         ids keyed by path; match each to the derived tree node (or to
         the route's path for method/integration/response addresses).
     - name: http_method
       derivations:
-        - from_stack_output_keyed_by_address: route_methods
-        - from_stack_output_keyed_by_address: response_methods
+        - from_output_keyed_by_address: route_methods
+        - from_output_keyed_by_address: response_methods
       where_to_find: >-
         The HTTP method is the first token of each route's for_each key
         ("GET /orders/{id}").
     - name: status_code
       derivations:
-        - from_stack_output_keyed_by_address: response_status_codes
+        - from_output_keyed_by_address: response_status_codes
       where_to_find: >-
         The status code is the token after "|" on each route-response
         for_each key ("GET /orders/{id}|200").
     - name: authorizer_id
       derivations:
-        - from_stack_output_keyed_by_address: authorizer_ids
+        - from_output_keyed_by_address: authorizer_ids
       where_to_find: >-
         `aws apigateway get-authorizers --rest-api-id <id>` (id), matched
         to each spec.authorizers entry by name.
@@ -57,7 +57,7 @@ spec:
         name (`aws apigateway get-models --rest-api-id <id>` shows name).
     - name: request_validator_id
       derivations:
-        - from_stack_output_keyed_by_address: request_validator_ids
+        - from_output_keyed_by_address: request_validator_ids
       where_to_find: >-
         `aws apigateway get-request-validators --rest-api-id <id>` (id),
         matched to each spec.request_validators entry by name.
@@ -69,7 +69,7 @@ spec:
         spec.gateway_responses entry's response_type.
     - name: stage_name
       derivations:
-        - from_stack_output: stage_name
+        - from_output: stage_name
       where_to_find: >-
         `aws apigateway get-stages --rest-api-id <id>` (stageName).
     - name: method_path
@@ -80,7 +80,7 @@ spec:
         ("*/*" or "{resource-path}/{METHOD}").
     - name: documentation_part_id
       derivations:
-        - from_stack_output_keyed_by_address: documentation_part_ids
+        - from_output_keyed_by_address: documentation_part_ids
       where_to_find: >-
         `aws apigateway get-documentation-parts --rest-api-id <id>`
         (id), matched to each spec.documentation.parts entry by
@@ -96,7 +96,7 @@ spec:
         (spec.documentation.published_version.version).
     - name: client_certificate_id
       derivations:
-        - from_stack_output: client_certificate_id
+        - from_output: client_certificate_id
       where_to_find: >-
         `aws apigateway get-client-certificates` (clientCertificateId)
         when stage.client_certificate.generate is true.

@@ -36,7 +36,7 @@ type KubernetesKarpenterNodePool struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesKarpenterNodePoolSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *KubernetesKarpenterNodePool) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesKarpenterNodePool) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesKarpenterNodePool) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *KubernetesKarpenterNodePool) GetStatus() *KubernetesKarpenterNodePoolSt
 // KubernetesKarpenterNodePoolStatus holds the deployment status and outputs.
 type KubernetesKarpenterNodePoolStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesKarpenterNodePoolStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesKarpenterNodePoolOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*KubernetesKarpenterNodePoolStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesKarpenterNodePoolStatus) GetOutputs() *KubernetesKarpenterNodePoolStackOutputs {
+func (x *KubernetesKarpenterNodePoolStatus) GetOutputs() *KubernetesKarpenterNodePoolOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_api_proto_raw
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bKubernetesKarpenterNodePoolR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12x\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12x\n" +
 	"\x04spec\x18\x04 \x01(\v2\\.dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12v\n" +
-	"\x06status\x18\x05 \x01(\v2^.dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolStatusR\x06status\"\xa3\x01\n" +
-	"!KubernetesKarpenterNodePoolStatus\x12~\n" +
-	"\aoutputs\x18\x01 \x01(\v2d.dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolStackOutputsR\aoutputsB\xd6\x03\n" +
+	"\x06status\x18\x05 \x01(\v2^.dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolStatusR\x06status\"\x9e\x01\n" +
+	"!KubernetesKarpenterNodePoolStatus\x12y\n" +
+	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolOutputsR\aoutputsB\xd6\x03\n" +
 	"?com.dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1B\bApiProtoP\x01Zxgithub.com/plantonhq/planton/catalog/kubernetes/kuberneteskarpenternodepool/v1alpha1;kuberneteskarpenternodepoolv1alpha1\xa2\x02\x04DPKK\xaa\x02;Dev.Planton.Kubernetes.Kuberneteskarpenternodepool.V1alpha1\xca\x02;Dev\\Planton\\Kubernetes\\Kuberneteskarpenternodepool\\V1alpha1\xe2\x02GDev\\Planton\\Kubernetes\\Kuberneteskarpenternodepool\\V1alpha1\\GPBMetadata\xea\x02?Dev::Planton::Kubernetes::Kuberneteskarpenternodepool::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_api_proto_rawD
 
 var file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesKarpenterNodePool)(nil),             // 0: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePool
-	(*KubernetesKarpenterNodePoolStatus)(nil),       // 1: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesKarpenterNodePoolSpec)(nil),         // 3: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolSpec
-	(*KubernetesKarpenterNodePoolStackOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolStackOutputs
+	(*KubernetesKarpenterNodePool)(nil),        // 0: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePool
+	(*KubernetesKarpenterNodePoolStatus)(nil),  // 1: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesKarpenterNodePoolSpec)(nil),    // 3: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolSpec
+	(*KubernetesKarpenterNodePoolOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolOutputs
 }
 var file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePool.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePool.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePool.spec:type_name -> dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolSpec
 	1, // 2: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePool.status:type_name -> dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolStatus
-	4, // 3: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolStackOutputs
+	4, // 3: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

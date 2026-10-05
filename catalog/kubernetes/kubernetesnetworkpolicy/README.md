@@ -2,9 +2,9 @@
 
 ## Overview
 
-**KubernetesNetworkPolicy** is a Planton component that creates and manages Kubernetes NetworkPolicies — the in-cluster firewall — as first-class, declaratively managed resources. A NetworkPolicy selects a set of pods with `pod_selector` and declares which network traffic is allowed to (`ingress_rules`) and from (`egress_rules`) those pods.
+**KubernetesNetworkPolicy** is a catalog kind that creates and manages Kubernetes NetworkPolicies — the in-cluster firewall — as first-class, declaratively managed resources. A NetworkPolicy selects a set of pods with `pod_selector` and declares which network traffic is allowed to (`ingress_rules`) and from (`egress_rules`) those pods.
 
-The component covers the complete `networking/v1` NetworkPolicySpec surface: pod and namespace label selectors (exact-match and set-based expressions), IP blocks with exceptions, TCP/UDP/SCTP ports, named ports, and port ranges. There is nothing an upstream NetworkPolicy can express that this spec cannot.
+The kind covers the complete `networking/v1` NetworkPolicySpec surface: pod and namespace label selectors (exact-match and set-based expressions), IP blocks with exceptions, TCP/UDP/SCTP ports, named ports, and port ranges. There is nothing an upstream NetworkPolicy can express that this spec cannot.
 
 ## Purpose
 
@@ -13,7 +13,7 @@ By default, every pod in a Kubernetes cluster can talk to every other pod. Netwo
 **Key value over raw manifests:**
 
 - **Schema-level validation**: Direction/rule consistency (rules in an ungoverned direction are rejected instead of silently ignored), CIDR format checks, port-range sanity, selector operator contracts, and empty-peer rejection — all caught before anything reaches the cluster
-- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an infra chart can create the namespace and its policies in one run
+- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an Infra Chart can create the namespace and its policies in one run
 - **Deterministic policy types**: Both IaC modules always submit the governed directions explicitly, applying the Kubernetes inference rule when the spec omits `policy_types`, so the deployed object never depends on which engine applied it
 - **Dual IaC support**: Both Pulumi and Terraform implementations with feature parity
 - **Lifecycle management**: Integrated with Planton's deployment lifecycle for status tracking and outputs
@@ -79,7 +79,7 @@ NetworkPolicy objects are only **enforced** by a CNI plugin that implements them
 - **`spec.ingress_rules`** / **`spec.egress_rules`**: The allow rules
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton labels for tracking and governance
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -89,7 +89,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace (literal value or resolved reference)
 2. Merge user labels and annotations with standard Planton tracking labels

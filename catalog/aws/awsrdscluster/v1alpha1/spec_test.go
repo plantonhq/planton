@@ -29,7 +29,7 @@ func validAuroraCluster() *AwsRdsCluster {
 	return &AwsRdsCluster{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsRdsCluster",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-rds-cluster",
 		},
 		Spec: &AwsRdsClusterSpec{

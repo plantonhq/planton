@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurekeyvaultsecret
 spec:
@@ -9,8 +9,8 @@ spec:
   values:
     - name: secret_id
       derivations:
-        - from_stack_output: secret_id
+        - from_output: secret_id
       where_to_find: >-
         `az keyvault secret show --vault-name <vault> -n <name> --query
         id` (returns the current version's URI), or the component's own
-        secret_id stack output.
+        secret_id output.

@@ -210,7 +210,7 @@ spec:
 | `scopeConfiguration` | object | No | Organization/group-wide webhooks (GITHUB_ORGANIZATION / GITHUB_GLOBAL / GITLAB_GROUP) |
 | `pullRequestBuildPolicy` | object | No | Comment-approval gate for PR builds (DISABLED / FORK_PULL_REQUESTS / ALL_PULL_REQUESTS + approver roles) |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|

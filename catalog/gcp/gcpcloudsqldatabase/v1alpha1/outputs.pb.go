@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpCloudSqlDatabaseStackOutputs captures values returned after provisioning
+// GcpCloudSqlDatabaseOutputs captures values returned after provisioning
 // a database inside a Cloud SQL instance.
-type GcpCloudSqlDatabaseStackOutputs struct {
+type GcpCloudSqlDatabaseOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the database inside the instance.
 	DatabaseName string `protobuf:"bytes,1,opt,name=database_name,json=databaseName,proto3" json:"database_name,omitempty"`
@@ -33,20 +33,20 @@ type GcpCloudSqlDatabaseStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCloudSqlDatabaseStackOutputs) Reset() {
-	*x = GcpCloudSqlDatabaseStackOutputs{}
+func (x *GcpCloudSqlDatabaseOutputs) Reset() {
+	*x = GcpCloudSqlDatabaseOutputs{}
 	mi := &file_catalog_gcp_gcpcloudsqldatabase_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudSqlDatabaseStackOutputs) String() string {
+func (x *GcpCloudSqlDatabaseOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudSqlDatabaseStackOutputs) ProtoMessage() {}
+func (*GcpCloudSqlDatabaseOutputs) ProtoMessage() {}
 
-func (x *GcpCloudSqlDatabaseStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudSqlDatabaseOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudsqldatabase_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpCloudSqlDatabaseStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudSqlDatabaseStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudSqlDatabaseStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudSqlDatabaseOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudSqlDatabaseOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudsqldatabase_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudSqlDatabaseStackOutputs) GetDatabaseName() string {
+func (x *GcpCloudSqlDatabaseOutputs) GetDatabaseName() string {
 	if x != nil {
 		return x.DatabaseName
 	}
 	return ""
 }
 
-func (x *GcpCloudSqlDatabaseStackOutputs) GetSelfLink() string {
+func (x *GcpCloudSqlDatabaseOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpcloudsqldatabase_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_gcp_gcpcloudsqldatabase_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcpcloudsqldatabase/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcpcloudsqldatabase.v1alpha1\"c\n" +
-	"\x1fGcpCloudSqlDatabaseStackOutputs\x12#\n" +
+	"6catalog/gcp/gcpcloudsqldatabase/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcpcloudsqldatabase.v1alpha1\"^\n" +
+	"\x1aGcpCloudSqlDatabaseOutputs\x12#\n" +
 	"\rdatabase_name\x18\x01 \x01(\tR\fdatabaseName\x12\x1b\n" +
 	"\tself_link\x18\x02 \x01(\tR\bselfLinkB\xf8\x02\n" +
 	"0com.dev.planton.gcp.gcpcloudsqldatabase.v1alpha1B\fOutputsProtoP\x01Zagithub.com/plantonhq/planton/catalog/gcp/gcpcloudsqldatabase/v1alpha1;gcpcloudsqldatabasev1alpha1\xa2\x02\x04DPGG\xaa\x02,Dev.Planton.Gcp.Gcpcloudsqldatabase.V1alpha1\xca\x02,Dev\\Planton\\Gcp\\Gcpcloudsqldatabase\\V1alpha1\xe2\x028Dev\\Planton\\Gcp\\Gcpcloudsqldatabase\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Gcp::Gcpcloudsqldatabase::V1alpha1b\x06proto3"
@@ -101,7 +101,7 @@ func file_catalog_gcp_gcpcloudsqldatabase_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcpcloudsqldatabase_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudsqldatabase_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudSqlDatabaseStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudsqldatabase.v1alpha1.GcpCloudSqlDatabaseStackOutputs
+	(*GcpCloudSqlDatabaseOutputs)(nil), // 0: dev.planton.gcp.gcpcloudsqldatabase.v1alpha1.GcpCloudSqlDatabaseOutputs
 }
 var file_catalog_gcp_gcpcloudsqldatabase_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -24,7 +24,7 @@ const (
 // *
 // Outputs exported after deploying Argo Workflows — the handles
 // downstream resources and humans compose against.
-type KubernetesArgoWorkflowsStackOutputs struct {
+type KubernetesArgoWorkflowsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace Argo Workflows is installed in.
@@ -56,20 +56,20 @@ type KubernetesArgoWorkflowsStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesArgoWorkflowsStackOutputs) Reset() {
-	*x = KubernetesArgoWorkflowsStackOutputs{}
+func (x *KubernetesArgoWorkflowsOutputs) Reset() {
+	*x = KubernetesArgoWorkflowsOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesArgoWorkflowsStackOutputs) String() string {
+func (x *KubernetesArgoWorkflowsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesArgoWorkflowsStackOutputs) ProtoMessage() {}
+func (*KubernetesArgoWorkflowsOutputs) ProtoMessage() {}
 
-func (x *KubernetesArgoWorkflowsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesArgoWorkflowsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -81,47 +81,47 @@ func (x *KubernetesArgoWorkflowsStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesArgoWorkflowsStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesArgoWorkflowsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesArgoWorkflowsOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesArgoWorkflowsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesArgoWorkflowsStackOutputs) GetNamespace() string {
+func (x *KubernetesArgoWorkflowsOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesArgoWorkflowsStackOutputs) GetReleaseName() string {
+func (x *KubernetesArgoWorkflowsOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesArgoWorkflowsStackOutputs) GetServerService() string {
+func (x *KubernetesArgoWorkflowsOutputs) GetServerService() string {
 	if x != nil {
 		return x.ServerService
 	}
 	return ""
 }
 
-func (x *KubernetesArgoWorkflowsStackOutputs) GetServerKubeEndpoint() string {
+func (x *KubernetesArgoWorkflowsOutputs) GetServerKubeEndpoint() string {
 	if x != nil {
 		return x.ServerKubeEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesArgoWorkflowsStackOutputs) GetWorkflowServiceAccount() string {
+func (x *KubernetesArgoWorkflowsOutputs) GetWorkflowServiceAccount() string {
 	if x != nil {
 		return x.WorkflowServiceAccount
 	}
 	return ""
 }
 
-func (x *KubernetesArgoWorkflowsStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesArgoWorkflowsOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -132,8 +132,8 @@ var File_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_outputs_proto proto
 
 const file_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/kubernetes/kubernetesargoworkflows/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1\"\xab\x02\n" +
-	"#KubernetesArgoWorkflowsStackOutputs\x12\x1c\n" +
+	"Acatalog/kubernetes/kubernetesargoworkflows/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1\"\xa6\x02\n" +
+	"\x1eKubernetesArgoWorkflowsOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12%\n" +
 	"\x0eserver_service\x18\x03 \x01(\tR\rserverService\x120\n" +
@@ -156,7 +156,7 @@ func file_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_outputs_proto_rawD
 
 var file_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesArgoWorkflowsStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsStackOutputs
+	(*KubernetesArgoWorkflowsOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsOutputs
 }
 var file_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

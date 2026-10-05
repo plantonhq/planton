@@ -1,12 +1,12 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceanapp
 spec:
   values:
     - name: app_id
       derivations:
-        - from_stack_output: app_id
+        - from_output: app_id
       where_to_find: >-
         DigitalOcean control panel -> Apps -> the app -> Settings, or
         `doctl apps list` (the ID column).

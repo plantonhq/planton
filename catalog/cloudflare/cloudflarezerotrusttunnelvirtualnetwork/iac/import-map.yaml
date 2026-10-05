@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezerotrusttunnelvirtualnetwork
 spec:
@@ -15,7 +15,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: virtual_network_id
       derivations:
-        - from_stack_output: virtual_network_id
+        - from_output: virtual_network_id
       where_to_find: >-
         Zero Trust dashboard -> Networks -> Virtual networks (the network ID
         is in the API, not the UI), or

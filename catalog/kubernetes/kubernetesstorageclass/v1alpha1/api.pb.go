@@ -38,7 +38,7 @@ type KubernetesStorageClass struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Metadata for the StorageClass resource.
 	// Includes standard fields like name, organization, environment, etc.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Specification of the desired state for the StorageClass.
 	// Defines the provisioner, parameters, and volume lifecycle policies.
 	Spec *KubernetesStorageClassSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -93,7 +93,7 @@ func (x *KubernetesStorageClass) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesStorageClass) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesStorageClass) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -122,7 +122,7 @@ type KubernetesStorageClassStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Outputs from the StorageClass deployment.
 	// Contains the class name claims reference for composition.
-	Outputs       *KubernetesStorageClassStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *KubernetesStorageClassOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -157,7 +157,7 @@ func (*KubernetesStorageClassStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesStorageClassStatus) GetOutputs() *KubernetesStorageClassStackOutputs {
+func (x *KubernetesStorageClassStatus) GetOutputs() *KubernetesStorageClassOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -175,11 +175,11 @@ const file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16KubernetesStorageClassR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
 	"\x04spec\x18\x04 \x01(\v2R.dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12l\n" +
-	"\x06status\x18\x05 \x01(\v2T.dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassStatusR\x06status\"\x94\x01\n" +
-	"\x1cKubernetesStorageClassStatus\x12t\n" +
-	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassStackOutputsR\aoutputsB\xb3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2T.dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassStatusR\x06status\"\x8f\x01\n" +
+	"\x1cKubernetesStorageClassStatus\x12o\n" +
+	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassOutputsR\aoutputsB\xb3\x03\n" +
 	":com.dev.planton.kubernetes.kubernetesstorageclass.v1alpha1B\bApiProtoP\x01Zngithub.com/plantonhq/planton/catalog/kubernetes/kubernetesstorageclass/v1alpha1;kubernetesstorageclassv1alpha1\xa2\x02\x04DPKK\xaa\x026Dev.Planton.Kubernetes.Kubernetesstorageclass.V1alpha1\xca\x026Dev\\Planton\\Kubernetes\\Kubernetesstorageclass\\V1alpha1\xe2\x02BDev\\Planton\\Kubernetes\\Kubernetesstorageclass\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Kubernetes::Kubernetesstorageclass::V1alpha1b\x06proto3"
 
 var (
@@ -196,17 +196,17 @@ func file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesStorageClass)(nil),             // 0: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClass
-	(*KubernetesStorageClassStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesStorageClassSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassSpec
-	(*KubernetesStorageClassStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassStackOutputs
+	(*KubernetesStorageClass)(nil),        // 0: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClass
+	(*KubernetesStorageClassStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesStorageClassSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassSpec
+	(*KubernetesStorageClassOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassOutputs
 }
 var file_catalog_kubernetes_kubernetesstorageclass_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClass.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClass.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClass.spec:type_name -> dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassSpec
 	1, // 2: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClass.status:type_name -> dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassStatus
-	4, // 3: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesstorageclass.v1alpha1.KubernetesStorageClassOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

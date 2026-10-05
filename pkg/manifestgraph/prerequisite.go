@@ -1,8 +1,8 @@
 package manifestgraph
 
 import (
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // The operator-prerequisite edge source reads a fact the kind metadata
@@ -37,7 +37,7 @@ import (
 
 // kindInstanceKey indexes the set's nodes by kind within an env.
 type kindInstanceKey struct {
-	Kind cloudresourcekind.CloudResourceKind
+	Kind catalogkind.CatalogKind
 	Env  string
 }
 
@@ -55,11 +55,11 @@ func kindInstanceIndex(set *Set) map[kindInstanceKey][]int {
 // operatorPrerequisites returns the operator kinds a node's kind declares as
 // prerequisites: the kind's direct prerequisites filtered to the Kubernetes
 // operators-and-controllers service group.
-func operatorPrerequisites(kind cloudresourcekind.CloudResourceKind) []cloudresourcekind.CloudResourceKind {
-	var operators []cloudresourcekind.CloudResourceKind
-	for _, prerequisite := range crkreflect.Prerequisites(kind) {
-		group, err := crkreflect.ServiceGroup(prerequisite)
-		if err != nil || group != cloudresourcekind.CloudProviderServiceGroup_kubernetes_operators_controllers {
+func operatorPrerequisites(kind catalogkind.CatalogKind) []catalogkind.CatalogKind {
+	var operators []catalogkind.CatalogKind
+	for _, prerequisite := range catalogkindreflect.Prerequisites(kind) {
+		group, err := catalogkindreflect.ServiceGroup(prerequisite)
+		if err != nil || group != catalogkind.CatalogProviderServiceGroup_kubernetes_operators_controllers {
 			continue
 		}
 		operators = append(operators, prerequisite)
@@ -69,7 +69,7 @@ func operatorPrerequisites(kind cloudresourcekind.CloudResourceKind) []cloudreso
 
 // soleInstance returns the one node of the given kind in the env, or -1 when
 // the set holds none or more than one.
-func soleInstance(index map[kindInstanceKey][]int, kind cloudresourcekind.CloudResourceKind, env string) int {
+func soleInstance(index map[kindInstanceKey][]int, kind catalogkind.CatalogKind, env string) int {
 	instances := index[kindInstanceKey{Kind: kind, Env: env}]
 	if len(instances) != 1 {
 		return -1

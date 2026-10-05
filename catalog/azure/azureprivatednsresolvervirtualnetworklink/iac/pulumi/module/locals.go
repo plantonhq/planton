@@ -15,10 +15,10 @@ type Locals struct {
 	AzurePrivateDnsResolverVirtualNetworkLink *azureprivatednsresolvervirtualnetworklinkv1alpha1.AzurePrivateDnsResolverVirtualNetworkLink
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureprivatednsresolvervirtualnetworklinkv1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureprivatednsresolvervirtualnetworklinkv1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzurePrivateDnsResolverVirtualNetworkLink = stackInput.Target
+	locals.AzurePrivateDnsResolverVirtualNetworkLink = iacInput.Target
 
 	return locals
 }

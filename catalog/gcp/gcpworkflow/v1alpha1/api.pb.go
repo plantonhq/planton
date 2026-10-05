@@ -28,7 +28,7 @@ type GcpWorkflow struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpWorkflowSpec              `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpWorkflowStatus            `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpWorkflow) GetKind() string {
 	return ""
 }
 
-func (x *GcpWorkflow) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpWorkflow) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpWorkflow) GetStatus() *GcpWorkflowStatus {
 }
 
 type GcpWorkflowStatus struct {
-	state         protoimpl.MessageState   `protogen:"open.v1"`
-	Outputs       *GcpWorkflowStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Outputs       *GcpWorkflowOutputs    `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpWorkflowStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpworkflow_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpWorkflowStatus) GetOutputs() *GcpWorkflowStackOutputs {
+func (x *GcpWorkflowStatus) GetOutputs() *GcpWorkflowOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpworkflow_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12&\n" +
 	"\x04kind\x18\x02 \x01(\tB\x12\xbaH\x0fr\r\n" +
 	"\vGcpWorkflowR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Q\n" +
 	"\x04spec\x18\x04 \x01(\v25.dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12O\n" +
-	"\x06status\x18\x05 \x01(\v27.dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowStatusR\x06status\"l\n" +
-	"\x11GcpWorkflowStatus\x12W\n" +
-	"\aoutputs\x18\x01 \x01(\v2=.dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowStackOutputsR\aoutputsB\xbc\x02\n" +
+	"\x06status\x18\x05 \x01(\v27.dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowStatusR\x06status\"g\n" +
+	"\x11GcpWorkflowStatus\x12R\n" +
+	"\aoutputs\x18\x01 \x01(\v28.dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowOutputsR\aoutputsB\xbc\x02\n" +
 	"(com.dev.planton.gcp.gcpworkflow.v1alpha1B\bApiProtoP\x01ZQgithub.com/plantonhq/planton/catalog/gcp/gcpworkflow/v1alpha1;gcpworkflowv1alpha1\xa2\x02\x04DPGG\xaa\x02$Dev.Planton.Gcp.Gcpworkflow.V1alpha1\xca\x02$Dev\\Planton\\Gcp\\Gcpworkflow\\V1alpha1\xe2\x020Dev\\Planton\\Gcp\\Gcpworkflow\\V1alpha1\\GPBMetadata\xea\x02(Dev::Planton::Gcp::Gcpworkflow::V1alpha1b\x06proto3"
 
 var (
@@ -178,15 +178,15 @@ var file_catalog_gcp_gcpworkflow_v1alpha1_api_proto_msgTypes = make([]protoimpl.
 var file_catalog_gcp_gcpworkflow_v1alpha1_api_proto_goTypes = []any{
 	(*GcpWorkflow)(nil),                  // 0: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflow
 	(*GcpWorkflowStatus)(nil),            // 1: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpWorkflowSpec)(nil),              // 3: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec
-	(*GcpWorkflowStackOutputs)(nil),      // 4: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowStackOutputs
+	(*GcpWorkflowOutputs)(nil),           // 4: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowOutputs
 }
 var file_catalog_gcp_gcpworkflow_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflow.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflow.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflow.spec:type_name -> dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec
 	1, // 2: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflow.status:type_name -> dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowStatus
-	4, // 3: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowStatus.outputs:type_name -> dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowStackOutputs
+	4, // 3: dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowStatus.outputs:type_name -> dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

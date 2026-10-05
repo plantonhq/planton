@@ -4,7 +4,7 @@ Deploys an Azure Cosmos DB for MongoDB vCore cluster -- a real MongoDB engine on
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Mongo vCore cluster** -- the cluster itself, in the creation mode the spec declares: compute tier and storage per shard, MongoDB version, high availability, authentication methods, identities, and optional customer-managed-key encryption
 - **Firewall rules** -- one per named client-IP range in `firewallRules`
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **The administrator password's source** -- a managed secret (`$secret/<slug>`) or an AzureKeyVaultSecret output; a literal is acceptable only in throwaway environments.
 
 ### Azure Subscription
 
-- **A resource group** -- reference an AzureResourceGroup Cloud Resource or pass an existing group's name.
+- **A resource group** -- reference an AzureResourceGroup Infra Component or pass an existing group's name.
 - **A globally unique name** -- the name becomes the cluster's public hostname (`{name}.mongocluster.cosmos.azure.com`); a taken name fails at deploy time. Prefix with your org.
 - **For CMK encryption** (optional) -- an AzureKeyVaultKey (referenced by its VERSIONLESS ID) and an AzureUserAssignedIdentity with unwrap/wrap permissions on the vault, granted BEFORE the cluster is created; Azure validates both at deploy time.
 - **For a GeoReplica** -- the source cluster must carry the `GeoReplicas` preview feature (a create-time, ForceNew list on the source).
@@ -70,7 +70,7 @@ spec:
 planton apply -f mongo-cluster.yaml
 ```
 
-This creates a Default-mode MongoDB 8.0 cluster on dedicated M30 compute with zone-redundant HA, both authentication worlds enabled, and one office IP range allowed through the firewall. A Stack Job tracks the provisioning in real time.
+This creates a Default-mode MongoDB 8.0 cluster on dedicated M30 compute with zone-redundant HA, both authentication worlds enabled, and one office IP range allowed through the firewall. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -122,7 +122,7 @@ These are the most important decisions when configuring a Mongo vCore cluster. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -133,9 +133,9 @@ These are the most important decisions when configuring a Mongo vCore cluster. E
 | **AzureMongoCluster** (GeoReplica mode) | `sourceServerId` | `status.outputs.mongo_cluster_id` |
 | **AzureMongoCluster** (PointInTimeRestore mode) | `restore.sourceId` | `status.outputs.mongo_cluster_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -155,8 +155,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the group the cluster lives in
-- [**Azure Mongo Cluster User**](/cloud-catalog/azure-mongo-cluster-user) -- Entra-identity grants for passwordless application access
-- [**Azure Key Vault Secret**](/cloud-catalog/azure-key-vault-secret) -- the vaulted administrator password, referenced not copied
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the customer-managed encryption key (versionless reference)
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- attached identities, including the CMK unwrap identity
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the group the cluster lives in
+- [**Azure Mongo Cluster User**](/infra-catalog/azure-mongo-cluster-user) -- Entra-identity grants for passwordless application access
+- [**Azure Key Vault Secret**](/infra-catalog/azure-key-vault-secret) -- the vaulted administrator password, referenced not copied
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the customer-managed encryption key (versionless reference)
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- attached identities, including the CMK unwrap identity

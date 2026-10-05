@@ -36,10 +36,10 @@ type AzureExpressRouteCircuitPeering struct {
 	// Resource kind. Must be "AzureExpressRouteCircuitPeering".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// ExpressRoute circuit peering specification.
 	Spec *AzureExpressRouteCircuitPeeringSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureExpressRouteCircuitPeeringStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -89,7 +89,7 @@ func (x *AzureExpressRouteCircuitPeering) GetKind() string {
 	return ""
 }
 
-func (x *AzureExpressRouteCircuitPeering) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureExpressRouteCircuitPeering) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *AzureExpressRouteCircuitPeering) GetStatus() *AzureExpressRouteCircuitP
 // AzureExpressRouteCircuitPeeringStatus holds the deployment outputs.
 type AzureExpressRouteCircuitPeeringStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureExpressRouteCircuitPeeringStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureExpressRouteCircuitPeeringOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzureExpressRouteCircuitPeeringStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureExpressRouteCircuitPeeringStatus) GetOutputs() *AzureExpressRouteCircuitPeeringStackOutputs {
+func (x *AzureExpressRouteCircuitPeeringStatus) GetOutputs() *AzureExpressRouteCircuitPeeringOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_api_proto_rawD
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
 	"\x1fAzureExpressRouteCircuitPeeringR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
 	"\x04spec\x18\x04 \x01(\v2_.dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12y\n" +
-	"\x06status\x18\x05 \x01(\v2a.dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStatusR\x06status\"\xab\x01\n" +
-	"%AzureExpressRouteCircuitPeeringStatus\x12\x81\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2g.dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStackOutputsR\aoutputsB\xd4\x03\n" +
+	"\x06status\x18\x05 \x01(\v2a.dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStatusR\x06status\"\xa5\x01\n" +
+	"%AzureExpressRouteCircuitPeeringStatus\x12|\n" +
+	"\aoutputs\x18\x01 \x01(\v2b.dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringOutputsR\aoutputsB\xd4\x03\n" +
 	">com.dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1B\bApiProtoP\x01Z{github.com/plantonhq/planton/catalog/azure/azureexpressroutecircuitpeering/v1alpha1;azureexpressroutecircuitpeeringv1alpha1\xa2\x02\x04DPAA\xaa\x02:Dev.Planton.Azure.Azureexpressroutecircuitpeering.V1alpha1\xca\x02:Dev\\Planton\\Azure\\Azureexpressroutecircuitpeering\\V1alpha1\xe2\x02FDev\\Planton\\Azure\\Azureexpressroutecircuitpeering\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Azure::Azureexpressroutecircuitpeering::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_api_proto_rawDe
 
 var file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_api_proto_goTypes = []any{
-	(*AzureExpressRouteCircuitPeering)(nil),             // 0: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeering
-	(*AzureExpressRouteCircuitPeeringStatus)(nil),       // 1: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStatus
-	(*shared.CloudResourceMetadata)(nil),                // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureExpressRouteCircuitPeeringSpec)(nil),         // 3: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringSpec
-	(*AzureExpressRouteCircuitPeeringStackOutputs)(nil), // 4: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStackOutputs
+	(*AzureExpressRouteCircuitPeering)(nil),        // 0: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeering
+	(*AzureExpressRouteCircuitPeeringStatus)(nil),  // 1: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStatus
+	(*shared.CatalogObjectMetadata)(nil),           // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureExpressRouteCircuitPeeringSpec)(nil),    // 3: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringSpec
+	(*AzureExpressRouteCircuitPeeringOutputs)(nil), // 4: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringOutputs
 }
 var file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeering.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeering.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeering.spec:type_name -> dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringSpec
 	1, // 2: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeering.status:type_name -> dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStatus
-	4, // 3: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStatus.outputs:type_name -> dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStackOutputs
+	4, // 3: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStatus.outputs:type_name -> dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

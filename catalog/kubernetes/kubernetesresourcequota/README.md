@@ -2,9 +2,9 @@
 
 ## Overview
 
-**KubernetesResourceQuota** is a Planton component that governs resource consumption in one namespace. It manages a governance PAIR: a `core/v1` **ResourceQuota** carrying aggregate caps on what the namespace may consume in total, and — when `spec.limit_defaults` is set — a companion `core/v1` **LimitRange** applying per-object defaults and bounds to individual pods, containers, and claims. They are two Kubernetes objects but one governance story — "how much may this namespace consume, and what does a workload get when it doesn't say?" — which is why this kind manages both.
+**KubernetesResourceQuota** is a catalog kind that governs resource consumption in one namespace. It manages a governance PAIR: a `core/v1` **ResourceQuota** carrying aggregate caps on what the namespace may consume in total, and — when `spec.limit_defaults` is set — a companion `core/v1` **LimitRange** applying per-object defaults and bounds to individual pods, containers, and claims. They are two Kubernetes objects but one governance story — "how much may this namespace consume, and what does a workload get when it doesn't say?" — which is why this kind manages both.
 
-The component covers the complete `core/v1` ResourceQuotaSpec and LimitRangeSpec surfaces: compute, storage, and object-count caps; coarse scopes and fine-grained scope selectors; and per-container, per-pod, and per-claim defaults, bounds, and burst ratios.
+The kind covers the complete `core/v1` ResourceQuotaSpec and LimitRangeSpec surfaces: compute, storage, and object-count caps; coarse scopes and fine-grained scope selectors; and per-container, per-pod, and per-claim defaults, bounds, and burst ratios.
 
 ## Purpose
 
@@ -14,7 +14,7 @@ Without quotas, a namespace can consume the entire cluster — one runaway team,
 
 - **The pair is managed together**: A compute quota without container defaults makes the API reject pods that omit requests/limits — the classic quota footgun. Setting `limit_defaults` alongside `hard` keeps the namespace livable, and both objects share one name and one lifecycle
 - **Schema-level validation**: Conflicting scope pairs, the best_effort-caps-only-pods rule, the scope-selector operator contract, and defaults-on-container-only — all caught before anything reaches the cluster (these mirror the API server's own admission rejections)
-- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an infra chart can create the namespace and its governance in one run
+- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an Infra Chart can create the namespace and its governance in one run
 - **Dual IaC support**: Both Pulumi and Terraform implementations with feature parity
 - **Lifecycle management**: Integrated with Planton's deployment lifecycle for status tracking and outputs
 
@@ -22,7 +22,7 @@ Without quotas, a namespace can consume the entire cluster — one runaway team,
 
 The single most important thing to understand about ResourceQuota: **once a quota caps a compute resource (`requests.cpu`, `limits.memory`, ...), the API REJECTS pods that omit that request or limit.** A naive `kubectl run nginx` in a compute-governed namespace fails admission.
 
-The fix is per-container defaults, which upstream models as a separate LimitRange object. This component treats the pair as one unit:
+The fix is per-container defaults, which upstream models as a separate LimitRange object. This kind treats the pair as one unit:
 
 - **`spec.hard` alone** — the quota exists; every pod must explicitly declare the capped requests/limits or be rejected
 - **`spec.hard` + `spec.limit_defaults`** — the safe pairing; workloads that omit requests/limits inherit the defaults instead of being rejected
@@ -108,7 +108,7 @@ The namespace may now consume at most 10 CPUs / 20Gi of requests in aggregate, a
 - **`spec.scopes`** / **`spec.scope_selector`**: Filters on which objects the quota tracks
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton labels for tracking and governance; applied to both created objects
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -118,7 +118,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace (literal value or resolved reference; `default` when omitted)
 2. Merge user labels and annotations with standard Planton tracking labels

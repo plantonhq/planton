@@ -10,11 +10,11 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *kubernetesauthorizationpolicyv1alpha1.KubernetesAuthorizationPolicyStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesauthorizationpolicyv1alpha1.KubernetesAuthorizationPolicyIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubeProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
@@ -31,7 +31,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesauthorizationpolicyv1a
 
 // createAuthorizationPolicy creates the namespaced Istio AuthorizationPolicy using
 // the typed crd2pulumi SDK (istiosecurityv1.NewAuthorizationPolicy), consistent with
-// every other Planton Istio component. The typed approach catches field-name and
+// every other Planton Istio kind. The typed approach catches field-name and
 // structure errors at compile time. Each optional upstream block is only attached
 // when present, so unset fields fall through to istiod's defaults (e.g. an absent
 // `action` becomes the upstream default ALLOW).
@@ -44,7 +44,7 @@ func createAuthorizationPolicy(
 
 	// The typed resource's Spec field is a PtrInput satisfied by the Args value
 	// itself (not the SpecPtr() wrapper, which marshals to the wrong element
-	// type); assigned directly below, mirroring the sibling Istio components.
+	// type); assigned directly below, mirroring the sibling Istio kinds.
 	apSpec := istiosecurityv1.AuthorizationPolicySpecArgs{}
 
 	if selector := spec.GetSelector(); selector != nil && len(selector.GetMatchLabels()) > 0 {

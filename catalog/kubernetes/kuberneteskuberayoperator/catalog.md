@@ -4,7 +4,7 @@ Deploys the KubeRay operator -- the controller that turns `RayCluster` custom re
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **The ray.io CRDs** -- `rayclusters`, `rayjobs`, and `rayservices`, installed by Helm from the chart's `crds/` directory: installed once, never upgraded on chart bumps (apply the new release's CRD files manually when a bump changes them), and left on the cluster on uninstall. They are large (~1MB each) and install SERVER-SIDE.
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -60,11 +60,11 @@ spec:
 planton apply -f kuberay-operator.yaml
 ```
 
-This deploys the operator into the `ray-system` namespace, fenced to the `ml-team` and `data-team` namespaces: the operator watches ONLY that list and its per-namespace reconcile RBAC scopes to the same list. A Stack Job tracks the provisioning in real time.
+This deploys the operator into the `ray-system` namespace, fenced to the `ml-team` and `data-team` namespaces: the operator watches ONLY that list and its per-namespace reconcile RBAC scopes to the same list. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the operator to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the operator to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -102,15 +102,15 @@ These are the most important decisions when configuring the KubeRay Operator. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -128,6 +128,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the operator install
-- [**Ray Cluster**](/cloud-catalog/kubernetes-ray-cluster) -- the Ray clusters this operator reconciles, declared one per cluster with their own topology and lifecycle
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) -- scrapes the operator's metrics when `serviceMonitorEnabled` is set (and provides the CRDs the ServiceMonitor requires)
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the operator install
+- [**Ray Cluster**](/infra-catalog/kubernetes-ray-cluster) -- the Ray clusters this operator reconciles, declared one per cluster with their own topology and lifecycle
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) -- scrapes the operator's metrics when `serviceMonitorEnabled` is set (and provides the CRDs the ServiceMonitor requires)

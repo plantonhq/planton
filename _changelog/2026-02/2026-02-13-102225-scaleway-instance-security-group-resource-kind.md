@@ -16,16 +16,16 @@ The Scaleway cloud provider expansion requires firewall capabilities before Inst
 
 - No firewall resource existed for Scaleway in Planton
 - ScalewayInstance (R06) depends on `security_group_id` -- this is a prerequisite
-- The kapsule-environment infra chart needs security group support for worker node firewalling
+- The kapsule-environment Infra Chart needs security group support for worker node firewalling
 
 ## Solution / What's New
 
 A complete ScalewayInstanceSecurityGroup resource kind with:
 
-- **Proto schemas**: spec with `ScalewaySecurityGroupInboundRule`/`OutboundRule` messages, api, stack_input, stack_outputs
+- **Proto schemas**: spec with `ScalewaySecurityGroupInboundRule`/`OutboundRule` messages, api, iac_input, outputs
 - **Pulumi Go module**: Maps proto rules to `instance.SecurityGroupInboundRuleArgs`/`OutboundRuleArgs`, creates `instance.SecurityGroup`
 - **Terraform HCL module**: Uses `dynamic` blocks for inline inbound/outbound rules
-- **Documentation**: README.md with configuration reference, security best practices, and infra chart integration guide; examples.md with 8 real-world patterns
+- **Documentation**: README.md with configuration reference, security best practices, and Infra Chart integration guide; examples.md with 8 real-world patterns
 - **Validation tests**: Ginkgo/Gomega protovalidate tests covering valid and invalid inputs
 
 ### Key Design Decisions
@@ -44,8 +44,8 @@ A complete ScalewayInstanceSecurityGroup resource kind with:
 **Proto schemas (4)**:
 - `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/spec.proto`
 - `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/api.proto`
-- `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/stack_input.proto`
-- `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/stack_outputs.proto`
+- `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/iac_input.proto`
+- `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/outputs.proto`
 
 **Pulumi Go module (7)**:
 - `apis/.../iac/pulumi/main.go` -- Entry point
@@ -71,7 +71,7 @@ A complete ScalewayInstanceSecurityGroup resource kind with:
 ### Verification Results
 
 - `make protos` -- Zero warnings
-- `make generate-cloud-resource-kind-map` -- ScalewayInstanceSecurityGroup registered (15 remaining skip)
+- `make generate-catalog-kind-map` -- ScalewayInstanceSecurityGroup registered (15 remaining skip)
 - `go build` -- Clean
 - `go vet` -- Clean
 - `go test` -- All tests pass
@@ -82,13 +82,13 @@ A complete ScalewayInstanceSecurityGroup resource kind with:
 - Enables the Instance resource (R06) to reference security groups via StringValueOrRef
 - Supports both allowlist and denylist firewall models via default policies
 - Preserves Scaleway-native semantics (actions, protocols, stateful mode, SMTP security)
-- Ready for infra chart composition in kapsule-environment and instance-based charts
+- Ready for Infra Chart composition in kapsule-environment and instance-based charts
 
 ## Impact
 
 - **Resource count**: 4 of 19 Scaleway resource kinds now implemented
 - **Dependency chain**: Unblocks ScalewayInstance (R06) which depends on security_group_id
-- **Infra chart readiness**: Layer 0/1 standalone resource, composable via valueFrom references
+- **Infra Chart readiness**: Layer 0/1 standalone resource, composable via valueFrom references
 
 ## Related Work
 

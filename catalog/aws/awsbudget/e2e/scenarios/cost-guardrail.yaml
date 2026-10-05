@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsbudget
+    e2e-catalog-kind: awsbudget
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsIamRole,AwsIamUser"

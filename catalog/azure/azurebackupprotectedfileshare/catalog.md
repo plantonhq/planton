@@ -4,7 +4,7 @@ Puts one Azure Files share under a backup policy's protection in a Recovery Serv
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Protected file share** -- an ARM child of the vault (`.../protectionContainers/StorageContainer;storage;{sa-rg};{sa-name}/protectedItems/AzureFileShare;{system-name}`); Azure names the item by the share's SYSTEM name, which differs from its friendly name
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -55,7 +55,7 @@ spec:
 planton apply -f protected-share.yaml
 ```
 
-This binds the share to the policy's schedule and retention -- protection is registered immediately, and the first recovery point lands at the policy's next scheduled run. A Stack Job tracks the provisioning in real time.
+This binds the share to the policy's schedule and retention -- protection is registered immediately, and the first recovery point lands at the policy's next scheduled run. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -110,7 +110,7 @@ These are the most important decisions when configuring a protected file share. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -120,9 +120,9 @@ These are the most important decisions when configuring a protected file share. 
 | **AzureStorageShare** | `sourceFileShareName` | `status.outputs.share_name` |
 | **AzureBackupPolicyFileShare** | `backupPolicyId` | `status.outputs.backup_policy_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component is the end of the backup chain: its only output, `backup_protected_file_share_id`, is the protected item's ARM ID, and no downstream Cloud Resource consumes it. Restore operations happen through the vault, not through references to this binding.
+This kind is the end of the backup chain: its only output, `backup_protected_file_share_id`, is the protected item's ARM ID, and no downstream Infra Component consumes it. Restore operations happen through the vault, not through references to this binding.
 
 ## Common Patterns
 
@@ -134,8 +134,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the vault's resource group, where the protection lives
-- [**Azure Recovery Services Vault**](/cloud-catalog/azure-recovery-services-vault) -- the vault that protects the share
-- [**Azure Backup Container (Storage Account)**](/cloud-catalog/azure-backup-container-storage-account) -- the account registration this binding wires through
-- [**Azure Storage Share**](/cloud-catalog/azure-storage-share) -- the file share being protected
-- [**Azure Backup Policy (File Share)**](/cloud-catalog/azure-backup-policy-file-share) -- the schedule and retention the share binds to
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the vault's resource group, where the protection lives
+- [**Azure Recovery Services Vault**](/infra-catalog/azure-recovery-services-vault) -- the vault that protects the share
+- [**Azure Backup Container (Storage Account)**](/infra-catalog/azure-backup-container-storage-account) -- the account registration this binding wires through
+- [**Azure Storage Share**](/infra-catalog/azure-storage-share) -- the file share being protected
+- [**Azure Backup Policy (File Share)**](/infra-catalog/azure-backup-policy-file-share) -- the schedule and retention the share binds to

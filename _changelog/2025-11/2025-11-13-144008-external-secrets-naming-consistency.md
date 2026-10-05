@@ -2,7 +2,7 @@
 
 **Date**: November 13, 2025  
 **Type**: Refactoring  
-**Components**: API Definitions, Cloud Resource Registry, Documentation, Pulumi CLI Integration, Code Generation
+**Components**: API Definitions, Catalog Kind Registry, Documentation, Pulumi CLI Integration, Code Generation
 
 ## Summary
 
@@ -17,17 +17,17 @@ The External Secrets Operator resource was originally named `ExternalSecretsKube
 - **Redundant Context**: The resource lives under `provider/kubernetes/addon/`, making the "Kubernetes" suffix in the name redundant
 - **Verbose API Surface**: Users had to write `kind: ExternalSecretsKubernetes` in manifests, which is unnecessarily long
 - **Naming Inconsistency**: After recent refactorings (AltinityOperator, ElasticOperator, ExternalDns), this remained one of the few addons with a "Kubernetes" suffix
-- **Code Verbosity**: Proto message types like `ExternalSecretsKubernetesSpec` and `ExternalSecretsKubernetesStackInput` were excessively long
+- **Code Verbosity**: Proto message types like `ExternalSecretsKubernetesSpec` and `ExternalSecretsKubernetesIacInput` were excessively long
 - **Poor Developer Experience**: The redundancy made code harder to read and type
 
-The provider namespace (`dev.planton.provider.kubernetes.addon.externalsecrets.v1`) already clearly indicates this is a Kubernetes component, so including "Kubernetes" in every message name adds noise without value.
+The provider namespace (`dev.planton.provider.kubernetes.addon.externalsecrets.v1`) already clearly indicates this is a Kubernetes kind, so including "Kubernetes" in every message name adds noise without value.
 
 ## Solution / What's New
 
 Performed a comprehensive rename from `ExternalSecretsKubernetes` to `ExternalSecrets` across:
 
 1. **Proto API Definitions**: Updated all message types, field references, and validation constraints
-2. **Cloud Resource Registry**: Modified the enum entry in `cloud_resource_kind.proto`
+2. **Catalog Kind Registry**: Modified the enum entry in `catalog_kind.proto`
 3. **Documentation**: Updated user-facing documentation with the new naming
 4. **Implementation Code**: Modified Go code in Pulumi modules to use renamed types
 5. **Code Generation**: Enhanced the kind map generator to properly handle directory mappings for Kubernetes addons
@@ -83,33 +83,33 @@ message ExternalSecretsSpec { ... }
 message ExternalSecretsSpecContainer { ... }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/externalsecrets/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externalsecrets/v1/iac_input.proto`
 
 ```protobuf
 // Before
-message ExternalSecretsKubernetesStackInput {
+message ExternalSecretsKubernetesIacInput {
   ExternalSecretsKubernetes target = 1;
 }
 
 // After
-message ExternalSecretsStackInput {
+message ExternalSecretsIacInput {
   ExternalSecrets target = 1;
 }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/externalsecrets/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externalsecrets/v1/outputs.proto`
 
 ```protobuf
 // Before
-message ExternalSecretsKubernetesStackOutputs { ... }
+message ExternalSecretsKubernetesOutputs { ... }
 
 // After
-message ExternalSecretsStackOutputs { ... }
+message ExternalSecretsOutputs { ... }
 ```
 
 ### Registry Update
 
-**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/catalogkind/catalog_kind.proto`
 
 ```protobuf
 // Before
@@ -135,32 +135,32 @@ ExternalSecrets = 829 [(kind_meta) = {
 
 ```go
 // Before
-stackInput := &externalsecretskubernetesv1.ExternalSecretsKubernetesStackInput{}
+iacInput := &externalsecretskubernetesv1.ExternalSecretsKubernetesIacInput{}
 
 // After
-stackInput := &externalsecretsv1.ExternalSecretsStackInput{}
+iacInput := &externalsecretsv1.ExternalSecretsIacInput{}
 ```
 
 **File**: `apis/dev/planton/provider/kubernetes/addon/externalsecrets/v1/iac/pulumi/module/main.go`
 
 ```go
 // Before
-func Resources(ctx *pulumi.Context, in *externalsecretsv1.ExternalSecretsKubernetesStackInput) error
+func Resources(ctx *pulumi.Context, in *externalsecretsv1.ExternalSecretsKubernetesIacInput) error
 
 // After
-func Resources(ctx *pulumi.Context, in *externalsecretsv1.ExternalSecretsStackInput) error
+func Resources(ctx *pulumi.Context, in *externalsecretsv1.ExternalSecretsIacInput) error
 ```
 
 ### Code Generation Enhancement
 
-**File**: `pkg/crkreflect/codegen/main.go`
+**File**: `pkg/catalogkindreflect/codegen/main.go`
 
 Enhanced the kind map generator to properly handle directory name mappings for Kubernetes addons where the enum name differs from the directory name:
 
 ```go
 // Mapping for kubernetes addon directories where enum name differs from directory name
 dirName := lowerKind
-if kubernetesResourceType == cloudresourcekind.KubernetesCloudResourceCategory_addon {
+if kubernetesResourceType == catalogkind.KubernetesCatalogKindCategory_addon {
   addonDirMap := map[string]string{
     "altinityoperator":                "altinityoperator",
     "certmanagerkubernetes":           "certmanager",
@@ -193,7 +193,7 @@ Updated all occurrences in:
 ### Build Process
 
 1. **Proto Generation**: Ran `make protos` to regenerate Go stubs from updated proto files
-2. **Kind Map Regeneration**: Ran `make generate-cloud-resource-kind-map` to update reflection mappings
+2. **Kind Map Regeneration**: Ran `make generate-catalog-kind-map` to update reflection mappings
 3. **Compilation Verification**: Successfully compiled all Go packages
 4. **Import Verification**: Confirmed no broken imports or references
 
@@ -210,8 +210,8 @@ kind: ExternalSecrets  # vs. kind: ExternalSecretsKubernetes
 
 Proto message names are now more concise:
 - `ExternalSecretsSpec` (was `ExternalSecretsKubernetesSpec`)
-- `ExternalSecretsStackInput` (was `ExternalSecretsKubernetesStackInput`)
-- `ExternalSecretsStackOutputs` (was `ExternalSecretsKubernetesStackOutputs`)
+- `ExternalSecretsIacInput` (was `ExternalSecretsKubernetesIacInput`)
+- `ExternalSecretsOutputs` (was `ExternalSecretsKubernetesOutputs`)
 
 ### Naming Consistency
 
@@ -284,25 +284,25 @@ Similar patterns should be evaluated for remaining addons to establish uniform n
 **Proto Definitions** (4 files):
 - `api.proto` - Main API message types
 - `spec.proto` - Spec and container message types
-- `stack_input.proto` - Stack input message type
-- `stack_outputs.proto` - Stack outputs message type
+- `iac_input.proto` - IaC input message type
+- `outputs.proto` - Outputs message type
 
 **Registry** (1 file):
-- `cloud_resource_kind.proto` - Enum entry
+- `catalog_kind.proto` - Enum entry
 
 **Documentation** (1 file):
-- `docs/README.md` - Component documentation
+- `docs/README.md` - Kind documentation
 
 **Implementation** (2 files):
-- `iac/pulumi/main.go` - Stack input type reference
+- `iac/pulumi/main.go` - IaC input type reference
 - `iac/pulumi/module/main.go` - Function signature
 
 **Code Generation** (1 file):
-- `pkg/crkreflect/codegen/main.go` - Directory mapping logic
+- `pkg/catalogkindreflect/codegen/main.go` - Directory mapping logic
 
 **Generated Files**:
 - `*.pb.go` files (auto-regenerated from proto definitions)
-- `pkg/crkreflect/kind_map_gen.go` (auto-generated from codegen)
+- `pkg/catalogkindreflect/kind_map_gen.go` (auto-generated from codegen)
 
 **Total**: 9 manually modified files + generated artifacts
 

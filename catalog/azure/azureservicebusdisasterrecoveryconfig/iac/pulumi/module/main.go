@@ -8,13 +8,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureservicebusdisasterrecoveryconfigv1alpha1.AzureServiceBusDisasterRecoveryConfigStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureservicebusdisasterrecoveryconfigv1alpha1.AzureServiceBusDisasterRecoveryConfigIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -56,7 +56,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureservicebusdisasterrecoveryc
 		return errors.Wrapf(err, "failed to create Service Bus disaster-recovery config %s", spec.AliasName)
 	}
 
-	// Export stack outputs. The alias connection strings are what DR-aware
+	// Export outputs. The alias connection strings are what DR-aware
 	// clients hold: they address the alias DNS name, so a failover needs no
 	// client reconfiguration.
 	ctx.Export(OpDisasterRecoveryConfigId, createdPairing.ID())

@@ -3,7 +3,7 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # Scope correction, verified against the provider's own permission-group
 # inventory (retrieved 2026-08-22): although the spec's account_id/zone_id
@@ -15,7 +15,7 @@
 # the spec uses. (The docs reference page's zone table listing is not
 # reproduced by the provider's inventory API.)
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflarezerotrustaccessgroup
 spec:

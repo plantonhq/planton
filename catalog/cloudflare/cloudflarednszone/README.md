@@ -142,9 +142,10 @@ spec:
 | `status` | The zone status on Cloudflare |
 | `dnssec_ds` and friends | DS record material to enter at your registrar (only when DNSSEC is enabled) |
 
+Read them from the deployed resource, under `status.outputs` (`zoneId`, `nameservers`, and so on):
+
 ```bash
-planton output zone_id
-planton output nameservers
+planton get CloudflareDnsZone my-zone -o yaml
 ```
 
 ## Zone Hold and Plan
@@ -171,7 +172,7 @@ is active and the DS records are accepted by the registrar.
 
 ## Terraform and Pulumi
 
-This component supports both Pulumi (default) and Terraform, producing identical infrastructure:
+This kind supports both Pulumi (default) and Terraform, producing identical infrastructure:
 
 - **Pulumi**: `iac/pulumi/` — Go-based implementation
 - **Terraform**: `iac/tf/` — HCL-based implementation
@@ -183,7 +184,7 @@ This component supports both Pulumi (default) and Terraform, producing identical
 
 ## License
 
-This component is part of Planton and follows the same license.
+This kind is part of Planton and follows the same license.
 
 ---
 

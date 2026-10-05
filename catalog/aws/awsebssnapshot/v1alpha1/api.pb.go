@@ -27,7 +27,7 @@ type AwsEbsSnapshot struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsEbsSnapshotSpec           `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsEbsSnapshotStatus         `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsEbsSnapshot) GetKind() string {
 	return ""
 }
 
-func (x *AwsEbsSnapshot) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsEbsSnapshot) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsEbsSnapshot) GetStatus() *AwsEbsSnapshotStatus {
 }
 
 type AwsEbsSnapshotStatus struct {
-	state         protoimpl.MessageState      `protogen:"open.v1"`
-	Outputs       *AwsEbsSnapshotStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Outputs       *AwsEbsSnapshotOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsEbsSnapshotStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsebssnapshot_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsEbsSnapshotStatus) GetOutputs() *AwsEbsSnapshotStackOutputs {
+func (x *AwsEbsSnapshotStatus) GetOutputs() *AwsEbsSnapshotOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsebssnapshot_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eAwsEbsSnapshotR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotStatusR\x06status\"u\n" +
-	"\x14AwsEbsSnapshotStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotStackOutputsR\aoutputsB\xd1\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotStatusR\x06status\"p\n" +
+	"\x14AwsEbsSnapshotStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotOutputsR\aoutputsB\xd1\x02\n" +
 	"+com.dev.planton.aws.awsebssnapshot.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/aws/awsebssnapshot/v1alpha1;awsebssnapshotv1alpha1\xa2\x02\x04DPAA\xaa\x02'Dev.Planton.Aws.Awsebssnapshot.V1alpha1\xca\x02'Dev\\Planton\\Aws\\Awsebssnapshot\\V1alpha1\xe2\x023Dev\\Planton\\Aws\\Awsebssnapshot\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Aws::Awsebssnapshot::V1alpha1b\x06proto3"
 
 var (
@@ -177,15 +177,15 @@ var file_catalog_aws_awsebssnapshot_v1alpha1_api_proto_msgTypes = make([]protoim
 var file_catalog_aws_awsebssnapshot_v1alpha1_api_proto_goTypes = []any{
 	(*AwsEbsSnapshot)(nil),               // 0: dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshot
 	(*AwsEbsSnapshotStatus)(nil),         // 1: dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsEbsSnapshotSpec)(nil),           // 3: dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotSpec
-	(*AwsEbsSnapshotStackOutputs)(nil),   // 4: dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotStackOutputs
+	(*AwsEbsSnapshotOutputs)(nil),        // 4: dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotOutputs
 }
 var file_catalog_aws_awsebssnapshot_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshot.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshot.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshot.spec:type_name -> dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotSpec
 	1, // 2: dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshot.status:type_name -> dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotStatus
-	4, // 3: dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotStatus.outputs:type_name -> dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotStackOutputs
+	4, // 3: dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotStatus.outputs:type_name -> dev.planton.aws.awsebssnapshot.v1alpha1.AwsEbsSnapshotOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

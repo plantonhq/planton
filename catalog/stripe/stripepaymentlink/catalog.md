@@ -1,10 +1,10 @@
 # Stripe Payment Link
 
-Declares a Stripe-hosted payment page at a public address -- a one-time purchase, a subscription with a free trial -- that sells declared prices. One Cloud Resource per page.
+Declares a Stripe-hosted payment page at a public address -- a one-time purchase, a subscription with a free trial -- that sells declared prices. One Infra Component per page.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module creates one payment link in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module creates one payment link in the Stripe account your Stripe connection's key belongs to:
 
 - **The page** -- at a public address that takes payments from the moment it is created
 - **What it sells** -- one or more prices, with quantities, and optional extras
@@ -21,7 +21,7 @@ When you deploy this Cloud Resource, the OpenTofu module creates one payment lin
 ### Stripe Account
 
 - **The connection's restricted key** needs **Payment Links: Write** (Stripe Dashboard: Developers, API keys, the key's permissions).
-- **The prices** -- Stripe Price Cloud Resources, or existing prices' ids.
+- **The prices** -- Stripe Price Infra Components, or existing prices' ids.
 - **Terms of service** -- set your terms URL in the Dashboard's public details before requiring terms acceptance.
 - **One owner**: declare a link here only if your application and the Dashboard do not also manage it.
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f stripe-payment-link.yaml
 ```
 
-A Stack Job tracks the change in real time. The page takes payments as soon as the job finishes.
+An Infra Job tracks the change in real time. The page takes payments as soon as the job finishes.
 
 ### InfraChart
 
@@ -98,14 +98,14 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Field | Kind | Output |
 |-------|------|--------|
 | `lineItems[].price`, `optionalItems[].price` | Stripe Price | `status.outputs.id` |
 | `shippingOptions[].shippingRate` | Stripe Shipping Rate | `status.outputs.id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -125,6 +125,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Stripe Price**](/cloud-catalog/stripe-price) -- the prices the page sells.
-- [**Stripe Shipping Rate**](/cloud-catalog/stripe-shipping-rate) -- the shipping options it offers.
-- [**Stripe Promotion Code**](/cloud-catalog/stripe-promotion-code) -- codes buyers enter when promotion codes are allowed.
+- [**Stripe Price**](/infra-catalog/stripe-price) -- the prices the page sells.
+- [**Stripe Shipping Rate**](/infra-catalog/stripe-shipping-rate) -- the shipping options it offers.
+- [**Stripe Promotion Code**](/infra-catalog/stripe-promotion-code) -- codes buyers enter when promotion codes are allowed.

@@ -4,7 +4,7 @@ Deploys an EFS access point — an application-specific entry point into an exis
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EFS Access Point** -- an entry point into the referenced file system (up to 1,000 access points per file system)
 - **Enforced POSIX Identity** -- configured only when `posixUser` is provided; every file operation through the access point uses this UID/GID (plus up to 16 secondary GIDs), regardless of the client's own identity
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An EFS file system** -- the access point enters exactly one file system. Reference an [AWS Elastic File System](/cloud-catalog/aws-elastic-file-system) Cloud Resource or provide a literal file system ID (`fs-...`).
+- **An EFS file system** -- the access point enters exactly one file system. Reference an [AWS Elastic File System](/infra-catalog/aws-elastic-file-system) Infra Component or provide a literal file system ID (`fs-...`).
 - **A plan for the root path** -- if `rootDirectory.path` does not exist on the file system yet, provide `creationInfo` (owner UID/GID + octal permissions). Without it, mounting an access point whose path does not exist fails — AWS validates existence at mount time, not create time.
 
 ## Deploy
@@ -63,7 +63,7 @@ spec:
 planton apply -f efs-access-point.yaml
 ```
 
-This creates an access point that enforces UID/GID 1000 for all file operations and exposes `/app-data` as the root, creating the directory with `0755` permissions on first mount. A Stack Job tracks the provisioning in real time.
+This creates an access point that enforces UID/GID 1000 for all file operations and exposes `/app-data` as the root, creating the directory with `0755` permissions on first mount. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,15 +94,15 @@ These are the most important decisions when configuring an EFS access point. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsElasticFileSystem** | `fileSystemId` | `status.outputs.file_system_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -123,7 +123,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Elastic File System**](/cloud-catalog/aws-elastic-file-system) -- the file system this access point enters
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) -- mounts the access point via its file system config (`access_point_arn`)
-- [**AWS ECS Task Definition**](/cloud-catalog/aws-ecs-task-definition) -- mounts the access point in an EFS volume (`access_point_id`)
-- [**AWS Batch Job Definition**](/cloud-catalog/aws-batch-job-definition) -- mounts the access point in container EFS volumes (`access_point_id`)
+- [**AWS Elastic File System**](/infra-catalog/aws-elastic-file-system) -- the file system this access point enters
+- [**AWS Lambda**](/infra-catalog/aws-lambda) -- mounts the access point via its file system config (`access_point_arn`)
+- [**AWS ECS Task Definition**](/infra-catalog/aws-ecs-task-definition) -- mounts the access point in an EFS volume (`access_point_id`)
+- [**AWS Batch Job Definition**](/infra-catalog/aws-batch-job-definition) -- mounts the access point in container EFS volumes (`access_point_id`)

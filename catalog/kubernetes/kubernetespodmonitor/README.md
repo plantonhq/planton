@@ -141,14 +141,14 @@ spec:
 
 The pods a monitor scrapes are matched by label at discovery time, not referenced, so the diagram draws no edge to them. The registry prerequisite orders the monitor after the KubernetesKubePrometheusStack that installs its CRDs.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `pod_monitor_name` | Name of the created PodMonitor (equals `metadata.name`). |
 | `namespace` | Namespace the PodMonitor was created in. |
 
-## Related Components
+## Related Kinds
 
 - **KubernetesKubePrometheusStack**: installs the CRDs and the Prometheus that scrapes through the monitor.
 - **KubernetesServiceMonitor**: scrapes through a Service's endpoints.

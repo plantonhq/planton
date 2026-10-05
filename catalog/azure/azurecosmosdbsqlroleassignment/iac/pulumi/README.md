@@ -1,7 +1,7 @@
 # AzureCosmosdbSqlRoleAssignment - Pulumi Module
 
 Pulumi implementation for the AzureCosmosdbSqlRoleAssignment
-component.
+kind.
 
 ## Architecture
 
@@ -32,6 +32,6 @@ cosmosdb.SqlRoleAssignment (single resource)
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless web-identity (OIDC), and
 ambient credential chains. Never construct a provider inline.

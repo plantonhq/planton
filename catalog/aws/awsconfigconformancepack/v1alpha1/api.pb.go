@@ -27,7 +27,7 @@ type AwsConfigConformancePack struct {
 	state         protoimpl.MessageState          `protogen:"open.v1"`
 	ApiVersion    string                          `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                          `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata   `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata   `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsConfigConformancePackSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsConfigConformancePackStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsConfigConformancePack) GetKind() string {
 	return ""
 }
 
-func (x *AwsConfigConformancePack) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsConfigConformancePack) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsConfigConformancePack) GetStatus() *AwsConfigConformancePackStatus {
 }
 
 type AwsConfigConformancePackStatus struct {
-	state         protoimpl.MessageState                `protogen:"open.v1"`
-	Outputs       *AwsConfigConformancePackStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState           `protogen:"open.v1"`
+	Outputs       *AwsConfigConformancePackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsConfigConformancePackStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsconfigconformancepack_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsConfigConformancePackStatus) GetOutputs() *AwsConfigConformancePackStackOutputs {
+func (x *AwsConfigConformancePackStatus) GetOutputs() *AwsConfigConformancePackOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsconfigconformancepack_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18AwsConfigConformancePackR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
 	"\x04spec\x18\x04 \x01(\v2O.dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12i\n" +
-	"\x06status\x18\x05 \x01(\v2Q.dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackStatusR\x06status\"\x93\x01\n" +
-	"\x1eAwsConfigConformancePackStatus\x12q\n" +
-	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackStackOutputsR\aoutputsB\x97\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Q.dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackStatusR\x06status\"\x8e\x01\n" +
+	"\x1eAwsConfigConformancePackStatus\x12l\n" +
+	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackOutputsR\aoutputsB\x97\x03\n" +
 	"5com.dev.planton.aws.awsconfigconformancepack.v1alpha1B\bApiProtoP\x01Zkgithub.com/plantonhq/planton/catalog/aws/awsconfigconformancepack/v1alpha1;awsconfigconformancepackv1alpha1\xa2\x02\x04DPAA\xaa\x021Dev.Planton.Aws.Awsconfigconformancepack.V1alpha1\xca\x021Dev\\Planton\\Aws\\Awsconfigconformancepack\\V1alpha1\xe2\x02=Dev\\Planton\\Aws\\Awsconfigconformancepack\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Aws::Awsconfigconformancepack::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awsconfigconformancepack_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_aws_awsconfigconformancepack_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsconfigconformancepack_v1alpha1_api_proto_goTypes = []any{
-	(*AwsConfigConformancePack)(nil),             // 0: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePack
-	(*AwsConfigConformancePackStatus)(nil),       // 1: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsConfigConformancePackSpec)(nil),         // 3: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackSpec
-	(*AwsConfigConformancePackStackOutputs)(nil), // 4: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackStackOutputs
+	(*AwsConfigConformancePack)(nil),        // 0: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePack
+	(*AwsConfigConformancePackStatus)(nil),  // 1: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsConfigConformancePackSpec)(nil),    // 3: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackSpec
+	(*AwsConfigConformancePackOutputs)(nil), // 4: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackOutputs
 }
 var file_catalog_aws_awsconfigconformancepack_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePack.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePack.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePack.spec:type_name -> dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackSpec
 	1, // 2: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePack.status:type_name -> dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackStatus
-	4, // 3: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackStatus.outputs:type_name -> dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackStackOutputs
+	4, // 3: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackStatus.outputs:type_name -> dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

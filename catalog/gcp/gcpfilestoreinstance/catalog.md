@@ -4,7 +4,7 @@ Deploys a fully managed NFS file server on Google Cloud Filestore with configura
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Filestore Instance** -- a managed NFS file server in the specified project and location, configured with the chosen tier, capacity, and protocol
 - **File Share** -- a single NFS export with the specified name and capacity, mountable at `<ip>:/<share_name>`
@@ -19,13 +19,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the Filestore instance will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
-- **A VPC network** for the instance to connect to. Provide the network NAME directly or reference a GcpVpcNetwork Cloud Resource via ValueFromRef — the Filestore API rejects self-link URLs for same-project networks. The network configuration is immutable after creation.
+- **A GCP project** where the Filestore instance will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
+- **A VPC network** for the instance to connect to. Provide the network NAME directly or reference a GcpVpcNetwork Infra Component via ValueFromRef — the Filestore API rejects self-link URLs for same-project networks. The network configuration is immutable after creation.
 - **Private Services Access** (only for PRIVATE_SERVICE_ACCESS connect mode) -- the VPC must have a private services connection configured.
 
 ## Deploy
@@ -63,7 +63,7 @@ spec:
 planton apply -f filestore.yaml
 ```
 
-This creates a BASIC_SSD Filestore instance with a 2.5 TiB file share named `data`, connected to the specified VPC via DIRECT_PEERING. No CMEK, deletion protection, or performance tuning is configured. A Stack Job tracks the provisioning in real time.
+This creates a BASIC_SSD Filestore instance with a 2.5 TiB file share named `data`, connected to the specified VPC via DIRECT_PEERING. No CMEK, deletion protection, or performance tuning is configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -111,7 +111,7 @@ These are the most important decisions when configuring a Filestore instance. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -123,9 +123,9 @@ These are the most important decisions when configuring a Filestore instance. Ex
 The network reference resolves the VPC's plain NAME output — the Filestore API
 rejects self-link URLs for same-project networks.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -147,6 +147,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the instance is created
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- provides the VPC network for instance connectivity
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides the encryption key for customer-managed encryption at rest
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the instance is created
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC network for instance connectivity
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides the encryption key for customer-managed encryption at rest

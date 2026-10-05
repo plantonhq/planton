@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpglobaladdress.v1alpha1;
 
 // Outputs produced after provisioning a GCP global address.
-message GcpGlobalAddressStackOutputs {
+message GcpGlobalAddressOutputs {
   // The reserved IP address or the start of the reserved CIDR range.
   // For EXTERNAL addresses this is a public IP. For INTERNAL VPC_PEERING addresses
   // this is the first address in the reserved range.

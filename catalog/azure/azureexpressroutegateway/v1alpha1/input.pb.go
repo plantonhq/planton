@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureExpressRouteGatewayStackInput is the input to the IaC modules
+// AzureExpressRouteGatewayIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureExpressRouteGatewayStackInput struct {
+type AzureExpressRouteGatewayIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ExpressRoute Gateway resource to deploy.
 	Target *AzureExpressRouteGateway `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureExpressRouteGatewayStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureExpressRouteGatewayStackInput) Reset() {
-	*x = AzureExpressRouteGatewayStackInput{}
+func (x *AzureExpressRouteGatewayIacInput) Reset() {
+	*x = AzureExpressRouteGatewayIacInput{}
 	mi := &file_catalog_azure_azureexpressroutegateway_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureExpressRouteGatewayStackInput) String() string {
+func (x *AzureExpressRouteGatewayIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureExpressRouteGatewayStackInput) ProtoMessage() {}
+func (*AzureExpressRouteGatewayIacInput) ProtoMessage() {}
 
-func (x *AzureExpressRouteGatewayStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureExpressRouteGatewayIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureexpressroutegateway_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureExpressRouteGatewayStackInput) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureExpressRouteGatewayStackInput.ProtoReflect.Descriptor instead.
-func (*AzureExpressRouteGatewayStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureExpressRouteGatewayIacInput.ProtoReflect.Descriptor instead.
+func (*AzureExpressRouteGatewayIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureexpressroutegateway_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureExpressRouteGatewayStackInput) GetTarget() *AzureExpressRouteGateway {
+func (x *AzureExpressRouteGatewayIacInput) GetTarget() *AzureExpressRouteGateway {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureExpressRouteGatewayStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureExpressRouteGatewayIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azureexpressroutegateway_v1alpha1_input_proto protoreflec
 
 const file_catalog_azure_azureexpressroutegateway_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/azure/azureexpressroutegateway/v1alpha1/input.proto\x123dev.planton.azure.azureexpressroutegateway.v1alpha1\x1a9catalog/azure/azureexpressroutegateway/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xdc\x01\n" +
-	"\"AzureExpressRouteGatewayStackInput\x12e\n" +
+	";catalog/azure/azureexpressroutegateway/v1alpha1/input.proto\x123dev.planton.azure.azureexpressroutegateway.v1alpha1\x1a9catalog/azure/azureexpressroutegateway/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xda\x01\n" +
+	" AzureExpressRouteGatewayIacInput\x12e\n" +
 	"\x06target\x18\x01 \x01(\v2M.dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xa5\x03\n" +
 	"7com.dev.planton.azure.azureexpressroutegateway.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azureexpressroutegateway_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_azure_azureexpressroutegateway_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureexpressroutegateway_v1alpha1_input_proto_goTypes = []any{
-	(*AzureExpressRouteGatewayStackInput)(nil), // 0: dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayStackInput
-	(*AzureExpressRouteGateway)(nil),           // 1: dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGateway
-	(*azure.AzureProviderConfig)(nil),          // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureExpressRouteGatewayIacInput)(nil), // 0: dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayIacInput
+	(*AzureExpressRouteGateway)(nil),         // 1: dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGateway
+	(*azure.AzureProviderConfig)(nil),        // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureexpressroutegateway_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayStackInput.target:type_name -> dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGateway
-	2, // 1: dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayIacInput.target:type_name -> dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGateway
+	2, // 1: dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

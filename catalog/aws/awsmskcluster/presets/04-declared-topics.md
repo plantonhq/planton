@@ -6,7 +6,7 @@ An MSK cluster whose topics deploy WITH it: three contract topics (an event stre
 
 - Event-driven architectures where topics are part of the platform contract between services, not application-owned scratch space
 - Teams that disable `auto.create.topics.enable` (this preset does) so a typo'd topic name fails loudly instead of materializing an accidental single-replica topic
-- Infra charts wiring a cluster plus its consumers: the `topic_arns` output exposes each topic for IAM policy scoping
+- Infra Charts wiring a cluster plus its consumers: the `topic_arns` output exposes each topic for IAM policy scoping
 
 ## Configuration Highlights
 
@@ -24,7 +24,7 @@ An MSK cluster whose topics deploy WITH it: three contract topics (an event stre
 
 ## Cost Estimate
 
-The cost drivers are the three kafka.m5.large brokers (billed hourly, the dominant line) plus their EBS storage; the declared topics themselves add no charge beyond the data they retain. The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awsmskcluster.yaml` — computed from the pinned price book, never hand-typed here.
+The cost drivers are the three kafka.m5.large brokers (billed hourly, the dominant line) plus their EBS storage; the declared topics themselves add no charge beyond the data they retain. The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awsmskcluster.yaml` — computed from the pinned price book, never hand-typed here.
 
 ## Customization
 

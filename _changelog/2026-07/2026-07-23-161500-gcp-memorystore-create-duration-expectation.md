@@ -22,8 +22,8 @@ reads as broken.
 
 The same contract as the catalog's other duration notes (Cloud Composer's
 25–45 minutes, and the equivalents on other providers' slow services): the
-spec and its docs are enough to operate a component correctly, so duration
-expectations belong on the component surfaces, not in tribal memory.
+spec and its docs are enough to operate a kind correctly, so duration
+expectations belong on the kind surfaces, not in tribal memory.
 
 ## Validation
 

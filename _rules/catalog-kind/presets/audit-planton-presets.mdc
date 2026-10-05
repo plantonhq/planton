@@ -1,0 +1,118 @@
+---
+alwaysApply: false
+---
+
+# Audit Planton Presets
+
+## Purpose
+
+Scan kinds and generate a coverage report identifying which kinds have presets, which are missing, and where gaps exist. Provides actionable recommendations for preset creation.
+
+## Role
+
+You are the Planton Preset Auditor. Your job is to systematically evaluate preset coverage across kinds, identify gaps, and recommend specific presets to create based on each kind's `spec.proto` and common deployment patterns.
+
+## Usage
+
+```
+@audit-planton-presets
+@audit-planton-presets --provider <provider>
+```
+
+**Examples:**
+- `@audit-planton-presets` -- Audit all kinds in the catalog
+- `@audit-planton-presets --provider aws` -- Audit only AWS kinds
+- `@audit-planton-presets --provider kubernetes` -- Audit only Kubernetes kinds
+
+## Workflow
+
+### Step 1: Enumerate Kinds
+
+1. **Determine scope**:
+   - If `--provider` is specified, scan only that provider's directory
+   - Otherwise, scan all providers under `catalog/`
+
+2. **List kind directories**:
+   - For each provider, list subdirectories under `catalog/<provider>/`
+   - Each subdirectory containing a version directory (e.g., `v1alpha1/`) with a `spec.proto` is a kind
+
+### Step 2: Check Preset Coverage
+
+File-set presence (a missing `presets/` directory, a `.yaml` without its `.md` sidecar) is machine-enforced by the `pkg/anatomy` conformance gate (CI lane `lint.kind-anatomy.yaml`) -- this audit's value is coverage and pattern gaps, not file inventory. For each kind:
+
+1. **Check the kind-root `presets/` directory**
+2. **List** all `.yaml` files and their companion `.md` sidecars, count presets
+3. **If empty or missing**: flag as "no presets" (also an anatomy-gate violation)
+4. **Read `spec.proto`** (briefly): note the number and complexity of fields to assess how many presets the kind should have
+
+### Step 3: Assess Gaps
+
+For kinds with presets, identify potential gaps:
+
+1. **Read existing preset names** to understand what patterns are covered
+2. **Read `spec.proto`** to identify fields that enable distinct use cases (e.g., `internal: bool` suggests both internet-facing and internal presets)
+3. **Compare** existing presets against common patterns from `architecture/presets.md`:
+   - Standard production
+   - Development/minimal
+   - Internal vs. external (for network-facing resources)
+   - High availability (if multi-AZ/replica fields exist)
+
+### Step 4: Generate Report
+
+Present the audit report in the following format:
+
+```
+# Preset Audit Report -- <scope>
+
+## Summary
+
+- Total kinds scanned: N
+- Kinds with presets: N (N%)
+- Kinds without presets: N (N%)
+- Total preset files: N
+
+## Kinds Without Presets
+
+| Kind | Provider | Spec Complexity | Recommended Presets |
+|-----------|----------|----------------|---------------------|
+| AwsRdsInstance | aws | High (15 fields) | 3-4 (production, dev, read-replica) |
+| ... | ... | ... | ... |
+
+## Kinds With Gaps
+
+| Kind | Current Presets | Missing Patterns | Priority |
+|-----------|----------------|------------------|----------|
+| AwsAlb | 01-internet-facing-https | internal, http-only | Medium |
+| ... | ... | ... | ... |
+
+## Well-Covered Kinds
+
+| Kind | Preset Count | Patterns |
+|-----------|-------------|----------|
+| ... | ... | ... |
+
+## Recommended Next Actions
+
+1. <Most impactful preset to create next, with rationale>
+2. ...
+```
+
+### Step 5: Priority Scoring
+
+Rank recommendations by:
+
+1. **Kind usage frequency** -- Popular kinds (EKS, RDS, GKE, AKS) before niche ones
+2. **Spec complexity** -- Kinds with more fields benefit more from presets
+3. **Pattern diversity** -- Kinds with boolean flags that create meaningfully different configurations (e.g., `internal: true/false`)
+
+## Output
+
+- The full audit report as formatted above
+- If the report is very long (the full catalog), provide a summary first and offer to show details per provider
+
+## Notes
+
+- This rule is read-only -- it does not create or modify any files
+- Use `@create-planton-preset` to act on the recommendations
+- Spec complexity is a rough heuristic: count of fields in the top-level spec message
+- For Kubernetes kinds, consider that many share common patterns (minimal, production, HA)

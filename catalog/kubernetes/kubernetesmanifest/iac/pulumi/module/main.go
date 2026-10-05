@@ -20,22 +20,22 @@ import (
 // the provider resolves each kind's scope before defaulting. The Terraform
 // module reaches the same outcome with a per-document override_namespace on
 // documents that declare no namespace.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesmanifestv1alpha1.KubernetesManifestStackInput) error {
-	locals, err := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesmanifestv1alpha1.KubernetesManifestIacInput) error {
+	locals, err := initializeLocals(ctx, iacInput)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize locals")
 	}
 
-	// Create kubernetes provider from the credential in the stack-input,
+	// Create kubernetes provider from the credential in the iac-input,
 	// anchored to the spec namespace (see namespace semantics above).
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfigAndNamespace(ctx,
-		stackInput.ProviderConfig, "kubernetes", locals.Namespace)
+		iacInput.ProviderConfig, "kubernetes", locals.Namespace)
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

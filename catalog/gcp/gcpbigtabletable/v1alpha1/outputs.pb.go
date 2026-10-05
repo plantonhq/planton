@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a Cloud Bigtable table.
-type GcpBigtableTableStackOutputs struct {
+type GcpBigtableTableOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified table resource path
 	// (projects/{project}/instances/{instance}/tables/{table}).
@@ -38,20 +38,20 @@ type GcpBigtableTableStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpBigtableTableStackOutputs) Reset() {
-	*x = GcpBigtableTableStackOutputs{}
+func (x *GcpBigtableTableOutputs) Reset() {
+	*x = GcpBigtableTableOutputs{}
 	mi := &file_catalog_gcp_gcpbigtabletable_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpBigtableTableStackOutputs) String() string {
+func (x *GcpBigtableTableOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpBigtableTableStackOutputs) ProtoMessage() {}
+func (*GcpBigtableTableOutputs) ProtoMessage() {}
 
-func (x *GcpBigtableTableStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpBigtableTableOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpbigtabletable_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *GcpBigtableTableStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpBigtableTableStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpBigtableTableStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpBigtableTableOutputs.ProtoReflect.Descriptor instead.
+func (*GcpBigtableTableOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbigtabletable_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpBigtableTableStackOutputs) GetTableId() string {
+func (x *GcpBigtableTableOutputs) GetTableId() string {
 	if x != nil {
 		return x.TableId
 	}
 	return ""
 }
 
-func (x *GcpBigtableTableStackOutputs) GetTableName() string {
+func (x *GcpBigtableTableOutputs) GetTableName() string {
 	if x != nil {
 		return x.TableName
 	}
 	return ""
 }
 
-func (x *GcpBigtableTableStackOutputs) GetInstanceName() string {
+func (x *GcpBigtableTableOutputs) GetInstanceName() string {
 	if x != nil {
 		return x.InstanceName
 	}
@@ -93,8 +93,8 @@ var File_catalog_gcp_gcpbigtabletable_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpbigtabletable_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpbigtabletable/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpbigtabletable.v1alpha1\"}\n" +
-	"\x1cGcpBigtableTableStackOutputs\x12\x19\n" +
+	"3catalog/gcp/gcpbigtabletable/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpbigtabletable.v1alpha1\"x\n" +
+	"\x17GcpBigtableTableOutputs\x12\x19\n" +
 	"\btable_id\x18\x01 \x01(\tR\atableId\x12\x1d\n" +
 	"\n" +
 	"table_name\x18\x02 \x01(\tR\ttableName\x12#\n" +
@@ -115,7 +115,7 @@ func file_catalog_gcp_gcpbigtabletable_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpbigtabletable_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpbigtabletable_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpBigtableTableStackOutputs)(nil), // 0: dev.planton.gcp.gcpbigtabletable.v1alpha1.GcpBigtableTableStackOutputs
+	(*GcpBigtableTableOutputs)(nil), // 0: dev.planton.gcp.gcpbigtabletable.v1alpha1.GcpBigtableTableOutputs
 }
 var file_catalog_gcp_gcpbigtabletable_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -14,7 +14,7 @@ import (
 	"github.com/plantonhq/planton/internal/cli/ui"
 	"github.com/plantonhq/planton/internal/cli/workspace"
 	"github.com/plantonhq/planton/internal/manifest/protodefaults"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/protobufyaml"
 	"github.com/plantonhq/planton/pkg/ulidgen"
 	"github.com/plantonhq/planton/pkg/yamldiag"
@@ -115,12 +115,12 @@ func LoadManifestBytes(manifestYamlBytes []byte, sourceName string) (proto.Messa
 
 	kindName, err := extractKindName(manifestYamlBytes)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed to extract cloudResourceKind from %s", sourceName)
+		return nil, errors.Wrapf(err, "failed to extract catalogKind from %s", sourceName)
 	}
 
-	cloudResourceKind := crkreflect.KindFromString(kindName)
+	catalogKind := catalogkindreflect.KindFromString(kindName)
 
-	manifest := crkreflect.ToMessageMap[cloudResourceKind]
+	manifest := catalogkindreflect.ToMessageMap[catalogKind]
 
 	if manifest == nil {
 		return nil, formatUnsupportedResourceError(kindName)
@@ -152,7 +152,7 @@ func LoadManifestBytes(manifestYamlBytes []byte, sourceName string) (proto.Messa
 }
 
 // extractKindName reads the top-level 'kind' key from raw manifest YAML. It is the
-// in-memory equivalent of crkreflect.ExtractKindFromTargetManifest so byte- and
+// in-memory equivalent of catalogkindreflect.ExtractKindFromTargetManifest so byte- and
 // path-based loading resolve kinds identically.
 func extractKindName(manifestYamlBytes []byte) (string, error) {
 	var yamlData map[string]interface{}
@@ -221,7 +221,7 @@ func isManifestPathUrl(manifestPath string) (bool, error) {
 	return true, nil
 }
 
-// formatUnsupportedResourceError creates a helpful error message when a cloud resource kind is not supported
+// formatUnsupportedResourceError creates a helpful error message when a catalog kind is not supported
 func formatUnsupportedResourceError(kindName string) error {
 	// Create colored output functions
 	red := color.New(color.FgRed, color.Bold).SprintFunc()
@@ -234,12 +234,12 @@ func formatUnsupportedResourceError(kindName string) error {
 
 	msg.WriteString("\n")
 	msg.WriteString(red("╔═══════════════════════════════════════════════════════════════════════════════╗") + "\n")
-	msg.WriteString(red("║") + bold("                ⚠️  UNSUPPORTED CLOUD RESOURCE KIND                           ") + red("║") + "\n")
+	msg.WriteString(red("║") + bold("                ⚠️  UNSUPPORTED CATALOG KIND                           ") + red("║") + "\n")
 	msg.WriteString(red("╚═══════════════════════════════════════════════════════════════════════════════╝") + "\n\n")
 
 	msg.WriteString(yellow("Resource Kind:") + " " + bold(kindName) + "\n\n")
 
-	msg.WriteString(red("❌ This cloud resource kind is not recognized.\n\n"))
+	msg.WriteString(red("❌ This catalog kind is not recognized.\n\n"))
 
 	msg.WriteString(cyan("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"))
 	msg.WriteString(bold("                           🔧 HOW TO FIX\n"))
@@ -260,7 +260,7 @@ func formatUnsupportedResourceError(kindName string) error {
 
 	msg.WriteString(cyan("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"))
 
-	msg.WriteString(bold("💡 TIP: ") + "If you're developing a new cloud resource, ensure the proto files\n")
+	msg.WriteString(bold("💡 TIP: ") + "If you're developing a new catalog kind, ensure the proto files\n")
 	msg.WriteString("   are compiled and the CLI binary is rebuilt.\n\n")
 
 	return errors.New(msg.String())

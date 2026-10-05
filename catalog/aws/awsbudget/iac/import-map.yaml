@@ -1,18 +1,18 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsbudget
 spec:
   # The budget imports as "{account_id}:{budget_name}" and each folded
   # action as "{account_id}:{action_id}:{budget_name}". The account ID
-  # and budget name derive from the stack outputs / spec; the
+  # and budget name derive from the outputs / spec; the
   # cloud-generated action ID derives BLIND from the module's
   # action_ids map output, keyed by the action's spec name (the
   # for_each key the enumerated address carries).
   values:
     - name: account_id
       derivations:
-        - from_stack_output: account_id
+        - from_output: account_id
       where_to_find: >-
         The budget's owning account (the deploying account unless the
         budget targeted a member account) -- `aws sts
@@ -25,7 +25,7 @@ spec:
         budgets describe-budgets --account-id <id>` (BudgetName).
     - name: action_id
       derivations:
-        - from_stack_output_keyed_by_address: action_ids
+        - from_output_keyed_by_address: action_ids
       where_to_find: >-
         Billing console -> Budgets -> <budget> -> Actions, or `aws
         budgets describe-budget-actions-for-budget --account-id <id>

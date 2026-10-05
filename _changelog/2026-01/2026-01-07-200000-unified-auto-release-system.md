@@ -18,7 +18,7 @@ The existing auto-release mechanism only covered Pulumi modules. Other component
 - **Docker image updates required full releases**: Small app changes needed a full `v*` release
 - **Website deployments tied to releases**: Content updates required version tags
 - **Terraform modules not tracked**: No version tracking for terraform module changes
-- **Inconsistent tag formats**: Pulumi used `pulumi-{component}-{semver}-{date}` which put semver in the middle
+- **Inconsistent tag formats**: Pulumi used `pulumi-{kind}-{semver}-{date}` which put semver in the middle
 
 ## Solution / What's New
 
@@ -62,8 +62,8 @@ Standardized tag format with semver prefix for easy filtering and version compar
 | CLI              | `v{semver}.{YYYYMMDD}.{N}`                       | `v0.3.1.20260107.1`                         |
 | App              | `v{semver}-app-{YYYYMMDD}.{N}`                   | `v0.3.1-app-20260107.1`                     |
 | Website          | `v{semver}-website-{YYYYMMDD}.{N}`               | `v0.3.1-website-20260107.1`                 |
-| Pulumi module    | `v{semver}-pulumi-{component}-{YYYYMMDD}.{N}`    | `v0.3.1-pulumi-awsecsservice-20260107.1`    |
-| Terraform module | `v{semver}-terraform-{component}-{YYYYMMDD}.{N}` | `v0.3.1-terraform-awsecsservice-20260107.1` |
+| Pulumi module    | `v{semver}-pulumi-{kind}-{YYYYMMDD}.{N}`    | `v0.3.1-pulumi-awsecsservice-20260107.1`    |
+| Terraform module | `v{semver}-terraform-{kind}-{YYYYMMDD}.{N}` | `v0.3.1-terraform-awsecsservice-20260107.1` |
 
 **Note**: CLI uses dots (not hyphens) for Homebrew version comparison compatibility.
 
@@ -128,7 +128,7 @@ The orchestrator's `detect-changes` job:
 All workflows support `workflow_dispatch` for manual releases:
 
 - **Orchestrator**: Force flags for each component type
-- **Pulumi modules**: Provider/component selection or force-all
+- **Pulumi modules**: Provider/kind selection or force-all
 - **Terraform modules**: Same as Pulumi
 
 ## Benefits
@@ -232,7 +232,7 @@ gh workflow run auto-release.yaml -f force_terraform_all=true
 ## Related Work
 
 - **Prior changelogs**:
-  - `2026-01-07-180000-reusable-release-workflow-with-dynamic-component-discovery.md`
+  - `2026-01-07-180000-reusable-release-workflow-with-dynamic-kind-discovery.md`
   - `2026-01-07-161545-unified-release-workflow-architecture.md`
   - `2026-01-07-155125-gzip-compression-and-shortened-release-tags.md`
   - `2026-01-07-152159-pulumi-module-auto-release-workflow.md`

@@ -34,7 +34,7 @@ func validResource() *AzureEventgridDomain {
 	return &AzureEventgridDomain{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureEventgridDomain",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-egd",
 		},
 		Spec: &AzureEventgridDomainSpec{

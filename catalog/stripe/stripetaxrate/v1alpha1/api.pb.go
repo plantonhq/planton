@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeTaxRate is a component that declares a manual tax rate that invoices, subscriptions,
+// StripeTaxRate is a kind that declares a manual tax rate that invoices, subscriptions,
 // Checkout sessions and payment links apply.
 //
 // A rate's percentage and inclusiveness never change in Stripe, so changing them replaces the
@@ -59,12 +59,12 @@ type StripeTaxRate struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "StripeTaxRate" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the rate, where it applies, and how it shows on invoices.
 	Spec *StripeTaxRateSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the rate as created, populated after deployment.
@@ -117,7 +117,7 @@ func (x *StripeTaxRate) GetKind() string {
 	return ""
 }
 
-func (x *StripeTaxRate) GetMetadata() *shared.CloudResourceMetadata {
+func (x *StripeTaxRate) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -142,8 +142,8 @@ func (x *StripeTaxRate) GetStatus() *StripeTaxRateStatus {
 // Populated by the deployment system.
 type StripeTaxRateStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the rate's id and whether it is active.
-	Outputs       *StripeTaxRateStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the rate's id and whether it is active.
+	Outputs       *StripeTaxRateOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -178,7 +178,7 @@ func (*StripeTaxRateStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripetaxrate_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *StripeTaxRateStatus) GetOutputs() *StripeTaxRateStackOutputs {
+func (x *StripeTaxRateStatus) GetOutputs() *StripeTaxRateOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -196,11 +196,11 @@ const file_catalog_stripe_stripetaxrate_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12(\n" +
 	"\x04kind\x18\x02 \x01(\tB\x14\xbaH\x11r\x0f\n" +
 	"\rStripeTaxRateR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12X\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12X\n" +
 	"\x04spec\x18\x04 \x01(\v2<.dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12V\n" +
-	"\x06status\x18\x05 \x01(\v2>.dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateStatusR\x06status\"u\n" +
-	"\x13StripeTaxRateStatus\x12^\n" +
-	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateStackOutputsR\aoutputsB\xdc\x02\n" +
+	"\x06status\x18\x05 \x01(\v2>.dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateStatusR\x06status\"p\n" +
+	"\x13StripeTaxRateStatus\x12Y\n" +
+	"\aoutputs\x18\x01 \x01(\v2?.dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateOutputsR\aoutputsB\xdc\x02\n" +
 	"-com.dev.planton.stripe.stripetaxrate.v1alpha1B\bApiProtoP\x01ZXgithub.com/plantonhq/planton/catalog/stripe/stripetaxrate/v1alpha1;stripetaxratev1alpha1\xa2\x02\x04DPSS\xaa\x02)Dev.Planton.Stripe.Stripetaxrate.V1alpha1\xca\x02)Dev\\Planton\\Stripe\\Stripetaxrate\\V1alpha1\xe2\x025Dev\\Planton\\Stripe\\Stripetaxrate\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Stripe::Stripetaxrate::V1alpha1b\x06proto3"
 
 var (
@@ -219,15 +219,15 @@ var file_catalog_stripe_stripetaxrate_v1alpha1_api_proto_msgTypes = make([]proto
 var file_catalog_stripe_stripetaxrate_v1alpha1_api_proto_goTypes = []any{
 	(*StripeTaxRate)(nil),                // 0: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRate
 	(*StripeTaxRateStatus)(nil),          // 1: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*StripeTaxRateSpec)(nil),            // 3: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateSpec
-	(*StripeTaxRateStackOutputs)(nil),    // 4: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateStackOutputs
+	(*StripeTaxRateOutputs)(nil),         // 4: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateOutputs
 }
 var file_catalog_stripe_stripetaxrate_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRate.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRate.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRate.spec:type_name -> dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateSpec
 	1, // 2: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRate.status:type_name -> dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateStatus
-	4, // 3: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateStatus.outputs:type_name -> dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateStackOutputs
+	4, // 3: dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateStatus.outputs:type_name -> dev.planton.stripe.stripetaxrate.v1alpha1.StripeTaxRateOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

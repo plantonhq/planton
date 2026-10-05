@@ -1,6 +1,6 @@
 // Package catalogpage is the machine-enforced shape of the catalog pages:
-// every component's catalog.md follows the ONE standard structure
-// (_rules/docs/write-planton-component-catalog-md.mdc) and embeds only
+// every kind's catalog.md follows the ONE standard structure
+// (_rules/docs/write-catalog-kind-catalog-md.mdc) and embeds only
 // manifests that actually validate, so a page that teaches a broken shape is
 // unshippable instead of auditable.
 //
@@ -15,11 +15,11 @@
 //     input, which is exactly why the shape is gated here.
 //
 // The head checks guard a live machine contract: the bundle derives every
-// component's console-card title from the page's H1 and its one-line
+// kind's console-card title from the page's H1 and its one-line
 // description from the intro's first sentence, extracted from the FIRST
 // PHYSICAL LINE of the intro paragraph. A missing H1 silently ships the raw
 // kind name; a hard-wrapped intro silently ships a mid-sentence fragment as
-// the component's search-result copy. Both are violations here.
+// the kind's search-result copy. Both are violations here.
 //
 // Structure checks fire in two tiers so the report stays signal-dense: a
 // page whose H2 skeleton diverges gets ONE nonstandard-structure verdict
@@ -87,8 +87,8 @@ var fixedH3Anchors = []string{
 	"Planton Setup",
 	"Console",
 	"CLI",
-	"What This Component Consumes",
-	"What This Component Provides",
+	"What This Kind Consumes",
+	"What This Kind Provides",
 }
 
 var (
@@ -198,7 +198,7 @@ func consumesHasRows(page []byte) bool {
 		}
 		if strings.HasPrefix(line, "#") {
 			inConsumes = strings.HasPrefix(line, "### ") &&
-				strings.TrimSpace(strings.TrimPrefix(line, "### ")) == "What This Component Consumes"
+				strings.TrimSpace(strings.TrimPrefix(line, "### ")) == "What This Kind Consumes"
 			continue
 		}
 		if inConsumes && strings.HasPrefix(trimmed, "|") && !strings.HasPrefix(trimmed, "|-") &&
@@ -221,11 +221,11 @@ func CheckPage(path string, page []byte) []Violation {
 
 	// Head contract -- always checked: the bundle projects it silently.
 	if len(hs) == 0 || hs[0].level != 1 {
-		add(RuleMissingH1, "the H1 is the component's display name (console card title) and must be the first heading")
+		add(RuleMissingH1, "the H1 is the kind's display name (console card title) and must be the first heading")
 	} else {
 		switch line := introFirstLine(page); {
 		case line == "":
-			add(RuleMissingIntro, "an intro paragraph between the H1 and the first H2 is the component's description source")
+			add(RuleMissingIntro, "an intro paragraph between the H1 and the first H2 is the kind's description source")
 		case !completesSentence(line):
 			add(RuleIntroFragment, fmt.Sprintf(
 				"the intro's first line must complete a sentence (the bundle extracts the description from it); got a fragment: %q", line))
@@ -257,7 +257,7 @@ func CheckPage(path string, page []byte) []Violation {
 		}
 	}
 	if diff := structureDiff(h2s); diff != "" {
-		add(RuleNonstandardStructure, "the H2 skeleton diverges from the standard ("+diff+") -- bring the page to _rules/docs/write-planton-component-catalog-md.mdc")
+		add(RuleNonstandardStructure, "the H2 skeleton diverges from the standard ("+diff+") -- bring the page to _rules/docs/write-catalog-kind-catalog-md.mdc")
 		return vs
 	}
 	for _, anchor := range fixedH3Anchors {
@@ -322,7 +322,7 @@ func structureDiff(h2s []string) string {
 	return strings.Join(parts, "; ")
 }
 
-// Check walks every component catalog page at repoRoot and returns every
+// Check walks every kind catalog page at repoRoot and returns every
 // violation, sorted by ID. It never consults the baseline -- Gate does the
 // comparison. Page PRESENCE is pkg/anatomy's rule, so only existing pages
 // are checked; the _test provider's fixtures are not product pages.

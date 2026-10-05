@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcplogbucket.v1alpha1;
 
 // Outputs produced after provisioning a Cloud Logging bucket.
-message GcpLogBucketStackOutputs {
+message GcpLogBucketOutputs {
   // The full resource name of the bucket, e.g.
   // projects/{project}/locations/{location}/buckets/{bucket_id} (or the
   // folders/organizations/billingAccounts form for those scopes).

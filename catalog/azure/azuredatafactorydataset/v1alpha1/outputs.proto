@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuredatafactorydataset.v1alpha1;
 
-// **AzureDataFactoryDatasetStackOutputs** captures the outputs from
+// **AzureDataFactoryDatasetOutputs** captures the outputs from
 // provisioning an Azure Data Factory dataset.
-message AzureDataFactoryDatasetStackOutputs {
+message AzureDataFactoryDatasetOutputs {
   // The dataset's Azure Resource Manager ID
   // ({factory_id}/datasets/{name}) -- the same ID shape for all
   // dataset types.

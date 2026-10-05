@@ -4,7 +4,7 @@ Deploys a Microsoft Fabric capacity -- the billing and compute anchor of Microso
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Fabric capacity** -- the capacity itself: its F-SKU (tier "Fabric", the only value Azure defines, sent by the platform) and its administrator list
 - **Azure Tags** -- Planton-derived metadata tags merged with the manifest's `tags` (user values win on key conflicts)
@@ -13,11 +13,11 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Azure Subscription
 
-- **A resource group** -- reference an AzureResourceGroup Cloud Resource or pass an existing group's name.
+- **A resource group** -- reference an AzureResourceGroup Infra Component or pass an existing group's name.
 - **At least one administrator identity** -- an Entra user principal name (e.g. `admin@contoso.com`) or a service principal's object ID; Azure rejects a capacity created with none.
 - **A supported subscription offer type** -- sponsorship and some trial/credit offers cannot create Fabric capacities; the rejection is an auth-shaped `401` that has nothing to do with your credentials (see Key Configuration).
 - **A Fabric-supported region** -- Fabric is not available in every Azure region; check the availability list before choosing.
@@ -56,7 +56,7 @@ spec:
 planton apply -f fabric-capacity.yaml
 ```
 
-This creates the smallest Fabric capacity (F2) with one administrator -- the hour meter starts when the deploy finishes. A Stack Job tracks the provisioning in real time.
+This creates the smallest Fabric capacity (F2) with one administrator -- the hour meter starts when the deploy finishes. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,15 +96,15 @@ These are the most important decisions when configuring a Fabric capacity. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-`status.outputs` records identifiers only: `fabric_capacity_id` (the ARM ID) and `fabric_capacity_name`, which echoes the manifest's `name`. No catalog component consumes them via ValueFromRef -- workspaces assign themselves to the capacity from the Fabric side (workspace settings, selecting the capacity by name), outside ARM's reach.
+`status.outputs` records identifiers only: `fabric_capacity_id` (the ARM ID) and `fabric_capacity_name`, which echoes the manifest's `name`. No catalog kind consumes them via ValueFromRef -- workspaces assign themselves to the capacity from the Fabric side (workspace settings, selecting the capacity by name), outside ARM's reach.
 
 ## Common Patterns
 
@@ -116,6 +116,6 @@ These are the most important decisions when configuring a Fabric capacity. Explo
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the group the capacity lives in
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the group the capacity lives in
 
 Everything downstream of the capacity -- workspaces, lakehouses, warehouses -- lives in Microsoft's own Fabric tooling rather than the catalog, so this kind composes with the rest of Fabric outside Planton.

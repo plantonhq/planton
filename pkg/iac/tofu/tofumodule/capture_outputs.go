@@ -7,9 +7,9 @@ import (
 	"os"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/outputs"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // tofuOutputEnvelope is one entry of `tofu output -json` / `terraform output -json`:
@@ -23,7 +23,7 @@ type tofuOutputEnvelope struct {
 // captureOutputs reads the just-applied stack's outputs back with
 // `<binary> output -json`, unwraps the envelopes, and fills sink with the raw
 // map, the flattened map, the kind's secret outputs, and its typed
-// StackOutputs proto (honoring module-shipped transform overrides via the
+// Outputs proto (honoring module-shipped transform overrides via the
 // module directory).
 //
 // It must run while the module workspace is still alive: `output -json`
@@ -46,7 +46,7 @@ func captureOutputs(
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Run(); err != nil {
-		return errors.Wrapf(err, "failed to read stack outputs with `%s output -json`", binaryName)
+		return errors.Wrapf(err, "failed to read outputs with `%s output -json`", binaryName)
 	}
 
 	raw, err := unwrapTofuOutputs(stdout.Bytes())
@@ -57,9 +57,9 @@ func captureOutputs(
 	sink.Raw = raw
 	sink.Flat = outputs.Flatten(raw)
 
-	kind := crkreflect.KindFromString(kindName)
-	if kind == cloudresourcekind.CloudResourceKind_unspecified {
-		return errors.Errorf("cannot resolve cloud resource kind from %q for output transformation", kindName)
+	kind := catalogkindreflect.KindFromString(kindName)
+	if kind == catalogkind.CatalogKind_unspecified {
+		return errors.Errorf("cannot resolve catalog kind from %q for output transformation", kindName)
 	}
 	// A kind whose schema cannot be read leaves Secrets empty, and every
 	// output then renders masked.

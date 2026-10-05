@@ -23,10 +23,10 @@ const (
 )
 
 // *
-// **KubernetesSupersetStackOutputs** — the composition handles a
+// **KubernetesSupersetOutputs** — the composition handles a
 // deployed Superset exports. Exposure kinds route to the service;
 // operators sign in with the exported admin credential.
-type KubernetesSupersetStackOutputs struct {
+type KubernetesSupersetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace Superset runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -61,20 +61,20 @@ type KubernetesSupersetStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesSupersetStackOutputs) Reset() {
-	*x = KubernetesSupersetStackOutputs{}
+func (x *KubernetesSupersetOutputs) Reset() {
+	*x = KubernetesSupersetOutputs{}
 	mi := &file_catalog_kubernetes_kubernetessuperset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesSupersetStackOutputs) String() string {
+func (x *KubernetesSupersetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesSupersetStackOutputs) ProtoMessage() {}
+func (*KubernetesSupersetOutputs) ProtoMessage() {}
 
-func (x *KubernetesSupersetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesSupersetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetessuperset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -86,61 +86,61 @@ func (x *KubernetesSupersetStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesSupersetStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesSupersetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesSupersetOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesSupersetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetessuperset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesSupersetStackOutputs) GetNamespace() string {
+func (x *KubernetesSupersetOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesSupersetStackOutputs) GetService() string {
+func (x *KubernetesSupersetOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *KubernetesSupersetStackOutputs) GetEndpoint() string {
+func (x *KubernetesSupersetOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *KubernetesSupersetStackOutputs) GetAdminUsername() string {
+func (x *KubernetesSupersetOutputs) GetAdminUsername() string {
 	if x != nil {
 		return x.AdminUsername
 	}
 	return ""
 }
 
-func (x *KubernetesSupersetStackOutputs) GetAdminPasswordSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesSupersetOutputs) GetAdminPasswordSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.AdminPasswordSecret
 	}
 	return nil
 }
 
-func (x *KubernetesSupersetStackOutputs) GetEnvSecretName() string {
+func (x *KubernetesSupersetOutputs) GetEnvSecretName() string {
 	if x != nil {
 		return x.EnvSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesSupersetStackOutputs) GetSecretKeySecretName() string {
+func (x *KubernetesSupersetOutputs) GetSecretKeySecretName() string {
 	if x != nil {
 		return x.SecretKeySecretName
 	}
 	return ""
 }
 
-func (x *KubernetesSupersetStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesSupersetOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -151,8 +151,8 @@ var File_catalog_kubernetes_kubernetessuperset_v1alpha1_outputs_proto protorefle
 
 const file_catalog_kubernetes_kubernetessuperset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kubernetessuperset/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kubernetessuperset.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\x8b\x03\n" +
-	"\x1eKubernetesSupersetStackOutputs\x12\x1c\n" +
+	"<catalog/kubernetes/kubernetessuperset/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kubernetessuperset.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\x86\x03\n" +
+	"\x19KubernetesSupersetOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x18\n" +
 	"\aservice\x18\x02 \x01(\tR\aservice\x12\x1a\n" +
 	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x12%\n" +
@@ -177,11 +177,11 @@ func file_catalog_kubernetes_kubernetessuperset_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_kubernetes_kubernetessuperset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetessuperset_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesSupersetStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetessuperset.v1alpha1.KubernetesSupersetStackOutputs
+	(*KubernetesSupersetOutputs)(nil),      // 0: dev.planton.kubernetes.kubernetessuperset.v1alpha1.KubernetesSupersetOutputs
 	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetessuperset_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetessuperset.v1alpha1.KubernetesSupersetStackOutputs.admin_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kubernetessuperset.v1alpha1.KubernetesSupersetOutputs.admin_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

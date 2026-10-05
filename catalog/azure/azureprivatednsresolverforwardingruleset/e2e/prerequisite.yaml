@@ -1,5 +1,5 @@
 # AzurePrivateDnsResolverForwardingRuleset install profile used as a
-# prerequisite by dependent components (declared via prerequisites:
+# prerequisite by dependent kinds (declared via prerequisites:
 # [AzurePrivateDnsResolverForwardingRuleset] in the kind registry --
 # the virtual network link is the consumer). The harness deploys this
 # document after its own prerequisite chain (fixture resolver -> its
@@ -17,7 +17,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureprivatednsresolverforwardingruleset
+    e2e-catalog-kind: azureprivatednsresolverforwardingruleset
   annotations:
     planton.dev/e2e: "true"
   tags:

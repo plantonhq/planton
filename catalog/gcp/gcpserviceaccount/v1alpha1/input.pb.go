@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-service-account stack-input
-type GcpServiceAccountStackInput struct {
+// gcp-service-account iac-input
+type GcpServiceAccountIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpServiceAccount `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpServiceAccountStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpServiceAccountStackInput) Reset() {
-	*x = GcpServiceAccountStackInput{}
+func (x *GcpServiceAccountIacInput) Reset() {
+	*x = GcpServiceAccountIacInput{}
 	mi := &file_catalog_gcp_gcpserviceaccount_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpServiceAccountStackInput) String() string {
+func (x *GcpServiceAccountIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpServiceAccountStackInput) ProtoMessage() {}
+func (*GcpServiceAccountIacInput) ProtoMessage() {}
 
-func (x *GcpServiceAccountStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpServiceAccountIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpserviceaccount_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpServiceAccountStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpServiceAccountStackInput.ProtoReflect.Descriptor instead.
-func (*GcpServiceAccountStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpServiceAccountIacInput.ProtoReflect.Descriptor instead.
+func (*GcpServiceAccountIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpserviceaccount_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpServiceAccountStackInput) GetTarget() *GcpServiceAccount {
+func (x *GcpServiceAccountIacInput) GetTarget() *GcpServiceAccount {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpServiceAccountStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpServiceAccountIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpserviceaccount_v1alpha1_input_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcpserviceaccount_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpserviceaccount/v1alpha1/input.proto\x12*dev.planton.gcp.gcpserviceaccount.v1alpha1\x1a0catalog/gcp/gcpserviceaccount/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc1\x01\n" +
-	"\x1bGcpServiceAccountStackInput\x12U\n" +
+	"2catalog/gcp/gcpserviceaccount/v1alpha1/input.proto\x12*dev.planton.gcp.gcpserviceaccount.v1alpha1\x1a0catalog/gcp/gcpserviceaccount/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xbf\x01\n" +
+	"\x19GcpServiceAccountIacInput\x12U\n" +
 	"\x06target\x18\x01 \x01(\v2=.dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xe8\x02\n" +
 	".com.dev.planton.gcp.gcpserviceaccount.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpserviceaccount_v1alpha1_input_proto_rawDescGZIP() []byt
 
 var file_catalog_gcp_gcpserviceaccount_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpserviceaccount_v1alpha1_input_proto_goTypes = []any{
-	(*GcpServiceAccountStackInput)(nil), // 0: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountStackInput
-	(*GcpServiceAccount)(nil),           // 1: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccount
-	(*gcp.GcpProviderConfig)(nil),       // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpServiceAccountIacInput)(nil), // 0: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountIacInput
+	(*GcpServiceAccount)(nil),         // 1: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccount
+	(*gcp.GcpProviderConfig)(nil),     // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpserviceaccount_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountStackInput.target:type_name -> dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccount
-	2, // 1: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountIacInput.target:type_name -> dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccount
+	2, // 1: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

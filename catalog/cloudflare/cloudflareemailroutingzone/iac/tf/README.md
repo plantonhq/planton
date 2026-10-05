@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareEmailRoutingZoneSpec
 locals.tf     — Catch-all typed-action -> provider {type, value[]} mapping
 main.tf       — email_routing_settings + conditional catch_all and dns resources
-outputs.tf    — Stack outputs (zone_id, enabled, status, name)
+outputs.tf    — outputs (zone_id, enabled, status, name)
 ```
 
 ## Resource semantics worth knowing

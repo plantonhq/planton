@@ -11,7 +11,7 @@
 encryption, granular logging, upgrade policy, zonal shift, deletion
 protection, and EKS Auto Mode -- and `AwsEksNodeGroup` gained launch-template
 composition, the full AMI-family and purchase-model set, taints, surge
-rollouts, managed node auto-repair, and real stack outputs (three of its
+rollouts, managed node auto-repair, and real outputs (three of its
 four were hard-coded empty strings in both engines). Both kinds moved onto
 the generator-owned Terraform variable contract, both gained live
 dual-engine E2E, and the cluster module shed a composition-breaking side
@@ -35,7 +35,7 @@ launch templates -- and its `asg_name`/`remote_access_sg_id`/
   Terraform enabled private endpoint access when public was disabled
   (Pulumi did not -- deploying an unreachable control plane).
 - The node group's cluster reference pointed at `metadata.name`, a field
-  path the reference-resolution machinery cannot resolve (it reads stack
+  path the reference-resolution machinery cannot resolve (it reads
   outputs), so a composed node-group-on-cluster scenario could never work.
 - Both kinds carried the legacy hand-written `variables.tf` (object-shaped
   labels, un-substituted placeholder descriptions) that the tfvars pipeline
@@ -79,8 +79,8 @@ flowchart TD
   `service_ipv4_cidr`, and additional control-plane security groups.
 - **Future-proof version validation**: `^1\.(2[4-9]|[3-9][0-9])$` accepts
   any 1.24+ minor so the rule never needs relaxing as Kubernetes advances.
-- New `platform_version` stack output alongside the existing six.
-- Recorded skips (in the component docs): `outpost_config` (hardware-locked
+- New `platform_version` output alongside the existing six.
+- Recorded skips (in the kind docs): `outpost_config` (hardware-locked
   niche), `remote_network_config` (hybrid on-prem nodes),
   `control_plane_scaling_config` (very-large-cluster tiers).
 
@@ -129,9 +129,9 @@ doctrine: a module never reaches into a resource it references.
   that silently froze the module on provider v5 -- `update_strategy` and
   `node_repair_config` do not exist there. The pin is now the family-wide
   floor (`>= 5.0.0`) and the lock resolves v6.53, matching the cluster.
-- One parity exception, marked in both modules and the component docs:
+- One parity exception, marked in both modules and the kind docs:
   pulumi-aws v7.35.0 does not yet model `control_plane_egress_mode`, so
-  only the Terraform module implements it (stack outputs unaffected).
+  only the Terraform module implements it (outputs unaffected).
 - E2E: EKS verifiers (DescribeCluster; DescribeNodegroup keyed on the ARN,
   which encodes both names the API requires), registry prerequisites
   (`AwsEksCluster <- [AwsSubnet, AwsIamRole]`, `AwsEksNodeGroup <-
@@ -189,7 +189,7 @@ doctrine: a module never reaches into a resource it references.
   `instance_types`; `ssh_key_name` moves into `remote_access.ec2_ssh_key`;
   the cluster reference's default field path is `status.outputs.name`;
   `scaling` now permits zero minimum/desired.
-- `AwsEksNodeGroup` stack outputs: `instance_profile_arn` removed (was
+- `AwsEksNodeGroup` outputs: `instance_profile_arn` removed (was
   always empty); `nodegroup_arn` added; `asg_name` and
   `remote_access_sg_id` now carry real values.
 - The cluster's Terraform module no longer attaches

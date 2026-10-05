@@ -19,7 +19,7 @@ func getFieldDescriptor(t *testing.T, md protoreflect.MessageDescriptor, name st
 }
 
 func TestConvertScalar_String(t *testing.T) {
-	md := (&auth0v1.Auth0ResourceServerStackOutputs{}).ProtoReflect().Descriptor()
+	md := (&auth0v1.Auth0ResourceServerOutputs{}).ProtoReflect().Descriptor()
 	fd := getFieldDescriptor(t, md, "id")
 
 	v, err := convertScalar("abc123", fd)
@@ -33,14 +33,14 @@ func TestConvertScalar_String(t *testing.T) {
 
 func TestConvertScalar_Bool_True(t *testing.T) {
 	// Use a synthetic test via protoreflect — create a field-like lookup using
-	// a known bool-typed proto. Since Auth0ResourceServer StackOutputs has only
+	// a known bool-typed proto. Since Auth0ResourceServer Outputs has only
 	// string fields, we test the conversion function directly with a mock
 	// approach: call with "true" and verify it parses.
 
 	// For now, we test the standalone parsing logic by asserting the function
 	// works for non-string kinds using the auth0 "id" field as a string baseline
 	// and verifying error cases.
-	md := (&auth0v1.Auth0ResourceServerStackOutputs{}).ProtoReflect().Descriptor()
+	md := (&auth0v1.Auth0ResourceServerOutputs{}).ProtoReflect().Descriptor()
 	fd := getFieldDescriptor(t, md, "id")
 
 	// String field should accept any value
@@ -54,7 +54,7 @@ func TestConvertScalar_Bool_True(t *testing.T) {
 }
 
 func TestConvertScalar_EmptyString(t *testing.T) {
-	md := (&auth0v1.Auth0ResourceServerStackOutputs{}).ProtoReflect().Descriptor()
+	md := (&auth0v1.Auth0ResourceServerOutputs{}).ProtoReflect().Descriptor()
 	fd := getFieldDescriptor(t, md, "id")
 
 	v, err := convertScalar("", fd)

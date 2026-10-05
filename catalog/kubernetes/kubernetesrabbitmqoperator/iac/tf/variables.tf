@@ -4,7 +4,7 @@
 # its fixed `rabbitmq-system` namespace (see the spec).
 
 variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name        = string
     id          = optional(string, "")

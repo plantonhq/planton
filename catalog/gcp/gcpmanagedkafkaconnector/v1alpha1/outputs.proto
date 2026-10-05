@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1;
 
-// GcpManagedKafkaConnectorStackOutputs captures the connector's identity.
-message GcpManagedKafkaConnectorStackOutputs {
+// GcpManagedKafkaConnectorOutputs captures the connector's identity.
+message GcpManagedKafkaConnectorOutputs {
   // Full resource name --
   // projects/{project}/locations/{location}/connectClusters/{connect_cluster}/connectors/{connector_id}.
   string name = 1;

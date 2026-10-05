@@ -32,7 +32,7 @@ The registration door for "I have code, get it on the platform": the platform re
 
 ## Registering WITH deployment configuration (the inline posture)
 
-A registration may carry real per-environment deployment configuration from birth: `spec.deploy.environments` entries (each a list of full cloud-resource manifests) with NO `spec.deploy.kustomize` block — that absence IS the declaration that the configuration is manually authored (console, agent, apply) rather than git-maintained. The authoring contract when composing these manifests:
+A registration may carry real per-environment deployment configuration from birth: `spec.deploy.environments` entries (each a list of full catalog object manifests) with NO `spec.deploy.kustomize` block — that absence IS the declaration that the configuration is manually authored (console, agent, apply) rather than git-maintained. The authoring contract when composing these manifests:
 
 - The workload's container **image stays absent** — the blank field is the injection slot the delivery engine fills with the built artifact at deploy time. Never invent a placeholder.
 - `metadata.env` names the entry's environment explicitly, and `metadata.name` follows `{service}-{env}`.

@@ -5,9 +5,9 @@ package dev.planton.aws.awsefsaccesspoint.v1alpha1;
 import "catalog/aws/awsefsaccesspoint/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// aws-efs-access-point stack-input
-message AwsEfsAccessPointStackInput {
-  // target cloud-resource
+// aws-efs-access-point iac-input
+message AwsEfsAccessPointIacInput {
+  // the catalog object to deploy
   AwsEfsAccessPoint target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

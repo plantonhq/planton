@@ -4,7 +4,7 @@ Creates a compute instance on an Azure Machine Learning workspace -- a single al
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Instance** -- an ARM child of the workspace (`.../workspaces/{ws}/computes/{name}`): one VM with its size, ownership, identity, and networking
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f azure-machine-learning-compute-instance.yaml
 ```
 
-This creates a DS3v2 workstation owned by the assigned user, with a system identity and SSH disabled; it provisions in roughly five to ten minutes. A Stack Job tracks the provisioning in real time.
+This creates a DS3v2 workstation owned by the assigned user, with a system identity and SSH disabled; it provisions in roughly five to ten minutes. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,7 +87,7 @@ These are the most important decisions when configuring the instance. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -95,9 +95,9 @@ These are the most important decisions when configuring the instance. Explore th
 | **AzureSubnet** | `subnetId` | `status.outputs.subnet_id` |
 | **AzureUserAssignedIdentity** | `identity.identityIds[]` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,7 +115,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Machine Learning Workspace**](/cloud-catalog/azure-machine-learning-workspace) -- the parent workspace
-- [**Azure Machine Learning Compute Cluster**](/cloud-catalog/azure-machine-learning-compute-cluster) -- where heavy training belongs
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- VNet placement for the instance
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- bring-your-own identity for data grants
+- [**Azure Machine Learning Workspace**](/infra-catalog/azure-machine-learning-workspace) -- the parent workspace
+- [**Azure Machine Learning Compute Cluster**](/infra-catalog/azure-machine-learning-compute-cluster) -- where heavy training belongs
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- VNet placement for the instance
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- bring-your-own identity for data grants

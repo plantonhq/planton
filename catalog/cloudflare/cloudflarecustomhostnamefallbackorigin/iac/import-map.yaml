@@ -1,16 +1,16 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarecustomhostnamefallbackorigin
 spec:
   # The fallback origin is a zone singleton -- its import identity IS the
   # zone id. There is no resource id of its own. zone_id is a
-  # StringValueOrRef on the spec, so it comes from the deploy's stack
+  # StringValueOrRef on the spec, so it comes from the deploy's
   # outputs (the same output the verifier keys on).
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the

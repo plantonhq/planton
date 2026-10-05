@@ -6,7 +6,7 @@ display_name: SaaS Vanity Domain
 
 The recommended default: onboard a customer's hostname with a Cloudflare-issued DV
 certificate validated over TXT. The customer adds a CNAME and the ownership TXT
-record (from the stack outputs) and the hostname goes live.
+record (from the outputs) and the hostname goes live.
 
 ## When to use
 

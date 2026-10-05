@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeWebhookEndpointStackOutputs identifies the endpoint and carries its signing secret.
+// StripeWebhookEndpointOutputs identifies the endpoint and carries its signing secret.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/webhook_endpoint
-type StripeWebhookEndpointStackOutputs struct {
+type StripeWebhookEndpointOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the endpoint's Stripe id (we_...).
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -45,20 +45,20 @@ type StripeWebhookEndpointStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *StripeWebhookEndpointStackOutputs) Reset() {
-	*x = StripeWebhookEndpointStackOutputs{}
+func (x *StripeWebhookEndpointOutputs) Reset() {
+	*x = StripeWebhookEndpointOutputs{}
 	mi := &file_catalog_stripe_stripewebhookendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeWebhookEndpointStackOutputs) String() string {
+func (x *StripeWebhookEndpointOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeWebhookEndpointStackOutputs) ProtoMessage() {}
+func (*StripeWebhookEndpointOutputs) ProtoMessage() {}
 
-func (x *StripeWebhookEndpointStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripeWebhookEndpointOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripewebhookendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,40 +70,40 @@ func (x *StripeWebhookEndpointStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeWebhookEndpointStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripeWebhookEndpointStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeWebhookEndpointOutputs.ProtoReflect.Descriptor instead.
+func (*StripeWebhookEndpointOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripewebhookendpoint_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeWebhookEndpointStackOutputs) GetId() string {
+func (x *StripeWebhookEndpointOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripeWebhookEndpointStackOutputs) GetSecret() string {
+func (x *StripeWebhookEndpointOutputs) GetSecret() string {
 	if x != nil {
 		return x.Secret
 	}
 	return ""
 }
 
-func (x *StripeWebhookEndpointStackOutputs) GetStatus() string {
+func (x *StripeWebhookEndpointOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *StripeWebhookEndpointStackOutputs) GetUrl() string {
+func (x *StripeWebhookEndpointOutputs) GetUrl() string {
 	if x != nil {
 		return x.Url
 	}
 	return ""
 }
 
-func (x *StripeWebhookEndpointStackOutputs) GetApplication() string {
+func (x *StripeWebhookEndpointOutputs) GetApplication() string {
 	if x != nil {
 		return x.Application
 	}
@@ -114,8 +114,8 @@ var File_catalog_stripe_stripewebhookendpoint_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_stripe_stripewebhookendpoint_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/stripe/stripewebhookendpoint/v1alpha1/outputs.proto\x121dev.planton.stripe.stripewebhookendpoint.v1alpha1\x1a\x1cshared/options/options.proto\"\x9d\x01\n" +
-	"!StripeWebhookEndpointStackOutputs\x12\x0e\n" +
+	";catalog/stripe/stripewebhookendpoint/v1alpha1/outputs.proto\x121dev.planton.stripe.stripewebhookendpoint.v1alpha1\x1a\x1cshared/options/options.proto\"\x98\x01\n" +
+	"\x1cStripeWebhookEndpointOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1c\n" +
 	"\x06secret\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\x06secret\x12\x16\n" +
 	"\x06status\x18\x03 \x01(\tR\x06status\x12\x10\n" +
@@ -137,7 +137,7 @@ func file_catalog_stripe_stripewebhookendpoint_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_stripe_stripewebhookendpoint_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripewebhookendpoint_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripeWebhookEndpointStackOutputs)(nil), // 0: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointStackOutputs
+	(*StripeWebhookEndpointOutputs)(nil), // 0: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointOutputs
 }
 var file_catalog_stripe_stripewebhookendpoint_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

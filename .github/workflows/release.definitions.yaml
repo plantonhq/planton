@@ -73,6 +73,12 @@
 #     s3://downloads-dot-planton-dot-dev-bucket/definitions/stable/version.txt \
 #     --endpoint-url "$CLOUDFLARE_R2_ENDPOINT" --content-type text/plain
 #
+# Release candidates (prerelease input): the package, every per-artifact
+# upload, the exploded tree and the manifest publish at the candidate's own
+# tag, so a platform can pin and verify them; the stable pointer, the
+# releases index and the distribution repository are left alone, so no
+# install rolls forward to a candidate and no picker offers one.
+#
 # Called by: .github/workflows/release.yaml (after its github-release job creates the release)
 # =============================================================================
 
@@ -80,6 +86,12 @@ name: release.definitions
 
 on:
   workflow_call:
+    inputs:
+      # True for a release candidate (vX.Y.Z-rc.N), decided once by
+      # release.yaml's github-release job.
+      prerelease:
+        type: boolean
+        default: false
     secrets:
       CLOUDFLARE_R2_ACCESS_KEY_ID:
         required: true
@@ -117,7 +129,7 @@ jobs:
 
       - name: Package definitions release
         # -embed-catalog-pack ships the catalog skill self-contained (its
-        # components/ reference pack inside the archive). Artifacts above
+        # kinds/ reference pack inside the archive). Artifacts above
         # the engines' 10MB inline lane ride the capability-URL transfer
         # lane; pushing them needs Stigmer SDK >= v3.12.3 (go.mod pins it).
         run: |
@@ -336,6 +348,7 @@ jobs:
           echo "uploaded: https://downloads.planton.dev/${R2_KEY}"
 
       - name: Move the stable channel pointer
+        if: ${{ !inputs.prerelease }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
@@ -349,6 +362,7 @@ jobs:
           echo "  stable channel -> ${TAG} (https://downloads.planton.dev/definitions/stable/version.txt)"
 
       - name: Append the release to the definitions releases index
+        if: ${{ !inputs.prerelease }}
         # The index is the browse surfaces' release picker. It lives HERE --
         # after every upload job and the pointer move -- so it inherits the
         # DAG's only-complete-releases guarantee; the GitHub releases list
@@ -381,6 +395,7 @@ jobs:
   # to -- which is why this job needs publish-manifest, never just exploded.
   distribution-repo:
     needs: publish-manifest
+    if: ${{ !inputs.prerelease }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

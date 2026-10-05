@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflaresecretsstore.v1alpha1;
 
-// CloudflareSecretsStoreStackOutputs captures the observable outputs after
+// CloudflareSecretsStoreOutputs captures the observable outputs after
 // creating the account Secrets Store.
-message CloudflareSecretsStoreStackOutputs {
+message CloudflareSecretsStoreOutputs {
   // The store's ID -- what CloudflareSecretsStoreSecret resources, Worker
   // secrets-store bindings, and AI Gateway authentication reference.
   string store_id = 1;

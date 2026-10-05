@@ -22,7 +22,7 @@ func buildValidAppInsights() *AzureApplicationInsights {
 	return &AzureApplicationInsights{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureApplicationInsights",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-appinsights",
 		},
 		Spec: &AzureApplicationInsightsSpec{

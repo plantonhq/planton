@@ -69,7 +69,7 @@ behavior for unset nested messages.
 ## Cross-engine parity
 
 Both engines now produce RS256 under the same condition (jwt_configuration present, alg
-omitted), so the jwt-config parity dimension is MATCH. `alg` is not a stack output, so the
+omitted), so the jwt-config parity dimension is MATCH. `alg` is not an output, so the
 `pkg/outputs/conformance_test.go` bar is unaffected.
 
 ## Impact

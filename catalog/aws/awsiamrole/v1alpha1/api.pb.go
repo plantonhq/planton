@@ -34,7 +34,7 @@ type AwsIamRole struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration data defining the IAM role's trust policy and permissions.
 	Spec *AwsIamRoleSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -87,7 +87,7 @@ func (x *AwsIamRole) GetKind() string {
 	return ""
 }
 
-func (x *AwsIamRole) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsIamRole) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,7 +112,7 @@ func (x *AwsIamRole) GetStatus() *AwsIamRoleStatus {
 type AwsIamRoleStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after provisioning.
-	Outputs       *AwsIamRoleStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsIamRoleOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AwsIamRoleStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiamrole_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsIamRoleStatus) GetOutputs() *AwsIamRoleStackOutputs {
+func (x *AwsIamRoleStatus) GetOutputs() *AwsIamRoleOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_aws_awsiamrole_v1alpha1_api_proto_rawDesc = "" +
 	"\x04kind\x18\x02 \x01(\tB\x11\xbaH\x0er\f\n" +
 	"\n" +
 	"AwsIamRoleR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12O\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12O\n" +
 	"\x04spec\x18\x04 \x01(\v23.dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12M\n" +
-	"\x06status\x18\x05 \x01(\v25.dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleStatusR\x06status\"i\n" +
-	"\x10AwsIamRoleStatus\x12U\n" +
-	"\aoutputs\x18\x01 \x01(\v2;.dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleStackOutputsR\aoutputsB\xb5\x02\n" +
+	"\x06status\x18\x05 \x01(\v25.dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleStatusR\x06status\"d\n" +
+	"\x10AwsIamRoleStatus\x12P\n" +
+	"\aoutputs\x18\x01 \x01(\v26.dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleOutputsR\aoutputsB\xb5\x02\n" +
 	"'com.dev.planton.aws.awsiamrole.v1alpha1B\bApiProtoP\x01ZOgithub.com/plantonhq/planton/catalog/aws/awsiamrole/v1alpha1;awsiamrolev1alpha1\xa2\x02\x04DPAA\xaa\x02#Dev.Planton.Aws.Awsiamrole.V1alpha1\xca\x02#Dev\\Planton\\Aws\\Awsiamrole\\V1alpha1\xe2\x02/Dev\\Planton\\Aws\\Awsiamrole\\V1alpha1\\GPBMetadata\xea\x02'Dev::Planton::Aws::Awsiamrole::V1alpha1b\x06proto3"
 
 var (
@@ -190,15 +190,15 @@ var file_catalog_aws_awsiamrole_v1alpha1_api_proto_msgTypes = make([]protoimpl.M
 var file_catalog_aws_awsiamrole_v1alpha1_api_proto_goTypes = []any{
 	(*AwsIamRole)(nil),                   // 0: dev.planton.aws.awsiamrole.v1alpha1.AwsIamRole
 	(*AwsIamRoleStatus)(nil),             // 1: dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsIamRoleSpec)(nil),               // 3: dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleSpec
-	(*AwsIamRoleStackOutputs)(nil),       // 4: dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleStackOutputs
+	(*AwsIamRoleOutputs)(nil),            // 4: dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleOutputs
 }
 var file_catalog_aws_awsiamrole_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsiamrole.v1alpha1.AwsIamRole.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsiamrole.v1alpha1.AwsIamRole.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsiamrole.v1alpha1.AwsIamRole.spec:type_name -> dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleSpec
 	1, // 2: dev.planton.aws.awsiamrole.v1alpha1.AwsIamRole.status:type_name -> dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleStatus
-	4, // 3: dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleStatus.outputs:type_name -> dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleStackOutputs
+	4, // 3: dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleStatus.outputs:type_name -> dev.planton.aws.awsiamrole.v1alpha1.AwsIamRoleOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

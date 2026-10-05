@@ -1,4 +1,4 @@
-# Stack outputs - identical key set to the Pulumi module's exports.
+# Outputs - identical key set to the Pulumi module's exports.
 
 output "api_id" {
   description = "The API's id - the pivot's import ID, every satellite composite's prefix, and the MERGED source join key."

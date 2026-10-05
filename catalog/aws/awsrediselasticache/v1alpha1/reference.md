@@ -38,7 +38,7 @@ Notes:
 - `auth_token` and `user_group_ids` are mutually exclusive authentication
   methods; user groups (RBAC) are AWS's recommended production model.
 - Credentials, region, and deployment workflow live outside this spec in
-  stack inputs.
+  IaC inputs.
 
 ## Example
 

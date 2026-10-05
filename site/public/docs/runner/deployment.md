@@ -143,7 +143,7 @@ Deploys the runner as an always-on Container App. Similar to Cloud Run, minimum 
 
 ## Declarative Deployment from the Catalog
 
-Every deployment target above also exists as a first-class catalog component, so a runner can be declared in a manifest, composed into an infra-chart beside the network it serves, and managed through the same deploy pipeline as everything else:
+Every deployment target above also exists as a first-class catalog kind, so a runner can be declared in a manifest, composed into an infra-chart beside the network it serves, and managed through the same deploy pipeline as everything else:
 
 | Catalog Kind | Substrate |
 |--------------|-----------|
@@ -164,7 +164,7 @@ spec:
   token: $secret/vpc-runner-token
 ```
 
-The deployed runner enrolls itself on first boot and appears in your Runners list the moment it joins — exactly the same arrival story as a CLI deploy. Each kind models its substrate's real placement surface (subnets and task roles on AWS, direct VPC egress and service accounts on GCP, the Container App Environment on Azure, the namespace and chart values on Kubernetes); see each component's catalog page for the full specification.
+The deployed runner enrolls itself on first boot and appears in your Runners list the moment it joins — exactly the same arrival story as a CLI deploy. Each kind models its substrate's real placement surface (subnets and task roles on AWS, direct VPC egress and service accounts on GCP, the Container App Environment on Azure, the namespace and chart values on Kubernetes); see each kind's catalog page for the full specification.
 
 ## Default Runner
 

@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFrontDoorProfileStackOutputs** captures the outputs of
+// **AzureFrontDoorProfileOutputs** captures the outputs of
 // provisioning an Azure Front Door profile.
 //
 // The profile is the container; delivery resources compose against it by
@@ -29,7 +29,7 @@ const (
 // those) AzureFrontDoorOrigin and AzureFrontDoorRoute all consume
 // `profile_id`. Client-facing hostnames live on the ENDPOINT kind's
 // outputs, not here.
-type AzureFrontDoorProfileStackOutputs struct {
+type AzureFrontDoorProfileOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Front Door profile -- what
 	// AzureFrontDoorEndpoint and AzureFrontDoorOriginGroup reference as
@@ -52,20 +52,20 @@ type AzureFrontDoorProfileStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureFrontDoorProfileStackOutputs) Reset() {
-	*x = AzureFrontDoorProfileStackOutputs{}
+func (x *AzureFrontDoorProfileOutputs) Reset() {
+	*x = AzureFrontDoorProfileOutputs{}
 	mi := &file_catalog_azure_azurefrontdoorprofile_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFrontDoorProfileStackOutputs) String() string {
+func (x *AzureFrontDoorProfileOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFrontDoorProfileStackOutputs) ProtoMessage() {}
+func (*AzureFrontDoorProfileOutputs) ProtoMessage() {}
 
-func (x *AzureFrontDoorProfileStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFrontDoorProfileOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefrontdoorprofile_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -77,33 +77,33 @@ func (x *AzureFrontDoorProfileStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFrontDoorProfileStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFrontDoorProfileStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFrontDoorProfileOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFrontDoorProfileOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoorprofile_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFrontDoorProfileStackOutputs) GetProfileId() string {
+func (x *AzureFrontDoorProfileOutputs) GetProfileId() string {
 	if x != nil {
 		return x.ProfileId
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorProfileStackOutputs) GetProfileName() string {
+func (x *AzureFrontDoorProfileOutputs) GetProfileName() string {
 	if x != nil {
 		return x.ProfileName
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorProfileStackOutputs) GetResourceGuid() string {
+func (x *AzureFrontDoorProfileOutputs) GetResourceGuid() string {
 	if x != nil {
 		return x.ResourceGuid
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorProfileStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureFrontDoorProfileOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -114,8 +114,8 @@ var File_catalog_azure_azurefrontdoorprofile_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_azure_azurefrontdoorprofile_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/azure/azurefrontdoorprofile/v1alpha1/outputs.proto\x120dev.planton.azure.azurefrontdoorprofile.v1alpha1\"\xbe\x01\n" +
-	"!AzureFrontDoorProfileStackOutputs\x12\x1d\n" +
+	":catalog/azure/azurefrontdoorprofile/v1alpha1/outputs.proto\x120dev.planton.azure.azurefrontdoorprofile.v1alpha1\"\xb9\x01\n" +
+	"\x1cAzureFrontDoorProfileOutputs\x12\x1d\n" +
 	"\n" +
 	"profile_id\x18\x01 \x01(\tR\tprofileId\x12!\n" +
 	"\fprofile_name\x18\x02 \x01(\tR\vprofileName\x12#\n" +
@@ -137,7 +137,7 @@ func file_catalog_azure_azurefrontdoorprofile_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_azure_azurefrontdoorprofile_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefrontdoorprofile_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFrontDoorProfileStackOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorprofile.v1alpha1.AzureFrontDoorProfileStackOutputs
+	(*AzureFrontDoorProfileOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorprofile.v1alpha1.AzureFrontDoorProfileOutputs
 }
 var file_catalog_azure_azurefrontdoorprofile_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

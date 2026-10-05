@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesmongodb.v1alpha1;
 import "catalog/kubernetes/kubernetesmongodb/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//mongodb-kubernetes stack-input
-message KubernetesMongodbStackInput {
-  //target cloud-resource
+//mongodb-kubernetes iac-input
+message KubernetesMongodbIacInput {
+  // the catalog object to deploy
   KubernetesMongodb target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

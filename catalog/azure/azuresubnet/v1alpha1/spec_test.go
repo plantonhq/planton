@@ -39,7 +39,7 @@ func validResource() *AzureSubnet {
 	return &AzureSubnet{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureSubnet",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-subnet",
 		},
 		Spec: &AzureSubnetSpec{

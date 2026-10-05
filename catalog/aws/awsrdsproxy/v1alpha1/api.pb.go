@@ -27,7 +27,7 @@ type AwsRdsProxy struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsRdsProxySpec              `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsRdsProxyStatus            `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsRdsProxy) GetKind() string {
 	return ""
 }
 
-func (x *AwsRdsProxy) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsRdsProxy) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsRdsProxy) GetStatus() *AwsRdsProxyStatus {
 }
 
 type AwsRdsProxyStatus struct {
-	state         protoimpl.MessageState   `protogen:"open.v1"`
-	Outputs       *AwsRdsProxyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Outputs       *AwsRdsProxyOutputs    `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsRdsProxyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsrdsproxy_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsRdsProxyStatus) GetOutputs() *AwsRdsProxyStackOutputs {
+func (x *AwsRdsProxyStatus) GetOutputs() *AwsRdsProxyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsrdsproxy_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12&\n" +
 	"\x04kind\x18\x02 \x01(\tB\x12\xbaH\x0fr\r\n" +
 	"\vAwsRdsProxyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Q\n" +
 	"\x04spec\x18\x04 \x01(\v25.dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12O\n" +
-	"\x06status\x18\x05 \x01(\v27.dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStatusR\x06status\"l\n" +
-	"\x11AwsRdsProxyStatus\x12W\n" +
-	"\aoutputs\x18\x01 \x01(\v2=.dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStackOutputsR\aoutputsB\xbc\x02\n" +
+	"\x06status\x18\x05 \x01(\v27.dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStatusR\x06status\"g\n" +
+	"\x11AwsRdsProxyStatus\x12R\n" +
+	"\aoutputs\x18\x01 \x01(\v28.dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyOutputsR\aoutputsB\xbc\x02\n" +
 	"(com.dev.planton.aws.awsrdsproxy.v1alpha1B\bApiProtoP\x01ZQgithub.com/plantonhq/planton/catalog/aws/awsrdsproxy/v1alpha1;awsrdsproxyv1alpha1\xa2\x02\x04DPAA\xaa\x02$Dev.Planton.Aws.Awsrdsproxy.V1alpha1\xca\x02$Dev\\Planton\\Aws\\Awsrdsproxy\\V1alpha1\xe2\x020Dev\\Planton\\Aws\\Awsrdsproxy\\V1alpha1\\GPBMetadata\xea\x02(Dev::Planton::Aws::Awsrdsproxy::V1alpha1b\x06proto3"
 
 var (
@@ -177,15 +177,15 @@ var file_catalog_aws_awsrdsproxy_v1alpha1_api_proto_msgTypes = make([]protoimpl.
 var file_catalog_aws_awsrdsproxy_v1alpha1_api_proto_goTypes = []any{
 	(*AwsRdsProxy)(nil),                  // 0: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxy
 	(*AwsRdsProxyStatus)(nil),            // 1: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsRdsProxySpec)(nil),              // 3: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxySpec
-	(*AwsRdsProxyStackOutputs)(nil),      // 4: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStackOutputs
+	(*AwsRdsProxyOutputs)(nil),           // 4: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyOutputs
 }
 var file_catalog_aws_awsrdsproxy_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxy.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxy.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxy.spec:type_name -> dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxySpec
 	1, // 2: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxy.status:type_name -> dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStatus
-	4, // 3: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStatus.outputs:type_name -> dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStackOutputs
+	4, // 3: dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyStatus.outputs:type_name -> dev.planton.aws.awsrdsproxy.v1alpha1.AwsRdsProxyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBatchJobQueueStackOutputs captures the observable identifiers of the
+// AwsBatchJobQueueOutputs captures the observable identifiers of the
 // AWS Batch job queue.
-type AwsBatchJobQueueStackOutputs struct {
+type AwsBatchJobQueueOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the job queue -- the handle jobs are
 	// submitted against (SubmitJob) and the target EventBridge Batch targets
@@ -36,20 +36,20 @@ type AwsBatchJobQueueStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBatchJobQueueStackOutputs) Reset() {
-	*x = AwsBatchJobQueueStackOutputs{}
+func (x *AwsBatchJobQueueOutputs) Reset() {
+	*x = AwsBatchJobQueueOutputs{}
 	mi := &file_catalog_aws_awsbatchjobqueue_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBatchJobQueueStackOutputs) String() string {
+func (x *AwsBatchJobQueueOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBatchJobQueueStackOutputs) ProtoMessage() {}
+func (*AwsBatchJobQueueOutputs) ProtoMessage() {}
 
-func (x *AwsBatchJobQueueStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBatchJobQueueOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbatchjobqueue_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AwsBatchJobQueueStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBatchJobQueueStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBatchJobQueueStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBatchJobQueueOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBatchJobQueueOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbatchjobqueue_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBatchJobQueueStackOutputs) GetJobQueueArn() string {
+func (x *AwsBatchJobQueueOutputs) GetJobQueueArn() string {
 	if x != nil {
 		return x.JobQueueArn
 	}
 	return ""
 }
 
-func (x *AwsBatchJobQueueStackOutputs) GetJobQueueName() string {
+func (x *AwsBatchJobQueueOutputs) GetJobQueueName() string {
 	if x != nil {
 		return x.JobQueueName
 	}
@@ -84,8 +84,8 @@ var File_catalog_aws_awsbatchjobqueue_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_aws_awsbatchjobqueue_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awsbatchjobqueue/v1alpha1/outputs.proto\x12)dev.planton.aws.awsbatchjobqueue.v1alpha1\"h\n" +
-	"\x1cAwsBatchJobQueueStackOutputs\x12\"\n" +
+	"3catalog/aws/awsbatchjobqueue/v1alpha1/outputs.proto\x12)dev.planton.aws.awsbatchjobqueue.v1alpha1\"c\n" +
+	"\x17AwsBatchJobQueueOutputs\x12\"\n" +
 	"\rjob_queue_arn\x18\x01 \x01(\tR\vjobQueueArn\x12$\n" +
 	"\x0ejob_queue_name\x18\x02 \x01(\tR\fjobQueueNameB\xe3\x02\n" +
 	"-com.dev.planton.aws.awsbatchjobqueue.v1alpha1B\fOutputsProtoP\x01Z[github.com/plantonhq/planton/catalog/aws/awsbatchjobqueue/v1alpha1;awsbatchjobqueuev1alpha1\xa2\x02\x04DPAA\xaa\x02)Dev.Planton.Aws.Awsbatchjobqueue.V1alpha1\xca\x02)Dev\\Planton\\Aws\\Awsbatchjobqueue\\V1alpha1\xe2\x025Dev\\Planton\\Aws\\Awsbatchjobqueue\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Aws::Awsbatchjobqueue::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_aws_awsbatchjobqueue_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awsbatchjobqueue_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbatchjobqueue_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBatchJobQueueStackOutputs)(nil), // 0: dev.planton.aws.awsbatchjobqueue.v1alpha1.AwsBatchJobQueueStackOutputs
+	(*AwsBatchJobQueueOutputs)(nil), // 0: dev.planton.aws.awsbatchjobqueue.v1alpha1.AwsBatchJobQueueOutputs
 }
 var file_catalog_aws_awsbatchjobqueue_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

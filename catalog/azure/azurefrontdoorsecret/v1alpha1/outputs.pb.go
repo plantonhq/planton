@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFrontDoorSecretStackOutputs** captures the outputs of
+// **AzureFrontDoorSecretOutputs** captures the outputs of
 // provisioning an Azure Front Door secret.
-type AzureFrontDoorSecretStackOutputs struct {
+type AzureFrontDoorSecretOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the secret -- what
 	// AzureFrontDoorCustomDomain's tls.secret_id references to terminate
@@ -41,20 +41,20 @@ type AzureFrontDoorSecretStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *AzureFrontDoorSecretStackOutputs) Reset() {
-	*x = AzureFrontDoorSecretStackOutputs{}
+func (x *AzureFrontDoorSecretOutputs) Reset() {
+	*x = AzureFrontDoorSecretOutputs{}
 	mi := &file_catalog_azure_azurefrontdoorsecret_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFrontDoorSecretStackOutputs) String() string {
+func (x *AzureFrontDoorSecretOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFrontDoorSecretStackOutputs) ProtoMessage() {}
+func (*AzureFrontDoorSecretOutputs) ProtoMessage() {}
 
-func (x *AzureFrontDoorSecretStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFrontDoorSecretOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefrontdoorsecret_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *AzureFrontDoorSecretStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFrontDoorSecretStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFrontDoorSecretStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFrontDoorSecretOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFrontDoorSecretOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoorsecret_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFrontDoorSecretStackOutputs) GetSecretId() string {
+func (x *AzureFrontDoorSecretOutputs) GetSecretId() string {
 	if x != nil {
 		return x.SecretId
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorSecretStackOutputs) GetSecretName() string {
+func (x *AzureFrontDoorSecretOutputs) GetSecretName() string {
 	if x != nil {
 		return x.SecretName
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorSecretStackOutputs) GetSubjectAlternativeNames() []string {
+func (x *AzureFrontDoorSecretOutputs) GetSubjectAlternativeNames() []string {
 	if x != nil {
 		return x.SubjectAlternativeNames
 	}
@@ -96,8 +96,8 @@ var File_catalog_azure_azurefrontdoorsecret_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_azure_azurefrontdoorsecret_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azurefrontdoorsecret/v1alpha1/outputs.proto\x12/dev.planton.azure.azurefrontdoorsecret.v1alpha1\"\x9c\x01\n" +
-	" AzureFrontDoorSecretStackOutputs\x12\x1b\n" +
+	"9catalog/azure/azurefrontdoorsecret/v1alpha1/outputs.proto\x12/dev.planton.azure.azurefrontdoorsecret.v1alpha1\"\x97\x01\n" +
+	"\x1bAzureFrontDoorSecretOutputs\x12\x1b\n" +
 	"\tsecret_id\x18\x01 \x01(\tR\bsecretId\x12\x1f\n" +
 	"\vsecret_name\x18\x02 \x01(\tR\n" +
 	"secretName\x12:\n" +
@@ -118,7 +118,7 @@ func file_catalog_azure_azurefrontdoorsecret_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_azure_azurefrontdoorsecret_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefrontdoorsecret_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFrontDoorSecretStackOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretStackOutputs
+	(*AzureFrontDoorSecretOutputs)(nil), // 0: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretOutputs
 }
 var file_catalog_azure_azurefrontdoorsecret_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

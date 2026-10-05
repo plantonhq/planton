@@ -4,7 +4,7 @@ Builds a network endpoint group (NEG) — a named set of IP:port endpoints a bac
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions exactly one of:
+When you deploy this Infra Component, the IaC module provisions exactly one of:
 
 - **Zonal group** (`zone` set) -- the `compute_network_endpoint_group` in that zone on your network, plus its membership written as ONE set through Google's bulk endpoint operation (`compute_network_endpoints`) when `endpoints` is non-empty
 - **Global internet group** (`zone` empty) -- the `compute_global_network_endpoint_group`, plus one `compute_global_network_endpoint` per entry in `endpoints`
@@ -81,7 +81,7 @@ planton apply -f network-endpoint-group.yaml
 - VM groups (`GCE_VM_IP`, `GCE_VM_IP_PORT`): every endpoint names its `instance`; other groups reject `instance`. `GCE_VM_IP` endpoints and groups carry no port.
 - `INTERNET_FQDN_PORT` endpoints name an `fqdn` (no other group does); `NON_GCP_PRIVATE_IP_PORT` and `INTERNET_IP_PORT` endpoints name an `ipAddress`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -106,13 +106,13 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **The list is the membership.** An endpoint removed from `endpoints` is detached in place; one added is attached. Leave the list empty to let an autoscaler or another controller own membership.
 - **Nearly everything is immutable** -- name, scope, network, subnetwork, type, default port, description all recreate the group; only the endpoint list changes in place.
 - **A VM endpoint without `ipAddress`** uses the instance's primary internal IP; without `port`, the group's `defaultPort`.
-- **Cost**: the group and its endpoints are free; the load balancer that consumes it bills under its own kinds.
+- **Cost**: the group and its endpoints are free; the load balancer that consumes it bills under its own components.
 
 ## Examples
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpBackendService](/docs/catalog/gcp/gcpbackendservice) — consumes the group as a backend
 - [GcpRegionNetworkEndpointGroup](/docs/catalog/gcp/gcpregionnetworkendpointgroup) — serverless, PSC, and regional internet groups

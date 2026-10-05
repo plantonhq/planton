@@ -13,11 +13,11 @@ import (
 // Returns the created namespace resource (or nil when create_namespace is false).
 // Terraform equivalent: kubernetes_namespace resource with count.
 func namespace(ctx *pulumi.Context,
-	stackInput *kubernetescronjobv1alpha1.KubernetesCronJobStackInput,
+	iacInput *kubernetescronjobv1alpha1.KubernetesCronJobIacInput,
 	locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
 ) (*kubernetescorev1.Namespace, error) {
-	if !stackInput.Target.Spec.CreateNamespace {
+	if !iacInput.Target.Spec.CreateNamespace {
 		return nil, nil
 	}
 

@@ -5,10 +5,10 @@ package dev.planton.azure.azureexpressrouteport.v1alpha1;
 import "catalog/azure/azureexpressrouteport/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureExpressRoutePortStackInput is the input to the IaC modules
+// AzureExpressRoutePortIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureExpressRoutePortStackInput {
+message AzureExpressRoutePortIacInput {
   // The ExpressRoute Port resource to deploy.
   AzureExpressRoutePort target = 1;
 

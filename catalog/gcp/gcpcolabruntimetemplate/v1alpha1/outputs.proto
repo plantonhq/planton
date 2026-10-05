@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1;
 
-// GcpColabRuntimeTemplateStackOutputs carries the identity runtimes and
+// GcpColabRuntimeTemplateOutputs carries the identity runtimes and
 // schedules name the template by.
-message GcpColabRuntimeTemplateStackOutputs {
+message GcpColabRuntimeTemplateOutputs {
   // Full resource name:
   // projects/{project}/locations/{location}/notebookRuntimeTemplates/{runtime_template_id}
   // -- what GcpColabRuntime.runtime_template and GcpColabSchedule's

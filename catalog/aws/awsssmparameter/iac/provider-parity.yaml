@@ -31,7 +31,7 @@ resources:
       - arg: value_wo_version
         reason: the change-trigger companion of value_wo -- excluded with it
       - arg: arn
-        reason: writable-but-always-overwritten legacy attribute (the provider re-sets it from the API on every read) -- never honest user surface; the ARN is a stack output
+        reason: writable-but-always-overwritten legacy attribute (the provider re-sets it from the API on every read) -- never honest user surface; the ARN is an output
       - arg: tags
         reason: wired by the module from metadata (the canonical identity tag map) -- never free-form user surface
       - arg: tags_all

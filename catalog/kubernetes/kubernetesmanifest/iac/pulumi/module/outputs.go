@@ -4,8 +4,8 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output constants define the keys for stack outputs exported by this
-// module, mirroring KubernetesManifestStackOutputs. The Terraform module
+// Output constants define the keys for outputs exported by this
+// module, mirroring KubernetesManifestOutputs. The Terraform module
 // exports the identical set.
 const (
 	// OpNamespace is the anchor namespace: where namespaced documents

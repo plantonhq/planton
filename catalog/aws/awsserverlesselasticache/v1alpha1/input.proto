@@ -5,9 +5,9 @@ package dev.planton.aws.awsserverlesselasticache.v1alpha1;
 import "catalog/aws/awsserverlesselasticache/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// aws-serverless-elasticache stack-input
-message AwsServerlessElasticacheStackInput {
-  // target cloud-resource
+// aws-serverless-elasticache iac-input
+message AwsServerlessElasticacheIacInput {
+  // the catalog object to deploy
   AwsServerlessElasticache target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

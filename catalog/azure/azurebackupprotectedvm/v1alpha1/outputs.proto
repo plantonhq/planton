@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurebackupprotectedvm.v1alpha1;
 
-// **AzureBackupProtectedVmStackOutputs** captures the outputs of
+// **AzureBackupProtectedVmOutputs** captures the outputs of
 // registering a VM under backup protection.
-message AzureBackupProtectedVmStackOutputs {
+message AzureBackupProtectedVmOutputs {
   // The Azure Resource Manager ID of the protected item.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.RecoveryServices/vaults/{vault}/backupFabrics/Azure/protectionContainers/iaasvmcontainer;iaasvmcontainerv2;{vm-rg};{vm-name}/protectedItems/VM;iaasvmcontainerv2;{vm-rg};{vm-name}
   string backup_protected_vm_id = 1;

@@ -7,9 +7,9 @@
 # the price book's attribute identities. Throughput is sized through exactly
 # one spec arm (whole-file-system or per-HA-pair, spec-enforced XOR) -- the
 # per-pair arm multiplies by ha_pairs. Prices live in the provider's price
-# book (../pricebook/). Schema: finops/componentcostderivation/v1.
+# book (../pricebook/). Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsfsxontapfilesystem
 spec:

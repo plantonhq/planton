@@ -5,9 +5,9 @@ package dev.planton.stripe.stripepaymentlink.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/stripepaymentlink/v1alpha1/api.proto";
 
-// StripePaymentLinkStackInput is the input to the StripePaymentLink IaC module.
+// StripePaymentLinkIacInput is the input to the StripePaymentLink IaC module.
 // It contains the target resource and the Stripe provider configuration.
-message StripePaymentLinkStackInput {
+message StripePaymentLinkIacInput {
   // target is the StripePaymentLink resource to be deployed.
   StripePaymentLink target = 1;
 

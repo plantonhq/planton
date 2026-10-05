@@ -20,7 +20,7 @@ func newPeerAuthManifest() *peerauthv1.KubernetesPeerAuthentication {
 	return &peerauthv1.KubernetesPeerAuthentication{
 		ApiVersion: "kubernetes.planton.dev/v1alpha1",
 		Kind:       "KubernetesPeerAuthentication",
-		Metadata:   &shared.CloudResourceMetadata{Name: "pa-one"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "pa-one"},
 		Spec: &peerauthv1.KubernetesPeerAuthenticationSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "mesh-ns"},
@@ -88,7 +88,7 @@ func TestRenderTFVars_DispatchesByKind(t *testing.T) {
 	valkey := &kubernetesvalkeyv1alpha1.KubernetesValkey{
 		ApiVersion: "kubernetes.planton.dev/v1alpha1",
 		Kind:       "KubernetesValkey",
-		Metadata:   &shared.CloudResourceMetadata{Name: "vlk-one"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "vlk-one"},
 		Spec: &kubernetesvalkeyv1alpha1.KubernetesValkeySpec{
 			Config: &kubernetesvalkeyv1alpha1.KubernetesValkeyConfig{
 				MaxMemory:  "256mb",

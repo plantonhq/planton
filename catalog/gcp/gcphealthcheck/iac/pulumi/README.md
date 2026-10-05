@@ -29,7 +29,7 @@ iac/pulumi/
     ├── main.go          # Module coordinator
     ├── health_check.go  # Global/regional health check creation
     ├── locals.go        # Resolved resource + derived values
-    └── outputs.go       # Stack output constants
+    └── outputs.go       # Output constants
 ```
 
 ## Quick Start
@@ -43,7 +43,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the health check specification:
+Provide a `iac-input.yaml` with the health check specification:
 
 ```yaml
 target:
@@ -76,7 +76,7 @@ pulumi stack output type
 
 ## Inputs
 
-The module consumes `GcpHealthCheckStackInput`:
+The module consumes `GcpHealthCheckIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|

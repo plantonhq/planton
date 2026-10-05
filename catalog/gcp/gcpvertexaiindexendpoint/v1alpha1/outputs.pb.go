@@ -23,7 +23,7 @@ const (
 
 // Outputs produced after provisioning a GCP Vertex AI Vector Search
 // index endpoint.
-type GcpVertexAiIndexEndpointStackOutputs struct {
+type GcpVertexAiIndexEndpointOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified index endpoint resource path — the value a
 	// GcpVertexAiDeployedIndex passes as its `index_endpoint` reference.
@@ -43,20 +43,20 @@ type GcpVertexAiIndexEndpointStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiIndexEndpointStackOutputs) Reset() {
-	*x = GcpVertexAiIndexEndpointStackOutputs{}
+func (x *GcpVertexAiIndexEndpointOutputs) Reset() {
+	*x = GcpVertexAiIndexEndpointOutputs{}
 	mi := &file_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiIndexEndpointStackOutputs) String() string {
+func (x *GcpVertexAiIndexEndpointOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiIndexEndpointStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiIndexEndpointOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiIndexEndpointStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiIndexEndpointOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,40 +68,40 @@ func (x *GcpVertexAiIndexEndpointStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiIndexEndpointStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiIndexEndpointStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiIndexEndpointOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiIndexEndpointOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiIndexEndpointStackOutputs) GetIndexEndpointId() string {
+func (x *GcpVertexAiIndexEndpointOutputs) GetIndexEndpointId() string {
 	if x != nil {
 		return x.IndexEndpointId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiIndexEndpointStackOutputs) GetIndexEndpointName() string {
+func (x *GcpVertexAiIndexEndpointOutputs) GetIndexEndpointName() string {
 	if x != nil {
 		return x.IndexEndpointName
 	}
 	return ""
 }
 
-func (x *GcpVertexAiIndexEndpointStackOutputs) GetPublicEndpointDomainName() string {
+func (x *GcpVertexAiIndexEndpointOutputs) GetPublicEndpointDomainName() string {
 	if x != nil {
 		return x.PublicEndpointDomainName
 	}
 	return ""
 }
 
-func (x *GcpVertexAiIndexEndpointStackOutputs) GetCreateTime() string {
+func (x *GcpVertexAiIndexEndpointOutputs) GetCreateTime() string {
 	if x != nil {
 		return x.CreateTime
 	}
 	return ""
 }
 
-func (x *GcpVertexAiIndexEndpointStackOutputs) GetUpdateTime() string {
+func (x *GcpVertexAiIndexEndpointOutputs) GetUpdateTime() string {
 	if x != nil {
 		return x.UpdateTime
 	}
@@ -112,8 +112,8 @@ var File_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpvertexaiindexendpoint/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1\"\x83\x02\n" +
-	"$GcpVertexAiIndexEndpointStackOutputs\x12*\n" +
+	";catalog/gcp/gcpvertexaiindexendpoint/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1\"\xfe\x01\n" +
+	"\x1fGcpVertexAiIndexEndpointOutputs\x12*\n" +
 	"\x11index_endpoint_id\x18\x01 \x01(\tR\x0findexEndpointId\x12.\n" +
 	"\x13index_endpoint_name\x18\x02 \x01(\tR\x11indexEndpointName\x12=\n" +
 	"\x1bpublic_endpoint_domain_name\x18\x03 \x01(\tR\x18publicEndpointDomainName\x12\x1f\n" +
@@ -137,7 +137,7 @@ func file_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiIndexEndpointStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointStackOutputs
+	(*GcpVertexAiIndexEndpointOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointOutputs
 }
 var file_catalog_gcp_gcpvertexaiindexendpoint_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

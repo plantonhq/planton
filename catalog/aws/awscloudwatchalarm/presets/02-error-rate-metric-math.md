@@ -47,4 +47,4 @@ The alarm only evaluates the query where `returnData: true`. Input metrics are f
 - **CloudWatch alarms**: billed per alarm-month; metric math alarms bill at a higher per-alarm rate than standard single-metric alarms
 - **SNS**: first 1M notifications/month free
 
-The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awscloudwatchalarm.yaml` — computed from the pinned price book, never hand-typed here.
+The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awscloudwatchalarm.yaml` — computed from the pinned price book, never hand-typed here.

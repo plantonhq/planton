@@ -1,7 +1,7 @@
 # AzureMssqlElasticPool - Terraform Module
 
-Terraform implementation for the AzureMssqlElasticPool deployment
-component.
+Terraform implementation for the AzureMssqlElasticPool
+kind.
 
 ## Resources Created
 

@@ -1,5 +1,5 @@
 # AzureUserAssignedIdentity install profile used as a prerequisite by composed
-# components (declared via prerequisites: [AzureUserAssignedIdentity] in the
+# kinds (declared via prerequisites: [AzureUserAssignedIdentity] in the
 # kind registry). The E2E harness deploys this document (via the identity's
 # Pulumi module) after its own prerequisite (the fixture resource group, whose
 # name the resource_group reference below addresses), and captures its outputs
@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureuserassignedidentity
+    e2e-catalog-kind: azureuserassignedidentity
   annotations:
     planton.dev/e2e: "true"
   tags:

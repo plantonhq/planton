@@ -31,7 +31,7 @@ type DigitalOceanUptimeCheck struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *DigitalOceanUptimeCheckSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *DigitalOceanUptimeCheck) GetKind() string {
 	return ""
 }
 
-func (x *DigitalOceanUptimeCheck) GetMetadata() *shared.CloudResourceMetadata {
+func (x *DigitalOceanUptimeCheck) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *DigitalOceanUptimeCheck) GetStatus() *DigitalOceanUptimeCheckStatus {
 // digital-ocean-uptime-check status
 type DigitalOceanUptimeCheckStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	digital-ocean-uptime-check stack-outputs
-	Outputs       *DigitalOceanUptimeCheckStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	digital-ocean-uptime-check outputs
+	Outputs       *DigitalOceanUptimeCheckOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*DigitalOceanUptimeCheckStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *DigitalOceanUptimeCheckStatus) GetOutputs() *DigitalOceanUptimeCheckStackOutputs {
+func (x *DigitalOceanUptimeCheckStatus) GetOutputs() *DigitalOceanUptimeCheckOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_api_proto_rawDe
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17DigitalOceanUptimeCheckR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
 	"\x04spec\x18\x04 \x01(\v2V.dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12p\n" +
-	"\x06status\x18\x05 \x01(\v2X.dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStatusR\x06status\"\x99\x01\n" +
-	"\x1dDigitalOceanUptimeCheckStatus\x12x\n" +
-	"\aoutputs\x18\x01 \x01(\v2^.dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStackOutputsR\aoutputsB\xc6\x03\n" +
+	"\x06status\x18\x05 \x01(\v2X.dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStatusR\x06status\"\x94\x01\n" +
+	"\x1dDigitalOceanUptimeCheckStatus\x12s\n" +
+	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckOutputsR\aoutputsB\xc6\x03\n" +
 	"=com.dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1B\bApiProtoP\x01Zrgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanuptimecheck/v1alpha1;digitaloceanuptimecheckv1alpha1\xa2\x02\x04DPDD\xaa\x029Dev.Planton.Digitalocean.Digitaloceanuptimecheck.V1alpha1\xca\x029Dev\\Planton\\Digitalocean\\Digitaloceanuptimecheck\\V1alpha1\xe2\x02EDev\\Planton\\Digitalocean\\Digitaloceanuptimecheck\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Digitalocean::Digitaloceanuptimecheck::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_api_proto_rawDes
 
 var file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_api_proto_goTypes = []any{
-	(*DigitalOceanUptimeCheck)(nil),             // 0: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheck
-	(*DigitalOceanUptimeCheckStatus)(nil),       // 1: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*DigitalOceanUptimeCheckSpec)(nil),         // 3: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckSpec
-	(*DigitalOceanUptimeCheckStackOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStackOutputs
+	(*DigitalOceanUptimeCheck)(nil),        // 0: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheck
+	(*DigitalOceanUptimeCheckStatus)(nil),  // 1: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*DigitalOceanUptimeCheckSpec)(nil),    // 3: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckSpec
+	(*DigitalOceanUptimeCheckOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckOutputs
 }
 var file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheck.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheck.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheck.spec:type_name -> dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckSpec
 	1, // 2: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheck.status:type_name -> dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStatus
-	4, // 3: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStackOutputs
+	4, // 3: dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -9,12 +9,12 @@ import (
 
 // Resources orchestrates creation of the canary, owned groups, and the
 // canary's group joins, and exports outputs.
-func Resources(ctx *pulumi.Context, stackInput *awscloudwatchsyntheticsv1alpha1.AwsCloudwatchSyntheticsStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awscloudwatchsyntheticsv1alpha1.AwsCloudwatchSyntheticsIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.Target.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.Target.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

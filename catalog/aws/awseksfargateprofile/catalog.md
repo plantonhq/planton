@@ -4,7 +4,7 @@ Declares which Kubernetes pods of an EKS cluster run on AWS Fargate — serverle
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EKS Fargate Profile** -- the profile on the target cluster, with its pod selectors, private subnets, and pod execution role
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied to the profile
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **EKS Cluster** -- the target cluster, ideally a Planton AwsEksCluster referenced by its `name` output so deploys order correctly.
 - **Pod Execution Role** -- an AwsIamRole trusting `eks-fargate-pods.amazonaws.com` and carrying `AmazonEKSFargatePodExecutionRolePolicy`, referenced by its `role_arn` output.
 - **Private Subnets** -- AwsSubnet resources with no direct internet-gateway route, referenced by their `subnet_id` outputs.
@@ -70,7 +70,7 @@ spec:
 planton apply -f fargate-profile.yaml
 ```
 
-This schedules every pod in the `batch` namespace onto Fargate — no nodes to provision, patch, or scale for those workloads. A Stack Job tracks the provisioning in real time.
+This schedules every pod in the `batch` namespace onto Fargate — no nodes to provision, patch, or scale for those workloads. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -116,7 +116,7 @@ These are the most important decisions when configuring a Fargate profile. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -124,9 +124,9 @@ These are the most important decisions when configuring a Fargate profile. Explo
 | **AwsIamRole** | `podExecutionRoleArn` | `status.outputs.role_arn` |
 | **AwsSubnet** | `subnetIds[]` | `status.outputs.subnet_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -144,7 +144,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS EKS Cluster**](/cloud-catalog/aws-eks-cluster) -- the cluster the profile attaches to, referenced by `clusterName`.
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the pod execution role, referenced by `podExecutionRoleArn`.
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- the private subnets the pods launch into, referenced by `subnetIds`.
-- [**AWS EKS Addon**](/cloud-catalog/aws-eks-addon) -- CoreDNS as a managed add-on pairs with a `kube-system` selector on Fargate-only clusters.
+- [**AWS EKS Cluster**](/infra-catalog/aws-eks-cluster) -- the cluster the profile attaches to, referenced by `clusterName`.
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the pod execution role, referenced by `podExecutionRoleArn`.
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- the private subnets the pods launch into, referenced by `subnetIds`.
+- [**AWS EKS Addon**](/infra-catalog/aws-eks-addon) -- CoreDNS as a managed add-on pairs with a `kube-system` selector on Fargate-only clusters.

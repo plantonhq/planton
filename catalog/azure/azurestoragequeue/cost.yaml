@@ -4,9 +4,9 @@
 # Queue Storage price list has no meter for the queue object; queued data
 # bills capacity and every API call bills a class-1 or class-2 operation
 # meter, all on the parent storage account at the ACCOUNT's redundancy
-# rates. Schema: finops/componentcostprofile/v1.
+# rates. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurestoragequeue
 spec:

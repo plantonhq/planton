@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSsmAssociationStackInput is the input for the IaC modules that
+// AwsSsmAssociationIacInput is the input for the IaC modules that
 // manage a State Manager association.
-type AwsSsmAssociationStackInput struct {
+type AwsSsmAssociationIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsSsmAssociation resource to deploy.
 	Target *AwsSsmAssociation `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsSsmAssociationStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsSsmAssociationStackInput) Reset() {
-	*x = AwsSsmAssociationStackInput{}
+func (x *AwsSsmAssociationIacInput) Reset() {
+	*x = AwsSsmAssociationIacInput{}
 	mi := &file_catalog_aws_awsssmassociation_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSsmAssociationStackInput) String() string {
+func (x *AwsSsmAssociationIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSsmAssociationStackInput) ProtoMessage() {}
+func (*AwsSsmAssociationIacInput) ProtoMessage() {}
 
-func (x *AwsSsmAssociationStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsSsmAssociationIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsssmassociation_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsSsmAssociationStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSsmAssociationStackInput.ProtoReflect.Descriptor instead.
-func (*AwsSsmAssociationStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSsmAssociationIacInput.ProtoReflect.Descriptor instead.
+func (*AwsSsmAssociationIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsssmassociation_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSsmAssociationStackInput) GetTarget() *AwsSsmAssociation {
+func (x *AwsSsmAssociationIacInput) GetTarget() *AwsSsmAssociation {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsSsmAssociationStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsSsmAssociationIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsssmassociation_v1alpha1_input_proto protoreflect.FileDes
 
 const file_catalog_aws_awsssmassociation_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awsssmassociation/v1alpha1/input.proto\x12*dev.planton.aws.awsssmassociation.v1alpha1\x1a0catalog/aws/awsssmassociation/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc1\x01\n" +
-	"\x1bAwsSsmAssociationStackInput\x12U\n" +
+	"2catalog/aws/awsssmassociation/v1alpha1/input.proto\x12*dev.planton.aws.awsssmassociation.v1alpha1\x1a0catalog/aws/awsssmassociation/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xbf\x01\n" +
+	"\x19AwsSsmAssociationIacInput\x12U\n" +
 	"\x06target\x18\x01 \x01(\v2=.dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xe8\x02\n" +
 	".com.dev.planton.aws.awsssmassociation.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsssmassociation_v1alpha1_input_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awsssmassociation_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsssmassociation_v1alpha1_input_proto_goTypes = []any{
-	(*AwsSsmAssociationStackInput)(nil), // 0: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationStackInput
-	(*AwsSsmAssociation)(nil),           // 1: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociation
-	(*aws.AwsProviderConfig)(nil),       // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsSsmAssociationIacInput)(nil), // 0: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationIacInput
+	(*AwsSsmAssociation)(nil),         // 1: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociation
+	(*aws.AwsProviderConfig)(nil),     // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsssmassociation_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationStackInput.target:type_name -> dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociation
-	2, // 1: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationIacInput.target:type_name -> dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociation
+	2, // 1: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

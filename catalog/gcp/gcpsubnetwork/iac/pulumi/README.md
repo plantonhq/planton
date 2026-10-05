@@ -29,7 +29,7 @@ iac/pulumi/
     ├── main.go        # Module coordinator
     ├── subnetwork.go  # API enablement + subnetwork creation
     ├── locals.go      # Resolved resource holder
-    └── outputs.go     # Stack output constants
+    └── outputs.go     # Output constants
 ```
 
 ## Quick Start
@@ -43,7 +43,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the subnetwork specification:
+Provide a `iac-input.yaml` with the subnetwork specification:
 
 ```yaml
 target:
@@ -78,7 +78,7 @@ pulumi stack output subnetwork_self_link
 
 ## Inputs
 
-The module consumes `GcpSubnetworkStackInput`:
+The module consumes `GcpSubnetworkIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|

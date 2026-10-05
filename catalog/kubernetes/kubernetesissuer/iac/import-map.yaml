@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesissuer
 spec:
@@ -19,13 +19,13 @@ spec:
     - name: name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: issuer_name
+        - from_output: issuer_name
       where_to_find: >-
         The Issuer's metadata.name (equals the Planton resource name) —
         `kubectl get issuers -A` (NAME column).
     - name: namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         The namespace the Issuer lives in — `kubectl get issuers -A`
@@ -40,7 +40,7 @@ spec:
         `kubectl get secrets -n <issuer namespace>`.
     - name: secret_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same as the Issuer's namespace — a namespaced issuer only reads

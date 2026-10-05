@@ -23,7 +23,7 @@ var _ = ginkgo.Describe("CloudflareKvNamespaceSpec Custom Validation Tests", fun
 				input := &CloudflareKvNamespace{
 					ApiVersion: "cloudflare.planton.dev/v1alpha1",
 					Kind:       "CloudflareKvNamespace",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-kv-namespace",
 					},
 					Spec: &CloudflareKvNamespaceSpec{
@@ -44,7 +44,7 @@ var _ = ginkgo.Describe("CloudflareKvNamespaceSpec Custom Validation Tests", fun
 				input := &CloudflareKvNamespace{
 					ApiVersion: "cloudflare.planton.dev/v1alpha1",
 					Kind:       "CloudflareKvNamespace",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-kv-namespace",
 					},
 					Spec: &CloudflareKvNamespaceSpec{
@@ -59,7 +59,7 @@ var _ = ginkgo.Describe("CloudflareKvNamespaceSpec Custom Validation Tests", fun
 				input := &CloudflareKvNamespace{
 					ApiVersion: "cloudflare.planton.dev/v1alpha1",
 					Kind:       "CloudflareKvNamespace",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-kv-namespace",
 					},
 					Spec: &CloudflareKvNamespaceSpec{

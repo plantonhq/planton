@@ -4,7 +4,7 @@ Pairs two PREMIUM Azure Service Bus namespaces for geo-disaster recovery: metada
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **The geo-DR pairing** -- on the primary namespace, with continuous metadata replication to the partner
 - **The alias DNS name** -- `{alias}.servicebus.windows.net`, resolving to whichever side is currently primary
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -63,7 +63,7 @@ spec:
 planton apply -f dr-config.yaml
 ```
 
-This pairs the east and west namespaces under the `myorg-app-bus-alias` DNS name, with alias credentials carrying the scoped DR rule's keys instead of the root rule's. A Stack Job tracks the provisioning in real time.
+This pairs the east and west namespaces under the `myorg-app-bus-alias` DNS name, with alias credentials carrying the scoped DR rule's keys instead of the root rule's. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,7 +96,7 @@ These are the most important decisions when configuring a geo-DR pairing. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -104,9 +104,9 @@ These are the most important decisions when configuring a geo-DR pairing. Explor
 | **AzureServiceBusNamespace** | `partnerNamespaceId` | `status.outputs.namespace_id` |
 | **AzureServiceBusAuthorizationRule** | `aliasAuthorizationRuleId` | `status.outputs.authorization_rule_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -123,7 +123,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Service Bus Namespace**](/cloud-catalog/azure-service-bus-namespace) -- both sides of the pair (PREMIUM, different regions)
-- [**Azure Service Bus Authorization Rule**](/cloud-catalog/azure-service-bus-authorization-rule) -- the namespace-scoped rule whose keys the alias connection strings carry
-- [**Azure Service Bus Queue**](/cloud-catalog/azure-service-bus-queue) -- replicated to the partner as metadata, like every entity in the namespace
-- [**Azure Service Bus Topic**](/cloud-catalog/azure-service-bus-topic) -- likewise replicated; subscriptions and rules included
+- [**Azure Service Bus Namespace**](/infra-catalog/azure-service-bus-namespace) -- both sides of the pair (PREMIUM, different regions)
+- [**Azure Service Bus Authorization Rule**](/infra-catalog/azure-service-bus-authorization-rule) -- the namespace-scoped rule whose keys the alias connection strings carry
+- [**Azure Service Bus Queue**](/infra-catalog/azure-service-bus-queue) -- replicated to the partner as metadata, like every entity in the namespace
+- [**Azure Service Bus Topic**](/infra-catalog/azure-service-bus-topic) -- likewise replicated; subscriptions and rules included

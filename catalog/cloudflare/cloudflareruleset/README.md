@@ -14,7 +14,7 @@ Common use cases include:
 - **Redirect Rules** (`http_request_dynamic_redirect`) — Redirect requests with custom status codes
 - **Transform Rules** (`http_request_transform`, `http_response_headers_transform`) — Rewrite URLs or modify headers
 
-This component models the full v5 `cloudflare_ruleset` surface — every phase and action, with the complete `action_parameters` tree — so an advanced organization can reach the long tail (custom cache keys, Cache Reserve, set_config, set_cache_control directives, log custom fields, rate limiting) rather than just the common knobs.
+This kind models the full v5 `cloudflare_ruleset` surface — every phase and action, with the complete `action_parameters` tree — so an advanced organization can reach the long tail (custom cache keys, Cache Reserve, set_config, set_cache_control directives, log custom fields, rate limiting) rather than just the common knobs.
 
 ## Key Features
 
@@ -173,7 +173,7 @@ spec:
 | `set_config` | `ssl`, `securityLevel`, `polish`, `rocketLoader`, `autominify`, `bic`, `emailObfuscation`, … |
 | `log_custom_field` | `cookieFields`, `requestFields`, `responseFields`, `rawResponseFields`, `transformedRequestFields` |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -225,7 +225,7 @@ Example: `not (starts_with(http.request.uri.path, "/static") or http.request.uri
 4. **Test expressions**: Use the Cloudflare dashboard's expression builder to validate expressions before deploying.
 5. **Proxy required**: Most request-phase rulesets require the orange cloud (Cloudflare proxy) to be enabled on the DNS record.
 
-## Related Components
+## Related Kinds
 
 - **CloudflareDnsZone** — Manage the DNS zone that this ruleset applies to
 - **CloudflareDnsRecord** — Manage DNS records (must be proxied for rulesets to take effect)

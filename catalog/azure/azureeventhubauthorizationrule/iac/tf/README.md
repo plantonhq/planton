@@ -1,7 +1,7 @@
 # AzureEventHubAuthorizationRule - Terraform Module
 
 OpenTofu/Terraform implementation for the
-AzureEventHubAuthorizationRule component, at 100% behavioral
+AzureEventHubAuthorizationRule kind, at 100% behavioral
 parity with the Pulumi module.
 
 ## Resources Created

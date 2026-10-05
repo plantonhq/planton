@@ -1,6 +1,6 @@
 # KubernetesValkey Terraform Module
 
-Terraform/OpenTofu module for the KubernetesValkey component: installs
+Terraform/OpenTofu module for the KubernetesValkey kind: installs
 Valkey — the Redis-compatible in-memory data store — from the official
 Valkey Helm chart (`valkey` at https://valkey.io/valkey-helm/), in either
 standalone or primary/replica topology.

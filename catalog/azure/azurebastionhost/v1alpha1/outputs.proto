@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurebastionhost.v1alpha1;
 
-// **AzureBastionHostStackOutputs** captures the outputs of
+// **AzureBastionHostOutputs** captures the outputs of
 // provisioning a Bastion host.
-message AzureBastionHostStackOutputs {
+message AzureBastionHostOutputs {
   // The host's ARM resource ID
   // (.../providers/Microsoft.Network/bastionHosts/{name}).
   string bastion_host_id = 1;

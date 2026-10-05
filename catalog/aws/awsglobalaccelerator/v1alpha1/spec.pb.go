@@ -48,7 +48,7 @@ const (
 // - Protocol-agnostic: TCP and UDP at Layer 4 (not HTTP-aware like CloudFront)
 // - Client affinity: Optional SOURCE_IP stickiness per listener
 //
-// This component covers standard accelerators. Custom routing accelerators
+// This kind covers standard accelerators. Custom routing accelerators
 // (deterministic port-based routing to specific VPC subnet destinations) are a
 // distinct AWS resource family with its own listener and endpoint-group shapes
 // and are deliberately not modeled here.
@@ -59,7 +59,7 @@ const (
 // change is followed by a wait for the accelerator to return to the DEPLOYED
 // state — expect minutes, not seconds, per apply.
 //
-// Credentials and deployment workflow live outside this spec in stack inputs.
+// Credentials and deployment workflow live outside this spec in IaC inputs.
 type AwsGlobalAcceleratorSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS provider region used for deployment. Global Accelerator is a

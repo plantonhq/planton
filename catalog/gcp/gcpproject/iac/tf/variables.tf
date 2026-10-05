@@ -1,5 +1,5 @@
 variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name        = string
     id          = optional(string, "")
@@ -63,7 +63,7 @@ variable "spec" {
     auto_create_network = optional(bool)
 
     # List of Cloud APIs to enable at project creation
-    # (e.g. "compute.googleapis.com"). Individual component kinds also
+    # (e.g. "compute.googleapis.com"). Individual kinds also
     # enable the APIs they need, so this is a convenience for pre-warming a
     # known set. Each entry must end with ".googleapis.com".
     enabled_apis = optional(list(string), [])

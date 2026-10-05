@@ -4,7 +4,7 @@ Deploys a single DNS record in a Route53 hosted zone with support for every Rout
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Route53 DNS Record** -- a resource record in the specified hosted zone, either as a standard record with TTL and values or as an alias record pointing to an AWS resource (ALB, CloudFront, S3, API Gateway). With `allowOverwrite`, creation can adopt an existing record set with the same name and type instead of failing on the collision
 - **Routing Policy Configuration** -- created only when `routingPolicy` is specified; configures weighted, latency-based, failover, geolocation, geoproximity (distance with a bias dial), CIDR (per-network), or multivalue-answer routing for the record
@@ -15,14 +15,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A Route53 hosted zone** -- the zone where the DNS record will be created. Provide the zone ID directly or reference an AwsRoute53Zone Cloud Resource via ValueFromRef.
+- **A Route53 hosted zone** -- the zone where the DNS record will be created. Provide the zone ID directly or reference an AwsRoute53Zone Infra Component via ValueFromRef.
 - **An AWS resource** (optional, for alias records) -- the target resource (ALB, CloudFront distribution, S3 bucket, API Gateway) that the alias record will point to. Provide the DNS name and hosted zone ID directly or reference via ValueFromRef.
-- **A Route53 health check** (optional) -- pairs with failover routing (and any non-simple policy where unhealthy answers should drop out). Reference an AwsRoute53HealthCheck Cloud Resource or pass a health check ID.
+- **A Route53 health check** (optional) -- pairs with failover routing (and any non-simple policy where unhealthy answers should drop out). Reference an AwsRoute53HealthCheck Infra Component or pass a health check ID.
 - **A Route53 CIDR collection** (optional, CIDR routing only) -- created through the Route53 API outside this resource; the record references it by collection ID and location name.
 
 ## Deploy
@@ -57,7 +57,7 @@ spec:
 planton apply -f dns-record.yaml
 ```
 
-This creates a standard A record pointing `www.example.com` to the specified IP address with a 5-minute TTL. No alias target or routing policy is configured. A Stack Job tracks the provisioning in real time.
+This creates a standard A record pointing `www.example.com` to the specified IP address with a 5-minute TTL. No alias target or routing policy is configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -104,7 +104,7 @@ These are the most important decisions when configuring a Route53 DNS record. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -113,9 +113,9 @@ These are the most important decisions when configuring a Route53 DNS record. Ex
 | **AwsAlb** (optional) | `aliasTarget.zoneId` | `status.outputs.load_balancer_hosted_zone_id` |
 | **AwsRoute53HealthCheck** (optional) | `healthCheckId` | `status.outputs.health_check_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -135,6 +135,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Route 53 Zone**](/cloud-catalog/aws-route53-zone) -- provides the hosted zone where the DNS record is created
-- [**AWS ALB**](/cloud-catalog/aws-alb) -- provides the load balancer DNS name and hosted zone ID for alias records
-- [**AWS Route 53 Health Check**](/cloud-catalog/aws-route53-health-check) -- gates the record's answers on endpoint health
+- [**AWS Route 53 Zone**](/infra-catalog/aws-route53-zone) -- provides the hosted zone where the DNS record is created
+- [**AWS ALB**](/infra-catalog/aws-alb) -- provides the load balancer DNS name and hosted zone ID for alias records
+- [**AWS Route 53 Health Check**](/infra-catalog/aws-route53-health-check) -- gates the record's answers on endpoint health

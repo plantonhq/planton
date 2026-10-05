@@ -2,7 +2,7 @@
 # prerequisite (app clients, identity providers, resource servers). Deliberately
 # dependency-free and minimal: an email-username pool with nothing that needs
 # SES, SNS roles, or a domain, so consumers pay the minimum fixture cost
-# (Cognito pools create in seconds). The component's own richer lane lives in
+# (Cognito pools create in seconds). The kind's own richer lane lives in
 # scenarios/full-surface-pool.yaml.
 apiVersion: aws.planton.dev/v1alpha1
 kind: AwsCognitoUserPool
@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awscognitouserpool
+    e2e-catalog-kind: awscognitouserpool
   annotations:
     planton.dev/e2e: "true"
   tags:

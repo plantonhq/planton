@@ -49,7 +49,7 @@ func validResource() *AzureBastionHost {
 	return &AzureBastionHost{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureBastionHost",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-bastion",
 		},
 		Spec: &AzureBastionHostSpec{

@@ -5,10 +5,10 @@ package dev.planton.aws.awsorganization.v1alpha1;
 import "catalog/aws/awsorganization/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsOrganizationStackInput is the input for the IaC modules that
+// AwsOrganizationIacInput is the input for the IaC modules that
 // manage the AWS Organization with its folded service access,
 // delegated administrators, and resource policy.
-message AwsOrganizationStackInput {
+message AwsOrganizationIacInput {
   // target is the AwsOrganization resource to deploy.
   AwsOrganization target = 1;
   // provider_config contains the AWS provider credentials and configuration.

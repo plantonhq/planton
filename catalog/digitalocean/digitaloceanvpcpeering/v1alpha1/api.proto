@@ -16,7 +16,7 @@ message DigitalOceanVpcPeering {
   string kind = 2 [(buf.validate.field).string.const = 'DigitalOceanVpcPeering'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   DigitalOceanVpcPeeringSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,7 +27,7 @@ message DigitalOceanVpcPeering {
 
 // digital-ocean-vpc-peering status
 message DigitalOceanVpcPeeringStatus {
-  //stack-outputs
-  //  digital-ocean-vpc-peering stack-outputs
-  DigitalOceanVpcPeeringStackOutputs outputs = 1;
+  //outputs
+  //  digital-ocean-vpc-peering outputs
+  DigitalOceanVpcPeeringOutputs outputs = 1;
 }

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Forged four new first-class, infra-chart-composable Cloudflare cloud resource kinds
+Forged four new first-class, infra-chart-composable Cloudflare catalog kinds
 across two Tier-1 product families — TLS/Certificates and Cloudflare for SaaS — each
 modeled to the Cloudflare v5 provider's depth with full Terraform + Pulumi parity
 (provider `~> 5.0`, `pulumi-cloudflare/sdk/v6 v6.17.0`). This extends the Cloudflare
@@ -88,7 +88,7 @@ precedent). Certificate SAN/host lists and the customer hostname are plain strin
 ## Validation
 
 - `make protos`, spec/CEL tests for all four kinds, scoped `go build` of each package
-  and each Pulumi entrypoint (the release contract), `make generate-cloud-resource-kind-map`,
+  and each Pulumi entrypoint (the release contract), `make generate-catalog-kind-map`,
   gazelle, `pkg/outputs` conformance (4 new cases), `secret-coverage --check`,
   `go vet`, `gofmt`.
 - **Live `tofu apply`/`destroy`** on the real account for **CloudflareOriginCaCertificate**

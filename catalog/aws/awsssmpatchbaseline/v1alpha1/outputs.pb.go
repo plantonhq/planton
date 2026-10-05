@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSsmPatchBaselineStackOutputs captures the observable state of the
+// AwsSsmPatchBaselineOutputs captures the observable state of the
 // patch baseline after apply.
-type AwsSsmPatchBaselineStackOutputs struct {
+type AwsSsmPatchBaselineOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The baseline's AWS-generated ID ("pb-..." - also the provider's
 	// import ID; each folded patch group imports as
@@ -39,20 +39,20 @@ type AwsSsmPatchBaselineStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AwsSsmPatchBaselineStackOutputs) Reset() {
-	*x = AwsSsmPatchBaselineStackOutputs{}
+func (x *AwsSsmPatchBaselineOutputs) Reset() {
+	*x = AwsSsmPatchBaselineOutputs{}
 	mi := &file_catalog_aws_awsssmpatchbaseline_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSsmPatchBaselineStackOutputs) String() string {
+func (x *AwsSsmPatchBaselineOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSsmPatchBaselineStackOutputs) ProtoMessage() {}
+func (*AwsSsmPatchBaselineOutputs) ProtoMessage() {}
 
-func (x *AwsSsmPatchBaselineStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSsmPatchBaselineOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsssmpatchbaseline_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *AwsSsmPatchBaselineStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSsmPatchBaselineStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSsmPatchBaselineStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSsmPatchBaselineOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSsmPatchBaselineOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsssmpatchbaseline_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSsmPatchBaselineStackOutputs) GetBaselineId() string {
+func (x *AwsSsmPatchBaselineOutputs) GetBaselineId() string {
 	if x != nil {
 		return x.BaselineId
 	}
 	return ""
 }
 
-func (x *AwsSsmPatchBaselineStackOutputs) GetBaselineArn() string {
+func (x *AwsSsmPatchBaselineOutputs) GetBaselineArn() string {
 	if x != nil {
 		return x.BaselineArn
 	}
 	return ""
 }
 
-func (x *AwsSsmPatchBaselineStackOutputs) GetOperatingSystem() string {
+func (x *AwsSsmPatchBaselineOutputs) GetOperatingSystem() string {
 	if x != nil {
 		return x.OperatingSystem
 	}
@@ -94,8 +94,8 @@ var File_catalog_aws_awsssmpatchbaseline_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_aws_awsssmpatchbaseline_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awsssmpatchbaseline/v1alpha1/outputs.proto\x12,dev.planton.aws.awsssmpatchbaseline.v1alpha1\"\x90\x01\n" +
-	"\x1fAwsSsmPatchBaselineStackOutputs\x12\x1f\n" +
+	"6catalog/aws/awsssmpatchbaseline/v1alpha1/outputs.proto\x12,dev.planton.aws.awsssmpatchbaseline.v1alpha1\"\x8b\x01\n" +
+	"\x1aAwsSsmPatchBaselineOutputs\x12\x1f\n" +
 	"\vbaseline_id\x18\x01 \x01(\tR\n" +
 	"baselineId\x12!\n" +
 	"\fbaseline_arn\x18\x02 \x01(\tR\vbaselineArn\x12)\n" +
@@ -116,7 +116,7 @@ func file_catalog_aws_awsssmpatchbaseline_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsssmpatchbaseline_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsssmpatchbaseline_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSsmPatchBaselineStackOutputs)(nil), // 0: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineStackOutputs
+	(*AwsSsmPatchBaselineOutputs)(nil), // 0: dev.planton.aws.awsssmpatchbaseline.v1alpha1.AwsSsmPatchBaselineOutputs
 }
 var file_catalog_aws_awsssmpatchbaseline_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

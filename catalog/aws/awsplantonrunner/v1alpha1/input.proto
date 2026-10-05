@@ -5,9 +5,9 @@ package dev.planton.aws.awsplantonrunner.v1alpha1;
 import "catalog/aws/awsplantonrunner/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-planton-runner stack-input
-message AwsPlantonRunnerStackInput {
-  //target cloud-resource
+//aws-planton-runner iac-input
+message AwsPlantonRunnerIacInput {
+  // the catalog object to deploy
   AwsPlantonRunner target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

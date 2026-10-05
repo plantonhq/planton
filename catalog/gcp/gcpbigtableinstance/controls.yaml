@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcpbigtableinstance
 spec:
@@ -64,7 +64,7 @@ spec:
         reference: Bigtable publishes instance and cluster metrics (CPU, node count, storage, request latency) to Cloud Monitoring for every instance without configuration.
     - control_id: backup-recovery
       status: not_applicable
-      notes: Bigtable backups are table-level resources, and tables are application-level concerns this component deliberately excludes -- the spec's only backup surface is force_destroy, which clears backups blocking instance deletion.
+      notes: Bigtable backups are table-level resources, and tables are application-level concerns this kind deliberately excludes -- the spec's only backup surface is force_destroy, which clears backups blocking instance deletion.
     - control_id: backup-retention-policy
       status: not_applicable
       notes: Backup retention rides table-level backup resources, outside this component's instance-and-clusters scope.

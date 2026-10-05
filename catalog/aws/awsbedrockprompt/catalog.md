@@ -4,7 +4,7 @@ Deploys an Amazon Bedrock prompt — a reusable, versionable prompt definition i
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Bedrock Prompt** — the prompt with every `variants` entry rendered onto its draft: the template shape (text or chat, with AWS's discriminator derived from which one is set), the execution target (model XOR agent alias, likewise derived), inference configuration, metadata annotations, and model-specific request fields
 - **Prompt Encryption** — configured only when `customerEncryptionKeyArn` is set; without it AWS encrypts with a Bedrock-managed key
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Bedrock Prompt Management permissions (`bedrock:CreatePrompt` and its read/update/delete siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Bedrock Prompt Management permissions (`bedrock:CreatePrompt` and its read/update/delete siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -64,7 +64,7 @@ spec:
 planton apply -f prompt.yaml
 ```
 
-This creates a prompt with two candidate formulations — a Nova Micro text variant and a Nova Lite chat variant — serving the chat variant by default. A Stack Job tracks the provisioning in real time.
+This creates a prompt with two candidate formulations — a Nova Micro text variant and a Nova Lite chat variant — serving the chat variant by default. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,7 +96,7 @@ These are the most important decisions when configuring a prompt. Explore the fu
 
 **The DRAFT moves; published versions do not** — this component manages the draft only. When a formulation ships, publish a numbered version (console or API) and pin critical consumers to it; the draft keeps evolving underneath.
 
-**Declare every `{{variable}}`** — AWS matches template placeholders against `inputVariables` at invocation, not at deploy. An undeclared variable surfaces as a runtime invocation error — the one failure mode this component cannot catch at apply.
+**Declare every `{{variable}}`** — AWS matches template placeholders against `inputVariables` at invocation, not at deploy. An undeclared variable surfaces as a runtime invocation error — the one failure mode this kind cannot catch at apply.
 
 **Tools describe, models decide** — in chat variants, the tool catalog's descriptions are the model's only signal for tool selection: write them like API documentation. Use `toolChoice.any` to force SOME tool call (the structured-output extraction trick) and `toolName` to force a specific one.
 
@@ -108,16 +108,16 @@ These are the most important decisions when configuring a prompt. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsBedrockAgent** | `variants[].agentAliasArn` | `status.outputs.alias_arns.<alias-name>` |
 | **AwsKmsKey** | `customerEncryptionKeyArn` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -138,8 +138,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Bedrock Flow**](/cloud-catalog/aws-bedrock-flow) — prompt nodes execute this prompt by `prompt_arn`
-- [**AWS Bedrock Agent**](/cloud-catalog/aws-bedrock-agent) — the execution target for agent-backed variants, referenced through its alias ARN
-- [**AWS Bedrock Inference Profile**](/cloud-catalog/aws-bedrock-inference-profile) — an alternative `modelId` for per-application cost attribution
-- [**AWS Bedrock Model Access**](/cloud-catalog/aws-bedrock-model-access) — the agreement a marketplace variant model requires
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption via `customerEncryptionKeyArn`
+- [**AWS Bedrock Flow**](/infra-catalog/aws-bedrock-flow) — prompt nodes execute this prompt by `prompt_arn`
+- [**AWS Bedrock Agent**](/infra-catalog/aws-bedrock-agent) — the execution target for agent-backed variants, referenced through its alias ARN
+- [**AWS Bedrock Inference Profile**](/infra-catalog/aws-bedrock-inference-profile) — an alternative `modelId` for per-application cost attribution
+- [**AWS Bedrock Model Access**](/infra-catalog/aws-bedrock-model-access) — the agreement a marketplace variant model requires
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption via `customerEncryptionKeyArn`

@@ -33,7 +33,7 @@ type KubernetesListenerSet struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesListenerSetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *KubernetesListenerSet) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesListenerSet) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesListenerSet) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *KubernetesListenerSet) GetStatus() *KubernetesListenerSetStatus {
 // KubernetesListenerSetStatus holds the deployment status and outputs.
 type KubernetesListenerSetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesListenerSetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesListenerSetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*KubernetesListenerSetStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteslistenerset_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesListenerSetStatus) GetOutputs() *KubernetesListenerSetStackOutputs {
+func (x *KubernetesListenerSetStatus) GetOutputs() *KubernetesListenerSetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_kubernetes_kuberneteslistenerset_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15KubernetesListenerSetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
 	"\x04spec\x18\x04 \x01(\v2P.dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12j\n" +
-	"\x06status\x18\x05 \x01(\v2R.dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetStatusR\x06status\"\x91\x01\n" +
-	"\x1bKubernetesListenerSetStatus\x12r\n" +
-	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetStackOutputsR\aoutputsB\xac\x03\n" +
+	"\x06status\x18\x05 \x01(\v2R.dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetStatusR\x06status\"\x8c\x01\n" +
+	"\x1bKubernetesListenerSetStatus\x12m\n" +
+	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetOutputsR\aoutputsB\xac\x03\n" +
 	"9com.dev.planton.kubernetes.kuberneteslistenerset.v1alpha1B\bApiProtoP\x01Zlgithub.com/plantonhq/planton/catalog/kubernetes/kuberneteslistenerset/v1alpha1;kuberneteslistenersetv1alpha1\xa2\x02\x04DPKK\xaa\x025Dev.Planton.Kubernetes.Kuberneteslistenerset.V1alpha1\xca\x025Dev\\Planton\\Kubernetes\\Kuberneteslistenerset\\V1alpha1\xe2\x02ADev\\Planton\\Kubernetes\\Kuberneteslistenerset\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Kubernetes::Kuberneteslistenerset::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_kubernetes_kuberneteslistenerset_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_kubernetes_kuberneteslistenerset_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kuberneteslistenerset_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesListenerSet)(nil),             // 0: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSet
-	(*KubernetesListenerSetStatus)(nil),       // 1: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesListenerSetSpec)(nil),         // 3: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetSpec
-	(*KubernetesListenerSetStackOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetStackOutputs
+	(*KubernetesListenerSet)(nil),        // 0: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSet
+	(*KubernetesListenerSetStatus)(nil),  // 1: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesListenerSetSpec)(nil),    // 3: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetSpec
+	(*KubernetesListenerSetOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetOutputs
 }
 var file_catalog_kubernetes_kuberneteslistenerset_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSet.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSet.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSet.spec:type_name -> dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetSpec
 	1, // 2: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSet.status:type_name -> dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetStatus
-	4, // 3: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetStackOutputs
+	4, // 3: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

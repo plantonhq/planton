@@ -11,7 +11,7 @@ import (
 // databaseReplicaVerifier verifies a DigitalOceanDatabaseReplica via
 // GET /v2/databases/{cluster_id}/replicas/{name}. DigitalOcean reads
 // replicas by (cluster, name) -- the replica's own UUID exists but has no
-// read endpoint of its own -- so the verifier reads both from the stack
+// read endpoint of its own -- so the verifier reads both from the
 // outputs.
 type databaseReplicaVerifier struct{}
 
@@ -47,7 +47,7 @@ func (v *databaseReplicaVerifier) VerifyExistsFromOutputs(ctx context.Context, c
 			replica.Name, id, replica.ID)
 	}
 
-	// Assert connection posture only when the stack outputs claim it.
+	// Assert connection posture only when the outputs claim it.
 	if replica.Connection != nil {
 		if host := StringOutput(outputs, "host"); host != "" && replica.Connection.Host != host {
 			return pkgerrors.Errorf("digitaloceandatabasereplica %q host mismatch: output %q, live %q",
@@ -68,7 +68,7 @@ func (v *databaseReplicaVerifier) VerifyAbsentFromOutputs(ctx context.Context, c
 		return pkgerrors.Wrap(err, "digitaloceandatabasereplica verify-absent failed")
 	}
 	if replica != nil {
-		return &StillExistsError{Component: "digitaloceandatabasereplica", ID: replica.Name}
+		return &StillExistsError{Kind: "digitaloceandatabasereplica", ID: replica.Name}
 	}
 	return nil
 }

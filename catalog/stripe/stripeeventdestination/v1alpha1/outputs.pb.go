@@ -22,12 +22,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeEventDestinationStackOutputs identifies the destination, carries a webhook
+// StripeEventDestinationOutputs identifies the destination, carries a webhook
 // destination's signing secret, and names the cloud-side source an EventBridge or Event Grid
 // destination waits on.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/v2_core_event_destination
-type StripeEventDestinationStackOutputs struct {
+type StripeEventDestinationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the destination's Stripe id (ed_...).
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -59,20 +59,20 @@ type StripeEventDestinationStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *StripeEventDestinationStackOutputs) Reset() {
-	*x = StripeEventDestinationStackOutputs{}
+func (x *StripeEventDestinationOutputs) Reset() {
+	*x = StripeEventDestinationOutputs{}
 	mi := &file_catalog_stripe_stripeeventdestination_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeEventDestinationStackOutputs) String() string {
+func (x *StripeEventDestinationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeEventDestinationStackOutputs) ProtoMessage() {}
+func (*StripeEventDestinationOutputs) ProtoMessage() {}
 
-func (x *StripeEventDestinationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripeEventDestinationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripeeventdestination_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -84,68 +84,68 @@ func (x *StripeEventDestinationStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeEventDestinationStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripeEventDestinationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeEventDestinationOutputs.ProtoReflect.Descriptor instead.
+func (*StripeEventDestinationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripeeventdestination_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeEventDestinationStackOutputs) GetId() string {
+func (x *StripeEventDestinationOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripeEventDestinationStackOutputs) GetStatus() string {
+func (x *StripeEventDestinationOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *StripeEventDestinationStackOutputs) GetStatusDisabledReason() string {
+func (x *StripeEventDestinationOutputs) GetStatusDisabledReason() string {
 	if x != nil {
 		return x.StatusDisabledReason
 	}
 	return ""
 }
 
-func (x *StripeEventDestinationStackOutputs) GetSigningSecret() string {
+func (x *StripeEventDestinationOutputs) GetSigningSecret() string {
 	if x != nil {
 		return x.SigningSecret
 	}
 	return ""
 }
 
-func (x *StripeEventDestinationStackOutputs) GetAwsEventSourceArn() string {
+func (x *StripeEventDestinationOutputs) GetAwsEventSourceArn() string {
 	if x != nil {
 		return x.AwsEventSourceArn
 	}
 	return ""
 }
 
-func (x *StripeEventDestinationStackOutputs) GetAwsEventSourceName() string {
+func (x *StripeEventDestinationOutputs) GetAwsEventSourceName() string {
 	if x != nil {
 		return x.AwsEventSourceName
 	}
 	return ""
 }
 
-func (x *StripeEventDestinationStackOutputs) GetAwsEventSourceStatus() string {
+func (x *StripeEventDestinationOutputs) GetAwsEventSourceStatus() string {
 	if x != nil {
 		return x.AwsEventSourceStatus
 	}
 	return ""
 }
 
-func (x *StripeEventDestinationStackOutputs) GetAzurePartnerTopicName() string {
+func (x *StripeEventDestinationOutputs) GetAzurePartnerTopicName() string {
 	if x != nil {
 		return x.AzurePartnerTopicName
 	}
 	return ""
 }
 
-func (x *StripeEventDestinationStackOutputs) GetAzurePartnerTopicStatus() string {
+func (x *StripeEventDestinationOutputs) GetAzurePartnerTopicStatus() string {
 	if x != nil {
 		return x.AzurePartnerTopicStatus
 	}
@@ -156,8 +156,8 @@ var File_catalog_stripe_stripeeventdestination_v1alpha1_outputs_proto protorefle
 
 const file_catalog_stripe_stripeeventdestination_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/stripe/stripeeventdestination/v1alpha1/outputs.proto\x122dev.planton.stripe.stripeeventdestination.v1alpha1\x1a\x1cshared/options/options.proto\"\xc0\x03\n" +
-	"\"StripeEventDestinationStackOutputs\x12\x0e\n" +
+	"<catalog/stripe/stripeeventdestination/v1alpha1/outputs.proto\x122dev.planton.stripe.stripeeventdestination.v1alpha1\x1a\x1cshared/options/options.proto\"\xbb\x03\n" +
+	"\x1dStripeEventDestinationOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x124\n" +
 	"\x16status_disabled_reason\x18\x03 \x01(\tR\x14statusDisabledReason\x12+\n" +
@@ -183,7 +183,7 @@ func file_catalog_stripe_stripeeventdestination_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_stripe_stripeeventdestination_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripeeventdestination_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripeEventDestinationStackOutputs)(nil), // 0: dev.planton.stripe.stripeeventdestination.v1alpha1.StripeEventDestinationStackOutputs
+	(*StripeEventDestinationOutputs)(nil), // 0: dev.planton.stripe.stripeeventdestination.v1alpha1.StripeEventDestinationOutputs
 }
 var file_catalog_stripe_stripeeventdestination_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

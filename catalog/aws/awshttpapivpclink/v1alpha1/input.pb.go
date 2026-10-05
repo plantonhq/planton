@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsHttpApiVpcLinkStackInput is the input for the aws-http-api-vpc-link IaC
+// AwsHttpApiVpcLinkIacInput is the input for the aws-http-api-vpc-link IaC
 // modules.
-type AwsHttpApiVpcLinkStackInput struct {
+type AwsHttpApiVpcLinkIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsHttpApiVpcLink `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AwsHttpApiVpcLinkStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsHttpApiVpcLinkStackInput) Reset() {
-	*x = AwsHttpApiVpcLinkStackInput{}
+func (x *AwsHttpApiVpcLinkIacInput) Reset() {
+	*x = AwsHttpApiVpcLinkIacInput{}
 	mi := &file_catalog_aws_awshttpapivpclink_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsHttpApiVpcLinkStackInput) String() string {
+func (x *AwsHttpApiVpcLinkIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsHttpApiVpcLinkStackInput) ProtoMessage() {}
+func (*AwsHttpApiVpcLinkIacInput) ProtoMessage() {}
 
-func (x *AwsHttpApiVpcLinkStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsHttpApiVpcLinkIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awshttpapivpclink_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsHttpApiVpcLinkStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsHttpApiVpcLinkStackInput.ProtoReflect.Descriptor instead.
-func (*AwsHttpApiVpcLinkStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsHttpApiVpcLinkIacInput.ProtoReflect.Descriptor instead.
+func (*AwsHttpApiVpcLinkIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awshttpapivpclink_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsHttpApiVpcLinkStackInput) GetTarget() *AwsHttpApiVpcLink {
+func (x *AwsHttpApiVpcLinkIacInput) GetTarget() *AwsHttpApiVpcLink {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsHttpApiVpcLinkStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsHttpApiVpcLinkIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awshttpapivpclink_v1alpha1_input_proto protoreflect.FileDes
 
 const file_catalog_aws_awshttpapivpclink_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awshttpapivpclink/v1alpha1/input.proto\x12*dev.planton.aws.awshttpapivpclink.v1alpha1\x1a0catalog/aws/awshttpapivpclink/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc1\x01\n" +
-	"\x1bAwsHttpApiVpcLinkStackInput\x12U\n" +
+	"2catalog/aws/awshttpapivpclink/v1alpha1/input.proto\x12*dev.planton.aws.awshttpapivpclink.v1alpha1\x1a0catalog/aws/awshttpapivpclink/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xbf\x01\n" +
+	"\x19AwsHttpApiVpcLinkIacInput\x12U\n" +
 	"\x06target\x18\x01 \x01(\v2=.dev.planton.aws.awshttpapivpclink.v1alpha1.AwsHttpApiVpcLinkR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xe8\x02\n" +
 	".com.dev.planton.aws.awshttpapivpclink.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awshttpapivpclink_v1alpha1_input_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awshttpapivpclink_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awshttpapivpclink_v1alpha1_input_proto_goTypes = []any{
-	(*AwsHttpApiVpcLinkStackInput)(nil), // 0: dev.planton.aws.awshttpapivpclink.v1alpha1.AwsHttpApiVpcLinkStackInput
-	(*AwsHttpApiVpcLink)(nil),           // 1: dev.planton.aws.awshttpapivpclink.v1alpha1.AwsHttpApiVpcLink
-	(*aws.AwsProviderConfig)(nil),       // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsHttpApiVpcLinkIacInput)(nil), // 0: dev.planton.aws.awshttpapivpclink.v1alpha1.AwsHttpApiVpcLinkIacInput
+	(*AwsHttpApiVpcLink)(nil),         // 1: dev.planton.aws.awshttpapivpclink.v1alpha1.AwsHttpApiVpcLink
+	(*aws.AwsProviderConfig)(nil),     // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awshttpapivpclink_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awshttpapivpclink.v1alpha1.AwsHttpApiVpcLinkStackInput.target:type_name -> dev.planton.aws.awshttpapivpclink.v1alpha1.AwsHttpApiVpcLink
-	2, // 1: dev.planton.aws.awshttpapivpclink.v1alpha1.AwsHttpApiVpcLinkStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awshttpapivpclink.v1alpha1.AwsHttpApiVpcLinkIacInput.target:type_name -> dev.planton.aws.awshttpapivpclink.v1alpha1.AwsHttpApiVpcLink
+	2, // 1: dev.planton.aws.awshttpapivpclink.v1alpha1.AwsHttpApiVpcLinkIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -36,7 +36,7 @@ type AzureEventHubNamespaceCustomerManagedKey struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureEventHubNamespaceCustomerManagedKeySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *AzureEventHubNamespaceCustomerManagedKey) GetKind() string {
 	return ""
 }
 
-func (x *AzureEventHubNamespaceCustomerManagedKey) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureEventHubNamespaceCustomerManagedKey) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,8 +114,8 @@ func (x *AzureEventHubNamespaceCustomerManagedKey) GetStatus() *AzureEventHubNam
 // status and outputs.
 type AzureEventHubNamespaceCustomerManagedKeyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureEventHubNamespaceCustomerManagedKeyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureEventHubNamespaceCustomerManagedKeyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureEventHubNamespaceCustomerManagedKeyStatus) Descriptor() ([]byte, []i
 	return file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureEventHubNamespaceCustomerManagedKeyStatus) GetOutputs() *AzureEventHubNamespaceCustomerManagedKeyStackOutputs {
+func (x *AzureEventHubNamespaceCustomerManagedKeyStatus) GetOutputs() *AzureEventHubNamespaceCustomerManagedKeyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_api_p
 	"apiVersion\x12C\n" +
 	"\x04kind\x18\x02 \x01(\tB/\xbaH,r*\n" +
 	"(AzureEventHubNamespaceCustomerManagedKeyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8d\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8d\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2q.dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x8b\x01\n" +
-	"\x06status\x18\x05 \x01(\v2s.dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyStatusR\x06status\"\xc6\x01\n" +
-	".AzureEventHubNamespaceCustomerManagedKeyStatus\x12\x93\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2y.dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyStackOutputsR\aoutputsB\x94\x04\n" +
+	"\x06status\x18\x05 \x01(\v2s.dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyStatusR\x06status\"\xc1\x01\n" +
+	".AzureEventHubNamespaceCustomerManagedKeyStatus\x12\x8e\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2t.dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyOutputsR\aoutputsB\x94\x04\n" +
 	"Gcom.dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1B\bApiProtoP\x01Z\x8d\x01github.com/plantonhq/planton/catalog/azure/azureeventhubnamespacecustomermanagedkey/v1alpha1;azureeventhubnamespacecustomermanagedkeyv1alpha1\xa2\x02\x04DPAA\xaa\x02CDev.Planton.Azure.Azureeventhubnamespacecustomermanagedkey.V1alpha1\xca\x02CDev\\Planton\\Azure\\Azureeventhubnamespacecustomermanagedkey\\V1alpha1\xe2\x02ODev\\Planton\\Azure\\Azureeventhubnamespacecustomermanagedkey\\V1alpha1\\GPBMetadata\xea\x02GDev::Planton::Azure::Azureeventhubnamespacecustomermanagedkey::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_api_pr
 
 var file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_api_proto_goTypes = []any{
-	(*AzureEventHubNamespaceCustomerManagedKey)(nil),             // 0: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKey
-	(*AzureEventHubNamespaceCustomerManagedKeyStatus)(nil),       // 1: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyStatus
-	(*shared.CloudResourceMetadata)(nil),                         // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureEventHubNamespaceCustomerManagedKeySpec)(nil),         // 3: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeySpec
-	(*AzureEventHubNamespaceCustomerManagedKeyStackOutputs)(nil), // 4: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyStackOutputs
+	(*AzureEventHubNamespaceCustomerManagedKey)(nil),        // 0: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKey
+	(*AzureEventHubNamespaceCustomerManagedKeyStatus)(nil),  // 1: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyStatus
+	(*shared.CatalogObjectMetadata)(nil),                    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureEventHubNamespaceCustomerManagedKeySpec)(nil),    // 3: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeySpec
+	(*AzureEventHubNamespaceCustomerManagedKeyOutputs)(nil), // 4: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyOutputs
 }
 var file_catalog_azure_azureeventhubnamespacecustomermanagedkey_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKey.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKey.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKey.spec:type_name -> dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeySpec
 	1, // 2: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKey.status:type_name -> dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyStatus
-	4, // 3: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyStatus.outputs:type_name -> dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyStackOutputs
+	4, // 3: dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyStatus.outputs:type_name -> dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1.AzureEventHubNamespaceCustomerManagedKeyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

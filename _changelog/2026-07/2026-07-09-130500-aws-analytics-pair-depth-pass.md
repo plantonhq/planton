@@ -31,7 +31,7 @@ The two thinnest kinds in the AWS catalog reach the full provider surface. **`Aw
 
 - Generator-owned `variables.tf` contracts, enrolled in the drift guard; Terraform floors lifted from `>= 5.0` to `>= 6.34.0` (Athena — S3 Access Grants lands there) and `>= 6.0.0` (Glue).
 - Identity tags converged: both TF modules were on stale `planton.dev/*` keys while Pulumi emitted `planton.ai/*` — two engines produced visibly different consoles; now identical key-for-key.
-- Missing anatomy created: `iac/hack/manifest.yaml` (the offline `tofu plan` proof input — neither kind had one, so that gate had silently never run for them) and `iac/pulumi/stack-input.yaml`.
+- Missing anatomy created: `iac/hack/manifest.yaml` (the offline `tofu plan` proof input — neither kind had one, so that gate had silently never run for them) and `iac/pulumi/iac-input.yaml`.
 - All three pre-existing Athena presets were missing the required `region` — invalid since authoring; fixed, plus new presets for managed results (Athena) and shared-database links (Glue).
 - Richly-commented modules in both engines; ApplyT-free chained-accessor export for `effective_engine_version`.
 

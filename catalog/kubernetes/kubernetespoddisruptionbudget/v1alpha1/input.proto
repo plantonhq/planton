@@ -6,12 +6,12 @@ import "catalog/kubernetes/kubernetespoddisruptionbudget/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 /**
- * **KubernetesPodDisruptionBudgetStackInput** defines the input structure for
+ * **KubernetesPodDisruptionBudgetIacInput** defines the input structure for
  * deploying a Kubernetes PodDisruptionBudget. It carries the target budget
  * specification and the Kubernetes cluster configuration the IaC modules
  * (Pulumi and Terraform) need to reach the cluster.
  */
-message KubernetesPodDisruptionBudgetStackInput {
+message KubernetesPodDisruptionBudgetIacInput {
   /**
    * The target PodDisruptionBudget resource to be created.
    * Contains the complete specification including metadata, pod selection,

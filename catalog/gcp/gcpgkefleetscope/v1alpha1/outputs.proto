@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpgkefleetscope.v1alpha1;
 
-// GcpGkeFleetScopeStackOutputs carries the scope's identity.
-message GcpGkeFleetScopeStackOutputs {
+// GcpGkeFleetScopeOutputs carries the scope's identity.
+message GcpGkeFleetScopeOutputs {
   // Full resource name: projects/{project}/locations/global/scopes/{scope_id}.
   string name = 1;
 

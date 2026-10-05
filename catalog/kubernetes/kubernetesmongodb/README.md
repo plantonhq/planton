@@ -8,14 +8,14 @@ the ENGINE that reconciles it. The default operator posture watches its
 OWN namespace — install the operator in the database's namespace, or
 widen its watch. Deploy the operator first, databases after.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want the operator itself** — installing and configuring the
   Percona Operator for MongoDB (watch scope, reconcile concurrency,
-  telemetry) is KubernetesPerconaMongoOperator; this component is one
+  telemetry) is KubernetesPerconaMongoOperator; this kind is one
   MongoDB cluster it manages.
 - **You want a managed cloud MongoDB** — use a vendor-operated service
-  such as MongoDB Atlas; this component is for
+  such as MongoDB Atlas; this kind is for
   running MongoDB ON the Kubernetes cluster itself.
 - **You want a single throwaway pod** — a replica set, an operator,
   and per-member PVCs are the wrong tool for a scratch database that
@@ -177,7 +177,7 @@ discover every member through the headless Service; connect with
   `backup_if_unhealthy`; development only
 - **`spec.pause`**: scale everything to zero, keep the volumes
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

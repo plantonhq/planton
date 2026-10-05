@@ -5,7 +5,7 @@ go_library(
     srcs = ["certification.go"],
     importpath = "github.com/plantonhq/planton/pkg/certification",
     visibility = ["//visibility:public"],
-    deps = ["//pkg/crkreflect"],
+    deps = ["//pkg/catalogkindreflect"],
 )
 
 go_test(
@@ -17,12 +17,12 @@ go_test(
     ],
     embed = [":certification"],
     deps = [
-        "//catalog/_test/testcloudresourcegeneric/v1alpha1",
+        "//catalog/_test/testcatalogkindgeneric/v1alpha1",
         "//internal/manifest",
         "//pkg/catalogbundle",
+        "//pkg/catalogkindreflect",
         "//pkg/conversion",
-        "//pkg/crkreflect",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@io_k8s_sigs_yaml//:yaml",
         "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//reflect/protodesc",

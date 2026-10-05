@@ -13,13 +13,13 @@ AWS IAM roles enable secure delegation of permissions to AWS services, applicati
 - permissions_boundary: Managed policy (reference or literal ARN) capping the role's maximum permissions
 - force_detach_policies: Force-detach remaining attachments on deletion instead of failing
 
-## Stack outputs
+## Outputs
 - role_arn: Amazon Resource Name (ARN) of the created IAM role
 - role_name: Name of the IAM role in AWS (what an AwsIamInstanceProfile references)
 - role_id: Stable unique ID AWS assigns to the role
 
 ## How it works
-This resource is orchestrated by the Planton CLI as part of a stack-update. The CLI validates your manifest, generates stack inputs, and invokes IaC backends in this repo:
+This resource is orchestrated by the Planton CLI as part of a stack-update. The CLI validates your manifest, generates IaC inputs, and invokes IaC backends in this repo:
 - Pulumi (Go modules under iac/pulumi)
 - Terraform (modules under iac/tf)
 

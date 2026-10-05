@@ -23,7 +23,7 @@ const (
 
 // *
 // Outputs exported after installing OPA Gatekeeper.
-type KubernetesGatekeeperStackOutputs struct {
+type KubernetesGatekeeperOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace the engine runs in.
@@ -46,20 +46,20 @@ type KubernetesGatekeeperStackOutputs struct {
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *KubernetesGatekeeperStackOutputs) Reset() {
-	*x = KubernetesGatekeeperStackOutputs{}
+func (x *KubernetesGatekeeperOutputs) Reset() {
+	*x = KubernetesGatekeeperOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesGatekeeperStackOutputs) String() string {
+func (x *KubernetesGatekeeperOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesGatekeeperStackOutputs) ProtoMessage() {}
+func (*KubernetesGatekeeperOutputs) ProtoMessage() {}
 
-func (x *KubernetesGatekeeperStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesGatekeeperOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,33 +71,33 @@ func (x *KubernetesGatekeeperStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesGatekeeperStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesGatekeeperStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesGatekeeperOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesGatekeeperOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesGatekeeperStackOutputs) GetNamespace() string {
+func (x *KubernetesGatekeeperOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesGatekeeperStackOutputs) GetReleaseName() string {
+func (x *KubernetesGatekeeperOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesGatekeeperStackOutputs) GetWebhookServiceName() string {
+func (x *KubernetesGatekeeperOutputs) GetWebhookServiceName() string {
 	if x != nil {
 		return x.WebhookServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesGatekeeperStackOutputs) GetWebhookCertSecretName() string {
+func (x *KubernetesGatekeeperOutputs) GetWebhookCertSecretName() string {
 	if x != nil {
 		return x.WebhookCertSecretName
 	}
@@ -108,8 +108,8 @@ var File_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_outputs_proto protoref
 
 const file_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesgatekeeper/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1\"\xce\x01\n" +
-	" KubernetesGatekeeperStackOutputs\x12\x1c\n" +
+	">catalog/kubernetes/kubernetesgatekeeper/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1\"\xc9\x01\n" +
+	"\x1bKubernetesGatekeeperOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x120\n" +
 	"\x14webhook_service_name\x18\x03 \x01(\tR\x12webhookServiceName\x127\n" +
@@ -130,7 +130,7 @@ func file_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesGatekeeperStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperStackOutputs
+	(*KubernetesGatekeeperOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1.KubernetesGatekeeperOutputs
 }
 var file_catalog_kubernetes_kubernetesgatekeeper_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

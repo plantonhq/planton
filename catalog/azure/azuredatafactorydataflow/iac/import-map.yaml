@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuredatafactorydataflow
 spec:
@@ -10,9 +10,9 @@ spec:
   values:
     - name: data_flow_id
       derivations:
-        - from_stack_output: data_flow_id
+        - from_output: data_flow_id
       where_to_find: >-
         Compose it from the factory's resource ID plus
         /dataflows/<data-flow-name>, or `az datafactory data-flow show
         --factory-name <factory> -g <rg> -n <name> --query id`; also
-        the component's own data_flow_id stack output.
+        the component's own data_flow_id output.

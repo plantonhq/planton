@@ -31,7 +31,7 @@ type AwsS3ObjectSet struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsS3ObjectSetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsS3ObjectSet) GetKind() string {
 	return ""
 }
 
-func (x *AwsS3ObjectSet) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsS3ObjectSet) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsS3ObjectSet) GetStatus() *AwsS3ObjectSetStatus {
 // aws-s3-object-set status
 type AwsS3ObjectSetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsS3ObjectSetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsS3ObjectSetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsS3ObjectSetStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awss3objectset_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsS3ObjectSetStatus) GetOutputs() *AwsS3ObjectSetStackOutputs {
+func (x *AwsS3ObjectSetStatus) GetOutputs() *AwsS3ObjectSetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awss3objectset_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eAwsS3ObjectSetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStatusR\x06status\"u\n" +
-	"\x14AwsS3ObjectSetStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputsR\aoutputsB\xd1\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStatusR\x06status\"p\n" +
+	"\x14AwsS3ObjectSetStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputsR\aoutputsB\xd1\x02\n" +
 	"+com.dev.planton.aws.awss3objectset.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/aws/awss3objectset/v1alpha1;awss3objectsetv1alpha1\xa2\x02\x04DPAA\xaa\x02'Dev.Planton.Aws.Awss3objectset.V1alpha1\xca\x02'Dev\\Planton\\Aws\\Awss3objectset\\V1alpha1\xe2\x023Dev\\Planton\\Aws\\Awss3objectset\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Aws::Awss3objectset::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_aws_awss3objectset_v1alpha1_api_proto_msgTypes = make([]protoim
 var file_catalog_aws_awss3objectset_v1alpha1_api_proto_goTypes = []any{
 	(*AwsS3ObjectSet)(nil),               // 0: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSet
 	(*AwsS3ObjectSetStatus)(nil),         // 1: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsS3ObjectSetSpec)(nil),           // 3: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetSpec
-	(*AwsS3ObjectSetStackOutputs)(nil),   // 4: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs
+	(*AwsS3ObjectSetOutputs)(nil),        // 4: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs
 }
 var file_catalog_aws_awss3objectset_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSet.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSet.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSet.spec:type_name -> dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetSpec
 	1, // 2: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSet.status:type_name -> dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStatus
-	4, // 3: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStatus.outputs:type_name -> dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs
+	4, // 3: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStatus.outputs:type_name -> dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

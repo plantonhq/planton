@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azurednszone.v1alpha1;
 
-// **AzureDnsZoneStackOutputs** captures the outputs of provisioning an
+// **AzureDnsZoneOutputs** captures the outputs of provisioning an
 // Azure public DNS zone.
 //
 // `zone_name` (with `resource_group_name`) is the join key AzureDnsRecord
@@ -12,7 +12,7 @@ package dev.planton.azure.azurednszone.v1alpha1;
 // zone as a whole (Front Door custom-domain validation, AKS web-app
 // routing). `nameservers` is the delegation handoff: the four hosts to
 // configure at the domain registrar.
-message AzureDnsZoneStackOutputs {
+message AzureDnsZoneOutputs {
   // The Azure Resource Manager ID of the DNS zone.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/dnsZones/{name}
   string zone_id = 1;

@@ -67,7 +67,7 @@ The function name is `metadata.name` (create-time immutable in AWS). There is no
 
 Event sources are **not** on this spec — use `AwsLambdaEventSourceMapping`.
 
-## Stack outputs
+## Outputs
 
 - `function_arn` — join key for mappings and policies
 - `function_name` — SDK/CLI name (matches `metadata.name`)
@@ -79,12 +79,12 @@ Event sources are **not** on this spec — use `AwsLambdaEventSourceMapping`.
 
 ## How it works
 
-The Planton CLI validates the manifest, generates stack inputs, and invokes IaC backends:
+The Planton CLI validates the manifest, generates IaC inputs, and invokes IaC backends:
 
 - Pulumi (Go modules under `iac/pulumi`)
 - Terraform (modules under `iac/tf`)
 
-Credentials and region live in stack input (`provider_credential`), not in the spec.
+Credentials and region live in IaC input (`provider_credential`), not in the spec.
 
 Planton does **not** auto-create a CloudWatch log group, execution IAM role, or invoke permissions. Reference `AwsIamRole` for the role; set `logging_config.log_group` for a managed log group, or let AWS create the default on first invoke.
 

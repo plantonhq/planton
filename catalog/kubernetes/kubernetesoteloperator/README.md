@@ -9,7 +9,7 @@ with KubernetesOtelCollector — one resource per collector. Install the
 operator once per Kubernetes cluster (it watches every namespace), then
 declare collectors against it.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a collector** — that is KubernetesOtelCollector; this
   component is the controller that reconciles it.
@@ -141,7 +141,7 @@ Every refusal on the CRD path says three things, in this order and in stable wor
 
 Two things the messages say on purpose. A kept CRD the module re-adopts on reinstall shows as `create` in a Terraform plan, because the state has no record of it; the apply adopts it in place and the Pulumi log says so. And a chart with no CRDs is never refused for a CRD right it does not need: the ownership read and the permission probe run only over what the render produced.
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

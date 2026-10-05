@@ -105,7 +105,7 @@ Every configurable argument of `google_pubsub_topic` at the pinned provider
 version is representable through this spec; the recorded judgment lives in
 `iac/provider-parity.yaml`, checked by `planton provider-parity --check`.
 
-## Related Components
+## Related Kinds
 
 - [GcpPubSubSubscription](../gcppubsubsubscription/) -- Subscriptions that consume from this topic
 - [GcpPubSubSchema](../gcppubsubschema/) -- Message contract referenced by `schemaSettings.schema`

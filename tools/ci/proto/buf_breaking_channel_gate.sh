@@ -74,11 +74,11 @@ if [ "${1:-}" = "--self-test" ]; then
   check "catalog/aws/awsvpc/v1beta1/spec.proto" beta
   check "catalog/aws/awsvpc/v1/spec.proto" stable
   check "catalog/aws/awsvpc/v2/spec.proto" stable
-  check "catalog/_test/testcloudresourcegeneric/v1alpha1/api.proto" alpha
+  check "catalog/_test/testcatalogkindgeneric/v1alpha1/api.proto" alpha
   check "shared/foreignkey/v1/options.proto" stable
-  check "shared/cloudresourcekind/cloud_resource_kind.proto" shared
-  check "qa/componente2eprofile/v1/api.proto" internal
-  check "iac/componentimportmap/v1/api.proto" internal
+  check "shared/catalogkind/catalog_kind.proto" shared
+  check "qa/catalogkinde2eprofile/v1/api.proto" internal
+  check "iac/catalogkindimportmap/v1/api.proto" internal
   check_deleted() {
     local got
     got=$(deleted_path_from_message "$1")

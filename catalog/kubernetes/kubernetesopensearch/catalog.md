@@ -6,7 +6,7 @@ The topology is yours to declare: node pools carry roles (`cluster_manager`, `da
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** — created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **OpenSearchCluster custom resource** — the only object the module itself creates in the namespace; the operator derives everything else from it: one StatefulSet per node pool, the cluster Services, the generated TLS Secrets (a CA plus per-layer certificates for node-to-node and client traffic — the default posture), the `<name>-admin-password` bootstrap Secret, and (when enabled) the Dashboards Deployment
@@ -61,7 +61,7 @@ spec:
 planton apply -f opensearch-cluster.yaml
 ```
 
-This creates a two-node all-roles cluster (the smallest shape that survives the operator's bootstrap handoff) with operator-generated TLS on both layers and a 10Gi PVC per node. A Stack Job tracks the provisioning in real time.
+This creates a two-node all-roles cluster (the smallest shape that survives the operator's bootstrap handoff) with operator-generated TLS on both layers and a 10Gi PVC per node. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -109,7 +109,7 @@ These are the most important decisions when configuring an OpenSearch cluster. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -124,9 +124,9 @@ These are the most important decisions when configuring an OpenSearch cluster. E
 | **KubernetesSecret** (custom security config) | `monitoring.monitoringUserSecret` | `metadata.name` |
 | **KubernetesSecret** (per entry) | `keystore[].secret` | `metadata.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -149,10 +149,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**OpenSearch Operator**](/cloud-catalog/kubernetes-open-search-operator) — the engine that reconciles this cluster; deploy it first
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — provides the namespace the cluster runs in
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) — pins per-pool volume classes by reference
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) — cert-manager-issued TLS for bring-your-own postures
-- [**Kubernetes Secret**](/cloud-catalog/kubernetes-secret) — keystore sources, custom security config, credentials
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) — real exposure for the API and Dashboards
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) — the ServiceMonitor consumer when monitoring is enabled
+- [**OpenSearch Operator**](/infra-catalog/kubernetes-open-search-operator) — the engine that reconciles this cluster; deploy it first
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — provides the namespace the cluster runs in
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) — pins per-pool volume classes by reference
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) — cert-manager-issued TLS for bring-your-own postures
+- [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) — keystore sources, custom security config, credentials
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) — real exposure for the API and Dashboards
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) — the ServiceMonitor consumer when monitoring is enabled

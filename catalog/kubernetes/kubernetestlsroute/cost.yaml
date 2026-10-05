@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kubernetestlsroute
 spec:
   billing_model: free
   free_tier: A TLSRoute is Gateway API routing configuration -- rules that match TLS connections by SNI hostname and forward them, unterminated, to backend Services. It is a custom resource a Gateway controller reads; no compute runs for it and no provider meters it.
-  notes: "No field of this spec buys anything: parent_refs attach the route to a TLS listener, hostnames select connections by SNI, and backend_refs split traffic by weight -- all pure configuration. The spend near a route rides the Gateway's data plane: the Gateway (and any cloud load balancer its controller provisions) is its own catalog component with its own cost profile, and the backend Services and pods carry their own."
+  notes: "No field of this spec buys anything: parent_refs attach the route to a TLS listener, hostnames select connections by SNI, and backend_refs split traffic by weight -- all pure configuration. The spend near a route rides the Gateway's data plane: the Gateway (and any cloud load balancer its controller provisions) is its own catalog kind with its own cost profile, and the backend Services and pods carry their own."

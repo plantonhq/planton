@@ -31,7 +31,7 @@ type CloudflareCustomHostname struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareCustomHostnameSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *CloudflareCustomHostname) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareCustomHostname) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareCustomHostname) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *CloudflareCustomHostname) GetStatus() *CloudflareCustomHostnameStatus {
 // cloudflare-custom-hostname status
 type CloudflareCustomHostnameStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	cloudflare-custom-hostname stack-outputs
-	Outputs       *CloudflareCustomHostnameStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	cloudflare-custom-hostname outputs
+	Outputs       *CloudflareCustomHostnameOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareCustomHostnameStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareCustomHostnameStatus) GetOutputs() *CloudflareCustomHostnameStackOutputs {
+func (x *CloudflareCustomHostnameStatus) GetOutputs() *CloudflareCustomHostnameOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_api_proto_rawDes
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18CloudflareCustomHostnameR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
 	"\x04spec\x18\x04 \x01(\v2V.dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12p\n" +
-	"\x06status\x18\x05 \x01(\v2X.dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameStatusR\x06status\"\x9a\x01\n" +
-	"\x1eCloudflareCustomHostnameStatus\x12x\n" +
-	"\aoutputs\x18\x01 \x01(\v2^.dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameStackOutputsR\aoutputsB\xc1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2X.dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameStatusR\x06status\"\x95\x01\n" +
+	"\x1eCloudflareCustomHostnameStatus\x12s\n" +
+	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameOutputsR\aoutputsB\xc1\x03\n" +
 	"<com.dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1B\bApiProtoP\x01Zrgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarecustomhostname/v1alpha1;cloudflarecustomhostnamev1alpha1\xa2\x02\x04DPCC\xaa\x028Dev.Planton.Cloudflare.Cloudflarecustomhostname.V1alpha1\xca\x028Dev\\Planton\\Cloudflare\\Cloudflarecustomhostname\\V1alpha1\xe2\x02DDev\\Planton\\Cloudflare\\Cloudflarecustomhostname\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Cloudflare::Cloudflarecustomhostname::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_api_proto_rawDesc
 
 var file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareCustomHostname)(nil),             // 0: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostname
-	(*CloudflareCustomHostnameStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareCustomHostnameSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameSpec
-	(*CloudflareCustomHostnameStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameStackOutputs
+	(*CloudflareCustomHostname)(nil),        // 0: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostname
+	(*CloudflareCustomHostnameStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareCustomHostnameSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameSpec
+	(*CloudflareCustomHostnameOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameOutputs
 }
 var file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostname.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostname.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostname.spec:type_name -> dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameSpec
 	1, // 2: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostname.status:type_name -> dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameStatus
-	4, // 3: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

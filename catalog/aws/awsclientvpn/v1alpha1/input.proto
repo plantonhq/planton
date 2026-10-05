@@ -5,9 +5,9 @@ package dev.planton.aws.awsclientvpn.v1alpha1;
 import "catalog/aws/awsclientvpn/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-client-vpn stack-input
-message AwsClientVpnStackInput {
-  //target cloud-resource
+//aws-client-vpn iac-input
+message AwsClientVpnIacInput {
+  // the catalog object to deploy
   AwsClientVpn target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

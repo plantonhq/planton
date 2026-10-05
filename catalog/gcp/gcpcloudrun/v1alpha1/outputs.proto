@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcloudrun.v1alpha1;
 
-// GcpCloudRunStackOutputs captures values returned after provisioning.
-message GcpCloudRunStackOutputs {
+// GcpCloudRunOutputs captures values returned after provisioning.
+message GcpCloudRunOutputs {
   // Canonical serving URL of the service (https://<service>-<hash>-<region>.run.app).
   string url = 1;
 

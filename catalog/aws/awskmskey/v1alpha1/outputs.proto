@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awskmskey.v1alpha1;
 
-// AwsKmsKeyStackOutputs captures the observable identifiers of a
+// AwsKmsKeyOutputs captures the observable identifiers of a
 // deployed KMS key -- the join keys everything that encrypts with it
 // references.
-message AwsKmsKeyStackOutputs {
+message AwsKmsKeyOutputs {
   // The generated key ID (UUID; "mrk-..." for multi-Region keys).
   string key_id = 1;
 

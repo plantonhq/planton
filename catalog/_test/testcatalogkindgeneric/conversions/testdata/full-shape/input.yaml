@@ -1,0 +1,20 @@
+# Golden corpus: a v1alpha1 document exercising every op of the bridge.
+apiVersion: _test.planton.dev/v1alpha1
+kind: TestCatalogKindGeneric
+metadata:
+  name: torture-corpus
+spec:
+  stringField: renamed-on-upgrade
+  stringNoDefault: lost-on-upgrade-with-declaration
+  int32Field: 7
+  boolField: true
+  nested:
+    nestedString: passes-through-untouched
+  requiredRef:
+    value: literal-required-value
+  labels:
+    purpose: corpus
+  commands:
+    - first
+    - second
+  sensitiveString: $secret/not-a-real-secret

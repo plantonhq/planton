@@ -10,7 +10,7 @@ BGP, and NAT choices.
 
 The Azure provider is built through the shared provider builder, which
 resolves the right credential mechanism (static client secret, keyless
-web identity, or ambient chain) from the stack input.
+web identity, or ambient chain) from the IaC input.
 
 ## Design Decisions
 
@@ -29,7 +29,7 @@ web identity, or ambient chain) from the stack input.
 
 ## Inputs
 
-The module receives an `AzureVpnGatewayConnectionStackInput` containing:
+The module receives an `AzureVpnGatewayConnectionIacInput` containing:
 
 - `target.spec.name` -- the connection's name
 - `target.spec.vpn_gateway_id` / `target.spec.remote_vpn_site_id` -- the two sides

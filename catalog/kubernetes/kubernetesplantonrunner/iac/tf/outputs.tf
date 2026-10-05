@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (KubernetesPlantonRunnerStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (KubernetesPlantonRunnerOutputs).
 
 output "namespace" {
   description = "The namespace the runner is installed in."

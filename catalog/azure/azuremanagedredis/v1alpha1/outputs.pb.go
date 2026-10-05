@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureManagedRedisStackOutputs** captures the outputs of provisioning
+// **AzureManagedRedisOutputs** captures the outputs of provisioning
 // an Azure Managed Redis instance.
 //
 // For application connectivity, keyless (Entra) clients need only
@@ -33,7 +33,7 @@ const (
 //
 // The access keys are SECRET-BEARING: treat any output that embeds them
 // as a credential in downstream configuration.
-type AzureManagedRedisStackOutputs struct {
+type AzureManagedRedisOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Managed Redis cluster.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Cache/redisEnterprise/{name}
@@ -78,20 +78,20 @@ type AzureManagedRedisStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureManagedRedisStackOutputs) Reset() {
-	*x = AzureManagedRedisStackOutputs{}
+func (x *AzureManagedRedisOutputs) Reset() {
+	*x = AzureManagedRedisOutputs{}
 	mi := &file_catalog_azure_azuremanagedredis_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureManagedRedisStackOutputs) String() string {
+func (x *AzureManagedRedisOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureManagedRedisStackOutputs) ProtoMessage() {}
+func (*AzureManagedRedisOutputs) ProtoMessage() {}
 
-func (x *AzureManagedRedisStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureManagedRedisOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremanagedredis_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -103,75 +103,75 @@ func (x *AzureManagedRedisStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureManagedRedisStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureManagedRedisStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureManagedRedisOutputs.ProtoReflect.Descriptor instead.
+func (*AzureManagedRedisOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremanagedredis_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureManagedRedisStackOutputs) GetManagedRedisId() string {
+func (x *AzureManagedRedisOutputs) GetManagedRedisId() string {
 	if x != nil {
 		return x.ManagedRedisId
 	}
 	return ""
 }
 
-func (x *AzureManagedRedisStackOutputs) GetManagedRedisName() string {
+func (x *AzureManagedRedisOutputs) GetManagedRedisName() string {
 	if x != nil {
 		return x.ManagedRedisName
 	}
 	return ""
 }
 
-func (x *AzureManagedRedisStackOutputs) GetRegion() string {
+func (x *AzureManagedRedisOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AzureManagedRedisStackOutputs) GetResourceGroupName() string {
+func (x *AzureManagedRedisOutputs) GetResourceGroupName() string {
 	if x != nil {
 		return x.ResourceGroupName
 	}
 	return ""
 }
 
-func (x *AzureManagedRedisStackOutputs) GetHostname() string {
+func (x *AzureManagedRedisOutputs) GetHostname() string {
 	if x != nil {
 		return x.Hostname
 	}
 	return ""
 }
 
-func (x *AzureManagedRedisStackOutputs) GetDatabaseId() string {
+func (x *AzureManagedRedisOutputs) GetDatabaseId() string {
 	if x != nil {
 		return x.DatabaseId
 	}
 	return ""
 }
 
-func (x *AzureManagedRedisStackOutputs) GetPort() int32 {
+func (x *AzureManagedRedisOutputs) GetPort() int32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-func (x *AzureManagedRedisStackOutputs) GetPrimaryAccessKey() string {
+func (x *AzureManagedRedisOutputs) GetPrimaryAccessKey() string {
 	if x != nil {
 		return x.PrimaryAccessKey
 	}
 	return ""
 }
 
-func (x *AzureManagedRedisStackOutputs) GetSecondaryAccessKey() string {
+func (x *AzureManagedRedisOutputs) GetSecondaryAccessKey() string {
 	if x != nil {
 		return x.SecondaryAccessKey
 	}
 	return ""
 }
 
-func (x *AzureManagedRedisStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureManagedRedisOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -182,8 +182,8 @@ var File_catalog_azure_azuremanagedredis_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_azure_azuremanagedredis_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/azure/azuremanagedredis/v1alpha1/outputs.proto\x12,dev.planton.azure.azuremanagedredis.v1alpha1\x1a\x1cshared/options/options.proto\"\xb0\x03\n" +
-	"\x1dAzureManagedRedisStackOutputs\x12(\n" +
+	"6catalog/azure/azuremanagedredis/v1alpha1/outputs.proto\x12,dev.planton.azure.azuremanagedredis.v1alpha1\x1a\x1cshared/options/options.proto\"\xab\x03\n" +
+	"\x18AzureManagedRedisOutputs\x12(\n" +
 	"\x10managed_redis_id\x18\x01 \x01(\tR\x0emanagedRedisId\x12,\n" +
 	"\x12managed_redis_name\x18\x02 \x01(\tR\x10managedRedisName\x12\x16\n" +
 	"\x06region\x18\x03 \x01(\tR\x06region\x12.\n" +
@@ -212,7 +212,7 @@ func file_catalog_azure_azuremanagedredis_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_azure_azuremanagedredis_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremanagedredis_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureManagedRedisStackOutputs)(nil), // 0: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisStackOutputs
+	(*AzureManagedRedisOutputs)(nil), // 0: dev.planton.azure.azuremanagedredis.v1alpha1.AzureManagedRedisOutputs
 }
 var file_catalog_azure_azuremanagedredis_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

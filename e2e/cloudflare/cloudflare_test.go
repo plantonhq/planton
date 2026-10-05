@@ -16,7 +16,7 @@ import (
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"github.com/plantonhq/planton/e2e/framework/runner"
 	profilepkg "github.com/plantonhq/planton/pkg/e2e/profile"
-	componentv1 "github.com/plantonhq/planton/qa/componente2eprofile/v1"
+	kindv1 "github.com/plantonhq/planton/qa/catalogkinde2eprofile/v1"
 )
 
 var (
@@ -82,517 +82,517 @@ func TestMain(m *testing.M) {
 // while the catalog enrolls kind by kind.
 
 func TestCloudflareDnsZone_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarednszone", "pulumi")
+	runAllScenariosForKind(t, "cloudflarednszone", "pulumi")
 }
 func TestCloudflareDnsZone_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarednszone", "terraform")
+	runAllScenariosForKind(t, "cloudflarednszone", "terraform")
 }
 
 func TestCloudflareKvNamespace_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarekvnamespace", "pulumi")
+	runAllScenariosForKind(t, "cloudflarekvnamespace", "pulumi")
 }
 func TestCloudflareKvNamespace_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarekvnamespace", "terraform")
+	runAllScenariosForKind(t, "cloudflarekvnamespace", "terraform")
 }
 
 func TestCloudflareR2Bucket_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarer2bucket", "pulumi")
+	runAllScenariosForKind(t, "cloudflarer2bucket", "pulumi")
 }
 func TestCloudflareR2Bucket_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarer2bucket", "terraform")
+	runAllScenariosForKind(t, "cloudflarer2bucket", "terraform")
 }
 
 func TestCloudflareWorker_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareworker", "pulumi")
+	runAllScenariosForKind(t, "cloudflareworker", "pulumi")
 }
 func TestCloudflareWorker_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareworker", "terraform")
+	runAllScenariosForKind(t, "cloudflareworker", "terraform")
 }
 
 func TestCloudflareLoadBalancer_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareloadbalancer", "pulumi")
+	runAllScenariosForKind(t, "cloudflareloadbalancer", "pulumi")
 }
 func TestCloudflareLoadBalancer_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareloadbalancer", "terraform")
+	runAllScenariosForKind(t, "cloudflareloadbalancer", "terraform")
 }
 
 func TestCloudflareD1Database_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflared1database", "pulumi")
+	runAllScenariosForKind(t, "cloudflared1database", "pulumi")
 }
 func TestCloudflareD1Database_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflared1database", "terraform")
+	runAllScenariosForKind(t, "cloudflared1database", "terraform")
 }
 
 func TestCloudflareZeroTrustAccessApplication_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustaccessapplication", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustaccessapplication", "pulumi")
 }
 func TestCloudflareZeroTrustAccessApplication_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustaccessapplication", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustaccessapplication", "terraform")
 }
 
 func TestCloudflareDnsRecord_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarednsrecord", "pulumi")
+	runAllScenariosForKind(t, "cloudflarednsrecord", "pulumi")
 }
 func TestCloudflareDnsRecord_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarednsrecord", "terraform")
+	runAllScenariosForKind(t, "cloudflarednsrecord", "terraform")
 }
 
 func TestCloudflareRuleset_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareruleset", "pulumi")
+	runAllScenariosForKind(t, "cloudflareruleset", "pulumi")
 }
 func TestCloudflareRuleset_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareruleset", "terraform")
+	runAllScenariosForKind(t, "cloudflareruleset", "terraform")
 }
 
 func TestCloudflareWorkersKvPair_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareworkerskvpair", "pulumi")
+	runAllScenariosForKind(t, "cloudflareworkerskvpair", "pulumi")
 }
 func TestCloudflareWorkersKvPair_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareworkerskvpair", "terraform")
+	runAllScenariosForKind(t, "cloudflareworkerskvpair", "terraform")
 }
 
 func TestCloudflareHyperdriveConfig_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarehyperdriveconfig", "pulumi")
+	runAllScenariosForKind(t, "cloudflarehyperdriveconfig", "pulumi")
 }
 func TestCloudflareHyperdriveConfig_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarehyperdriveconfig", "terraform")
+	runAllScenariosForKind(t, "cloudflarehyperdriveconfig", "terraform")
 }
 
 func TestCloudflareLoadBalancerPool_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareloadbalancerpool", "pulumi")
+	runAllScenariosForKind(t, "cloudflareloadbalancerpool", "pulumi")
 }
 func TestCloudflareLoadBalancerPool_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareloadbalancerpool", "terraform")
+	runAllScenariosForKind(t, "cloudflareloadbalancerpool", "terraform")
 }
 
 func TestCloudflareLoadBalancerMonitor_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareloadbalancermonitor", "pulumi")
+	runAllScenariosForKind(t, "cloudflareloadbalancermonitor", "pulumi")
 }
 func TestCloudflareLoadBalancerMonitor_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareloadbalancermonitor", "terraform")
+	runAllScenariosForKind(t, "cloudflareloadbalancermonitor", "terraform")
 }
 
 func TestCloudflareZeroTrustAccessPolicy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustaccesspolicy", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustaccesspolicy", "pulumi")
 }
 func TestCloudflareZeroTrustAccessPolicy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustaccesspolicy", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustaccesspolicy", "terraform")
 }
 
 func TestCloudflareZeroTrustAccessGroup_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustaccessgroup", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustaccessgroup", "pulumi")
 }
 func TestCloudflareZeroTrustAccessGroup_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustaccessgroup", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustaccessgroup", "terraform")
 }
 
 func TestCloudflareQueue_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarequeue", "pulumi")
+	runAllScenariosForKind(t, "cloudflarequeue", "pulumi")
 }
 func TestCloudflareQueue_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarequeue", "terraform")
+	runAllScenariosForKind(t, "cloudflarequeue", "terraform")
 }
 
 func TestCloudflarePagesProject_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarepagesproject", "pulumi")
+	runAllScenariosForKind(t, "cloudflarepagesproject", "pulumi")
 }
 func TestCloudflarePagesProject_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarepagesproject", "terraform")
+	runAllScenariosForKind(t, "cloudflarepagesproject", "terraform")
 }
 
 func TestCloudflareZeroTrustTunnel_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrusttunnel", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrusttunnel", "pulumi")
 }
 func TestCloudflareZeroTrustTunnel_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrusttunnel", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrusttunnel", "terraform")
 }
 
 func TestCloudflareZeroTrustTunnelVirtualNetwork_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrusttunnelvirtualnetwork", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrusttunnelvirtualnetwork", "pulumi")
 }
 func TestCloudflareZeroTrustTunnelVirtualNetwork_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrusttunnelvirtualnetwork", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrusttunnelvirtualnetwork", "terraform")
 }
 
 func TestCloudflareZeroTrustTunnelRoute_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrusttunnelroute", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrusttunnelroute", "pulumi")
 }
 func TestCloudflareZeroTrustTunnelRoute_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrusttunnelroute", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrusttunnelroute", "terraform")
 }
 
 func TestCloudflareList_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarelist", "pulumi")
+	runAllScenariosForKind(t, "cloudflarelist", "pulumi")
 }
 func TestCloudflareList_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarelist", "terraform")
+	runAllScenariosForKind(t, "cloudflarelist", "terraform")
 }
 
 func TestCloudflareListItem_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarelistitem", "pulumi")
+	runAllScenariosForKind(t, "cloudflarelistitem", "pulumi")
 }
 func TestCloudflareListItem_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarelistitem", "terraform")
+	runAllScenariosForKind(t, "cloudflarelistitem", "terraform")
 }
 
 func TestCloudflareTurnstileWidget_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareturnstilewidget", "pulumi")
+	runAllScenariosForKind(t, "cloudflareturnstilewidget", "pulumi")
 }
 func TestCloudflareTurnstileWidget_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareturnstilewidget", "terraform")
+	runAllScenariosForKind(t, "cloudflareturnstilewidget", "terraform")
 }
 
 func TestCloudflareEmailRoutingZone_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareemailroutingzone", "pulumi")
+	runAllScenariosForKind(t, "cloudflareemailroutingzone", "pulumi")
 }
 func TestCloudflareEmailRoutingZone_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareemailroutingzone", "terraform")
+	runAllScenariosForKind(t, "cloudflareemailroutingzone", "terraform")
 }
 
 func TestCloudflareEmailRoutingRule_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareemailroutingrule", "pulumi")
+	runAllScenariosForKind(t, "cloudflareemailroutingrule", "pulumi")
 }
 func TestCloudflareEmailRoutingRule_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareemailroutingrule", "terraform")
+	runAllScenariosForKind(t, "cloudflareemailroutingrule", "terraform")
 }
 
 func TestCloudflareEmailRoutingAddress_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareemailroutingaddress", "pulumi")
+	runAllScenariosForKind(t, "cloudflareemailroutingaddress", "pulumi")
 }
 func TestCloudflareEmailRoutingAddress_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareemailroutingaddress", "terraform")
+	runAllScenariosForKind(t, "cloudflareemailroutingaddress", "terraform")
 }
 
 func TestCloudflareOriginCaCertificate_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareorigincacertificate", "pulumi")
+	runAllScenariosForKind(t, "cloudflareorigincacertificate", "pulumi")
 }
 func TestCloudflareOriginCaCertificate_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareorigincacertificate", "terraform")
+	runAllScenariosForKind(t, "cloudflareorigincacertificate", "terraform")
 }
 
 func TestCloudflareCertificatePack_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarecertificatepack", "pulumi")
+	runAllScenariosForKind(t, "cloudflarecertificatepack", "pulumi")
 }
 func TestCloudflareCertificatePack_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarecertificatepack", "terraform")
+	runAllScenariosForKind(t, "cloudflarecertificatepack", "terraform")
 }
 
 func TestCloudflareCustomHostname_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarecustomhostname", "pulumi")
+	runAllScenariosForKind(t, "cloudflarecustomhostname", "pulumi")
 }
 func TestCloudflareCustomHostname_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarecustomhostname", "terraform")
+	runAllScenariosForKind(t, "cloudflarecustomhostname", "terraform")
 }
 
 func TestCloudflareCustomHostnameFallbackOrigin_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarecustomhostnamefallbackorigin", "pulumi")
+	runAllScenariosForKind(t, "cloudflarecustomhostnamefallbackorigin", "pulumi")
 }
 func TestCloudflareCustomHostnameFallbackOrigin_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarecustomhostnamefallbackorigin", "terraform")
+	runAllScenariosForKind(t, "cloudflarecustomhostnamefallbackorigin", "terraform")
 }
 
 func TestCloudflareZoneSettings_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezonesettings", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezonesettings", "pulumi")
 }
 func TestCloudflareZoneSettings_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezonesettings", "terraform")
+	runAllScenariosForKind(t, "cloudflarezonesettings", "terraform")
 }
 
 func TestCloudflareCacheSettings_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarecachesettings", "pulumi")
+	runAllScenariosForKind(t, "cloudflarecachesettings", "pulumi")
 }
 func TestCloudflareCacheSettings_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarecachesettings", "terraform")
+	runAllScenariosForKind(t, "cloudflarecachesettings", "terraform")
 }
 
 func TestCloudflareZoneTlsSettings_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezonetlssettings", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezonetlssettings", "pulumi")
 }
 func TestCloudflareZoneTlsSettings_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezonetlssettings", "terraform")
+	runAllScenariosForKind(t, "cloudflarezonetlssettings", "terraform")
 }
 
 func TestCloudflareCustomSslCertificate_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarecustomsslcertificate", "pulumi")
+	runAllScenariosForKind(t, "cloudflarecustomsslcertificate", "pulumi")
 }
 func TestCloudflareCustomSslCertificate_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarecustomsslcertificate", "terraform")
+	runAllScenariosForKind(t, "cloudflarecustomsslcertificate", "terraform")
 }
 
 func TestCloudflareMtlsCertificate_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflaremtlscertificate", "pulumi")
+	runAllScenariosForKind(t, "cloudflaremtlscertificate", "pulumi")
 }
 func TestCloudflareMtlsCertificate_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflaremtlscertificate", "terraform")
+	runAllScenariosForKind(t, "cloudflaremtlscertificate", "terraform")
 }
 
 func TestCloudflareAuthenticatedOriginPulls_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareauthenticatedoriginpulls", "pulumi")
+	runAllScenariosForKind(t, "cloudflareauthenticatedoriginpulls", "pulumi")
 }
 func TestCloudflareAuthenticatedOriginPulls_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareauthenticatedoriginpulls", "terraform")
+	runAllScenariosForKind(t, "cloudflareauthenticatedoriginpulls", "terraform")
 }
 
 func TestCloudflareAuthenticatedOriginPullsCertificate_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareauthenticatedoriginpullscertificate", "pulumi")
+	runAllScenariosForKind(t, "cloudflareauthenticatedoriginpullscertificate", "pulumi")
 }
 func TestCloudflareAuthenticatedOriginPullsCertificate_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareauthenticatedoriginpullscertificate", "terraform")
+	runAllScenariosForKind(t, "cloudflareauthenticatedoriginpullscertificate", "terraform")
 }
 
 func TestCloudflareWorkflow_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareworkflow", "pulumi")
+	runAllScenariosForKind(t, "cloudflareworkflow", "pulumi")
 }
 func TestCloudflareWorkflow_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareworkflow", "terraform")
+	runAllScenariosForKind(t, "cloudflareworkflow", "terraform")
 }
 
 func TestCloudflareSecretsStore_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflaresecretsstore", "pulumi")
+	runAllScenariosForKind(t, "cloudflaresecretsstore", "pulumi")
 }
 func TestCloudflareSecretsStore_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflaresecretsstore", "terraform")
+	runAllScenariosForKind(t, "cloudflaresecretsstore", "terraform")
 }
 
 func TestCloudflareSecretsStoreSecret_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflaresecretsstoresecret", "pulumi")
+	runAllScenariosForKind(t, "cloudflaresecretsstoresecret", "pulumi")
 }
 func TestCloudflareSecretsStoreSecret_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflaresecretsstoresecret", "terraform")
+	runAllScenariosForKind(t, "cloudflaresecretsstoresecret", "terraform")
 }
 
 func TestCloudflareAiGateway_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareaigateway", "pulumi")
+	runAllScenariosForKind(t, "cloudflareaigateway", "pulumi")
 }
 func TestCloudflareAiGateway_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareaigateway", "terraform")
+	runAllScenariosForKind(t, "cloudflareaigateway", "terraform")
 }
 
 func TestCloudflareZeroTrustAccessIdentityProvider_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustaccessidentityprovider", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustaccessidentityprovider", "pulumi")
 }
 func TestCloudflareZeroTrustAccessIdentityProvider_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustaccessidentityprovider", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustaccessidentityprovider", "terraform")
 }
 
 func TestCloudflareZeroTrustAccessServiceToken_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustaccessservicetoken", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustaccessservicetoken", "pulumi")
 }
 
 func TestCloudflareZeroTrustOrganization_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustorganization", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustorganization", "pulumi")
 }
 func TestCloudflareZeroTrustOrganization_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustorganization", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustorganization", "terraform")
 }
 
 func TestCloudflareZeroTrustAccessInfrastructureTarget_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustaccessinfrastructuretarget", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustaccessinfrastructuretarget", "pulumi")
 }
 func TestCloudflareZeroTrustAccessInfrastructureTarget_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustaccessinfrastructuretarget", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustaccessinfrastructuretarget", "terraform")
 }
 
 func TestCloudflareZeroTrustMcpPortal_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustmcpportal", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustmcpportal", "pulumi")
 }
 func TestCloudflareZeroTrustMcpPortal_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustmcpportal", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustmcpportal", "terraform")
 }
 
 func TestCloudflareZeroTrustMcpServer_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustmcpserver", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustmcpserver", "pulumi")
 }
 func TestCloudflareZeroTrustMcpServer_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustmcpserver", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustmcpserver", "terraform")
 }
 
 func TestCloudflareZeroTrustGatewaySettings_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustgatewaysettings", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustgatewaysettings", "pulumi")
 }
 func TestCloudflareZeroTrustGatewaySettings_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustgatewaysettings", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustgatewaysettings", "terraform")
 }
 
 func TestCloudflareZeroTrustDnsLocation_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustdnslocation", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustdnslocation", "pulumi")
 }
 func TestCloudflareZeroTrustDnsLocation_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustdnslocation", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustdnslocation", "terraform")
 }
 
 func TestCloudflareZeroTrustDeviceDefaultProfile_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustdevicedefaultprofile", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustdevicedefaultprofile", "pulumi")
 }
 func TestCloudflareZeroTrustDeviceDefaultProfile_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustdevicedefaultprofile", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustdevicedefaultprofile", "terraform")
 }
 
 func TestCloudflareZeroTrustDeviceCustomProfile_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustdevicecustomprofile", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustdevicecustomprofile", "pulumi")
 }
 func TestCloudflareZeroTrustDeviceCustomProfile_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustdevicecustomprofile", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustdevicecustomprofile", "terraform")
 }
 
 func TestCloudflareZeroTrustDevicePostureRule_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustdeviceposturerule", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustdeviceposturerule", "pulumi")
 }
 func TestCloudflareZeroTrustDevicePostureRule_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustdeviceposturerule", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustdeviceposturerule", "terraform")
 }
 func TestCloudflareLogpushJob_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarelogpushjob", "pulumi")
+	runAllScenariosForKind(t, "cloudflarelogpushjob", "pulumi")
 }
 func TestCloudflareLogpushJob_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarelogpushjob", "terraform")
+	runAllScenariosForKind(t, "cloudflarelogpushjob", "terraform")
 }
 func TestCloudflareNotificationPolicy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarenotificationpolicy", "pulumi")
+	runAllScenariosForKind(t, "cloudflarenotificationpolicy", "pulumi")
 }
 func TestCloudflareNotificationPolicy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarenotificationpolicy", "terraform")
+	runAllScenariosForKind(t, "cloudflarenotificationpolicy", "terraform")
 }
 func TestCloudflareNotificationWebhook_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarenotificationwebhook", "pulumi")
+	runAllScenariosForKind(t, "cloudflarenotificationwebhook", "pulumi")
 }
 func TestCloudflareNotificationWebhook_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarenotificationwebhook", "terraform")
+	runAllScenariosForKind(t, "cloudflarenotificationwebhook", "terraform")
 }
 func TestCloudflareWebAnalyticsSite_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarewebanalyticssite", "pulumi")
+	runAllScenariosForKind(t, "cloudflarewebanalyticssite", "pulumi")
 }
 func TestCloudflareWebAnalyticsSite_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarewebanalyticssite", "terraform")
+	runAllScenariosForKind(t, "cloudflarewebanalyticssite", "terraform")
 }
 func TestCloudflareAccountApiToken_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareaccountapitoken", "pulumi")
+	runAllScenariosForKind(t, "cloudflareaccountapitoken", "pulumi")
 }
 func TestCloudflareAccountApiToken_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareaccountapitoken", "terraform")
+	runAllScenariosForKind(t, "cloudflareaccountapitoken", "terraform")
 }
 func TestCloudflareZeroTrustAccessServiceToken_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustaccessservicetoken", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustaccessservicetoken", "terraform")
 }
 
 func TestCloudflareZeroTrustGatewayPolicy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustgatewaypolicy", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustgatewaypolicy", "pulumi")
 }
 func TestCloudflareZeroTrustGatewayPolicy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustgatewaypolicy", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustgatewaypolicy", "terraform")
 }
 
 func TestCloudflareZeroTrustList_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustlist", "pulumi")
+	runAllScenariosForKind(t, "cloudflarezerotrustlist", "pulumi")
 }
 func TestCloudflareZeroTrustList_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarezerotrustlist", "terraform")
+	runAllScenariosForKind(t, "cloudflarezerotrustlist", "terraform")
 }
 
 func TestCloudflareIpAccessRule_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareipaccessrule", "pulumi")
+	runAllScenariosForKind(t, "cloudflareipaccessrule", "pulumi")
 }
 func TestCloudflareIpAccessRule_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflareipaccessrule", "terraform")
+	runAllScenariosForKind(t, "cloudflareipaccessrule", "terraform")
 }
 
 func TestCloudflareBotManagement_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarebotmanagement", "pulumi")
+	runAllScenariosForKind(t, "cloudflarebotmanagement", "pulumi")
 }
 func TestCloudflareBotManagement_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarebotmanagement", "terraform")
+	runAllScenariosForKind(t, "cloudflarebotmanagement", "terraform")
 }
 
 func TestCloudflareSnippet_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflaresnippet", "pulumi")
+	runAllScenariosForKind(t, "cloudflaresnippet", "pulumi")
 }
 func TestCloudflareSnippet_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflaresnippet", "terraform")
+	runAllScenariosForKind(t, "cloudflaresnippet", "terraform")
 }
 
 func TestCloudflareSnippetRules_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflaresnippetrules", "pulumi")
+	runAllScenariosForKind(t, "cloudflaresnippetrules", "pulumi")
 }
 func TestCloudflareSnippetRules_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflaresnippetrules", "terraform")
+	runAllScenariosForKind(t, "cloudflaresnippetrules", "terraform")
 }
 
 func TestCloudflareHealthcheck_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarehealthcheck", "pulumi")
+	runAllScenariosForKind(t, "cloudflarehealthcheck", "pulumi")
 }
 func TestCloudflareHealthcheck_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarehealthcheck", "terraform")
+	runAllScenariosForKind(t, "cloudflarehealthcheck", "terraform")
 }
 
 func TestCloudflareWaitingRoom_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarewaitingroom", "pulumi")
+	runAllScenariosForKind(t, "cloudflarewaitingroom", "pulumi")
 }
 func TestCloudflareWaitingRoom_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarewaitingroom", "terraform")
+	runAllScenariosForKind(t, "cloudflarewaitingroom", "terraform")
 }
 
 func TestCloudflareWaitingRoomEvent_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarewaitingroomevent", "pulumi")
+	runAllScenariosForKind(t, "cloudflarewaitingroomevent", "pulumi")
 }
 func TestCloudflareWaitingRoomEvent_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "cloudflarewaitingroomevent", "terraform")
+	runAllScenariosForKind(t, "cloudflarewaitingroomevent", "terraform")
 }
 
-// runAllScenariosForComponent discovers and runs all E2E scenarios for a
-// Cloudflare component.
-func runAllScenariosForComponent(t *testing.T, component, engine string) {
+// runAllScenariosForKind discovers and runs all E2E scenarios for a
+// Cloudflare kind.
+func runAllScenariosForKind(t *testing.T, kindDir, engine string) {
 	t.Helper()
 
-	if cp, err := profilepkg.LoadComponentProfile(repoRoot, "cloudflare", component); err == nil && cp.Spec != nil {
+	if cp, err := profilepkg.LoadKindProfile(repoRoot, "cloudflare", kindDir); err == nil && cp.Spec != nil {
 		switch cp.Spec.Status {
-		case componentv1.ComponentE2EProfileSpec_deferred,
-			componentv1.ComponentE2EProfileSpec_skip,
-			componentv1.ComponentE2EProfileSpec_stub,
+		case kindv1.CatalogKindE2EProfileSpec_deferred,
+			kindv1.CatalogKindE2EProfileSpec_skip,
+			kindv1.CatalogKindE2EProfileSpec_stub,
 			// pending_proof: fully authored, offline-validated, awaiting its
 			// first live proof. The proving session flips the profile to green
 			// immediately before executing the lanes; until then a sweep must
 			// never run it.
-			componentv1.ComponentE2EProfileSpec_pending_proof,
+			kindv1.CatalogKindE2EProfileSpec_pending_proof,
 			// real_cluster has no meaning for a SaaS provider; a profile
 			// carrying it is a mistake that must skip loudly, never run.
-			componentv1.ComponentE2EProfileSpec_real_cluster:
+			kindv1.CatalogKindE2EProfileSpec_real_cluster:
 			reason := cp.Spec.DeferredReason
 			if reason == "" {
 				reason = cp.Spec.Status.String()
 			}
-			t.Skipf("component %s E2E profile status is %s: %s", component, cp.Spec.Status, reason)
+			t.Skipf("kind %s E2E profile status is %s: %s", kindDir, cp.Spec.Status, reason)
 		}
 	}
 
-	moduleDir, err := discovery.ModuleDir(repoRoot, "cloudflare", component, engine)
+	moduleDir, err := discovery.ModuleDir(repoRoot, "cloudflare", kindDir, engine)
 	if err != nil {
-		t.Fatalf("failed to locate %s %s module: %v", component, engine, err)
+		t.Fatalf("failed to locate %s %s module: %v", kindDir, engine, err)
 	}
 
 	if !fileExists(moduleDir) {
-		t.Skipf("component %s %s module not found at %s", component, engine, moduleDir)
+		t.Skipf("kind %s %s module not found at %s", kindDir, engine, moduleDir)
 	}
 
-	scenarios, err := discovery.DiscoverTestScenarios(repoRoot, "cloudflare", component)
+	scenarios, err := discovery.DiscoverTestScenarios(repoRoot, "cloudflare", kindDir)
 	if err != nil {
-		t.Fatalf("failed to discover test scenarios for %s: %v", component, err)
+		t.Fatalf("failed to discover test scenarios for %s: %v", kindDir, err)
 	}
 
 	if len(scenarios) == 0 {
-		t.Skipf("no test scenarios found for %s", component)
+		t.Skipf("no test scenarios found for %s", kindDir)
 	}
 
-	t.Logf("Discovered %d scenarios for %s [%s]", len(scenarios), component, engine)
+	t.Logf("Discovered %d scenarios for %s [%s]", len(scenarios), kindDir, engine)
 
 	for _, scenario := range scenarios {
 		scenario := scenario
 		t.Run(scenario.Name, func(t *testing.T) {
-			runSingleScenario(t, component, moduleDir, engine, scenario)
+			runSingleScenario(t, kindDir, moduleDir, engine, scenario)
 		})
 	}
 }
 
-func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenario discovery.TestScenario) {
+func runSingleScenario(t *testing.T, kindDir, moduleDir, engine string, scenario discovery.TestScenario) {
 	t.Helper()
 
 	// Scenarios needing owner-arranged external context (the
@@ -602,14 +602,14 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 	// unset tokens would otherwise fail expansion loudly, turning a
 	// deferral into a false failure.
 	if missing, err := runner.ScenarioMissingRequiredEnv(scenario.ManifestPath); err != nil {
-		t.Fatalf("reading required-env declaration for scenario %s/%s: %v", component, scenario.Name, err)
+		t.Fatalf("reading required-env declaration for scenario %s/%s: %v", kindDir, scenario.Name, err)
 	} else if len(missing) > 0 {
 		t.Skipf("scenario %s/%s needs owner-arranged environment variables that are unset: %s (per %s)",
-			component, scenario.Name, strings.Join(missing, ", "), runner.ScenarioRequiredEnvAnnotation)
+			kindDir, scenario.Name, strings.Join(missing, ", "), runner.ScenarioRequiredEnvAnnotation)
 	}
 
-	tc := &provider.ComponentTestContext{
-		Component:    component,
+	tc := &provider.KindTestContext{
+		Kind:         kindDir,
 		Provider:     "cloudflare",
 		Engine:       engine,
 		ModuleDir:    moduleDir,
@@ -630,11 +630,11 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 	if engine == "pulumi" {
 		// GenerateStackName enforces the length cap uniqueness-preservingly
 		// (blind truncation here would collide long kind names' scenarios).
-		tc.StackName = runner.GenerateStackName(component+"-"+scenario.Name, runID)
+		tc.StackName = runner.GenerateStackName(kindDir+"-"+scenario.Name, runID)
 	}
 
 	ctx := context.Background()
-	result := runner.RunComponentTest(ctx, tc, testHarness)
+	result := runner.RunKindTest(ctx, tc, testHarness)
 
 	for _, phase := range result.Phases {
 		status := "PASS"
@@ -648,10 +648,10 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 	}
 
 	if !result.Passed {
-		t.Fatalf("scenario %s/%s [%s] failed (total: %s)", component, scenario.Name, engine, result.Duration)
+		t.Fatalf("scenario %s/%s [%s] failed (total: %s)", kindDir, scenario.Name, engine, result.Duration)
 	}
 
-	t.Logf("scenario %s/%s [%s] passed (total: %s)", component, scenario.Name, engine, result.Duration)
+	t.Logf("scenario %s/%s [%s] passed (total: %s)", kindDir, scenario.Name, engine, result.Duration)
 }
 
 func fileExists(path string) bool {

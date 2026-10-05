@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpServiceNetworkingConnectionSpec", func() {
 		return &GcpServiceNetworkingConnection{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpServiceNetworkingConnection",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-psa-connection",
 			},
 			Spec: &GcpServiceNetworkingConnectionSpec{

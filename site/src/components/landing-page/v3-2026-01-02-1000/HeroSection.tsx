@@ -79,7 +79,7 @@ const scenarios: Scenario[] = [
       { type: 'info', text: 'Applying Service/acme-api to environment dev...', delay: 500 },
       { type: 'output', text: '', delay: 300 },
       { type: 'success', text: '✓ Manifest validated', delay: 500 },
-      { type: 'success', text: '✓ Stack job created (job-4a7f)', delay: 600 },
+      { type: 'success', text: '✓ Infra Job created (job-4a7f)', delay: 600 },
       { type: 'success', text: '✓ Container built (1m 18s)', delay: 700 },
       { type: 'success', text: '✓ Deployed to ECS (2m 05s)', delay: 800 },
       { type: 'success', text: '✓ Ingress configured (15s)', delay: 900 },

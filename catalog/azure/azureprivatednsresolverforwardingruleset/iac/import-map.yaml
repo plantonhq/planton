@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azureprivatednsresolverforwardingruleset
 spec:
@@ -8,11 +8,11 @@ spec:
   values:
     - name: dns_forwarding_ruleset_id
       derivations:
-        - from_stack_output: dns_forwarding_ruleset_id
+        - from_output: dns_forwarding_ruleset_id
       where_to_find: >-
         `az dns-resolver forwarding-ruleset show -g <resource-group> -n
         <name> --query id`, or the component's own
-        dns_forwarding_ruleset_id stack output.
+        dns_forwarding_ruleset_id output.
     - name: forwarding_rule_name
       derivations:
         - from_address_key: true

@@ -34,7 +34,7 @@ type AzureEventgridDomainTopic struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureEventgridDomainTopicSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureEventgridDomainTopic) GetKind() string {
 	return ""
 }
 
-func (x *AzureEventgridDomainTopic) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureEventgridDomainTopic) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,10 +112,10 @@ func (x *AzureEventgridDomainTopic) GetStatus() *AzureEventgridDomainTopicStatus
 // Event Grid domain topic deployment.
 type AzureEventgridDomainTopicStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-eventgrid-domain-topic stack-outputs
-	Outputs       *AzureEventgridDomainTopicStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-eventgrid-domain-topic outputs
+	Outputs       *AzureEventgridDomainTopicOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureEventgridDomainTopicStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventgriddomaintopic_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureEventgridDomainTopicStatus) GetOutputs() *AzureEventgridDomainTopicStackOutputs {
+func (x *AzureEventgridDomainTopicStatus) GetOutputs() *AzureEventgridDomainTopicOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azureeventgriddomaintopic_v1alpha1_api_proto_rawDesc = 
 	"apiVersion\x124\n" +
 	"\x04kind\x18\x02 \x01(\tB \xbaH\x1dr\x1b\n" +
 	"\x19AzureEventgridDomainTopicR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
 	"\x04spec\x18\x04 \x01(\v2S.dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12m\n" +
-	"\x06status\x18\x05 \x01(\v2U.dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicStatusR\x06status\"\x98\x01\n" +
-	"\x1fAzureEventgridDomainTopicStatus\x12u\n" +
-	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicStackOutputsR\aoutputsB\xaa\x03\n" +
+	"\x06status\x18\x05 \x01(\v2U.dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicStatusR\x06status\"\x93\x01\n" +
+	"\x1fAzureEventgridDomainTopicStatus\x12p\n" +
+	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicOutputsR\aoutputsB\xaa\x03\n" +
 	"8com.dev.planton.azure.azureeventgriddomaintopic.v1alpha1B\bApiProtoP\x01Zogithub.com/plantonhq/planton/catalog/azure/azureeventgriddomaintopic/v1alpha1;azureeventgriddomaintopicv1alpha1\xa2\x02\x04DPAA\xaa\x024Dev.Planton.Azure.Azureeventgriddomaintopic.V1alpha1\xca\x024Dev\\Planton\\Azure\\Azureeventgriddomaintopic\\V1alpha1\xe2\x02@Dev\\Planton\\Azure\\Azureeventgriddomaintopic\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Azure::Azureeventgriddomaintopic::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azureeventgriddomaintopic_v1alpha1_api_proto_rawDescGZIP
 
 var file_catalog_azure_azureeventgriddomaintopic_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureeventgriddomaintopic_v1alpha1_api_proto_goTypes = []any{
-	(*AzureEventgridDomainTopic)(nil),             // 0: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopic
-	(*AzureEventgridDomainTopicStatus)(nil),       // 1: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicStatus
-	(*shared.CloudResourceMetadata)(nil),          // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureEventgridDomainTopicSpec)(nil),         // 3: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicSpec
-	(*AzureEventgridDomainTopicStackOutputs)(nil), // 4: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicStackOutputs
+	(*AzureEventgridDomainTopic)(nil),        // 0: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopic
+	(*AzureEventgridDomainTopicStatus)(nil),  // 1: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicStatus
+	(*shared.CatalogObjectMetadata)(nil),     // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureEventgridDomainTopicSpec)(nil),    // 3: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicSpec
+	(*AzureEventgridDomainTopicOutputs)(nil), // 4: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicOutputs
 }
 var file_catalog_azure_azureeventgriddomaintopic_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopic.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopic.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopic.spec:type_name -> dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicSpec
 	1, // 2: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopic.status:type_name -> dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicStatus
-	4, // 3: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicStatus.outputs:type_name -> dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicStackOutputs
+	4, // 3: dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicStatus.outputs:type_name -> dev.planton.azure.azureeventgriddomaintopic.v1alpha1.AzureEventgridDomainTopicOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

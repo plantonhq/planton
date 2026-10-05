@@ -1,7 +1,7 @@
 # AzureMonitorActivityLogAlert - Pulumi Module
 
-Pulumi implementation for the AzureMonitorActivityLogAlert deployment
-component.
+Pulumi implementation for the AzureMonitorActivityLogAlert
+kind.
 
 ## Architecture
 
@@ -24,11 +24,11 @@ monitoring.ActivityLogAlert (one subscription-plane Activity Log alert)
   are mutually exclusive**, enforced by spec CELs before either engine
   runs.
 - **Identity tags match the Terraform module** key for key and value
-  for value: `resource_kind` is the lowercased CloudResourceKind enum
+  for value: `resource_kind` is the lowercased CatalogKind enum
   name, and `resource_id` is written only when `metadata.id` is set.
 
 ## Provider
 
 Built via the shared `pulumiazureprovider.Get` builder -- static client
-secret, keyless web identity, or ambient chain, resolved from the stack
+secret, keyless web identity, or ambient chain, resolved from the IaC
 input. Never construct the provider inline.

@@ -14,13 +14,13 @@ import (
 // AwsRedshiftServerlessWorkgroup nodes that attach by name -- this
 // module never creates or mutates a resource that deserves to be its
 // own node.
-func Resources(ctx *pulumi.Context, stackInput *awsredshiftserverlessnamespacev1alpha1.AwsRedshiftServerlessNamespaceStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsredshiftserverlessnamespacev1alpha1.AwsRedshiftServerlessNamespaceIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder,
+	// Build the AWS provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static keys, keyless
 	// web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsRedshiftServerlessNamespace.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsRedshiftServerlessNamespace.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}
@@ -31,7 +31,7 @@ func Resources(ctx *pulumi.Context, stackInput *awsredshiftserverlessnamespacev1
 	}
 
 	// The name is the join key workgroups attach with, so it must
-	// surface as a stack output -- downstream references resolve against
+	// surface as an output -- downstream references resolve against
 	// outputs, never metadata.
 	ctx.Export(OpNamespaceName, createdNamespace.NamespaceName)
 	ctx.Export(OpNamespaceId, createdNamespace.NamespaceId)

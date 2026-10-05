@@ -32,7 +32,7 @@
 | `hostname` | string | Yes | The target's hostname (≤255 chars, letters/digits/dashes/periods, alphanumeric ends). The selection surface for applications. |
 | `ip` | object | Yes | At least one of `ipv4` / `ipv6`, each with `ip_addr` and an optional `virtual_network_id`. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

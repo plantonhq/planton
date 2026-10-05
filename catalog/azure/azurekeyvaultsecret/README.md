@@ -22,7 +22,7 @@ The **AzureKeyVaultSecret** component stores a secret -- a password, API key, co
 
 ## Future Enhancements
 
-- The value's source references widen as more credential-emitting components land in the catalog.
+- The value's source references widen as more credential-emitting kinds land in the catalog.
 
 ---
 

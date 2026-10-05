@@ -5,10 +5,10 @@ package dev.planton.aws.awslambdaeventsourcemapping.v1alpha1;
 import "catalog/aws/awslambdaeventsourcemapping/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsLambdaEventSourceMappingStackInput is the input for the
+// AwsLambdaEventSourceMappingIacInput is the input for the
 // aws-lambda-event-source-mapping IaC modules.
-message AwsLambdaEventSourceMappingStackInput {
-  // target cloud-resource
+message AwsLambdaEventSourceMappingIacInput {
+  // the catalog object to deploy
   AwsLambdaEventSourceMapping target = 1;
 
   // provider-config

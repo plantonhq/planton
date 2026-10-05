@@ -34,7 +34,7 @@ func validResource() *AzureMonitorDataCollectionRuleAssociation {
 	return &AzureMonitorDataCollectionRuleAssociation{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMonitorDataCollectionRuleAssociation",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-dcra",
 		},
 		Spec: &AzureMonitorDataCollectionRuleAssociationSpec{

@@ -33,7 +33,7 @@ type CloudflareSnippetRules struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareSnippetRulesSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *CloudflareSnippetRules) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareSnippetRules) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareSnippetRules) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *CloudflareSnippetRules) GetStatus() *CloudflareSnippetRulesStatus {
 // snippet routing table.
 type CloudflareSnippetRulesStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareSnippetRulesStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareSnippetRulesOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*CloudflareSnippetRulesStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareSnippetRulesStatus) GetOutputs() *CloudflareSnippetRulesStackOutputs {
+func (x *CloudflareSnippetRulesStatus) GetOutputs() *CloudflareSnippetRulesOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16CloudflareSnippetRulesR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
 	"\x04spec\x18\x04 \x01(\v2R.dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12l\n" +
-	"\x06status\x18\x05 \x01(\v2T.dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesStatusR\x06status\"\x94\x01\n" +
-	"\x1cCloudflareSnippetRulesStatus\x12t\n" +
-	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesStackOutputsR\aoutputsB\xb3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2T.dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesStatusR\x06status\"\x8f\x01\n" +
+	"\x1cCloudflareSnippetRulesStatus\x12o\n" +
+	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesOutputsR\aoutputsB\xb3\x03\n" +
 	":com.dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1B\bApiProtoP\x01Zngithub.com/plantonhq/planton/catalog/cloudflare/cloudflaresnippetrules/v1alpha1;cloudflaresnippetrulesv1alpha1\xa2\x02\x04DPCC\xaa\x026Dev.Planton.Cloudflare.Cloudflaresnippetrules.V1alpha1\xca\x026Dev\\Planton\\Cloudflare\\Cloudflaresnippetrules\\V1alpha1\xe2\x02BDev\\Planton\\Cloudflare\\Cloudflaresnippetrules\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Cloudflare::Cloudflaresnippetrules::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareSnippetRules)(nil),             // 0: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRules
-	(*CloudflareSnippetRulesStatus)(nil),       // 1: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareSnippetRulesSpec)(nil),         // 3: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesSpec
-	(*CloudflareSnippetRulesStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesStackOutputs
+	(*CloudflareSnippetRules)(nil),        // 0: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRules
+	(*CloudflareSnippetRulesStatus)(nil),  // 1: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareSnippetRulesSpec)(nil),    // 3: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesSpec
+	(*CloudflareSnippetRulesOutputs)(nil), // 4: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesOutputs
 }
 var file_catalog_cloudflare_cloudflaresnippetrules_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRules.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRules.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRules.spec:type_name -> dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesSpec
 	1, // 2: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRules.status:type_name -> dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesStatus
-	4, // 3: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesStatus.outputs:type_name -> dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesStatus.outputs:type_name -> dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1.CloudflareSnippetRulesOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

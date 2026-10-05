@@ -53,7 +53,7 @@ const (
 // engine and version, parameter group, windows, SNS topic) updates in place.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsMemorydbClusterSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

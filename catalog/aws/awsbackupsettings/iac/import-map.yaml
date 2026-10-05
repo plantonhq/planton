@@ -1,21 +1,21 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsbackupsettings
 spec:
   # Settings singletons import by their identity: the global arm by
-  # the ACCOUNT ID, the region arm by the REGION - both are stack
+  # the ACCOUNT ID, the region arm by the REGION - both are
   # outputs (no name involved; metadata.name never reaches AWS).
   values:
     - name: account_id
       derivations:
-        - from_stack_output: account_id
+        - from_output: account_id
       where_to_find: >-
         The AWS account ID (`aws sts get-caller-identity` shows
         Account) -- the global settings resource's identity at AWS.
     - name: region
       derivations:
-        - from_stack_output: region
+        - from_output: region
       where_to_find: >-
         The region the instance manages (spec.region) -- the region
         settings resource's identity at AWS.

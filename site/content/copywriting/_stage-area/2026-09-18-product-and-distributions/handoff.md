@@ -18,7 +18,7 @@ Product is the user's half of the story in the order a platform engineer meets i
 
 ## Must not claim
 
-Any dollar-savings figure; "compliant" of any component; anything not in the public docs or the story as shipped (the account-wide browse, the failed-deploy rescue, and a "drift report" were removed by review); a bill where the product shows a verified monthly cost; a mobile page or store link; a competitor's name.
+Any dollar-savings figure; "compliant" of any kind; anything not in the public docs or the story as shipped (the account-wide browse, the failed-deploy rescue, and a "drift report" were removed by review); a bill where the product shows a verified monthly cost; a mobile page or store link; a competitor's name.
 
 ## Verification
 

@@ -11,7 +11,7 @@ import (
 
 // records creates DNS records within the zone and returns their
 // Cloudflare-assigned ids keyed by the same name-type-index key the tofu
-// module uses for for_each -- the keyed record_ids stack output import
+// module uses for for_each -- the keyed record_ids output import
 // recipes derive per-record import IDs from.
 func records(
 	ctx *pulumi.Context,

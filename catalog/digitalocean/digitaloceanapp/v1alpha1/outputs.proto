@@ -4,7 +4,7 @@ package dev.planton.digitalocean.digitaloceanapp.v1alpha1;
 
 // Outputs of a deployed App Platform application. Names match across
 // Terraform and Pulumi.
-message DigitalOceanAppStackOutputs {
+message DigitalOceanAppOutputs {
   // App UUID. Used to import the digitalocean_app resource.
   string app_id = 1;
   // Default ondigitalocean.app hostname assigned by the platform.

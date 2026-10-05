@@ -23,7 +23,7 @@ const (
 
 // Outputs produced after provisioning a Certificate Manager DNS
 // authorization.
-type GcpCertManagerDnsAuthorizationStackOutputs struct {
+type GcpCertManagerDnsAuthorizationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully-qualified resource ID of the authorization
 	// (projects/{project}/locations/{location}/dnsAuthorizations/{name}).
@@ -46,20 +46,20 @@ type GcpCertManagerDnsAuthorizationStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCertManagerDnsAuthorizationStackOutputs) Reset() {
-	*x = GcpCertManagerDnsAuthorizationStackOutputs{}
+func (x *GcpCertManagerDnsAuthorizationOutputs) Reset() {
+	*x = GcpCertManagerDnsAuthorizationOutputs{}
 	mi := &file_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCertManagerDnsAuthorizationStackOutputs) String() string {
+func (x *GcpCertManagerDnsAuthorizationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCertManagerDnsAuthorizationStackOutputs) ProtoMessage() {}
+func (*GcpCertManagerDnsAuthorizationOutputs) ProtoMessage() {}
 
-func (x *GcpCertManagerDnsAuthorizationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCertManagerDnsAuthorizationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,47 +71,47 @@ func (x *GcpCertManagerDnsAuthorizationStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCertManagerDnsAuthorizationStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCertManagerDnsAuthorizationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCertManagerDnsAuthorizationOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCertManagerDnsAuthorizationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCertManagerDnsAuthorizationStackOutputs) GetAuthorizationId() string {
+func (x *GcpCertManagerDnsAuthorizationOutputs) GetAuthorizationId() string {
 	if x != nil {
 		return x.AuthorizationId
 	}
 	return ""
 }
 
-func (x *GcpCertManagerDnsAuthorizationStackOutputs) GetAuthorizationName() string {
+func (x *GcpCertManagerDnsAuthorizationOutputs) GetAuthorizationName() string {
 	if x != nil {
 		return x.AuthorizationName
 	}
 	return ""
 }
 
-func (x *GcpCertManagerDnsAuthorizationStackOutputs) GetDomain() string {
+func (x *GcpCertManagerDnsAuthorizationOutputs) GetDomain() string {
 	if x != nil {
 		return x.Domain
 	}
 	return ""
 }
 
-func (x *GcpCertManagerDnsAuthorizationStackOutputs) GetDnsRecordName() string {
+func (x *GcpCertManagerDnsAuthorizationOutputs) GetDnsRecordName() string {
 	if x != nil {
 		return x.DnsRecordName
 	}
 	return ""
 }
 
-func (x *GcpCertManagerDnsAuthorizationStackOutputs) GetDnsRecordType() string {
+func (x *GcpCertManagerDnsAuthorizationOutputs) GetDnsRecordType() string {
 	if x != nil {
 		return x.DnsRecordType
 	}
 	return ""
 }
 
-func (x *GcpCertManagerDnsAuthorizationStackOutputs) GetDnsRecordData() string {
+func (x *GcpCertManagerDnsAuthorizationOutputs) GetDnsRecordData() string {
 	if x != nil {
 		return x.DnsRecordData
 	}
@@ -122,8 +122,8 @@ var File_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_outputs_proto proto
 
 const file_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/gcp/gcpcertmanagerdnsauthorization/v1alpha1/outputs.proto\x127dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1\"\x96\x02\n" +
-	"*GcpCertManagerDnsAuthorizationStackOutputs\x12)\n" +
+	"Acatalog/gcp/gcpcertmanagerdnsauthorization/v1alpha1/outputs.proto\x127dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1\"\x91\x02\n" +
+	"%GcpCertManagerDnsAuthorizationOutputs\x12)\n" +
 	"\x10authorization_id\x18\x01 \x01(\tR\x0fauthorizationId\x12-\n" +
 	"\x12authorization_name\x18\x02 \x01(\tR\x11authorizationName\x12\x16\n" +
 	"\x06domain\x18\x03 \x01(\tR\x06domain\x12&\n" +
@@ -146,7 +146,7 @@ func file_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_outputs_proto_rawD
 
 var file_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCertManagerDnsAuthorizationStackOutputs)(nil), // 0: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationStackOutputs
+	(*GcpCertManagerDnsAuthorizationOutputs)(nil), // 0: dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1.GcpCertManagerDnsAuthorizationOutputs
 }
 var file_catalog_gcp_gcpcertmanagerdnsauthorization_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

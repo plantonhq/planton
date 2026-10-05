@@ -4,7 +4,7 @@ Deploys a gallery image: one image definition inside an Azure Compute Gallery pl
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Image definition** -- the image's identity, OS type, architecture, Hyper-V generation, security posture, and advisory sizing, inside the referenced gallery
 - **Image versions** -- one per entry in the `versions` list, each built from its declared source and replicated to its target regions with per-region replica counts, storage types, and optional customer-managed-key encryption
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -60,7 +60,7 @@ spec:
 planton apply -f gallery-image.yaml
 ```
 
-This registers the image definition -- Gen2 Linux with trusted launch supported, no versions published yet -- ready for the image pipeline's first release to land in the `versions` list. A Stack Job tracks the provisioning in real time.
+This registers the image definition -- Gen2 Linux with trusted launch supported, no versions published yet -- ready for the image pipeline's first release to land in the `versions` list. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -119,7 +119,7 @@ These are the most important decisions when configuring a gallery image. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -129,9 +129,9 @@ These are the most important decisions when configuring a gallery image. Explore
 | **AzureStorageAccount** (blob-sourced versions) | `versions[].storageAccountId` | `status.outputs.storage_account_id` |
 | **AzureDiskEncryptionSet** (optional, per region) | `versions[].targetRegions[].diskEncryptionSetId` | `status.outputs.disk_encryption_set_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -152,9 +152,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the gallery and image live in
-- [**Azure Compute Gallery**](/cloud-catalog/azure-compute-gallery) -- the gallery the definition lives in, referenced by its `gallery_name` output
-- [**Azure Disk Snapshot**](/cloud-catalog/azure-disk-snapshot) -- the prepared-OS-disk source for snapshot-built versions
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- holds the VHD page blob for blob-sourced versions
-- [**Azure Disk Encryption Set**](/cloud-catalog/azure-disk-encryption-set) -- customer-managed-key encryption for a region's replicas
-- [**Azure Virtual Machine**](/cloud-catalog/azure-virtual-machine) -- deploys from a pinned version ID or the definition's latest
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the gallery and image live in
+- [**Azure Compute Gallery**](/infra-catalog/azure-compute-gallery) -- the gallery the definition lives in, referenced by its `gallery_name` output
+- [**Azure Disk Snapshot**](/infra-catalog/azure-disk-snapshot) -- the prepared-OS-disk source for snapshot-built versions
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- holds the VHD page blob for blob-sourced versions
+- [**Azure Disk Encryption Set**](/infra-catalog/azure-disk-encryption-set) -- customer-managed-key encryption for a region's replicas
+- [**Azure Virtual Machine**](/infra-catalog/azure-virtual-machine) -- deploys from a pinned version ID or the definition's latest

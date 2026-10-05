@@ -4,7 +4,7 @@ Configures a project's Identity Platform — the sign-in methods (email/password
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Identity Platform Config** -- the `identity_platform_config` PROJECT SINGLETON carrying sign-in methods, authorized domains, MFA policy, blocking functions, quotas, SMS-region policy, client permissions, request logging, and multi-tenancy settings
 - **Default supported IdP configs** -- one `default_supported_idp_config` per `defaultSupportedIdps` entry (Google, Facebook, Apple, ...)
@@ -26,7 +26,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **A GCP project with BILLING enabled** — initialization fails without it. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project with BILLING enabled** — initialization fails without it. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **IAM**: the deploying identity needs `roles/identityplatform.admin` or broader.
 
 ### Identity Provider Credentials
@@ -84,7 +84,7 @@ planton apply -f config.yaml
 - **Blocking functions**: `eventType` in `beforeCreate`/`beforeSignIn`; `functionUri` required.
 - **IdP naming**: `idpId` in the ten canonical values; OIDC names start `oidc.`; SAML names match `saml.<lowercase-start slug>`; SAML `callbackUri` must be `https://`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -114,7 +114,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpIdentityPlatformTenant](/docs/catalog/gcp/gcpidentityplatformtenant) — isolated per-customer user pools; requires `multiTenant.allowTenants: true` here first
 - [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project (with billing) that gets initialized

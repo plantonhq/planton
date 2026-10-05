@@ -127,7 +127,7 @@ func TestBuild_AwsEksAmbientMode(t *testing.T) {
 }
 
 // TestBuild_GcpGkeExecShape: GKE rides the same exec seam with its own env contract,
-// and a bare endpoint IP (the GKE stack-output shape) gains the https:// scheme.
+// and a bare endpoint IP (the GKE output shape) gains the https:// scheme.
 func TestBuild_GcpGkeExecShape(t *testing.T) {
 	rendered, err := Build(&kubernetesprovider.KubernetesProviderConfig{
 		Provider: kubernetesprovider.KubernetesProvider_gcp_gke,

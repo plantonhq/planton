@@ -4,7 +4,7 @@ Deploys the region's GuardDuty threat-detection posture: one detector with its p
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **GuardDuty Detector** — the region's detector with its monitoring switch and finding re-publish frequency
 - **Detector Features** — one patch per `features` entry: protection plans with their agent-management sub-toggles. Features are patches onto the detector — AWS has no delete for them, so unlisted features stay exactly as AWS has them
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with GuardDuty permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with GuardDuty permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -63,7 +63,7 @@ spec:
 planton apply -f guardduty.yaml
 ```
 
-This creates the region's detector with S3 protection and runtime monitoring on, updated findings re-publishing every fifteen minutes, and low-severity findings auto-archived. A Stack Job tracks the provisioning in real time.
+This creates the region's detector with S3 protection and runtime monitoring on, updated findings re-publishing every fifteen minutes, and low-severity findings auto-archived. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -109,23 +109,23 @@ These are the most important decisions when configuring GuardDuty. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsS3Bucket** | `publishingDestination.bucketArn` | `status.outputs.bucket_arn` |
 | **AwsKmsKey** | `publishingDestination.kmsKeyArn` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `detector_id` | The detector's AWS-assigned ID — the region's GuardDuty identity | Addressing the detector in AWS CLI/API operations; the import key every satellite composes from |
 | `detector_arn` | The detector's ARN | IAM policies scoping GuardDuty administration |
 
-`account_id`, `ip_set_ids`, `threat_intel_set_ids`, and `publishing_destination_id` are also exported; they are import and audit echoes for the folded satellites, not composition inputs — no catalog component consumes them via ValueFromRef.
+`account_id`, `ip_set_ids`, `threat_intel_set_ids`, and `publishing_destination_id` are also exported; they are import and audit echoes for the folded satellites, not composition inputs — no catalog kind consumes them via ValueFromRef.
 
 ## Common Patterns
 
@@ -139,7 +139,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — the findings-export destination, and where trusted/threat list files live
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — encrypts exported findings (required by AWS for export)
-- [**AWS GuardDuty Malware Protection Plan**](/cloud-catalog/aws-guard-duty-malware-protection-plan) — on-upload malware scanning for S3 buckets, a separate GuardDuty surface with no detector edge
-- [**AWS EKS Cluster**](/cloud-catalog/aws-eks-cluster) — the workloads EKS audit-log and runtime-monitoring plans watch
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — the findings-export destination, and where trusted/threat list files live
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — encrypts exported findings (required by AWS for export)
+- [**AWS GuardDuty Malware Protection Plan**](/infra-catalog/aws-guard-duty-malware-protection-plan) — on-upload malware scanning for S3 buckets, a separate GuardDuty surface with no detector edge
+- [**AWS EKS Cluster**](/infra-catalog/aws-eks-cluster) — the workloads EKS audit-log and runtime-monitoring plans watch

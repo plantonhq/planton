@@ -4,7 +4,7 @@ Deploys a Transit Gateway on AWS as a regional networking hub that interconnects
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Transit Gateway** -- a regional networking hub with configurable BGP ASN, default route table association and propagation, DNS support, VPN ECMP support, optional multicast routing, security-group referencing, an optional in-transit encryption posture, and up to five gateway CIDR blocks for Connect and VPN termination addresses
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
@@ -15,7 +15,7 @@ Attachments and custom route tables are **not** part of this resource -- they ar
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -50,7 +50,7 @@ spec:
 planton apply -f transit-gateway.yaml
 ```
 
-This creates a Transit Gateway with the AWS defaults: full-mesh routing (auto-association and auto-propagation), DNS support, and VPN ECMP enabled. Attach VPCs afterward with `AwsTransitGatewayVpcAttachment` resources. A Stack Job tracks the provisioning in real time.
+This creates a Transit Gateway with the AWS defaults: full-mesh routing (auto-association and auto-propagation), DNS support, and VPN ECMP enabled. Attach VPCs afterward with `AwsTransitGatewayVpcAttachment` resources. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -68,13 +68,13 @@ These are the most important decisions when configuring a Transit Gateway. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies -- the gateway is the root of the private-networking family. Attachments, route tables, and Client VPN endpoints consume its outputs.
+This kind has no foreign key dependencies -- the gateway is the root of the private-networking family. Attachments, route tables, and Client VPN endpoints consume its outputs.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -96,7 +96,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Transit Gateway VPC Attachment**](/cloud-catalog/aws-transit-gateway-vpc-attachment) -- joins a VPC to this gateway; consumes `transit_gateway_id`
-- [**AWS Transit Gateway Route Table**](/cloud-catalog/aws-transit-gateway-route-table) -- custom routing domains for segmented topologies; consumes `transit_gateway_id`
-- [**AWS Client VPN**](/cloud-catalog/aws-client-vpn) -- can terminate remote-access VPN sessions directly on this gateway; consumes `transit_gateway_id`
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- provides the VPCs that attachments join to the hub
+- [**AWS Transit Gateway VPC Attachment**](/infra-catalog/aws-transit-gateway-vpc-attachment) -- joins a VPC to this gateway; consumes `transit_gateway_id`
+- [**AWS Transit Gateway Route Table**](/infra-catalog/aws-transit-gateway-route-table) -- custom routing domains for segmented topologies; consumes `transit_gateway_id`
+- [**AWS Client VPN**](/infra-catalog/aws-client-vpn) -- can terminate remote-access VPN sessions directly on this gateway; consumes `transit_gateway_id`
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- provides the VPCs that attachments join to the hub

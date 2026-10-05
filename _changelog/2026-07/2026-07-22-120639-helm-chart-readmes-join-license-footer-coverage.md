@@ -14,7 +14,7 @@ total).
 
 ## Problem Statement / Motivation
 
-When the license footer landed across all component and infra chart READMEs,
+When the license footer landed across all kind and Infra Chart READMEs,
 the helm charts were deferred: unrelated work was in flight in `helm/` and
 sweeping it into the footer commit would have mixed unrelated changes. That
 work has landed, so the deferred surface closes.
@@ -32,7 +32,7 @@ work has landed, so the deferred surface closes.
 
 ## Validation
 
-- Guard run over the full scope (560 component + 64 infra chart + 3 helm
+- Guard run over the full scope (560 kind + 64 Infra Chart + 3 helm
   READMEs): green — after the guard itself caught the untracked third chart
   and it was footered.
 - `actionlint` and `shellcheck`: zero findings.
@@ -45,7 +45,7 @@ visible behavior change.
 
 ## Related Work
 
-- The original footer rollout (components + infra charts) and its guard.
+- The original footer rollout (kinds + Infra Charts) and its guard.
 - NOTICE / TRADEMARKS / CLA — the completed legal-posture bundle this closes
   out.
 

@@ -36,30 +36,30 @@ Every user-facing error MUST follow the three-layer pattern:
 ### 1. Error Type (internal/cli/manifest/ or domain package)
 
 ```go
-// ClipboardNotStackInputError indicates clipboard content is valid YAML
-// but not a stack input (missing 'target' field).
-type ClipboardNotStackInputError struct {
+// ClipboardNotIacInputError indicates clipboard content is valid YAML
+// but not an IaC input (missing 'target' field).
+type ClipboardNotIacInputError struct {
     Raw []byte  // Include context for beautiful display
 }
 
-func (e *ClipboardNotStackInputError) Error() string {
-    return "clipboard content is not a stack input (missing 'target' field)"
+func (e *ClipboardNotIacInputError) Error() string {
+    return "clipboard content is not an IaC input (missing 'target' field)"
 }
 ```
 
 ### 2. Beautiful UI Function (internal/cli/ui/)
 
 ```go
-func ClipboardNotStackInput(content []byte) {
+func ClipboardNotIacInput(content []byte) {
     sep := separator(infoIcon)
     
     // 1. Clear header with icon
     fmt.Println(sep)
-    fmt.Printf("%s  %s\n", infoIcon.Render("ℹ️"), infoTitle.Render("Not a Stack Input"))
+    fmt.Printf("%s  %s\n", infoIcon.Render("ℹ️"), infoTitle.Render("Not an IaC Input"))
     fmt.Println(sep)
     
     // 2. Explain what went wrong
-    fmt.Println(infoMessage.Render("The clipboard content is valid YAML but not a stack input."))
+    fmt.Println(infoMessage.Render("The clipboard content is valid YAML but not an IaC input."))
     
     // 3. Show what was received (content preview)
     preview := formatContentPreview(content)
@@ -67,7 +67,7 @@ func ClipboardNotStackInput(content []byte) {
     fmt.Println(preview)
     
     // 4. Show what was expected (correct format)
-    fmt.Println(infoTitle.Render("Expected stack input format:"))
+    fmt.Println(infoTitle.Render("Expected IaC input format:"))
     fmt.Printf("    %s\n", Cmd("target:"))
     fmt.Printf("    %s\n", Cmd("  apiVersion: ..."))
     
@@ -84,8 +84,8 @@ func ClipboardNotStackInput(content []byte) {
 ```go
 func HandleClipboardError(err error) bool {
     switch e := err.(type) {
-    case *ClipboardNotStackInputError:
-        ui.ClipboardNotStackInput(e.Raw)
+    case *ClipboardNotIacInputError:
+        ui.ClipboardNotIacInput(e.Raw)
         return true
     // ... other cases
     }
@@ -195,7 +195,7 @@ cliprint.PrintError("Invalid configuration")
 
 ```go
 // ✅ REQUIRED - Structured error with context
-return &ClipboardNotStackInputError{Raw: content}
+return &ClipboardNotIacInputError{Raw: content}
 
 // ✅ REQUIRED - Beautiful handler in command layer
 if climanifest.HandleClipboardError(err) {

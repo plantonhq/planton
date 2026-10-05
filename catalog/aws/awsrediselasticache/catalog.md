@@ -4,7 +4,7 @@ Deploys an ElastiCache replication group running Redis or Valkey with configurab
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ElastiCache Replication Group** -- a managed Redis or Valkey replication group in the specified AWS region, in either non-clustered mode (primary + read replicas) or clustered mode (sharded with data partitioning)
 - **Cache Nodes** -- one or more nodes based on topology: `numCacheClusters` nodes for non-clustered mode, or `numNodeGroups` shards each with `replicasPerNodeGroup` replicas for clustered mode
@@ -17,13 +17,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **Subnets** in the target VPC for the ElastiCache subnet group. Provide at least two subnets in distinct Availability Zones for multi-AZ deployments. Provide subnet IDs directly or reference AwsSubnet Cloud Resources via ValueFromRef.
-- **Security groups** to attach to the cluster nodes for network access control. Provide security group IDs directly or reference an AwsSecurityGroup Cloud Resource.
+- **Subnets** in the target VPC for the ElastiCache subnet group. Provide at least two subnets in distinct Availability Zones for multi-AZ deployments. Provide subnet IDs directly or reference AwsSubnet Infra Components via ValueFromRef.
+- **Security groups** to attach to the cluster nodes for network access control. Provide security group IDs directly or reference an AwsSecurityGroup Infra Component.
 - **A KMS key** (optional) for at-rest encryption with a customer-managed key instead of the default AWS-managed key. This is a ForceNew attribute -- changing it after creation destroys and recreates the cluster.
 - **An SNS topic** (optional) for cluster event notifications (failover, maintenance, configuration changes).
 
@@ -65,7 +65,7 @@ spec:
 planton apply -f redis-elasticache.yaml
 ```
 
-This creates a non-clustered Redis 7.1 replication group with 1 primary and 2 read replicas, automatic failover across multiple AZs, encryption at rest and in transit, and 7-day snapshot retention. No AUTH token, custom parameters, or log delivery are configured. A Stack Job tracks the provisioning in real time.
+This creates a non-clustered Redis 7.1 replication group with 1 primary and 2 read replicas, automatic failover across multiple AZs, encryption at rest and in transit, and 7-day snapshot retention. No AUTH token, custom parameters, or log delivery are configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -127,7 +127,7 @@ These are the most important decisions when configuring an ElastiCache Redis clu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -137,9 +137,9 @@ These are the most important decisions when configuring an ElastiCache Redis clu
 | **AwsSnsTopic** (optional) | `notificationTopicArn` | `status.outputs.topic_arn` |
 | **AwsElasticacheUserGroup** (optional) | `userGroupIds` | `status.outputs.user_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -165,8 +165,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides the subnets for the ElastiCache subnet group across multiple Availability Zones
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- provides network access control for the Redis endpoint
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for at-rest encryption
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) -- receives cluster event notifications for failover and maintenance events
-- [**AWS ElastiCache User Group**](/cloud-catalog/aws-elasticache-user-group) -- provides Redis ACL user groups for fine-grained authentication
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides the subnets for the ElastiCache subnet group across multiple Availability Zones
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- provides network access control for the Redis endpoint
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for at-rest encryption
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) -- receives cluster event notifications for failover and maintenance events
+- [**AWS ElastiCache User Group**](/infra-catalog/aws-elasticache-user-group) -- provides Redis ACL user groups for fine-grained authentication

@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a Firestore composite index.
-type GcpFirestoreIndexStackOutputs struct {
+type GcpFirestoreIndexOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Server-defined index resource name
 	// (projects/{project}/databases/{database}/collectionGroups/{collection}/indexes/{id}).
@@ -35,20 +35,20 @@ type GcpFirestoreIndexStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpFirestoreIndexStackOutputs) Reset() {
-	*x = GcpFirestoreIndexStackOutputs{}
+func (x *GcpFirestoreIndexOutputs) Reset() {
+	*x = GcpFirestoreIndexOutputs{}
 	mi := &file_catalog_gcp_gcpfirestoreindex_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpFirestoreIndexStackOutputs) String() string {
+func (x *GcpFirestoreIndexOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpFirestoreIndexStackOutputs) ProtoMessage() {}
+func (*GcpFirestoreIndexOutputs) ProtoMessage() {}
 
-func (x *GcpFirestoreIndexStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpFirestoreIndexOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpfirestoreindex_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *GcpFirestoreIndexStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpFirestoreIndexStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpFirestoreIndexStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpFirestoreIndexOutputs.ProtoReflect.Descriptor instead.
+func (*GcpFirestoreIndexOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfirestoreindex_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpFirestoreIndexStackOutputs) GetIndexId() string {
+func (x *GcpFirestoreIndexOutputs) GetIndexId() string {
 	if x != nil {
 		return x.IndexId
 	}
 	return ""
 }
 
-func (x *GcpFirestoreIndexStackOutputs) GetCollection() string {
+func (x *GcpFirestoreIndexOutputs) GetCollection() string {
 	if x != nil {
 		return x.Collection
 	}
@@ -83,8 +83,8 @@ var File_catalog_gcp_gcpfirestoreindex_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_gcp_gcpfirestoreindex_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpfirestoreindex/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpfirestoreindex.v1alpha1\"Z\n" +
-	"\x1dGcpFirestoreIndexStackOutputs\x12\x19\n" +
+	"4catalog/gcp/gcpfirestoreindex/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpfirestoreindex.v1alpha1\"U\n" +
+	"\x18GcpFirestoreIndexOutputs\x12\x19\n" +
 	"\bindex_id\x18\x01 \x01(\tR\aindexId\x12\x1e\n" +
 	"\n" +
 	"collection\x18\x02 \x01(\tR\n" +
@@ -105,7 +105,7 @@ func file_catalog_gcp_gcpfirestoreindex_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_gcp_gcpfirestoreindex_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpfirestoreindex_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpFirestoreIndexStackOutputs)(nil), // 0: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexStackOutputs
+	(*GcpFirestoreIndexOutputs)(nil), // 0: dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexOutputs
 }
 var file_catalog_gcp_gcpfirestoreindex_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -15,8 +15,8 @@ type Locals struct {
 	NetworkEndpointGroupName string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcpregionnetworkendpointgroupv1alpha1.GcpRegionNetworkEndpointGroupStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(ctx *pulumi.Context, iacInput *gcpregionnetworkendpointgroupv1alpha1.GcpRegionNetworkEndpointGroupIacInput) *Locals {
+	target := iacInput.Target
 
 	networkEndpointGroupName := target.Spec.NetworkEndpointGroupName
 	if networkEndpointGroupName == "" {

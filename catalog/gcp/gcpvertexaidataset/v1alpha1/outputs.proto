@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpvertexaidataset.v1alpha1;
 
-// GcpVertexAiDatasetStackOutputs captures the identity Google assigned the
+// GcpVertexAiDatasetOutputs captures the identity Google assigned the
 // dataset -- what a training job, pipeline, or labeling task names it by.
-message GcpVertexAiDatasetStackOutputs {
+message GcpVertexAiDatasetOutputs {
   // Full resource name:
   // projects/{project_number}/locations/{location}/datasets/{dataset_id}.
   string name = 1;

@@ -4,7 +4,7 @@ Creates a Google Cloud API key — the project-scoped credential a client applic
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API key** -- the `apikeys_key` in the project's `global` location, named by `keyId`, with its display name and optional service-account binding
 - **Restrictions** -- at most one client arm (`androidKeyRestrictions`, `iosKeyRestrictions`, `browserKeyRestrictions`, `serverKeyRestrictions`) plus any number of `apiTargets`, updated in place whenever the spec changes
@@ -84,7 +84,7 @@ planton apply -f api-key.yaml
 - **API targets**: `service` ends in `.googleapis.com`.
 - **`deletionPolicy`**: `DELETE`, `PREVENT`, or `ABANDON`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -114,7 +114,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpFirebaseProject](/docs/catalog/gcp/gcpfirebaseproject) — Firebase on the same project; the app registrations that reference this key live inside it
 - [GcpProject](/docs/catalog/gcp/gcpproject) — provides the project the key belongs to

@@ -25,7 +25,7 @@ should not speak plaintext, and `disable_non_tls_listeners: true`
 closes every plain port, including the plain ports of the enabled
 plugins (their WebSocket forms too), once every client speaks TLS.
 Backend consumers read credentials from the operator-generated
-`iot-broker-default-user` Secret exported in the stack outputs.
+`iot-broker-default-user` Secret exported in the outputs.
 
 See [03-mqtt-iot-broker.yaml](./03-mqtt-iot-broker.yaml) for the
 manifest.

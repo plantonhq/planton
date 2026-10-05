@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsAlbStackOutputs describes the outputs returned by Pulumi/Terraform after creating an ALB.
-type AwsAlbStackOutputs struct {
+// AwsAlbOutputs describes the outputs returned by Pulumi/Terraform after creating an ALB.
+type AwsAlbOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// load_balancer_arn is the ARN of the created Application Load Balancer.
 	LoadBalancerArn string `protobuf:"bytes,1,opt,name=load_balancer_arn,json=loadBalancerArn,proto3" json:"load_balancer_arn,omitempty"`
@@ -40,20 +40,20 @@ type AwsAlbStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsAlbStackOutputs) Reset() {
-	*x = AwsAlbStackOutputs{}
+func (x *AwsAlbOutputs) Reset() {
+	*x = AwsAlbOutputs{}
 	mi := &file_catalog_aws_awsalb_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsAlbStackOutputs) String() string {
+func (x *AwsAlbOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsAlbStackOutputs) ProtoMessage() {}
+func (*AwsAlbOutputs) ProtoMessage() {}
 
-func (x *AwsAlbStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsAlbOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsalb_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,40 +65,40 @@ func (x *AwsAlbStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsAlbStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsAlbStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsAlbOutputs.ProtoReflect.Descriptor instead.
+func (*AwsAlbOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsalb_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsAlbStackOutputs) GetLoadBalancerArn() string {
+func (x *AwsAlbOutputs) GetLoadBalancerArn() string {
 	if x != nil {
 		return x.LoadBalancerArn
 	}
 	return ""
 }
 
-func (x *AwsAlbStackOutputs) GetLoadBalancerName() string {
+func (x *AwsAlbOutputs) GetLoadBalancerName() string {
 	if x != nil {
 		return x.LoadBalancerName
 	}
 	return ""
 }
 
-func (x *AwsAlbStackOutputs) GetLoadBalancerDnsName() string {
+func (x *AwsAlbOutputs) GetLoadBalancerDnsName() string {
 	if x != nil {
 		return x.LoadBalancerDnsName
 	}
 	return ""
 }
 
-func (x *AwsAlbStackOutputs) GetLoadBalancerHostedZoneId() string {
+func (x *AwsAlbOutputs) GetLoadBalancerHostedZoneId() string {
 	if x != nil {
 		return x.LoadBalancerHostedZoneId
 	}
 	return ""
 }
 
-func (x *AwsAlbStackOutputs) GetArnSuffix() string {
+func (x *AwsAlbOutputs) GetArnSuffix() string {
 	if x != nil {
 		return x.ArnSuffix
 	}
@@ -109,8 +109,8 @@ var File_catalog_aws_awsalb_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_aws_awsalb_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	")catalog/aws/awsalb/v1alpha1/outputs.proto\x12\x1fdev.planton.aws.awsalb.v1alpha1\"\x82\x02\n" +
-	"\x12AwsAlbStackOutputs\x12*\n" +
+	")catalog/aws/awsalb/v1alpha1/outputs.proto\x12\x1fdev.planton.aws.awsalb.v1alpha1\"\xfd\x01\n" +
+	"\rAwsAlbOutputs\x12*\n" +
 	"\x11load_balancer_arn\x18\x01 \x01(\tR\x0floadBalancerArn\x12,\n" +
 	"\x12load_balancer_name\x18\x02 \x01(\tR\x10loadBalancerName\x123\n" +
 	"\x16load_balancer_dns_name\x18\x03 \x01(\tR\x13loadBalancerDnsName\x12>\n" +
@@ -133,7 +133,7 @@ func file_catalog_aws_awsalb_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsalb_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsalb_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsAlbStackOutputs)(nil), // 0: dev.planton.aws.awsalb.v1alpha1.AwsAlbStackOutputs
+	(*AwsAlbOutputs)(nil), // 0: dev.planton.aws.awsalb.v1alpha1.AwsAlbOutputs
 }
 var file_catalog_aws_awsalb_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

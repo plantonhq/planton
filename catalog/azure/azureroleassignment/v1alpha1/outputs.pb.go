@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureRoleAssignmentStackOutputs** captures the outputs of provisioning an
+// **AzureRoleAssignmentOutputs** captures the outputs of provisioning an
 // Azure RBAC role assignment. The fully-scoped ARM ID is the assignment's
 // identity for auditing and for the authorization API; the resolved
 // scope/role/principal coordinates are exported so downstream automation can
 // reason about the grant without re-reading the spec (the role definition ID
 // in particular is resolved even when the spec referenced the role by name).
-type AzureRoleAssignmentStackOutputs struct {
+type AzureRoleAssignmentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The fully-scoped Azure Resource Manager ID of the role assignment.
 	// Format: {scope}/providers/Microsoft.Authorization/roleAssignments/{name}
@@ -54,20 +54,20 @@ type AzureRoleAssignmentStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureRoleAssignmentStackOutputs) Reset() {
-	*x = AzureRoleAssignmentStackOutputs{}
+func (x *AzureRoleAssignmentOutputs) Reset() {
+	*x = AzureRoleAssignmentOutputs{}
 	mi := &file_catalog_azure_azureroleassignment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureRoleAssignmentStackOutputs) String() string {
+func (x *AzureRoleAssignmentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureRoleAssignmentStackOutputs) ProtoMessage() {}
+func (*AzureRoleAssignmentOutputs) ProtoMessage() {}
 
-func (x *AzureRoleAssignmentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureRoleAssignmentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureroleassignment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -79,47 +79,47 @@ func (x *AzureRoleAssignmentStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureRoleAssignmentStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureRoleAssignmentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureRoleAssignmentOutputs.ProtoReflect.Descriptor instead.
+func (*AzureRoleAssignmentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureroleassignment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureRoleAssignmentStackOutputs) GetRoleAssignmentId() string {
+func (x *AzureRoleAssignmentOutputs) GetRoleAssignmentId() string {
 	if x != nil {
 		return x.RoleAssignmentId
 	}
 	return ""
 }
 
-func (x *AzureRoleAssignmentStackOutputs) GetName() string {
+func (x *AzureRoleAssignmentOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AzureRoleAssignmentStackOutputs) GetScope() string {
+func (x *AzureRoleAssignmentOutputs) GetScope() string {
 	if x != nil {
 		return x.Scope
 	}
 	return ""
 }
 
-func (x *AzureRoleAssignmentStackOutputs) GetRoleDefinitionId() string {
+func (x *AzureRoleAssignmentOutputs) GetRoleDefinitionId() string {
 	if x != nil {
 		return x.RoleDefinitionId
 	}
 	return ""
 }
 
-func (x *AzureRoleAssignmentStackOutputs) GetPrincipalId() string {
+func (x *AzureRoleAssignmentOutputs) GetPrincipalId() string {
 	if x != nil {
 		return x.PrincipalId
 	}
 	return ""
 }
 
-func (x *AzureRoleAssignmentStackOutputs) GetPrincipalType() string {
+func (x *AzureRoleAssignmentOutputs) GetPrincipalType() string {
 	if x != nil {
 		return x.PrincipalType
 	}
@@ -130,8 +130,8 @@ var File_catalog_azure_azureroleassignment_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_azure_azureroleassignment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/azure/azureroleassignment/v1alpha1/outputs.proto\x12.dev.planton.azure.azureroleassignment.v1alpha1\"\xf1\x01\n" +
-	"\x1fAzureRoleAssignmentStackOutputs\x12,\n" +
+	"8catalog/azure/azureroleassignment/v1alpha1/outputs.proto\x12.dev.planton.azure.azureroleassignment.v1alpha1\"\xec\x01\n" +
+	"\x1aAzureRoleAssignmentOutputs\x12,\n" +
 	"\x12role_assignment_id\x18\x01 \x01(\tR\x10roleAssignmentId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
 	"\x05scope\x18\x03 \x01(\tR\x05scope\x12,\n" +
@@ -154,7 +154,7 @@ func file_catalog_azure_azureroleassignment_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_azure_azureroleassignment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureroleassignment_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureRoleAssignmentStackOutputs)(nil), // 0: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentStackOutputs
+	(*AzureRoleAssignmentOutputs)(nil), // 0: dev.planton.azure.azureroleassignment.v1alpha1.AzureRoleAssignmentOutputs
 }
 var file_catalog_azure_azureroleassignment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

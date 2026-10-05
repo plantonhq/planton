@@ -25,7 +25,7 @@ message KubernetesPodDisruptionBudget {
 
   // Metadata for the PodDisruptionBudget resource.
   // Includes standard fields like name, organization, environment, etc.
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // Specification of the desired state for the PodDisruptionBudget.
   // Defines the protected pod selection and the availability bound.
@@ -44,5 +44,5 @@ message KubernetesPodDisruptionBudget {
 message KubernetesPodDisruptionBudgetStatus {
   // Outputs from the PodDisruptionBudget deployment.
   // Contains the budget name and namespace.
-  KubernetesPodDisruptionBudgetStackOutputs outputs = 1;
+  KubernetesPodDisruptionBudgetOutputs outputs = 1;
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// exportOutputs exports the stack outputs for the Istio CRDs installation.
+// exportOutputs exports the outputs for the Istio CRDs installation.
 func exportOutputs(ctx *pulumi.Context, locals *Locals, _ *pulumiyaml.ConfigFile) error {
 	// Istio release the CRDs were installed from.
 	ctx.Export("installed_release", pulumi.String(locals.Release))

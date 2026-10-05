@@ -8,9 +8,9 @@
 # (and a separate snapshots volume when declared). Collection-level
 # properties (shards, replication factor, quantization) are data
 # operations through the Qdrant API, outside deployment scope. Schema:
-# finops/componentcapacityderivation/v1.
+# finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesqdrant
 spec:

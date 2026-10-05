@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsTransitGatewayVpcAttachmentStackOutputs captures observable identifiers
+// AwsTransitGatewayVpcAttachmentOutputs captures observable identifiers
 // from a provisioned Transit Gateway VPC attachment.
 //
 // The attachment ID is the join key of the Transit Gateway routing surface:
 // AwsTransitGatewayRouteTable resources associate it, accept propagations
 // from it, and target it in static routes.
-type AwsTransitGatewayVpcAttachmentStackOutputs struct {
+type AwsTransitGatewayVpcAttachmentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Transit Gateway attachment ID (e.g., "tgw-attach-0123456789abcdef0").
 	// Referenced by route table associations, propagations, and static routes.
@@ -42,20 +42,20 @@ type AwsTransitGatewayVpcAttachmentStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsTransitGatewayVpcAttachmentStackOutputs) Reset() {
-	*x = AwsTransitGatewayVpcAttachmentStackOutputs{}
+func (x *AwsTransitGatewayVpcAttachmentOutputs) Reset() {
+	*x = AwsTransitGatewayVpcAttachmentOutputs{}
 	mi := &file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsTransitGatewayVpcAttachmentStackOutputs) String() string {
+func (x *AwsTransitGatewayVpcAttachmentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsTransitGatewayVpcAttachmentStackOutputs) ProtoMessage() {}
+func (*AwsTransitGatewayVpcAttachmentOutputs) ProtoMessage() {}
 
-func (x *AwsTransitGatewayVpcAttachmentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsTransitGatewayVpcAttachmentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,26 +67,26 @@ func (x *AwsTransitGatewayVpcAttachmentStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsTransitGatewayVpcAttachmentStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsTransitGatewayVpcAttachmentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsTransitGatewayVpcAttachmentOutputs.ProtoReflect.Descriptor instead.
+func (*AwsTransitGatewayVpcAttachmentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsTransitGatewayVpcAttachmentStackOutputs) GetAttachmentId() string {
+func (x *AwsTransitGatewayVpcAttachmentOutputs) GetAttachmentId() string {
 	if x != nil {
 		return x.AttachmentId
 	}
 	return ""
 }
 
-func (x *AwsTransitGatewayVpcAttachmentStackOutputs) GetAttachmentArn() string {
+func (x *AwsTransitGatewayVpcAttachmentOutputs) GetAttachmentArn() string {
 	if x != nil {
 		return x.AttachmentArn
 	}
 	return ""
 }
 
-func (x *AwsTransitGatewayVpcAttachmentStackOutputs) GetVpcOwnerId() string {
+func (x *AwsTransitGatewayVpcAttachmentOutputs) GetVpcOwnerId() string {
 	if x != nil {
 		return x.VpcOwnerId
 	}
@@ -97,8 +97,8 @@ var File_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_outputs_proto proto
 
 const file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/aws/awstransitgatewayvpcattachment/v1alpha1/outputs.proto\x127dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1\"\x9a\x01\n" +
-	"*AwsTransitGatewayVpcAttachmentStackOutputs\x12#\n" +
+	"Acatalog/aws/awstransitgatewayvpcattachment/v1alpha1/outputs.proto\x127dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1\"\x95\x01\n" +
+	"%AwsTransitGatewayVpcAttachmentOutputs\x12#\n" +
 	"\rattachment_id\x18\x01 \x01(\tR\fattachmentId\x12%\n" +
 	"\x0eattachment_arn\x18\x02 \x01(\tR\rattachmentArn\x12 \n" +
 	"\fvpc_owner_id\x18\x03 \x01(\tR\n" +
@@ -119,7 +119,7 @@ func file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_outputs_proto_rawD
 
 var file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsTransitGatewayVpcAttachmentStackOutputs)(nil), // 0: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentStackOutputs
+	(*AwsTransitGatewayVpcAttachmentOutputs)(nil), // 0: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentOutputs
 }
 var file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

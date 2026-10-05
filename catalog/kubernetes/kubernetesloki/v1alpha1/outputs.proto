@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesloki.v1alpha1;
 
-//loki-kubernetes stack outputs
-message KubernetesLokiStackOutputs {
+//loki-kubernetes outputs
+message KubernetesLokiOutputs {
   //namespace Loki runs in.
   string namespace = 1;
 

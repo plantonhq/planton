@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesGatewayClassStackOutputs captures observable outputs after the
+// KubernetesGatewayClassOutputs captures observable outputs after the
 // GatewayClass is created on the target cluster.
-type KubernetesGatewayClassStackOutputs struct {
+type KubernetesGatewayClassOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created GatewayClass (equals metadata.name). Use this value in
 	// KubernetesGateway.spec.gateway_class_name to attach a Gateway to this
@@ -37,20 +37,20 @@ type KubernetesGatewayClassStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesGatewayClassStackOutputs) Reset() {
-	*x = KubernetesGatewayClassStackOutputs{}
+func (x *KubernetesGatewayClassOutputs) Reset() {
+	*x = KubernetesGatewayClassOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesGatewayClassStackOutputs) String() string {
+func (x *KubernetesGatewayClassOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesGatewayClassStackOutputs) ProtoMessage() {}
+func (*KubernetesGatewayClassOutputs) ProtoMessage() {}
 
-func (x *KubernetesGatewayClassStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesGatewayClassOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *KubernetesGatewayClassStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesGatewayClassStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesGatewayClassStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesGatewayClassOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesGatewayClassOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesGatewayClassStackOutputs) GetGatewayClassName() string {
+func (x *KubernetesGatewayClassOutputs) GetGatewayClassName() string {
 	if x != nil {
 		return x.GatewayClassName
 	}
 	return ""
 }
 
-func (x *KubernetesGatewayClassStackOutputs) GetControllerName() string {
+func (x *KubernetesGatewayClassOutputs) GetControllerName() string {
 	if x != nil {
 		return x.ControllerName
 	}
@@ -85,8 +85,8 @@ var File_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_outputs_proto protor
 
 const file_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/kubernetes/kubernetesgatewayclass/v1alpha1/outputs.proto\x126dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1\"{\n" +
-	"\"KubernetesGatewayClassStackOutputs\x12,\n" +
+	"@catalog/kubernetes/kubernetesgatewayclass/v1alpha1/outputs.proto\x126dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1\"v\n" +
+	"\x1dKubernetesGatewayClassOutputs\x12,\n" +
 	"\x12gateway_class_name\x18\x01 \x01(\tR\x10gatewayClassName\x12'\n" +
 	"\x0fcontroller_name\x18\x02 \x01(\tR\x0econtrollerNameB\xb7\x03\n" +
 	":com.dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1B\fOutputsProtoP\x01Zngithub.com/plantonhq/planton/catalog/kubernetes/kubernetesgatewayclass/v1alpha1;kubernetesgatewayclassv1alpha1\xa2\x02\x04DPKK\xaa\x026Dev.Planton.Kubernetes.Kubernetesgatewayclass.V1alpha1\xca\x026Dev\\Planton\\Kubernetes\\Kubernetesgatewayclass\\V1alpha1\xe2\x02BDev\\Planton\\Kubernetes\\Kubernetesgatewayclass\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Kubernetes::Kubernetesgatewayclass::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesGatewayClassStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassStackOutputs
+	(*KubernetesGatewayClassOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1.KubernetesGatewayClassOutputs
 }
 var file_catalog_kubernetes_kubernetesgatewayclass_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -1,6 +1,6 @@
 # GcpBigQueryTable -- Pulumi Module
 
-This directory contains the Pulumi Go implementation for the GcpBigQueryTable component.
+This directory contains the Pulumi Go implementation for the GcpBigQueryTable kind.
 
 ## Module Structure
 
@@ -12,7 +12,7 @@ module/
   external_data_configuration.go   -- Maps the external-table arm's nested options
   outputs.go                       -- Output key constants
 
-main.go         -- Pulumi program entrypoint (loads stack input, calls module)
+main.go         -- Pulumi program entrypoint (loads IaC input, calls module)
 Pulumi.yaml     -- Pulumi project configuration
 Makefile        -- Build, preview, up, destroy targets
 ```

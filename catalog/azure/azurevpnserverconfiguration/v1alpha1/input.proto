@@ -5,10 +5,10 @@ package dev.planton.azure.azurevpnserverconfiguration.v1alpha1;
 import "catalog/azure/azurevpnserverconfiguration/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureVpnServerConfigurationStackInput is the input to the IaC
+// AzureVpnServerConfigurationIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-message AzureVpnServerConfigurationStackInput {
+message AzureVpnServerConfigurationIacInput {
   // The VPN server configuration resource to deploy.
   AzureVpnServerConfiguration target = 1;
 

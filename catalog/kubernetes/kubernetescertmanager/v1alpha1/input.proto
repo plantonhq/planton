@@ -6,8 +6,8 @@ import "catalog/kubernetes/kubernetescertmanager/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 //input for kubernetes-cert-manager stack
-message KubernetesCertManagerStackInput {
-  //target cloud-resource
+message KubernetesCertManagerIacInput {
+  // the catalog object to deploy
   KubernetesCertManager target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

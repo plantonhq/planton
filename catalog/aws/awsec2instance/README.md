@@ -16,7 +16,7 @@ Everything the instance composes with attaches by reference and none of it is cr
 - **Placement**: AZ pinning, placement groups (by name or ID, with partition numbers), tenancy, Dedicated Hosts, and host resource groups.
 - **User data**: plain-text or base64 (mutually exclusive), with an explicit replace-on-change switch; `${...}` content passes through literally on both engines.
 
-## Stack outputs
+## Outputs
 
 `instance_id` (the join key -- `AwsLbTargetGroup` instance targets reference it), `arn`, `instance_state`, `availability_zone`, `private_ip`, `private_dns`, `public_ip`, `public_dns`, `primary_network_interface_id`.
 

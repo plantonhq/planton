@@ -1,4 +1,4 @@
-# Component defaults end to end: the default storage engine (integrated
+# Kind defaults end to end: the default storage engine (integrated
 # Raft — a one-node Raft cluster is the spec's meaning of a server that
 # declares nothing) at the default count of one, its data on the Raft
 # volume, plain HTTP in-cluster, UI on. Only the volume size is written,

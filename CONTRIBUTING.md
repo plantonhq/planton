@@ -86,7 +86,7 @@ features, or improve documentation, your efforts are appreciated and will help m
 
 ## Contributing Catalog Knowledge
 
-The cloud-component catalog carries three layers of knowledge -- facts (the protos),
+The Infra Catalog carries three layers of knowledge -- facts (the protos),
 verified data (the cost/controls/permissions fact-sheets), and judgment (guides and
 patterns) -- and your contribution lands in a different place depending on which kind
 it is. Route it right and every surface (reference pages, CLI, indexes, the console,
@@ -98,8 +98,8 @@ the packaged skill) improves at once:
 | A **cost fact or price** (billing dimensions, a unit price, an estimate) | The kind's `cost.yaml` for billing facts; `catalog/_pricing/` for price books, derivation rules, and models -- estimates are GENERATED (`make generate-cost-estimates`), never edited | Every figure is recomputed and gate-checked (`lint.catalog-data`); a hand-typed dollar amount anywhere else is a second source of truth that will drift |
 | A **control-posture claim** (what a component enforces or exposes) | The kind's `controls.yaml`, citing the central control catalog and crosswalks in `catalog/_compliance/` | Posture is evidence-backed and conformance-gated; it maps onto framework requirements but never becomes "compliant" or "certified" |
 | A **provisioning-permission claim** (what the runner needs) | The kind's `iac/permissions.yaml` | Machine-checked against the providers' own published action/scope inventories -- an invented permission fails CI |
-| **Judgment about one component** (operational gotchas, when to choose it, what it pairs with) | `GUIDE.md` beside that kind's `reference.md` (create it if absent, then run `make generate-reference` so the page links it) | Authoring standard: `_rules/docs/write-planton-component-guide.mdc` |
-| **How components compose** (multi-kind wiring, trade-offs, failure modes) | A pattern in `catalog/_patterns/` | Authoring standard: `_rules/docs/write-planton-architecture-pattern.mdc` |
+| **Judgment about one kind** (operational gotchas, when to choose it, what it pairs with) | `GUIDE.md` beside that kind's `reference.md` (create it if absent, then run `make generate-reference` so the page links it) | Authoring standard: `_rules/docs/write-catalog-kind-guide.mdc` |
+| **How kinds compose** (multi-kind wiring, trade-offs, failure modes) | A pattern in `catalog/_patterns/` | Authoring standard: `_rules/docs/write-planton-architecture-pattern.mdc` |
 | **Catalog-wide wisdom** (finding alternatives, cross-provider conventions) | `catalog/_docs/GUIDE.md` | The catalog's own guide |
 | **The page format itself** (headings, tables, the search grammar) | The markdown renderer in `pkg/explain`, then `make generate-reference` | Format quality is measured, never asserted: run the eval in `_rules/docs/evaluate-planton-catalog-research.mdc` and include the numbers in your PR |
 

@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustDnsLocationStackInput is the input to the IaC module.
+// CloudflareZeroTrustDnsLocationIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type CloudflareZeroTrustDnsLocationStackInput struct {
+type CloudflareZeroTrustDnsLocationIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// the catalog object to deploy to be deployed
 	Target *CloudflareZeroTrustDnsLocation `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Cloudflare authentication
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type CloudflareZeroTrustDnsLocationStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustDnsLocationStackInput) Reset() {
-	*x = CloudflareZeroTrustDnsLocationStackInput{}
+func (x *CloudflareZeroTrustDnsLocationIacInput) Reset() {
+	*x = CloudflareZeroTrustDnsLocationIacInput{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustdnslocation_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustDnsLocationStackInput) String() string {
+func (x *CloudflareZeroTrustDnsLocationIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustDnsLocationStackInput) ProtoMessage() {}
+func (*CloudflareZeroTrustDnsLocationIacInput) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustDnsLocationStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustDnsLocationIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustdnslocation_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareZeroTrustDnsLocationStackInput) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustDnsLocationStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustDnsLocationStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustDnsLocationIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustDnsLocationIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustdnslocation_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustDnsLocationStackInput) GetTarget() *CloudflareZeroTrustDnsLocation {
+func (x *CloudflareZeroTrustDnsLocationIacInput) GetTarget() *CloudflareZeroTrustDnsLocation {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareZeroTrustDnsLocationStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareZeroTrustDnsLocationIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflarezerotrustdnslocation_v1alpha1_input_proto 
 
 const file_catalog_cloudflare_cloudflarezerotrustdnslocation_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/cloudflare/cloudflarezerotrustdnslocation/v1alpha1/input.proto\x12>dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1\x1aDcatalog/cloudflare/cloudflarezerotrustdnslocation/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xfd\x01\n" +
-	"(CloudflareZeroTrustDnsLocationStackInput\x12v\n" +
+	"Fcatalog/cloudflare/cloudflarezerotrustdnslocation/v1alpha1/input.proto\x12>dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1\x1aDcatalog/cloudflare/cloudflarezerotrustdnslocation/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xfb\x01\n" +
+	"&CloudflareZeroTrustDnsLocationIacInput\x12v\n" +
 	"\x06target\x18\x01 \x01(\v2^.dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1.CloudflareZeroTrustDnsLocationR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xed\x03\n" +
 	"Bcom.dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_cloudflare_cloudflarezerotrustdnslocation_v1alpha1_input_proto
 
 var file_catalog_cloudflare_cloudflarezerotrustdnslocation_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustdnslocation_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareZeroTrustDnsLocationStackInput)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1.CloudflareZeroTrustDnsLocationStackInput
-	(*CloudflareZeroTrustDnsLocation)(nil),           // 1: dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1.CloudflareZeroTrustDnsLocation
-	(*cloudflare.CloudflareProviderConfig)(nil),      // 2: dev.planton.cloudflare.CloudflareProviderConfig
+	(*CloudflareZeroTrustDnsLocationIacInput)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1.CloudflareZeroTrustDnsLocationIacInput
+	(*CloudflareZeroTrustDnsLocation)(nil),         // 1: dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1.CloudflareZeroTrustDnsLocation
+	(*cloudflare.CloudflareProviderConfig)(nil),    // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflarezerotrustdnslocation_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1.CloudflareZeroTrustDnsLocationStackInput.target:type_name -> dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1.CloudflareZeroTrustDnsLocation
-	2, // 1: dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1.CloudflareZeroTrustDnsLocationStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1.CloudflareZeroTrustDnsLocationIacInput.target:type_name -> dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1.CloudflareZeroTrustDnsLocation
+	2, // 1: dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1.CloudflareZeroTrustDnsLocationIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

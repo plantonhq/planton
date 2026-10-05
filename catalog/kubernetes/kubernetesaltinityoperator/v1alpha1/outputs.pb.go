@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-altinity-operator stack outputs
-type KubernetesAltinityOperatorStackOutputs struct {
+// kubernetes-altinity-operator outputs
+type KubernetesAltinityOperatorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the operator is installed into.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -42,20 +42,20 @@ type KubernetesAltinityOperatorStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *KubernetesAltinityOperatorStackOutputs) Reset() {
-	*x = KubernetesAltinityOperatorStackOutputs{}
+func (x *KubernetesAltinityOperatorOutputs) Reset() {
+	*x = KubernetesAltinityOperatorOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesAltinityOperatorStackOutputs) String() string {
+func (x *KubernetesAltinityOperatorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesAltinityOperatorStackOutputs) ProtoMessage() {}
+func (*KubernetesAltinityOperatorOutputs) ProtoMessage() {}
 
-func (x *KubernetesAltinityOperatorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesAltinityOperatorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,40 +67,40 @@ func (x *KubernetesAltinityOperatorStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesAltinityOperatorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesAltinityOperatorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesAltinityOperatorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesAltinityOperatorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesAltinityOperatorStackOutputs) GetNamespace() string {
+func (x *KubernetesAltinityOperatorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesAltinityOperatorStackOutputs) GetReleaseName() string {
+func (x *KubernetesAltinityOperatorOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesAltinityOperatorStackOutputs) GetDeploymentName() string {
+func (x *KubernetesAltinityOperatorOutputs) GetDeploymentName() string {
 	if x != nil {
 		return x.DeploymentName
 	}
 	return ""
 }
 
-func (x *KubernetesAltinityOperatorStackOutputs) GetCredentialsSecretName() string {
+func (x *KubernetesAltinityOperatorOutputs) GetCredentialsSecretName() string {
 	if x != nil {
 		return x.CredentialsSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesAltinityOperatorStackOutputs) GetMetricsEndpoint() string {
+func (x *KubernetesAltinityOperatorOutputs) GetMetricsEndpoint() string {
 	if x != nil {
 		return x.MetricsEndpoint
 	}
@@ -111,8 +111,8 @@ var File_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_outputs_proto pr
 
 const file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/kubernetes/kubernetesaltinityoperator/v1alpha1/outputs.proto\x12:dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1\"\xf5\x01\n" +
-	"&KubernetesAltinityOperatorStackOutputs\x12\x1c\n" +
+	"Dcatalog/kubernetes/kubernetesaltinityoperator/v1alpha1/outputs.proto\x12:dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1\"\xf0\x01\n" +
+	"!KubernetesAltinityOperatorOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12'\n" +
 	"\x0fdeployment_name\x18\x03 \x01(\tR\x0edeploymentName\x126\n" +
@@ -134,7 +134,7 @@ func file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_outputs_proto_r
 
 var file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesAltinityOperatorStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorStackOutputs
+	(*KubernetesAltinityOperatorOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

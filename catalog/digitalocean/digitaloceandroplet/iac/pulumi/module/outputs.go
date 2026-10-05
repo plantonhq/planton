@@ -1,6 +1,6 @@
 package module
 
-// Stack output keys, exactly the DigitalOceanDropletStackOutputs contract.
+// Output keys, exactly the DigitalOceanDropletOutputs contract.
 const (
 	OpDropletId          = "droplet_id"
 	OpIpv4Address        = "ipv4_address"

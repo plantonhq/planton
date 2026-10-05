@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesSolrOperatorStackOutputs by the
+# Outputs — flattened onto KubernetesSolrOperatorOutputs by the
 # platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

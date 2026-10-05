@@ -1,0 +1,16 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "catalogkindcostprofile",
+    srcs = [
+        "api.pb.go",
+        "spec.pb.go",
+    ],
+    importpath = "github.com/plantonhq/planton/finops/catalogkindcostprofile/v1",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//shared",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+        "@org_golang_google_protobuf//runtime/protoimpl",
+    ],
+)

@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package dev.planton.aws.awswafwebacl.v1alpha1;
 
-// AwsWafWebAclStackOutputs captures observable identifiers from a provisioned
+// AwsWafWebAclOutputs captures observable identifiers from a provisioned
 // WAFv2 Web ACL.
 //
 // The primary output is `web_acl_arn`, which downstream resources use to
 // associate the Web ACL with protected resources via StringValueOrRef. For
 // example, an AwsAlb (spec.web_acl_arn) or AwsCloudFront (spec.web_acl_arn)
 // references the Web ACL ARN to enable WAF protection.
-message AwsWafWebAclStackOutputs {
+message AwsWafWebAclOutputs {
   // The Amazon Resource Name (ARN) of the Web ACL. This is the primary
   // output used to associate the Web ACL with ALB, API Gateway, CloudFront,
   // AppSync, Cognito, or App Runner resources.

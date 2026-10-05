@@ -116,7 +116,7 @@ func (v *ArgoCdVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) er
 		return nil
 	}
 
-	// The designed keep posture (the component default): destroying the
+	// The designed keep posture (the kind's default): destroying the
 	// release must LEAVE the Application CRD behind (removing it would
 	// cascade-delete every Application in the cluster).
 	if err := KubectlResourceExists(ctx, kubeconfig, "crd", argocdCrdApplication, ""); err != nil {

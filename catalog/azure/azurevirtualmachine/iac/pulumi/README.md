@@ -39,7 +39,7 @@ and NICs survive, which is exactly why they are referenced). Resizing
 
 ## Inputs
 
-The module receives an `AzureVirtualMachineStackInput` containing:
+The module receives an `AzureVirtualMachineIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name`
   / `target.spec.size` -- the VM's ARM identity (references resolved to

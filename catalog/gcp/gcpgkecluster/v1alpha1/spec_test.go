@@ -45,7 +45,7 @@ func newCluster(spec *GcpGkeClusterSpec) *GcpGkeCluster {
 	return &GcpGkeCluster{
 		ApiVersion: "gcp.planton.dev/v1alpha1",
 		Kind:       "GcpGkeCluster",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-gke-cluster",
 		},
 		Spec: spec,

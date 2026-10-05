@@ -8,7 +8,7 @@ import "catalog/kubernetes/kubernetes.proto";
  * Outputs a KubernetesValkey deployment exports for composition —
  * everything a workload (or an exposure kind) needs to reach the store.
  */
-message KubernetesValkeyStackOutputs {
+message KubernetesValkeyOutputs {
   /**
    * Namespace the instance runs in.
    */

@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurecontainerappenvironmentstoragev1alpha1.AzureContainerAppEnvironmentStorageStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurecontainerappenvironmentstoragev1alpha1.AzureContainerAppEnvironmentStorageIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -48,7 +48,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerappenvironmentstor
 		return errors.Wrapf(err, "failed to create Container App Environment storage %s", spec.StorageName)
 	}
 
-	// Export stack outputs. storage_name is the composition seam app and
+	// Export outputs. storage_name is the composition seam app and
 	// job volumes reference.
 	ctx.Export(OpStorageId, createdStorage.ID())
 	ctx.Export(OpStorageName, createdStorage.Name)

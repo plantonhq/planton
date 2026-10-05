@@ -4,7 +4,7 @@ Deploys the trust boundary of keyless authentication: a Workload Identity Pool l
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Workload Identity Pool** -- an `iam.WorkloadIdentityPool` in the target project, in FEDERATION_ONLY mode (the default) or TRUST_DOMAIN mode
 - **Certificate Issuance** -- created only when `inlineCertificateIssuanceConfig` is specified; wires Certificate Authority Service CA pools for mTLS workload certificates (trust-domain pools)
@@ -20,7 +20,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **A GCP project** to own the pool — federation quotas and IAM principals scope to it. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** to own the pool — federation quotas and IAM principals scope to it. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f gcp-workload-identity-pool.yaml
 ```
 
-This creates the pool in FEDERATION_ONLY mode (GCP's default when `mode` is unset). A Stack Job tracks the provisioning in real time.
+This creates the pool in FEDERATION_ONLY mode (GCP's default when `mode` is unset). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ These are the most important decisions when configuring a pool. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -111,6 +111,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Workload Identity Pool Provider**](/cloud-catalog/gcp-workload-identity-pool-provider) -- attaches one external issuer (GitHub OIDC, AWS, SAML, X.509) to this pool
-- [**GCP Service Account IAM Member**](/cloud-catalog/gcp-service-account-iam-member) -- grants the pool's principalSet impersonation of a service account (`roles/iam.workloadIdentityUser`)
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the project that owns the pool
+- [**GCP Workload Identity Pool Provider**](/infra-catalog/gcp-workload-identity-pool-provider) -- attaches one external issuer (GitHub OIDC, AWS, SAML, X.509) to this pool
+- [**GCP Service Account IAM Member**](/infra-catalog/gcp-service-account-iam-member) -- grants the pool's principalSet impersonation of a service account (`roles/iam.workloadIdentityUser`)
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the project that owns the pool

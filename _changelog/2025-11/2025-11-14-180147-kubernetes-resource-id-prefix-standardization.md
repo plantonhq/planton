@@ -2,15 +2,15 @@
 
 **Date**: November 14, 2025
 **Type**: Refactoring
-**Components**: API Definitions, Cloud Resource Metadata, Resource Identification
+**Components**: API Definitions, Catalog Object Metadata, Resource Identification
 
 ## Summary
 
-Standardized all Kubernetes workload and addon ID prefixes in `cloud_resource_kind.proto` to follow a consistent `k8s{abbreviation}` pattern. This change affects 31 Kubernetes resources (21 workloads and 10 addons), replacing the inconsistent `{abbreviation}k8s` pattern with a uniform naming scheme that improves readability and aligns with industry conventions.
+Standardized all Kubernetes workload and addon ID prefixes in `catalog_kind.proto` to follow a consistent `k8s{abbreviation}` pattern. This change affects 31 Kubernetes resources (21 workloads and 10 addons), replacing the inconsistent `{abbreviation}k8s` pattern with a uniform naming scheme that improves readability and aligns with industry conventions.
 
 ## Problem Statement / Motivation
 
-The Kubernetes cloud resources in Planton had inconsistent ID prefix patterns. Some resources used the format `{abbreviation}k8s` (e.g., `argk8s`, `cronk8s`, `msk8s`), which made it difficult to:
+The Kubernetes catalog kinds in Planton had inconsistent ID prefix patterns. Some resources used the format `{abbreviation}k8s` (e.g., `argk8s`, `cronk8s`, `msk8s`), which made it difficult to:
 
 1. **Quickly identify Kubernetes resources** - The "k8s" identifier appeared at the end rather than the beginning
 2. **Maintain consistency across the codebase** - Mixed patterns created confusion when working with resource IDs
@@ -109,7 +109,7 @@ k8scm      (CertManager)
 
 ### Code Changes
 
-**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/catalogkind/catalog_kind.proto`
 
 Example change for KubernetesCronJob (lines 331-339):
 
@@ -157,7 +157,7 @@ KubernetesCronJob = 801 [(kind_meta) = {
 
 - **Simplified monitoring queries**: Filtering by `k8s*` prefix captures all Kubernetes resources
 - **Improved automation**: Scripts can reliably identify Kubernetes resources by prefix pattern
-- **Better resource tracking**: Cloud resource dashboards can group by prefix for clearer visualization
+- **Better resource tracking**: Infra component dashboards can group by prefix for clearer visualization
 - **Enhanced audit trails**: Log analysis tools can efficiently filter Kubernetes operations
 
 ### For System Architecture
@@ -171,8 +171,8 @@ KubernetesCronJob = 801 [(kind_meta) = {
 
 ### Scope
 
-- **Files changed**: 1 (cloud_resource_kind.proto)
-- **Resources affected**: 31 Kubernetes cloud resources
+- **Files changed**: 1 (catalog_kind.proto)
+- **Resources affected**: 31 Kubernetes catalog kinds
 - **Lines changed**: 31 id_prefix definitions
 
 ### Affected Components
@@ -251,15 +251,15 @@ This change continues the pattern established for other cloud providers:
 
 ```bash
 # Verify all Kubernetes resources use k8s prefix
-grep -A 3 'provider: kubernetes' cloud_resource_kind.proto | grep 'id_prefix' | grep -v 'k8s'
+grep -A 3 'provider: kubernetes' catalog_kind.proto | grep 'id_prefix' | grep -v 'k8s'
 # Should return no results
 
 # Count total Kubernetes resources
-grep -A 3 'provider: kubernetes' cloud_resource_kind.proto | grep 'id_prefix' | wc -l
+grep -A 3 'provider: kubernetes' catalog_kind.proto | grep 'id_prefix' | wc -l
 # Should return 31
 
 # Verify pattern consistency
-grep -A 3 'provider: kubernetes' cloud_resource_kind.proto | grep 'id_prefix' | \
+grep -A 3 'provider: kubernetes' catalog_kind.proto | grep 'id_prefix' | \
   grep -E 'id_prefix: "k8s[a-z]+'
 # Should match all 31 resources
 ```

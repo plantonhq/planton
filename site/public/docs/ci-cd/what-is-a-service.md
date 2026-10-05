@@ -64,7 +64,7 @@ Deployment configuration comes from one of two sources:
 - **Git-based** (default): The pipeline reads deployment manifests from a `_kustomize` directory in your repository. Kustomize overlays define per-environment configuration. This is the traditional approach for teams that manage deployment configuration in version control.
 - **Inline** (UI-based): Deployment targets are defined directly in the Service configuration through the web console. This enables complete service onboarding without creating any deployment files in your repository. Each target specifies an environment, cloud provider, resource type, and resource configuration.
 
-Both paths converge at the same outcome: cloud resource manifests that the deploy stage provisions through Planton's infrastructure layer.
+Both paths converge at the same outcome: catalog object manifests that the deploy stage provisions through Planton's infrastructure layer.
 
 See [Deployment Targets](/docs/ci-cd/deployment-targets) for the full list of supported platforms and configuration details.
 
@@ -95,7 +95,7 @@ graph LR
 3. **Deploy**: The pipeline deploys the artifact to each configured environment in order, respecting manual approval gates where configured.
 4. **Iterate**: Update the Service configuration as requirements change — add environments, switch build methods, adjust trigger paths. Changes take effect on the next pipeline run.
 
-Deleting a Service removes the configuration and disconnects the webhook. It does **not** delete deployed cloud resources — those must be removed separately.
+Deleting a Service removes the configuration and disconnects the webhook. It does **not** delete deployed Infra Components — those must be removed separately.
 
 ## Related Resources
 

@@ -9,10 +9,10 @@ import (
 )
 
 // The multi-cloud-catalog skill ships SELF-CONTAINED: its archive carries
-// the component reference pack -- the generated reference pages, the
+// the kind reference pack -- the generated reference pages, the
 // indexes, the cross-reference graph, the commons page, the authored
 // GUIDE.md / patterns wisdom layer, and the verified fact-sheet layer
-// (per-component cost/controls/permissions sidecars, the generated
+// (per-kind cost/controls/permissions sidecars, the generated
 // per-preset cost estimates, and the central compliance catalog with its
 // framework crosswalks) -- assembled from the repository's catalog/ tree at
 // package time. The facts travel with the skill to every engine, so a
@@ -31,7 +31,7 @@ const catalogPackSkillSlug = "multi-cloud-catalog"
 // repository's own layout (providers at the top, _docs/ for the commons,
 // indexes and graph, _patterns/ for the pattern library) so relative links
 // between pack pages keep resolving after extraction.
-const packDirName = "components"
+const packDirName = "kinds"
 
 // Engine ceilings for one skill artifact (the serving engine refuses a push
 // beyond 100MB compressed or 10,000 files). Validation enforces margins

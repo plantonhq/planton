@@ -1,7 +1,7 @@
 # AzureMonitorDiagnosticSetting - Pulumi Module
 
-Pulumi (Go) implementation for the AzureMonitorDiagnosticSetting deployment
-component, at 100% behavioral parity with the Terraform module.
+Pulumi (Go) implementation for the AzureMonitorDiagnosticSetting
+kind, at 100% behavioral parity with the Terraform module.
 
 ## Resources Created
 

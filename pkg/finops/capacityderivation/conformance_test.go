@@ -10,10 +10,10 @@ import (
 
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	capacityv1 "github.com/plantonhq/planton/finops/componentcapacityderivation/v1"
-	derivationv1 "github.com/plantonhq/planton/finops/componentcostderivation/v1"
-	costprofilev1 "github.com/plantonhq/planton/finops/componentcostprofile/v1"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	capacityv1 "github.com/plantonhq/planton/finops/catalogkindcapacityderivation/v1"
+	derivationv1 "github.com/plantonhq/planton/finops/catalogkindcostderivation/v1"
+	costprofilev1 "github.com/plantonhq/planton/finops/catalogkindcostprofile/v1"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/finops/capacityestimator"
 	"github.com/plantonhq/planton/pkg/finops/costderivation"
 	"github.com/plantonhq/planton/pkg/finops/costprofile"
@@ -31,12 +31,12 @@ var decimalPattern = regexp.MustCompile(`^[0-9]+(\.[0-9]+)?$`)
 // TestCapacityDerivationConformance holds every capacity derivation to
 // its contract, offline:
 //
-//  1. The document parses strictly, names its component (metadata.name
-//     equals the filename), and the component ships a cost profile whose
-//     billing model IS cluster_capacity -- priced components derive
+//  1. The document parses strictly, names its kind (metadata.name
+//     equals the filename), and the kind ships a cost profile whose
+//     billing model IS cluster_capacity -- priced kinds derive
 //     dollars through the cost-derivation standard, never capacity.
-//  2. The component ships NEITHER a hand-authored estimate model NOR a
-//     cost derivation beside this document -- a component's quantities
+//  2. The kind ships NEITHER a hand-authored estimate model NOR a
+//     cost derivation beside this document -- a kind's quantities
 //     have exactly one home.
 //  3. Every workload binds real spec structure: resources_path resolves
 //     to the shared ContainerResources message, the instance count is a
@@ -57,49 +57,49 @@ func TestCapacityDerivationConformance(t *testing.T) {
 		t.Skip("catalog source tree not present (bazel sandbox); runs under go test and the lint.catalog-data lane")
 	}
 
-	components, err := Discover(root)
+	kindDirs, err := Discover(root)
 	if err != nil {
 		t.Fatalf("discovering capacity derivations: %v", err)
 	}
-	if len(components) == 0 {
+	if len(kindDirs) == 0 {
 		t.Skip("no capacity derivations authored yet")
 	}
 
-	for _, component := range components {
-		component := component
-		t.Run(component, func(t *testing.T) {
-			derivation, err := Load(root, component)
+	for _, kindDir := range kindDirs {
+		kindDir := kindDir
+		t.Run(kindDir, func(t *testing.T) {
+			derivation, err := Load(root, kindDir)
 			if err != nil {
 				t.Fatalf("capacity derivation: %v", err)
 			}
-			if derivation.GetKind() != "ComponentCapacityDerivation" {
-				t.Fatalf("kind is %q, want ComponentCapacityDerivation", derivation.GetKind())
+			if derivation.GetKind() != "CatalogKindCapacityDerivation" {
+				t.Fatalf("kind is %q, want CatalogKindCapacityDerivation", derivation.GetKind())
 			}
-			if derivation.GetMetadata().GetName() != component {
-				t.Errorf("metadata.name is %q, want %q (the filename is the component's identity)",
-					derivation.GetMetadata().GetName(), component)
-			}
-
-			if _, err := os.Stat(estimatemodel.Path(root, component)); err == nil {
-				t.Errorf("component also ships an estimate model (%s) -- quantities have exactly one home; delete the model",
-					estimatemodel.Path(root, component))
-			}
-			if _, err := os.Stat(costderivation.Path(root, component)); err == nil {
-				t.Errorf("component also ships a cost derivation (%s) -- a cluster-capacity component prices no meters",
-					costderivation.Path(root, component))
+			if derivation.GetMetadata().GetName() != kindDir {
+				t.Errorf("metadata.name is %q, want %q (the filename is the kind's identity)",
+					derivation.GetMetadata().GetName(), kindDir)
 			}
 
-			provider := componentProvider(t, root, component)
-			profile, err := costprofile.Load(root, provider, component)
+			if _, err := os.Stat(estimatemodel.Path(root, kindDir)); err == nil {
+				t.Errorf("kind also ships an estimate model (%s) -- quantities have exactly one home; delete the model",
+					estimatemodel.Path(root, kindDir))
+			}
+			if _, err := os.Stat(costderivation.Path(root, kindDir)); err == nil {
+				t.Errorf("kind also ships a cost derivation (%s) -- a cluster-capacity kind prices no meters",
+					costderivation.Path(root, kindDir))
+			}
+
+			provider := kindProvider(t, root, kindDir)
+			profile, err := costprofile.Load(root, provider, kindDir)
 			if err != nil {
-				t.Fatalf("the component must ship a cost profile: %v", err)
+				t.Fatalf("the kind must ship a cost profile: %v", err)
 			}
 			if profile.GetSpec().GetBillingModel() != costprofilev1.BillingModel_cluster_capacity {
-				t.Fatalf("billing model is %s -- capacity derivations exist exactly for cluster_capacity components; priced components derive dollars",
+				t.Fatalf("billing model is %s -- capacity derivations exist exactly for cluster_capacity kinds; priced kinds derive dollars",
 					profile.GetSpec().GetBillingModel())
 			}
 
-			specDescriptor := kindSpecDescriptor(t, component)
+			specDescriptor := kindSpecDescriptor(t, kindDir)
 			spec := derivation.GetSpec()
 
 			if len(spec.GetWorkloads()) == 0 {
@@ -260,27 +260,27 @@ func describeTerminal(field protoreflect.FieldDescriptor) string {
 	return field.Kind().String()
 }
 
-// componentProvider locates the provider directory a component lives under.
-func componentProvider(t *testing.T, repoRoot, component string) string {
+// kindProvider locates the provider directory a kind lives under.
+func kindProvider(t *testing.T, repoRoot, kindDir string) string {
 	t.Helper()
-	matches, err := filepath.Glob(filepath.Join(repoRoot, "catalog", "*", component))
+	matches, err := filepath.Glob(filepath.Join(repoRoot, "catalog", "*", kindDir))
 	if err != nil || len(matches) == 0 {
-		t.Fatalf("capacity derivation names component %q, which exists nowhere under catalog/", component)
+		t.Fatalf("capacity derivation names kind %q, which exists nowhere under catalog/", kindDir)
 	}
 	if len(matches) > 1 {
-		t.Fatalf("component %q exists under multiple providers: %v", component, matches)
+		t.Fatalf("kind %q exists under multiple providers: %v", kindDir, matches)
 	}
 	return filepath.Base(filepath.Dir(matches[0]))
 }
 
-// kindSpecDescriptor resolves a component directory name to its kind's spec
+// kindSpecDescriptor resolves a kind directory name to its kind's spec
 // message descriptor via the kind registry.
-func kindSpecDescriptor(t *testing.T, component string) protoreflect.MessageDescriptor {
+func kindSpecDescriptor(t *testing.T, kindDir string) protoreflect.MessageDescriptor {
 	t.Helper()
-	kind := crkreflect.KindFromString(component)
-	apiMessage, err := crkreflect.NewInstance(kind)
+	kind := catalogkindreflect.KindFromString(kindDir)
+	apiMessage, err := catalogkindreflect.NewInstance(kind)
 	if err != nil {
-		t.Fatalf("NewInstance(%s): %v", component, err)
+		t.Fatalf("NewInstance(%s): %v", kindDir, err)
 	}
 	specField := apiMessage.ProtoReflect().Descriptor().Fields().ByName("spec")
 	if specField == nil || specField.Kind() != protoreflect.MessageKind {

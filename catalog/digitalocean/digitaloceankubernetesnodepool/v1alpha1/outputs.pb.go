@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanKubernetesNodePoolStackOutputs captures the outputs after
+// DigitalOceanKubernetesNodePoolOutputs captures the outputs after
 // provisioning a DigitalOcean Kubernetes node pool.
 //
 // The pool's member nodes are deliberately NOT outputs: DOKS replaces them
@@ -33,7 +33,7 @@ const (
 // DigitalOcean applies to every current and future node; the live node set
 // is read from the API by whoever needs it (the E2E verifier asserts node
 // health that way).
-type DigitalOceanKubernetesNodePoolStackOutputs struct {
+type DigitalOceanKubernetesNodePoolOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique identifier (UUID) of the created node pool.
 	NodePoolId string `protobuf:"bytes,1,opt,name=node_pool_id,json=nodePoolId,proto3" json:"node_pool_id,omitempty"`
@@ -45,20 +45,20 @@ type DigitalOceanKubernetesNodePoolStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanKubernetesNodePoolStackOutputs) Reset() {
-	*x = DigitalOceanKubernetesNodePoolStackOutputs{}
+func (x *DigitalOceanKubernetesNodePoolOutputs) Reset() {
+	*x = DigitalOceanKubernetesNodePoolOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanKubernetesNodePoolStackOutputs) String() string {
+func (x *DigitalOceanKubernetesNodePoolOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanKubernetesNodePoolStackOutputs) ProtoMessage() {}
+func (*DigitalOceanKubernetesNodePoolOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanKubernetesNodePoolStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanKubernetesNodePoolOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,19 +70,19 @@ func (x *DigitalOceanKubernetesNodePoolStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanKubernetesNodePoolStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanKubernetesNodePoolStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanKubernetesNodePoolOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanKubernetesNodePoolOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanKubernetesNodePoolStackOutputs) GetNodePoolId() string {
+func (x *DigitalOceanKubernetesNodePoolOutputs) GetNodePoolId() string {
 	if x != nil {
 		return x.NodePoolId
 	}
 	return ""
 }
 
-func (x *DigitalOceanKubernetesNodePoolStackOutputs) GetClusterId() string {
+func (x *DigitalOceanKubernetesNodePoolOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
@@ -93,8 +93,8 @@ var File_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_outputs_pr
 
 const file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Jcatalog/digitalocean/digitaloceankubernetesnodepool/v1alpha1/outputs.proto\x12@dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1\"\x90\x01\n" +
-	"*DigitalOceanKubernetesNodePoolStackOutputs\x12 \n" +
+	"Jcatalog/digitalocean/digitaloceankubernetesnodepool/v1alpha1/outputs.proto\x12@dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1\"\x8b\x01\n" +
+	"%DigitalOceanKubernetesNodePoolOutputs\x12 \n" +
 	"\fnode_pool_id\x18\x01 \x01(\tR\n" +
 	"nodePoolId\x12\x1d\n" +
 	"\n" +
@@ -115,7 +115,7 @@ func file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_outputs_p
 
 var file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanKubernetesNodePoolStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1.DigitalOceanKubernetesNodePoolStackOutputs
+	(*DigitalOceanKubernetesNodePoolOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1.DigitalOceanKubernetesNodePoolOutputs
 }
 var file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

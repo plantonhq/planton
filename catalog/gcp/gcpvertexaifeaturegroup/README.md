@@ -4,7 +4,7 @@ A Vertex AI Feature Store feature group -- the registry entry that says "these f
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project (never disabled on destroy)
 - **Feature group** -- a `vertex_ai_feature_group` pointing at the BigQuery source, with its entity ID columns
@@ -76,7 +76,7 @@ planton apply -f vertex-ai-feature-group.yaml
 - Feature ids are unique within the group.
 - A declared BigQuery source names its table.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -105,7 +105,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpBigQueryTable** -- the source table or view
 - **GcpBigQueryDataset** -- the dataset holding the source

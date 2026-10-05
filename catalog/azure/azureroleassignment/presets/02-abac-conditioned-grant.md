@@ -29,7 +29,7 @@ serve multiple teams with tag-level isolation instead of per-team accounts.
 
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
-| `<your-storage-account>` | Metadata name of the AzureStorageAccount being granted on | Your infra chart / resource list |
+| `<your-storage-account>` | Metadata name of the AzureStorageAccount being granted on | Your Infra Chart / resource list |
 | `<principal-object-id>` | Azure AD OBJECT ID of the grantee (not the client ID) | Entra ID portal → the user/group/identity's Object ID |
 | `<tag-name>` / `<tag-value>` | Blob index tag the condition matches | Your data-classification convention |
 | `<why-this-grant-exists>` | Audit note shown in the portal's IAM blade | Your runbook / change ticket |

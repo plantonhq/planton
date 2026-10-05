@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.stripe.stripepaymentmethoddomain.v1alpha1;
 
-// StripePaymentMethodDomainStackOutputs identifies the registration and reports, wallet by
+// StripePaymentMethodDomainOutputs identifies the registration and reports, wallet by
 // wallet, whether the buttons can appear and, when not, Stripe's reason.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/payment_method_domain
-message StripePaymentMethodDomainStackOutputs {
+message StripePaymentMethodDomainOutputs {
   // id is the registration's Stripe id (pmd_...).
   string id = 1;
 

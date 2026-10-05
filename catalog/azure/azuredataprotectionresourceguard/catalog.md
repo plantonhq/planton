@@ -4,7 +4,7 @@ Creates a Data Protection Resource Guard -- the approval gate behind Multi-User 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Resource Guard** -- the Multi-User Authorization gate (`Microsoft.DataProtection/resourceGuards`), with its critical-operation exclusion list
 - **Azure Tags** -- Planton-derived resource tags (organization, environment, resource ID) merged under any user tags
@@ -50,7 +50,7 @@ spec:
 planton apply -f resource-guard.yaml
 ```
 
-This creates the strongest-posture guard: no exclusions, so every critical vault operation requires an approval through it -- in a resource group the security team (not the backup admins) controls. A Stack Job tracks the provisioning in real time.
+This creates the strongest-posture guard: no exclusions, so every critical vault operation requires an approval through it -- in a resource group the security team (not the backup admins) controls. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,15 +83,15 @@ These are the most important decisions when configuring a Resource Guard. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -110,6 +110,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the guard's home scope, owned by a different administrator than the vaults
-- [**Azure Recovery Services Vault**](/cloud-catalog/azure-recovery-services-vault) -- references the guard's ARM ID through its `resourceGuardId` field
-- [**Azure Data Protection Backup Vault**](/cloud-catalog/azure-data-protection-backup-vault) -- the modern vault family whose privileged operations (like disabling soft delete) MUA exists to gate
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the guard's home scope, owned by a different administrator than the vaults
+- [**Azure Recovery Services Vault**](/infra-catalog/azure-recovery-services-vault) -- references the guard's ARM ID through its `resourceGuardId` field
+- [**Azure Data Protection Backup Vault**](/infra-catalog/azure-data-protection-backup-vault) -- the modern vault family whose privileged operations (like disabling soft delete) MUA exists to gate

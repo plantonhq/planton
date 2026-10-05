@@ -167,14 +167,14 @@ KubernetesCertManager -> KubernetesClusterIssuer -> KubernetesCertificate
    -> (Secret) -> KubernetesGateway -> KubernetesGrpcRoute / KubernetesHttpRoute
 ```
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `routeName` | Name of the created GRPCRoute (equals metadata.name). |
 | `namespace` | Namespace the GRPCRoute was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Gateway](../kubernetesgateway)
 - [Kubernetes Gateway Class](../kubernetesgatewayclass)

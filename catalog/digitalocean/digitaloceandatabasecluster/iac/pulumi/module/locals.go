@@ -6,7 +6,7 @@ import (
 	digitaloceanprovider "github.com/plantonhq/planton/catalog/digitalocean"
 	digitaloceandatabaseclusterv1alpha1 "github.com/plantonhq/planton/catalog/digitalocean/digitaloceandatabasecluster/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/digitalocean/digitaloceanlabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -17,18 +17,18 @@ type Locals struct {
 	DigitalOceanLabels          map[string]string
 }
 
-// initializeLocals copies stack‑input fields into the Locals struct and builds
+// initializeLocals copies IaC input fields into the Locals struct and builds
 // a reusable label map. Mirrors the pattern of the DigitalOcean VPC module.
-func initializeLocals(_ *pulumi.Context, stackInput *digitaloceandatabaseclusterv1alpha1.DigitalOceanDatabaseClusterStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *digitaloceandatabaseclusterv1alpha1.DigitalOceanDatabaseClusterIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.DigitalOceanDatabaseCluster = stackInput.Target
+	locals.DigitalOceanDatabaseCluster = iacInput.Target
 
 	// Standard Planton labels for DigitalOcean resources.
 	locals.DigitalOceanLabels = map[string]string{
 		digitaloceanlabelkeys.Resource:     strconv.FormatBool(true),
 		digitaloceanlabelkeys.ResourceName: locals.DigitalOceanDatabaseCluster.Metadata.Name,
-		digitaloceanlabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_DigitalOceanDatabaseCluster.String(),
+		digitaloceanlabelkeys.ResourceKind: catalogkind.CatalogKind_DigitalOceanDatabaseCluster.String(),
 	}
 
 	if locals.DigitalOceanDatabaseCluster.Metadata.Org != "" {
@@ -43,7 +43,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *digitaloceandatabasecluster
 		locals.DigitalOceanLabels[digitaloceanlabelkeys.ResourceId] = locals.DigitalOceanDatabaseCluster.Metadata.Id
 	}
 
-	locals.DigitalOceanProviderConfig = stackInput.ProviderConfig
+	locals.DigitalOceanProviderConfig = iacInput.ProviderConfig
 
 	return locals
 }

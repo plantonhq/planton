@@ -5,10 +5,10 @@ package dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1;
 import "catalog/cloudflare/cloudflarenotificationpolicy/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-// CloudflareNotificationPolicyStackInput is the input to the IaC module. It
+// CloudflareNotificationPolicyIacInput is the input to the IaC module. It
 // contains the target resource and provider configuration.
-message CloudflareNotificationPolicyStackInput {
-  // target cloud-resource to be deployed
+message CloudflareNotificationPolicyIacInput {
+  // the catalog object to deploy to be deployed
   CloudflareNotificationPolicy target = 1;
   // provider-config for Cloudflare authentication
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

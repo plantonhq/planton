@@ -34,7 +34,7 @@ type CloudflareZeroTrustOrganization struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareZeroTrustOrganizationSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *CloudflareZeroTrustOrganization) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareZeroTrustOrganization) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareZeroTrustOrganization) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *CloudflareZeroTrustOrganization) GetStatus() *CloudflareZeroTrustOrgani
 // organization.
 type CloudflareZeroTrustOrganizationStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareZeroTrustOrganizationStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareZeroTrustOrganizationOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*CloudflareZeroTrustOrganizationStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareZeroTrustOrganizationStatus) GetOutputs() *CloudflareZeroTrustOrganizationStackOutputs {
+func (x *CloudflareZeroTrustOrganizationStatus) GetOutputs() *CloudflareZeroTrustOrganizationOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_api_proto
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
 	"\x1fCloudflareZeroTrustOrganizationR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x80\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x80\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2d.dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12~\n" +
-	"\x06status\x18\x05 \x01(\v2f.dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationStatusR\x06status\"\xb0\x01\n" +
-	"%CloudflareZeroTrustOrganizationStatus\x12\x86\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2l.dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationStackOutputsR\aoutputsB\xf3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2f.dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationStatusR\x06status\"\xab\x01\n" +
+	"%CloudflareZeroTrustOrganizationStatus\x12\x81\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2g.dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationOutputsR\aoutputsB\xf3\x03\n" +
 	"Ccom.dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1B\bApiProtoP\x01Z\x80\x01github.com/plantonhq/planton/catalog/cloudflare/cloudflarezerotrustorganization/v1alpha1;cloudflarezerotrustorganizationv1alpha1\xa2\x02\x04DPCC\xaa\x02?Dev.Planton.Cloudflare.Cloudflarezerotrustorganization.V1alpha1\xca\x02?Dev\\Planton\\Cloudflare\\Cloudflarezerotrustorganization\\V1alpha1\xe2\x02KDev\\Planton\\Cloudflare\\Cloudflarezerotrustorganization\\V1alpha1\\GPBMetadata\xea\x02CDev::Planton::Cloudflare::Cloudflarezerotrustorganization::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_api_proto_
 
 var file_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareZeroTrustOrganization)(nil),             // 0: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganization
-	(*CloudflareZeroTrustOrganizationStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationStatus
-	(*shared.CloudResourceMetadata)(nil),                // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareZeroTrustOrganizationSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationSpec
-	(*CloudflareZeroTrustOrganizationStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationStackOutputs
+	(*CloudflareZeroTrustOrganization)(nil),        // 0: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganization
+	(*CloudflareZeroTrustOrganizationStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationStatus
+	(*shared.CatalogObjectMetadata)(nil),           // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareZeroTrustOrganizationSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationSpec
+	(*CloudflareZeroTrustOrganizationOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganization.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganization.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganization.spec:type_name -> dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationSpec
 	1, // 2: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganization.status:type_name -> dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationStatus
-	4, // 3: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

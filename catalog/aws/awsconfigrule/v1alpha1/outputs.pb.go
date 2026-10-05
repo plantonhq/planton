@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsConfigRuleStackOutputs captures the observable state of the
+// AwsConfigRuleOutputs captures the observable state of the
 // Config rule after apply.
-type AwsConfigRuleStackOutputs struct {
+type AwsConfigRuleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The rule's ARN. For organization rules this is the organization
 	// rule ARN.
@@ -41,20 +41,20 @@ type AwsConfigRuleStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsConfigRuleStackOutputs) Reset() {
-	*x = AwsConfigRuleStackOutputs{}
+func (x *AwsConfigRuleOutputs) Reset() {
+	*x = AwsConfigRuleOutputs{}
 	mi := &file_catalog_aws_awsconfigrule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsConfigRuleStackOutputs) String() string {
+func (x *AwsConfigRuleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsConfigRuleStackOutputs) ProtoMessage() {}
+func (*AwsConfigRuleOutputs) ProtoMessage() {}
 
-func (x *AwsConfigRuleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsConfigRuleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsconfigrule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,33 +66,33 @@ func (x *AwsConfigRuleStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsConfigRuleStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsConfigRuleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsConfigRuleOutputs.ProtoReflect.Descriptor instead.
+func (*AwsConfigRuleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsconfigrule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsConfigRuleStackOutputs) GetRuleArn() string {
+func (x *AwsConfigRuleOutputs) GetRuleArn() string {
 	if x != nil {
 		return x.RuleArn
 	}
 	return ""
 }
 
-func (x *AwsConfigRuleStackOutputs) GetRuleName() string {
+func (x *AwsConfigRuleOutputs) GetRuleName() string {
 	if x != nil {
 		return x.RuleName
 	}
 	return ""
 }
 
-func (x *AwsConfigRuleStackOutputs) GetRuleId() string {
+func (x *AwsConfigRuleOutputs) GetRuleId() string {
 	if x != nil {
 		return x.RuleId
 	}
 	return ""
 }
 
-func (x *AwsConfigRuleStackOutputs) GetRemediationArn() string {
+func (x *AwsConfigRuleOutputs) GetRemediationArn() string {
 	if x != nil {
 		return x.RemediationArn
 	}
@@ -103,8 +103,8 @@ var File_catalog_aws_awsconfigrule_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awsconfigrule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awsconfigrule/v1alpha1/outputs.proto\x12&dev.planton.aws.awsconfigrule.v1alpha1\"\x95\x01\n" +
-	"\x19AwsConfigRuleStackOutputs\x12\x19\n" +
+	"0catalog/aws/awsconfigrule/v1alpha1/outputs.proto\x12&dev.planton.aws.awsconfigrule.v1alpha1\"\x90\x01\n" +
+	"\x14AwsConfigRuleOutputs\x12\x19\n" +
 	"\brule_arn\x18\x01 \x01(\tR\aruleArn\x12\x1b\n" +
 	"\trule_name\x18\x04 \x01(\tR\bruleName\x12\x17\n" +
 	"\arule_id\x18\x02 \x01(\tR\x06ruleId\x12'\n" +
@@ -125,7 +125,7 @@ func file_catalog_aws_awsconfigrule_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsconfigrule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsconfigrule_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsConfigRuleStackOutputs)(nil), // 0: dev.planton.aws.awsconfigrule.v1alpha1.AwsConfigRuleStackOutputs
+	(*AwsConfigRuleOutputs)(nil), // 0: dev.planton.aws.awsconfigrule.v1alpha1.AwsConfigRuleOutputs
 }
 var file_catalog_aws_awsconfigrule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

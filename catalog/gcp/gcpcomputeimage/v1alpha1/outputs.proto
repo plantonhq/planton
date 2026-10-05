@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcomputeimage.v1alpha1;
 
-// GcpComputeImageStackOutputs captures the image's identity.
-message GcpComputeImageStackOutputs {
+// GcpComputeImageOutputs captures the image's identity.
+message GcpComputeImageOutputs {
   // Name of the image in GCP.
   string name = 1;
 

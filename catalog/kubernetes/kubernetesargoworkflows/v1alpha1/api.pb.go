@@ -31,7 +31,7 @@ type KubernetesArgoWorkflows struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesArgoWorkflowsSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesArgoWorkflows) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesArgoWorkflows) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesArgoWorkflows) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesArgoWorkflows) GetStatus() *KubernetesArgoWorkflowsStatus {
 // argo-workflows-kubernetes status.
 type KubernetesArgoWorkflowsStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesArgoWorkflowsStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesArgoWorkflowsOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesArgoWorkflowsStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesArgoWorkflowsStatus) GetOutputs() *KubernetesArgoWorkflowsStackOutputs {
+func (x *KubernetesArgoWorkflowsStatus) GetOutputs() *KubernetesArgoWorkflowsOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_api_proto_rawDesc
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17KubernetesArgoWorkflowsR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
 	"\x04spec\x18\x04 \x01(\v2T.dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12n\n" +
-	"\x06status\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsStatusR\x06status\"\x97\x01\n" +
-	"\x1dKubernetesArgoWorkflowsStatus\x12v\n" +
-	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsStackOutputsR\aoutputsB\xba\x03\n" +
+	"\x06status\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsStatusR\x06status\"\x92\x01\n" +
+	"\x1dKubernetesArgoWorkflowsStatus\x12q\n" +
+	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsOutputsR\aoutputsB\xba\x03\n" +
 	";com.dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1B\bApiProtoP\x01Zpgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesargoworkflows/v1alpha1;kubernetesargoworkflowsv1alpha1\xa2\x02\x04DPKK\xaa\x027Dev.Planton.Kubernetes.Kubernetesargoworkflows.V1alpha1\xca\x027Dev\\Planton\\Kubernetes\\Kubernetesargoworkflows\\V1alpha1\xe2\x02CDev\\Planton\\Kubernetes\\Kubernetesargoworkflows\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Kubernetes::Kubernetesargoworkflows::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_api_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesArgoWorkflows)(nil),             // 0: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflows
-	(*KubernetesArgoWorkflowsStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesArgoWorkflowsSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsSpec
-	(*KubernetesArgoWorkflowsStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsStackOutputs
+	(*KubernetesArgoWorkflows)(nil),        // 0: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflows
+	(*KubernetesArgoWorkflowsStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesArgoWorkflowsSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsSpec
+	(*KubernetesArgoWorkflowsOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsOutputs
 }
 var file_catalog_kubernetes_kubernetesargoworkflows_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflows.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflows.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflows.spec:type_name -> dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsSpec
 	1, // 2: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflows.status:type_name -> dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsStatus
-	4, // 3: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1.KubernetesArgoWorkflowsOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

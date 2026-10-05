@@ -4,7 +4,7 @@ Creates a Google Cloud Resource Manager tag value: the VALUE half of a tag -- `p
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Tag value** -- the `tags_tag_value` under its key, with its short name and description
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials that can administer tags at the key's owner. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials that can administer tags at the key's owner. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Tag Key
 
@@ -48,7 +48,7 @@ spec:
 planton apply -f tag-value.yaml
 ```
 
-This declares `environment/prod` under the existing `environment` key. A Stack Job tracks the provisioning in real time.
+This declares `environment/prod` under the existing `environment` key. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -78,15 +78,15 @@ These are the most important decisions when configuring a tag value. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpTagKey** | `tagKey` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -105,6 +105,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Tag Key**](/cloud-catalog/gcp-tag-key) -- the key this value belongs to
-- [**GCP Tag Binding**](/cloud-catalog/gcp-tag-binding) -- attaches this value to a resource
-- [**GCP Organization Policy**](/cloud-catalog/gcp-org-policy) -- rules conditioned on this value
+- [**GCP Tag Key**](/infra-catalog/gcp-tag-key) -- the key this value belongs to
+- [**GCP Tag Binding**](/infra-catalog/gcp-tag-binding) -- attaches this value to a resource
+- [**GCP Organization Policy**](/infra-catalog/gcp-org-policy) -- rules conditioned on this value

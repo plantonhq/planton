@@ -30,7 +30,7 @@ This preset reserves a regional external IPv4 address for use with Cloud NAT, re
 - **02-internal-lb-vip** — Reserve an internal shared load balancer VIP
 - **03-internal-gce-endpoint** — Reserve an internal IP within a subnetwork for a GCE endpoint
 
-## Related Components
+## Related Kinds
 
 - [GcpGlobalAddress](/docs/catalog/gcp/gcpglobaladdress) — for global-scope static IPs (HTTP(S) load balancers, CDN)
 - [GcpNatGateway](/docs/catalog/gcp/gcpnatgateway) — consumes this address for Cloud NAT

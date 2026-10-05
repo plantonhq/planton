@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanReservedIpStackOutputs captures the key outputs after
+// DigitalOceanReservedIpOutputs captures the key outputs after
 // reserving an IP address. The address itself is the resource's API
 // identity (there is no separate reserved-IP id).
-type DigitalOceanReservedIpStackOutputs struct {
+type DigitalOceanReservedIpOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The reserved IP address (IPv4 or IPv6 per the spec's ip_version). This
 	// IS the resource identity: imports, lookups, and assignments all address
@@ -38,20 +38,20 @@ type DigitalOceanReservedIpStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanReservedIpStackOutputs) Reset() {
-	*x = DigitalOceanReservedIpStackOutputs{}
+func (x *DigitalOceanReservedIpOutputs) Reset() {
+	*x = DigitalOceanReservedIpOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceanreservedip_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanReservedIpStackOutputs) String() string {
+func (x *DigitalOceanReservedIpOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanReservedIpStackOutputs) ProtoMessage() {}
+func (*DigitalOceanReservedIpOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanReservedIpStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanReservedIpOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanreservedip_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *DigitalOceanReservedIpStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanReservedIpStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanReservedIpStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanReservedIpOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanReservedIpOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanreservedip_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanReservedIpStackOutputs) GetReservedIpAddress() string {
+func (x *DigitalOceanReservedIpOutputs) GetReservedIpAddress() string {
 	if x != nil {
 		return x.ReservedIpAddress
 	}
 	return ""
 }
 
-func (x *DigitalOceanReservedIpStackOutputs) GetUrn() string {
+func (x *DigitalOceanReservedIpOutputs) GetUrn() string {
 	if x != nil {
 		return x.Urn
 	}
@@ -86,8 +86,8 @@ var File_catalog_digitalocean_digitaloceanreservedip_v1alpha1_outputs_proto prot
 
 const file_catalog_digitalocean_digitaloceanreservedip_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/digitalocean/digitaloceanreservedip/v1alpha1/outputs.proto\x128dev.planton.digitalocean.digitaloceanreservedip.v1alpha1\"f\n" +
-	"\"DigitalOceanReservedIpStackOutputs\x12.\n" +
+	"Bcatalog/digitalocean/digitaloceanreservedip/v1alpha1/outputs.proto\x128dev.planton.digitalocean.digitaloceanreservedip.v1alpha1\"a\n" +
+	"\x1dDigitalOceanReservedIpOutputs\x12.\n" +
 	"\x13reserved_ip_address\x18\x01 \x01(\tR\x11reservedIpAddress\x12\x10\n" +
 	"\x03urn\x18\x02 \x01(\tR\x03urnB\xc3\x03\n" +
 	"<com.dev.planton.digitalocean.digitaloceanreservedip.v1alpha1B\fOutputsProtoP\x01Zpgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanreservedip/v1alpha1;digitaloceanreservedipv1alpha1\xa2\x02\x04DPDD\xaa\x028Dev.Planton.Digitalocean.Digitaloceanreservedip.V1alpha1\xca\x028Dev\\Planton\\Digitalocean\\Digitaloceanreservedip\\V1alpha1\xe2\x02DDev\\Planton\\Digitalocean\\Digitaloceanreservedip\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Digitalocean::Digitaloceanreservedip::V1alpha1b\x06proto3"
@@ -106,7 +106,7 @@ func file_catalog_digitalocean_digitaloceanreservedip_v1alpha1_outputs_proto_raw
 
 var file_catalog_digitalocean_digitaloceanreservedip_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanreservedip_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanReservedIpStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanreservedip.v1alpha1.DigitalOceanReservedIpStackOutputs
+	(*DigitalOceanReservedIpOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanreservedip.v1alpha1.DigitalOceanReservedIpOutputs
 }
 var file_catalog_digitalocean_digitaloceanreservedip_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

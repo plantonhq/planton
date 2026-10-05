@@ -24,7 +24,7 @@ disk; `sourceImageEncryption` / `sourceSnapshotEncryption` decrypt encrypted
 sources. Customer-supplied raw keys (CSEK) are deliberately NOT modeled —
 the provider keeps those arguments in state as ordinary values, and key material
 flowing through manifests contradicts the platform's secret posture; the
-recorded exclusions live in this component's parity manifest. If a workload
+recorded exclusions live in this kind's parity manifest. If a workload
 genuinely requires CSEK, that is a platform-level conversation, not a field
 request. Before the first CMEK apply, the Compute Engine service agent needs
 `roles/cloudkms.cryptoKeyEncrypterDecrypter` on the key — missing it fails
@@ -44,7 +44,7 @@ snapshot net for volumes that must still be tear-down-able.
 `asyncPrimaryDisk` makes THIS disk the secondary of a primary in another
 region — set it on the DR-side disk, matching the primary's size and type.
 Creating the pair does not start replication: activation is an operation on
-the primary (outside this component's surface today), so treat the field as
+the primary (outside this kind's surface today), so treat the field as
 the pairing declaration, not the running replication.
 
 ## On the diagram

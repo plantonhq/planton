@@ -5,9 +5,9 @@ package dev.planton.aws.awsapigatewayaccountsettings.v1alpha1;
 import "catalog/aws/awsapigatewayaccountsettings/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsApiGatewayAccountSettingsStackInput is the input for the IaC
+// AwsApiGatewayAccountSettingsIacInput is the input for the IaC
 // modules that manage the region's API Gateway account settings.
-message AwsApiGatewayAccountSettingsStackInput {
+message AwsApiGatewayAccountSettingsIacInput {
   // target is the AwsApiGatewayAccountSettings resource to deploy.
   AwsApiGatewayAccountSettings target = 1;
   // provider_config contains the AWS provider credentials and configuration.

@@ -28,7 +28,7 @@ The contract worth internalizing before the first apply:
 - **`spec.authorization.acls`**: the rules granting access — each names a resource (`topic`, `group`, `cluster`, `transactionalId`; `literal` or `prefix` matching) and the operations granted. A typical producer needs Write + Describe (+ IdempotentWrite for idempotent producers); a consumer needs Read + Describe on the topic and Read on its consumer group
 - **`spec.quotas`**: broker-enforced client caps — producer/consumer byte rates, request-time percentage, partition-mutation rate
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

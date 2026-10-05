@@ -34,7 +34,7 @@ func baseLoadBalancer() *AzureLoadBalancer {
 	return &AzureLoadBalancer{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureLoadBalancer",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-lb",
 		},
 		Spec: &AzureLoadBalancerSpec{

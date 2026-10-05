@@ -1,10 +1,10 @@
 # Auth0 Tenant Settings
 
-Sets how an existing Auth0 tenant presents itself and behaves: the name Universal Login shows, the logo on its login and consent pages, its languages and support contacts, how long sessions last, what its OAuth endpoints accept (including what MCP clients rely on), the defaults every application inherits, its error page and its behavior flags. One Cloud Resource per tenant.
+Sets how an existing Auth0 tenant presents itself and behaves: the name Universal Login shows, the logo on its login and consent pages, its languages and support contacts, how long sessions last, what its OAuth endpoints accept (including what MCP clients rely on), the defaults every application inherits, its error page and its behavior flags. One Infra Component per tenant.
 
 ## What Gets Created
 
-Nothing new: a tenant can't be created or deleted through Auth0's Management API. When you deploy this Cloud Resource, the IaC module sets the settings of the tenant your Auth0 connection's credential belongs to:
+Nothing new: a tenant can't be created or deleted through Auth0's Management API. When you deploy this Infra Component, the IaC module sets the settings of the tenant your Auth0 connection's credential belongs to:
 
 - **Friendly name** -- the name in "Log in to *friendly name* to continue to *application*", and in the emails Auth0 sends for the tenant
 - **Logo** -- shown on the login and consent pages instead of Auth0's
@@ -24,7 +24,7 @@ Only what you set is changed; every other setting keeps its value.
 
 ### Planton Setup
 
-- **Auth0 Provider Connection** -- an active connection in the Connect module with the tenant's domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Auth0 Provider Connection** -- an active connection in the Connect module with the tenant's domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Auth0 Account
@@ -60,7 +60,7 @@ spec:
 planton apply -f auth0-tenant-settings.yaml
 ```
 
-The tenant's login page reads "Log in to Acme to continue to *application*" with your logo. A Stack Job tracks the change in real time.
+The tenant's login page reads "Log in to Acme to continue to *application*" with your logo. An Infra Job tracks the change in real time.
 
 ### InfraChart
 
@@ -104,11 +104,11 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 **Email links on your domain** -- Set `defaultCustomDomain` to a verified custom domain (reference the Auth0 Custom Domain Verification's `domain` output), so verification and password-reset emails link to your domain. The credential then also needs `read:custom_domains` and `update:custom_domains`.
 
-**Destroy leaves the settings in place** -- Auth0 has no delete for tenant settings, so destroying this Cloud Resource stops managing them and keeps their last-applied values. To return a setting to a specific value, set that value before removing the field or the resource.
+**Destroy leaves the settings in place** -- Auth0 has no delete for tenant settings, so destroying this Infra Component stops managing them and keeps their last-applied values. To return a setting to a specific value, set that value before removing the field or the resource.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Field | Foreign Key | Required |
 |-------|-------------|----------|
@@ -118,7 +118,7 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 The tenant is the one the Auth0 connection's credential belongs to.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains the settings as the tenant carries them:
 
@@ -152,7 +152,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Auth0 Client (Application)**](/cloud-catalog/auth0-client) -- names the application in the login page's sentence.
-- [**Auth0 Connection**](/cloud-catalog/auth0-connection) -- the sign-in methods the branded page offers, and the tenant's default directory.
-- [**Auth0 Resource Server**](/cloud-catalog/auth0-resource-server) -- the API the tenant's default audience names.
-- [**Auth0 Custom Domain Verification**](/cloud-catalog/auth0-custom-domain-verification) -- the verified domain the tenant's emails link to.
+- [**Auth0 Client (Application)**](/infra-catalog/auth0-client) -- names the application in the login page's sentence.
+- [**Auth0 Connection**](/infra-catalog/auth0-connection) -- the sign-in methods the branded page offers, and the tenant's default directory.
+- [**Auth0 Resource Server**](/infra-catalog/auth0-resource-server) -- the API the tenant's default audience names.
+- [**Auth0 Custom Domain Verification**](/infra-catalog/auth0-custom-domain-verification) -- the verified domain the tenant's emails link to.

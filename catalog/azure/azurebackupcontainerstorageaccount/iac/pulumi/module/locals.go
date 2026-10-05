@@ -20,11 +20,11 @@ type Locals struct {
 // (ARM protection containers are untagged), so this module derives no
 // tag map.
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurebackupcontainerstorageaccountv1alpha1.AzureBackupContainerStorageAccountStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurebackupcontainerstorageaccountv1alpha1.AzureBackupContainerStorageAccountIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureBackupContainerStorageAccount = stackInput.Target
-	target := stackInput.Target
+	locals.AzureBackupContainerStorageAccount = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 	locals.RecoveryVaultName = target.Spec.RecoveryVaultName.GetValue()

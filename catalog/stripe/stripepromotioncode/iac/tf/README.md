@@ -15,7 +15,7 @@ OpenTofu module that declares one Stripe promotion code on a coupon. Stripe kind
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `coupon` (resolved coupon id, required); `code`, `customer`, `customer_account`, `expires_at`, `max_redemptions`, `restrictions`, `active`, `metadata` |
 
 ## Outputs

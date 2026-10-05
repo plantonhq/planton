@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpVertexAiRagEngineConfigStackOutputs captures what the RAG Engine
+// GcpVertexAiRagEngineConfigOutputs captures what the RAG Engine
 // configuration of one project and location resolved to.
-type GcpVertexAiRagEngineConfigStackOutputs struct {
+type GcpVertexAiRagEngineConfigOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name of the singleton configuration:
 	// projects/{project}/locations/{location}/ragEngineConfig.
@@ -35,20 +35,20 @@ type GcpVertexAiRagEngineConfigStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiRagEngineConfigStackOutputs) Reset() {
-	*x = GcpVertexAiRagEngineConfigStackOutputs{}
+func (x *GcpVertexAiRagEngineConfigOutputs) Reset() {
+	*x = GcpVertexAiRagEngineConfigOutputs{}
 	mi := &file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiRagEngineConfigStackOutputs) String() string {
+func (x *GcpVertexAiRagEngineConfigOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiRagEngineConfigStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiRagEngineConfigOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiRagEngineConfigStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiRagEngineConfigOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *GcpVertexAiRagEngineConfigStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiRagEngineConfigStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiRagEngineConfigStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiRagEngineConfigOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiRagEngineConfigOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiRagEngineConfigStackOutputs) GetName() string {
+func (x *GcpVertexAiRagEngineConfigOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpVertexAiRagEngineConfigStackOutputs) GetLocation() string {
+func (x *GcpVertexAiRagEngineConfigOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -83,8 +83,8 @@ var File_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_outputs_proto protorefl
 
 const file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/gcp/gcpvertexairagengineconfig/v1alpha1/outputs.proto\x123dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1\"X\n" +
-	"&GcpVertexAiRagEngineConfigStackOutputs\x12\x12\n" +
+	"=catalog/gcp/gcpvertexairagengineconfig/v1alpha1/outputs.proto\x123dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1\"S\n" +
+	"!GcpVertexAiRagEngineConfigOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1a\n" +
 	"\blocation\x18\x02 \x01(\tR\blocationB\xa9\x03\n" +
 	"7com.dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1B\fOutputsProtoP\x01Zogithub.com/plantonhq/planton/catalog/gcp/gcpvertexairagengineconfig/v1alpha1;gcpvertexairagengineconfigv1alpha1\xa2\x02\x04DPGG\xaa\x023Dev.Planton.Gcp.Gcpvertexairagengineconfig.V1alpha1\xca\x023Dev\\Planton\\Gcp\\Gcpvertexairagengineconfig\\V1alpha1\xe2\x02?Dev\\Planton\\Gcp\\Gcpvertexairagengineconfig\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Gcp::Gcpvertexairagengineconfig::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiRagEngineConfigStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigStackOutputs
+	(*GcpVertexAiRagEngineConfigOutputs)(nil), // 0: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigOutputs
 }
 var file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

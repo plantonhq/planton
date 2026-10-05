@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudwatchLogDeliveryStackOutputs captures the observable state
+// AwsCloudwatchLogDeliveryOutputs captures the observable state
 // of the delivery objects after apply.
-type AwsCloudwatchLogDeliveryStackOutputs struct {
+type AwsCloudwatchLogDeliveryOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The vended source's ARN. Empty when the vended arm has no source.
 	SourceArn string `protobuf:"bytes,1,opt,name=source_arn,json=sourceArn,proto3" json:"source_arn,omitempty"`
@@ -50,20 +50,20 @@ type AwsCloudwatchLogDeliveryStackOutputs struct {
 	sizeCache                   protoimpl.SizeCache
 }
 
-func (x *AwsCloudwatchLogDeliveryStackOutputs) Reset() {
-	*x = AwsCloudwatchLogDeliveryStackOutputs{}
+func (x *AwsCloudwatchLogDeliveryOutputs) Reset() {
+	*x = AwsCloudwatchLogDeliveryOutputs{}
 	mi := &file_catalog_aws_awscloudwatchlogdelivery_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudwatchLogDeliveryStackOutputs) String() string {
+func (x *AwsCloudwatchLogDeliveryOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudwatchLogDeliveryStackOutputs) ProtoMessage() {}
+func (*AwsCloudwatchLogDeliveryOutputs) ProtoMessage() {}
 
-func (x *AwsCloudwatchLogDeliveryStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudwatchLogDeliveryOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudwatchlogdelivery_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,61 +75,61 @@ func (x *AwsCloudwatchLogDeliveryStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudwatchLogDeliveryStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCloudwatchLogDeliveryStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudwatchLogDeliveryOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCloudwatchLogDeliveryOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchlogdelivery_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudwatchLogDeliveryStackOutputs) GetSourceArn() string {
+func (x *AwsCloudwatchLogDeliveryOutputs) GetSourceArn() string {
 	if x != nil {
 		return x.SourceArn
 	}
 	return ""
 }
 
-func (x *AwsCloudwatchLogDeliveryStackOutputs) GetSourceName() string {
+func (x *AwsCloudwatchLogDeliveryOutputs) GetSourceName() string {
 	if x != nil {
 		return x.SourceName
 	}
 	return ""
 }
 
-func (x *AwsCloudwatchLogDeliveryStackOutputs) GetSourceService() string {
+func (x *AwsCloudwatchLogDeliveryOutputs) GetSourceService() string {
 	if x != nil {
 		return x.SourceService
 	}
 	return ""
 }
 
-func (x *AwsCloudwatchLogDeliveryStackOutputs) GetDestinationArns() map[string]string {
+func (x *AwsCloudwatchLogDeliveryOutputs) GetDestinationArns() map[string]string {
 	if x != nil {
 		return x.DestinationArns
 	}
 	return nil
 }
 
-func (x *AwsCloudwatchLogDeliveryStackOutputs) GetDeliveryIds() map[string]string {
+func (x *AwsCloudwatchLogDeliveryOutputs) GetDeliveryIds() map[string]string {
 	if x != nil {
 		return x.DeliveryIds
 	}
 	return nil
 }
 
-func (x *AwsCloudwatchLogDeliveryStackOutputs) GetDeliveryArns() map[string]string {
+func (x *AwsCloudwatchLogDeliveryOutputs) GetDeliveryArns() map[string]string {
 	if x != nil {
 		return x.DeliveryArns
 	}
 	return nil
 }
 
-func (x *AwsCloudwatchLogDeliveryStackOutputs) GetCrossAccountDestinationArn() string {
+func (x *AwsCloudwatchLogDeliveryOutputs) GetCrossAccountDestinationArn() string {
 	if x != nil {
 		return x.CrossAccountDestinationArn
 	}
 	return ""
 }
 
-func (x *AwsCloudwatchLogDeliveryStackOutputs) GetCrossAccountDestinationName() string {
+func (x *AwsCloudwatchLogDeliveryOutputs) GetCrossAccountDestinationName() string {
 	if x != nil {
 		return x.CrossAccountDestinationName
 	}
@@ -140,16 +140,16 @@ var File_catalog_aws_awscloudwatchlogdelivery_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_aws_awscloudwatchlogdelivery_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awscloudwatchlogdelivery/v1alpha1/outputs.proto\x121dev.planton.aws.awscloudwatchlogdelivery.v1alpha1\"\x93\a\n" +
-	"$AwsCloudwatchLogDeliveryStackOutputs\x12\x1d\n" +
+	";catalog/aws/awscloudwatchlogdelivery/v1alpha1/outputs.proto\x121dev.planton.aws.awscloudwatchlogdelivery.v1alpha1\"\xff\x06\n" +
+	"\x1fAwsCloudwatchLogDeliveryOutputs\x12\x1d\n" +
 	"\n" +
 	"source_arn\x18\x01 \x01(\tR\tsourceArn\x12\x1f\n" +
 	"\vsource_name\x18\x02 \x01(\tR\n" +
 	"sourceName\x12%\n" +
-	"\x0esource_service\x18\x03 \x01(\tR\rsourceService\x12\x97\x01\n" +
-	"\x10destination_arns\x18\x04 \x03(\v2l.dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryStackOutputs.DestinationArnsEntryR\x0fdestinationArns\x12\x8b\x01\n" +
-	"\fdelivery_ids\x18\x05 \x03(\v2h.dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryStackOutputs.DeliveryIdsEntryR\vdeliveryIds\x12\x8e\x01\n" +
-	"\rdelivery_arns\x18\x06 \x03(\v2i.dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryStackOutputs.DeliveryArnsEntryR\fdeliveryArns\x12A\n" +
+	"\x0esource_service\x18\x03 \x01(\tR\rsourceService\x12\x92\x01\n" +
+	"\x10destination_arns\x18\x04 \x03(\v2g.dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryOutputs.DestinationArnsEntryR\x0fdestinationArns\x12\x86\x01\n" +
+	"\fdelivery_ids\x18\x05 \x03(\v2c.dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryOutputs.DeliveryIdsEntryR\vdeliveryIds\x12\x89\x01\n" +
+	"\rdelivery_arns\x18\x06 \x03(\v2d.dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryOutputs.DeliveryArnsEntryR\fdeliveryArns\x12A\n" +
 	"\x1dcross_account_destination_arn\x18\a \x01(\tR\x1acrossAccountDestinationArn\x12C\n" +
 	"\x1ecross_account_destination_name\x18\b \x01(\tR\x1bcrossAccountDestinationName\x1aB\n" +
 	"\x14DestinationArnsEntry\x12\x10\n" +
@@ -177,15 +177,15 @@ func file_catalog_aws_awscloudwatchlogdelivery_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_aws_awscloudwatchlogdelivery_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_catalog_aws_awscloudwatchlogdelivery_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCloudwatchLogDeliveryStackOutputs)(nil), // 0: dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryStackOutputs
-	nil, // 1: dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryStackOutputs.DestinationArnsEntry
-	nil, // 2: dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryStackOutputs.DeliveryIdsEntry
-	nil, // 3: dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryStackOutputs.DeliveryArnsEntry
+	(*AwsCloudwatchLogDeliveryOutputs)(nil), // 0: dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryOutputs
+	nil,                                     // 1: dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryOutputs.DestinationArnsEntry
+	nil,                                     // 2: dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryOutputs.DeliveryIdsEntry
+	nil,                                     // 3: dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryOutputs.DeliveryArnsEntry
 }
 var file_catalog_aws_awscloudwatchlogdelivery_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryStackOutputs.destination_arns:type_name -> dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryStackOutputs.DestinationArnsEntry
-	2, // 1: dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryStackOutputs.delivery_ids:type_name -> dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryStackOutputs.DeliveryIdsEntry
-	3, // 2: dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryStackOutputs.delivery_arns:type_name -> dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryStackOutputs.DeliveryArnsEntry
+	1, // 0: dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryOutputs.destination_arns:type_name -> dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryOutputs.DestinationArnsEntry
+	2, // 1: dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryOutputs.delivery_ids:type_name -> dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryOutputs.DeliveryIdsEntry
+	3, // 2: dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryOutputs.delivery_arns:type_name -> dev.planton.aws.awscloudwatchlogdelivery.v1alpha1.AwsCloudwatchLogDeliveryOutputs.DeliveryArnsEntry
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

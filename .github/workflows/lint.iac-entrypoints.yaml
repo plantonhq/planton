@@ -1,7 +1,7 @@
 # =============================================================================
 # IaC Entrypoint Guard
 # =============================================================================
-# Fails the PR if any Pulumi component is missing a `package main`
+# Fails the PR if any Pulumi kind is missing a `package main`
 # entrypoint at its `iac/pulumi/` root, or places the entrypoint in a `main/` or
 # `entrypoint/` subdirectory.
 #

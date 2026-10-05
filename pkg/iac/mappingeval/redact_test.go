@@ -27,7 +27,7 @@ func TestRedactSeedFingerprints(t *testing.T) {
 						tag("planton.ai/resource", "true"),
 						tag("planton.ai/resource-kind", "AwsVpc"),
 						tag("planton.ai/environment", "prod"),
-						tag("e2e-component", "awsvpc"),
+						tag("e2e-catalog-kind", "awsvpc"),
 						tag("managed-by", "planton-e2e"),
 						// Realistic signals -- must stay.
 						tag("Name", "orders-prod-vpc"),

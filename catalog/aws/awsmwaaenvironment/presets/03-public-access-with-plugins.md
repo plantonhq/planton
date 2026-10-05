@@ -28,7 +28,7 @@ MWAA's extensibility features.
 
 ## Cost Estimate
 
-The cost drivers are the mw1.large base environment (billed hourly around the clock, the dominant line) plus worker scaling — each additional mw1.large worker adds its own hourly charge, and this preset allows up to 25. CloudWatch Logs costs apply for the 5 enabled logging modules. The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awsmwaaenvironment.yaml` — computed from the pinned price book, never hand-typed here.
+The cost drivers are the mw1.large base environment (billed hourly around the clock, the dominant line) plus worker scaling — each additional mw1.large worker adds its own hourly charge, and this preset allows up to 25. CloudWatch Logs costs apply for the 5 enabled logging modules. The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awsmwaaenvironment.yaml` — computed from the pinned price book, never hand-typed here.
 
 ## Customization
 

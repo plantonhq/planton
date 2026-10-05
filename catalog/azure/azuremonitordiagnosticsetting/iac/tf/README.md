@@ -1,7 +1,7 @@
 # AzureMonitorDiagnosticSetting - Terraform Module
 
-Terraform implementation for the AzureMonitorDiagnosticSetting deployment
-component.
+Terraform implementation for the AzureMonitorDiagnosticSetting
+kind.
 
 ## Resources Created
 

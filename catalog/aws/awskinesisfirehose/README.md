@@ -371,7 +371,7 @@ The input format is one deserializer arm (`open_x_json` or `hive_json`), the out
 | `content_encoding` | string | No | `"NONE"` | `"NONE"` or `"GZIP"` |
 | `common_attributes` | repeated object | No | — | Custom key-value pairs sent as HTTP headers |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

@@ -19,15 +19,15 @@ func repoRoot(t *testing.T) string {
 	return filepath.Join(filepath.Dir(thisFile), "..", "..")
 }
 
-// TestComponentAnatomyGate is the CI guardrail: the live walk over the whole
+// TestKindAnatomyGate is the CI guardrail: the live walk over the whole
 // catalog must not introduce a violation outside the baseline or leave a
 // stale baseline entry. On failure, either fix the anatomy (the detail says
 // how) or -- for a deliberate, parity-routed gap -- regenerate the baseline
 // with PLANTON_REGEN_ANATOMY_BASELINE=1 and justify the growth in review.
-func TestComponentAnatomyGate(t *testing.T) {
+func TestKindAnatomyGate(t *testing.T) {
 	root := repoRoot(t)
 	if _, err := os.Stat(filepath.Join(root, "catalog")); err != nil {
-		t.Skip("catalog source tree not present (bazel sandbox); runs under go test and the lint.component-anatomy lane")
+		t.Skip("catalog source tree not present (bazel sandbox); runs under go test and the lint.kind-anatomy lane")
 	}
 
 	violations, err := Check(root)
@@ -73,10 +73,10 @@ func TestCheck_HermeticFixture(t *testing.T) {
 		}
 	}
 
-	// A well-formed component missing several requirements, carrying several
+	// A well-formed kind missing several requirements, carrying several
 	// forbidden residents. awss3bucket is a real registered kind, so the
 	// registry lookup resolves; every OTHER registered kind will report
-	// missing-component-dir (expected -- counted, not enumerated).
+	// missing-kind-dir (expected -- counted, not enumerated).
 	write("catalog/aws/awss3bucket/v1alpha1/api.proto")
 	write("catalog/aws/awss3bucket/v1alpha1/api.pb.go")
 	write("catalog/aws/awss3bucket/v1alpha1/spec.proto")             // no stub -> missing-stub
@@ -91,10 +91,10 @@ func TestCheck_HermeticFixture(t *testing.T) {
 	write("catalog/aws/awss3bucket/iac/provider-parity.md")   // -> unexpected-entry (only the .yaml is declared)
 	write("catalog/aws/awss3bucket/presets/01-basic.yaml")    // no sidecar -> missing-preset-sidecar
 	write("catalog/aws/awss3bucket/cost.yaml")                // allowed: the cost profile (controls.yaml deliberately absent)
-	write("catalog/aws/notakinddir/spec.proto")               // -> unregistered-component-dir
+	write("catalog/aws/notakinddir/spec.proto")               // -> unregistered-kind-dir
 	write("catalog/stray-file.txt")                           // -> unexpected-entry (catalog root)
-	write("catalog/_compliance/controls-catalog.yaml")        // ignored: non-component home at the catalog root
-	write("catalog/_pricing/estimates/awss3bucket.yaml")      // ignored: non-component home at the catalog root
+	write("catalog/_compliance/controls-catalog.yaml")        // ignored: non-kind home at the catalog root
+	write("catalog/_pricing/estimates/awss3bucket.yaml")      // ignored: non-kind home at the catalog root
 
 	violations, err := Check(root)
 	if err != nil {
@@ -123,9 +123,9 @@ func TestCheck_HermeticFixture(t *testing.T) {
 		"catalog/aws/awss3bucket:missing-logo",
 		"catalog/aws/awss3bucket:missing-control-profile",
 		"catalog/aws/awss3bucket/iac:missing-permissions",
-		"catalog/aws/notakinddir:unregistered-component-dir",
+		"catalog/aws/notakinddir:unregistered-kind-dir",
 		"catalog/stray-file.txt:unexpected-entry",
-		"AwsEcsService:missing-component-dir", // representative of the completeness half
+		"AwsEcsService:missing-kind-dir", // representative of the completeness half
 	} {
 		if !got[want] {
 			t.Errorf("expected violation %s to fire", want)
@@ -140,8 +140,8 @@ func TestCheck_HermeticFixture(t *testing.T) {
 		"catalog/aws/awss3bucket/cost.yaml:unexpected-entry",
 		"catalog/aws/awss3bucket/v1alpha1/api.proto:unexpected-entry",
 		"catalog/aws/awss3bucket/iac/provider-parity.yaml:unexpected-entry",
-		"catalog/_compliance:unregistered-component-dir",
-		"catalog/_pricing:unregistered-component-dir",
+		"catalog/_compliance:unregistered-kind-dir",
+		"catalog/_pricing:unregistered-kind-dir",
 	} {
 		if got[wrong] {
 			t.Errorf("violation %s must not fire on the well-formed part", wrong)

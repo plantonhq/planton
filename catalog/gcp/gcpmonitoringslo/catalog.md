@@ -4,7 +4,7 @@ Creates a Cloud Monitoring service-level objective — the formal reliability ta
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SLO** -- a `monitoring.Slo` with the configured goal, period, and service-level indicator
 - **Monitoring service** (optional, count-gated) -- a `monitoring.CustomService` or `monitoring.GenericService` when the spec's service arm asks for one
@@ -58,7 +58,7 @@ spec:
 planton apply -f slo.yaml
 ```
 
-Three nines of good checkouts, measured over a rolling 30 days, on a custom service created in the same apply. A Stack Job tracks the provisioning in real time.
+Three nines of good checkouts, measured over a rolling 30 days, on a custom service created in the same apply. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,15 +92,15 @@ These are the most important decisions when configuring an SLO. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -117,6 +117,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Monitoring Alert Policy**](/cloud-catalog/gcp-monitoring-alert-policy) -- burn-rate alerts are how an SLO pages someone
-- [**GCP Log Metric**](/cloud-catalog/gcp-log-metric) -- log-based metrics feed request-based SLIs
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the SLO is created
+- [**GCP Monitoring Alert Policy**](/infra-catalog/gcp-monitoring-alert-policy) -- burn-rate alerts are how an SLO pages someone
+- [**GCP Log Metric**](/infra-catalog/gcp-log-metric) -- log-based metrics feed request-based SLIs
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the SLO is created

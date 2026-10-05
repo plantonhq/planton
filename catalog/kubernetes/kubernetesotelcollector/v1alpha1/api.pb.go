@@ -31,7 +31,7 @@ type KubernetesOtelCollector struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesOtelCollectorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesOtelCollector) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesOtelCollector) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesOtelCollector) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesOtelCollector) GetStatus() *KubernetesOtelCollectorStatus {
 // otel-collector-kubernetes status.
 type KubernetesOtelCollectorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesOtelCollectorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesOtelCollectorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesOtelCollectorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesOtelCollectorStatus) GetOutputs() *KubernetesOtelCollectorStackOutputs {
+func (x *KubernetesOtelCollectorStatus) GetOutputs() *KubernetesOtelCollectorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_api_proto_rawDesc
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17KubernetesOtelCollectorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
 	"\x04spec\x18\x04 \x01(\v2T.dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12n\n" +
-	"\x06status\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorStatusR\x06status\"\x97\x01\n" +
-	"\x1dKubernetesOtelCollectorStatus\x12v\n" +
-	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorStackOutputsR\aoutputsB\xba\x03\n" +
+	"\x06status\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorStatusR\x06status\"\x92\x01\n" +
+	"\x1dKubernetesOtelCollectorStatus\x12q\n" +
+	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorOutputsR\aoutputsB\xba\x03\n" +
 	";com.dev.planton.kubernetes.kubernetesotelcollector.v1alpha1B\bApiProtoP\x01Zpgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesotelcollector/v1alpha1;kubernetesotelcollectorv1alpha1\xa2\x02\x04DPKK\xaa\x027Dev.Planton.Kubernetes.Kubernetesotelcollector.V1alpha1\xca\x027Dev\\Planton\\Kubernetes\\Kubernetesotelcollector\\V1alpha1\xe2\x02CDev\\Planton\\Kubernetes\\Kubernetesotelcollector\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Kubernetes::Kubernetesotelcollector::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_api_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesOtelCollector)(nil),             // 0: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollector
-	(*KubernetesOtelCollectorStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesOtelCollectorSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorSpec
-	(*KubernetesOtelCollectorStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorStackOutputs
+	(*KubernetesOtelCollector)(nil),        // 0: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollector
+	(*KubernetesOtelCollectorStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesOtelCollectorSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorSpec
+	(*KubernetesOtelCollectorOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorOutputs
 }
 var file_catalog_kubernetes_kubernetesotelcollector_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollector.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollector.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollector.spec:type_name -> dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorSpec
 	1, // 2: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollector.status:type_name -> dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorStatus
-	4, // 3: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesotelcollector.v1alpha1.KubernetesOtelCollectorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

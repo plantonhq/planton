@@ -3,4 +3,4 @@
 name: auth0-prompt-custom-text
 runtime:
   name: go
-description: Pulumi module for Auth0PromptCustomText component
+description: Pulumi module for Auth0PromptCustomText kind

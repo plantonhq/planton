@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// signoz-kubernetes stack-input
-type KubernetesSignozStackInput struct {
+// signoz-kubernetes iac-input
+type KubernetesSignozIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *KubernetesSignoz `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-credential
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesSignozStackInput struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *KubernetesSignozStackInput) Reset() {
-	*x = KubernetesSignozStackInput{}
+func (x *KubernetesSignozIacInput) Reset() {
+	*x = KubernetesSignozIacInput{}
 	mi := &file_catalog_kubernetes_kubernetessignoz_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesSignozStackInput) String() string {
+func (x *KubernetesSignozIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesSignozStackInput) ProtoMessage() {}
+func (*KubernetesSignozIacInput) ProtoMessage() {}
 
-func (x *KubernetesSignozStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesSignozIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetessignoz_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,26 +60,26 @@ func (x *KubernetesSignozStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesSignozStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesSignozStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesSignozIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesSignozIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetessignoz_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesSignozStackInput) GetTarget() *KubernetesSignoz {
+func (x *KubernetesSignozIacInput) GetTarget() *KubernetesSignoz {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesSignozStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesSignozIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
 	return nil
 }
 
-func (x *KubernetesSignozStackInput) GetKubernetesNamespace() string {
+func (x *KubernetesSignozIacInput) GetKubernetesNamespace() string {
 	if x != nil {
 		return x.KubernetesNamespace
 	}
@@ -90,8 +90,8 @@ var File_catalog_kubernetes_kubernetessignoz_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetessignoz_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetessignoz/v1alpha1/input.proto\x120dev.planton.kubernetes.kubernetessignoz.v1alpha1\x1a6catalog/kubernetes/kubernetessignoz/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\x86\x02\n" +
-	"\x1aKubernetesSignozStackInput\x12Z\n" +
+	"8catalog/kubernetes/kubernetessignoz/v1alpha1/input.proto\x120dev.planton.kubernetes.kubernetessignoz.v1alpha1\x1a6catalog/kubernetes/kubernetessignoz/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\x84\x02\n" +
+	"\x18KubernetesSignozIacInput\x12Z\n" +
 	"\x06target\x18\x01 \x01(\v2B.dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignozR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfig\x121\n" +
 	"\x14kubernetes_namespace\x18\x03 \x01(\tR\x13kubernetesNamespaceB\x8b\x03\n" +
@@ -112,13 +112,13 @@ func file_catalog_kubernetes_kubernetessignoz_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_kubernetes_kubernetessignoz_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetessignoz_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesSignozStackInput)(nil),          // 0: dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignozStackInput
+	(*KubernetesSignozIacInput)(nil),            // 0: dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignozIacInput
 	(*KubernetesSignoz)(nil),                    // 1: dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignoz
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetessignoz_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignozStackInput.target:type_name -> dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignoz
-	2, // 1: dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignozStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignozIacInput.target:type_name -> dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignoz
+	2, // 1: dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignozIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

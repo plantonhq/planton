@@ -37,11 +37,11 @@ func parseNamespaceName(namespaceId string) (string, error) {
 	return parts[1], nil
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureservicebusqueuev1alpha1.AzureServiceBusQueueStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureservicebusqueuev1alpha1.AzureServiceBusQueueIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureServiceBusQueue = stackInput.Target
-	locals.NamespaceId = stackInput.Target.Spec.NamespaceId.GetValue()
+	locals.AzureServiceBusQueue = iacInput.Target
+	locals.NamespaceId = iacInput.Target.Spec.NamespaceId.GetValue()
 
 	// Queues carry no Azure tags: ARM does not support tags on Service Bus
 	// entities, so the platform's identity tags live on the parent

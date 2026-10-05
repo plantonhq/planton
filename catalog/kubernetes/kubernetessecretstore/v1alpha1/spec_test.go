@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	kubernetesprovider "github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -23,7 +23,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("KubernetesSecretStore Validation Tests", func() {
 		input = &KubernetesSecretStore{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesSecretStore",
-			Metadata:   &shared.CloudResourceMetadata{Name: "team-a-gcp"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "team-a-gcp"},
 			Spec: &KubernetesSecretStoreSpec{
 				Namespace: literal("team-a"),
 				Config: &kubernetesprovider.ExternalSecretsStoreConfig{
@@ -139,7 +139,7 @@ var _ = ginkgo.Describe("KubernetesSecretStore Validation Tests", func() {
 				Backend: &kubernetesprovider.ExternalSecretsStoreConfig_AzureKeyVault{
 					AzureKeyVault: &kubernetesprovider.ExternalSecretsStoreAzure{
 						VaultUrl: valueFrom(
-							cloudresourcekind.CloudResourceKind_AzureKeyVault, "platform-kv", "status.outputs.vault_uri"),
+							catalogkind.CatalogKind_AzureKeyVault, "platform-kv", "status.outputs.vault_uri"),
 						TenantId: "00000000-0000-0000-0000-000000000000",
 					},
 				},

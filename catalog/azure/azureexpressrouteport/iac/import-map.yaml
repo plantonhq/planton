@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azureexpressrouteport
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: express_route_port_id
       derivations:
-        - from_stack_output: express_route_port_id
+        - from_output: express_route_port_id
       where_to_find: >-
         Portal -> ExpressRoute ports -> the port -> Properties ->
         Resource ID, or `az network express-route port show -g <rg> -n

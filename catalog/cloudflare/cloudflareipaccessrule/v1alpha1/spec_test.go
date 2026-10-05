@@ -27,7 +27,7 @@ func validRule(spec *CloudflareIpAccessRuleSpec) *CloudflareIpAccessRule {
 	return &CloudflareIpAccessRule{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareIpAccessRule",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ip-access-rule",
 		},
 		Spec: spec,

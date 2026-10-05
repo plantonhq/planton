@@ -42,7 +42,7 @@ MemoryDB's authentication model becomes representable in the resource graph: **`
 
 - Two new verifiers registered: `memorydb.go` (DescribeUsers/DescribeACLs/DescribeClusters keyed on names, state-aware — deleting counts as absent) and `client_vpn.go` (DescribeClientVpnEndpoints keyed on the endpoint ID); the memorydb SDK module added.
 - Registry prerequisites: cluster → `[AwsSubnet]`; Client VPN → `[AwsCertManagerCert]` (a new imported self-signed ACM fixture serves as both server certificate and client CA chain — the first `awscertmanagercert` prerequisite).
-- Six scenarios with documented arm exclusions, eight entrypoints, four conformance cases in `pkg/outputs`, hack manifests + `iac/pulumi/stack-input.yaml` for all four kinds.
+- Six scenarios with documented arm exclusions, eight entrypoints, four conformance cases in `pkg/outputs`, hack manifests + `iac/pulumi/iac-input.yaml` for all four kinds.
 - **Live lanes deferred by owner decision** (recorded in all four profiles): user/ACL dual-engine create/delete cycles were exercised against the live account (verified via CloudTrail) but a clean observed completion is pending; the Client VPN and cluster lanes carry provisioning-cost deferrals (~25–45 minutes per engine lane). The interrupted run's orphans — two Client VPN endpoints with associations, two prerequisite VPCs with subnets, two ACM fixture certs — were swept; the account verified clean (zero endpoints, zero non-default MemoryDB resources, zero fixture VPCs/certs).
 
 ## Validation

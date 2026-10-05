@@ -4,7 +4,7 @@ Grants one role, to one identity, on ONE Pub/Sub topic — the least-privilege w
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Topic IAM Member Binding** -- a `google_pubsub_topic_iam_member` merging the (role, member) pair into the target topic's IAM policy
 
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **A Pub/Sub topic** whose IAM policy receives the grant. Provide its full name (`projects/<project>/topics/<topic>`) directly or reference a GcpPubSubTopic Cloud Resource via ValueFromRef.
+- **A Pub/Sub topic** whose IAM policy receives the grant. Provide its full name (`projects/<project>/topics/<topic>`) directly or reference a GcpPubSubTopic Infra Component via ValueFromRef.
 - **The identity** receiving the grant must already exist — a sink's writer identity exists once the sink is created.
 
 ## Deploy
@@ -50,7 +50,7 @@ spec:
 planton apply -f gcp-pubsub-topic-iam-member.yaml
 ```
 
-This merges one binding into the topic's policy. A Stack Job tracks the provisioning in real time.
+This merges one binding into the topic's policy. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,7 +90,7 @@ These are the most important decisions when configuring a grant. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -100,9 +100,9 @@ These are the most important decisions when configuring a grant. Explore the ful
 | **GcpLoggingSink** (optional) | `member` | `status.outputs.writer_identity` |
 | **GcpSccNotificationConfig** (optional) | `member` | `status.outputs.service_account_member` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no outputs a downstream Cloud Resource would consume: `status.outputs` records the grant's post-resolution facts — the (`topic`, `role`, `member`) triple after any references were resolved, plus the topic IAM policy `etag` at the moment this grant merged. They exist for audit and drift review, not for ValueFromRef wiring.
+This kind has no outputs a downstream Infra Component would consume: `status.outputs` records the grant's post-resolution facts — the (`topic`, `role`, `member`) triple after any references were resolved, plus the topic IAM policy `etag` at the moment this grant merged. They exist for audit and drift review, not for ValueFromRef wiring.
 
 ## Common Patterns
 
@@ -116,8 +116,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Pub/Sub Topic**](/cloud-catalog/gcp-pub-sub-topic) -- its `topic_id` output feeds the topic field; the topic this grant controls access to
-- [**GCP Logging Sink**](/cloud-catalog/gcp-logging-sink) -- its `writer_identity` output feeds the member field for Pub/Sub log exports
-- [**GCP SCC Notification Config**](/cloud-catalog/gcp-scc-notification-config) -- its `service_account_member` output feeds the member field for findings notifications
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- its `member` output feeds the member field for workload access
-- [**GCP IAM Custom Role**](/cloud-catalog/gcp-iam-custom-role) -- its `name` output feeds the role field for curated permission bundles
+- [**GCP Pub/Sub Topic**](/infra-catalog/gcp-pub-sub-topic) -- its `topic_id` output feeds the topic field; the topic this grant controls access to
+- [**GCP Logging Sink**](/infra-catalog/gcp-logging-sink) -- its `writer_identity` output feeds the member field for Pub/Sub log exports
+- [**GCP SCC Notification Config**](/infra-catalog/gcp-scc-notification-config) -- its `service_account_member` output feeds the member field for findings notifications
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- its `member` output feeds the member field for workload access
+- [**GCP IAM Custom Role**](/infra-catalog/gcp-iam-custom-role) -- its `name` output feeds the role field for curated permission bundles

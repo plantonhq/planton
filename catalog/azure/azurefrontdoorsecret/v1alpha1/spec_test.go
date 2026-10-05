@@ -32,7 +32,7 @@ func minimalSpec() *AzureFrontDoorSecret {
 	return &AzureFrontDoorSecret{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFrontDoorSecret",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-front-door-secret",
 		},
 		Spec: &AzureFrontDoorSecretSpec{

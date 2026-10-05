@@ -21,7 +21,7 @@ control compliance, delivered as CSV/JSON files to an S3 bucket.
   reference), and account/OU/region coverage.
 
 The frameworks the compliance templates evaluate are deliberately NOT
-part of this component — see
+part of this kind — see
 [AwsBackupFramework](../awsbackupframework).
 
 See [v1alpha1/reference.md](v1alpha1/reference.md) for the full field

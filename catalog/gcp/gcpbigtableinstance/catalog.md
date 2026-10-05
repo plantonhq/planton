@@ -4,7 +4,7 @@ Deploys a Cloud Bigtable instance with one or more clusters, configurable scalin
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Bigtable Admin API enablement** (`bigtableadmin.googleapis.com`) on the target project (never disabled on destroy)
 - **Bigtable Instance** -- a managed instance in the specified GCP project, serving as the logical container for data with deletion protection and optional display name
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the Bigtable instance will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the Bigtable instance will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **Cloud KMS key** (if using CMEK) -- the key region must match the cluster zone's region. The Bigtable service account must have `roles/cloudkms.cryptoKeyEncrypterDecrypter` on the key.
 
 ## Deploy
@@ -55,7 +55,7 @@ spec:
 planton apply -f bigtable-instance.yaml
 ```
 
-This creates a Bigtable instance with a single 3-node SSD cluster, Google-managed encryption, and deletion protection enabled (default). No autoscaling or multi-zone replication is configured. A Stack Job tracks the provisioning in real time.
+This creates a Bigtable instance with a single 3-node SSD cluster, Google-managed encryption, and deletion protection enabled (default). No autoscaling or multi-zone replication is configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -86,16 +86,16 @@ These are the most important decisions when configuring a Bigtable instance. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpKmsKey** (optional, per cluster) | `clusters[].kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -114,6 +114,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the Bigtable instance is created
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides the Cloud KMS key for per-cluster CMEK encryption
-- [**GCP Bigtable Table**](/cloud-catalog/gcp-bigtable-table) -- tables created on this instance, referencing its `instance_name` output
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the Bigtable instance is created
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides the Cloud KMS key for per-cluster CMEK encryption
+- [**GCP Bigtable Table**](/infra-catalog/gcp-bigtable-table) -- tables created on this instance, referencing its `instance_name` output

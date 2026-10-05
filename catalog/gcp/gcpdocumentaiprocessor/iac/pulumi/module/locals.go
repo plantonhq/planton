@@ -11,10 +11,10 @@ type Locals struct {
 	GcpDocumentAiProcessor *gcpdocumentaiprocessorv1alpha1.GcpDocumentAiProcessor
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpdocumentaiprocessorv1alpha1.GcpDocumentAiProcessorStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpdocumentaiprocessorv1alpha1.GcpDocumentAiProcessorIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpDocumentAiProcessor = stackInput.Target
+	locals.GcpDocumentAiProcessor = iacInput.Target
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

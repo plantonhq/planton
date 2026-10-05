@@ -4,7 +4,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output name constants — the stack-outputs contract
+// Output name constants — the outputs contract
 // (outputs.proto). The Terraform twin exports the same handles.
 const (
 	OpNamespace           = "namespace"

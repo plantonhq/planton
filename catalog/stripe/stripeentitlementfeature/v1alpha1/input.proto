@@ -5,9 +5,9 @@ package dev.planton.stripe.stripeentitlementfeature.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/stripeentitlementfeature/v1alpha1/api.proto";
 
-// StripeEntitlementFeatureStackInput is the input to the StripeEntitlementFeature IaC module.
+// StripeEntitlementFeatureIacInput is the input to the StripeEntitlementFeature IaC module.
 // It contains the target resource and the Stripe provider configuration.
-message StripeEntitlementFeatureStackInput {
+message StripeEntitlementFeatureIacInput {
   // target is the StripeEntitlementFeature resource to be deployed.
   StripeEntitlementFeature target = 1;
 

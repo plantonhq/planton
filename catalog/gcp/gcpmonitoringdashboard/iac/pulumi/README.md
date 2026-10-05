@@ -26,7 +26,7 @@ iac/pulumi/
     ├── main.go                # Module coordinator
     ├── dashboard.go           # Dashboard creation from the JSON document
     ├── locals.go              # Resolved resource
-    └── outputs.go             # Stack output constants
+    └── outputs.go             # Output constants
 ```
 
 ## How the module maps the spec
@@ -41,7 +41,7 @@ The module also enables `monitoring.googleapis.com` on the target project
 (`disable_on_destroy` false — tearing down one dashboard never disables
 monitoring project-wide).
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|
@@ -49,7 +49,7 @@ monitoring project-wide).
 
 ## Local development
 
-`stack-input.yaml` carries a ready smoke manifest. Run the module directly:
+`iac-input.yaml` carries a ready smoke manifest. Run the module directly:
 
 ```bash
 planton apply --manifest ../../e2e/manifest.yaml --module-dir .

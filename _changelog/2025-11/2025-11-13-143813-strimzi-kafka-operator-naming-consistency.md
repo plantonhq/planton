@@ -2,7 +2,7 @@
 
 **Date**: November 13, 2025  
 **Type**: Refactoring  
-**Components**: API Definitions, Cloud Resource Registry, Documentation, Pulumi Implementation
+**Components**: API Definitions, Catalog Kind Registry, Documentation, Pulumi Implementation
 
 ## Summary
 
@@ -18,17 +18,17 @@ The Kafka operator resource was originally named `KafkaOperatorKubernetes`, whic
 - **Lack of Specificity**: The name "Kafka Operator" is generic—it doesn't indicate we're specifically deploying **Strimzi**, the CNCF-backed, production-ready Kafka operator
 - **Verbose API Surface**: Users had to write `kind: KafkaOperatorKubernetes` in manifests, which is unnecessarily long and doesn't communicate the actual operator being deployed
 - **Naming Inconsistency**: Mixed naming patterns across addon operators—some with suffixes, some without, and none clearly identifying the specific operator implementation
-- **Code Verbosity**: Proto message types like `KafkaOperatorKubernetesSpec` and `KafkaOperatorKubernetesStackInput` were excessively long
+- **Code Verbosity**: Proto message types like `KafkaOperatorKubernetesSpec` and `KafkaOperatorKubernetesIacInput` were excessively long
 - **Poor Developer Experience**: The redundancy and lack of clarity made code harder to read and type
 
-The provider namespace (`dev.planton.provider.kubernetes.addon.strimzikafkaoperator.v1`) already clearly indicates this is a Kubernetes component, so including "Kubernetes" in every message name adds noise without value. More importantly, the generic "Kafka Operator" name doesn't convey that this is **Strimzi specifically**—a critical detail for users choosing between Strimzi, Confluent for Kubernetes, or Banzai Cloud Koperator.
+The provider namespace (`dev.planton.provider.kubernetes.addon.strimzikafkaoperator.v1`) already clearly indicates this is a Kubernetes kind, so including "Kubernetes" in every message name adds noise without value. More importantly, the generic "Kafka Operator" name doesn't convey that this is **Strimzi specifically**—a critical detail for users choosing between Strimzi, Confluent for Kubernetes, or Banzai Cloud Koperator.
 
 ## Solution / What's New
 
 Performed a comprehensive rename from `KafkaOperatorKubernetes` to `StrimziKafkaOperator` across:
 
 1. **Proto API Definitions**: Updated all message types, field references, and validation constraints
-2. **Cloud Resource Registry**: Modified the enum entry in `cloud_resource_kind.proto`
+2. **Catalog Kind Registry**: Modified the enum entry in `catalog_kind.proto`
 3. **Documentation**: Updated all user-facing docs to reflect the Strimzi-specific naming
 4. **Implementation Code**: Modified Go code in Pulumi modules to use renamed types
 
@@ -87,33 +87,33 @@ message StrimziKafkaOperatorSpecContainer { ... }
 
 Updated documentation in spec messages to clarify this is the **Strimzi Kafka Operator** specifically.
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/strimzikafkaoperator/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/strimzikafkaoperator/v1/iac_input.proto`
 
 ```protobuf
 // Before
-message KafkaOperatorKubernetesStackInput {
+message KafkaOperatorKubernetesIacInput {
   KafkaOperatorKubernetes target = 1;
 }
 
 // After
-message StrimziKafkaOperatorStackInput {
+message StrimziKafkaOperatorIacInput {
   StrimziKafkaOperator target = 1;
 }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/strimzikafkaoperator/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/strimzikafkaoperator/v1/outputs.proto`
 
 ```protobuf
 // Before
-message KafkaOperatorKubernetesStackOutputs { ... }
+message KafkaOperatorKubernetesOutputs { ... }
 
 // After
-message StrimziKafkaOperatorStackOutputs { ... }
+message StrimziKafkaOperatorOutputs { ... }
 ```
 
 ### Registry Update
 
-**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/catalogkind/catalog_kind.proto`
 
 ```protobuf
 // Before
@@ -139,20 +139,20 @@ StrimziKafkaOperator = 826 [(kind_meta) = {
 
 ```go
 // Before
-stackInput := &strimzikafkaoperatorv1.KafkaOperatorKubernetesStackInput{}
+iacInput := &strimzikafkaoperatorv1.KafkaOperatorKubernetesIacInput{}
 
 // After
-stackInput := &strimzikafkaoperatorv1.StrimziKafkaOperatorStackInput{}
+iacInput := &strimzikafkaoperatorv1.StrimziKafkaOperatorIacInput{}
 ```
 
 **File**: `apis/dev/planton/provider/kubernetes/addon/strimzikafkaoperator/v1/iac/pulumi/module/main.go`
 
 ```go
 // Before
-func Resources(ctx *pulumi.Context, stackInput *strimzikafkaoperatorv1.KafkaOperatorKubernetesStackInput) error
+func Resources(ctx *pulumi.Context, iacInput *strimzikafkaoperatorv1.KafkaOperatorKubernetesIacInput) error
 
 // After
-func Resources(ctx *pulumi.Context, stackInput *strimzikafkaoperatorv1.StrimziKafkaOperatorStackInput) error
+func Resources(ctx *pulumi.Context, iacInput *strimzikafkaoperatorv1.StrimziKafkaOperatorIacInput) error
 ```
 
 **File**: `apis/dev/planton/provider/kubernetes/addon/strimzikafkaoperator/v1/iac/pulumi/module/kafka_operator.go`
@@ -168,7 +168,7 @@ func kafkaOperator(ctx *pulumi.Context, target *strimzikafkaoperatorv1.StrimziKa
 ### Documentation Updates
 
 Updated all occurrences in:
-- `docs/README.md` (main component documentation)
+- `docs/README.md` (main kind documentation)
   - Updated all references from `KafkaOperatorKubernetes` to `StrimziKafkaOperator`
   - Documentation already contained extensive Strimzi-specific content, now the API name matches the documented implementation
 
@@ -192,8 +192,8 @@ kind: StrimziKafkaOperator  # vs. kind: KafkaOperatorKubernetes
 
 Proto message names are now more concise and specific:
 - `StrimziKafkaOperatorSpec` (was `KafkaOperatorKubernetesSpec`)
-- `StrimziKafkaOperatorStackInput` (was `KafkaOperatorKubernetesStackInput`)
-- `StrimziKafkaOperatorStackOutputs` (was `KafkaOperatorKubernetesStackOutputs`)
+- `StrimziKafkaOperatorIacInput` (was `KafkaOperatorKubernetesIacInput`)
+- `StrimziKafkaOperatorOutputs` (was `KafkaOperatorKubernetesOutputs`)
 
 ### Naming Consistency
 
@@ -252,17 +252,17 @@ spec:
 **Proto Definitions** (4 files):
 - `api.proto` - Main API message types and comments
 - `spec.proto` - Spec and container message types with updated descriptions
-- `stack_input.proto` - Stack input message type
-- `stack_outputs.proto` - Stack outputs message type with updated comments
+- `iac_input.proto` - IaC input message type
+- `outputs.proto` - Outputs message type with updated comments
 
 **Registry** (1 file):
-- `cloud_resource_kind.proto` - Enum entry
+- `catalog_kind.proto` - Enum entry
 
 **Documentation** (1 file):
-- `docs/README.md` - Component documentation (5 occurrences updated)
+- `docs/README.md` - Kind documentation (5 occurrences updated)
 
 **Implementation** (3 files):
-- `iac/pulumi/main.go` - Stack input type reference
+- `iac/pulumi/main.go` - IaC input type reference
 - `iac/pulumi/module/main.go` - Function signature
 - `iac/pulumi/module/kafka_operator.go` - Function signature
 

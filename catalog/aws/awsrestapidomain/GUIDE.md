@@ -1,6 +1,6 @@
-# AwsRestApiDomain — Component Guide
+# AwsRestApiDomain — Kind Guide
 
-Authored operational judgment for the REST API custom-domain component:
+Authored operational judgment for the REST API custom-domain kind:
 the design decisions behind the spec's shape, and what to know before
 fronting APIs with your own hostname.
 
@@ -11,7 +11,7 @@ fronting APIs with your own hostname.
   every mapping to share an API lifecycle.
 - **`routing_mode` is modeled; routing rules are not.** Rules are an
   API Gateway v2 surface that also attaches to v1 domains, and they
-  already live on AwsHttpApiDomain. This component exposes the v1
+  already live on AwsHttpApiDomain. This kind exposes the v1
   knob that chooses between base-path mappings and those rules.
 - **DNS stays outside.** The domain exists independently of any
   record pointing at it. Alias targets and zone IDs are outputs so
@@ -23,7 +23,7 @@ fronting APIs with your own hostname.
 - **Uploaded certificate material is a legacy path.** AWS's docs are
   ambiguous about which endpoint types accept direct uploads (the SDK
   says edge-or-private, the provider shows a regional example); the
-  component permits it everywhere and lets AWS arbitrate. Prefer ACM.
+  kind permits it everywhere and lets AWS arbitrate. Prefer ACM.
 
 ## Running custom domains in production
 

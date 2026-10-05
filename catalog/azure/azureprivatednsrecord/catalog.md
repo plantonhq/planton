@@ -4,7 +4,7 @@ Deploys one DNS record set (A, AAAA, CNAME, MX, PTR, SRV, or TXT) in an Azure Pr
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **One record set** of the type your spec's payload declares -- all values for the (name, type) pair in one resource. Exactly one of the seven typed record resources materializes, addressed by the zone's ARM ID plus the record name.
 
@@ -51,11 +51,11 @@ spec:
 planton apply -f record.yaml
 ```
 
-This creates an A record answering `db.internal.acme.com` with one private IPv4 address, resolvable from every virtual network linked to the zone. A Stack Job tracks the provisioning in real time.
+This creates an A record answering `db.internal.acme.com` with one private IPv4 address, resolvable from every virtual network linked to the zone. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When the zone (and the record's target) are Cloud Resources in the same chart, wire them by reference:
+When the zone (and the record's target) are Infra Components in the same chart, wire them by reference:
 
 ```yaml
 spec:
@@ -89,7 +89,7 @@ These are the most important decisions when configuring an Azure Private DNS Rec
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
@@ -97,9 +97,9 @@ These are the most important decisions when configuring an Azure Private DNS Rec
 | Any component with a hostname output (CNAME target) | `cname` | declared explicitly per kind |
 | Any component with a string output (TXT values) | `txt` | declared explicitly per kind |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -117,5 +117,5 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Private DNS Zone**](/cloud-catalog/azure-private-dns-zone) -- the zone the record lives in; reference its `zone_id` output.
-- [**Azure Private DNS Zone Virtual Network Link**](/cloud-catalog/azure-private-dns-zone-virtual-network-link) -- what makes the record resolvable: links the zone to the virtual networks that query it.
+- [**Azure Private DNS Zone**](/infra-catalog/azure-private-dns-zone) -- the zone the record lives in; reference its `zone_id` output.
+- [**Azure Private DNS Zone Virtual Network Link**](/infra-catalog/azure-private-dns-zone-virtual-network-link) -- what makes the record resolvable: links the zone to the virtual networks that query it.

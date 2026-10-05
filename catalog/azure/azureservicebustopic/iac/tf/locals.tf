@@ -17,7 +17,7 @@ locals {
   )
 
   # The namespace name, parsed from the resolved namespace ARM ID for
-  # the stack output -- consumers frequently need the namespace/topic
+  # the output -- consumers frequently need the namespace/topic
   # name pair. The anchored regex fails the plan loudly if the ID is not
   # a Service Bus namespace ARM ID.
   namespace_name = regex("/namespaces/(?P<name>[^/]+)$", var.spec.namespace_id)["name"]

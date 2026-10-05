@@ -1,10 +1,10 @@
 # AWS SES Configuration Set
 
-Deploys an Amazon SES (SESv2) configuration set — the named group of sending rules that email identities and individual send calls opt into. A configuration set is the policy layer of the SES graph: TLS posture, dedicated IP pool, open/click tracking, suppression, deliverability dashboards, and event publishing are defined once here, and every identity that references the set ([AwsSesEmailIdentity](/cloud-catalog/aws-ses-email-identity)) inherits them. Event publishing is where SES becomes observable — bounce/complaint feedback loops, the difference between a healthy sender reputation and a suspended account, are built from exactly the event destinations this set carries.
+Deploys an Amazon SES (SESv2) configuration set — the named group of sending rules that email identities and individual send calls opt into. A configuration set is the policy layer of the SES graph: TLS posture, dedicated IP pool, open/click tracking, suppression, deliverability dashboards, and event publishing are defined once here, and every identity that references the set ([AwsSesEmailIdentity](/infra-catalog/aws-ses-email-identity)) inherits them. Event publishing is where SES becomes observable — bounce/complaint feedback loops, the difference between a healthy sender reputation and a suspended account, are built from exactly the event destinations this set carries.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SES Configuration Set** -- the named rule group (the set name derives from the resource name), with the sending kill switch, reputation metrics, and suppression overrides
 - **Delivery Options** -- TLS enforcement, the retry budget, and the dedicated IP pool binding, when configured
@@ -17,8 +17,8 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **Destination resources** -- event destinations reference other Planton resources: an [AwsSnsTopic](/cloud-catalog/aws-sns-topic) for the classic feedback loop, an AwsKinesisFirehose plus an [AwsIamRole](/cloud-catalog/aws-iam-role) for analytics, or an AwsEventBridgeBus for rule-based routing. Create them first, or paste literal ARNs.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **Destination resources** -- event destinations reference other Planton resources: an [AwsSnsTopic](/infra-catalog/aws-sns-topic) for the classic feedback loop, an AwsKinesisFirehose plus an [AwsIamRole](/infra-catalog/aws-iam-role) for analytics, or an AwsEventBridgeBus for rule-based routing. Create them first, or paste literal ARNs.
 
 ### AWS Account
 
@@ -65,7 +65,7 @@ spec:
 planton apply -f ses-configuration-set.yaml
 ```
 
-This creates a production transactional set with reputation metrics on, both suppression reasons honored, and an SNS bounce/complaint feedback loop. A Stack Job tracks the provisioning in real time.
+This creates a production transactional set with reputation metrics on, both suppression reasons honored, and an SNS bounce/complaint feedback loop. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -119,7 +119,7 @@ These are the most important decisions when configuring a configuration set. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -130,9 +130,9 @@ These are the most important decisions when configuring a configuration set. Exp
 
 Pinpoint destinations take a literal ARN (Pinpoint is not modeled in this catalog). A set with no event destinations is a leaf.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -149,7 +149,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS SES Email Identity**](/cloud-catalog/aws-ses-email-identity) -- the verified sending domain or address that inherits this set as its default (references `configuration_set_name`)
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) -- the classic bounce/complaint feedback-loop destination
-- [**AWS Kinesis Firehose**](/cloud-catalog/aws-kinesis-firehose) -- streams email events to S3, Redshift, or OpenSearch for durable analytics
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the role SES assumes for Firehose event delivery
+- [**AWS SES Email Identity**](/infra-catalog/aws-ses-email-identity) -- the verified sending domain or address that inherits this set as its default (references `configuration_set_name`)
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) -- the classic bounce/complaint feedback-loop destination
+- [**AWS Kinesis Firehose**](/infra-catalog/aws-kinesis-firehose) -- streams email events to S3, Redshift, or OpenSearch for durable analytics
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the role SES assumes for Firehose event delivery

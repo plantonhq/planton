@@ -9,7 +9,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpgkeworkloadidentitybinding
+    e2e-catalog-kind: gcpgkeworkloadidentitybinding
   annotations:
     planton.dev/e2e: "true"
   tags:

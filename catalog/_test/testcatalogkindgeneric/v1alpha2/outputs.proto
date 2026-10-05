@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton._test.testcatalogkindgeneric.v1alpha2;
+
+// Outputs at v1alpha2. Relative to v1alpha1, `endpoint` is RENAMED to
+// `url` -- the outputs-path rename class: other resources reference outputs
+// by string path (foreign-key annotations, valueFrom fieldPaths), so the
+// conversion spec must declare the mapping for referrer rewriting.
+message TestCatalogKindGenericOutputs {
+  string id = 1;
+  string name = 2;
+  string url = 3;
+  repeated string tags = 4;
+}

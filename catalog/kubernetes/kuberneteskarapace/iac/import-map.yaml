@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kuberneteskarapace
 spec:
@@ -22,7 +22,7 @@ spec:
       tofu_resource_name: registry
       derivations:
         - from_metadata_name: true
-        - from_stack_output: service_name
+        - from_output: service_name
       where_to_find: >-
         The registry Service shares the resource's name —
         `kubectl get services -n <namespace>`.
@@ -53,27 +53,27 @@ spec:
     # ── shared namespace segment for every namespaced object ────────────
     - name: deployment_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         The registry's namespace — `kubectl get deployments -A`
         (NAMESPACE column).
     - name: service_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the registry.
     - name: secret_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the registry.
     # ── the optional anchor namespace ────────────────────────────────────
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the registry's

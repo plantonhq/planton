@@ -1,10 +1,10 @@
 # AWS ElastiCache User
 
-Deploys an ElastiCache RBAC user — one identity in the Redis/Valkey Role-Based Access Control system. RBAC is AWS's recommended authentication model for ElastiCache: instead of one shared AUTH token for every client, each application gets its own user with an access string scoping exactly which commands and keys it may touch. Rotating one application's credentials or revoking its access never disturbs the others. Users join user groups ([AwsElasticacheUserGroup](/cloud-catalog/aws-elasticache-user-group)), and a group attaches to a replication group or serverless cache. Password material lives in managed secrets referenced from the spec — never in the manifest.
+Deploys an ElastiCache RBAC user — one identity in the Redis/Valkey Role-Based Access Control system. RBAC is AWS's recommended authentication model for ElastiCache: instead of one shared AUTH token for every client, each application gets its own user with an access string scoping exactly which commands and keys it may touch. Rotating one application's credentials or revoking its access never disturbs the others. Users join user groups ([AwsElasticacheUserGroup](/infra-catalog/aws-elasticache-user-group)), and a group attaches to a replication group or serverless cache. Password material lives in managed secrets referenced from the spec — never in the manifest.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ElastiCache User** -- one RBAC identity whose AWS user id is the resource name (create-time immutable), carrying its Redis `ACL SETUSER` access string (scoping keys and command categories; tightening it later applies in place) and exactly one authentication mode: password (1–2 secrets, enabling zero-downtime rotation), IAM-signed tokens, or no credential (for the disabled default user)
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Managed secrets for passwords** -- when using password authentication, create the password as an org secret first; the spec carries a `$secret/<slug>` reference and the runner resolves it just-in-time at deploy. Each password's value must be 16–128 printable characters.
 
 ### AWS Account
@@ -53,7 +53,7 @@ spec:
 planton apply -f elasticache-user.yaml
 ```
 
-This creates a password-authenticated user scoped to the `orders:` key prefix with read/write command categories. A Stack Job tracks the provisioning in real time.
+This creates a password-authenticated user scoped to the `orders:` key prefix with read/write command categories. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -69,13 +69,13 @@ These are the most important decisions when configuring an ElastiCache user. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. It is a leaf the RBAC graph builds on: in a chart, users deploy first, then the group that collects them (referencing this user's `user_id` output), then the cache that attaches the group.
+This kind has no foreign key dependencies. It is a leaf the RBAC graph builds on: in a chart, users deploy first, then the group that collects them (referencing this user's `user_id` output), then the cache that attaches the group.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -95,5 +95,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS ElastiCache User Group**](/cloud-catalog/aws-elasticache-user-group) -- collects users into the RBAC attachment unit (references `user_id`)
-- [**AWS ElastiCache Serverless**](/cloud-catalog/aws-serverless-elasticache) -- the cache the user ultimately authenticates against, via its attached user group
+- [**AWS ElastiCache User Group**](/infra-catalog/aws-elasticache-user-group) -- collects users into the RBAC attachment unit (references `user_id`)
+- [**AWS ElastiCache Serverless**](/infra-catalog/aws-serverless-elasticache) -- the cache the user ultimately authenticates against, via its attached user group

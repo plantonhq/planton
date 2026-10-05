@@ -1,13 +1,13 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate quantities: a Key Vault secret is free to HOLD -- Microsoft's
 # price list has no storage meter for secrets, only the vault's operations
 # meter -- so the object itself never appears on the invoice, and every
 # charge it shapes is a data-plane call billed on the parent vault.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurekeyvaultsecret
 spec:

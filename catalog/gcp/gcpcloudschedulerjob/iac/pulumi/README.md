@@ -16,7 +16,7 @@ target type (HTTP, Pub/Sub, or App Engine) and optional retry configuration.
 | `module/locals.go` | Locals struct and initialization - extracts target and provider config |
 | `module/cloud_scheduler_job.go` | Core resource creation with all target types and retry config |
 | `module/outputs.go` | Output constant definitions (job_id, job_name, state) |
-| `main.go` | Pulumi entrypoint - loads stack input and delegates to module |
+| `main.go` | Pulumi entrypoint - loads IaC input and delegates to module |
 
 ## Usage
 

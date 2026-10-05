@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcppubsubtopic.v1alpha1;
 
 // Outputs produced after provisioning a GCP Pub/Sub topic.
-message GcpPubSubTopicStackOutputs {
+message GcpPubSubTopicOutputs {
   // The fully qualified topic ID.
   // Format: projects/{project}/topics/{name}
   // This is the value downstream resources (subscriptions, schedulers,

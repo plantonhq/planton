@@ -6,9 +6,9 @@
 # evaluates the same rules against live manifests. Prices live in the
 # provider's price book (../pricebook/). Grammar-reachable: the
 # committed meter is one ENI per ip_addresses entry x hours in the
-# month. Schema: finops/componentcostderivation/v1.
+# month. Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsroute53resolverendpoint
 spec:

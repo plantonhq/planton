@@ -4,18 +4,18 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/catalog/auth0/auth0eventstream/iac/pulumi/module"
 	auth0eventstreamv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0eventstream/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		stackInput := &auth0eventstreamv1alpha1.Auth0EventStreamStackInput{}
+		iacInput := &auth0eventstreamv1alpha1.Auth0EventStreamIacInput{}
 
-		if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
-			return errors.Wrap(err, "failed to load stack-input")
+		if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
+			return errors.Wrap(err, "failed to load iac-input")
 		}
 
-		return module.Resources(ctx, stackInput)
+		return module.Resources(ctx, iacInput)
 	})
 }

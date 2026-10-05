@@ -5,12 +5,12 @@ package dev.planton.kubernetes.kubernetespostgres.v1alpha1;
 import "catalog/kubernetes/kubernetes.proto";
 
 /**
- * **KubernetesPostgresStackOutputs** — the composition handles a deployed
+ * **KubernetesPostgresOutputs** — the composition handles a deployed
  * PostgreSQL cluster exports. Applications join through the SERVICES
  * (CloudNativePG re-points them across failovers) and authenticate with
  * the credential Secrets the operator maintains.
  */
-message KubernetesPostgresStackOutputs {
+message KubernetesPostgresOutputs {
   // Namespace the cluster runs in.
   string namespace = 1;
 

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureeventgridnamespace.v1alpha1;
 
-// **AzureEventgridNamespaceStackOutputs** captures the outputs from
+// **AzureEventgridNamespaceOutputs** captures the outputs from
 // provisioning an Azure Event Grid namespace.
-message AzureEventgridNamespaceStackOutputs {
+message AzureEventgridNamespaceOutputs {
   // The namespace's Azure Resource Manager ID -- the target an
   // AzureEventgridNamespaceTopic's namespace_id references.
   string namespace_id = 1;

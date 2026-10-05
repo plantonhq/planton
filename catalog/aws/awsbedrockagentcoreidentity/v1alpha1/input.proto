@@ -5,9 +5,9 @@ package dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1;
 import "catalog/aws/awsbedrockagentcoreidentity/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBedrockAgentCoreIdentityStackInput is the input for the IaC modules
+// AwsBedrockAgentCoreIdentityIacInput is the input for the IaC modules
 // that deploy the AgentCore identity bundle.
-message AwsBedrockAgentCoreIdentityStackInput {
+message AwsBedrockAgentCoreIdentityIacInput {
   // target is the AwsBedrockAgentCoreIdentity resource to deploy.
   AwsBedrockAgentCoreIdentity target = 1;
   // provider_config contains the AWS provider credentials and configuration.

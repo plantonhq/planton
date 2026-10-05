@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareMtlsCertificateStackOutputs captures the observable outputs after
+// CloudflareMtlsCertificateOutputs captures the observable outputs after
 // uploading an mTLS certificate.
-type CloudflareMtlsCertificateStackOutputs struct {
+type CloudflareMtlsCertificateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the uploaded certificate -- what Authenticated Origin Pulls
 	// rows, zone TLS CA associations, and Workers mTLS bindings reference.
@@ -36,20 +36,20 @@ type CloudflareMtlsCertificateStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareMtlsCertificateStackOutputs) Reset() {
-	*x = CloudflareMtlsCertificateStackOutputs{}
+func (x *CloudflareMtlsCertificateOutputs) Reset() {
+	*x = CloudflareMtlsCertificateOutputs{}
 	mi := &file_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareMtlsCertificateStackOutputs) String() string {
+func (x *CloudflareMtlsCertificateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareMtlsCertificateStackOutputs) ProtoMessage() {}
+func (*CloudflareMtlsCertificateOutputs) ProtoMessage() {}
 
-func (x *CloudflareMtlsCertificateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareMtlsCertificateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *CloudflareMtlsCertificateStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareMtlsCertificateStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareMtlsCertificateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareMtlsCertificateOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareMtlsCertificateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareMtlsCertificateStackOutputs) GetCertificateId() string {
+func (x *CloudflareMtlsCertificateOutputs) GetCertificateId() string {
 	if x != nil {
 		return x.CertificateId
 	}
 	return ""
 }
 
-func (x *CloudflareMtlsCertificateStackOutputs) GetExpiresOn() string {
+func (x *CloudflareMtlsCertificateOutputs) GetExpiresOn() string {
 	if x != nil {
 		return x.ExpiresOn
 	}
 	return ""
 }
 
-func (x *CloudflareMtlsCertificateStackOutputs) GetSerialNumber() string {
+func (x *CloudflareMtlsCertificateOutputs) GetSerialNumber() string {
 	if x != nil {
 		return x.SerialNumber
 	}
@@ -91,8 +91,8 @@ var File_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_outputs_proto pro
 
 const file_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/cloudflare/cloudflaremtlscertificate/v1alpha1/outputs.proto\x129dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1\"\x92\x01\n" +
-	"%CloudflareMtlsCertificateStackOutputs\x12%\n" +
+	"Ccatalog/cloudflare/cloudflaremtlscertificate/v1alpha1/outputs.proto\x129dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1\"\x8d\x01\n" +
+	" CloudflareMtlsCertificateOutputs\x12%\n" +
 	"\x0ecertificate_id\x18\x01 \x01(\tR\rcertificateId\x12\x1d\n" +
 	"\n" +
 	"expires_on\x18\x02 \x01(\tR\texpiresOn\x12#\n" +
@@ -113,7 +113,7 @@ func file_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_outputs_proto_ra
 
 var file_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareMtlsCertificateStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateStackOutputs
+	(*CloudflareMtlsCertificateOutputs)(nil), // 0: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateOutputs
 }
 var file_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

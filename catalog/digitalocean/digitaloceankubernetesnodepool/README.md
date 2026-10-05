@@ -2,7 +2,7 @@
 
 An additional worker pool for an existing DigitalOcean Kubernetes (DOKS) cluster, described once in a Planton manifest: node sizing and count, autoscaling bounds, Kubernetes labels and taints, DigitalOcean tags, and AMD GPU partitioning. The cluster's own default pool belongs to the `DigitalOceanKubernetesCluster` kind; this kind grows a cluster with separately shaped pools.
 
-## What this component models
+## What this kind models
 
 The spec maps one-to-one onto DigitalOcean's standalone node pool:
 

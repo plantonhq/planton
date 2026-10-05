@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcphavpnconnection
+    e2e-catalog-kind: gcphavpnconnection
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_VPN_PEER_IP_0,PLANTON_E2E_GCP_VPN_PEER_IP_1

@@ -12,14 +12,14 @@ tags:
 
 # Kubernetes Dashboard
 
-After deploying a service to Kubernetes, the Kubernetes tab on your cloud resource shows the live state of your deployment — pods, their status, logs, and a shell for debugging. No kubectl installation required, no kubeconfig to manage, no cluster credentials to distribute.
+After deploying a service to Kubernetes, the Kubernetes tab on your Infra Component shows the live state of your deployment — pods, their status, logs, and a shell for debugging. No kubectl installation required, no kubeconfig to manage, no cluster credentials to distribute.
 
 ## What You See
 
-Open any Kubernetes cloud resource in the web console and click the Kubernetes tab. The dashboard is scoped to your deployment's namespace — you see only the resources that belong to your service, not the entire cluster.
+Open any Kubernetes Infra Component in the web console and click the Kubernetes tab. The dashboard is scoped to your deployment's namespace — you see only the resources that belong to your service, not the entire cluster.
 
 <!-- SCREENSHOT: Kubernetes dashboard overview
-  Page: /resource/infra-hub/cloud-resource/kubernetes/{type}/{id}/kubernetes-resources
+  Page: /resource/infra-hub/infra-component/kubernetes/{type}/{id}/kubernetes-resources
   Action: Show the Kubernetes tab with resource graph and pod list visible
   Focus: Full page showing the resource graph and pod list
   Alt: Kubernetes dashboard showing the resource dependency graph and pod list for a deployed service
@@ -41,7 +41,7 @@ Each pod has an actions menu with three operations: stream logs, exec into a con
 The resource graph visualizes all Kubernetes resources created for your deployment as a directed acyclic graph. Nodes represent resources (Deployments, ReplicaSets, Pods, Services, ConfigMaps, Secrets) and edges show relationships between them. Click any node to inspect, edit, or delete the resource.
 
 <!-- SCREENSHOT: Resource graph
-  Page: /resource/infra-hub/cloud-resource/kubernetes/{type}/{id}/kubernetes-resources
+  Page: /resource/infra-hub/infra-component/kubernetes/{type}/{id}/kubernetes-resources
   Action: Show the DAG canvas with Deployment -> ReplicaSet -> Pod relationships visible
   Focus: The graph visualization panel
   Alt: Directed acyclic graph showing Kubernetes resource relationships for a deployed service

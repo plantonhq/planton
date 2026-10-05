@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a Secret Manager secret.
-type GcpSecretManagerSecretStackOutputs struct {
+type GcpSecretManagerSecretOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The full resource name of the secret.
 	// Global: projects/{project}/secrets/{secret_id}
@@ -41,20 +41,20 @@ type GcpSecretManagerSecretStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *GcpSecretManagerSecretStackOutputs) Reset() {
-	*x = GcpSecretManagerSecretStackOutputs{}
+func (x *GcpSecretManagerSecretOutputs) Reset() {
+	*x = GcpSecretManagerSecretOutputs{}
 	mi := &file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSecretManagerSecretStackOutputs) String() string {
+func (x *GcpSecretManagerSecretOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSecretManagerSecretStackOutputs) ProtoMessage() {}
+func (*GcpSecretManagerSecretOutputs) ProtoMessage() {}
 
-func (x *GcpSecretManagerSecretStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpSecretManagerSecretOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *GcpSecretManagerSecretStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSecretManagerSecretStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpSecretManagerSecretStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSecretManagerSecretOutputs.ProtoReflect.Descriptor instead.
+func (*GcpSecretManagerSecretOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSecretManagerSecretStackOutputs) GetSecretName() string {
+func (x *GcpSecretManagerSecretOutputs) GetSecretName() string {
 	if x != nil {
 		return x.SecretName
 	}
 	return ""
 }
 
-func (x *GcpSecretManagerSecretStackOutputs) GetSecretId() string {
+func (x *GcpSecretManagerSecretOutputs) GetSecretId() string {
 	if x != nil {
 		return x.SecretId
 	}
 	return ""
 }
 
-func (x *GcpSecretManagerSecretStackOutputs) GetLatestVersionName() string {
+func (x *GcpSecretManagerSecretOutputs) GetLatestVersionName() string {
 	if x != nil {
 		return x.LatestVersionName
 	}
@@ -96,8 +96,8 @@ var File_catalog_gcp_gcpsecretmanagersecret_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/gcp/gcpsecretmanagersecret/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpsecretmanagersecret.v1alpha1\"\x92\x01\n" +
-	"\"GcpSecretManagerSecretStackOutputs\x12\x1f\n" +
+	"9catalog/gcp/gcpsecretmanagersecret/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpsecretmanagersecret.v1alpha1\"\x8d\x01\n" +
+	"\x1dGcpSecretManagerSecretOutputs\x12\x1f\n" +
 	"\vsecret_name\x18\x01 \x01(\tR\n" +
 	"secretName\x12\x1b\n" +
 	"\tsecret_id\x18\x02 \x01(\tR\bsecretId\x12.\n" +
@@ -118,7 +118,7 @@ func file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpSecretManagerSecretStackOutputs)(nil), // 0: dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecretStackOutputs
+	(*GcpSecretManagerSecretOutputs)(nil), // 0: dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecretOutputs
 }
 var file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

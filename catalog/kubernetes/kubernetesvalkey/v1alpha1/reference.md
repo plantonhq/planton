@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesValkeySpec** deploys Valkey — the Linux Foundation's
 Redis-compatible in-memory data store (the open-source successor every
@@ -48,7 +48,7 @@ renders that string deterministically on both engines; the block's
 
 EXPOSURE IS COMPOSED, never embedded: the store is in-cluster plumbing
 reachable at the exported `kube_endpoint`. To reach it from outside,
-compose a first-class exposure kind — this component never creates
+compose a first-class exposure kind — this kind never creates
 one. (The service block's type/annotations exist for the LoadBalancer
 arm of managed-cloud recipes, documented per environment.)
 

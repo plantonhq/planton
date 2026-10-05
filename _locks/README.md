@@ -11,9 +11,9 @@ ignored).
 | Lock file | Acquire before |
 |---|---|
 | `git-commit.lock.md` | The session's single wrap-up commit + push |
-| `proto-build.lock.md` | Any whole-tree generation or shared-surface edit: `make protos` / chunked `buf generate`, `make generate-cloud-resource-kind-map`, `make reset-gazelle`, `make generate-proto-docs`, `make e2e-matrix`, site catalog regeneration; also brief edits to shared choke-point files — the E2E verifier dispatch switch, the provider E2E test entrypoint files, Makefile test-tier regexes, the cloud-resource-kind enum — and to the shared workflow rules (`_rules/`) |
+| `proto-build.lock.md` | Any whole-tree generation or shared-surface edit: `make protos` / chunked `buf generate`, `make generate-catalog-kind-map`, `make reset-gazelle`, `make generate-proto-docs`, `make e2e-matrix`, site catalog regeneration; also brief edits to shared choke-point files — the E2E verifier dispatch switch, the provider E2E test entrypoint files, Makefile test-tier regexes, the catalog-kind enum — and to the shared workflow rules (`_rules/`) |
 
-**Work scoped to your own component folders NEVER needs a lock.** Locks exist
+**Work scoped to your own kind folders NEVER needs a lock.** Locks exist
 only for the operations listed above. Two concurrent Bazel builds
 (`make build-go`) need no lock either — Bazel serializes on its own workspace
 lock.

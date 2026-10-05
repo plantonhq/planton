@@ -38,7 +38,7 @@ func validResource() *AzureDataFactoryIntegrationRuntime {
 	return &AzureDataFactoryIntegrationRuntime{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureDataFactoryIntegrationRuntime",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-adf-ir",
 		},
 		Spec: &AzureDataFactoryIntegrationRuntimeSpec{

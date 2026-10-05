@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsNeptuneCluster is a component for creating and managing
+// AwsNeptuneCluster is a kind for creating and managing
 // Amazon Neptune graph database clusters. Neptune supports property-graph
 // queries via Apache TinkerPop Gremlin and RDF queries via SPARQL.
 type AwsNeptuneCluster struct {
@@ -33,7 +33,7 @@ type AwsNeptuneCluster struct {
 	// kind identifies this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata contains standard resource metadata including name, labels, and annotations.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec defines the desired state of the Neptune cluster.
 	Spec *AwsNeptuneClusterSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the observed state and outputs from the deployment.
@@ -86,7 +86,7 @@ func (x *AwsNeptuneCluster) GetKind() string {
 	return ""
 }
 
-func (x *AwsNeptuneCluster) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsNeptuneCluster) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,7 +111,7 @@ func (x *AwsNeptuneCluster) GetStatus() *AwsNeptuneClusterStatus {
 type AwsNeptuneClusterStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs contains the values exported from the IaC stack after deployment.
-	Outputs       *AwsNeptuneClusterStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsNeptuneClusterOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AwsNeptuneClusterStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsneptunecluster_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsNeptuneClusterStatus) GetOutputs() *AwsNeptuneClusterStackOutputs {
+func (x *AwsNeptuneClusterStatus) GetOutputs() *AwsNeptuneClusterOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_aws_awsneptunecluster_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AwsNeptuneClusterR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStatusR\x06status\"~\n" +
-	"\x17AwsNeptuneClusterStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStackOutputsR\aoutputsB\xe6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStatusR\x06status\"y\n" +
+	"\x17AwsNeptuneClusterStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterOutputsR\aoutputsB\xe6\x02\n" +
 	".com.dev.planton.aws.awsneptunecluster.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/aws/awsneptunecluster/v1alpha1;awsneptuneclusterv1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Aws.Awsneptunecluster.V1alpha1\xca\x02*Dev\\Planton\\Aws\\Awsneptunecluster\\V1alpha1\xe2\x026Dev\\Planton\\Aws\\Awsneptunecluster\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Aws::Awsneptunecluster::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_aws_awsneptunecluster_v1alpha1_api_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsneptunecluster_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsneptunecluster_v1alpha1_api_proto_goTypes = []any{
-	(*AwsNeptuneCluster)(nil),             // 0: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneCluster
-	(*AwsNeptuneClusterStatus)(nil),       // 1: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsNeptuneClusterSpec)(nil),         // 3: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec
-	(*AwsNeptuneClusterStackOutputs)(nil), // 4: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStackOutputs
+	(*AwsNeptuneCluster)(nil),            // 0: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneCluster
+	(*AwsNeptuneClusterStatus)(nil),      // 1: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsNeptuneClusterSpec)(nil),        // 3: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec
+	(*AwsNeptuneClusterOutputs)(nil),     // 4: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterOutputs
 }
 var file_catalog_aws_awsneptunecluster_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneCluster.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneCluster.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneCluster.spec:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterSpec
 	1, // 2: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneCluster.status:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStatus
-	4, // 3: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStatus.outputs:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStackOutputs
+	4, // 3: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStatus.outputs:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

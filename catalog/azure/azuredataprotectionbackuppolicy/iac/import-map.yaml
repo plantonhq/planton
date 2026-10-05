@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuredataprotectionbackuppolicy
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: backup_policy_id
       derivations:
-        - from_stack_output: backup_policy_id
+        - from_output: backup_policy_id
       where_to_find: >-
         `az dataprotection backup-policy show -g <rg> --vault-name
         <vault> -n <name> --query id`, or compose

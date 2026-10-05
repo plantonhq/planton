@@ -1,10 +1,10 @@
 # Cloudflare Workers KV Pair
 
-Deploys a single key-value entry inside a Cloudflare Workers KV namespace, managed and versioned as infrastructure. It exists as a first-class Cloud Resource so configuration keys can be seeded and reviewed in code (and reference other resources' outputs) -- distinct from the high-churn application data a Worker writes at runtime. Each entry belongs to a KV namespace and is account-scoped.
+Deploys a single key-value entry inside a Cloudflare Workers KV namespace, managed and versioned as infrastructure. It exists as a first-class Infra Component so configuration keys can be seeded and reviewed in code (and reference other resources' outputs) -- distinct from the high-churn application data a Worker writes at runtime. Each entry belongs to a KV namespace and is account-scoped.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **KV Entry** -- a single key/value pair (with optional JSON metadata) written into the referenced namespace
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Workers KV Storage edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Workers KV Storage edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **A KV namespace** -- an existing CloudflareKvNamespace to write into (reference it), or a literal namespace ID.
 - **Planton Runner** -- required when using Runner-based credential delivery.
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f cloudflare-workers-kv-pair.yaml
 ```
 
-This writes a `feature-flags/new-checkout` key into the `app-config` namespace. A Stack Job tracks the provisioning in real time.
+This writes a `feature-flags/new-checkout` key into the `app-config` namespace. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,7 +84,7 @@ These are the most important decisions when configuring a KV pair. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -92,9 +92,9 @@ These are the most important decisions when configuring a KV pair. Explore the f
 
 The field accepts a literal namespace ID or a ValueFromRef.
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no consumable outputs: `status.outputs` only echoes `key_name` and `namespace_id` back from the spec. Workers read the entry at runtime through their KV binding to the parent namespace, not through this resource's outputs.
+This kind has no consumable outputs: `status.outputs` only echoes `key_name` and `namespace_id` back from the spec. Workers read the entry at runtime through their KV binding to the parent namespace, not through this resource's outputs.
 
 ## Common Patterns
 
@@ -106,5 +106,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare KV Namespace**](/cloud-catalog/cloudflare-kv-namespace) -- the namespace this entry is written into (via `namespaceId`)
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) -- reads this entry at runtime through a `kv` binding to the namespace
+- [**Cloudflare KV Namespace**](/infra-catalog/cloudflare-kv-namespace) -- the namespace this entry is written into (via `namespaceId`)
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) -- reads this entry at runtime through a `kv` binding to the namespace

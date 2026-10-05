@@ -4,12 +4,12 @@ package dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1;
 
 import "shared/options/options.proto";
 
-// DigitalOceanKubernetesClusterStackOutputs captures the key outputs after
+// DigitalOceanKubernetesClusterOutputs captures the key outputs after
 // provisioning a DigitalOcean Kubernetes cluster. Outputs are durable
 // identifiers and connection details; live state (status, timestamps) is
 // read from the API, never exported, because an apply-time snapshot goes
 // stale immediately.
-message DigitalOceanKubernetesClusterStackOutputs {
+message DigitalOceanKubernetesClusterOutputs {
   // The unique identifier (UUID) of the created Kubernetes cluster.
   string cluster_id = 1;
 

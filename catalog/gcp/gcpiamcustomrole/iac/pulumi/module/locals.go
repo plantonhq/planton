@@ -11,8 +11,8 @@ type Locals struct {
 	GcpIamCustomRole *gcpiamcustomrolev1alpha1.GcpIamCustomRole
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcpiamcustomrolev1alpha1.GcpIamCustomRoleStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *gcpiamcustomrolev1alpha1.GcpIamCustomRoleIacInput) *Locals {
 	return &Locals{
-		GcpIamCustomRole: stackInput.Target,
+		GcpIamCustomRole: iacInput.Target,
 	}
 }

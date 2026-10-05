@@ -4,7 +4,7 @@ package dev.planton.azure.azureakscluster.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureAksClusterStackOutputs** captures the outputs of provisioning an
+// **AzureAksClusterOutputs** captures the outputs of provisioning an
 // AKS managed cluster.
 //
 // The two composition-critical outputs are `cluster_id` (the parent
@@ -12,7 +12,7 @@ import "shared/options/options.proto";
 // `oidc_issuer_url` (the `issuer` an AzureFederatedIdentityCredential
 // binds to for workload identity federation -- the keyless path for pods
 // to act as an Azure managed identity).
-message AzureAksClusterStackOutputs {
+message AzureAksClusterOutputs {
   // The Azure Resource Manager ID of the managed cluster.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ContainerService/managedClusters/{name}
   // This is the parent reference AzureAksNodePool resources consume.

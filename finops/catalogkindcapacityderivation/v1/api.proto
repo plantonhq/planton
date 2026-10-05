@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package dev.planton.finops.catalogkindcapacityderivation.v1;
+
+import "finops/catalogkindcapacityderivation/v1/spec.proto";
+import "shared/metadata.proto";
+
+// CatalogKindCapacityDerivation is the machine-executable half of a
+// cluster-capacity kind's cost knowledge: the rules that turn ANY
+// manifest's spec values into the capacity footprint the workload
+// reserves from its target cluster. It is the capacity twin of
+// CatalogKindCostDerivation -- where a priced kind's rules select
+// meters and price-book entries, a cluster-capacity kind creates no
+// cloud SKU, so its rules bind resources blocks, instance counts, and
+// per-instance volumes instead, and the produced estimate states capacity
+// (requests, limits, persistent storage) with a basis sentence tracing
+// every total back to the manifest's values. Every catalog preset is
+// replayed through these rules to generate the kind's committed
+// CatalogKindCostEstimate, so the rules are held to the hand-verified
+// footprints by CI. One file per kind, at
+// catalog/_pricing/capacity/<kind>.yaml (filename = metadata.name =
+// the kind directory name). Follows the KRM pattern (apiVersion +
+// kind + metadata + spec).
+//
+// Ownership split, so every fact has exactly one home: this derivation
+// owns the value-to-capacity bindings, exclusions, and notes; the
+// kind's cost.yaml owns the billing-model statement
+// (cluster_capacity) and the driver prose; the generated estimate owns
+// nothing -- it is arithmetic. A kind carries either this document
+// or a hand-authored CatalogKindCostEstimateModel, never both -- and never
+// a CatalogKindCostDerivation beside it (capacity kinds price no
+// meters).
+//
+// Example:
+//   apiVersion: finops.planton.dev/v1
+//   kind: CatalogKindCapacityDerivation
+//   metadata:
+//     name: kubernetespostgres
+//   spec:
+//     workloads:
+//       - label: instance
+//         resources_path: resources
+//         instances:
+//           field_value:
+//             field_path: instances
+//             default_when_unset: "1"
+//         volumes:
+//           - label: data
+//             size_path: storage.size
+//           - label: WAL
+//             size_path: wal_storage.size
+//     exclusions:
+//       - text: the dollar value of this capacity is the target
+//           cluster's node and storage-class economics
+message CatalogKindCapacityDerivation {
+  string api_version = 1;
+  string kind = 2;
+  dev.planton.shared.CatalogObjectMetadata metadata = 3;
+  CatalogKindCapacityDerivationSpec spec = 4;
+}

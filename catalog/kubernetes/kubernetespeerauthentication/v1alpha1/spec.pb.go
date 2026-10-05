@@ -60,7 +60,7 @@ type KubernetesPeerAuthenticationSpec struct {
 	//	      name: "{{ values.app }}"
 	//	      type: depends_on
 	//
-	// See the component's "Composing in Infra Charts" docs for the full pattern.
+	// See the kind's "Composing in Infra Charts" docs for the full pattern.
 	Selector *kubernetes.KubernetesIstioApiWorkloadSelector `protobuf:"bytes,3,opt,name=selector,proto3" json:"selector,omitempty"`
 	// Mesh-TLS mode applied to the selected workloads. When omitted, the mode is
 	// inherited from the parent (namespace-level, then mesh-level) policy. To make

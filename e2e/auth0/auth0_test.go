@@ -17,7 +17,7 @@ import (
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"github.com/plantonhq/planton/e2e/framework/runner"
 	profilepkg "github.com/plantonhq/planton/pkg/e2e/profile"
-	componentv1 "github.com/plantonhq/planton/qa/componente2eprofile/v1"
+	kindv1 "github.com/plantonhq/planton/qa/catalogkinde2eprofile/v1"
 )
 
 var (
@@ -77,191 +77,191 @@ func TestMain(m *testing.M) {
 
 // --- Auth0 Client ---
 
-func TestAuth0Client_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "auth0client", "pulumi") }
+func TestAuth0Client_Pulumi(t *testing.T) { runAllScenariosForKind(t, "auth0client", "pulumi") }
 func TestAuth0Client_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0client", "terraform")
+	runAllScenariosForKind(t, "auth0client", "terraform")
 }
 
 // --- Auth0 Connection ---
 
 func TestAuth0Connection_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0connection", "pulumi")
+	runAllScenariosForKind(t, "auth0connection", "pulumi")
 }
 func TestAuth0Connection_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0connection", "terraform")
+	runAllScenariosForKind(t, "auth0connection", "terraform")
 }
 
 // --- Auth0 Resource Server ---
 
 func TestAuth0ResourceServer_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0resourceserver", "pulumi")
+	runAllScenariosForKind(t, "auth0resourceserver", "pulumi")
 }
 func TestAuth0ResourceServer_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0resourceserver", "terraform")
+	runAllScenariosForKind(t, "auth0resourceserver", "terraform")
 }
 
 // --- Auth0 Action ---
 
-func TestAuth0Action_Pulumi(t *testing.T) { runAllScenariosForComponent(t, "auth0action", "pulumi") }
+func TestAuth0Action_Pulumi(t *testing.T) { runAllScenariosForKind(t, "auth0action", "pulumi") }
 func TestAuth0Action_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0action", "terraform")
+	runAllScenariosForKind(t, "auth0action", "terraform")
 }
 
 // --- Auth0 Event Stream ---
 
 func TestAuth0EventStream_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0eventstream", "pulumi")
+	runAllScenariosForKind(t, "auth0eventstream", "pulumi")
 }
 func TestAuth0EventStream_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0eventstream", "terraform")
+	runAllScenariosForKind(t, "auth0eventstream", "terraform")
 }
 
 // --- Auth0 Role ---
 
-func TestAuth0Role_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "auth0role", "pulumi") }
-func TestAuth0Role_Terraform(t *testing.T) { runAllScenariosForComponent(t, "auth0role", "terraform") }
+func TestAuth0Role_Pulumi(t *testing.T)    { runAllScenariosForKind(t, "auth0role", "pulumi") }
+func TestAuth0Role_Terraform(t *testing.T) { runAllScenariosForKind(t, "auth0role", "terraform") }
 
 // --- Auth0 User ---
 
-func TestAuth0User_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "auth0user", "pulumi") }
-func TestAuth0User_Terraform(t *testing.T) { runAllScenariosForComponent(t, "auth0user", "terraform") }
+func TestAuth0User_Pulumi(t *testing.T)    { runAllScenariosForKind(t, "auth0user", "pulumi") }
+func TestAuth0User_Terraform(t *testing.T) { runAllScenariosForKind(t, "auth0user", "terraform") }
 
 // --- Auth0 Tenant Settings ---
 
 func TestAuth0TenantSettings_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0tenantsettings", "pulumi")
+	runAllScenariosForKind(t, "auth0tenantsettings", "pulumi")
 }
 func TestAuth0TenantSettings_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0tenantsettings", "terraform")
+	runAllScenariosForKind(t, "auth0tenantsettings", "terraform")
 }
 
 // --- Auth0 Custom Domain ---
 
 func TestAuth0CustomDomain_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0customdomain", "pulumi")
+	runAllScenariosForKind(t, "auth0customdomain", "pulumi")
 }
 func TestAuth0CustomDomain_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0customdomain", "terraform")
+	runAllScenariosForKind(t, "auth0customdomain", "terraform")
 }
 
 // --- Auth0 Custom Domain Verification ---
 
 func TestAuth0CustomDomainVerification_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0customdomainverification", "pulumi")
+	runAllScenariosForKind(t, "auth0customdomainverification", "pulumi")
 }
 func TestAuth0CustomDomainVerification_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0customdomainverification", "terraform")
+	runAllScenariosForKind(t, "auth0customdomainverification", "terraform")
 }
 
 // --- Auth0 Branding ---
 
 func TestAuth0Branding_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0branding", "pulumi")
+	runAllScenariosForKind(t, "auth0branding", "pulumi")
 }
 func TestAuth0Branding_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0branding", "terraform")
+	runAllScenariosForKind(t, "auth0branding", "terraform")
 }
 
 // --- Auth0 Prompt ---
 
 func TestAuth0Prompt_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0prompt", "pulumi")
+	runAllScenariosForKind(t, "auth0prompt", "pulumi")
 }
 func TestAuth0Prompt_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0prompt", "terraform")
+	runAllScenariosForKind(t, "auth0prompt", "terraform")
 }
 
 // --- Auth0 Prompt Custom Text ---
 
 func TestAuth0PromptCustomText_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0promptcustomtext", "pulumi")
+	runAllScenariosForKind(t, "auth0promptcustomtext", "pulumi")
 }
 func TestAuth0PromptCustomText_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0promptcustomtext", "terraform")
+	runAllScenariosForKind(t, "auth0promptcustomtext", "terraform")
 }
 
 // --- Auth0 Prompt Screen Partials ---
 
 func TestAuth0PromptScreenPartials_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0promptscreenpartials", "pulumi")
+	runAllScenariosForKind(t, "auth0promptscreenpartials", "pulumi")
 }
 func TestAuth0PromptScreenPartials_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0promptscreenpartials", "terraform")
+	runAllScenariosForKind(t, "auth0promptscreenpartials", "terraform")
 }
 
 // --- Auth0 Email Provider ---
 
 func TestAuth0EmailProvider_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0emailprovider", "pulumi")
+	runAllScenariosForKind(t, "auth0emailprovider", "pulumi")
 }
 func TestAuth0EmailProvider_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0emailprovider", "terraform")
+	runAllScenariosForKind(t, "auth0emailprovider", "terraform")
 }
 
 // --- Auth0 Email Template ---
 
 func TestAuth0EmailTemplate_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0emailtemplate", "pulumi")
+	runAllScenariosForKind(t, "auth0emailtemplate", "pulumi")
 }
 func TestAuth0EmailTemplate_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0emailtemplate", "terraform")
+	runAllScenariosForKind(t, "auth0emailtemplate", "terraform")
 }
 
 // --- Auth0 Client From Metadata Document ---
 
 func TestAuth0ClientFromMetadataDocument_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0clientfrommetadatadocument", "pulumi")
+	runAllScenariosForKind(t, "auth0clientfrommetadatadocument", "pulumi")
 }
 func TestAuth0ClientFromMetadataDocument_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "auth0clientfrommetadatadocument", "terraform")
+	runAllScenariosForKind(t, "auth0clientfrommetadatadocument", "terraform")
 }
 
-// runAllScenariosForComponent discovers and runs all E2E scenarios for an Auth0 component.
-func runAllScenariosForComponent(t *testing.T, component, engine string) {
+// runAllScenariosForKind discovers and runs all E2E scenarios for an Auth0 kind.
+func runAllScenariosForKind(t *testing.T, kindDir, engine string) {
 	t.Helper()
 
-	if cp, err := profilepkg.LoadComponentProfile(repoRoot, "auth0", component); err == nil && cp.Spec != nil {
+	if cp, err := profilepkg.LoadKindProfile(repoRoot, "auth0", kindDir); err == nil && cp.Spec != nil {
 		switch cp.Spec.Status {
-		case componentv1.ComponentE2EProfileSpec_deferred,
-			componentv1.ComponentE2EProfileSpec_skip,
-			componentv1.ComponentE2EProfileSpec_stub:
+		case kindv1.CatalogKindE2EProfileSpec_deferred,
+			kindv1.CatalogKindE2EProfileSpec_skip,
+			kindv1.CatalogKindE2EProfileSpec_stub:
 			reason := cp.Spec.DeferredReason
 			if reason == "" {
 				reason = cp.Spec.Status.String()
 			}
-			t.Skipf("component %s E2E profile status is %s: %s", component, cp.Spec.Status, reason)
+			t.Skipf("kind %s E2E profile status is %s: %s", kindDir, cp.Spec.Status, reason)
 		}
 	}
 
-	moduleDir, err := discovery.ModuleDir(repoRoot, "auth0", component, engine)
+	moduleDir, err := discovery.ModuleDir(repoRoot, "auth0", kindDir, engine)
 	if err != nil {
-		t.Fatalf("failed to locate %s %s module: %v", component, engine, err)
+		t.Fatalf("failed to locate %s %s module: %v", kindDir, engine, err)
 	}
 
 	if !fileExists(moduleDir) {
-		t.Skipf("component %s %s module not found at %s", component, engine, moduleDir)
+		t.Skipf("kind %s %s module not found at %s", kindDir, engine, moduleDir)
 	}
 
-	scenarios, err := discovery.DiscoverTestScenarios(repoRoot, "auth0", component)
+	scenarios, err := discovery.DiscoverTestScenarios(repoRoot, "auth0", kindDir)
 	if err != nil {
-		t.Fatalf("failed to discover test scenarios for %s: %v", component, err)
+		t.Fatalf("failed to discover test scenarios for %s: %v", kindDir, err)
 	}
 
 	if len(scenarios) == 0 {
-		t.Skipf("no test scenarios found for %s", component)
+		t.Skipf("no test scenarios found for %s", kindDir)
 	}
 
-	t.Logf("Discovered %d scenarios for %s [%s]", len(scenarios), component, engine)
+	t.Logf("Discovered %d scenarios for %s [%s]", len(scenarios), kindDir, engine)
 
 	for _, scenario := range scenarios {
 		scenario := scenario
 		t.Run(scenario.Name, func(t *testing.T) {
-			runSingleScenario(t, component, moduleDir, engine, scenario)
+			runSingleScenario(t, kindDir, moduleDir, engine, scenario)
 		})
 	}
 }
 
-func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenario discovery.TestScenario) {
+func runSingleScenario(t *testing.T, kindDir, moduleDir, engine string, scenario discovery.TestScenario) {
 	t.Helper()
 
 	// Scenarios needing owner-arranged external context (the
@@ -271,14 +271,14 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 	// otherwise fail expansion loudly, turning a deferral into a false
 	// failure.
 	if missing, err := runner.ScenarioMissingRequiredEnv(scenario.ManifestPath); err != nil {
-		t.Fatalf("reading required-env declaration for scenario %s/%s: %v", component, scenario.Name, err)
+		t.Fatalf("reading required-env declaration for scenario %s/%s: %v", kindDir, scenario.Name, err)
 	} else if len(missing) > 0 {
 		t.Skipf("scenario %s/%s needs owner-arranged environment variables that are unset: %s (per %s)",
-			component, scenario.Name, strings.Join(missing, ", "), runner.ScenarioRequiredEnvAnnotation)
+			kindDir, scenario.Name, strings.Join(missing, ", "), runner.ScenarioRequiredEnvAnnotation)
 	}
 
-	tc := &provider.ComponentTestContext{
-		Component:    component,
+	tc := &provider.KindTestContext{
+		Kind:         kindDir,
 		Provider:     "auth0",
 		Engine:       engine,
 		ModuleDir:    moduleDir,
@@ -298,11 +298,11 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 	if engine == "pulumi" {
 		// GenerateStackName enforces the length cap uniqueness-preservingly
 		// (blind truncation here would collide long kind names' scenarios).
-		tc.StackName = runner.GenerateStackName(component+"-"+scenario.Name, runID)
+		tc.StackName = runner.GenerateStackName(kindDir+"-"+scenario.Name, runID)
 	}
 
 	ctx := context.Background()
-	result := runner.RunComponentTest(ctx, tc, testHarness)
+	result := runner.RunKindTest(ctx, tc, testHarness)
 
 	for _, phase := range result.Phases {
 		status := "PASS"
@@ -316,10 +316,10 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 	}
 
 	if !result.Passed {
-		t.Fatalf("scenario %s/%s [%s] failed (total: %s)", component, scenario.Name, engine, result.Duration)
+		t.Fatalf("scenario %s/%s [%s] failed (total: %s)", kindDir, scenario.Name, engine, result.Duration)
 	}
 
-	t.Logf("scenario %s/%s [%s] passed (total: %s)", component, scenario.Name, engine, result.Duration)
+	t.Logf("scenario %s/%s [%s] passed (total: %s)", kindDir, scenario.Name, engine, result.Duration)
 }
 
 func fileExists(path string) bool {

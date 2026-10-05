@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurerediscacheaccesspolicyassignment
 spec:
   billing_model: free
   free_tier: An access policy assignment is the grant record binding a Redis data-plane policy to a Microsoft Entra identity on the cache -- the Redis analog of a role assignment. It is authorization metadata; Azure has no meter for assignments, and creating, holding, or replacing grants costs nothing.
-  notes: "No field of this spec buys anything: redis_cache_id points at the AzureRedisCache that bills as its own catalog kind (an hourly rate set by tier and size), and the policy name, object ID, and alias are all grant metadata. Microsoft Entra authentication itself carries no meter, and the granted identity's Redis traffic consumes capacity the cache already pays for -- the same whether clients authenticate with Entra tokens through this grant or with the cache's access keys."
+  notes: "No field of this spec buys anything: redis_cache_id points at the AzureRedisCache that bills as its own component (an hourly rate set by tier and size), and the policy name, object ID, and alias are all grant metadata. Microsoft Entra authentication itself carries no meter, and the granted identity's Redis traffic consumes capacity the cache already pays for -- the same whether clients authenticate with Entra tokens through this grant or with the cache's access keys."

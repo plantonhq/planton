@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1;
 
-// **AzureExpressRouteCircuitPeeringStackOutputs** captures the outputs
+// **AzureExpressRouteCircuitPeeringOutputs** captures the outputs
 // of provisioning an ExpressRoute circuit peering.
-message AzureExpressRouteCircuitPeeringStackOutputs {
+message AzureExpressRouteCircuitPeeringOutputs {
   // The Azure Resource Manager ID of the peering -- what a Global Reach
   // connection on ANOTHER circuit references as peer_peering_id.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/expressRouteCircuits/{circuit}/peerings/{type}

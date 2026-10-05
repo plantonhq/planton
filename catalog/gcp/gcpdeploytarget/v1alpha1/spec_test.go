@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/pkg/refannotations"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -21,7 +21,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: value}}
 }
 
-func reference(kind cloudresourcekind.CloudResourceKind, name string) *foreignkeyv1.StringValueOrRef {
+func reference(kind catalogkind.CatalogKind, name string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Kind: kind, Name: name}}}
 }
 
@@ -38,7 +38,7 @@ var _ = ginkgo.Describe("GcpDeployTargetSpec", func() {
 		return &GcpDeployTarget{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpDeployTarget",
-			Metadata:   &shared.CloudResourceMetadata{Name: "staging"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "staging"},
 			Spec: &GcpDeployTargetSpec{
 				Location: "us-central1",
 				Run:      &GcpDeployTargetRun{Location: "projects/my-app-staging/locations/us-central1"},
@@ -48,7 +48,7 @@ var _ = ginkgo.Describe("GcpDeployTargetSpec", func() {
 
 	full := func() *GcpDeployTarget {
 		msg := minimal()
-		msg.Spec.ProjectId = reference(cloudresourcekind.CloudResourceKind_GcpProject, "delivery")
+		msg.Spec.ProjectId = reference(catalogkind.CatalogKind_GcpProject, "delivery")
 		msg.Spec.TargetId = "staging"
 		msg.Spec.Description = "Staging on Cloud Run"
 		msg.Spec.Labels = map[string]string{"env": "staging"}
@@ -58,9 +58,9 @@ var _ = ginkgo.Describe("GcpDeployTargetSpec", func() {
 		msg.Spec.ExecutionConfigs = []*GcpDeployTargetExecutionConfig{
 			{
 				Usages:           []string{"RENDER", "DEPLOY"},
-				WorkerPool:       reference(cloudresourcekind.CloudResourceKind_GcpCloudBuildWorkerPool, "private-builds"),
-				ServiceAccount:   reference(cloudresourcekind.CloudResourceKind_GcpServiceAccount, "deployer"),
-				ArtifactStorage:  reference(cloudresourcekind.CloudResourceKind_GcpGcsBucket, "deploy-artifacts"),
+				WorkerPool:       reference(catalogkind.CatalogKind_GcpCloudBuildWorkerPool, "private-builds"),
+				ServiceAccount:   reference(catalogkind.CatalogKind_GcpServiceAccount, "deployer"),
+				ArtifactStorage:  reference(catalogkind.CatalogKind_GcpGcsBucket, "deploy-artifacts"),
 				ExecutionTimeout: "3600s",
 				Verbose:          true,
 			},
@@ -84,12 +84,12 @@ var _ = ginkgo.Describe("GcpDeployTargetSpec", func() {
 	ginkgo.It("should accept each of the other target types", func() {
 		gke := minimal()
 		gke.Spec.Run = nil
-		gke.Spec.Gke = &GcpDeployTargetGke{Cluster: reference(cloudresourcekind.CloudResourceKind_GcpGkeCluster, "prod"), DnsEndpoint: true, ProxyUrl: "http://10.0.0.5:3128"}
+		gke.Spec.Gke = &GcpDeployTargetGke{Cluster: reference(catalogkind.CatalogKind_GcpGkeCluster, "prod"), DnsEndpoint: true, ProxyUrl: "http://10.0.0.5:3128"}
 		gke.Spec.AssociatedEntities = []*GcpDeployTargetAssociatedEntity{
 			{
 				EntityId:       "config-cluster",
 				GkeClusters:    []*GcpDeployTargetAssociatedGkeCluster{{Cluster: literal("projects/p/locations/us-central1/clusters/config"), InternalIp: true}},
-				AnthosClusters: []*GcpDeployTargetAssociatedAnthosCluster{{Membership: reference(cloudresourcekind.CloudResourceKind_GcpGkeCluster, "edge")}},
+				AnthosClusters: []*GcpDeployTargetAssociatedAnthosCluster{{Membership: reference(catalogkind.CatalogKind_GcpGkeCluster, "edge")}},
 			},
 		}
 		gomega.Expect(validator.Validate(gke)).To(gomega.Succeed())
@@ -102,14 +102,14 @@ var _ = ginkgo.Describe("GcpDeployTargetSpec", func() {
 		multi := minimal()
 		multi.Spec.Run = nil
 		multi.Spec.MultiTarget = &GcpDeployTargetMultiTarget{TargetIds: []*foreignkeyv1.StringValueOrRef{
-			reference(cloudresourcekind.CloudResourceKind_GcpDeployTarget, "prod-us"),
+			reference(catalogkind.CatalogKind_GcpDeployTarget, "prod-us"),
 			literal("prod-eu"),
 		}}
 		gomega.Expect(validator.Validate(multi)).To(gomega.Succeed())
 
 		custom := minimal()
 		custom.Spec.Run = nil
-		custom.Spec.CustomTarget = &GcpDeployTargetCustomTarget{CustomTargetType: reference(cloudresourcekind.CloudResourceKind_GcpDeployCustomTargetType, "terraform")}
+		custom.Spec.CustomTarget = &GcpDeployTargetCustomTarget{CustomTargetType: reference(catalogkind.CatalogKind_GcpDeployCustomTargetType, "terraform")}
 		gomega.Expect(validator.Validate(custom)).To(gomega.Succeed())
 	})
 
@@ -263,13 +263,13 @@ func TestAnthosMembershipAcceptsBothRegistrationPaths(t *testing.T) {
 		"anthos_cluster.membership":           refannotations.Of((&GcpDeployTargetAnthosCluster{}).ProtoReflect().Descriptor().Fields().ByName("membership")),
 		"associated_entities.anthos_clusters": refannotations.Of((&GcpDeployTargetAssociatedAnthosCluster{}).ProtoReflect().Descriptor().Fields().ByName("membership")),
 	} {
-		if path, ok := field.DefaultPath(cloudresourcekind.CloudResourceKind_GcpGkeCluster); !ok || path != "status.outputs.fleet_membership" {
+		if path, ok := field.DefaultPath(catalogkind.CatalogKind_GcpGkeCluster); !ok || path != "status.outputs.fleet_membership" {
 			t.Fatalf("%s composes from a GcpGkeCluster at %q (ok=%t), want status.outputs.fleet_membership", name, path, ok)
 		}
-		if path, ok := field.DefaultPath(cloudresourcekind.CloudResourceKind_GcpGkeFleetMembership); !ok || path != "status.outputs.name" {
+		if path, ok := field.DefaultPath(catalogkind.CatalogKind_GcpGkeFleetMembership); !ok || path != "status.outputs.name" {
 			t.Fatalf("%s composes from a GcpGkeFleetMembership at %q (ok=%t), want status.outputs.name", name, path, ok)
 		}
-		if kind := field.EffectiveKind(cloudresourcekind.CloudResourceKind_unspecified); kind != cloudresourcekind.CloudResourceKind_GcpGkeFleetMembership {
+		if kind := field.EffectiveKind(catalogkind.CatalogKind_unspecified); kind != catalogkind.CatalogKind_GcpGkeFleetMembership {
 			t.Fatalf("%s: a kindless valueFrom reads as %s, want GcpGkeFleetMembership", name, kind)
 		}
 	}

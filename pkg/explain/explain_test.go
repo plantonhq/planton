@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -186,7 +186,7 @@ func TestPathResolution(t *testing.T) {
 
 // kindDispatcher is a test double for the kind-valued dispatch seam: it
 // claims AwsVpc's instanceTenancy field and resolves the next segment as a
-// cloud-resource kind -- structurally identical to a platform envelope's
+// catalog kind -- structurally identical to a platform envelope's
 // kind-discriminated payload.
 type kindDispatcher struct{}
 
@@ -195,8 +195,8 @@ func (kindDispatcher) Claims(fd protoreflect.FieldDescriptor) bool {
 }
 
 func (kindDispatcher) Resolve(segment string) (Resource, error) {
-	kind := crkreflect.KindFromString(segment)
-	if kind == cloudresourcekind.CloudResourceKind_unspecified {
+	kind := catalogkindreflect.KindFromString(segment)
+	if kind == catalogkind.CatalogKind_unspecified {
 		return Resource{}, errors.Errorf("unknown kind %q", segment)
 	}
 	return KindResource(kind)
@@ -267,7 +267,7 @@ func TestDispatcher(t *testing.T) {
 func TestConstraintJSONDumpsAreCompact(t *testing.T) {
 	engine := DefaultEngine()
 	jsonDumps := 0
-	for _, kind := range crkreflect.KindsList() {
+	for _, kind := range catalogkindreflect.KindsList() {
 		res, err := KindResource(kind)
 		if err != nil {
 			t.Fatalf("%s: %v", kind, err)
@@ -306,7 +306,7 @@ func TestConstraintJSONDumpsAreCompact(t *testing.T) {
 // must produce a root report without panicking or erroring.
 func TestAllKindsExplain(t *testing.T) {
 	engine := DefaultEngine()
-	for _, kind := range crkreflect.KindsList() {
+	for _, kind := range catalogkindreflect.KindsList() {
 		res, err := KindResource(kind)
 		if err != nil {
 			t.Fatalf("%s: %v", kind, err)

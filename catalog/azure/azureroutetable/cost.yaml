@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureroutetable
 spec:
   billing_model: free
   free_tier: A route table and its user-defined routes are routing configuration on Azure's software-defined network fabric. Creating tables, adding routes, attaching the table to any number of subnets, and the BGP-propagation toggle never bill -- Azure charges for traffic and for billable network primitives, not for how routing is configured.
-  notes: "No field of this spec buys anything: routes, next-hop choices, and bgp_route_propagation_enabled are all free configuration. The real spend lives at the destinations routes point to -- a VIRTUAL_APPLIANCE next hop steers traffic into an Azure Firewall or NVA that bills as its own kind, a VIRTUAL_NETWORK_GATEWAY hop rides a VPN/ExpressRoute gateway with its own meters -- and in the traffic itself (egress, inter-zone), which accrues to the traffic sources, never to the table."
+  notes: "No field of this spec buys anything: routes, next-hop choices, and bgp_route_propagation_enabled are all free configuration. The real spend lives at the destinations routes point to -- a VIRTUAL_APPLIANCE next hop steers traffic into an Azure Firewall or NVA that bills as its own component, a VIRTUAL_NETWORK_GATEWAY hop rides a VPN/ExpressRoute gateway with its own meters -- and in the traffic itself (egress, inter-zone), which accrues to the traffic sources, never to the table."

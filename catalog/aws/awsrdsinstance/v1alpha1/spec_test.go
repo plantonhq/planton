@@ -29,7 +29,7 @@ func validInstance() *AwsRdsInstance {
 	return &AwsRdsInstance{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsRdsInstance",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-rds-instance",
 		},
 		Spec: &AwsRdsInstanceSpec{

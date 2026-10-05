@@ -4,7 +4,7 @@ Deploys a Cognito User Pool app client — the OAuth 2.0 / OIDC contract between
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cognito User Pool Client** — registered on the target user pool with the configured OAuth flows, scopes, redirect URLs, auth flows, token lifetimes, attribute access, and optional Pinpoint analytics. App clients are not taggable in AWS.
 - **Client Secret** — minted only when `generateSecret` is true (confidential / M2M clients); public clients authenticate with PKCE instead.
@@ -14,11 +14,11 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
-- **A Cognito User Pool** — the directory this application authenticates against. Reference an AwsCognitoUserPool Cloud Resource or provide the pool ID directly.
+- **A Cognito User Pool** — the directory this application authenticates against. Reference an AwsCognitoUserPool Infra Component or provide the pool ID directly.
 - **Identity providers** (only for federated sign-in) — list providers by name or reference AwsCognitoIdentityProvider resources in `supportedIdentityProviders`.
 - **Resource server scopes** (only for custom scopes) — an AwsCognitoResourceServer minting the `identifier/scope-name` strings this client will request; mandatory for the `client_credentials` grant.
 
@@ -70,7 +70,7 @@ spec:
 planton apply -f cognito-user-pool-client.yaml
 ```
 
-This creates a public SPA client on the referenced pool: Authorization Code grant with the standard OIDC scopes, SRP sign-in against the pool's own directory, refresh tokens, revocation on sign-out, and user-enumeration protection. A Stack Job tracks the provisioning in real time.
+This creates a public SPA client on the referenced pool: Authorization Code grant with the standard OIDC scopes, SRP sign-in against the pool's own directory, refresh tokens, revocation on sign-out, and user-enumeration protection. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -122,7 +122,7 @@ These are the most important decisions when configuring an app client. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -133,9 +133,9 @@ These are the most important decisions when configuring an app client. Explore t
 
 Custom resource-server scopes travel as plain strings in `allowedOauthScopes` — copy them from the resource server's `scope_identifiers` output.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -155,7 +155,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Cognito User Pool**](/cloud-catalog/aws-cognito-user-pool) — the user directory this client authenticates against, wired via the `userPoolId` reference
-- [**AWS Cognito Identity Provider**](/cloud-catalog/aws-cognito-identity-provider) — federated providers listed in `supportedIdentityProviders`
-- [**AWS Cognito Resource Server**](/cloud-catalog/aws-cognito-resource-server) — mints the custom OAuth scopes this client requests
-- [**AWS SES Email Identity**](/cloud-catalog/aws-ses-email-identity) — the sending identity for threat-protection notification emails
+- [**AWS Cognito User Pool**](/infra-catalog/aws-cognito-user-pool) — the user directory this client authenticates against, wired via the `userPoolId` reference
+- [**AWS Cognito Identity Provider**](/infra-catalog/aws-cognito-identity-provider) — federated providers listed in `supportedIdentityProviders`
+- [**AWS Cognito Resource Server**](/infra-catalog/aws-cognito-resource-server) — mints the custom OAuth scopes this client requests
+- [**AWS SES Email Identity**](/infra-catalog/aws-ses-email-identity) — the sending identity for threat-protection notification emails

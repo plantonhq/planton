@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awssecuritygroup
 spec:
   billing_model: free
   free_tier: A security group carries no meter -- AWS charges nothing for groups, for rules, for the stateful connection tracking that enforces them, or for sharing one group into additional VPCs. AWS's own pricing is explicit that security groups and their rules have no charge, and unlike a NAT gateway or load balancer, no traffic volume through a group's rules ever produces a line item.
-  notes: "No field of this spec buys anything: ingress and egress rules, cross-group references, prefix-list rules, and additional_vpc_ids associations are all free VPC configuration. The real spend lives on the resources the group protects -- the instances, databases, and load balancers whose network interfaces attach it each bill as their own catalog kinds, and the traffic the rules admit bills on THEIR data-transfer meters. Filtering is the one part of the path AWS gives away."
+  notes: "No field of this spec buys anything: ingress and egress rules, cross-group references, prefix-list rules, and additional_vpc_ids associations are all free VPC configuration. The real spend lives on the resources the group protects -- the instances, databases, and load balancers whose network interfaces attach it each bill as their own components, and the traffic the rules admit bills on THEIR data-transfer meters. Filtering is the one part of the path AWS gives away."

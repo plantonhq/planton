@@ -4,7 +4,7 @@ Deploys a targeted Cloudflare WARP device profile: the full device-settings body
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Custom Device Profile** — a `cloudflare_zero_trust_device_custom_profile` carrying the wirefilter `match`, the required `precedence`, and every declared settings toggle. A real object: create, update, and delete all do what they say, and deleting it returns matched devices to the default profile
 - **Per-Profile Fallback Domain List** — created only when `fallbackDomains` is declared. The profile resource reports its fallback list read-only; this dedicated companion is the only write path, and it replaces the whole list on every apply. Rows ride the profile and retire with it
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -54,11 +54,11 @@ spec:
 planton apply -f custom-profile.yaml
 ```
 
-This creates a profile that puts everyone in the contractors identity group on full-tunnel WARP they cannot switch off, switch modes on, or unenroll from. A Stack Job tracks the provisioning in real time.
+This creates a profile that puts everyone in the contractors identity group on full-tunnel WARP they cannot switch off, switch modes on, or unenroll from. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire virtual network scoping to networks managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, wire virtual network scoping to networks managed by other Infra Components:
 
 ```yaml
 spec:
@@ -97,16 +97,16 @@ These are the most important decisions when configuring a custom device profile.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | CloudflareZeroTrustTunnelVirtualNetwork | `spec.virtualNetworks.allowed[]` | `status.outputs.virtual_network_id` |
 | CloudflareZeroTrustTunnelVirtualNetwork | `spec.virtualNetworks.defaultVirtualNetworkId` | `status.outputs.virtual_network_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -125,6 +125,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust Device Default Profile**](/cloud-catalog/cloudflare-zero-trust-device-default-profile) — the account baseline this profile overrides; devices matching no custom profile land there.
-- [**Cloudflare Zero Trust Device Posture Rule**](/cloud-catalog/cloudflare-zero-trust-device-posture-rule) — health checks that can gate what this profile's devices reach.
-- [**Cloudflare Zero Trust Tunnel Virtual Network**](/cloud-catalog/cloudflare-zero-trust-tunnel-virtual-network) — the routing segments `virtualNetworks` scopes device access to.
+- [**Cloudflare Zero Trust Device Default Profile**](/infra-catalog/cloudflare-zero-trust-device-default-profile) — the account baseline this profile overrides; devices matching no custom profile land there.
+- [**Cloudflare Zero Trust Device Posture Rule**](/infra-catalog/cloudflare-zero-trust-device-posture-rule) — health checks that can gate what this profile's devices reach.
+- [**Cloudflare Zero Trust Tunnel Virtual Network**](/infra-catalog/cloudflare-zero-trust-tunnel-virtual-network) — the routing segments `virtualNetworks` scopes device access to.

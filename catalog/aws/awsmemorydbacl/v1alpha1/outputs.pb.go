@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsMemorydbAclStackOutputs captures observable identifiers from a
+// AwsMemorydbAclOutputs captures observable identifiers from a
 // provisioned MemoryDB ACL. These outputs are used by downstream resources
 // to wire dependencies via StringValueOrRef — most importantly the cluster's
 // `acl_name` attachment.
-type AwsMemorydbAclStackOutputs struct {
+type AwsMemorydbAclOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ACL's AWS name. This is what clusters attach via their `acl_name`
 	// and what the AWS CLI/API address.
@@ -40,20 +40,20 @@ type AwsMemorydbAclStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AwsMemorydbAclStackOutputs) Reset() {
-	*x = AwsMemorydbAclStackOutputs{}
+func (x *AwsMemorydbAclOutputs) Reset() {
+	*x = AwsMemorydbAclOutputs{}
 	mi := &file_catalog_aws_awsmemorydbacl_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsMemorydbAclStackOutputs) String() string {
+func (x *AwsMemorydbAclOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsMemorydbAclStackOutputs) ProtoMessage() {}
+func (*AwsMemorydbAclOutputs) ProtoMessage() {}
 
-func (x *AwsMemorydbAclStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsMemorydbAclOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsmemorydbacl_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *AwsMemorydbAclStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsMemorydbAclStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsMemorydbAclStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsMemorydbAclOutputs.ProtoReflect.Descriptor instead.
+func (*AwsMemorydbAclOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmemorydbacl_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsMemorydbAclStackOutputs) GetAclName() string {
+func (x *AwsMemorydbAclOutputs) GetAclName() string {
 	if x != nil {
 		return x.AclName
 	}
 	return ""
 }
 
-func (x *AwsMemorydbAclStackOutputs) GetAclArn() string {
+func (x *AwsMemorydbAclOutputs) GetAclArn() string {
 	if x != nil {
 		return x.AclArn
 	}
 	return ""
 }
 
-func (x *AwsMemorydbAclStackOutputs) GetMinimumEngineVersion() string {
+func (x *AwsMemorydbAclOutputs) GetMinimumEngineVersion() string {
 	if x != nil {
 		return x.MinimumEngineVersion
 	}
@@ -95,8 +95,8 @@ var File_catalog_aws_awsmemorydbacl_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_aws_awsmemorydbacl_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awsmemorydbacl/v1alpha1/outputs.proto\x12'dev.planton.aws.awsmemorydbacl.v1alpha1\"\x86\x01\n" +
-	"\x1aAwsMemorydbAclStackOutputs\x12\x19\n" +
+	"1catalog/aws/awsmemorydbacl/v1alpha1/outputs.proto\x12'dev.planton.aws.awsmemorydbacl.v1alpha1\"\x81\x01\n" +
+	"\x15AwsMemorydbAclOutputs\x12\x19\n" +
 	"\bacl_name\x18\x01 \x01(\tR\aaclName\x12\x17\n" +
 	"\aacl_arn\x18\x02 \x01(\tR\x06aclArn\x124\n" +
 	"\x16minimum_engine_version\x18\x03 \x01(\tR\x14minimumEngineVersionB\xd5\x02\n" +
@@ -116,7 +116,7 @@ func file_catalog_aws_awsmemorydbacl_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsmemorydbacl_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsmemorydbacl_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsMemorydbAclStackOutputs)(nil), // 0: dev.planton.aws.awsmemorydbacl.v1alpha1.AwsMemorydbAclStackOutputs
+	(*AwsMemorydbAclOutputs)(nil), // 0: dev.planton.aws.awsmemorydbacl.v1alpha1.AwsMemorydbAclOutputs
 }
 var file_catalog_aws_awsmemorydbacl_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

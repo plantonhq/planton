@@ -12,9 +12,9 @@ type Locals struct {
 	CloudflareCustomHostnameFallbackOrigin *cloudflarecustomhostnamefallbackoriginv1alpha1.CloudflareCustomHostnameFallbackOrigin
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarecustomhostnamefallbackoriginv1alpha1.CloudflareCustomHostnameFallbackOriginStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarecustomhostnamefallbackoriginv1alpha1.CloudflareCustomHostnameFallbackOriginIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareCustomHostnameFallbackOrigin = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareCustomHostnameFallbackOrigin = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

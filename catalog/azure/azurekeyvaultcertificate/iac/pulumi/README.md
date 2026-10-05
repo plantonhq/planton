@@ -23,7 +23,7 @@ issuer keeps the operation pending until the CA responds.
 
 ## Inputs
 
-The module receives an `AzureKeyVaultCertificateStackInput` containing:
+The module receives an `AzureKeyVaultCertificateIacInput` containing:
 
 - `target.spec.name` -- 1-127 letters/digits/hyphens, unique among the vault's certificates
 - `target.spec.key_vault_id` -- the vault's ARM ID (resolved from an AzureKeyVault reference by the platform)

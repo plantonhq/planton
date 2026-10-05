@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareZoneTlsSettingsSpec
 locals.tf     — Per-hostname override maps + CA association keying
 main.tf       — Count-gated singletons + per-(setting, hostname) fan-out
-outputs.tf    — Stack outputs (zone_id)
+outputs.tf    — outputs (zone_id)
 ```
 
 ## Usage

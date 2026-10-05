@@ -4,7 +4,7 @@ Creates a network firewall policy — an ordered set of firewall rules owned by 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Firewall policy** -- the `compute_network_firewall_policy` (global) or `compute_region_network_firewall_policy` (regional), chosen by `region`
 - **Rules** -- one `..._rule` per `rules` entry, keyed by priority
@@ -110,7 +110,7 @@ planton apply -f baseline.yaml
 - `targetForwardingRules` non-empty exactly when `targetType` is `INTERNAL_MANAGED_LB`.
 - `ports` only with `tcp`, `udp`, `6`, or `17`; `ipProtocol` is a well-known name, `all`, or a number 0-255.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -142,7 +142,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpHierarchicalFirewallPolicy](/docs/catalog/gcp/gcphierarchicalfirewallpolicy) — organization- and folder-level policies evaluated before this one
 - [GcpFirewallRule](/docs/catalog/gcp/gcpfirewallrule) — legacy per-network VPC firewall rules, evaluated after

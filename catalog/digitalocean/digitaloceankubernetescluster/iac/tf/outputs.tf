@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanKubernetesClusterStackOutputs
+# Outputs — exactly the DigitalOceanKubernetesClusterOutputs
 # contract, identical across both provisioners.
 
 output "cluster_id" {

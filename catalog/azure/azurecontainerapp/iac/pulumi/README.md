@@ -1,12 +1,12 @@
 # AzureContainerApp Pulumi Module
 
-The Pulumi (Go) implementation of the `AzureContainerApp` component.
+The Pulumi (Go) implementation of the `AzureContainerApp` kind.
 
 ## Structure
 
 ```
 pulumi/
-├── main.go          # Entrypoint (loads stack input, calls module)
+├── main.go          # Entrypoint (loads IaC input, calls module)
 ├── Pulumi.yaml      # Pulumi project configuration
 ├── Makefile         # Build/test targets
 └── module/

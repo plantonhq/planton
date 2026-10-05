@@ -4,7 +4,7 @@ Deploys an X.509 certificate inside an Azure Key Vault -- the TLS building block
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Key Vault Certificate** -- in the referenced vault, either vault-GENERATED (self-signed or CA-issued from a policy) or IMPORTED from an existing PFX/PEM bundle
 - **Issuance policy** -- when configured: the issuer, the private-key shape (RSA/EC, optionally HSM-backed, exportable or vault-bound), near-expiry actions (auto-renew or contact notification), and the secret encoding (PKCS#12 or PEM)
@@ -16,12 +16,12 @@ The certificate lives entirely inside the referenced vault, whose authorization 
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Key Vault** for the certificate to live in. Reference an AzureKeyVault Cloud Resource via ValueFromRef. HSM-backed private keys require the vault on the PREMIUM SKU.
+- **An Azure Key Vault** for the certificate to live in. Reference an AzureKeyVault Infra Component via ValueFromRef. HSM-backed private keys require the vault on the PREMIUM SKU.
 - **Data-plane certificate permissions** for the deploying credential -- the "Key Vault Administrator" or "Key Vault Certificates Officer" RBAC role, or certificate permissions in a legacy access policy.
 - **For imports** -- the base64-encoded PFX/PEM bundle stored as a Planton org secret (it carries the private key; the plaintext never enters the manifest).
 - **For CA issuance** -- a CA issuer (DigiCert, GlobalSign) configured on the vault out-of-band.
@@ -77,7 +77,7 @@ spec:
 planton apply -f key-vault-certificate.yaml
 ```
 
-This creates the fully-hands-off internal-TLS shape: self-signed, renewing itself at 80% lifetime, with consumers following each renewal through the versionless secret ID. A Stack Job tracks the provisioning in real time.
+This creates the fully-hands-off internal-TLS shape: self-signed, renewing itself at 80% lifetime, with consumers following each renewal through the versionless secret ID. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -110,15 +110,15 @@ These are the most important decisions when configuring a Key Vault certificate.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureKeyVault** | `keyVaultId` | `status.outputs.key_vault_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -142,8 +142,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- the parent vault whose governance this certificate inherits
-- [**Azure Application Gateway**](/cloud-catalog/azure-application-gateway) -- terminates TLS with this certificate through its secret ID
-- [**Azure Front Door Secret**](/cloud-catalog/azure-front-door-secret) -- wraps this certificate (by its versionless ID) to serve Front Door custom domains
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the sibling kind for raw cryptographic keys (CMK)
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- grants TLS consumers secret-read access on the vault
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- the parent vault whose governance this certificate inherits
+- [**Azure Application Gateway**](/infra-catalog/azure-application-gateway) -- terminates TLS with this certificate through its secret ID
+- [**Azure Front Door Secret**](/infra-catalog/azure-front-door-secret) -- wraps this certificate (by its versionless ID) to serve Front Door custom domains
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the sibling kind for raw cryptographic keys (CMK)
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- grants TLS consumers secret-read access on the vault

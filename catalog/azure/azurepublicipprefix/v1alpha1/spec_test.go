@@ -37,7 +37,7 @@ func validResource() *AzurePublicIpPrefix {
 	return &AzurePublicIpPrefix{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzurePublicIpPrefix",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-prefix",
 		},
 		Spec: &AzurePublicIpPrefixSpec{

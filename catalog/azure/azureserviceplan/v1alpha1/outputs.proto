@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azureserviceplan.v1alpha1;
 
-// **AzureServicePlanStackOutputs** captures the outputs of provisioning an
+// **AzureServicePlanOutputs** captures the outputs of provisioning an
 // Azure App Service Plan.
 //
 // The primary output is `service_plan_id`, which downstream app kinds
@@ -12,7 +12,7 @@ package dev.planton.azure.azureserviceplan.v1alpha1;
 //
 // The remaining outputs are informational -- useful for debugging,
 // auditing, cost tracking, and infra-chart visibility.
-message AzureServicePlanStackOutputs {
+message AzureServicePlanOutputs {
   // The Azure Resource Manager ID of the Service Plan.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Web/serverFarms/{name}
   //

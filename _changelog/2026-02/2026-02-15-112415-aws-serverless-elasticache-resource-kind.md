@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added AwsServerlessElasticache (R07b) -- a deployment component for AWS ElastiCache Serverless caches supporting all three engines (Redis, Valkey, Memcached). This is the third and final ElastiCache variant, completing the family alongside AwsRedisElasticache (provisioned Redis/Valkey) and AwsMemcachedElasticache (provisioned Memcached).
+Added AwsServerlessElasticache (R07b) -- a catalog kind for AWS ElastiCache Serverless caches supporting all three engines (Redis, Valkey, Memcached). This is the third and final ElastiCache variant, completing the family alongside AwsRedisElasticache (provisioned Redis/Valkey) and AwsMemcachedElasticache (provisioned Memcached).
 
 ## Problem Statement / Motivation
 
-AWS ElastiCache Serverless is a fundamentally different deployment model from provisioned clusters. It uses a completely different Terraform resource (`aws_elasticache_serverless_cache`), a different billing model (pay-per-ECPU and per-GB), and removes all node management. The original AwsElasticacheCluster planning item was split into three focused components during R07 implementation when the deltas between provisioned Redis, provisioned Memcached, and serverless were found to be too large for a single component.
+AWS ElastiCache Serverless is a fundamentally different deployment model from provisioned clusters. It uses a completely different Terraform resource (`aws_elasticache_serverless_cache`), a different billing model (pay-per-ECPU and per-GB), and removes all node management. The original AwsElasticacheCluster planning item was split into three focused kinds during R07 implementation when the deltas between provisioned Redis, provisioned Memcached, and serverless were found to be too large for a single kind.
 
 ### Pain Points
 
@@ -20,9 +20,9 @@ AWS ElastiCache Serverless is a fundamentally different deployment model from pr
 
 ## Solution / What's New
 
-### Multi-Engine Serverless Cache Component
+### Multi-Engine Serverless Cache Kind
 
-A single deployment component supporting all three ElastiCache engines with engine-specific field guards via CEL validations. Unlike the provisioned siblings (which were split because they use different Terraform resources), serverless uses a single `aws_elasticache_serverless_cache` resource for all engines.
+A single catalog kind supporting all three ElastiCache engines with engine-specific field guards via CEL validations. Unlike the provisioned siblings (which were split because they use different Terraform resources), serverless uses a single `aws_elasticache_serverless_cache` resource for all engines.
 
 ### Flattened Scaling Limits
 
@@ -72,7 +72,7 @@ Uses dynamic blocks for `cache_usage_limits`, `data_storage`, and `ecpu_per_seco
 - **Zero node management**: Users specify engine + optional limits, AWS handles everything else
 - **Pay-per-use**: Ideal for variable workloads, dev/staging, and prototyping
 - **Clean spec**: 13 fields vs Redis's 29 and Memcached's 15 -- embraces serverless simplicity
-- **Infra chart ready**: StringValueOrRef on all cross-resource fields enables `valueFrom` composition
+- **Infra Chart ready**: StringValueOrRef on all cross-resource fields enables `valueFrom` composition
 
 ## Impact
 
@@ -80,13 +80,13 @@ Uses dynamic blocks for `cache_usage_limits`, `data_storage`, and `ecpu_per_seco
 
 - Serverless Redis, Valkey, and Memcached deployment via Planton
 - ECPU-based auto-scaling within configurable bounds
-- Completes the ElastiCache family (3 of 3 components)
+- Completes the ElastiCache family (3 of 3 kinds)
 
 ### Files Changed
 
 - 41 files, ~3,097 lines added
-- New component: `apis/dev/planton/provider/aws/awsserverlesselasticache/v1/`
-- Enum registration: `AwsServerlessElasticache = 253` in `cloud_resource_kind.proto`
+- New kind: `apis/dev/planton/provider/aws/awsserverlesselasticache/v1/`
+- Enum registration: `AwsServerlessElasticache = 253` in `catalog_kind.proto`
 - Catalog page: `site/public/docs/catalog/aws/serverless-elasticache.md`
 - 3 presets: redis-minimal, memcached-with-limits, redis-production
 

@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -20,7 +20,7 @@ func minimalSubscription() *AzureServiceBusSubscription {
 	return &AzureServiceBusSubscription{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureServiceBusSubscription",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-subscription",
 		},
 		Spec: &AzureServiceBusSubscriptionSpec{
@@ -57,7 +57,7 @@ var _ = ginkgo.Describe("AzureServiceBusSubscriptionSpec Validation Tests", func
 				input.Spec.TopicId = &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AzureServiceBusTopic,
+							Kind:      catalogkind.CatalogKind_AzureServiceBusTopic,
 							Name:      "events-topic",
 							FieldPath: "status.outputs.topic_id",
 						},
@@ -95,7 +95,7 @@ var _ = ginkgo.Describe("AzureServiceBusSubscriptionSpec Validation Tests", func
 				input.Spec.ForwardTo = &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AzureServiceBusQueue,
+							Kind:      catalogkind.CatalogKind_AzureServiceBusQueue,
 							Name:      "work-queue",
 							FieldPath: "status.outputs.queue_name",
 						},

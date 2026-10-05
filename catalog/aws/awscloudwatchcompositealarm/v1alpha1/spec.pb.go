@@ -43,7 +43,7 @@ const (
 // changes state — it has no metrics, periods, or thresholds of its own.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsCloudwatchCompositeAlarmSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.
@@ -62,7 +62,7 @@ type AwsCloudwatchCompositeAlarmSpec struct {
 	// Example: "ALARM(\"cpu-high\") AND ALARM(\"error-rate-high\")"
 	//
 	// Compose alarm names from AwsCloudwatchAlarm resources via their exported
-	// `alarm_name` stack output. Maximum 10240 characters.
+	// `alarm_name` output. Maximum 10240 characters.
 	AlarmRule string `protobuf:"bytes,2,opt,name=alarm_rule,json=alarmRule,proto3" json:"alarm_rule,omitempty"`
 	// Human-readable description of what this composite alarm represents and
 	// what to do when it fires. Maximum 1024 characters.

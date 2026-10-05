@@ -35,7 +35,7 @@ planton pulumi destroy \
 
 ```
 iac/pulumi/
-├── main.go              # Pulumi entrypoint — loads stack input, delegates to module
+├── main.go              # Pulumi entrypoint — loads IaC input, delegates to module
 ├── Pulumi.yaml          # Pulumi project metadata
 ├── Makefile             # Build/tidy/lint helpers
 ├── README.md            # This file
@@ -46,7 +46,7 @@ iac/pulumi/
     └── outputs.go       # Output key constants
 ```
 
-## Stack Outputs
+## Outputs
 
 | Output Key                        | Description                                         |
 |-----------------------------------|-----------------------------------------------------|

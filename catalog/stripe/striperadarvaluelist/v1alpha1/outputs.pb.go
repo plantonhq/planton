@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeRadarValueListStackOutputs identifies the list and each of its items.
+// StripeRadarValueListOutputs identifies the list and each of its items.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/radar_value_list
-type StripeRadarValueListStackOutputs struct {
+type StripeRadarValueListOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the list's Stripe id (rsl_...).
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -37,20 +37,20 @@ type StripeRadarValueListStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *StripeRadarValueListStackOutputs) Reset() {
-	*x = StripeRadarValueListStackOutputs{}
+func (x *StripeRadarValueListOutputs) Reset() {
+	*x = StripeRadarValueListOutputs{}
 	mi := &file_catalog_stripe_striperadarvaluelist_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeRadarValueListStackOutputs) String() string {
+func (x *StripeRadarValueListOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeRadarValueListStackOutputs) ProtoMessage() {}
+func (*StripeRadarValueListOutputs) ProtoMessage() {}
 
-func (x *StripeRadarValueListStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripeRadarValueListOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_striperadarvaluelist_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *StripeRadarValueListStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeRadarValueListStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripeRadarValueListStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeRadarValueListOutputs.ProtoReflect.Descriptor instead.
+func (*StripeRadarValueListOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_striperadarvaluelist_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeRadarValueListStackOutputs) GetId() string {
+func (x *StripeRadarValueListOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripeRadarValueListStackOutputs) GetAlias() string {
+func (x *StripeRadarValueListOutputs) GetAlias() string {
 	if x != nil {
 		return x.Alias
 	}
 	return ""
 }
 
-func (x *StripeRadarValueListStackOutputs) GetItemIds() map[string]string {
+func (x *StripeRadarValueListOutputs) GetItemIds() map[string]string {
 	if x != nil {
 		return x.ItemIds
 	}
@@ -92,11 +92,11 @@ var File_catalog_stripe_striperadarvaluelist_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_stripe_striperadarvaluelist_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/stripe/striperadarvaluelist/v1alpha1/outputs.proto\x120dev.planton.stripe.striperadarvaluelist.v1alpha1\"\x80\x02\n" +
-	" StripeRadarValueListStackOutputs\x12\x0e\n" +
+	":catalog/stripe/striperadarvaluelist/v1alpha1/outputs.proto\x120dev.planton.stripe.striperadarvaluelist.v1alpha1\"\xf6\x01\n" +
+	"\x1bStripeRadarValueListOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
-	"\x05alias\x18\x02 \x01(\tR\x05alias\x12z\n" +
-	"\bitem_ids\x18\x03 \x03(\v2_.dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListStackOutputs.ItemIdsEntryR\aitemIds\x1a:\n" +
+	"\x05alias\x18\x02 \x01(\tR\x05alias\x12u\n" +
+	"\bitem_ids\x18\x03 \x03(\v2Z.dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListOutputs.ItemIdsEntryR\aitemIds\x1a:\n" +
 	"\fItemIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x91\x03\n" +
@@ -116,11 +116,11 @@ func file_catalog_stripe_striperadarvaluelist_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_stripe_striperadarvaluelist_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_stripe_striperadarvaluelist_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripeRadarValueListStackOutputs)(nil), // 0: dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListStackOutputs
-	nil,                                      // 1: dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListStackOutputs.ItemIdsEntry
+	(*StripeRadarValueListOutputs)(nil), // 0: dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListOutputs
+	nil,                                 // 1: dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListOutputs.ItemIdsEntry
 }
 var file_catalog_stripe_striperadarvaluelist_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListStackOutputs.item_ids:type_name -> dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListStackOutputs.ItemIdsEntry
+	1, // 0: dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListOutputs.item_ids:type_name -> dev.planton.stripe.striperadarvaluelist.v1alpha1.StripeRadarValueListOutputs.ItemIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

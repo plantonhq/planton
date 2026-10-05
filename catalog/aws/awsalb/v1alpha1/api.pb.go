@@ -31,7 +31,7 @@ type AwsAlb struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsAlbSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsAlb) GetKind() string {
 	return ""
 }
 
-func (x *AwsAlb) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsAlb) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsAlb) GetStatus() *AwsAlbStatus {
 // aws-alb status
 type AwsAlbStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsAlbStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsAlbOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsAlbStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsalb_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsAlbStatus) GetOutputs() *AwsAlbStackOutputs {
+func (x *AwsAlbStatus) GetOutputs() *AwsAlbOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -163,11 +163,11 @@ const file_catalog_aws_awsalb_v1alpha1_api_proto_rawDesc = "" +
 	"\x04kind\x18\x02 \x01(\tB\r\xbaH\n" +
 	"r\b\n" +
 	"\x06AwsAlbR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12G\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12G\n" +
 	"\x04spec\x18\x04 \x01(\v2+.dev.planton.aws.awsalb.v1alpha1.AwsAlbSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12E\n" +
-	"\x06status\x18\x05 \x01(\v2-.dev.planton.aws.awsalb.v1alpha1.AwsAlbStatusR\x06status\"]\n" +
-	"\fAwsAlbStatus\x12M\n" +
-	"\aoutputs\x18\x01 \x01(\v23.dev.planton.aws.awsalb.v1alpha1.AwsAlbStackOutputsR\aoutputsB\x99\x02\n" +
+	"\x06status\x18\x05 \x01(\v2-.dev.planton.aws.awsalb.v1alpha1.AwsAlbStatusR\x06status\"X\n" +
+	"\fAwsAlbStatus\x12H\n" +
+	"\aoutputs\x18\x01 \x01(\v2..dev.planton.aws.awsalb.v1alpha1.AwsAlbOutputsR\aoutputsB\x99\x02\n" +
 	"#com.dev.planton.aws.awsalb.v1alpha1B\bApiProtoP\x01ZGgithub.com/plantonhq/planton/catalog/aws/awsalb/v1alpha1;awsalbv1alpha1\xa2\x02\x04DPAA\xaa\x02\x1fDev.Planton.Aws.Awsalb.V1alpha1\xca\x02\x1fDev\\Planton\\Aws\\Awsalb\\V1alpha1\xe2\x02+Dev\\Planton\\Aws\\Awsalb\\V1alpha1\\GPBMetadata\xea\x02#Dev::Planton::Aws::Awsalb::V1alpha1b\x06proto3"
 
 var (
@@ -186,15 +186,15 @@ var file_catalog_aws_awsalb_v1alpha1_api_proto_msgTypes = make([]protoimpl.Messa
 var file_catalog_aws_awsalb_v1alpha1_api_proto_goTypes = []any{
 	(*AwsAlb)(nil),                       // 0: dev.planton.aws.awsalb.v1alpha1.AwsAlb
 	(*AwsAlbStatus)(nil),                 // 1: dev.planton.aws.awsalb.v1alpha1.AwsAlbStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsAlbSpec)(nil),                   // 3: dev.planton.aws.awsalb.v1alpha1.AwsAlbSpec
-	(*AwsAlbStackOutputs)(nil),           // 4: dev.planton.aws.awsalb.v1alpha1.AwsAlbStackOutputs
+	(*AwsAlbOutputs)(nil),                // 4: dev.planton.aws.awsalb.v1alpha1.AwsAlbOutputs
 }
 var file_catalog_aws_awsalb_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsalb.v1alpha1.AwsAlb.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsalb.v1alpha1.AwsAlb.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsalb.v1alpha1.AwsAlb.spec:type_name -> dev.planton.aws.awsalb.v1alpha1.AwsAlbSpec
 	1, // 2: dev.planton.aws.awsalb.v1alpha1.AwsAlb.status:type_name -> dev.planton.aws.awsalb.v1alpha1.AwsAlbStatus
-	4, // 3: dev.planton.aws.awsalb.v1alpha1.AwsAlbStatus.outputs:type_name -> dev.planton.aws.awsalb.v1alpha1.AwsAlbStackOutputs
+	4, // 3: dev.planton.aws.awsalb.v1alpha1.AwsAlbStatus.outputs:type_name -> dev.planton.aws.awsalb.v1alpha1.AwsAlbOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

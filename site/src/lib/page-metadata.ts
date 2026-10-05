@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { SITE, sitePage } from '@/data/site-pages';
-import { retiredRoute } from '@/data/retired-routes';
 
 /**
  * The metadata for a registered page, from the route registry. A page's
@@ -35,16 +34,3 @@ export function pageMetadata(path: string, overrides: Metadata = {}): Metadata {
   };
 }
 
-/**
- * The metadata for a retired path: a title that says so, no indexing, and a
- * canonical pointing at the page that answers for it, so a crawler that still
- * holds the old URL transfers what it knows to the new one.
- */
-export function retiredRouteMetadata(from: string): Metadata {
-  const route = retiredRoute(from);
-  return {
-    title: `Moved${SITE.titleSuffix}`,
-    robots: { index: false, follow: true },
-    alternates: { canonical: `${SITE.url}${route.to}` },
-  };
-}

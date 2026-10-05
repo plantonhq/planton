@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsapprunnervpcconnector.v1alpha1;
 
-// AwsAppRunnerVpcConnectorStackOutputs captures observable identifiers from a
+// AwsAppRunnerVpcConnectorOutputs captures observable identifiers from a
 // provisioned App Runner VPC connector. Services reference the connector by
 // its ARN in their network egress configuration.
-message AwsAppRunnerVpcConnectorStackOutputs {
+message AwsAppRunnerVpcConnectorOutputs {
   // The ARN of the VPC connector (e.g. "arn:aws:apprunner:us-west-2:
   // 123456789012:vpcconnector/my-connector/1/abc123"). This is the
   // identifier App Runner services set as their egress vpc_connector_arn.

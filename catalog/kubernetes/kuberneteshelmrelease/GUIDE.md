@@ -8,7 +8,7 @@ compatible alternative — the search-first workflow lives in the
 
 ## What a chart install costs the architecture
 
-A typed component validates configuration before deploy, exports outputs
+A typed kind validates configuration before deploy, exports outputs
 other resources reference by `valueFrom`, and documents its trade-offs
 field by field. A Helm release does none of that: values are opaque to
 validation until Helm renders them, and nothing it creates is referenceable
@@ -23,7 +23,7 @@ is the honest answer, and its spec is a faithful Helm surface: pinned
 `version` (required — reproducibility is the point), Helm's own values
 precedence, real hooks and release history (details on
 [reference.md](v1alpha1/reference.md)). Say plainly in the proposal that the
-catalog has no first-class component yet.
+catalog has no first-class kind yet.
 
 ## Namespace ownership
 

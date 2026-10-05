@@ -11,7 +11,7 @@ author:
     title: Founder
 ---
 
-Keeping up with a fast-moving platform shouldn't require reading release notes buried in a repository. Starting today, every meaningful change to the Planton platform — new cloud resources, console improvements, API enhancements, and bug fixes — is published here as a human-readable changelog entry.
+Keeping up with a fast-moving platform shouldn't require reading release notes buried in a repository. Starting today, every meaningful change to the Planton platform — new catalog kinds, console improvements, API enhancements, and bug fixes — is published here as a human-readable changelog entry.
 
 ## Why a Public Changelog?
 

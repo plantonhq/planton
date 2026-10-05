@@ -225,14 +225,14 @@ if isTemp {
 ┌─────────────────────────────────────────────────────────────┐
 │ Step 4: Kind Extraction                                      │
 │ - Parse manifest to extract `kind` field                    │
-│ - Use crkreflect to map kind string to CloudResourceKind    │
+│ - Use catalogkindreflect to map kind string to CatalogKind    │
 └────────────────┬────────────────────────────────────────────┘
                  │
                  ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ Step 5: Proto Message Lookup                                 │
 │ - Look up proto message type for kind                       │
-│ - Use crkreflect.ToMessageMap[kind]                         │
+│ - Use catalogkindreflect.ToMessageMap[kind]                         │
 │ - Error if kind not supported                               │
 └────────────────┬────────────────────────────────────────────┘
                  │
@@ -264,28 +264,28 @@ if isTemp {
 
 ### How Kind Resolution Works
 
-The package uses the `crkreflect` (Cloud Resource Kind Reflection) system:
+The package uses the `catalogkindreflect` (Catalog Kind Reflection) system:
 
 ```go
 // Extract kind string from YAML
-kindName, err := crkreflect.ExtractKindFromTargetManifest(manifestPath)
+kindName, err := catalogkindreflect.ExtractKindFromTargetManifest(manifestPath)
 // kindName = "AwsS3Bucket"
 
-// Convert string to CloudResourceKind enum
-cloudResourceKind := crkreflect.KindFromString(kindName)
-// cloudResourceKind = CloudResourceKind_aws_s3_bucket
+// Convert string to CatalogKind enum
+catalogKind := catalogkindreflect.KindFromString(kindName)
+// catalogKind = CatalogKind_aws_s3_bucket
 
 // Look up proto message type
-manifest := crkreflect.ToMessageMap[cloudResourceKind]
+manifest := catalogkindreflect.ToMessageMap[catalogKind]
 // manifest = &AwsS3Bucket{}
 ```
 
-**Supported kinds**: See `pkg/crkreflect/kind_map_gen.go` for complete mapping.
+**Supported kinds**: See `pkg/catalogkindreflect/kind_map_gen.go` for complete mapping.
 
 **Unsupported kind error**: If kind isn't in the map, returns formatted error:
 
 ```
-Unsupported cloud resource kind: UnknownKind
+Unsupported catalog kind: UnknownKind
 
 Available kinds: AwsS3Bucket, GcpGkeCluster, PostgresKubernetes, ...
 ```
@@ -501,7 +501,7 @@ URL manifests are downloaded once per operation:
 ### Adding Support for New Kinds
 
 1. Define proto message in `catalog/` directory
-2. Add to `crkreflect` kind mapping (auto-generated via `make generate-cloud-resource-kind-map`)
+2. Add to `catalogkindreflect` kind mapping (auto-generated via `make generate-catalog-kind-map`)
 3. No changes needed in `manifest` package (automatic)
 
 ### Modifying Validation
@@ -522,7 +522,7 @@ The `manifestprotobuf.SetProtoField` function supports any valid proto path:
 
 - [Documentation](https://planton.ai/docs) - User-facing manifest documentation
 - [Proto Defaults README](./protodefaults/README.md) - Default value system
-- [CRK Reflect Package](../../pkg/crkreflect/README.md) - Kind resolution system
+- [Catalog kind reflection](../../pkg/catalogkindreflect/) - Kind resolution system
 
 ---
 
@@ -543,8 +543,8 @@ manifest, err := manifest.LoadManifest("resource.yaml")
 
 **"Unsupported kind"**: 
 - Verify kind spelling (case-sensitive)
-- Check `pkg/crkreflect/kind_map_gen.go` for supported kinds
-- Run `make generate-cloud-resource-kind-map` if adding new kind
+- Check `pkg/catalogkindreflect/kind_map_gen.go` for supported kinds
+- Run `make generate-catalog-kind-map` if adding new kind
 
 **"Validation failed"**:
 - Run `planton validate` for detailed errors

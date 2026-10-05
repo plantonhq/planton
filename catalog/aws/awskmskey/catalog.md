@@ -1,10 +1,10 @@
 # AWS KMS Key
 
-Deploys a customer-managed KMS key with configurable cryptographic shape (key spec and usage), a custom key policy, automatic rotation, multi-Region designation, a scheduled deletion window, aliases, and scoped grants. KMS keys have no name in AWS -- identity is the generated key ID and ARN -- so downstream Cloud Resources compose with this key by referencing its `key_arn` output, the value encryption-at-rest fields across databases, queues, buckets, and functions all take. The cryptographic shape is create-time immutable: changing `keySpec` or `keyUsage` replaces the key, and old ciphertext stays decryptable only by the old key.
+Deploys a customer-managed KMS key with configurable cryptographic shape (key spec and usage), a custom key policy, automatic rotation, multi-Region designation, a scheduled deletion window, aliases, and scoped grants. KMS keys have no name in AWS -- identity is the generated key ID and ARN -- so downstream Infra Components compose with this key by referencing its `key_arn` output, the value encryption-at-rest fields across databases, queues, buckets, and functions all take. The cryptographic shape is create-time immutable: changing `keySpec` or `keyUsage` replaces the key, and old ciphertext stays decryptable only by the old key.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **KMS Key** -- a customer-managed key with the specified key spec and usage, description, key policy, rotation configuration, multi-Region designation, deletion window, and (optionally) a custom key store home
 - **KMS Grants** -- created only when `grants` is set; one grant resource per entry, giving a principal scoped, revocable use of the key without key-policy edits
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -55,7 +55,7 @@ spec:
 planton apply -f kms-key.yaml
 ```
 
-This creates a symmetric encryption key with automatic rotation enabled, a 30-day deletion window, and one alias. SYMMETRIC_DEFAULT is suitable for use with S3 SSE-KMS, EBS volume encryption, RDS storage encryption, and EKS secrets encryption. A Stack Job tracks the provisioning in real time.
+This creates a symmetric encryption key with automatic rotation enabled, a 30-day deletion window, and one alias. SYMMETRIC_DEFAULT is suitable for use with S3 SSE-KMS, EBS volume encryption, RDS storage encryption, and EKS secrets encryption. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -103,7 +103,7 @@ These are the most important decisions when configuring a KMS key. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -112,9 +112,9 @@ These are the most important decisions when configuring a KMS key. Explore the f
 
 Both fields also accept literal IAM principal ARNs -- how users, account roots, and cross-account principals are named.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -137,7 +137,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the grantee and retiring principals grants reference by `role_arn`
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- consumes `key_arn` for SSE-KMS default encryption
-- [**AWS EKS Cluster**](/cloud-catalog/aws-eks-cluster) -- consumes `key_arn` for secrets envelope encryption
-- [**AWS RDS Instance**](/cloud-catalog/aws-rds-instance) -- consumes `key_arn` for storage encryption
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the grantee and retiring principals grants reference by `role_arn`
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- consumes `key_arn` for SSE-KMS default encryption
+- [**AWS EKS Cluster**](/infra-catalog/aws-eks-cluster) -- consumes `key_arn` for secrets envelope encryption
+- [**AWS RDS Instance**](/infra-catalog/aws-rds-instance) -- consumes `key_arn` for storage encryption

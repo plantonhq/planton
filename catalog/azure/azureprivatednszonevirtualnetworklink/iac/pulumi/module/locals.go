@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 	azureprivatednszonevirtualnetworklinkv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureprivatednszonevirtualnetworklink/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -34,11 +34,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureprivatednszonevirtualnetworklinkv1alpha1.AzurePrivateDnsZoneVirtualNetworkLinkStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureprivatednszonevirtualnetworklinkv1alpha1.AzurePrivateDnsZoneVirtualNetworkLinkIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzurePrivateDnsZoneVirtualNetworkLink = stackInput.Target
-	target := stackInput.Target
+	locals.AzurePrivateDnsZoneVirtualNetworkLink = iacInput.Target
+	target := iacInput.Target
 
 	locals.PrivateDnsZoneId = target.Spec.PrivateDnsZoneId.GetValue()
 	locals.VirtualNetworkId = target.Spec.VirtualNetworkId.GetValue()
@@ -61,7 +61,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureprivatednszonevirtua
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzurePrivateDnsZoneVirtualNetworkLink.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzurePrivateDnsZoneVirtualNetworkLink.String()),
 	}
 
 	if target.Metadata.Id != "" {

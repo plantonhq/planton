@@ -7,19 +7,19 @@ rules referenced by policies and other groups.
 
 ```
 iac/pulumi/
-├── main.go            # entrypoint (loads stack-input, calls module.Resources)
+├── main.go            # entrypoint (loads iac-input, calls module.Resources)
 ├── Pulumi.yaml
 ├── Makefile
 └── module/
     ├── main.go            # Resources(): provider setup + group()
-    ├── locals.go          # stack-input references
+    ├── locals.go          # iac-input references
     ├── group.go           # the cloudflare.ZeroTrustAccessGroup + rule mappers
     └── outputs.go         # output constant names
 ```
 
 ## Inputs
 
-A `CloudflareZeroTrustAccessGroupStackInput` (target + provider config). Set exactly
+A `CloudflareZeroTrustAccessGroupIacInput` (target + provider config). Set exactly
 one of `account_id` or `zone_id`; `include` requires at least one rule.
 
 ## Outputs

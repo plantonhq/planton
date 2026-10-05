@@ -22,8 +22,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanContainerRegistryStackOutputs captures outputs after provisioning.
-type DigitalOceanContainerRegistryStackOutputs struct {
+// DigitalOceanContainerRegistryOutputs captures outputs after provisioning.
+type DigitalOceanContainerRegistryOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The registry name (also the registry's resource identifier in DigitalOcean).
 	RegistryName string `protobuf:"bytes,1,opt,name=registry_name,json=registryName,proto3" json:"registry_name,omitempty"`
@@ -44,20 +44,20 @@ type DigitalOceanContainerRegistryStackOutputs struct {
 	sizeCache                protoimpl.SizeCache
 }
 
-func (x *DigitalOceanContainerRegistryStackOutputs) Reset() {
-	*x = DigitalOceanContainerRegistryStackOutputs{}
+func (x *DigitalOceanContainerRegistryOutputs) Reset() {
+	*x = DigitalOceanContainerRegistryOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanContainerRegistryStackOutputs) String() string {
+func (x *DigitalOceanContainerRegistryOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanContainerRegistryStackOutputs) ProtoMessage() {}
+func (*DigitalOceanContainerRegistryOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanContainerRegistryStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanContainerRegistryOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,47 +69,47 @@ func (x *DigitalOceanContainerRegistryStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanContainerRegistryStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanContainerRegistryStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanContainerRegistryOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanContainerRegistryOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanContainerRegistryStackOutputs) GetRegistryName() string {
+func (x *DigitalOceanContainerRegistryOutputs) GetRegistryName() string {
 	if x != nil {
 		return x.RegistryName
 	}
 	return ""
 }
 
-func (x *DigitalOceanContainerRegistryStackOutputs) GetServerUrl() string {
+func (x *DigitalOceanContainerRegistryOutputs) GetServerUrl() string {
 	if x != nil {
 		return x.ServerUrl
 	}
 	return ""
 }
 
-func (x *DigitalOceanContainerRegistryStackOutputs) GetEndpoint() string {
+func (x *DigitalOceanContainerRegistryOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *DigitalOceanContainerRegistryStackOutputs) GetRegion() string {
+func (x *DigitalOceanContainerRegistryOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *DigitalOceanContainerRegistryStackOutputs) GetDockerCredentials() string {
+func (x *DigitalOceanContainerRegistryOutputs) GetDockerCredentials() string {
 	if x != nil {
 		return x.DockerCredentials
 	}
 	return ""
 }
 
-func (x *DigitalOceanContainerRegistryStackOutputs) GetCredentialExpirationTime() string {
+func (x *DigitalOceanContainerRegistryOutputs) GetCredentialExpirationTime() string {
 	if x != nil {
 		return x.CredentialExpirationTime
 	}
@@ -120,8 +120,8 @@ var File_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_outputs_pro
 
 const file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/digitalocean/digitaloceancontainerregistry/v1alpha1/outputs.proto\x12?dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1\x1a\x1cshared/options/options.proto\"\x96\x02\n" +
-	")DigitalOceanContainerRegistryStackOutputs\x12#\n" +
+	"Icatalog/digitalocean/digitaloceancontainerregistry/v1alpha1/outputs.proto\x12?dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1\x1a\x1cshared/options/options.proto\"\x91\x02\n" +
+	"$DigitalOceanContainerRegistryOutputs\x12#\n" +
 	"\rregistry_name\x18\x01 \x01(\tR\fregistryName\x12\x1d\n" +
 	"\n" +
 	"server_url\x18\x02 \x01(\tR\tserverUrl\x12\x1a\n" +
@@ -145,7 +145,7 @@ func file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_outputs_pr
 
 var file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanContainerRegistryStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1.DigitalOceanContainerRegistryStackOutputs
+	(*DigitalOceanContainerRegistryOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1.DigitalOceanContainerRegistryOutputs
 }
 var file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

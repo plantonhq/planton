@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeBillingPortalConfigurationStackInput is the input to the StripeBillingPortalConfiguration
+// StripeBillingPortalConfigurationIacInput is the input to the StripeBillingPortalConfiguration
 // IaC module. It contains the target resource and the Stripe provider configuration.
-type StripeBillingPortalConfigurationStackInput struct {
+type StripeBillingPortalConfigurationIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripeBillingPortalConfiguration resource to be deployed.
 	Target *StripeBillingPortalConfiguration `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripeBillingPortalConfigurationStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripeBillingPortalConfigurationStackInput) Reset() {
-	*x = StripeBillingPortalConfigurationStackInput{}
+func (x *StripeBillingPortalConfigurationIacInput) Reset() {
+	*x = StripeBillingPortalConfigurationIacInput{}
 	mi := &file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeBillingPortalConfigurationStackInput) String() string {
+func (x *StripeBillingPortalConfigurationIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeBillingPortalConfigurationStackInput) ProtoMessage() {}
+func (*StripeBillingPortalConfigurationIacInput) ProtoMessage() {}
 
-func (x *StripeBillingPortalConfigurationStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripeBillingPortalConfigurationIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripeBillingPortalConfigurationStackInput) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeBillingPortalConfigurationStackInput.ProtoReflect.Descriptor instead.
-func (*StripeBillingPortalConfigurationStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeBillingPortalConfigurationIacInput.ProtoReflect.Descriptor instead.
+func (*StripeBillingPortalConfigurationIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeBillingPortalConfigurationStackInput) GetTarget() *StripeBillingPortalConfiguration {
+func (x *StripeBillingPortalConfigurationIacInput) GetTarget() *StripeBillingPortalConfiguration {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripeBillingPortalConfigurationStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripeBillingPortalConfigurationIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripebillingportalconfiguration_v1alpha1_input_proto pr
 
 const file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/stripe/stripebillingportalconfiguration/v1alpha1/input.proto\x12<dev.planton.stripe.stripebillingportalconfiguration.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1aBcatalog/stripe/stripebillingportalconfiguration/v1alpha1/api.proto\"\xf7\x01\n" +
-	"*StripeBillingPortalConfigurationStackInput\x12v\n" +
+	"Dcatalog/stripe/stripebillingportalconfiguration/v1alpha1/input.proto\x12<dev.planton.stripe.stripebillingportalconfiguration.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1aBcatalog/stripe/stripebillingportalconfiguration/v1alpha1/api.proto\"\xf5\x01\n" +
+	"(StripeBillingPortalConfigurationIacInput\x12v\n" +
 	"\x06target\x18\x01 \x01(\v2^.dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\xe3\x03\n" +
 	"@com.dev.planton.stripe.stripebillingportalconfiguration.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_input_proto_r
 
 var file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_input_proto_goTypes = []any{
-	(*StripeBillingPortalConfigurationStackInput)(nil), // 0: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationStackInput
-	(*StripeBillingPortalConfiguration)(nil),           // 1: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfiguration
-	(*stripe.StripeProviderConfig)(nil),                // 2: dev.planton.stripe.StripeProviderConfig
+	(*StripeBillingPortalConfigurationIacInput)(nil), // 0: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationIacInput
+	(*StripeBillingPortalConfiguration)(nil),         // 1: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfiguration
+	(*stripe.StripeProviderConfig)(nil),              // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripebillingportalconfiguration_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationStackInput.target:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfiguration
-	2, // 1: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationIacInput.target:type_name -> dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfiguration
+	2, // 1: dev.planton.stripe.stripebillingportalconfiguration.v1alpha1.StripeBillingPortalConfigurationIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

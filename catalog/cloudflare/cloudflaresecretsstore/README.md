@@ -33,7 +33,7 @@ Two hard provider facts shape this resource: EVERY field is create-only (a name 
 | `account_id` | string | Yes | The Cloudflare account (32-hex). |
 | `name` | string | Yes | The store's name. Create-only: renaming replaces the store AND every secret it holds. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

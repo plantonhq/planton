@@ -27,7 +27,7 @@ here: a subnet declares which NSG guards it (AzureSubnet's
 
 ## Inputs
 
-The module receives an `AzureNetworkSecurityGroupStackInput` containing:
+The module receives an `AzureNetworkSecurityGroupIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the group's ARM identity (references resolved to literals by the platform)
 - `target.spec.security_rules` -- 5-tuple filters with `priority` (100-4096, lowest evaluates first), `direction` (INBOUND/OUTBOUND), `access` (ALLOW/DENY), and `protocol` (ANY/TCP/UDP/ICMP/AH/ESP, where ANY is ARM's "*"); ports and each address side take exactly one form (single prefix, prefix list, or application security group IDs), with unset meaning any

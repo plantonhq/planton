@@ -4,7 +4,7 @@ Registers an Android app in a Firebase-enabled Google Cloud project and composes
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **The app registration** -- one `firebase_android_app` identified by its immutable package name
 - **Play Integrity attestation** -- the app's `firebase_app_check_play_integrity_config` when `appCheck.playIntegrity` is configured
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Project
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f android-app.yaml
 ```
 
-This registers the app and produces its `google-services.json`; the `config_file_contents` output is what the Android build decodes into `app/google-services.json`. A Stack Job tracks the provisioning in real time.
+This registers the app and produces its `google-services.json`; the `config_file_contents` output is what the Android build decodes into `app/google-services.json`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -97,16 +97,16 @@ These are the most important decisions when configuring an Android app registrat
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpFirebaseProject** | `projectId` | `status.outputs.project_id` |
 | **GcpApiKey** (optional) | `apiKeyId` | `status.outputs.uid` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources and the mobile build can consume:
+After provisioning, `status.outputs` contains values that downstream Infra Components and the mobile build can consume:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,7 +126,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Firebase Project**](/cloud-catalog/gcp-firebase-project) -- the Firebase enablement this app is registered in
-- [**GCP API Key**](/cloud-catalog/gcp-api-key) -- the restricted key the app references
-- [**GCP Firebase Apple App**](/cloud-catalog/gcp-firebase-apple-app) -- the same product's iOS registration
-- [**GCP Firebase Web App**](/cloud-catalog/gcp-firebase-web-app) -- the same product's web registration
+- [**GCP Firebase Project**](/infra-catalog/gcp-firebase-project) -- the Firebase enablement this app is registered in
+- [**GCP API Key**](/infra-catalog/gcp-api-key) -- the restricted key the app references
+- [**GCP Firebase Apple App**](/infra-catalog/gcp-firebase-apple-app) -- the same product's iOS registration
+- [**GCP Firebase Web App**](/infra-catalog/gcp-firebase-web-app) -- the same product's web registration

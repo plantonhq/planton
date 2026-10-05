@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzurePublicIpStackOutputs** captures the outputs of provisioning an
+// **AzurePublicIpOutputs** captures the outputs of provisioning an
 // Azure Public IP Address.
-type AzurePublicIpStackOutputs struct {
+type AzurePublicIpOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the public IP. This is the primary
 	// output: AzureApplicationGateway, AzureLoadBalancer, and
@@ -42,20 +42,20 @@ type AzurePublicIpStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzurePublicIpStackOutputs) Reset() {
-	*x = AzurePublicIpStackOutputs{}
+func (x *AzurePublicIpOutputs) Reset() {
+	*x = AzurePublicIpOutputs{}
 	mi := &file_catalog_azure_azurepublicip_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePublicIpStackOutputs) String() string {
+func (x *AzurePublicIpOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePublicIpStackOutputs) ProtoMessage() {}
+func (*AzurePublicIpOutputs) ProtoMessage() {}
 
-func (x *AzurePublicIpStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzurePublicIpOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurepublicip_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *AzurePublicIpStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePublicIpStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzurePublicIpStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePublicIpOutputs.ProtoReflect.Descriptor instead.
+func (*AzurePublicIpOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurepublicip_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePublicIpStackOutputs) GetPublicIpId() string {
+func (x *AzurePublicIpOutputs) GetPublicIpId() string {
 	if x != nil {
 		return x.PublicIpId
 	}
 	return ""
 }
 
-func (x *AzurePublicIpStackOutputs) GetIpAddress() string {
+func (x *AzurePublicIpOutputs) GetIpAddress() string {
 	if x != nil {
 		return x.IpAddress
 	}
 	return ""
 }
 
-func (x *AzurePublicIpStackOutputs) GetFqdn() string {
+func (x *AzurePublicIpOutputs) GetFqdn() string {
 	if x != nil {
 		return x.Fqdn
 	}
 	return ""
 }
 
-func (x *AzurePublicIpStackOutputs) GetPublicIpName() string {
+func (x *AzurePublicIpOutputs) GetPublicIpName() string {
 	if x != nil {
 		return x.PublicIpName
 	}
@@ -104,8 +104,8 @@ var File_catalog_azure_azurepublicip_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_azure_azurepublicip_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/azure/azurepublicip/v1alpha1/outputs.proto\x12(dev.planton.azure.azurepublicip.v1alpha1\"\x96\x01\n" +
-	"\x19AzurePublicIpStackOutputs\x12 \n" +
+	"2catalog/azure/azurepublicip/v1alpha1/outputs.proto\x12(dev.planton.azure.azurepublicip.v1alpha1\"\x91\x01\n" +
+	"\x14AzurePublicIpOutputs\x12 \n" +
 	"\fpublic_ip_id\x18\x01 \x01(\tR\n" +
 	"publicIpId\x12\x1d\n" +
 	"\n" +
@@ -128,7 +128,7 @@ func file_catalog_azure_azurepublicip_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_azure_azurepublicip_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurepublicip_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzurePublicIpStackOutputs)(nil), // 0: dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpStackOutputs
+	(*AzurePublicIpOutputs)(nil), // 0: dev.planton.azure.azurepublicip.v1alpha1.AzurePublicIpOutputs
 }
 var file_catalog_azure_azurepublicip_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

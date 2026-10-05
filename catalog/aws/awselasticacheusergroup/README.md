@@ -43,7 +43,7 @@ RBAC attachment deserves its own composable node between users and caches:
   removing one is a list edit — no cache replacement.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `user_group_id`: the group's AWS identifier (same as `metadata.name`)
 - `arn`: the group's ARN (for IAM policies and cross-service permissions)

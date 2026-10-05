@@ -4,7 +4,7 @@ Declares a complete self-hosted Planton platform — control plane, web console,
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** — created only when `createNamespace` is `true`; otherwise the namespace must already exist
 - **PlantonPlatform CR** — the one declaration; the OPERATOR then creates the platform from it (workloads, Services, Secrets, volumes — all in the platform's namespace, all named from this resource's name and owner-referenced to the declaration)
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** — an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** — an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -49,7 +49,7 @@ spec:
 planton apply -f planton.yaml
 ```
 
-This declares a full zero-config platform: the operator brings up the control plane, console, identity server, databases, secrets manager, and runner in the `planton` namespace. Watch it come up (`kubectl get plantonplatforms -A` — phase, version, URL), then use the `port_forward_command` output to open the door and the `setup_code_command` output for the first-visit setup page. A Stack Job tracks the provisioning in real time.
+This declares a full zero-config platform: the operator brings up the control plane, console, identity server, databases, secrets manager, and runner in the `planton` namespace. Watch it come up (`kubectl get plantonplatforms -A` — phase, version, URL), then use the `port_forward_command` output to open the door and the `setup_code_command` output for the first-visit setup page. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -76,7 +76,7 @@ These are the most important decisions when configuring a Planton Platform. Expl
 
 **Set the URL before the first sign-in** — the identity server bakes the platform URL into its realm at first boot. For port-forward platforms that URL includes `gateway.localPort` (default 8080; two port-forward platforms on one machine need distinct ports); for ingress platforms it is `ingress.hostname`. Deciding exposure after the first visit means re-doing identity setup. `ingress.tls` requires a hostname (a certificate cannot be issued for an auto-derived address) and takes exactly one of `secretName` or a cert-manager `issuer`.
 
-**Pick the front door the cluster already runs** — `ingress` serves the platform through either an Ingress controller (`ingressClassName`, or the cluster's default class) or a Gateway API Gateway (`gatewayRef`: Istio, Envoy Gateway, Cilium, a cloud Gateway); never both. On the Gateway door the operator attaches one route for the hostname and reads the Gateway's listeners — an HTTPS listener that already serves the hostname means `https://` with no `tls` block, and `tls.issuer` has cert-manager issue a certificate for the listener to reference (`tls.secretName` does not apply there). Never route a Gateway of your own to the platform's port-forward Service: pages load, but the platform still advertises `http://localhost:8080` and sign-in goes there. `gatewayRef.name` and `gatewayRef.namespace` are foreign keys to KubernetesGateway: when the Gateway is Planton's own, wire both with `valueFrom` in the same infra chart and the platform deploys after its Gateway, follows a rename, and shows the edge in the resource graph; a Gateway created outside Planton takes the literal names with `value:`.
+**Pick the front door the cluster already runs** — `ingress` serves the platform through either an Ingress controller (`ingressClassName`, or the cluster's default class) or a Gateway API Gateway (`gatewayRef`: Istio, Envoy Gateway, Cilium, a cloud Gateway); never both. On the Gateway door the operator attaches one route for the hostname and reads the Gateway's listeners — an HTTPS listener that already serves the hostname means `https://` with no `tls` block, and `tls.issuer` has cert-manager issue a certificate for the listener to reference (`tls.secretName` does not apply there). Never route a Gateway of your own to the platform's port-forward Service: pages load, but the platform still advertises `http://localhost:8080` and sign-in goes there. `gatewayRef.name` and `gatewayRef.namespace` are foreign keys to KubernetesGateway: when the Gateway is Planton's own, wire both with `valueFrom` in the same Infra Chart and the platform deploys after its Gateway, follows a rename, and shows the edge in the resource graph; a Gateway created outside Planton takes the literal names with `value:`.
 
 **Say whether the internet reaches the door** — `ingress.reachability` is the one fact about the front door the operator cannot observe from inside the cluster, and it decides the doors that need an inbound path from the internet: keyless cloud connections (the cloud fetches the platform's identity documents from the door) and GitHub webhook delivery. `auto` (the default) reads a hostname served over HTTPS as public and anything else as private — the right answer for most installs. Declare `private` when only your network reaches an HTTPS address (split DNS, a corporate CA, an internal load balancer), so those doors stay honestly closed instead of failing at the cloud's first fetch; declare `public` when TLS terminates outside the cluster (an internet-facing ALB with an ACM certificate has no in-cluster `tls` block for `auto` to read). `public` on a disabled ingress is refused — a port-forward door is never reached from the internet.
 
@@ -106,7 +106,7 @@ These are the most important decisions when configuring a Planton Platform. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -114,9 +114,9 @@ These are the most important decisions when configuring a Planton Platform. Expl
 | **CloudflareR2Bucket** | `database.postgresql.backup.objectStore.r2.accountId`, `.jurisdiction` (and the same under `recoverFrom`) | `status.outputs.account_id`, `status.outputs.jurisdiction` |
 | **CloudflareAccountApiToken** | `database.postgresql.backup.objectStore.r2.credentials.accessKeyId`, `.secretAccessKey` (and the same under `recoverFrom`) | `status.outputs.r2_access_key_id`, `status.outputs.r2_secret_access_key` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef (all derive from the declaration itself — the operator's naming is deterministic per platform name, so they are stable from the first apply):
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef (all derive from the declaration itself — the operator's naming is deterministic per platform name, so they are stable from the first apply):
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -142,8 +142,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Planton Operator**](/cloud-catalog/kubernetes-planton-operator) — the hard prerequisite: the manager that reconciles this declaration; one per cluster serves every platform
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — provides the platform's namespace when composed in an InfraChart
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) — issues and renews the ingress certificate when `ingress.tls.issuer` is used, and secures the operator's link to the database backup plugin when a backup is declared
-- [**Cloudflare R2 Bucket**](/cloud-catalog/cloudflare-r2-bucket) — the archive the platform's database backs up to on the `r2` arm; its `account_id` and `jurisdiction` outputs are referenced, never typed
-- [**Cloudflare Account API Token**](/cloud-catalog/cloudflare-account-api-token) — the bucket-scoped credential for that archive, exported as the S3 key pair the `r2` arm references
+- [**Planton Operator**](/infra-catalog/kubernetes-planton-operator) — the hard prerequisite: the manager that reconciles this declaration; one per cluster serves every platform
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — provides the platform's namespace when composed in an InfraChart
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) — issues and renews the ingress certificate when `ingress.tls.issuer` is used, and secures the operator's link to the database backup plugin when a backup is declared
+- [**Cloudflare R2 Bucket**](/infra-catalog/cloudflare-r2-bucket) — the archive the platform's database backs up to on the `r2` arm; its `account_id` and `jurisdiction` outputs are referenced, never typed
+- [**Cloudflare Account API Token**](/infra-catalog/cloudflare-account-api-token) — the bucket-scoped credential for that archive, exported as the S3 key pair the `r2` arm references

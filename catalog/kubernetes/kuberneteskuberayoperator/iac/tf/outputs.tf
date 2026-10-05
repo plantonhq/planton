@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesKubeRayOperatorStackOutputs by
+# Outputs — flattened onto KubernetesKubeRayOperatorOutputs by
 # the platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

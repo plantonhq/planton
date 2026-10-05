@@ -4,7 +4,7 @@ Establishes private services access — the VPC peering between your network and
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Private services access connection** — a `google_service_networking_connection` peering your network with the producer (default `servicenetworking.googleapis.com`), backed by the reserved ranges; the peering appears on the VPC named after the service (e.g. `servicenetworking-googleapis-com`)
 - **Service Networking API enablement** — `servicenetworking.googleapis.com` enabled in the target project (the producer-side control plane; never disabled on destroy)
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** — an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** — an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
@@ -50,7 +50,7 @@ spec:
 planton apply -f psa-connection.yaml
 ```
 
-This peers `prod-vpc` with `servicenetworking.googleapis.com` (the default producer behind Cloud SQL, AlloyDB, Memorystore, and Filestore private IP), drawing service subnets from the named reserved range. A Stack Job tracks the provisioning in real time.
+This peers `prod-vpc` with `servicenetworking.googleapis.com` (the default producer behind Cloud SQL, AlloyDB, Memorystore, and Filestore private IP), drawing service subnets from the named reserved range. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,7 +88,7 @@ These are the most important decisions when configuring a service networking con
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -96,9 +96,9 @@ These are the most important decisions when configuring a service networking con
 | **GcpVpcNetwork** | `network` | `status.outputs.network_self_link` |
 | **GcpGlobalAddress** (per entry) | `reservedPeeringRanges` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -117,8 +117,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Global Address**](/cloud-catalog/gcp-global-address) — reserves the `VPC_PEERING` address space the producer carves subnets from
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) — the consumer network being peered
-- [**GCP AlloyDB Cluster**](/cloud-catalog/gcp-alloydb-cluster) — private IP requires this connection on the network first
-- [**GCP Cloud SQL**](/cloud-catalog/gcp-cloud-sql) — private IP requires this connection on the network first
-- [**GCP Project**](/cloud-catalog/gcp-project) — provides the project where the required APIs are enabled
+- [**GCP Global Address**](/infra-catalog/gcp-global-address) — reserves the `VPC_PEERING` address space the producer carves subnets from
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) — the consumer network being peered
+- [**GCP AlloyDB Cluster**](/infra-catalog/gcp-alloydb-cluster) — private IP requires this connection on the network first
+- [**GCP Cloud SQL**](/infra-catalog/gcp-cloud-sql) — private IP requires this connection on the network first
+- [**GCP Project**](/infra-catalog/gcp-project) — provides the project where the required APIs are enabled

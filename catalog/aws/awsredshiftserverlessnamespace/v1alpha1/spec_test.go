@@ -21,7 +21,7 @@ func validNamespace() *AwsRedshiftServerlessNamespace {
 	return &AwsRedshiftServerlessNamespace{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsRedshiftServerlessNamespace",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-namespace",
 		},
 		Spec: &AwsRedshiftServerlessNamespaceSpec{

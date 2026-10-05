@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Document AI processor fr
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `processor` |
-| `module/locals.go` | Stack input holder |
+| `module/locals.go` | IaC input holder |
 | `module/processor.go` | Enables the API; creates the processor and the default version binding; exports the outputs |
 | `module/outputs.go` | Output key constants (`name`, `processor_id`, `location`, `process_endpoint`) |
 

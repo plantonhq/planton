@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added auto-unseal configuration to the `KubernetesOpenBao` component, enabling automatic master key decryption via external KMS providers on pod startup. Supports GCP Cloud KMS, AWS KMS, Azure Key Vault, and Transit seal types with a `oneof`-based proto design. GCP KMS fields use `StringValueOrRef` for infra-chart composability with existing `GcpProject`, `GcpKmsKeyRing`, `GcpKmsKey`, and `GcpServiceAccount` resource kinds.
+Added auto-unseal configuration to the `KubernetesOpenBao` kind, enabling automatic master key decryption via external KMS providers on pod startup. Supports GCP Cloud KMS, AWS KMS, Azure Key Vault, and Transit seal types with a `oneof`-based proto design. GCP KMS fields use `StringValueOrRef` for infra-chart composability with existing `GcpProject`, `GcpKmsKeyRing`, `GcpKmsKey`, and `GcpServiceAccount` resource kinds.
 
 ## Problem Statement / Motivation
 
@@ -58,7 +58,7 @@ flowchart TB
 
 ### GCP KMS with StringValueOrRef
 
-The GCP KMS seal fields (`project`, `key_ring`, `crypto_key`, `workload_identity_service_account`) use `StringValueOrRef` with `default_kind` and `default_kind_field_path` annotations. This follows the infra-chart composability rule -- an infra chart can wire a `GcpKmsKey` output directly into the OpenBao seal config using `valueFrom` references.
+The GCP KMS seal fields (`project`, `key_ring`, `crypto_key`, `workload_identity_service_account`) use `StringValueOrRef` with `default_kind` and `default_kind_field_path` annotations. This follows the infra-chart composability rule -- an Infra Chart can wire a `GcpKmsKey` output directly into the OpenBao seal config using `valueFrom` references.
 
 ```yaml
 # Standalone use (literal values)
@@ -106,20 +106,20 @@ autoUnseal:
 | `spec.proto` | +126 | 6 new messages, 1 new field on KubernetesOpenBaoSpec |
 | `spec.pb.go` | +546 | Regenerated Go protobuf code |
 | `helm_chart.go` | +87/-26 | sealConfigHcl(), workloadIdentityServiceAccount(), SA annotation injection |
-| `stack-input.yaml` | +11 | Updated stack input schema |
+| `iac-input.yaml` | +11 | Updated IaC input schema |
 
 ## Benefits
 
 - **Zero-downtime recovery**: Pod restarts auto-unseal via KMS -- no human intervention
 - **Multi-cloud support**: GCP, AWS, Azure, and Transit seal types from day one
-- **Infra-chart composable**: GCP KMS fields use `StringValueOrRef` for dependency-aware deployment in infra charts
+- **Infra-chart composable**: GCP KMS fields use `StringValueOrRef` for dependency-aware deployment in Infra Charts
 - **GKE-native auth**: Workload Identity annotation eliminates credential file management
 - **Backward compatible**: `auto_unseal` is optional -- existing deployments without it continue to work with manual unseal
 
 ## Impact
 
 - **Planton users**: Can configure auto-unseal declaratively in their `KubernetesOpenBao` YAML manifests
-- **Infra chart authors**: Can compose KMS resources with OpenBao using `valueFrom` references
+- **Infra Chart authors**: Can compose KMS resources with OpenBao using `valueFrom` references
 - **Planton platform**: Production OpenBAO can migrate from manual unseal to GCP KMS auto-unseal
 
 ## Related Work

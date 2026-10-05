@@ -33,7 +33,7 @@ type CloudflareIpAccessRule struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareIpAccessRuleSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *CloudflareIpAccessRule) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareIpAccessRule) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareIpAccessRule) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *CloudflareIpAccessRule) GetStatus() *CloudflareIpAccessRuleStatus {
 // CloudflareIpAccessRuleStatus represents the observed state of an IP Access rule.
 type CloudflareIpAccessRuleStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareIpAccessRuleStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareIpAccessRuleOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareIpAccessRuleStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareIpAccessRuleStatus) GetOutputs() *CloudflareIpAccessRuleStackOutputs {
+func (x *CloudflareIpAccessRuleStatus) GetOutputs() *CloudflareIpAccessRuleOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16CloudflareIpAccessRuleR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
 	"\x04spec\x18\x04 \x01(\v2R.dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12l\n" +
-	"\x06status\x18\x05 \x01(\v2T.dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleStatusR\x06status\"\x94\x01\n" +
-	"\x1cCloudflareIpAccessRuleStatus\x12t\n" +
-	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleStackOutputsR\aoutputsB\xb3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2T.dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleStatusR\x06status\"\x8f\x01\n" +
+	"\x1cCloudflareIpAccessRuleStatus\x12o\n" +
+	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleOutputsR\aoutputsB\xb3\x03\n" +
 	":com.dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1B\bApiProtoP\x01Zngithub.com/plantonhq/planton/catalog/cloudflare/cloudflareipaccessrule/v1alpha1;cloudflareipaccessrulev1alpha1\xa2\x02\x04DPCC\xaa\x026Dev.Planton.Cloudflare.Cloudflareipaccessrule.V1alpha1\xca\x026Dev\\Planton\\Cloudflare\\Cloudflareipaccessrule\\V1alpha1\xe2\x02BDev\\Planton\\Cloudflare\\Cloudflareipaccessrule\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Cloudflare::Cloudflareipaccessrule::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareIpAccessRule)(nil),             // 0: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRule
-	(*CloudflareIpAccessRuleStatus)(nil),       // 1: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareIpAccessRuleSpec)(nil),         // 3: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleSpec
-	(*CloudflareIpAccessRuleStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleStackOutputs
+	(*CloudflareIpAccessRule)(nil),        // 0: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRule
+	(*CloudflareIpAccessRuleStatus)(nil),  // 1: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareIpAccessRuleSpec)(nil),    // 3: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleSpec
+	(*CloudflareIpAccessRuleOutputs)(nil), // 4: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleOutputs
 }
 var file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRule.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRule.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRule.spec:type_name -> dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleSpec
 	1, // 2: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRule.status:type_name -> dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleStatus
-	4, // 3: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleStatus.outputs:type_name -> dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleStatus.outputs:type_name -> dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

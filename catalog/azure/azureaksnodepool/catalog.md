@@ -1,10 +1,10 @@
 # Azure AKS Node Pool
 
-Adds a standalone node pool to an existing Azure Kubernetes Service (AKS) cluster. The pool is deliberately separate from the cluster Cloud Resource so application capacity can scale, price (Spot), upgrade, and taint independently of the control plane and its built-in system pool. Each pool is the unit of compute shape — general, memory-optimized, GPU, Spot, or Windows — with a fully independent lifecycle: scale, upgrade, rotate, or delete a pool without touching the cluster or its sibling pools.
+Adds a standalone node pool to an existing Azure Kubernetes Service (AKS) cluster. The pool is deliberately separate from the cluster Infra Component so application capacity can scale, price (Spot), upgrade, and taint independently of the control plane and its built-in system pool. Each pool is the unit of compute shape — general, memory-optimized, GPU, Spot, or Windows — with a fully independent lifecycle: scale, upgrade, rotate, or delete a pool without touching the cluster or its sibling pools.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **AKS Agent Pool** -- a `containerservice.AgentPool` attached to the referenced cluster, with the VM size, fixed count or autoscaling bounds, OS family/image, and pool role (System / User) you choose
 - **Pricing posture** -- on-demand (default) or Spot with eviction policy and max price; Spot pools arrive pre-tainted and skip surge upgrades
@@ -17,12 +17,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An AKS cluster** -- this pool attaches by ARM ID. Provide it directly or reference an AzureAksCluster Cloud Resource via ValueFromRef (`status.outputs.cluster_id`). The pool inherits the cluster's region and resource group.
+- **An AKS cluster** -- this pool attaches by ARM ID. Provide it directly or reference an AzureAksCluster Infra Component via ValueFromRef (`status.outputs.cluster_id`). The pool inherits the cluster's region and resource group.
 - **Quota** -- the chosen VM size needs available vCPU quota in the cluster's region (Azure Portal → Quotas → Compute).
 - **Windows pools** -- the parent cluster must already carry a Windows profile (admin credentials).
 - **Subnet headroom (optional)** -- when placing the pool in its own subnet on flat Azure CNI, size for nodes plus max-pods IPs.
@@ -61,7 +61,7 @@ spec:
 planton apply -f azure-aks-node-pool.yaml
 ```
 
-This creates a zone-spread, autoscaled User pool that can scale to zero when idle. A Stack Job tracks the provisioning in real time.
+This creates a zone-spread, autoscaled User pool that can scale to zero when idle. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -108,7 +108,7 @@ These are the most important decisions when configuring an AKS node pool. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -116,9 +116,9 @@ These are the most important decisions when configuring an AKS node pool. Explor
 | **AzureSubnet** | `vnetSubnetId`, `podSubnetId` | `status.outputs.subnet_id` |
 | **AzurePublicIpPrefix** | `nodePublicIpPrefixId` | `status.outputs.public_ip_prefix_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -138,6 +138,6 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure AKS Cluster**](/cloud-catalog/azure-aks-cluster) -- the parent cluster this pool attaches to by ARM ID; the pool inherits its region and resource group
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- optional dedicated node subnet (`vnetSubnetId`) or pod subnet (`podSubnetId`) for segmenting pools on Azure CNI
-- [**Azure Public IP Prefix**](/cloud-catalog/azure-public-ip-prefix) -- allocates node public IPs from one allowlistable CIDR when `nodePublicIpEnabled` is set
+- [**Azure AKS Cluster**](/infra-catalog/azure-aks-cluster) -- the parent cluster this pool attaches to by ARM ID; the pool inherits its region and resource group
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- optional dedicated node subnet (`vnetSubnetId`) or pod subnet (`podSubnetId`) for segmenting pools on Azure CNI
+- [**Azure Public IP Prefix**](/infra-catalog/azure-public-ip-prefix) -- allocates node public IPs from one allowlistable CIDR when `nodePublicIpEnabled` is set

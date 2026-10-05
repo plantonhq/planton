@@ -6,17 +6,17 @@
 
 ## Summary
 
-Migrated the GcpCloudRun component to use `StringValueOrRef` for `project_id`, `vpc_access.network`, and `vpc_access.subnet` fields, enabling cross-resource references between Planton resources. This allows users to reference GcpProject, GcpVpc, and GcpSubnetwork resources dynamically instead of hardcoding values.
+Migrated the GcpCloudRun kind to use `StringValueOrRef` for `project_id`, `vpc_access.network`, and `vpc_access.subnet` fields, enabling cross-resource references between Planton resources. This allows users to reference GcpProject, GcpVpc, and GcpSubnetwork resources dynamically instead of hardcoding values.
 
 ## Problem Statement / Motivation
 
-The GcpCloudRun component previously used plain `string` types for `project_id`, `network`, and `subnet` fields. This required users to hardcode GCP resource identifiers, making it difficult to:
+The GcpCloudRun kind previously used plain `string` types for `project_id`, `network`, and `subnet` fields. This required users to hardcode GCP resource identifiers, making it difficult to:
 
 ### Pain Points
 
 - **No cross-resource references**: Users couldn't reference a `GcpProject` resource's output as the `project_id`
 - **Tight coupling**: Cloud Run manifests needed to know exact project IDs at authoring time
-- **Inconsistent with other components**: GcpGkeCluster, GcpVpc, GcpSubnetwork already supported `StringValueOrRef`
+- **Inconsistent with other kinds**: GcpGkeCluster, GcpVpc, GcpSubnetwork already supported `StringValueOrRef`
 - **Limited composability**: Couldn't chain resources (e.g., GcpProject → GcpVpc → GcpSubnetwork → GcpCloudRun)
 
 ## Solution / What's New
@@ -179,12 +179,12 @@ spec:
 - Existing manifests need minor updates (`projectId: "x"` → `projectId: { value: "x" }`)
 
 ### Developers
-- Consistent pattern across all GCP components
+- Consistent pattern across all GCP kinds
 - Type-safe field access with `.GetValue()` method
 
 ## Related Work
 
-This change is part of the broader GCP ValueFrom migration effort documented in `apis/gcp-value-from-anaylasis.md`. Components already migrated:
+This change is part of the broader GCP ValueFrom migration effort documented in `apis/gcp-value-from-anaylasis.md`. Kinds already migrated:
 - GcpVpc
 - GcpSubnetwork
 - GcpGkeCluster
@@ -192,7 +192,7 @@ This change is part of the broader GCP ValueFrom migration effort documented in 
 - GcpRouterNat
 - GcpGkeWorkloadIdentityBinding
 
-Components remaining:
+Kinds remaining:
 - GcpCloudSql
 - GcpCloudFunction
 - GcpServiceAccount

@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpbigtableinstance
+    e2e-catalog-kind: gcpbigtableinstance
   annotations:
     planton.dev/e2e: "true"
   tags:

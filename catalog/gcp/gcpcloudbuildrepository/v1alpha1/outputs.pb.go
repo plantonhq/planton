@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpCloudBuildRepositoryStackOutputs carries the repository link's
+// GcpCloudBuildRepositoryOutputs carries the repository link's
 // identity.
-type GcpCloudBuildRepositoryStackOutputs struct {
+type GcpCloudBuildRepositoryOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/connections/{connection}/repositories/{repository_id}.
@@ -38,20 +38,20 @@ type GcpCloudBuildRepositoryStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCloudBuildRepositoryStackOutputs) Reset() {
-	*x = GcpCloudBuildRepositoryStackOutputs{}
+func (x *GcpCloudBuildRepositoryOutputs) Reset() {
+	*x = GcpCloudBuildRepositoryOutputs{}
 	mi := &file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudBuildRepositoryStackOutputs) String() string {
+func (x *GcpCloudBuildRepositoryOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudBuildRepositoryStackOutputs) ProtoMessage() {}
+func (*GcpCloudBuildRepositoryOutputs) ProtoMessage() {}
 
-func (x *GcpCloudBuildRepositoryStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudBuildRepositoryOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *GcpCloudBuildRepositoryStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudBuildRepositoryStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudBuildRepositoryStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudBuildRepositoryOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudBuildRepositoryOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudBuildRepositoryStackOutputs) GetName() string {
+func (x *GcpCloudBuildRepositoryOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpCloudBuildRepositoryStackOutputs) GetRepositoryId() string {
+func (x *GcpCloudBuildRepositoryOutputs) GetRepositoryId() string {
 	if x != nil {
 		return x.RepositoryId
 	}
 	return ""
 }
 
-func (x *GcpCloudBuildRepositoryStackOutputs) GetRemoteUri() string {
+func (x *GcpCloudBuildRepositoryOutputs) GetRemoteUri() string {
 	if x != nil {
 		return x.RemoteUri
 	}
@@ -93,8 +93,8 @@ var File_catalog_gcp_gcpcloudbuildrepository_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpcloudbuildrepository/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpcloudbuildrepository.v1alpha1\"}\n" +
-	"#GcpCloudBuildRepositoryStackOutputs\x12\x12\n" +
+	":catalog/gcp/gcpcloudbuildrepository/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpcloudbuildrepository.v1alpha1\"x\n" +
+	"\x1eGcpCloudBuildRepositoryOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12#\n" +
 	"\rrepository_id\x18\x02 \x01(\tR\frepositoryId\x12\x1d\n" +
 	"\n" +
@@ -115,7 +115,7 @@ func file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudBuildRepositoryStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudbuildrepository.v1alpha1.GcpCloudBuildRepositoryStackOutputs
+	(*GcpCloudBuildRepositoryOutputs)(nil), // 0: dev.planton.gcp.gcpcloudbuildrepository.v1alpha1.GcpCloudBuildRepositoryOutputs
 }
 var file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

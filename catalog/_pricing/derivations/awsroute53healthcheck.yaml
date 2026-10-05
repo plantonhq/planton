@@ -8,9 +8,9 @@
 # manifest's region -- and split by endpoint class (AWS vs non-AWS
 # endpoint), which no manifest field can prove; the endpoint lines state
 # the non-AWS assumption in their basis.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsroute53healthcheck
 spec:

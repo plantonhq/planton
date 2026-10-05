@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureeventgridnamespacetopic
 spec:
   billing_model: free
   free_tier: The namespace topic itself -- its name and retention window -- never bills. A topic is a named CloudEvents stream carved out of its Event Grid NAMESPACE, and Azure meters everything at the namespace level; adding topics inside a namespace adds nothing to the bill.
-  notes: "The real spend lives on the parent AzureEventgridNamespace, a separate catalog kind, which bills its provisioned throughput capacity and per-million operations -- every publish to and delivery from this topic counts against THOSE meters, whichever topic carries the event. event_retention_in_days (1-7, default 7) bounds how long undelivered events stay available and adds no meter of its own; namespace_id points at the billed parent."
+  notes: "The real spend lives on the parent AzureEventgridNamespace, a separate component, which bills its provisioned throughput capacity and per-million operations -- every publish to and delivery from this topic counts against THOSE meters, whichever topic carries the event. event_retention_in_days (1-7, default 7) bounds how long undelivered events stay available and adds no meter of its own; namespace_id points at the billed parent."

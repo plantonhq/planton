@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpcloudrunjob.v1alpha1;
 import "catalog/gcp/gcpcloudrunjob/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-cloud-run-job stack-input
-message GcpCloudRunJobStackInput {
-  //target cloud-resource
+//gcp-cloud-run-job iac-input
+message GcpCloudRunJobIacInput {
+  // the catalog object to deploy
   GcpCloudRunJob target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

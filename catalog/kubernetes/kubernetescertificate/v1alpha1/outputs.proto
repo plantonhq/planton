@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetescertificate.v1alpha1;
 
-// KubernetesCertificateStackOutputs captures observable outputs after
+// KubernetesCertificateOutputs captures observable outputs after
 // the Certificate is created.
-message KubernetesCertificateStackOutputs {
+message KubernetesCertificateOutputs {
   // Namespace where the Certificate resource was created.
   string namespace = 1;
 

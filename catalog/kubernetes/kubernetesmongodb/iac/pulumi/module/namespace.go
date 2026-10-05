@@ -18,11 +18,11 @@ import (
 // directly from locals.Namespace.
 //
 // Terraform equivalent: a standalone kubernetes_namespace resource with count.
-func namespace(ctx *pulumi.Context, stackInput *kubernetesmongodbv1alpha1.KubernetesMongodbStackInput,
+func namespace(ctx *pulumi.Context, iacInput *kubernetesmongodbv1alpha1.KubernetesMongodbIacInput,
 	locals *Locals, kubernetesProvider pulumi.ProviderResource) (*kubernetescorev1.Namespace, error) {
 
 	// Only create namespace if the flag is set to true
-	if !stackInput.Target.Spec.CreateNamespace {
+	if !iacInput.Target.Spec.CreateNamespace {
 		return nil, nil
 	}
 

@@ -364,7 +364,7 @@ type ConsoleSpec struct {
 }
 
 // RunnerSpec configures the in-cluster Planton runner: the worker pod that
-// executes IaC deployments (OpenTofu) for cloud resources created through the
+// executes IaC deployments (OpenTofu) for InfraComponents created through the
 // platform. Deployed by default -- without it an install can browse the
 // catalog but never deploy anything real. The operator seeds everything the
 // runner needs (registration, credential, deploy defaults) at control-plane

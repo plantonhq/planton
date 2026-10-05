@@ -4,9 +4,9 @@ Deploys a Cloudflare Zero Trust Access application: the protected resource -- a 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
-- **Access Application** -- the guarded application with its type, protected `domain` and additional `destinations`, attached policies in evaluation order, session and cookie settings, and (for `saas` types) the SAML/OIDC federation configuration whose issued credentials surface as stack outputs
+- **Access Application** -- the guarded application with its type, protected `domain` and additional `destinations`, attached policies in evaluation order, session and cookie settings, and (for `saas` types) the SAML/OIDC federation configuration whose issued credentials surface as outputs
 
 Policies themselves are separate resources -- this component attaches existing CloudflareZeroTrustAccessPolicy resources; it does not create them.
 
@@ -14,7 +14,7 @@ Policies themselves are separate resources -- this component attaches existing C
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Access edit permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Access edit permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -59,7 +59,7 @@ spec:
 planton apply -f cloudflare-zero-trust-access-application.yaml
 ```
 
-This creates an account-scoped self-hosted application protecting `dashboard.example.com`, governed by the referenced `allow-staff` policy, with a 24-hour session. A Stack Job tracks the provisioning in real time.
+This creates an account-scoped self-hosted application protecting `dashboard.example.com`, governed by the referenced `allow-staff` policy, with a 24-hour session. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,13 +92,13 @@ These are the most important decisions when configuring a Zero Trust Access appl
 
 **Identity providers (`allowedIdps`, `autoRedirectToIdentity`)** -- Empty allows every configured IdP. Restricting to one IdP and setting `autoRedirectToIdentity` skips the chooser page, which is the polished single-IdP experience but locks sign-in to that provider's availability.
 
-**SaaS federation (`saasApp`)** -- For `saas` types, choose `authType` `saml` or `oidc`. OIDC issues a `client_id`/`client_secret` pair as stack outputs to paste into the SaaS provider's SSO settings; SAML exports the SSO endpoint, entity ID, and public key instead.
+**SaaS federation (`saasApp`)** -- For `saas` types, choose `authType` `saml` or `oidc`. OIDC issues a `client_id`/`client_secret` pair as outputs to paste into the SaaS provider's SSO settings; SAML exports the SSO endpoint, entity ID, and public key instead.
 
 **CORS (`corsHeaders` vs `optionsPreflightBypass`)** -- Mutually exclusive. Bypass lets preflight requests skip Access entirely; explicit CORS headers keep Access in the path. Pick bypass only when the protected API must serve browsers from other origins that cannot carry the Access cookie.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -107,9 +107,9 @@ These are the most important decisions when configuring a Zero Trust Access appl
 
 `allowedIdps[]` and `scimConfig.idpUid` also accept references to identity-provider outputs alongside literal IdP IDs.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -130,8 +130,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Cloudflare Zero Trust Access Policy**](/cloud-catalog/cloudflare-zero-trust-access-policy) -- attached via `policies[]` to decide who is admitted
-- [**Cloudflare Zero Trust Access Group**](/cloud-catalog/cloudflare-zero-trust-access-group) -- reusable identity groups the attached policies reference
-- [**Cloudflare Zero Trust Access Identity Provider**](/cloud-catalog/cloudflare-zero-trust-access-identity-provider) -- the IdPs `allowedIdps` restricts sign-in to
-- [**Cloudflare Zero Trust Tunnel**](/cloud-catalog/cloudflare-zero-trust-tunnel) -- publishes the private origin a self-hosted application protects
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- scopes a zone-level application and hosts the protected hostname
+- [**Cloudflare Zero Trust Access Policy**](/infra-catalog/cloudflare-zero-trust-access-policy) -- attached via `policies[]` to decide who is admitted
+- [**Cloudflare Zero Trust Access Group**](/infra-catalog/cloudflare-zero-trust-access-group) -- reusable identity groups the attached policies reference
+- [**Cloudflare Zero Trust Access Identity Provider**](/infra-catalog/cloudflare-zero-trust-access-identity-provider) -- the IdPs `allowedIdps` restricts sign-in to
+- [**Cloudflare Zero Trust Tunnel**](/infra-catalog/cloudflare-zero-trust-tunnel) -- publishes the private origin a self-hosted application protects
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- scopes a zone-level application and hosts the protected hostname

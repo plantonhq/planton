@@ -350,7 +350,7 @@ func (x *KubernetesOtelOperatorCrds) GetKeepOnUninstall() bool {
 
 // *
 // Admission-webhook certificate configuration (cert-manager-issued —
-// the only posture this component models; the spec's WEBHOOK
+// the only posture this kind models; the spec's WEBHOOK
 // CERTIFICATE note explains why a one-shot certificate arm cannot
 // exist alongside retained CRDs).
 type KubernetesOtelOperatorWebhook struct {

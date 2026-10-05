@@ -4,7 +4,7 @@ Deploys an ExpressRoute circuit -- the dedicated PRIVATE connection between your
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ExpressRoute Circuit** -- the ARM billing/identity object with its SKU, provisioning mode, and generated service key
 - **Circuit Authorizations** -- one per `authorizations` entry: ARM-generated keys that let virtual network gateways in OTHER subscriptions connect to this circuit
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -55,7 +55,7 @@ spec:
 planton apply -f azure-express-route-circuit.yaml
 ```
 
-This creates a 1 Gbps STANDARD metered circuit provisioned through Equinix at the Washington DC peering location; it sits in `NotProvisioned` until you hand the `service_key` output to your provider. A Stack Job tracks the provisioning in real time. **Billing starts at creation**, even before the provider completes the cross-connect.
+This creates a 1 Gbps STANDARD metered circuit provisioned through Equinix at the Washington DC peering location; it sits in `NotProvisioned` until you hand the `service_key` output to your provider. An Infra Job tracks the provisioning in real time. **Billing starts at creation**, even before the provider completes the cross-connect.
 
 ### InfraChart
 
@@ -84,16 +84,16 @@ These are the most important decisions when configuring a circuit. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzureExpressRoutePort** | `expressRoutePortId` | `status.outputs.express_route_port_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,7 +115,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the circuit is created in
-- [**Azure ExpressRoute Circuit Peering**](/cloud-catalog/azure-express-route-circuit-peering) -- the BGP configuration that makes routes flow
-- [**Azure ExpressRoute Port**](/cloud-catalog/azure-express-route-port) -- the Direct port a provider-less circuit is carved from
-- [**Azure Virtual Network Gateway**](/cloud-catalog/azure-virtual-network-gateway) -- the EXPRESS_ROUTE-type gateway that connects a VNet to the circuit's private peering
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the circuit is created in
+- [**Azure ExpressRoute Circuit Peering**](/infra-catalog/azure-express-route-circuit-peering) -- the BGP configuration that makes routes flow
+- [**Azure ExpressRoute Port**](/infra-catalog/azure-express-route-port) -- the Direct port a provider-less circuit is carved from
+- [**Azure Virtual Network Gateway**](/infra-catalog/azure-virtual-network-gateway) -- the EXPRESS_ROUTE-type gateway that connects a VNet to the circuit's private peering

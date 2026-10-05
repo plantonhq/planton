@@ -1,6 +1,6 @@
-# AwsSagemakerModelRegistry — Component Guide
+# AwsSagemakerModelRegistry — Kind Guide
 
-Authored operational judgment for the model registry component: the
+Authored operational judgment for the model registry kind: the
 design decisions behind the spec's shape, and what to know before
 running a model registry in production.
 

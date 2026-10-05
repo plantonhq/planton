@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuredataprotectionresourceguard.v1alpha1;
 
-// **AzureDataProtectionResourceGuardStackOutputs** captures the
+// **AzureDataProtectionResourceGuardOutputs** captures the
 // outputs of provisioning a Data Protection Resource Guard.
-message AzureDataProtectionResourceGuardStackOutputs {
+message AzureDataProtectionResourceGuardOutputs {
   // The Azure Resource Manager ID of the guard -- what backup vaults
   // reference to put themselves under the guard's Multi-User
   // Authorization.

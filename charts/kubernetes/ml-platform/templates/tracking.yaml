@@ -10,7 +10,7 @@
 # Both production seams are external by construction here — PostgreSQL
 # for metadata, S3 for artifacts — which is exactly what unlocks scaling
 # the server beyond one replica later (a values change on the deployed
-# resource; the component enforces the pairing).
+# resource; the kind enforces the pairing).
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesMlflow
 metadata:
@@ -56,7 +56,7 @@ spec:
       # The artifact seam, entirely by reference: endpoint resolves the
       # store's S3 gateway endpoint, and the credentials Secret name
       # resolves its generated `-s3-secret` — the key names inside it
-      # keep the component's defaults (the admin pair), so they are
+      # keep the kind's defaults (the admin pair), so they are
       # deliberately not restated. The bucket is a render-known literal
       # matching what artifacts.yaml declares — both sides render from
       # this chart's own design, which is what keeps the pairing honest.

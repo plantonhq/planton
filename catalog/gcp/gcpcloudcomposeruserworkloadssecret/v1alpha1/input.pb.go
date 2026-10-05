@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-cloud-composer-user-workloads-secret stack-input
-type GcpCloudComposerUserWorkloadsSecretStackInput struct {
+// gcp-cloud-composer-user-workloads-secret iac-input
+type GcpCloudComposerUserWorkloadsSecretIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpCloudComposerUserWorkloadsSecret `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpCloudComposerUserWorkloadsSecretStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpCloudComposerUserWorkloadsSecretStackInput) Reset() {
-	*x = GcpCloudComposerUserWorkloadsSecretStackInput{}
+func (x *GcpCloudComposerUserWorkloadsSecretIacInput) Reset() {
+	*x = GcpCloudComposerUserWorkloadsSecretIacInput{}
 	mi := &file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudComposerUserWorkloadsSecretStackInput) String() string {
+func (x *GcpCloudComposerUserWorkloadsSecretIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudComposerUserWorkloadsSecretStackInput) ProtoMessage() {}
+func (*GcpCloudComposerUserWorkloadsSecretIacInput) ProtoMessage() {}
 
-func (x *GcpCloudComposerUserWorkloadsSecretStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudComposerUserWorkloadsSecretIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpCloudComposerUserWorkloadsSecretStackInput) ProtoReflect() protorefl
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudComposerUserWorkloadsSecretStackInput.ProtoReflect.Descriptor instead.
-func (*GcpCloudComposerUserWorkloadsSecretStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudComposerUserWorkloadsSecretIacInput.ProtoReflect.Descriptor instead.
+func (*GcpCloudComposerUserWorkloadsSecretIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudComposerUserWorkloadsSecretStackInput) GetTarget() *GcpCloudComposerUserWorkloadsSecret {
+func (x *GcpCloudComposerUserWorkloadsSecretIacInput) GetTarget() *GcpCloudComposerUserWorkloadsSecret {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpCloudComposerUserWorkloadsSecretStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpCloudComposerUserWorkloadsSecretIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_input_proto pr
 
 const file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/gcp/gcpcloudcomposeruserworkloadssecret/v1alpha1/input.proto\x12<dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1\x1aBcatalog/gcp/gcpcloudcomposeruserworkloadssecret/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xf7\x01\n" +
-	"-GcpCloudComposerUserWorkloadsSecretStackInput\x12y\n" +
+	"Dcatalog/gcp/gcpcloudcomposeruserworkloadssecret/v1alpha1/input.proto\x12<dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1\x1aBcatalog/gcp/gcpcloudcomposeruserworkloadssecret/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xf5\x01\n" +
+	"+GcpCloudComposerUserWorkloadsSecretIacInput\x12y\n" +
 	"\x06target\x18\x01 \x01(\v2a.dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xe7\x03\n" +
 	"@com.dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_input_proto_r
 
 var file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_input_proto_goTypes = []any{
-	(*GcpCloudComposerUserWorkloadsSecretStackInput)(nil), // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretStackInput
-	(*GcpCloudComposerUserWorkloadsSecret)(nil),           // 1: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecret
-	(*gcp.GcpProviderConfig)(nil),                         // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpCloudComposerUserWorkloadsSecretIacInput)(nil), // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretIacInput
+	(*GcpCloudComposerUserWorkloadsSecret)(nil),         // 1: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecret
+	(*gcp.GcpProviderConfig)(nil),                       // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretStackInput.target:type_name -> dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecret
-	2, // 1: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretIacInput.target:type_name -> dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecret
+	2, // 1: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

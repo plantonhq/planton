@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-sagemaker-domain stack-input
-type AwsSagemakerDomainStackInput struct {
+// aws-sagemaker-domain iac-input
+type AwsSagemakerDomainIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsSagemakerDomain `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-credential
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsSagemakerDomainStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsSagemakerDomainStackInput) Reset() {
-	*x = AwsSagemakerDomainStackInput{}
+func (x *AwsSagemakerDomainIacInput) Reset() {
+	*x = AwsSagemakerDomainIacInput{}
 	mi := &file_catalog_aws_awssagemakerdomain_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSagemakerDomainStackInput) String() string {
+func (x *AwsSagemakerDomainIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSagemakerDomainStackInput) ProtoMessage() {}
+func (*AwsSagemakerDomainIacInput) ProtoMessage() {}
 
-func (x *AwsSagemakerDomainStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsSagemakerDomainIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssagemakerdomain_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsSagemakerDomainStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSagemakerDomainStackInput.ProtoReflect.Descriptor instead.
-func (*AwsSagemakerDomainStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSagemakerDomainIacInput.ProtoReflect.Descriptor instead.
+func (*AwsSagemakerDomainIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakerdomain_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSagemakerDomainStackInput) GetTarget() *AwsSagemakerDomain {
+func (x *AwsSagemakerDomainIacInput) GetTarget() *AwsSagemakerDomain {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsSagemakerDomainStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsSagemakerDomainIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awssagemakerdomain_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_aws_awssagemakerdomain_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awssagemakerdomain/v1alpha1/input.proto\x12+dev.planton.aws.awssagemakerdomain.v1alpha1\x1a1catalog/aws/awssagemakerdomain/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc4\x01\n" +
-	"\x1cAwsSagemakerDomainStackInput\x12W\n" +
+	"3catalog/aws/awssagemakerdomain/v1alpha1/input.proto\x12+dev.planton.aws.awssagemakerdomain.v1alpha1\x1a1catalog/aws/awssagemakerdomain/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc2\x01\n" +
+	"\x1aAwsSagemakerDomainIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xef\x02\n" +
 	"/com.dev.planton.aws.awssagemakerdomain.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awssagemakerdomain_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awssagemakerdomain_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssagemakerdomain_v1alpha1_input_proto_goTypes = []any{
-	(*AwsSagemakerDomainStackInput)(nil), // 0: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackInput
-	(*AwsSagemakerDomain)(nil),           // 1: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomain
-	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsSagemakerDomainIacInput)(nil), // 0: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainIacInput
+	(*AwsSagemakerDomain)(nil),         // 1: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomain
+	(*aws.AwsProviderConfig)(nil),      // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awssagemakerdomain_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackInput.target:type_name -> dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomain
-	2, // 1: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainIacInput.target:type_name -> dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomain
+	2, // 1: dev.planton.aws.awssagemakerdomain.v1alpha1.AwsSagemakerDomainIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.aws.awss3bucket.v1alpha1;
 
-//aws-s3-bucket stack outputs
-message AwsS3BucketStackOutputs {
+//aws-s3-bucket outputs
+message AwsS3BucketOutputs {
   //id (name) of the S3 bucket created on AWS
   string bucket_id = 1;
 

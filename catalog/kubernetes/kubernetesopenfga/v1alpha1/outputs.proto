@@ -3,12 +3,12 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesopenfga.v1alpha1;
 
 /**
- * **KubernetesOpenFgaStackOutputs** — the composition handles a
+ * **KubernetesOpenFgaOutputs** — the composition handles a
  * deployed OpenFGA exports. Point authorization-data tooling (the
  * `fga` CLI, SDKs, the platform's OpenFGA provider kinds) at the
  * endpoints below.
  */
-message KubernetesOpenFgaStackOutputs {
+message KubernetesOpenFgaOutputs {
   /**
    * Namespace the server runs in.
    */

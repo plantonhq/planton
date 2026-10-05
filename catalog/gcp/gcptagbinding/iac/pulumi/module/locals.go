@@ -34,8 +34,8 @@ type Locals struct {
 	IsLocationScoped bool
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcptagbindingv1alpha1.GcpTagBindingStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcptagbindingv1alpha1.GcpTagBindingIacInput) *Locals {
+	target := iacInput.Target
 	parent := target.Spec.Parent
 
 	locals := &Locals{

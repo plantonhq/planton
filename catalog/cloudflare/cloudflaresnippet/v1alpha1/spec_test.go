@@ -25,7 +25,7 @@ func validSnippet(spec *CloudflareSnippetSpec) *CloudflareSnippet {
 	return &CloudflareSnippet{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareSnippet",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-snippet",
 		},
 		Spec: spec,

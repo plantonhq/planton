@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpFirestoreIndexSpec", func() {
 		return &GcpFirestoreIndex{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpFirestoreIndex",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "orders-by-customer",
 			},
 			Spec: &GcpFirestoreIndexSpec{

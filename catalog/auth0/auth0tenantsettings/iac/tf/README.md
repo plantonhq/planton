@@ -16,7 +16,7 @@ Terraform/OpenTofu module that manages the settings of an existing Auth0 tenant.
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | The tenant settings (`variables.tf`, generated from the spec) -- each optional, at least one set |
 
 ## Outputs

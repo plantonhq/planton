@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareLoadBalancerStackOutputs describes the outputs after provisioning a Cloudflare Load Balancer.
-type CloudflareLoadBalancerStackOutputs struct {
+// CloudflareLoadBalancerOutputs describes the outputs after provisioning a Cloudflare Load Balancer.
+type CloudflareLoadBalancerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Unique identifier of the Cloudflare load balancer.
 	LoadBalancerId string `protobuf:"bytes,1,opt,name=load_balancer_id,json=loadBalancerId,proto3" json:"load_balancer_id,omitempty"`
@@ -38,20 +38,20 @@ type CloudflareLoadBalancerStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareLoadBalancerStackOutputs) Reset() {
-	*x = CloudflareLoadBalancerStackOutputs{}
+func (x *CloudflareLoadBalancerOutputs) Reset() {
+	*x = CloudflareLoadBalancerOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareloadbalancer_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareLoadBalancerStackOutputs) String() string {
+func (x *CloudflareLoadBalancerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareLoadBalancerStackOutputs) ProtoMessage() {}
+func (*CloudflareLoadBalancerOutputs) ProtoMessage() {}
 
-func (x *CloudflareLoadBalancerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareLoadBalancerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareloadbalancer_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,33 +63,33 @@ func (x *CloudflareLoadBalancerStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareLoadBalancerStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareLoadBalancerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareLoadBalancerOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareLoadBalancerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareloadbalancer_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareLoadBalancerStackOutputs) GetLoadBalancerId() string {
+func (x *CloudflareLoadBalancerOutputs) GetLoadBalancerId() string {
 	if x != nil {
 		return x.LoadBalancerId
 	}
 	return ""
 }
 
-func (x *CloudflareLoadBalancerStackOutputs) GetLoadBalancerDnsRecordName() string {
+func (x *CloudflareLoadBalancerOutputs) GetLoadBalancerDnsRecordName() string {
 	if x != nil {
 		return x.LoadBalancerDnsRecordName
 	}
 	return ""
 }
 
-func (x *CloudflareLoadBalancerStackOutputs) GetLoadBalancerCnameTarget() string {
+func (x *CloudflareLoadBalancerOutputs) GetLoadBalancerCnameTarget() string {
 	if x != nil {
 		return x.LoadBalancerCnameTarget
 	}
 	return ""
 }
 
-func (x *CloudflareLoadBalancerStackOutputs) GetZoneId() string {
+func (x *CloudflareLoadBalancerOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
@@ -100,8 +100,8 @@ var File_catalog_cloudflare_cloudflareloadbalancer_v1alpha1_outputs_proto protor
 
 const file_catalog_cloudflare_cloudflareloadbalancer_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/cloudflare/cloudflareloadbalancer/v1alpha1/outputs.proto\x126dev.planton.cloudflare.cloudflareloadbalancer.v1alpha1\"\xe6\x01\n" +
-	"\"CloudflareLoadBalancerStackOutputs\x12(\n" +
+	"@catalog/cloudflare/cloudflareloadbalancer/v1alpha1/outputs.proto\x126dev.planton.cloudflare.cloudflareloadbalancer.v1alpha1\"\xe1\x01\n" +
+	"\x1dCloudflareLoadBalancerOutputs\x12(\n" +
 	"\x10load_balancer_id\x18\x01 \x01(\tR\x0eloadBalancerId\x12@\n" +
 	"\x1dload_balancer_dns_record_name\x18\x02 \x01(\tR\x19loadBalancerDnsRecordName\x12;\n" +
 	"\x1aload_balancer_cname_target\x18\x03 \x01(\tR\x17loadBalancerCnameTarget\x12\x17\n" +
@@ -122,7 +122,7 @@ func file_catalog_cloudflare_cloudflareloadbalancer_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_cloudflare_cloudflareloadbalancer_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareloadbalancer_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareLoadBalancerStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareloadbalancer.v1alpha1.CloudflareLoadBalancerStackOutputs
+	(*CloudflareLoadBalancerOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareloadbalancer.v1alpha1.CloudflareLoadBalancerOutputs
 }
 var file_catalog_cloudflare_cloudflareloadbalancer_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

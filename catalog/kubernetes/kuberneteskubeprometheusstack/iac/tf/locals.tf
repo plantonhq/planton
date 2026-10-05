@@ -126,7 +126,7 @@ locals {
   ]
 
   # ---- prometheus spec ----------------------------------------------------------
-  # Discovery: the component default is cluster-wide (`all_monitors`) —
+  # Discovery: the kind's default is cluster-wide (`all_monitors`) —
   # every catalog kind's service_monitor toggle and any user-authored
   # monitor lights up without extra wiring. `release_managed_only`
   # restores the chart's release-fenced default by rendering nothing.

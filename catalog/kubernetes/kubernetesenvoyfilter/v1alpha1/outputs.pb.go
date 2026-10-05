@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesEnvoyFilterStackOutputs captures observable outputs after the EnvoyFilter is
+// KubernetesEnvoyFilterOutputs captures observable outputs after the EnvoyFilter is
 // created on the target cluster. An EnvoyFilter is a config-patch resource consumed by istiod
 // (it has no controller-reconciled status subresource useful to surface here), so only the
 // resource identity is exported — enough for a future "what does this patch?" view to
 // cross-reference the policy against the workloads it selects.
-type KubernetesEnvoyFilterStackOutputs struct {
+type KubernetesEnvoyFilterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created EnvoyFilter (equals metadata.name).
 	EnvoyFilterName string `protobuf:"bytes,1,opt,name=envoy_filter_name,json=envoyFilterName,proto3" json:"envoy_filter_name,omitempty"`
@@ -36,20 +36,20 @@ type KubernetesEnvoyFilterStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesEnvoyFilterStackOutputs) Reset() {
-	*x = KubernetesEnvoyFilterStackOutputs{}
+func (x *KubernetesEnvoyFilterOutputs) Reset() {
+	*x = KubernetesEnvoyFilterOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesEnvoyFilterStackOutputs) String() string {
+func (x *KubernetesEnvoyFilterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesEnvoyFilterStackOutputs) ProtoMessage() {}
+func (*KubernetesEnvoyFilterOutputs) ProtoMessage() {}
 
-func (x *KubernetesEnvoyFilterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesEnvoyFilterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *KubernetesEnvoyFilterStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesEnvoyFilterStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesEnvoyFilterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesEnvoyFilterOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesEnvoyFilterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesEnvoyFilterStackOutputs) GetEnvoyFilterName() string {
+func (x *KubernetesEnvoyFilterOutputs) GetEnvoyFilterName() string {
 	if x != nil {
 		return x.EnvoyFilterName
 	}
 	return ""
 }
 
-func (x *KubernetesEnvoyFilterStackOutputs) GetNamespace() string {
+func (x *KubernetesEnvoyFilterOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -84,8 +84,8 @@ var File_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_outputs_proto protore
 
 const file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/kubernetes/kubernetesenvoyfilter/v1alpha1/outputs.proto\x125dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1\"m\n" +
-	"!KubernetesEnvoyFilterStackOutputs\x12*\n" +
+	"?catalog/kubernetes/kubernetesenvoyfilter/v1alpha1/outputs.proto\x125dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1\"h\n" +
+	"\x1cKubernetesEnvoyFilterOutputs\x12*\n" +
 	"\x11envoy_filter_name\x18\x01 \x01(\tR\x0fenvoyFilterName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\xb0\x03\n" +
 	"9com.dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1B\fOutputsProtoP\x01Zlgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesenvoyfilter/v1alpha1;kubernetesenvoyfilterv1alpha1\xa2\x02\x04DPKK\xaa\x025Dev.Planton.Kubernetes.Kubernetesenvoyfilter.V1alpha1\xca\x025Dev\\Planton\\Kubernetes\\Kubernetesenvoyfilter\\V1alpha1\xe2\x02ADev\\Planton\\Kubernetes\\Kubernetesenvoyfilter\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Kubernetes::Kubernetesenvoyfilter::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesEnvoyFilterStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterStackOutputs
+	(*KubernetesEnvoyFilterOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1.KubernetesEnvoyFilterOutputs
 }
 var file_catalog_kubernetes_kubernetesenvoyfilter_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -4,7 +4,7 @@ Judgment calls that matter when you run individual DNS records on DigitalOcean.
 
 ## Standalone records vs. zone-inline records
 
-Two components can create the same record: this kind (one record, one resource) and the `DigitalOceanDnsZone` kind's inline `records` list. Use zone-inline records when one team owns the whole zone and its records ship together. Use this kind when records have different owners or lifecycles than their zone — an application chart adding its own hostname to a shared company zone is the canonical case. Mixing both against the same name works (DigitalOcean allows duplicate-name records of most types) but splits ownership; pick one home per record.
+Two kinds can create the same record: this kind (one record, one resource) and the `DigitalOceanDnsZone` kind's inline `records` list. Use zone-inline records when one team owns the whole zone and its records ship together. Use this kind when records have different owners or lifecycles than their zone — an application chart adding its own hostname to a shared company zone is the canonical case. Mixing both against the same name works (DigitalOcean allows duplicate-name records of most types) but splits ownership; pick one home per record.
 
 ## Many records on one zone at once: apply them one after another
 

@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeProductStackInput is the input to the StripeProduct IaC module.
+// StripeProductIacInput is the input to the StripeProduct IaC module.
 // It contains the target resource and the Stripe provider configuration.
-type StripeProductStackInput struct {
+type StripeProductIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripeProduct resource to be deployed.
 	Target *StripeProduct `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripeProductStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripeProductStackInput) Reset() {
-	*x = StripeProductStackInput{}
+func (x *StripeProductIacInput) Reset() {
+	*x = StripeProductIacInput{}
 	mi := &file_catalog_stripe_stripeproduct_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeProductStackInput) String() string {
+func (x *StripeProductIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeProductStackInput) ProtoMessage() {}
+func (*StripeProductIacInput) ProtoMessage() {}
 
-func (x *StripeProductStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripeProductIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripeproduct_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripeProductStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeProductStackInput.ProtoReflect.Descriptor instead.
-func (*StripeProductStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeProductIacInput.ProtoReflect.Descriptor instead.
+func (*StripeProductIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripeproduct_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeProductStackInput) GetTarget() *StripeProduct {
+func (x *StripeProductIacInput) GetTarget() *StripeProduct {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripeProductStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripeProductIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripeproduct_v1alpha1_input_proto protoreflect.FileDesc
 
 const file_catalog_stripe_stripeproduct_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/stripe/stripeproduct/v1alpha1/input.proto\x12)dev.planton.stripe.stripeproduct.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a/catalog/stripe/stripeproduct/v1alpha1/api.proto\"\xbe\x01\n" +
-	"\x17StripeProductStackInput\x12P\n" +
+	"1catalog/stripe/stripeproduct/v1alpha1/input.proto\x12)dev.planton.stripe.stripeproduct.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a/catalog/stripe/stripeproduct/v1alpha1/api.proto\"\xbc\x01\n" +
+	"\x15StripeProductIacInput\x12P\n" +
 	"\x06target\x18\x01 \x01(\v28.dev.planton.stripe.stripeproduct.v1alpha1.StripeProductR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\xde\x02\n" +
 	"-com.dev.planton.stripe.stripeproduct.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripeproduct_v1alpha1_input_proto_rawDescGZIP() []byte
 
 var file_catalog_stripe_stripeproduct_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripeproduct_v1alpha1_input_proto_goTypes = []any{
-	(*StripeProductStackInput)(nil),     // 0: dev.planton.stripe.stripeproduct.v1alpha1.StripeProductStackInput
+	(*StripeProductIacInput)(nil),       // 0: dev.planton.stripe.stripeproduct.v1alpha1.StripeProductIacInput
 	(*StripeProduct)(nil),               // 1: dev.planton.stripe.stripeproduct.v1alpha1.StripeProduct
 	(*stripe.StripeProviderConfig)(nil), // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripeproduct_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripeproduct.v1alpha1.StripeProductStackInput.target:type_name -> dev.planton.stripe.stripeproduct.v1alpha1.StripeProduct
-	2, // 1: dev.planton.stripe.stripeproduct.v1alpha1.StripeProductStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripeproduct.v1alpha1.StripeProductIacInput.target:type_name -> dev.planton.stripe.stripeproduct.v1alpha1.StripeProduct
+	2, // 1: dev.planton.stripe.stripeproduct.v1alpha1.StripeProductIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

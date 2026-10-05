@@ -1,16 +1,16 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceandatabasefirewall
 spec:
   # The rule set is a property of its cluster: import takes the BARE
   # cluster UUID (the provider then mints a fresh random state id, which is
   # deliberately non-deterministic and never compared). The cluster UUID is
-  # a stack output, so zero user input when state is present.
+  # an output, so zero user input when state is present.
   values:
     - name: cluster_id
       derivations:
-        - from_stack_output: cluster_id
+        - from_output: cluster_id
       where_to_find: >-
         DigitalOcean control panel -> Databases -> the cluster -> the UUID
         in the cluster's page URL, or `doctl databases list` (the ID

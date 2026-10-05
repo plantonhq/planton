@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsgluecatalogdatabase.v1alpha1;
 
-// AwsGlueCatalogDatabaseStackOutputs captures observable identifiers from a
+// AwsGlueCatalogDatabaseOutputs captures observable identifiers from a
 // provisioned Glue Data Catalog database. These outputs are used by downstream
 // resources (Athena workgroups, Glue crawlers, Glue ETL jobs, Redshift Spectrum
 // queries) and for operational visibility via StringValueOrRef.
-message AwsGlueCatalogDatabaseStackOutputs {
+message AwsGlueCatalogDatabaseOutputs {
   // The name of the Glue Data Catalog database. Used in Athena queries
   // (FROM database.table), Glue crawler configurations, Glue ETL job scripts,
   // and Redshift Spectrum external schema definitions.

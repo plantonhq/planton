@@ -4,7 +4,7 @@ Deploys a Front Door origin group -- the load-balanced pool of backends a route 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Front Door Origin Group** -- a named child of the profile that owns the pool's load-balancing and health-probe policy
 - **Load-balancing settings** -- always sent (Azure requires them on every group): sample size, successful samples required, and the latency window, with Azure's defaults (4 / 3 / 50 ms) when the spec is silent
@@ -54,7 +54,7 @@ spec:
 planton apply -f front-door-origin-group.yaml
 ```
 
-This creates a group with Azure's load-balancing defaults and no health probe -- the right shape for a single origin; add origins next, then attach a route. A Stack Job tracks the provisioning in real time.
+This creates a group with Azure's load-balancing defaults and no health probe -- the right shape for a single origin; add origins next, then attach a route. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,15 +95,15 @@ These are the most important decisions when configuring an origin group. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureFrontDoorProfile** | `profileId` | `status.outputs.profile_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,6 +122,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Front Door Profile**](/cloud-catalog/azure-front-door-profile) -- the parent container the group nests under
-- [**Azure Front Door Origin**](/cloud-catalog/azure-front-door-origin) -- each backend inside this group, referencing `origin_group_id`
-- [**Azure Front Door Route**](/cloud-catalog/azure-front-door-route) -- forwards matched requests to this group by `origin_group_id`
+- [**Azure Front Door Profile**](/infra-catalog/azure-front-door-profile) -- the parent container the group nests under
+- [**Azure Front Door Origin**](/infra-catalog/azure-front-door-origin) -- each backend inside this group, referencing `origin_group_id`
+- [**Azure Front Door Route**](/infra-catalog/azure-front-door-route) -- forwards matched requests to this group by `origin_group_id`

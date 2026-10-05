@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetespoddisruptionbudget
 spec:
@@ -8,13 +8,13 @@ spec:
   values:
     - name: pdb_name
       derivations:
-        - from_stack_output: pod_disruption_budget_name
+        - from_output: pod_disruption_budget_name
         - from_spec_field: name
       where_to_find: >-
         `kubectl get pdb -A` (NAME column).
     - name: pdb_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `kubectl get pdb -A` (NAMESPACE column); "default" when the spec

@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureCosmosdbAccountStackOutputs** captures the outputs of provisioning
+// **AzureCosmosdbAccountOutputs** captures the outputs of provisioning
 // an Azure Cosmos DB account.
 //
 // Cosmos DB authenticates with auto-generated account keys rather than
@@ -40,7 +40,7 @@ const (
 // (AzureCosmosdbSqlDatabase / AzureCosmosdbSqlContainer /
 // AzureCosmosdbMongoDatabase / AzureCosmosdbMongoCollection) referencing
 // this account, so this kind exports no database ids.
-type AzureCosmosdbAccountStackOutputs struct {
+type AzureCosmosdbAccountOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the account.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DocumentDB/databaseAccounts/{name}
@@ -95,20 +95,20 @@ type AzureCosmosdbAccountStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) Reset() {
-	*x = AzureCosmosdbAccountStackOutputs{}
+func (x *AzureCosmosdbAccountOutputs) Reset() {
+	*x = AzureCosmosdbAccountOutputs{}
 	mi := &file_catalog_azure_azurecosmosdbaccount_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) String() string {
+func (x *AzureCosmosdbAccountOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureCosmosdbAccountStackOutputs) ProtoMessage() {}
+func (*AzureCosmosdbAccountOutputs) ProtoMessage() {}
 
-func (x *AzureCosmosdbAccountStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureCosmosdbAccountOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecosmosdbaccount_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -120,131 +120,131 @@ func (x *AzureCosmosdbAccountStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureCosmosdbAccountStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureCosmosdbAccountStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureCosmosdbAccountOutputs.ProtoReflect.Descriptor instead.
+func (*AzureCosmosdbAccountOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecosmosdbaccount_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetCosmosdbAccountId() string {
+func (x *AzureCosmosdbAccountOutputs) GetCosmosdbAccountId() string {
 	if x != nil {
 		return x.CosmosdbAccountId
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetCosmosdbAccountName() string {
+func (x *AzureCosmosdbAccountOutputs) GetCosmosdbAccountName() string {
 	if x != nil {
 		return x.CosmosdbAccountName
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetEndpoint() string {
+func (x *AzureCosmosdbAccountOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetReadEndpoints() []string {
+func (x *AzureCosmosdbAccountOutputs) GetReadEndpoints() []string {
 	if x != nil {
 		return x.ReadEndpoints
 	}
 	return nil
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetWriteEndpoints() []string {
+func (x *AzureCosmosdbAccountOutputs) GetWriteEndpoints() []string {
 	if x != nil {
 		return x.WriteEndpoints
 	}
 	return nil
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetPrimaryKey() string {
+func (x *AzureCosmosdbAccountOutputs) GetPrimaryKey() string {
 	if x != nil {
 		return x.PrimaryKey
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetSecondaryKey() string {
+func (x *AzureCosmosdbAccountOutputs) GetSecondaryKey() string {
 	if x != nil {
 		return x.SecondaryKey
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetPrimaryReadonlyKey() string {
+func (x *AzureCosmosdbAccountOutputs) GetPrimaryReadonlyKey() string {
 	if x != nil {
 		return x.PrimaryReadonlyKey
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetSecondaryReadonlyKey() string {
+func (x *AzureCosmosdbAccountOutputs) GetSecondaryReadonlyKey() string {
 	if x != nil {
 		return x.SecondaryReadonlyKey
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetPrimarySqlConnectionString() string {
+func (x *AzureCosmosdbAccountOutputs) GetPrimarySqlConnectionString() string {
 	if x != nil {
 		return x.PrimarySqlConnectionString
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetSecondarySqlConnectionString() string {
+func (x *AzureCosmosdbAccountOutputs) GetSecondarySqlConnectionString() string {
 	if x != nil {
 		return x.SecondarySqlConnectionString
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetPrimaryReadonlySqlConnectionString() string {
+func (x *AzureCosmosdbAccountOutputs) GetPrimaryReadonlySqlConnectionString() string {
 	if x != nil {
 		return x.PrimaryReadonlySqlConnectionString
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetSecondaryReadonlySqlConnectionString() string {
+func (x *AzureCosmosdbAccountOutputs) GetSecondaryReadonlySqlConnectionString() string {
 	if x != nil {
 		return x.SecondaryReadonlySqlConnectionString
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetPrimaryMongodbConnectionString() string {
+func (x *AzureCosmosdbAccountOutputs) GetPrimaryMongodbConnectionString() string {
 	if x != nil {
 		return x.PrimaryMongodbConnectionString
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetSecondaryMongodbConnectionString() string {
+func (x *AzureCosmosdbAccountOutputs) GetSecondaryMongodbConnectionString() string {
 	if x != nil {
 		return x.SecondaryMongodbConnectionString
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetPrimaryReadonlyMongodbConnectionString() string {
+func (x *AzureCosmosdbAccountOutputs) GetPrimaryReadonlyMongodbConnectionString() string {
 	if x != nil {
 		return x.PrimaryReadonlyMongodbConnectionString
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetSecondaryReadonlyMongodbConnectionString() string {
+func (x *AzureCosmosdbAccountOutputs) GetSecondaryReadonlyMongodbConnectionString() string {
 	if x != nil {
 		return x.SecondaryReadonlyMongodbConnectionString
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbAccountStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureCosmosdbAccountOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -255,8 +255,8 @@ var File_catalog_azure_azurecosmosdbaccount_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_azure_azurecosmosdbaccount_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azurecosmosdbaccount/v1alpha1/outputs.proto\x12/dev.planton.azure.azurecosmosdbaccount.v1alpha1\x1a\x1cshared/options/options.proto\"\xa8\t\n" +
-	" AzureCosmosdbAccountStackOutputs\x12.\n" +
+	"9catalog/azure/azurecosmosdbaccount/v1alpha1/outputs.proto\x12/dev.planton.azure.azurecosmosdbaccount.v1alpha1\x1a\x1cshared/options/options.proto\"\xa3\t\n" +
+	"\x1bAzureCosmosdbAccountOutputs\x12.\n" +
 	"\x13cosmosdb_account_id\x18\x01 \x01(\tR\x11cosmosdbAccountId\x122\n" +
 	"\x15cosmosdb_account_name\x18\x02 \x01(\tR\x13cosmosdbAccountName\x12\x1a\n" +
 	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x12%\n" +
@@ -293,7 +293,7 @@ func file_catalog_azure_azurecosmosdbaccount_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_azure_azurecosmosdbaccount_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecosmosdbaccount_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureCosmosdbAccountStackOutputs)(nil), // 0: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountStackOutputs
+	(*AzureCosmosdbAccountOutputs)(nil), // 0: dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountOutputs
 }
 var file_catalog_azure_azurecosmosdbaccount_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

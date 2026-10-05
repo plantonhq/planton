@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockGuardrailStackOutputs captures observable identifiers from a
+// AwsBedrockGuardrailOutputs captures observable identifiers from a
 // provisioned Bedrock guardrail. These outputs are used by downstream
 // resources (agents, application inference configs) to wire dependencies
 // via StringValueOrRef.
-type AwsBedrockGuardrailStackOutputs struct {
+type AwsBedrockGuardrailOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique guardrail identifier (e.g. "gr-abc123..."). The join key
 	// model invocations and agents use together with a version.
@@ -44,20 +44,20 @@ type AwsBedrockGuardrailStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBedrockGuardrailStackOutputs) Reset() {
-	*x = AwsBedrockGuardrailStackOutputs{}
+func (x *AwsBedrockGuardrailOutputs) Reset() {
+	*x = AwsBedrockGuardrailOutputs{}
 	mi := &file_catalog_aws_awsbedrockguardrail_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockGuardrailStackOutputs) String() string {
+func (x *AwsBedrockGuardrailOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockGuardrailStackOutputs) ProtoMessage() {}
+func (*AwsBedrockGuardrailOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockGuardrailStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockGuardrailOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockguardrail_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,33 +69,33 @@ func (x *AwsBedrockGuardrailStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockGuardrailStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockGuardrailStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockGuardrailOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockGuardrailOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockguardrail_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockGuardrailStackOutputs) GetGuardrailId() string {
+func (x *AwsBedrockGuardrailOutputs) GetGuardrailId() string {
 	if x != nil {
 		return x.GuardrailId
 	}
 	return ""
 }
 
-func (x *AwsBedrockGuardrailStackOutputs) GetGuardrailArn() string {
+func (x *AwsBedrockGuardrailOutputs) GetGuardrailArn() string {
 	if x != nil {
 		return x.GuardrailArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockGuardrailStackOutputs) GetDraftVersion() string {
+func (x *AwsBedrockGuardrailOutputs) GetDraftVersion() string {
 	if x != nil {
 		return x.DraftVersion
 	}
 	return ""
 }
 
-func (x *AwsBedrockGuardrailStackOutputs) GetVersionNumbers() map[string]string {
+func (x *AwsBedrockGuardrailOutputs) GetVersionNumbers() map[string]string {
 	if x != nil {
 		return x.VersionNumbers
 	}
@@ -106,12 +106,12 @@ var File_catalog_aws_awsbedrockguardrail_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_aws_awsbedrockguardrail_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awsbedrockguardrail/v1alpha1/outputs.proto\x12,dev.planton.aws.awsbedrockguardrail.v1alpha1\"\xde\x02\n" +
-	"\x1fAwsBedrockGuardrailStackOutputs\x12!\n" +
+	"6catalog/aws/awsbedrockguardrail/v1alpha1/outputs.proto\x12,dev.planton.aws.awsbedrockguardrail.v1alpha1\"\xd4\x02\n" +
+	"\x1aAwsBedrockGuardrailOutputs\x12!\n" +
 	"\fguardrail_id\x18\x01 \x01(\tR\vguardrailId\x12#\n" +
 	"\rguardrail_arn\x18\x02 \x01(\tR\fguardrailArn\x12#\n" +
-	"\rdraft_version\x18\x03 \x01(\tR\fdraftVersion\x12\x8a\x01\n" +
-	"\x0fversion_numbers\x18\x04 \x03(\v2a.dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStackOutputs.VersionNumbersEntryR\x0eversionNumbers\x1aA\n" +
+	"\rdraft_version\x18\x03 \x01(\tR\fdraftVersion\x12\x85\x01\n" +
+	"\x0fversion_numbers\x18\x04 \x03(\v2\\.dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailOutputs.VersionNumbersEntryR\x0eversionNumbers\x1aA\n" +
 	"\x13VersionNumbersEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xf8\x02\n" +
@@ -131,11 +131,11 @@ func file_catalog_aws_awsbedrockguardrail_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsbedrockguardrail_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbedrockguardrail_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockGuardrailStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStackOutputs
-	nil,                                     // 1: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStackOutputs.VersionNumbersEntry
+	(*AwsBedrockGuardrailOutputs)(nil), // 0: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailOutputs
+	nil,                                // 1: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailOutputs.VersionNumbersEntry
 }
 var file_catalog_aws_awsbedrockguardrail_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStackOutputs.version_numbers:type_name -> dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStackOutputs.VersionNumbersEntry
+	1, // 0: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailOutputs.version_numbers:type_name -> dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailOutputs.VersionNumbersEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

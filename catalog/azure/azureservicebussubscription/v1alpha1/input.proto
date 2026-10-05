@@ -5,9 +5,9 @@ package dev.planton.azure.azureservicebussubscription.v1alpha1;
 import "catalog/azure/azureservicebussubscription/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-service-bus-subscription stack-input
-message AzureServiceBusSubscriptionStackInput {
-  //target cloud-resource
+//azure-service-bus-subscription iac-input
+message AzureServiceBusSubscriptionIacInput {
+  // the catalog object to deploy
   AzureServiceBusSubscription target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

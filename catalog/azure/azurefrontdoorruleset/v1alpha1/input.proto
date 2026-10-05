@@ -5,9 +5,9 @@ package dev.planton.azure.azurefrontdoorruleset.v1alpha1;
 import "catalog/azure/azurefrontdoorruleset/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-front-door-rule-set stack-input
-message AzureFrontDoorRuleSetStackInput {
-  //target cloud-resource
+//azure-front-door-rule-set iac-input
+message AzureFrontDoorRuleSetIacInput {
+  // the catalog object to deploy
   AzureFrontDoorRuleSet target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

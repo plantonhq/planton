@@ -10,15 +10,15 @@ Implemented `ScalewayPrivateNetwork` as the second Scaleway resource kind in Pla
 
 **Proto schemas (4):**
 - `spec.proto` -- Spec with `StringValueOrRef vpc_id` referencing ScalewayVpc, region, optional ipv4_subnet/ipv6_subnets, enable_default_route_propagation
-- `stack_input.proto` -- Standard target + provider_config pattern
-- `stack_outputs.proto` -- Exports `private_network_id` (primary cross-resource reference) and `ipv4_subnet_cidr`
+- `iac_input.proto` -- Standard target + provider_config pattern
+- `outputs.proto` -- Exports `private_network_id` (primary cross-resource reference) and `ipv4_subnet_cidr`
 - `api.proto` -- Resource envelope with api_version, kind, metadata, spec, status
 
 **Pulumi Go module (7):**
-- Entrypoint loads stack input and calls module.Resources
+- Entrypoint loads IaC input and calls module.Resources
 - Module initializes locals (resolving `vpc_id` from `StringValueOrRef` via `GetValue()`), creates Scaleway provider, provisions Private Network
 - Supports optional IPv4 subnet, optional IPv6 subnets, and enable_default_route_propagation
-- Exports `private_network_id` and `ipv4_subnet_cidr` as stack outputs
+- Exports `private_network_id` and `ipv4_subnet_cidr` as outputs
 
 **Terraform HCL module (5):**
 - Uses `scaleway_vpc_private_network` resource with dynamic blocks for optional ipv4_subnet and ipv6_subnets
@@ -31,7 +31,7 @@ Implemented `ScalewayPrivateNetwork` as the second Scaleway resource kind in Pla
 
 ### Modified Files
 
-- `pkg/crkreflect/kind_map_gen.go` -- ScalewayPrivateNetwork registered in the cloud resource kind map
+- `pkg/catalogkindreflect/kind_map_gen.go` -- ScalewayPrivateNetwork registered in the catalog kind map
 
 ## Why This Matters
 
@@ -45,7 +45,7 @@ This implementation establishes the `StringValueOrRef` cross-resource reference 
 - `go build` -- clean
 - `go vet` -- clean
 - `terraform validate` -- "Success! The configuration is valid."
-- `make generate-cloud-resource-kind-map` -- ScalewayPrivateNetwork registered
+- `make generate-catalog-kind-map` -- ScalewayPrivateNetwork registered
 
 ## Branch
 

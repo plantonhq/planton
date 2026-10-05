@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcomputedisk.v1alpha1;
 
-// GcpComputeDiskStackOutputs captures observable values produced after
+// GcpComputeDiskOutputs captures observable values produced after
 // provisioning a Compute Engine persistent disk.
-message GcpComputeDiskStackOutputs {
+message GcpComputeDiskOutputs {
   // Name of the disk in GCP.
   string name = 1;
 

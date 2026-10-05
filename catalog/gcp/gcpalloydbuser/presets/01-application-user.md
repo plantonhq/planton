@@ -16,6 +16,6 @@ This preset creates a classic username/password AlloyDB user for an application 
 
 - **02-iam-user** — passwordless IAM-authenticated user
 
-## Related Components
+## Related Kinds
 
 - [GcpAlloydbCluster](/docs/catalog/gcp/gcpalloydbcluster) — the cluster this user lives on

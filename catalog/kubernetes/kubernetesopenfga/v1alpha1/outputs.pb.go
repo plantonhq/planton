@@ -22,11 +22,11 @@ const (
 )
 
 // *
-// **KubernetesOpenFgaStackOutputs** — the composition handles a
+// **KubernetesOpenFgaOutputs** — the composition handles a
 // deployed OpenFGA exports. Point authorization-data tooling (the
 // `fga` CLI, SDKs, the platform's OpenFGA provider kinds) at the
 // endpoints below.
-type KubernetesOpenFgaStackOutputs struct {
+type KubernetesOpenFgaOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace the server runs in.
@@ -55,20 +55,20 @@ type KubernetesOpenFgaStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesOpenFgaStackOutputs) Reset() {
-	*x = KubernetesOpenFgaStackOutputs{}
+func (x *KubernetesOpenFgaOutputs) Reset() {
+	*x = KubernetesOpenFgaOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesopenfga_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesOpenFgaStackOutputs) String() string {
+func (x *KubernetesOpenFgaOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesOpenFgaStackOutputs) ProtoMessage() {}
+func (*KubernetesOpenFgaOutputs) ProtoMessage() {}
 
-func (x *KubernetesOpenFgaStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesOpenFgaOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesopenfga_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -80,47 +80,47 @@ func (x *KubernetesOpenFgaStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesOpenFgaStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesOpenFgaStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesOpenFgaOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenFgaOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesopenfga_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesOpenFgaStackOutputs) GetNamespace() string {
+func (x *KubernetesOpenFgaOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesOpenFgaStackOutputs) GetService() string {
+func (x *KubernetesOpenFgaOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *KubernetesOpenFgaStackOutputs) GetApiHttpEndpoint() string {
+func (x *KubernetesOpenFgaOutputs) GetApiHttpEndpoint() string {
 	if x != nil {
 		return x.ApiHttpEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesOpenFgaStackOutputs) GetApiGrpcEndpoint() string {
+func (x *KubernetesOpenFgaOutputs) GetApiGrpcEndpoint() string {
 	if x != nil {
 		return x.ApiGrpcEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesOpenFgaStackOutputs) GetAuthnKeysSecretName() string {
+func (x *KubernetesOpenFgaOutputs) GetAuthnKeysSecretName() string {
 	if x != nil {
 		return x.AuthnKeysSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesOpenFgaStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesOpenFgaOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -131,8 +131,8 @@ var File_catalog_kubernetes_kubernetesopenfga_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_kubernetes_kubernetesopenfga_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesopenfga/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesopenfga.v1alpha1\"\x96\x02\n" +
-	"\x1dKubernetesOpenFgaStackOutputs\x12\x1c\n" +
+	";catalog/kubernetes/kubernetesopenfga/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesopenfga.v1alpha1\"\x91\x02\n" +
+	"\x18KubernetesOpenFgaOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x18\n" +
 	"\aservice\x18\x02 \x01(\tR\aservice\x12*\n" +
 	"\x11api_http_endpoint\x18\x03 \x01(\tR\x0fapiHttpEndpoint\x12*\n" +
@@ -155,7 +155,7 @@ func file_catalog_kubernetes_kubernetesopenfga_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesopenfga_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesopenfga_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesOpenFgaStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaStackOutputs
+	(*KubernetesOpenFgaOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesopenfga.v1alpha1.KubernetesOpenFgaOutputs
 }
 var file_catalog_kubernetes_kubernetesopenfga_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarezerotrustlist.v1alpha1;
 
-// CloudflareZeroTrustListStackOutputs captures the observable outputs after
+// CloudflareZeroTrustListOutputs captures the observable outputs after
 // creating a Zero Trust list.
-message CloudflareZeroTrustListStackOutputs {
+message CloudflareZeroTrustListOutputs {
   // The UUID of the created list -- what Gateway policies and device-posture
   // rules reference.
   string list_id = 1;

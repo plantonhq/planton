@@ -31,7 +31,7 @@ type KubernetesExternalDns struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesExternalDnsSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesExternalDns) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesExternalDns) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesExternalDns) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesExternalDns) GetStatus() *KubernetesExternalDnsStatus {
 // kubernetes-external-dns status.
 type KubernetesExternalDnsStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesExternalDnsStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesExternalDnsOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesExternalDnsStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesexternaldns_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesExternalDnsStatus) GetOutputs() *KubernetesExternalDnsStackOutputs {
+func (x *KubernetesExternalDnsStatus) GetOutputs() *KubernetesExternalDnsOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesexternaldns_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15KubernetesExternalDnsR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
 	"\x04spec\x18\x04 \x01(\v2P.dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12j\n" +
-	"\x06status\x18\x05 \x01(\v2R.dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsStatusR\x06status\"\x91\x01\n" +
-	"\x1bKubernetesExternalDnsStatus\x12r\n" +
-	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsStackOutputsR\aoutputsB\xac\x03\n" +
+	"\x06status\x18\x05 \x01(\v2R.dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsStatusR\x06status\"\x8c\x01\n" +
+	"\x1bKubernetesExternalDnsStatus\x12m\n" +
+	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsOutputsR\aoutputsB\xac\x03\n" +
 	"9com.dev.planton.kubernetes.kubernetesexternaldns.v1alpha1B\bApiProtoP\x01Zlgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesexternaldns/v1alpha1;kubernetesexternaldnsv1alpha1\xa2\x02\x04DPKK\xaa\x025Dev.Planton.Kubernetes.Kubernetesexternaldns.V1alpha1\xca\x025Dev\\Planton\\Kubernetes\\Kubernetesexternaldns\\V1alpha1\xe2\x02ADev\\Planton\\Kubernetes\\Kubernetesexternaldns\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Kubernetes::Kubernetesexternaldns::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesexternaldns_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesexternaldns_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesexternaldns_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesExternalDns)(nil),             // 0: dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDns
-	(*KubernetesExternalDnsStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesExternalDnsSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsSpec
-	(*KubernetesExternalDnsStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsStackOutputs
+	(*KubernetesExternalDns)(nil),        // 0: dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDns
+	(*KubernetesExternalDnsStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesExternalDnsSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsSpec
+	(*KubernetesExternalDnsOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsOutputs
 }
 var file_catalog_kubernetes_kubernetesexternaldns_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDns.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDns.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDns.spec:type_name -> dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsSpec
 	1, // 2: dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDns.status:type_name -> dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsStatus
-	4, // 3: dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesexternaldns.v1alpha1.KubernetesExternalDnsOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

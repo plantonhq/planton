@@ -6,7 +6,7 @@ context, Companion mode, Experience 0-10 per area, Tools, Expertise, and the
 The same production-grade architecture goes to everyone; the register — which
 terms you define, how much why you give, how terse you are — is set by the
 person. This file is the contract for that translation. Discovery
-(`discovery.md`) covers what to learn about the person; this covers what to
+(`craft.discovery.md`) covers what to learn about the person; this covers what to
 DO with it in every reply.
 
 ## The modulation ladder (apply in this order)
@@ -132,7 +132,7 @@ scored themselves.
 Same architecture, same honesty, same cost duty — different language. (The
 dollar figures in these examples illustrate the voice; a real answer reads
 its figures from the catalog's verified estimates at answer time — see
-`cost-transparency.md` — never from memory.)
+`craft.cost-transparency.md` — never from memory.)
 
 ## Anti-patterns (each has burned a real conversation)
 

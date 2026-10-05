@@ -6,15 +6,15 @@
 
 ## Summary
 
-Completed the GcpServiceAccount component by implementing a full Terraform module and fixing documentation errors. The
-component now provides production-ready Infrastructure-as-Code support for both Pulumi and Terraform, enabling users to
+Completed the GcpServiceAccount kind by implementing a full Terraform module and fixing documentation errors. The
+kind now provides production-ready Infrastructure-as-Code support for both Pulumi and Terraform, enabling users to
 declaratively create GCP service accounts with optional key generation and IAM role bindings at project and
-organization levels. This work elevates the component from 84% to 98% completion, making it fully functional for all
+organization levels. This work elevates the kind from 84% to 98% completion, making it fully functional for all
 users regardless of their IaC tool preference.
 
 ## Problem Statement / Motivation
 
-The GcpServiceAccount component audit (2025-11-14) revealed critical gaps that prevented Terraform users from
+The GcpServiceAccount kind audit (2025-11-14) revealed critical gaps that prevented Terraform users from
 deploying service accounts:
 
 ### Pain Points
@@ -24,20 +24,20 @@ deploying service accounts:
 - **Minimal Variables Configuration**: `variables.tf` only contained the metadata variable without any spec fields
 - **Missing Locals File**: No `locals.tf` existed for computed values and label management
 - **Documentation Content Error**: The README.md described DNS zone management instead of service accounts—a clear
-  copy-paste error from another component
+  copy-paste error from another kind
 - **Incomplete Outputs**: The `outputs.tf` file was empty, preventing users from accessing created resource attributes
 - **No Terraform Examples**: While Pulumi examples existed, Terraform users had no reference documentation
 
 These gaps meant approximately half of potential users (those preferring Terraform over Pulumi) could not use this
-component at all, despite having a well-designed spec.proto and a fully functional Pulumi implementation.
+kind at all, despite having a well-designed spec.proto and a fully functional Pulumi implementation.
 
-### Component Audit Results
+### Kind Audit Results
 
 **Initial State**: 84.40% complete
 
 | Category                    | Weight | Score  | Status |
 |-----------------------------|--------|--------|--------|
-| Cloud Resource Registry     | 4.44%  | 4.44%  | ✅      |
+| Catalog Kind Registry     | 4.44%  | 4.44%  | ✅      |
 | Folder Structure            | 4.44%  | 4.44%  | ✅      |
 | Protobuf API Definitions    | 22.20% | 22.20% | ✅      |
 | IaC Modules - Pulumi        | 13.32% | 13.32% | ✅      |
@@ -53,7 +53,7 @@ component at all, despite having a well-designed spec.proto and a fully function
 
 Implemented a complete Terraform module that mirrors the functionality of the existing Pulumi implementation, ensuring
 feature parity across both IaC backends. Fixed documentation errors to accurately describe the service account
-component.
+kind.
 
 ### Implementation Components
 
@@ -94,7 +94,7 @@ variable "spec" {
 
 #### 2. Terraform Locals (`locals.tf`)
 
-Implemented computed values and label management following the standard pattern used across other GCP components:
+Implemented computed values and label management following the standard pattern used across other GCP kinds:
 
 ```hcl
 locals {
@@ -124,7 +124,7 @@ locals {
 }
 ```
 
-**Pattern Consistency**: Follows the same label structure as other GCP components (GcpSecretsManager, GcpGcsBucket)
+**Pattern Consistency**: Follows the same label structure as other GCP kinds (GcpSecretsManager, GcpGcsBucket)
 for consistent resource tagging across the platform.
 
 #### 3. Terraform Main Resources (`main.tf`)
@@ -189,7 +189,7 @@ resource "google_organization_iam_member" "org_roles" {
 
 #### 4. Terraform Outputs (`outputs.tf`)
 
-Defined outputs matching the stack outputs proto:
+Defined outputs matching the outputs proto:
 
 ```hcl
 output "email" {
@@ -206,7 +206,7 @@ output "key_base64" {
 
 **Output Mapping**:
 
-| Proto Field (stack_outputs.proto) | Terraform Output | Notes                     |
+| Proto Field (outputs.proto) | Terraform Output | Notes                     |
 |-----------------------------------|------------------|---------------------------|
 | `email`                           | `email`          | Always available          |
 | `key_base64`                      | `key_base64`     | Null if key not created   |
@@ -286,7 +286,7 @@ terraform fmt
 - ✅ All files properly formatted
 - ✅ No syntax or type errors
 
-**Go Component Tests**:
+**Go Kind Tests**:
 
 ```bash
 go test ./apis/dev/planton/provider/gcp/gcpserviceaccount/v1/ -v
@@ -308,9 +308,9 @@ PASS
 
 ### Alignment with Existing Patterns
 
-The Terraform implementation follows established patterns from other GCP components:
+The Terraform implementation follows established patterns from other GCP kinds:
 
-**Reference Components**:
+**Reference Kinds**:
 
 - `GcpSecretsManager` - Label merging pattern, locals structure
 - `GcpGcsBucket` - Resource naming conventions
@@ -335,7 +335,7 @@ The Terraform implementation follows established patterns from other GCP compone
 
 - **Dual-Backend Support**: Same YAML manifest deploys with either Pulumi or Terraform
 - **Reduced Friction**: Teams can choose their preferred IaC tool without feature limitations
-- **Pattern Reinforcement**: Terraform module follows established component patterns
+- **Pattern Reinforcement**: Terraform module follows established kind patterns
 
 ### For Security
 
@@ -345,7 +345,7 @@ The Terraform implementation follows established patterns from other GCP compone
 
 ### For Documentation
 
-- **Accurate README**: Users now see correct component description, not DNS zone content
+- **Accurate README**: Users now see correct kind description, not DNS zone content
 - **Comprehensive Examples**: Terraform users have 5 detailed examples covering common scenarios
 - **Troubleshooting Guide**: Common errors documented with solutions
 
@@ -353,7 +353,7 @@ The Terraform implementation follows established patterns from other GCP compone
 
 | Metric                      | Before | After | Improvement |
 |-----------------------------|--------|-------|-------------|
-| Component Completion Score  | 84.40% | ~98%  | +13.6%      |
+| Kind Completion Score  | 84.40% | ~98%  | +13.6%      |
 | Terraform Module Files      | 3/6    | 6/6   | 100%        |
 | Terraform Module Lines      | 13     | ~157  | +1108%      |
 | Documentation Accuracy      | ⚠️      | ✅     | Fixed       |
@@ -367,9 +367,9 @@ The Terraform implementation follows established patterns from other GCP compone
 **Before**: Only Pulumi users could deploy GcpServiceAccount  
 **After**: Both Pulumi and Terraform users have full support
 
-**Estimated User Impact**: ~50% of users (those preferring Terraform) can now use this component
+**Estimated User Impact**: ~50% of users (those preferring Terraform) can now use this kind
 
-### Component Readiness
+### Kind Readiness
 
 **Before**: Functionally incomplete (Terraform blocked)  
 **After**: Production-ready for both IaC backends
@@ -393,7 +393,7 @@ The Terraform implementation follows established patterns from other GCP compone
 automated workflows
 
 **Multi-Cloud Platforms**: Planton now provides consistent service account management across IaC tools, matching
-the pattern established for other GCP components
+the pattern established for other GCP kinds
 
 ## Testing Strategy
 
@@ -404,7 +404,7 @@ the pattern established for other GCP components
     - Ran `terraform validate` with no errors
     - Ran `terraform fmt` to ensure formatting compliance
 
-2. **Component Unit Tests**:
+2. **Kind Unit Tests**:
     - Executed Go tests for GcpServiceAccountSpec
     - Verified buf.validate rules work correctly
     - Confirmed all validation tests pass (1/1 specs passed)
@@ -422,26 +422,26 @@ the pattern established for other GCP components
 ### Manual Testing Checklist
 
 ✅ Terraform validates without errors  
-✅ Component tests pass  
-✅ README content accurately describes component  
+✅ Kind tests pass  
+✅ README content accurately describes kind  
 ✅ Examples.md provides valid HCL configurations  
 ✅ Variables.tf includes all spec fields  
 ✅ Locals.tf follows standard pattern  
 ✅ Main.tf creates all required resources  
-✅ Outputs.tf matches proto stack outputs  
+✅ Outputs.tf matches proto outputs  
 ✅ No linter errors in any modified files  
 ✅ Terraform formatting applied consistently
 
 ## Related Work
 
-### Referenced Components
+### Referenced Kinds
 
 - **GcpSecretsManager** (`apis/dev/planton/provider/gcp/gcpsecretsmanager/v1/`): Referenced for locals
   pattern and label structure
 - **GcpGcsBucket**: Referenced for Terraform module organization
 - **GcpDnsZone**: Referenced for resource naming conventions
 
-### Component Audit
+### Kind Audit
 
 This work addresses findings from the audit report:
 
@@ -452,7 +452,7 @@ This work addresses findings from the audit report:
 
 ### Architecture Documentation
 
-- **Component Standard**: `architecture/deployment-component.md`
+- **Kind Standard**: `architecture/catalog-kind.md`
 - **Research Document**: `apis/dev/planton/provider/gcp/gcpserviceaccount/v1/docs/README.md` (18.8 KB
   research on service account patterns, keyless authentication, and 80/20 principle scoping)
 
@@ -500,8 +500,8 @@ IAM member resources rather than wrapping Pulumi calls.
 
 **Rationale**:
 
-- **Consistency**: All GCP components should tag resources identically
-- **Query Efficiency**: Consistent labels enable cross-component queries in GCP Console
+- **Consistency**: All GCP kinds should tag resources identically
+- **Query Efficiency**: Consistent labels enable cross-kind queries in GCP Console
 - **Cost Allocation**: Standard `resource_id`, `org`, `env` labels support cost tracking
 
 ## Known Limitations
@@ -514,7 +514,7 @@ IAM member resources rather than wrapping Pulumi calls.
 
 ### Documentation
 
-- **No E2E Test Logs**: Unlike some components, we don't yet have Terraform E2E test execution logs (future work)
+- **No E2E Test Logs**: Unlike some kinds, we don't yet have Terraform E2E test execution logs (future work)
 
 ### Validation
 
@@ -551,21 +551,21 @@ IAM member resources rather than wrapping Pulumi calls.
 
 **Status**: ✅ Production Ready  
 **Timeline**: Completed November 15, 2025  
-**Component Path**: `apis/dev/planton/provider/gcp/gcpserviceaccount/v1/`  
+**Kind Path**: `apis/dev/planton/provider/gcp/gcpserviceaccount/v1/`  
 **Audit Improvement**: 84.40% → ~98% (+13.6 percentage points)
 
 ## Conclusion
 
-The GcpServiceAccount component is now production-ready for both Pulumi and Terraform users. The implementation provides
+The GcpServiceAccount kind is now production-ready for both Pulumi and Terraform users. The implementation provides
 feature parity across IaC tools while maintaining security-first defaults (keyless by default) and following established
-patterns from other GCP components. With comprehensive documentation, validation, and examples, users can confidently
+patterns from other GCP kinds. With comprehensive documentation, validation, and examples, users can confidently
 provision GCP service accounts as part of their infrastructure-as-code workflows.
 
 ### Next Steps for Users
 
 1. **Terraform Users**: Reference `iac/tf/examples.md` for usage patterns
 2. **Pulumi Users**: Continue using existing implementation (no changes required)
-3. **Documentation**: Review updated `README.md` for accurate component overview
+3. **Documentation**: Review updated `README.md` for accurate kind overview
 4. **Deployment**: Use standard Planton CLI commands with either backend
 
 ### Verification Commands
@@ -576,7 +576,7 @@ cd apis/dev/planton/provider/gcp/gcpserviceaccount/v1/iac/tf
 terraform init -backend=false
 terraform validate
 
-# Run component tests
+# Run kind tests
 go test ./apis/dev/planton/provider/gcp/gcpserviceaccount/v1/ -v
 
 # Deploy with Terraform
@@ -588,6 +588,6 @@ planton pulumi up --manifest service-account.yaml --stack org/project/stack
 
 ---
 
-*Component completion driven by audit findings and user need for Terraform support. Implementation prioritized feature
+*Kind completion driven by audit findings and user need for Terraform support. Implementation prioritized feature
 parity, security defaults, and documentation accuracy.*
 

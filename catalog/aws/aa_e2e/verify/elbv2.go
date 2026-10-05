@@ -21,7 +21,7 @@ import (
 // loadBalancerVerifier verifies an ALB or NLB via DescribeLoadBalancers,
 // keyed on the load balancer ARN.
 type loadBalancerVerifier struct {
-	component string
+	kind string
 }
 
 func (*loadBalancerVerifier) IDOutputKey() string { return "load_balancer_arn" }
@@ -29,10 +29,10 @@ func (*loadBalancerVerifier) IDOutputKey() string { return "load_balancer_arn" }
 func (v *loadBalancerVerifier) VerifyExists(ctx context.Context, cfg aws.Config, id, region string) error {
 	exists, err := loadBalancerExists(ctx, cfg, region, id)
 	if err != nil {
-		return pkgerrors.Wrapf(err, "%s verify-exists failed for %q", v.component, id)
+		return pkgerrors.Wrapf(err, "%s verify-exists failed for %q", v.kind, id)
 	}
 	if !exists {
-		return pkgerrors.Errorf("%s %q not found after deploy", v.component, id)
+		return pkgerrors.Errorf("%s %q not found after deploy", v.kind, id)
 	}
 	return nil
 }
@@ -40,10 +40,10 @@ func (v *loadBalancerVerifier) VerifyExists(ctx context.Context, cfg aws.Config,
 func (v *loadBalancerVerifier) VerifyAbsent(ctx context.Context, cfg aws.Config, id, region string) error {
 	exists, err := loadBalancerExists(ctx, cfg, region, id)
 	if err != nil {
-		return pkgerrors.Wrapf(err, "%s verify-absent failed for %q", v.component, id)
+		return pkgerrors.Wrapf(err, "%s verify-absent failed for %q", v.kind, id)
 	}
 	if exists {
-		return pkgerrors.Errorf("%s %q still exists after destroy", v.component, id)
+		return pkgerrors.Errorf("%s %q still exists after destroy", v.kind, id)
 	}
 	return nil
 }

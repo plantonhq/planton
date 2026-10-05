@@ -4,9 +4,9 @@ package dev.planton.azure.azurecontainerregistry.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureContainerRegistryStackOutputs** captures the outputs of
+// **AzureContainerRegistryOutputs** captures the outputs of
 // provisioning an Azure Container Registry.
-message AzureContainerRegistryStackOutputs {
+message AzureContainerRegistryOutputs {
   // The Azure Resource Manager ID of the registry. This is the primary
   // output: AzureAksCluster's container_registry_id references it to wire
   // image pulls, and role assignments (AcrPull/AcrPush) scope to it.

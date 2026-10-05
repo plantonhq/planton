@@ -2,11 +2,11 @@
 
 **Date**: November 16, 2025  
 **Type**: Refactoring  
-**Components**: Deployment Component Lifecycle, Python Scripts, Build System
+**Components**: Catalog Kind Lifecycle, Python Scripts, Build System
 
 ## Summary
 
-Refactored the deployment component rename script to use an elegant sequential in-place approach (directories → files → contents) instead of copying the entire directory tree. This implementation, inspired by the Planton monorepo's rename workflow, is more efficient, cleaner, and safer while maintaining 100% backward compatibility. Also reorganized the script into its own `_scripts` folder under the `rename/` subdirectory for better organization.
+Refactored the catalog kind rename script to use an elegant sequential in-place approach (directories → files → contents) instead of copying the entire directory tree. This implementation, inspired by the Planton monorepo's rename workflow, is more efficient, cleaner, and safer while maintaining 100% backward compatibility. Also reorganized the script into its own `_scripts` folder under the `rename/` subdirectory for better organization.
 
 ## Problem Statement / Motivation
 
@@ -33,7 +33,7 @@ shutil.rmtree(old_dir)
 - More I/O operations (copy + delete vs rename)
 
 **Unnecessary Duplication**:
-- Creates a complete duplicate of the component directory
+- Creates a complete duplicate of the kind directory
 - Both old and new exist simultaneously until deletion
 - Risk of confusion if process is interrupted
 
@@ -162,7 +162,7 @@ def replace_in_files(root_dir: Path, old_str: str, new_str: str, stats: Dict) ->
 
 **Before**:
 ```python
-# 1-2. Validate component
+# 1-2. Validate kind
 # 3. Delete target directory if exists
 # 4. Copy old_dir to new_dir
 # 5. Build replacement map
@@ -176,11 +176,11 @@ def replace_in_files(root_dir: Path, old_str: str, new_str: str, stats: Dict) ->
 
 **After**:
 ```python
-# 1-2. Validate component
+# 1-2. Validate kind
 # 3. Update registry (before file renames)
-# 4. Rename icon folder (before component renames)
+# 4. Rename icon folder (before kind renames)
 # 5. Build replacement map
-# 6. For each pattern: apply_sequential_renames(component_dir)
+# 6. For each pattern: apply_sequential_renames(kind_path)
 # 7. For each pattern: apply_sequential_renames(docs_dir)
 # 8. Run build pipeline
 ```
@@ -196,23 +196,23 @@ Key changes:
 
 ```
 Before:
-_rules/deployment-component/
+_rules/catalog-kind/
 ├── _scripts/
-│   ├── rename_deployment_component.py  ← Here
+│   ├── rename_catalog_kind.py  ← Here
 │   └── ... (other scripts for forge, audit, etc.)
 └── rename/
-    ├── rename-planton-component.mdc
+    ├── rename-catalog-kind.mdc
     └── README.md
 
 After:
-_rules/deployment-component/
+_rules/catalog-kind/
 ├── _scripts/
 │   └── ... (other scripts for forge, audit, etc.)
 └── rename/
-    ├── rename-planton-component.mdc
+    ├── rename-catalog-kind.mdc
     ├── README.md
     └── _scripts/
-        └── rename_deployment_component.py  ← Now here
+        └── rename_catalog_kind.py  ← Now here
 ```
 
 **Why?** Each lifecycle operation can have its own scripts folder, keeping organization clear and focused.
@@ -222,8 +222,8 @@ _rules/deployment-component/
 Updated 6 references across the codebase:
 1. Script docstring (usage examples)
 2. `rename/README.md` (architecture diagram + reference section)
-3. `rename-planton-component.mdc` (cursor rule reference)
-4. `deployment-component/README.md` (main README)
+3. `rename-catalog-kind.mdc` (cursor rule reference)
+4. `catalog-kind/README.md` (main README)
 5. Changelog `2025-11-15-085240` (recent rename example)
 6. Changelog `2025-11-15-083839` (automation documentation)
 
@@ -234,7 +234,7 @@ Updated 6 references across the codebase:
 **Disk I/O Reduction**:
 - **Before**: Copy entire directory tree + delete original
 - **After**: Rename operations only (move file pointers, no data copy)
-- **Result**: Significantly faster for large components
+- **Result**: Significantly faster for large kinds
 
 **No Temporary Duplication**:
 - **Before**: Disk usage doubles during copy phase
@@ -261,7 +261,7 @@ Updated 6 references across the codebase:
 ### Code Quality
 
 **Reduced Complexity**:
-- Removed `copy_component_directory()` function (not needed)
+- Removed `copy_kind_directory()` function (not needed)
 - Removed `delete_directory_if_exists()` function (not needed)
 - Cleaner main execution flow (fewer steps)
 
@@ -311,7 +311,7 @@ Updated 6 references across the codebase:
 
 **Functions**:
 - Added: `rename_directories()`, `rename_files()`, `replace_in_files()`, `apply_sequential_renames()`
-- Removed: `copy_component_directory()`, `delete_directory_if_exists()`
+- Removed: `copy_kind_directory()`, `delete_directory_if_exists()`
 - Modified: `main()` execution flow
 
 **Complexity Reduction**:
@@ -339,7 +339,7 @@ Updated 6 references across the codebase:
 
 **Choice**: Explicitly skip files and directories starting with `.`
 
-**Rationale**: Hidden files (.git, .DS_Store) should never be renamed as part of component operations. This prevents accidental modifications to version control and system files.
+**Rationale**: Hidden files (.git, .DS_Store) should never be renamed as part of kind operations. This prevents accidental modifications to version control and system files.
 
 ### Decision 4: Move Script to `rename/_scripts/`
 
@@ -355,14 +355,14 @@ Updated 6 references across the codebase:
 ### Inspiration: Planton Monorepo
 
 The sequential rename approach was discovered in the Planton monorepo's rename script:
-- Location: `planton/.cursor/rules/product/apis/infra-hub/cloud-resource/deployment-component/_scripts/rename_component.py`
+- Location: `planton/.cursor/rules/product/apis/infra-hub/infra-component/catalog-kind/_scripts/rename_kind.py`
 - Key insight: Sequential renames (directories → files → contents) are more elegant than copy-based approach
 - Pattern: Bottom-up traversal to avoid path conflicts
 
 ### Previous Implementation
 
 This refactoring builds on:
-- **Deployment Component Rename Automation** (`2025-11-15-083839`)
+- **Catalog Kind Rename Automation** (`2025-11-15-083839`)
   - Original copy-based implementation
   - Established the seven naming patterns
   - Created comprehensive cursor rule workflow
@@ -370,13 +370,13 @@ This refactoring builds on:
 ### Integration with Lifecycle System
 
 Rename continues to be the 7th lifecycle operation:
-1. 🔨 Forge - Create new components
+1. 🔨 Forge - Create new kinds
 2. 🔍 Audit - Assess completeness
 3. 🔄 Update - Enhance existing
 4. ✨ Complete - Auto-improve
 5. 🔧 Fix - Targeted fixes
 6. ✏️ **Rename** - Systematic renaming (now with elegant implementation)
-7. 🗑️ Delete - Remove components
+7. 🗑️ Delete - Remove kinds
 
 ## Verification
 
@@ -399,7 +399,7 @@ Rename continues to be the 7th lifecycle operation:
 **Potential Improvements**:
 
 1. **Dry-Run Mode**: Add `--dry-run` flag to preview changes without applying
-2. **Progress Reporting**: Show progress for large components (X of Y files processed)
+2. **Progress Reporting**: Show progress for large kinds (X of Y files processed)
 3. **Parallel Processing**: Process naming patterns in parallel for speed
 4. **Undo Command**: Store original state for easy rollback
 
@@ -412,5 +412,5 @@ Rename continues to be the 7th lifecycle operation:
 
 **Status**: ✅ Production Ready  
 **Timeline**: 2 hours (refactoring + reorganization + updates)  
-**Next**: This implementation is complete and ready for use in component renames
+**Next**: This implementation is complete and ready for use in kind renames
 

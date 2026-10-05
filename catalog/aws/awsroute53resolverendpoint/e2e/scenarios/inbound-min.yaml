@@ -11,7 +11,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsroute53resolverendpoint
+    e2e-catalog-kind: awsroute53resolverendpoint
   annotations:
     planton.dev/e2e: "true"
   tags:

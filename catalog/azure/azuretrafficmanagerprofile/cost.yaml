@@ -5,9 +5,9 @@
 # while the per-endpoint health-check fees (basic, fast-interval add-on,
 # HTTPS add-on, nested) land on each AzureTrafficManagerEndpoint -- even
 # though two of those add-ons are switched by THIS spec's monitor
-# configuration. Schema: finops/componentcostprofile/v1.
+# configuration. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azuretrafficmanagerprofile
 spec:

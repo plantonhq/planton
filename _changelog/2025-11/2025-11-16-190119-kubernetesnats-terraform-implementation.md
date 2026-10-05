@@ -1,4 +1,4 @@
-# KubernetesNats Terraform Module Implementation and Component Completion
+# KubernetesNats Terraform Module Implementation and Kind Completion
 
 **Date**: November 16, 2025  
 **Type**: Enhancement  
@@ -6,11 +6,11 @@
 
 ## Summary
 
-Implemented a complete Terraform module for KubernetesNats component, expanding the skeleton `main.tf` from 125 bytes to a full 302-line production-ready implementation. Added comprehensive documentation for both Pulumi and Terraform users, bringing the component from 94.4% to 100% completion with feature parity across both IaC tools.
+Implemented a complete Terraform module for KubernetesNats kind, expanding the skeleton `main.tf` from 125 bytes to a full 302-line production-ready implementation. Added comprehensive documentation for both Pulumi and Terraform users, bringing the kind from 94.4% to 100% completion with feature parity across both IaC tools.
 
 ## Problem Statement / Motivation
 
-The KubernetesNats component was functionally complete for Pulumi users but had an incomplete Terraform implementation:
+The KubernetesNats kind was functionally complete for Pulumi users but had an incomplete Terraform implementation:
 
 ### Critical Gap
 

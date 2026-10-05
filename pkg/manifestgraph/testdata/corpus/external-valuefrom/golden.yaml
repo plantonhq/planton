@@ -1,4 +1,4 @@
 order:
-    - TestCloudResourceGeneric/consumer@dev
+    - TestCatalogKindGeneric/consumer@dev
 findings:
-    - external-value-from TestCloudResourceGeneric/consumer@dev spec.optional_ref
+    - external-value-from TestCatalogKindGeneric/consumer@dev spec.optional_ref

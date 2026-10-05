@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpBigQueryConnectionStackOutputs captures the connection's identity and
+// GcpBigQueryConnectionOutputs captures the connection's identity and
 // the Google-owned identities its arm created -- the principals you grant
 // access to the data the connection reads. Only the declared arm's values
 // are populated.
-type GcpBigQueryConnectionStackOutputs struct {
+type GcpBigQueryConnectionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name --
 	// projects/{project}/locations/{location}/connections/{connection_id}.
@@ -61,20 +61,20 @@ type GcpBigQueryConnectionStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) Reset() {
-	*x = GcpBigQueryConnectionStackOutputs{}
+func (x *GcpBigQueryConnectionOutputs) Reset() {
+	*x = GcpBigQueryConnectionOutputs{}
 	mi := &file_catalog_gcp_gcpbigqueryconnection_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) String() string {
+func (x *GcpBigQueryConnectionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpBigQueryConnectionStackOutputs) ProtoMessage() {}
+func (*GcpBigQueryConnectionOutputs) ProtoMessage() {}
 
-func (x *GcpBigQueryConnectionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpBigQueryConnectionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpbigqueryconnection_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -86,96 +86,96 @@ func (x *GcpBigQueryConnectionStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpBigQueryConnectionStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpBigQueryConnectionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpBigQueryConnectionOutputs.ProtoReflect.Descriptor instead.
+func (*GcpBigQueryConnectionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbigqueryconnection_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) GetName() string {
+func (x *GcpBigQueryConnectionOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) GetConnectionId() string {
+func (x *GcpBigQueryConnectionOutputs) GetConnectionId() string {
 	if x != nil {
 		return x.ConnectionId
 	}
 	return ""
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) GetLocation() string {
+func (x *GcpBigQueryConnectionOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) GetCloudResourceServiceAccountId() string {
+func (x *GcpBigQueryConnectionOutputs) GetCloudResourceServiceAccountId() string {
 	if x != nil {
 		return x.CloudResourceServiceAccountId
 	}
 	return ""
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) GetSparkServiceAccountId() string {
+func (x *GcpBigQueryConnectionOutputs) GetSparkServiceAccountId() string {
 	if x != nil {
 		return x.SparkServiceAccountId
 	}
 	return ""
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) GetCloudSqlServiceAccountId() string {
+func (x *GcpBigQueryConnectionOutputs) GetCloudSqlServiceAccountId() string {
 	if x != nil {
 		return x.CloudSqlServiceAccountId
 	}
 	return ""
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) GetConnectorServiceAccount() string {
+func (x *GcpBigQueryConnectionOutputs) GetConnectorServiceAccount() string {
 	if x != nil {
 		return x.ConnectorServiceAccount
 	}
 	return ""
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) GetAwsIdentity() string {
+func (x *GcpBigQueryConnectionOutputs) GetAwsIdentity() string {
 	if x != nil {
 		return x.AwsIdentity
 	}
 	return ""
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) GetAzureIdentity() string {
+func (x *GcpBigQueryConnectionOutputs) GetAzureIdentity() string {
 	if x != nil {
 		return x.AzureIdentity
 	}
 	return ""
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) GetAzureApplication() string {
+func (x *GcpBigQueryConnectionOutputs) GetAzureApplication() string {
 	if x != nil {
 		return x.AzureApplication
 	}
 	return ""
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) GetAzureClientId() string {
+func (x *GcpBigQueryConnectionOutputs) GetAzureClientId() string {
 	if x != nil {
 		return x.AzureClientId
 	}
 	return ""
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) GetAzureObjectId() string {
+func (x *GcpBigQueryConnectionOutputs) GetAzureObjectId() string {
 	if x != nil {
 		return x.AzureObjectId
 	}
 	return ""
 }
 
-func (x *GcpBigQueryConnectionStackOutputs) GetAzureRedirectUri() string {
+func (x *GcpBigQueryConnectionOutputs) GetAzureRedirectUri() string {
 	if x != nil {
 		return x.AzureRedirectUri
 	}
@@ -186,8 +186,8 @@ var File_catalog_gcp_gcpbigqueryconnection_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_gcp_gcpbigqueryconnection_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/gcp/gcpbigqueryconnection/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpbigqueryconnection.v1alpha1\"\xec\x04\n" +
-	"!GcpBigQueryConnectionStackOutputs\x12\x12\n" +
+	"8catalog/gcp/gcpbigqueryconnection/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpbigqueryconnection.v1alpha1\"\xe7\x04\n" +
+	"\x1cGcpBigQueryConnectionOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12#\n" +
 	"\rconnection_id\x18\x02 \x01(\tR\fconnectionId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x12H\n" +
@@ -218,7 +218,7 @@ func file_catalog_gcp_gcpbigqueryconnection_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_gcp_gcpbigqueryconnection_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpbigqueryconnection_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpBigQueryConnectionStackOutputs)(nil), // 0: dev.planton.gcp.gcpbigqueryconnection.v1alpha1.GcpBigQueryConnectionStackOutputs
+	(*GcpBigQueryConnectionOutputs)(nil), // 0: dev.planton.gcp.gcpbigqueryconnection.v1alpha1.GcpBigQueryConnectionOutputs
 }
 var file_catalog_gcp_gcpbigqueryconnection_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

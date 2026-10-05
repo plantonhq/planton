@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuremanagedredisgeoreplication
+    e2e-catalog-kind: azuremanagedredisgeoreplication
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/azure/azuremanagedredisgeoreplication/e2e/geo-cluster-east.yaml, catalog/azure/azuremanagedredisgeoreplication/e2e/geo-cluster-west.yaml"

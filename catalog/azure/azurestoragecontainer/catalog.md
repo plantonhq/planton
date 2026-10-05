@@ -4,7 +4,7 @@ Deploys a blob container inside an Azure Storage Account -- the namespace unit o
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Blob Container** -- a container on the referenced storage account (by ARM ID -- the control-plane path), with your chosen anonymous-access posture, optional default encryption scope, and data-plane metadata
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -51,7 +51,7 @@ spec:
 planton apply -f container.yaml
 ```
 
-This creates a private container named `uploads` on the `app-storage` account -- every read requires authorization, the right posture for everything that is not a public website or CDN origin. A Stack Job tracks the provisioning in real time.
+This creates a private container named `uploads` on the `app-storage` account -- every read requires authorization, the right posture for everything that is not a public website or CDN origin. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -71,16 +71,16 @@ These are the most important decisions when configuring a container. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureStorageAccount** | `storageAccountId` | `status.outputs.storage_account_id` |
 | **AzureStorageEncryptionScope** | `defaultEncryptionScope` | `status.outputs.encryption_scope_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -102,6 +102,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the parent account and the source of the blob endpoint containers compose URLs from
-- [**Azure Storage Encryption Scope**](/cloud-catalog/azure-storage-encryption-scope) -- the same-account scope a container can adopt as its default encryption boundary
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- container-scoped data-plane grants targeting `container_id`
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the parent account and the source of the blob endpoint containers compose URLs from
+- [**Azure Storage Encryption Scope**](/infra-catalog/azure-storage-encryption-scope) -- the same-account scope a container can adopt as its default encryption boundary
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- container-scoped data-plane grants targeting `container_id`

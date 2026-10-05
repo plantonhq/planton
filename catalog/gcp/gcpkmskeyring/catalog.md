@@ -4,7 +4,7 @@ Deploys a Cloud KMS key ring -- a permanent organizational container for cryptog
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **KMS Key Ring** -- a `kms.KeyRing` in the specified GCP project and location, serving as the container for CryptoKeys created afterward
 - **Cloud KMS API enablement** -- `cloudkms.googleapis.com` enabled in the target project (never disabled on destroy)
@@ -15,12 +15,12 @@ Key rings are permanent GCP resources -- they cannot be deleted. On destroy, the
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the key ring will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef. The module enables the Cloud KMS API itself.
+- **A GCP project** where the key ring will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef. The module enables the Cloud KMS API itself.
 
 ## Deploy
 
@@ -50,7 +50,7 @@ spec:
 planton apply -f gcp-kms-key-ring.yaml
 ```
 
-This creates a regional key ring in `us-central1`. The key ring is empty -- CryptoKeys are added separately as GcpKmsKey Cloud Resources. A Stack Job tracks the provisioning in real time.
+This creates a regional key ring in `us-central1`. The key ring is empty -- CryptoKeys are added separately as GcpKmsKey Infra Components. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -79,15 +79,15 @@ These are the most important decisions when configuring a key ring. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -107,5 +107,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the key ring is created
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- the CryptoKeys created inside this ring; its `keyRingId` field consumes the `key_ring_id` output
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the key ring is created
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- the CryptoKeys created inside this ring; its `keyRingId` field consumes the `key_ring_id` output

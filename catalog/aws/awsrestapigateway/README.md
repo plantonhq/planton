@@ -10,7 +10,7 @@ JSON Schema models, request validation, per-method caching and throttling,
 WAF-capable stages, and EDGE / REGIONAL / PRIVATE endpoints.
 
 HTTP APIs (the leaner, cheaper alternative) are the
-[AwsHttpApiGateway](../awshttpapigateway) component.
+[AwsHttpApiGateway](../awshttpapigateway) kind.
 
 ## What Gets Created
 

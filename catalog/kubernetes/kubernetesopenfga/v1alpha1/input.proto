@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesopenfga.v1alpha1;
 import "catalog/kubernetes/kubernetesopenfga/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//open-fga-kubernetes stack-input
-message KubernetesOpenFgaStackInput {
-  //target cloud-resource
+//open-fga-kubernetes iac-input
+message KubernetesOpenFgaIacInput {
+  // the catalog object to deploy
   KubernetesOpenFga target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

@@ -32,7 +32,7 @@ func validEvent(spec *CloudflareWaitingRoomEventSpec) *CloudflareWaitingRoomEven
 	return &CloudflareWaitingRoomEvent{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareWaitingRoomEvent",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-waiting-room-event",
 		},
 		Spec: spec,

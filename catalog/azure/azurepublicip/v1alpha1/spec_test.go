@@ -37,7 +37,7 @@ func validResource() *AzurePublicIp {
 	return &AzurePublicIp{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzurePublicIp",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-public-ip",
 		},
 		Spec: &AzurePublicIpSpec{

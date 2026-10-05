@@ -27,7 +27,7 @@ type AwsEbsVolume struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsEbsVolumeSpec             `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsEbsVolumeStatus           `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsEbsVolume) GetKind() string {
 	return ""
 }
 
-func (x *AwsEbsVolume) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsEbsVolume) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsEbsVolume) GetStatus() *AwsEbsVolumeStatus {
 }
 
 type AwsEbsVolumeStatus struct {
-	state         protoimpl.MessageState    `protogen:"open.v1"`
-	Outputs       *AwsEbsVolumeStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Outputs       *AwsEbsVolumeOutputs   `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsEbsVolumeStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsebsvolume_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsEbsVolumeStatus) GetOutputs() *AwsEbsVolumeStackOutputs {
+func (x *AwsEbsVolumeStatus) GetOutputs() *AwsEbsVolumeOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsebsvolume_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12'\n" +
 	"\x04kind\x18\x02 \x01(\tB\x13\xbaH\x10r\x0e\n" +
 	"\fAwsEbsVolumeR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
 	"\x04spec\x18\x04 \x01(\v27.dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Q\n" +
-	"\x06status\x18\x05 \x01(\v29.dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeStatusR\x06status\"o\n" +
-	"\x12AwsEbsVolumeStatus\x12Y\n" +
-	"\aoutputs\x18\x01 \x01(\v2?.dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeStackOutputsR\aoutputsB\xc3\x02\n" +
+	"\x06status\x18\x05 \x01(\v29.dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeStatusR\x06status\"j\n" +
+	"\x12AwsEbsVolumeStatus\x12T\n" +
+	"\aoutputs\x18\x01 \x01(\v2:.dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeOutputsR\aoutputsB\xc3\x02\n" +
 	")com.dev.planton.aws.awsebsvolume.v1alpha1B\bApiProtoP\x01ZSgithub.com/plantonhq/planton/catalog/aws/awsebsvolume/v1alpha1;awsebsvolumev1alpha1\xa2\x02\x04DPAA\xaa\x02%Dev.Planton.Aws.Awsebsvolume.V1alpha1\xca\x02%Dev\\Planton\\Aws\\Awsebsvolume\\V1alpha1\xe2\x021Dev\\Planton\\Aws\\Awsebsvolume\\V1alpha1\\GPBMetadata\xea\x02)Dev::Planton::Aws::Awsebsvolume::V1alpha1b\x06proto3"
 
 var (
@@ -177,15 +177,15 @@ var file_catalog_aws_awsebsvolume_v1alpha1_api_proto_msgTypes = make([]protoimpl
 var file_catalog_aws_awsebsvolume_v1alpha1_api_proto_goTypes = []any{
 	(*AwsEbsVolume)(nil),                 // 0: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolume
 	(*AwsEbsVolumeStatus)(nil),           // 1: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsEbsVolumeSpec)(nil),             // 3: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeSpec
-	(*AwsEbsVolumeStackOutputs)(nil),     // 4: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeStackOutputs
+	(*AwsEbsVolumeOutputs)(nil),          // 4: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeOutputs
 }
 var file_catalog_aws_awsebsvolume_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolume.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolume.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolume.spec:type_name -> dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeSpec
 	1, // 2: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolume.status:type_name -> dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeStatus
-	4, // 3: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeStatus.outputs:type_name -> dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeStackOutputs
+	4, // 3: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeStatus.outputs:type_name -> dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

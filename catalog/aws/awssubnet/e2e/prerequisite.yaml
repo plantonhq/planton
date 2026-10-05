@@ -1,11 +1,11 @@
-# AwsSubnet install profile used as a prerequisite by composed components.
+# AwsSubnet install profile used as a prerequisite by composed kinds.
 # Publishes a THREE-AZ trio because the most demanding dependents require
 # subnets across multiple availability zones -- load balancers and EKS
 # clusters need two, and Redshift Serverless workgroups need three. Components
 # that need fewer reference the instances they want by name (e.g.
 # AwsNatGateway takes only the first). All subnets resolve their vpcId against
 # the AwsVpc prerequisite. CIDRs are carved high in the VPC's 10.0.0.0/16 to
-# avoid colliding with any component scenario's own ranges. Full metadata is
+# avoid colliding with any kind scenario's own ranges. Full metadata is
 # supplied for tagging/orphan cleanup.
 apiVersion: aws.planton.dev/v1alpha1
 kind: AwsSubnet
@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awssubnet
+    e2e-catalog-kind: awssubnet
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -40,7 +40,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awssubnet
+    e2e-catalog-kind: awssubnet
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -64,7 +64,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awssubnet
+    e2e-catalog-kind: awssubnet
   annotations:
     planton.dev/e2e: "true"
   tags:

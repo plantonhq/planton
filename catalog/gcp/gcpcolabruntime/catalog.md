@@ -4,7 +4,7 @@ Hands a person a ready notebook machine. A Colab Enterprise runtime is a noteboo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project
 - **Runtime** -- a `colab.Runtime` assigned to the user from the template
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Required Dependencies
@@ -52,7 +52,7 @@ spec:
 planton apply -f colab-runtime.yaml
 ```
 
-This gives Alice a GPU runtime that waits stopped until she needs it. A Stack Job tracks the provisioning in real time.
+This gives Alice a GPU runtime that waits stopped until she needs it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -70,16 +70,16 @@ These are the most important decisions when configuring a runtime. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpColabRuntimeTemplate** | `runtimeTemplate` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -97,5 +97,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Colab Runtime Template**](/cloud-catalog/gcp-colab-runtime-template) -- the template the runtime is built from
-- [**GCP Colab Schedule**](/cloud-catalog/gcp-colab-schedule) -- scheduled notebook runs
+- [**GCP Colab Runtime Template**](/infra-catalog/gcp-colab-runtime-template) -- the template the runtime is built from
+- [**GCP Colab Schedule**](/infra-catalog/gcp-colab-schedule) -- scheduled notebook runs

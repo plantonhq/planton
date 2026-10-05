@@ -1,7 +1,7 @@
 # Kubernetes cert-manager family rebuilt: controller, issuers, and certificates at full depth on both engines
 
 **Date**: 2026-07-22
-**Scope**: `apis/dev/planton/provider/kubernetes` (kubernetescertmanager, kubernetesclusterissuer, kubernetesissuer, kubernetescertificate — all rebuilt; new shared `cert_manager_issuer.proto`), `cloudresourcekind` (registry prerequisites), `aa_e2e/verify` (cert-manager verifiers), `aa_import` (certmanager map), `e2e` + Makefile Tier-1, `pkg/outputs`, `pkg/iac/importmap` (ledger), `pkg/iac/pulumi/pulumimodule/provider/kubernetes/certmanagerissuer` (new shared builder), `pkg/kubernetes/kubernetestypes` (cert-manager pin + regenerated types), site catalog, `_rules/deployment-component/update`
+**Scope**: `apis/dev/planton/provider/kubernetes` (kubernetescertmanager, kubernetesclusterissuer, kubernetesissuer, kubernetescertificate — all rebuilt; new shared `cert_manager_issuer.proto`), `catalogkind` (registry prerequisites), `aa_e2e/verify` (cert-manager verifiers), `aa_import` (certmanager map), `e2e` + Makefile Tier-1, `pkg/outputs`, `pkg/iac/importmap` (ledger), `pkg/iac/pulumi/pulumimodule/provider/kubernetes/certmanagerissuer` (new shared builder), `pkg/kubernetes/kubernetestypes` (cert-manager pin + regenerated types), site catalog, `_rules/catalog-kind/update`
 
 ## What changed
 
@@ -82,7 +82,7 @@ kind-cluster E2E including real certificate issuance.
 The three CR kinds' modules previously used `kubernetes_manifest`, which
 requires a reachable cluster AND the CRD's OpenAPI schema at PLAN time — an
 issuer could never be planned before cert-manager existed, breaking
-single-run infra charts and offline plan proofs. All three now apply
+single-run Infra Charts and offline plan proofs. All three now apply
 through `kubectl_manifest` (server-side apply, no plan-time cluster
 dependency), consistent with the raw-manifest kind.
 

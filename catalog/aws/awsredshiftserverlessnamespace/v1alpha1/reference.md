@@ -175,7 +175,7 @@ Reference an output from another manifest as `valueFrom: {kind: AwsRedshiftServe
 
 | Output | Type | Description |
 |---|---|---|
-| `status.outputs.namespace_name` | `string` | The namespace name. Exported because it is the join key workgroups attach with -- downstream references resolve against stack outputs, so the name must surface here even though it equals metadata.name. |
+| `status.outputs.namespace_name` | `string` | The namespace name. Exported because it is the join key workgroups attach with -- downstream references resolve against outputs, so the name must surface here even though it equals metadata.name. |
 | `status.outputs.namespace_id` | `string` | The unique identifier AWS assigns to the namespace. |
 | `status.outputs.arn` | `string` | The Amazon Resource Name of the namespace, for IAM policies, usage limits, and resource policies. |
 | `status.outputs.db_name` | `string` | The name of the first database in the namespace. |

@@ -4,7 +4,7 @@ Deploys one Data Lifecycle Manager policy — account-level automation that crea
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DLM Lifecycle Policy** — one policy in the configured mode: `defaultPolicy` renders AWS's simplified posture, `customPolicy` renders the full schedule or event-based engine. The provider's policy language is derived from the arm (SIMPLIFIED for default mode, STANDARD for custom) so a spec field can never contradict it. The policy's enabled/disabled state and the IAM role DLM acts through are part of it.
 - **AWS Tags** — resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, including DLM and EC2 permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, including DLM and EC2 permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An execution role trusting `dlm.amazonaws.com`** — AWS's service default `AWSDataLifecycleManagerDefaultRole` (create it once per account with `aws dlm create-default-role`), or an AwsIamRole Cloud Resource carrying the documented DLM permissions. The policy is rejected without it, and it silently stops working if the role later loses permissions.
+- **An execution role trusting `dlm.amazonaws.com`** — AWS's service default `AWSDataLifecycleManagerDefaultRole` (create it once per account with `aws dlm create-default-role`), or an AwsIamRole Infra Component carrying the documented DLM permissions. The policy is rejected without it, and it silently stops working if the role later loses permissions.
 - **KMS keys in the destination regions** (only for encrypted cross-region copies) — each copy rule's key lives in ITS target region.
 
 ## Deploy
@@ -63,7 +63,7 @@ spec:
 planton apply -f dlm-policy.yaml
 ```
 
-This creates a policy that snapshots every volume tagged `backup: daily` at 03:00 UTC and keeps the newest 14, with source tags riding along. A Stack Job tracks the provisioning in real time.
+This creates a policy that snapshots every volume tagged `backup: daily` at 03:00 UTC and keeps the newest 14, with source tags riding along. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -112,7 +112,7 @@ These are the most important decisions when configuring a DLM policy. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -120,9 +120,9 @@ These are the most important decisions when configuring a DLM policy. Explore th
 | **AwsKmsKey** (optional, per copy rule) | `customPolicy.schedules[].crossRegionCopyRules[].cmkArn` | `status.outputs.key_arn` |
 | **AwsKmsKey** (optional, event-based copies) | `customPolicy.action.crossRegionCopies[].cmkArn` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-`status.outputs` carries `policy_id` (the `policy-...` identifier, also the provider's import ID) and `policy_arn`. They identify the policy for audit and import purposes; no downstream Cloud Resource composes on a DLM policy, because the policy targets volumes by tags rather than being referenced by them.
+`status.outputs` carries `policy_id` (the `policy-...` identifier, also the provider's import ID) and `policy_arn`. They identify the policy for audit and import purposes; no downstream Infra Component composes on a DLM policy, because the policy targets volumes by tags rather than being referenced by them.
 
 ## Common Patterns
 
@@ -136,7 +136,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the execution role DLM assumes, wired via `executionRoleArn`
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — the destination-region keys encrypted cross-region copies use, wired via `cmkArn`
-- [**AWS EBS Volume**](/cloud-catalog/aws-ebs-volume) — the tagged targets; the policy discovers them by tag at fire time rather than by reference
-- [**AWS EBS Snapshot**](/cloud-catalog/aws-ebs-snapshot) — the deliberate one-off captures that complement the policy's recurring cadence
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the execution role DLM assumes, wired via `executionRoleArn`
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — the destination-region keys encrypted cross-region copies use, wired via `cmkArn`
+- [**AWS EBS Volume**](/infra-catalog/aws-ebs-volume) — the tagged targets; the policy discovers them by tag at fire time rather than by reference
+- [**AWS EBS Snapshot**](/infra-catalog/aws-ebs-snapshot) — the deliberate one-off captures that complement the policy's recurring cadence

@@ -183,7 +183,7 @@ Slide content pulls from actual customer data in `planton/_business/sales/custom
 
 ### For Engineering
 - **Slide-per-file**: Easy to find, edit, or reorder individual slides
-- **Reusable primitives**: 20+ components accelerate future deck creation
+- **Reusable primitives**: 20+ UI components accelerate future deck creation
 - **Type-safe**: Full TypeScript throughout with proper interfaces
 - **Static export**: Works with `output: 'export'` for CDN deployment
 
@@ -194,7 +194,7 @@ Slide content pulls from actual customer data in `planton/_business/sales/custom
 | Category | Count |
 |----------|-------|
 | Slide components | 24 |
-| Shared primitives | 3 files, 20+ components |
+| Shared primitives | 3 files, 20+ UI components |
 | Route handlers | 4 |
 | Configuration | 2 |
 | **Total** | **33 files** |

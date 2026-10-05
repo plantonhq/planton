@@ -4,7 +4,7 @@ Installs cert-manager — the cluster's certificate machinery — from the offic
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm Release** -- the `cert-manager` chart from `https://charts.jetstack.io`, pinned to the chart version you choose
 - **Controller, Webhook, and CA Injector** -- the three cert-manager deployments, each tunable (replicas, resources, webhook networking)
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -53,11 +53,11 @@ spec:
 planton apply -f cert-manager.yaml
 ```
 
-This installs cert-manager into a new `cert-manager` namespace with CRDs installed and kept on uninstall — the standard single-installation path. A Stack Job tracks the provisioning in real time.
+This installs cert-manager into a new `cert-manager` namespace with CRDs installed and kept on uninstall — the standard single-installation path. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the namespace to a resource managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, wire the namespace to a resource managed by another Infra Component:
 
 ```yaml
 spec:
@@ -93,15 +93,15 @@ These are the most important decisions when configuring cert-manager. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,7 +121,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cert Manager Cluster Issuer**](/cloud-catalog/kubernetes-cluster-issuer) and [**Cert Manager Issuer**](/cloud-catalog/kubernetes-issuer) -- the signing authorities; deploy them after cert-manager (they reference its namespace and CRDs).
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) -- requests certificates from those issuers into workload namespaces.
-- [**Ingress NGINX**](/cloud-catalog/kubernetes-ingress-nginx) and [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- serve HTTPS using the issued certificate Secrets.
-- [**ExternalDNS**](/cloud-catalog/kubernetes-external-dns) -- manages DNS records in the same zones the DNS-01 solvers write challenge records to.
+- [**Cert Manager Cluster Issuer**](/infra-catalog/kubernetes-cluster-issuer) and [**Cert Manager Issuer**](/infra-catalog/kubernetes-issuer) -- the signing authorities; deploy them after cert-manager (they reference its namespace and CRDs).
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) -- requests certificates from those issuers into workload namespaces.
+- [**Ingress NGINX**](/infra-catalog/kubernetes-ingress-nginx) and [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- serve HTTPS using the issued certificate Secrets.
+- [**ExternalDNS**](/infra-catalog/kubernetes-external-dns) -- manages DNS records in the same zones the DNS-01 solvers write challenge records to.

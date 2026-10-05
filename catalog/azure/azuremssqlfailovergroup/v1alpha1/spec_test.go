@@ -33,7 +33,7 @@ func validResource() *AzureMssqlFailoverGroup {
 	return &AzureMssqlFailoverGroup{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMssqlFailoverGroup",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-fog",
 		},
 		Spec: &AzureMssqlFailoverGroupSpec{

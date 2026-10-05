@@ -4,7 +4,7 @@ Registers a datastore on an Azure Machine Learning workspace -- the saved connec
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Datastore** -- an ARM child of the workspace (`.../workspaces/{ws}/dataStores/{name}`); the variant block decides whether it is a blob-container, data-lake, or file-share connection
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f azure-machine-learning-datastore.yaml
 ```
 
-This registers a blob-container connection named `training_data` under the workspace's own identity -- no embedded credentials; it registers in seconds. A Stack Job tracks the provisioning in real time.
+This registers a blob-container connection named `training_data` under the workspace's own identity -- no embedded credentials; it registers in seconds. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,7 +89,7 @@ These are the most important decisions when configuring the datastore. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -98,9 +98,9 @@ These are the most important decisions when configuring the datastore. Explore t
 | **AzureStorageDataLakeGen2Filesystem** | `dataLakeGen2.storageContainerId` | `status.outputs.filesystem_id` |
 | **AzureStorageShare** | `fileShare.storageFileshareId` | `status.outputs.share_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -117,7 +117,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Machine Learning Workspace**](/cloud-catalog/azure-machine-learning-workspace) -- the parent workspace
-- [**Azure Storage Container**](/cloud-catalog/azure-storage-container) -- the blob variant's target
-- [**Azure Storage Data Lake Gen2 Filesystem**](/cloud-catalog/azure-storage-data-lake-gen2-filesystem) -- the data-lake variant's target
-- [**Azure Storage Share**](/cloud-catalog/azure-storage-share) -- the file-share variant's target
+- [**Azure Machine Learning Workspace**](/infra-catalog/azure-machine-learning-workspace) -- the parent workspace
+- [**Azure Storage Container**](/infra-catalog/azure-storage-container) -- the blob variant's target
+- [**Azure Storage Data Lake Gen2 Filesystem**](/infra-catalog/azure-storage-data-lake-gen2-filesystem) -- the data-lake variant's target
+- [**Azure Storage Share**](/infra-catalog/azure-storage-share) -- the file-share variant's target

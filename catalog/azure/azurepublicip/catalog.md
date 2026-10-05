@@ -4,7 +4,7 @@ Deploys an Azure Public IP Address -- a static, internet-routable address that l
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Public IP Address** -- a static public IP in the specified region and resource group. Allocation is always static (the retired Basic SKU's dynamic allocation is not modeled); the address is assigned at creation and persists for the resource's lifetime. Unspecified SKU, tier, and version deploy Azure's defaults (Standard, Regional, IPv4)
 - **Prefix Allocation** -- when `publicIpPrefixId` is set, the address is drawn from the reserved Public IP Prefix's contiguous, allowlistable range instead of Microsoft's general pool
@@ -17,12 +17,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the Public IP will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the Public IP will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **Region alignment** -- the Public IP must be in the same region as the resource it will be attached to (load balancer, application gateway, NAT gateway, firewall, or VM).
 - **Availability zone support** -- verify the target region supports the desired availability zones if using zone-redundant configuration.
 - **A Public IP Prefix (optional)** -- to allocate from a reserved range, the prefix must live in the same region and carry a matching SKU.
@@ -60,7 +60,7 @@ spec:
 planton apply -f public-ip.yaml
 ```
 
-This creates a zone-redundant public IP with static allocation; the unspecified SKU, tier, and version deploy Azure's defaults (Standard, Regional, IPv4), and the unset idle timeout leaves Azure's 4-minute default. No DNS label is configured. A Stack Job tracks the provisioning in real time.
+This creates a zone-redundant public IP with static allocation; the unspecified SKU, tier, and version deploy Azure's defaults (Standard, Regional, IPv4), and the unset idle timeout leaves Azure's 4-minute default. No DNS label is configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,16 +102,16 @@ These are the most important decisions when configuring a Public IP. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzurePublicIpPrefix** | `publicIpPrefixId` | `status.outputs.public_ip_prefix_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,5 +132,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the Public IP is created
-- [**Azure Public IP Prefix**](/cloud-catalog/azure-public-ip-prefix) -- the reserved, allowlistable range the address can be drawn from
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the Public IP is created
+- [**Azure Public IP Prefix**](/infra-catalog/azure-public-ip-prefix) -- the reserved, allowlistable range the address can be drawn from

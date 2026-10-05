@@ -5,9 +5,9 @@ package dev.planton.stripe.stripetaxrate.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/stripetaxrate/v1alpha1/api.proto";
 
-// StripeTaxRateStackInput is the input to the StripeTaxRate IaC module.
+// StripeTaxRateIacInput is the input to the StripeTaxRate IaC module.
 // It contains the target resource and the Stripe provider configuration.
-message StripeTaxRateStackInput {
+message StripeTaxRateIacInput {
   // target is the StripeTaxRate resource to be deployed.
   StripeTaxRate target = 1;
 

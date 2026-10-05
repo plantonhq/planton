@@ -28,7 +28,7 @@ type GcpComputeDisk struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpComputeDiskSpec           `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpComputeDiskStatus         `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpComputeDisk) GetKind() string {
 	return ""
 }
 
-func (x *GcpComputeDisk) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpComputeDisk) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpComputeDisk) GetStatus() *GcpComputeDiskStatus {
 }
 
 type GcpComputeDiskStatus struct {
-	state         protoimpl.MessageState      `protogen:"open.v1"`
-	Outputs       *GcpComputeDiskStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Outputs       *GcpComputeDiskOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpComputeDiskStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcomputedisk_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpComputeDiskStatus) GetOutputs() *GcpComputeDiskStackOutputs {
+func (x *GcpComputeDiskStatus) GetOutputs() *GcpComputeDiskOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpcomputedisk_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eGcpComputeDiskR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskStatusR\x06status\"u\n" +
-	"\x14GcpComputeDiskStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskStackOutputsR\aoutputsB\xd1\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskStatusR\x06status\"p\n" +
+	"\x14GcpComputeDiskStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskOutputsR\aoutputsB\xd1\x02\n" +
 	"+com.dev.planton.gcp.gcpcomputedisk.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/gcp/gcpcomputedisk/v1alpha1;gcpcomputediskv1alpha1\xa2\x02\x04DPGG\xaa\x02'Dev.Planton.Gcp.Gcpcomputedisk.V1alpha1\xca\x02'Dev\\Planton\\Gcp\\Gcpcomputedisk\\V1alpha1\xe2\x023Dev\\Planton\\Gcp\\Gcpcomputedisk\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Gcp::Gcpcomputedisk::V1alpha1b\x06proto3"
 
 var (
@@ -178,15 +178,15 @@ var file_catalog_gcp_gcpcomputedisk_v1alpha1_api_proto_msgTypes = make([]protoim
 var file_catalog_gcp_gcpcomputedisk_v1alpha1_api_proto_goTypes = []any{
 	(*GcpComputeDisk)(nil),               // 0: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDisk
 	(*GcpComputeDiskStatus)(nil),         // 1: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpComputeDiskSpec)(nil),           // 3: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec
-	(*GcpComputeDiskStackOutputs)(nil),   // 4: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskStackOutputs
+	(*GcpComputeDiskOutputs)(nil),        // 4: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskOutputs
 }
 var file_catalog_gcp_gcpcomputedisk_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDisk.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDisk.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDisk.spec:type_name -> dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec
 	1, // 2: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDisk.status:type_name -> dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskStatus
-	4, // 3: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskStatus.outputs:type_name -> dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskStackOutputs
+	4, // 3: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskStatus.outputs:type_name -> dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

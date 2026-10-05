@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpworkloadidentitypool.v1alpha1;
 
 // Outputs produced after provisioning a GCP Workload Identity Pool.
-message GcpWorkloadIdentityPoolStackOutputs {
+message GcpWorkloadIdentityPoolOutputs {
   // The full resource name:
   // projects/<project_number>/locations/global/workloadIdentityPools/<pool_id>.
   // This is the handle IAM principals are built from —

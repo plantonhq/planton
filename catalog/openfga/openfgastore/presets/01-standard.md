@@ -11,7 +11,7 @@ This preset creates an OpenFGA store, the logical container for all authorizatio
 ## Key Configuration Choices
 
 - **Single required field** (`name`) -- the store is intentionally minimal; all complexity lives in the authorization model and tuples
-- **Terraform/Tofu only** -- OpenFGA has no Pulumi provider; this component uses Terraform as the provisioner
+- **Terraform/Tofu only** -- OpenFGA has no Pulumi provider; this kind uses Terraform as the provisioner
 
 ## Placeholders to Replace
 

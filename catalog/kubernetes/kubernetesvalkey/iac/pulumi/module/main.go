@@ -20,17 +20,17 @@ import (
 // chart's fullname is pinned to the same value: several Valkey instances
 // coexist in one cluster, each rendering its own `<name>`,
 // `<name>-headless`, and (replication) `<name>-read` Services.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesvalkeyv1alpha1.KubernetesValkeyStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesvalkeyv1alpha1.KubernetesValkeyIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

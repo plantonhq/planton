@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockKnowledgeBaseStackInput is the input for the IaC modules that
+// AwsBedrockKnowledgeBaseIacInput is the input for the IaC modules that
 // deploy the Bedrock knowledge base.
-type AwsBedrockKnowledgeBaseStackInput struct {
+type AwsBedrockKnowledgeBaseIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsBedrockKnowledgeBase resource to deploy.
 	Target *AwsBedrockKnowledgeBase `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsBedrockKnowledgeBaseStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBedrockKnowledgeBaseStackInput) Reset() {
-	*x = AwsBedrockKnowledgeBaseStackInput{}
+func (x *AwsBedrockKnowledgeBaseIacInput) Reset() {
+	*x = AwsBedrockKnowledgeBaseIacInput{}
 	mi := &file_catalog_aws_awsbedrockknowledgebase_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockKnowledgeBaseStackInput) String() string {
+func (x *AwsBedrockKnowledgeBaseIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockKnowledgeBaseStackInput) ProtoMessage() {}
+func (*AwsBedrockKnowledgeBaseIacInput) ProtoMessage() {}
 
-func (x *AwsBedrockKnowledgeBaseStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockKnowledgeBaseIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockknowledgebase_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBedrockKnowledgeBaseStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockKnowledgeBaseStackInput.ProtoReflect.Descriptor instead.
-func (*AwsBedrockKnowledgeBaseStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockKnowledgeBaseIacInput.ProtoReflect.Descriptor instead.
+func (*AwsBedrockKnowledgeBaseIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockknowledgebase_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockKnowledgeBaseStackInput) GetTarget() *AwsBedrockKnowledgeBase {
+func (x *AwsBedrockKnowledgeBaseIacInput) GetTarget() *AwsBedrockKnowledgeBase {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsBedrockKnowledgeBaseStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsBedrockKnowledgeBaseIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbedrockknowledgebase_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_aws_awsbedrockknowledgebase_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awsbedrockknowledgebase/v1alpha1/input.proto\x120dev.planton.aws.awsbedrockknowledgebase.v1alpha1\x1a6catalog/aws/awsbedrockknowledgebase/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd3\x01\n" +
-	"!AwsBedrockKnowledgeBaseStackInput\x12a\n" +
+	"8catalog/aws/awsbedrockknowledgebase/v1alpha1/input.proto\x120dev.planton.aws.awsbedrockknowledgebase.v1alpha1\x1a6catalog/aws/awsbedrockknowledgebase/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd1\x01\n" +
+	"\x1fAwsBedrockKnowledgeBaseIacInput\x12a\n" +
 	"\x06target\x18\x01 \x01(\v2I.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"4com.dev.planton.aws.awsbedrockknowledgebase.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsbedrockknowledgebase_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_aws_awsbedrockknowledgebase_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockknowledgebase_v1alpha1_input_proto_goTypes = []any{
-	(*AwsBedrockKnowledgeBaseStackInput)(nil), // 0: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseStackInput
-	(*AwsBedrockKnowledgeBase)(nil),           // 1: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBase
-	(*aws.AwsProviderConfig)(nil),             // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsBedrockKnowledgeBaseIacInput)(nil), // 0: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseIacInput
+	(*AwsBedrockKnowledgeBase)(nil),         // 1: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBase
+	(*aws.AwsProviderConfig)(nil),           // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsbedrockknowledgebase_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseStackInput.target:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBase
-	2, // 1: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseIacInput.target:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBase
+	2, // 1: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

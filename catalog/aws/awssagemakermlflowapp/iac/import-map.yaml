@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awssagemakermlflowapp
 spec:
@@ -8,7 +8,7 @@ spec:
   values:
     - name: app_arn
       derivations:
-        - from_stack_output: app_arn
+        - from_output: app_arn
       where_to_find: >-
         `aws sagemaker list-mlflow-apps` shows Arn per app (shape
         "arn:aws:sagemaker:<region>:<account>:mlflow-app/app-...").

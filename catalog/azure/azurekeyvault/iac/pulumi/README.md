@@ -23,7 +23,7 @@ than IaC state.
 
 ## Inputs
 
-The module receives an `AzureKeyVaultStackInput` containing:
+The module receives an `AzureKeyVaultIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.vault_name` -- the vault's ARM identity (references resolved to literals by the platform); the name is GLOBALLY unique because it becomes `{name}.vault.azure.net`
 - `target.spec.sku` -- STANDARD (default) or PREMIUM (HSM-backed key types for the keys inside); updatable in place
@@ -38,7 +38,7 @@ The module receives an `AzureKeyVaultStackInput` containing:
 - `provider_config` -- Azure credentials (static client secret, keyless web identity, or ambient chain)
 
 Optional fields with true/non-zero defaults are presence-guarded: an unset
-field explicitly falls back to the proto default so a manifest-built stack
+field explicitly falls back to the proto default so a manifest-built IaC
 input (which does not materialize defaults) deploys identically to the
 Terraform module.
 

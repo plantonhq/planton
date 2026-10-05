@@ -22,17 +22,17 @@ message AzurePrivateDnsZone {
   string kind = 2 [(buf.validate.field).string.const = 'AzurePrivateDnsZone'];
 
   // Standard Planton metadata (name, org, env, labels, tags).
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // Private DNS zone specification.
   AzurePrivateDnsZoneSpec spec = 4 [(buf.validate.field).required = true];
 
-  // Deployment status containing stack outputs. Populated after deployment.
+  // Deployment status containing outputs. Populated after deployment.
   AzurePrivateDnsZoneStatus status = 5;
 }
 
 // AzurePrivateDnsZoneStatus holds the deployment outputs.
 message AzurePrivateDnsZoneStatus {
-  // Stack outputs from the IaC deployment.
-  AzurePrivateDnsZoneStackOutputs outputs = 1;
+  // Outputs from the IaC deployment.
+  AzurePrivateDnsZoneOutputs outputs = 1;
 }

@@ -11,7 +11,7 @@ The rule is the unit of per-service routing. A shared HTTPS listener stays
 untouched while each service deploys its own rule -- "host `api.example.com`
 forwards to the api target group", "path `/admin/*` requires OIDC login
 first" -- and removes it when the service goes away. Modeling the rule as its
-own component lets you:
+own kind lets you:
 
 - **Deploy routing with the service**: a service's manifest set carries its
   target group and its rule; nothing else in the environment changes.
@@ -58,7 +58,7 @@ own component lets you:
   and load balancer never churn.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `rule_arn`: ARN of the rule (the handle audit tooling and imports reference)
 - `priority`: the priority AWS assigned -- meaningful when the spec left it unset

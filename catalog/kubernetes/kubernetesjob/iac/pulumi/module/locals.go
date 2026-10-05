@@ -10,7 +10,7 @@ import (
 	kubernetesjobv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesjob/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadpod"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -36,11 +36,11 @@ type Locals struct {
 	ImagePullSecretData map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesjobv1alpha1.KubernetesJobStackInput) (*Locals, error) {
+func initializeLocals(ctx *pulumi.Context, iacInput *kubernetesjobv1alpha1.KubernetesJobIacInput) (*Locals, error) {
 	locals := &Locals{}
 
-	locals.KubernetesJob = stackInput.Target
-	target := stackInput.Target
+	locals.KubernetesJob = iacInput.Target
+	target := iacInput.Target
 
 	if target.Spec.Container == nil || target.Spec.Container.App == nil || target.Spec.Container.App.Image == nil {
 		return nil, errors.New("spec.container.app.image is required")
@@ -55,7 +55,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesjobv1alpha1.Kub
 		"app":                            target.Metadata.Name,
 		kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
 		kuberneteslabelkeys.ResourceName: target.Metadata.Name,
-		kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesJob.String(),
+		kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesJob.String(),
 	}
 
 	if target.Metadata.Id != "" {

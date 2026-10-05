@@ -9,17 +9,17 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureresourcegroupv1alpha1.AzureResourceGroupStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureresourcegroupv1alpha1.AzureResourceGroupIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient
 	// chain). preventDeletionIfContainsResources is flipped off so destroy of a Planton
 	// resource group means ARM-delete the group (matching `az group delete`): Azure
 	// services leave nested furniture this module never created (Application Insights'
 	// "Smart Detection" action group is the first live-caught case) and the provider
 	// default would strand the group. Mirrors the Terraform module's features block.
-	azureProvider, err := pulumiazureprovider.GetWithFeatures(ctx, stackInput.ProviderConfig,
+	azureProvider, err := pulumiazureprovider.GetWithFeatures(ctx, iacInput.ProviderConfig,
 		azure.ProviderFeaturesArgs{
 			ResourceGroup: azure.ProviderFeaturesResourceGroupArgs{
 				PreventDeletionIfContainsResources: pulumi.Bool(false),
@@ -44,7 +44,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureresourcegroupv1alpha1.Azure
 		return errors.Wrapf(err, "failed to create resource group %s", spec.Name)
 	}
 
-	// Export stack outputs
+	// Export outputs
 	ctx.Export(OpResourceGroupId, rg.ID())
 	ctx.Export(OpResourceGroupName, rg.Name)
 	ctx.Export(OpRegion, pulumi.String(spec.Region))

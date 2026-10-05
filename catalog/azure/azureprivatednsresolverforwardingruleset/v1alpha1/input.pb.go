@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzurePrivateDnsResolverForwardingRulesetStackInput is the input to
+// AzurePrivateDnsResolverForwardingRulesetIacInput is the input to
 // the IaC modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-type AzurePrivateDnsResolverForwardingRulesetStackInput struct {
+type AzurePrivateDnsResolverForwardingRulesetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The DNS forwarding ruleset resource to deploy.
 	Target *AzurePrivateDnsResolverForwardingRuleset `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzurePrivateDnsResolverForwardingRulesetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzurePrivateDnsResolverForwardingRulesetStackInput) Reset() {
-	*x = AzurePrivateDnsResolverForwardingRulesetStackInput{}
+func (x *AzurePrivateDnsResolverForwardingRulesetIacInput) Reset() {
+	*x = AzurePrivateDnsResolverForwardingRulesetIacInput{}
 	mi := &file_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePrivateDnsResolverForwardingRulesetStackInput) String() string {
+func (x *AzurePrivateDnsResolverForwardingRulesetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePrivateDnsResolverForwardingRulesetStackInput) ProtoMessage() {}
+func (*AzurePrivateDnsResolverForwardingRulesetIacInput) ProtoMessage() {}
 
-func (x *AzurePrivateDnsResolverForwardingRulesetStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzurePrivateDnsResolverForwardingRulesetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzurePrivateDnsResolverForwardingRulesetStackInput) ProtoReflect() prot
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePrivateDnsResolverForwardingRulesetStackInput.ProtoReflect.Descriptor instead.
-func (*AzurePrivateDnsResolverForwardingRulesetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePrivateDnsResolverForwardingRulesetIacInput.ProtoReflect.Descriptor instead.
+func (*AzurePrivateDnsResolverForwardingRulesetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePrivateDnsResolverForwardingRulesetStackInput) GetTarget() *AzurePrivateDnsResolverForwardingRuleset {
+func (x *AzurePrivateDnsResolverForwardingRulesetIacInput) GetTarget() *AzurePrivateDnsResolverForwardingRuleset {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzurePrivateDnsResolverForwardingRulesetStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzurePrivateDnsResolverForwardingRulesetIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_input_p
 
 const file_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Kcatalog/azure/azureprivatednsresolverforwardingruleset/v1alpha1/input.proto\x12Cdev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1\x1aIcatalog/azure/azureprivatednsresolverforwardingruleset/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\x8d\x02\n" +
-	"2AzurePrivateDnsResolverForwardingRulesetStackInput\x12\x85\x01\n" +
+	"Kcatalog/azure/azureprivatednsresolverforwardingruleset/v1alpha1/input.proto\x12Cdev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1\x1aIcatalog/azure/azureprivatednsresolverforwardingruleset/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\x8b\x02\n" +
+	"0AzurePrivateDnsResolverForwardingRulesetIacInput\x12\x85\x01\n" +
 	"\x06target\x18\x01 \x01(\v2m.dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x96\x04\n" +
 	"Gcom.dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_input_
 
 var file_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_input_proto_goTypes = []any{
-	(*AzurePrivateDnsResolverForwardingRulesetStackInput)(nil), // 0: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetStackInput
-	(*AzurePrivateDnsResolverForwardingRuleset)(nil),           // 1: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRuleset
-	(*azure.AzureProviderConfig)(nil),                          // 2: dev.planton.azure.AzureProviderConfig
+	(*AzurePrivateDnsResolverForwardingRulesetIacInput)(nil), // 0: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetIacInput
+	(*AzurePrivateDnsResolverForwardingRuleset)(nil),         // 1: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRuleset
+	(*azure.AzureProviderConfig)(nil),                        // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetStackInput.target:type_name -> dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRuleset
-	2, // 1: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetIacInput.target:type_name -> dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRuleset
+	2, // 1: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

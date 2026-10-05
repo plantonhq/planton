@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// temporal-kubernetes stack-input
-type KubernetesTemporalStackInput struct {
+// temporal-kubernetes iac-input
+type KubernetesTemporalIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *KubernetesTemporal `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesTemporalStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesTemporalStackInput) Reset() {
-	*x = KubernetesTemporalStackInput{}
+func (x *KubernetesTemporalIacInput) Reset() {
+	*x = KubernetesTemporalIacInput{}
 	mi := &file_catalog_kubernetes_kubernetestemporal_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesTemporalStackInput) String() string {
+func (x *KubernetesTemporalIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesTemporalStackInput) ProtoMessage() {}
+func (*KubernetesTemporalIacInput) ProtoMessage() {}
 
-func (x *KubernetesTemporalStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesTemporalIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetestemporal_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesTemporalStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesTemporalStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesTemporalStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesTemporalIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesTemporalIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetestemporal_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesTemporalStackInput) GetTarget() *KubernetesTemporal {
+func (x *KubernetesTemporalIacInput) GetTarget() *KubernetesTemporal {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesTemporalStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesTemporalIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetestemporal_v1alpha1_input_proto protoreflect
 
 const file_catalog_kubernetes_kubernetestemporal_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kubernetestemporal/v1alpha1/input.proto\x122dev.planton.kubernetes.kubernetestemporal.v1alpha1\x1a8catalog/kubernetes/kubernetestemporal/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd9\x01\n" +
-	"\x1cKubernetesTemporalStackInput\x12^\n" +
+	":catalog/kubernetes/kubernetestemporal/v1alpha1/input.proto\x122dev.planton.kubernetes.kubernetestemporal.v1alpha1\x1a8catalog/kubernetes/kubernetestemporal/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd7\x01\n" +
+	"\x1aKubernetesTemporalIacInput\x12^\n" +
 	"\x06target\x18\x01 \x01(\v2F.dev.planton.kubernetes.kubernetestemporal.v1alpha1.KubernetesTemporalR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x99\x03\n" +
 	"6com.dev.planton.kubernetes.kubernetestemporal.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetestemporal_v1alpha1_input_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetestemporal_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetestemporal_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesTemporalStackInput)(nil),        // 0: dev.planton.kubernetes.kubernetestemporal.v1alpha1.KubernetesTemporalStackInput
+	(*KubernetesTemporalIacInput)(nil),          // 0: dev.planton.kubernetes.kubernetestemporal.v1alpha1.KubernetesTemporalIacInput
 	(*KubernetesTemporal)(nil),                  // 1: dev.planton.kubernetes.kubernetestemporal.v1alpha1.KubernetesTemporal
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetestemporal_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetestemporal.v1alpha1.KubernetesTemporalStackInput.target:type_name -> dev.planton.kubernetes.kubernetestemporal.v1alpha1.KubernetesTemporal
-	2, // 1: dev.planton.kubernetes.kubernetestemporal.v1alpha1.KubernetesTemporalStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetestemporal.v1alpha1.KubernetesTemporalIacInput.target:type_name -> dev.planton.kubernetes.kubernetestemporal.v1alpha1.KubernetesTemporal
+	2, // 1: dev.planton.kubernetes.kubernetestemporal.v1alpha1.KubernetesTemporalIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

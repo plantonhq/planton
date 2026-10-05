@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEbsVolumeStackInput is the input for the IaC modules that manage
+// AwsEbsVolumeIacInput is the input for the IaC modules that manage
 // a standalone EBS volume.
-type AwsEbsVolumeStackInput struct {
+type AwsEbsVolumeIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsEbsVolume resource to deploy.
 	Target *AwsEbsVolume `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsEbsVolumeStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsEbsVolumeStackInput) Reset() {
-	*x = AwsEbsVolumeStackInput{}
+func (x *AwsEbsVolumeIacInput) Reset() {
+	*x = AwsEbsVolumeIacInput{}
 	mi := &file_catalog_aws_awsebsvolume_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEbsVolumeStackInput) String() string {
+func (x *AwsEbsVolumeIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEbsVolumeStackInput) ProtoMessage() {}
+func (*AwsEbsVolumeIacInput) ProtoMessage() {}
 
-func (x *AwsEbsVolumeStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsEbsVolumeIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsebsvolume_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsEbsVolumeStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEbsVolumeStackInput.ProtoReflect.Descriptor instead.
-func (*AwsEbsVolumeStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEbsVolumeIacInput.ProtoReflect.Descriptor instead.
+func (*AwsEbsVolumeIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsebsvolume_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEbsVolumeStackInput) GetTarget() *AwsEbsVolume {
+func (x *AwsEbsVolumeIacInput) GetTarget() *AwsEbsVolume {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsEbsVolumeStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsEbsVolumeIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsebsvolume_v1alpha1_input_proto protoreflect.FileDescript
 
 const file_catalog_aws_awsebsvolume_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/aws/awsebsvolume/v1alpha1/input.proto\x12%dev.planton.aws.awsebsvolume.v1alpha1\x1a+catalog/aws/awsebsvolume/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb2\x01\n" +
-	"\x16AwsEbsVolumeStackInput\x12K\n" +
+	"-catalog/aws/awsebsvolume/v1alpha1/input.proto\x12%dev.planton.aws.awsebsvolume.v1alpha1\x1a+catalog/aws/awsebsvolume/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb0\x01\n" +
+	"\x14AwsEbsVolumeIacInput\x12K\n" +
 	"\x06target\x18\x01 \x01(\v23.dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xc5\x02\n" +
 	")com.dev.planton.aws.awsebsvolume.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsebsvolume_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsebsvolume_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsebsvolume_v1alpha1_input_proto_goTypes = []any{
-	(*AwsEbsVolumeStackInput)(nil), // 0: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeStackInput
-	(*AwsEbsVolume)(nil),           // 1: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolume
-	(*aws.AwsProviderConfig)(nil),  // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsEbsVolumeIacInput)(nil),  // 0: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeIacInput
+	(*AwsEbsVolume)(nil),          // 1: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolume
+	(*aws.AwsProviderConfig)(nil), // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsebsvolume_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeStackInput.target:type_name -> dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolume
-	2, // 1: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeIacInput.target:type_name -> dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolume
+	2, // 1: dev.planton.aws.awsebsvolume.v1alpha1.AwsEbsVolumeIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

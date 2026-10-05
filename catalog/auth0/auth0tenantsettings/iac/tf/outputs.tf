@@ -1,5 +1,5 @@
 # Auth0TenantSettings Outputs
-# Maps to the Auth0TenantSettingsStackOutputs protobuf message: the settings as
+# Maps to the Auth0TenantSettingsOutputs protobuf message: the settings as
 # the tenant carries them after the apply, managed or not (local.tenant is the
 # resource when the spec declares a setting, the data source otherwise). The Pulumi module's
 # outputs.go exports the same names -- keep them in lockstep.

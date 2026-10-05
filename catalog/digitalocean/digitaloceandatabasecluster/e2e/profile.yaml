@@ -1,11 +1,11 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: digitaloceandatabasecluster
 spec:
   # Live-proven on BOTH engines, all three scenarios, full lifecycle under
   # the idempotency gate, plus the blind import round-trip on every
-  # Terraform lane (`{cluster_id}` UUID from the stack output). `minimal` is
+  # Terraform lane (`{cluster_id}` UUID from the output). `minimal` is
   # a single-node PostgreSQL 16 on the cheapest slug proving the lifecycle
   # and the connection outputs (host/port/database_name asserted against the
   # live cluster; the round-trip was lossless -- nothing tolerated); it is

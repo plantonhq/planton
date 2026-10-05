@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsApiGatewayAccountSettingsStackOutputs captures the observable
+// AwsApiGatewayAccountSettingsOutputs captures the observable
 // state of the region's API Gateway account object after apply.
-type AwsApiGatewayAccountSettingsStackOutputs struct {
+type AwsApiGatewayAccountSettingsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The 12-digit AWS account ID the settings belong to (also the
 	// provider's import ID for this singleton).
@@ -43,20 +43,20 @@ type AwsApiGatewayAccountSettingsStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AwsApiGatewayAccountSettingsStackOutputs) Reset() {
-	*x = AwsApiGatewayAccountSettingsStackOutputs{}
+func (x *AwsApiGatewayAccountSettingsOutputs) Reset() {
+	*x = AwsApiGatewayAccountSettingsOutputs{}
 	mi := &file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsApiGatewayAccountSettingsStackOutputs) String() string {
+func (x *AwsApiGatewayAccountSettingsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsApiGatewayAccountSettingsStackOutputs) ProtoMessage() {}
+func (*AwsApiGatewayAccountSettingsOutputs) ProtoMessage() {}
 
-func (x *AwsApiGatewayAccountSettingsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsApiGatewayAccountSettingsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,40 +68,40 @@ func (x *AwsApiGatewayAccountSettingsStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsApiGatewayAccountSettingsStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsApiGatewayAccountSettingsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsApiGatewayAccountSettingsOutputs.ProtoReflect.Descriptor instead.
+func (*AwsApiGatewayAccountSettingsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsApiGatewayAccountSettingsStackOutputs) GetAccountId() string {
+func (x *AwsApiGatewayAccountSettingsOutputs) GetAccountId() string {
 	if x != nil {
 		return x.AccountId
 	}
 	return ""
 }
 
-func (x *AwsApiGatewayAccountSettingsStackOutputs) GetApiKeyVersion() string {
+func (x *AwsApiGatewayAccountSettingsOutputs) GetApiKeyVersion() string {
 	if x != nil {
 		return x.ApiKeyVersion
 	}
 	return ""
 }
 
-func (x *AwsApiGatewayAccountSettingsStackOutputs) GetFeatures() []string {
+func (x *AwsApiGatewayAccountSettingsOutputs) GetFeatures() []string {
 	if x != nil {
 		return x.Features
 	}
 	return nil
 }
 
-func (x *AwsApiGatewayAccountSettingsStackOutputs) GetThrottleBurstLimit() int32 {
+func (x *AwsApiGatewayAccountSettingsOutputs) GetThrottleBurstLimit() int32 {
 	if x != nil {
 		return x.ThrottleBurstLimit
 	}
 	return 0
 }
 
-func (x *AwsApiGatewayAccountSettingsStackOutputs) GetThrottleRateLimit() float64 {
+func (x *AwsApiGatewayAccountSettingsOutputs) GetThrottleRateLimit() float64 {
 	if x != nil {
 		return x.ThrottleRateLimit
 	}
@@ -112,8 +112,8 @@ var File_catalog_aws_awsapigatewayaccountsettings_v1alpha1_outputs_proto protore
 
 const file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/aws/awsapigatewayaccountsettings/v1alpha1/outputs.proto\x125dev.planton.aws.awsapigatewayaccountsettings.v1alpha1\"\xef\x01\n" +
-	"(AwsApiGatewayAccountSettingsStackOutputs\x12\x1d\n" +
+	"?catalog/aws/awsapigatewayaccountsettings/v1alpha1/outputs.proto\x125dev.planton.aws.awsapigatewayaccountsettings.v1alpha1\"\xea\x01\n" +
+	"#AwsApiGatewayAccountSettingsOutputs\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x01 \x01(\tR\taccountId\x12&\n" +
 	"\x0fapi_key_version\x18\x02 \x01(\tR\rapiKeyVersion\x12\x1a\n" +
@@ -136,7 +136,7 @@ func file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsApiGatewayAccountSettingsStackOutputs)(nil), // 0: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsStackOutputs
+	(*AwsApiGatewayAccountSettingsOutputs)(nil), // 0: dev.planton.aws.awsapigatewayaccountsettings.v1alpha1.AwsApiGatewayAccountSettingsOutputs
 }
 var file_catalog_aws_awsapigatewayaccountsettings_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

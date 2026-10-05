@@ -185,7 +185,7 @@ type Locals struct {
     // ... other fields
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *rediskubernetesv1.RedisKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *rediskubernetesv1.RedisKubernetesIacInput) *Locals {
     // ... other initialization
 
     if target.Spec.Ingress == nil ||
@@ -219,7 +219,7 @@ type Locals struct {
     // ... other fields
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *rediskubernetesv1.RedisKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *rediskubernetesv1.RedisKubernetesIacInput) *Locals {
     // ... other initialization
 
     if target.Spec.Ingress == nil ||
@@ -329,7 +329,7 @@ All documentation files updated with correct ingress syntax:
    - Matched updates from root-level examples.md
 
 4. **`v1/iac/pulumi/README.md`**:
-   - Removed internal_hostname from RedisKubernetesStackOutputs section
+   - Removed internal_hostname from RedisKubernetesOutputs section
 
 ### Test Updates
 

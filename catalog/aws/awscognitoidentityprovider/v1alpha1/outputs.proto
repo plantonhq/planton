@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package dev.planton.aws.awscognitoidentityprovider.v1alpha1;
 
-// AwsCognitoIdentityProviderStackOutputs captures observable identifiers from
+// AwsCognitoIdentityProviderOutputs captures observable identifiers from
 // a provisioned Cognito Identity Provider.
 //
 // The primary output is `provider_name`, which downstream User Pool Clients
 // reference in their `supported_identity_providers` list to enable federated
 // sign-in. Unlike most AWS resources, identity providers do not produce an
 // ARN — the provider_name is the sole identifier used for integration.
-message AwsCognitoIdentityProviderStackOutputs {
+message AwsCognitoIdentityProviderOutputs {
   // The name of the identity provider as registered in the User Pool.
   // This is the value that must appear in a User Pool Client's
   // `supported_identity_providers` list to enable federated sign-in

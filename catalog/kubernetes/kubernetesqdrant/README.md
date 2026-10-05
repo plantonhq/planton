@@ -8,7 +8,7 @@ always on (the chart's default), pod 0 bootstraps the Raft consensus,
 and every further replica joins over the p2p port. Scaling the
 deployment is a `replicas` change — nothing else.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want shards or replication factor in the manifest** — those
   are collection-level properties declared per collection through the
@@ -41,7 +41,7 @@ first install (stable across upgrades), while `existing_secret`
 points the chart at a Secret you own (it must exist BEFORE the
 install; the chart reads it at template time). Either way the key
 material lives in the chart-owned `<name>-apikey` Secret (keys
-`api-key` / `read-only-api-key`), whose name lands in the stack
+`api-key` / `read-only-api-key`), whose name lands in the
 outputs. A read-only key REQUIRES a read-write key — the spec
 enforces it (an unauthenticated cluster with a read-only key protects
 nothing).
@@ -107,7 +107,7 @@ nothing).
   (repository, tag, `use_unprivileged` for restricted Pod Security
   Standards) and the escape hatch
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

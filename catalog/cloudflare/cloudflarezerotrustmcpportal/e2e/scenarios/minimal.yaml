@@ -19,7 +19,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: cloudflarezerotrustmcpportal
+    e2e-catalog-kind: cloudflarezerotrustmcpportal
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-required-env: PLANTON_E2E_CLOUDFLARE_ZONE_NAME

@@ -1,13 +1,13 @@
 # Crosswalk: CIS Amazon Web Services Foundations Benchmark v3.0.0 onto the
 # Planton Control Catalog. Covers the benchmark recommendations that map to
-# per-component technical controls; account-wide recommendations (IAM
+# per-kind technical controls; account-wide recommendations (IAM
 # hygiene, CloudTrail plumbing, Config) are platform/organization posture,
-# not component posture, and are deliberately absent. A mapping says catalog
-# controls SERVE a recommendation -- it never declares a component or
+# not kind posture, and are deliberately absent. A mapping says catalog
+# controls SERVE a recommendation -- it never declares a kind or
 # deployment "CIS-compliant". Schema: compliance/frameworkcrosswalk/v1.
 #
 # This benchmark names AWS in its own title, so it declares provider scope:
-# it appears only on AWS components, never on another provider's.
+# it appears only on AWS kinds, never on another provider's.
 apiVersion: compliance.planton.dev/v1
 kind: FrameworkCrosswalk
 metadata:
@@ -38,7 +38,7 @@ spec:
     - requirement_id: "3.1"
       requirement_name: Ensure CloudTrail is enabled in all regions
       control_ids: [audit-logging]
-      notes: CloudTrail itself is account posture; component-level audit-logging serves the same intent for resource access events.
+      notes: CloudTrail itself is account posture; kind-level audit-logging serves the same intent for resource access events.
     - requirement_id: "5.2"
       requirement_name: Ensure no security groups allow ingress from 0.0.0.0/0 to remote server administration ports
       control_ids: [restricted-ingress]

@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: cloudflarezerotrusttunnel
 spec:
   billing_model: free
   free_tier: "Cloudflare Tunnel's own landing page banners it as \"Available on all plans\" (https://developers.cloudflare.com/tunnel/, fetched 2026-08-22), and the connector (cloudflared) is software you run on your own machines. No meter counts tunnels, connectors per tunnel, ingress rules, or the traffic the tunnel carries through Cloudflare's edge."
-  notes: "No field of this spec buys anything: name, config_src, the optional tunnel_secret, ingress rules, and origin_request tuning are all connector configuration. The real spend lives in three places, none of them this object. (1) The MACHINES running cloudflared -- the Kubernetes cluster, VM, or container host on your side of the tunnel bills as its own catalog kind. (2) That infrastructure's egress/bandwidth -- traffic the tunnel carries rides the connected infrastructure's own network billing, not Cloudflare's. (3) If the tunnel backs PRIVATE network access for WARP users (via CloudflareZeroTrustTunnelRoute), each authenticated user consumes a Zero Trust seat -- free through 50 users, per-user above, chosen at the account (https://developers.cloudflare.com/cloudflare-one/team-and-resources/users/seat-management/, fetched 2026-08-22). Publishing public hostnames through the tunnel adds nothing beyond the zone's own plan."
+  notes: "No field of this spec buys anything: name, config_src, the optional tunnel_secret, ingress rules, and origin_request tuning are all connector configuration. The real spend lives in three places, none of them this object. (1) The MACHINES running cloudflared -- the Kubernetes cluster, VM, or container host on your side of the tunnel bills as its own component. (2) That infrastructure's egress/bandwidth -- traffic the tunnel carries rides the connected infrastructure's own network billing, not Cloudflare's. (3) If the tunnel backs PRIVATE network access for WARP users (via CloudflareZeroTrustTunnelRoute), each authenticated user consumes a Zero Trust seat -- free through 50 users, per-user above, chosen at the account (https://developers.cloudflare.com/cloudflare-one/team-and-resources/users/seat-management/, fetched 2026-08-22). Publishing public hostnames through the tunnel adds nothing beyond the zone's own plan."

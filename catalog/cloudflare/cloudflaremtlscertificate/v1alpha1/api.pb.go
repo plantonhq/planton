@@ -32,7 +32,7 @@ type CloudflareMtlsCertificate struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareMtlsCertificateSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -85,7 +85,7 @@ func (x *CloudflareMtlsCertificate) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareMtlsCertificate) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareMtlsCertificate) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *CloudflareMtlsCertificate) GetStatus() *CloudflareMtlsCertificateStatus
 // uploaded certificate.
 type CloudflareMtlsCertificateStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareMtlsCertificateStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareMtlsCertificateOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareMtlsCertificateStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareMtlsCertificateStatus) GetOutputs() *CloudflareMtlsCertificateStackOutputs {
+func (x *CloudflareMtlsCertificateStatus) GetOutputs() *CloudflareMtlsCertificateOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_api_proto_rawDe
 	"apiVersion\x124\n" +
 	"\x04kind\x18\x02 \x01(\tB \xbaH\x1dr\x1b\n" +
 	"\x19CloudflareMtlsCertificateR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12t\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12t\n" +
 	"\x04spec\x18\x04 \x01(\v2X.dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12r\n" +
-	"\x06status\x18\x05 \x01(\v2Z.dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateStatusR\x06status\"\x9d\x01\n" +
-	"\x1fCloudflareMtlsCertificateStatus\x12z\n" +
-	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateStackOutputsR\aoutputsB\xc8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Z.dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateStatusR\x06status\"\x98\x01\n" +
+	"\x1fCloudflareMtlsCertificateStatus\x12u\n" +
+	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateOutputsR\aoutputsB\xc8\x03\n" +
 	"=com.dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1B\bApiProtoP\x01Ztgithub.com/plantonhq/planton/catalog/cloudflare/cloudflaremtlscertificate/v1alpha1;cloudflaremtlscertificatev1alpha1\xa2\x02\x04DPCC\xaa\x029Dev.Planton.Cloudflare.Cloudflaremtlscertificate.V1alpha1\xca\x029Dev\\Planton\\Cloudflare\\Cloudflaremtlscertificate\\V1alpha1\xe2\x02EDev\\Planton\\Cloudflare\\Cloudflaremtlscertificate\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Cloudflare::Cloudflaremtlscertificate::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_api_proto_rawDes
 
 var file_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareMtlsCertificate)(nil),             // 0: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificate
-	(*CloudflareMtlsCertificateStatus)(nil),       // 1: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateStatus
-	(*shared.CloudResourceMetadata)(nil),          // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareMtlsCertificateSpec)(nil),         // 3: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateSpec
-	(*CloudflareMtlsCertificateStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateStackOutputs
+	(*CloudflareMtlsCertificate)(nil),        // 0: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificate
+	(*CloudflareMtlsCertificateStatus)(nil),  // 1: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateStatus
+	(*shared.CatalogObjectMetadata)(nil),     // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareMtlsCertificateSpec)(nil),    // 3: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateSpec
+	(*CloudflareMtlsCertificateOutputs)(nil), // 4: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateOutputs
 }
 var file_catalog_cloudflare_cloudflaremtlscertificate_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificate.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificate.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificate.spec:type_name -> dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateSpec
 	1, // 2: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificate.status:type_name -> dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateStatus
-	4, // 3: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateStatus.outputs:type_name -> dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateStatus.outputs:type_name -> dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1.CloudflareMtlsCertificateOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

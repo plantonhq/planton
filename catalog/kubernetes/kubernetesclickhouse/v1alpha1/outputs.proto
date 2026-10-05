@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesclickhouse.v1alpha1;
 
-//kubernetes-click-house stack outputs
-message KubernetesClickHouseStackOutputs {
+//kubernetes-click-house outputs
+message KubernetesClickHouseOutputs {
   //namespace the cluster runs in.
   string namespace = 1;
 

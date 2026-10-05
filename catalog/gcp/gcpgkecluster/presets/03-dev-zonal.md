@@ -31,7 +31,7 @@ Add a small `GcpGkeNodePool` (e.g. two `e2-medium` nodes) to run workloads.
 - **01-private-standard** — the production shape (regional, private nodes, planned ranges)
 - **02-autopilot** — no node management at all, per-pod billing
 
-## Related Components
+## Related Kinds
 
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — the network the cluster lives in
 - [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — the subnetwork nodes attach to

@@ -5,9 +5,9 @@ package dev.planton.azure.azurefrontdoorendpoint.v1alpha1;
 import "catalog/azure/azurefrontdoorendpoint/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-front-door-endpoint stack-input
-message AzureFrontDoorEndpointStackInput {
-  //target cloud-resource
+//azure-front-door-endpoint iac-input
+message AzureFrontDoorEndpointIacInput {
+  // the catalog object to deploy
   AzureFrontDoorEndpoint target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

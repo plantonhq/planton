@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpEventarcMessageBusSpec", func() {
 		return &GcpEventarcMessageBus{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpEventarcMessageBus",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-bus",
 			},
 			Spec: &GcpEventarcMessageBusSpec{

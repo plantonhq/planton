@@ -9,9 +9,9 @@
 # us-east-1 offer, so a constant-quantity line with one price serves
 # every base_model_arn. The one-time training charge is data-sized
 # (tokens live in S3) -- excluded with rates stated, never guessed.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsbedrockcustommodel
 spec:

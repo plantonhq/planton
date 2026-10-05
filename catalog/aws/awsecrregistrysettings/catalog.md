@@ -4,7 +4,7 @@ Configures the registry-level ECR posture for one AWS region: what scans your im
 
 ## What Gets Created
 
-This component adopts the account's existing ECR registry in the target region — the registry itself is never created or destroyed — and configures its posture arm by arm:
+This kind adopts the account's existing ECR registry in the target region — the registry itself is never created or destroyed — and configures its posture arm by arm:
 
 - **Registry permissions policy** — configured only when `registryPolicy` is set: the IAM resource policy granting other accounts registry-level actions (replication in, pull-through cache sharing). Destroying this arm deletes the policy
 - **Scanning configuration** — configured only when `scanning` is set: the BASIC or ENHANCED (Amazon Inspector) engine plus per-repository-pattern frequency rules. Destroying this arm resets the registry to BASIC scanning with no rules — AWS has no delete, so the modules put the empty default back
@@ -18,7 +18,7 @@ This component adopts the account's existing ECR registry in the target region �
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with ECR permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with ECR permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -74,7 +74,7 @@ spec:
 planton apply -f ecr-registry-settings.yaml
 ```
 
-This configures two pull-through caches — authenticated Docker Hub under `docker-hub/` and registry.k8s.io under `k8s/` — each paired with a creation template so cached repositories arrive with immutable tags and a 90-day expiry. A Stack Job tracks the provisioning in real time.
+This configures two pull-through caches — authenticated Docker Hub under `docker-hub/` and registry.k8s.io under `k8s/` — each paired with a creation template so cached repositories arrive with immutable tags and a 90-day expiry. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -118,7 +118,7 @@ These are the most important decisions when configuring registry settings. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -126,9 +126,9 @@ These are the most important decisions when configuring registry settings. Explo
 | **AwsIamRole** | `pullTimeUpdateExclusions[]`, `pullThroughCacheRules[].customRoleArn`, `repositoryCreationTemplates[].customRoleArn` | `status.outputs.role_arn` |
 | **AwsKmsKey** | `repositoryCreationTemplates[].encryption.kmsKey` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -149,7 +149,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS ECR Repository**](/cloud-catalog/aws-ecr-repo) — the individual repositories this registry-level posture governs
-- [**AWS Secrets Manager Secret**](/cloud-catalog/aws-secrets-manager-secret) — holds upstream credentials for authenticated cache rules (named under `ecr-pullthroughcache/`)
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — pull-time exclusions, cross-account cache pulls, and template-creation roles
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption stamped onto auto-created repositories via template encryption
+- [**AWS ECR Repository**](/infra-catalog/aws-ecr-repo) — the individual repositories this registry-level posture governs
+- [**AWS Secrets Manager Secret**](/infra-catalog/aws-secrets-manager-secret) — holds upstream credentials for authenticated cache rules (named under `ecr-pullthroughcache/`)
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — pull-time exclusions, cross-account cache pulls, and template-creation roles
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption stamped onto auto-created repositories via template encryption

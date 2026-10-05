@@ -64,7 +64,7 @@ params:
       anything that reaches its Service. The platform materializes it
       into the cache's auth Secret; your app reads it from there.
       On Planton the value is a reference to a managed secret, resolved at deploy
-      so the password is never stored with the project: create it with
+      so the password is never stored with the Infra Stack: create it with
       `planton secret set app-data-services-valkey-password --string` (or name an environment's own as
       `$secret/@<env>/<slug>`). A deploy without the platform takes the literal.
     value: $secret/app-data-services-valkey-password

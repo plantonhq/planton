@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awseksfargateprofile.v1alpha1;
 
-// AwsEksFargateProfileStackOutputs describes the values returned after
+// AwsEksFargateProfileOutputs describes the values returned after
 // provisioning an EKS Fargate profile.
-message AwsEksFargateProfileStackOutputs {
+message AwsEksFargateProfileOutputs {
   // fargate_profile_arn is the Amazon Resource Name of the profile --
   // arn:aws:eks:<region>:<account>:fargateprofile/<cluster>/<name>/<uuid>.
   string fargate_profile_arn = 1;

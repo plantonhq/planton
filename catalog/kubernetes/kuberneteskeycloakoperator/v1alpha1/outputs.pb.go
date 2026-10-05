@@ -22,9 +22,9 @@ const (
 )
 
 // *
-// **KubernetesKeycloakOperatorStackOutputs** — handles a deployed
+// **KubernetesKeycloakOperatorOutputs** — handles a deployed
 // Keycloak Operator exports.
-type KubernetesKeycloakOperatorStackOutputs struct {
+type KubernetesKeycloakOperatorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace the operator runs in (where namespaced-watch Keycloak
@@ -42,20 +42,20 @@ type KubernetesKeycloakOperatorStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesKeycloakOperatorStackOutputs) Reset() {
-	*x = KubernetesKeycloakOperatorStackOutputs{}
+func (x *KubernetesKeycloakOperatorOutputs) Reset() {
+	*x = KubernetesKeycloakOperatorOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKeycloakOperatorStackOutputs) String() string {
+func (x *KubernetesKeycloakOperatorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKeycloakOperatorStackOutputs) ProtoMessage() {}
+func (*KubernetesKeycloakOperatorOutputs) ProtoMessage() {}
 
-func (x *KubernetesKeycloakOperatorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKeycloakOperatorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,26 +67,26 @@ func (x *KubernetesKeycloakOperatorStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKeycloakOperatorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKeycloakOperatorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKeycloakOperatorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKeycloakOperatorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKeycloakOperatorStackOutputs) GetNamespace() string {
+func (x *KubernetesKeycloakOperatorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesKeycloakOperatorStackOutputs) GetDeployment() string {
+func (x *KubernetesKeycloakOperatorOutputs) GetDeployment() string {
 	if x != nil {
 		return x.Deployment
 	}
 	return ""
 }
 
-func (x *KubernetesKeycloakOperatorStackOutputs) GetService() string {
+func (x *KubernetesKeycloakOperatorOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
@@ -97,8 +97,8 @@ var File_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_outputs_proto pr
 
 const file_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/kubernetes/kuberneteskeycloakoperator/v1alpha1/outputs.proto\x12:dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1\"\x80\x01\n" +
-	"&KubernetesKeycloakOperatorStackOutputs\x12\x1c\n" +
+	"Dcatalog/kubernetes/kuberneteskeycloakoperator/v1alpha1/outputs.proto\x12:dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1\"{\n" +
+	"!KubernetesKeycloakOperatorOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x1e\n" +
 	"\n" +
 	"deployment\x18\x02 \x01(\tR\n" +
@@ -120,7 +120,7 @@ func file_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_outputs_proto_r
 
 var file_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKeycloakOperatorStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorStackOutputs
+	(*KubernetesKeycloakOperatorOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1.KubernetesKeycloakOperatorOutputs
 }
 var file_catalog_kubernetes_kuberneteskeycloakoperator_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

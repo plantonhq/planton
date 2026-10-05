@@ -5,9 +5,9 @@
 # is up, the SSIS flavor is created STOPPED and unbilled (node-hours
 # start at start), and the self-hosted flavor is a free registration
 # for compute you own -- so the profile is usage_based with no baseline
-# charges. Schema: finops/componentcostprofile/v1.
+# charges. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azuredatafactoryintegrationruntime
 spec:

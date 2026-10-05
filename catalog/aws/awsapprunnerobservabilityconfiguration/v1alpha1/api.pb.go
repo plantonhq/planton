@@ -38,7 +38,7 @@ type AwsAppRunnerObservabilityConfiguration struct {
 	// labels) and must pass standard validations for resource naming.
 	// The configuration's AWS name is metadata.name; revisions register under
 	// this name.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration of the observability configuration.
 	Spec *AwsAppRunnerObservabilityConfigurationSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds post-deployment information.
@@ -91,7 +91,7 @@ func (x *AwsAppRunnerObservabilityConfiguration) GetKind() string {
 	return ""
 }
 
-func (x *AwsAppRunnerObservabilityConfiguration) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsAppRunnerObservabilityConfiguration) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -118,7 +118,7 @@ type AwsAppRunnerObservabilityConfigurationStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the observable values returned by Pulumi/Terraform
 	// after provisioning.
-	Outputs       *AwsAppRunnerObservabilityConfigurationStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsAppRunnerObservabilityConfigurationOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -153,7 +153,7 @@ func (*AwsAppRunnerObservabilityConfigurationStatus) Descriptor() ([]byte, []int
 	return file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsAppRunnerObservabilityConfigurationStatus) GetOutputs() *AwsAppRunnerObservabilityConfigurationStackOutputs {
+func (x *AwsAppRunnerObservabilityConfigurationStatus) GetOutputs() *AwsAppRunnerObservabilityConfigurationOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -171,11 +171,11 @@ const file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_api_proto
 	"apiVersion\x12A\n" +
 	"\x04kind\x18\x02 \x01(\tB-\xbaH*r(\n" +
 	"&AwsAppRunnerObservabilityConfigurationR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x87\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x87\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2k.dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x85\x01\n" +
-	"\x06status\x18\x05 \x01(\v2m.dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationStatusR\x06status\"\xbe\x01\n" +
-	",AwsAppRunnerObservabilityConfigurationStatus\x12\x8d\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2s.dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationStackOutputsR\aoutputsB\xfa\x03\n" +
+	"\x06status\x18\x05 \x01(\v2m.dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationStatusR\x06status\"\xb9\x01\n" +
+	",AwsAppRunnerObservabilityConfigurationStatus\x12\x88\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2n.dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationOutputsR\aoutputsB\xfa\x03\n" +
 	"Ccom.dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1B\bApiProtoP\x01Z\x87\x01github.com/plantonhq/planton/catalog/aws/awsapprunnerobservabilityconfiguration/v1alpha1;awsapprunnerobservabilityconfigurationv1alpha1\xa2\x02\x04DPAA\xaa\x02?Dev.Planton.Aws.Awsapprunnerobservabilityconfiguration.V1alpha1\xca\x02?Dev\\Planton\\Aws\\Awsapprunnerobservabilityconfiguration\\V1alpha1\xe2\x02KDev\\Planton\\Aws\\Awsapprunnerobservabilityconfiguration\\V1alpha1\\GPBMetadata\xea\x02CDev::Planton::Aws::Awsapprunnerobservabilityconfiguration::V1alpha1b\x06proto3"
 
 var (
@@ -192,17 +192,17 @@ func file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_api_proto_
 
 var file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_api_proto_goTypes = []any{
-	(*AwsAppRunnerObservabilityConfiguration)(nil),             // 0: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfiguration
-	(*AwsAppRunnerObservabilityConfigurationStatus)(nil),       // 1: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationStatus
-	(*shared.CloudResourceMetadata)(nil),                       // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsAppRunnerObservabilityConfigurationSpec)(nil),         // 3: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationSpec
-	(*AwsAppRunnerObservabilityConfigurationStackOutputs)(nil), // 4: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationStackOutputs
+	(*AwsAppRunnerObservabilityConfiguration)(nil),        // 0: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfiguration
+	(*AwsAppRunnerObservabilityConfigurationStatus)(nil),  // 1: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationStatus
+	(*shared.CatalogObjectMetadata)(nil),                  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsAppRunnerObservabilityConfigurationSpec)(nil),    // 3: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationSpec
+	(*AwsAppRunnerObservabilityConfigurationOutputs)(nil), // 4: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationOutputs
 }
 var file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfiguration.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfiguration.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfiguration.spec:type_name -> dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationSpec
 	1, // 2: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfiguration.status:type_name -> dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationStatus
-	4, // 3: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationStatus.outputs:type_name -> dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationStackOutputs
+	4, // 3: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationStatus.outputs:type_name -> dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

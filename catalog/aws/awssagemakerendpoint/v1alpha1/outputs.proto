@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awssagemakerendpoint.v1alpha1;
 
-// AwsSagemakerEndpointStackOutputs captures observable identifiers from
+// AwsSagemakerEndpointOutputs captures observable identifiers from
 // a provisioned SageMaker endpoint. Clients invoke by `endpoint_name`;
 // autoscaling policies and inference components wire via the ARNs.
-message AwsSagemakerEndpointStackOutputs {
+message AwsSagemakerEndpointOutputs {
   // The endpoint name (the AWS identity clients invoke).
   string endpoint_name = 1;
 

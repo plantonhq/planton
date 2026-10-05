@@ -257,7 +257,7 @@ func auxiliarySkuToArm(s azurevirtualmachinescalesetv1alpha1.AzureVirtualMachine
 }
 
 // optionalBool resolves an optional bool field to its value or, when
-// unset, the proto-declared default. Stack-input paths that bypass the
+// unset, the proto-declared default. IaC-input paths that bypass the
 // manifest loader deliver unset optionals as nil, and a bare getter's
 // false would silently diverge from the Terraform module's
 // optional(bool, true) encodings on the true-default fields

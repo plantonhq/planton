@@ -6,7 +6,7 @@ It builds the object from the manifest's projection (`pkg/iac/pulumi/pulumimodul
 
 ## Prerequisites
 
-- The prometheus-operator CRDs on the cluster (see the `KubernetesKubePrometheusStack` component).
+- The prometheus-operator CRDs on the cluster (see the `KubernetesKubePrometheusStack` kind).
 - A Prometheus whose PodMonitor selector matches the object, for the pods to be scraped. The object applies with only the CRDs present.
 - The target namespace (see `KubernetesNamespace`).
 - Go toolchain and the Pulumi CLI, and access to the target cluster.
@@ -21,11 +21,11 @@ planton pulumi up --manifest ../../e2e/manifest.yaml
 
 ### Direct Pulumi usage
 
-The entrypoint loads the `KubernetesPodMonitorStackInput` from the `STACK_INPUT_YAML_FILE` environment variable (path to a manifest) or `STACK_INPUT_YAML` (inline YAML content):
+The entrypoint loads the `KubernetesPodMonitorIacInput` from the `IAC_INPUT_YAML_FILE` environment variable (path to the IaC input, with the manifest under `target`) or `IAC_INPUT_YAML` (inline YAML content). The CLI builds that input from a manifest
+and runs Pulumi:
 
 ```bash
-export STACK_INPUT_YAML_FILE=../../e2e/manifest.yaml
-pulumi up
+planton pulumi up --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack>
 ```
 
 ## Outputs
@@ -39,7 +39,7 @@ pulumi up
 
 ```
 pulumi/
-├── main.go          # Pulumi entrypoint (loads the stack input)
+├── main.go          # Pulumi entrypoint (loads the IaC input)
 ├── Pulumi.yaml      # Pulumi project configuration
 ├── README.md        # This file
 └── module/

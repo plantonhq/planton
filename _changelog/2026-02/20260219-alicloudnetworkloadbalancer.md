@@ -7,11 +7,11 @@
 
 ## Summary
 
-Added Alibaba Cloud Network Load Balancer (NLB) as a new cloud resource kind. NLB provides ultra-high performance Layer 4 (TCP/UDP/TCPSSL) load balancing for workloads that require low latency and high throughput.
+Added Alibaba Cloud Network Load Balancer (NLB) as a new catalog kind. NLB provides ultra-high performance Layer 4 (TCP/UDP/TCPSSL) load balancing for workloads that require low latency and high throughput.
 
 ## What's Included
 
-- **Proto API**: spec, api, stack_input, stack_outputs with comprehensive buf.validate rules
+- **Proto API**: spec, api, iac_input, outputs with comprehensive buf.validate rules
 - **Pulumi module**: Go implementation using `nlb.LoadBalancer`, `nlb.ServerGroup`, `nlb.Listener`
 - **Terraform module**: HCL implementation using `alicloud_nlb_load_balancer`, `alicloud_nlb_server_group`, `alicloud_nlb_listener`
 - **Validation tests**: 40 Ginkgo/Gomega tests covering all fields, ranges, and enums

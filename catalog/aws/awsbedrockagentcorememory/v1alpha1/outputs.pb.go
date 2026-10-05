@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockAgentCoreMemoryStackOutputs captures observable identifiers
+// AwsBedrockAgentCoreMemoryOutputs captures observable identifiers
 // from a provisioned AgentCore memory. Downstream resources (evaluation
 // harnesses reading memory, agent code writing events) wire dependencies
 // via StringValueOrRef.
-type AwsBedrockAgentCoreMemoryStackOutputs struct {
+type AwsBedrockAgentCoreMemoryOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique memory identifier (e.g. "my_memory-AbC1dEf2Gh").
 	MemoryId string `protobuf:"bytes,1,opt,name=memory_id,json=memoryId,proto3" json:"memory_id,omitempty"`
@@ -38,20 +38,20 @@ type AwsBedrockAgentCoreMemoryStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBedrockAgentCoreMemoryStackOutputs) Reset() {
-	*x = AwsBedrockAgentCoreMemoryStackOutputs{}
+func (x *AwsBedrockAgentCoreMemoryOutputs) Reset() {
+	*x = AwsBedrockAgentCoreMemoryOutputs{}
 	mi := &file_catalog_aws_awsbedrockagentcorememory_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockAgentCoreMemoryStackOutputs) String() string {
+func (x *AwsBedrockAgentCoreMemoryOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockAgentCoreMemoryStackOutputs) ProtoMessage() {}
+func (*AwsBedrockAgentCoreMemoryOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockAgentCoreMemoryStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockAgentCoreMemoryOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockagentcorememory_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *AwsBedrockAgentCoreMemoryStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockAgentCoreMemoryStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockAgentCoreMemoryStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockAgentCoreMemoryOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockAgentCoreMemoryOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockagentcorememory_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockAgentCoreMemoryStackOutputs) GetMemoryId() string {
+func (x *AwsBedrockAgentCoreMemoryOutputs) GetMemoryId() string {
 	if x != nil {
 		return x.MemoryId
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentCoreMemoryStackOutputs) GetMemoryArn() string {
+func (x *AwsBedrockAgentCoreMemoryOutputs) GetMemoryArn() string {
 	if x != nil {
 		return x.MemoryArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentCoreMemoryStackOutputs) GetStrategyIds() map[string]string {
+func (x *AwsBedrockAgentCoreMemoryOutputs) GetStrategyIds() map[string]string {
 	if x != nil {
 		return x.StrategyIds
 	}
@@ -93,12 +93,12 @@ var File_catalog_aws_awsbedrockagentcorememory_v1alpha1_outputs_proto protorefle
 
 const file_catalog_aws_awsbedrockagentcorememory_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/aws/awsbedrockagentcorememory/v1alpha1/outputs.proto\x122dev.planton.aws.awsbedrockagentcorememory.v1alpha1\"\xb3\x02\n" +
-	"%AwsBedrockAgentCoreMemoryStackOutputs\x12\x1b\n" +
+	"<catalog/aws/awsbedrockagentcorememory/v1alpha1/outputs.proto\x122dev.planton.aws.awsbedrockagentcorememory.v1alpha1\"\xa9\x02\n" +
+	" AwsBedrockAgentCoreMemoryOutputs\x12\x1b\n" +
 	"\tmemory_id\x18\x01 \x01(\tR\bmemoryId\x12\x1d\n" +
 	"\n" +
-	"memory_arn\x18\x02 \x01(\tR\tmemoryArn\x12\x8d\x01\n" +
-	"\fstrategy_ids\x18\x03 \x03(\v2j.dev.planton.aws.awsbedrockagentcorememory.v1alpha1.AwsBedrockAgentCoreMemoryStackOutputs.StrategyIdsEntryR\vstrategyIds\x1a>\n" +
+	"memory_arn\x18\x02 \x01(\tR\tmemoryArn\x12\x88\x01\n" +
+	"\fstrategy_ids\x18\x03 \x03(\v2e.dev.planton.aws.awsbedrockagentcorememory.v1alpha1.AwsBedrockAgentCoreMemoryOutputs.StrategyIdsEntryR\vstrategyIds\x1a>\n" +
 	"\x10StrategyIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xa2\x03\n" +
@@ -118,11 +118,11 @@ func file_catalog_aws_awsbedrockagentcorememory_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_aws_awsbedrockagentcorememory_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbedrockagentcorememory_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockAgentCoreMemoryStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockagentcorememory.v1alpha1.AwsBedrockAgentCoreMemoryStackOutputs
-	nil, // 1: dev.planton.aws.awsbedrockagentcorememory.v1alpha1.AwsBedrockAgentCoreMemoryStackOutputs.StrategyIdsEntry
+	(*AwsBedrockAgentCoreMemoryOutputs)(nil), // 0: dev.planton.aws.awsbedrockagentcorememory.v1alpha1.AwsBedrockAgentCoreMemoryOutputs
+	nil,                                      // 1: dev.planton.aws.awsbedrockagentcorememory.v1alpha1.AwsBedrockAgentCoreMemoryOutputs.StrategyIdsEntry
 }
 var file_catalog_aws_awsbedrockagentcorememory_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockagentcorememory.v1alpha1.AwsBedrockAgentCoreMemoryStackOutputs.strategy_ids:type_name -> dev.planton.aws.awsbedrockagentcorememory.v1alpha1.AwsBedrockAgentCoreMemoryStackOutputs.StrategyIdsEntry
+	1, // 0: dev.planton.aws.awsbedrockagentcorememory.v1alpha1.AwsBedrockAgentCoreMemoryOutputs.strategy_ids:type_name -> dev.planton.aws.awsbedrockagentcorememory.v1alpha1.AwsBedrockAgentCoreMemoryOutputs.StrategyIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

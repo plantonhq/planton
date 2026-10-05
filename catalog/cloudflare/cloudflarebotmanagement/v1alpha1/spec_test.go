@@ -26,7 +26,7 @@ func validBotManagement(spec *CloudflareBotManagementSpec) *CloudflareBotManagem
 	return &CloudflareBotManagement{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareBotManagement",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-bot-management",
 		},
 		Spec: spec,

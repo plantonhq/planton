@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureAksClusterStackOutputs** captures the outputs of provisioning an
+// **AzureAksClusterOutputs** captures the outputs of provisioning an
 // AKS managed cluster.
 //
 // The two composition-critical outputs are `cluster_id` (the parent
@@ -30,7 +30,7 @@ const (
 // `oidc_issuer_url` (the `issuer` an AzureFederatedIdentityCredential
 // binds to for workload identity federation -- the keyless path for pods
 // to act as an Azure managed identity).
-type AzureAksClusterStackOutputs struct {
+type AzureAksClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the managed cluster.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ContainerService/managedClusters/{name}
@@ -96,20 +96,20 @@ type AzureAksClusterStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *AzureAksClusterStackOutputs) Reset() {
-	*x = AzureAksClusterStackOutputs{}
+func (x *AzureAksClusterOutputs) Reset() {
+	*x = AzureAksClusterOutputs{}
 	mi := &file_catalog_azure_azureakscluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureAksClusterStackOutputs) String() string {
+func (x *AzureAksClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureAksClusterStackOutputs) ProtoMessage() {}
+func (*AzureAksClusterOutputs) ProtoMessage() {}
 
-func (x *AzureAksClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureAksClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureakscluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -121,110 +121,110 @@ func (x *AzureAksClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureAksClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureAksClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureAksClusterOutputs.ProtoReflect.Descriptor instead.
+func (*AzureAksClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureakscluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureAksClusterStackOutputs) GetClusterId() string {
+func (x *AzureAksClusterOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
 	return ""
 }
 
-func (x *AzureAksClusterStackOutputs) GetClusterName() string {
+func (x *AzureAksClusterOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *AzureAksClusterStackOutputs) GetFqdn() string {
+func (x *AzureAksClusterOutputs) GetFqdn() string {
 	if x != nil {
 		return x.Fqdn
 	}
 	return ""
 }
 
-func (x *AzureAksClusterStackOutputs) GetPrivateFqdn() string {
+func (x *AzureAksClusterOutputs) GetPrivateFqdn() string {
 	if x != nil {
 		return x.PrivateFqdn
 	}
 	return ""
 }
 
-func (x *AzureAksClusterStackOutputs) GetPortalFqdn() string {
+func (x *AzureAksClusterOutputs) GetPortalFqdn() string {
 	if x != nil {
 		return x.PortalFqdn
 	}
 	return ""
 }
 
-func (x *AzureAksClusterStackOutputs) GetOidcIssuerUrl() string {
+func (x *AzureAksClusterOutputs) GetOidcIssuerUrl() string {
 	if x != nil {
 		return x.OidcIssuerUrl
 	}
 	return ""
 }
 
-func (x *AzureAksClusterStackOutputs) GetNodeResourceGroup() string {
+func (x *AzureAksClusterOutputs) GetNodeResourceGroup() string {
 	if x != nil {
 		return x.NodeResourceGroup
 	}
 	return ""
 }
 
-func (x *AzureAksClusterStackOutputs) GetNodeResourceGroupId() string {
+func (x *AzureAksClusterOutputs) GetNodeResourceGroupId() string {
 	if x != nil {
 		return x.NodeResourceGroupId
 	}
 	return ""
 }
 
-func (x *AzureAksClusterStackOutputs) GetClusterKubeconfig() string {
+func (x *AzureAksClusterOutputs) GetClusterKubeconfig() string {
 	if x != nil {
 		return x.ClusterKubeconfig
 	}
 	return ""
 }
 
-func (x *AzureAksClusterStackOutputs) GetClusterIdentityPrincipalId() string {
+func (x *AzureAksClusterOutputs) GetClusterIdentityPrincipalId() string {
 	if x != nil {
 		return x.ClusterIdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureAksClusterStackOutputs) GetKubeletIdentityObjectId() string {
+func (x *AzureAksClusterOutputs) GetKubeletIdentityObjectId() string {
 	if x != nil {
 		return x.KubeletIdentityObjectId
 	}
 	return ""
 }
 
-func (x *AzureAksClusterStackOutputs) GetKubeletIdentityClientId() string {
+func (x *AzureAksClusterOutputs) GetKubeletIdentityClientId() string {
 	if x != nil {
 		return x.KubeletIdentityClientId
 	}
 	return ""
 }
 
-func (x *AzureAksClusterStackOutputs) GetCurrentKubernetesVersion() string {
+func (x *AzureAksClusterOutputs) GetCurrentKubernetesVersion() string {
 	if x != nil {
 		return x.CurrentKubernetesVersion
 	}
 	return ""
 }
 
-func (x *AzureAksClusterStackOutputs) GetClusterCaCertificate() string {
+func (x *AzureAksClusterOutputs) GetClusterCaCertificate() string {
 	if x != nil {
 		return x.ClusterCaCertificate
 	}
 	return ""
 }
 
-func (x *AzureAksClusterStackOutputs) GetEntraIntegrationEnabled() string {
+func (x *AzureAksClusterOutputs) GetEntraIntegrationEnabled() string {
 	if x != nil {
 		return x.EntraIntegrationEnabled
 	}
@@ -235,8 +235,8 @@ var File_catalog_azure_azureakscluster_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_azure_azureakscluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/azure/azureakscluster/v1alpha1/outputs.proto\x12*dev.planton.azure.azureakscluster.v1alpha1\x1a\x1cshared/options/options.proto\"\xe6\x05\n" +
-	"\x1bAzureAksClusterStackOutputs\x12\x1d\n" +
+	"4catalog/azure/azureakscluster/v1alpha1/outputs.proto\x12*dev.planton.azure.azureakscluster.v1alpha1\x1a\x1cshared/options/options.proto\"\xe1\x05\n" +
+	"\x16AzureAksClusterOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12\x12\n" +
@@ -271,7 +271,7 @@ func file_catalog_azure_azureakscluster_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azureakscluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureakscluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureAksClusterStackOutputs)(nil), // 0: dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterStackOutputs
+	(*AzureAksClusterOutputs)(nil), // 0: dev.planton.azure.azureakscluster.v1alpha1.AzureAksClusterOutputs
 }
 var file_catalog_azure_azureakscluster_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

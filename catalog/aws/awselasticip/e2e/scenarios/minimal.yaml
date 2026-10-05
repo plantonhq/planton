@@ -24,7 +24,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awselasticip
+    e2e-catalog-kind: awselasticip
   annotations:
     planton.dev/e2e: "true"
   tags:

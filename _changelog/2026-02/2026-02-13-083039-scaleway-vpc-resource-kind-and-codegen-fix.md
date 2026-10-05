@@ -14,7 +14,7 @@ Two issues were addressed in this session:
 
 ### 1. Codegen Phantom Imports
 
-After Session 3 registered 19 Scaleway enum values in `cloud_resource_kind.proto`, the `crkreflect` codegen (`pkg/crkreflect/codegen/main.go`) unconditionally generated Go imports for all 19 Scaleway packages in `kind_map_gen.go`. Since no resource kind packages existed yet, this produced 19 Gazelle warnings during `make protos` and would cause `go build` failures because the generated code referenced types in non-existent packages.
+After Session 3 registered 19 Scaleway enum values in `catalog_kind.proto`, the `catalogkindreflect` codegen (`pkg/catalogkindreflect/codegen/main.go`) unconditionally generated Go imports for all 19 Scaleway packages in `kind_map_gen.go`. Since no resource kind packages existed yet, this produced 19 Gazelle warnings during `make protos` and would cause `go build` failures because the generated code referenced types in non-existent packages.
 
 ### 2. No Scaleway Resource Kinds Existed
 
@@ -30,7 +30,7 @@ The Scaleway provider had scaffolding (enum values, provider helper, label keys)
 
 ### Fix: Codegen Directory Existence Guard
 
-Added a directory existence check in `pkg/crkreflect/codegen/main.go` that skips resource kinds whose API packages don't exist on disk yet. This is a 7-line guard clause between the import path computation and the `uniqueAlias()` call:
+Added a directory existence check in `pkg/catalogkindreflect/codegen/main.go` that skips resource kinds whose API packages don't exist on disk yet. This is a 7-line guard clause between the import path computation and the `uniqueAlias()` call:
 
 ```go
 pkgDir := filepath.Join("apis", "dev", "planton", "provider", provSlug, lowerKind, "v1")
@@ -50,9 +50,9 @@ Implemented the complete ScalewayVpc resource kind following the DigitalOcean VP
 apis/dev/planton/provider/scaleway/scalewayvpc/v1/
 ├── spec.proto              # ScalewayVpcSpec: region, enable_routing, enable_custom_routes_propagation
 ├── api.proto               # ScalewayVpc resource + ScalewayVpcStatus
-├── stack_input.proto        # ScalewayVpcStackInput: target + provider_config
-├── stack_outputs.proto      # ScalewayVpcStackOutputs: vpc_id
-├── README.md               # Component documentation
+├── iac_input.proto        # ScalewayVpcIacInput: target + provider_config
+├── outputs.proto      # ScalewayVpcOutputs: vpc_id
+├── README.md               # Kind documentation
 ├── examples.md             # 4 YAML examples with deployment commands
 ├── iac/
 │   ├── pulumi/
@@ -77,7 +77,7 @@ apis/dev/planton/provider/scaleway/scalewayvpc/v1/
 - **Spec is minimal**: Scaleway VPCs have no CIDR blocks or IP ranges (unlike DigitalOcean/AWS). The spec has only `region`, `enable_routing`, and `enable_custom_routes_propagation`. IP planning happens at the Private Network level (R02).
 - **One-way routing flags**: Both `enable_routing` and `enable_custom_routes_propagation` are irreversible toggles -- once enabled, they cannot be disabled. This constraint is documented in proto comments, README, and enforced via Terraform lifecycle `ignore_changes`.
 - **Tags from metadata**: Standard Planton labels are automatically applied as Scaleway tags (formatted as `"key=value"` strings). No user-facing `tags` field in the spec -- follows the DigitalOcean VPC pattern.
-- **Single output**: `vpc_id` is the only stack output, matching what downstream resources (ScalewayPrivateNetwork) need as a `StringValueOrRef` reference.
+- **Single output**: `vpc_id` is the only output, matching what downstream resources (ScalewayPrivateNetwork) need as a `StringValueOrRef` reference.
 
 ## Implementation Details
 
@@ -85,8 +85,8 @@ apis/dev/planton/provider/scaleway/scalewayvpc/v1/
 
 | File | Change |
 |------|--------|
-| `pkg/crkreflect/codegen/main.go` | +7 lines: `os.Stat` guard before `uniqueAlias()` call |
-| `pkg/crkreflect/kind_map_gen.go` | Regenerated: now includes ScalewayVpc, skips 18 unimplemented kinds |
+| `pkg/catalogkindreflect/codegen/main.go` | +7 lines: `os.Stat` guard before `uniqueAlias()` call |
+| `pkg/catalogkindreflect/kind_map_gen.go` | Regenerated: now includes ScalewayVpc, skips 18 unimplemented kinds |
 
 ### ScalewayVpc Resource Kind
 
@@ -94,9 +94,9 @@ apis/dev/planton/provider/scaleway/scalewayvpc/v1/
 |------|-------------|
 | `apis/.../scalewayvpc/v1/spec.proto` | 3 fields: region (required), enable_routing, enable_custom_routes_propagation |
 | `apis/.../scalewayvpc/v1/api.proto` | ScalewayVpc message + ScalewayVpcStatus |
-| `apis/.../scalewayvpc/v1/stack_input.proto` | Stack input with target + provider config |
-| `apis/.../scalewayvpc/v1/stack_outputs.proto` | vpc_id output |
-| `apis/.../scalewayvpc/v1/iac/pulumi/main.go` | Loads stack input, delegates to module |
+| `apis/.../scalewayvpc/v1/iac_input.proto` | IaC input with target + provider config |
+| `apis/.../scalewayvpc/v1/outputs.proto` | vpc_id output |
+| `apis/.../scalewayvpc/v1/iac/pulumi/main.go` | Loads IaC input, delegates to module |
 | `apis/.../scalewayvpc/v1/iac/pulumi/module/main.go` | Orchestrates: locals -> provider -> vpc |
 | `apis/.../scalewayvpc/v1/iac/pulumi/module/vpc.go` | Creates `network.NewVpc()` via pulumiverse SDK |
 | `apis/.../scalewayvpc/v1/iac/pulumi/module/locals.go` | Builds tags from metadata using scalewaylabelkeys |
@@ -106,13 +106,13 @@ apis/dev/planton/provider/scaleway/scalewayvpc/v1/
 | `apis/.../scalewayvpc/v1/iac/tf/locals.tf` | Extracts values, builds standard tags |
 | `apis/.../scalewayvpc/v1/iac/tf/outputs.tf` | vpc_id, is_default, organization_id, region, created_at |
 | `apis/.../scalewayvpc/v1/iac/tf/provider.tf` | scaleway/scaleway ~> 2.0 |
-| `apis/.../scalewayvpc/v1/README.md` | Component overview, constraints, use cases |
+| `apis/.../scalewayvpc/v1/README.md` | Kind overview, constraints, use cases |
 | `apis/.../scalewayvpc/v1/examples.md` | 4 YAML examples with deployment commands |
 
 Auto-generated files updated by `make protos` and Gazelle:
 - `*.pb.go`, `*_pb.ts` proto stubs
 - BUILD.bazel files for all new packages
-- `pkg/crkreflect/kind_map_gen.go` (ScalewayVpc now registered)
+- `pkg/catalogkindreflect/kind_map_gen.go` (ScalewayVpc now registered)
 
 ## Benefits
 
@@ -125,7 +125,7 @@ Auto-generated files updated by `make protos` and Gazelle:
 ## Impact
 
 - **Resource kind authors**: ScalewayVpc is the reference implementation for all subsequent Scaleway kinds
-- **Infra chart designers**: The `kapsule-environment` and `serverless-environment` charts can now reference ScalewayVpc as their Layer 0 foundation
+- **Infra Chart designers**: The `kapsule-environment` and `serverless-environment` charts can now reference ScalewayVpc as their Layer 0 foundation
 - **Build system**: Codegen fix prevents recurrence of phantom import warnings for any future provider that registers enums before implementing resources
 
 ## Related Work

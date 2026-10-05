@@ -1,4 +1,4 @@
-# AliCloudStorageBucket Component Added
+# AliCloudStorageBucket Kind Added
 
 **Date**: 2026-02-19
 **Component**: AliCloudStorageBucket
@@ -7,13 +7,13 @@
 
 ## Summary
 
-Added the AliCloudStorageBucket deployment component -- the first Storage-tier resource in the Alibaba Cloud catalog. This component manages an Alibaba Cloud OSS bucket with configurable access control, storage class, zone redundancy, versioning, server-side encryption, lifecycle management, CORS rules, and access logging.
+Added the AliCloudStorageBucket catalog kind -- the first Storage-tier resource in the Alibaba Cloud catalog. This kind manages an Alibaba Cloud OSS bucket with configurable access control, storage class, zone redundancy, versioning, server-side encryption, lifecycle management, CORS rules, and access logging.
 
 ## What Was Created
 
 ### API Definition
-- `apis/dev/planton/provider/alicloud/alicloudstoragebucket/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AliCloudStorageBucket = 3050` in `CloudResourceKind` enum under the Storage category
+- `apis/dev/planton/provider/alicloud/alicloudstoragebucket/v1/` -- Full proto API (spec, api, iac_input, outputs)
+- Registered `AliCloudStorageBucket = 3050` in `CatalogKind` enum under the Storage category
 - 5 nested messages: `AliCloudStorageBucketEncryption`, `AliCloudStorageBucketLifecycleRule`, `AliCloudStorageBucketLifecycleTransition`, `AliCloudStorageBucketCorsRule`, `AliCloudStorageBucketLogging`
 
 ### IaC Modules
@@ -24,7 +24,7 @@ Added the AliCloudStorageBucket deployment component -- the first Storage-tier r
 - Ginkgo/Gomega spec validation tests: 19 specs covering valid inputs (minimal, full config, AES256 encryption, lifecycle with versioning), missing required fields (region, bucket_name), bucket name length limits, invalid enum values (acl, storage_class, redundancy_type, sse_algorithm, transition storage_class), invalid CORS rules, missing logging target, wrong api_version/kind, and missing metadata
 
 ### Documentation
-- README.md with configuration reference, lifecycle rule fields, output reference, and related components
+- README.md with configuration reference, lifecycle rule fields, output reference, and related kinds
 - examples.md with 5 YAML examples (minimal, production versioned+encrypted, archive lifecycle, CORS browser access, KMS encrypted with logging)
 - catalog-page.md with full configuration reference and examples
 - docs/README.md with comprehensive research documentation

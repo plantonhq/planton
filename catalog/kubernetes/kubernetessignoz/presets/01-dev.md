@@ -1,6 +1,6 @@
 # SigNoz for development
 
-The smallest honest SigNoz: the component's defaults against a composed
+The smallest honest SigNoz: the kind's defaults against a composed
 `KubernetesClickHouse` named `telemetry` in the same namespace — the
 whole platform (UI, API, alerting, the ingestion collector) wired
 through three references, no password anywhere in the manifest.

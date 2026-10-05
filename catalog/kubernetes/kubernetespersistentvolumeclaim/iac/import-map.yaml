@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetespersistentvolumeclaim
 spec:
@@ -8,13 +8,13 @@ spec:
   values:
     - name: pvc_name
       derivations:
-        - from_stack_output: pvc_name
+        - from_output: pvc_name
         - from_spec_field: name
       where_to_find: >-
         `kubectl get pvc -A` (NAME column).
     - name: pvc_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `kubectl get pvc -A` (NAMESPACE column); "default" when the spec

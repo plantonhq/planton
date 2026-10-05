@@ -1,0 +1,33 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "catalogkind",
+    srcs = [
+        "catalog_kind.pb.go",
+        "catalog_provider.pb.go",
+        "catalog_provider_service_group.pb.go",
+        "kubernetes.pb.go",
+    ],
+    importpath = "github.com/plantonhq/planton/shared/catalogkind",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@org_golang_google_protobuf//reflect/protoreflect",
+        "@org_golang_google_protobuf//runtime/protoimpl",
+        "@org_golang_google_protobuf//types/descriptorpb",
+    ],
+)
+
+go_test(
+    name = "catalogkind_test",
+    srcs = ["containment_decisions_test.go"],
+    data = glob(["testdata/**"]),
+    deps = [
+        ":catalogkind",
+        "//pkg/catalogkindreflect",
+        "//shared/foreignkey/v1:foreignkey",
+        "//shared/options",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+        "@org_golang_google_protobuf//reflect/protoregistry",
+    ],
+)

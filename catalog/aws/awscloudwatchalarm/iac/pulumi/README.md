@@ -8,7 +8,7 @@ Provisions an AWS CloudWatch metric alarm supporting all three metric definition
 
 ## Inputs
 
-Accepts `AwsCloudwatchAlarmStackInput` which includes:
+Accepts `AwsCloudwatchAlarmIacInput` which includes:
 - `target` — The AwsCloudwatchAlarm KRM resource (metadata + spec)
 - `provider_config` — AWS provider credentials and region
 

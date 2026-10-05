@@ -4,7 +4,7 @@ Deploys an Azure Machine Learning workspace -- the central home a data-science t
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Machine Learning workspace** -- the ARM workspace object with its identity, companion-service attachments, optional CMK encryption, managed virtual network, and serverless-compute settings
 - **FQDN outbound rules** (optional) -- one ARM child per entry allowing outbound traffic by domain name under approved-outbound isolation
@@ -63,7 +63,7 @@ spec:
 planton apply -f azure-machine-learning-workspace.yaml
 ```
 
-This creates a system-identity workspace attached to its three companion services. A Stack Job tracks the provisioning in real time.
+This creates a system-identity workspace attached to its three companion services. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -109,7 +109,7 @@ These are the most important decisions when configuring the workspace. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -122,9 +122,9 @@ These are the most important decisions when configuring the workspace. Explore t
 | **AzureSubnet** | `serverlessCompute.subnetId` (optional) | `status.outputs.subnet_id` |
 | **AzureKeyVaultKey** | `encryption.keyId` (optional) | `status.outputs.versionless_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -133,7 +133,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `discovery_url` | The regional discovery URL | SDK endpoint resolution |
 | `system_assigned_identity_principal_id` | The system identity's principal ID | Storage / Key Vault role assignments |
 
-The outbound-rule ID maps (`fqdn_outbound_rule_ids`, `private_endpoint_outbound_rule_ids`, `service_tag_outbound_rule_ids`) echo the managed-VNet rules back for inspection; no downstream Cloud Resource consumes them.
+The outbound-rule ID maps (`fqdn_outbound_rule_ids`, `private_endpoint_outbound_rule_ids`, `service_tag_outbound_rule_ids`) echo the managed-VNet rules back for inspection; no downstream Infra Component consumes them.
 
 ## Common Patterns
 
@@ -147,8 +147,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Machine Learning Datastore**](/cloud-catalog/azure-machine-learning-datastore) -- saved data connections on the workspace
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the default artifact storage
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- the workspace's secret store
-- [**Azure Application Insights**](/cloud-catalog/azure-application-insights) -- workspace telemetry
-- [**Azure Container Registry**](/cloud-catalog/azure-container-registry) -- environment images
+- [**Azure Machine Learning Datastore**](/infra-catalog/azure-machine-learning-datastore) -- saved data connections on the workspace
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the default artifact storage
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- the workspace's secret store
+- [**Azure Application Insights**](/infra-catalog/azure-application-insights) -- workspace telemetry
+- [**Azure Container Registry**](/infra-catalog/azure-container-registry) -- environment images

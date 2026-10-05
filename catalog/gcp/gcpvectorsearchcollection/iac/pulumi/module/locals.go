@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpvectorsearchcollectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvectorsearchcollection/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -21,9 +21,9 @@ type Locals struct {
 	CollectionId string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpvectorsearchcollectionv1alpha1.GcpVectorSearchCollectionStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpvectorsearchcollectionv1alpha1.GcpVectorSearchCollectionIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpVectorSearchCollection = stackInput.Target
+	locals.GcpVectorSearchCollection = iacInput.Target
 
 	locals.CollectionId = locals.GcpVectorSearchCollection.Spec.CollectionId
 	if locals.CollectionId == "" {
@@ -39,7 +39,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpvectorsearchcollectionv1
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.CollectionId
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpVectorSearchCollection.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpVectorSearchCollection.String())
 
 	if locals.GcpVectorSearchCollection.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = locals.GcpVectorSearchCollection.Metadata.Org
@@ -51,6 +51,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpvectorsearchcollectionv1
 		locals.GcpLabels[gcplabelkeys.ResourceId] = locals.GcpVectorSearchCollection.Metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

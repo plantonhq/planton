@@ -8,13 +8,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azuremonitorscheduledqueryalertv1alpha1.AzureMonitorScheduledQueryAlertStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuremonitorscheduledqueryalertv1alpha1.AzureMonitorScheduledQueryAlertIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -72,8 +72,8 @@ func Resources(ctx *pulumi.Context, stackInput *azuremonitorscheduledqueryalertv
 		// module wraps the same value in a one-item list. Wire-identical.
 		Scopes:    pulumi.String(spec.Scope.GetValue()),
 		Criterias: criterias,
-		// Presence-guarded to the proto defaults: stack inputs built from a
-		// manifest materialize defaults, but direct stack-input paths do not.
+		// Presence-guarded to the proto defaults: IaC inputs built from a
+		// manifest materialize defaults, but direct iac-input paths do not.
 		Enabled:             pulumi.Bool(presenceGuardedBool(spec.Enabled, true)),
 		Severity:            pulumi.Int(int(presenceGuardedInt32(spec.Severity, 3))),
 		EvaluationFrequency: pulumi.String(presenceGuardedString(spec.EvaluationFrequency, "PT5M")),
@@ -143,7 +143,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuremonitorscheduledqueryalertv
 		return errors.Wrapf(err, "failed to create scheduled query alert %s", spec.AlertName)
 	}
 
-	// Export stack outputs. Empty principal id unless SYSTEM_ASSIGNED is
+	// Export outputs. Empty principal id unless SYSTEM_ASSIGNED is
 	// enabled -- mirrors the TF module's try(identity[0].principal_id, "").
 	ctx.Export(OpScheduledQueryAlertId, createdAlert.ID())
 	ctx.Export(OpScheduledQueryAlertName, createdAlert.Name)

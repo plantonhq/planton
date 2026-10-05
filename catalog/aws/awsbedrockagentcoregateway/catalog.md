@@ -4,7 +4,7 @@ Deploys an Amazon Bedrock AgentCore gateway — a managed MCP (Model Context Pro
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **MCP Gateway** — the gateway itself, named from `metadata.name`, with the chosen inbound authorizer, optional KMS encryption, MCP protocol tuning (instructions, semantic tool search, session timeout, response streaming), up to two Lambda interceptors, and an optional Cedar policy engine attachment
 - **Gateway Target** — one per `targets` entry: an AgentCore runtime, an API Gateway REST API stage, a Lambda function with explicit tool schemas, a remote MCP server, or tools derived from an OpenAPI 3 or Smithy schema. AWS deletes a gateway's targets automatically before the gateway itself at destroy
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with AgentCore control-plane permissions (`bedrock-agentcore:CreateGateway` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with AgentCore control-plane permissions (`bedrock-agentcore:CreateGateway` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -67,7 +67,7 @@ spec:
 planton apply -f agentcore-gateway.yaml
 ```
 
-This creates an IAM-authenticated MCP gateway with one target that derives a tool per route from the OpenAPI document and signs backend calls with the gateway's role. A Stack Job tracks the provisioning in real time.
+This creates an IAM-authenticated MCP gateway with one target that derives a tool per route from the OpenAPI document and signs backend calls with the gateway's role. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -106,7 +106,7 @@ These are the most important decisions when configuring a gateway. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -118,9 +118,9 @@ These are the most important decisions when configuring a gateway. Explore the f
 
 Target credential providers (`credentials.apiKey.providerArn`, `credentials.oauth.providerArn`) also commonly reference an **AwsBedrockAgentCoreIdentity** resource's provider-ARN output maps, and private endpoints for JWT providers and backends take **AwsVpc**, **AwsSubnet**, and **AwsSecurityGroup** references.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -143,10 +143,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the execution role the gateway assumes to reach its targets, wired via `roleArn`
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — tool-fulfilling functions and request/response interceptors
-- [**AWS Bedrock AgentCore Identity**](/cloud-catalog/aws-bedrock-agent-core-identity) — vaulted API keys, OAuth providers, and the Cedar policy engine the gateway evaluates against
-- [**AWS Bedrock AgentCore Runtime**](/cloud-catalog/aws-bedrock-agent-core-runtime) — agent runtimes exposed as tools through `agentcoreRuntime` targets, and the agents that consume this gateway's `gateway_url`
-- [**AWS Bedrock AgentCore Evaluation**](/cloud-catalog/aws-bedrock-agent-core-evaluation) — harnesses call tools through the gateway via its `gateway_arn`
-- [**AWS REST API Gateway**](/cloud-catalog/aws-rest-api-gateway) — REST API stages fronted as tools through `apiGateway` targets
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption for the gateway's data at rest
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the execution role the gateway assumes to reach its targets, wired via `roleArn`
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — tool-fulfilling functions and request/response interceptors
+- [**AWS Bedrock AgentCore Identity**](/infra-catalog/aws-bedrock-agent-core-identity) — vaulted API keys, OAuth providers, and the Cedar policy engine the gateway evaluates against
+- [**AWS Bedrock AgentCore Runtime**](/infra-catalog/aws-bedrock-agent-core-runtime) — agent runtimes exposed as tools through `agentcoreRuntime` targets, and the agents that consume this gateway's `gateway_url`
+- [**AWS Bedrock AgentCore Evaluation**](/infra-catalog/aws-bedrock-agent-core-evaluation) — harnesses call tools through the gateway via its `gateway_arn`
+- [**AWS REST API Gateway**](/infra-catalog/aws-rest-api-gateway) — REST API stages fronted as tools through `apiGateway` targets
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption for the gateway's data at rest

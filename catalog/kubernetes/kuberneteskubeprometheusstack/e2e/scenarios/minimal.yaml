@@ -1,4 +1,4 @@
-# The component defaults on their own: a single persistent Prometheus,
+# The kind defaults on their own: a single persistent Prometheus,
 # Alertmanager and the bundled Grafana on, cluster-wide monitor discovery,
 # both exporters — the verifier proves LIVE metric flow (a healthy
 # kube-state-metrics scrape target + a PromQL query answering with data).

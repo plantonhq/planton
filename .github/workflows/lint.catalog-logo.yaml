@@ -1,7 +1,7 @@
 # =============================================================================
 # Catalog Logo Guard
 # =============================================================================
-# Fails the PR when any component's logo.svg breaks one of three rules:
+# Fails the PR when any kind's logo.svg breaks one of three rules:
 #   - malformed-svg: not a browser-renderable SVG document (a missing <svg>
 #     root, a raw control byte, an illegal "--" comment sequence, a duplicate
 #     attribute -- every one of which has shipped in this tree and renders the
@@ -27,7 +27,7 @@ on:
     paths:
       - 'catalog/**/logo.svg'
       - 'pkg/cataloglogo/**'
-      - 'shared/cloudresourcekind/**'
+      - 'shared/catalogkind/**'
       - '.github/workflows/lint.catalog-logo.yaml'
   push:
     branches:
@@ -35,7 +35,7 @@ on:
     paths:
       - 'catalog/**/logo.svg'
       - 'pkg/cataloglogo/**'
-      - 'shared/cloudresourcekind/**'
+      - 'shared/catalogkind/**'
       - '.github/workflows/lint.catalog-logo.yaml'
 
 permissions:

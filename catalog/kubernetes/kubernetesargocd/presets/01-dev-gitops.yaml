@@ -6,12 +6,12 @@ spec:
   namespace:
     value: dev-argocd
   create_namespace: true
-  # Everything else is the component's defaults: the pinned chart
+  # Everything else is the kind's defaults: the pinned chart
   # version, all seven components at chart grain (bundled single-pod
   # Redis cache, dex + notifications on, commit server off), and the
   # local admin user enabled — Argo CD generates the first password
   # into the `argocd-initial-admin-secret` Secret at first start (name
-  # and a port-forward command land in the stack outputs).
+  # and a port-forward command land in the outputs).
   #
   # Declaring applications is NOT this kind's job: once the control
   # plane runs, Applications/AppProjects are plain custom resources —

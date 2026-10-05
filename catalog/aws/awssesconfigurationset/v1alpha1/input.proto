@@ -5,10 +5,10 @@ package dev.planton.aws.awssesconfigurationset.v1alpha1;
 import "catalog/aws/awssesconfigurationset/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSesConfigurationSetStackInput is the input for the
+// AwsSesConfigurationSetIacInput is the input for the
 // aws-ses-configuration-set IaC modules.
-message AwsSesConfigurationSetStackInput {
-  // target cloud-resource
+message AwsSesConfigurationSetIacInput {
+  // the catalog object to deploy
   AwsSesConfigurationSet target = 1;
 
   // provider-config

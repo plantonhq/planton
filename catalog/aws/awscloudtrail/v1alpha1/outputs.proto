@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awscloudtrail.v1alpha1;
 
-// AwsCloudTrailStackOutputs captures the observable state of the
+// AwsCloudTrailOutputs captures the observable state of the
 // trail after apply.
-message AwsCloudTrailStackOutputs {
+message AwsCloudTrailOutputs {
   // The trail's ARN (also the provider's import ID).
   string trail_arn = 1;
 

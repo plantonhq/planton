@@ -55,7 +55,7 @@ const (
 //   - Child volumes are independent lifecycle resources and are NOT managed by
 //     this component. Use the root_volume_id output to create child volumes.
 //   - Credentials, region, and deployment workflow live outside this spec in
-//     stack inputs.
+//     IaC inputs.
 type AwsFsxOpenzfsFileSystemSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

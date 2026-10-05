@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarer2bucket.v1alpha1;
 
-// CloudflareR2BucketStackOutputs captures the outputs after provisioning the R2 bucket.
-message CloudflareR2BucketStackOutputs {
+// CloudflareR2BucketOutputs captures the outputs after provisioning the R2 bucket.
+message CloudflareR2BucketOutputs {
   // The name of the bucket (same as spec.bucket_name)
   string bucket_name = 1;
 

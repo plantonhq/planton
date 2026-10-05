@@ -14,6 +14,6 @@ planton pulumi up --manifest ../../e2e/manifest.yaml --module-dir .
 planton pulumi destroy --manifest ../../e2e/manifest.yaml --module-dir .
 ```
 
-**Note**: Credentials are provided via stack input (CLI), not in the manifest `spec`.
+**Note**: Credentials are provided via IaC input (CLI), not in the manifest `spec`.
 
 For a ready-to-run fixture, see [`e2e/manifest.yaml`](../../e2e/manifest.yaml).

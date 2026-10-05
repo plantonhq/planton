@@ -4,7 +4,7 @@ Deploys a managed database cluster on DigitalOcean supporting PostgreSQL, MySQL,
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DigitalOcean Database Cluster** -- a managed database cluster in the specified region with the configured engine, version, node size, and node count
 - **VPC Network Attachment** -- configured only when `vpc` is provided; places the cluster within a private network for secure internal access
@@ -18,13 +18,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
 
 - **A target region** where managed databases are available. Not all regions support all engines -- list what is offered where via `doctl databases options regions`.
-- **A VPC network** (recommended for production) in the target region. Provide the VPC UUID directly or reference a DigitalOceanVpc Cloud Resource via ValueFromRef.
+- **A VPC network** (recommended for production) in the target region. Provide the VPC UUID directly or reference a DigitalOceanVpc Infra Component via ValueFromRef.
 - **A valid node size slug** (e.g., `"db-s-2vcpu-4gb"`) -- check available database sizes via `doctl databases options slugs`.
 
 ## Deploy
@@ -57,7 +57,7 @@ spec:
 planton apply -f do-database.yaml
 ```
 
-This creates a 3-node PostgreSQL 16 cluster in the NYC3 region with no VPC attachment. A Stack Job tracks the provisioning in real time.
+This creates a 3-node PostgreSQL 16 cluster in the NYC3 region with no VPC attachment. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,16 +94,16 @@ These are the most important decisions when configuring a database cluster. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **DigitalOceanVpc** (optional) | `vpc` | `status.outputs.vpc_id` |
 | **DigitalOceanProject** (optional) | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -134,11 +134,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean VPC**](/cloud-catalog/digital-ocean-vpc) -- provides the private network for database cluster placement
-- [**DigitalOcean Logical Database**](/cloud-catalog/digital-ocean-database-db) -- additional databases inside the cluster, beyond the default one
-- [**DigitalOcean Database User**](/cloud-catalog/digital-ocean-database-user) -- per-application credentials instead of sharing the default user
-- [**DigitalOcean Database Connection Pool**](/cloud-catalog/digital-ocean-database-connection-pool) -- server-side connection pooling in front of the cluster
-- [**DigitalOcean Database Firewall**](/cloud-catalog/digital-ocean-database-firewall) -- trusted-source rules restricting which resources may connect
-- [**DigitalOcean Database Read Replica**](/cloud-catalog/digital-ocean-database-replica) -- read-only copies for read scaling and regional locality
-- [**DigitalOcean Kafka Topic**](/cloud-catalog/digital-ocean-database-kafka-topic) / [**DigitalOcean Kafka Schema**](/cloud-catalog/digital-ocean-database-kafka-schema) -- topics and schemas on Kafka clusters
-- [**DigitalOcean Monitor Alert**](/cloud-catalog/digital-ocean-monitor-alert) -- alerting on the cluster's resource metrics
+- [**DigitalOcean VPC**](/infra-catalog/digital-ocean-vpc) -- provides the private network for database cluster placement
+- [**DigitalOcean Logical Database**](/infra-catalog/digital-ocean-database-db) -- additional databases inside the cluster, beyond the default one
+- [**DigitalOcean Database User**](/infra-catalog/digital-ocean-database-user) -- per-application credentials instead of sharing the default user
+- [**DigitalOcean Database Connection Pool**](/infra-catalog/digital-ocean-database-connection-pool) -- server-side connection pooling in front of the cluster
+- [**DigitalOcean Database Firewall**](/infra-catalog/digital-ocean-database-firewall) -- trusted-source rules restricting which resources may connect
+- [**DigitalOcean Database Read Replica**](/infra-catalog/digital-ocean-database-replica) -- read-only copies for read scaling and regional locality
+- [**DigitalOcean Kafka Topic**](/infra-catalog/digital-ocean-database-kafka-topic) / [**DigitalOcean Kafka Schema**](/infra-catalog/digital-ocean-database-kafka-schema) -- topics and schemas on Kafka clusters
+- [**DigitalOcean Monitor Alert**](/infra-catalog/digital-ocean-monitor-alert) -- alerting on the cluster's resource metrics

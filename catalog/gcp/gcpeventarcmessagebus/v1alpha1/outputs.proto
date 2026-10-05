@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpeventarcmessagebus.v1alpha1;
 
 // Outputs produced after provisioning an Eventarc Advanced message bus.
-message GcpEventarcMessageBusStackOutputs {
+message GcpEventarcMessageBusOutputs {
   // The full bus resource name
   // (projects/{project}/locations/{location}/messageBuses/{bus}) — the
   // value cross-bus pipelines (another bus's destination.message_bus) and

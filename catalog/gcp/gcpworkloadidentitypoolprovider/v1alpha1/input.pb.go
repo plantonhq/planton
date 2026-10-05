@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpWorkloadIdentityPoolProviderStackInput struct {
+type GcpWorkloadIdentityPoolProviderIacInput struct {
 	state          protoimpl.MessageState           `protogen:"open.v1"`
 	Target         *GcpWorkloadIdentityPoolProvider `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig           `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpWorkloadIdentityPoolProviderStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpWorkloadIdentityPoolProviderStackInput) Reset() {
-	*x = GcpWorkloadIdentityPoolProviderStackInput{}
+func (x *GcpWorkloadIdentityPoolProviderIacInput) Reset() {
+	*x = GcpWorkloadIdentityPoolProviderIacInput{}
 	mi := &file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpWorkloadIdentityPoolProviderStackInput) String() string {
+func (x *GcpWorkloadIdentityPoolProviderIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpWorkloadIdentityPoolProviderStackInput) ProtoMessage() {}
+func (*GcpWorkloadIdentityPoolProviderIacInput) ProtoMessage() {}
 
-func (x *GcpWorkloadIdentityPoolProviderStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpWorkloadIdentityPoolProviderIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpWorkloadIdentityPoolProviderStackInput) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpWorkloadIdentityPoolProviderStackInput.ProtoReflect.Descriptor instead.
-func (*GcpWorkloadIdentityPoolProviderStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpWorkloadIdentityPoolProviderIacInput.ProtoReflect.Descriptor instead.
+func (*GcpWorkloadIdentityPoolProviderIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpWorkloadIdentityPoolProviderStackInput) GetTarget() *GcpWorkloadIdentityPoolProvider {
+func (x *GcpWorkloadIdentityPoolProviderIacInput) GetTarget() *GcpWorkloadIdentityPoolProvider {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpWorkloadIdentityPoolProviderStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpWorkloadIdentityPoolProviderIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_input_proto protor
 
 const file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/gcp/gcpworkloadidentitypoolprovider/v1alpha1/input.proto\x128dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1\x1a>catalog/gcp/gcpworkloadidentitypoolprovider/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xeb\x01\n" +
-	")GcpWorkloadIdentityPoolProviderStackInput\x12q\n" +
+	"@catalog/gcp/gcpworkloadidentitypoolprovider/v1alpha1/input.proto\x128dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1\x1a>catalog/gcp/gcpworkloadidentitypoolprovider/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe9\x01\n" +
+	"'GcpWorkloadIdentityPoolProviderIacInput\x12q\n" +
 	"\x06target\x18\x01 \x01(\v2Y.dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xca\x03\n" +
 	"<com.dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_input_proto_rawDe
 
 var file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_input_proto_goTypes = []any{
-	(*GcpWorkloadIdentityPoolProviderStackInput)(nil), // 0: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderStackInput
-	(*GcpWorkloadIdentityPoolProvider)(nil),           // 1: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProvider
-	(*gcp.GcpProviderConfig)(nil),                     // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpWorkloadIdentityPoolProviderIacInput)(nil), // 0: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderIacInput
+	(*GcpWorkloadIdentityPoolProvider)(nil),         // 1: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProvider
+	(*gcp.GcpProviderConfig)(nil),                   // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpworkloadidentitypoolprovider_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderStackInput.target:type_name -> dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProvider
-	2, // 1: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderIacInput.target:type_name -> dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProvider
+	2, // 1: dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

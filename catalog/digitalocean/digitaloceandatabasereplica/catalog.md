@@ -4,7 +4,7 @@ Creates a single-node read-only replica of a DigitalOcean managed database clust
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Read-Only Replica** -- a full single-node managed database of the configured size, continuously following the primary
 - **VPC Network Attachment** -- configured only when `vpc` is provided; places the replica's private endpoint in the named VPC (the REPLICA region's VPC for cross-region replicas)
@@ -15,13 +15,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **A DigitalOceanDatabaseCluster** -- the primary (PostgreSQL or MySQL), referenced by name (or an existing cluster's UUID as a literal).
 
 ### DigitalOcean Account
 
 - **Budget for a second node** -- the replica bills hourly like a single-node cluster of its slug, from creation, regardless of read traffic.
-- **A VPC in the replica's region** (only for private networking) -- cross-region replicas join the REPLICA region's VPC, not the primary's; reference a DigitalOceanVpc Cloud Resource or pass a VPC UUID.
+- **A VPC in the replica's region** (only for private networking) -- cross-region replicas join the REPLICA region's VPC, not the primary's; reference a DigitalOceanVpc Infra Component or pass a VPC UUID.
 
 ## Deploy
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f do-database-replica.yaml
 ```
 
-This creates a same-region read replica of the referenced cluster with its own read-only endpoint. A Stack Job tracks the provisioning in real time.
+This creates a same-region read replica of the referenced cluster with its own read-only endpoint. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,16 +100,16 @@ These are the most important decisions when configuring a read replica. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **DigitalOceanDatabaseCluster** | `cluster` | `status.outputs.cluster_id` |
 | **DigitalOceanVpc** (optional) | `vpc` | `status.outputs.vpc_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,5 +132,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Database Cluster**](/cloud-catalog/digital-ocean-database-cluster) -- the primary this replica follows, wired via the `cluster` reference
-- [**DigitalOcean VPC**](/cloud-catalog/digital-ocean-vpc) -- private networking in the replica's region, wired via the `vpc` reference
+- [**DigitalOcean Database Cluster**](/infra-catalog/digital-ocean-database-cluster) -- the primary this replica follows, wired via the `cluster` reference
+- [**DigitalOcean VPC**](/infra-catalog/digital-ocean-vpc) -- private networking in the replica's region, wired via the `vpc` reference

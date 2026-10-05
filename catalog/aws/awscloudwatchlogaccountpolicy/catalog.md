@@ -4,7 +4,7 @@ Deploys a CloudWatch Logs account-level policy — one rule AWS applies to every
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CloudWatch Logs Account Policy** — one policy object per (`policyName`, `policyType`) pair, carrying the type's own policy document. The provider's scope argument is pinned to `ALL` (its only legal value); `selectionCriteria` is sent only when set, and AWS accepts it only on subscription-filter policies.
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, carrying `logs:PutAccountPolicy`, `logs:DescribeAccountPolicies`, and `logs:DeleteAccountPolicy`. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, carrying `logs:PutAccountPolicy`, `logs:DescribeAccountPolicies`, and `logs:DeleteAccountPolicy`. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f log-account-policy.yaml
 ```
 
-This creates a field-index policy that indexes `requestId`, `customerId`, and `sourceIp` across every log group in us-east-1 — Logs Insights queries filtering on indexed fields scan less. A Stack Job tracks the provisioning in real time.
+This creates a field-index policy that indexes `requestId`, `customerId`, and `sourceIp` across every log group in us-east-1 — Logs Insights queries filtering on indexed fields scan less. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -71,11 +71,11 @@ These are the most important decisions when configuring an account policy. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. A subscription-filter policy's destination ARN travels inside `policyDocument` as a plain string, not as a typed reference.
+This kind has no foreign key dependencies. A subscription-filter policy's destination ARN travels inside `policyDocument` as a plain string, not as a typed reference.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` echoes the policy's identity back: `policy_name` and `policy_type`, which together form the provider's import ID (`policy_name:policy_type`). Both are input echoes — nothing downstream composes on an account policy via ValueFromRef.
 
@@ -91,6 +91,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) — the groups the policy governs; per-group transformers and indexes on the group win over the account policy for service-specific needs
-- [**AWS Kinesis Data Stream**](/cloud-catalog/aws-kinesis-stream) — a common destination for subscription-filter policies, carried in the policy document by ARN
-- [**AWS CloudWatch Logs Delivery**](/cloud-catalog/aws-cloudwatch-log-delivery) — the cross-account destination other accounts' subscription policies can target
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) — the groups the policy governs; per-group transformers and indexes on the group win over the account policy for service-specific needs
+- [**AWS Kinesis Data Stream**](/infra-catalog/aws-kinesis-stream) — a common destination for subscription-filter policies, carried in the policy document by ARN
+- [**AWS CloudWatch Logs Delivery**](/infra-catalog/aws-cloudwatch-log-delivery) — the cross-account destination other accounts' subscription policies can target

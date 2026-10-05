@@ -5,10 +5,10 @@ package dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1;
 import "catalog/kubernetes/kubernetesplantonoperator/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesPlantonOperatorStackInput provides the input for the Planton
+// KubernetesPlantonOperatorIacInput provides the input for the Planton
 // operator IaC stack.
-message KubernetesPlantonOperatorStackInput {
-  // target cloud-resource
+message KubernetesPlantonOperatorIacInput {
+  // the catalog object to deploy
   KubernetesPlantonOperator target = 1;
   // provider-config for Kubernetes provider
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

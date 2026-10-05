@@ -33,7 +33,7 @@ type CloudflareHealthcheck struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareHealthcheckSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *CloudflareHealthcheck) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareHealthcheck) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareHealthcheck) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *CloudflareHealthcheck) GetStatus() *CloudflareHealthcheckStatus {
 // CloudflareHealthcheckStatus represents the observed state of a health check.
 type CloudflareHealthcheckStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareHealthcheckStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareHealthcheckOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareHealthcheckStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareHealthcheckStatus) GetOutputs() *CloudflareHealthcheckStackOutputs {
+func (x *CloudflareHealthcheckStatus) GetOutputs() *CloudflareHealthcheckOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15CloudflareHealthcheckR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
 	"\x04spec\x18\x04 \x01(\v2P.dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12j\n" +
-	"\x06status\x18\x05 \x01(\v2R.dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckStatusR\x06status\"\x91\x01\n" +
-	"\x1bCloudflareHealthcheckStatus\x12r\n" +
-	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckStackOutputsR\aoutputsB\xac\x03\n" +
+	"\x06status\x18\x05 \x01(\v2R.dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckStatusR\x06status\"\x8c\x01\n" +
+	"\x1bCloudflareHealthcheckStatus\x12m\n" +
+	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckOutputsR\aoutputsB\xac\x03\n" +
 	"9com.dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1B\bApiProtoP\x01Zlgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarehealthcheck/v1alpha1;cloudflarehealthcheckv1alpha1\xa2\x02\x04DPCC\xaa\x025Dev.Planton.Cloudflare.Cloudflarehealthcheck.V1alpha1\xca\x025Dev\\Planton\\Cloudflare\\Cloudflarehealthcheck\\V1alpha1\xe2\x02ADev\\Planton\\Cloudflare\\Cloudflarehealthcheck\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Cloudflare::Cloudflarehealthcheck::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareHealthcheck)(nil),             // 0: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheck
-	(*CloudflareHealthcheckStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareHealthcheckSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckSpec
-	(*CloudflareHealthcheckStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckStackOutputs
+	(*CloudflareHealthcheck)(nil),        // 0: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheck
+	(*CloudflareHealthcheckStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareHealthcheckSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckSpec
+	(*CloudflareHealthcheckOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckOutputs
 }
 var file_catalog_cloudflare_cloudflarehealthcheck_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheck.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheck.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheck.spec:type_name -> dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckSpec
 	1, // 2: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheck.status:type_name -> dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckStatus
-	4, // 3: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1.CloudflareHealthcheckOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

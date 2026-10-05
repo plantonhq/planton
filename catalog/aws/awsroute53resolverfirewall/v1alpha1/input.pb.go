@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRoute53ResolverFirewallStackInput is the input for the IaC
+// AwsRoute53ResolverFirewallIacInput is the input for the IaC
 // modules that manage a DNS Firewall rule group with its domain
 // lists, rules, and VPC associations.
-type AwsRoute53ResolverFirewallStackInput struct {
+type AwsRoute53ResolverFirewallIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsRoute53ResolverFirewall resource to deploy.
 	Target *AwsRoute53ResolverFirewall `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AwsRoute53ResolverFirewallStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsRoute53ResolverFirewallStackInput) Reset() {
-	*x = AwsRoute53ResolverFirewallStackInput{}
+func (x *AwsRoute53ResolverFirewallIacInput) Reset() {
+	*x = AwsRoute53ResolverFirewallIacInput{}
 	mi := &file_catalog_aws_awsroute53resolverfirewall_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRoute53ResolverFirewallStackInput) String() string {
+func (x *AwsRoute53ResolverFirewallIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRoute53ResolverFirewallStackInput) ProtoMessage() {}
+func (*AwsRoute53ResolverFirewallIacInput) ProtoMessage() {}
 
-func (x *AwsRoute53ResolverFirewallStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsRoute53ResolverFirewallIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsroute53resolverfirewall_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsRoute53ResolverFirewallStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRoute53ResolverFirewallStackInput.ProtoReflect.Descriptor instead.
-func (*AwsRoute53ResolverFirewallStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRoute53ResolverFirewallIacInput.ProtoReflect.Descriptor instead.
+func (*AwsRoute53ResolverFirewallIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsroute53resolverfirewall_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRoute53ResolverFirewallStackInput) GetTarget() *AwsRoute53ResolverFirewall {
+func (x *AwsRoute53ResolverFirewallIacInput) GetTarget() *AwsRoute53ResolverFirewall {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsRoute53ResolverFirewallStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsRoute53ResolverFirewallIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awsroute53resolverfirewall_v1alpha1_input_proto protoreflec
 
 const file_catalog_aws_awsroute53resolverfirewall_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awsroute53resolverfirewall/v1alpha1/input.proto\x123dev.planton.aws.awsroute53resolverfirewall.v1alpha1\x1a9catalog/aws/awsroute53resolverfirewall/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdc\x01\n" +
-	"$AwsRoute53ResolverFirewallStackInput\x12g\n" +
+	";catalog/aws/awsroute53resolverfirewall/v1alpha1/input.proto\x123dev.planton.aws.awsroute53resolverfirewall.v1alpha1\x1a9catalog/aws/awsroute53resolverfirewall/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xda\x01\n" +
+	"\"AwsRoute53ResolverFirewallIacInput\x12g\n" +
 	"\x06target\x18\x01 \x01(\v2O.dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xa7\x03\n" +
 	"7com.dev.planton.aws.awsroute53resolverfirewall.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_aws_awsroute53resolverfirewall_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_aws_awsroute53resolverfirewall_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsroute53resolverfirewall_v1alpha1_input_proto_goTypes = []any{
-	(*AwsRoute53ResolverFirewallStackInput)(nil), // 0: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackInput
-	(*AwsRoute53ResolverFirewall)(nil),           // 1: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewall
-	(*aws.AwsProviderConfig)(nil),                // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsRoute53ResolverFirewallIacInput)(nil), // 0: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallIacInput
+	(*AwsRoute53ResolverFirewall)(nil),         // 1: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewall
+	(*aws.AwsProviderConfig)(nil),              // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsroute53resolverfirewall_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackInput.target:type_name -> dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewall
-	2, // 1: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallIacInput.target:type_name -> dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewall
+	2, // 1: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

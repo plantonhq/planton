@@ -18,7 +18,7 @@ The Scaleway provider expansion needs DNS management capabilities for two critic
 ### Pain Points
 
 - No DNS zone management in the Scaleway provider prior to this work
-- Infra charts cannot compose DNS with other Scaleway resources without a zone kind
+- Infra Charts cannot compose DNS with other Scaleway resources without a zone kind
 - The upcoming ScalewayDnsRecord (R16) needs a zone to reference
 
 ## Solution / What's New
@@ -73,7 +73,7 @@ Like Container Registry (R14), Scaleway DNS zones and records do not support tag
 ## Benefits
 
 - **Universal pattern compliance** -- Follows the zone+records pattern used by all 7 existing DNS zone kinds
-- **Infra chart ready** -- `zone_name` output enables downstream ScalewayDnsRecord references via `StringValueOrRef`
+- **Infra Chart ready** -- `zone_name` output enables downstream ScalewayDnsRecord references via `StringValueOrRef`
 - **Self-contained email setup** -- Inline MX, SPF, DMARC records ship with the zone in a single manifest
 - **Subdomain delegation** -- Supports both root zones and delegated subdomain zones
 
@@ -81,15 +81,15 @@ Like Container Registry (R14), Scaleway DNS zones and records do not support tag
 
 - **15 of 19 Scaleway resource kinds complete** (79%)
 - DNS tier started; ScalewayDnsRecord (R16) is next in queue
-- Unblocks infra chart DNS integration for `scaleway/kapsule-environment`
+- Unblocks Infra Chart DNS integration for `scaleway/kapsule-environment`
 
 ## Files Created
 
 **Proto (4):**
 - `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/spec.proto`
-- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/stack_outputs.proto`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/outputs.proto`
 - `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/api.proto`
-- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/stack_input.proto`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac_input.proto`
 
 **Pulumi Go (6):**
 - `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac/pulumi/main.go`

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflared1database
 spec:
@@ -15,7 +15,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: database_id
       derivations:
-        - from_stack_output: database_id
+        - from_output: database_id
       where_to_find: >-
         Cloudflare dashboard -> Storage & Databases -> D1 -> the database
         (the UUID under the name), or `GET /accounts/<account_id>/d1/database`

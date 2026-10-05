@@ -3,7 +3,7 @@
 Deploy a Cloudflare Pages project — a managed host for a static site or
 full-stack app (static assets + Pages Functions) served from Cloudflare's edge.
 
-This component manages the durable **project**: its build configuration, optional
+This kind manages the durable **project**: its build configuration, optional
 git connection, per-environment runtime configuration (bindings, env vars,
 compatibility), and custom domains. The actual **deployments** (the built
 versions of the site) are produced out-of-band — see "How versions are deployed".
@@ -123,7 +123,7 @@ exist until the first deployment is produced out-of-band.
 secret-by-default: provide a managed-secret reference, resolved just-in-time at
 deploy. Plain configuration belongs in `vars`.
 
-## Related components
+## Related kinds
 
 - `CloudflareWorker` (with Static Assets) — the build-and-upload hosting model.
 - `CloudflareKvNamespace`, `CloudflareD1Database`, `CloudflareR2Bucket`,

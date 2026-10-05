@@ -3,7 +3,7 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # SEPARATE CREDENTIAL -- R2 bundle fetch: when spec.r2_bundle is set, BOTH
 # modules read the pre-built script bundle through R2's S3-compatible API
@@ -24,10 +24,10 @@
 # that call is not stated on the permissions reference page; the live capture
 # lane should settle it.
 #
-# The component README and catalog.md carried no named permission prose to
+# The kind's README and catalog.md carried no named permission prose to
 # migrate.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflareworker
 spec:

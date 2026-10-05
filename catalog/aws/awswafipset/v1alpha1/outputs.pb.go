@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsWafIpSetStackOutputs captures observable identifiers from a provisioned
+// AwsWafIpSetOutputs captures observable identifiers from a provisioned
 // WAFv2 IP set.
 //
 // The primary output is `ip_set_arn` — the value a web ACL's
 // ip_set_reference statement (AwsWafWebAcl) points at to match requests
 // against this set's addresses.
-type AwsWafIpSetStackOutputs struct {
+type AwsWafIpSetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name of the IP set
 	// (arn:aws:wafv2:<region>:<account>:<scope>/ipset/<name>/<id>).
@@ -42,20 +42,20 @@ type AwsWafIpSetStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsWafIpSetStackOutputs) Reset() {
-	*x = AwsWafIpSetStackOutputs{}
+func (x *AwsWafIpSetOutputs) Reset() {
+	*x = AwsWafIpSetOutputs{}
 	mi := &file_catalog_aws_awswafipset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsWafIpSetStackOutputs) String() string {
+func (x *AwsWafIpSetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsWafIpSetStackOutputs) ProtoMessage() {}
+func (*AwsWafIpSetOutputs) ProtoMessage() {}
 
-func (x *AwsWafIpSetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsWafIpSetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awswafipset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,26 +67,26 @@ func (x *AwsWafIpSetStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsWafIpSetStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsWafIpSetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsWafIpSetOutputs.ProtoReflect.Descriptor instead.
+func (*AwsWafIpSetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awswafipset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsWafIpSetStackOutputs) GetIpSetArn() string {
+func (x *AwsWafIpSetOutputs) GetIpSetArn() string {
 	if x != nil {
 		return x.IpSetArn
 	}
 	return ""
 }
 
-func (x *AwsWafIpSetStackOutputs) GetIpSetId() string {
+func (x *AwsWafIpSetOutputs) GetIpSetId() string {
 	if x != nil {
 		return x.IpSetId
 	}
 	return ""
 }
 
-func (x *AwsWafIpSetStackOutputs) GetIpSetName() string {
+func (x *AwsWafIpSetOutputs) GetIpSetName() string {
 	if x != nil {
 		return x.IpSetName
 	}
@@ -97,8 +97,8 @@ var File_catalog_aws_awswafipset_v1alpha1_outputs_proto protoreflect.FileDescrip
 
 const file_catalog_aws_awswafipset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/aws/awswafipset/v1alpha1/outputs.proto\x12$dev.planton.aws.awswafipset.v1alpha1\"s\n" +
-	"\x17AwsWafIpSetStackOutputs\x12\x1c\n" +
+	".catalog/aws/awswafipset/v1alpha1/outputs.proto\x12$dev.planton.aws.awswafipset.v1alpha1\"n\n" +
+	"\x12AwsWafIpSetOutputs\x12\x1c\n" +
 	"\n" +
 	"ip_set_arn\x18\x01 \x01(\tR\bipSetArn\x12\x1a\n" +
 	"\tip_set_id\x18\x02 \x01(\tR\aipSetId\x12\x1e\n" +
@@ -119,7 +119,7 @@ func file_catalog_aws_awswafipset_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awswafipset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awswafipset_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsWafIpSetStackOutputs)(nil), // 0: dev.planton.aws.awswafipset.v1alpha1.AwsWafIpSetStackOutputs
+	(*AwsWafIpSetOutputs)(nil), // 0: dev.planton.aws.awswafipset.v1alpha1.AwsWafIpSetOutputs
 }
 var file_catalog_aws_awswafipset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

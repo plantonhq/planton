@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	awsecrrepov1alpha1 "github.com/plantonhq/planton/catalog/aws/awsecrrepo/v1alpha1"
-	componentv1 "github.com/plantonhq/planton/iac/componentimportmap/v1"
+	kindv1 "github.com/plantonhq/planton/iac/catalogkindimportmap/v1"
 )
 
 func TestPlaceholders(t *testing.T) {
@@ -138,32 +138,32 @@ func TestParseTofuAddress(t *testing.T) {
 }
 
 func TestResolveValues(t *testing.T) {
-	m := &componentv1.ComponentImportMap{
-		Spec: &componentv1.ComponentImportMapSpec{
-			Values: []*componentv1.ImportValue{
+	m := &kindv1.CatalogKindImportMap{
+		Spec: &kindv1.CatalogKindImportMapSpec{
+			Values: []*kindv1.ImportValue{
 				{
 					Name: "bucket",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_FromMetadataName{FromMetadataName: true}},
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_FromMetadataName{FromMetadataName: true}},
 					},
 				},
 				{
 					Name: "repository_name",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_FromSpecField{FromSpecField: "repository_name"}},
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_FromSpecField{FromSpecField: "repository_name"}},
 					},
 				},
 				{
 					Name: "vpc_id",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_FromStackOutput{FromStackOutput: "vpc_id"}},
-						{Source: &componentv1.ImportValueDerivation_FromArnPart{FromArnPart: "resource_id"}},
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_FromOutput{FromOutput: "vpc_id"}},
+						{Source: &kindv1.ImportValueDerivation_FromArnPart{FromArnPart: "resource_id"}},
 					},
 				},
 				{
 					Name: "tiering_name",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_FromAddressKey{FromAddressKey: true}},
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_FromAddressKey{FromAddressKey: true}},
 					},
 				},
 				{Name: "association_id", WhereToFind: "describe-vpcs"},
@@ -171,8 +171,8 @@ func TestResolveValues(t *testing.T) {
 					// A literal derivation: constants the module hardcodes
 					// (a typed-CR module's apiVersion/kind).
 					Name: "api_version",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_Literal{Literal: "cert-manager.io/v1"}},
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_Literal{Literal: "cert-manager.io/v1"}},
 					},
 				},
 				{
@@ -180,8 +180,8 @@ func TestResolveValues(t *testing.T) {
 					// provider-composed identifiers built by prefixing the
 					// parent's name (App Auto Scaling's "table/<table_name>").
 					Name: "scaling_resource_id",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_FromMetadataNamePrefix{FromMetadataNamePrefix: "table/"}},
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_FromMetadataNamePrefix{FromMetadataNamePrefix: "table/"}},
 					},
 				},
 			},
@@ -191,7 +191,7 @@ func TestResolveValues(t *testing.T) {
 	rctx := ResolveContext{
 		MetadataName: "my-bucket",
 		Spec:         &awsecrrepov1alpha1.AwsEcrRepoSpec{RepositoryName: "team/app"},
-		StackOutputs: map[string]string{},
+		Outputs:      map[string]string{},
 		AddressKey:   "archive",
 		ArnParts:     map[string]string{"resource_id": "vpc-0abc"},
 	}
@@ -205,7 +205,7 @@ func TestResolveValues(t *testing.T) {
 	want := map[string]string{
 		"bucket":          "my-bucket",
 		"repository_name": "team/app",
-		// stack output empty -> falls through to the ARN part.
+		// output empty -> falls through to the ARN part.
 		"vpc_id":              "vpc-0abc",
 		"tiering_name":        "archive",
 		"api_version":         "cert-manager.io/v1",
@@ -219,20 +219,20 @@ func TestResolveValues(t *testing.T) {
 	}
 }
 
-func TestResolveValues_FromStackOutputKeyedByAddress(t *testing.T) {
+func TestResolveValues_FromOutputKeyedByAddress(t *testing.T) {
 	// Cloud-generated per-instance IDs of keyed satellites: the module
 	// exports a map keyed by the SAME key as the resource's for_each
 	// instances, and the enumerated address selects the entry. Map keys may
 	// themselves contain dots (a CIDR) -- the lookup composes the flattened
 	// dot-path string exactly, never re-parses it.
-	m := &componentv1.ComponentImportMap{
-		Spec: &componentv1.ComponentImportMapSpec{
-			Values: []*componentv1.ImportValue{
+	m := &kindv1.CatalogKindImportMap{
+		Spec: &kindv1.CatalogKindImportMapSpec{
+			Values: []*kindv1.ImportValue{
 				{
 					Name: "cidr_association_id",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_FromStackOutputKeyedByAddress{
-							FromStackOutputKeyedByAddress: "secondary_ipv4_cidr_association_ids",
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_FromOutputKeyedByAddress{
+							FromOutputKeyedByAddress: "secondary_ipv4_cidr_association_ids",
 						}},
 					},
 					WhereToFind: "describe-vpcs",
@@ -247,16 +247,16 @@ func TestResolveValues_FromStackOutputKeyedByAddress(t *testing.T) {
 	}
 
 	resolved, unresolved := ResolveValues(m, []string{"cidr_association_id"}, ResolveContext{
-		StackOutputs: outputs,
-		AddressKey:   "10.1.0.0/16",
+		Outputs:    outputs,
+		AddressKey: "10.1.0.0/16",
 	})
 	if len(unresolved) != 0 || resolved["cidr_association_id"] != "vpc-cidr-assoc-0abc" {
 		t.Errorf("dotted-key entry: resolved = %v, unresolved = %v", resolved, unresolved)
 	}
 
 	resolved, unresolved = ResolveValues(m, []string{"cidr_association_id"}, ResolveContext{
-		StackOutputs: outputs,
-		AddressKey:   "ipam-1",
+		Outputs:    outputs,
+		AddressKey: "ipam-1",
 	})
 	if len(unresolved) != 0 || resolved["cidr_association_id"] != "vpc-cidr-assoc-0def" {
 		t.Errorf("ipam-keyed entry: resolved = %v, unresolved = %v", resolved, unresolved)
@@ -266,7 +266,7 @@ func TestResolveValues_FromStackOutputKeyedByAddress(t *testing.T) {
 	// arm by mistake) resolves empty and falls back to unresolved -- the
 	// ask-the-user contract, never a wrong composed lookup.
 	resolved, unresolved = ResolveValues(m, []string{"cidr_association_id"}, ResolveContext{
-		StackOutputs: outputs,
+		Outputs: outputs,
 	})
 	if len(resolved) != 0 || !reflect.DeepEqual(unresolved, []string{"cidr_association_id"}) {
 		t.Errorf("empty address key: resolved = %v, unresolved = %v", resolved, unresolved)
@@ -279,20 +279,20 @@ func TestResolveValues_TofuResourceNameScoping(t *testing.T) {
 	// Helm releases): the declaration scoped to the address's logical name
 	// wins; addresses without a scoped declaration fall back to the unscoped
 	// one; scoped declarations for OTHER resources are never consulted.
-	m := &componentv1.ComponentImportMap{
-		Spec: &componentv1.ComponentImportMapSpec{
-			Values: []*componentv1.ImportValue{
+	m := &kindv1.CatalogKindImportMap{
+		Spec: &kindv1.CatalogKindImportMapSpec{
+			Values: []*kindv1.ImportValue{
 				{
 					Name: "release_name",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_Literal{Literal: "istio-base"}},
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_Literal{Literal: "istio-base"}},
 					},
 				},
 				{
 					Name:             "release_name",
 					TofuResourceName: "istiod",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_FromStackOutput{FromStackOutput: "istiod_service_name"}},
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_FromOutput{FromOutput: "istiod_service_name"}},
 					},
 				},
 			},
@@ -303,14 +303,14 @@ func TestResolveValues_TofuResourceNameScoping(t *testing.T) {
 
 	// Scoped address: the istiod declaration wins.
 	resolved, unresolved := ResolveValues(m, []string{"release_name"},
-		ResolveContext{StackOutputs: outputs, LogicalName: "istiod"})
+		ResolveContext{Outputs: outputs, LogicalName: "istiod"})
 	if len(unresolved) != 0 || resolved["release_name"] != "istiod" {
 		t.Errorf("scoped: resolved = %v, unresolved = %v; want release_name=istiod", resolved, unresolved)
 	}
 
 	// Unscoped address: falls back to the unscoped declaration.
 	resolved, unresolved = ResolveValues(m, []string{"release_name"},
-		ResolveContext{StackOutputs: outputs, LogicalName: "base"})
+		ResolveContext{Outputs: outputs, LogicalName: "base"})
 	if len(unresolved) != 0 || resolved["release_name"] != "istio-base" {
 		t.Errorf("fallback: resolved = %v, unresolved = %v; want release_name=istio-base", resolved, unresolved)
 	}
@@ -323,31 +323,31 @@ func TestResolveValues_FromAddressKeySegment(t *testing.T) {
 	// one "//"-delimited segment of the key itself. An index past the key's
 	// segment count resolves to "" so the optional namespace segment drops
 	// for cluster-scoped documents.
-	m := &componentv1.ComponentImportMap{
-		Spec: &componentv1.ComponentImportMapSpec{
-			Values: []*componentv1.ImportValue{
+	m := &kindv1.CatalogKindImportMap{
+		Spec: &kindv1.CatalogKindImportMapSpec{
+			Values: []*kindv1.ImportValue{
 				{
 					Name: "api_version",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_FromAddressKeySegment{FromAddressKeySegment: 0}},
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_FromAddressKeySegment{FromAddressKeySegment: 0}},
 					},
 				},
 				{
 					Name: "kind",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_FromAddressKeySegment{FromAddressKeySegment: 1}},
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_FromAddressKeySegment{FromAddressKeySegment: 1}},
 					},
 				},
 				{
 					Name: "name",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_FromAddressKeySegment{FromAddressKeySegment: 2}},
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_FromAddressKeySegment{FromAddressKeySegment: 2}},
 					},
 				},
 				{
 					Name: "namespace",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_FromAddressKeySegment{FromAddressKeySegment: 3}},
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_FromAddressKeySegment{FromAddressKeySegment: 3}},
 					},
 				},
 			},
@@ -399,14 +399,14 @@ func TestResolveValues_FromClusterSecretKey_KeyFromAddressKey(t *testing.T) {
 	// declared user, keyed by username): the Secret KEY is the
 	// address's own instance key, so one declaration serves every
 	// instance of the collection.
-	m := &componentv1.ComponentImportMap{
-		Spec: &componentv1.ComponentImportMapSpec{
-			Values: []*componentv1.ImportValue{
+	m := &kindv1.CatalogKindImportMap{
+		Spec: &kindv1.CatalogKindImportMapSpec{
+			Values: []*kindv1.ImportValue{
 				{
 					Name: "user_password_value",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_FromClusterSecretKey{
-							FromClusterSecretKey: &componentv1.FromClusterSecretKey{
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_FromClusterSecretKey{
+							FromClusterSecretKey: &kindv1.FromClusterSecretKey{
 								NameSuffix:        "-auth",
 								KeyFromAddressKey: true,
 							},
@@ -456,14 +456,14 @@ func TestResolveValues_FromClusterSecretKey(t *testing.T) {
 	// arm reads the module-materialized Secret through the context's
 	// cluster reader. Contexts without a reader (a disconnected wizard)
 	// leave the value unresolved so the ask-the-user fallback carries it.
-	m := &componentv1.ComponentImportMap{
-		Spec: &componentv1.ComponentImportMapSpec{
-			Values: []*componentv1.ImportValue{
+	m := &kindv1.CatalogKindImportMap{
+		Spec: &kindv1.CatalogKindImportMapSpec{
+			Values: []*kindv1.ImportValue{
 				{
 					Name: "admin_password_value",
-					Derivations: []*componentv1.ImportValueDerivation{
-						{Source: &componentv1.ImportValueDerivation_FromClusterSecretKey{
-							FromClusterSecretKey: &componentv1.FromClusterSecretKey{
+					Derivations: []*kindv1.ImportValueDerivation{
+						{Source: &kindv1.ImportValueDerivation_FromClusterSecretKey{
+							FromClusterSecretKey: &kindv1.FromClusterSecretKey{
 								NameSuffix: "-admin-auth",
 								Key:        "password",
 							},

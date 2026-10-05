@@ -6,9 +6,9 @@ using the typed crd2pulumi SDK.
 ## Prerequisites
 
 - The Istio CRDs must already be installed on the cluster
-  (see the `KubernetesIstioBaseCrds` component).
+  (see the `KubernetesIstioBaseCrds` kind).
 - A running Istio control plane (istiod) to enforce the policy in the data plane
-  (see the `KubernetesIstio` component). The CR applies successfully with only the
+  (see the `KubernetesIstio` kind). The CR applies successfully with only the
   CRDs present; enforcement requires istiod.
 - The target namespace must exist (see `KubernetesNamespace`).
 - Go toolchain and the Pulumi CLI.
@@ -31,13 +31,13 @@ planton pulumi up --manifest ../../e2e/manifest.yaml
 
 ### Direct Pulumi usage
 
-The entrypoint loads the `KubernetesAuthorizationPolicyStackInput` from the
-`STACK_INPUT_YAML_FILE` environment variable (path to a manifest) or
-`STACK_INPUT_YAML` (inline YAML content):
+The entrypoint loads the `KubernetesAuthorizationPolicyIacInput` from the
+`IAC_INPUT_YAML_FILE` environment variable (path to the IaC input, with the manifest under `target`) or
+`IAC_INPUT_YAML` (inline YAML content). The CLI builds that input from a manifest
+and runs Pulumi:
 
 ```bash
-export STACK_INPUT_YAML_FILE=../../e2e/manifest.yaml
-pulumi up
+planton pulumi up --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack>
 ```
 
 ## Outputs
@@ -51,7 +51,7 @@ pulumi up
 
 ```
 pulumi/
-├── main.go              # Pulumi entrypoint (loads stack input)
+├── main.go              # Pulumi entrypoint (loads IaC input)
 ├── Pulumi.yaml          # Pulumi project configuration
 ├── Makefile             # Build automation
 ├── README.md            # This file
@@ -59,7 +59,7 @@ pulumi/
 └── module/
     ├── main.go          # Resource creation (typed NewAuthorizationPolicy)
     ├── locals.go        # Computed values + resolved foreign keys
-    └── outputs.go       # Stack output constant names
+    └── outputs.go       # Output constant names
 ```
 
 ## References

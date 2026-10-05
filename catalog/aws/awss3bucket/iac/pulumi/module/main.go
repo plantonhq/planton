@@ -8,14 +8,14 @@ import (
 )
 
 // Resources orchestrates bucket creation — the root resource plus one
-// satellite per folded spec block — and exports the stack outputs.
-func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1alpha1.AwsS3BucketStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+// satellite per folded spec block — and exports the outputs.
+func Resources(ctx *pulumi.Context, iacInput *awss3bucketv1alpha1.AwsS3BucketIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder,
+	// Build the AWS provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static keys, keyless web
 	// identity, or ambient chain). The region is the resource's region.
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}
@@ -86,9 +86,9 @@ func Resources(ctx *pulumi.Context, stackInput *awss3bucketv1alpha1.AwsS3BucketS
 		return errors.Wrap(err, "metadata configuration")
 	}
 
-	// Export outputs matching AwsS3BucketStackOutputs. Website outputs are
+	// Export outputs matching AwsS3BucketOutputs. Website outputs are
 	// exported as empty strings when hosting is not configured so the
-	// stack-output contract stays shape-stable across both engines.
+	// output contract stays shape-stable across both engines.
 	ctx.Export(OpBucketId, createdBucket.Bucket)
 	ctx.Export(OpBucketArn, createdBucket.Arn)
 	ctx.Export(OpRegion, createdBucket.Region)

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added a reflective "secret coverage" analyzer that walks every production cloud-resource
+Added a reflective "secret coverage" analyzer that walks every production infra-component
 kind and reports which string-bearing `spec` fields are annotated `sensitive`, which are
 intentionally exempted, and which are gaps (look like a secret by name but are not
 annotated). A new `planton secret-coverage` command surfaces the report and a ratcheting
@@ -71,7 +71,7 @@ sweep proceeds.
   (`password`, `secret`, `token`, `credential`, `apikey`, `private_key`, ...) with a
   denylist for non-secret look-alikes (`*_id`, `*_name`, `*_arn`, `public_*`, ...). Bare
   `key` is intentionally excluded to keep precision high; recall gaps are annotated by hand.
-- `pkg/secretcoverage/analyze.go` -- enumerates kinds via `crkreflect.KindsList()` /
+- `pkg/secretcoverage/analyze.go` -- enumerates kinds via `catalogkindreflect.KindsList()` /
   `NewInstance`, skips `_test` and unimplemented kinds, walks each `spec`, and classifies
   each leaf via a pure `classify(name, isSensitive, exemptReason)` (also flags the two
   annotation contradictions: `sensitive` + exempt, and exemption on a non-heuristic name).
@@ -123,7 +123,7 @@ planton secret-coverage --write-baseline
 ## Testing Strategy
 
 `pkg/secretcoverage` ships with: a `classify` truth-table test (incl. both violations), a
-descriptor-walk test against the hermetic `testcloudresourcegeneric` fixture (sensitive
+descriptor-walk test against the hermetic `testcatalogkindgeneric` fixture (sensitive
 string + sensitive `StringValueOrRef` both COVERED), synthetic `Gate` tests (new gap, stale
 entry, contradiction), and `TestSecretCoverageGate` -- the live CI gate over all production
 kinds. `make protos` + `go vet` + `go build` green; a downstream security review found no

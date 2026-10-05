@@ -29,17 +29,17 @@ import (
 // external reachability (the cloud secrets API, Vault) that is not part of
 // applying the resource. Terraform equivalent: kubectl_manifest without a
 // wait_for block.
-func Resources(ctx *pulumi.Context, stackInput *kubernetessecretstorev1alpha1.KubernetesSecretStoreStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetessecretstorev1alpha1.KubernetesSecretStoreIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	result, err := externalsecretsstore.BuildSpec(
-		locals.StoreName, locals.Namespace, false, stackInput.Target.Spec.Config)
+		locals.StoreName, locals.Namespace, false, iacInput.Target.Spec.Config)
 	if err != nil {
 		return errors.Wrap(err, "failed to build secret store spec")
 	}

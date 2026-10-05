@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesclickhouse.v1alpha1;
 import "catalog/kubernetes/kubernetesclickhouse/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// click-house-kubernetes stack-input
-message KubernetesClickHouseStackInput {
-  // target cloud-resource
+// click-house-kubernetes iac-input
+message KubernetesClickHouseIacInput {
+  // the catalog object to deploy
   KubernetesClickHouse target = 1;
   // provider-credential
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

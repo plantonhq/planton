@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesclusterissuer
 spec:
@@ -19,7 +19,7 @@ spec:
     - name: name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: cluster_issuer_name
+        - from_output: cluster_issuer_name
       where_to_find: >-
         The ClusterIssuer's metadata.name (equals the Planton resource name) —
         `kubectl get clusterissuers` (NAME column).
@@ -38,7 +38,7 @@ spec:
         `kubectl get secrets -n <cert-manager namespace>`.
     - name: secret_namespace
       derivations:
-        - from_stack_output: secrets_namespace
+        - from_output: secrets_namespace
         - from_spec_field: cert_manager_namespace.value
       where_to_find: >-
         The cert-manager installation namespace (the only namespace

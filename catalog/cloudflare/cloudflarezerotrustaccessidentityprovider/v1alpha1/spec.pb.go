@@ -67,7 +67,7 @@ type CloudflareZeroTrustAccessIdentityProviderSpec struct {
 	// SCIM provisioning: let the identity provider push user create/update/
 	// deprovision events to Cloudflare so Zero Trust identities stay in sync
 	// without waiting for re-authentication. Not available for onetimepin.
-	// Enabling SCIM mints a bearer secret exposed once in the scim_secret stack
+	// Enabling SCIM mints a bearer secret exposed once in the scim_secret
 	// output.
 	ScimConfig *CloudflareZeroTrustAccessIdentityProviderScimConfig `protobuf:"bytes,7,opt,name=scim_config,json=scimConfig,proto3" json:"scim_config,omitempty"`
 	// Declares the provider immutable: Cloudflare refuses API updates and deletes
@@ -543,7 +543,7 @@ func (x *CloudflareZeroTrustAccessIdentityProviderHeaderAttribute) GetHeaderName
 type CloudflareZeroTrustAccessIdentityProviderScimConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Turn SCIM on. Enabling it for the first time mints the SCIM bearer secret
-	// (exposed once in the scim_secret stack output; refresh it later via the
+	// (exposed once in the scim_secret output; refresh it later via the
 	// Access API's refresh_scim_secret endpoint if lost).
 	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	// How a SCIM update event affects the user's Zero Trust identity used in

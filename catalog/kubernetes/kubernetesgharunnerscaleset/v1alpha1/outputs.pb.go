@@ -23,7 +23,7 @@ const (
 
 // *
 // Outputs exported after deploying the runner scale set.
-type KubernetesGhaRunnerScaleSetStackOutputs struct {
+type KubernetesGhaRunnerScaleSetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace the scale set (listener + runner pods) runs in.
@@ -43,20 +43,20 @@ type KubernetesGhaRunnerScaleSetStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *KubernetesGhaRunnerScaleSetStackOutputs) Reset() {
-	*x = KubernetesGhaRunnerScaleSetStackOutputs{}
+func (x *KubernetesGhaRunnerScaleSetOutputs) Reset() {
+	*x = KubernetesGhaRunnerScaleSetOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesGhaRunnerScaleSetStackOutputs) String() string {
+func (x *KubernetesGhaRunnerScaleSetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesGhaRunnerScaleSetStackOutputs) ProtoMessage() {}
+func (*KubernetesGhaRunnerScaleSetOutputs) ProtoMessage() {}
 
-func (x *KubernetesGhaRunnerScaleSetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesGhaRunnerScaleSetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,33 +68,33 @@ func (x *KubernetesGhaRunnerScaleSetStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesGhaRunnerScaleSetStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesGhaRunnerScaleSetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesGhaRunnerScaleSetOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesGhaRunnerScaleSetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesGhaRunnerScaleSetStackOutputs) GetNamespace() string {
+func (x *KubernetesGhaRunnerScaleSetOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesGhaRunnerScaleSetStackOutputs) GetReleaseName() string {
+func (x *KubernetesGhaRunnerScaleSetOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesGhaRunnerScaleSetStackOutputs) GetRunnerScaleSetName() string {
+func (x *KubernetesGhaRunnerScaleSetOutputs) GetRunnerScaleSetName() string {
 	if x != nil {
 		return x.RunnerScaleSetName
 	}
 	return ""
 }
 
-func (x *KubernetesGhaRunnerScaleSetStackOutputs) GetGithubConfigUrl() string {
+func (x *KubernetesGhaRunnerScaleSetOutputs) GetGithubConfigUrl() string {
 	if x != nil {
 		return x.GithubConfigUrl
 	}
@@ -105,8 +105,8 @@ var File_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_outputs_proto p
 
 const file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/kubernetes/kubernetesgharunnerscaleset/v1alpha1/outputs.proto\x12;dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1\"\xc9\x01\n" +
-	"'KubernetesGhaRunnerScaleSetStackOutputs\x12\x1c\n" +
+	"Ecatalog/kubernetes/kubernetesgharunnerscaleset/v1alpha1/outputs.proto\x12;dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1\"\xc4\x01\n" +
+	"\"KubernetesGhaRunnerScaleSetOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x121\n" +
 	"\x15runner_scale_set_name\x18\x03 \x01(\tR\x12runnerScaleSetName\x12*\n" +
@@ -127,7 +127,7 @@ func file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_outputs_proto_
 
 var file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesGhaRunnerScaleSetStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetStackOutputs
+	(*KubernetesGhaRunnerScaleSetOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetOutputs
 }
 var file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

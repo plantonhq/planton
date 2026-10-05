@@ -11,7 +11,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsconfigrule
+    e2e-catalog-kind: awsconfigrule
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsIamRole,AwsS3Bucket,AwsConfigRecorder"

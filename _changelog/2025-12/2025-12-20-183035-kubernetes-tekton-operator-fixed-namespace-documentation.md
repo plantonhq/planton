@@ -6,11 +6,11 @@
 
 ## Summary
 
-Reverted the recently added `namespace` and `create_namespace` fields from the KubernetesTektonOperator component after research confirmed that Tekton Operator uses **fixed namespaces** managed by the operator itself. Updated all component documentation to clearly explain this important architectural limitation that differentiates this component from other namespace-scoped resources in Planton.
+Reverted the recently added `namespace` and `create_namespace` fields from the KubernetesTektonOperator kind after research confirmed that Tekton Operator uses **fixed namespaces** managed by the operator itself. Updated all kind documentation to clearly explain this important architectural limitation that differentiates this kind from other namespace-scoped resources in Planton.
 
 ## Problem Statement / Motivation
 
-During the recent KubernetesTektonOperator component development, `namespace` and `create_namespace` fields were added following the standard pattern used by other Kubernetes components in Planton. However, this approach doesn't align with how Tekton Operator actually works.
+During the recent KubernetesTektonOperator kind development, `namespace` and `create_namespace` fields were added following the standard pattern used by other Kubernetes kinds in Planton. However, this approach doesn't align with how Tekton Operator actually works.
 
 ### Pain Points
 
@@ -56,7 +56,7 @@ Removed fields and added documentation:
 
 ```protobuf
 // IMPORTANT: Namespace Behavior
-// Unlike other Kubernetes components in Planton, the Tekton Operator uses fixed namespaces
+// Unlike other Kubernetes kinds in Planton, the Tekton Operator uses fixed namespaces
 // that are managed by the operator itself:
 // - The Tekton Operator is installed in the 'tekton-operator' namespace
 // - Tekton components (Pipelines, Triggers, Dashboard) are installed in the 'tekton-pipelines' namespace
@@ -90,7 +90,7 @@ Removed namespace creation logic:
 // - 'tekton-pipelines' for Tekton components (Pipelines, Triggers, Dashboard)
 // These namespaces are automatically created by the Tekton Operator and cannot be customized.
 func Resources(ctx *pulumi.Context,
-	in *kubernetestektonoperatorv1.KubernetesTektonOperatorStackInput) error {
+	in *kubernetestektonoperatorv1.KubernetesTektonOperatorIacInput) error {
 	// ... (no namespace creation block)
 }
 ```
@@ -120,7 +120,7 @@ Removed namespace-related variables and added documentation:
 ```hcl
 variable "spec" {
   # IMPORTANT: Namespace Behavior
-  # Unlike other Kubernetes components in Planton, the Tekton Operator uses fixed namespaces
+  # Unlike other Kubernetes kinds in Planton, the Tekton Operator uses fixed namespaces
   # that are managed by the operator itself:
   # - The Tekton Operator is installed in the 'tekton-operator' namespace
   # - Tekton components (Pipelines, Triggers, Dashboard) are installed in the 'tekton-pipelines' namespace
@@ -240,7 +240,7 @@ spec:
 
 ## Related Work
 
-- [2025-12-19-055933-kubernetes-tekton-operator-component.md](2025-12-19-055933-kubernetes-tekton-operator-component.md) - Initial component creation
+- [2025-12-19-055933-kubernetes-tekton-operator-component.md](2025-12-19-055933-kubernetes-tekton-operator-component.md) - Initial kind creation
 - [2025-12-20-122911-kubernetes-tekton-operator-version-field.md](2025-12-20-122911-kubernetes-tekton-operator-version-field.md) - Version field addition
 
 ## Research References

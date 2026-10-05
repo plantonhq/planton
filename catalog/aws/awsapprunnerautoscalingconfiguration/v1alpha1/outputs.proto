@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1;
 
-// AwsAppRunnerAutoScalingConfigurationStackOutputs captures observable
+// AwsAppRunnerAutoScalingConfigurationOutputs captures observable
 // identifiers from a provisioned App Runner auto scaling configuration.
 // Services reference the configuration by its revision-carrying ARN.
-message AwsAppRunnerAutoScalingConfigurationStackOutputs {
+message AwsAppRunnerAutoScalingConfigurationOutputs {
   // The ARN of this configuration revision (e.g. "arn:aws:apprunner:
   // us-west-2:123456789012:autoscalingconfiguration/my-asc/3/abc123").
   // The ARN carries the revision number, so registering a new revision

@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsAthenaWorkgroupStackOutputs captures observable identifiers from a
+// AwsAthenaWorkgroupOutputs captures observable identifiers from a
 // provisioned Athena workgroup. These outputs are used by downstream resources
 // (e.g., Athena named queries, prepared statements, or Glue catalog references)
 // and for operational visibility via StringValueOrRef.
-type AwsAthenaWorkgroupStackOutputs struct {
+type AwsAthenaWorkgroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the Athena workgroup. Used for IAM
 	// policies, cross-service permissions, and as a reference identifier.
@@ -42,20 +42,20 @@ type AwsAthenaWorkgroupStackOutputs struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *AwsAthenaWorkgroupStackOutputs) Reset() {
-	*x = AwsAthenaWorkgroupStackOutputs{}
+func (x *AwsAthenaWorkgroupOutputs) Reset() {
+	*x = AwsAthenaWorkgroupOutputs{}
 	mi := &file_catalog_aws_awsathenaworkgroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsAthenaWorkgroupStackOutputs) String() string {
+func (x *AwsAthenaWorkgroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsAthenaWorkgroupStackOutputs) ProtoMessage() {}
+func (*AwsAthenaWorkgroupOutputs) ProtoMessage() {}
 
-func (x *AwsAthenaWorkgroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsAthenaWorkgroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsathenaworkgroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,26 +67,26 @@ func (x *AwsAthenaWorkgroupStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsAthenaWorkgroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsAthenaWorkgroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsAthenaWorkgroupOutputs.ProtoReflect.Descriptor instead.
+func (*AwsAthenaWorkgroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsathenaworkgroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsAthenaWorkgroupStackOutputs) GetWorkgroupArn() string {
+func (x *AwsAthenaWorkgroupOutputs) GetWorkgroupArn() string {
 	if x != nil {
 		return x.WorkgroupArn
 	}
 	return ""
 }
 
-func (x *AwsAthenaWorkgroupStackOutputs) GetWorkgroupName() string {
+func (x *AwsAthenaWorkgroupOutputs) GetWorkgroupName() string {
 	if x != nil {
 		return x.WorkgroupName
 	}
 	return ""
 }
 
-func (x *AwsAthenaWorkgroupStackOutputs) GetEffectiveEngineVersion() string {
+func (x *AwsAthenaWorkgroupOutputs) GetEffectiveEngineVersion() string {
 	if x != nil {
 		return x.EffectiveEngineVersion
 	}
@@ -97,8 +97,8 @@ var File_catalog_aws_awsathenaworkgroup_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awsathenaworkgroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awsathenaworkgroup/v1alpha1/outputs.proto\x12+dev.planton.aws.awsathenaworkgroup.v1alpha1\"\xa6\x01\n" +
-	"\x1eAwsAthenaWorkgroupStackOutputs\x12#\n" +
+	"5catalog/aws/awsathenaworkgroup/v1alpha1/outputs.proto\x12+dev.planton.aws.awsathenaworkgroup.v1alpha1\"\xa1\x01\n" +
+	"\x19AwsAthenaWorkgroupOutputs\x12#\n" +
 	"\rworkgroup_arn\x18\x01 \x01(\tR\fworkgroupArn\x12%\n" +
 	"\x0eworkgroup_name\x18\x02 \x01(\tR\rworkgroupName\x128\n" +
 	"\x18effective_engine_version\x18\x03 \x01(\tR\x16effectiveEngineVersionB\xf1\x02\n" +
@@ -118,7 +118,7 @@ func file_catalog_aws_awsathenaworkgroup_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awsathenaworkgroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsathenaworkgroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsAthenaWorkgroupStackOutputs)(nil), // 0: dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupStackOutputs
+	(*AwsAthenaWorkgroupOutputs)(nil), // 0: dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupOutputs
 }
 var file_catalog_aws_awsathenaworkgroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

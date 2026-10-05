@@ -42,7 +42,7 @@ const (
 //     tokens; already-issued tokens carry it until they expire.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsCognitoResourceServerSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

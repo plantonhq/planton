@@ -4,7 +4,7 @@ Deploys a customer-owned AWS Systems Manager document: a reusable, versioned def
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SSM Document** — the document body (JSON or YAML) with its declared parameters, document type, and optional target-type restriction. The document's name is `metadata.name`, and changing it forces replacement.
 - **Sharing Permissions** — configured only when `shareWithAccountIds` is set; the module shares the document to the listed account IDs (or publicly via the single entry `All`) and automatically un-shares before delete.
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with permissions to manage SSM documents. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with permissions to manage SSM documents. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f ssm-document.yaml
 ```
 
-This creates a schema-2.2 Command document named `collect-diagnostics` with one defaulted parameter callers can override per run, restricted to EC2 instance targets. A Stack Job tracks the provisioning in real time.
+This creates a schema-2.2 Command document named `collect-diagnostics` with one defaulted parameter callers can override per run, restricted to EC2 instance targets. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -82,13 +82,13 @@ These are the most important decisions when configuring a document. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — the document body, type, and sharing list are all self-contained values. Consumers point at the document, not the other way around.
+This kind has no foreign key dependencies — the document body, type, and sharing list are all self-contained values. Consumers point at the document, not the other way around.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -110,6 +110,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS SSM Association**](/cloud-catalog/aws-ssm-association) — binds this document to targets on a schedule, wired via the `documentName` reference
-- [**AWS SSM Maintenance Window**](/cloud-catalog/aws-ssm-maintenance-window) — executes this document as a registered task inside a defined change window
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — hosts artifact files that Package documents attach via `attachmentSources`
+- [**AWS SSM Association**](/infra-catalog/aws-ssm-association) — binds this document to targets on a schedule, wired via the `documentName` reference
+- [**AWS SSM Maintenance Window**](/infra-catalog/aws-ssm-maintenance-window) — executes this document as a registered task inside a defined change window
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — hosts artifact files that Package documents attach via `attachmentSources`

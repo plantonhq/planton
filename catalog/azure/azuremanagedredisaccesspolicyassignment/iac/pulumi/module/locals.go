@@ -11,12 +11,12 @@ type Locals struct {
 	ObjectId                                string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremanagedredisaccesspolicyassignmentv1alpha1.AzureManagedRedisAccessPolicyAssignmentStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremanagedredisaccesspolicyassignmentv1alpha1.AzureManagedRedisAccessPolicyAssignmentIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureManagedRedisAccessPolicyAssignment = stackInput.Target
-	locals.ManagedRedisId = stackInput.Target.Spec.ManagedRedisId.GetValue()
-	locals.ObjectId = stackInput.Target.Spec.ObjectId.GetValue()
+	locals.AzureManagedRedisAccessPolicyAssignment = iacInput.Target
+	locals.ManagedRedisId = iacInput.Target.Spec.ManagedRedisId.GetValue()
+	locals.ObjectId = iacInput.Target.Spec.ObjectId.GetValue()
 
 	// No Azure tags: ARM does not support tags on access policy
 	// assignments (database children), so the platform's identity tags

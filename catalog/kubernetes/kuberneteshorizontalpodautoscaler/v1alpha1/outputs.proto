@@ -3,10 +3,10 @@ syntax = "proto3";
 package dev.planton.kubernetes.kuberneteshorizontalpodautoscaler.v1alpha1;
 
 /**
- * **KubernetesHorizontalPodAutoscalerStackOutputs** captures the observable
+ * **KubernetesHorizontalPodAutoscalerOutputs** captures the observable
  * handles of a deployed HorizontalPodAutoscaler.
  */
-message KubernetesHorizontalPodAutoscalerStackOutputs {
+message KubernetesHorizontalPodAutoscalerOutputs {
   // The name of the HorizontalPodAutoscaler object as created in the cluster.
   string horizontal_pod_autoscaler_name = 1;
 

@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsopensearchdomain.v1alpha1;
 
-// AwsOpenSearchDomainStackOutputs captures observable identifiers and endpoints
+// AwsOpenSearchDomainOutputs captures observable identifiers and endpoints
 // from a provisioned OpenSearch Service domain. These outputs are used by
 // downstream resources to wire dependencies via StringValueOrRef.
-message AwsOpenSearchDomainStackOutputs {
+message AwsOpenSearchDomainOutputs {
   // The unique identifier assigned to the domain by AWS.
   string domain_id = 1;
 

@@ -18,7 +18,7 @@ message KubernetesGatewayClass {
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesGatewayClass'];
 
   // metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
   KubernetesGatewayClassSpec spec = 4 [(buf.validate.field).required = true];
@@ -29,6 +29,6 @@ message KubernetesGatewayClass {
 
 // KubernetesGatewayClassStatus holds the deployment status and outputs.
 message KubernetesGatewayClassStatus {
-  // stack-outputs
-  KubernetesGatewayClassStackOutputs outputs = 1;
+  // outputs
+  KubernetesGatewayClassOutputs outputs = 1;
 }

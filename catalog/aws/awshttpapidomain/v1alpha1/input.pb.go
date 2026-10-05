@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsHttpApiDomainStackInput is the input for the aws-http-api-domain IaC
+// AwsHttpApiDomainIacInput is the input for the aws-http-api-domain IaC
 // modules.
-type AwsHttpApiDomainStackInput struct {
+type AwsHttpApiDomainIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsHttpApiDomain `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AwsHttpApiDomainStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsHttpApiDomainStackInput) Reset() {
-	*x = AwsHttpApiDomainStackInput{}
+func (x *AwsHttpApiDomainIacInput) Reset() {
+	*x = AwsHttpApiDomainIacInput{}
 	mi := &file_catalog_aws_awshttpapidomain_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsHttpApiDomainStackInput) String() string {
+func (x *AwsHttpApiDomainIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsHttpApiDomainStackInput) ProtoMessage() {}
+func (*AwsHttpApiDomainIacInput) ProtoMessage() {}
 
-func (x *AwsHttpApiDomainStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsHttpApiDomainIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awshttpapidomain_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsHttpApiDomainStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsHttpApiDomainStackInput.ProtoReflect.Descriptor instead.
-func (*AwsHttpApiDomainStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsHttpApiDomainIacInput.ProtoReflect.Descriptor instead.
+func (*AwsHttpApiDomainIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awshttpapidomain_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsHttpApiDomainStackInput) GetTarget() *AwsHttpApiDomain {
+func (x *AwsHttpApiDomainIacInput) GetTarget() *AwsHttpApiDomain {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsHttpApiDomainStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsHttpApiDomainIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awshttpapidomain_v1alpha1_input_proto protoreflect.FileDesc
 
 const file_catalog_aws_awshttpapidomain_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awshttpapidomain/v1alpha1/input.proto\x12)dev.planton.aws.awshttpapidomain.v1alpha1\x1a/catalog/aws/awshttpapidomain/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xbe\x01\n" +
-	"\x1aAwsHttpApiDomainStackInput\x12S\n" +
+	"1catalog/aws/awshttpapidomain/v1alpha1/input.proto\x12)dev.planton.aws.awshttpapidomain.v1alpha1\x1a/catalog/aws/awshttpapidomain/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xbc\x01\n" +
+	"\x18AwsHttpApiDomainIacInput\x12S\n" +
 	"\x06target\x18\x01 \x01(\v2;.dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xe1\x02\n" +
 	"-com.dev.planton.aws.awshttpapidomain.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awshttpapidomain_v1alpha1_input_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awshttpapidomain_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awshttpapidomain_v1alpha1_input_proto_goTypes = []any{
-	(*AwsHttpApiDomainStackInput)(nil), // 0: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainStackInput
-	(*AwsHttpApiDomain)(nil),           // 1: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomain
-	(*aws.AwsProviderConfig)(nil),      // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsHttpApiDomainIacInput)(nil), // 0: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainIacInput
+	(*AwsHttpApiDomain)(nil),         // 1: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomain
+	(*aws.AwsProviderConfig)(nil),    // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awshttpapidomain_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainStackInput.target:type_name -> dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomain
-	2, // 1: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainIacInput.target:type_name -> dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomain
+	2, // 1: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -2,16 +2,16 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: azuremonitordatacollectionrule
 spec:
   controls:
     - control_id: enc-at-rest
       status: not_applicable
-      notes: The rule stores routing configuration, not telemetry; collected data rests at the destinations (Log Analytics workspace, Event Hub, storage account), each of which owns its encryption posture as its own catalog kind.
+      notes: The rule stores routing configuration, not telemetry; collected data rests at the destinations (Log Analytics workspace, Event Hub, storage account), each of which owns its encryption posture as its own component.
     - control_id: enc-at-rest-cmk
       status: not_applicable
       notes: No data at rest to encrypt on the rule itself (see enc-at-rest); customer-managed-key levers live on the destination kinds.

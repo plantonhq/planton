@@ -31,7 +31,7 @@ type KubernetesKafkaMirrorMaker2 struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesKafkaMirrorMaker2Spec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesKafkaMirrorMaker2) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesKafkaMirrorMaker2) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesKafkaMirrorMaker2) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesKafkaMirrorMaker2) GetStatus() *KubernetesKafkaMirrorMaker2St
 // kubernetes-kafka-mirror-maker2 status
 type KubernetesKafkaMirrorMaker2Status struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesKafkaMirrorMaker2StackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesKafkaMirrorMaker2Outputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesKafkaMirrorMaker2Status) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesKafkaMirrorMaker2Status) GetOutputs() *KubernetesKafkaMirrorMaker2StackOutputs {
+func (x *KubernetesKafkaMirrorMaker2Status) GetOutputs() *KubernetesKafkaMirrorMaker2Outputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_api_proto_raw
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bKubernetesKafkaMirrorMaker2R\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12x\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12x\n" +
 	"\x04spec\x18\x04 \x01(\v2\\.dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2SpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12v\n" +
-	"\x06status\x18\x05 \x01(\v2^.dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2StatusR\x06status\"\xa3\x01\n" +
-	"!KubernetesKafkaMirrorMaker2Status\x12~\n" +
-	"\aoutputs\x18\x01 \x01(\v2d.dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2StackOutputsR\aoutputsB\xd6\x03\n" +
+	"\x06status\x18\x05 \x01(\v2^.dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2StatusR\x06status\"\x9e\x01\n" +
+	"!KubernetesKafkaMirrorMaker2Status\x12y\n" +
+	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2OutputsR\aoutputsB\xd6\x03\n" +
 	"?com.dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1B\bApiProtoP\x01Zxgithub.com/plantonhq/planton/catalog/kubernetes/kuberneteskafkamirrormaker2/v1alpha1;kuberneteskafkamirrormaker2v1alpha1\xa2\x02\x04DPKK\xaa\x02;Dev.Planton.Kubernetes.Kuberneteskafkamirrormaker2.V1alpha1\xca\x02;Dev\\Planton\\Kubernetes\\Kuberneteskafkamirrormaker2\\V1alpha1\xe2\x02GDev\\Planton\\Kubernetes\\Kuberneteskafkamirrormaker2\\V1alpha1\\GPBMetadata\xea\x02?Dev::Planton::Kubernetes::Kuberneteskafkamirrormaker2::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_api_proto_rawD
 
 var file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesKafkaMirrorMaker2)(nil),             // 0: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2
-	(*KubernetesKafkaMirrorMaker2Status)(nil),       // 1: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2Status
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesKafkaMirrorMaker2Spec)(nil),         // 3: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2Spec
-	(*KubernetesKafkaMirrorMaker2StackOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2StackOutputs
+	(*KubernetesKafkaMirrorMaker2)(nil),        // 0: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2
+	(*KubernetesKafkaMirrorMaker2Status)(nil),  // 1: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2Status
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesKafkaMirrorMaker2Spec)(nil),    // 3: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2Spec
+	(*KubernetesKafkaMirrorMaker2Outputs)(nil), // 4: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2Outputs
 }
 var file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2.spec:type_name -> dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2Spec
 	1, // 2: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2.status:type_name -> dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2Status
-	4, // 3: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2Status.outputs:type_name -> dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2StackOutputs
+	4, // 3: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2Status.outputs:type_name -> dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2Outputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

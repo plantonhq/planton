@@ -3,12 +3,12 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesmanifest.v1alpha1;
 
 /**
- * **KubernetesManifestStackOutputs** captures the observable handles of an
+ * **KubernetesManifestOutputs** captures the observable handles of an
  * applied raw manifest. The resource inventory is derived by parsing the
  * input YAML — identically on both engines — so downstream tooling can see
  * WHAT was applied without re-parsing the manifest itself.
  */
-message KubernetesManifestStackOutputs {
+message KubernetesManifestOutputs {
   // The anchor namespace: where namespaced documents without an explicit
   // metadata.namespace were applied.
   string namespace = 1;

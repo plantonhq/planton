@@ -19,7 +19,7 @@ message AzureContainerAppEnvironment {
   string kind = 2 [(buf.validate.field).string.const = 'AzureContainerAppEnvironment'];
 
   // metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
   AzureContainerAppEnvironmentSpec spec = 4 [(buf.validate.field).required = true];
@@ -30,6 +30,6 @@ message AzureContainerAppEnvironment {
 
 // AzureContainerAppEnvironmentStatus holds the deployment status and outputs.
 message AzureContainerAppEnvironmentStatus {
-  // stack-outputs
-  AzureContainerAppEnvironmentStackOutputs outputs = 1;
+  // outputs
+  AzureContainerAppEnvironmentOutputs outputs = 1;
 }

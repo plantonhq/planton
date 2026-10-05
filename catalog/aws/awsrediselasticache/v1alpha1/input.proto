@@ -5,9 +5,9 @@ package dev.planton.aws.awsrediselasticache.v1alpha1;
 import "catalog/aws/awsrediselasticache/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// aws-redis-elasticache stack-input
-message AwsRedisElasticacheStackInput {
-  // target cloud-resource
+// aws-redis-elasticache iac-input
+message AwsRedisElasticacheIacInput {
+  // the catalog object to deploy
   AwsRedisElasticache target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

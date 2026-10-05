@@ -7,7 +7,7 @@ import (
 	digitaloceanprovider "github.com/plantonhq/planton/catalog/digitalocean"
 	digitaloceanappv1alpha1 "github.com/plantonhq/planton/catalog/digitalocean/digitaloceanapp/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/digitalocean/digitaloceanlabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -21,14 +21,14 @@ type Locals struct {
 	DigitalOceanLabels         map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *digitaloceanappv1alpha1.DigitalOceanAppStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *digitaloceanappv1alpha1.DigitalOceanAppIacInput) *Locals {
 	locals := &Locals{}
-	locals.DigitalOceanApp = stackInput.Target
+	locals.DigitalOceanApp = iacInput.Target
 
 	locals.DigitalOceanLabels = map[string]string{
 		digitaloceanlabelkeys.Resource:     strconv.FormatBool(true),
 		digitaloceanlabelkeys.ResourceName: locals.DigitalOceanApp.Metadata.Name,
-		digitaloceanlabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_DigitalOceanApp.String(),
+		digitaloceanlabelkeys.ResourceKind: catalogkind.CatalogKind_DigitalOceanApp.String(),
 	}
 
 	if locals.DigitalOceanApp.Metadata.Org != "" {
@@ -41,7 +41,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *digitaloceanappv1alpha1.Dig
 		locals.DigitalOceanLabels[digitaloceanlabelkeys.ResourceId] = locals.DigitalOceanApp.Metadata.Id
 	}
 
-	locals.DigitalOceanProviderConfig = stackInput.ProviderConfig
+	locals.DigitalOceanProviderConfig = iacInput.ProviderConfig
 	return locals
 }
 

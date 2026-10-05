@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuredatafactory
+    e2e-catalog-kind: azuredatafactory
   annotations:
     planton.dev/e2e: "true"
     # The managed private endpoint targets the fixture storage account

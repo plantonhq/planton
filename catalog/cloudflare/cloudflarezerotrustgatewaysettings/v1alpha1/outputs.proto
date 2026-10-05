@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarezerotrustgatewaysettings.v1alpha1;
 
-// CloudflareZeroTrustGatewaySettingsStackOutputs captures the observable
+// CloudflareZeroTrustGatewaySettingsOutputs captures the observable
 // outputs after applying the Gateway configuration.
-message CloudflareZeroTrustGatewaySettingsStackOutputs {
+message CloudflareZeroTrustGatewaySettingsOutputs {
   // The Cloudflare account the configuration was applied to (the
   // singleton's identity -- the harness and import recipes key on it).
   string account_id = 1;

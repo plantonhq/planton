@@ -1,6 +1,6 @@
 # AzureFrontDoorOrigin - Pulumi Module
 
-Pulumi implementation for the AzureFrontDoorOrigin component.
+Pulumi implementation for the AzureFrontDoorOrigin kind.
 
 ## Architecture
 
@@ -15,7 +15,7 @@ cdn.FrontdoorOrigin (single resource)
   spec carries one authoritative parent reference.
 - **`certificate_name_check_enabled` is always sent** -- the provider
   requires the value explicitly; the module materializes the documented
-  `true` default (stack inputs never carry proto defaults). Keeping it on
+  `true` default (IaC inputs never carry proto defaults). Keeping it on
   is the secure posture, and Azure requires it with Private Link.
 - **Private Link is PREMIUM-gated by Azure at apply time** -- the profile
   SKU lives on a different resource, so neither the spec nor the module
@@ -33,6 +33,6 @@ cdn.FrontdoorOrigin (single resource)
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless web-identity (OIDC), and
 ambient credential chains. Never construct a provider inline.

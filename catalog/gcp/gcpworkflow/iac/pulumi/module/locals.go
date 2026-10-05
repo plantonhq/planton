@@ -6,7 +6,7 @@ import (
 
 	gcpworkflowv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpworkflow/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -24,8 +24,8 @@ type Locals struct {
 	GcpLabels map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpworkflowv1alpha1.GcpWorkflowStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpworkflowv1alpha1.GcpWorkflowIacInput) *Locals {
+	target := iacInput.Target
 
 	workflowName := target.Spec.WorkflowName
 	if workflowName == "" {
@@ -38,7 +38,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpworkflowv1alpha1.GcpWork
 	}
 	gcpLabels[gcplabelkeys.Resource] = strconv.FormatBool(true)
 	gcpLabels[gcplabelkeys.ResourceName] = target.Metadata.Name
-	gcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpWorkflow.String())
+	gcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpWorkflow.String())
 	if target.Metadata.Org != "" {
 		gcpLabels[gcplabelkeys.Organization] = target.Metadata.Org
 	}

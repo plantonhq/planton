@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceansshkey.v1alpha1;
 
-// DigitalOceanSshKeyStackOutputs captures the key outputs after
+// DigitalOceanSshKeyOutputs captures the key outputs after
 // provisioning a DigitalOcean SSH key.
-message DigitalOceanSshKeyStackOutputs {
+message DigitalOceanSshKeyOutputs {
   // Numeric id of the SSH key, as a string (for example "263654"). This is
   // the key's API identity and the ONLY id imports accept -- the
   // fingerprint does not work as an import id even though droplets accept

@@ -22,14 +22,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0ResourceServerStackInput is the input message for the Auth0 Resource Server IaC modules.
+// Auth0ResourceServerIacInput is the input message for the Auth0 Resource Server IaC modules.
 // This message aggregates all information needed to deploy an Auth0 Resource Server (API):
 // - The target Auth0ResourceServer resource specification
 // - The Auth0 provider configuration (credentials for API access)
 //
 // The IaC modules (Pulumi and Terraform) receive this as their input and use it
 // to create/update the Auth0 Resource Server via the Auth0 Management API.
-type Auth0ResourceServerStackInput struct {
+type Auth0ResourceServerIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the Auth0ResourceServer resource to deploy.
 	// Contains the complete specification of the desired API configuration.
@@ -46,20 +46,20 @@ type Auth0ResourceServerStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *Auth0ResourceServerStackInput) Reset() {
-	*x = Auth0ResourceServerStackInput{}
+func (x *Auth0ResourceServerIacInput) Reset() {
+	*x = Auth0ResourceServerIacInput{}
 	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0ResourceServerStackInput) String() string {
+func (x *Auth0ResourceServerIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0ResourceServerStackInput) ProtoMessage() {}
+func (*Auth0ResourceServerIacInput) ProtoMessage() {}
 
-func (x *Auth0ResourceServerStackInput) ProtoReflect() protoreflect.Message {
+func (x *Auth0ResourceServerIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,19 +71,19 @@ func (x *Auth0ResourceServerStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0ResourceServerStackInput.ProtoReflect.Descriptor instead.
-func (*Auth0ResourceServerStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0ResourceServerIacInput.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0resourceserver_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0ResourceServerStackInput) GetTarget() *Auth0ResourceServer {
+func (x *Auth0ResourceServerIacInput) GetTarget() *Auth0ResourceServer {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *Auth0ResourceServerStackInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
+func (x *Auth0ResourceServerIacInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -94,8 +94,8 @@ var File_catalog_auth0_auth0resourceserver_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_auth0_auth0resourceserver_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/auth0/auth0resourceserver/v1alpha1/input.proto\x12.dev.planton.auth0.auth0resourceserver.v1alpha1\x1a4catalog/auth0/auth0resourceserver/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xcd\x01\n" +
-	"\x1dAuth0ResourceServerStackInput\x12[\n" +
+	"6catalog/auth0/auth0resourceserver/v1alpha1/input.proto\x12.dev.planton.auth0.auth0resourceserver.v1alpha1\x1a4catalog/auth0/auth0resourceserver/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xcb\x01\n" +
+	"\x1bAuth0ResourceServerIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.auth0.Auth0ProviderConfigR\x0eproviderConfigB\x82\x03\n" +
 	"2com.dev.planton.auth0.auth0resourceserver.v1alpha1B\n" +
@@ -115,13 +115,13 @@ func file_catalog_auth0_auth0resourceserver_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_auth0_auth0resourceserver_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0resourceserver_v1alpha1_input_proto_goTypes = []any{
-	(*Auth0ResourceServerStackInput)(nil), // 0: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerStackInput
-	(*Auth0ResourceServer)(nil),           // 1: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServer
-	(*auth0.Auth0ProviderConfig)(nil),     // 2: dev.planton.auth0.Auth0ProviderConfig
+	(*Auth0ResourceServerIacInput)(nil), // 0: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerIacInput
+	(*Auth0ResourceServer)(nil),         // 1: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServer
+	(*auth0.Auth0ProviderConfig)(nil),   // 2: dev.planton.auth0.Auth0ProviderConfig
 }
 var file_catalog_auth0_auth0resourceserver_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerStackInput.target:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServer
-	2, // 1: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerStackInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
+	1, // 0: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerIacInput.target:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServer
+	2, // 1: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerIacInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

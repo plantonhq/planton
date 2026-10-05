@@ -7,7 +7,7 @@ spec:
   location: us-central1
   rateLimits:
     # The ceiling on dispatch throughput; GCP additionally computes a
-    # max burst size from this rate (reported in stack outputs).
+    # max burst size from this rate (reported in outputs).
     maxDispatchesPerSecond: 500
     # Concurrency cap: dispatch stops when this many tasks are in flight.
     maxConcurrentDispatches: 100

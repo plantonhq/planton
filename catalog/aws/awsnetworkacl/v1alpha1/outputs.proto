@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsnetworkacl.v1alpha1;
 
-// AwsNetworkAclStackOutputs captures the observable state of the
+// AwsNetworkAclOutputs captures the observable state of the
 // network ACL after apply.
-message AwsNetworkAclStackOutputs {
+message AwsNetworkAclOutputs {
   // The ACL's id (acl-...) - the provider's import ID.
   string network_acl_id = 1;
 

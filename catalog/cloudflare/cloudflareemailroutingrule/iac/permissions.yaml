@@ -3,9 +3,9 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
-# The component's catalog.md states the requirement in prose ("Email Routing
+# The kind's catalog.md states the requirement in prose ("Email Routing
 # edit access (and Workers Scripts access when routing to an Email Worker)")
 # -- migrated here losslessly. The Workers Scripts clause is catalog.md's
 # claim, NOT derivable from the modules' API surface: both engines call only
@@ -14,7 +14,7 @@
 # endpoint itself demands a Workers permission to accept a worker action is
 # unverified -- an honest unknown for the live capture lane to settle.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflareemailroutingrule
 spec:

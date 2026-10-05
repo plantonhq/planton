@@ -6,7 +6,7 @@
 
 **apiVersion**: `aws.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 AwsSsmDocumentSpec defines the desired configuration for one
 customer-owned AWS Systems Manager document: a reusable definition
@@ -21,7 +21,7 @@ documents at schema version 1.x can only be updated when the
 content itself changes (an AWS rule for legacy command documents).
 
 Associations (State Manager bindings of a document to targets on a
-schedule) are their own AwsSsmAssociation component - an association
+schedule) are their own AwsSsmAssociation kind - an association
 binds ANY document, AWS-managed or customer-owned, so it is not this
 document's satellite.
 

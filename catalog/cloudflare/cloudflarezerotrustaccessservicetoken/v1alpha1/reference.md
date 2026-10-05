@@ -6,7 +6,7 @@
 
 **apiVersion**: `cloudflare.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 CloudflareZeroTrustAccessServiceTokenSpec defines an Access service token: a
 machine credential (a client-ID / client-secret pair) that non-human clients
@@ -16,7 +16,7 @@ provider login.
 
 THE SECRET IS RETURNED ONLY AT CREATION AND AT ROTATION -- Cloudflare never
 returns it again on reads, and an imported token cannot recover it. Capture
-the `client_secret` stack output into a secret store at deploy time; a lost
+the `client_secret` output into a secret store at deploy time; a lost
 secret means rotating the token.
 
 Rotation is first-class: increment client_secret_version to mint a new secret,
@@ -94,7 +94,7 @@ empty for the Cloudflare default of one year (8760h).
 
 Version number of the current client secret. Incrementing it triggers a
 ROTATION: Cloudflare mints a new secret (returned once in the
-client_secret stack output) and keeps accepting the previous secret until
+client_secret output) and keeps accepting the previous secret until
 previous_client_secret_expires_at. Leave unset until the first rotation
 (Cloudflare treats the initial secret as version 1). Creating a token
 with a higher version directly also works (measured live 2026-08-26);

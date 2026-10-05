@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// otel-operator-kubernetes stack outputs
-type KubernetesOtelOperatorStackOutputs struct {
+// otel-operator-kubernetes outputs
+type KubernetesOtelOperatorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the operator runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -39,20 +39,20 @@ type KubernetesOtelOperatorStackOutputs struct {
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *KubernetesOtelOperatorStackOutputs) Reset() {
-	*x = KubernetesOtelOperatorStackOutputs{}
+func (x *KubernetesOtelOperatorOutputs) Reset() {
+	*x = KubernetesOtelOperatorOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesOtelOperatorStackOutputs) String() string {
+func (x *KubernetesOtelOperatorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesOtelOperatorStackOutputs) ProtoMessage() {}
+func (*KubernetesOtelOperatorOutputs) ProtoMessage() {}
 
-func (x *KubernetesOtelOperatorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesOtelOperatorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *KubernetesOtelOperatorStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesOtelOperatorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesOtelOperatorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesOtelOperatorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesOtelOperatorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesOtelOperatorStackOutputs) GetNamespace() string {
+func (x *KubernetesOtelOperatorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesOtelOperatorStackOutputs) GetReleaseName() string {
+func (x *KubernetesOtelOperatorOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesOtelOperatorStackOutputs) GetWebhookService() string {
+func (x *KubernetesOtelOperatorOutputs) GetWebhookService() string {
 	if x != nil {
 		return x.WebhookService
 	}
 	return ""
 }
 
-func (x *KubernetesOtelOperatorStackOutputs) GetWebhookCertSecretName() string {
+func (x *KubernetesOtelOperatorOutputs) GetWebhookCertSecretName() string {
 	if x != nil {
 		return x.WebhookCertSecretName
 	}
@@ -101,8 +101,8 @@ var File_catalog_kubernetes_kubernetesoteloperator_v1alpha1_outputs_proto protor
 
 const file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/kubernetes/kubernetesoteloperator/v1alpha1/outputs.proto\x126dev.planton.kubernetes.kubernetesoteloperator.v1alpha1\"\xc7\x01\n" +
-	"\"KubernetesOtelOperatorStackOutputs\x12\x1c\n" +
+	"@catalog/kubernetes/kubernetesoteloperator/v1alpha1/outputs.proto\x126dev.planton.kubernetes.kubernetesoteloperator.v1alpha1\"\xc2\x01\n" +
+	"\x1dKubernetesOtelOperatorOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12'\n" +
 	"\x0fwebhook_service\x18\x03 \x01(\tR\x0ewebhookService\x127\n" +
@@ -123,7 +123,7 @@ func file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesOtelOperatorStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesoteloperator.v1alpha1.KubernetesOtelOperatorStackOutputs
+	(*KubernetesOtelOperatorOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesoteloperator.v1alpha1.KubernetesOtelOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetesoteloperator_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

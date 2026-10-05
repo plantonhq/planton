@@ -29,7 +29,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuremachinelearningworkspace
+    e2e-catalog-kind: azuremachinelearningworkspace
   annotations:
     planton.dev/e2e: "true"
   tags:

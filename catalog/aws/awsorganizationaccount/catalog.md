@@ -4,7 +4,7 @@ Creates a member account of an AWS Organization, born in the right OU with the r
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Member Account** -- the account itself (12-digit account ID), created into the organization under the parent named by `parentId` (or the organization root when unset), with the bootstrap role AWS pre-creates for the management account to assume
 - **Alternate Contacts** -- one per category set under `alternateContacts` (billing, operations, security); AWS routes that category's communications to the contact, and removing an arm deletes it
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module whose credentials belong to the organization's MANAGEMENT account, with Organizations and Account Management permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module whose credentials belong to the organization's MANAGEMENT account, with Organizations and Account Management permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -67,7 +67,7 @@ spec:
 planton apply -f aws-organization-account.yaml
 ```
 
-This creates a member account inside the referenced workloads OU with root-only billing access and billing/security contacts on file from day one; account creation runs asynchronously and the module polls it to completion. A Stack Job tracks the provisioning in real time.
+This creates a member account inside the referenced workloads OU with root-only billing access and billing/security contacts on file from day one; account creation runs asynchronously and the module polls it to completion. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -107,15 +107,15 @@ These are the most important decisions when configuring a member account. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsOrganizationalUnit** | `parentId` | `status.outputs.ou_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -135,6 +135,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Organization**](/cloud-catalog/aws-organization) -- the organization this account is created into; the contact and region arms need `account.amazonaws.com` in its trusted-access list
-- [**AWS Organizational Unit**](/cloud-catalog/aws-organizational-unit) -- the OU the account is placed in, wired via the `parentId` reference
-- [**AWS Organization Policy**](/cloud-catalog/aws-organization-policy) -- guardrails attached to this account directly or inherited from its OU
+- [**AWS Organization**](/infra-catalog/aws-organization) -- the organization this account is created into; the contact and region arms need `account.amazonaws.com` in its trusted-access list
+- [**AWS Organizational Unit**](/infra-catalog/aws-organizational-unit) -- the OU the account is placed in, wired via the `parentId` reference
+- [**AWS Organization Policy**](/infra-catalog/aws-organization-policy) -- guardrails attached to this account directly or inherited from its OU

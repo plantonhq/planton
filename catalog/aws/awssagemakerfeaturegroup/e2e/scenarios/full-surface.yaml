@@ -17,7 +17,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awssagemakerfeaturegroup
+    e2e-catalog-kind: awssagemakerfeaturegroup
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsIamRole,AwsS3Bucket"

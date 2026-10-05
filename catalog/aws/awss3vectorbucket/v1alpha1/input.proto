@@ -5,9 +5,9 @@ package dev.planton.aws.awss3vectorbucket.v1alpha1;
 import "catalog/aws/awss3vectorbucket/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsS3VectorBucketStackInput is the input for the IaC modules that
+// AwsS3VectorBucketIacInput is the input for the IaC modules that
 // manage an S3 vector bucket and its indexes.
-message AwsS3VectorBucketStackInput {
+message AwsS3VectorBucketIacInput {
   // target is the AwsS3VectorBucket resource to deploy.
   AwsS3VectorBucket target = 1;
   // provider_config contains the AWS provider credentials and configuration.

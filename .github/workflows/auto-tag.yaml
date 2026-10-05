@@ -8,8 +8,8 @@
 # The actual build/release is handled by the auto-release workflows.
 #
 # Tag Formats (pre-release of NEXT version):
-#   - Pulumi: v{next}-pulumi.{component}.{YYYYMMDD}.{N}
-#   - Terraform: v{next}-terraform.{component}.{YYYYMMDD}.{N}
+#   - Pulumi: v{next}-pulumi.{kind}.{YYYYMMDD}.{N}
+#   - Terraform: v{next}-terraform.{kind}.{YYYYMMDD}.{N}
 #   - Stigmer skills: v{next}-skill.{slug}.{YYYYMMDD}.{N}
 #
 # Example: If latest release is v0.3.4, auto-releases become
@@ -162,14 +162,14 @@ jobs:
 
           for dir in $PULUMI_DIRS; do
             PROVIDER=$(echo "$dir" | sed 's|catalog/\([^/]*\)/.*|\1|')
-            COMPONENT=$(echo "$dir" | sed 's|catalog/[^/]*/\([^/]*\)/.*|\1|')
+            KIND=$(echo "$dir" | sed 's|catalog/[^/]*/\([^/]*\)/.*|\1|')
 
             # Skip test providers
             if [ "$PROVIDER" = "_test" ]; then
               continue
             fi
 
-            TAG_PREFIX="${NEXT_SEMVER}-pulumi.${COMPONENT}.${TODAY}"
+            TAG_PREFIX="${NEXT_SEMVER}-pulumi.${KIND}.${TODAY}"
             LATEST_TAG=$(git tag -l "${TAG_PREFIX}.*" 2>/dev/null | sort -t. -k2 -n | tail -1)
             if [ -z "$LATEST_TAG" ]; then
               NEXT_SEQ=0
@@ -179,12 +179,12 @@ jobs:
             fi
 
             NEXT_TAG="${TAG_PREFIX}.${NEXT_SEQ}"
-            echo "Creating Pulumi tag: ${NEXT_TAG} (${PROVIDER}/${COMPONENT})"
-            git tag -a "${NEXT_TAG}" -m "Auto-tag Pulumi module ${COMPONENT} - ${NEXT_TAG}"
+            echo "Creating Pulumi tag: ${NEXT_TAG} (${PROVIDER}/${KIND})"
+            git tag -a "${NEXT_TAG}" -m "Auto-tag Pulumi module ${KIND} - ${NEXT_TAG}"
             git push origin "${NEXT_TAG}"
             
             # Add to JSON array
-            PULUMI_JSON=$(echo "$PULUMI_JSON" | jq -c --arg tag "$NEXT_TAG" --arg comp "$COMPONENT" --arg prov "$PROVIDER" --arg path "$dir" '. + [{"tag": $tag, "component": $comp, "provider": $prov, "path": $path}]')
+            PULUMI_JSON=$(echo "$PULUMI_JSON" | jq -c --arg tag "$NEXT_TAG" --arg comp "$KIND" --arg prov "$PROVIDER" --arg path "$dir" '. + [{"tag": $tag, "kind": $comp, "provider": $prov, "path": $path}]')
             ANY_TAGS_CREATED="true"
           done
 
@@ -198,14 +198,14 @@ jobs:
 
           for dir in $TERRAFORM_DIRS; do
             PROVIDER=$(echo "$dir" | sed 's|catalog/\([^/]*\)/.*|\1|')
-            COMPONENT=$(echo "$dir" | sed 's|catalog/[^/]*/\([^/]*\)/.*|\1|')
+            KIND=$(echo "$dir" | sed 's|catalog/[^/]*/\([^/]*\)/.*|\1|')
 
             # Skip test providers
             if [ "$PROVIDER" = "_test" ]; then
               continue
             fi
 
-            TAG_PREFIX="${NEXT_SEMVER}-terraform.${COMPONENT}.${TODAY}"
+            TAG_PREFIX="${NEXT_SEMVER}-terraform.${KIND}.${TODAY}"
             LATEST_TAG=$(git tag -l "${TAG_PREFIX}.*" 2>/dev/null | sort -t. -k2 -n | tail -1)
             if [ -z "$LATEST_TAG" ]; then
               NEXT_SEQ=0
@@ -215,12 +215,12 @@ jobs:
             fi
 
             NEXT_TAG="${TAG_PREFIX}.${NEXT_SEQ}"
-            echo "Creating Terraform tag: ${NEXT_TAG} (${PROVIDER}/${COMPONENT})"
-            git tag -a "${NEXT_TAG}" -m "Auto-tag Terraform module ${COMPONENT} - ${NEXT_TAG}"
+            echo "Creating Terraform tag: ${NEXT_TAG} (${PROVIDER}/${KIND})"
+            git tag -a "${NEXT_TAG}" -m "Auto-tag Terraform module ${KIND} - ${NEXT_TAG}"
             git push origin "${NEXT_TAG}"
             
             # Add to JSON array
-            TERRAFORM_JSON=$(echo "$TERRAFORM_JSON" | jq -c --arg tag "$NEXT_TAG" --arg comp "$COMPONENT" --arg prov "$PROVIDER" --arg path "$dir" '. + [{"tag": $tag, "component": $comp, "provider": $prov, "path": $path}]')
+            TERRAFORM_JSON=$(echo "$TERRAFORM_JSON" | jq -c --arg tag "$NEXT_TAG" --arg comp "$KIND" --arg prov "$PROVIDER" --arg path "$dir" '. + [{"tag": $tag, "kind": $comp, "provider": $prov, "path": $path}]')
             ANY_TAGS_CREATED="true"
           done
 
@@ -231,7 +231,7 @@ jobs:
           # =================================================================
           # One tag per skill whose PUBLISHED ARTIFACT changed. A skill's
           # trigger set is its own skills/<slug>/ tree; the catalog skill's
-          # archive additionally embeds the component reference pack, so its
+          # archive additionally embeds the kind reference pack, so its
           # set extends to every file the pack assembler selects (mirrors
           # pkg/skills/defspack/catalogpack.go -- name-based, _test excluded).
           # These are the lanes that tag on push: a catalog-wide regeneration
@@ -305,12 +305,12 @@ jobs:
                 ref: 'main',
                 inputs: {
                   tag: mod.tag,
-                  component: mod.component,
+                  kind: mod.kind,
                   provider: mod.provider,
                   path: mod.path
                 }
               });
-              console.log('Triggered auto-release.pulumi-modules for: ' + mod.component + ' (' + mod.tag + ')');
+              console.log('Triggered auto-release.pulumi-modules for: ' + mod.kind + ' (' + mod.tag + ')');
             }
 
       - name: Trigger Terraform releases
@@ -327,12 +327,12 @@ jobs:
                 ref: 'main',
                 inputs: {
                   tag: mod.tag,
-                  component: mod.component,
+                  kind: mod.kind,
                   provider: mod.provider,
                   path: mod.path
                 }
               });
-              console.log('Triggered auto-release.terraform-modules for: ' + mod.component + ' (' + mod.tag + ')');
+              console.log('Triggered auto-release.terraform-modules for: ' + mod.kind + ' (' + mod.tag + ')');
             }
 
       - name: Trigger Stigmer skill releases
@@ -378,12 +378,12 @@ jobs:
 
           PULUMI_MODULES='${{ needs.create-tags.outputs.pulumi_modules }}'
           if [ "$PULUMI_MODULES" != "[]" ] && [ -n "$PULUMI_MODULES" ]; then
-            echo "$PULUMI_MODULES" | jq -r '.[] | "| Pulumi: \(.component) | `\(.tag)` |"' >> $GITHUB_STEP_SUMMARY
+            echo "$PULUMI_MODULES" | jq -r '.[] | "| Pulumi: \(.kind) | `\(.tag)` |"' >> $GITHUB_STEP_SUMMARY
           fi
 
           TERRAFORM_MODULES='${{ needs.create-tags.outputs.terraform_modules }}'
           if [ "$TERRAFORM_MODULES" != "[]" ] && [ -n "$TERRAFORM_MODULES" ]; then
-            echo "$TERRAFORM_MODULES" | jq -r '.[] | "| Terraform: \(.component) | `\(.tag)` |"' >> $GITHUB_STEP_SUMMARY
+            echo "$TERRAFORM_MODULES" | jq -r '.[] | "| Terraform: \(.kind) | `\(.tag)` |"' >> $GITHUB_STEP_SUMMARY
           fi
 
           STIGMER_SKILLS='${{ needs.create-tags.outputs.stigmer_skills }}'

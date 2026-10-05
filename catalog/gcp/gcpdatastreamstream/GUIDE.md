@@ -16,7 +16,7 @@ Each source needs its own preparation, outside the catalog: MySQL binary logging
 - **`writeMode: APPEND_ONLY`** -- every change is a row with its change type: history, audits, slowly changing dimensions. It is immutable, so choose deliberately.
 - **Datasets** -- `singleTargetDataset` puts every table in one dataset (a `GcpBigQueryDataset` reference, trimmed to Google's `projects/{p}/datasets/{d}` form); `sourceHierarchyDatasets` creates one dataset per source schema, prefixed and optionally CMEK-encrypted.
 - **`ruleSets`** -- partition or cluster a source object's table when Datastream creates it. Rules apply at creation, so declare them before the stream starts.
-- **`blmtConfig`** -- write Apache Iceberg tables to your bucket through a BigQuery cloud-resource connection, whose service account needs storage access.
+- **`blmtConfig`** -- write Apache Iceberg tables to your bucket through a BigQuery Cloud Resource connection, whose service account needs storage access.
 
 ## Landing in Cloud Storage
 

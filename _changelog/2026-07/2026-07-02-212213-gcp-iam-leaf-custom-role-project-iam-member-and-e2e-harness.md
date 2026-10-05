@@ -43,7 +43,7 @@ sequenceDiagram
     participant Test as e2e/gcp
     participant Runner as shared framework
     participant Cloud as GCP project
-    Test->>Runner: RunComponentTest(GcpProjectIamMember)
+    Test->>Runner: RunKindTest(GcpProjectIamMember)
     Runner->>Cloud: deploy prerequisites (SA + custom role, Pulumi)
     Runner->>Runner: resolve valueFrom refs from outputs
     Runner->>Cloud: deploy grant (engine under test)
@@ -55,7 +55,7 @@ sequenceDiagram
 ### Cross-cutting fixes
 
 - **Ambient-project contract honored**: the three touched kinds' modules now fall back to the provider's default project when `project_id` is empty (`null` guard where the provider computes the project; a client-config lookup in both engines for the grant, whose resource requires an explicit project). Identical behavior across engines.
-- **CLI**: the `tofu` command group now registers the `stack-input` flag the shared manifest resolver reads on every path — previously any `planton tofu <cmd> --manifest ...` invocation failed before running.
+- **CLI**: the `tofu` command group now registers the `iac-input` flag the shared manifest resolver reads on every path — previously any `planton tofu <cmd> --manifest ...` invocation failed before running.
 - **Workflow rules**: the Terraform-module forge rule now warns that the proto→tfvars converter flattens `StringValueOrRef` to a plain string (so ref fields are typed `string`, never `object({value})`); the Pulumi-entrypoint rule now forbids `runtime.options.binary` in `Pulumi.yaml` (it breaks source-mode `pulumi up`). Both were stale-sibling traps hit and fixed this session.
 
 ## Validation
@@ -75,7 +75,7 @@ Per-kind audits (all three): **Fully Complete — PARITY ✅**, recorded in each
 ## Impact
 
 - GCP users can now express least-privilege access as first-class, composable graph nodes — define a permission bundle once, grant it per identity, see every grant as a visible edge.
-- Every future GCP component session inherits a working live E2E harness and two proven new-kind patterns (leaf kind, composed kind with prerequisites).
+- Every future GCP kind session inherits a working live E2E harness and two proven new-kind patterns (leaf kind, composed kind with prerequisites).
 - The `GcpSecretsManager` removal eliminates a dead-end kind and points users at the platform's single secrets system.
 
 ## Related Work

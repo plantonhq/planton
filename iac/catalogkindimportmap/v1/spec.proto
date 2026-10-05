@@ -1,0 +1,187 @@
+syntax = "proto3";
+
+package dev.planton.iac.catalogkindimportmap.v1;
+
+// CatalogKindImportMapSpec declares where the values in a kind's import
+// IDs come from. The provider-tier ProviderImportCatalog owns the ID FORMAT
+// per resource type ("{bucket}", "{vpc_id}_{association_id}"); this map owns
+// the VALUE SOURCE per placeholder for one kind -- which spec field,
+// ARN part, or discovered attribute supplies it, or what to ask the user
+// when nothing can derive it.
+//
+// Addresses are never authored here: the engine enumerates real addresses
+// per spec at import time (a read-only preview lists them), so constructed
+// names, repeated resources, and conditional resources are handled by
+// construction.
+message CatalogKindImportMapSpec {
+  repeated ImportValue values = 1;
+  // Resources whose post-import plan legitimately updates a declared
+  // attribute sub-path -- values that CANNOT round-trip by provider
+  // construction, where the first post-adoption apply rewrites them to
+  // a functionally equivalent form. The canonical class: a cluster
+  // object wiring a salted-hash COMPUTED attribute (random_password's
+  // bcrypt_hash) -- the random provider recomputes the hash with a
+  // fresh salt on import, so the referencing data key re-renders once
+  // while the underlying credential is unchanged. Declarations are
+  // scoped to ONE resource and ONE dotted sub-path each, with the
+  // reason stated -- never a whole attribute, never a whole type
+  // (that is the provider catalog's config-only/write-normalized
+  // vocabulary). The import round-trip oracle tolerates exactly these
+  // sub-paths; any sibling drift under the same attribute still fails.
+  repeated ImportNormalizedResource import_normalized = 2;
+}
+
+// ImportNormalizedResource declares the import-normalized sub-paths of
+// one Terraform logical resource.
+message ImportNormalizedResource {
+  // The Terraform logical resource name (the `internal_auth` in
+  // `kubernetes_secret_v1.internal_auth`).
+  string tofu_resource_name = 1;
+  repeated ImportNormalizedSubPath sub_paths = 2;
+}
+
+// ImportNormalizedSubPath is one dotted attribute sub-path that cannot
+// round-trip through import, with the evidence-flavored reason.
+message ImportNormalizedSubPath {
+  // Dotted sub-path under the resource's attributes, e.g.
+  // "data.REGISTRY_HTPASSWD". Must reach BELOW a top-level attribute --
+  // whole-attribute tolerance belongs in the provider catalog. A
+  // segment whose KEY itself contains dots is written bracket-quoted:
+  // `data["password.db"]` (Kubernetes Secret data keys are the
+  // canonical case) -- a plain dotted path cannot express it.
+  string path = 1;
+  // Why this value cannot round-trip and why the one-time post-import
+  // rewrite is functionally a no-op. Required -- an undocumented
+  // tolerance is indistinguishable from a silenced defect.
+  string reason = 2;
+}
+
+// ImportValue defines one named placeholder the provider-tier ID formats
+// reference, with its ordered derivations.
+message ImportValue {
+  // The placeholder name as it appears in id_format templates (without
+  // braces), e.g. "bucket", "vpc_id".
+  string name = 1;
+  // Ordered derivations; the first one that resolves wins. When none
+  // resolves (or the list is empty) the user is asked, guided by
+  // where_to_find.
+  repeated ImportValueDerivation derivations = 2;
+  // Exactly where a user finds this value in the provider's console/CLI --
+  // shown whenever the platform must ask instead of derive.
+  string where_to_find = 3;
+  // Scopes this declaration to addresses of ONE Terraform logical resource
+  // name (the `istiod` in `helm_release.istiod`). Needed when a module
+  // declares SEVERAL resources of the same type whose ID placeholders carry
+  // different values -- e.g. a control-plane module installing multiple Helm
+  // releases: each release's `{release_name}` is a different constant. A
+  // scoped declaration wins over an unscoped one for its resource; addresses
+  // with no scoped declaration fall back to the unscoped declaration of the
+  // same placeholder name. Leave empty (the common case) when the kind
+  // has at most one resource per type.
+  string tofu_resource_name = 4;
+}
+
+// ImportValueDerivation is a single way to derive a placeholder value
+// without asking the user.
+message ImportValueDerivation {
+  oneof source {
+    // The value is the catalog object's metadata.name (modules that name
+    // their provider resource after the catalog object).
+    bool from_metadata_name = 1;
+    // Dot path to a spec field (proto field names), e.g. "repository_name".
+    string from_spec_field = 2;
+    // An output key (e.g. "vpc_id") -- resolvable when the resource
+    // was previously deployed or refreshed by this platform.
+    string from_output = 3;
+    // A part of a pasted AWS ARN: "resource_id" | "resource_name" |
+    // "account_id" | "region" | "arn" (the full ARN as pasted, for
+    // resource types whose import ID IS the ARN). One pasted ARN can feed
+    // several values.
+    string from_arn_part = 4;
+    // The enumerated address's own instance key (the ["..."] suffix on a
+    // for_each resource). For repeated resources the module keys instances
+    // by exactly the discriminator the import ID needs (e.g. an S3
+    // intelligent-tiering configuration's name), so the address carries it.
+    bool from_address_key = 5;
+    // metadata.name plus this literal suffix -- for satellite resources a
+    // module names by convention off the parent's name (a workload's
+    // "<name>-hpa" autoscaler, its "<name>-env-secrets" Secret). Keeps
+    // convention-named satellites blind-derivable without exporting their
+    // names as outputs.
+    string from_metadata_name_suffix = 6;
+    // A constant the module hardcodes -- for placeholder values that are
+    // properties of the module itself rather than of any one resource. The
+    // canonical case is kubectl_manifest's composed import ID
+    // ("{api_version}//{kind}//{name}[//{namespace}]"): a typed-CR module
+    // renders exactly one apiVersion and kind, so the map author declares
+    // them as literals. Never use a literal for anything a user could vary
+    // per resource -- that is what the other derivations are for.
+    string literal = 7;
+    // One "//"-delimited segment (0-based) of the enumerated address's
+    // instance key -- for modules that apply a MULTI-GVK manifest bundle
+    // through one for_each resource keyed by each document's own composed
+    // identity ("apiVersion//kind//name[//namespace]"): every placeholder
+    // of the composed import ID is then a segment of the key itself, and
+    // per-document values (a bundle spans many apiVersion/kind pairs)
+    // cannot be literals. An index past the key's segment count resolves
+    // to "" so an optional trailing segment (the cluster-scoped 3-part
+    // form) drops out of the ID's bracketed group. The delimiter is fixed
+    // to "//" -- the kubectl composed-ID delimiter this arm exists for
+    // (an apiVersion can itself contain a single slash).
+    int32 from_address_key_segment = 8;
+    // One key of a convention-named Kubernetes Secret in the deployed
+    // resource's own namespace -- for import IDs that ARE secret
+    // material the module materialized into a Secret: the canonical
+    // case is a random_password resource, whose import ID is the
+    // password value itself (the random provider keeps no cloud state).
+    // Only cluster-connected resolution contexts can serve this arm
+    // (the E2E round-trip reads through the cluster credentials it
+    // already holds; a disconnected context leaves the value unresolved
+    // and falls back to asking with where_to_find). The resolved value
+    // is SECRET MATERIAL: it exists to feed the import command and must
+    // never be logged or persisted by the resolving context.
+    FromClusterSecretKey from_cluster_secret_key = 9;
+    // A map-valued output whose entries the module keys by the SAME
+    // key it uses for the resource's for_each instances -- for
+    // CLOUD-GENERATED per-instance identifiers of keyed satellite
+    // resources, where the instance key is config-time identity but the
+    // import ID is assigned by the cloud (a VPC secondary CIDR's
+    // "vpc-cidr-assoc-..." association id keyed by the CIDR, a KMS
+    // grant's generated grant id keyed by list position). from_address_key
+    // cannot serve these (the key is not the ID), and a plain
+    // from_output cannot either (one static key cannot vary per
+    // instance). Resolves as the flattened output entry
+    // "<output>.<address key>" per the platform's dot-path output
+    // flattening; resolves empty for addresses without an instance key,
+    // falling back to the next derivation or where_to_find.
+    string from_output_keyed_by_address = 10;
+    // This literal prefix plus metadata.name -- the mirror of
+    // from_metadata_name_suffix, for composed identifiers a provider
+    // builds by PREFIXING the parent's name (the canonical case:
+    // Application Auto Scaling's resource_id "table/<table_name>", where
+    // the module names the table after the Planton resource). Keeps
+    // provider-composed identifiers blind-derivable without exporting
+    // them as outputs.
+    string from_metadata_name_prefix = 11;
+  }
+}
+
+// FromClusterSecretKey locates one data key of a convention-named
+// Kubernetes Secret -- "<metadata.name><name_suffix>", the same naming
+// convention from_metadata_name_suffix serves -- in the deployed
+// resource's namespace (bound by the resolving context, which knows the
+// deployment it is importing).
+message FromClusterSecretKey {
+  // Appended to metadata.name to form the Secret's name.
+  string name_suffix = 1;
+  // The Secret .data key holding the value.
+  string key = 2;
+  // When true, the Secret .data key is the ADDRESS'S OWN INSTANCE KEY
+  // instead of the static `key` — for keyed resource collections whose
+  // per-instance credentials live under manifest-driven Secret keys
+  // (the canonical case: one random_password per declared user, keyed
+  // by username, materialized into a Secret with one key per username).
+  // A declaration may set either `key` or this flag; the flag wins when
+  // both are present and the context carries an address key.
+  bool key_from_address_key = 3;
+}

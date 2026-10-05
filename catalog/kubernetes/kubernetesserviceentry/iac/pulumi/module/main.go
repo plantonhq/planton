@@ -10,11 +10,11 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *kubernetesserviceentryv1alpha1.KubernetesServiceEntryStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesserviceentryv1alpha1.KubernetesServiceEntryIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubeProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
@@ -31,7 +31,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesserviceentryv1alpha1.K
 
 // createServiceEntry creates the namespaced Istio ServiceEntry using the typed crd2pulumi
 // SDK (istionetworkingv1.NewServiceEntry), consistent with every other Planton Istio
-// component. The typed approach catches field-name and structure errors at compile time.
+// kind. The typed approach catches field-name and structure errors at compile time.
 // Only `hosts` is always set (it is required upstream); every other block is attached only
 // when present, so unset fields fall through to istiod's defaults.
 func createServiceEntry(
@@ -43,7 +43,7 @@ func createServiceEntry(
 
 	// The typed resource's Spec field is a PtrInput satisfied by the Args value itself
 	// (not the SpecPtr() wrapper, which marshals to the wrong element type); assigned
-	// directly below, mirroring the PeerAuthentication/RequestAuthentication components.
+	// directly below, mirroring the PeerAuthentication/RequestAuthentication kinds.
 	seSpec := istionetworkingv1.ServiceEntrySpecArgs{
 		Hosts: pulumi.ToStringArray(spec.GetHosts()),
 	}

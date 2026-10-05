@@ -4,7 +4,7 @@ Deploys a Virtual WAN -- the free, lightweight umbrella object of Azure's manage
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Virtual WAN** -- the ARM policy object with its type (Standard/Basic), VPN-encryption and branch-to-branch settings, and Office 365 breakout category
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) merged with your `tags`, applied to the WAN
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -48,7 +48,7 @@ spec:
 planton apply -f azure-virtual-wan.yaml
 ```
 
-This creates a Standard-tier WAN with ARM's defaults -- branch-to-branch transit on, no Office 365 breakout. The WAN provisions in minutes and is free by itself; hubs and gateways carry the cost. A Stack Job tracks the provisioning in real time.
+This creates a Standard-tier WAN with ARM's defaults -- branch-to-branch transit on, no Office 365 breakout. The WAN provisions in minutes and is free by itself; hubs and gateways carry the cost. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -79,21 +79,21 @@ These are the most important decisions when configuring a WAN. Explore the full 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `virtual_wan_id` | Azure Resource Manager ID of the WAN | A virtual hub's `virtualWanId` |
 
-The only other output, `virtual_wan_name`, echoes the WAN's name back; no downstream Cloud Resource consumes it.
+The only other output, `virtual_wan_name`, echoes the WAN's name back; no downstream Infra Component consumes it.
 
 ## Common Patterns
 
@@ -105,5 +105,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the WAN is created in
-- [**Azure Virtual Hub**](/cloud-catalog/azure-virtual-hub) -- the regional routers that reference this WAN's `virtual_wan_id`
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the WAN is created in
+- [**Azure Virtual Hub**](/infra-catalog/azure-virtual-hub) -- the regional routers that reference this WAN's `virtual_wan_id`

@@ -1,6 +1,6 @@
 # AzureAiFoundry Guide
 
-Judgment and internal conventions for the AI Foundry hub component --
+Judgment and internal conventions for the AI Foundry hub kind --
 what the schema alone cannot carry.
 
 ## Parity accounting

@@ -34,7 +34,7 @@ func minimalSpec() *AzureCosmosdbSqlRoleAssignment {
 	return &AzureCosmosdbSqlRoleAssignment{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureCosmosdbSqlRoleAssignment",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-sql-role-assignment",
 		},
 		Spec: &AzureCosmosdbSqlRoleAssignmentSpec{

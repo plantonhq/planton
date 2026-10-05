@@ -4,7 +4,7 @@ Deploys an S3 vector bucket with its similarity-search indexes — purpose-built
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **S3 Vector Bucket** — named after the resource, with the declared encryption at rest (S3-managed keys when `encryption` is unset) and force-destroy posture
 - **Vector Bucket Policy** — created only when `policy` is set; who can put and query vectors, including cross-account Bedrock knowledge bases
@@ -15,13 +15,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, including S3 Vectors permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, including S3 Vectors permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
 - **Your embedding model's output dimension** — not an AWS resource but the one fact you must have first: the index `dimension` must equal it exactly and can never change.
-- **A KMS key** (only for `aws:kms` encryption) — reference an AwsKmsKey Cloud Resource or pass a literal key ARN. Encryption is fixed for life of the bucket.
+- **A KMS key** (only for `aws:kms` encryption) — reference an AwsKmsKey Infra Component or pass a literal key ARN. Encryption is fixed for life of the bucket.
 
 ## Deploy
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f vector-bucket.yaml
 ```
 
-This creates a vector bucket with one 1024-dimension cosine index whose chunk text and source URI ride along as non-filterable metadata. A Stack Job tracks the provisioning in real time.
+This creates a vector bucket with one 1024-dimension cosine index whose chunk text and source URI ride along as non-filterable metadata. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,16 +95,16 @@ These are the most important decisions when configuring a vector bucket. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsKmsKey** (optional) | `encryption.kmsKeyArn` | `status.outputs.key_arn` |
 | **AwsKmsKey** (optional, per index) | `indexes[].encryption.kmsKeyArn` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,5 +121,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Bedrock Knowledge Base**](/cloud-catalog/aws-bedrock-knowledge-base) — the main consumer: its s3_vectors arm points at an index here via the `index_arns` output
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — the customer-managed key for at-rest encryption, wired via `encryption.kmsKeyArn` at the bucket or per index
+- [**AWS Bedrock Knowledge Base**](/infra-catalog/aws-bedrock-knowledge-base) — the main consumer: its s3_vectors arm points at an index here via the `index_arns` output
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — the customer-managed key for at-rest encryption, wired via `encryption.kmsKeyArn` at the bucket or per index

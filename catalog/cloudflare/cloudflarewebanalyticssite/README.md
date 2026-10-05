@@ -10,7 +10,7 @@
 - **Automatic installation** -- with a zone, `auto_install` puts the beacon on every proxied page with no code change
 - **Measurement rules** -- include or exclude traffic by host and path, folded into this component as `rules[]`
 - **The lite beacon** -- a smaller script with a reduced metric set for pages that are latency-sensitive
-- **Ready-to-embed snippet** -- the exact script tag is a stack output, alongside the site token it carries
+- **Ready-to-embed snippet** -- the exact script tag is an output, alongside the site token it carries
 
 ## Use Cases
 
@@ -43,7 +43,7 @@
 | `lite` | bool | Serve the lightweight beacon variant. |
 | `rules` | list | Include/exclude rows: `host`, `paths[]`, `inclusive`, `is_paused`. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|
@@ -85,7 +85,7 @@ spec:
 
 Real delete for both the site and its rules. Measurement stops and historical analytics for the site are no longer reachable. If `auto_install` was on, the injected beacon disappears with the site.
 
-## Related Components
+## Related Kinds
 
 - [Cloudflare DNS Zone](/docs/catalog/cloudflare/cloudflarednszone) -- the zone a zone-measured site points at
 - [Cloudflare Logpush Job](/docs/catalog/cloudflare/cloudflarelogpushjob) -- edge-side request logs, the server's view of the same traffic

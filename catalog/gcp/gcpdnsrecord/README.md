@@ -15,7 +15,7 @@ primary/backup failover with health-checked targets.
   and owners.
 - **All record types**: `type` accepts any record type the Cloud DNS API
   supports (A, AAAA, CNAME, MX, TXT, SRV, NS, PTR, CAA, SOA, HTTPS, SVCB,
-  DS, DNSKEY, TLSA, SSHFP, NAPTR, ...), so new types need no component
+  DS, DNSKEY, TLSA, SSHFP, NAPTR, ...), so new types need no kind
   change.
 - **Traffic steering**: weighted round robin for canary rollouts, geo
   routing for latency-sensitive multi-region serving, and primary/backup
@@ -105,7 +105,7 @@ planton tofu apply --manifest dns-record.yaml
    GcpDnsZone resource and internal load balancer targets at GcpAddress /
    GcpVpcNetwork resources so renames and rebuilds propagate.
 
-## Related Components
+## Related Kinds
 
 - **GcpDnsZone**: the managed zone this record lives in (zone shell only —
   records belong here).

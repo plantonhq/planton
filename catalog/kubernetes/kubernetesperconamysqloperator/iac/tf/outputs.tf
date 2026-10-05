@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesPerconaMysqlOperatorStackOutputs
+# Outputs — flattened onto KubernetesPerconaMysqlOperatorOutputs
 # by the platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

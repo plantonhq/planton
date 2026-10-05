@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpfirestoredatabase.v1alpha1;
 
-// GcpFirestoreDatabaseStackOutputs captures observable values produced after
+// GcpFirestoreDatabaseOutputs captures observable values produced after
 // provisioning a Cloud Firestore database.
-message GcpFirestoreDatabaseStackOutputs {
+message GcpFirestoreDatabaseOutputs {
   // Fully qualified database ID.
   // Format: projects/{project}/databases/{database}
   // This is the canonical identifier used for API calls and client

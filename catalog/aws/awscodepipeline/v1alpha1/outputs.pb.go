@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCodePipelineStackOutputs captures observable identifiers from the
+// AwsCodePipelineOutputs captures observable identifiers from the
 // AWS CodePipeline deployment.
-type AwsCodePipelineStackOutputs struct {
+type AwsCodePipelineOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the pipeline.
 	// Use this for IAM policies, EventBridge targets, and cross-resource references.
@@ -35,20 +35,20 @@ type AwsCodePipelineStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsCodePipelineStackOutputs) Reset() {
-	*x = AwsCodePipelineStackOutputs{}
+func (x *AwsCodePipelineOutputs) Reset() {
+	*x = AwsCodePipelineOutputs{}
 	mi := &file_catalog_aws_awscodepipeline_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCodePipelineStackOutputs) String() string {
+func (x *AwsCodePipelineOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCodePipelineStackOutputs) ProtoMessage() {}
+func (*AwsCodePipelineOutputs) ProtoMessage() {}
 
-func (x *AwsCodePipelineStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCodePipelineOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscodepipeline_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsCodePipelineStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCodePipelineStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCodePipelineStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCodePipelineOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCodePipelineOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscodepipeline_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCodePipelineStackOutputs) GetPipelineArn() string {
+func (x *AwsCodePipelineOutputs) GetPipelineArn() string {
 	if x != nil {
 		return x.PipelineArn
 	}
 	return ""
 }
 
-func (x *AwsCodePipelineStackOutputs) GetPipelineName() string {
+func (x *AwsCodePipelineOutputs) GetPipelineName() string {
 	if x != nil {
 		return x.PipelineName
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awscodepipeline_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_aws_awscodepipeline_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awscodepipeline/v1alpha1/outputs.proto\x12(dev.planton.aws.awscodepipeline.v1alpha1\"e\n" +
-	"\x1bAwsCodePipelineStackOutputs\x12!\n" +
+	"2catalog/aws/awscodepipeline/v1alpha1/outputs.proto\x12(dev.planton.aws.awscodepipeline.v1alpha1\"`\n" +
+	"\x16AwsCodePipelineOutputs\x12!\n" +
 	"\fpipeline_arn\x18\x01 \x01(\tR\vpipelineArn\x12#\n" +
 	"\rpipeline_name\x18\x02 \x01(\tR\fpipelineNameB\xdc\x02\n" +
 	",com.dev.planton.aws.awscodepipeline.v1alpha1B\fOutputsProtoP\x01ZYgithub.com/plantonhq/planton/catalog/aws/awscodepipeline/v1alpha1;awscodepipelinev1alpha1\xa2\x02\x04DPAA\xaa\x02(Dev.Planton.Aws.Awscodepipeline.V1alpha1\xca\x02(Dev\\Planton\\Aws\\Awscodepipeline\\V1alpha1\xe2\x024Dev\\Planton\\Aws\\Awscodepipeline\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Aws::Awscodepipeline::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_aws_awscodepipeline_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awscodepipeline_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscodepipeline_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCodePipelineStackOutputs)(nil), // 0: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineStackOutputs
+	(*AwsCodePipelineOutputs)(nil), // 0: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineOutputs
 }
 var file_catalog_aws_awscodepipeline_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

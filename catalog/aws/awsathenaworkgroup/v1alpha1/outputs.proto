@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsathenaworkgroup.v1alpha1;
 
-// AwsAthenaWorkgroupStackOutputs captures observable identifiers from a
+// AwsAthenaWorkgroupOutputs captures observable identifiers from a
 // provisioned Athena workgroup. These outputs are used by downstream resources
 // (e.g., Athena named queries, prepared statements, or Glue catalog references)
 // and for operational visibility via StringValueOrRef.
-message AwsAthenaWorkgroupStackOutputs {
+message AwsAthenaWorkgroupOutputs {
   // The Amazon Resource Name (ARN) of the Athena workgroup. Used for IAM
   // policies, cross-service permissions, and as a reference identifier.
   string workgroup_arn = 1;

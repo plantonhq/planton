@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurevirtualnetworkv1alpha1.AzureVirtualNetworkStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurevirtualnetworkv1alpha1.AzureVirtualNetworkIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -114,7 +114,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurevirtualnetworkv1alpha1.Azur
 		return errors.Wrapf(err, "failed to create virtual network %s", spec.Name)
 	}
 
-	// Export stack outputs from the created resource. virtual_network_id is
+	// Export outputs from the created resource. virtual_network_id is
 	// the join key subnets, peerings, and DNS links attach through;
 	// address_spaces reflects the ACTUAL ranges (IPAM-provisioned when
 	// ip_address_pools delegate allocation); guid identifies the network to

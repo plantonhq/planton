@@ -9,7 +9,7 @@ tags:
   - "azure"
   - "aks"
   - "kubernetes"
-  - "cloud-catalog"
+  - "infra-catalog"
 category: "azure"
 excerpt: "Deploy a production-ready Azure Kubernetes Service cluster using a single YAML manifest and the Planton CLI."
 ---
@@ -19,13 +19,13 @@ excerpt: "Deploy a production-ready Azure Kubernetes Service cluster using a sin
 This tutorial walks you through deploying a managed Kubernetes cluster on Azure Kubernetes Service (AKS) through Planton. You will write a YAML manifest describing the cluster you want, deploy it with a single CLI command, and connect `kubectl` to the running cluster. By the end, you will have a production-ready AKS cluster with autoscaling node pools, Azure CNI Overlay networking, and Azure AD RBAC -- or a lightweight development cluster, depending on your needs.
 
 > **Note**: The Planton web console provides a guided creation wizard for AKS
-> and other Cloud Resources. This tutorial uses the CLI/YAML approach for stability
+> and other Infra Components. This tutorial uses the CLI/YAML approach for stability
 > and reproducibility. The console UI evolves frequently — always check it for the
 > latest experience.
 
 ## What You Will Learn
 
-- How AKS fits in Planton's Cloud Catalog as an Azure Cloud Resource
+- How AKS fits in Planton's Infra Catalog as an Azure catalog kind
 - How to write an `AzureAksCluster` manifest with system node pools, networking, and security configuration
 - How to deploy with `planton apply` and monitor progress in real time
 - How to connect `kubectl` to the new cluster
@@ -40,9 +40,9 @@ This tutorial walks you through deploying a managed Kubernetes cluster on Azure 
 - [ ] The `planton` CLI installed and authenticated (`planton auth login`)
 - [ ] The [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) installed (for connecting `kubectl` after deployment)
 
-## What Is an AKS Cloud Resource?
+## What Is an AKS Infra Component?
 
-`AzureAksCluster` is a Cloud Resource type in the Cloud Catalog that provisions a fully managed Azure Kubernetes Service cluster. You define the cluster configuration in a YAML manifest and apply it with `planton apply` -- Planton handles the Azure Resource Manager operations using your Azure provider connection. For more on Cloud Resources, see the [Cloud Resources documentation](/docs/infrastructure/cloud-resources).
+`AzureAksCluster` is a catalog kind in the Infra Catalog that provisions a fully managed Azure Kubernetes Service cluster. You define the cluster configuration in a YAML manifest and apply it with `planton apply` -- Planton handles the Azure Resource Manager operations using your Azure provider connection. For more on Infra Components, see the [Infra Components documentation](/docs/infrastructure/infra-components).
 
 ## Step 1: Write the AKS Manifest
 
@@ -97,7 +97,7 @@ Replace these placeholder values with your own:
 The key fields in this manifest:
 
 - **`region`**: The Azure region for the cluster. Choose a region that supports AKS availability zones.
-- **`resourceGroup` / `vnetSubnetId`**: These use a nested `value` key because they also support `valueFrom` references to other Cloud Resources. Literal values work for this tutorial; the [Creating Prerequisites via Planton](#creating-prerequisites-via-planton-alternative) section shows the `valueFrom` approach.
+- **`resourceGroup` / `vnetSubnetId`**: These use a nested `value` key because they also support `valueFrom` references to other Infra Components. Literal values work for this tutorial; the [Creating Prerequisites via Planton](#creating-prerequisites-via-planton-alternative) section shows the `valueFrom` approach.
 - **`kubernetesVersion`**: Pins the cluster to a specific Kubernetes minor version. Azure supports the current version and two previous minor versions.
 - **`controlPlaneSku`**: `STANDARD` provides an uptime SLA (99.95% with AZs) for ~$73/month. `FREE` has no SLA -- suitable for development.
 - **`networkPlugin` / `networkPluginMode`**: `AZURE_CNI` with `OVERLAY` is recommended. Pods get IPs from a private range (default `10.244.0.0/16`), separate from your VNet address space. Avoids subnet IP exhaustion at scale.
@@ -130,12 +130,12 @@ planton apply -f aks-cluster.yaml
 The CLI prints the deployment job ID immediately. You can check on it later with:
 
 ```bash
-planton follow <stack-job-id>
+planton follow <infra-job-id>
 ```
 
 ## Step 3: Verify the Deployment
 
-After the deployment completes, retrieve the Cloud Resource to see its status and outputs:
+After the deployment completes, retrieve the Infra Component to see its status and outputs:
 
 ```bash
 planton get AzureAksCluster app-aks-cluster -o yaml
@@ -156,10 +156,10 @@ The `status.outputs` section contains the key information about your cluster:
 To list all deployment jobs for this resource:
 
 ```bash
-planton stack-job list <cloud-resource-id>
+planton infra job list <infra-component-id>
 ```
 
-The cloud resource ID is in the `metadata.id` field of the `planton get` output.
+The Infra Component ID is in the `metadata.id` field of the `planton get` output.
 
 ## Step 4: Connect kubectl to the Cluster
 
@@ -393,7 +393,7 @@ Deploy it:
 planton apply -f vnet.yaml -t
 ```
 
-The `resourceGroup.valueFrom` tells Planton to resolve the resource group name from the `AzureResourceGroup` Cloud Resource you created in Step A. The `fieldPath` specifies which output to use -- in this case, the `resource_group_name` output.
+The `resourceGroup.valueFrom` tells Planton to resolve the resource group name from the `AzureResourceGroup` Infra Component you created in Step A. The `fieldPath` specifies which output to use -- in this case, the `resource_group_name` output.
 
 ### Step C: Deploy AKS with resource references
 
@@ -452,5 +452,5 @@ The `valueFrom` references allow Planton to resolve the resource group name and 
 Your AKS cluster is running on Azure. From here:
 
 - **Deploy a backend service** to the cluster. See [How to Deploy Your First Service with Zero-Config CI/CD](/tutorials/how-to-deploy-your-first-service-with-zero-config-cicd) to set up a push-to-deploy workflow for your applications.
-- **Deploy Redis or other workloads** onto the cluster. See [How to Deploy Redis on Kubernetes](/tutorials/how-to-deploy-redis-on-kubernetes) -- the Kubernetes Cloud Resource workflow deploys directly to any connected cluster, including the one you created here.
-- **Explore other Azure resources** in the Cloud Catalog. The same `planton apply` workflow works for Azure SQL Database, Azure Key Vault, Azure Storage Accounts, Azure Container Registry, and other Azure resource types.
+- **Deploy Redis or other workloads** onto the cluster. See [How to Deploy Redis on Kubernetes](/tutorials/how-to-deploy-redis-on-kubernetes) -- the Kubernetes Infra Component workflow deploys directly to any connected cluster, including the one you created here.
+- **Explore other Azure resources** in the Infra Catalog. The same `planton apply` workflow works for Azure SQL Database, Azure Key Vault, Azure Storage Accounts, Azure Container Registry, and other Azure resource types.

@@ -58,7 +58,7 @@ The landing page, while technically accurate, wasn't effectively communicating P
 ### Enhanced Components (9)
 
 - **HeroSection**: New headline "What if DevOps Didn't Block Your Developers?", animated terminal, quantified social proof
-- **InfraHub**: Updated to 120+ components, metrics bar, dual customer quotes
+- **InfraHub**: Updated to 120+ catalog kinds, metrics bar, dual customer quotes
 - **ServiceHub**: Featured TynyBay testimonial with metrics display
 - **CustomerStories**: Expanded to 3 detailed stories (Harsha/Jai.CX, TynyBay, iorta TechNext)
 - **PricingSimplified**: Early adopter urgency banner, ROI calculator link

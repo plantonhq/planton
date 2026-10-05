@@ -14,7 +14,7 @@ The **AzureFunctionAppFlexConsumption** component deploys an Azure Function App 
 - The deployment-storage contract is validated before anything reaches Azure: connection-string auth requires the access key, user-assigned-identity auth requires the identity id -- exactly the checks Azure runs at create time, front-loaded.
 - Chart-ready: `resource_group` defaults its reference to AzureResourceGroup, `service_plan_id` to AzureServicePlan (the FC1 tier), `storage_access_key` to AzureStorageAccount's primary key, `storage_user_assigned_identity_id` and identity ids to AzureUserAssignedIdentity, `application_insights_connection_string` to AzureApplicationInsights, and subnet references to AzureSubnet; `default_hostname` is what DNS records and upstream proxies consume.
 - Secure by default: the storage access key, App Insights credentials, and connection-string values are marked sensitive; Easy Auth provider secrets are referenced by app-setting NAME, never inline; `https_only` deploys true.
-- Legacy `auth_settings` (v1): superseded by `auth_settings_v2`, which this component models fully.
+- Legacy `auth_settings` (v1): superseded by `auth_settings_v2`, which this kind models fully.
 
 ## Use Cases
 

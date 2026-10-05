@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-memcached-elasticache stack-input
-type AwsMemcachedElasticacheStackInput struct {
+// aws-memcached-elasticache iac-input
+type AwsMemcachedElasticacheIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsMemcachedElasticache `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-credential
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsMemcachedElasticacheStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsMemcachedElasticacheStackInput) Reset() {
-	*x = AwsMemcachedElasticacheStackInput{}
+func (x *AwsMemcachedElasticacheIacInput) Reset() {
+	*x = AwsMemcachedElasticacheIacInput{}
 	mi := &file_catalog_aws_awsmemcachedelasticache_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsMemcachedElasticacheStackInput) String() string {
+func (x *AwsMemcachedElasticacheIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsMemcachedElasticacheStackInput) ProtoMessage() {}
+func (*AwsMemcachedElasticacheIacInput) ProtoMessage() {}
 
-func (x *AwsMemcachedElasticacheStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsMemcachedElasticacheIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsmemcachedelasticache_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsMemcachedElasticacheStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsMemcachedElasticacheStackInput.ProtoReflect.Descriptor instead.
-func (*AwsMemcachedElasticacheStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsMemcachedElasticacheIacInput.ProtoReflect.Descriptor instead.
+func (*AwsMemcachedElasticacheIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmemcachedelasticache_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsMemcachedElasticacheStackInput) GetTarget() *AwsMemcachedElasticache {
+func (x *AwsMemcachedElasticacheIacInput) GetTarget() *AwsMemcachedElasticache {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsMemcachedElasticacheStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsMemcachedElasticacheIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awsmemcachedelasticache_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_aws_awsmemcachedelasticache_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awsmemcachedelasticache/v1alpha1/input.proto\x120dev.planton.aws.awsmemcachedelasticache.v1alpha1\x1a6catalog/aws/awsmemcachedelasticache/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd3\x01\n" +
-	"!AwsMemcachedElasticacheStackInput\x12a\n" +
+	"8catalog/aws/awsmemcachedelasticache/v1alpha1/input.proto\x120dev.planton.aws.awsmemcachedelasticache.v1alpha1\x1a6catalog/aws/awsmemcachedelasticache/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd1\x01\n" +
+	"\x1fAwsMemcachedElasticacheIacInput\x12a\n" +
 	"\x06target\x18\x01 \x01(\v2I.dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"4com.dev.planton.aws.awsmemcachedelasticache.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awsmemcachedelasticache_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_aws_awsmemcachedelasticache_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsmemcachedelasticache_v1alpha1_input_proto_goTypes = []any{
-	(*AwsMemcachedElasticacheStackInput)(nil), // 0: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheStackInput
-	(*AwsMemcachedElasticache)(nil),           // 1: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticache
-	(*aws.AwsProviderConfig)(nil),             // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsMemcachedElasticacheIacInput)(nil), // 0: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheIacInput
+	(*AwsMemcachedElasticache)(nil),         // 1: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticache
+	(*aws.AwsProviderConfig)(nil),           // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsmemcachedelasticache_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheStackInput.target:type_name -> dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticache
-	2, // 1: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheIacInput.target:type_name -> dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticache
+	2, // 1: dev.planton.aws.awsmemcachedelasticache.v1alpha1.AwsMemcachedElasticacheIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

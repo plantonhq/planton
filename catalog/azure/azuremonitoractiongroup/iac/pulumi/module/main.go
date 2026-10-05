@@ -8,13 +8,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azuremonitoractiongroupv1alpha1.AzureMonitorActionGroupStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuremonitoractiongroupv1alpha1.AzureMonitorActionGroupIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -211,7 +211,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuremonitoractiongroupv1alpha1.
 		return errors.Wrapf(err, "failed to create action group %s", locals.AzureMonitorActionGroup.Metadata.Name)
 	}
 
-	// Export stack outputs. action_group_id is the composition seam alert
+	// Export outputs. action_group_id is the composition seam alert
 	// rules reference.
 	ctx.Export(OpActionGroupId, createdActionGroup.ID())
 	ctx.Export(OpActionGroupName, createdActionGroup.Name)

@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpColabRuntimeStackOutputs carries the runtime's identity.
-type GcpColabRuntimeStackOutputs struct {
+// GcpColabRuntimeOutputs carries the runtime's identity.
+type GcpColabRuntimeOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/notebookRuntimes/{runtime_id}.
@@ -35,20 +35,20 @@ type GcpColabRuntimeStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpColabRuntimeStackOutputs) Reset() {
-	*x = GcpColabRuntimeStackOutputs{}
+func (x *GcpColabRuntimeOutputs) Reset() {
+	*x = GcpColabRuntimeOutputs{}
 	mi := &file_catalog_gcp_gcpcolabruntime_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpColabRuntimeStackOutputs) String() string {
+func (x *GcpColabRuntimeOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpColabRuntimeStackOutputs) ProtoMessage() {}
+func (*GcpColabRuntimeOutputs) ProtoMessage() {}
 
-func (x *GcpColabRuntimeStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpColabRuntimeOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcolabruntime_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,26 +60,26 @@ func (x *GcpColabRuntimeStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpColabRuntimeStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpColabRuntimeStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpColabRuntimeOutputs.ProtoReflect.Descriptor instead.
+func (*GcpColabRuntimeOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcolabruntime_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpColabRuntimeStackOutputs) GetName() string {
+func (x *GcpColabRuntimeOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpColabRuntimeStackOutputs) GetRuntimeId() string {
+func (x *GcpColabRuntimeOutputs) GetRuntimeId() string {
 	if x != nil {
 		return x.RuntimeId
 	}
 	return ""
 }
 
-func (x *GcpColabRuntimeStackOutputs) GetLocation() string {
+func (x *GcpColabRuntimeOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -90,8 +90,8 @@ var File_catalog_gcp_gcpcolabruntime_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcpcolabruntime_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpcolabruntime/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpcolabruntime.v1alpha1\"l\n" +
-	"\x1bGcpColabRuntimeStackOutputs\x12\x12\n" +
+	"2catalog/gcp/gcpcolabruntime/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpcolabruntime.v1alpha1\"g\n" +
+	"\x16GcpColabRuntimeOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
 	"runtime_id\x18\x02 \x01(\tR\truntimeId\x12\x1a\n" +
@@ -112,7 +112,7 @@ func file_catalog_gcp_gcpcolabruntime_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_gcp_gcpcolabruntime_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcolabruntime_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpColabRuntimeStackOutputs)(nil), // 0: dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeStackOutputs
+	(*GcpColabRuntimeOutputs)(nil), // 0: dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeOutputs
 }
 var file_catalog_gcp_gcpcolabruntime_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

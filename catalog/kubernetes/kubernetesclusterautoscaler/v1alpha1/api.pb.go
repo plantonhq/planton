@@ -35,7 +35,7 @@ type KubernetesClusterAutoscaler struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesClusterAutoscalerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -88,7 +88,7 @@ func (x *KubernetesClusterAutoscaler) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesClusterAutoscaler) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesClusterAutoscaler) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *KubernetesClusterAutoscaler) GetStatus() *KubernetesClusterAutoscalerSt
 // KubernetesClusterAutoscalerStatus holds the deployment status and outputs.
 type KubernetesClusterAutoscalerStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesClusterAutoscalerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesClusterAutoscalerOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*KubernetesClusterAutoscalerStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesClusterAutoscalerStatus) GetOutputs() *KubernetesClusterAutoscalerStackOutputs {
+func (x *KubernetesClusterAutoscalerStatus) GetOutputs() *KubernetesClusterAutoscalerOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_api_proto_raw
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bKubernetesClusterAutoscalerR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12x\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12x\n" +
 	"\x04spec\x18\x04 \x01(\v2\\.dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12v\n" +
-	"\x06status\x18\x05 \x01(\v2^.dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerStatusR\x06status\"\xa3\x01\n" +
-	"!KubernetesClusterAutoscalerStatus\x12~\n" +
-	"\aoutputs\x18\x01 \x01(\v2d.dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerStackOutputsR\aoutputsB\xd6\x03\n" +
+	"\x06status\x18\x05 \x01(\v2^.dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerStatusR\x06status\"\x9e\x01\n" +
+	"!KubernetesClusterAutoscalerStatus\x12y\n" +
+	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerOutputsR\aoutputsB\xd6\x03\n" +
 	"?com.dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1B\bApiProtoP\x01Zxgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesclusterautoscaler/v1alpha1;kubernetesclusterautoscalerv1alpha1\xa2\x02\x04DPKK\xaa\x02;Dev.Planton.Kubernetes.Kubernetesclusterautoscaler.V1alpha1\xca\x02;Dev\\Planton\\Kubernetes\\Kubernetesclusterautoscaler\\V1alpha1\xe2\x02GDev\\Planton\\Kubernetes\\Kubernetesclusterautoscaler\\V1alpha1\\GPBMetadata\xea\x02?Dev::Planton::Kubernetes::Kubernetesclusterautoscaler::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_api_proto_rawD
 
 var file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesClusterAutoscaler)(nil),             // 0: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscaler
-	(*KubernetesClusterAutoscalerStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesClusterAutoscalerSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerSpec
-	(*KubernetesClusterAutoscalerStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerStackOutputs
+	(*KubernetesClusterAutoscaler)(nil),        // 0: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscaler
+	(*KubernetesClusterAutoscalerStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesClusterAutoscalerSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerSpec
+	(*KubernetesClusterAutoscalerOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerOutputs
 }
 var file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscaler.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscaler.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscaler.spec:type_name -> dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerSpec
 	1, // 2: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscaler.status:type_name -> dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerStatus
-	4, // 3: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

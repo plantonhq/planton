@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsOpenSearchDomainStackOutputs captures observable identifiers and endpoints
+// AwsOpenSearchDomainOutputs captures observable identifiers and endpoints
 // from a provisioned OpenSearch Service domain. These outputs are used by
 // downstream resources to wire dependencies via StringValueOrRef.
-type AwsOpenSearchDomainStackOutputs struct {
+type AwsOpenSearchDomainOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique identifier assigned to the domain by AWS.
 	DomainId string `protobuf:"bytes,1,opt,name=domain_id,json=domainId,proto3" json:"domain_id,omitempty"`
@@ -54,20 +54,20 @@ type AwsOpenSearchDomainStackOutputs struct {
 	sizeCache                    protoimpl.SizeCache
 }
 
-func (x *AwsOpenSearchDomainStackOutputs) Reset() {
-	*x = AwsOpenSearchDomainStackOutputs{}
+func (x *AwsOpenSearchDomainOutputs) Reset() {
+	*x = AwsOpenSearchDomainOutputs{}
 	mi := &file_catalog_aws_awsopensearchdomain_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsOpenSearchDomainStackOutputs) String() string {
+func (x *AwsOpenSearchDomainOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsOpenSearchDomainStackOutputs) ProtoMessage() {}
+func (*AwsOpenSearchDomainOutputs) ProtoMessage() {}
 
-func (x *AwsOpenSearchDomainStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsOpenSearchDomainOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsopensearchdomain_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -79,61 +79,61 @@ func (x *AwsOpenSearchDomainStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsOpenSearchDomainStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsOpenSearchDomainStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsOpenSearchDomainOutputs.ProtoReflect.Descriptor instead.
+func (*AwsOpenSearchDomainOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsopensearchdomain_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsOpenSearchDomainStackOutputs) GetDomainId() string {
+func (x *AwsOpenSearchDomainOutputs) GetDomainId() string {
 	if x != nil {
 		return x.DomainId
 	}
 	return ""
 }
 
-func (x *AwsOpenSearchDomainStackOutputs) GetDomainName() string {
+func (x *AwsOpenSearchDomainOutputs) GetDomainName() string {
 	if x != nil {
 		return x.DomainName
 	}
 	return ""
 }
 
-func (x *AwsOpenSearchDomainStackOutputs) GetDomainArn() string {
+func (x *AwsOpenSearchDomainOutputs) GetDomainArn() string {
 	if x != nil {
 		return x.DomainArn
 	}
 	return ""
 }
 
-func (x *AwsOpenSearchDomainStackOutputs) GetEndpoint() string {
+func (x *AwsOpenSearchDomainOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *AwsOpenSearchDomainStackOutputs) GetDashboardEndpoint() string {
+func (x *AwsOpenSearchDomainOutputs) GetDashboardEndpoint() string {
 	if x != nil {
 		return x.DashboardEndpoint
 	}
 	return ""
 }
 
-func (x *AwsOpenSearchDomainStackOutputs) GetEndpointV2() string {
+func (x *AwsOpenSearchDomainOutputs) GetEndpointV2() string {
 	if x != nil {
 		return x.EndpointV2
 	}
 	return ""
 }
 
-func (x *AwsOpenSearchDomainStackOutputs) GetDashboardEndpointV2() string {
+func (x *AwsOpenSearchDomainOutputs) GetDashboardEndpointV2() string {
 	if x != nil {
 		return x.DashboardEndpointV2
 	}
 	return ""
 }
 
-func (x *AwsOpenSearchDomainStackOutputs) GetDomainEndpointV2HostedZoneId() string {
+func (x *AwsOpenSearchDomainOutputs) GetDomainEndpointV2HostedZoneId() string {
 	if x != nil {
 		return x.DomainEndpointV2HostedZoneId
 	}
@@ -144,8 +144,8 @@ var File_catalog_aws_awsopensearchdomain_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_aws_awsopensearchdomain_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awsopensearchdomain/v1alpha1/outputs.proto\x12,dev.planton.aws.awsopensearchdomain.v1alpha1\"\xe7\x02\n" +
-	"\x1fAwsOpenSearchDomainStackOutputs\x12\x1b\n" +
+	"6catalog/aws/awsopensearchdomain/v1alpha1/outputs.proto\x12,dev.planton.aws.awsopensearchdomain.v1alpha1\"\xe2\x02\n" +
+	"\x1aAwsOpenSearchDomainOutputs\x12\x1b\n" +
 	"\tdomain_id\x18\x01 \x01(\tR\bdomainId\x12\x1f\n" +
 	"\vdomain_name\x18\x02 \x01(\tR\n" +
 	"domainName\x12\x1d\n" +
@@ -173,7 +173,7 @@ func file_catalog_aws_awsopensearchdomain_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsopensearchdomain_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsopensearchdomain_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsOpenSearchDomainStackOutputs)(nil), // 0: dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomainStackOutputs
+	(*AwsOpenSearchDomainOutputs)(nil), // 0: dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomainOutputs
 }
 var file_catalog_aws_awsopensearchdomain_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

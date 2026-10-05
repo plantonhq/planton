@@ -5,7 +5,7 @@ import (
 
 	azureserviceplanv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureserviceplan/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -86,11 +86,11 @@ var skuStrings = map[azureserviceplanv1alpha1.AzureServicePlanSku]string{
 	azureserviceplanv1alpha1.AzureServicePlanSku_WORKFLOW_WS3:         "WS3",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureserviceplanv1alpha1.AzureServicePlanStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureserviceplanv1alpha1.AzureServicePlanIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureServicePlan = stackInput.Target
-	target := stackInput.Target
+	locals.AzureServicePlan = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -112,7 +112,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureserviceplanv1alpha1.
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureServicePlan.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureServicePlan.String()),
 	}
 
 	if target.Metadata.Id != "" {

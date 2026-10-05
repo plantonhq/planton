@@ -4,9 +4,9 @@ package dev.planton.cloudflare.cloudflarezerotrustaccessidentityprovider.v1alpha
 
 import "shared/options/options.proto";
 
-// CloudflareZeroTrustAccessIdentityProviderStackOutputs captures the observable
+// CloudflareZeroTrustAccessIdentityProviderOutputs captures the observable
 // outputs after creating an Access identity provider.
-message CloudflareZeroTrustAccessIdentityProviderStackOutputs {
+message CloudflareZeroTrustAccessIdentityProviderOutputs {
   // The UUID of the identity provider -- what Access policy rules (azure_ad,
   // github_organization, gsuite, okta, saml, oidc, login_method, auth_context)
   // reference.

@@ -11,13 +11,13 @@ import (
 // the provider's credential belongs to. The tenant must allow registration
 // from metadata documents (Auth0TenantSettings); Auth0 refuses the
 // registration otherwise.
-func Resources(ctx *pulumi.Context, stackInput *auth0clientfrommetadatadocumentv1alpha1.Auth0ClientFromMetadataDocumentStackInput) error {
-	locals := initializeLocals(stackInput)
+func Resources(ctx *pulumi.Context, iacInput *auth0clientfrommetadatadocumentv1alpha1.Auth0ClientFromMetadataDocumentIacInput) error {
+	locals := initializeLocals(iacInput)
 
 	// Setup Auth0 provider with credentials from provider config.
 	var provider *auth0.Provider
 	var err error
-	providerConfig := stackInput.ProviderConfig
+	providerConfig := iacInput.ProviderConfig
 
 	if providerConfig == nil {
 		// Use default provider (assumes credentials from environment variables).

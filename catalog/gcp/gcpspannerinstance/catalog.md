@@ -4,7 +4,7 @@ Deploys a Cloud Spanner instance with configurable compute capacity (fixed nodes
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Spanner API enablement** -- the module enables `spanner.googleapis.com` on the target project before creating the instance, so a fresh project works without manual API setup
 - **Spanner Instance** -- a managed instance in the specified GCP project with the chosen instance configuration (regional or multi-region), edition, and compute capacity allocation
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the Spanner instance will be created. Provide the project ID directly, reference a GcpProject Cloud Resource via ValueFromRef, or omit `projectId` to use the provider connection's default project. The module enables the Cloud Spanner API itself — no manual API activation is needed.
+- **A GCP project** where the Spanner instance will be created. Provide the project ID directly, reference a GcpProject Infra Component via ValueFromRef, or omit `projectId` to use the provider connection's default project. The module enables the Cloud Spanner API itself — no manual API activation is needed.
 - **Billing enabled** on the project. Spanner has no always-free provisioned tier: the smallest billable footprint is 100 processing units, and a `FREE_INSTANCE` is limited to one per billing account.
 
 ## Deploy
@@ -55,7 +55,7 @@ spec:
 planton apply -f spanner-instance.yaml
 ```
 
-This creates a 1-node Enterprise instance in `us-central1` with no automatic backup scheduling; databases are created separately with GcpSpannerDatabase. A Stack Job tracks the provisioning in real time.
+This creates a 1-node Enterprise instance in `us-central1` with no automatic backup scheduling; databases are created separately with GcpSpannerDatabase. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,15 +90,15 @@ These are the most important decisions when configuring a Spanner instance. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -119,6 +119,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the Spanner instance is created
-- [**GCP Spanner Database**](/cloud-catalog/gcp-spanner-database) -- databases live on this instance and reference it by `instance_name`
-- [**GCP Spanner Backup Schedule**](/cloud-catalog/gcp-spanner-backup-schedule) -- explicit backup schedules for databases on this instance
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the Spanner instance is created
+- [**GCP Spanner Database**](/infra-catalog/gcp-spanner-database) -- databases live on this instance and reference it by `instance_name`
+- [**GCP Spanner Backup Schedule**](/infra-catalog/gcp-spanner-backup-schedule) -- explicit backup schedules for databases on this instance

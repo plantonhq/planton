@@ -11,10 +11,10 @@ type Locals struct {
 	GcpSccBigQueryExport *gcpsccbigqueryexportv1alpha1.GcpSccBigQueryExport
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpsccbigqueryexportv1alpha1.GcpSccBigQueryExportStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpsccbigqueryexportv1alpha1.GcpSccBigQueryExportIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpSccBigQueryExport = stackInput.Target
+	locals.GcpSccBigQueryExport = iacInput.Target
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

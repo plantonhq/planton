@@ -94,7 +94,7 @@ flowchart TB
     B1 --> U3[Upload immediately]
 ```
 
-All 44 jobs (11 providers × 4 platforms) run in parallel. Each job builds all components for its provider/platform combination and uploads each binary immediately after building.
+All 44 jobs (11 providers × 4 platforms) run in parallel. Each job builds all kinds for its provider/platform combination and uploads each binary immediately after building.
 
 ### Files Changed
 
@@ -102,7 +102,7 @@ All 44 jobs (11 providers × 4 platforms) run in parallel. Each job builds all c
 | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `.goreleaser.yaml`                                   | Changed `name_template` from `planton_*` to `cli_*`; updated release notes with new naming and multi-platform Pulumi docs |
 | `.github/workflows/release.pulumi-modules.yaml`      | Added provider × platform matrix (44 jobs); builds all platforms in parallel                                                      |
-| `.github/workflows/auto-release.pulumi-modules.yaml` | Restructured with expand-matrix, create-releases, and build jobs; component × platform matrix for parallel builds                |
+| `.github/workflows/auto-release.pulumi-modules.yaml` | Restructured with expand-matrix, create-releases, and build jobs; kind × platform matrix for parallel builds                |
 
 ### Build Time Impact
 

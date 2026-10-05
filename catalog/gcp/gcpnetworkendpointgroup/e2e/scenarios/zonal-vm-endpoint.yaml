@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpnetworkendpointgroup
+    e2e-catalog-kind: gcpnetworkendpointgroup
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "GcpVpcNetwork,catalog/gcp/gcpnetworkendpointgroup/e2e/prerequisites/gcpsubnetwork-vm.yaml,catalog/gcp/gcpnetworkendpointgroup/e2e/prerequisites/gcpcomputeinstance-endpoint.yaml"

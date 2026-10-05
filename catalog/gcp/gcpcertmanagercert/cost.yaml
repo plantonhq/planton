@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpcertmanagercert
 spec:
@@ -24,4 +24,4 @@ spec:
   estimate_exclusions:
     - which tier this certificate lands in depends on how many other Certificate Manager certificates the project already holds
     - per-connection charges for RSA-3072/RSA-4096 self-managed certificates follow TLS handshake volume no manifest can predict
-  notes: "This is the METERED certificate kind -- the contrast matters: a classic Google-managed compute certificate (GcpManagedSslCertificate) carries no per-certificate fee at all, so a handful of certificates directly attached to a global load balancer is cheaper classic, while wildcards, pre-issuance validation, certificate maps, and regional load balancers need Certificate Manager and its meter. An issuance_config pointing at Certificate Authority Service adds CAS's own charges on top of this meter; certificates from Certificate Manager's Public CA are free to issue but still count toward the meter like any other certificate. DNS authorizations and certificate maps are separate chargeless kinds, and the load balancer serving the certificate bills on its own meters as its own kinds."
+  notes: "This is the METERED certificate kind -- the contrast matters: a classic Google-managed compute certificate (GcpManagedSslCertificate) carries no per-certificate fee at all, so a handful of certificates directly attached to a global load balancer is cheaper classic, while wildcards, pre-issuance validation, certificate maps, and regional load balancers need Certificate Manager and its meter. An issuance_config pointing at Certificate Authority Service adds CAS's own charges on top of this meter; certificates from Certificate Manager's Public CA are free to issue but still count toward the meter like any other certificate. DNS authorizations and certificate maps are separate chargeless kinds, and the load balancer serving the certificate bills on its own meters as its own components."

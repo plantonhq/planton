@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kuberneteskarpenternodepool
 spec:
@@ -21,7 +21,7 @@ spec:
     - name: name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: node_pool_name
+        - from_output: node_pool_name
       where_to_find: >-
         The NodePool's metadata.name (equals the Planton resource name) —
         `kubectl get nodepools` (NAME column).

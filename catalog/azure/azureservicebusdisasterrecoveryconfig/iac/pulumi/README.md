@@ -1,7 +1,7 @@
 # AzureServiceBusDisasterRecoveryConfig - Pulumi Module
 
 Pulumi (Go) implementation for the
-AzureServiceBusDisasterRecoveryConfig component, at 100%
+AzureServiceBusDisasterRecoveryConfig kind, at 100%
 behavioral parity with the Terraform module.
 
 ## Resources Created

@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	fkv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "cpu-high",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -48,7 +48,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "cpu-gt",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -70,7 +70,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "free-mem-low",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -92,7 +92,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "disk-space-low",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -114,7 +114,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "latency-p95",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -136,7 +136,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "ec2-cpu-instance",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -161,7 +161,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "error-rate-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -207,7 +207,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "cpu-anomaly",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -248,7 +248,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "full-actions-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -273,7 +273,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "ref-actions-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -289,7 +289,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 					{
 						LiteralOrRef: &fkv1.StringValueOrRef_ValueFrom{
 							ValueFrom: &fkv1.ValueFromRef{
-								Kind:      cloudresourcekind.CloudResourceKind_AwsSnsTopic,
+								Kind:      catalogkind.CatalogKind_AwsSnsTopic,
 								Name:      "alerts-topic",
 								FieldPath: "status.outputs.topic_arn",
 							},
@@ -306,7 +306,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "m-of-n-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -329,7 +329,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "heartbeat-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -352,7 +352,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "intermittent-errors",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -375,7 +375,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "maintenance-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -398,7 +398,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "high-res-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -420,7 +420,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "percentile-ignore",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -443,7 +443,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		snsArn := &fkv1.StringValueOrRef{
 			LiteralOrRef: &fkv1.StringValueOrRef_ValueFrom{
 				ValueFrom: &fkv1.ValueFromRef{
-					Kind:      cloudresourcekind.CloudResourceKind_AwsSnsTopic,
+					Kind:      catalogkind.CatalogKind_AwsSnsTopic,
 					Name:      "prod-alerts",
 					FieldPath: "status.outputs.topic_arn",
 				},
@@ -452,7 +452,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "prod-cpu-alarm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -489,7 +489,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-operator",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -514,7 +514,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-eval-periods",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -539,7 +539,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-stat",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -564,7 +564,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-missing-data",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -590,7 +590,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-low-sample",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -616,7 +616,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "both-stats",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -642,7 +642,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "both-modes",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -679,7 +679,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "no-metric-source",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -700,7 +700,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "no-namespace",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -724,7 +724,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "no-period",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -748,7 +748,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "no-statistic",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -772,7 +772,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-period-45",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -793,7 +793,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-period-100",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -818,7 +818,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-datapoints",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -857,7 +857,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "too-many-queries",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -887,7 +887,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "too-many-alarm-actions",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -921,7 +921,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "too-many-ok-actions",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -955,7 +955,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "too-many-insuf-actions",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -981,7 +981,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "wrong.planton.dev/v1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-version",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1002,7 +1002,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "WrongKind",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-kind",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1041,7 +1041,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "no-spec",
 			},
 		}
@@ -1057,7 +1057,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "promql-cpu-high",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1080,7 +1080,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "promql-and-metric",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1106,7 +1106,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "promql-with-operator",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1127,7 +1127,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "promql-with-periods",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1148,7 +1148,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "interval-without-promql",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1171,7 +1171,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "promql-bad-interval",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1192,7 +1192,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "empty-criteria",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1208,7 +1208,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "promql-pending-too-long",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1233,7 +1233,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "query-both-arms",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1264,7 +1264,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "query-neither-arm",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1288,7 +1288,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "no-return-data",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1317,7 +1317,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "double-return-data",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1357,7 +1357,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "no-namespace-metric",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1386,7 +1386,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-query-period",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1416,7 +1416,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-unit",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1443,7 +1443,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "double-threshold",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1482,7 +1482,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "query-with-stray-unit",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1513,7 +1513,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "query-with-stray-dimensions",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1549,7 +1549,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 			return &AwsCloudwatchAlarm{
 				ApiVersion: "aws.planton.dev/v1alpha1",
 				Kind:       "AwsCloudwatchAlarm",
-				Metadata:   &shared.CloudResourceMetadata{Name: name},
+				Metadata:   &shared.CatalogObjectMetadata{Name: name},
 				Spec: &AwsCloudwatchAlarmSpec{
 					Region:             "us-west-2",
 					ComparisonOperator: "GreaterThanThreshold",
@@ -1572,7 +1572,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-ext-stat",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1594,7 +1594,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-query-stat",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1628,7 +1628,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-namespace",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{
@@ -1650,7 +1650,7 @@ var _ = ginkgo.Describe("AwsCloudwatchAlarmSpec validations", func() {
 		input := &AwsCloudwatchAlarm{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchAlarm",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-query-namespace",
 			},
 			Spec: &AwsCloudwatchAlarmSpec{

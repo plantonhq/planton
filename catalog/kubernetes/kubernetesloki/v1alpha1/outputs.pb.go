@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// loki-kubernetes stack outputs
-type KubernetesLokiStackOutputs struct {
+// loki-kubernetes outputs
+type KubernetesLokiOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace Loki runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -52,20 +52,20 @@ type KubernetesLokiStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesLokiStackOutputs) Reset() {
-	*x = KubernetesLokiStackOutputs{}
+func (x *KubernetesLokiOutputs) Reset() {
+	*x = KubernetesLokiOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesLokiStackOutputs) String() string {
+func (x *KubernetesLokiOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesLokiStackOutputs) ProtoMessage() {}
+func (*KubernetesLokiOutputs) ProtoMessage() {}
 
-func (x *KubernetesLokiStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesLokiOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesloki_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -77,54 +77,54 @@ func (x *KubernetesLokiStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesLokiStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesLokiStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesLokiOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesLokiOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesloki_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesLokiStackOutputs) GetNamespace() string {
+func (x *KubernetesLokiOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesLokiStackOutputs) GetReleaseName() string {
+func (x *KubernetesLokiOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesLokiStackOutputs) GetGatewayService() string {
+func (x *KubernetesLokiOutputs) GetGatewayService() string {
 	if x != nil {
 		return x.GatewayService
 	}
 	return ""
 }
 
-func (x *KubernetesLokiStackOutputs) GetGatewayEndpoint() string {
+func (x *KubernetesLokiOutputs) GetGatewayEndpoint() string {
 	if x != nil {
 		return x.GatewayEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesLokiStackOutputs) GetOtlpPushEndpoint() string {
+func (x *KubernetesLokiOutputs) GetOtlpPushEndpoint() string {
 	if x != nil {
 		return x.OtlpPushEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesLokiStackOutputs) GetLokiService() string {
+func (x *KubernetesLokiOutputs) GetLokiService() string {
 	if x != nil {
 		return x.LokiService
 	}
 	return ""
 }
 
-func (x *KubernetesLokiStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesLokiOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -135,8 +135,8 @@ var File_catalog_kubernetes_kubernetesloki_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetesloki_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetesloki/v1alpha1/outputs.proto\x12.dev.planton.kubernetes.kubernetesloki.v1alpha1\"\xb4\x02\n" +
-	"\x1aKubernetesLokiStackOutputs\x12\x1c\n" +
+	"8catalog/kubernetes/kubernetesloki/v1alpha1/outputs.proto\x12.dev.planton.kubernetes.kubernetesloki.v1alpha1\"\xaf\x02\n" +
+	"\x15KubernetesLokiOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12'\n" +
 	"\x0fgateway_service\x18\x03 \x01(\tR\x0egatewayService\x12)\n" +
@@ -160,7 +160,7 @@ func file_catalog_kubernetes_kubernetesloki_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_kubernetes_kubernetesloki_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesloki_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesLokiStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStackOutputs
+	(*KubernetesLokiOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiOutputs
 }
 var file_catalog_kubernetes_kubernetesloki_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -5,7 +5,7 @@ package dev.planton.gcp.gcpserviceconnectionpolicy.v1alpha1;
 import "catalog/gcp/gcpserviceconnectionpolicy/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-message GcpServiceConnectionPolicyStackInput {
+message GcpServiceConnectionPolicyIacInput {
   GcpServiceConnectionPolicy target = 1;
   dev.planton.gcp.GcpProviderConfig provider_config = 2;
 }

@@ -1,7 +1,7 @@
 # AzureServiceBusAuthorizationRule - Terraform Module
 
 OpenTofu/Terraform implementation for the
-AzureServiceBusAuthorizationRule component, at 100%
+AzureServiceBusAuthorizationRule kind, at 100%
 behavioral parity with the Pulumi module.
 
 ## Resources Created

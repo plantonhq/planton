@@ -1,7 +1,7 @@
 # AzureFrontDoorOrigin - Terraform Module
 
-Terraform implementation for the AzureFrontDoorOrigin deployment
-component.
+Terraform implementation for the AzureFrontDoorOrigin
+kind.
 
 ## Resources Created
 

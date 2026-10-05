@@ -17,16 +17,16 @@ import (
 // services, PVCs, the basic-auth bootstrap Secret, Ingress exposure — is
 // the operator's to create from the SolrCloud spec; the module renders the
 // CR and exports the operator's deterministic names.
-func Resources(ctx *pulumi.Context, stackInput *kubernetessolrv1alpha1.KubernetesSolrStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetessolrv1alpha1.KubernetesSolrIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
 
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

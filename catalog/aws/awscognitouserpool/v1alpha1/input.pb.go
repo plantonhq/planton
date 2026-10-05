@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-cognito-user-pool stack-input
-type AwsCognitoUserPoolStackInput struct {
+// aws-cognito-user-pool iac-input
+type AwsCognitoUserPoolIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsCognitoUserPool `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-credential
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsCognitoUserPoolStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsCognitoUserPoolStackInput) Reset() {
-	*x = AwsCognitoUserPoolStackInput{}
+func (x *AwsCognitoUserPoolIacInput) Reset() {
+	*x = AwsCognitoUserPoolIacInput{}
 	mi := &file_catalog_aws_awscognitouserpool_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCognitoUserPoolStackInput) String() string {
+func (x *AwsCognitoUserPoolIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCognitoUserPoolStackInput) ProtoMessage() {}
+func (*AwsCognitoUserPoolIacInput) ProtoMessage() {}
 
-func (x *AwsCognitoUserPoolStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsCognitoUserPoolIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscognitouserpool_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsCognitoUserPoolStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCognitoUserPoolStackInput.ProtoReflect.Descriptor instead.
-func (*AwsCognitoUserPoolStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCognitoUserPoolIacInput.ProtoReflect.Descriptor instead.
+func (*AwsCognitoUserPoolIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscognitouserpool_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCognitoUserPoolStackInput) GetTarget() *AwsCognitoUserPool {
+func (x *AwsCognitoUserPoolIacInput) GetTarget() *AwsCognitoUserPool {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsCognitoUserPoolStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsCognitoUserPoolIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awscognitouserpool_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_aws_awscognitouserpool_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awscognitouserpool/v1alpha1/input.proto\x12+dev.planton.aws.awscognitouserpool.v1alpha1\x1a1catalog/aws/awscognitouserpool/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc4\x01\n" +
-	"\x1cAwsCognitoUserPoolStackInput\x12W\n" +
+	"3catalog/aws/awscognitouserpool/v1alpha1/input.proto\x12+dev.planton.aws.awscognitouserpool.v1alpha1\x1a1catalog/aws/awscognitouserpool/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc2\x01\n" +
+	"\x1aAwsCognitoUserPoolIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xef\x02\n" +
 	"/com.dev.planton.aws.awscognitouserpool.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awscognitouserpool_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awscognitouserpool_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscognitouserpool_v1alpha1_input_proto_goTypes = []any{
-	(*AwsCognitoUserPoolStackInput)(nil), // 0: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolStackInput
-	(*AwsCognitoUserPool)(nil),           // 1: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPool
-	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsCognitoUserPoolIacInput)(nil), // 0: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolIacInput
+	(*AwsCognitoUserPool)(nil),         // 1: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPool
+	(*aws.AwsProviderConfig)(nil),      // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awscognitouserpool_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolStackInput.target:type_name -> dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPool
-	2, // 1: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolIacInput.target:type_name -> dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPool
+	2, // 1: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

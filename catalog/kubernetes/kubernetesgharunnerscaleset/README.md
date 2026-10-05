@@ -7,7 +7,7 @@ self-hosted GitHub Actions runners registered against one repository,
 organization or enterprise. Each runner pod executes exactly one job
 and is replaced.
 
-Not the right component when:
+Not the right kind when:
 
 - **The controller is missing** —
   `KubernetesGhaRunnerScaleSetController` is the registry prerequisite;
@@ -24,7 +24,7 @@ Not the right component when:
 The fleet registers in GitHub under `runner_scale_set_name` (default:
 `metadata.name`, at most 45 characters — a GitHub limit) and workflows
 select it with `runs-on: <that name>`. Labels are not how scale sets
-route; the name is the whole contract, and it is exported as a stack
+route; the name is the whole contract, and it is exported as a
 output.
 
 ## The credential never rides a manifest

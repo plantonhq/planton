@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added AwsCodePipeline as a new deployment component (enum 331, id_prefix `awscp`), enabling declarative management of AWS CodePipeline continuous delivery pipelines through Planton. The component supports V1 and V2 pipelines with stages, actions, artifact stores, git-based triggers, pipeline variables, and advanced execution modes.
+Added AwsCodePipeline as a new catalog kind (enum 331, id_prefix `awscp`), enabling declarative management of AWS CodePipeline continuous delivery pipelines through Planton. The kind supports V1 and V2 pipelines with stages, actions, artifact stores, git-based triggers, pipeline variables, and advanced execution modes.
 
 ## Problem Statement / Motivation
 
-AWS CodePipeline is the standard CI/CD orchestration service in the AWS ecosystem, connecting source providers (GitHub, Bitbucket, CodeCommit), build services (CodeBuild), and deployment targets (ECS, Lambda, S3, CloudFormation) into automated release pipelines. Without an Planton component, teams managing AWS infrastructure through Planton had no way to declaratively define their delivery pipelines alongside the infrastructure they deploy to.
+AWS CodePipeline is the standard CI/CD orchestration service in the AWS ecosystem, connecting source providers (GitHub, Bitbucket, CodeCommit), build services (CodeBuild), and deployment targets (ECS, Lambda, S3, CloudFormation) into automated release pipelines. Without an Planton kind, teams managing AWS infrastructure through Planton had no way to declaratively define their delivery pipelines alongside the infrastructure they deploy to.
 
 ### Pain Points
 
@@ -20,7 +20,7 @@ AWS CodePipeline is the standard CI/CD orchestration service in the AWS ecosyste
 
 ## Solution / What's New
 
-A complete AwsCodePipeline deployment component with:
+A complete AwsCodePipeline catalog kind with:
 
 - **Proto API** — 4 proto files with 11 message types covering pipeline type (V1/V2), execution modes (SUPERSEDED/QUEUED/PARALLEL), artifact stores (single-region and cross-region with KMS encryption), stages with polymorphic actions (Source/Build/Test/Deploy/Approval/Invoke/Compute), git-based triggers (push and pull request with branch/file path/tag filtering), and pipeline-level variables
 - **46 validation tests** — all passing, covering valid configurations, required fields, enum validations, range validations, and 4 cross-field CEL rules
@@ -80,16 +80,16 @@ AwsCodePipelineSpec
 ## Benefits
 
 - **Declarative pipeline management** — Define CI/CD pipelines as YAML alongside infrastructure
-- **Cross-resource composability** — StringValueOrRef enables pipelines to reference IAM roles, S3 buckets, and KMS keys from other Planton components
+- **Cross-resource composability** — StringValueOrRef enables pipelines to reference IAM roles, S3 buckets, and KMS keys from other Planton kinds
 - **V2-first design** — Modern defaults with triggers and variables out of the box
-- **Infra chart ready** — Pipelines can be composed into infra charts with dependency-aware deployment ordering
+- **Infra Chart ready** — Pipelines can be composed into Infra Charts with dependency-aware deployment ordering
 
 ## Impact
 
 - **34 files**, ~3,850 lines of non-generated code
 - **46 validation tests** — all passing
-- Registered as enum 331 in cloud_resource_kind.proto
-- Complements the existing AwsCodeBuildProject component (enum 330) — together they provide complete CI/CD coverage in the AWS provider
+- Registered as enum 331 in catalog_kind.proto
+- Complements the existing AwsCodeBuildProject kind (enum 330) — together they provide complete CI/CD coverage in the AWS provider
 
 ## Related Work
 

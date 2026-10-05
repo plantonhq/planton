@@ -36,7 +36,7 @@ func validResource() *AzureFunctionAppFlexConsumption {
 	return &AzureFunctionAppFlexConsumption{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFunctionAppFlexConsumption",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-flex-app",
 		},
 		Spec: &AzureFunctionAppFlexConsumptionSpec{

@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpfirestoredatabase
+    e2e-catalog-kind: gcpfirestoredatabase
   annotations:
     planton.dev/e2e: "true"
   tags:

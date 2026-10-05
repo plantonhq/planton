@@ -34,7 +34,7 @@ type AwsSesConfigurationSet struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, environment,
 	// labels) and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration of the configuration set.
 	Spec *AwsSesConfigurationSetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds post-deployment information.
@@ -87,7 +87,7 @@ func (x *AwsSesConfigurationSet) GetKind() string {
 	return ""
 }
 
-func (x *AwsSesConfigurationSet) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsSesConfigurationSet) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,7 +114,7 @@ type AwsSesConfigurationSetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the observable values returned by Pulumi/Terraform
 	// after provisioning.
-	Outputs       *AwsSesConfigurationSetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsSesConfigurationSetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AwsSesConfigurationSetStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssesconfigurationset_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsSesConfigurationSetStatus) GetOutputs() *AwsSesConfigurationSetStackOutputs {
+func (x *AwsSesConfigurationSetStatus) GetOutputs() *AwsSesConfigurationSetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_aws_awssesconfigurationset_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16AwsSesConfigurationSetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
 	"\x04spec\x18\x04 \x01(\v2K.dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12e\n" +
-	"\x06status\x18\x05 \x01(\v2M.dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetStatusR\x06status\"\x8d\x01\n" +
-	"\x1cAwsSesConfigurationSetStatus\x12m\n" +
-	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetStackOutputsR\aoutputsB\x89\x03\n" +
+	"\x06status\x18\x05 \x01(\v2M.dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetStatusR\x06status\"\x88\x01\n" +
+	"\x1cAwsSesConfigurationSetStatus\x12h\n" +
+	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetOutputsR\aoutputsB\x89\x03\n" +
 	"3com.dev.planton.aws.awssesconfigurationset.v1alpha1B\bApiProtoP\x01Zggithub.com/plantonhq/planton/catalog/aws/awssesconfigurationset/v1alpha1;awssesconfigurationsetv1alpha1\xa2\x02\x04DPAA\xaa\x02/Dev.Planton.Aws.Awssesconfigurationset.V1alpha1\xca\x02/Dev\\Planton\\Aws\\Awssesconfigurationset\\V1alpha1\xe2\x02;Dev\\Planton\\Aws\\Awssesconfigurationset\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Aws::Awssesconfigurationset::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_aws_awssesconfigurationset_v1alpha1_api_proto_rawDescGZIP() []
 
 var file_catalog_aws_awssesconfigurationset_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awssesconfigurationset_v1alpha1_api_proto_goTypes = []any{
-	(*AwsSesConfigurationSet)(nil),             // 0: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSet
-	(*AwsSesConfigurationSetStatus)(nil),       // 1: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsSesConfigurationSetSpec)(nil),         // 3: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetSpec
-	(*AwsSesConfigurationSetStackOutputs)(nil), // 4: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetStackOutputs
+	(*AwsSesConfigurationSet)(nil),        // 0: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSet
+	(*AwsSesConfigurationSetStatus)(nil),  // 1: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsSesConfigurationSetSpec)(nil),    // 3: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetSpec
+	(*AwsSesConfigurationSetOutputs)(nil), // 4: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetOutputs
 }
 var file_catalog_aws_awssesconfigurationset_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSet.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSet.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSet.spec:type_name -> dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetSpec
 	1, // 2: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSet.status:type_name -> dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetStatus
-	4, // 3: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetStatus.outputs:type_name -> dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetStackOutputs
+	4, // 3: dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetStatus.outputs:type_name -> dev.planton.aws.awssesconfigurationset.v1alpha1.AwsSesConfigurationSetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -21,7 +21,7 @@ message AzureServiceBusTopic {
   string kind = 2 [(buf.validate.field).string.const = 'AzureServiceBusTopic'];
 
   // metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
   AzureServiceBusTopicSpec spec = 4 [(buf.validate.field).required = true];
@@ -32,6 +32,6 @@ message AzureServiceBusTopic {
 
 // AzureServiceBusTopicStatus holds the deployment status and outputs.
 message AzureServiceBusTopicStatus {
-  // stack-outputs
-  AzureServiceBusTopicStackOutputs outputs = 1;
+  // outputs
+  AzureServiceBusTopicOutputs outputs = 1;
 }

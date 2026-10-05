@@ -11,7 +11,7 @@ planton tofu apply --manifest ../../e2e/manifest.yaml --auto-approve
 planton tofu destroy --manifest ../../e2e/manifest.yaml --auto-approve
 ```
 
-Credentials are passed via the stack input through the CLI, not in `spec`.
+Credentials are passed via the IaC input through the CLI, not in `spec`.
 
 ## Files
 - `variables.tf` (generated; do not edit)
@@ -21,7 +21,7 @@ Credentials are passed via the stack input through the CLI, not in `spec`.
 - `cluster_param_group.tf` — managed cluster parameter group for inline parameters
 - `docdb_cluster.tf` — main cluster resource
 - `cluster_instances.tf` — per-name folded instances
-- `outputs.tf` — outputs matching `AwsDocumentDbStackOutputs`
+- `outputs.tf` — outputs matching `AwsDocumentDbOutputs`
 
 ## Presets
 See `../../presets/` for ready-to-adapt manifests.

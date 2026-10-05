@@ -31,7 +31,7 @@ type KubernetesNats struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesNatsSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesNats) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesNats) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesNats) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesNats) GetStatus() *KubernetesNatsStatus {
 // nats-kubernetes status
 type KubernetesNatsStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesNatsStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesNatsOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesNatsStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesnats_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesNatsStatus) GetOutputs() *KubernetesNatsStackOutputs {
+func (x *KubernetesNatsStatus) GetOutputs() *KubernetesNatsOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesnats_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eKubernetesNatsR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12^\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12^\n" +
 	"\x04spec\x18\x04 \x01(\v2B.dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\\\n" +
-	"\x06status\x18\x05 \x01(\v2D.dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsStatusR\x06status\"|\n" +
-	"\x14KubernetesNatsStatus\x12d\n" +
-	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsStackOutputsR\aoutputsB\xfb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2D.dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsStatusR\x06status\"w\n" +
+	"\x14KubernetesNatsStatus\x12_\n" +
+	"\aoutputs\x18\x01 \x01(\v2E.dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsOutputsR\aoutputsB\xfb\x02\n" +
 	"2com.dev.planton.kubernetes.kubernetesnats.v1alpha1B\bApiProtoP\x01Z^github.com/plantonhq/planton/catalog/kubernetes/kubernetesnats/v1alpha1;kubernetesnatsv1alpha1\xa2\x02\x04DPKK\xaa\x02.Dev.Planton.Kubernetes.Kubernetesnats.V1alpha1\xca\x02.Dev\\Planton\\Kubernetes\\Kubernetesnats\\V1alpha1\xe2\x02:Dev\\Planton\\Kubernetes\\Kubernetesnats\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Kubernetes::Kubernetesnats::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_kubernetes_kubernetesnats_v1alpha1_api_proto_msgTypes = make([]
 var file_catalog_kubernetes_kubernetesnats_v1alpha1_api_proto_goTypes = []any{
 	(*KubernetesNats)(nil),               // 0: dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNats
 	(*KubernetesNatsStatus)(nil),         // 1: dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*KubernetesNatsSpec)(nil),           // 3: dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsSpec
-	(*KubernetesNatsStackOutputs)(nil),   // 4: dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsStackOutputs
+	(*KubernetesNatsOutputs)(nil),        // 4: dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsOutputs
 }
 var file_catalog_kubernetes_kubernetesnats_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNats.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNats.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNats.spec:type_name -> dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsSpec
 	1, // 2: dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNats.status:type_name -> dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsStatus
-	4, // 3: dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

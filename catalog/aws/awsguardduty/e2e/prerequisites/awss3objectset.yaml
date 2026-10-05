@@ -11,7 +11,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awss3objectset
+    e2e-catalog-kind: awss3objectset
   annotations:
     planton.dev/e2e: "true"
   tags:

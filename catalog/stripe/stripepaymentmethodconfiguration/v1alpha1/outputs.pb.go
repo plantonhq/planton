@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePaymentMethodConfigurationStackOutputs identifies the configuration a payment names and
+// StripePaymentMethodConfigurationOutputs identifies the configuration a payment names and
 // what it actually offers.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/payment_method_configuration
-type StripePaymentMethodConfigurationStackOutputs struct {
+type StripePaymentMethodConfigurationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the configuration's Stripe id (pmc_...), the value an application passes as
 	// `payment_method_configuration` when it creates a Checkout Session or PaymentIntent.
@@ -43,20 +43,20 @@ type StripePaymentMethodConfigurationStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *StripePaymentMethodConfigurationStackOutputs) Reset() {
-	*x = StripePaymentMethodConfigurationStackOutputs{}
+func (x *StripePaymentMethodConfigurationOutputs) Reset() {
+	*x = StripePaymentMethodConfigurationOutputs{}
 	mi := &file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripePaymentMethodConfigurationStackOutputs) String() string {
+func (x *StripePaymentMethodConfigurationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripePaymentMethodConfigurationStackOutputs) ProtoMessage() {}
+func (*StripePaymentMethodConfigurationOutputs) ProtoMessage() {}
 
-func (x *StripePaymentMethodConfigurationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripePaymentMethodConfigurationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,33 +68,33 @@ func (x *StripePaymentMethodConfigurationStackOutputs) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripePaymentMethodConfigurationStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripePaymentMethodConfigurationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripePaymentMethodConfigurationOutputs.ProtoReflect.Descriptor instead.
+func (*StripePaymentMethodConfigurationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripePaymentMethodConfigurationStackOutputs) GetId() string {
+func (x *StripePaymentMethodConfigurationOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripePaymentMethodConfigurationStackOutputs) GetIsDefault() bool {
+func (x *StripePaymentMethodConfigurationOutputs) GetIsDefault() bool {
 	if x != nil {
 		return x.IsDefault
 	}
 	return false
 }
 
-func (x *StripePaymentMethodConfigurationStackOutputs) GetActive() bool {
+func (x *StripePaymentMethodConfigurationOutputs) GetActive() bool {
 	if x != nil {
 		return x.Active
 	}
 	return false
 }
 
-func (x *StripePaymentMethodConfigurationStackOutputs) GetAvailablePaymentMethods() []string {
+func (x *StripePaymentMethodConfigurationOutputs) GetAvailablePaymentMethods() []string {
 	if x != nil {
 		return x.AvailablePaymentMethods
 	}
@@ -105,8 +105,8 @@ var File_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_outputs_proto 
 
 const file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/stripe/stripepaymentmethodconfiguration/v1alpha1/outputs.proto\x12<dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1\"\xb1\x01\n" +
-	",StripePaymentMethodConfigurationStackOutputs\x12\x0e\n" +
+	"Fcatalog/stripe/stripepaymentmethodconfiguration/v1alpha1/outputs.proto\x12<dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1\"\xac\x01\n" +
+	"'StripePaymentMethodConfigurationOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"is_default\x18\x02 \x01(\bR\tisDefault\x12\x16\n" +
@@ -128,7 +128,7 @@ func file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_outputs_proto
 
 var file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripePaymentMethodConfigurationStackOutputs)(nil), // 0: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationStackOutputs
+	(*StripePaymentMethodConfigurationOutputs)(nil), // 0: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationOutputs
 }
 var file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

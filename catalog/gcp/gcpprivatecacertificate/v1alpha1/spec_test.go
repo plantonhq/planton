@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpPrivateCaCertificateSpec", func() {
 		return &GcpPrivateCaCertificate{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpPrivateCaCertificate",
-			Metadata:   &shared.CloudResourceMetadata{Name: "api-server"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "api-server"},
 			Spec: &GcpPrivateCaCertificateSpec{
 				Location: "us-central1",
 				Pool:     litRef("internal-tls"),

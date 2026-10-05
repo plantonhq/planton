@@ -4,7 +4,7 @@ Deploys a Cloud Composer environment -- a managed Apache Airflow service -- with
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloud Composer API enablement** (`composer.googleapis.com`) on the target project (never disabled on destroy)
 - **Cloud Composer Environment** -- a managed `composer.Environment` in the specified GCP project and region, with the chosen environment size (SMALL, MEDIUM, LARGE, or EXTRA_LARGE) and resilience mode
@@ -24,13 +24,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the Composer environment will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
-- **A VPC network and subnet** (if using private networking) -- required for Composer 2.x with VPC peering. Provide self-links directly or reference GcpVpcNetwork and GcpSubnetwork Cloud Resources via ValueFromRef.
+- **A GCP project** where the Composer environment will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
+- **A VPC network and subnet** (if using private networking) -- required for Composer 2.x with VPC peering. Provide self-links directly or reference GcpVpcNetwork and GcpSubnetwork Infra Components via ValueFromRef.
 - **A service account** (recommended) -- a custom service account for Composer GKE nodes with permissions for BigQuery, GCS, and other GCP services your DAGs access.
 - **Cloud KMS key** (if using CMEK) -- a key in the same region as the environment, with the Composer service agent granted the `cloudkms.cryptoKeyEncrypterDecrypter` role.
 
@@ -64,7 +64,7 @@ spec:
 planton apply -f cloud-composer.yaml
 ```
 
-This creates a small Composer 2.x environment with public endpoint access, default workload resource allocations, and no private networking or CMEK encryption. A Stack Job tracks the provisioning in real time.
+This creates a small Composer 2.x environment with public endpoint access, default workload resource allocations, and no private networking or CMEK encryption. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -116,7 +116,7 @@ These are the most important decisions when configuring a Cloud Composer environ
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -127,9 +127,9 @@ These are the most important decisions when configuring a Cloud Composer environ
 | **GcpKmsKey** (optional) | `kmsKeyName` | `status.outputs.key_id` |
 | **GcpGcsBucket** (optional) | `storageBucket` | `status.outputs.bucket_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -151,8 +151,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the Composer environment is created
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- provides the VPC network for private Composer networking
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- provides the subnet for Composer GKE node placement
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- provides the VM identity for Composer GKE nodes
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides the customer-managed encryption key for all Composer-managed resources
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the Composer environment is created
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC network for private Composer networking
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- provides the subnet for Composer GKE node placement
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- provides the VM identity for Composer GKE nodes
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides the customer-managed encryption key for all Composer-managed resources

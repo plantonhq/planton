@@ -21,7 +21,7 @@ This directory contains the Terraform/OpenTofu implementation for deploying a Cl
 | `variables.tf` | GENERATED from the proto spec (`planton tofu generate-variables GcpMonitoringDashboard`) — never hand-edited |
 | `locals.tf` | Project fallback derivation |
 | `main.tf` | API enablement + the dashboard resource |
-| `outputs.tf` | Stack outputs |
+| `outputs.tf` | Outputs |
 | `provider.tf` | google provider pin (`~> 8.3`) |
 | `backend.tf` | Local state backend (the runner injects the real backend) |
 

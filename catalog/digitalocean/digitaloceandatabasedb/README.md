@@ -2,9 +2,9 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_database_db` resource at the pinned provider version.
 
-## What this component models
+## What this kind models
 
-An additional logical database inside a DigitalOcean managed database cluster. The resource is deliberately minimal upstream -- two create-only arguments -- and this component models both:
+An additional logical database inside a DigitalOcean managed database cluster. The resource is deliberately minimal upstream -- two create-only arguments -- and this kind models both:
 
 - `cluster` -- the owning cluster, by literal UUID or by reference to a `DigitalOceanDatabaseCluster` (create-only)
 - `database_name` -- the logical database's name and API identity (create-only; a rename REPLACES the database and DROPS its data)

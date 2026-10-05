@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -45,7 +45,7 @@ func minimalSpec() *AzureFunctionApp {
 	return &AzureFunctionApp{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFunctionApp",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-fn",
 		},
 		Spec: &AzureFunctionAppSpec{
@@ -341,7 +341,7 @@ var _ = ginkgo.Describe("AzureFunctionAppSpec Validation Tests", func() {
 				input.Spec.ServicePlanId = &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AzureServicePlan,
+							Kind:      catalogkind.CatalogKind_AzureServicePlan,
 							Name:      "fn-plan",
 							FieldPath: "status.outputs.service_plan_id",
 						},
@@ -350,7 +350,7 @@ var _ = ginkgo.Describe("AzureFunctionAppSpec Validation Tests", func() {
 				input.Spec.StorageAccountName = &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AzureStorageAccount,
+							Kind:      catalogkind.CatalogKind_AzureStorageAccount,
 							Name:      "fn-storage",
 							FieldPath: "status.outputs.storage_account_name",
 						},

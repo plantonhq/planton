@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpmanagedsslcertificate.v1alpha1;
 
 // Outputs produced after provisioning a GCP managed SSL certificate.
-message GcpManagedSslCertificateStackOutputs {
+message GcpManagedSslCertificateOutputs {
   // Self-link URI of the SSL certificate. This is the value a target HTTPS
   // proxy references in its ssl_certificates list — the composition handle
   // that terminates TLS at the load balancer.

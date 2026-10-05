@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awssagemakerendpoint
 spec:
@@ -9,13 +9,13 @@ spec:
   values:
     - name: endpoint_name
       derivations:
-        - from_stack_output: endpoint_name
+        - from_output: endpoint_name
       where_to_find: >-
         SageMaker console -> Inference -> Endpoints (the name), or
         `aws sagemaker list-endpoints` (EndpointName).
     - name: endpoint_config_name
       derivations:
-        - from_stack_output: endpoint_config_name
+        - from_output: endpoint_config_name
       where_to_find: >-
         `aws sagemaker describe-endpoint --endpoint-name <name>` shows
         EndpointConfigName (the suffixed configuration currently in

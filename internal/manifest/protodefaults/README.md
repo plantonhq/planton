@@ -212,7 +212,7 @@ spec:
 
 **2. Via CLI flags**:
 ```bash
-planton deploy cert-manager.yaml \
+planton pulumi up --manifest cert-manager.yaml \
   --set spec.namespace=custom-namespace \
   --set spec.certManagerVersion=v1.14.0
 ```
@@ -281,7 +281,7 @@ Use the `(dev.planton.shared.options.recommended_default)` extension for suggest
 
 ## Contributing
 
-When adding new cloud resource APIs:
+When adding new catalog kind APIs:
 
 1. Define sensible defaults in your proto files
 2. Always use `optional` for fields with defaults

@@ -24,7 +24,7 @@ func validPolicy() *CloudflareZeroTrustAccessPolicy {
 	return &CloudflareZeroTrustAccessPolicy{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustAccessPolicy",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-policy"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-policy"},
 		Spec: &CloudflareZeroTrustAccessPolicySpec{
 			AccountId: validAccountID,
 			Name:      "allow-staff",

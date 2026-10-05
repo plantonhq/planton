@@ -4,9 +4,9 @@ package dev.planton.azure.azureeventgriddomain.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureEventgridDomainStackOutputs** captures the outputs from
+// **AzureEventgridDomainOutputs** captures the outputs from
 // provisioning an Azure Event Grid domain.
-message AzureEventgridDomainStackOutputs {
+message AzureEventgridDomainOutputs {
   // The domain's Azure Resource Manager ID.
   string domain_id = 1;
 

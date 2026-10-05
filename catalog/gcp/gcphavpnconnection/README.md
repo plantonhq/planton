@@ -4,7 +4,7 @@ Connects a Google Cloud HA VPN gateway (`GcpHaVpnGateway`) to ONE peer — an on
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **External VPN gateway** (external peer only) -- the `compute_external_vpn_gateway` holding the device's public addresses
 - **VPN tunnels** -- one `compute_vpn_tunnel` per `tunnels[]` entry
@@ -108,7 +108,7 @@ planton apply -f ha-vpn-connection.yaml
 - **`bgpSession`**: `peerAsn` ≥ 1; `interfaceIpRange` is `169.254.x.y/30`; BFD intervals 1000-30000, multiplier 5-16; priorities 0-65535 / 0-65335.
 - **Keys**: a literal `sharedSecret` is 1-63 printable ASCII characters; a literal `md5AuthenticationKey` is 1-80.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -144,7 +144,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpHaVpnGateway](/docs/catalog/gcp/gcphavpngateway) — the gateway and router this connection rides
 - [GcpVpcPeering](/docs/catalog/gcp/gcpvpcpeering) — shares the routes this connection learns with peered networks

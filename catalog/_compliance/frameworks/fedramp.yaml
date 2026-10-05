@@ -1,6 +1,6 @@
 # Crosswalk: FedRAMP (via the NIST SP 800-53 Rev 5 controls its baselines
 # draw on) onto the Planton Control Catalog. FedRAMP is an authorization
-# program, not a checklist -- no component, chart, or deployment is ever
+# program, not a checklist -- no kind, chart, or deployment is ever
 # "FedRAMP authorized" by this data. This crosswalk maps the technical
 # 800-53 controls FedRAMP baselines draw on, so the catalog's verified
 # posture serves as evidence a FedRAMP assessment consumes, never as an
@@ -13,7 +13,7 @@
 # FedRAMP is provider-neutral: its baselines govern any cloud service
 # offering regardless of the underlying cloud, so this crosswalk declares
 # NO provider scope (spec.providers stays absent) and applies to every
-# provider's components.
+# provider's kinds.
 apiVersion: compliance.planton.dev/v1
 kind: FrameworkCrosswalk
 metadata:
@@ -29,7 +29,7 @@ spec:
     - requirement_id: AC-6
       requirement_name: Least Privilege
       control_ids: [rbac]
-      notes: Role-based grants scoped to what each role needs are the component-grain expression of least privilege.
+      notes: Role-based grants scoped to what each role needs are the kind-grain expression of least privilege.
     - requirement_id: IA-5
       requirement_name: Authenticator Management
       control_ids: [workload-identity, no-legacy-auth, strong-user-auth]
@@ -71,7 +71,7 @@ spec:
     - requirement_id: CP-10
       requirement_name: System Recovery and Reconstitution
       control_ids: [backup-recovery, multi-zone-ha]
-      notes: Restore-from-backup recovers the component to a known state; zone-replicated operation sustains service through the failure of a zone. CP-7 (Alternate Processing Site) is deliberately not cited -- its statement concerns organization-level site agreements and equipment, not a component capability.
+      notes: Restore-from-backup recovers the component to a known state; zone-replicated operation sustains service through the failure of a zone. CP-7 (Alternate Processing Site) is deliberately not cited -- its statement concerns organization-level site agreements and equipment, not a kind capability.
     - requirement_id: SI-2
       requirement_name: Flaw Remediation
       control_ids: [managed-patching]

@@ -30,7 +30,7 @@ _kustomize/
   planton-schema.json          # the merge schema (generated; commit it)
   overlays/<env>/              # one per deploy environment — the overlay SET
     kustomization.yaml         #   defines which environments the service deploys to
-    <resource>.yaml            # full cloud-resource manifests
+    <resource>.yaml            # full catalog object manifests
   dev/<flavor>/                # local-development flavors: NEVER deployed, never synced
     kustomization.yaml         #   (compose an overlay, patch laptop deltas)
   previews/<env>/              # pull-request preview deltas for that environment: rendered

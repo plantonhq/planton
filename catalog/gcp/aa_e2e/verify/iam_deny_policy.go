@@ -10,7 +10,7 @@ import (
 )
 
 // iamDenyPolicyVerifier probes an IAM deny policy through the IAM v2 API.
-// The stack output policy_name carries {url-encoded-parent}/{policy_name};
+// The output policy_name carries {url-encoded-parent}/{policy_name};
 // the v2 API addresses the policy as
 // policies/{url-encoded-parent}/denypolicies/{policy_name}. The encoded
 // parent contains no "/" (that is the point of the encoding), so the first
@@ -19,7 +19,7 @@ type iamDenyPolicyVerifier struct{}
 
 func (v *iamDenyPolicyVerifier) IDOutputKey() string { return "policy_name" }
 
-// denyPolicyApiName renders the v2 API resource name from the stack output.
+// denyPolicyApiName renders the v2 API resource name from the output.
 func denyPolicyApiName(policyName string) (string, error) {
 	parent, name, found := strings.Cut(policyName, "/")
 	if !found || parent == "" || name == "" {

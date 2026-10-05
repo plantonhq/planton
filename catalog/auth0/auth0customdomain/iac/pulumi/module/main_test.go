@@ -38,9 +38,9 @@ func (mocks) Call(args pulumi.MockCallArgs) (resource.PropertyMap, error) {
 // can still panic when its outputs are wired (an applier whose parameter the
 // input output cannot supply), and only running it proves the wiring.
 func TestResources(t *testing.T) {
-	stackInput := &auth0customdomainv1alpha1.Auth0CustomDomainStackInput{
+	iacInput := &auth0customdomainv1alpha1.Auth0CustomDomainIacInput{
 		Target: &auth0customdomainv1alpha1.Auth0CustomDomain{
-			Metadata: &shared.CloudResourceMetadata{Name: "sign-in"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "sign-in"},
 			Spec: &auth0customdomainv1alpha1.Auth0CustomDomainSpec{
 				Domain: "id.example.com",
 				Type:   "auth0_managed_certs",
@@ -49,7 +49,7 @@ func TestResources(t *testing.T) {
 	}
 
 	err := pulumi.RunErr(func(ctx *pulumi.Context) error {
-		return Resources(ctx, stackInput)
+		return Resources(ctx, iacInput)
 	}, pulumi.WithMocks("auth0-custom-domain", "test", mocks{}))
 	if err != nil {
 		t.Fatalf("the program must run to completion: %v", err)

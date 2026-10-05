@@ -44,7 +44,7 @@ func validResource() *AzureMongoClusterUser {
 	return &AzureMongoClusterUser{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMongoClusterUser",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-mongou",
 		},
 		Spec: &AzureMongoClusterUserSpec{

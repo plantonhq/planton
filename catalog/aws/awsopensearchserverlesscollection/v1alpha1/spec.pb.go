@@ -59,7 +59,7 @@ const (
 // key choice. Network, data-access, and retention rules update in place.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsOpenSearchServerlessCollectionSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the collection will be created.

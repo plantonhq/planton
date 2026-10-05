@@ -4,7 +4,7 @@ Deploys an ElastiCache cluster running Memcached with configurable node count, c
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ElastiCache Cluster** -- a managed Memcached cluster in the specified AWS region with one or more cache nodes distributing keys via consistent hashing
 - **Cache Nodes** -- one or more nodes based on `numCacheNodes` (range 1-40); each node holds a partition of the key space. Adding nodes is non-disruptive; removing nodes evicts keys hashed to the removed node
@@ -16,13 +16,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **Subnets** in the target VPC for the ElastiCache subnet group. Provide at least two subnets in distinct Availability Zones when using `cross-az` mode. Provide subnet IDs directly or reference AwsSubnet Cloud Resources via ValueFromRef.
-- **Security groups** to attach to the cluster nodes for network access control. Since Memcached has no built-in authentication, security groups are the primary access control mechanism. Provide security group IDs directly or reference an AwsSecurityGroup Cloud Resource.
+- **Subnets** in the target VPC for the ElastiCache subnet group. Provide at least two subnets in distinct Availability Zones when using `cross-az` mode. Provide subnet IDs directly or reference AwsSubnet Infra Components via ValueFromRef.
+- **Security groups** to attach to the cluster nodes for network access control. Since Memcached has no built-in authentication, security groups are the primary access control mechanism. Provide security group IDs directly or reference an AwsSecurityGroup Infra Component.
 - **An SNS topic** (optional) for cluster event notifications (node additions, removals, maintenance events).
 
 ## Deploy
@@ -58,7 +58,7 @@ spec:
 planton apply -f memcached-elasticache.yaml
 ```
 
-This creates a 3-node Memcached 1.6.22 cluster distributed across multiple Availability Zones with in-transit encryption. No custom parameters or SNS notifications are configured. Memcached does not support encryption at rest, persistence, or authentication. A Stack Job tracks the provisioning in real time.
+This creates a 3-node Memcached 1.6.22 cluster distributed across multiple Availability Zones with in-transit encryption. No custom parameters or SNS notifications are configured. Memcached does not support encryption at rest, persistence, or authentication. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -107,7 +107,7 @@ These are the most important decisions when configuring an ElastiCache Memcached
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -115,9 +115,9 @@ These are the most important decisions when configuring an ElastiCache Memcached
 | **AwsSecurityGroup** (optional) | `securityGroupIds` | `status.outputs.security_group_id` |
 | **AwsSnsTopic** (optional) | `notificationTopicArn` | `status.outputs.topic_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -141,6 +141,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides the subnets for the ElastiCache subnet group across multiple Availability Zones
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- provides network access control for the Memcached endpoint (primary security mechanism since Memcached has no authentication)
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) -- receives cluster event notifications for node changes and maintenance events
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides the subnets for the ElastiCache subnet group across multiple Availability Zones
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- provides network access control for the Memcached endpoint (primary security mechanism since Memcached has no authentication)
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) -- receives cluster event notifications for node changes and maintenance events

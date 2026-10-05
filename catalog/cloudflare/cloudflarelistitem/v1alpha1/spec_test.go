@@ -22,7 +22,7 @@ func baseItem() *CloudflareListItem {
 	return &CloudflareListItem{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareListItem",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-list-item"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-list-item"},
 		Spec: &CloudflareListItemSpec{
 			AccountId: validAccountID,
 			ListId:    value("2c0fc9fa937b11eaa1b71c4d701ab86e"),

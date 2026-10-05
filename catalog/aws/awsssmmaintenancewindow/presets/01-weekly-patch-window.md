@@ -21,7 +21,7 @@ new work stops in the last hour, and a rate-controlled
 ## Customize
 
 - Set `Operation: Scan` first to observe before installing (pair with
-  [AWS SSM Association](/cloud-catalog/aws-ssm-association) for
+  [AWS SSM Association](/infra-catalog/aws-ssm-association) for
   continuous scanning)
 - Add `outputLocation`/`cloudwatchConfig` on the invocation to keep
   command output

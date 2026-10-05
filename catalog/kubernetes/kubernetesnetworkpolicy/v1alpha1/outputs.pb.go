@@ -22,11 +22,11 @@ const (
 )
 
 // *
-// **KubernetesNetworkPolicyStackOutputs** captures the observable handles of a
+// **KubernetesNetworkPolicyOutputs** captures the observable handles of a
 // deployed NetworkPolicy. A policy has no runtime status of its own (enforcement
 // lives in the CNI); the handles identify the object for composition and
 // debugging.
-type KubernetesNetworkPolicyStackOutputs struct {
+type KubernetesNetworkPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the NetworkPolicy object as created in the cluster.
 	NetworkPolicyName string `protobuf:"bytes,1,opt,name=network_policy_name,json=networkPolicyName,proto3" json:"network_policy_name,omitempty"`
@@ -41,20 +41,20 @@ type KubernetesNetworkPolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesNetworkPolicyStackOutputs) Reset() {
-	*x = KubernetesNetworkPolicyStackOutputs{}
+func (x *KubernetesNetworkPolicyOutputs) Reset() {
+	*x = KubernetesNetworkPolicyOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesNetworkPolicyStackOutputs) String() string {
+func (x *KubernetesNetworkPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesNetworkPolicyStackOutputs) ProtoMessage() {}
+func (*KubernetesNetworkPolicyOutputs) ProtoMessage() {}
 
-func (x *KubernetesNetworkPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesNetworkPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *KubernetesNetworkPolicyStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesNetworkPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesNetworkPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesNetworkPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesNetworkPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesNetworkPolicyStackOutputs) GetNetworkPolicyName() string {
+func (x *KubernetesNetworkPolicyOutputs) GetNetworkPolicyName() string {
 	if x != nil {
 		return x.NetworkPolicyName
 	}
 	return ""
 }
 
-func (x *KubernetesNetworkPolicyStackOutputs) GetNamespace() string {
+func (x *KubernetesNetworkPolicyOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesNetworkPolicyStackOutputs) GetPolicyTypes() string {
+func (x *KubernetesNetworkPolicyOutputs) GetPolicyTypes() string {
 	if x != nil {
 		return x.PolicyTypes
 	}
@@ -96,8 +96,8 @@ var File_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_outputs_proto proto
 
 const file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/kubernetes/kubernetesnetworkpolicy/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1\"\x96\x01\n" +
-	"#KubernetesNetworkPolicyStackOutputs\x12.\n" +
+	"Acatalog/kubernetes/kubernetesnetworkpolicy/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1\"\x91\x01\n" +
+	"\x1eKubernetesNetworkPolicyOutputs\x12.\n" +
 	"\x13network_policy_name\x18\x01 \x01(\tR\x11networkPolicyName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12!\n" +
 	"\fpolicy_types\x18\x03 \x01(\tR\vpolicyTypesB\xbe\x03\n" +
@@ -117,7 +117,7 @@ func file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_outputs_proto_rawD
 
 var file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesNetworkPolicyStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyStackOutputs
+	(*KubernetesNetworkPolicyOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyOutputs
 }
 var file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

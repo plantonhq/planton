@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0EmailTemplateSpec manages one of the emails the Auth0 tenant the provider
 connection's credential belongs to sends.
@@ -30,7 +30,7 @@ https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/email_
 
 ```yaml
 # Auth0 Email Template Test Manifest
-# This file is used for testing the Auth0EmailTemplate component.
+# This file is used for testing the Auth0EmailTemplate kind.
 #
 # Prerequisites:
 # 1. Set the following environment variables:
@@ -44,7 +44,7 @@ https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/email_
 #    - update:email_templates
 #
 # 3. The tenant must send through its own email provider (e.g., created via
-#    the Auth0EmailProvider component): Auth0 refuses custom templates on the
+#    the Auth0EmailProvider kind): Auth0 refuses custom templates on the
 #    built-in one. The from address must be on a domain that provider may
 #    send for.
 

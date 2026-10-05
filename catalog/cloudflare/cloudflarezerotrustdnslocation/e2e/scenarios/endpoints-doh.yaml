@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: cloudflarezerotrustdnslocation
+    e2e-catalog-kind: cloudflarezerotrustdnslocation
   annotations:
     planton.dev/e2e: "true"
   tags:

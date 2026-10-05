@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareNotificationPolicyStackOutputs captures the observable outputs
+// CloudflareNotificationPolicyOutputs captures the observable outputs
 // after creating the notification policy.
-type CloudflareNotificationPolicyStackOutputs struct {
+type CloudflareNotificationPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned UUID of the policy.
 	PolicyId      string `protobuf:"bytes,1,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
@@ -31,20 +31,20 @@ type CloudflareNotificationPolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareNotificationPolicyStackOutputs) Reset() {
-	*x = CloudflareNotificationPolicyStackOutputs{}
+func (x *CloudflareNotificationPolicyOutputs) Reset() {
+	*x = CloudflareNotificationPolicyOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareNotificationPolicyStackOutputs) String() string {
+func (x *CloudflareNotificationPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareNotificationPolicyStackOutputs) ProtoMessage() {}
+func (*CloudflareNotificationPolicyOutputs) ProtoMessage() {}
 
-func (x *CloudflareNotificationPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareNotificationPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -56,12 +56,12 @@ func (x *CloudflareNotificationPolicyStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareNotificationPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareNotificationPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareNotificationPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareNotificationPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareNotificationPolicyStackOutputs) GetPolicyId() string {
+func (x *CloudflareNotificationPolicyOutputs) GetPolicyId() string {
 	if x != nil {
 		return x.PolicyId
 	}
@@ -72,8 +72,8 @@ var File_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_outputs_proto 
 
 const file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/cloudflare/cloudflarenotificationpolicy/v1alpha1/outputs.proto\x12<dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1\"G\n" +
-	"(CloudflareNotificationPolicyStackOutputs\x12\x1b\n" +
+	"Fcatalog/cloudflare/cloudflarenotificationpolicy/v1alpha1/outputs.proto\x12<dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1\"B\n" +
+	"#CloudflareNotificationPolicyOutputs\x12\x1b\n" +
 	"\tpolicy_id\x18\x01 \x01(\tR\bpolicyIdB\xe1\x03\n" +
 	"@com.dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1B\fOutputsProtoP\x01Zzgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarenotificationpolicy/v1alpha1;cloudflarenotificationpolicyv1alpha1\xa2\x02\x04DPCC\xaa\x02<Dev.Planton.Cloudflare.Cloudflarenotificationpolicy.V1alpha1\xca\x02<Dev\\Planton\\Cloudflare\\Cloudflarenotificationpolicy\\V1alpha1\xe2\x02HDev\\Planton\\Cloudflare\\Cloudflarenotificationpolicy\\V1alpha1\\GPBMetadata\xea\x02@Dev::Planton::Cloudflare::Cloudflarenotificationpolicy::V1alpha1b\x06proto3"
 
@@ -91,7 +91,7 @@ func file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_outputs_proto
 
 var file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareNotificationPolicyStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyStackOutputs
+	(*CloudflareNotificationPolicyOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyOutputs
 }
 var file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

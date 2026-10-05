@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceanreservedip
 spec:
@@ -14,7 +14,7 @@ spec:
   values:
     - name: reserved_ip_address
       derivations:
-        - from_stack_output: reserved_ip_address
+        - from_output: reserved_ip_address
       where_to_find: >-
         DigitalOcean control panel -> Networking -> Reserved IPs (the
         address column), or `doctl compute reserved-ip list` /

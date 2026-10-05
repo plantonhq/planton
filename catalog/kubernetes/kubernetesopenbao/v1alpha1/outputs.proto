@@ -3,14 +3,14 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesopenbao.v1alpha1;
 
 /**
- * **KubernetesOpenBaoStackOutputs** — the composition handles a
+ * **KubernetesOpenBaoOutputs** — the composition handles a
  * deployed OpenBao exports. NOTE deliberately absent: root tokens and
  * unseal/recovery keys are produced by the RUNTIME
  * `bao operator init` call and are never known to (or owned by) the
  * deployment — capture them from the init output and store them
  * outside the cluster.
  */
-message KubernetesOpenBaoStackOutputs {
+message KubernetesOpenBaoOutputs {
   /**
    * Namespace the server runs in.
    */

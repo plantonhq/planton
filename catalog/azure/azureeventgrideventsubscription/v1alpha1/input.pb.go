@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureEventgridEventSubscriptionStackInput is the input to the IaC
+// AzureEventgridEventSubscriptionIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-type AzureEventgridEventSubscriptionStackInput struct {
+type AzureEventgridEventSubscriptionIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Event Grid event subscription resource to deploy.
 	Target *AzureEventgridEventSubscription `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureEventgridEventSubscriptionStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureEventgridEventSubscriptionStackInput) Reset() {
-	*x = AzureEventgridEventSubscriptionStackInput{}
+func (x *AzureEventgridEventSubscriptionIacInput) Reset() {
+	*x = AzureEventgridEventSubscriptionIacInput{}
 	mi := &file_catalog_azure_azureeventgrideventsubscription_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventgridEventSubscriptionStackInput) String() string {
+func (x *AzureEventgridEventSubscriptionIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventgridEventSubscriptionStackInput) ProtoMessage() {}
+func (*AzureEventgridEventSubscriptionIacInput) ProtoMessage() {}
 
-func (x *AzureEventgridEventSubscriptionStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureEventgridEventSubscriptionIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventgrideventsubscription_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureEventgridEventSubscriptionStackInput) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventgridEventSubscriptionStackInput.ProtoReflect.Descriptor instead.
-func (*AzureEventgridEventSubscriptionStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventgridEventSubscriptionIacInput.ProtoReflect.Descriptor instead.
+func (*AzureEventgridEventSubscriptionIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventgrideventsubscription_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventgridEventSubscriptionStackInput) GetTarget() *AzureEventgridEventSubscription {
+func (x *AzureEventgridEventSubscriptionIacInput) GetTarget() *AzureEventgridEventSubscription {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureEventgridEventSubscriptionStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureEventgridEventSubscriptionIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azureeventgrideventsubscription_v1alpha1_input_proto prot
 
 const file_catalog_azure_azureeventgrideventsubscription_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/azure/azureeventgrideventsubscription/v1alpha1/input.proto\x12:dev.planton.azure.azureeventgrideventsubscription.v1alpha1\x1a@catalog/azure/azureeventgrideventsubscription/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xf1\x01\n" +
-	")AzureEventgridEventSubscriptionStackInput\x12s\n" +
+	"Bcatalog/azure/azureeventgrideventsubscription/v1alpha1/input.proto\x12:dev.planton.azure.azureeventgrideventsubscription.v1alpha1\x1a@catalog/azure/azureeventgrideventsubscription/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xef\x01\n" +
+	"'AzureEventgridEventSubscriptionIacInput\x12s\n" +
 	"\x06target\x18\x01 \x01(\v2[.dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xd6\x03\n" +
 	">com.dev.planton.azure.azureeventgrideventsubscription.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azureeventgrideventsubscription_v1alpha1_input_proto_raw
 
 var file_catalog_azure_azureeventgrideventsubscription_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventgrideventsubscription_v1alpha1_input_proto_goTypes = []any{
-	(*AzureEventgridEventSubscriptionStackInput)(nil), // 0: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStackInput
-	(*AzureEventgridEventSubscription)(nil),           // 1: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscription
-	(*azure.AzureProviderConfig)(nil),                 // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureEventgridEventSubscriptionIacInput)(nil), // 0: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionIacInput
+	(*AzureEventgridEventSubscription)(nil),         // 1: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscription
+	(*azure.AzureProviderConfig)(nil),               // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureeventgrideventsubscription_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStackInput.target:type_name -> dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscription
-	2, // 1: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionIacInput.target:type_name -> dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscription
+	2, // 1: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

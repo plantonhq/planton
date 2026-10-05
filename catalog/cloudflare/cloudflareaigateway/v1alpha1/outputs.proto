@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflareaigateway.v1alpha1;
 
-// CloudflareAiGatewayStackOutputs captures the observable outputs after
+// CloudflareAiGatewayOutputs captures the observable outputs after
 // creating the gateway.
-message CloudflareAiGatewayStackOutputs {
+message CloudflareAiGatewayOutputs {
   // The gateway's id (URL slug) -- the segment clients put in the gateway
   // endpoint URL, and what dynamic-routing objects attach to.
   string gateway_id = 1;

@@ -1,6 +1,6 @@
 package module
 
-// Stack output keys — names and shapes byte-identical to the Terraform
+// Output keys — names and shapes byte-identical to the Terraform
 // module's outputs.
 const (
 	OpInstanceGroup           = "instance_group"

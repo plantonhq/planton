@@ -7,9 +7,9 @@ import (
 	"github.com/pkg/errors"
 	proposalv1 "github.com/plantonhq/planton/iac/importmappingproposal/v1"
 	"github.com/plantonhq/planton/internal/manifest"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/protobufyaml"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -17,7 +17,7 @@ import (
 // ProposedInstance is one proposal resource in validated, typed form: the
 // manifest parsed into its kind's api message plus the claim accounting.
 type ProposedInstance struct {
-	Kind      cloudresourcekind.CloudResourceKind
+	Kind      catalogkind.CatalogKind
 	Name      string
 	Manifest  proto.Message
 	Claims    []AccountResourceRef
@@ -55,7 +55,7 @@ func LoadProposalFile(path string) (*LoadedProposal, error) {
 //   - every proposed instance claims at least one account resource (a
 //     manifest that accounts for nothing is not a mapping);
 //   - every value_from reference targets another instance IN the proposal
-//     -- a dangling reference would fail resolution at the first stack-job
+//     -- a dangling reference would fail resolution at the first infra-job
 //     build, so it is rejected at the contract. (References to resources a
 //     platform already manages are legal in production; an eval proposal is
 //     self-contained by construction.)
@@ -65,7 +65,7 @@ func ParseProposal(p *proposalv1.ImportMappingProposal) (*LoadedProposal, error)
 	}
 
 	loaded := &LoadedProposal{Proposal: p}
-	namesByKind := map[cloudresourcekind.CloudResourceKind]map[string]bool{}
+	namesByKind := map[catalogkind.CatalogKind]map[string]bool{}
 
 	for i, resource := range p.GetSpec().GetResources() {
 		if resource.GetManifest() == nil {
@@ -86,9 +86,9 @@ func ParseProposal(p *proposalv1.ImportMappingProposal) (*LoadedProposal, error)
 		}
 
 		kindName, _ := manifestMap["kind"].(string)
-		kind := crkreflect.KindFromString(kindName)
-		if kind == cloudresourcekind.CloudResourceKind_unspecified {
-			return nil, errors.Errorf("resources[%d]: manifest kind %q is not a registered CloudResourceKind", i, kindName)
+		kind := catalogkindreflect.KindFromString(kindName)
+		if kind == catalogkind.CatalogKind_unspecified {
+			return nil, errors.Errorf("resources[%d]: manifest kind %q is not a registered CatalogKind", i, kindName)
 		}
 		name := manifestMetadataName(typed)
 		if name == "" {
@@ -134,7 +134,7 @@ func ParseProposal(p *proposalv1.ImportMappingProposal) (*LoadedProposal, error)
 	for _, instance := range loaded.Instances {
 		for _, edge := range instance.Edges {
 			if !edgeTargetExists(edge, namesByKind) {
-				return nil, errors.Errorf("%s %q: value_from at %s targets %s %q, which this proposal does not propose -- a dangling reference fails resolution at the first stack-job build",
+				return nil, errors.Errorf("%s %q: value_from at %s targets %s %q, which this proposal does not propose -- a dangling reference fails resolution at the first infra-job build",
 					instance.Kind, instance.Name, edge.FieldPath, edge.TargetKind, edge.TargetName)
 			}
 		}
@@ -157,8 +157,8 @@ func ParseProposal(p *proposalv1.ImportMappingProposal) (*LoadedProposal, error)
 // reference that states its kind must match kind+name; a kind-less
 // reference (a polymorphic field with no default_kind, pointing wherever
 // its target_type says) matches by name alone.
-func edgeTargetExists(edge RefEdge, namesByKind map[cloudresourcekind.CloudResourceKind]map[string]bool) bool {
-	if edge.TargetKind != cloudresourcekind.CloudResourceKind_unspecified {
+func edgeTargetExists(edge RefEdge, namesByKind map[catalogkind.CatalogKind]map[string]bool) bool {
+	if edge.TargetKind != catalogkind.CatalogKind_unspecified {
 		return namesByKind[edge.TargetKind][edge.TargetName]
 	}
 	for _, names := range namesByKind {

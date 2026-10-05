@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesPerconaMongoOperatorStackOutputs
+# Outputs — flattened onto KubernetesPerconaMongoOperatorOutputs
 # by the platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

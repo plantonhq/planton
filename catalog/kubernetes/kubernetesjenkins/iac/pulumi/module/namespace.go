@@ -9,11 +9,11 @@ import (
 )
 
 func namespace(ctx *pulumi.Context,
-	stackInput *kubernetesjenkinsv1alpha1.KubernetesJenkinsStackInput,
+	iacInput *kubernetesjenkinsv1alpha1.KubernetesJenkinsIacInput,
 	locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
 ) (*kubernetescorev1.Namespace, error) {
-	if !stackInput.Target.Spec.CreateNamespace {
+	if !iacInput.Target.Spec.CreateNamespace {
 		return nil, nil
 	}
 	createdNamespace, err := kubernetescorev1.NewNamespace(ctx,

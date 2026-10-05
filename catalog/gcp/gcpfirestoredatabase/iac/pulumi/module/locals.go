@@ -14,9 +14,9 @@ type Locals struct {
 	GcpFirestoreDatabase *gcpfirestoredatabasev1alpha1.GcpFirestoreDatabase
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpfirestoredatabasev1alpha1.GcpFirestoreDatabaseStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpfirestoredatabasev1alpha1.GcpFirestoreDatabaseIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpFirestoreDatabase = stackInput.Target
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpFirestoreDatabase = iacInput.Target
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

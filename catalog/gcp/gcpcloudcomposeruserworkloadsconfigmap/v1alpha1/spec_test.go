@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpCloudComposerUserWorkloadsConfigMapSpec", func() {
 		return &GcpCloudComposerUserWorkloadsConfigMap{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudComposerUserWorkloadsConfigMap",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "dag-configuration",
 			},
 			Spec: &GcpCloudComposerUserWorkloadsConfigMapSpec{

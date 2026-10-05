@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpCloudRunStackOutputs captures values returned after provisioning.
-type GcpCloudRunStackOutputs struct {
+// GcpCloudRunOutputs captures values returned after provisioning.
+type GcpCloudRunOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Canonical serving URL of the service (https://<service>-<hash>-<region>.run.app).
 	Url string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
@@ -47,20 +47,20 @@ type GcpCloudRunStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCloudRunStackOutputs) Reset() {
-	*x = GcpCloudRunStackOutputs{}
+func (x *GcpCloudRunOutputs) Reset() {
+	*x = GcpCloudRunOutputs{}
 	mi := &file_catalog_gcp_gcpcloudrun_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudRunStackOutputs) String() string {
+func (x *GcpCloudRunOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudRunStackOutputs) ProtoMessage() {}
+func (*GcpCloudRunOutputs) ProtoMessage() {}
 
-func (x *GcpCloudRunStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudRunOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudrun_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,54 +72,54 @@ func (x *GcpCloudRunStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudRunStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudRunStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudRunOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudRunOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudrun_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudRunStackOutputs) GetUrl() string {
+func (x *GcpCloudRunOutputs) GetUrl() string {
 	if x != nil {
 		return x.Url
 	}
 	return ""
 }
 
-func (x *GcpCloudRunStackOutputs) GetServiceName() string {
+func (x *GcpCloudRunOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *GcpCloudRunStackOutputs) GetRevision() string {
+func (x *GcpCloudRunOutputs) GetRevision() string {
 	if x != nil {
 		return x.Revision
 	}
 	return ""
 }
 
-func (x *GcpCloudRunStackOutputs) GetLocation() string {
+func (x *GcpCloudRunOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpCloudRunStackOutputs) GetUid() string {
+func (x *GcpCloudRunOutputs) GetUid() string {
 	if x != nil {
 		return x.Uid
 	}
 	return ""
 }
 
-func (x *GcpCloudRunStackOutputs) GetUrls() []string {
+func (x *GcpCloudRunOutputs) GetUrls() []string {
 	if x != nil {
 		return x.Urls
 	}
 	return nil
 }
 
-func (x *GcpCloudRunStackOutputs) GetProjectId() string {
+func (x *GcpCloudRunOutputs) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
@@ -130,8 +130,8 @@ var File_catalog_gcp_gcpcloudrun_v1alpha1_outputs_proto protoreflect.FileDescrip
 
 const file_catalog_gcp_gcpcloudrun_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/gcp/gcpcloudrun/v1alpha1/outputs.proto\x12$dev.planton.gcp.gcpcloudrun.v1alpha1\"\xcb\x01\n" +
-	"\x17GcpCloudRunStackOutputs\x12\x10\n" +
+	".catalog/gcp/gcpcloudrun/v1alpha1/outputs.proto\x12$dev.planton.gcp.gcpcloudrun.v1alpha1\"\xc6\x01\n" +
+	"\x12GcpCloudRunOutputs\x12\x10\n" +
 	"\x03url\x18\x01 \x01(\tR\x03url\x12!\n" +
 	"\fservice_name\x18\x02 \x01(\tR\vserviceName\x12\x1a\n" +
 	"\brevision\x18\x03 \x01(\tR\brevision\x12\x1a\n" +
@@ -156,7 +156,7 @@ func file_catalog_gcp_gcpcloudrun_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpcloudrun_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudrun_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudRunStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunStackOutputs
+	(*GcpCloudRunOutputs)(nil), // 0: dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunOutputs
 }
 var file_catalog_gcp_gcpcloudrun_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

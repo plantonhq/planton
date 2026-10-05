@@ -7,7 +7,7 @@ import "catalog/kubernetes/kubernetesstatefulset/v1alpha1/outputs.proto";
 import "catalog/kubernetes/kubernetesstatefulset/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// KubernetesStatefulSet is a component for running stateful applications on Kubernetes.
+// KubernetesStatefulSet is a kind for running stateful applications on Kubernetes.
 // StatefulSets are used for applications that require stable, unique network identifiers,
 // stable persistent storage, ordered graceful deployment and scaling, and ordered automated rolling updates.
 message KubernetesStatefulSet {
@@ -18,7 +18,7 @@ message KubernetesStatefulSet {
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesStatefulSet'];
 
   // metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
   KubernetesStatefulSetSpec spec = 4 [(buf.validate.field).required = true];
@@ -29,6 +29,6 @@ message KubernetesStatefulSet {
 
 // KubernetesStatefulSetStatus represents the status of a KubernetesStatefulSet resource.
 message KubernetesStatefulSetStatus {
-  // stack-outputs
-  KubernetesStatefulSetStackOutputs outputs = 1;
+  // outputs
+  KubernetesStatefulSetOutputs outputs = 1;
 }

@@ -14,13 +14,13 @@ The cluster is the shared-storage brain -- endpoints, credentials, backups, encr
 - **Per-instance maintenance control** -- each `instances` entry can stagger its maintenance window, pin its CA bundle, defer the CA-rotation restart (`certificateRotationRestart: false` -- unset keeps AWS's restart-on-rotation default), and apply its own changes immediately (`applyImmediately`).
 - **Parameters** -- inline `parameters` (a module-managed cluster parameter group with the family derived from the pinned engine version) or an existing `dbClusterParameterGroupName`.
 
-## Stack outputs
+## Outputs
 
 `cluster_identifier`, `arn`, `cluster_resource_id`, `endpoint` (writer), `reader_endpoint`, `port`, `hosted_zone_id`, `engine_version_actual`, `master_user_secret_arn`, `db_subnet_group_name`, `db_cluster_parameter_group_name`, `instance_endpoints`.
 
 ## How it works
 
-Planton provisions via the Pulumi or Terraform module in `iac/`, both implementing the same contract at full parity. The API contract is protobuf-based (`spec.proto`); stack execution is orchestrated using `AwsDocumentDbStackInput` (provider credentials + IaC info).
+Planton provisions via the Pulumi or Terraform module in `iac/`, both implementing the same contract at full parity. The API contract is protobuf-based (`spec.proto`); stack execution is orchestrated using `AwsDocumentDbIacInput` (provider credentials + IaC info).
 
 ## References
 

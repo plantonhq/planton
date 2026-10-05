@@ -11,10 +11,10 @@
 //
 //   - external cluster: PLANTON_E2E_KUBECONFIG points at a kubeconfig for a
 //     cluster provisioned and owned OUTSIDE the run (batched real EKS/GKE/AKS
-//     lanes -- one cluster per wave batch, reused across component lanes). The
+//     lanes -- one cluster per wave batch, reused across kind lanes). The
 //     harness never creates or deletes anything cluster-level in this lane.
 //
-// Component-level verify semantics (deployed / destroyed) are identical in both
+// Kind-level verify semantics (deployed / destroyed) are identical in both
 // lanes: verification keys off the kubeconfig path, not the cluster's origin.
 package aa_e2e
 
@@ -248,7 +248,7 @@ func (h *Harness) Setup(ctx context.Context) error {
 // waitForApiServer polls the cluster's /readyz endpoint until the API server
 // accepts requests. This is the readiness gate for CNI-less profiles, where
 // node readiness (kind's own --wait gate) is unreachable by design until the
-// CNI component under test installs.
+// CNI kind under test installs.
 func (h *Harness) waitForApiServer(ctx context.Context, timeout time.Duration) error {
 	deadline := time.Now().Add(timeout)
 	var lastErr error
@@ -345,7 +345,7 @@ func (h *Harness) ClusterName() string {
 }
 
 // VerifyDeployed delegates to resource-type-specific verification based on the manifest.
-func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs map[string]interface{}) error {
+func (h *Harness) VerifyDeployed(ctx context.Context, kindDir string, outputs map[string]interface{}) error {
 	manifestPath, _ := ctx.Value(provider.ManifestPathKey{}).(string)
 	if manifestPath == "" {
 		return errors.New("manifest path not found in context -- cannot verify deployment")
@@ -361,7 +361,7 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 // RuntimeCauseVerifier capability (expected-runtime-failure lanes): it
 // dispatches to the kind's verifier, which must itself opt in via the local
 // verify.RuntimeCauseVerifier interface.
-func (h *Harness) VerifyRuntimeFailureCause(ctx context.Context, tc *provider.ComponentTestContext, cause string) error {
+func (h *Harness) VerifyRuntimeFailureCause(ctx context.Context, tc *provider.KindTestContext, cause string) error {
 	manifestPath, _ := ctx.Value(provider.ManifestPathKey{}).(string)
 	if manifestPath == "" {
 		manifestPath = tc.ManifestPath
@@ -372,7 +372,7 @@ func (h *Harness) VerifyRuntimeFailureCause(ctx context.Context, tc *provider.Co
 	}
 	rcv, ok := verifier.(verify.RuntimeCauseVerifier)
 	if !ok {
-		return errors.Errorf("component %q's verifier does not implement verify.RuntimeCauseVerifier -- the scenario expects a runtime failure cause (%s) it cannot pin", tc.Component, cause)
+		return errors.Errorf("kind %q's verifier does not implement verify.RuntimeCauseVerifier -- the scenario expects a runtime failure cause (%s) it cannot pin", tc.Kind, cause)
 	}
 	return rcv.VerifyRuntimeFailureCause(ctx, h.kubeconfigPath, cause)
 }
@@ -383,7 +383,7 @@ func (h *Harness) VerifyRuntimeFailureCause(ctx context.Context, tc *provider.Co
 // must itself opt in via the local verify.DeployFailureVerifier interface.
 // The manifest on ctx is the one whose deploy failed (the upgrade manifest
 // for an upgrade lane), so the verifier reads the refused values from it.
-func (h *Harness) VerifyExpectedDeployFailure(ctx context.Context, tc *provider.ComponentTestContext, expectation string, deployErr error) error {
+func (h *Harness) VerifyExpectedDeployFailure(ctx context.Context, tc *provider.KindTestContext, expectation string, deployErr error) error {
 	manifestPath, _ := ctx.Value(provider.ManifestPathKey{}).(string)
 	if manifestPath == "" {
 		manifestPath = tc.ManifestPath
@@ -394,13 +394,13 @@ func (h *Harness) VerifyExpectedDeployFailure(ctx context.Context, tc *provider.
 	}
 	dfv, ok := verifier.(verify.DeployFailureVerifier)
 	if !ok {
-		return errors.Errorf("component %q's verifier does not implement verify.DeployFailureVerifier -- the scenario expects a deploy failure (%s) it cannot pin", tc.Component, expectation)
+		return errors.Errorf("kind %q's verifier does not implement verify.DeployFailureVerifier -- the scenario expects a deploy failure (%s) it cannot pin", tc.Kind, expectation)
 	}
 	return dfv.VerifyExpectedDeployFailure(ctx, h.kubeconfigPath, expectation, deployErr)
 }
 
 // VerifyDestroyed confirms that resources have been removed after destroy.
-func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
+func (h *Harness) VerifyDestroyed(ctx context.Context, kindDir string) error {
 	manifestPath, _ := ctx.Value(provider.ManifestPathKey{}).(string)
 	if manifestPath == "" {
 		return errors.New("manifest path not found in context -- cannot verify cleanup")

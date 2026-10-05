@@ -55,7 +55,7 @@ spec:
     nextSigningKeyLength: RSA_2048_BIT
 ```
 
-## Related Components
+## Related Kinds
 
 - [AwsSesConfigurationSet](../awssesconfigurationset/README.md) — The default sending rules and event destinations this identity opts into.
 - `AwsRoute53DnsRecord` — Publishes the DKIM CNAMEs and the MAIL FROM domain's MX/SPF records.

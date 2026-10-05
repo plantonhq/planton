@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsManagedPrometheusScraperStackInput is the input for the IaC
+// AwsManagedPrometheusScraperIacInput is the input for the IaC
 // modules that manage an AMP scraper.
-type AwsManagedPrometheusScraperStackInput struct {
+type AwsManagedPrometheusScraperIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsManagedPrometheusScraper resource to deploy.
 	Target *AwsManagedPrometheusScraper `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsManagedPrometheusScraperStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsManagedPrometheusScraperStackInput) Reset() {
-	*x = AwsManagedPrometheusScraperStackInput{}
+func (x *AwsManagedPrometheusScraperIacInput) Reset() {
+	*x = AwsManagedPrometheusScraperIacInput{}
 	mi := &file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsManagedPrometheusScraperStackInput) String() string {
+func (x *AwsManagedPrometheusScraperIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsManagedPrometheusScraperStackInput) ProtoMessage() {}
+func (*AwsManagedPrometheusScraperIacInput) ProtoMessage() {}
 
-func (x *AwsManagedPrometheusScraperStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsManagedPrometheusScraperIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsManagedPrometheusScraperStackInput) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsManagedPrometheusScraperStackInput.ProtoReflect.Descriptor instead.
-func (*AwsManagedPrometheusScraperStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsManagedPrometheusScraperIacInput.ProtoReflect.Descriptor instead.
+func (*AwsManagedPrometheusScraperIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsManagedPrometheusScraperStackInput) GetTarget() *AwsManagedPrometheusScraper {
+func (x *AwsManagedPrometheusScraperIacInput) GetTarget() *AwsManagedPrometheusScraper {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsManagedPrometheusScraperStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsManagedPrometheusScraperIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsmanagedprometheusscraper_v1alpha1_input_proto protorefle
 
 const file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/aws/awsmanagedprometheusscraper/v1alpha1/input.proto\x124dev.planton.aws.awsmanagedprometheusscraper.v1alpha1\x1a:catalog/aws/awsmanagedprometheusscraper/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdf\x01\n" +
-	"%AwsManagedPrometheusScraperStackInput\x12i\n" +
+	"<catalog/aws/awsmanagedprometheusscraper/v1alpha1/input.proto\x124dev.planton.aws.awsmanagedprometheusscraper.v1alpha1\x1a:catalog/aws/awsmanagedprometheusscraper/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdd\x01\n" +
+	"#AwsManagedPrometheusScraperIacInput\x12i\n" +
 	"\x06target\x18\x01 \x01(\v2Q.dev.planton.aws.awsmanagedprometheusscraper.v1alpha1.AwsManagedPrometheusScraperR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xae\x03\n" +
 	"8com.dev.planton.aws.awsmanagedprometheusscraper.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_input_proto_goTypes = []any{
-	(*AwsManagedPrometheusScraperStackInput)(nil), // 0: dev.planton.aws.awsmanagedprometheusscraper.v1alpha1.AwsManagedPrometheusScraperStackInput
-	(*AwsManagedPrometheusScraper)(nil),           // 1: dev.planton.aws.awsmanagedprometheusscraper.v1alpha1.AwsManagedPrometheusScraper
-	(*aws.AwsProviderConfig)(nil),                 // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsManagedPrometheusScraperIacInput)(nil), // 0: dev.planton.aws.awsmanagedprometheusscraper.v1alpha1.AwsManagedPrometheusScraperIacInput
+	(*AwsManagedPrometheusScraper)(nil),         // 1: dev.planton.aws.awsmanagedprometheusscraper.v1alpha1.AwsManagedPrometheusScraper
+	(*aws.AwsProviderConfig)(nil),               // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsmanagedprometheusscraper.v1alpha1.AwsManagedPrometheusScraperStackInput.target:type_name -> dev.planton.aws.awsmanagedprometheusscraper.v1alpha1.AwsManagedPrometheusScraper
-	2, // 1: dev.planton.aws.awsmanagedprometheusscraper.v1alpha1.AwsManagedPrometheusScraperStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsmanagedprometheusscraper.v1alpha1.AwsManagedPrometheusScraperIacInput.target:type_name -> dev.planton.aws.awsmanagedprometheusscraper.v1alpha1.AwsManagedPrometheusScraper
+	2, // 1: dev.planton.aws.awsmanagedprometheusscraper.v1alpha1.AwsManagedPrometheusScraperIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

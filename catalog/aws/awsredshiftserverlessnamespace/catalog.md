@@ -1,10 +1,10 @@
 # AWS Redshift Serverless Namespace
 
-Deploys an Amazon Redshift Serverless namespace — the data plane of the serverless warehouse: the first database, its admin credentials, the KMS key encrypting stored data, the IAM roles the engine assumes for COPY/UNLOAD/Spectrum, and the audit-log exports. A namespace stores; it never computes. Compute lives on [AwsRedshiftServerlessWorkgroup](/cloud-catalog/aws-redshift-serverless-workgroup) nodes that attach to this namespace by name — many workgroups can serve one namespace, each created and destroyed without touching the data. The namespace defaults to the AWS-managed admin password strategy, so no secret ever touches the manifest or the IaC state.
+Deploys an Amazon Redshift Serverless namespace — the data plane of the serverless warehouse: the first database, its admin credentials, the KMS key encrypting stored data, the IAM roles the engine assumes for COPY/UNLOAD/Spectrum, and the audit-log exports. A namespace stores; it never computes. Compute lives on [AwsRedshiftServerlessWorkgroup](/infra-catalog/aws-redshift-serverless-workgroup) nodes that attach to this namespace by name — many workgroups can serve one namespace, each created and destroyed without touching the data. The namespace defaults to the AWS-managed admin password strategy, so no secret ever touches the manifest or the IaC state.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Redshift Serverless Namespace** -- the single provider resource, and the data plane of the warehouse. Its name is the resource name (create-time immutable), and workgroups attach to it by that name. The namespace carries the first database (blank keeps the AWS default `dev`; additional databases are created with SQL), the admin credential posture (the AWS-managed password in Secrets Manager, or a supplied secret-reference password), the encryption binding (the AWS-owned Redshift service key or a referenced customer-managed KMS key), the engine IAM role associations (the roles COPY, UNLOAD, Spectrum, and external functions run under, plus the optional default role), and the audit-log exports to CloudWatch Logs
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Managed secret for a supplied password** -- only when you opt out of the AWS-managed strategy: create the password as an org secret first; the spec carries a `$secret/<slug>` reference and the runner resolves it just-in-time at deploy. The value must be 8-64 characters with an uppercase letter, a lowercase letter, and a digit.
 
 ### AWS Account
@@ -51,7 +51,7 @@ spec:
 planton apply -f redshift-serverless-namespace.yaml
 ```
 
-This creates the data plane with an AWS-managed admin password and connection auditing. A Stack Job tracks the provisioning in real time.
+This creates the data plane with an AWS-managed admin password and connection auditing. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,7 +89,7 @@ These are the most important decisions when configuring a serverless namespace. 
 
 **Managed password first** -- with `manageAdminPassword: true` (the recommended default), AWS generates the password, stores it in Secrets Manager, and rotates it on schedule; applications fetch credentials at runtime through the `admin_password_secret_arn` output. A supplied password is stored in IaC state — reserve it for external systems that must own the credential lifecycle. The two strategies are mutually exclusive, and unlike the provisioned cluster, a namespace may also run adminless: IAM identities can use temporary credentials (GetCredentials) without an admin user.
 
-**Encryption ownership** -- empty `kmsKeyId` uses the AWS-owned Redshift service key; referencing an [AwsKmsKey](/cloud-catalog/aws-kms-key) adds your rotation policy, access audit, and revocation kill switch. Switching keys on a live namespace is an in-place but long-running re-encryption.
+**Encryption ownership** -- empty `kmsKeyId` uses the AWS-owned Redshift service key; referencing an [AwsKmsKey](/infra-catalog/aws-kms-key) adds your rotation policy, access audit, and revocation kill switch. Switching keys on a live namespace is an in-place but long-running re-encryption.
 
 **Engine roles and the default** -- COPY from S3, UNLOAD, Spectrum queries, and CREATE EXTERNAL FUNCTION run under a role from `iamRoles`. The `defaultIamRoleArn` answers SQL that says `IAM_ROLE default` and must also be one of the associated roles — the console offers it only from the declared list, so the rule cannot be violated there.
 
@@ -97,7 +97,7 @@ These are the most important decisions when configuring a serverless namespace. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -106,9 +106,9 @@ These are the most important decisions when configuring a serverless namespace. 
 
 All references are optional -- the namespace works with none of them set.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -128,7 +128,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Redshift Serverless Workgroup**](/cloud-catalog/aws-redshift-serverless-workgroup) -- the compute plane that serves this data (references `namespace_name`)
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- customer-managed encryption for stored data and the managed admin secret
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the engine's COPY/UNLOAD/Spectrum identities
-- [**AWS Redshift Cluster**](/cloud-catalog/aws-redshift-cluster) -- the provisioned alternative when steady, predictable load makes reserved capacity cheaper
+- [**AWS Redshift Serverless Workgroup**](/infra-catalog/aws-redshift-serverless-workgroup) -- the compute plane that serves this data (references `namespace_name`)
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- customer-managed encryption for stored data and the managed admin secret
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the engine's COPY/UNLOAD/Spectrum identities
+- [**AWS Redshift Cluster**](/infra-catalog/aws-redshift-cluster) -- the provisioned alternative when steady, predictable load makes reserved capacity cheaper

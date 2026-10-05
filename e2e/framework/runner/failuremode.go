@@ -47,7 +47,7 @@ const (
 // updating) or the substrate stopped gating on workload health (a real
 // contract change worth catching). Either way the created resources are
 // destroyed by the pipeline's failure-cleanup path.
-func runExpectDeployFailure(ctx context.Context, tc *provider.ComponentTestContext, harness provider.Harness, expectation string) error {
+func runExpectDeployFailure(ctx context.Context, tc *provider.KindTestContext, harness provider.Harness, expectation string) error {
 	fv, ok := harness.(provider.DeployFailureVerifier)
 	if !ok {
 		return errors.Errorf("scenario expects a deploy failure (%s) but the %s harness does not implement provider.DeployFailureVerifier",
@@ -69,7 +69,7 @@ func runExpectDeployFailure(ctx context.Context, tc *provider.ComponentTestConte
 // runVerifyRuntimeCause asserts a deployed-but-designed-to-fail workload's
 // failure has exactly the expected cause, via the harness's optional
 // RuntimeCauseVerifier capability.
-func runVerifyRuntimeCause(ctx context.Context, tc *provider.ComponentTestContext, harness provider.Harness, cause string) error {
+func runVerifyRuntimeCause(ctx context.Context, tc *provider.KindTestContext, harness provider.Harness, cause string) error {
 	rv, ok := harness.(provider.RuntimeCauseVerifier)
 	if !ok {
 		return errors.Errorf("scenario expects a runtime failure cause (%s) but the %s harness does not implement provider.RuntimeCauseVerifier",

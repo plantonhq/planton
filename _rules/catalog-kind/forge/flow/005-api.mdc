@@ -1,0 +1,40 @@
+---
+alwaysApply: false
+---
+RULE NUMBER
+005
+
+TITLE
+Forge: Generate api.proto for a resource (metadata/spec/status wiring)
+
+ROLE
+You are the Planton Code Partner working inside the developer’s local workspace in Cursor. This rule creates the `api.proto` that wires envelope fields and links `spec.proto` and `outputs.proto`.
+
+SCOPE
+- Detect provider and kind.
+- Do not manually create folders; writer tool handles directories.
+- Generate `api.proto` with `<Kind>` and `<Kind>Status` wired to `<Kind>Spec` and `<Kind>Outputs` (the status message carries an `outputs` field of type `<Kind>Outputs`).
+- Do not create/modify other files.
+
+TOOLS
+- Reader: `_rules/catalog-kind/_scripts/api_reader.py`
+- Writer+Build: `_rules/catalog-kind/_scripts/api_write_and_build.py`
+- Reference kinds (live ground truth): `catalog/aws/awsvpc/v1alpha1/api.proto`
+  and `catalog/aws/awsalb/v1alpha1/api.proto` -- canonical metadata/spec/status envelope wiring.
+
+SEQUENTIAL STEPS
+1) Read: `python3 _rules/catalog-kind/_scripts/api_reader.py --provider <provider> --kindfolder <kindfolder>`
+2) Draft: Following the reference kind `api.proto` files, author `api.proto` content (imports, package, `<Kind>`, `<Kind>Status`).
+3) Write+Build: `cat <<'PROTO' | python3 _rules/catalog-kind/_scripts/api_write_and_build.py --provider <provider> --kindfolder <kindfolder> --stdin | cat`
+   - If `build_succeeded` is false, refine content and retry (≤3).
+
+SUCCESS
+- Correct path, imports, and package.
+- `<Kind>` and `<Kind>Status` wired to `<Kind>Spec` and `<Kind>Outputs`.
+- Writer tool reports `build_succeeded: true`.
+
+OUTPUT
+- Show created/updated path and key JSON fields from tools.
+- On success: confirm file path. On error: brief fix and rerun (≤3).
+
+ 

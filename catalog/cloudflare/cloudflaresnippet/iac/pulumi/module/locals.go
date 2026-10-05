@@ -12,10 +12,10 @@ type Locals struct {
 	CloudflareSnippet        *cloudflaresnippetv1alpha1.CloudflareSnippet
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflaresnippetv1alpha1.CloudflareSnippetStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflaresnippetv1alpha1.CloudflareSnippetIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareSnippet = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareSnippet = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

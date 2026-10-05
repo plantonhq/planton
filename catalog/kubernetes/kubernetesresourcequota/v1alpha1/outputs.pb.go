@@ -22,10 +22,10 @@ const (
 )
 
 // *
-// **KubernetesResourceQuotaStackOutputs** captures the observable handles of a
+// **KubernetesResourceQuotaOutputs** captures the observable handles of a
 // deployed namespace-governance pair: the ResourceQuota object and, when
 // limit defaults were configured, the companion LimitRange.
-type KubernetesResourceQuotaStackOutputs struct {
+type KubernetesResourceQuotaOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the ResourceQuota object as created in the cluster.
 	ResourceQuotaName string `protobuf:"bytes,1,opt,name=resource_quota_name,json=resourceQuotaName,proto3" json:"resource_quota_name,omitempty"`
@@ -38,20 +38,20 @@ type KubernetesResourceQuotaStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesResourceQuotaStackOutputs) Reset() {
-	*x = KubernetesResourceQuotaStackOutputs{}
+func (x *KubernetesResourceQuotaOutputs) Reset() {
+	*x = KubernetesResourceQuotaOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesresourcequota_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesResourceQuotaStackOutputs) String() string {
+func (x *KubernetesResourceQuotaOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesResourceQuotaStackOutputs) ProtoMessage() {}
+func (*KubernetesResourceQuotaOutputs) ProtoMessage() {}
 
-func (x *KubernetesResourceQuotaStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesResourceQuotaOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesresourcequota_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *KubernetesResourceQuotaStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesResourceQuotaStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesResourceQuotaStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesResourceQuotaOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesResourceQuotaOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesresourcequota_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesResourceQuotaStackOutputs) GetResourceQuotaName() string {
+func (x *KubernetesResourceQuotaOutputs) GetResourceQuotaName() string {
 	if x != nil {
 		return x.ResourceQuotaName
 	}
 	return ""
 }
 
-func (x *KubernetesResourceQuotaStackOutputs) GetNamespace() string {
+func (x *KubernetesResourceQuotaOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesResourceQuotaStackOutputs) GetLimitRangeName() string {
+func (x *KubernetesResourceQuotaOutputs) GetLimitRangeName() string {
 	if x != nil {
 		return x.LimitRangeName
 	}
@@ -93,8 +93,8 @@ var File_catalog_kubernetes_kubernetesresourcequota_v1alpha1_outputs_proto proto
 
 const file_catalog_kubernetes_kubernetesresourcequota_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/kubernetes/kubernetesresourcequota/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesresourcequota.v1alpha1\"\x9d\x01\n" +
-	"#KubernetesResourceQuotaStackOutputs\x12.\n" +
+	"Acatalog/kubernetes/kubernetesresourcequota/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesresourcequota.v1alpha1\"\x98\x01\n" +
+	"\x1eKubernetesResourceQuotaOutputs\x12.\n" +
 	"\x13resource_quota_name\x18\x01 \x01(\tR\x11resourceQuotaName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12(\n" +
 	"\x10limit_range_name\x18\x03 \x01(\tR\x0elimitRangeNameB\xbe\x03\n" +
@@ -114,7 +114,7 @@ func file_catalog_kubernetes_kubernetesresourcequota_v1alpha1_outputs_proto_rawD
 
 var file_catalog_kubernetes_kubernetesresourcequota_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesresourcequota_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesResourceQuotaStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaStackOutputs
+	(*KubernetesResourceQuotaOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaOutputs
 }
 var file_catalog_kubernetes_kubernetesresourcequota_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

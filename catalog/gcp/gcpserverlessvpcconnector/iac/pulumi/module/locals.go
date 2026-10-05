@@ -17,9 +17,9 @@ type Locals struct {
 // nearly every other GCP kind — attaches no platform attribution labels.
 // Both engines skip labels identically; attribution rides on the connector
 // name and the Planton control plane's own records.
-func initializeLocals(_ *pulumi.Context, stackInput *gcpserverlessvpcconnectorv1alpha1.GcpServerlessVpcConnectorStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpserverlessvpcconnectorv1alpha1.GcpServerlessVpcConnectorIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpServerlessVpcConnector = stackInput.Target
+	locals.GcpServerlessVpcConnector = iacInput.Target
 
 	// Connector name defaults to metadata.name. GCP caps connector names at
 	// 25 characters — shorter than most resource names — so a metadata.name
@@ -29,6 +29,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpserverlessvpcconnectorv1
 		locals.ConnectorName = locals.GcpServerlessVpcConnector.Metadata.Name
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

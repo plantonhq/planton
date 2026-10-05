@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (KubernetesGhaRunnerScaleSetStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (KubernetesGhaRunnerScaleSetOutputs).
 
 output "namespace" {
   description = "Namespace the scale set (listener + runner pods) runs in"

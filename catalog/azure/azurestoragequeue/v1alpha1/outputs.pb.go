@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureStorageQueueStackOutputs** captures the outputs of provisioning
+// **AzureStorageQueueOutputs** captures the outputs of provisioning
 // a Storage queue.
 //
 // No URL output on purpose: the queue's data-plane URL is the ACCOUNT's
@@ -29,7 +29,7 @@ const (
 // real endpoint (partitioned-DNS accounts use a different hostname than
 // the classic shared DNS). Compose client URLs from
 // AzureStorageAccount's primary_queue_endpoint output + queue_name.
-type AzureStorageQueueStackOutputs struct {
+type AzureStorageQueueOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the queue. Role assignments
 	// (Storage Queue Data Contributor/Message Processor/Message Sender)
@@ -47,20 +47,20 @@ type AzureStorageQueueStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureStorageQueueStackOutputs) Reset() {
-	*x = AzureStorageQueueStackOutputs{}
+func (x *AzureStorageQueueOutputs) Reset() {
+	*x = AzureStorageQueueOutputs{}
 	mi := &file_catalog_azure_azurestoragequeue_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureStorageQueueStackOutputs) String() string {
+func (x *AzureStorageQueueOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureStorageQueueStackOutputs) ProtoMessage() {}
+func (*AzureStorageQueueOutputs) ProtoMessage() {}
 
-func (x *AzureStorageQueueStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureStorageQueueOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurestoragequeue_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,26 +72,26 @@ func (x *AzureStorageQueueStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureStorageQueueStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureStorageQueueStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureStorageQueueOutputs.ProtoReflect.Descriptor instead.
+func (*AzureStorageQueueOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurestoragequeue_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureStorageQueueStackOutputs) GetQueueId() string {
+func (x *AzureStorageQueueOutputs) GetQueueId() string {
 	if x != nil {
 		return x.QueueId
 	}
 	return ""
 }
 
-func (x *AzureStorageQueueStackOutputs) GetQueueName() string {
+func (x *AzureStorageQueueOutputs) GetQueueName() string {
 	if x != nil {
 		return x.QueueName
 	}
 	return ""
 }
 
-func (x *AzureStorageQueueStackOutputs) GetStorageAccountName() string {
+func (x *AzureStorageQueueOutputs) GetStorageAccountName() string {
 	if x != nil {
 		return x.StorageAccountName
 	}
@@ -102,8 +102,8 @@ var File_catalog_azure_azurestoragequeue_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_azure_azurestoragequeue_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/azure/azurestoragequeue/v1alpha1/outputs.proto\x12,dev.planton.azure.azurestoragequeue.v1alpha1\"\x8b\x01\n" +
-	"\x1dAzureStorageQueueStackOutputs\x12\x19\n" +
+	"6catalog/azure/azurestoragequeue/v1alpha1/outputs.proto\x12,dev.planton.azure.azurestoragequeue.v1alpha1\"\x86\x01\n" +
+	"\x18AzureStorageQueueOutputs\x12\x19\n" +
 	"\bqueue_id\x18\x01 \x01(\tR\aqueueId\x12\x1d\n" +
 	"\n" +
 	"queue_name\x18\x02 \x01(\tR\tqueueName\x120\n" +
@@ -124,7 +124,7 @@ func file_catalog_azure_azurestoragequeue_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_azure_azurestoragequeue_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurestoragequeue_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureStorageQueueStackOutputs)(nil), // 0: dev.planton.azure.azurestoragequeue.v1alpha1.AzureStorageQueueStackOutputs
+	(*AzureStorageQueueOutputs)(nil), // 0: dev.planton.azure.azurestoragequeue.v1alpha1.AzureStorageQueueOutputs
 }
 var file_catalog_azure_azurestoragequeue_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

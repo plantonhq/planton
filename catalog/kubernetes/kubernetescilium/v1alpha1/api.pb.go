@@ -33,7 +33,7 @@ type KubernetesCilium struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesCiliumSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *KubernetesCilium) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesCilium) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesCilium) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *KubernetesCilium) GetStatus() *KubernetesCiliumStatus {
 // KubernetesCiliumStatus holds the deployment status and outputs.
 type KubernetesCiliumStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesCiliumStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesCiliumOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*KubernetesCiliumStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetescilium_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesCiliumStatus) GetOutputs() *KubernetesCiliumStackOutputs {
+func (x *KubernetesCiliumStatus) GetOutputs() *KubernetesCiliumOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_kubernetes_kubernetescilium_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10KubernetesCiliumR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12b\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12b\n" +
 	"\x04spec\x18\x04 \x01(\v2F.dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12`\n" +
-	"\x06status\x18\x05 \x01(\v2H.dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumStatusR\x06status\"\x82\x01\n" +
-	"\x16KubernetesCiliumStatus\x12h\n" +
-	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumStackOutputsR\aoutputsB\x89\x03\n" +
+	"\x06status\x18\x05 \x01(\v2H.dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumStatusR\x06status\"}\n" +
+	"\x16KubernetesCiliumStatus\x12c\n" +
+	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumOutputsR\aoutputsB\x89\x03\n" +
 	"4com.dev.planton.kubernetes.kubernetescilium.v1alpha1B\bApiProtoP\x01Zbgithub.com/plantonhq/planton/catalog/kubernetes/kubernetescilium/v1alpha1;kubernetesciliumv1alpha1\xa2\x02\x04DPKK\xaa\x020Dev.Planton.Kubernetes.Kubernetescilium.V1alpha1\xca\x020Dev\\Planton\\Kubernetes\\Kubernetescilium\\V1alpha1\xe2\x02<Dev\\Planton\\Kubernetes\\Kubernetescilium\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Kubernetes::Kubernetescilium::V1alpha1b\x06proto3"
 
 var (
@@ -187,15 +187,15 @@ var file_catalog_kubernetes_kubernetescilium_v1alpha1_api_proto_msgTypes = make(
 var file_catalog_kubernetes_kubernetescilium_v1alpha1_api_proto_goTypes = []any{
 	(*KubernetesCilium)(nil),             // 0: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCilium
 	(*KubernetesCiliumStatus)(nil),       // 1: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*KubernetesCiliumSpec)(nil),         // 3: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumSpec
-	(*KubernetesCiliumStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumStackOutputs
+	(*KubernetesCiliumOutputs)(nil),      // 4: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumOutputs
 }
 var file_catalog_kubernetes_kubernetescilium_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCilium.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCilium.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCilium.spec:type_name -> dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumSpec
 	1, // 2: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCilium.status:type_name -> dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumStatus
-	4, // 3: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumStatus.outputs:type_name -> dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumStatus.outputs:type_name -> dev.planton.kubernetes.kubernetescilium.v1alpha1.KubernetesCiliumOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

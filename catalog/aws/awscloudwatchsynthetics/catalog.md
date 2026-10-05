@@ -4,7 +4,7 @@ Deploys CloudWatch Synthetics resources: a canary — a scheduled scripted probe
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Synthetics Canary** — created only when the `canary` arm is set: the probe with its S3-staged code bundle, runtime, schedule (with retries), per-run sizing, optional VPC placement, artifact location and encryption, and retention windows. With `startCanary: true` the schedule starts after create and updates.
 - **Synthetics Groups** — one per `groups` entry, each a name-and-tags container this instance owns. Groups shared by many canaries belong in one owning instance.
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, carrying Synthetics, Lambda, S3, and IAM pass-role permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, carrying Synthetics, Lambda, S3, and IAM pass-role permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -72,7 +72,7 @@ spec:
 planton apply -f synthetics-canary.yaml
 ```
 
-This creates a five-minute heartbeat canary with one retry, trimmed success retention, and a clean-teardown posture, running immediately. A Stack Job tracks the provisioning in real time.
+This creates a five-minute heartbeat canary with one retry, trimmed success retention, and a clean-teardown posture, running immediately. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -130,7 +130,7 @@ These are the most important decisions when configuring a Synthetics deployment.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -141,9 +141,9 @@ These are the most important decisions when configuring a Synthetics deployment.
 | **AwsSubnet** (VPC placement) | `canary.vpcConfig.subnetIds[]` | `status.outputs.subnet_id` |
 | **AwsSecurityGroup** (VPC placement) | `canary.vpcConfig.securityGroupIds[]` | `status.outputs.security_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -165,9 +165,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — holds the code zip and receives every run's artifacts
-- [**AWS S3 Object Set**](/cloud-catalog/aws-s3-object-set) — stages small canary code bundles inline as base64
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the execution role the canary's Lambda runs under
-- [**AWS CloudWatch Alarm**](/cloud-catalog/aws-cloudwatch-alarm) — pages on the canary's SuccessPercent and Duration metrics
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption for run artifacts (SSE_KMS)
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) / [**AWS Security Group**](/cloud-catalog/aws-security-group) — network placement for canaries probing private endpoints
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — holds the code zip and receives every run's artifacts
+- [**AWS S3 Object Set**](/infra-catalog/aws-s3-object-set) — stages small canary code bundles inline as base64
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the execution role the canary's Lambda runs under
+- [**AWS CloudWatch Alarm**](/infra-catalog/aws-cloudwatch-alarm) — pages on the canary's SuccessPercent and Duration metrics
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption for run artifacts (SSE_KMS)
+- [**AWS Subnet**](/infra-catalog/aws-subnet) / [**AWS Security Group**](/infra-catalog/aws-security-group) — network placement for canaries probing private endpoints

@@ -10,8 +10,8 @@ Corrected and completed `default_kind` / `default_kind_field_path` foreign-key
 annotations on several spec protos. Every change was surfaced by a new
 FK-annotation audit oracle in planton-web (which walks every Spec descriptor and
 cross-checks FK annotations) and verified here against the referenced kind's
-`stack_outputs.proto`. These annotations are the single source of truth the
-cloud-resource wizard reads at runtime to populate cross-resource references, so
+`outputs.proto`. These annotations are the single source of truth the
+infra-component wizard reads at runtime to populate cross-resource references, so
 a wrong path silently ships a reference to a non-existent output.
 
 ## Fixes (wrong / asymmetric annotations)
@@ -44,13 +44,13 @@ a wrong path silently ships a reference to a non-existent output.
 
 - `buf build` + `buf lint` clean.
 - Each `default_kind_field_path` confirmed to exist on the referenced kind's
-  `stack_outputs.proto`.
+  `outputs.proto`.
 
 ## Known issues flagged (NOT changed here — need a dedicated, verified pass)
 
 - **OCI camelCase output paths**: OCI FK annotations use camelCase (`keyId`,
   `compartmentId`, `subnetId`, `networkSecurityGroupId`) but OCI
-  `stack_outputs.proto` fields are snake_case (e.g. `OciKmsKey` → `key_id`). The
+  `outputs.proto` fields are snake_case (e.g. `OciKmsKey` → `key_id`). The
   OCI annotations are systematically suspect and need a per-resource verified
   correction.
 - **AwsIamRole** lacks an `instance_profile_arn` output referenced by

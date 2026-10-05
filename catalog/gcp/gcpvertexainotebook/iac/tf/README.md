@@ -54,4 +54,4 @@ This Terraform module has full feature parity with the Pulumi module:
 - Shielded VM configuration
 - Client-side `deletion_policy` (DELETE / PREVENT / ABANDON), mirrored zero-vs-omit
 - User labels merged beneath platform attribution labels (identical merge order)
-- All 8 stack outputs
+- All 8 outputs

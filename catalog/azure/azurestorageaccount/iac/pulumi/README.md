@@ -1,6 +1,6 @@
 # AzureStorageAccount - Pulumi Module
 
-Pulumi implementation for the AzureStorageAccount component.
+Pulumi implementation for the AzureStorageAccount kind.
 
 ## Architecture
 
@@ -13,7 +13,7 @@ storage.Account (the account)
 ## Key Design Decisions
 
 - **Unset SKU enums materialize the spec's documented defaults**
-  (StorageV2 / Standard / LRS) -- stack inputs built from a manifest do
+  (StorageV2 / Standard / LRS) -- IaC inputs built from a manifest do
   NOT materialize proto defaults, and the provider requires tier and
   replication. Unset `access_tier` / `dns_endpoint_type` /
   `allowed_copy_scope` / key types are NOT sent at all, mirroring the
@@ -37,6 +37,6 @@ storage.Account (the account)
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless web-identity (OIDC), and
 ambient credential chains. Never construct a provider inline.

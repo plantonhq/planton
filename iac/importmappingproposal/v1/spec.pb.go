@@ -23,8 +23,8 @@ const (
 )
 
 // ImportMappingProposalSpec is the structured answer a mapper gives to the
-// question "how does this set of discovered cloud resources map into Planton
-// components?". It is the contract between any proposer -- a deterministic
+// question "how does this set of discovered provider resources map into Planton
+// kinds?". It is the contract between any proposer -- a deterministic
 // mapper today, an AI mapping agent later -- and everything downstream that
 // consumes a mapping: the eval scorer that grades proposals against a known
 // ground truth, and the review surfaces a human approves before anything is
@@ -51,7 +51,7 @@ type ImportMappingProposalSpec struct {
 	// ordering is derived downstream from the value_from reference graph.
 	Resources []*ProposedResource `protobuf:"bytes,1,rep,name=resources,proto3" json:"resources,omitempty"`
 	// Discovered account resources the proposer examined but could not map to
-	// any Planton component -- the honest remainder.
+	// any Planton kind -- the honest remainder.
 	Unmapped      []*UnmappedAccountResource `protobuf:"bytes,2,rep,name=unmapped,proto3" json:"unmapped,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -113,10 +113,10 @@ type ProposedResource struct {
 	// proposed instances address each other by metadata.name and may only
 	// target names present in this proposal (or resources already managed by
 	// the platform); a dangling reference is a contract violation because it
-	// would fail resolution at the first stack-job build.
+	// would fail resolution at the first infra-job build.
 	Manifest *structpb.Struct `protobuf:"bytes,1,opt,name=manifest,proto3" json:"manifest,omitempty"`
 	// The discovered account resources this instance accounts for. A claim
-	// says "creating this manifest and importing its state covers that cloud
+	// says "creating this manifest and importing its state covers that provider
 	// resource". Claims are how grouping quality is measured: the scorer
 	// compares an instance's claims against the resources its ground-truth
 	// counterpart actually owns. Instances are matched by kind plus claim

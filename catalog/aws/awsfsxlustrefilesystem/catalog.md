@@ -4,7 +4,7 @@ Deploys a high-performance parallel file system on Amazon FSx for Lustre with co
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **FSx Lustre File System** -- a high-performance parallel file system placed in a single subnet, with configurable deployment type (SCRATCH_1, SCRATCH_2, PERSISTENT_1, PERSISTENT_2), storage media (SSD, HDD, or elastic Intelligent-Tiering), throughput tiers, and optional LZ4 data compression -- sized fresh or restored from an FSx backup via `backupId`
 - **Network Interface** -- an ENI in the specified subnet for Lustre client connectivity over TCP port 988 and data channels 1018-1023
@@ -18,15 +18,15 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **One subnet** in the target VPC. Lustre file systems are single-AZ -- exactly one subnet is supported. All compute resources mounting this file system must have network connectivity to this subnet. Provide the subnet ID directly or reference an AwsSubnet Cloud Resource via ValueFromRef.
-- **A security group** that allows Lustre traffic between the file system and its clients: TCP port 988 (Lustre protocol) and TCP ports 1018-1023 (data channels). Provide the ID directly or reference an AwsSecurityGroup Cloud Resource.
-- **A KMS key** (optional) -- for customer-managed encryption at rest instead of the default AWS-managed FSx key. Provide the ARN directly or reference an AwsKmsKey Cloud Resource.
-- **A CloudWatch log group** (optional) -- required only when enabling audit logging. The log group must have a resource policy allowing FSx to write to it. Reference an AwsCloudwatchLogGroup Cloud Resource via ValueFromRef.
+- **One subnet** in the target VPC. Lustre file systems are single-AZ -- exactly one subnet is supported. All compute resources mounting this file system must have network connectivity to this subnet. Provide the subnet ID directly or reference an AwsSubnet Infra Component via ValueFromRef.
+- **A security group** that allows Lustre traffic between the file system and its clients: TCP port 988 (Lustre protocol) and TCP ports 1018-1023 (data channels). Provide the ID directly or reference an AwsSecurityGroup Infra Component.
+- **A KMS key** (optional) -- for customer-managed encryption at rest instead of the default AWS-managed FSx key. Provide the ARN directly or reference an AwsKmsKey Infra Component.
+- **A CloudWatch log group** (optional) -- required only when enabling audit logging. The log group must have a resource policy allowing FSx to write to it. Reference an AwsCloudwatchLogGroup Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -60,7 +60,7 @@ spec:
 planton apply -f fsx-lustre.yaml
 ```
 
-This creates a SCRATCH_2 Lustre file system with 1.2 TiB of SSD storage, no backups, no S3 integration, and no audit logging. A Stack Job tracks the provisioning in real time.
+This creates a SCRATCH_2 Lustre file system with 1.2 TiB of SSD storage, no backups, no S3 integration, and no audit logging. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -99,11 +99,11 @@ These are the most important decisions when configuring an FSx Lustre file syste
 
 **Root squash and EFA** -- `rootSquashConfiguration` maps root users on client instances to an unprivileged UID:GID (with an exempt-NID list) -- the POSIX guardrail for shared multi-team clusters; it updates in place. `efaEnabled` (PERSISTENT_2 + metadata configuration required, ForceNew) enables OS-bypass networking and GPUDirect Storage for the most latency-sensitive HPC/ML fleets.
 
-**S3 data repository** -- Two generations exist and cannot be mixed on one file system. The legacy in-spec `importPath`/`exportPath` arm works on SCRATCH_1/SCRATCH_2/PERSISTENT_1 and is immutable. The modern generation is the [AWS FSx Data Repository Association](/cloud-catalog/aws-fsx-data-repository-association) kind -- per-directory links with independent lifecycles and per-event sync policies, and the ONLY option on PERSISTENT_2.
+**S3 data repository** -- Two generations exist and cannot be mixed on one file system. The legacy in-spec `importPath`/`exportPath` arm works on SCRATCH_1/SCRATCH_2/PERSISTENT_1 and is immutable. The modern generation is the [AWS FSx Data Repository Association](/infra-catalog/aws-fsx-data-repository-association) kind -- per-directory links with independent lifecycles and per-event sync policies, and the ONLY option on PERSISTENT_2.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -112,9 +112,9 @@ These are the most important decisions when configuring an FSx Lustre file syste
 | **AwsKmsKey** (optional) | `kmsKeyId` | `status.outputs.key_arn` |
 | **AwsCloudwatchLogGroup** (optional) | `logConfiguration.destination` | `status.outputs.log_group_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -141,8 +141,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- provides the subnet for the file system's network interface placement
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- controls Lustre traffic (TCP 988, 1018-1023) access to the file system
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for encryption at rest
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) -- receives Lustre audit events for compliance and debugging
-- [**AWS FSx Data Repository Association**](/cloud-catalog/aws-fsx-data-repository-association) -- links directories to S3 buckets with bidirectional sync (consumes `file_system_id`)
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- provides the subnet for the file system's network interface placement
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- controls Lustre traffic (TCP 988, 1018-1023) access to the file system
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for encryption at rest
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) -- receives Lustre audit events for compliance and debugging
+- [**AWS FSx Data Repository Association**](/infra-catalog/aws-fsx-data-repository-association) -- links directories to S3 buckets with bidirectional sync (consumes `file_system_id`)

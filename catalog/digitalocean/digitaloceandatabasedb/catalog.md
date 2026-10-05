@@ -4,7 +4,7 @@ Creates an additional logical database inside a DigitalOcean managed database cl
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Logical Database** -- a named database inside the referenced cluster, addressable by clients, users, and connection pools
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **A DigitalOceanDatabaseCluster** -- the owning cluster, referenced by name (or an existing cluster's UUID as a literal).
 
 ### DigitalOcean Account
@@ -49,7 +49,7 @@ spec:
 planton apply -f do-database-db.yaml
 ```
 
-This creates a logical database named `orders` on the referenced cluster, visible in its Users & Databases tab. A Stack Job tracks the provisioning in real time.
+This creates a logical database named `orders` on the referenced cluster, visible in its Users & Databases tab. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -81,13 +81,13 @@ These are the most important decisions when configuring a logical database. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **DigitalOceanDatabaseCluster** | `cluster` | `status.outputs.cluster_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` echoes `cluster_id` and `database_name` back -- DigitalOcean has no standalone database id, so the (cluster, name) pair IS the identity, and these echoes exist for addressing and verification rather than for downstream wiring. No other component consumes them via ValueFromRef: connection pools and application connection strings address this database by writing the same name, and credentials live on the cluster and its users, never here.
 
@@ -101,6 +101,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Database Cluster**](/cloud-catalog/digital-ocean-database-cluster) -- the owning cluster, wired via the `cluster` reference
-- [**DigitalOcean Database User**](/cloud-catalog/digital-ocean-database-user) -- the per-service credential that connects to this database
-- [**DigitalOcean Database Connection Pool**](/cloud-catalog/digital-ocean-database-connection-pool) -- a PgBouncer pool serving this database by name
+- [**DigitalOcean Database Cluster**](/infra-catalog/digital-ocean-database-cluster) -- the owning cluster, wired via the `cluster` reference
+- [**DigitalOcean Database User**](/infra-catalog/digital-ocean-database-user) -- the per-service credential that connects to this database
+- [**DigitalOcean Database Connection Pool**](/infra-catalog/digital-ocean-database-connection-pool) -- a PgBouncer pool serving this database by name

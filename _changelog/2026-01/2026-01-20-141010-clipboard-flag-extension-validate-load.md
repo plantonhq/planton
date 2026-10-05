@@ -46,7 +46,7 @@ flowchart TB
         F --> C["--clipboard, --clip, --cb, -c"]
         M --> R[ResolveManifestPath]
         R --> CB[resolveFromClipboard]
-        R --> SI[resolveFromStackInput]
+        R --> SI[resolveFromIacInput]
         R --> K[kustomize builder]
     end
 ```

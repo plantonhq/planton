@@ -2,11 +2,11 @@
 
 **Date**: September 27, 2026
 **Type**: Fix
-**Components**: Catalog (stack outputs of 48 kinds, 38 Pulumi and 12 OpenTofu modules), Module verify, Guards (secret coverage), Output capture, Reference pages, Docs and skills
+**Components**: Catalog (outputs of 48 kinds, 38 Pulumi and 12 OpenTofu modules), Module verify, Guards (secret coverage), Output capture, Reference pages, Docs and skills
 
 ## Summary
 
-A stack output that is a secret the resource generates (an Auth0 client's secret, an AWS IAM user's secret access key, a registry's admin password, a database's connection string) is now declared in its kind's schema with the `sensitive` option, on every kind that has one. `planton module verify` holds both engines to that declaration: a marked output is exported as a secret (OpenTofu `sensitive = true`, Pulumi `pulumi.ToSecret`), and no other output is, so an engine never prints a generated credential in its deploy logs or keeps it readable in state. The CLI's captured outputs read which outputs are secrets from the same schema, and the reference pages mark them. On Planton, such an output is stored in the organization's secret store and the output holds a reference.
+An output that is a secret the resource generates (an Auth0 client's secret, an AWS IAM user's secret access key, a registry's admin password, a database's connection string) is now declared in its kind's schema with the `sensitive` option, on every kind that has one. `planton module verify` holds both engines to that declaration: a marked output is exported as a secret (OpenTofu `sensitive = true`, Pulumi `pulumi.ToSecret`), and no other output is, so an engine never prints a generated credential in its deploy logs or keeps it readable in state. The CLI's captured outputs read which outputs are secrets from the same schema, and the reference pages mark them. On Planton, such an output is stored in the organization's secret store and the output holds a reference.
 
 ## What Changed
 
@@ -23,10 +23,10 @@ A stack output that is a secret the resource generates (an Auth0 client's secret
   - Pulumi exports every marked output directly through `pulumi.ToSecret` (89 exports, 33 of them on kinds already marked but exported in the clear), and unwraps the public outputs a provider marks secret with `pulumi.Unsecret`.
   - OpenTofu already declared every secret `sensitive`. Its 17 over-marked public outputs drop the flag, and the 13 whose provider attribute is sensitive unwrap with `nonsensitive()`.
 - **`planton module verify`** gains the secret-outputs check in both engines, at error severity for a secret exported in the clear, and a Pulumi export-name check to match OpenTofu's. Output names resolve from literals and the module's own constants. A whole-catalog test runs both checks on every official module with no baseline, and the secret-coverage workflow runs it.
-- **`pkg/secretcoverage`** pins the shape of output marks: only on a top-level `StackOutputs` field, no exemption reason, no value rule. The name heuristic stays on the spec, because a name cannot tell a key id from a private key.
+- **`pkg/secretcoverage`** pins the shape of output marks: only on a top-level `Outputs` field, no exemption reason, no value rule. The name heuristic stays on the spec, because a name cannot tell a key id from a private key.
 - **Output capture reads the schema:** `outputs.SecretOutputs(kind)` is the one rule, `CaptureResult.IsSensitive` masks a secret output and any output the schema does not declare, Pulumi's second (masked) output read is gone, and a value that fails to populate is no longer logged.
 - **Reference pages** mark a secret output `(sensitive)` in the Outputs table and say where it lives on Planton; `options.proto` documents the option on outputs.
-- **Docs and skills:** "Secrets a Resource Generates" on the secrets page; stack-job output display; the dependencies and config-references skill pages (a secret output feeds only a sensitive field); the catalog skill's research recipes.
+- **Docs and skills:** "Secrets a Resource Generates" on the secrets page; infra-job output display; the dependencies and config-references skill pages (a secret output feeds only a sensitive field); the catalog skill's research recipes.
 - **Regenerated:** stubs, reference pages, the proto-docs index, catalog schemas.
 
 ## Verification

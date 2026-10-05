@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpPubSubSubscriptionStackInput struct {
+type GcpPubSubSubscriptionIacInput struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Target         *GcpPubSubSubscription `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpPubSubSubscriptionStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpPubSubSubscriptionStackInput) Reset() {
-	*x = GcpPubSubSubscriptionStackInput{}
+func (x *GcpPubSubSubscriptionIacInput) Reset() {
+	*x = GcpPubSubSubscriptionIacInput{}
 	mi := &file_catalog_gcp_gcppubsubsubscription_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpPubSubSubscriptionStackInput) String() string {
+func (x *GcpPubSubSubscriptionIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpPubSubSubscriptionStackInput) ProtoMessage() {}
+func (*GcpPubSubSubscriptionIacInput) ProtoMessage() {}
 
-func (x *GcpPubSubSubscriptionStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpPubSubSubscriptionIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcppubsubsubscription_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpPubSubSubscriptionStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpPubSubSubscriptionStackInput.ProtoReflect.Descriptor instead.
-func (*GcpPubSubSubscriptionStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpPubSubSubscriptionIacInput.ProtoReflect.Descriptor instead.
+func (*GcpPubSubSubscriptionIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcppubsubsubscription_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpPubSubSubscriptionStackInput) GetTarget() *GcpPubSubSubscription {
+func (x *GcpPubSubSubscriptionIacInput) GetTarget() *GcpPubSubSubscription {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpPubSubSubscriptionStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpPubSubSubscriptionIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcppubsubsubscription_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_gcp_gcppubsubsubscription_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcppubsubsubscription/v1alpha1/input.proto\x12.dev.planton.gcp.gcppubsubsubscription.v1alpha1\x1a4catalog/gcp/gcppubsubsubscription/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xcd\x01\n" +
-	"\x1fGcpPubSubSubscriptionStackInput\x12]\n" +
+	"6catalog/gcp/gcppubsubsubscription/v1alpha1/input.proto\x12.dev.planton.gcp.gcppubsubsubscription.v1alpha1\x1a4catalog/gcp/gcppubsubsubscription/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xcb\x01\n" +
+	"\x1dGcpPubSubSubscriptionIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscriptionR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"2com.dev.planton.gcp.gcppubsubsubscription.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcppubsubsubscription_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcppubsubsubscription_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcppubsubsubscription_v1alpha1_input_proto_goTypes = []any{
-	(*GcpPubSubSubscriptionStackInput)(nil), // 0: dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscriptionStackInput
-	(*GcpPubSubSubscription)(nil),           // 1: dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscription
-	(*gcp.GcpProviderConfig)(nil),           // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpPubSubSubscriptionIacInput)(nil), // 0: dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscriptionIacInput
+	(*GcpPubSubSubscription)(nil),         // 1: dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscription
+	(*gcp.GcpProviderConfig)(nil),         // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcppubsubsubscription_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscriptionStackInput.target:type_name -> dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscription
-	2, // 1: dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscriptionStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscriptionIacInput.target:type_name -> dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscription
+	2, // 1: dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscriptionIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

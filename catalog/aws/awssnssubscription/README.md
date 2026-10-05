@@ -45,7 +45,7 @@ spec: { ... }
 | `endpointAutoConfirms` | bool | no | `false` | HTTP/S endpoint self-confirms the subscription handshake. |
 | `confirmationTimeoutMinutes` | int32 | no | `1` | Minutes to wait for HTTP/S confirmation before failing. |
 
-## Stack outputs
+## Outputs
 
 | Output | Description |
 |---|---|

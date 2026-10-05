@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpCloudIdentityGroupStackOutputs captures the group after provisioning.
-type GcpCloudIdentityGroupStackOutputs struct {
+// GcpCloudIdentityGroupOutputs captures the group after provisioning.
+type GcpCloudIdentityGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The group's resource name, `groups/{group_id}` -- the handle the Cloud
 	// Identity API addresses it by.
@@ -36,20 +36,20 @@ type GcpCloudIdentityGroupStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *GcpCloudIdentityGroupStackOutputs) Reset() {
-	*x = GcpCloudIdentityGroupStackOutputs{}
+func (x *GcpCloudIdentityGroupOutputs) Reset() {
+	*x = GcpCloudIdentityGroupOutputs{}
 	mi := &file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudIdentityGroupStackOutputs) String() string {
+func (x *GcpCloudIdentityGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudIdentityGroupStackOutputs) ProtoMessage() {}
+func (*GcpCloudIdentityGroupOutputs) ProtoMessage() {}
 
-func (x *GcpCloudIdentityGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudIdentityGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *GcpCloudIdentityGroupStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudIdentityGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudIdentityGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudIdentityGroupOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudIdentityGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudIdentityGroupStackOutputs) GetName() string {
+func (x *GcpCloudIdentityGroupOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpCloudIdentityGroupStackOutputs) GetGroupEmail() string {
+func (x *GcpCloudIdentityGroupOutputs) GetGroupEmail() string {
 	if x != nil {
 		return x.GroupEmail
 	}
 	return ""
 }
 
-func (x *GcpCloudIdentityGroupStackOutputs) GetMembershipCount() string {
+func (x *GcpCloudIdentityGroupOutputs) GetMembershipCount() string {
 	if x != nil {
 		return x.MembershipCount
 	}
@@ -91,8 +91,8 @@ var File_catalog_gcp_gcpcloudidentitygroup_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/gcp/gcpcloudidentitygroup/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpcloudidentitygroup.v1alpha1\"\x83\x01\n" +
-	"!GcpCloudIdentityGroupStackOutputs\x12\x12\n" +
+	"8catalog/gcp/gcpcloudidentitygroup/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpcloudidentitygroup.v1alpha1\"~\n" +
+	"\x1cGcpCloudIdentityGroupOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1f\n" +
 	"\vgroup_email\x18\x02 \x01(\tR\n" +
 	"groupEmail\x12)\n" +
@@ -113,7 +113,7 @@ func file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudIdentityGroupStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudidentitygroup.v1alpha1.GcpCloudIdentityGroupStackOutputs
+	(*GcpCloudIdentityGroupOutputs)(nil), // 0: dev.planton.gcp.gcpcloudidentitygroup.v1alpha1.GcpCloudIdentityGroupOutputs
 }
 var file_catalog_gcp_gcpcloudidentitygroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

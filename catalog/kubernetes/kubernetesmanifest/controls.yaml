@@ -4,9 +4,9 @@
 # bring-your-own-manifest escape hatch -- raw YAML applied as written -- so
 # nearly every posture belongs to the MANIFEST AUTHOR's documents, and this
 # profile says so honestly rather than claiming stances the spec cannot
-# enforce. Schema: compliance/componentcontrolprofile/v1.
+# enforce. Schema: compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kubernetesmanifest
 spec:
@@ -34,7 +34,7 @@ spec:
       notes: Any RBAC the manifest creates (ServiceAccounts, Roles, ClusterRoles) is its own content, applied exactly as written. Applying and managing the manifest itself is governed by the target cluster's Kubernetes RBAC on the IaC runner -- see iac/permissions.yaml for why that surface is unbounded for raw YAML.
     - control_id: workload-identity
       status: not_applicable
-      notes: This spec holds no credential seam at all -- identities, ServiceAccounts, and cloud bindings are whatever the applied documents declare. Secrets belong in typed components or secret managers, not pasted into manifest_yaml.
+      notes: This spec holds no credential seam at all -- identities, ServiceAccounts, and cloud bindings are whatever the applied documents declare. Secrets belong in typed kinds or secret managers, not pasted into manifest_yaml.
     - control_id: no-legacy-auth
       status: not_applicable
       notes: Authentication paths of the applied workloads are the manifest's content; the component itself exposes none.

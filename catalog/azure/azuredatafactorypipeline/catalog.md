@@ -4,7 +4,7 @@ Deploys one pipeline inside an Azure Data Factory -- an ordered set of activitie
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Data Factory pipeline** -- the pipeline definition: activities JSON, run-time parameters with defaults, variables, annotations, the concurrency cap, the Studio display folder, and the elapsed-time metric threshold
 
@@ -57,7 +57,7 @@ spec:
 planton apply -f data-factory-pipeline.yaml
 ```
 
-This creates a single-concurrency pipeline named `ingest-daily` under the factory's `ingest` folder with one window parameter and a placeholder Wait activity -- swap in your Studio-authored activities array before wiring triggers. A Stack Job tracks the provisioning in real time.
+This creates a single-concurrency pipeline named `ingest-daily` under the factory's `ingest` folder with one window parameter and a placeholder Wait activity -- swap in your Studio-authored activities array before wiring triggers. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,15 +90,15 @@ These are the most important decisions when configuring a pipeline. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureDataFactory** | `dataFactoryId` | `status.outputs.data_factory_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -117,8 +117,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Data Factory**](/cloud-catalog/azure-data-factory) -- the factory the pipeline lives in, referenced by `dataFactoryId`
-- [**Azure Data Factory Trigger**](/cloud-catalog/azure-data-factory-trigger) -- schedules, tumbling windows, and event triggers fire this pipeline by name
-- [**Azure Data Factory Dataset**](/cloud-catalog/azure-data-factory-dataset) -- the sources and sinks copy activities read and write
-- [**Azure Data Factory Linked Service**](/cloud-catalog/azure-data-factory-linked-service) -- the connections activities authenticate through
-- [**Azure Data Factory Data Flow**](/cloud-catalog/azure-data-factory-data-flow) -- execute-data-flow activities run transformations built as data flows
+- [**Azure Data Factory**](/infra-catalog/azure-data-factory) -- the factory the pipeline lives in, referenced by `dataFactoryId`
+- [**Azure Data Factory Trigger**](/infra-catalog/azure-data-factory-trigger) -- schedules, tumbling windows, and event triggers fire this pipeline by name
+- [**Azure Data Factory Dataset**](/infra-catalog/azure-data-factory-dataset) -- the sources and sinks copy activities read and write
+- [**Azure Data Factory Linked Service**](/infra-catalog/azure-data-factory-linked-service) -- the connections activities authenticate through
+- [**Azure Data Factory Data Flow**](/infra-catalog/azure-data-factory-data-flow) -- execute-data-flow activities run transformations built as data flows

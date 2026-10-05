@@ -1,6 +1,6 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate model: compute rides the REFERENCED App Service plan
 # (service_plan_id), and the plan's SKU -- invisible in this manifest --
 # decides both the rate and the billing mode. On Dedicated and Elastic
@@ -8,9 +8,9 @@
 # Consumption (Y1) plan the plan provisions nothing and this app's
 # executions and GB-seconds are the meters, quantities no manifest can
 # predict. Either way a dollar figure here would be a guess wearing a
-# dollar sign. Schema: finops/componentcostprofile/v1.
+# dollar sign. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurefunctionapp
 spec:
@@ -62,7 +62,7 @@ spec:
       impact: "Wiring APM sends every request, dependency, exception, and trace to the referenced Application Insights resource -- ingestion bills per GB on that component, scaling with traffic and sampling settings, never here."
   free_tier: "Consumption-plan pricing includes a monthly free grant of 1 million executions and 400000 GB-seconds of resource consumption per subscription (across all function apps in it), on paid subscriptions. The grant does not cover the required storage account, and does not apply to Elastic Premium or Dedicated hosting (Microsoft's Azure Functions pricing page, retrieved 2026-08-18)."
   estimate_exclusions:
-    - "the compute rate lives on the referenced AzureServicePlan -- its SKU decides instance-hour rates (Dedicated), vCPU-second and GB-second rates (Elastic Premium), or that no instances bill at all (Consumption) -- which is why no estimate document exists for this component"
+    - "the compute rate lives on the referenced AzureServicePlan -- its SKU decides instance-hour rates (Dedicated), vCPU-second and GB-second rates (Elastic Premium), or that no instances bill at all (Consumption) -- which is why no estimate document exists for this kind"
     - "Consumption executions and GB-seconds are pure runtime behavior: billed per million executions and per GB-second after the free grant, with memory rounded up to the nearest 128 MB and duration to the nearest millisecond (100 ms / 128 MB minimums per execution)"
     - "the required runtime-state storage account (triggers, logs, the Azure Files content share) bills standard storage rates on the referenced AzureStorageAccount -- Microsoft's pricing page states explicitly it is not in the free grant"
     - "Application Insights ingestion and retention bill on the referenced AzureApplicationInsights component"

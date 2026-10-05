@@ -1,7 +1,7 @@
 # Kubernetes capacity and scheduling primitives at full configuration depth: six new kinds forged
 
 **Date**: 2026-07-22
-**Scope**: `apis/dev/planton/provider/kubernetes` (kubernetespersistentvolumeclaim, kubernetesstorageclass, kubernetesresourcequota, kubernetespriorityclass, kubernetespoddisruptionbudget, kuberneteshorizontalpodautoscaler — all new), `apis/dev/planton/shared/cloudresourcekind`, `aa_import`, `aa_e2e/verify`, `e2e`, `pkg/outputs`, `pkg/iac/importmap`, Makefile E2E tiers, site catalog, `_rules/deployment-component/forge`
+**Scope**: `apis/dev/planton/provider/kubernetes` (kubernetespersistentvolumeclaim, kubernetesstorageclass, kubernetesresourcequota, kubernetespriorityclass, kubernetespoddisruptionbudget, kuberneteshorizontalpodautoscaler — all new), `apis/dev/planton/shared/catalogkind`, `aa_import`, `aa_e2e/verify`, `e2e`, `pkg/outputs`, `pkg/iac/importmap`, Makefile E2E tiers, site catalog, `_rules/catalog-kind/forge`
 
 ## What changed
 
@@ -131,7 +131,7 @@ surface — never both on one target.
 
 ## Forge-rule freshness fix
 
-The forge rule's E2E test-name discovery note claimed Kubernetes components
+The forge rule's E2E test-name discovery note claimed Kubernetes kinds
 "still fall back to the legacy prefix table"; discovery has been
 registry-driven for all providers with only a small verified-deviation
 override map. The sentence now describes the actual mechanism.

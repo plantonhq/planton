@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurerediscacheaccesspolicyassignment
+    e2e-catalog-kind: azurerediscacheaccesspolicyassignment
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AzureUserAssignedIdentity, catalog/azure/azurerediscacheaccesspolicyassignment/e2e/entra-cache.yaml, catalog/azure/azurerediscacheaccesspolicyassignment/e2e/prefix-policy.yaml"

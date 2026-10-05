@@ -29,7 +29,7 @@ func validZoneSettings(spec *CloudflareZoneSettingsSpec) *CloudflareZoneSettings
 	return &CloudflareZoneSettings{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZoneSettings",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-zone-settings",
 		},
 		Spec: spec,

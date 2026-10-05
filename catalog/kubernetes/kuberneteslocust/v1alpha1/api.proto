@@ -16,7 +16,7 @@ message KubernetesLocust {
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesLocust'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   KubernetesLocustSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message KubernetesLocust {
 
 //locust-kubernetes status.
 message KubernetesLocustStatus {
-  //stack-outputs
-  KubernetesLocustStackOutputs outputs = 1;
+  //outputs
+  KubernetesLocustOutputs outputs = 1;
 }

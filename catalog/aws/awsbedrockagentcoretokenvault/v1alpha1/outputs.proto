@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1;
 
-// AwsBedrockAgentCoreTokenVaultStackOutputs captures the observable
+// AwsBedrockAgentCoreTokenVaultOutputs captures the observable
 // state of the configured token vault.
-message AwsBedrockAgentCoreTokenVaultStackOutputs {
+message AwsBedrockAgentCoreTokenVaultOutputs {
   // The vault the setting was applied to ("default" unless the spec
   // targeted another vault) - also the provider's import ID.
   string token_vault_id = 1;

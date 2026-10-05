@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"gopkg.in/yaml.v3"
 )
 
@@ -84,7 +84,7 @@ func TestScanModule_InvalidHclFailsLoudly(t *testing.T) {
 // --- provider-config census ---
 
 func TestProviderConfigCensus_Aws(t *testing.T) {
-	paths, err := ProviderConfigCensus(cloudresourcekind.CloudResourceProvider_aws)
+	paths, err := ProviderConfigCensus(catalogkind.CatalogProvider_aws)
 	if err != nil {
 		t.Fatalf("census: %v", err)
 	}

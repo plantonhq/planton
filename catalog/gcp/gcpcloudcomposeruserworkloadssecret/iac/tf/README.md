@@ -4,7 +4,7 @@ This Terraform module provisions a Kubernetes Secret in a Cloud Composer environ
 
 ## Overview
 
-The Secret's data updates in place; name, environment, region, and project are immutable (ForceNew). Values are base64-encoded secret material (the Kubernetes Secret contract). The provider marks the `data` attribute sensitive — plans redact it — and it is never surfaced in stack outputs; IaC state is the engine's secret boundary. No API enablement here: the Composer API is enabled by the environment this Secret is delivered into. An empty `project_id` falls back to the provider's default project.
+The Secret's data updates in place; name, environment, region, and project are immutable (ForceNew). Values are base64-encoded secret material (the Kubernetes Secret contract). The provider marks the `data` attribute sensitive — plans redact it — and it is never surfaced in outputs; IaC state is the engine's secret boundary. No API enablement here: the Composer API is enabled by the environment this Secret is delivered into. An empty `project_id` falls back to the provider's default project.
 
 ## Usage with Planton CLI
 
@@ -15,7 +15,7 @@ planton tofu apply --manifest ../../e2e/manifest.yaml --auto-approve
 planton tofu destroy --manifest ../../e2e/manifest.yaml --auto-approve
 ```
 
-Credentials are provided via stack input (by the CLI), not in the manifest `spec`. Manifest file: `../../e2e/manifest.yaml`.
+Credentials are provided via IaC input (by the CLI), not in the manifest `spec`. Manifest file: `../../e2e/manifest.yaml`.
 
 ## Direct Terraform Usage
 

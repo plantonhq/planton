@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/fileutil"
 	"github.com/plantonhq/planton/pkg/iac/specprojection"
 	"google.golang.org/protobuf/proto"
@@ -17,7 +17,7 @@ import (
 // metadata. This is the kind-aware entry point every runtime caller should use
 // so the converter and the shipped module always agree on the wire format:
 //
-//   - Manifest-projection kinds (CloudResourceKindMeta.kubernetes_manifest_projection
+//   - Manifest-projection kinds (CatalogKindMeta.kubernetes_manifest_projection
 //     set) -> ProtoToManifestTFVars: camelCase, pruned, fed verbatim to a
 //     kubernetes_manifest passthrough module.
 //   - All other (provider-abstraction) kinds -> ProtoToTFVars: snake_case typed
@@ -35,14 +35,14 @@ func RenderTFVars(msg proto.Message) (string, error) {
 // isManifestProjectionMessage reports whether the manifest's kind is a thin
 // projection of a single Kubernetes custom resource (so its tfvars must be the
 // camelCase manifest spec). The projection flag lives on the kind enum's
-// CloudResourceKindMeta, so we resolve kind -> meta via crkreflect rather than
+// CatalogKindMeta, so we resolve kind -> meta via catalogkindreflect rather than
 // inspecting the message body.
 func isManifestProjectionMessage(msg proto.Message) bool {
-	kindStr, err := crkreflect.ExtractKindFromProto(msg)
+	kindStr, err := catalogkindreflect.ExtractKindFromProto(msg)
 	if err != nil {
 		return false
 	}
-	meta, err := crkreflect.KindMeta(crkreflect.KindFromString(kindStr))
+	meta, err := catalogkindreflect.KindMeta(catalogkindreflect.KindFromString(kindStr))
 	if err != nil {
 		return false
 	}

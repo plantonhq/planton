@@ -278,7 +278,7 @@ Suresh Attaluri  31:27
 in case of like columi modules, yeah, managing pulumi modules or TerraForm modules with plant and cloud, if they register, it is easy to search for devs. It will be. But the journey without private cloud would be a GitHub account or some other place where they need to rely on the keyword search.
 
 Swarup Donepudi  31:55  
-Or, again, this diagram doesn't have to represent all of that, because we cannot tell the entire story here. We have the opportunity to do those things at several places on the website. Meaning, so you said, I multi cloud, right? IAC workflows that has a pulumi registry deployment component sections, or even the IAC workflows itself. The hero section can have in its own illustration or a video where we can do an iPad explanation also. But
+Or, again, this diagram doesn't have to represent all of that, because we cannot tell the entire story here. We have the opportunity to do those things at several places on the website. Meaning, so you said, I multi cloud, right? IAC workflows that has a pulumi registry catalog kind sections, or even the IAC workflows itself. The hero section can have in its own illustration or a video where we can do an iPad explanation also. But
 
 Suresh Attaluri  32:27  
 the message we can put here is, with plaid and code, you can rely on one app, but without Plato, you need to go,

@@ -7,7 +7,7 @@ PostgreSQL setting matters.
 
 ## The architecture must include the operator
 
-This component does not run PostgreSQL by itself: it renders a CloudNativePG
+This kind does not run PostgreSQL by itself: it renders a CloudNativePG
 `Cluster` custom resource, and
 **[KubernetesCloudNativePgOperator](../kubernetescloudnativepgoperator/GUIDE.md)
 must be on the cluster** to reconcile it — proposing a database without it

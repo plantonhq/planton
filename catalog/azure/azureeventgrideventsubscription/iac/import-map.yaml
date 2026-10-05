@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azureeventgrideventsubscription
 spec:
@@ -12,10 +12,10 @@ spec:
   values:
     - name: event_subscription_id
       derivations:
-        - from_stack_output: event_subscription_id
+        - from_output: event_subscription_id
       where_to_find: >-
         `az eventgrid event-subscription list --source-resource-id
         <scope> --query [].id` (or `az eventgrid system-topic
         event-subscription show --name <name> --system-topic-name
         <topic> --resource-group <rg> --query id`), or the component's
-        own event_subscription_id stack output.
+        own event_subscription_id output.

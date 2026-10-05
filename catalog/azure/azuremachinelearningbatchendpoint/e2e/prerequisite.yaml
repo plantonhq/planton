@@ -1,5 +1,5 @@
 # AzureMachineLearningBatchEndpoint install profile used as a fixture
-# by dependent components (declared via prerequisites:
+# by dependent kinds (declared via prerequisites:
 # [AzureMachineLearningBatchEndpoint] in the kind registry -- the
 # batch-deployment lane). The harness deploys this document after the
 # fixture workspace chain and captures its outputs --
@@ -24,7 +24,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuremachinelearningbatchendpoint
+    e2e-catalog-kind: azuremachinelearningbatchendpoint
   annotations:
     planton.dev/e2e: "true"
   tags:

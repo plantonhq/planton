@@ -5,7 +5,7 @@ This preset creates the managed SSIS package runtime with an SSISDB catalog on y
 ## When to Use
 
 - Running existing SSIS packages in Azure without rewriting them as pipelines
-- Deploying SSIS projects from SSIS Studio / Visual Studio to a cloud catalog
+- Deploying SSIS projects from SSIS Studio / Visual Studio to an infra catalog
 - Retiring an on-premises SQL Server that exists only to host SSIS
 
 ## Key Configuration Choices

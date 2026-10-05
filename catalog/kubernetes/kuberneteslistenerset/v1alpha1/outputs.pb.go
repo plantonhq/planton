@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesListenerSetStackOutputs captures observable outputs after the
+// KubernetesListenerSetOutputs captures observable outputs after the
 // ListenerSet is created on the target cluster. Controller-managed status
 // (per-listener Accepted/Programmed conditions and the parent Gateway's
 // AttachedListenerSets count) is reconciled asynchronously by the Gateway
 // implementation and read via kubectl, so it is intentionally not stored here.
-type KubernetesListenerSetStackOutputs struct {
+type KubernetesListenerSetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created ListenerSet (equals metadata.name). Routes reference
 	// this name in their parent_refs (kind: ListenerSet) to attach to the
@@ -42,20 +42,20 @@ type KubernetesListenerSetStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesListenerSetStackOutputs) Reset() {
-	*x = KubernetesListenerSetStackOutputs{}
+func (x *KubernetesListenerSetOutputs) Reset() {
+	*x = KubernetesListenerSetOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteslistenerset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesListenerSetStackOutputs) String() string {
+func (x *KubernetesListenerSetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesListenerSetStackOutputs) ProtoMessage() {}
+func (*KubernetesListenerSetOutputs) ProtoMessage() {}
 
-func (x *KubernetesListenerSetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesListenerSetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteslistenerset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,26 +67,26 @@ func (x *KubernetesListenerSetStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesListenerSetStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesListenerSetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesListenerSetOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesListenerSetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteslistenerset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesListenerSetStackOutputs) GetListenerSetName() string {
+func (x *KubernetesListenerSetOutputs) GetListenerSetName() string {
 	if x != nil {
 		return x.ListenerSetName
 	}
 	return ""
 }
 
-func (x *KubernetesListenerSetStackOutputs) GetNamespace() string {
+func (x *KubernetesListenerSetOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesListenerSetStackOutputs) GetGatewayName() string {
+func (x *KubernetesListenerSetOutputs) GetGatewayName() string {
 	if x != nil {
 		return x.GatewayName
 	}
@@ -97,8 +97,8 @@ var File_catalog_kubernetes_kuberneteslistenerset_v1alpha1_outputs_proto protore
 
 const file_catalog_kubernetes_kuberneteslistenerset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/kubernetes/kuberneteslistenerset/v1alpha1/outputs.proto\x125dev.planton.kubernetes.kuberneteslistenerset.v1alpha1\"\x90\x01\n" +
-	"!KubernetesListenerSetStackOutputs\x12*\n" +
+	"?catalog/kubernetes/kuberneteslistenerset/v1alpha1/outputs.proto\x125dev.planton.kubernetes.kuberneteslistenerset.v1alpha1\"\x8b\x01\n" +
+	"\x1cKubernetesListenerSetOutputs\x12*\n" +
 	"\x11listener_set_name\x18\x01 \x01(\tR\x0flistenerSetName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12!\n" +
 	"\fgateway_name\x18\x03 \x01(\tR\vgatewayNameB\xb0\x03\n" +
@@ -118,7 +118,7 @@ func file_catalog_kubernetes_kuberneteslistenerset_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_kubernetes_kuberneteslistenerset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteslistenerset_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesListenerSetStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetStackOutputs
+	(*KubernetesListenerSetOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteslistenerset.v1alpha1.KubernetesListenerSetOutputs
 }
 var file_catalog_kubernetes_kuberneteslistenerset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

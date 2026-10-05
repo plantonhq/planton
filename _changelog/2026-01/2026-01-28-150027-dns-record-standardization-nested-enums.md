@@ -1,4 +1,4 @@
-# DNS Record Components Standardization: Nested Enums and StringValueOrRef
+# DNS Record Kinds Standardization: Nested Enums and StringValueOrRef
 
 **Date**: January 28, 2026
 **Type**: Refactoring
@@ -6,11 +6,11 @@
 
 ## Summary
 
-Standardized all DNS record components across 6 cloud providers (Cloudflare, GCP, AWS Route53, Azure, DigitalOcean, Civo) to use nested `RecordType` enums inside their spec messages and the `StringValueOrRef` pattern for zone ID fields. This refactoring improves API consistency, enhances type safety, and enables better resource referencing across Planton manifests.
+Standardized all DNS record kinds across 6 cloud providers (Cloudflare, GCP, AWS Route53, Azure, DigitalOcean, Civo) to use nested `RecordType` enums inside their spec messages and the `StringValueOrRef` pattern for zone ID fields. This refactoring improves API consistency, enhances type safety, and enables better resource referencing across Planton manifests.
 
 ## Problem Statement / Motivation
 
-The DNS record components across different cloud providers had inconsistent implementations:
+The DNS record kinds across different cloud providers had inconsistent implementations:
 
 ### Pain Points
 
@@ -21,7 +21,7 @@ The DNS record components across different cloud providers had inconsistent impl
 
 ## Solution / What's New
 
-Standardized all DNS record components with the following patterns:
+Standardized all DNS record kinds with the following patterns:
 
 ### Nested RecordType Enums
 
@@ -85,9 +85,9 @@ Standardized field names across providers:
 
 ### Proto Schema Changes
 
-**54 files modified** across 7 components:
+**54 files modified** across 7 kinds:
 
-| Component | Proto Changes | Test Updates | Pulumi Module | Terraform Module |
+| Kind | Proto Changes | Test Updates | Pulumi Module | Terraform Module |
 |-----------|--------------|--------------|---------------|------------------|
 | CloudflareDnsRecord | Nested enum, StringValueOrRef for zone_id | ✅ | ✅ | ✅ |
 | GcpDnsRecord | Nested enum, field rename | ✅ | ✅ | ✅ |
@@ -227,8 +227,8 @@ type = var.spec.type
 ## Related Work
 
 - This change enables the broader DNS zone support feature (`feat/all-dns-zone-kinds-to-support-records` branch)
-- Follows the `StringValueOrRef` pattern established in other components
-- Aligns with the nested enum pattern used in newer Planton components
+- Follows the `StringValueOrRef` pattern established in other kinds
+- Aligns with the nested enum pattern used in newer Planton kinds
 
 ## Additional Fixes
 

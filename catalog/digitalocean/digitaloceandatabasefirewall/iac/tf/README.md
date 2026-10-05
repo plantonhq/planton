@@ -14,7 +14,7 @@ Generated `variables.tf` mirrors the `DigitalOceanDatabaseFirewallSpec` proto: `
 
 ## Outputs
 
-Exactly the `DigitalOceanDatabaseFirewallStackOutputs` contract: `cluster_id` -- the rule set's only durable identity.
+Exactly the `DigitalOceanDatabaseFirewallOutputs` contract: `cluster_id` -- the rule set's only durable identity.
 
 ## Behavior notes
 

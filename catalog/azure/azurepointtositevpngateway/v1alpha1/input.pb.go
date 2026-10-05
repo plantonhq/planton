@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzurePointToSiteVpnGatewayStackInput is the input to the IaC modules
+// AzurePointToSiteVpnGatewayIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzurePointToSiteVpnGatewayStackInput struct {
+type AzurePointToSiteVpnGatewayIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The point-to-site VPN gateway resource to deploy.
 	Target *AzurePointToSiteVpnGateway `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzurePointToSiteVpnGatewayStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzurePointToSiteVpnGatewayStackInput) Reset() {
-	*x = AzurePointToSiteVpnGatewayStackInput{}
+func (x *AzurePointToSiteVpnGatewayIacInput) Reset() {
+	*x = AzurePointToSiteVpnGatewayIacInput{}
 	mi := &file_catalog_azure_azurepointtositevpngateway_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePointToSiteVpnGatewayStackInput) String() string {
+func (x *AzurePointToSiteVpnGatewayIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePointToSiteVpnGatewayStackInput) ProtoMessage() {}
+func (*AzurePointToSiteVpnGatewayIacInput) ProtoMessage() {}
 
-func (x *AzurePointToSiteVpnGatewayStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzurePointToSiteVpnGatewayIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurepointtositevpngateway_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzurePointToSiteVpnGatewayStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePointToSiteVpnGatewayStackInput.ProtoReflect.Descriptor instead.
-func (*AzurePointToSiteVpnGatewayStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePointToSiteVpnGatewayIacInput.ProtoReflect.Descriptor instead.
+func (*AzurePointToSiteVpnGatewayIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurepointtositevpngateway_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePointToSiteVpnGatewayStackInput) GetTarget() *AzurePointToSiteVpnGateway {
+func (x *AzurePointToSiteVpnGatewayIacInput) GetTarget() *AzurePointToSiteVpnGateway {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzurePointToSiteVpnGatewayStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzurePointToSiteVpnGatewayIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurepointtositevpngateway_v1alpha1_input_proto protorefl
 
 const file_catalog_azure_azurepointtositevpngateway_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azurepointtositevpngateway/v1alpha1/input.proto\x125dev.planton.azure.azurepointtositevpngateway.v1alpha1\x1a;catalog/azure/azurepointtositevpngateway/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe2\x01\n" +
-	"$AzurePointToSiteVpnGatewayStackInput\x12i\n" +
+	"=catalog/azure/azurepointtositevpngateway/v1alpha1/input.proto\x125dev.planton.azure.azurepointtositevpngateway.v1alpha1\x1a;catalog/azure/azurepointtositevpngateway/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe0\x01\n" +
+	"\"AzurePointToSiteVpnGatewayIacInput\x12i\n" +
 	"\x06target\x18\x01 \x01(\v2Q.dev.planton.azure.azurepointtositevpngateway.v1alpha1.AzurePointToSiteVpnGatewayR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xb3\x03\n" +
 	"9com.dev.planton.azure.azurepointtositevpngateway.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azurepointtositevpngateway_v1alpha1_input_proto_rawDescG
 
 var file_catalog_azure_azurepointtositevpngateway_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurepointtositevpngateway_v1alpha1_input_proto_goTypes = []any{
-	(*AzurePointToSiteVpnGatewayStackInput)(nil), // 0: dev.planton.azure.azurepointtositevpngateway.v1alpha1.AzurePointToSiteVpnGatewayStackInput
-	(*AzurePointToSiteVpnGateway)(nil),           // 1: dev.planton.azure.azurepointtositevpngateway.v1alpha1.AzurePointToSiteVpnGateway
-	(*azure.AzureProviderConfig)(nil),            // 2: dev.planton.azure.AzureProviderConfig
+	(*AzurePointToSiteVpnGatewayIacInput)(nil), // 0: dev.planton.azure.azurepointtositevpngateway.v1alpha1.AzurePointToSiteVpnGatewayIacInput
+	(*AzurePointToSiteVpnGateway)(nil),         // 1: dev.planton.azure.azurepointtositevpngateway.v1alpha1.AzurePointToSiteVpnGateway
+	(*azure.AzureProviderConfig)(nil),          // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurepointtositevpngateway_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurepointtositevpngateway.v1alpha1.AzurePointToSiteVpnGatewayStackInput.target:type_name -> dev.planton.azure.azurepointtositevpngateway.v1alpha1.AzurePointToSiteVpnGateway
-	2, // 1: dev.planton.azure.azurepointtositevpngateway.v1alpha1.AzurePointToSiteVpnGatewayStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurepointtositevpngateway.v1alpha1.AzurePointToSiteVpnGatewayIacInput.target:type_name -> dev.planton.azure.azurepointtositevpngateway.v1alpha1.AzurePointToSiteVpnGateway
+	2, // 1: dev.planton.azure.azurepointtositevpngateway.v1alpha1.AzurePointToSiteVpnGatewayIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

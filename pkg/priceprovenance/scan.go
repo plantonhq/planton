@@ -2,7 +2,7 @@
 // catalog's PROSE never quotes a cloud price. Verified dollar figures have
 // exactly one home -- the pinned, source-dated price books and the generated
 // estimates under catalog/_pricing/ -- and every other dollar figure in a
-// component's documentation is a second, unverified source of truth that
+// kind's documentation is a second, unverified source of truth that
 // contradicts the verified one the day the provider reprices. This gate makes
 // writing one a CI failure instead of a review hope.
 //
@@ -17,7 +17,7 @@
 //   - a user-chosen dollar VALUE illustrating a dollar-typed configuration
 //     field (a budget limit, a cost-anomaly alert threshold) -- that is the
 //     user's number, not a provider rate, and banning it would break honest
-//     teaching of dollar-typed components;
+//     teaching of dollar-typed kinds;
 //   - a non-price token the scanner cannot distinguish (a regex
 //     backreference like "/v2/$1" in a rewrite example).
 //

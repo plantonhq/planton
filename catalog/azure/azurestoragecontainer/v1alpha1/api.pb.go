@@ -35,7 +35,7 @@ type AzureStorageContainer struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureStorageContainerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -88,7 +88,7 @@ func (x *AzureStorageContainer) GetKind() string {
 	return ""
 }
 
-func (x *AzureStorageContainer) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureStorageContainer) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureStorageContainer) GetStatus() *AzureStorageContainerStatus {
 // AzureStorageContainerStatus holds the deployment status and outputs.
 type AzureStorageContainerStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureStorageContainerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureStorageContainerOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureStorageContainerStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurestoragecontainer_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureStorageContainerStatus) GetOutputs() *AzureStorageContainerStackOutputs {
+func (x *AzureStorageContainerStatus) GetOutputs() *AzureStorageContainerOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azurestoragecontainer_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15AzureStorageContainerR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
 	"\x04spec\x18\x04 \x01(\v2K.dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12e\n" +
-	"\x06status\x18\x05 \x01(\v2M.dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerStatusR\x06status\"\x8c\x01\n" +
-	"\x1bAzureStorageContainerStatus\x12m\n" +
-	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerStackOutputsR\aoutputsB\x8e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2M.dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerStatusR\x06status\"\x87\x01\n" +
+	"\x1bAzureStorageContainerStatus\x12h\n" +
+	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerOutputsR\aoutputsB\x8e\x03\n" +
 	"4com.dev.planton.azure.azurestoragecontainer.v1alpha1B\bApiProtoP\x01Zggithub.com/plantonhq/planton/catalog/azure/azurestoragecontainer/v1alpha1;azurestoragecontainerv1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Azure.Azurestoragecontainer.V1alpha1\xca\x020Dev\\Planton\\Azure\\Azurestoragecontainer\\V1alpha1\xe2\x02<Dev\\Planton\\Azure\\Azurestoragecontainer\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Azure::Azurestoragecontainer::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azurestoragecontainer_v1alpha1_api_proto_rawDescGZIP() [
 
 var file_catalog_azure_azurestoragecontainer_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurestoragecontainer_v1alpha1_api_proto_goTypes = []any{
-	(*AzureStorageContainer)(nil),             // 0: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainer
-	(*AzureStorageContainerStatus)(nil),       // 1: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureStorageContainerSpec)(nil),         // 3: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerSpec
-	(*AzureStorageContainerStackOutputs)(nil), // 4: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerStackOutputs
+	(*AzureStorageContainer)(nil),        // 0: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainer
+	(*AzureStorageContainerStatus)(nil),  // 1: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureStorageContainerSpec)(nil),    // 3: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerSpec
+	(*AzureStorageContainerOutputs)(nil), // 4: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerOutputs
 }
 var file_catalog_azure_azurestoragecontainer_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainer.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainer.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainer.spec:type_name -> dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerSpec
 	1, // 2: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainer.status:type_name -> dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerStatus
-	4, // 3: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerStatus.outputs:type_name -> dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerStackOutputs
+	4, // 3: dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerStatus.outputs:type_name -> dev.planton.azure.azurestoragecontainer.v1alpha1.AzureStorageContainerOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

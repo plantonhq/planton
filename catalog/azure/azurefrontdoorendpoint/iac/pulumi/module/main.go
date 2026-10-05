@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorendpointv1alpha1.AzureFrontDoorEndpointStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurefrontdoorendpointv1alpha1.AzureFrontDoorEndpointIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -30,7 +30,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorendpointv1alpha1.A
 	}
 
 	// Sent only when explicitly disabled: Azure's default is enabled, and
-	// the platform materializes the documented default centrally (stack
+	// the platform materializes the documented default centrally (IaC
 	// inputs never carry proto defaults, so an absent field means true).
 	if spec.Enabled != nil {
 		endpointArgs.Enabled = pulumi.Bool(spec.GetEnabled())
@@ -44,7 +44,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorendpointv1alpha1.A
 		return errors.Wrapf(err, "failed to create front door endpoint %s", spec.EndpointName)
 	}
 
-	// Export stack outputs. host_name is the generated *.azurefd.net
+	// Export outputs. host_name is the generated *.azurefd.net
 	// hostname -- the CNAME target custom-domain DNS records point at.
 	ctx.Export(OpEndpointId, createdEndpoint.ID())
 	ctx.Export(OpEndpointName, createdEndpoint.Name)

@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesmlflow.v1alpha1;
 import "catalog/kubernetes/kubernetesmlflow/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//mlflow-kubernetes stack-input
-message KubernetesMlflowStackInput {
-  //target cloud-resource
+//mlflow-kubernetes iac-input
+message KubernetesMlflowIacInput {
+  // the catalog object to deploy
   KubernetesMlflow target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

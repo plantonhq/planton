@@ -10,14 +10,14 @@ import (
 // Resources is the main entry point for the Pulumi module.
 // It orchestrates the creation of a Kubernetes StorageClass with its
 // provisioner, parameters, and volume lifecycle policies.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesstorageclassv1alpha1.KubernetesStorageClassStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetesstorageclassv1alpha1.KubernetesStorageClassIacInput) error {
 	// Initialize locals with derived values
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// Create Kubernetes provider from credentials
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 		"kubernetes",
 	)
 	if err != nil {

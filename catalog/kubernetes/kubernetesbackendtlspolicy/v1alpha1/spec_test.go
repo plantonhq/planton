@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -24,7 +24,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -61,7 +61,7 @@ var _ = ginkgo.Describe("KubernetesBackendTlsPolicy Validation Tests", func() {
 		input = &KubernetesBackendTlsPolicy{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesBackendTlsPolicy",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-backend-tls",
 			},
 			Spec: &KubernetesBackendTlsPolicySpec{
@@ -93,18 +93,18 @@ var _ = ginkgo.Describe("KubernetesBackendTlsPolicy Validation Tests", func() {
 		})
 
 		ginkgo.It("full surface with FK refs, section names, SANs and options should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "app-ns", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "app-ns", "spec.name")
 			input.Spec.TargetRefs = []*KubernetesBackendTlsPolicyTargetReference{
 				{
 					Group:       stringPtr(""),
 					Kind:        "Service",
-					Name:        valueFrom(cloudresourcekind.CloudResourceKind_KubernetesService, "payments", "status.outputs.service_name"),
+					Name:        valueFrom(catalogkind.CatalogKind_KubernetesService, "payments", "status.outputs.service_name"),
 					SectionName: stringPtr("https"),
 				},
 				{
 					Group:       stringPtr(""),
 					Kind:        "Service",
-					Name:        valueFrom(cloudresourcekind.CloudResourceKind_KubernetesService, "payments", "status.outputs.service_name"),
+					Name:        valueFrom(catalogkind.CatalogKind_KubernetesService, "payments", "status.outputs.service_name"),
 					SectionName: stringPtr("grpc"),
 				},
 			}
@@ -112,7 +112,7 @@ var _ = ginkgo.Describe("KubernetesBackendTlsPolicy Validation Tests", func() {
 				{
 					Group: stringPtr(""),
 					Kind:  "ConfigMap",
-					Name:  valueFrom(cloudresourcekind.CloudResourceKind_KubernetesConfigMap, "backend-ca", "status.outputs.configmap_name"),
+					Name:  valueFrom(catalogkind.CatalogKind_KubernetesConfigMap, "backend-ca", "status.outputs.configmap_name"),
 				},
 			}
 			input.Spec.Validation.SubjectAltNames = []*KubernetesBackendTlsPolicySubjectAltName{

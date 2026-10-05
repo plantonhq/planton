@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureExpressRouteGatewayStackOutputs** captures the outputs of
+// **AzureExpressRouteGatewayOutputs** captures the outputs of
 // provisioning an ExpressRoute Gateway and its connections.
-type AzureExpressRouteGatewayStackOutputs struct {
+type AzureExpressRouteGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the gateway.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/expressRouteGateways/{name}
@@ -38,20 +38,20 @@ type AzureExpressRouteGatewayStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureExpressRouteGatewayStackOutputs) Reset() {
-	*x = AzureExpressRouteGatewayStackOutputs{}
+func (x *AzureExpressRouteGatewayOutputs) Reset() {
+	*x = AzureExpressRouteGatewayOutputs{}
 	mi := &file_catalog_azure_azureexpressroutegateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureExpressRouteGatewayStackOutputs) String() string {
+func (x *AzureExpressRouteGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureExpressRouteGatewayStackOutputs) ProtoMessage() {}
+func (*AzureExpressRouteGatewayOutputs) ProtoMessage() {}
 
-func (x *AzureExpressRouteGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureExpressRouteGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureexpressroutegateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *AzureExpressRouteGatewayStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureExpressRouteGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureExpressRouteGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureExpressRouteGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*AzureExpressRouteGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureexpressroutegateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureExpressRouteGatewayStackOutputs) GetExpressRouteGatewayId() string {
+func (x *AzureExpressRouteGatewayOutputs) GetExpressRouteGatewayId() string {
 	if x != nil {
 		return x.ExpressRouteGatewayId
 	}
 	return ""
 }
 
-func (x *AzureExpressRouteGatewayStackOutputs) GetExpressRouteGatewayName() string {
+func (x *AzureExpressRouteGatewayOutputs) GetExpressRouteGatewayName() string {
 	if x != nil {
 		return x.ExpressRouteGatewayName
 	}
 	return ""
 }
 
-func (x *AzureExpressRouteGatewayStackOutputs) GetConnectionIds() map[string]string {
+func (x *AzureExpressRouteGatewayOutputs) GetConnectionIds() map[string]string {
 	if x != nil {
 		return x.ConnectionIds
 	}
@@ -93,11 +93,11 @@ var File_catalog_azure_azureexpressroutegateway_v1alpha1_outputs_proto protorefl
 
 const file_catalog_azure_azureexpressroutegateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azureexpressroutegateway/v1alpha1/outputs.proto\x123dev.planton.azure.azureexpressroutegateway.v1alpha1\"\xf4\x02\n" +
-	"$AzureExpressRouteGatewayStackOutputs\x127\n" +
+	"=catalog/azure/azureexpressroutegateway/v1alpha1/outputs.proto\x123dev.planton.azure.azureexpressroutegateway.v1alpha1\"\xea\x02\n" +
+	"\x1fAzureExpressRouteGatewayOutputs\x127\n" +
 	"\x18express_route_gateway_id\x18\x01 \x01(\tR\x15expressRouteGatewayId\x12;\n" +
-	"\x1aexpress_route_gateway_name\x18\x02 \x01(\tR\x17expressRouteGatewayName\x12\x93\x01\n" +
-	"\x0econnection_ids\x18\x03 \x03(\v2l.dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayStackOutputs.ConnectionIdsEntryR\rconnectionIds\x1a@\n" +
+	"\x1aexpress_route_gateway_name\x18\x02 \x01(\tR\x17expressRouteGatewayName\x12\x8e\x01\n" +
+	"\x0econnection_ids\x18\x03 \x03(\v2g.dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayOutputs.ConnectionIdsEntryR\rconnectionIds\x1a@\n" +
 	"\x12ConnectionIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xa7\x03\n" +
@@ -117,11 +117,11 @@ func file_catalog_azure_azureexpressroutegateway_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_azure_azureexpressroutegateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureexpressroutegateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureExpressRouteGatewayStackOutputs)(nil), // 0: dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayStackOutputs
-	nil, // 1: dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayStackOutputs.ConnectionIdsEntry
+	(*AzureExpressRouteGatewayOutputs)(nil), // 0: dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayOutputs
+	nil,                                     // 1: dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayOutputs.ConnectionIdsEntry
 }
 var file_catalog_azure_azureexpressroutegateway_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayStackOutputs.connection_ids:type_name -> dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayStackOutputs.ConnectionIdsEntry
+	1, // 0: dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayOutputs.connection_ids:type_name -> dev.planton.azure.azureexpressroutegateway.v1alpha1.AzureExpressRouteGatewayOutputs.ConnectionIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

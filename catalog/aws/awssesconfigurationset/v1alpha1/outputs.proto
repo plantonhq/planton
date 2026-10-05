@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awssesconfigurationset.v1alpha1;
 
-// AwsSesConfigurationSetStackOutputs captures the observable identifiers
+// AwsSesConfigurationSetOutputs captures the observable identifiers
 // of the SES configuration set.
-message AwsSesConfigurationSetStackOutputs {
+message AwsSesConfigurationSetOutputs {
   // The Amazon Resource Name (ARN) of the configuration set -- the target
   // for IAM policies that scope who may send under this set.
   string configuration_set_arn = 1;

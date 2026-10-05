@@ -46,7 +46,7 @@ Refer to the [example](example.md) for usage instructions and sample YAML defini
 1. Define a YAML file containing a `CronJobKubernetes` resource.
 2. Use:
    ```bash
-   planton pulumi up --stack-input <your-cronjob-file.yaml>
+   planton pulumi up --iac-input <your-cronjob-file.yaml>
    ```
 
 to deploy your CronJob to the specified Kubernetes cluster.
@@ -58,7 +58,7 @@ to deploy your CronJob to the specified Kubernetes cluster.
    concurrency settings, and any secrets or environment variables.
 
 2. **Run the CLI**  
-   Execute `planton pulumi up --stack-input <cronjob-spec.yaml>` (or whatever command you typically use) to apply the
+   Execute `planton pulumi up --iac-input <cronjob-spec.yaml>` (or whatever command you typically use) to apply the
    resource on your cluster.
 
 3. **Observe Your Jobs**  
@@ -68,7 +68,7 @@ to deploy your CronJob to the specified Kubernetes cluster.
 ## Module Structure
 
 1. **Initialization**  
-   Reads the `KubernetesCronJobStackInput` fields (cluster credentials, the resolved namespace, the specification) and
+   Reads the `KubernetesCronJobIacInput` fields (cluster credentials, the resolved namespace, the specification) and
    sets up local references and labels.
 
 2. **Provider Setup**  

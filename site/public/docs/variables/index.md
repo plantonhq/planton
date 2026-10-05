@@ -127,7 +127,7 @@ Variables are the source of truth for non-sensitive configuration across the pla
 
 **Connection fields** — Non-sensitive fields in [connections](/docs/connections) (such as AWS account IDs, regions, or an Auth0 tenant's domain) take a variable in place of a literal: `region: {variable: default-aws-region}`, or one entry of a variable group as `region: {variable: aws-defaults/region}`. Several connections can share one value, and a fact that a connection and your services both read is declared once. Connections read organization-scoped variables.
 
-**Cloud Resource inputs** — Any non-sensitive input field on a Cloud Resource takes a `$var/...` reference in place of a literal. Instead of duplicating a VPC ID or subnet name across multiple resource definitions, you store it as a variable and reference it. The value is resolved just-in-time before the deployment executes, and the field's own rules (a format, a length) are checked on the resolved value.
+**Infra Component inputs** — Any non-sensitive input field on an Infra Component takes a `$var/...` reference in place of a literal. Instead of duplicating a VPC ID or subnet name across multiple resource definitions, you store it as a variable and reference it. The value is resolved just-in-time before the deployment executes, and the field's own rules (a format, a length) are checked on the resolved value.
 
 ## Related Documentation
 

@@ -68,7 +68,7 @@ The access-rule variants are the same set documented on `CloudflareZeroTrustAcce
 |---|---|
 | `policy_id` | The Access policy ID (reference it from an application) |
 
-## Related components
+## Related kinds
 
 - `CloudflareZeroTrustAccessGroup` — reusable rule bundles referenced here.
 - `CloudflareZeroTrustAccessApplication` — binds policies to a protected resource.

@@ -2,13 +2,13 @@
 
 ## Overview
 
-This Pulumi module applies raw Kubernetes YAML — the KubernetesManifest component's escape-hatch contract — through the Kubernetes provider's `yaml/v2` ConfigGroup, with an optional anchor namespace created first. The manifest content is applied exactly as written: no injected labels, no rewritten fields; the only defaulting is the anchor namespace, and only for namespaced documents that declare none.
+This Pulumi module applies raw Kubernetes YAML — the KubernetesManifest kind's escape-hatch contract — through the Kubernetes provider's `yaml/v2` ConfigGroup, with an optional anchor namespace created first. The manifest content is applied exactly as written: no injected labels, no rewritten fields; the only defaulting is the anchor namespace, and only for namespaced documents that declare none.
 
 ## Architecture
 
 ```
 iac/pulumi/
-├── main.go              # Entrypoint: loads stack input, calls module
+├── main.go              # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml          # Pulumi project configuration
 ├── Makefile             # Make targets for preview/up/down/refresh
 └── module/
@@ -21,7 +21,7 @@ iac/pulumi/
 
 ## How It Works
 
-1. **Stack Input Loading**: the entrypoint loads `KubernetesManifestStackInput` from Pulumi config
+1. **IaC Input Loading**: the entrypoint loads `KubernetesManifestIacInput` from Pulumi config
 2. **Locals Initialization**: `locals.go` resolves the anchor namespace from the spec's value-or-ref, computes the standard Planton identity labels (stamped on the created namespace only — never injected into the manifest's documents), and parses the applied-resource inventory from `manifest_yaml`
 3. **Provider Creation**: the Kubernetes provider is initialized from `provider_config` **with `spec.namespace` as its default namespace** — this is the anchoring mechanism. The provider resolves each kind's scope before defaulting, so namespaced documents without an explicit `metadata.namespace` land in the anchor, documents with one keep it, and cluster-scoped documents are never touched
 4. **Namespace**: when `create_namespace` is `true`, the anchor namespace is created with the identity labels, and the ConfigGroup depends on it
@@ -66,4 +66,4 @@ go build ./module/...
 go build .
 ```
 
-> **Note**: reach for KubernetesManifest only when no first-class catalog component covers what you need to apply — typed components validate configuration before deploy and export composable outputs. This module deliberately validates nothing about the manifest's content beyond YAML well-formedness; the API server is what judges the kinds, exactly as with `kubectl apply`.
+> **Note**: reach for KubernetesManifest only when no first-class catalog kind covers what you need to apply — typed kinds validate configuration before deploy and export composable outputs. This module deliberately validates nothing about the manifest's content beyond YAML well-formedness; the API server is what judges the kinds, exactly as with `kubectl apply`.

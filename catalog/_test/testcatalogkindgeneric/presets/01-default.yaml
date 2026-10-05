@@ -1,0 +1,24 @@
+apiVersion: _test.planton.dev/v1alpha2
+kind: TestCatalogKindGeneric
+metadata:
+  name: torture-default
+spec:
+  displayName: explicit-string
+  int32Field: 7
+  boolField: true
+  nested:
+    nestedString: explicit-nested
+  requiredRef:
+    value: literal-required-value
+  annotatedRef:
+    valueFrom:
+      kind: TestCatalogKindGeneric
+      name: torture-upstream
+      fieldPath: status.outputs.id
+  labels:
+    purpose: certification
+  steps:
+    - command: first
+    - command: second
+  replicas: 2
+  sensitiveString: $secret/not-a-real-secret

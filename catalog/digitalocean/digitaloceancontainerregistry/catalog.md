@@ -1,13 +1,13 @@
 # DigitalOcean Container Registry
 
-Deploys a private, OCI-compliant container registry on DigitalOcean for storing Docker images and Helm charts. Configures the registry name, subscription tier, and region, optionally mints Docker credentials with a controlled lifetime, and exposes the endpoint as a stack output for downstream workloads to pull images. A DigitalOcean account holds exactly ONE registry, and name and region are create-only -- the subscription tier is the only setting that can change after creation.
+Deploys a private, OCI-compliant container registry on DigitalOcean for storing Docker images and Helm charts. Configures the registry name, subscription tier, and region, optionally mints Docker credentials with a controlled lifetime, and exposes the endpoint as an output for downstream workloads to pull images. A DigitalOcean account holds exactly ONE registry, and name and region are create-only -- the subscription tier is the only setting that can change after creation.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Container Registry** -- a `digitalocean_container_registry` resource with the specified name, subscription tier, and region
-- **Docker Credentials** -- created only when `dockerCredentials` is set: a `digitalocean_container_registry_docker_credentials` resource minting a read-only or write credential with the configured expiry, exported through the `docker_credentials` stack output (a secret)
+- **Docker Credentials** -- created only when `dockerCredentials` is set: a `digitalocean_container_registry_docker_credentials` resource minting a read-only or write credential with the configured expiry, exported through the `docker_credentials` output (a secret)
 
 DigitalOcean restricts each account to a single container registry, and registry names are globally unique across ALL DigitalOcean accounts. Deploying a second DigitalOceanContainerRegistry resource on the same account will fail.
 
@@ -15,7 +15,7 @@ DigitalOcean restricts each account to a single container registry, and registry
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
@@ -50,7 +50,7 @@ spec:
 planton apply -f registry.yaml
 ```
 
-This creates a professional-tier container registry in NYC3, with images addressable at `registry.digitalocean.com/prod-registry/<repository>:<tag>`. A Stack Job tracks the provisioning in real time.
+This creates a professional-tier container registry in NYC3, with images addressable at `registry.digitalocean.com/prod-registry/<repository>:<tag>`. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -66,13 +66,13 @@ These are the most important decisions when configuring a container registry. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -95,5 +95,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Kubernetes Cluster**](/cloud-catalog/digital-ocean-kubernetes-cluster) -- its `registryIntegration` toggle lets cluster workloads pull from this registry account-wide, with no image pull secret
-- [**DigitalOcean App Platform App**](/cloud-catalog/digital-ocean-app) -- services, workers, and jobs deploy images from this registry via the `docr` image source, using the account's registry access
+- [**DigitalOcean Kubernetes Cluster**](/infra-catalog/digital-ocean-kubernetes-cluster) -- its `registryIntegration` toggle lets cluster workloads pull from this registry account-wide, with no image pull secret
+- [**DigitalOcean App Platform App**](/infra-catalog/digital-ocean-app) -- services, workers, and jobs deploy images from this registry via the `docr` image source, using the account's registry access

@@ -15,18 +15,19 @@ planton pulumi up --manifest dns-authorization.yaml
 
 ### Standalone Usage
 
-1. Set the stack input as an environment variable:
+1. Set the IaC input as an environment variable. The module reads a `GcpCertManagerDnsAuthorizationIacInput` from `IAC_INPUT_YAML` (YAML content), `IAC_INPUT_YAML_FILE` (a path to that YAML) or the Pulumi config key `planton:iac-input`; the manifest goes under `target`:
 
 ```bash
-export PLANTON_CLOUD_RESOURCE_MANIFEST=$(cat <<EOF
-apiVersion: gcp.planton.dev/v1alpha1
-kind: GcpCertManagerDnsAuthorization
-metadata:
-  name: example-com-auth
-spec:
-  projectId:
-    value: my-gcp-project
-  domain: example.com
+export IAC_INPUT_YAML=$(cat <<EOF
+target:
+  apiVersion: gcp.planton.dev/v1alpha1
+  kind: GcpCertManagerDnsAuthorization
+  metadata:
+    name: example-com-auth
+  spec:
+    projectId:
+      value: my-gcp-project
+    domain: example.com
 EOF
 )
 ```
@@ -45,7 +46,7 @@ pulumi up
 
 ## Inputs
 
-The module reads its configuration from the `GcpCertManagerDnsAuthorizationStackInput` proto message:
+The module reads its configuration from the `GcpCertManagerDnsAuthorizationIacInput` proto message:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|

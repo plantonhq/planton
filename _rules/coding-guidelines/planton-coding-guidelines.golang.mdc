@@ -69,7 +69,7 @@ if err != nil {
 
 // ✅ REQUIRED - Specific, actionable context
 if err != nil {
-    return errors.Wrap(err, "failed to parse cloud resource manifest")
+    return errors.Wrap(err, "failed to parse catalog object manifest")
 }
 ```
 

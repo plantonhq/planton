@@ -2,7 +2,7 @@
 
 **Date**: November 13, 2025  
 **Type**: Refactoring  
-**Components**: API Definitions, Cloud Resource Registry, Documentation, Pulumi CLI Integration
+**Components**: API Definitions, Catalog Kind Registry, Documentation, Pulumi CLI Integration
 
 ## Summary
 
@@ -18,18 +18,18 @@ The Apache Solr Operator resource was originally named `SolrOperatorKubernetes`,
 - **Missing Attribution**: Omitting "Apache" from the name doesn't properly identify this as the official Apache Solr Operator project
 - **Verbose API Surface**: Users had to write `kind: SolrOperatorKubernetes` in manifests, which is unnecessarily long
 - **Naming Inconsistency**: Mixed naming patterns across addon operators—some with suffixes, some without
-- **Code Verbosity**: Proto message types like `SolrOperatorKubernetesSpec` and `SolrOperatorKubernetesStackInput` were excessively long
+- **Code Verbosity**: Proto message types like `SolrOperatorKubernetesSpec` and `SolrOperatorKubernetesIacInput` were excessively long
 - **Poor Developer Experience**: The redundancy made code harder to read and type
 - **Lack of Clarity**: The name didn't clearly indicate this is the operator-based deployment approach (vs. direct StatefulSet deployments or Helm charts)
 
-The provider namespace (`dev.planton.provider.kubernetes.addon.apachesolroperator.v1`) already clearly indicates this is a Kubernetes component, so including "Kubernetes" in every message name adds noise without value. More importantly, adding "Apache" properly attributes the operator to its upstream project.
+The provider namespace (`dev.planton.provider.kubernetes.addon.apachesolroperator.v1`) already clearly indicates this is a Kubernetes kind, so including "Kubernetes" in every message name adds noise without value. More importantly, adding "Apache" properly attributes the operator to its upstream project.
 
 ## Solution / What's New
 
 Performed a comprehensive rename from `SolrOperatorKubernetes` to `ApacheSolrOperator` across:
 
 1. **Proto API Definitions**: Updated all message types, field references, and validation constraints
-2. **Cloud Resource Registry**: Modified the enum entry in `cloud_resource_kind.proto`
+2. **Catalog Kind Registry**: Modified the enum entry in `catalog_kind.proto`
 3. **Documentation**: Updated all user-facing docs with proper Apache Solr Operator references
 4. **Implementation Code**: Modified Go code in Pulumi modules to use renamed types
 5. **Generated Code**: Regenerated all proto stubs with new type names
@@ -95,34 +95,34 @@ message ApacheSolrOperatorSpec {
 
 Updated comments to properly reflect Apache Solr Operator instead of copy-pasted references.
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/apachesolroperator/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/apachesolroperator/v1/iac_input.proto`
 
 ```protobuf
 // Before
-message SolrOperatorKubernetesStackInput {
+message SolrOperatorKubernetesIacInput {
   SolrOperatorKubernetes target = 1;
   dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
 
 // After
-message ApacheSolrOperatorStackInput {
+message ApacheSolrOperatorIacInput {
   ApacheSolrOperator target = 1;
   dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/apachesolroperator/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/apachesolroperator/v1/outputs.proto`
 
 ```protobuf
 // Before
-message SolrOperatorKubernetesStackOutputs {
+message SolrOperatorKubernetesOutputs {
   //kubernetes namespace in which solr-operator-kubernetes is created.
   string namespace = 1;
   // ... other fields
 }
 
 // After
-message ApacheSolrOperatorStackOutputs {
+message ApacheSolrOperatorOutputs {
   //kubernetes namespace in which apache-solr-operator is created.
   string namespace = 1;
   // ... other fields
@@ -133,7 +133,7 @@ Updated all comments throughout to reference `apache-solr-operator` consistently
 
 ### Registry Update
 
-**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/catalogkind/catalog_kind.proto`
 
 ```protobuf
 // Before
@@ -159,10 +159,10 @@ ApacheSolrOperator = 828 [(kind_meta) = {
 
 ```go
 // Before
-stackInput := &solroperatorkubernetesv1.SolrOperatorKubernetesStackInput{}
+iacInput := &solroperatorkubernetesv1.SolrOperatorKubernetesIacInput{}
 
 // After
-stackInput := &apachesolroperatorv1.ApacheSolrOperatorStackInput{}
+iacInput := &apachesolroperatorv1.ApacheSolrOperatorIacInput{}
 ```
 
 Package imports were also updated to reference `apachesolroperator` instead of `solroperatorkubernetes`.
@@ -171,10 +171,10 @@ Package imports were also updated to reference `apachesolroperator` instead of `
 
 ```go
 // Before
-func Resources(ctx *pulumi.Context, stackInput *solroperatorkubernetesv1.SolrOperatorKubernetesStackInput) error
+func Resources(ctx *pulumi.Context, iacInput *solroperatorkubernetesv1.SolrOperatorKubernetesIacInput) error
 
 // After
-func Resources(ctx *pulumi.Context, stackInput *apachesolroperatorv1.ApacheSolrOperatorStackInput) error
+func Resources(ctx *pulumi.Context, iacInput *apachesolroperatorv1.ApacheSolrOperatorIacInput) error
 ```
 
 Updated function comment to reference "Apache Solr Operator Kubernetes add-on".
@@ -194,7 +194,7 @@ Updated title and all references throughout the comprehensive deployment guide:
    - Successfully generated new `ApacheSolrOperator` types across all proto files
 2. **Gazelle Update**: Ran `./bazelw run //:gazelle` to update BUILD.bazel files with new package structure
 3. **Compilation Verification**: Successfully compiled the apachesolroperator package (254 total actions)
-4. **Cloud Resource Registry Build**: Verified cloudresourcekind package builds successfully
+4. **Catalog Kind Registry Build**: Verified catalogkind package builds successfully
 5. **Linter Validation**: No linter errors in any modified proto files
 
 ## Benefits
@@ -215,8 +215,8 @@ The new name immediately communicates:
 
 Proto message names are now more concise and properly attributed:
 - `ApacheSolrOperatorSpec` (was `SolrOperatorKubernetesSpec`)
-- `ApacheSolrOperatorStackInput` (was `SolrOperatorKubernetesStackInput`)
-- `ApacheSolrOperatorStackOutputs` (was `SolrOperatorKubernetesStackOutputs`)
+- `ApacheSolrOperatorIacInput` (was `SolrOperatorKubernetesIacInput`)
+- `ApacheSolrOperatorOutputs` (was `SolrOperatorKubernetesOutputs`)
 
 ### Naming Consistency
 
@@ -276,17 +276,17 @@ spec:
 **Proto Definitions** (4 files):
 - `api.proto` - Main API message types and kind validation
 - `spec.proto` - Spec and container message types with updated comments
-- `stack_input.proto` - Stack input message type
-- `stack_outputs.proto` - Stack outputs message type with updated comments
+- `iac_input.proto` - IaC input message type
+- `outputs.proto` - Outputs message type with updated comments
 
 **Registry** (1 file):
-- `cloud_resource_kind.proto` - Enum entry renamed
+- `catalog_kind.proto` - Enum entry renamed
 
 **Documentation** (1 file):
 - `docs/README.md` - Updated title and API references
 
 **Implementation** (2 files):
-- `iac/pulumi/main.go` - Stack input type reference and import paths
+- `iac/pulumi/main.go` - IaC input type reference and import paths
 - `iac/pulumi/module/main.go` - Function signature and comment
 
 **Generated Files**:

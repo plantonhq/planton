@@ -33,10 +33,10 @@ type AzureVpnGateway struct {
 	// Resource kind. Must be "AzureVpnGateway".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// VPN gateway specification.
 	Spec *AzureVpnGatewaySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureVpnGatewayStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -86,7 +86,7 @@ func (x *AzureVpnGateway) GetKind() string {
 	return ""
 }
 
-func (x *AzureVpnGateway) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureVpnGateway) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *AzureVpnGateway) GetStatus() *AzureVpnGatewayStatus {
 // AzureVpnGatewayStatus holds the deployment outputs.
 type AzureVpnGatewayStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureVpnGatewayStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureVpnGatewayOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureVpnGatewayStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevpngateway_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureVpnGatewayStatus) GetOutputs() *AzureVpnGatewayStackOutputs {
+func (x *AzureVpnGatewayStatus) GetOutputs() *AzureVpnGatewayOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azurevpngateway_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fAzureVpnGatewayR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
 	"\x04spec\x18\x04 \x01(\v2?.dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewaySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Y\n" +
-	"\x06status\x18\x05 \x01(\v2A.dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayStatusR\x06status\"z\n" +
-	"\x15AzureVpnGatewayStatus\x12a\n" +
-	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayStackOutputsR\aoutputsB\xe4\x02\n" +
+	"\x06status\x18\x05 \x01(\v2A.dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayStatusR\x06status\"u\n" +
+	"\x15AzureVpnGatewayStatus\x12\\\n" +
+	"\aoutputs\x18\x01 \x01(\v2B.dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayOutputsR\aoutputsB\xe4\x02\n" +
 	".com.dev.planton.azure.azurevpngateway.v1alpha1B\bApiProtoP\x01Z[github.com/plantonhq/planton/catalog/azure/azurevpngateway/v1alpha1;azurevpngatewayv1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Azure.Azurevpngateway.V1alpha1\xca\x02*Dev\\Planton\\Azure\\Azurevpngateway\\V1alpha1\xe2\x026Dev\\Planton\\Azure\\Azurevpngateway\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Azure::Azurevpngateway::V1alpha1b\x06proto3"
 
 var (
@@ -187,15 +187,15 @@ var file_catalog_azure_azurevpngateway_v1alpha1_api_proto_msgTypes = make([]prot
 var file_catalog_azure_azurevpngateway_v1alpha1_api_proto_goTypes = []any{
 	(*AzureVpnGateway)(nil),              // 0: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGateway
 	(*AzureVpnGatewayStatus)(nil),        // 1: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AzureVpnGatewaySpec)(nil),          // 3: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewaySpec
-	(*AzureVpnGatewayStackOutputs)(nil),  // 4: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayStackOutputs
+	(*AzureVpnGatewayOutputs)(nil),       // 4: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayOutputs
 }
 var file_catalog_azure_azurevpngateway_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGateway.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGateway.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGateway.spec:type_name -> dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewaySpec
 	1, // 2: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGateway.status:type_name -> dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayStatus
-	4, // 3: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayStatus.outputs:type_name -> dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayStackOutputs
+	4, // 3: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayStatus.outputs:type_name -> dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

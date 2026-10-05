@@ -4,7 +4,7 @@ Deploys a MirrorMaker 2 replication engine on Kubernetes as a Strimzi `KafkaMirr
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Strimzi `KafkaMirrorMaker2` resource** — the engine declaration (target connection, one entry per source, per-mirror connector tuning), reconciled by the watching Strimzi operator into Connect-protocol mirror workers. Under the hood each mirror runs a MirrorSourceConnector (records + topic configuration) and a MirrorCheckpointConnector (consumer-group offset translation).
 - **Kubernetes Namespace** — created only when `createNamespace` is `true`; the natural home is the target Kafka cluster's own namespace. A Strimzi operator must watch it or the resource is accepted and silently never reconciled.
@@ -64,7 +64,7 @@ spec:
 planton apply -f msk-migration.yaml
 ```
 
-This starts continuous mirroring of every topic (and, by default, every consumer group's offsets) from the MSK cluster into the `event-bus` cluster; watch mirror connector status through the exported REST endpoint and cut consumers over only after checkpoint lag is acceptable. A Stack Job tracks the provisioning in real time.
+This starts continuous mirroring of every topic (and, by default, every consumer group's offsets) from the MSK cluster into the `event-bus` cluster; watch mirror connector status through the exported REST endpoint and cut consumers over only after checkpoint lag is acceptable. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -107,7 +107,7 @@ These are the most important decisions when configuring a MirrorMaker 2 deployme
 
 **Group identity must be unique on the target.** `target.groupId` and the three storage topics default from `metadata.name` and share the Connect protocol with Kafka Connect clusters — a collision with any Connect-protocol workload on the same target corrupts both engines' state.
 
-**Checkpointing is what makes cutover safe.** `groupsPattern` (default `.*`) decides which consumer groups' offsets are translated into the target. Narrow it deliberately — a group that is not checkpointed reprocesses or skips data at cutover. The alternative people reach for (snapshot-and-replay) loses consumer positions entirely; preserving them is this component's reason to exist.
+**Checkpointing is what makes cutover safe.** `groupsPattern` (default `.*`) decides which consumer groups' offsets are translated into the target. Narrow it deliberately — a group that is not checkpointed reprocesses or skips data at cutover. The alternative people reach for (snapshot-and-replay) loses consumer positions entirely; preserving them is this kind's reason to exist.
 
 **Match each connection to its listener.** Target and every source carry independent `tls` / `authentication` blocks: Confluent Cloud sources use `plain` with the API key/secret, MSK SCRAM sources use `scram-sha-512`, a Strimzi-managed target trusts its cluster CA by referencing the Apache Kafka resource. A mismatched type fails at connect time, not at apply time.
 
@@ -115,7 +115,7 @@ These are the most important decisions when configuring a MirrorMaker 2 deployme
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -124,9 +124,9 @@ These are the most important decisions when configuring a MirrorMaker 2 deployme
 | **KubernetesKafka** | `target.tls.trustedCertificates[].secretName` (and per-source) | `status.outputs.cluster_ca_cert_secret_name` |
 | **KubernetesKafkaUser** | `authentication.certificateAndKey.secretName` / `authentication.passwordSecret.secretName` (target and per-source) | `status.outputs.secret_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -144,9 +144,9 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Apache Kafka**](/cloud-catalog/kubernetes-kafka) — the usual target; its outputs resolve the bootstrap endpoint and cluster CA
-- [**Strimzi Kafka Operator**](/cloud-catalog/kubernetes-strimzi-kafka-operator) — the declared prerequisite: it must watch the workers' namespace
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — the placement unit, naturally shared with the target cluster
-- [**Kafka Connect**](/cloud-catalog/kubernetes-kafka-connect) — general-purpose Connect for non-mirror integrations; shares the Connect protocol, so group identities must not collide
-- [**Kafka User**](/cloud-catalog/kubernetes-kafka-user) — the authenticated principal for a Strimzi-managed target or source
-- [**Kafka UI**](/cloud-catalog/kubernetes-kafka-ui) — observe topics and consumer lag on both sides during cutover
+- [**Apache Kafka**](/infra-catalog/kubernetes-kafka) — the usual target; its outputs resolve the bootstrap endpoint and cluster CA
+- [**Strimzi Kafka Operator**](/infra-catalog/kubernetes-strimzi-kafka-operator) — the declared prerequisite: it must watch the workers' namespace
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — the placement unit, naturally shared with the target cluster
+- [**Kafka Connect**](/infra-catalog/kubernetes-kafka-connect) — general-purpose Connect for non-mirror integrations; shares the Connect protocol, so group identities must not collide
+- [**Kafka User**](/infra-catalog/kubernetes-kafka-user) — the authenticated principal for a Strimzi-managed target or source
+- [**Kafka UI**](/infra-catalog/kubernetes-kafka-ui) — observe topics and consumer lag on both sides during cutover

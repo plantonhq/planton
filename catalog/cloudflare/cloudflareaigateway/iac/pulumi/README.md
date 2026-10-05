@@ -5,12 +5,12 @@ Pulumi (Go) IaC module for one AI Gateway and its dynamic routes.
 ## Architecture
 
 ```
-main.go                     — Entrypoint loading the stack input
+main.go                     — Entrypoint loading the IaC input
 module/main.go              — Resources(): provider setup, gateway then routes
 module/locals.go            — Locals initialization
 module/ai_gateway.go        — cloudflare.AiGateway + nested-tree builders
 module/dynamic_routes.go    — cloudflare.AiGatewayDynamicRouting per route row
-module/outputs.go           — Stack output keys
+module/outputs.go           — output keys
 ```
 
 ## Behavior

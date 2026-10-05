@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kubernetestektonoperator
 spec:
@@ -15,7 +15,7 @@ spec:
       sku_meter: cluster CPU and memory reservations
       impact: The reservation for the webhook Deployment's container. Empty means the release manifest's defaults, and the manifest sets NONE.
   estimate_exclusions:
-    - no capacity derivation is published for this component -- the committed preset is an empty spec and the pinned release manifest declares no requests or limits on either Deployment, so a manifest-time footprint would state zero reservation, which is the truth but not a useful capacity statement; set operator_resources and webhook_resources to reserve capacity deliberately
+    - no capacity derivation is published for this kind -- the committed preset is an empty spec and the pinned release manifest declares no requests or limits on either Deployment, so a manifest-time footprint would state zero reservation, which is the truth but not a useful capacity statement; set operator_resources and webhook_resources to reserve capacity deliberately
     - the Tekton components this operator installs (Pipelines, Triggers, Dashboard, Chains) and the pipeline pods they run are the real capacity story -- they ride the cluster's single KubernetesTekton declaration and the PipelineRun workloads, never this component's footprint
     - the price of reserved CPU and memory is the target cluster's node economics, which this catalog cannot know
   notes: "This component creates no cloud SKU of its own -- its cost is the share of the cluster its two fixed Deployments (the operator and its webhook, replica counts baked into the release manifest) reserve, realized on the cluster's bill. The operator is the lifecycle manager, not the workload: it is installed with automatic component installation disabled, so installing it alone deploys no Tekton components. There is no helm_values escape hatch on this kind -- the distribution is the pinned single-file release manifest, patched only through the typed spec fields."

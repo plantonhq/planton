@@ -16,7 +16,7 @@ message DigitalOceanBucket {
   string kind = 2 [(buf.validate.field).string.const = "DigitalOceanBucket"];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   DigitalOceanBucketSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,7 +27,7 @@ message DigitalOceanBucket {
 
 // digital-ocean-bucket status
 message DigitalOceanBucketStatus {
-  //stack-outputs
-  //  digital-ocean-bucket stack-outputs
-  DigitalOceanBucketStackOutputs outputs = 1;
+  //outputs
+  //  digital-ocean-bucket outputs
+  DigitalOceanBucketOutputs outputs = 1;
 }

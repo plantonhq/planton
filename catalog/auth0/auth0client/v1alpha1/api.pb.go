@@ -23,11 +23,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0Client is a component that configures an Application in Auth0.
+// Auth0Client is a kind that configures an Application in Auth0.
 // In the Auth0 dashboard, these are shown as "Applications" - they represent clients
 // that can authenticate users and request access to APIs.
 //
-// This component supports all Auth0 application types:
+// This kind supports all Auth0 application types:
 // - Native applications (mobile, desktop, CLI)
 // - Single Page Applications (SPAs)
 // - Regular web applications (server-side rendered)
@@ -87,12 +87,12 @@ type Auth0Client struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "Auth0Client" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the application within Planton (becomes client name)
 	// - org: Organization that owns this application
 	// - env: Environment (development, staging, production)
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the desired configuration for the Auth0 application.
 	// This includes application type, OAuth settings, and security configuration.
 	Spec *Auth0ClientSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -148,7 +148,7 @@ func (x *Auth0Client) GetKind() string {
 	return ""
 }
 
-func (x *Auth0Client) GetMetadata() *shared.CloudResourceMetadata {
+func (x *Auth0Client) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -173,10 +173,10 @@ func (x *Auth0Client) GetStatus() *Auth0ClientStatus {
 // This is populated by the deployment system and contains read-only outputs.
 type Auth0ClientStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs from the Auth0 client deployment.
+	// outputs contains the outputs from the Auth0 client deployment.
 	// These values are populated after successful deployment and include
 	// client credentials, identifiers, and configuration URLs.
-	Outputs       *Auth0ClientStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *Auth0ClientOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -211,7 +211,7 @@ func (*Auth0ClientStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0client_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Auth0ClientStatus) GetOutputs() *Auth0ClientStackOutputs {
+func (x *Auth0ClientStatus) GetOutputs() *Auth0ClientOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -229,11 +229,11 @@ const file_catalog_auth0_auth0client_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12&\n" +
 	"\x04kind\x18\x02 \x01(\tB\x12\xbaH\x0fr\r\n" +
 	"\vAuth0ClientR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
 	"\x04spec\x18\x04 \x01(\v27.dev.planton.auth0.auth0client.v1alpha1.Auth0ClientSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Q\n" +
-	"\x06status\x18\x05 \x01(\v29.dev.planton.auth0.auth0client.v1alpha1.Auth0ClientStatusR\x06status\"n\n" +
-	"\x11Auth0ClientStatus\x12Y\n" +
-	"\aoutputs\x18\x01 \x01(\v2?.dev.planton.auth0.auth0client.v1alpha1.Auth0ClientStackOutputsR\aoutputsB\xc8\x02\n" +
+	"\x06status\x18\x05 \x01(\v29.dev.planton.auth0.auth0client.v1alpha1.Auth0ClientStatusR\x06status\"i\n" +
+	"\x11Auth0ClientStatus\x12T\n" +
+	"\aoutputs\x18\x01 \x01(\v2:.dev.planton.auth0.auth0client.v1alpha1.Auth0ClientOutputsR\aoutputsB\xc8\x02\n" +
 	"*com.dev.planton.auth0.auth0client.v1alpha1B\bApiProtoP\x01ZSgithub.com/plantonhq/planton/catalog/auth0/auth0client/v1alpha1;auth0clientv1alpha1\xa2\x02\x04DPAA\xaa\x02&Dev.Planton.Auth0.Auth0client.V1alpha1\xca\x02&Dev\\Planton\\Auth0\\Auth0client\\V1alpha1\xe2\x022Dev\\Planton\\Auth0\\Auth0client\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Auth0::Auth0client::V1alpha1b\x06proto3"
 
 var (
@@ -252,15 +252,15 @@ var file_catalog_auth0_auth0client_v1alpha1_api_proto_msgTypes = make([]protoimp
 var file_catalog_auth0_auth0client_v1alpha1_api_proto_goTypes = []any{
 	(*Auth0Client)(nil),                  // 0: dev.planton.auth0.auth0client.v1alpha1.Auth0Client
 	(*Auth0ClientStatus)(nil),            // 1: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*Auth0ClientSpec)(nil),              // 3: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientSpec
-	(*Auth0ClientStackOutputs)(nil),      // 4: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientStackOutputs
+	(*Auth0ClientOutputs)(nil),           // 4: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientOutputs
 }
 var file_catalog_auth0_auth0client_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.auth0.auth0client.v1alpha1.Auth0Client.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.auth0.auth0client.v1alpha1.Auth0Client.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.auth0.auth0client.v1alpha1.Auth0Client.spec:type_name -> dev.planton.auth0.auth0client.v1alpha1.Auth0ClientSpec
 	1, // 2: dev.planton.auth0.auth0client.v1alpha1.Auth0Client.status:type_name -> dev.planton.auth0.auth0client.v1alpha1.Auth0ClientStatus
-	4, // 3: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientStatus.outputs:type_name -> dev.planton.auth0.auth0client.v1alpha1.Auth0ClientStackOutputs
+	4, // 3: dev.planton.auth0.auth0client.v1alpha1.Auth0ClientStatus.outputs:type_name -> dev.planton.auth0.auth0client.v1alpha1.Auth0ClientOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

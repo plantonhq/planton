@@ -165,7 +165,7 @@ type Locals struct {
     // ... other fields
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *clickhousekubernetesv1.ClickHouseKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *clickhousekubernetesv1.ClickHouseKubernetesIacInput) *Locals {
     // ... other initialization
 
     if target.Spec.Ingress == nil ||
@@ -199,7 +199,7 @@ type Locals struct {
     // ... other fields
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *clickhousekubernetesv1.ClickHouseKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *clickhousekubernetesv1.ClickHouseKubernetesIacInput) *Locals {
     // ... other initialization
 
     if target.Spec.Ingress == nil ||

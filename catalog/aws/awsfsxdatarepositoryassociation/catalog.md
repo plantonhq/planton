@@ -4,7 +4,7 @@ Links a directory on an FSx for Lustre file system to an S3 bucket or prefix wit
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Data Repository Association** -- the link between one file-system path (e.g., `/datasets/2026`) and one S3 data repository (e.g., `s3://training-data/2026/`). A file system supports up to 8 associations (25 per account)
 - **Automatic Import Policy** -- configured only when `autoImportEvents` is non-empty; NEW/CHANGED/DELETED object events in S3 create, refresh, or remove the corresponding Lustre file metadata
@@ -15,12 +15,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An FSx for Lustre file system** that does NOT use the legacy in-spec S3 link (`import_path`) -- AWS forbids mixing the two S3-integration generations. Reference an AwsFsxLustreFileSystem Cloud Resource or provide an fs-... id directly. PERSISTENT_2 file systems accept only associations.
+- **An FSx for Lustre file system** that does NOT use the legacy in-spec S3 link (`import_path`) -- AWS forbids mixing the two S3-integration generations. Reference an AwsFsxLustreFileSystem Infra Component or provide an fs-... id directly. PERSISTENT_2 file systems accept only associations.
 - **An S3 bucket** (or prefix) to link. The bucket may live in another region, but same-region buckets avoid inter-region transfer charges on every sync event.
 - **Non-overlapping paths** -- each directory subtree on the file system can belong to at most one repository.
 
@@ -61,7 +61,7 @@ spec:
 planton apply -f dra.yaml
 ```
 
-This links `/datasets/2026` on the file system to the bucket prefix, imports the existing metadata at creation, and keeps the namespace tracking the bucket as objects are added, changed, or deleted. A Stack Job tracks the provisioning in real time.
+This links `/datasets/2026` on the file system to the bucket prefix, imports the existing metadata at creation, and keeps the namespace tracking the bucket as objects are added, changed, or deleted. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -97,15 +97,15 @@ These are the most important decisions when configuring a data repository associ
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsFsxLustreFileSystem** | `fileSystemId` | `status.outputs.file_system_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -125,5 +125,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS FSx Lustre File System**](/cloud-catalog/aws-fsx-lustre-file-system) -- the file system the association attaches to; provides `file_system_id`
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- the data repository backing the linked path
+- [**AWS FSx Lustre File System**](/infra-catalog/aws-fsx-lustre-file-system) -- the file system the association attaches to; provides `file_system_id`
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- the data repository backing the linked path

@@ -29,7 +29,7 @@ func validResource() *AzurePrivateLinkService {
 	return &AzurePrivateLinkService{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzurePrivateLinkService",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-pls",
 		},
 		Spec: &AzurePrivateLinkServiceSpec{

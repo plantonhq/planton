@@ -8,13 +8,13 @@ ENGINE that reconciles it — and, for provided ZooKeeper ensembles, the
 bundled zookeeper-operator that provisions them. Deploy the operator
 first, clusters after.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want the operator itself** — installing and configuring the
-  Apache Solr Operator is KubernetesSolrOperator; this component is
+  Apache Solr Operator is KubernetesSolrOperator; this kind is
   one SolrCloud cluster it manages.
 - **You want a managed cloud search service** — use the host cloud
-  provider's managed search kinds; this component is for running
+  provider's managed search kinds; this kind is for running
   SolrCloud ON the Kubernetes cluster itself.
 - **You expect durable storage by default** — the operator's default
   is EPHEMERAL (emptyDir): data is LOST when a pod leaves its node.
@@ -145,7 +145,7 @@ Backup repositories are where cloud identity rides.
 | GCS, keyless (GKE) | `backup_repositories[].gcs` without a credential | Workload Identity on the Solr pods |
 | Shared volume | `backup_repositories[].volume` | An existing ReadWriteMany PVC mounted to every node |
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

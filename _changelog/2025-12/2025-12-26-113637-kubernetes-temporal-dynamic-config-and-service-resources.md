@@ -129,7 +129,7 @@ Added comprehensive test coverage:
 - **Self-service scalability**: Control history shards and service resources declaratively
 - **Workflow resilience**: Increase history limits for complex workflows without code changes
 - **Cost optimization**: Right-size each service based on actual workload characteristics
-- **Consistent UX**: Configuration follows the same patterns as other deployment components
+- **Consistent UX**: Configuration follows the same patterns as other catalog kinds
 
 ## Impact
 
@@ -184,7 +184,7 @@ spec:
 
 ## Related Work
 
-- **Issue**: `_issues/2025-12-26-104033.deployment-component.feat.expand-temporal-spec-dynamic-config.md`
+- **Issue**: `_issues/2025-12-26-104033.catalog-kind.feat.expand-temporal-spec-dynamic-config.md`
 - **Audit**: `docs/audit/2025-12-26-113019.md`
 
 ---

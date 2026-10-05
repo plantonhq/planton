@@ -4,7 +4,7 @@ Creates a single DNS record within an existing DigitalOcean DNS zone. Supports e
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DNS Record** -- a `digitalocean_record` resource in the specified domain with the configured type, name, value, and TTL
 - **Type-Specific Attributes** -- `priority` is set for MX and SRV records; `weight` and `port` are set for SRV records; `flags` and `tag` are set for CAA records; all are omitted for inapplicable record types
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
 
-- **An existing DigitalOcean DNS zone (domain)** managed by DigitalOcean's DNS service. Provide the domain name directly or reference a DigitalOceanDnsZone Cloud Resource via ValueFromRef.
+- **An existing DigitalOcean DNS zone (domain)** managed by DigitalOcean's DNS service. Provide the domain name directly or reference a DigitalOceanDnsZone Infra Component via ValueFromRef.
 - **A valid record value** matching the record type: an IPv4 address for A records, a hostname for CNAME records, a mail server for MX records, etc.
 
 ## Deploy
@@ -52,7 +52,7 @@ spec:
 planton apply -f dns-record.yaml
 ```
 
-This creates an A record pointing `www.example.com` to `192.0.2.1` with a one-hour TTL; no MX, SRV, or CAA-specific fields are configured. A Stack Job tracks the provisioning in real time.
+This creates an A record pointing `www.example.com` to `192.0.2.1` with a one-hour TTL; no MX, SRV, or CAA-specific fields are configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -81,19 +81,19 @@ These are the most important decisions when configuring a DNS record. Explore th
 
 **Hostname values carry a trailing dot on read-back** -- CNAME, MX, NS, SRV, and CAA targets are stored fully qualified (`mail.example.com.`, `letsencrypt.org.`); author the trailing dot, or a zone-relative name (`mail`). A bare `letsencrypt.org` is re-applied on every run, forever.
 
-**Value references** -- The `value` field supports ValueFromRef, allowing you to reference outputs from other Cloud Resources (e.g., a Droplet's IP address or a Load Balancer's hostname) instead of hardcoding values.
+**Value references** -- The `value` field supports ValueFromRef, allowing you to reference outputs from other Infra Components (e.g., a Droplet's IP address or a Load Balancer's hostname) instead of hardcoding values.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **DigitalOceanDnsZone** | `domain` | `status.outputs.zone_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` carries `record_id`, `hostname`, `record_type`, `domain`, and `ttl_seconds` -- but no other catalog component consumes them via ValueFromRef: a DNS record is a leaf of the dependency graph. `record_type`, `domain`, and `ttl_seconds` echo the manifest back for audit (`ttl_seconds` carries the API's applied default when the spec left it unset). The genuinely new values are `record_id` -- the numeric id that, together with the domain, addresses the record in the DigitalOcean API and in imports (`{domain},{record_id}`) -- and `hostname`, the provider-computed fully qualified name to verify resolution against.
+After provisioning, `status.outputs` carries `record_id`, `hostname`, `record_type`, `domain`, and `ttl_seconds` -- but no other catalog kind consumes them via ValueFromRef: a DNS record is a leaf of the dependency graph. `record_type`, `domain`, and `ttl_seconds` echo the manifest back for audit (`ttl_seconds` carries the API's applied default when the spec left it unset). The genuinely new values are `record_id` -- the numeric id that, together with the domain, addresses the record in the DigitalOcean API and in imports (`{domain},{record_id}`) -- and `hostname`, the provider-computed fully qualified name to verify resolution against.
 
 ## Common Patterns
 
@@ -105,4 +105,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean DNS Zone**](/cloud-catalog/digital-ocean-dns-zone) -- provides the domain (DNS zone) in which records are created
+- [**DigitalOcean DNS Zone**](/infra-catalog/digital-ocean-dns-zone) -- provides the domain (DNS zone) in which records are created

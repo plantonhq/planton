@@ -1,10 +1,10 @@
 # AWS REST API Gateway
 
-Deploys an Amazon API Gateway REST API (API Gateway v1) — the API, its resource and method tree, a single stage with an explicit deployment, and the API-scoped satellites — as one declarative resource. REST APIs are API Gateway's full-featured surface: mapping templates, JSON Schema request validation, API keys, per-method caching and throttling, WAF integration, and EDGE, REGIONAL, or PRIVATE endpoints. The API definition is exactly one of typed `routes` (the modules derive the resource tree from the paths) or an imported `openapi` document; HTTP APIs, the leaner v2 alternative, are the AWS HTTP API Gateway component.
+Deploys an Amazon API Gateway REST API (API Gateway v1) — the API, its resource and method tree, a single stage with an explicit deployment, and the API-scoped satellites — as one declarative resource. REST APIs are API Gateway's full-featured surface: mapping templates, JSON Schema request validation, API keys, per-method caching and throttling, WAF integration, and EDGE, REGIONAL, or PRIVATE endpoints. The API definition is exactly one of typed `routes` (the modules derive the resource tree from the paths) or an imported `openapi` document; HTTP APIs, the leaner v2 alternative, are the AWS HTTP API Gateway kind.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **REST API** — from typed `routes` or the `openapi` document, with the chosen endpoint type, binary media types, compression threshold, TLS security policy, and resource policy
 - **Resource tree, methods, and integrations** — derived level-by-level from the route paths (up to five segments; intermediate segments need no route of their own), with one method, integration, and set of typed responses per route
@@ -16,7 +16,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with API Gateway control-plane permissions (`apigateway:POST` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with API Gateway control-plane permissions (`apigateway:POST` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -72,7 +72,7 @@ spec:
 planton apply -f rest-api.yaml
 ```
 
-This creates a REGIONAL REST API with a Lambda-proxied `POST /orders` requiring an API key, a backend-free `GET /health` answered by a MOCK integration, and a `prod` stage serving the deployment. A Stack Job tracks the provisioning in real time.
+This creates a REGIONAL REST API with a Lambda-proxied `POST /orders` requiring an API key, a backend-free `GET /health` answered by a MOCK integration, and a `prod` stage serving the deployment. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -117,7 +117,7 @@ These are the most important decisions when configuring a REST API. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -128,9 +128,9 @@ These are the most important decisions when configuring a REST API. Explore the 
 | **AwsVpcEndpoint** | `endpointConfiguration.vpcEndpointIds` | `status.outputs.vpc_endpoint_id` |
 | **AwsCloudwatchLogGroup** | `stage.accessLog.destinationArn` | `status.outputs.log_group_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -157,12 +157,12 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — proxy and non-proxy backends, and TOKEN/REQUEST authorizer functions
-- [**AWS REST API Domain**](/cloud-catalog/aws-rest-api-domain) — custom domains mapping onto this API's `rest_api_id` and `stage_name`
-- [**AWS REST API Usage Plan**](/cloud-catalog/aws-rest-api-usage-plan) — API keys, quotas, and throttling attached to this API's stage
-- [**AWS REST API VPC Link**](/cloud-catalog/aws-rest-api-vpc-link) — the path to NLB-fronted private backends
-- [**AWS Cognito User Pool**](/cloud-catalog/aws-cognito-user-pool) — token validation for `COGNITO_USER_POOLS` authorizers
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) — stage access log delivery
-- [**AWS WAF Web ACL**](/cloud-catalog/aws-waf-web-acl) — associates with the `stage_arn` to filter traffic
-- [**AWS HTTP API Gateway**](/cloud-catalog/aws-http-api-gateway) — the leaner API Gateway v2 alternative for plain proxy workloads
-- [**AWS Bedrock AgentCore Gateway**](/cloud-catalog/aws-bedrock-agent-core-gateway) — fronts this API's stage as MCP tools for agents
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — proxy and non-proxy backends, and TOKEN/REQUEST authorizer functions
+- [**AWS REST API Domain**](/infra-catalog/aws-rest-api-domain) — custom domains mapping onto this API's `rest_api_id` and `stage_name`
+- [**AWS REST API Usage Plan**](/infra-catalog/aws-rest-api-usage-plan) — API keys, quotas, and throttling attached to this API's stage
+- [**AWS REST API VPC Link**](/infra-catalog/aws-rest-api-vpc-link) — the path to NLB-fronted private backends
+- [**AWS Cognito User Pool**](/infra-catalog/aws-cognito-user-pool) — token validation for `COGNITO_USER_POOLS` authorizers
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) — stage access log delivery
+- [**AWS WAF Web ACL**](/infra-catalog/aws-waf-web-acl) — associates with the `stage_arn` to filter traffic
+- [**AWS HTTP API Gateway**](/infra-catalog/aws-http-api-gateway) — the leaner API Gateway v2 alternative for plain proxy workloads
+- [**AWS Bedrock AgentCore Gateway**](/infra-catalog/aws-bedrock-agent-core-gateway) — fronts this API's stage as MCP tools for agents

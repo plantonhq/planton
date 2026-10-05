@@ -34,10 +34,10 @@ type AzureBackupProtectedFileShare struct {
 	// Resource kind. Must be "AzureBackupProtectedFileShare".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Protected file share specification.
 	Spec *AzureBackupProtectedFileShareSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureBackupProtectedFileShareStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -87,7 +87,7 @@ func (x *AzureBackupProtectedFileShare) GetKind() string {
 	return ""
 }
 
-func (x *AzureBackupProtectedFileShare) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureBackupProtectedFileShare) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureBackupProtectedFileShare) GetStatus() *AzureBackupProtectedFileSha
 // AzureBackupProtectedFileShareStatus holds the deployment outputs.
 type AzureBackupProtectedFileShareStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureBackupProtectedFileShareStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureBackupProtectedFileShareOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureBackupProtectedFileShareStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureBackupProtectedFileShareStatus) GetOutputs() *AzureBackupProtectedFileShareStackOutputs {
+func (x *AzureBackupProtectedFileShareStatus) GetOutputs() *AzureBackupProtectedFileShareOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_api_proto_rawDes
 	"apiVersion\x128\n" +
 	"\x04kind\x18\x02 \x01(\tB$\xbaH!r\x1f\n" +
 	"\x1dAzureBackupProtectedFileShareR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12w\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12w\n" +
 	"\x04spec\x18\x04 \x01(\v2[.dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12u\n" +
-	"\x06status\x18\x05 \x01(\v2].dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareStatusR\x06status\"\xa4\x01\n" +
-	"#AzureBackupProtectedFileShareStatus\x12}\n" +
-	"\aoutputs\x18\x01 \x01(\v2c.dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareStackOutputsR\aoutputsB\xc6\x03\n" +
+	"\x06status\x18\x05 \x01(\v2].dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareStatusR\x06status\"\x9f\x01\n" +
+	"#AzureBackupProtectedFileShareStatus\x12x\n" +
+	"\aoutputs\x18\x01 \x01(\v2^.dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareOutputsR\aoutputsB\xc6\x03\n" +
 	"<com.dev.planton.azure.azurebackupprotectedfileshare.v1alpha1B\bApiProtoP\x01Zwgithub.com/plantonhq/planton/catalog/azure/azurebackupprotectedfileshare/v1alpha1;azurebackupprotectedfilesharev1alpha1\xa2\x02\x04DPAA\xaa\x028Dev.Planton.Azure.Azurebackupprotectedfileshare.V1alpha1\xca\x028Dev\\Planton\\Azure\\Azurebackupprotectedfileshare\\V1alpha1\xe2\x02DDev\\Planton\\Azure\\Azurebackupprotectedfileshare\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Azure::Azurebackupprotectedfileshare::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_api_proto_rawDesc
 
 var file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_api_proto_goTypes = []any{
-	(*AzureBackupProtectedFileShare)(nil),             // 0: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShare
-	(*AzureBackupProtectedFileShareStatus)(nil),       // 1: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareStatus
-	(*shared.CloudResourceMetadata)(nil),              // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureBackupProtectedFileShareSpec)(nil),         // 3: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareSpec
-	(*AzureBackupProtectedFileShareStackOutputs)(nil), // 4: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareStackOutputs
+	(*AzureBackupProtectedFileShare)(nil),        // 0: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShare
+	(*AzureBackupProtectedFileShareStatus)(nil),  // 1: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareStatus
+	(*shared.CatalogObjectMetadata)(nil),         // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureBackupProtectedFileShareSpec)(nil),    // 3: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareSpec
+	(*AzureBackupProtectedFileShareOutputs)(nil), // 4: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareOutputs
 }
 var file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShare.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShare.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShare.spec:type_name -> dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareSpec
 	1, // 2: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShare.status:type_name -> dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareStatus
-	4, // 3: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareStatus.outputs:type_name -> dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareStackOutputs
+	4, // 3: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareStatus.outputs:type_name -> dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

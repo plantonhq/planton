@@ -1,10 +1,10 @@
 # Azure Redis Cache
 
-Deploys an Azure Cache for Redis instance -- a fully managed, in-memory data store built on the open-source Redis engine, used for caching, session state, real-time leaderboards, and pub/sub messaging with sub-millisecond latency. The component models the full current surface: the tier/capacity ladder, engine configuration, the keyless (Entra) authentication posture, managed identity, RDB/AOF persistence, VNet injection, patch schedules, and firewall rules. Know before you choose it: Azure has announced the retirement of classic Azure Cache for Redis in favor of Azure Managed Redis, and ARM has begun rejecting new cache creations region by region -- existing caches keep running and this kind remains the right surface for managing them, but prefer Azure Managed Redis for new deployments.
+Deploys an Azure Cache for Redis instance -- a fully managed, in-memory data store built on the open-source Redis engine, used for caching, session state, real-time leaderboards, and pub/sub messaging with sub-millisecond latency. The kind models the full current surface: the tier/capacity ladder, engine configuration, the keyless (Entra) authentication posture, managed identity, RDB/AOF persistence, VNet injection, patch schedules, and firewall rules. Know before you choose it: Azure has announced the retirement of classic Azure Cache for Redis in favor of Azure Managed Redis, and ARM has begun rejecting new cache creations region by region -- existing caches keep running and this kind remains the right surface for managing them, but prefer Azure Managed Redis for new deployments.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Redis Cache** -- an Azure Cache for Redis instance in the specified region and resource group, configured with the chosen SKU tier, capacity, Redis version, engine configuration, and optional clustering, replicas, and zone pinning
 - **VNet Injection** -- created only when `subnetId` is configured (Premium only); deploys the cache inside a dedicated subnet with private IP addressing, optionally pinned to a static address
@@ -17,13 +17,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the Redis cache will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
-- **A dedicated subnet** (optional, Premium only) for VNet injection. The subnet must contain nothing but Redis caches. Provide the subnet resource ID directly or reference an AzureSubnet Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the Redis cache will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
+- **A dedicated subnet** (optional, Premium only) for VNet injection. The subnet must contain nothing but Redis caches. Provide the subnet resource ID directly or reference an AzureSubnet Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f redis-cache.yaml
 ```
 
-This creates a Standard-tier (Azure's default when the tier is unspecified) Redis 6 cache with 2.5 GB memory (C2), TLS-only access on port 6380, and Azure's default engine behavior. No VNet injection, clustering, persistence, or firewall rules are configured. A Stack Job tracks the provisioning in real time.
+This creates a Standard-tier (Azure's default when the tier is unspecified) Redis 6 cache with 2.5 GB memory (C2), TLS-only access on port 6380, and Azure's default engine behavior. No VNet injection, clustering, persistence, or firewall rules are configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,7 +94,7 @@ These are the most important decisions when configuring a Redis cache. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -102,9 +102,9 @@ These are the most important decisions when configuring a Redis cache. Explore t
 | **AzureSubnet** (optional) | `subnetId` | `status.outputs.subnet_id` |
 | **AzureUserAssignedIdentity** (optional) | `identity.userAssignedIdentityIds` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -133,11 +133,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the Redis cache is created
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- provides the VNet subnet for Premium-tier VNet injection
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the identity for keyless persistence-storage access
-- [**Azure Redis Cache Access Policy**](/cloud-catalog/azure-redis-cache-access-policy) -- custom data-plane permission sets in Redis ACL syntax
-- [**Azure Redis Cache Access Policy Assignment**](/cloud-catalog/azure-redis-cache-access-policy-assignment) -- grants a policy (built-in or custom) to a Microsoft Entra identity
-- [**Azure Redis Linked Server**](/cloud-catalog/azure-redis-linked-server) -- geo-replication link pairing two Premium caches for disaster recovery
-- [**Azure Private Endpoint**](/cloud-catalog/azure-private-endpoint) -- private connectivity to the cache with public access disabled
-- [**Azure Managed Redis**](/cloud-catalog/azure-managed-redis) -- the successor service; prefer it for new Redis deployments as classic-cache creation retires region by region
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the Redis cache is created
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- provides the VNet subnet for Premium-tier VNet injection
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the identity for keyless persistence-storage access
+- [**Azure Redis Cache Access Policy**](/infra-catalog/azure-redis-cache-access-policy) -- custom data-plane permission sets in Redis ACL syntax
+- [**Azure Redis Cache Access Policy Assignment**](/infra-catalog/azure-redis-cache-access-policy-assignment) -- grants a policy (built-in or custom) to a Microsoft Entra identity
+- [**Azure Redis Linked Server**](/infra-catalog/azure-redis-linked-server) -- geo-replication link pairing two Premium caches for disaster recovery
+- [**Azure Private Endpoint**](/infra-catalog/azure-private-endpoint) -- private connectivity to the cache with public access disabled
+- [**Azure Managed Redis**](/infra-catalog/azure-managed-redis) -- the successor service; prefer it for new Redis deployments as classic-cache creation retires region by region

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Decoupled ClusterIssuer lifecycle management from the cert-manager controller installation by creating a new `KubernetesClusterIssuer` component (enum 851) and simplifying `KubernetesCertManager` (enum 821) to focus solely on Helm-based controller installation with optional workload identity. Also removed the deprecated `examples.md` artifact from the forge/update workflow, consolidating all usage examples into presets.
+Decoupled ClusterIssuer lifecycle management from the cert-manager controller installation by creating a new `KubernetesClusterIssuer` kind (enum 851) and simplifying `KubernetesCertManager` (enum 821) to focus solely on Helm-based controller installation with optional workload identity. Also removed the deprecated `examples.md` artifact from the forge/update workflow, consolidating all usage examples into presets.
 
 ## Problem Statement / Motivation
 
@@ -20,18 +20,18 @@ Decoupled ClusterIssuer lifecycle management from the cert-manager controller in
 - A misconfigured DNS provider could roll back the controller, affecting all existing issuers
 - Different teams managing different domains had to coordinate on a single resource
 - `spec.kubernetes_cert_manager_version` and `spec.skip_install_self_signed_issuer` were defined but never wired in IaC
-- `stack_outputs.proto` declared fields that IaC didn't export (`solver_identity`) and IaC exported fields not in proto (`cluster_issuer_names`)
+- `outputs.proto` declared fields that IaC didn't export (`solver_identity`) and IaC exported fields not in proto (`cluster_issuer_names`)
 - Proto comments said "single ClusterIssuer" while IaC created one per domain
 
 ## Solution / What's New
 
 ```mermaid
 flowchart TD
-    subgraph before ["Before: Single Component"]
+    subgraph before ["Before: Single Kind"]
         CM1["KubernetesCertManager\n(Helm + SA + Secrets + ClusterIssuers)"]
     end
 
-    subgraph after ["After: Two Components"]
+    subgraph after ["After: Two Kinds"]
         CM2["KubernetesCertManager\n(Helm + SA with WorkloadIdentity)"]
         CI["KubernetesClusterIssuer\n(one ClusterIssuer CR + credentials)"]
     end
@@ -51,22 +51,22 @@ flowchart TD
 - Removed: `AcmeConfig`, `DnsProviderConfig`, all DNS provider messages, ClusterIssuer creation
 - Added: `WorkloadIdentityConfig` (oneof: GKE/EKS/AKS) for controller SA annotations
 - Wired previously unused fields: `kubernetes_cert_manager_version` (image tag), `skip_install_self_signed_issuer` (startup API check)
-- Cleaned up `stack_outputs.proto`: replaced stale `solver_identity`/`cloudflare_secret_name` with `service_account_name`
+- Cleaned up `outputs.proto`: replaced stale `solver_identity`/`cloudflare_secret_name` with `service_account_name`
 
 ### examples.md Removal
 
-- Removed `examples.md` as a required component artifact across the entire forge/update workflow
+- Removed `examples.md` as a required kind artifact across the entire forge/update workflow
 - Updated all 3 Python helper scripts, 8 workflow rules, 3 architecture docs, and 3 `.cursor/info` files
 - Usage examples now live exclusively in presets (`v1/presets/`)
 
 ## Implementation Details
 
-### New Component: 27 files created
+### New Kind: 27 files created
 
 ```
 apis/dev/planton/provider/kubernetes/kubernetesclusterissuer/v1/
-├── spec.proto, api.proto, stack_input.proto, stack_outputs.proto
-├── spec.pb.go, api.pb.go, stack_input.pb.go, stack_outputs.pb.go
+├── spec.proto, api.proto, iac_input.proto, outputs.proto
+├── spec.pb.go, api.pb.go, iac_input.pb.go, outputs.pb.go
 ├── spec_test.go (17 tests -- 6 valid, 11 invalid)
 ├── README.md, catalog-page.md, docs/README.md
 ├── e2e/profile.yaml
@@ -76,7 +76,7 @@ apis/dev/planton/provider/kubernetes/kubernetesclusterissuer/v1/
 └── iac/tf/ (provider.tf, variables.tf, locals.tf, main.tf, outputs.tf, README.md)
 ```
 
-### Updated Component: 15 files modified, 9 deleted
+### Updated Kind: 15 files modified, 9 deleted
 
 - Spec reduced from 127 lines (8 messages) to 75 lines (4 messages)
 - Pulumi module reduced from 251 lines to 113 lines
@@ -85,7 +85,7 @@ apis/dev/planton/provider/kubernetes/kubernetesclusterissuer/v1/
 
 ### Consumer Impact: Zero
 
-15 ingress-enabled components derive ClusterIssuer names via `extractDomainFromHostname(hostname)`. The new component creates ClusterIssuers with `name = spec.dns_domain`, preserving the invariant:
+15 ingress-enabled kinds derive ClusterIssuer names via `extractDomainFromHostname(hostname)`. The new kind creates ClusterIssuers with `name = spec.dns_domain`, preserving the invariant:
 
 ```
 KubernetesClusterIssuer.spec.dns_domain == extractDomainFromHostname(consumer.spec.ingress.hostname)
@@ -97,21 +97,21 @@ KubernetesClusterIssuer.spec.dns_domain == extractDomainFromHostname(consumer.sp
 - **Reduced blast radius**: ClusterIssuer misconfiguration doesn't affect the controller
 - **Multi-team support**: Different teams own their domains independently
 - **Bug fixes**: Wired `kubernetes_cert_manager_version` and `skip_install_self_signed_issuer`
-- **Proto/IaC alignment**: `stack_outputs.proto` now matches what IaC actually exports
+- **Proto/IaC alignment**: `outputs.proto` now matches what IaC actually exports
 - **Workflow simplification**: Removed `examples.md` as a required artifact (presets serve this role better)
 
 ## Impact
 
-- **Component authors**: New forge workflow no longer generates `examples.md`; presets are the primary usage documentation
-- **Platform users**: Deploy cert-manager and ClusterIssuers as separate resources; existing ingress components work unchanged
-- **No breaking changes for consumers**: All 15 ingress-enabled components continue to work without modification
+- **Kind authors**: New forge workflow no longer generates `examples.md`; presets are the primary usage documentation
+- **Platform users**: Deploy cert-manager and ClusterIssuers as separate resources; existing ingress kinds work unchanged
+- **No breaking changes for consumers**: All 15 ingress-enabled kinds continue to work without modification
 
 ## Related Work
 
 - `2025-11-02-100616-cert-manager-multi-provider-redesign.md` -- Previous redesign that introduced per-domain issuers
-- `2025-11-22-194743-eliminate-shared-ingress-spec-kubernetes-components.md` -- Introduced `extractDomainFromHostname` convention
+- `2025-11-22-194743-eliminate-shared-ingress-spec-kubernetes-kinds.md` -- Introduced `extractDomainFromHostname` convention
 
 ---
 
 **Status**: ✅ Production Ready
-**Validation**: `go build` and `go test` pass for both components (29 total tests, 0 failures). `make protos` succeeded. `make generate-cloud-resource-kind-map` regenerated `kind_map_gen.go` with `KubernetesClusterIssuer`.
+**Validation**: `go build` and `go test` pass for both kinds (29 total tests, 0 failures). `make protos` succeeded. `make generate-catalog-kind-map` regenerated `kind_map_gen.go` with `KubernetesClusterIssuer`.

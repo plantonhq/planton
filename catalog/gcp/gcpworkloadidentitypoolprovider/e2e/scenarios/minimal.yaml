@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpworkloadidentitypoolprovider
+    e2e-catalog-kind: gcpworkloadidentitypoolprovider
   annotations:
     planton.dev/e2e: "true"
   tags:

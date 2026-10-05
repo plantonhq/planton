@@ -33,7 +33,7 @@ func minimalValidRunner() *AzurePlantonRunner {
 	return &AzurePlantonRunner{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzurePlantonRunner",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "vnet-runner",
 		},
 		Spec: &AzurePlantonRunnerSpec{

@@ -37,7 +37,7 @@ The canonical segmented topology -- production spokes that reach shared services
 | `setAsDefaultAssociationTable` | bool | false | Designate this table as the gateway's default ASSOCIATION table (default-enabled gateways; one claimant per gateway; removal restores the original) |
 | `setAsDefaultPropagationTable` | bool | false | Designate this table as the gateway's default PROPAGATION table (same contract) |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|

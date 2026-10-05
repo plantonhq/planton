@@ -4,7 +4,7 @@ Publishes a service through Private Service Connect -- the producer half. A serv
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Service Attachment** -- a `compute.ServiceAttachment` in the chosen region, pointing at the target forwarding rule, translating consumer traffic into the PSC NAT subnets, and enforcing the connection preference with its accept and reject lists, reconciliation, PROXY protocol, Cloud DNS domain, and propagated-connection limit
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with `roles/compute.networkAdmin` on the producer project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with `roles/compute.networkAdmin` on the producer project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Networks
@@ -61,7 +61,7 @@ spec:
 planton apply -f psc-service-attachment.yaml
 ```
 
-This publishes the orders database's internal load balancer to one consumer project with up to ten endpoints. A Stack Job tracks the provisioning in real time.
+This publishes the orders database's internal load balancer to one consumer project with up to ten endpoints. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -81,7 +81,7 @@ These are the most important decisions when configuring a service attachment. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -91,9 +91,9 @@ These are the most important decisions when configuring a service attachment. Ex
 | **GcpProject** | `consumerAcceptLists[].projectId`, `consumerRejectLists[]` | `status.outputs.project_id` |
 | **GcpVpcNetwork** | `consumerAcceptLists[].network` | `status.outputs.network_self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -113,6 +113,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Global Forwarding Rule**](/cloud-catalog/gcp-global-forwarding-rule) -- the producer's internal load balancer (regional arm, `INTERNAL` scheme) this attachment publishes; and the consumer's PSC endpoint (regional arm, empty scheme) that targets it
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- the PSC NAT subnets
-- [**GCP Backend Service**](/cloud-catalog/gcp-backend-service) -- the regional backend service behind the producer's forwarding rule
+- [**GCP Global Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- the producer's internal load balancer (regional arm, `INTERNAL` scheme) this attachment publishes; and the consumer's PSC endpoint (regional arm, empty scheme) that targets it
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- the PSC NAT subnets
+- [**GCP Backend Service**](/infra-catalog/gcp-backend-service) -- the regional backend service behind the producer's forwarding rule

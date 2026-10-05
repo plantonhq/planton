@@ -1,10 +1,10 @@
 # Stripe Radar Value List
 
-Declares a Stripe Radar list -- blocked countries, trusted customers, known fraudulent emails -- and every item in it, for Radar rules to reference by alias. Items are checked against the list's type before Stripe sees them. One Cloud Resource per list.
+Declares a Stripe Radar list -- blocked countries, trusted customers, known fraudulent emails -- and every item in it, for Radar rules to reference by alias. Items are checked against the list's type before Stripe sees them. One Infra Component per list.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module creates, in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module creates, in the Stripe account your Stripe connection's key belongs to:
 
 - **The list** -- its alias, name and item type
 - **One item per value** -- each its own object in Stripe, created and deleted as the manifest changes
@@ -51,7 +51,7 @@ spec:
 planton apply -f stripe-radar-value-list.yaml
 ```
 
-A Stack Job tracks the change in real time.
+An Infra Job tracks the change in real time.
 
 ## Key Configuration
 
@@ -65,11 +65,11 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -89,4 +89,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Stripe Payment Method Configuration**](/cloud-catalog/stripe-payment-method-configuration) -- the methods whose payments Radar screens.
+- [**Stripe Payment Method Configuration**](/infra-catalog/stripe-payment-method-configuration) -- the methods whose payments Radar screens.

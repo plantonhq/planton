@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRoute53HealthCheckStackOutputs captures observable identifiers from a
+// AwsRoute53HealthCheckOutputs captures observable identifiers from a
 // provisioned Route 53 health check.
 //
 // The primary output is `health_check_id` — the value an AwsRoute53DnsRecord
 // references (via spec.health_check_id) to gate its DNS answers on this
 // check, and the value CALCULATED parent checks aggregate as children.
-type AwsRoute53HealthCheckStackOutputs struct {
+type AwsRoute53HealthCheckOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The health check ID (a UUID, e.g.
 	// "abcdef11-2222-3333-4444-555555fedcba"). The identifier DNS records and
@@ -41,20 +41,20 @@ type AwsRoute53HealthCheckStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsRoute53HealthCheckStackOutputs) Reset() {
-	*x = AwsRoute53HealthCheckStackOutputs{}
+func (x *AwsRoute53HealthCheckOutputs) Reset() {
+	*x = AwsRoute53HealthCheckOutputs{}
 	mi := &file_catalog_aws_awsroute53healthcheck_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRoute53HealthCheckStackOutputs) String() string {
+func (x *AwsRoute53HealthCheckOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRoute53HealthCheckStackOutputs) ProtoMessage() {}
+func (*AwsRoute53HealthCheckOutputs) ProtoMessage() {}
 
-func (x *AwsRoute53HealthCheckStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRoute53HealthCheckOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsroute53healthcheck_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,19 +66,19 @@ func (x *AwsRoute53HealthCheckStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRoute53HealthCheckStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRoute53HealthCheckStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRoute53HealthCheckOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRoute53HealthCheckOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsroute53healthcheck_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRoute53HealthCheckStackOutputs) GetHealthCheckId() string {
+func (x *AwsRoute53HealthCheckOutputs) GetHealthCheckId() string {
 	if x != nil {
 		return x.HealthCheckId
 	}
 	return ""
 }
 
-func (x *AwsRoute53HealthCheckStackOutputs) GetHealthCheckArn() string {
+func (x *AwsRoute53HealthCheckOutputs) GetHealthCheckArn() string {
 	if x != nil {
 		return x.HealthCheckArn
 	}
@@ -89,8 +89,8 @@ var File_catalog_aws_awsroute53healthcheck_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_aws_awsroute53healthcheck_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awsroute53healthcheck/v1alpha1/outputs.proto\x12.dev.planton.aws.awsroute53healthcheck.v1alpha1\"u\n" +
-	"!AwsRoute53HealthCheckStackOutputs\x12&\n" +
+	"8catalog/aws/awsroute53healthcheck/v1alpha1/outputs.proto\x12.dev.planton.aws.awsroute53healthcheck.v1alpha1\"p\n" +
+	"\x1cAwsRoute53HealthCheckOutputs\x12&\n" +
 	"\x0fhealth_check_id\x18\x01 \x01(\tR\rhealthCheckId\x12(\n" +
 	"\x10health_check_arn\x18\x02 \x01(\tR\x0ehealthCheckArnB\x86\x03\n" +
 	"2com.dev.planton.aws.awsroute53healthcheck.v1alpha1B\fOutputsProtoP\x01Zegithub.com/plantonhq/planton/catalog/aws/awsroute53healthcheck/v1alpha1;awsroute53healthcheckv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Aws.Awsroute53healthcheck.V1alpha1\xca\x02.Dev\\Planton\\Aws\\Awsroute53healthcheck\\V1alpha1\xe2\x02:Dev\\Planton\\Aws\\Awsroute53healthcheck\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Aws::Awsroute53healthcheck::V1alpha1b\x06proto3"
@@ -109,7 +109,7 @@ func file_catalog_aws_awsroute53healthcheck_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_aws_awsroute53healthcheck_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsroute53healthcheck_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRoute53HealthCheckStackOutputs)(nil), // 0: dev.planton.aws.awsroute53healthcheck.v1alpha1.AwsRoute53HealthCheckStackOutputs
+	(*AwsRoute53HealthCheckOutputs)(nil), // 0: dev.planton.aws.awsroute53healthcheck.v1alpha1.AwsRoute53HealthCheckOutputs
 }
 var file_catalog_aws_awsroute53healthcheck_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

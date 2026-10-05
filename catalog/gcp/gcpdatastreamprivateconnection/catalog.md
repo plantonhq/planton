@@ -4,7 +4,7 @@ Lets Datastream reach databases with no public address -- VMs, on-premises serve
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `datastream.googleapis.com` on the project (never disabled on destroy)
 - **Private connection** -- a `datastream_private_connection` with VPC peering or a PSC interface
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Datastream admin permissions (`roles/datastream.admin`) on the project, plus network admin on the VPC for peering. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Datastream admin permissions (`roles/datastream.admin`) on the project, plus network admin on the VPC for peering. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Required Dependencies
@@ -49,7 +49,7 @@ spec:
 planton apply -f datastream-private-connection.yaml
 ```
 
-This peers Datastream's network with the `data` VPC. A Stack Job tracks the provisioning in real time.
+This peers Datastream's network with the `data` VPC. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -65,16 +65,16 @@ These are the most important decisions when configuring this component. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpVpcNetwork** | `vpcPeeringConfig.vpc` | `status.outputs.network_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
@@ -90,6 +90,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the peered network
-- [**GCP Datastream Connection Profile**](/cloud-catalog/gcp-datastream-connection-profile) -- the profiles that use it
-- [**GCP Datastream Stream**](/cloud-catalog/gcp-datastream-stream) -- the streams they feed
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the peered network
+- [**GCP Datastream Connection Profile**](/infra-catalog/gcp-datastream-connection-profile) -- the profiles that use it
+- [**GCP Datastream Stream**](/infra-catalog/gcp-datastream-stream) -- the streams they feed

@@ -6,7 +6,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// dnsRecord provisions a single DigitalOcean DNS record and exports stack
+// dnsRecord provisions a single DigitalOcean DNS record and exports
 // outputs. The per-type fields (priority/weight/port/flags/tag) carry the
 // spec's presence semantics: unset stays unset, matching the provider's own
 // GetOk-guarded request building. Spec CEL rules already guarantee the fields

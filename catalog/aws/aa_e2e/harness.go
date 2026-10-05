@@ -3,8 +3,8 @@
 // ambient AWS credential chain can reach the account, and resource verification
 // runs through the AWS SDK.
 //
-// Credentials are intentionally NOT plumbed through the stack input. The E2E
-// framework builds every stack input with a nil provider config, so the IaC
+// Credentials are intentionally NOT plumbed through the IaC input. The E2E
+// framework builds every IaC input with a nil provider config, so the IaC
 // modules resolve credentials from the SDK's ambient chain. That chain is
 // populated keylessly -- a short-lived AWS SSO session locally, or a GitHub
 // Actions OIDC role in CI -- so no static secret is ever stored on disk or in CI.
@@ -88,10 +88,10 @@ func (h *Harness) Teardown(ctx context.Context) error {
 	return nil
 }
 
-// VerifyDeployed confirms the component's resource exists via its registered
-// verifier, using the resource id and region carried in the stack outputs.
-func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs map[string]interface{}) error {
-	v, err := verify.GetVerifier(component)
+// VerifyDeployed confirms the kind's resource exists via its registered
+// verifier, using the resource id and region carried in the outputs.
+func (h *Harness) VerifyDeployed(ctx context.Context, kindDir string, outputs map[string]interface{}) error {
+	v, err := verify.GetVerifier(kindDir)
 	if err != nil {
 		return err
 	}
@@ -103,7 +103,7 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 	// verifier itself fails when the outputs carry no arm to verify, so only
 	// the single-id path demands a non-empty id here.
 	if id == "" && !isOutputsVerifier {
-		return errors.Errorf("no %q in outputs for %s -- cannot verify", v.IDOutputKey(), component)
+		return errors.Errorf("no %q in outputs for %s -- cannot verify", v.IDOutputKey(), kindDir)
 	}
 	region := stringOutput(outputs, "region")
 	if region == "" {
@@ -111,7 +111,7 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 	}
 
 	h.mu.Lock()
-	h.deployed[componentKey(ctx, component)] = deployedResource{id: id, region: region, outputs: outputs}
+	h.deployed[kindKey(ctx, kindDir)] = deployedResource{id: id, region: region, outputs: outputs}
 	h.mu.Unlock()
 
 	if isOutputsVerifier {
@@ -126,38 +126,38 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 // dispatches to the kind's verifier, which must itself opt in via the local
 // verify.RuntimeCauseVerifier interface, reusing the outputs and region
 // VERIFY-RES stored (the phase is guaranteed to have run first).
-func (h *Harness) VerifyRuntimeFailureCause(ctx context.Context, tc *provider.ComponentTestContext, cause string) error {
-	v, err := verify.GetVerifier(tc.Component)
+func (h *Harness) VerifyRuntimeFailureCause(ctx context.Context, tc *provider.KindTestContext, cause string) error {
+	v, err := verify.GetVerifier(tc.Kind)
 	if err != nil {
 		return err
 	}
 	rcv, ok := v.(verify.RuntimeCauseVerifier)
 	if !ok {
-		return errors.Errorf("component %q's verifier does not implement verify.RuntimeCauseVerifier -- the scenario expects a runtime failure cause (%s) it cannot pin", tc.Component, cause)
+		return errors.Errorf("kind %q's verifier does not implement verify.RuntimeCauseVerifier -- the scenario expects a runtime failure cause (%s) it cannot pin", tc.Kind, cause)
 	}
 
 	h.mu.Lock()
-	res := h.deployed[componentKey(ctx, tc.Component)]
+	res := h.deployed[kindKey(ctx, tc.Kind)]
 	h.mu.Unlock()
 	if res.outputs == nil {
-		return errors.Errorf("no stored outputs for %s -- VERIFY-RES may not have run", tc.Component)
+		return errors.Errorf("no stored outputs for %s -- VERIFY-RES may not have run", tc.Kind)
 	}
 	return rcv.VerifyRuntimeFailureCause(ctx, h.cfg, res.outputs, res.region, cause)
 }
 
 // VerifyDestroyed confirms the previously deployed resource no longer exists.
-func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
-	v, err := verify.GetVerifier(component)
+func (h *Harness) VerifyDestroyed(ctx context.Context, kindDir string) error {
+	v, err := verify.GetVerifier(kindDir)
 	if err != nil {
 		return err
 	}
 
 	h.mu.Lock()
-	res := h.deployed[componentKey(ctx, component)]
+	res := h.deployed[kindKey(ctx, kindDir)]
 	h.mu.Unlock()
 
 	if res.id == "" && res.outputs == nil {
-		return errors.Errorf("no stored resource id for %s -- VerifyDeployed may not have run", component)
+		return errors.Errorf("no stored resource id for %s -- VerifyDeployed may not have run", kindDir)
 	}
 	if ov, ok := v.(verify.OutputsVerifier); ok {
 		return ov.VerifyAbsentFromOutputs(ctx, h.cfg, res.outputs, res.region)
@@ -165,7 +165,7 @@ func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
 	return v.VerifyAbsent(ctx, h.cfg, res.id, res.region)
 }
 
-// stringOutput reads a string-valued stack output, tolerating non-string scalars.
+// stringOutput reads a string-valued output, tolerating non-string scalars.
 func stringOutput(outputs map[string]interface{}, key string) string {
 	if outputs == nil {
 		return ""
@@ -179,13 +179,13 @@ func stringOutput(outputs map[string]interface{}, key string) string {
 	return ""
 }
 
-// componentKey combines the manifest path (from context) with the component name
-// so concurrent scenarios of the same component type do not collide in the map.
-func componentKey(ctx context.Context, component string) string {
+// kindKey combines the manifest path (from context) with the kind name
+// so concurrent scenarios of the same kind do not collide in the map.
+func kindKey(ctx context.Context, kindDir string) string {
 	if mp, ok := ctx.Value(provider.ManifestPathKey{}).(string); ok && mp != "" {
-		return mp + "::" + component
+		return mp + "::" + kindDir
 	}
-	return component
+	return kindDir
 }
 
 func firstNonEmpty(values ...string) string {

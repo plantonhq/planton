@@ -13,7 +13,7 @@ Do not shrink this preset to save resources — there is no smaller
 Neo4j; the floor is the chart's, not this preset's. The credential
 needs no attention: it is generated, stable across re-applies, and
 read by clients from the Secret the outputs name. In-cluster clients connect via the default Service in the
-stack outputs (bolt 7687); nothing is exposed outside the cluster.
+outputs (bolt 7687); nothing is exposed outside the cluster.
 
 Change first: `data_volume.size` if
 your graph will outgrow 10Gi — growing a PVC later depends on the

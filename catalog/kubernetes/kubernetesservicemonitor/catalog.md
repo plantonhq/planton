@@ -4,7 +4,7 @@ Declares a prometheus-operator ServiceMonitor: a namespaced object that tells ev
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A ServiceMonitor** -- one namespaced object carrying your selector and scrape endpoints, which the prometheus-operator renders into the scrape configuration of every Prometheus whose ServiceMonitor selector matches it.
 - **Kubernetes Labels** -- your own labels on the object (the ones a Prometheus selects by), with resource metadata labels (resource name, kind, organization, environment) applied automatically on top.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -56,11 +56,11 @@ spec:
 planton apply -f service-monitor.yaml
 ```
 
-The stack's Prometheus picks the monitor up on its next reload and starts scraping every endpoint of the `api` Service, with `job="api"` on the series. A Stack Job tracks the provisioning in real time.
+The stack's Prometheus picks the monitor up on its next reload and starts scraping every endpoint of the `api` Service, with `job="api"` on the series. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the namespace and the scrape token to resources managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, wire the namespace and the scrape token to resources managed by other Infra Components:
 
 ```yaml
 spec:
@@ -101,7 +101,7 @@ These are the most important decisions when configuring a service monitor. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -109,9 +109,9 @@ These are the most important decisions when configuring a service monitor. Explo
 | **KubernetesSecret** | every Secret selector's `name` (`authorization.credentials`, `basic_auth`, `oauth2.client_secret`, `tls_config.key_secret`, ...) | `status.outputs.secret_name` |
 | **KubernetesConfigMap** | every ConfigMap selector's `name` (`tls_config.ca.config_map`, `oauth2.client_id.config_map`, ...) | `status.outputs.configmap_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
@@ -128,8 +128,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kube Prometheus Stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) -- installs the CRDs and the Prometheus that scrapes through the monitor.
-- [**Pod Monitor**](/cloud-catalog/kubernetes-pod-monitor) -- scrapes pods directly, without a Service.
-- [**Prometheus Rule**](/cloud-catalog/kubernetes-prometheus-rule) -- alerts and recording rules over the scraped series.
-- [**Kubernetes Secret**](/cloud-catalog/kubernetes-secret) -- holds the scrape credentials the monitor references.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the placement target the monitor lives in.
+- [**Kube Prometheus Stack**](/infra-catalog/kubernetes-kube-prometheus-stack) -- installs the CRDs and the Prometheus that scrapes through the monitor.
+- [**Pod Monitor**](/infra-catalog/kubernetes-pod-monitor) -- scrapes pods directly, without a Service.
+- [**Prometheus Rule**](/infra-catalog/kubernetes-prometheus-rule) -- alerts and recording rules over the scraped series.
+- [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) -- holds the scrape credentials the monitor references.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the placement target the monitor lives in.

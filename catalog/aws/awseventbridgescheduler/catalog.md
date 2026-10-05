@@ -4,7 +4,7 @@ Deploys an EventBridge Scheduler schedule — serverless cron that fires a Lambd
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EventBridge Scheduler schedule** — named after `metadata.name`, firing on `scheduleExpression` (cron, rate, or one-time `at(...)`) in its timezone, within its start/end window, in `ENABLED` or `DISABLED` state, with an exact or flexible invocation window
 - **Target wiring** — the target ARN and the `scheduler.amazonaws.com`-trusting execution role, an optional static input payload, the retry policy, the dead-letter queue, and at most one service parameter block (ECS RunTask, EventBridge PutEvents, Kinesis PutRecord, SageMaker StartPipelineExecution, SQS SendMessage) matching the target's service
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with EventBridge Scheduler permissions and `iam:PassRole` on the execution role. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with EventBridge Scheduler permissions and `iam:PassRole` on the execution role. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -72,7 +72,7 @@ spec:
 planton apply -f eventbridge-scheduler.yaml
 ```
 
-This creates an enabled schedule that invokes the referenced Lambda at 2 AM Eastern every night (daylight saving handled by AWS), retrying failures for at most an hour and three attempts before dead-lettering. A Stack Job tracks the provisioning in real time.
+This creates an enabled schedule that invokes the referenced Lambda at 2 AM Eastern every night (daylight saving handled by AWS), retrying failures for at most an hour and three attempts before dead-lettering. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -118,7 +118,7 @@ These are the most important decisions when configuring a schedule. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 `target.arn` ranges over many services (Lambda, SQS, ECS, Kinesis, Step Functions, event buses, SageMaker, API destinations), so it carries no default kind — a valueFrom on it states its kind explicitly. The common wirings:
 
@@ -130,9 +130,9 @@ These are the most important decisions when configuring a schedule. Explore the 
 | **AwsEcsTaskDefinition** | `target.ecsParameters.taskDefinitionArn` | `status.outputs.task_definition_arn` |
 | **AwsKmsKey** | `kmsKeyArn` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -155,10 +155,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — the most common target; the schedule delivers `input` as the event payload
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the scheduler-trusting execution role wired via `target.roleArn`
-- [**AWS SQS Queue**](/cloud-catalog/aws-sqs-queue) — message target and the dead-letter queue for exhausted retries
-- [**AWS ECS Task Definition**](/cloud-catalog/aws-ecs-task-definition) — the task each invocation launches via `ecsParameters`
-- [**AWS EventBridge Bus**](/cloud-catalog/aws-event-bridge-bus) — target for fanning scheduled events out through rules
-- [**AWS EventBridge API Destination**](/cloud-catalog/aws-event-bridge-api-destination) — authenticated HTTP endpoint a schedule can invoke
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption of the target input via `kmsKeyArn`
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — the most common target; the schedule delivers `input` as the event payload
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the scheduler-trusting execution role wired via `target.roleArn`
+- [**AWS SQS Queue**](/infra-catalog/aws-sqs-queue) — message target and the dead-letter queue for exhausted retries
+- [**AWS ECS Task Definition**](/infra-catalog/aws-ecs-task-definition) — the task each invocation launches via `ecsParameters`
+- [**AWS EventBridge Bus**](/infra-catalog/aws-event-bridge-bus) — target for fanning scheduled events out through rules
+- [**AWS EventBridge API Destination**](/infra-catalog/aws-event-bridge-api-destination) — authenticated HTTP endpoint a schedule can invoke
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption of the target input via `kmsKeyArn`

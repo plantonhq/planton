@@ -8,13 +8,13 @@ import (
 )
 
 // Resources provisions the Lambda event source mapping and exports outputs.
-func Resources(ctx *pulumi.Context, stackInput *awslambdaeventsourcemappingv1alpha1.AwsLambdaEventSourceMappingStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awslambdaeventsourcemappingv1alpha1.AwsLambdaEventSourceMappingIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which
+	// Build the AWS provider from the IaC input via the shared builder, which
 	// resolves the right credential mechanism (static keys, keyless web identity,
 	// or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsLambdaEventSourceMapping.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsLambdaEventSourceMapping.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

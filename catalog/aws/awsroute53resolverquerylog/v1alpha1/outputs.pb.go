@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRoute53ResolverQueryLogStackOutputs captures the observable state
+// AwsRoute53ResolverQueryLogOutputs captures the observable state
 // of the resolver query logging configuration after apply.
-type AwsRoute53ResolverQueryLogStackOutputs struct {
+type AwsRoute53ResolverQueryLogOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The configuration's id (rqlc-...) - the provider's import ID.
 	QueryLogConfigId string `protobuf:"bytes,1,opt,name=query_log_config_id,json=queryLogConfigId,proto3" json:"query_log_config_id,omitempty"`
@@ -39,20 +39,20 @@ type AwsRoute53ResolverQueryLogStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsRoute53ResolverQueryLogStackOutputs) Reset() {
-	*x = AwsRoute53ResolverQueryLogStackOutputs{}
+func (x *AwsRoute53ResolverQueryLogOutputs) Reset() {
+	*x = AwsRoute53ResolverQueryLogOutputs{}
 	mi := &file_catalog_aws_awsroute53resolverquerylog_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRoute53ResolverQueryLogStackOutputs) String() string {
+func (x *AwsRoute53ResolverQueryLogOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRoute53ResolverQueryLogStackOutputs) ProtoMessage() {}
+func (*AwsRoute53ResolverQueryLogOutputs) ProtoMessage() {}
 
-func (x *AwsRoute53ResolverQueryLogStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRoute53ResolverQueryLogOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsroute53resolverquerylog_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *AwsRoute53ResolverQueryLogStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRoute53ResolverQueryLogStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRoute53ResolverQueryLogStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRoute53ResolverQueryLogOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRoute53ResolverQueryLogOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsroute53resolverquerylog_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRoute53ResolverQueryLogStackOutputs) GetQueryLogConfigId() string {
+func (x *AwsRoute53ResolverQueryLogOutputs) GetQueryLogConfigId() string {
 	if x != nil {
 		return x.QueryLogConfigId
 	}
 	return ""
 }
 
-func (x *AwsRoute53ResolverQueryLogStackOutputs) GetQueryLogConfigArn() string {
+func (x *AwsRoute53ResolverQueryLogOutputs) GetQueryLogConfigArn() string {
 	if x != nil {
 		return x.QueryLogConfigArn
 	}
 	return ""
 }
 
-func (x *AwsRoute53ResolverQueryLogStackOutputs) GetShareStatus() string {
+func (x *AwsRoute53ResolverQueryLogOutputs) GetShareStatus() string {
 	if x != nil {
 		return x.ShareStatus
 	}
 	return ""
 }
 
-func (x *AwsRoute53ResolverQueryLogStackOutputs) GetAssociationIds() map[string]string {
+func (x *AwsRoute53ResolverQueryLogOutputs) GetAssociationIds() map[string]string {
 	if x != nil {
 		return x.AssociationIds
 	}
@@ -101,12 +101,12 @@ var File_catalog_aws_awsroute53resolverquerylog_v1alpha1_outputs_proto protorefl
 
 const file_catalog_aws_awsroute53resolverquerylog_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/aws/awsroute53resolverquerylog/v1alpha1/outputs.proto\x123dev.planton.aws.awsroute53resolverquerylog.v1alpha1\"\x89\x03\n" +
-	"&AwsRoute53ResolverQueryLogStackOutputs\x12-\n" +
+	"=catalog/aws/awsroute53resolverquerylog/v1alpha1/outputs.proto\x123dev.planton.aws.awsroute53resolverquerylog.v1alpha1\"\xff\x02\n" +
+	"!AwsRoute53ResolverQueryLogOutputs\x12-\n" +
 	"\x13query_log_config_id\x18\x01 \x01(\tR\x10queryLogConfigId\x12/\n" +
 	"\x14query_log_config_arn\x18\x02 \x01(\tR\x11queryLogConfigArn\x12!\n" +
-	"\fshare_status\x18\x03 \x01(\tR\vshareStatus\x12\x98\x01\n" +
-	"\x0fassociation_ids\x18\x04 \x03(\v2o.dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStackOutputs.AssociationIdsEntryR\x0eassociationIds\x1aA\n" +
+	"\fshare_status\x18\x03 \x01(\tR\vshareStatus\x12\x93\x01\n" +
+	"\x0fassociation_ids\x18\x04 \x03(\v2j.dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogOutputs.AssociationIdsEntryR\x0eassociationIds\x1aA\n" +
 	"\x13AssociationIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xa9\x03\n" +
@@ -126,11 +126,11 @@ func file_catalog_aws_awsroute53resolverquerylog_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_aws_awsroute53resolverquerylog_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsroute53resolverquerylog_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRoute53ResolverQueryLogStackOutputs)(nil), // 0: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStackOutputs
-	nil, // 1: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStackOutputs.AssociationIdsEntry
+	(*AwsRoute53ResolverQueryLogOutputs)(nil), // 0: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogOutputs
+	nil, // 1: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogOutputs.AssociationIdsEntry
 }
 var file_catalog_aws_awsroute53resolverquerylog_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStackOutputs.association_ids:type_name -> dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStackOutputs.AssociationIdsEntry
+	1, // 0: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogOutputs.association_ids:type_name -> dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogOutputs.AssociationIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

@@ -25,7 +25,7 @@ var _ = ginkgo.Describe("KubernetesGatewayClass Validation Tests", func() {
 		input = &KubernetesGatewayClass{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesGatewayClass",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-gateway-class",
 			},
 			Spec: &KubernetesGatewayClassSpec{

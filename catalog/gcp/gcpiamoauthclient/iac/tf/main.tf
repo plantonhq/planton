@@ -11,7 +11,7 @@ resource "google_project_service" "iam_api" {
 
 # A WORKFORCE Identity Federation OAuth client — the only kind of OAuth
 # client Google's APIs can create programmatically (consent-screen clients
-# remain a console step; see the component README).
+# remain a console step; see the kind's README).
 resource "google_iam_oauth_client" "this" {
   project = local.project_id
 

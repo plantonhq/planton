@@ -123,7 +123,7 @@ flowchart LR
 
 ## Related Work
 
-This refactoring is part of ongoing work to ensure all DNS Zone components support inline records. Cross-provider analysis confirmed:
+This refactoring is part of ongoing work to ensure all DNS Zone kinds support inline records. Cross-provider analysis confirmed:
 
 - All 6 DNS Zone specs (AWS, Azure, GCP, Civo, Cloudflare, DigitalOcean) have `repeated records` field
 - Azure and Civo zone records have minor field gaps compared to standalone record specs

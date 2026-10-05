@@ -19,7 +19,7 @@ Provisions an AWS Secrets Manager secret using Pulumi (Go).
 
 ## How It Works
 
-The module receives an `AwsSecretsManagerSecretStackInput` (the manifest
+The module receives an `AwsSecretsManagerSecretIacInput` (the manifest
 plus provider credentials), builds the AWS provider through the shared
 builder, and renders the secret and its satellites from the spec. Send
 conditions match the Terraform module argument-for-argument: the policy

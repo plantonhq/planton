@@ -1,6 +1,6 @@
 locals {
   # Identity tags -- the same keys and values the Pulumi module writes.
-  # resource_kind is the CloudResourceKind enum name lowercased, spelled as
+  # resource_kind is the CatalogKind enum name lowercased, spelled as
   # that exact literal; resource_id is added (id_tag below) only when the
   # resource has an id, never with the name as a stand-in.
   base_tags = {

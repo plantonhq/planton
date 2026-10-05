@@ -17,7 +17,7 @@ The typed spec renders into the CR body in `locals.tf`
   `strimzi.io/cluster` renders from `spec.connect_cluster`; without
   it the cluster operator never picks the connector up.
 - **CRs apply through `kubectl_manifest` (alekc/kubectl)** — no
-  cluster connection needed at plan time, so an infra chart can plan
+  cluster connection needed at plan time, so an Infra Chart can plan
   the operator, the Connect cluster, and its connectors in one run.
 - **No wait_for block** — reconciliation belongs to the cluster
   operator; a "class not found" condition surfaces on the resource

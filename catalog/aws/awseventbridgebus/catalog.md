@@ -4,7 +4,7 @@ Deploys a custom EventBridge event bus with optional customer-managed KMS encryp
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EventBridge Event Bus** -- a custom event bus named from your manifest's `metadata.name`, with optional description and partner event source configuration
 - **KMS Encryption** -- configured only when `kmsKeyIdentifier` is provided; encrypts events at rest with a customer-managed key instead of the default AWS-owned key
@@ -18,13 +18,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A KMS key** (optional) -- required only when using customer-managed encryption. Provide the key ARN directly or reference an AwsKmsKey Cloud Resource via ValueFromRef.
-- **An SQS queue** (optional) -- required when configuring a bus-level dead letter queue. The queue must exist in the same account and region. Provide the ARN directly or reference an AwsSqsQueue Cloud Resource via ValueFromRef.
+- **A KMS key** (optional) -- required only when using customer-managed encryption. Provide the key ARN directly or reference an AwsKmsKey Infra Component via ValueFromRef.
+- **An SQS queue** (optional) -- required when configuring a bus-level dead letter queue. The queue must exist in the same account and region. Provide the ARN directly or reference an AwsSqsQueue Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -52,7 +52,7 @@ spec:
 planton apply -f event-bus.yaml
 ```
 
-This creates a custom event bus with AWS-managed encryption. No dead letter queue or logging is configured. A Stack Job tracks the provisioning in real time.
+This creates a custom event bus with AWS-managed encryption. No dead letter queue or logging is configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,16 +91,16 @@ These are the most important decisions when configuring an EventBridge bus. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsKmsKey** (optional) | `kmsKeyIdentifier` | `status.outputs.key_arn` |
 | **AwsSqsQueue** (optional) | `deadLetterConfig.arn` | `status.outputs.queue_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,6 +120,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS EventBridge Rule**](/cloud-catalog/aws-event-bridge-rule) -- attaches to this bus and routes matching events to Lambda, SQS, SNS, and Step Functions targets
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for encrypting events at rest
-- [**AWS SQS Queue**](/cloud-catalog/aws-sqs-queue) -- provides a dead letter queue for events that fail delivery
+- [**AWS EventBridge Rule**](/infra-catalog/aws-event-bridge-rule) -- attaches to this bus and routes matching events to Lambda, SQS, SNS, and Step Functions targets
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for encrypting events at rest
+- [**AWS SQS Queue**](/infra-catalog/aws-sqs-queue) -- provides a dead letter queue for events that fail delivery

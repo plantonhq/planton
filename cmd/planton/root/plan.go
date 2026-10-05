@@ -30,8 +30,8 @@ This command has 'preview' as an alias for Pulumi-style experience.`,
 	planton preview -f manifest.yaml
 	planton plan --manifest manifest.yaml
 
-	# Preview with stack input file (extracts manifest from target field)
-	planton plan -i stack-input.yaml
+	# Preview with IaC input file (extracts manifest from target field)
+	planton plan -i iac-input.yaml
 
 	# Preview with kustomize
 	planton plan --kustomize-dir _kustomize --overlay prod

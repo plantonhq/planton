@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefrontdoororigin.v1alpha1;
 
-// **AzureFrontDoorOriginStackOutputs** captures the outputs of
+// **AzureFrontDoorOriginOutputs** captures the outputs of
 // provisioning an Azure Front Door origin.
-message AzureFrontDoorOriginStackOutputs {
+message AzureFrontDoorOriginOutputs {
   // The Azure Resource Manager ID of the origin -- what
   // AzureFrontDoorRoute's origin_ids list references to sequence route
   // deployment after the backends exist.

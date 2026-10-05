@@ -7,7 +7,7 @@ import (
 )
 
 // droplet provisions the DigitalOcean Droplet, modeling the complete
-// digitalocean_droplet resource surface, and exports the stack outputs.
+// digitalocean_droplet resource surface, and exports the outputs.
 func droplet(
 	ctx *pulumi.Context,
 	locals *Locals,
@@ -148,7 +148,7 @@ func droplet(
 		return nil, errors.Wrap(err, "failed to create digitalocean droplet")
 	}
 
-	// 3. Export stack outputs — exactly the DigitalOceanDropletStackOutputs
+	// 3. Export outputs — exactly the DigitalOceanDropletOutputs
 	// contract, from the SDK's real field names.
 	ctx.Export(OpDropletId, createdDroplet.ID())
 	ctx.Export(OpIpv4Address, createdDroplet.Ipv4Address)

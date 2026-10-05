@@ -4,7 +4,7 @@ Define a certificate shape once -- a TLS server, an mTLS client, a SPIFFE worklo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `privateca.googleapis.com` on the project (never disabled on destroy)
 - **Certificate template** -- a `privateca_certificate_template` with its predefined values, identity constraints, passthrough extensions, and maximum lifetime
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with CA Service template admin permissions (`roles/privateca.templateAdmin`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with CA Service template admin permissions (`roles/privateca.templateAdmin`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Required Dependencies
@@ -55,7 +55,7 @@ spec:
 planton apply -f certificate-template.yaml
 ```
 
-This creates a 30-day TLS server template. A Stack Job tracks the provisioning in real time.
+This creates a 30-day TLS server template. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -73,15 +73,15 @@ These are the most important decisions when configuring this component. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
@@ -97,5 +97,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Private CA Certificate**](/cloud-catalog/gcp-private-ca-certificate) -- certificates issued with it
-- [**GCP Private CA Pool**](/cloud-catalog/gcp-private-ca-pool) -- the pools it issues from
+- [**GCP Private CA Certificate**](/infra-catalog/gcp-private-ca-certificate) -- certificates issued with it
+- [**GCP Private CA Pool**](/infra-catalog/gcp-private-ca-pool) -- the pools it issues from

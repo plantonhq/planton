@@ -14,13 +14,13 @@ import (
 // security groups, KMS keys, and the monitoring role compose by
 // reference -- this module never creates or mutates a resource that
 // deserves to be its own node.
-func Resources(ctx *pulumi.Context, stackInput *awsrdsinstancev1alpha1.AwsRdsInstanceStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsrdsinstancev1alpha1.AwsRdsInstanceIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder,
+	// Build the AWS provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static keys, keyless
 	// web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsRdsInstance.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsRdsInstance.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

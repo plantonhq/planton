@@ -5,7 +5,7 @@ package dev.planton.gcp.gcpcloudschedulerjob.v1alpha1;
 import "catalog/gcp/gcpcloudschedulerjob/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-message GcpCloudSchedulerJobStackInput {
+message GcpCloudSchedulerJobIacInput {
   GcpCloudSchedulerJob target = 1;
   dev.planton.gcp.GcpProviderConfig provider_config = 2;
 }

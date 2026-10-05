@@ -4,7 +4,7 @@ Deploys a zone's Authenticated Origin Pulls surface: the zone-wide toggle that m
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Zone Toggle** — one `cloudflare_authenticated_origin_pulls_settings`, created only when `zoneEnabled` is set. Unset means the toggle is not managed at all; the toggle uses the zone's zone-level client certificate unless associations pin uploaded ones.
 - **Hostname Associations** — one `cloudflare_authenticated_origin_pulls` per `hostnameAssociations` row. The provider hard-fails any association resource carrying more than one hostname, so the module fans each row out to its own resource, keyed by hostname.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module whose API token carries **Zone → SSL and Certificates → Edit**. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module whose API token carries **Zone → SSL and Certificates → Edit**. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
@@ -49,7 +49,7 @@ spec:
 planton apply -f origin-pulls.yaml
 ```
 
-This enables Authenticated Origin Pulls for the whole zone using the zone-level client certificate — Cloudflare starts presenting it on every origin pull. A Stack Job tracks the provisioning in real time.
+This enables Authenticated Origin Pulls for the whole zone using the zone-level client certificate — Cloudflare starts presenting it on every origin pull. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,14 +92,14 @@ These are the most important decisions when configuring Authenticated Origin Pul
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 | **CloudflareAuthenticatedOriginPullsCertificate** (required per association row) | `hostnameAssociations[].certificateId` | `status.outputs.certificate_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 This component's `status.outputs` only echoes the managed zone's ID back (`zone_id`) — the AOP surface is zone-singleton shaped, so the zone ID is its identity and there is nothing new for downstream resources to consume. Downstream references belong on the zone or the certificate resources themselves.
 
@@ -115,6 +115,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — the zone whose AOP surface this manages; wire `zoneId` via ValueFromRef
-- [**Cloudflare Authenticated Origin Pulls Certificate**](/cloud-catalog/cloudflare-authenticated-origin-pulls-certificate) — the uploaded client certificates association rows pin
-- [**Cloudflare mTLS Certificate**](/cloud-catalog/cloudflare-mtls-certificate) — account-level CA material for validating per-hostname client certificates
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — the zone whose AOP surface this manages; wire `zoneId` via ValueFromRef
+- [**Cloudflare Authenticated Origin Pulls Certificate**](/infra-catalog/cloudflare-authenticated-origin-pulls-certificate) — the uploaded client certificates association rows pin
+- [**Cloudflare mTLS Certificate**](/infra-catalog/cloudflare-mtls-certificate) — account-level CA material for validating per-hostname client certificates

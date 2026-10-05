@@ -5,7 +5,7 @@ import (
 
 	kubernetespersistentvolumeclaimv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetespersistentvolumeclaim/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -15,7 +15,7 @@ import (
 // module's wait_until_bound=false is the same decision on the other engine.
 const skipAwaitAnnotation = "pulumi.com/skipAwait"
 
-// Locals holds computed values derived from the stack input for use across the module.
+// Locals holds computed values derived from the IaC input for use across the module.
 type Locals struct {
 	Context     *pulumi.Context
 	Spec        *kubernetespersistentvolumeclaimv1alpha1.KubernetesPersistentVolumeClaimSpec
@@ -42,8 +42,8 @@ type Locals struct {
 }
 
 // initializeLocals extracts and transforms spec fields into module-local values.
-func initializeLocals(ctx *pulumi.Context, stackInput *kubernetespersistentvolumeclaimv1alpha1.KubernetesPersistentVolumeClaimStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(ctx *pulumi.Context, iacInput *kubernetespersistentvolumeclaimv1alpha1.KubernetesPersistentVolumeClaimIacInput) *Locals {
+	target := iacInput.Target
 	spec := target.Spec
 
 	// Resource-identity labels: the kuberneteslabelkeys set, identical to what
@@ -52,7 +52,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kubernetespersistentvolum
 	labels := map[string]string{
 		kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
 		kuberneteslabelkeys.ResourceName: target.Metadata.Name,
-		kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesPersistentVolumeClaim.String(),
+		kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesPersistentVolumeClaim.String(),
 	}
 	if target.Metadata.Id != "" {
 		labels[kuberneteslabelkeys.ResourceId] = target.Metadata.Id

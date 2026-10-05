@@ -4,7 +4,7 @@ package dev.planton.gcp.gcpsslcertificate.v1alpha1;
 
 // Outputs produced after provisioning a self-managed GCP SSL certificate.
 // The private key is write-only in GCP and deliberately never appears here.
-message GcpSslCertificateStackOutputs {
+message GcpSslCertificateOutputs {
   // Self-link URI of the SSL certificate. This is the value a target HTTPS
   // (or SSL) proxy references in its ssl_certificates list — the composition
   // handle that terminates TLS at the load balancer.

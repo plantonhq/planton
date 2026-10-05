@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcplogbucket
 spec:
@@ -28,4 +28,4 @@ spec:
     - an empty bucket bills nothing -- ingestion charges $0.50/GiB (vended network logs $0.25/GiB with no free allotment) as sinks stream entries in, past the first 50 GiB/project/month
     - ingestion is per DESTINATION -- an entry routed to three buckets bills three times; what lands here is the sinks' (separate resources') routing decision
     - Log Analytics (enable_analytics) and the linked BigQuery dataset add no Logging charge -- the linked dataset duplicates no storage into BigQuery; SQL run through BigQuery services is governed by BigQuery's own pricing
-  notes: "The bucket is where Logging's money lands: routing is free (Log Router carries no charge) and the SOURCES pay nothing -- the one-time $0.50/GiB streaming charge and the past-30-days retention meter both bill the project holding the destination bucket (Cloud Logging pricing summary, Google Cloud Observability pricing page). The built-in _Required bucket is the free exception -- no storage or retention charges, fixed 400 days, undeletable -- and this component can only ever adopt, never create, the built-ins. deletion_policy ABANDON leaves the bucket storing and billing after it is unmanaged."
+  notes: "The bucket is where Logging's money lands: routing is free (Log Router carries no charge) and the SOURCES pay nothing -- the one-time $0.50/GiB streaming charge and the past-30-days retention meter both bill the project holding the destination bucket (Cloud Logging pricing summary, Google Cloud Observability pricing page). The built-in _Required bucket is the free exception -- no storage or retention charges, fixed 400 days, undeletable -- and this kind can only ever adopt, never create, the built-ins. deletion_policy ABANDON leaves the bucket storing and billing after it is unmanaged."

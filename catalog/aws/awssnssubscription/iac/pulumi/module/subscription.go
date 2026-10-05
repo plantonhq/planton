@@ -100,7 +100,7 @@ func subscription(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (
 		return nil, errors.Wrap(err, "failed to create SNS subscription")
 	}
 
-	// Export outputs matching AwsSnsSubscriptionStackOutputs.
+	// Export outputs matching AwsSnsSubscriptionOutputs.
 	ctx.Export(OpSubscriptionArn, sub.Arn)
 	ctx.Export(OpOwnerId, sub.OwnerId)
 	ctx.Export(OpPendingConfirmation, sub.PendingConfirmation)

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesissuer.v1alpha1;
 
-// KubernetesIssuerStackOutputs captures observable outputs after
+// KubernetesIssuerOutputs captures observable outputs after
 // the Issuer is created.
-message KubernetesIssuerStackOutputs {
+message KubernetesIssuerOutputs {
   // Namespace where the Issuer was created.
   string namespace = 1;
   // Issuer resource name (equals metadata.name).

@@ -60,8 +60,8 @@ A flexible, reusable component for displaying empty data scenarios:
 ```typescript
 <EmptyState
   icon={<CloudIcon />}
-  title="No cloud resources yet"
-  description="Create your first cloud resource to get started"
+  title="No infra components yet"
+  description="Create your first infra component to get started"
   actionLabel="Create Resource"
   onAction={handleCreate}
   secondaryActionLabel="Learn More"
@@ -96,12 +96,12 @@ Premium dashboard card component with hover effects and optional click actions:
 
 ```typescript
 <StatCard
-  title="Cloud Resources"
+  title="Infra Components"
   value={resourceCount}
   icon={<CloudIcon />}
   loading={isLoading}
   accent={true}
-  href="/cloud-resources"
+  href="/infra-components"
   trend={{ value: "+12%", positive: true }}
   subtitle="Last 7 days"
 />
@@ -172,7 +172,7 @@ flowchart LR
     MuiComponents --> Card[Cards]
     MuiComponents --> Table[Tables]
     MuiComponents --> Dialog[Dialogs]
-    MuiComponents --> 50+[50+ Components]
+    MuiComponents --> 50+[50+ UI Components]
 ```
 
 **Key improvements**:
@@ -192,27 +192,27 @@ Transformed the dashboard from a basic page to an engaging overview:
 **Before**:
 ```mermaid
 flowchart TB
-    Dashboard[Dashboard] --> List[Cloud Resources List]
+    Dashboard[Dashboard] --> List[Infra Components List]
 ```
 
 **After**:
 ```mermaid
 flowchart TB
     Dashboard[Dashboard] --> Stats[Stat Cards Row]
-    Dashboard --> List[Cloud Resources List]
+    Dashboard --> List[Infra Components List]
 
-    Stats --> CloudCount[Cloud Resources Count]
+    Stats --> CloudCount[Infra Components Count]
     Stats --> Creds[Credentials]
     Stats --> StackUpdates[Stack Updates]
 
-    CloudCount -->|Click| Navigate[Navigate to Cloud Resources]
+    CloudCount -->|Click| Navigate[Navigate to Infra Components]
     CloudCount -->|Loading| Skeleton[Skeleton State]
     CloudCount -->|API| RealTimeData[Real-time Data]
 ```
 
 **Features**:
-- Real-time cloud resource count with API integration
-- Three stat cards: Cloud Resources (accent), Credentials, Stack Updates
+- Real-time Infra Component count with API integration
+- Three stat cards: Infra Components (accent), Credentials, Stack Updates
 - Loading skeletons during data fetch
 - Clickable cards for navigation
 - Responsive grid layout (3 columns desktop, 2 tablet, 1 mobile)
@@ -305,15 +305,15 @@ const CustomCard = styled(Box)(({ theme }) => ({
 import { EmptyState } from '@/components/shared/empty-state';
 import { CloudOff } from '@mui/icons-material';
 
-function CloudResourcesPage() {
+function InfraComponentsPage() {
   const hasResources = resources.length > 0;
 
   if (!hasResources) {
     return (
       <EmptyState
         icon={<CloudOff />}
-        title="No cloud resources found"
-        description="Get started by deploying your first cloud resource"
+        title="No infra components found"
+        description="Get started by deploying your first infra component"
         actionLabel="Deploy Resource"
         onAction={() => router.push('/deploy')}
       />
@@ -358,7 +358,7 @@ function Dashboard() {
 
 ### Dashboard
 **Before**:
-- Basic page with just a cloud resources list
+- Basic page with just an Infra Components list
 - No overview metrics
 - Jarring loading experience with blank page
 

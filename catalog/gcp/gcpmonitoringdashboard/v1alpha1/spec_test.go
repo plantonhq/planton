@@ -27,7 +27,7 @@ var _ = ginkgo.Describe("GcpMonitoringDashboardSpec", func() {
 		return &GcpMonitoringDashboard{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpMonitoringDashboard",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-dashboard",
 			},
 			Spec: &GcpMonitoringDashboardSpec{

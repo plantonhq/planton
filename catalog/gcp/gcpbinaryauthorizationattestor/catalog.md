@@ -4,7 +4,7 @@ Declares a trusted signer for container images. Your build or QA pipeline signs 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `binaryauthorization.googleapis.com` and `containeranalysis.googleapis.com`
 - **Note** -- the attestor's own `containeranalysis.Note`, when `note` is set
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Binary Authorization attestor and Artifact Analysis note admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Binary Authorization attestor and Artifact Analysis note admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -51,7 +51,7 @@ spec:
 planton apply -f binary-authorization-attestor.yaml
 ```
 
-This creates the CI attestor and its note, verifying signatures made with the KMS key. A Stack Job tracks the provisioning in real time.
+This creates the CI attestor and its note, verifying signatures made with the KMS key. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -69,16 +69,16 @@ These are the most important decisions when configuring an attestor. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpKmsKey** | `attestationAuthorityNote.publicKeys[].pkixPublicKey.kmsKeyVersion` | `status.outputs.initial_version_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -97,5 +97,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Binary Authorization Policy**](/cloud-catalog/gcp-binary-authorization-policy) -- requires the attestor
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- the signing key
+- [**GCP Binary Authorization Policy**](/infra-catalog/gcp-binary-authorization-policy) -- requires the attestor
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- the signing key

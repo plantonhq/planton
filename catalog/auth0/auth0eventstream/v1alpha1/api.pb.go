@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0EventStream is a component that configures an Event Stream in Auth0.
+// Auth0EventStream is a kind that configures an Event Stream in Auth0.
 // Event Streams enable real-time delivery of Auth0 events to external systems like
 // AWS EventBridge or custom webhook endpoints.
 //
@@ -89,12 +89,12 @@ type Auth0EventStream struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "Auth0EventStream" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the event stream within Planton (becomes stream name)
 	// - org: Organization that owns this event stream
 	// - env: Environment (development, staging, production)
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the desired configuration for the Auth0 event stream.
 	// This includes destination type, subscriptions, and destination-specific configuration.
 	Spec *Auth0EventStreamSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -150,7 +150,7 @@ func (x *Auth0EventStream) GetKind() string {
 	return ""
 }
 
-func (x *Auth0EventStream) GetMetadata() *shared.CloudResourceMetadata {
+func (x *Auth0EventStream) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -175,10 +175,10 @@ func (x *Auth0EventStream) GetStatus() *Auth0EventStreamStatus {
 // This is populated by the deployment system and contains read-only outputs.
 type Auth0EventStreamStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs from the Auth0 event stream deployment.
+	// outputs contains the outputs from the Auth0 event stream deployment.
 	// These values are populated after successful deployment and include
 	// identifiers, status, and destination-specific information.
-	Outputs       *Auth0EventStreamStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *Auth0EventStreamOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -213,7 +213,7 @@ func (*Auth0EventStreamStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0eventstream_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Auth0EventStreamStatus) GetOutputs() *Auth0EventStreamStackOutputs {
+func (x *Auth0EventStreamStatus) GetOutputs() *Auth0EventStreamOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -231,11 +231,11 @@ const file_catalog_auth0_auth0eventstream_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10Auth0EventStreamR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamStatusR\x06status\"}\n" +
-	"\x16Auth0EventStreamStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamStackOutputsR\aoutputsB\xeb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamStatusR\x06status\"x\n" +
+	"\x16Auth0EventStreamStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamOutputsR\aoutputsB\xeb\x02\n" +
 	"/com.dev.planton.auth0.auth0eventstream.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/auth0/auth0eventstream/v1alpha1;auth0eventstreamv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Auth0.Auth0eventstream.V1alpha1\xca\x02+Dev\\Planton\\Auth0\\Auth0eventstream\\V1alpha1\xe2\x027Dev\\Planton\\Auth0\\Auth0eventstream\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Auth0::Auth0eventstream::V1alpha1b\x06proto3"
 
 var (
@@ -254,15 +254,15 @@ var file_catalog_auth0_auth0eventstream_v1alpha1_api_proto_msgTypes = make([]pro
 var file_catalog_auth0_auth0eventstream_v1alpha1_api_proto_goTypes = []any{
 	(*Auth0EventStream)(nil),             // 0: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStream
 	(*Auth0EventStreamStatus)(nil),       // 1: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*Auth0EventStreamSpec)(nil),         // 3: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamSpec
-	(*Auth0EventStreamStackOutputs)(nil), // 4: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamStackOutputs
+	(*Auth0EventStreamOutputs)(nil),      // 4: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamOutputs
 }
 var file_catalog_auth0_auth0eventstream_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStream.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStream.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStream.spec:type_name -> dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamSpec
 	1, // 2: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStream.status:type_name -> dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamStatus
-	4, // 3: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamStatus.outputs:type_name -> dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamStackOutputs
+	4, // 3: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamStatus.outputs:type_name -> dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

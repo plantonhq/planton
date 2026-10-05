@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzurePrivateDnsResolverStackOutputs** captures the outputs of
+// **AzurePrivateDnsResolverOutputs** captures the outputs of
 // provisioning a DNS Private Resolver and its endpoints.
-type AzurePrivateDnsResolverStackOutputs struct {
+type AzurePrivateDnsResolverOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The resolver's ARM resource ID
 	// (.../providers/Microsoft.Network/dnsResolvers/{name}).
@@ -49,20 +49,20 @@ type AzurePrivateDnsResolverStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzurePrivateDnsResolverStackOutputs) Reset() {
-	*x = AzurePrivateDnsResolverStackOutputs{}
+func (x *AzurePrivateDnsResolverOutputs) Reset() {
+	*x = AzurePrivateDnsResolverOutputs{}
 	mi := &file_catalog_azure_azureprivatednsresolver_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePrivateDnsResolverStackOutputs) String() string {
+func (x *AzurePrivateDnsResolverOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePrivateDnsResolverStackOutputs) ProtoMessage() {}
+func (*AzurePrivateDnsResolverOutputs) ProtoMessage() {}
 
-func (x *AzurePrivateDnsResolverStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzurePrivateDnsResolverOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureprivatednsresolver_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,47 +74,47 @@ func (x *AzurePrivateDnsResolverStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePrivateDnsResolverStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzurePrivateDnsResolverStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePrivateDnsResolverOutputs.ProtoReflect.Descriptor instead.
+func (*AzurePrivateDnsResolverOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureprivatednsresolver_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePrivateDnsResolverStackOutputs) GetDnsResolverId() string {
+func (x *AzurePrivateDnsResolverOutputs) GetDnsResolverId() string {
 	if x != nil {
 		return x.DnsResolverId
 	}
 	return ""
 }
 
-func (x *AzurePrivateDnsResolverStackOutputs) GetDnsResolverName() string {
+func (x *AzurePrivateDnsResolverOutputs) GetDnsResolverName() string {
 	if x != nil {
 		return x.DnsResolverName
 	}
 	return ""
 }
 
-func (x *AzurePrivateDnsResolverStackOutputs) GetInboundEndpointIp() string {
+func (x *AzurePrivateDnsResolverOutputs) GetInboundEndpointIp() string {
 	if x != nil {
 		return x.InboundEndpointIp
 	}
 	return ""
 }
 
-func (x *AzurePrivateDnsResolverStackOutputs) GetInboundEndpointIps() map[string]string {
+func (x *AzurePrivateDnsResolverOutputs) GetInboundEndpointIps() map[string]string {
 	if x != nil {
 		return x.InboundEndpointIps
 	}
 	return nil
 }
 
-func (x *AzurePrivateDnsResolverStackOutputs) GetOutboundEndpointId() string {
+func (x *AzurePrivateDnsResolverOutputs) GetOutboundEndpointId() string {
 	if x != nil {
 		return x.OutboundEndpointId
 	}
 	return ""
 }
 
-func (x *AzurePrivateDnsResolverStackOutputs) GetOutboundEndpointIds() map[string]string {
+func (x *AzurePrivateDnsResolverOutputs) GetOutboundEndpointIds() map[string]string {
 	if x != nil {
 		return x.OutboundEndpointIds
 	}
@@ -125,14 +125,14 @@ var File_catalog_azure_azureprivatednsresolver_v1alpha1_outputs_proto protorefle
 
 const file_catalog_azure_azureprivatednsresolver_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/azure/azureprivatednsresolver/v1alpha1/outputs.proto\x122dev.planton.azure.azureprivatednsresolver.v1alpha1\"\xb5\x05\n" +
-	"#AzurePrivateDnsResolverStackOutputs\x12&\n" +
+	"<catalog/azure/azureprivatednsresolver/v1alpha1/outputs.proto\x122dev.planton.azure.azureprivatednsresolver.v1alpha1\"\xa6\x05\n" +
+	"\x1eAzurePrivateDnsResolverOutputs\x12&\n" +
 	"\x0fdns_resolver_id\x18\x01 \x01(\tR\rdnsResolverId\x12*\n" +
 	"\x11dns_resolver_name\x18\x02 \x01(\tR\x0fdnsResolverName\x12.\n" +
-	"\x13inbound_endpoint_ip\x18\x03 \x01(\tR\x11inboundEndpointIp\x12\xa1\x01\n" +
-	"\x14inbound_endpoint_ips\x18\x04 \x03(\v2o.dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStackOutputs.InboundEndpointIpsEntryR\x12inboundEndpointIps\x120\n" +
-	"\x14outbound_endpoint_id\x18\x05 \x01(\tR\x12outboundEndpointId\x12\xa4\x01\n" +
-	"\x15outbound_endpoint_ids\x18\x06 \x03(\v2p.dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStackOutputs.OutboundEndpointIdsEntryR\x13outboundEndpointIds\x1aE\n" +
+	"\x13inbound_endpoint_ip\x18\x03 \x01(\tR\x11inboundEndpointIp\x12\x9c\x01\n" +
+	"\x14inbound_endpoint_ips\x18\x04 \x03(\v2j.dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverOutputs.InboundEndpointIpsEntryR\x12inboundEndpointIps\x120\n" +
+	"\x14outbound_endpoint_id\x18\x05 \x01(\tR\x12outboundEndpointId\x12\x9f\x01\n" +
+	"\x15outbound_endpoint_ids\x18\x06 \x03(\v2k.dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverOutputs.OutboundEndpointIdsEntryR\x13outboundEndpointIds\x1aE\n" +
 	"\x17InboundEndpointIpsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aF\n" +
@@ -155,13 +155,13 @@ func file_catalog_azure_azureprivatednsresolver_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_azure_azureprivatednsresolver_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_azure_azureprivatednsresolver_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzurePrivateDnsResolverStackOutputs)(nil), // 0: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStackOutputs
-	nil, // 1: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStackOutputs.InboundEndpointIpsEntry
-	nil, // 2: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStackOutputs.OutboundEndpointIdsEntry
+	(*AzurePrivateDnsResolverOutputs)(nil), // 0: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverOutputs
+	nil,                                    // 1: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverOutputs.InboundEndpointIpsEntry
+	nil,                                    // 2: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverOutputs.OutboundEndpointIdsEntry
 }
 var file_catalog_azure_azureprivatednsresolver_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStackOutputs.inbound_endpoint_ips:type_name -> dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStackOutputs.InboundEndpointIpsEntry
-	2, // 1: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStackOutputs.outbound_endpoint_ids:type_name -> dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStackOutputs.OutboundEndpointIdsEntry
+	1, // 0: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverOutputs.inbound_endpoint_ips:type_name -> dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverOutputs.InboundEndpointIpsEntry
+	2, // 1: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverOutputs.outbound_endpoint_ids:type_name -> dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverOutputs.OutboundEndpointIdsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

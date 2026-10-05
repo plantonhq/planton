@@ -1,12 +1,12 @@
 # Azure Firewall Family: Policy, Rule Collection Groups, Firewall, and IP Groups
 
 **Date**: 2026-07-14
-**Type**: Feature (new deployment components)
+**Type**: Feature (new catalog kinds)
 **Scope**: `apis/dev/planton/provider/azure/{azurefirewallpolicy,azurefirewallpolicyrulecollectiongroup,azurefirewall,azureipgroup}/v1`, kind registry, Azure E2E harness, outputs conformance
 
 ## Summary
 
-Four new Azure deployment components bring centralized network security to
+Four new Azure catalog kinds bring centralized network security to
 the catalog, modeled on Azure's own separation of concerns: a reusable
 **Firewall Policy** (the rule-and-inspection document), independently
 deployable **Rule Collection Groups** (the rules, one group per team or

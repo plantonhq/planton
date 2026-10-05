@@ -3,11 +3,11 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetespriorityclass.v1alpha1;
 
 /**
- * **KubernetesPriorityClassStackOutputs** captures the observable handles of
+ * **KubernetesPriorityClassOutputs** captures the observable handles of
  * a deployed PriorityClass. `priority_class_name` is the composition handle
  * workload pod specs reference.
  */
-message KubernetesPriorityClassStackOutputs {
+message KubernetesPriorityClassOutputs {
   // The name of the PriorityClass object as created in the cluster — the
   // value pods put in `priority_class_name`.
   string priority_class_name = 1;

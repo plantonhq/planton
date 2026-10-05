@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpBigQueryDatasetStackInput struct {
+type GcpBigQueryDatasetIacInput struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Target         *GcpBigQueryDataset    `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpBigQueryDatasetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpBigQueryDatasetStackInput) Reset() {
-	*x = GcpBigQueryDatasetStackInput{}
+func (x *GcpBigQueryDatasetIacInput) Reset() {
+	*x = GcpBigQueryDatasetIacInput{}
 	mi := &file_catalog_gcp_gcpbigquerydataset_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpBigQueryDatasetStackInput) String() string {
+func (x *GcpBigQueryDatasetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpBigQueryDatasetStackInput) ProtoMessage() {}
+func (*GcpBigQueryDatasetIacInput) ProtoMessage() {}
 
-func (x *GcpBigQueryDatasetStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpBigQueryDatasetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpbigquerydataset_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpBigQueryDatasetStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpBigQueryDatasetStackInput.ProtoReflect.Descriptor instead.
-func (*GcpBigQueryDatasetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpBigQueryDatasetIacInput.ProtoReflect.Descriptor instead.
+func (*GcpBigQueryDatasetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbigquerydataset_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpBigQueryDatasetStackInput) GetTarget() *GcpBigQueryDataset {
+func (x *GcpBigQueryDatasetIacInput) GetTarget() *GcpBigQueryDataset {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpBigQueryDatasetStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpBigQueryDatasetIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpbigquerydataset_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpbigquerydataset_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpbigquerydataset/v1alpha1/input.proto\x12+dev.planton.gcp.gcpbigquerydataset.v1alpha1\x1a1catalog/gcp/gcpbigquerydataset/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc4\x01\n" +
-	"\x1cGcpBigQueryDatasetStackInput\x12W\n" +
+	"3catalog/gcp/gcpbigquerydataset/v1alpha1/input.proto\x12+dev.planton.gcp.gcpbigquerydataset.v1alpha1\x1a1catalog/gcp/gcpbigquerydataset/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc2\x01\n" +
+	"\x1aGcpBigQueryDatasetIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDatasetR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xef\x02\n" +
 	"/com.dev.planton.gcp.gcpbigquerydataset.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpbigquerydataset_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpbigquerydataset_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpbigquerydataset_v1alpha1_input_proto_goTypes = []any{
-	(*GcpBigQueryDatasetStackInput)(nil), // 0: dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDatasetStackInput
-	(*GcpBigQueryDataset)(nil),           // 1: dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDataset
-	(*gcp.GcpProviderConfig)(nil),        // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpBigQueryDatasetIacInput)(nil), // 0: dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDatasetIacInput
+	(*GcpBigQueryDataset)(nil),         // 1: dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDataset
+	(*gcp.GcpProviderConfig)(nil),      // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpbigquerydataset_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDatasetStackInput.target:type_name -> dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDataset
-	2, // 1: dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDatasetStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDatasetIacInput.target:type_name -> dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDataset
+	2, // 1: dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDatasetIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

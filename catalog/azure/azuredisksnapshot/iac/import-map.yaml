@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuredisksnapshot
 spec:
@@ -7,7 +7,7 @@ spec:
   values:
     - name: snapshot_id
       derivations:
-        - from_stack_output: snapshot_id
+        - from_output: snapshot_id
       where_to_find: >-
         Portal -> Snapshots -> the snapshot -> Properties -> Resource ID,
         or `az snapshot show --name <name> -g <rg> --query id`.

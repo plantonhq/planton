@@ -15,30 +15,30 @@ import (
 // semantics — the exact semantic twin of the Terraform module's
 // helm_release with values = [typed, helm_values, fullnameOverride
 // re-pin].
-func Resources(ctx *pulumi.Context, stackInput *kubernetesopenfgav1alpha1.KubernetesOpenFgaStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetesopenfgav1alpha1.KubernetesOpenFgaIacInput) error {
 	// NAME BUDGET, checked before anything is created: the chart
 	// truncates its fullname at 63 characters THEN derives
 	// `<fullname>-migrate` for the migration Job, whose pod label value
 	// also caps at 63 — a name past 55 would truncate silently or push
 	// the Job's label over the limit. Fail loudly instead (Terraform
 	// twin: the lifecycle precondition on helm_release.openfga).
-	if len(stackInput.Target.Metadata.Name) > vars.MaxMetadataNameLength {
+	if len(iacInput.Target.Metadata.Name) > vars.MaxMetadataNameLength {
 		return errors.Errorf(
 			"metadata.name %q is %d characters; the OpenFGA chart's name budget allows at most %d "+
 				"(the chart truncates its fullname at 63 and appends \"-migrate\" for the migration Job)",
-			stackInput.Target.Metadata.Name, len(stackInput.Target.Metadata.Name), vars.MaxMetadataNameLength)
+			iacInput.Target.Metadata.Name, len(iacInput.Target.Metadata.Name), vars.MaxMetadataNameLength)
 	}
 
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

@@ -193,7 +193,7 @@ func buildRestoreConfig(
 
 ```go
 // Build restore configuration (standby block + STANDBY_* env vars)
-operatorBucket := "" // TODO: Extract from stackInput if available
+operatorBucket := "" // TODO: Extract from iacInput if available
 var restoreConfig *PostgresKubernetesRestoreConfig
 if locals.PostgresKubernetes.Spec.BackupConfig != nil {
     restoreConfig = locals.PostgresKubernetes.Spec.BackupConfig.Restore
@@ -300,7 +300,7 @@ spec:
 **Deploy**:
 
 ```bash
-cd ops/organizations/planton/infra-hub/cloud-resources/app-prod/kubernetes/workload/app/dependencies/databases
+cd ops/organizations/planton/infra-hub/infra-components/app-prod/kubernetes/workload/app/dependencies/databases
 
 export POSTGRES_MODULE=~/scm/github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/postgreskubernetes/v1/iac/pulumi
 

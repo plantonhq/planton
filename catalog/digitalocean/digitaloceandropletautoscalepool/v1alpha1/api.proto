@@ -16,7 +16,7 @@ message DigitalOceanDropletAutoscalePool {
   string kind = 2 [(buf.validate.field).string.const = 'DigitalOceanDropletAutoscalePool'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   DigitalOceanDropletAutoscalePoolSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,7 +27,7 @@ message DigitalOceanDropletAutoscalePool {
 
 // digital-ocean-droplet-autoscale-pool status
 message DigitalOceanDropletAutoscalePoolStatus {
-  //stack-outputs
-  //  digital-ocean-droplet-autoscale-pool stack-outputs
-  DigitalOceanDropletAutoscalePoolStackOutputs outputs = 1;
+  //outputs
+  //  digital-ocean-droplet-autoscale-pool outputs
+  DigitalOceanDropletAutoscalePoolOutputs outputs = 1;
 }

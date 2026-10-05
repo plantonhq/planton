@@ -8,13 +8,13 @@
 #   iac-source.zip        -- IaC source (.go, .tf, .md, .yaml under iac/) plus
 #                            the provider import catalogs (aa_import/catalog.yaml
 #                            -- read together with each kind's iac/import-map.yaml)
-#   catalog-pages.zip     -- Per-component kind-root catalog.md files
+#   catalog-pages.zip     -- each catalog kind root's catalog.md
 #   proto-source.zip      -- Raw proto source (spec, api, input, outputs)
-#   reference-pack.zip    -- The component reference pack: generated reference
+#   reference-pack.zip    -- The kind reference pack: generated reference
 #                            pages, catalog indexes, the cross-reference graph,
 #                            the commons page, the authored GUIDE.md / patterns
 #                            wisdom layer, and the verified fact-sheet layer
-#                            (per-component cost/controls/permissions sidecars,
+#                            (per-kind cost/controls/permissions sidecars,
 #                            the generated per-preset cost estimates, and the
 #                            central compliance catalog + framework crosswalks)
 #   conversion-corpus.zip -- The golden conversion corpus: every authored
@@ -134,17 +134,17 @@ create_zip() {
 }
 
 # ─── Presets ─────────────────────────────────────────────────────────────────
-# Presets live at the component root (catalog/{provider}/{kind}/presets/).
+# Presets live at the kind root (catalog/{provider}/{kind}/presets/).
 if wants presets; then
   echo "Presets..."
   {
     find "$CATALOG_ROOT" \( -path '*/presets/*.yaml' -o -path '*/presets/*.md' \) ! -path '*/_test/*'
-    echo "shared/cloudresourcekind/cloud_resource_kind.proto"
+    echo "shared/catalogkind/catalog_kind.proto"
   } | create_zip "presets.zip" "presets"
 fi
 
 # ─── IaC Source ──────────────────────────────────────────────────────────────
-# IaC modules live at the component root (catalog/{provider}/{kind}/iac/).
+# IaC modules live at the kind root (catalog/{provider}/{kind}/iac/).
 # Mirrors the ALLOWED_EXTENSIONS in iac-bundler.ts: .go, .tf, .md, .yaml
 # Excludes hidden dirs, vendor, and node_modules (same as iac-bundler.ts).
 # The provider-level import catalogs (catalog/{provider}/aa_import/catalog.yaml)
@@ -196,12 +196,12 @@ fi
 # pinned by the reference generator's contract tests. Name-based selection
 # also survives api-version directory renames, which path patterns would not.
 #
-# The fact-sheet layer rides the same pack: the per-component sidecar names
+# The fact-sheet layer rides the same pack: the per-kind sidecar names
 # (cost.yaml, controls.yaml, iac/permissions.yaml) are anatomy-enforced and
 # unique to fact-sheets, and the central trees (_pricing/estimates/ for the
 # generated per-preset dollar estimates, _compliance/ for the control catalog
 # and framework crosswalks) are selected by path like _patterns/. Coverage is
-# presence-based -- only covered components carry sidecars -- so absence in
+# presence-based -- only covered kinds carry sidecars -- so absence in
 # the pack means "not yet published", never zero.
 #
 # This selection MUST stay mirrored with the self-contained catalog skill's

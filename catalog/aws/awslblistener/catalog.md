@@ -4,7 +4,7 @@ Deploys an ELBv2 listener — the port/protocol entry point on a load balancer, 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Listener** -- on the referenced load balancer, with its port, protocol, and default-action chain
 - **Certificate attachments** -- the default certificate plus any SNI certificates (HTTPS/TLS listeners)
@@ -17,7 +17,7 @@ The load balancer, target groups, and listener rules are separate components —
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Load Balancer** -- an AwsAlb (or AwsNlb) referenced by its `load_balancer_arn` output; the wizard's family toggle swaps the reference target.
 - **Certificates** -- AwsCertManagerCert resources referenced by their `cert_arn` outputs for HTTPS/TLS listeners.
 - **Target Groups** -- AwsLbTargetGroup resources for the forward actions, referenced by their `target_group_arn` outputs.
@@ -74,7 +74,7 @@ spec:
 planton apply -f listener.yaml
 ```
 
-This attaches a TLS-terminating HTTPS listener to the ALB, forwarding everything to the web-servers group. A Stack Job tracks the provisioning in real time.
+This attaches a TLS-terminating HTTPS listener to the ALB, forwarding everything to the web-servers group. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -126,7 +126,7 @@ These are the most important decisions when configuring a listener. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -136,9 +136,9 @@ These are the most important decisions when configuring a listener. Explore the 
 | **AwsCognitoUserPool** | `defaultActions[].authenticateCognito.userPoolArn` / `.userPoolDomain` | `status.outputs.user_pool_arn` / `status.outputs.user_pool_domain` |
 | **AwsCognitoUserPoolClient** | `defaultActions[].authenticateCognito.userPoolClientId` | `status.outputs.client_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -156,9 +156,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS ALB**](/cloud-catalog/aws-alb) -- the Layer-7 load balancer this listener attaches to, referenced by `loadBalancerArn`.
-- [**AWS NLB**](/cloud-catalog/aws-nlb) -- the Layer-4 alternative attachment, taking forward-only protocols.
-- [**AWS LB Listener Rule**](/cloud-catalog/aws-lb-listener-rule) -- per-service routing attached through this listener's `listener_arn` output.
-- [**AWS LB Target Group**](/cloud-catalog/aws-lb-target-group) -- the forward destinations, referenced per action.
-- [**AWS ACM Certificate**](/cloud-catalog/aws-cert-manager-cert) -- the TLS material, referenced by `certificateArn`.
-- [**AWS Cognito User Pool**](/cloud-catalog/aws-cognito-user-pool) -- the user pool behind authenticate-cognito actions.
+- [**AWS ALB**](/infra-catalog/aws-alb) -- the Layer-7 load balancer this listener attaches to, referenced by `loadBalancerArn`.
+- [**AWS NLB**](/infra-catalog/aws-nlb) -- the Layer-4 alternative attachment, taking forward-only protocols.
+- [**AWS LB Listener Rule**](/infra-catalog/aws-lb-listener-rule) -- per-service routing attached through this listener's `listener_arn` output.
+- [**AWS LB Target Group**](/infra-catalog/aws-lb-target-group) -- the forward destinations, referenced per action.
+- [**AWS ACM Certificate**](/infra-catalog/aws-cert-manager-cert) -- the TLS material, referenced by `certificateArn`.
+- [**AWS Cognito User Pool**](/infra-catalog/aws-cognito-user-pool) -- the user pool behind authenticate-cognito actions.

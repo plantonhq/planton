@@ -36,7 +36,7 @@ var _ = ginkgo.Describe("GcpIdentityPlatformConfigSpec", func() {
 		return &GcpIdentityPlatformConfig{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpIdentityPlatformConfig",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-idp-config",
 			},
 			Spec: &GcpIdentityPlatformConfigSpec{

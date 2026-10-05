@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarecustomhostnamefallbackorigin.v1alpha1;
 
-// CloudflareCustomHostnameFallbackOriginStackOutputs captures the outputs after
+// CloudflareCustomHostnameFallbackOriginOutputs captures the outputs after
 // setting a zone's fallback origin.
-message CloudflareCustomHostnameFallbackOriginStackOutputs {
+message CloudflareCustomHostnameFallbackOriginOutputs {
   // Field 1 (status) was removed: fallback-origin deployment is
   // asynchronous (a fresh origin transitions pending_deployment -> active
-  // seconds later), so a point-in-time phase can never be a stable stack
+  // seconds later), so a point-in-time phase can never be a stable
   // output -- it flips on the first refresh after the transition and
   // re-plans forever (the same class measured live on the Authenticated
   // Origin Pulls certificate, 2026-08-28). Read deployment status from the
@@ -24,7 +24,7 @@ message CloudflareCustomHostnameFallbackOriginStackOutputs {
   // Field 4 (errors) was removed: like the sibling custom hostname's
   // verification_errors (measured live 2026-08-29), it is a transient
   // diagnostic the server populates and clears asynchronously after apply,
-  // so it can never be a stable stack output -- an output-only change fails
+  // so it can never be a stable output -- an output-only change fails
   // every refresh-inclusive idempotency re-plan (the async-phase-output
   // class, list form). Read deployment errors from the Cloudflare API or
   // dashboard instead.

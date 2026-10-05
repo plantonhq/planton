@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDataProtectionResourceGuardStackOutputs** captures the
+// **AzureDataProtectionResourceGuardOutputs** captures the
 // outputs of provisioning a Data Protection Resource Guard.
-type AzureDataProtectionResourceGuardStackOutputs struct {
+type AzureDataProtectionResourceGuardOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the guard -- what backup vaults
 	// reference to put themselves under the guard's Multi-User
@@ -36,20 +36,20 @@ type AzureDataProtectionResourceGuardStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AzureDataProtectionResourceGuardStackOutputs) Reset() {
-	*x = AzureDataProtectionResourceGuardStackOutputs{}
+func (x *AzureDataProtectionResourceGuardOutputs) Reset() {
+	*x = AzureDataProtectionResourceGuardOutputs{}
 	mi := &file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataProtectionResourceGuardStackOutputs) String() string {
+func (x *AzureDataProtectionResourceGuardOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataProtectionResourceGuardStackOutputs) ProtoMessage() {}
+func (*AzureDataProtectionResourceGuardOutputs) ProtoMessage() {}
 
-func (x *AzureDataProtectionResourceGuardStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDataProtectionResourceGuardOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AzureDataProtectionResourceGuardStackOutputs) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataProtectionResourceGuardStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDataProtectionResourceGuardStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataProtectionResourceGuardOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDataProtectionResourceGuardOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataProtectionResourceGuardStackOutputs) GetResourceGuardId() string {
+func (x *AzureDataProtectionResourceGuardOutputs) GetResourceGuardId() string {
 	if x != nil {
 		return x.ResourceGuardId
 	}
 	return ""
 }
 
-func (x *AzureDataProtectionResourceGuardStackOutputs) GetResourceGuardName() string {
+func (x *AzureDataProtectionResourceGuardOutputs) GetResourceGuardName() string {
 	if x != nil {
 		return x.ResourceGuardName
 	}
@@ -84,8 +84,8 @@ var File_catalog_azure_azuredataprotectionresourceguard_v1alpha1_outputs_proto p
 
 const file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/azure/azuredataprotectionresourceguard/v1alpha1/outputs.proto\x12;dev.planton.azure.azuredataprotectionresourceguard.v1alpha1\"\x8a\x01\n" +
-	",AzureDataProtectionResourceGuardStackOutputs\x12*\n" +
+	"Ecatalog/azure/azuredataprotectionresourceguard/v1alpha1/outputs.proto\x12;dev.planton.azure.azuredataprotectionresourceguard.v1alpha1\"\x85\x01\n" +
+	"'AzureDataProtectionResourceGuardOutputs\x12*\n" +
 	"\x11resource_guard_id\x18\x01 \x01(\tR\x0fresourceGuardId\x12.\n" +
 	"\x13resource_guard_name\x18\x02 \x01(\tR\x11resourceGuardNameB\xdf\x03\n" +
 	"?com.dev.planton.azure.azuredataprotectionresourceguard.v1alpha1B\fOutputsProtoP\x01Z}github.com/plantonhq/planton/catalog/azure/azuredataprotectionresourceguard/v1alpha1;azuredataprotectionresourceguardv1alpha1\xa2\x02\x04DPAA\xaa\x02;Dev.Planton.Azure.Azuredataprotectionresourceguard.V1alpha1\xca\x02;Dev\\Planton\\Azure\\Azuredataprotectionresourceguard\\V1alpha1\xe2\x02GDev\\Planton\\Azure\\Azuredataprotectionresourceguard\\V1alpha1\\GPBMetadata\xea\x02?Dev::Planton::Azure::Azuredataprotectionresourceguard::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_outputs_proto_
 
 var file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDataProtectionResourceGuardStackOutputs)(nil), // 0: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardStackOutputs
+	(*AzureDataProtectionResourceGuardOutputs)(nil), // 0: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardOutputs
 }
 var file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

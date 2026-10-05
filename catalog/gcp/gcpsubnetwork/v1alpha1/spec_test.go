@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpSubnetworkSpec", func() {
 		return &GcpSubnetwork{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpSubnetwork",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-subnetwork",
 			},
 			Spec: &GcpSubnetworkSpec{

@@ -5,9 +5,9 @@ package dev.planton.aws.awssagemakermlflowserver.v1alpha1;
 import "catalog/aws/awssagemakermlflowserver/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSagemakerMlflowServerStackInput is the input for the IaC modules
+// AwsSagemakerMlflowServerIacInput is the input for the IaC modules
 // that deploy the MLflow tracking server.
-message AwsSagemakerMlflowServerStackInput {
+message AwsSagemakerMlflowServerIacInput {
   // target is the AwsSagemakerMlflowServer resource to deploy.
   AwsSagemakerMlflowServer target = 1;
   // provider_config contains the AWS provider credentials and configuration.

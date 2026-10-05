@@ -1,7 +1,7 @@
 # AzureFrontDoorProfile - Terraform Module
 
-Terraform implementation for the AzureFrontDoorProfile deployment
-component.
+Terraform implementation for the AzureFrontDoorProfile
+kind.
 
 ## Resources Created
 

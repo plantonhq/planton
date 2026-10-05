@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,9 +6,9 @@
 # unmodeled: its two nodes bill at a node type INHERITED from the global
 # datastore's primary, which this manifest cannot know -- an estimate here
 # would be a guess wearing a dollar sign, so the preset renders no price.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awsrediselasticache
 spec:
@@ -52,4 +52,4 @@ spec:
         - snapshot storage beyond the free allowance across the 14-day retention grows with dataset size
         - slow-log delivery bills CloudWatch Logs ingestion with engine activity
         - cross-AZ replication transfer is write-volume-dependent
-      notes: The largest committed spend in this component's presets -- nine memory-optimized nodes around the clock before a single command runs.
+      notes: The largest committed spend in this kind's presets -- nine memory-optimized nodes around the clock before a single command runs.

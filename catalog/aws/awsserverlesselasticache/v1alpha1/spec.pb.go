@@ -31,7 +31,7 @@ const (
 // AWS automatically scales compute (measured in ElastiCache Processing Units,
 // ECPU) and storage (measured in GB) within the limits you configure.
 //
-// This component supports all three ElastiCache engines:
+// This kind supports all three ElastiCache engines:
 //
 //   - **Redis** — in-memory data store with persistence, replication, and
 //     fine-grained access control via Redis ACL user groups.
@@ -48,7 +48,7 @@ const (
 //   - `kms_key_id` and `subnet_ids` are ForceNew — changing them destroys and
 //     recreates the cache. Design encryption and networking choices upfront.
 //   - Credentials, region, and deployment workflow live outside this spec in
-//     stack inputs.
+//     IaC inputs.
 type AwsServerlessElasticacheSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

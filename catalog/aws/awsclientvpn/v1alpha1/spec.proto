@@ -40,7 +40,7 @@ import "shared/options/options.proto";
 // Everything else updates in place.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 message AwsClientVpnSpec {
   // The AWS region where the Client VPN endpoint will be created.
   // Example: "us-west-2", "eu-west-1"

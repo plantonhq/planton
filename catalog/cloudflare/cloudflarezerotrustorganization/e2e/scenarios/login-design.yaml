@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: cloudflarezerotrustorganization
+    e2e-catalog-kind: cloudflarezerotrustorganization
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-required-env: PLANTON_E2E_CLOUDFLARE_TEAM_DOMAIN

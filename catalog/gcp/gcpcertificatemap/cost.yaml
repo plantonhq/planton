@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpcertificatemap
 spec:
   billing_model: free
   free_tier: A certificate map and its entries carry no meter -- Certificate Manager's pricing enumerates its charges as certificates per month, TLS connections for large-key certificates, and mTLS connections, and neither maps nor map entries appear among them. The routing table itself costs nothing at any entry count.
-  notes: "No field of this spec buys anything directly, but the map is a routing table OVER metered objects. Every certificate an entry references (entries[].certificates) is a GcpCertManagerCert counting toward Certificate Manager's per-project certificate meter -- the project's first 100 certificates are free, then each bills monthly -- so a map fanning out to hundreds of certificates describes real recurring spend that bills on the CERTIFICATES, not here. Referenced certificates keyed with RSA-3072/RSA-4096 add $0.45 per million TLS connections served through them. And the map only does anything attached to a target HTTPS proxy, whose load balancer bills forwarding-rule hours and data processing as its own kinds. The map is free leverage over all of it."
+  notes: "No field of this spec buys anything directly, but the map is a routing table OVER metered objects. Every certificate an entry references (entries[].certificates) is a GcpCertManagerCert counting toward Certificate Manager's per-project certificate meter -- the project's first 100 certificates are free, then each bills monthly -- so a map fanning out to hundreds of certificates describes real recurring spend that bills on the CERTIFICATES, not here. Referenced certificates keyed with RSA-3072/RSA-4096 add $0.45 per million TLS connections served through them. And the map only does anything attached to a target HTTPS proxy, whose load balancer bills forwarding-rule hours and data processing as its own components. The map is free leverage over all of it."

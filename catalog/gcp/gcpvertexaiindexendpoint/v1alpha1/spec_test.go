@@ -28,7 +28,7 @@ var _ = ginkgo.Describe("GcpVertexAiIndexEndpointSpec", func() {
 		return &GcpVertexAiIndexEndpoint{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVertexAiIndexEndpoint",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-index-endpoint",
 			},
 			Spec: &GcpVertexAiIndexEndpointSpec{
@@ -233,7 +233,7 @@ var _ = ginkgo.Describe("GcpVertexAiIndexEndpointSpec", func() {
 		msg := &GcpVertexAiIndexEndpoint{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVertexAiIndexEndpoint",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-index-endpoint",
 			},
 		}

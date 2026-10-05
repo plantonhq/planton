@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureLoadBalancerStackOutputs** captures the outputs of provisioning
+// **AzureLoadBalancerOutputs** captures the outputs of provisioning
 // an Azure Load Balancer.
 //
 // The maps keyed by sub-resource NAME are the composition seams: backend
@@ -31,7 +31,7 @@ const (
 // NAT-rule association references `status.outputs.nat_rule_ids.<rule-name>`,
 // and a scale set's rolling-upgrade health probe references
 // `status.outputs.probe_ids.<probe-name>`.
-type AzureLoadBalancerStackOutputs struct {
+type AzureLoadBalancerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the load balancer.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/loadBalancers/{name}
@@ -71,20 +71,20 @@ type AzureLoadBalancerStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureLoadBalancerStackOutputs) Reset() {
-	*x = AzureLoadBalancerStackOutputs{}
+func (x *AzureLoadBalancerOutputs) Reset() {
+	*x = AzureLoadBalancerOutputs{}
 	mi := &file_catalog_azure_azureloadbalancer_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureLoadBalancerStackOutputs) String() string {
+func (x *AzureLoadBalancerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureLoadBalancerStackOutputs) ProtoMessage() {}
+func (*AzureLoadBalancerOutputs) ProtoMessage() {}
 
-func (x *AzureLoadBalancerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureLoadBalancerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureloadbalancer_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -96,61 +96,61 @@ func (x *AzureLoadBalancerStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureLoadBalancerStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureLoadBalancerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureLoadBalancerOutputs.ProtoReflect.Descriptor instead.
+func (*AzureLoadBalancerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureloadbalancer_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureLoadBalancerStackOutputs) GetLoadBalancerId() string {
+func (x *AzureLoadBalancerOutputs) GetLoadBalancerId() string {
 	if x != nil {
 		return x.LoadBalancerId
 	}
 	return ""
 }
 
-func (x *AzureLoadBalancerStackOutputs) GetLoadBalancerName() string {
+func (x *AzureLoadBalancerOutputs) GetLoadBalancerName() string {
 	if x != nil {
 		return x.LoadBalancerName
 	}
 	return ""
 }
 
-func (x *AzureLoadBalancerStackOutputs) GetPrivateIpAddress() string {
+func (x *AzureLoadBalancerOutputs) GetPrivateIpAddress() string {
 	if x != nil {
 		return x.PrivateIpAddress
 	}
 	return ""
 }
 
-func (x *AzureLoadBalancerStackOutputs) GetPrivateIpAddresses() []string {
+func (x *AzureLoadBalancerOutputs) GetPrivateIpAddresses() []string {
 	if x != nil {
 		return x.PrivateIpAddresses
 	}
 	return nil
 }
 
-func (x *AzureLoadBalancerStackOutputs) GetFrontendIpConfigurationIds() map[string]string {
+func (x *AzureLoadBalancerOutputs) GetFrontendIpConfigurationIds() map[string]string {
 	if x != nil {
 		return x.FrontendIpConfigurationIds
 	}
 	return nil
 }
 
-func (x *AzureLoadBalancerStackOutputs) GetBackendPoolIds() map[string]string {
+func (x *AzureLoadBalancerOutputs) GetBackendPoolIds() map[string]string {
 	if x != nil {
 		return x.BackendPoolIds
 	}
 	return nil
 }
 
-func (x *AzureLoadBalancerStackOutputs) GetProbeIds() map[string]string {
+func (x *AzureLoadBalancerOutputs) GetProbeIds() map[string]string {
 	if x != nil {
 		return x.ProbeIds
 	}
 	return nil
 }
 
-func (x *AzureLoadBalancerStackOutputs) GetNatRuleIds() map[string]string {
+func (x *AzureLoadBalancerOutputs) GetNatRuleIds() map[string]string {
 	if x != nil {
 		return x.NatRuleIds
 	}
@@ -161,16 +161,16 @@ var File_catalog_azure_azureloadbalancer_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_azure_azureloadbalancer_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/azure/azureloadbalancer/v1alpha1/outputs.proto\x12,dev.planton.azure.azureloadbalancer.v1alpha1\"\x99\b\n" +
-	"\x1dAzureLoadBalancerStackOutputs\x12(\n" +
+	"6catalog/azure/azureloadbalancer/v1alpha1/outputs.proto\x12,dev.planton.azure.azureloadbalancer.v1alpha1\"\x80\b\n" +
+	"\x18AzureLoadBalancerOutputs\x12(\n" +
 	"\x10load_balancer_id\x18\x01 \x01(\tR\x0eloadBalancerId\x12,\n" +
 	"\x12load_balancer_name\x18\x02 \x01(\tR\x10loadBalancerName\x12,\n" +
 	"\x12private_ip_address\x18\x03 \x01(\tR\x10privateIpAddress\x120\n" +
-	"\x14private_ip_addresses\x18\x04 \x03(\tR\x12privateIpAddresses\x12\xae\x01\n" +
-	"\x1dfrontend_ip_configuration_ids\x18\x05 \x03(\v2k.dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.FrontendIpConfigurationIdsEntryR\x1afrontendIpConfigurationIds\x12\x89\x01\n" +
-	"\x10backend_pool_ids\x18\x06 \x03(\v2_.dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.BackendPoolIdsEntryR\x0ebackendPoolIds\x12v\n" +
-	"\tprobe_ids\x18\a \x03(\v2Y.dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.ProbeIdsEntryR\bprobeIds\x12}\n" +
-	"\fnat_rule_ids\x18\b \x03(\v2[.dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.NatRuleIdsEntryR\n" +
+	"\x14private_ip_addresses\x18\x04 \x03(\tR\x12privateIpAddresses\x12\xa9\x01\n" +
+	"\x1dfrontend_ip_configuration_ids\x18\x05 \x03(\v2f.dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.FrontendIpConfigurationIdsEntryR\x1afrontendIpConfigurationIds\x12\x84\x01\n" +
+	"\x10backend_pool_ids\x18\x06 \x03(\v2Z.dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.BackendPoolIdsEntryR\x0ebackendPoolIds\x12q\n" +
+	"\tprobe_ids\x18\a \x03(\v2T.dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.ProbeIdsEntryR\bprobeIds\x12x\n" +
+	"\fnat_rule_ids\x18\b \x03(\v2V.dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.NatRuleIdsEntryR\n" +
 	"natRuleIds\x1aM\n" +
 	"\x1fFrontendIpConfigurationIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -200,17 +200,17 @@ func file_catalog_azure_azureloadbalancer_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_azure_azureloadbalancer_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_catalog_azure_azureloadbalancer_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureLoadBalancerStackOutputs)(nil), // 0: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs
-	nil,                                   // 1: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.FrontendIpConfigurationIdsEntry
-	nil,                                   // 2: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.BackendPoolIdsEntry
-	nil,                                   // 3: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.ProbeIdsEntry
-	nil,                                   // 4: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.NatRuleIdsEntry
+	(*AzureLoadBalancerOutputs)(nil), // 0: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs
+	nil,                              // 1: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.FrontendIpConfigurationIdsEntry
+	nil,                              // 2: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.BackendPoolIdsEntry
+	nil,                              // 3: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.ProbeIdsEntry
+	nil,                              // 4: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.NatRuleIdsEntry
 }
 var file_catalog_azure_azureloadbalancer_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.frontend_ip_configuration_ids:type_name -> dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.FrontendIpConfigurationIdsEntry
-	2, // 1: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.backend_pool_ids:type_name -> dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.BackendPoolIdsEntry
-	3, // 2: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.probe_ids:type_name -> dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.ProbeIdsEntry
-	4, // 3: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.nat_rule_ids:type_name -> dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerStackOutputs.NatRuleIdsEntry
+	1, // 0: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.frontend_ip_configuration_ids:type_name -> dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.FrontendIpConfigurationIdsEntry
+	2, // 1: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.backend_pool_ids:type_name -> dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.BackendPoolIdsEntry
+	3, // 2: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.probe_ids:type_name -> dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.ProbeIdsEntry
+	4, // 3: dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.nat_rule_ids:type_name -> dev.planton.azure.azureloadbalancer.v1alpha1.AzureLoadBalancerOutputs.NatRuleIdsEntry
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

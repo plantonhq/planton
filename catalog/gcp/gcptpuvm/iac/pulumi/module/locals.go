@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcptpuvmv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptpuvm/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -16,9 +16,9 @@ type Locals struct {
 	GcpLabels         map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcptpuvmv1alpha1.GcpTpuVmStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcptpuvmv1alpha1.GcpTpuVmIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpTpuVm = stackInput.Target
+	locals.GcpTpuVm = iacInput.Target
 	metadata := locals.GcpTpuVm.Metadata
 
 	// User labels first so platform attribution labels win on key
@@ -29,7 +29,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcptpuvmv1alpha1.GcpTpuVmSt
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = metadata.Name
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpTpuVm.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpTpuVm.String())
 
 	if metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = metadata.Org
@@ -41,6 +41,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcptpuvmv1alpha1.GcpTpuVmSt
 		locals.GcpLabels[gcplabelkeys.ResourceId] = metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

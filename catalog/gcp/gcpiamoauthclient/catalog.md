@@ -6,7 +6,7 @@ Scope honesty: this is the ONLY kind of OAuth client Google's APIs can create pr
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **OAuth Client** -- a `google_iam_oauth_client` (the Workforce Identity Federation OAuth registration) with grant types, scopes, redirect URIs, and confidentiality model
 - **OAuth Client Credentials** -- one `google_iam_oauth_client_credential` per `credentials` entry; secrets are generated server-side by GCP
@@ -59,7 +59,7 @@ spec:
 planton apply -f client.yaml
 ```
 
-This creates a confidential client with one managed credential; its server-generated secret is the `client_secret` output. A Stack Job tracks the provisioning in real time.
+This creates a confidential client with one managed credential; its server-generated secret is the `client_secret` output. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,16 +102,16 @@ These are the most important decisions when configuring an OAuth client. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 | **GcpCloudRun** (optional) | `allowedRedirectUris` entries | `status.outputs.url` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -130,7 +130,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Identity Platform Config**](/cloud-catalog/gcp-identity-platform-config) -- consumes console-created consent-screen client IDs/secrets for end-user sign-in
-- [**GCP Secret Manager Secret**](/cloud-catalog/gcp-secret-manager-secret) -- durable home for the generated client secret
-- [**GCP Cloud Run**](/cloud-catalog/gcp-cloud-run) -- its URL output feeds the redirect URIs
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the client is created
+- [**GCP Identity Platform Config**](/infra-catalog/gcp-identity-platform-config) -- consumes console-created consent-screen client IDs/secrets for end-user sign-in
+- [**GCP Secret Manager Secret**](/infra-catalog/gcp-secret-manager-secret) -- durable home for the generated client secret
+- [**GCP Cloud Run**](/infra-catalog/gcp-cloud-run) -- its URL output feeds the redirect URIs
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the client is created

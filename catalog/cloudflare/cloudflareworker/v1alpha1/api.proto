@@ -16,7 +16,7 @@ message CloudflareWorker {
   string kind = 2 [(buf.validate.field).string.const = 'CloudflareWorker'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   CloudflareWorkerSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,7 +27,7 @@ message CloudflareWorker {
 
 // cloudflare-worker status
 message CloudflareWorkerStatus {
-  //stack-outputs
-  //  cloudflare-worker stack-outputs
-  CloudflareWorkerStackOutputs outputs = 1;
+  //outputs
+  //  cloudflare-worker outputs
+  CloudflareWorkerOutputs outputs = 1;
 }

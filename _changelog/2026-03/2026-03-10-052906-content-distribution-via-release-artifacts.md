@@ -6,7 +6,7 @@
 
 ## Summary
 
-Planton releases now package four versioned content zips as GitHub Release artifacts: presets, IaC source, catalog pages, and proto source. This decouples the Planton upgrade-planton workflow from requiring a local Planton checkout, enabling CI/CD automation and removing the developer-machine filesystem dependency. Additionally, 18 preset files across 6 components were renamed to follow the `{rank}-{description}` naming convention.
+Planton releases now package four versioned content zips as GitHub Release artifacts: presets, IaC source, catalog pages, and proto source. This decouples the Planton upgrade-planton workflow from requiring a local Planton checkout, enabling CI/CD automation and removing the developer-machine filesystem dependency. Additionally, 18 preset files across 6 kinds were renamed to follow the `{rank}-{description}` naming convention.
 
 ## Problem Statement / Motivation
 
@@ -17,7 +17,7 @@ The Planton monorepo's `make upgrade-planton` reads five categories of content d
 - **CI/CD incompatible**: Automated upgrade workflows cannot run because no local checkout exists in CI runners
 - **Developer coupling**: Every developer must have the Planton repo cloned at a specific path before running the upgrade
 - **Version mismatch risk**: The local checkout may be at a different version than the target upgrade version, producing silently incorrect output
-- **Preset naming violations**: 18 preset files across 6 newer components (alicloud, GCP Cloud Armor, Cloud Scheduler, Cloud Tasks, Vertex AI) were missing the required `{rank}-` numeric prefix, causing them to be silently skipped during CloudObjectPreset asset generation
+- **Preset naming violations**: 18 preset files across 6 newer kinds (alicloud, GCP Cloud Armor, Cloud Scheduler, Cloud Tasks, Vertex AI) were missing the required `{rank}-` numeric prefix, causing them to be silently skipped during CatalogKindPreset asset generation
 
 ## Solution / What's New
 
@@ -29,8 +29,8 @@ A single packaging script creates four versioned zip files, each scoped to one c
 |-----|----------|------|-------|
 | `presets_{v}.zip` | Preset YAML + MD, kind enum proto | 1.4 MB | 1,562 |
 | `iac-source_{v}.zip` | IaC source (.go, .tf, .md, .yaml) | 5.1 MB | 5,468 |
-| `catalog-pages_{v}.zip` | Per-component catalog-page.md | 1.1 MB | 362 |
-| `proto-source_{v}.zip` | Raw proto source (spec, api, stack_input, stack_outputs) | 1.7 MB | 1,457 |
+| `catalog-pages_{v}.zip` | Per-kind catalog-page.md | 1.1 MB | 362 |
+| `proto-source_{v}.zip` | Raw proto source (spec, api, iac_input, outputs) | 1.7 MB | 1,457 |
 
 All zips preserve repo-relative paths (`apis/dev/planton/provider/...`). When extracted into a single directory, they overlay into a virtual Planton root that downstream tools use without modification.
 
@@ -59,9 +59,9 @@ flowchart LR
 
 ### Preset Filename Fixes
 
-18 preset files across 6 components renamed to add the required `{rank}-` prefix:
+18 preset files across 6 kinds renamed to add the required `{rank}-` prefix:
 
-| Component | Renames |
+| Kind | Renames |
 |-----------|---------|
 | `alicloudcontainerregistry` | basic-dev → 01-basic-dev, standard-production → 02-standard-production, advanced-enterprise → 03-advanced-enterprise |
 | `gcpcloudarmorpolicy` | basic-ip-allowlist → 01-basic-ip-allowlist, rate-limiting-api → 02-rate-limiting-api, waf-owasp-protection → 03-waf-owasp-protection |
@@ -108,11 +108,11 @@ flowchart TB
 
 - **Release pipeline**: Every future Planton release automatically includes four content zips
 - **Planton upgrade**: `upgrade_planton.py` downloads content from the release instead of reading from local checkout
-- **Preset coverage**: All 788 presets across 14 providers now generate CloudObjectPreset assets
+- **Preset coverage**: All 788 presets across 14 providers now generate CatalogKindPreset assets
 
 ## Related Work
 
-- Planton Presets project (T01-T09): Created the original 375 presets across 213 components
+- Planton Presets project (T01-T09): Created the original 375 presets across 213 kinds
 - Planton `upgrade_planton.py`: Consumer that downloads and uses the content zips
 - Planton `generate_preset_assets.py`: Added `--version` flag for standalone remote download
 

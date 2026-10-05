@@ -48,7 +48,7 @@ Custom certificates are a Business/Enterprise zone feature. Cloudflare enforces 
 | `custom_csr_id` | string | The Cloudflare-generated CSR this certificate was issued from, when the CSR flow was used. |
 | `deploy` | string | `staging` or `production`. Staging is a Business/Enterprise validation surface. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|
@@ -56,7 +56,7 @@ Custom certificates are a Business/Enterprise zone feature. Cloudflare enforces 
 | `zone_id` | The zone the certificate belongs to |
 | `expires_on` | When the certificate expires (RFC3339) |
 
-Deployment status is deliberately not a stack output: deployment is asynchronous (pending before active), so a point-in-time phase would flip on the first refresh and re-plan forever. Read it from the Cloudflare API or dashboard.
+Deployment status is deliberately not an output: deployment is asynchronous (pending before active), so a point-in-time phase would flip on the first refresh and re-plan forever. Read it from the Cloudflare API or dashboard.
 
 ## Example Manifest
 

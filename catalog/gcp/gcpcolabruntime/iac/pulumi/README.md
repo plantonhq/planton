@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Colab Enterprise runtime
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `runtime` |
-| `module/locals.go` | Stack input holder |
+| `module/locals.go` | IaC input holder |
 | `module/runtime.go` | Enables the API; maps the runtime; exports the outputs |
 | `module/outputs.go` | Output key constants (`name`, `runtime_id`, `location`) |
 

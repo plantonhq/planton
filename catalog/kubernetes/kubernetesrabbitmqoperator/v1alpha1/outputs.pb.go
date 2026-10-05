@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-rabbit-mq-operator stack outputs
-type KubernetesRabbitMqOperatorStackOutputs struct {
+// kubernetes-rabbit-mq-operator outputs
+type KubernetesRabbitMqOperatorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the operator is installed into (always rabbitmq-system —
 	// the release manifest's fixed namespace).
@@ -41,20 +41,20 @@ type KubernetesRabbitMqOperatorStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesRabbitMqOperatorStackOutputs) Reset() {
-	*x = KubernetesRabbitMqOperatorStackOutputs{}
+func (x *KubernetesRabbitMqOperatorOutputs) Reset() {
+	*x = KubernetesRabbitMqOperatorOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesrabbitmqoperator_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesRabbitMqOperatorStackOutputs) String() string {
+func (x *KubernetesRabbitMqOperatorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesRabbitMqOperatorStackOutputs) ProtoMessage() {}
+func (*KubernetesRabbitMqOperatorOutputs) ProtoMessage() {}
 
-func (x *KubernetesRabbitMqOperatorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesRabbitMqOperatorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesrabbitmqoperator_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,33 +66,33 @@ func (x *KubernetesRabbitMqOperatorStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesRabbitMqOperatorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesRabbitMqOperatorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesRabbitMqOperatorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesRabbitMqOperatorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesrabbitmqoperator_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesRabbitMqOperatorStackOutputs) GetNamespace() string {
+func (x *KubernetesRabbitMqOperatorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesRabbitMqOperatorStackOutputs) GetDeploymentName() string {
+func (x *KubernetesRabbitMqOperatorOutputs) GetDeploymentName() string {
 	if x != nil {
 		return x.DeploymentName
 	}
 	return ""
 }
 
-func (x *KubernetesRabbitMqOperatorStackOutputs) GetMetricsEndpoint() string {
+func (x *KubernetesRabbitMqOperatorOutputs) GetMetricsEndpoint() string {
 	if x != nil {
 		return x.MetricsEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesRabbitMqOperatorStackOutputs) GetCrdName() string {
+func (x *KubernetesRabbitMqOperatorOutputs) GetCrdName() string {
 	if x != nil {
 		return x.CrdName
 	}
@@ -103,8 +103,8 @@ var File_catalog_kubernetes_kubernetesrabbitmqoperator_v1alpha1_outputs_proto pr
 
 const file_catalog_kubernetes_kubernetesrabbitmqoperator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/kubernetes/kubernetesrabbitmqoperator/v1alpha1/outputs.proto\x12:dev.planton.kubernetes.kubernetesrabbitmqoperator.v1alpha1\"\xb5\x01\n" +
-	"&KubernetesRabbitMqOperatorStackOutputs\x12\x1c\n" +
+	"Dcatalog/kubernetes/kubernetesrabbitmqoperator/v1alpha1/outputs.proto\x12:dev.planton.kubernetes.kubernetesrabbitmqoperator.v1alpha1\"\xb0\x01\n" +
+	"!KubernetesRabbitMqOperatorOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12'\n" +
 	"\x0fdeployment_name\x18\x02 \x01(\tR\x0edeploymentName\x12)\n" +
 	"\x10metrics_endpoint\x18\x03 \x01(\tR\x0fmetricsEndpoint\x12\x19\n" +
@@ -125,7 +125,7 @@ func file_catalog_kubernetes_kubernetesrabbitmqoperator_v1alpha1_outputs_proto_r
 
 var file_catalog_kubernetes_kubernetesrabbitmqoperator_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesrabbitmqoperator_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesRabbitMqOperatorStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesrabbitmqoperator.v1alpha1.KubernetesRabbitMqOperatorStackOutputs
+	(*KubernetesRabbitMqOperatorOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesrabbitmqoperator.v1alpha1.KubernetesRabbitMqOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetesrabbitmqoperator_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

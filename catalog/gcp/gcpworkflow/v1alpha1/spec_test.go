@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpWorkflowSpec", func() {
 		return &GcpWorkflow{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpWorkflow",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-workflow",
 			},
 			Spec: &GcpWorkflowSpec{

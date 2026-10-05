@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurednsrecord
+    e2e-catalog-kind: azurednsrecord
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/azure/azurednsrecord/e2e/fixture-labeled-pip.yaml"

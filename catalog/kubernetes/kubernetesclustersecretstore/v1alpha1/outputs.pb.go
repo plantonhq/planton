@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesClusterSecretStoreStackOutputs captures observable outputs after
+// KubernetesClusterSecretStoreOutputs captures observable outputs after
 // the ClusterSecretStore is created.
-type KubernetesClusterSecretStoreStackOutputs struct {
+type KubernetesClusterSecretStoreOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created ClusterSecretStore (equals metadata.name). Use it in
 	// an ExternalSecret's secretStoreRef.name with kind ClusterSecretStore.
@@ -34,20 +34,20 @@ type KubernetesClusterSecretStoreStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *KubernetesClusterSecretStoreStackOutputs) Reset() {
-	*x = KubernetesClusterSecretStoreStackOutputs{}
+func (x *KubernetesClusterSecretStoreOutputs) Reset() {
+	*x = KubernetesClusterSecretStoreOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesclustersecretstore_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesClusterSecretStoreStackOutputs) String() string {
+func (x *KubernetesClusterSecretStoreOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesClusterSecretStoreStackOutputs) ProtoMessage() {}
+func (*KubernetesClusterSecretStoreOutputs) ProtoMessage() {}
 
-func (x *KubernetesClusterSecretStoreStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesClusterSecretStoreOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesclustersecretstore_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *KubernetesClusterSecretStoreStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesClusterSecretStoreStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesClusterSecretStoreStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesClusterSecretStoreOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesClusterSecretStoreOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesclustersecretstore_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesClusterSecretStoreStackOutputs) GetStoreName() string {
+func (x *KubernetesClusterSecretStoreOutputs) GetStoreName() string {
 	if x != nil {
 		return x.StoreName
 	}
 	return ""
 }
 
-func (x *KubernetesClusterSecretStoreStackOutputs) GetSecretsNamespace() string {
+func (x *KubernetesClusterSecretStoreOutputs) GetSecretsNamespace() string {
 	if x != nil {
 		return x.SecretsNamespace
 	}
@@ -82,8 +82,8 @@ var File_catalog_kubernetes_kubernetesclustersecretstore_v1alpha1_outputs_proto 
 
 const file_catalog_kubernetes_kubernetesclustersecretstore_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/kubernetes/kubernetesclustersecretstore/v1alpha1/outputs.proto\x12<dev.planton.kubernetes.kubernetesclustersecretstore.v1alpha1\"v\n" +
-	"(KubernetesClusterSecretStoreStackOutputs\x12\x1d\n" +
+	"Fcatalog/kubernetes/kubernetesclustersecretstore/v1alpha1/outputs.proto\x12<dev.planton.kubernetes.kubernetesclustersecretstore.v1alpha1\"q\n" +
+	"#KubernetesClusterSecretStoreOutputs\x12\x1d\n" +
 	"\n" +
 	"store_name\x18\x01 \x01(\tR\tstoreName\x12+\n" +
 	"\x11secrets_namespace\x18\x02 \x01(\tR\x10secretsNamespaceB\xe1\x03\n" +
@@ -103,7 +103,7 @@ func file_catalog_kubernetes_kubernetesclustersecretstore_v1alpha1_outputs_proto
 
 var file_catalog_kubernetes_kubernetesclustersecretstore_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesclustersecretstore_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesClusterSecretStoreStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesclustersecretstore.v1alpha1.KubernetesClusterSecretStoreStackOutputs
+	(*KubernetesClusterSecretStoreOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesclustersecretstore.v1alpha1.KubernetesClusterSecretStoreOutputs
 }
 var file_catalog_kubernetes_kubernetesclustersecretstore_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

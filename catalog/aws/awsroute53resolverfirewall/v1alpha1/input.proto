@@ -5,10 +5,10 @@ package dev.planton.aws.awsroute53resolverfirewall.v1alpha1;
 import "catalog/aws/awsroute53resolverfirewall/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsRoute53ResolverFirewallStackInput is the input for the IaC
+// AwsRoute53ResolverFirewallIacInput is the input for the IaC
 // modules that manage a DNS Firewall rule group with its domain
 // lists, rules, and VPC associations.
-message AwsRoute53ResolverFirewallStackInput {
+message AwsRoute53ResolverFirewallIacInput {
   // target is the AwsRoute53ResolverFirewall resource to deploy.
   AwsRoute53ResolverFirewall target = 1;
   // provider_config contains the AWS provider credentials and configuration.

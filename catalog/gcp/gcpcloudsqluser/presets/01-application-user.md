@@ -25,7 +25,7 @@ This preset creates a classic username/password user for one application, with a
 
 - **02-iam-service-account-user** — the passwordless alternative for workloads with IAM identities
 
-## Related Components
+## Related Kinds
 
 - [GcpCloudSql](/docs/catalog/gcp/gcpcloudsql) — the instance this user lives on
 - [GcpCloudSqlDatabase](/docs/catalog/gcp/gcpcloudsqldatabase) — pair the user with its application database

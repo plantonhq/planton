@@ -1,13 +1,13 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsiamsamlprovider
 spec:
-  # The provider imports by its ARN, derived from the stack output.
+  # The provider imports by its ARN, derived from the output.
   values:
     - name: provider_arn
       derivations:
-        - from_stack_output: provider_arn
+        - from_output: provider_arn
       where_to_find: >-
         IAM console -> Identity providers (the provider's ARN), or
         `aws iam list-saml-providers` (Arn).

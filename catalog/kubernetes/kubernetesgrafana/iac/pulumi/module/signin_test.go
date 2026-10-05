@@ -28,9 +28,9 @@ func literal(v string) *foreignkeyv1.StringValueOrRef {
 }
 
 func localsWithAuth(auth *kubernetesgrafanav1alpha1.KubernetesGrafanaAuth) *Locals {
-	return initializeLocals(nil, &kubernetesgrafanav1alpha1.KubernetesGrafanaStackInput{
+	return initializeLocals(nil, &kubernetesgrafanav1alpha1.KubernetesGrafanaIacInput{
 		Target: &kubernetesgrafanav1alpha1.KubernetesGrafana{
-			Metadata: &shared.CloudResourceMetadata{Name: "hub"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "hub"},
 			Spec: &kubernetesgrafanav1alpha1.KubernetesGrafanaSpec{
 				Namespace: literal("observability"),
 				Server:    &kubernetesgrafanav1alpha1.KubernetesGrafanaServer{RootUrl: "https://grafana.example.com"},

@@ -47,7 +47,7 @@ export const DOORS: Record<DoorId, Door> = {
   codingAgentsDocs: { label: 'Set Up Your Coding Agent', href: '/docs/coding-agents' },
   cliDocs: { label: 'Install the CLI', href: '/docs/cli' },
   /** The live catalog browser in the console; it answers without a sign-in. */
-  catalogBrowser: { label: 'Browse the Catalog', href: '/cloud-catalog' },
+  catalogBrowser: { label: 'Browse the Catalog', href: '/infra-catalog' },
   catalogSource: { label: 'The Catalog on GitHub', href: 'https://github.com/plantonhq/planton/tree/main/catalog' },
   github: { label: 'Planton on GitHub', href: 'https://github.com/plantonhq/planton' },
 };

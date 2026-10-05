@@ -9,7 +9,7 @@ rule child per spec entry.
 
 The Azure provider is built through the shared provider builder, which
 resolves the right credential mechanism (static client secret, keyless
-web identity, or ambient chain) from the stack input.
+web identity, or ambient chain) from the IaC input.
 
 ## Design Decisions
 
@@ -30,7 +30,7 @@ web identity, or ambient chain) from the stack input.
 
 ## Inputs
 
-The module receives an `AzureVpnGatewayStackInput` containing:
+The module receives an `AzureVpnGatewayIacInput` containing:
 
 - `target.spec.name` -- the gateway's name
 - `target.spec.virtual_hub_id` -- the hub to deploy into (one VPN gateway per hub)

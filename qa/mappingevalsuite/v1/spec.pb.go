@@ -25,7 +25,7 @@ const (
 // mapping: the fixture manifests that are deployed as the known ground
 // truth, and the scan scope a blind proposer is given. Because the suite
 // deploys from known manifests, it holds the complete answer key -- which
-// cloud resources exist, which component instance owns each, what every
+// provider resources exist, which InfraComponent owns each, what every
 // spec field is, and where the value_from edges run -- so a proposer's
 // output can be machine-scored instead of eyeballed.
 //
@@ -110,13 +110,13 @@ func (x *MappingEvalSuiteSpec) GetGradeEnvironmentPartition() bool {
 	return false
 }
 
-// SuiteMember is one fixture deployment: a component kind plus the manifest
+// SuiteMember is one fixture deployment: a kind plus the manifest
 // to deploy for it.
 type SuiteMember struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The component directory name (e.g. "awsvpc", "awssubnet") -- the same
+	// The kind directory name (e.g. "awsvpc", "awssubnet") -- the same
 	// slug the E2E framework and the import maps key on.
-	Component string `protobuf:"bytes,1,opt,name=component,proto3" json:"component,omitempty"`
+	KindDir string `protobuf:"bytes,1,opt,name=kind_dir,json=kindDir,proto3" json:"kind_dir,omitempty"`
 	// Repo-relative path to the KRM manifest to deploy (an existing E2E
 	// scenario or install profile -- suites compose proven fixtures rather
 	// than inventing parallel ones).
@@ -155,9 +155,9 @@ func (*SuiteMember) Descriptor() ([]byte, []int) {
 	return file_qa_mappingevalsuite_v1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *SuiteMember) GetComponent() string {
+func (x *SuiteMember) GetKindDir() string {
 	if x != nil {
-		return x.Component
+		return x.KindDir
 	}
 	return ""
 }
@@ -224,9 +224,9 @@ const file_qa_mappingevalsuite_v1_spec_proto_rawDesc = "" +
 	"\amembers\x18\x01 \x03(\v2/.dev.planton.qa.mappingevalsuite.v1.SuiteMemberR\amembers\x12L\n" +
 	"\n" +
 	"scan_scope\x18\x02 \x01(\v2-.dev.planton.qa.mappingevalsuite.v1.ScanScopeR\tscanScope\x12>\n" +
-	"\x1bgrade_environment_partition\x18\x03 \x01(\bR\x19gradeEnvironmentPartition\"P\n" +
-	"\vSuiteMember\x12\x1c\n" +
-	"\tcomponent\x18\x01 \x01(\tR\tcomponent\x12#\n" +
+	"\x1bgrade_environment_partition\x18\x03 \x01(\bR\x19gradeEnvironmentPartition\"M\n" +
+	"\vSuiteMember\x12\x19\n" +
+	"\bkind_dir\x18\x01 \x01(\tR\akindDir\x12#\n" +
 	"\rmanifest_path\x18\x02 \x01(\tR\fmanifestPath\"#\n" +
 	"\tScanScope\x12\x16\n" +
 	"\x06region\x18\x01 \x01(\tR\x06regionB\xa8\x02\n" +

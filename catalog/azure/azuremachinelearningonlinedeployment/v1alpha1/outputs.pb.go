@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMachineLearningOnlineDeploymentStackOutputs** captures the
+// **AzureMachineLearningOnlineDeploymentOutputs** captures the
 // outputs of provisioning a Machine Learning online deployment.
-type AzureMachineLearningOnlineDeploymentStackOutputs struct {
+type AzureMachineLearningOnlineDeploymentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the online deployment.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.MachineLearningServices/workspaces/{ws}/onlineEndpoints/{endpoint}/deployments/{name}
@@ -35,20 +35,20 @@ type AzureMachineLearningOnlineDeploymentStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AzureMachineLearningOnlineDeploymentStackOutputs) Reset() {
-	*x = AzureMachineLearningOnlineDeploymentStackOutputs{}
+func (x *AzureMachineLearningOnlineDeploymentOutputs) Reset() {
+	*x = AzureMachineLearningOnlineDeploymentOutputs{}
 	mi := &file_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMachineLearningOnlineDeploymentStackOutputs) String() string {
+func (x *AzureMachineLearningOnlineDeploymentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMachineLearningOnlineDeploymentStackOutputs) ProtoMessage() {}
+func (*AzureMachineLearningOnlineDeploymentOutputs) ProtoMessage() {}
 
-func (x *AzureMachineLearningOnlineDeploymentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMachineLearningOnlineDeploymentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureMachineLearningOnlineDeploymentStackOutputs) ProtoReflect() protor
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMachineLearningOnlineDeploymentStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMachineLearningOnlineDeploymentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMachineLearningOnlineDeploymentOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMachineLearningOnlineDeploymentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMachineLearningOnlineDeploymentStackOutputs) GetOnlineDeploymentId() string {
+func (x *AzureMachineLearningOnlineDeploymentOutputs) GetOnlineDeploymentId() string {
 	if x != nil {
 		return x.OnlineDeploymentId
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningOnlineDeploymentStackOutputs) GetOnlineDeploymentName() string {
+func (x *AzureMachineLearningOnlineDeploymentOutputs) GetOnlineDeploymentName() string {
 	if x != nil {
 		return x.OnlineDeploymentName
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_outputs_pro
 
 const file_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/azure/azuremachinelearningonlinedeployment/v1alpha1/outputs.proto\x12?dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1\"\x9a\x01\n" +
-	"0AzureMachineLearningOnlineDeploymentStackOutputs\x120\n" +
+	"Icatalog/azure/azuremachinelearningonlinedeployment/v1alpha1/outputs.proto\x12?dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1\"\x95\x01\n" +
+	"+AzureMachineLearningOnlineDeploymentOutputs\x120\n" +
 	"\x14online_deployment_id\x18\x01 \x01(\tR\x12onlineDeploymentId\x124\n" +
 	"\x16online_deployment_name\x18\x02 \x01(\tR\x14onlineDeploymentNameB\xfc\x03\n" +
 	"Ccom.dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1B\fOutputsProtoP\x01Z\x85\x01github.com/plantonhq/planton/catalog/azure/azuremachinelearningonlinedeployment/v1alpha1;azuremachinelearningonlinedeploymentv1alpha1\xa2\x02\x04DPAA\xaa\x02?Dev.Planton.Azure.Azuremachinelearningonlinedeployment.V1alpha1\xca\x02?Dev\\Planton\\Azure\\Azuremachinelearningonlinedeployment\\V1alpha1\xe2\x02KDev\\Planton\\Azure\\Azuremachinelearningonlinedeployment\\V1alpha1\\GPBMetadata\xea\x02CDev::Planton::Azure::Azuremachinelearningonlinedeployment::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_outputs_pr
 
 var file_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMachineLearningOnlineDeploymentStackOutputs)(nil), // 0: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentStackOutputs
+	(*AzureMachineLearningOnlineDeploymentOutputs)(nil), // 0: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentOutputs
 }
 var file_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

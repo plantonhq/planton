@@ -1,5 +1,5 @@
 # AzureLogAnalyticsWorkspace install profile used as a prerequisite by
-# composed components (Application Insights, diagnostic settings,
+# composed kinds (Application Insights, diagnostic settings,
 # scheduled query alerts -- declared via prerequisites:
 # [AzureLogAnalyticsWorkspace] in the kind registry). The E2E harness
 # deploys this document (via the workspace's Pulumi module), captures its
@@ -17,7 +17,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureloganalyticsworkspace
+    e2e-catalog-kind: azureloganalyticsworkspace
   annotations:
     planton.dev/e2e: "true"
   tags:

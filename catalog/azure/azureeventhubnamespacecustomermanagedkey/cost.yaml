@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureeventhubnamespacecustomermanagedkey
 spec:
   billing_model: free
   free_tier: The CMK configuration itself never bills -- it is an encryption setting patched onto an existing namespace, and Azure charges nothing for using customer-managed keys on Event Hubs (including the optional infrastructure_encryption_enabled second layer).
-  notes: "The spend this kind depends on lives in the resources it references and requires: the keys in key_vault_key_ids belong to an AzureKeyVault whose vault and key operations (the service's periodic wrap/unwrap calls) bill on that kind's meters; and CMK's platform contract -- the namespace must sit on the PREMIUM tier or a dedicated cluster -- means the parent AzureEventHubNamespace is already paying single-tenant rates as its own kind. Nothing in this spec adds a meter on top."
+  notes: "The spend this kind depends on lives in the resources it references and requires: the keys in key_vault_key_ids belong to an AzureKeyVault whose vault and key operations (the service's periodic wrap/unwrap calls) bill on that component's meters; and CMK's platform contract -- the namespace must sit on the PREMIUM tier or a dedicated cluster -- means the parent AzureEventHubNamespace is already paying single-tenant rates as its own kind. Nothing in this spec adds a meter on top."

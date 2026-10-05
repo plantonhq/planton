@@ -48,7 +48,7 @@ type AwsManagedPrefixListSpec struct {
 	MaxEntries int64 `protobuf:"varint,3,opt,name=max_entries,json=maxEntries,proto3" json:"max_entries,omitempty"`
 	// The CIDR entries, each optionally described. Managed as the
 	// complete set - an entry removed here is removed at AWS. AWS
-	// versions the list on every entry change (the version stack
+	// versions the list on every entry change (the version
 	// output).
 	Entries       []*AwsManagedPrefixListEntry `protobuf:"bytes,4,rep,name=entries,proto3" json:"entries,omitempty"`
 	unknownFields protoimpl.UnknownFields

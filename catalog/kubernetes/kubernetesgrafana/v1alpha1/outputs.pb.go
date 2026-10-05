@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// grafana-kubernetes stack outputs
-type KubernetesGrafanaStackOutputs struct {
+// grafana-kubernetes outputs
+type KubernetesGrafanaOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace Grafana runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -47,20 +47,20 @@ type KubernetesGrafanaStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesGrafanaStackOutputs) Reset() {
-	*x = KubernetesGrafanaStackOutputs{}
+func (x *KubernetesGrafanaOutputs) Reset() {
+	*x = KubernetesGrafanaOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesGrafanaStackOutputs) String() string {
+func (x *KubernetesGrafanaOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesGrafanaStackOutputs) ProtoMessage() {}
+func (*KubernetesGrafanaOutputs) ProtoMessage() {}
 
-func (x *KubernetesGrafanaStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesGrafanaOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,47 +72,47 @@ func (x *KubernetesGrafanaStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesGrafanaStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesGrafanaStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesGrafanaOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesGrafanaOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesGrafanaStackOutputs) GetNamespace() string {
+func (x *KubernetesGrafanaOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesGrafanaStackOutputs) GetReleaseName() string {
+func (x *KubernetesGrafanaOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesGrafanaStackOutputs) GetService() string {
+func (x *KubernetesGrafanaOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *KubernetesGrafanaStackOutputs) GetEndpoint() string {
+func (x *KubernetesGrafanaOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *KubernetesGrafanaStackOutputs) GetAdminSecretName() string {
+func (x *KubernetesGrafanaOutputs) GetAdminSecretName() string {
 	if x != nil {
 		return x.AdminSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesGrafanaStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesGrafanaOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -123,8 +123,8 @@ var File_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesgrafana/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesgrafana.v1alpha1\"\xf4\x01\n" +
-	"\x1dKubernetesGrafanaStackOutputs\x12\x1c\n" +
+	";catalog/kubernetes/kubernetesgrafana/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesgrafana.v1alpha1\"\xef\x01\n" +
+	"\x18KubernetesGrafanaOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12\x18\n" +
 	"\aservice\x18\x03 \x01(\tR\aservice\x12\x1a\n" +
@@ -147,7 +147,7 @@ func file_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesGrafanaStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStackOutputs
+	(*KubernetesGrafanaOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaOutputs
 }
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

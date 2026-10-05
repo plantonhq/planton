@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1;
 
-// CloudflareLogpushJobStackOutputs captures the observable outputs after
+// CloudflareLogpushJobOutputs captures the observable outputs after
 // creating the Logpush job.
-message CloudflareLogpushJobStackOutputs {
+message CloudflareLogpushJobOutputs {
   // The Cloudflare-assigned numeric job ID, in string form.
   string job_id = 1;
 

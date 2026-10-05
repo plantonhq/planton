@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurecosmosdbsqlroleassignment
 spec:
   billing_model: free
   free_tier: A Cosmos DB SQL role assignment is the grant record binding a Cosmos data-plane role to a Microsoft Entra principal at an account, database, or container scope. It is authorization metadata inside the account -- creating, holding, and evaluating grants consumes no request units and carries no meter.
-  notes: "No field of this spec buys anything: the parent account reference, the role binding, the principal, the scope, and the pinned GUID are all grant metadata. The real spend lives entirely in the AzureCosmosdbAccount the grant governs -- RU/s throughput and storage bill as that kind regardless of who holds data access -- and in the workloads doing the reading and writing, each billing as its own catalog kind."
+  notes: "No field of this spec buys anything: the parent account reference, the role binding, the principal, the scope, and the pinned GUID are all grant metadata. The real spend lives entirely in the AzureCosmosdbAccount the grant governs -- RU/s throughput and storage bill as that kind regardless of who holds data access -- and in the workloads doing the reading and writing, each billing as its own component."

@@ -25,7 +25,7 @@ AWS provider — [reference.md](v1alpha1/reference.md) carries the scope).
 
 ## Install-then-declare, or it provisions nothing
 
-This component installs the ENGINE. What to provision is separate:
+This kind installs the ENGINE. What to provision is separate:
 declare at least one
 [KubernetesKarpenterNodePool](../kuberneteskarpenternodepool/GUIDE.md)
 (the fleet shape) referencing a KubernetesKarpenterEc2NodeClass (the

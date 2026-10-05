@@ -16,7 +16,7 @@ Configuring AWS ECR repositories can be intricate due to numerous security consi
 ### Environment Integration
 
 - **Environment Info**: Seamlessly integrates with our environment management system to deploy ECR repositories within specific environments.
-- **Stack Job Settings**: Supports custom stack-update settings for infrastructure-as-code deployments.
+- **Infra Job Settings**: Supports custom stack-update settings for infrastructure-as-code deployments.
 
 ### AWS Credential Management
 

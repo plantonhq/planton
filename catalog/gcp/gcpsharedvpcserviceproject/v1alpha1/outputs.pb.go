@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpSharedVpcServiceProjectStackOutputs captures the attachment's two
+// GcpSharedVpcServiceProjectOutputs captures the attachment's two
 // ends after provisioning.
-type GcpSharedVpcServiceProjectStackOutputs struct {
+type GcpSharedVpcServiceProjectOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The project ID now attached as a service project.
 	ServiceProjectId string `protobuf:"bytes,1,opt,name=service_project_id,json=serviceProjectId,proto3" json:"service_project_id,omitempty"`
@@ -33,20 +33,20 @@ type GcpSharedVpcServiceProjectStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpSharedVpcServiceProjectStackOutputs) Reset() {
-	*x = GcpSharedVpcServiceProjectStackOutputs{}
+func (x *GcpSharedVpcServiceProjectOutputs) Reset() {
+	*x = GcpSharedVpcServiceProjectOutputs{}
 	mi := &file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSharedVpcServiceProjectStackOutputs) String() string {
+func (x *GcpSharedVpcServiceProjectOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSharedVpcServiceProjectStackOutputs) ProtoMessage() {}
+func (*GcpSharedVpcServiceProjectOutputs) ProtoMessage() {}
 
-func (x *GcpSharedVpcServiceProjectStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpSharedVpcServiceProjectOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpSharedVpcServiceProjectStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSharedVpcServiceProjectStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpSharedVpcServiceProjectStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSharedVpcServiceProjectOutputs.ProtoReflect.Descriptor instead.
+func (*GcpSharedVpcServiceProjectOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSharedVpcServiceProjectStackOutputs) GetServiceProjectId() string {
+func (x *GcpSharedVpcServiceProjectOutputs) GetServiceProjectId() string {
 	if x != nil {
 		return x.ServiceProjectId
 	}
 	return ""
 }
 
-func (x *GcpSharedVpcServiceProjectStackOutputs) GetHostProjectId() string {
+func (x *GcpSharedVpcServiceProjectOutputs) GetHostProjectId() string {
 	if x != nil {
 		return x.HostProjectId
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_outputs_proto protorefl
 
 const file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/gcp/gcpsharedvpcserviceproject/v1alpha1/outputs.proto\x123dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1\"~\n" +
-	"&GcpSharedVpcServiceProjectStackOutputs\x12,\n" +
+	"=catalog/gcp/gcpsharedvpcserviceproject/v1alpha1/outputs.proto\x123dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1\"y\n" +
+	"!GcpSharedVpcServiceProjectOutputs\x12,\n" +
 	"\x12service_project_id\x18\x01 \x01(\tR\x10serviceProjectId\x12&\n" +
 	"\x0fhost_project_id\x18\x02 \x01(\tR\rhostProjectIdB\xa9\x03\n" +
 	"7com.dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1B\fOutputsProtoP\x01Zogithub.com/plantonhq/planton/catalog/gcp/gcpsharedvpcserviceproject/v1alpha1;gcpsharedvpcserviceprojectv1alpha1\xa2\x02\x04DPGG\xaa\x023Dev.Planton.Gcp.Gcpsharedvpcserviceproject.V1alpha1\xca\x023Dev\\Planton\\Gcp\\Gcpsharedvpcserviceproject\\V1alpha1\xe2\x02?Dev\\Planton\\Gcp\\Gcpsharedvpcserviceproject\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Gcp::Gcpsharedvpcserviceproject::V1alpha1b\x06proto3"
@@ -101,7 +101,7 @@ func file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpSharedVpcServiceProjectStackOutputs)(nil), // 0: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectStackOutputs
+	(*GcpSharedVpcServiceProjectOutputs)(nil), // 0: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectOutputs
 }
 var file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

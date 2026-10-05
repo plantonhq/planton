@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpCloudComposerUserWorkloadsSecretSpec defines a Kubernetes Secret
 delivered into a Cloud Composer environment's workloads namespace.
@@ -116,7 +116,7 @@ Immutable after creation.
 The Secret's key-value entries. Values MUST be base64-encoded
 (Kubernetes Secret semantics — e.g. `echo -n 'postgresql://...' |
 base64`); the API rejects raw values. The decoded material (Airflow
-connection URIs, passwords, tokens) is never placed in stack
+connection URIs, passwords, tokens) is never placed in
 outputs, and the entries are held as secrets in IaC state.
 
 - rule: {"map":{"minPairs":"1","values":{"cel":[{"id":"data_value_base64","message":"each data value must be base64-encoded (e.g. echo -n 'value' | base64)","expression":"this.matches('^[A-Za-z0-9+/]+={0,2}$')"}]}}}

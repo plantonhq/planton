@@ -119,7 +119,7 @@ graph TB
 
 - Offline (all green): spec tests 21/17/15 covering every CEL error
   path; targeted + release-equivalent builds ×3; `make build-go`; Bazel
-  component trees ×3; `secret-coverage --check` (Azure stays 100%);
+  kind trees ×3; `secret-coverage --check` (Azure stays 100%);
   `validate-refs --check` (9 new FK edges); `pkg/outputs` conformance
   ×3; full `planton tofu plan` ×3 hack manifests rendering every enum
   and CEL seam; 7 presets + 10 E2E/hack manifests validate; parity

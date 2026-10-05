@@ -20,7 +20,7 @@ Your cloud account is the foundation. Planton connects the work of setting it up
 
 
 - Connect your cloud: Connect the cloud accounts your team already uses. Choose the connection method that fits your deployment and verify that it can obtain the access it needs.
-- Create an environment: Compose cloud resources into reusable templates. Deploy the network, runtime, and supporting services in dependency order, with a configuration you can inspect.
+- Create an environment: Compose catalog kinds into reusable templates. Deploy the network, runtime, and supporting services in dependency order, with a configuration you can inspect.
 - Ship your application: Connect your repository, configure where the service runs, and follow its journey from build to deployment. See what is live in each environment.
 
 ## Design it once. Reuse it across environments.
@@ -45,18 +45,18 @@ Know what shipped, where it landed, and what needs attention.
 
 ## Give developers freedom. Keep changes accountable.
 
-Chapter: your-rules-hold. Sources: `wiki/product.infra-hub.catalog-curation.md`, `wiki/product.infra-hub.control-posture.md`, `wiki/product.infra-hub.stack-job.md`, `wiki/product.service-hub.assistant-repository-access.md`.
+Chapter: your-rules-hold. Sources: `wiki/product.infra-hub.catalog-curation.md`, `wiki/product.infra-hub.control-posture.md`, `wiki/product.infra-hub.infra-job.md`, `wiki/product.service-hub.assistant-repository-access.md`.
 
-Self-service works when the boundaries are clear. Define which cloud components your organization can create, require approval for protected environments, and keep a record of the changes that run.
+Self-service works when the boundaries are clear. Define which catalog kinds your organization can create, require approval for protected environments, and keep a record of the changes that run.
 
 The assistant works within the access of the person asking. Repository changes go through a reviewed pull request.
-- A catalog shaped by your team: Make approved component kinds available for new resources. The platform enforces creation restrictions at the API boundary, including requests from the CLI and agents.
+- A catalog shaped by your team: Make approved catalog kinds available for new resources. The platform enforces creation restrictions at the API boundary, including requests from the CLI and agents.
 - Evidence with its limits visible: Review available cost, permission, and technical-control information. Proven, declared, and not-evaluable claims remain distinct; estimates are not your cloud bill.
 - A record you can return to: Inspect the captured configuration, execution outcome, and approval history. Later edits do not rewrite what an earlier deployment recorded.
 
 ## Fits the cloud— and the way—you work.
 
-Chapter: runs-where-you-decide. Sources: `wiki/product.infra-hub.cloud-resource-import.md`, `wiki/product.infra-hub.planton.md`, `wiki/product.desktop.feature-availability.md`, `wiki/product.self-hosted.install-and-upgrade-lifecycle.md`, `wiki/product.connect.connection-methods-by-deployment.md`.
+Chapter: runs-where-you-decide. Sources: `wiki/product.infra-hub.infra-component-import.md`, `wiki/product.infra-hub.planton.md`, `wiki/product.desktop.feature-availability.md`, `wiki/product.self-hosted.install-and-upgrade-lifecycle.md`, `wiki/product.connect.connection-methods-by-deployment.md`.
 
 You can begin with an existing cloud account. Supported resources can be imported into infrastructure state without recreating them. Check the supported kind and import path before bringing a resource under management.
 
@@ -81,7 +81,7 @@ Verbatim: `src/data/testimonials.ts`, Sai Saketh and Rohit Reddy Gopu. No quote 
 
 ## FAQ trace
 
-Integration → service-records-and-build-lane; import → cloud-resource-import; deployment → feature-availability/install-and-upgrade; credentials → connection-methods and broker-issued-credentials; AI → assistant-repository-access and rooms; demo → existing BookDemoForm and BookDemoScheduler.
+Integration → service-records-and-build-lane; import → infra-component-import; deployment → feature-availability/install-and-upgrade; credentials → connection-methods and broker-issued-credentials; AI → assistant-repository-access and rooms; demo → existing BookDemoForm and BookDemoScheduler.
 
 ## Approved launch revision
 

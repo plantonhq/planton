@@ -10,7 +10,7 @@ The Azure 90/10 branch is reconciled with `main` after the AWS 90/10 project's
 two squash merges (#460, #465). Beyond the merge itself, the reconciliation
 unified three framework capabilities that the two provider projects had built
 independently on diverged branches — the scenario-declared E2E fixture
-mechanism, the offline InfraChart validation gate, and stack-output map
+mechanism, the offline InfraChart validation gate, and output map
 population — so each now exists exactly once, carrying both projects'
 capability sets. The Azure documentation surface also adopts main's
 platform-key convention (`planton.dev/provisioner` and backend keys in
@@ -76,7 +76,7 @@ liveness is a curl check in the authoring rule).
 
 `_rules/charts/forge-planton-infra-chart.mdc` absorbs the Azure-side rule's
 substance (one-chart-one-architecture, secure-by-default posture, chart
-self-containment, the seam-gap-is-a-component-gap principle and its honest-
+self-containment, the seam-gap-is-a-kind-gap principle and its honest-
 literal boundary, parameter-earns-its-place, the naming convention);
 `author-planton-infra-charts.mdc` is deleted and the repair rule repointed.
 

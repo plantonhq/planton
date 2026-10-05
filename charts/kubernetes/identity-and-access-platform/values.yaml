@@ -98,7 +98,7 @@ params:
       server's authn-keys Secret; only the Secret name renders into chart
       values. Rotate by writing a new version of the secret and redeploying.
       On Planton the value is a reference to a managed secret, resolved at deploy
-      so the password is never stored with the project: create it with
+      so the password is never stored with the Infra Stack: create it with
       `planton secret set identity-and-access-platform-openfga-key --string` (or name an environment's own as
       `$secret/@<env>/<slug>`). A deploy without the platform takes the literal.
     value: $secret/identity-and-access-platform-openfga-key

@@ -5,8 +5,8 @@ package dev.planton.aws.awssnstopic.v1alpha1;
 import "catalog/aws/awssnstopic/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSnsTopicStackInput is the input envelope passed to IaC modules for provisioning.
-message AwsSnsTopicStackInput {
+// AwsSnsTopicIacInput is the input envelope passed to IaC modules for provisioning.
+message AwsSnsTopicIacInput {
   // target is the fully-specified AwsSnsTopic resource to provision.
   AwsSnsTopic target = 1;
 

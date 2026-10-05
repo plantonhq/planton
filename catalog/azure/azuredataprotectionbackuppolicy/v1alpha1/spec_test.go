@@ -32,7 +32,7 @@ func diskVariant() *AzureDataProtectionBackupPolicy {
 	return &AzureDataProtectionBackupPolicy{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureDataProtectionBackupPolicy",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-backup-policy",
 		},
 		Spec: &AzureDataProtectionBackupPolicySpec{

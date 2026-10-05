@@ -1,4 +1,4 @@
-# Azure Federated Identity Credential Component + User-Assigned Identity Rework
+# Azure Federated Identity Credential Kind + User-Assigned Identity Rework
 
 **Date**: July 3, 2026
 **Type**: Feature
@@ -7,11 +7,11 @@
 ## Summary
 
 Completes Azure's identity story with two changes that land together because they are two
-halves of one design: a new first-class `AzureFederatedIdentityCredential` component (the
+halves of one design: a new first-class `AzureFederatedIdentityCredential` kind (the
 keyless-OIDC unlock for GitHub Actions CI and AKS workload identity), and a rework of
 `AzureUserAssignedIdentity` to be identity-only — its formerly embedded role assignments
-move to the standalone `AzureRoleAssignment` component, while the identity gains the full
-azurerm v4 surface (`isolation_scope`, user `tags`). Both components are proven with live
+move to the standalone `AzureRoleAssignment` kind, while the identity gains the full
+azurerm v4 surface (`isolation_scope`, user `tags`). Both kinds are proven with live
 dual-engine E2E against a real Azure subscription.
 
 ## Problem Statement / Motivation
@@ -22,8 +22,8 @@ a managed identity's credentials. The catalog could not express this at all — 
 federated-credential resource, so GitHub Actions pipelines needed stored client secrets
 and AKS workloads could not use workload identity through Planton.
 
-At the same time, the user-assigned identity component bundled an optional list of role
-assignments inside its spec. That bundling predated the standalone RBAC components and
+At the same time, the user-assigned identity kind bundled an optional list of role
+assignments inside its spec. That bundling predated the standalone RBAC kinds and
 carried three structural problems:
 
 ### Pain Points
@@ -86,7 +86,7 @@ principal and invalidate everything.
 - **Presets**: the bundled-grants preset replaced with composition-teaching presets
   (standard, CI-deployer, governance-tagged).
 - **Zero blast radius verified**: the only chart consuming the identity does not use
-  `role_assignments`; the E2E fixture profile never carried grants; the identity's stack
+  `role_assignments`; the E2E fixture profile never carried grants; the identity's
   outputs are unchanged.
 
 ### Shared dependency bump
@@ -133,16 +133,16 @@ and the repo-wide `make build-go`.
 
 - **Keyless CI/CD and AKS workload identity are now expressible**: identity + grant +
   trust rule, all by reference, no client secret anywhere.
-- **The identity component stops owning grants it doesn't own** — composed environments
+- **The identity kind stops owning grants it doesn't own** — composed environments
   express permissions through the full-surface `AzureRoleAssignment` instead of a shallow
   embedded duplicate.
 - 4 of ~39 Azure Pulumi modules now run on the shared provider builder (keyless-ready).
 
 ## Related Work
 
-- `2026-07-03-115439-azure-role-assignment-component.md` — the standalone grant component
+- `2026-07-03-115439-azure-role-assignment-kind.md` — the standalone grant kind
   the extraction lands on
-- `2026-07-03-130142-azure-role-definition-component.md` — custom roles; assignments bind
+- `2026-07-03-130142-azure-role-definition-kind.md` — custom roles; assignments bind
   their fully-scoped IDs
 - `2026-07-03-081126-azure-e2e-harness.md` — the live dual-engine harness these proofs
   run on

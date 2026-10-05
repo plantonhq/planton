@@ -50,19 +50,19 @@ Changed from `bg-purple-900/30 text-purple-300` to `bg-slate-800/60 text-sky-300
 
 ## Implementation Details
 
-### Build Script Changes (`site/scripts/copy-component-docs.ts`)
+### Build Script Changes (`site/scripts/copy-kind-docs.ts`)
 
 - Added `extractTitleFromContent()` — regex for first `^# (.+)$` heading
 - Added `stripProviderPrefix()` — removes "AWS ", "GCP ", "Azure ", etc.
 - Added `generateSlug()` — title to kebab-case (`"Route53 DNS Record"` → `"route53-dns-record"`)
 - Added `yamlEscape()` — escapes double quotes in YAML frontmatter values (fixed a build failure from a legacy DigitalOcean doc heading containing `"1-Click"`)
-- Output filenames changed from `{component}.md` to `{slug}.md`
+- Output filenames changed from `{kind}.md` to `{slug}.md`
 - Provider index links updated to use slug-based URLs
-- `componentName` preserved in frontmatter for icon path resolution
+- `kindName` preserved in frontmatter for icon path resolution
 
 ### Structure Generation (`generate-docs-structure.ts`, `fileSystem.ts`)
 
-- Added `componentName` to `DocItem` interface
+- Added `kindName` to `DocItem` interface
 - Propagated from frontmatter through to the sidebar JSON
 
 ### Layout Restructure
@@ -76,7 +76,7 @@ Changed from `bg-purple-900/30 text-purple-300` to `bg-slate-800/60 text-sky-300
 - Structure fetch moved to mount-only (ref guard prevents re-fetch)
 - `expandedPaths` useEffect changed from `new Set()` to `new Set(prev)`
 - Added `data-active` attribute + `scrollIntoView({ behavior: 'smooth', block: 'nearest' })`
-- Icon resolution now uses `componentName` from item data (survives slug changes)
+- Icon resolution now uses `kindName` from item data (survives slug changes)
 - Added `onError` handler on `Image` — fallback to letter badge on load failure
 
 ### MDX Renderer (`MDXRenderer.tsx`)
@@ -97,7 +97,7 @@ Changed from `bg-purple-900/30 text-purple-300` to `bg-slate-800/60 text-sky-300
 ## Impact
 
 - **All 190 catalog page URLs changed** — old URLs will 404 (acceptable for pre-1.0 docs)
-- **Build pipeline updated** — `copy-component-docs.ts` now generates slug-based filenames
+- **Build pipeline updated** — `copy-kind-docs.ts` now generates slug-based filenames
 - **No breaking changes to docs content** — only the site infrastructure and rendering changed
 
 ## Files Changed
@@ -108,11 +108,11 @@ Changed from `bg-purple-900/30 text-purple-300` to `bg-slate-800/60 text-sky-300
 - `site/src/app/docs/components/CodeBlock.tsx`
 
 **Modified files (6):**
-- `site/scripts/copy-component-docs.ts` — title extraction, slug generation, YAML escaping
-- `site/scripts/generate-docs-structure.ts` — componentName propagation
-- `site/src/app/docs/utils/fileSystem.ts` — componentName in DocItem interface
+- `site/scripts/copy-kind-docs.ts` — title extraction, slug generation, YAML escaping
+- `site/scripts/generate-docs-structure.ts` — kindName propagation
+- `site/src/app/docs/utils/fileSystem.ts` — kindName in DocItem interface
 - `site/src/app/docs/[[...slug]]/page.tsx` — layout refactor
-- `site/src/app/docs/components/DocsSidebar.tsx` — scroll, icons, componentName
+- `site/src/app/docs/components/DocsSidebar.tsx` — scroll, icons, kindName
 - `site/src/app/docs/components/MDXRenderer.tsx` — CodeBlock, inline code styling
 
 **Generated files (~190):**

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetescilium.v1alpha1;
 
-// KubernetesCiliumStackOutputs captures observable outputs after Cilium is
+// KubernetesCiliumOutputs captures observable outputs after Cilium is
 // installed on the target cluster.
-message KubernetesCiliumStackOutputs {
+message KubernetesCiliumOutputs {
   // Namespace Cilium was installed into (the resolved spec.namespace).
   string namespace = 1;
 

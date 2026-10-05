@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awscloudwatchcompositealarm
+    e2e-catalog-kind: awscloudwatchcompositealarm
   annotations:
     planton.dev/e2e: "true"
   tags:

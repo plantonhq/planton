@@ -9,9 +9,9 @@
 # chart-default sizing and are excluded loudly below. Superset provisions
 # no volumes -- all durable state lives in the metadata database and
 # cache components.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetessuperset
 spec:

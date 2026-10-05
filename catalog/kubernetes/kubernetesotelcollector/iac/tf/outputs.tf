@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesOtelCollectorStackOutputs by
+# Outputs — flattened onto KubernetesOtelCollectorOutputs by
 # the platform. Keep in lockstep with the Pulumi module's exports.
 #
 # Sidecar mode creates NO standalone workload — every Service-derived

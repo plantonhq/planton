@@ -33,7 +33,7 @@ Key design notes:
   an access point whose path does not exist fails.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

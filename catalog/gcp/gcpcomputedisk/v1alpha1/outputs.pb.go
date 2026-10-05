@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpComputeDiskStackOutputs captures observable values produced after
+// GcpComputeDiskOutputs captures observable values produced after
 // provisioning a Compute Engine persistent disk.
-type GcpComputeDiskStackOutputs struct {
+type GcpComputeDiskOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the disk in GCP.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -43,20 +43,20 @@ type GcpComputeDiskStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpComputeDiskStackOutputs) Reset() {
-	*x = GcpComputeDiskStackOutputs{}
+func (x *GcpComputeDiskOutputs) Reset() {
+	*x = GcpComputeDiskOutputs{}
 	mi := &file_catalog_gcp_gcpcomputedisk_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpComputeDiskStackOutputs) String() string {
+func (x *GcpComputeDiskOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpComputeDiskStackOutputs) ProtoMessage() {}
+func (*GcpComputeDiskOutputs) ProtoMessage() {}
 
-func (x *GcpComputeDiskStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpComputeDiskOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcomputedisk_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,47 +68,47 @@ func (x *GcpComputeDiskStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpComputeDiskStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpComputeDiskStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpComputeDiskOutputs.ProtoReflect.Descriptor instead.
+func (*GcpComputeDiskOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcomputedisk_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpComputeDiskStackOutputs) GetName() string {
+func (x *GcpComputeDiskOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpComputeDiskStackOutputs) GetDiskId() string {
+func (x *GcpComputeDiskOutputs) GetDiskId() string {
 	if x != nil {
 		return x.DiskId
 	}
 	return ""
 }
 
-func (x *GcpComputeDiskStackOutputs) GetSelfLink() string {
+func (x *GcpComputeDiskOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpComputeDiskStackOutputs) GetZone() string {
+func (x *GcpComputeDiskOutputs) GetZone() string {
 	if x != nil {
 		return x.Zone
 	}
 	return ""
 }
 
-func (x *GcpComputeDiskStackOutputs) GetSizeGb() int32 {
+func (x *GcpComputeDiskOutputs) GetSizeGb() int32 {
 	if x != nil {
 		return x.SizeGb
 	}
 	return 0
 }
 
-func (x *GcpComputeDiskStackOutputs) GetType() string {
+func (x *GcpComputeDiskOutputs) GetType() string {
 	if x != nil {
 		return x.Type
 	}
@@ -119,8 +119,8 @@ var File_catalog_gcp_gcpcomputedisk_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_gcp_gcpcomputedisk_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/gcp/gcpcomputedisk/v1alpha1/outputs.proto\x12'dev.planton.gcp.gcpcomputedisk.v1alpha1\"\xa7\x01\n" +
-	"\x1aGcpComputeDiskStackOutputs\x12\x12\n" +
+	"1catalog/gcp/gcpcomputedisk/v1alpha1/outputs.proto\x12'dev.planton.gcp.gcpcomputedisk.v1alpha1\"\xa2\x01\n" +
+	"\x15GcpComputeDiskOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x17\n" +
 	"\adisk_id\x18\x02 \x01(\tR\x06diskId\x12\x1b\n" +
 	"\tself_link\x18\x03 \x01(\tR\bselfLink\x12\x12\n" +
@@ -143,7 +143,7 @@ func file_catalog_gcp_gcpcomputedisk_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_gcp_gcpcomputedisk_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcomputedisk_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpComputeDiskStackOutputs)(nil), // 0: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskStackOutputs
+	(*GcpComputeDiskOutputs)(nil), // 0: dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskOutputs
 }
 var file_catalog_gcp_gcpcomputedisk_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

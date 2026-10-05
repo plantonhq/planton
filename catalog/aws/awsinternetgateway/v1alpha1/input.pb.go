@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsInternetGatewayStackInput is the input to the IaC modules (Pulumi /
+// AwsInternetGatewayIacInput is the input to the IaC modules (Pulumi /
 // Terraform) that deploy an AwsInternetGateway resource.
-type AwsInternetGatewayStackInput struct {
+type AwsInternetGatewayIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsInternetGateway `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AwsInternetGatewayStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsInternetGatewayStackInput) Reset() {
-	*x = AwsInternetGatewayStackInput{}
+func (x *AwsInternetGatewayIacInput) Reset() {
+	*x = AwsInternetGatewayIacInput{}
 	mi := &file_catalog_aws_awsinternetgateway_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsInternetGatewayStackInput) String() string {
+func (x *AwsInternetGatewayIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsInternetGatewayStackInput) ProtoMessage() {}
+func (*AwsInternetGatewayIacInput) ProtoMessage() {}
 
-func (x *AwsInternetGatewayStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsInternetGatewayIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsinternetgateway_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsInternetGatewayStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsInternetGatewayStackInput.ProtoReflect.Descriptor instead.
-func (*AwsInternetGatewayStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsInternetGatewayIacInput.ProtoReflect.Descriptor instead.
+func (*AwsInternetGatewayIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsinternetgateway_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsInternetGatewayStackInput) GetTarget() *AwsInternetGateway {
+func (x *AwsInternetGatewayIacInput) GetTarget() *AwsInternetGateway {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsInternetGatewayStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsInternetGatewayIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsinternetgateway_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_aws_awsinternetgateway_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awsinternetgateway/v1alpha1/input.proto\x12+dev.planton.aws.awsinternetgateway.v1alpha1\x1a1catalog/aws/awsinternetgateway/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc4\x01\n" +
-	"\x1cAwsInternetGatewayStackInput\x12W\n" +
+	"3catalog/aws/awsinternetgateway/v1alpha1/input.proto\x12+dev.planton.aws.awsinternetgateway.v1alpha1\x1a1catalog/aws/awsinternetgateway/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc2\x01\n" +
+	"\x1aAwsInternetGatewayIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xef\x02\n" +
 	"/com.dev.planton.aws.awsinternetgateway.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsinternetgateway_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awsinternetgateway_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsinternetgateway_v1alpha1_input_proto_goTypes = []any{
-	(*AwsInternetGatewayStackInput)(nil), // 0: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayStackInput
-	(*AwsInternetGateway)(nil),           // 1: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGateway
-	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsInternetGatewayIacInput)(nil), // 0: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayIacInput
+	(*AwsInternetGateway)(nil),         // 1: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGateway
+	(*aws.AwsProviderConfig)(nil),      // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsinternetgateway_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayStackInput.target:type_name -> dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGateway
-	2, // 1: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayIacInput.target:type_name -> dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGateway
+	2, // 1: dev.planton.aws.awsinternetgateway.v1alpha1.AwsInternetGatewayIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

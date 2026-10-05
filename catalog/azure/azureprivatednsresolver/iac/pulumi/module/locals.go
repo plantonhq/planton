@@ -5,7 +5,7 @@ import (
 
 	azureprivatednsresolverv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureprivatednsresolver/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -32,11 +32,11 @@ var allocationMethodWire = map[azureprivatednsresolverv1alpha1.AzurePrivateDnsRe
 	azureprivatednsresolverv1alpha1.AzurePrivateDnsResolverIpAllocationMethod_STATIC:  "Static",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureprivatednsresolverv1alpha1.AzurePrivateDnsResolverStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureprivatednsresolverv1alpha1.AzurePrivateDnsResolverIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzurePrivateDnsResolver = stackInput.Target
-	target := stackInput.Target
+	locals.AzurePrivateDnsResolver = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -47,7 +47,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureprivatednsresolverv1
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzurePrivateDnsResolver.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzurePrivateDnsResolver.String()),
 	}
 
 	if target.Metadata.Id != "" {

@@ -37,7 +37,7 @@ func validResource() *AzurePrivateDnsZoneVirtualNetworkLink {
 	return &AzurePrivateDnsZoneVirtualNetworkLink{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzurePrivateDnsZoneVirtualNetworkLink",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-link",
 		},
 		Spec: &AzurePrivateDnsZoneVirtualNetworkLinkSpec{

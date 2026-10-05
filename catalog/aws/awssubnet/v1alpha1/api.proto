@@ -17,7 +17,7 @@ message AwsSubnet {
   string kind = 2 [(buf.validate.field).string.const = 'AwsSubnet'];
 
   // metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
   AwsSubnetSpec spec = 4 [(buf.validate.field).required = true];
@@ -28,6 +28,6 @@ message AwsSubnet {
 
 // AwsSubnetStatus holds the outputs produced by deploying an AwsSubnet.
 message AwsSubnetStatus {
-  // stack-outputs
-  AwsSubnetStackOutputs outputs = 1;
+  // outputs
+  AwsSubnetOutputs outputs = 1;
 }

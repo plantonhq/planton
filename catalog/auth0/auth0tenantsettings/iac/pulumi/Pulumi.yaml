@@ -3,4 +3,4 @@
 name: auth0-tenant-settings
 runtime:
   name: go
-description: Pulumi module for Auth0TenantSettings component
+description: Pulumi module for Auth0TenantSettings kind

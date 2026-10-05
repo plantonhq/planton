@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-solr stack outputs
-type KubernetesSolrStackOutputs struct {
+// kubernetes-solr outputs
+type KubernetesSolrOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the cluster runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -54,20 +54,20 @@ type KubernetesSolrStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesSolrStackOutputs) Reset() {
-	*x = KubernetesSolrStackOutputs{}
+func (x *KubernetesSolrOutputs) Reset() {
+	*x = KubernetesSolrOutputs{}
 	mi := &file_catalog_kubernetes_kubernetessolr_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesSolrStackOutputs) String() string {
+func (x *KubernetesSolrOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesSolrStackOutputs) ProtoMessage() {}
+func (*KubernetesSolrOutputs) ProtoMessage() {}
 
-func (x *KubernetesSolrStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesSolrOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetessolr_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -79,54 +79,54 @@ func (x *KubernetesSolrStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesSolrStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesSolrStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesSolrOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesSolrOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetessolr_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesSolrStackOutputs) GetNamespace() string {
+func (x *KubernetesSolrOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesSolrStackOutputs) GetClusterName() string {
+func (x *KubernetesSolrOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *KubernetesSolrStackOutputs) GetCommonServiceName() string {
+func (x *KubernetesSolrOutputs) GetCommonServiceName() string {
 	if x != nil {
 		return x.CommonServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesSolrStackOutputs) GetInternalEndpoint() string {
+func (x *KubernetesSolrOutputs) GetInternalEndpoint() string {
 	if x != nil {
 		return x.InternalEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesSolrStackOutputs) GetBasicAuthSecretName() string {
+func (x *KubernetesSolrOutputs) GetBasicAuthSecretName() string {
 	if x != nil {
 		return x.BasicAuthSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesSolrStackOutputs) GetZookeeperConnectionString() string {
+func (x *KubernetesSolrOutputs) GetZookeeperConnectionString() string {
 	if x != nil {
 		return x.ZookeeperConnectionString
 	}
 	return ""
 }
 
-func (x *KubernetesSolrStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesSolrOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -137,8 +137,8 @@ var File_catalog_kubernetes_kubernetessolr_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetessolr_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetessolr/v1alpha1/outputs.proto\x12.dev.planton.kubernetes.kubernetessolr.v1alpha1\"\xe1\x02\n" +
-	"\x1aKubernetesSolrStackOutputs\x12\x1c\n" +
+	"8catalog/kubernetes/kubernetessolr/v1alpha1/outputs.proto\x12.dev.planton.kubernetes.kubernetessolr.v1alpha1\"\xdc\x02\n" +
+	"\x15KubernetesSolrOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12.\n" +
 	"\x13common_service_name\x18\x03 \x01(\tR\x11commonServiceName\x12+\n" +
@@ -162,7 +162,7 @@ func file_catalog_kubernetes_kubernetessolr_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_kubernetes_kubernetessolr_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetessolr_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesSolrStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrStackOutputs
+	(*KubernetesSolrOutputs)(nil), // 0: dev.planton.kubernetes.kubernetessolr.v1alpha1.KubernetesSolrOutputs
 }
 var file_catalog_kubernetes_kubernetessolr_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

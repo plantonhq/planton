@@ -4,7 +4,7 @@ Creates a Google Group in Cloud Identity or Google Workspace and manages its mem
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Group** -- a `cloudidentity.Group` under the customer with the declared email, display name, description, initial configuration, and the discussion-forum label every Google Group carries (plus the security label when `security` is true)
 - **Memberships** -- one `cloudidentity.GroupMembership` per member, keyed by email, with its roles and optional expiry
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module whose principal holds the Groups Admin role in the Cloud Identity / Workspace customer. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module whose principal holds the Groups Admin role in the Cloud Identity / Workspace customer. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Cloud Identity
@@ -61,7 +61,7 @@ spec:
 planton apply -f cloud-identity-group.yaml
 ```
 
-This creates a security group with a human owner and a service-account member; IAM bindings then name `group:platform-admins@example.com`. A Stack Job tracks the provisioning in real time.
+This creates a security group with a human owner and a service-account member; IAM bindings then name `group:platform-admins@example.com`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -81,15 +81,15 @@ These are the most important decisions when configuring a group. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpServiceAccount** | `memberships[].member` | `status.outputs.email` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -107,6 +107,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- service accounts a group holds as members
-- [**GCP Project IAM Member**](/cloud-catalog/gcp-project-iam-member) -- binds a role to `group:{group_email}`
-- [**GCP Folder**](/cloud-catalog/gcp-folder), [**GCP Project**](/cloud-catalog/gcp-project) -- where the group's bindings live
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- service accounts a group holds as members
+- [**GCP Project IAM Member**](/infra-catalog/gcp-project-iam-member) -- binds a role to `group:{group_email}`
+- [**GCP Folder**](/infra-catalog/gcp-folder), [**GCP Project**](/infra-catalog/gcp-project) -- where the group's bindings live

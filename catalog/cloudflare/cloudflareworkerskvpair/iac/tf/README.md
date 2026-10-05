@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareWorkersKvPairSpec
 locals.tf     — Resource naming
 main.tf       — cloudflare_workers_kv resource
-outputs.tf    — Stack outputs (key_name, namespace_id)
+outputs.tf    — outputs (key_name, namespace_id)
 ```
 
 ## Usage

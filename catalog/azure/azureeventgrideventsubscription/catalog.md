@@ -4,7 +4,7 @@ Deploys an Azure Event Grid event subscription -- the delivery instruction that 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions exactly one of:
+When you deploy this Infra Component, the IaC module provisions exactly one of:
 
 - **Scope-addressed event subscription** -- attaches to any ARM resource that emits Event Grid events: a custom topic, a domain (receiving every domain topic's events), a single domain topic, a resource group, or a subscription (created when `scope` is set)
 - **System-topic event subscription** -- a child of the referenced system topic; Azure models these as children rather than scoped attachments, and the engines create the matching resource type (created when `systemTopicId` is set)
@@ -15,13 +15,13 @@ Both shapes carry the same configuration surface: destination, filters, retry po
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Azure Subscription
 
 - **The event source must exist** -- an Azure Event Grid Topic (the default reference for `scope`), an Azure Event Grid System Topic (for `systemTopicId`), or any other source's ARM ID passed as a literal.
 - **The destination must exist** -- Azure validates it at create time. Webhook destinations answer a validation handshake at create: the endpoint must be live, or the create fails, so in charts sequence the handler before the subscription.
-- **The dead-letter blob container** (only with `deadLetter`) -- the container must already exist; an Azure Storage Container Cloud Resource manages one.
+- **The dead-letter blob container** (only with `deadLetter`) -- the container must already exist; an Azure Storage Container Infra Component manages one.
 - **A managed identity with data-plane access** (only for identity-based delivery) -- the identity must exist ON the source topic and hold the destination's data-plane role (Storage Queue Data Message Sender, Azure Service Bus Data Sender) before the subscription names it.
 
 ## Deploy
@@ -70,7 +70,7 @@ spec:
 planton apply -f event-subscription.yaml
 ```
 
-This subscribes a storage queue to every event on the topic, delivering in the CloudEvents envelope, with undeliverable events parked in a blob container instead of dropped. A Stack Job tracks the provisioning in real time.
+This subscribes a storage queue to every event on the topic, delivering in the CloudEvents envelope, with undeliverable events parked in a blob container instead of dropped. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -118,7 +118,7 @@ These are the most important decisions when configuring an event subscription. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -133,9 +133,9 @@ These are the most important decisions when configuring an event subscription. E
 
 The Azure Function destination's `destination.azureFunction.functionId` addresses one function inside an app (`{function_app_id}/functions/{function_name}`), so it has no single-output default -- pass the ID as a literal or compose it in the manifest. `destination.hybridConnectionId` likewise takes a literal ARM ID (Relay is not a catalog kind).
 
-### What This Component Provides
+### What This Kind Provides
 
-`status.outputs` records identifiers only: `event_subscription_id` (whose shape follows the addressing choice -- a scoped path extending the source's ID, or a child path under the system topic) and `event_subscription_name`, which echoes the manifest's `name`. A subscription is the end of the routing chain -- no downstream Cloud Resource consumes it via ValueFromRef.
+`status.outputs` records identifiers only: `event_subscription_id` (whose shape follows the addressing choice -- a scoped path extending the source's ID, or a child path under the system topic) and `event_subscription_name`, which echoes the manifest's `name`. A subscription is the end of the routing chain -- no downstream Infra Component consumes it via ValueFromRef.
 
 ## Common Patterns
 
@@ -149,13 +149,13 @@ The Azure Function destination's `destination.azureFunction.functionId` addresse
 
 ## Works With
 
-- [**Azure Event Grid Topic**](/cloud-catalog/azure-eventgrid-topic) -- the default source for scope-addressed subscriptions
-- [**Azure Event Grid System Topic**](/cloud-catalog/azure-eventgrid-system-topic) -- the source for platform-event subscriptions
-- [**Azure Event Grid Domain**](/cloud-catalog/azure-eventgrid-domain) / [**Azure Event Grid Domain Topic**](/cloud-catalog/azure-eventgrid-domain-topic) -- alternative scope sources for multi-tenant eventing
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- hosts the destination queue and the dead-letter container
-- [**Azure Storage Queue**](/cloud-catalog/azure-storage-queue) -- the pull-based destination queue
-- [**Azure Storage Container**](/cloud-catalog/azure-storage-container) -- the dead-letter blob container
-- [**Azure Service Bus Queue**](/cloud-catalog/azure-service-bus-queue) / [**Azure Service Bus Topic**](/cloud-catalog/azure-service-bus-topic) -- destinations with ordering and DLQ semantics of their own
-- [**Azure Event Hub**](/cloud-catalog/azure-event-hub) -- the high-throughput streaming destination
-- [**Azure Function App**](/cloud-catalog/azure-function-app) -- the function destination (`{function_app_id}/functions/{name}`)
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the identity deliveries and dead-letter writes run as
+- [**Azure Event Grid Topic**](/infra-catalog/azure-eventgrid-topic) -- the default source for scope-addressed subscriptions
+- [**Azure Event Grid System Topic**](/infra-catalog/azure-eventgrid-system-topic) -- the source for platform-event subscriptions
+- [**Azure Event Grid Domain**](/infra-catalog/azure-eventgrid-domain) / [**Azure Event Grid Domain Topic**](/infra-catalog/azure-eventgrid-domain-topic) -- alternative scope sources for multi-tenant eventing
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- hosts the destination queue and the dead-letter container
+- [**Azure Storage Queue**](/infra-catalog/azure-storage-queue) -- the pull-based destination queue
+- [**Azure Storage Container**](/infra-catalog/azure-storage-container) -- the dead-letter blob container
+- [**Azure Service Bus Queue**](/infra-catalog/azure-service-bus-queue) / [**Azure Service Bus Topic**](/infra-catalog/azure-service-bus-topic) -- destinations with ordering and DLQ semantics of their own
+- [**Azure Event Hub**](/infra-catalog/azure-event-hub) -- the high-throughput streaming destination
+- [**Azure Function App**](/infra-catalog/azure-function-app) -- the function destination (`{function_app_id}/functions/{name}`)
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the identity deliveries and dead-letter writes run as

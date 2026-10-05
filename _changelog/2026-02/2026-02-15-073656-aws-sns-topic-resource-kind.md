@@ -10,7 +10,7 @@ Added the AwsSnsTopic resource kind (R02, enum 226) to Planton, providing a stan
 
 ## Problem Statement / Motivation
 
-Planton's AWS coverage lacked a native pub/sub messaging resource. SNS is foundational to event-driven architectures on AWS — it powers fan-out notifications, cross-service event distribution, alarm routing, and serverless event pipelines. Without AwsSnsTopic, infra charts could not express the common pattern of "publish to one topic, deliver to many subscribers."
+Planton's AWS coverage lacked a native pub/sub messaging resource. SNS is foundational to event-driven architectures on AWS — it powers fan-out notifications, cross-service event distribution, alarm routing, and serverless event pipelines. Without AwsSnsTopic, Infra Charts could not express the common pattern of "publish to one topic, deliver to many subscribers."
 
 ### Pain Points
 
@@ -21,14 +21,14 @@ Planton's AWS coverage lacked a native pub/sub messaging resource. SNS is founda
 
 ## Solution / What's New
 
-A complete AwsSnsTopic deployment component following the established forge pattern:
+A complete AwsSnsTopic catalog kind following the established forge pattern:
 
 ### Proto API (4 files)
 
 - **spec.proto**: 10 top-level fields, 3 nested messages (AwsSnsTopicSubscription, AwsSnsSubscriptionRedriveConfig), 8 CEL validations across spec and subscription levels
 - **api.proto**: Kubernetes-style resource envelope (api_version, kind, metadata, spec, status)
-- **stack_input.proto**: Input envelope with target resource and AWS provider config
-- **stack_outputs.proto**: topic_arn, topic_name, subscription_arns (map<string, string>)
+- **iac_input.proto**: Input envelope with target resource and AWS provider config
+- **outputs.proto**: topic_arn, topic_name, subscription_arns (map<string, string>)
 
 ### Bundled Subscriptions
 
@@ -90,10 +90,10 @@ Subscriptions are defined inline with the topic as a repeated field. Each subscr
 
 ## Benefits
 
-- Enables fan-out notification patterns in infra charts
+- Enables fan-out notification patterns in Infra Charts
 - Completes the messaging pair: AwsSqsQueue (point-to-point) + AwsSnsTopic (pub/sub)
 - Subscription filtering reduces unnecessary message delivery
-- Cross-resource wiring via StringValueOrRef creates proper dependency edges in the infra chart DAG
+- Cross-resource wiring via StringValueOrRef creates proper dependency edges in the Infra Chart DAG
 - Map-keyed subscription ARN outputs enable fine-grained downstream references
 
 ## Impact
@@ -101,13 +101,13 @@ Subscriptions are defined inline with the topic as a repeated field. Each subscr
 - **New resource kind**: AwsSnsTopic (enum 226, id_prefix awssns)
 - **Files created**: ~45 files across proto, Go, HCL, YAML, and Markdown
 - **Validation tests**: 34 tests covering spec-level and subscription-level validations (all passing)
-- **Infra chart readiness**: Topic can be composed with AwsSqsQueue, AwsLambda, AwsKmsKey, AwsIamRole, and AwsEventBridgeRule
+- **Infra Chart readiness**: Topic can be composed with AwsSqsQueue, AwsLambda, AwsKmsKey, AwsIamRole, and AwsEventBridgeRule
 
 ## Related Work
 
 - **AwsSqsQueue (R01)**: Completed earlier in this session. AwsSnsTopic references AwsSqsQueue for subscription endpoints and subscription DLQs.
 - **AwsEventBridgeRule (R04)**: Upcoming. Will reference AwsSnsTopic as a rule target.
-- **Infra charts**: The serverless-api and event-driven charts will compose AwsSnsTopic with AwsSqsQueue and AwsLambda.
+- **Infra Charts**: The serverless-api and event-driven charts will compose AwsSnsTopic with AwsSqsQueue and AwsLambda.
 
 ---
 

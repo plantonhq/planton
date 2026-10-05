@@ -1,16 +1,16 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuredatafactoryintegrationruntime
 spec:
   values:
     - name: integration_runtime_id
       derivations:
-        - from_stack_output: integration_runtime_id
+        - from_output: integration_runtime_id
       where_to_find: >-
         Compose it from the factory's resource ID plus
         /integrationRuntimes/<runtime-name>, or `az datafactory
         integration-runtime show --factory-name <factory>
         --resource-group <rg> --name <name> --query id`; also the
-        component's own integration_runtime_id stack output. The same
+        component's own integration_runtime_id output. The same
         ID shape serves all 3 runtime flavors.

@@ -26,7 +26,7 @@ func validRoom(spec *CloudflareWaitingRoomSpec) *CloudflareWaitingRoom {
 	return &CloudflareWaitingRoom{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareWaitingRoom",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-waiting-room",
 		},
 		Spec: spec,

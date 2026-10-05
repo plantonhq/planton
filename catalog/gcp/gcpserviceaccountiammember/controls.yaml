@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcpserviceaccountiammember
 spec:
@@ -24,7 +24,7 @@ spec:
       evidence:
         type: spec_validation
         reference: The modules' member-format validation admits allUsers and allAuthenticatedUsers alongside the identity-scoped formats, so public exposure is always an explicit, reviewable value in the manifest -- never a default or a side effect.
-      notes: On a service account the stakes are sharper than on most resources -- a public grant of an impersonation role hands the account's entire identity to the internet, which is why the component's own documentation calls those literals never appropriate on a service account in practice. Review any manifest carrying them as an incident, not a configuration.
+      notes: On a service account the stakes are sharper than on most resources -- a public grant of an impersonation role hands the account's entire identity to the internet, which is why the kind's own documentation calls those literals never appropriate on a service account in practice. Review any manifest carrying them as an incident, not a configuration.
     - control_id: restricted-ingress
       status: not_applicable
       notes: No network path exists to restrict -- IAM authorization is identity-based, not source-based. Network posture for whatever the impersonated account reaches lives on those resources' own controls.

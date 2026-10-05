@@ -96,7 +96,7 @@ Grants to deleted principals (`deleted:...`) are refused by validation.
 
 Both are additive and never fight. Use the bucket's own `iam_members` for grantees known when the bucket is declared — a workload's service account, a group, a service agent. Use this kind only when the grantee is created from the bucket (a sink exporting into it). Never declare the same (role, member) pair in both places: removing either one removes the grant.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -126,7 +126,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **Only additive grants are modeled**: authoritative per-role bindings and whole-policy writes clobber every grant they do not list and are deliberately not modeled.
 - **A sink exports nothing until this grant lands**: deploy the grant in the same chart as the sink so the first hourly batch is written.
 
-## Related Components
+## Related Kinds
 
 - [GcpGcsBucket](/docs/catalog/gcp/gcpgcsbucket) — the bucket being granted on (its `bucket_id` output feeds this component; its own `iam_members` covers every other grantee)
 - [GcpLoggingSink](/docs/catalog/gcp/gcploggingsink) — a sink exporting to the bucket (its `writer_identity` output feeds `member`)

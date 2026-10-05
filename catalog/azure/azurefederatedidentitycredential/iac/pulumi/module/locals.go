@@ -29,11 +29,11 @@ type Locals struct {
 // Note: federated identity credentials carry no tags -- ARM models them as
 // untagged child resources of the identity -- so the usual metadata-derived
 // tag map is intentionally absent from these locals.
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefederatedidentitycredentialv1alpha1.AzureFederatedIdentityCredentialStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefederatedidentitycredentialv1alpha1.AzureFederatedIdentityCredentialIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFederatedIdentityCredential = stackInput.Target
-	spec := stackInput.Target.Spec
+	locals.AzureFederatedIdentityCredential = iacInput.Target
+	spec := iacInput.Target.Spec
 
 	locals.UserAssignedIdentityId = spec.UserAssignedIdentity.GetValue()
 

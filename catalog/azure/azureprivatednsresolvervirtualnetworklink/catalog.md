@@ -4,7 +4,7 @@ Deploys the virtual network link that attaches ONE virtual network to a DNS forw
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Virtual network link** -- a child resource of the forwarding ruleset, one per ruleset-network pair (Azure allows up to 500 per ruleset)
 
@@ -52,11 +52,11 @@ spec:
 planton apply -f link.yaml
 ```
 
-This attaches the `spoke-payments` network to the hub's forwarding ruleset -- the moment it lands, resources in the spoke resolve the ruleset's domains through the hub resolver's outbound endpoint. A Stack Job tracks the provisioning in real time.
+This attaches the `spoke-payments` network to the hub's forwarding ruleset -- the moment it lands, resources in the spoke resolve the ruleset's domains through the hub resolver's outbound endpoint. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When the ruleset and network are Cloud Resources in the same chart, wire both by reference:
+When the ruleset and network are Infra Components in the same chart, wire both by reference:
 
 ```yaml
 spec:
@@ -87,14 +87,14 @@ These are the most important decisions when configuring an Azure DNS Resolver Vi
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
 | Azure DNS Forwarding Ruleset | `dnsForwardingRulesetId` | `status.outputs.dns_forwarding_ruleset_id` |
 | Azure Virtual Network | `virtualNetworkId` | `status.outputs.virtual_network_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 `status.outputs` carries the link's ARM ID (`virtual_network_link_id`) and name (`virtual_network_link_name`). Nothing downstream consumes a link by reference -- it is a leaf attachment binding two other resources -- so these outputs exist for identification and import rather than composition.
 
@@ -108,6 +108,6 @@ These are the most important decisions when configuring an Azure DNS Resolver Vi
 
 ## Works With
 
-- [**Azure DNS Forwarding Ruleset**](/cloud-catalog/azure-private-dns-resolver-forwarding-ruleset) -- the rule book this link activates; reference its `dns_forwarding_ruleset_id` output.
-- [**Azure Virtual Network**](/cloud-catalog/azure-virtual-network) -- the network that starts forwarding; reference its `virtual_network_id` output.
-- [**Azure DNS Private Resolver**](/cloud-catalog/azure-private-dns-resolver) -- owns the outbound endpoint the linked networks' queries egress through.
+- [**Azure DNS Forwarding Ruleset**](/infra-catalog/azure-private-dns-resolver-forwarding-ruleset) -- the rule book this link activates; reference its `dns_forwarding_ruleset_id` output.
+- [**Azure Virtual Network**](/infra-catalog/azure-virtual-network) -- the network that starts forwarding; reference its `virtual_network_id` output.
+- [**Azure DNS Private Resolver**](/infra-catalog/azure-private-dns-resolver) -- owns the outbound endpoint the linked networks' queries egress through.

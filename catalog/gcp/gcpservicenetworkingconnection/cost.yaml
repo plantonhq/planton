@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpservicenetworkingconnection
 spec:
   billing_model: free
   free_tier: A private services access connection carries no meter -- Google's VPC pricing states outright that when you create one, there are no hourly or data charges for the connection itself. The peering it establishes between your network and the service producer's network is chargeless configuration, whatever the number of reserved ranges behind it.
-  notes: "No field of this spec bills directly, but the connection exists to carry two things that DO. Google's pricing names them exactly -- the resources you provision in the service producer's network, and the data transfer from your VMs to the producer's network. The first is the dominant spend and bills as its own catalog kinds (the GcpCloudSql, AlloyDB, Memorystore, and Filestore instances whose private IPs this peering makes possible); the second follows normal data-transfer rates by zone and region, invisible in any manifest. The reserved_peering_ranges are references to GcpGlobalAddress resources whose cost anatomy lives on that kind; widening capacity by appending ranges to this connection adds nothing to the bill by itself. Nothing about the connection -- service, ranges, deletion policy -- ever appears on an invoice."
+  notes: "No field of this spec bills directly, but the connection exists to carry two things that DO. Google's pricing names them exactly -- the resources you provision in the service producer's network, and the data transfer from your VMs to the producer's network. The first is the dominant spend and bills as its own components (the GcpCloudSql, AlloyDB, Memorystore, and Filestore instances whose private IPs this peering makes possible); the second follows normal data-transfer rates by zone and region, invisible in any manifest. The reserved_peering_ranges are references to GcpGlobalAddress resources whose cost anatomy lives on that kind; widening capacity by appending ranges to this connection adds nothing to the bill by itself. Nothing about the connection -- service, ranges, deletion policy -- ever appears on an invoice."

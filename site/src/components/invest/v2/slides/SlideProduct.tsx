@@ -48,7 +48,7 @@ const infraSteps = [
     iconType: 'lucide' as const,
     icon: Layers,
     title: 'Choose Infra',
-    description: 'Pick from 120+ Deployment Components',
+    description: 'Pick from 120+ Catalog Kinds',
   },
   {
     iconType: 'iac' as const,

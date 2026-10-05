@@ -40,4 +40,4 @@ module "dns_record" {
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Pulumi module: `record_id`, `hostname`, `record_type`, `domain`, `ttl_seconds`.
+Exactly the kind's output contract, identical to the Pulumi module: `record_id`, `hostname`, `record_type`, `domain`, `ttl_seconds`.

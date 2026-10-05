@@ -36,7 +36,7 @@ func validResource() *AzureRecoveryServicesVault {
 	return &AzureRecoveryServicesVault{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureRecoveryServicesVault",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-recovery-services-vault",
 		},
 		Spec: &AzureRecoveryServicesVaultSpec{

@@ -21,7 +21,7 @@ import (
 	// explicitly or the deprecation existence check refuses the bundle. (The
 	// real bundle is buf-built from the proto tree and carries every version
 	// regardless of linkage.)
-	_ "github.com/plantonhq/planton/catalog/_test/testcloudresourcegeneric/v1alpha1"
+	_ "github.com/plantonhq/planton/catalog/_test/testcatalogkindgeneric/v1alpha1"
 )
 
 // The full bundle lifecycle, hermetically: a descriptor set built from the
@@ -58,12 +58,12 @@ func TestBundleRoundTrip(t *testing.T) {
 
 	// The torture kind's cargo must be aboard: its conversion spec and its
 	// kind-level preset.
-	if _, ok := bundle.ConversionSpecs()["conversions/_test/testcloudresourcegeneric/v1alpha1_to_v1alpha2.yaml"]; !ok {
+	if _, ok := bundle.ConversionSpecs()["conversions/_test/testcatalogkindgeneric/v1alpha1_to_v1alpha2.yaml"]; !ok {
 		t.Error("the torture kind's conversion spec is missing from the bundle")
 	}
 	foundPreset := false
 	for name := range bundle.Presets() {
-		if strings.HasPrefix(name, "presets/_test/testcloudresourcegeneric/") {
+		if strings.HasPrefix(name, "presets/_test/testcatalogkindgeneric/") {
 			foundPreset = true
 			break
 		}

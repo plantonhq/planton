@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (KubernetesGhaRunnerScaleSetControllerStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (KubernetesGhaRunnerScaleSetControllerOutputs).
 
 output "namespace" {
   description = "Namespace the controller is installed into"

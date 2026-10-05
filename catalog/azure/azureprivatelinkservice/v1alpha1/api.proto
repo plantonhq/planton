@@ -21,17 +21,17 @@ message AzurePrivateLinkService {
   string kind = 2 [(buf.validate.field).string.const = 'AzurePrivateLinkService'];
 
   // Standard Planton metadata (name, org, env, labels, tags).
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // Private Link Service specification.
   AzurePrivateLinkServiceSpec spec = 4 [(buf.validate.field).required = true];
 
-  // Deployment status containing stack outputs. Populated after deployment.
+  // Deployment status containing outputs. Populated after deployment.
   AzurePrivateLinkServiceStatus status = 5;
 }
 
 // AzurePrivateLinkServiceStatus holds the deployment outputs.
 message AzurePrivateLinkServiceStatus {
-  // Stack outputs from the IaC deployment.
-  AzurePrivateLinkServiceStackOutputs outputs = 1;
+  // Outputs from the IaC deployment.
+  AzurePrivateLinkServiceOutputs outputs = 1;
 }

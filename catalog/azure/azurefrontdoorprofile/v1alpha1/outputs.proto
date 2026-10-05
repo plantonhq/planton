@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefrontdoorprofile.v1alpha1;
 
-// **AzureFrontDoorProfileStackOutputs** captures the outputs of
+// **AzureFrontDoorProfileOutputs** captures the outputs of
 // provisioning an Azure Front Door profile.
 //
 // The profile is the container; delivery resources compose against it by
@@ -10,7 +10,7 @@ package dev.planton.azure.azurefrontdoorprofile.v1alpha1;
 // those) AzureFrontDoorOrigin and AzureFrontDoorRoute all consume
 // `profile_id`. Client-facing hostnames live on the ENDPOINT kind's
 // outputs, not here.
-message AzureFrontDoorProfileStackOutputs {
+message AzureFrontDoorProfileOutputs {
   // The Azure Resource Manager ID of the Front Door profile -- what
   // AzureFrontDoorEndpoint and AzureFrontDoorOriginGroup reference as
   // their parent.

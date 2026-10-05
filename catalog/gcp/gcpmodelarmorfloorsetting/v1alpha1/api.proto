@@ -16,7 +16,7 @@ message GcpModelArmorFloorSetting {
   string kind = 2 [(buf.validate.field).string.const = 'GcpModelArmorFloorSetting'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   GcpModelArmorFloorSettingSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message GcpModelArmorFloorSetting {
 
 //gcp-model-armor-floor-setting status
 message GcpModelArmorFloorSettingStatus {
-  //stack-outputs
-  GcpModelArmorFloorSettingStackOutputs outputs = 1;
+  //outputs
+  GcpModelArmorFloorSettingOutputs outputs = 1;
 }

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecontainerappcustomdomain.v1alpha1;
 
-// **AzureContainerAppCustomDomainStackOutputs** captures the outputs of
+// **AzureContainerAppCustomDomainOutputs** captures the outputs of
 // binding a custom domain to a Container App.
-message AzureContainerAppCustomDomainStackOutputs {
+message AzureContainerAppCustomDomainOutputs {
   // The binding's resource ID. Azure models the binding as an entry in
   // the app's ingress configuration rather than a standalone ARM
   // resource, so this is the providers' synthetic identifier:

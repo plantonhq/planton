@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureEventgridSystemTopicStackOutputs** captures the outputs from
+// **AzureEventgridSystemTopicOutputs** captures the outputs from
 // provisioning an Azure Event Grid system topic.
-type AzureEventgridSystemTopicStackOutputs struct {
+type AzureEventgridSystemTopicOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The system topic's Azure Resource Manager ID -- the target an
 	// AzureEventgridEventSubscription's system_topic_id references.
@@ -42,20 +42,20 @@ type AzureEventgridSystemTopicStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureEventgridSystemTopicStackOutputs) Reset() {
-	*x = AzureEventgridSystemTopicStackOutputs{}
+func (x *AzureEventgridSystemTopicOutputs) Reset() {
+	*x = AzureEventgridSystemTopicOutputs{}
 	mi := &file_catalog_azure_azureeventgridsystemtopic_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventgridSystemTopicStackOutputs) String() string {
+func (x *AzureEventgridSystemTopicOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventgridSystemTopicStackOutputs) ProtoMessage() {}
+func (*AzureEventgridSystemTopicOutputs) ProtoMessage() {}
 
-func (x *AzureEventgridSystemTopicStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureEventgridSystemTopicOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventgridsystemtopic_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *AzureEventgridSystemTopicStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventgridSystemTopicStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureEventgridSystemTopicStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventgridSystemTopicOutputs.ProtoReflect.Descriptor instead.
+func (*AzureEventgridSystemTopicOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventgridsystemtopic_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventgridSystemTopicStackOutputs) GetSystemTopicId() string {
+func (x *AzureEventgridSystemTopicOutputs) GetSystemTopicId() string {
 	if x != nil {
 		return x.SystemTopicId
 	}
 	return ""
 }
 
-func (x *AzureEventgridSystemTopicStackOutputs) GetSystemTopicName() string {
+func (x *AzureEventgridSystemTopicOutputs) GetSystemTopicName() string {
 	if x != nil {
 		return x.SystemTopicName
 	}
 	return ""
 }
 
-func (x *AzureEventgridSystemTopicStackOutputs) GetMetricResourceId() string {
+func (x *AzureEventgridSystemTopicOutputs) GetMetricResourceId() string {
 	if x != nil {
 		return x.MetricResourceId
 	}
 	return ""
 }
 
-func (x *AzureEventgridSystemTopicStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureEventgridSystemTopicOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -104,8 +104,8 @@ var File_catalog_azure_azureeventgridsystemtopic_v1alpha1_outputs_proto protoref
 
 const file_catalog_azure_azureeventgridsystemtopic_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/azure/azureeventgridsystemtopic/v1alpha1/outputs.proto\x124dev.planton.azure.azureeventgridsystemtopic.v1alpha1\"\xdd\x01\n" +
-	"%AzureEventgridSystemTopicStackOutputs\x12&\n" +
+	">catalog/azure/azureeventgridsystemtopic/v1alpha1/outputs.proto\x124dev.planton.azure.azureeventgridsystemtopic.v1alpha1\"\xd8\x01\n" +
+	" AzureEventgridSystemTopicOutputs\x12&\n" +
 	"\x0fsystem_topic_id\x18\x01 \x01(\tR\rsystemTopicId\x12*\n" +
 	"\x11system_topic_name\x18\x02 \x01(\tR\x0fsystemTopicName\x12,\n" +
 	"\x12metric_resource_id\x18\x03 \x01(\tR\x10metricResourceId\x122\n" +
@@ -126,7 +126,7 @@ func file_catalog_azure_azureeventgridsystemtopic_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_azure_azureeventgridsystemtopic_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventgridsystemtopic_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureEventgridSystemTopicStackOutputs)(nil), // 0: dev.planton.azure.azureeventgridsystemtopic.v1alpha1.AzureEventgridSystemTopicStackOutputs
+	(*AzureEventgridSystemTopicOutputs)(nil), // 0: dev.planton.azure.azureeventgridsystemtopic.v1alpha1.AzureEventgridSystemTopicOutputs
 }
 var file_catalog_azure_azureeventgridsystemtopic_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

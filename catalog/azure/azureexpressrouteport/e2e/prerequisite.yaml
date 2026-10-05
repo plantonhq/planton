@@ -1,5 +1,5 @@
 # AzureExpressRoutePort install profile used as a fixture by composed
-# components (declared via prerequisites or the e2e-prerequisites
+# kinds (declared via prerequisites or the e2e-prerequisites
 # annotation -- the ExpressRoute Direct circuit shape). The harness
 # deploys this document after the fixture resource group and captures
 # its outputs -- express_route_port_id in particular -- for dependents'
@@ -21,7 +21,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureexpressrouteport
+    e2e-catalog-kind: azureexpressrouteport
   annotations:
     planton.dev/e2e: "true"
   tags:

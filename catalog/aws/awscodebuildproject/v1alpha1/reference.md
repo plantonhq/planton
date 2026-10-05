@@ -1175,7 +1175,7 @@ to 10. Omit (or 0) to disable automatic retry.
 `bool`
 
 badge_enabled publishes a dynamic build badge for the project. The badge
-URL is exported as the badge_url stack output and can be embedded in a
+URL is exported as the badge_url output and can be embedded in a
 repository README. Not supported for CODEPIPELINE or S3 sources.
 
 ### spec.sourceVersion
@@ -1540,7 +1540,7 @@ build_type controls the build type triggered by the webhook.
 manual_creation makes CodeBuild return the payload URL and HMAC secret
 WITHOUT registering the webhook with the provider — you configure the
 repository webhook by hand from the webhook_payload_url and
-webhook_secret stack outputs. Required for GitHub Enterprise; useful
+webhook_secret outputs. Required for GitHub Enterprise; useful
 when the connection lacks admin rights on the repository.
 
 ### spec.webhook.filterGroups

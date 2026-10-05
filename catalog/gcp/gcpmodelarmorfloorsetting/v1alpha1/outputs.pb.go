@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpModelArmorFloorSettingStackOutputs carries the floor's identity.
-type GcpModelArmorFloorSettingStackOutputs struct {
+// GcpModelArmorFloorSettingOutputs carries the floor's identity.
+type GcpModelArmorFloorSettingOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name: {parent}/locations/{location}/floorSetting.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -33,20 +33,20 @@ type GcpModelArmorFloorSettingStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpModelArmorFloorSettingStackOutputs) Reset() {
-	*x = GcpModelArmorFloorSettingStackOutputs{}
+func (x *GcpModelArmorFloorSettingOutputs) Reset() {
+	*x = GcpModelArmorFloorSettingOutputs{}
 	mi := &file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpModelArmorFloorSettingStackOutputs) String() string {
+func (x *GcpModelArmorFloorSettingOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpModelArmorFloorSettingStackOutputs) ProtoMessage() {}
+func (*GcpModelArmorFloorSettingOutputs) ProtoMessage() {}
 
-func (x *GcpModelArmorFloorSettingStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpModelArmorFloorSettingOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpModelArmorFloorSettingStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpModelArmorFloorSettingStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpModelArmorFloorSettingStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpModelArmorFloorSettingOutputs.ProtoReflect.Descriptor instead.
+func (*GcpModelArmorFloorSettingOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpModelArmorFloorSettingStackOutputs) GetName() string {
+func (x *GcpModelArmorFloorSettingOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpModelArmorFloorSettingStackOutputs) GetParent() string {
+func (x *GcpModelArmorFloorSettingOutputs) GetParent() string {
 	if x != nil {
 		return x.Parent
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_outputs_proto protorefle
 
 const file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1\"S\n" +
-	"%GcpModelArmorFloorSettingStackOutputs\x12\x12\n" +
+	"<catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1\"N\n" +
+	" GcpModelArmorFloorSettingOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x16\n" +
 	"\x06parent\x18\x02 \x01(\tR\x06parentB\xa2\x03\n" +
 	"6com.dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1B\fOutputsProtoP\x01Zmgithub.com/plantonhq/planton/catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1;gcpmodelarmorfloorsettingv1alpha1\xa2\x02\x04DPGG\xaa\x022Dev.Planton.Gcp.Gcpmodelarmorfloorsetting.V1alpha1\xca\x022Dev\\Planton\\Gcp\\Gcpmodelarmorfloorsetting\\V1alpha1\xe2\x02>Dev\\Planton\\Gcp\\Gcpmodelarmorfloorsetting\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Gcp::Gcpmodelarmorfloorsetting::V1alpha1b\x06proto3"
@@ -101,7 +101,7 @@ func file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpModelArmorFloorSettingStackOutputs)(nil), // 0: dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingStackOutputs
+	(*GcpModelArmorFloorSettingOutputs)(nil), // 0: dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingOutputs
 }
 var file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpKmsKeyRingStackInput struct {
+type GcpKmsKeyRingIacInput struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Target         *GcpKmsKeyRing         `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpKmsKeyRingStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpKmsKeyRingStackInput) Reset() {
-	*x = GcpKmsKeyRingStackInput{}
+func (x *GcpKmsKeyRingIacInput) Reset() {
+	*x = GcpKmsKeyRingIacInput{}
 	mi := &file_catalog_gcp_gcpkmskeyring_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpKmsKeyRingStackInput) String() string {
+func (x *GcpKmsKeyRingIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpKmsKeyRingStackInput) ProtoMessage() {}
+func (*GcpKmsKeyRingIacInput) ProtoMessage() {}
 
-func (x *GcpKmsKeyRingStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpKmsKeyRingIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpkmskeyring_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpKmsKeyRingStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpKmsKeyRingStackInput.ProtoReflect.Descriptor instead.
-func (*GcpKmsKeyRingStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpKmsKeyRingIacInput.ProtoReflect.Descriptor instead.
+func (*GcpKmsKeyRingIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpkmskeyring_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpKmsKeyRingStackInput) GetTarget() *GcpKmsKeyRing {
+func (x *GcpKmsKeyRingIacInput) GetTarget() *GcpKmsKeyRing {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpKmsKeyRingStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpKmsKeyRingIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpkmskeyring_v1alpha1_input_proto protoreflect.FileDescrip
 
 const file_catalog_gcp_gcpkmskeyring_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	".catalog/gcp/gcpkmskeyring/v1alpha1/input.proto\x12&dev.planton.gcp.gcpkmskeyring.v1alpha1\x1a,catalog/gcp/gcpkmskeyring/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xb5\x01\n" +
-	"\x17GcpKmsKeyRingStackInput\x12M\n" +
+	".catalog/gcp/gcpkmskeyring/v1alpha1/input.proto\x12&dev.planton.gcp.gcpkmskeyring.v1alpha1\x1a,catalog/gcp/gcpkmskeyring/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xb3\x01\n" +
+	"\x15GcpKmsKeyRingIacInput\x12M\n" +
 	"\x06target\x18\x01 \x01(\v25.dev.planton.gcp.gcpkmskeyring.v1alpha1.GcpKmsKeyRingR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xcc\x02\n" +
 	"*com.dev.planton.gcp.gcpkmskeyring.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpkmskeyring_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpkmskeyring_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpkmskeyring_v1alpha1_input_proto_goTypes = []any{
-	(*GcpKmsKeyRingStackInput)(nil), // 0: dev.planton.gcp.gcpkmskeyring.v1alpha1.GcpKmsKeyRingStackInput
-	(*GcpKmsKeyRing)(nil),           // 1: dev.planton.gcp.gcpkmskeyring.v1alpha1.GcpKmsKeyRing
-	(*gcp.GcpProviderConfig)(nil),   // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpKmsKeyRingIacInput)(nil), // 0: dev.planton.gcp.gcpkmskeyring.v1alpha1.GcpKmsKeyRingIacInput
+	(*GcpKmsKeyRing)(nil),         // 1: dev.planton.gcp.gcpkmskeyring.v1alpha1.GcpKmsKeyRing
+	(*gcp.GcpProviderConfig)(nil), // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpkmskeyring_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpkmskeyring.v1alpha1.GcpKmsKeyRingStackInput.target:type_name -> dev.planton.gcp.gcpkmskeyring.v1alpha1.GcpKmsKeyRing
-	2, // 1: dev.planton.gcp.gcpkmskeyring.v1alpha1.GcpKmsKeyRingStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpkmskeyring.v1alpha1.GcpKmsKeyRingIacInput.target:type_name -> dev.planton.gcp.gcpkmskeyring.v1alpha1.GcpKmsKeyRing
+	2, // 1: dev.planton.gcp.gcpkmskeyring.v1alpha1.GcpKmsKeyRingIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -20,7 +20,7 @@ upload with AccessDenied.
 
 The seal is yours to choose. On Shamir (this manifest as written) the
 backups run exactly the same and the restore is the manual runbook in the
-component guide — the humans holding the shares are the key. Add an
+kind guide — the humans holding the shares are the key. Add an
 `autoUnseal` arm (Cloud KMS on the cloud you run in, or another OpenBao's
 transit engine) and the restore becomes a declaration: a fresh vault on the
 SAME key with this `backup` block and `restore: {latest: true}`.

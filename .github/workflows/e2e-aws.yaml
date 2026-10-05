@@ -13,7 +13,7 @@
 # still use stored secrets and should be retrofitted onto OIDC (tracked).
 #
 # Test selection uses direct package invocation (`go test ./e2e/aws/...`), NOT the
-# generated tier matrix: the matrix's component->test-name PascalCaser is
+# generated tier matrix: the matrix's kind->test-name PascalCaser is
 # Kubernetes-only today, so a generated -run regex would silently match zero AWS
 # tests. Generalizing the PascalCaser is a tracked E2E-framework follow-up.
 #

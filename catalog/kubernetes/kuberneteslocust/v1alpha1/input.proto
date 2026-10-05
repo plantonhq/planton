@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kuberneteslocust.v1alpha1;
 import "catalog/kubernetes/kuberneteslocust/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//locust-kubernetes stack-input
-message KubernetesLocustStackInput {
-  //target cloud-resource
+//locust-kubernetes iac-input
+message KubernetesLocustIacInput {
+  // the catalog object to deploy
   KubernetesLocust target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

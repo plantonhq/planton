@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: auth0resourceserver
 spec:
@@ -9,7 +9,7 @@ spec:
     # output.
     - name: resource_server_id
       derivations:
-        - from_stack_output: id
+        - from_output: id
       where_to_find: >-
         Auth0 dashboard -> Applications -> APIs -> the API (the Id on its
         Settings tab), or `GET /api/v2/resource-servers` on the Management
@@ -28,7 +28,7 @@ spec:
     # the module's for_each entries (the subject type).
     - name: client_grant_id
       derivations:
-        - from_stack_output_keyed_by_address: third_party_client_default_grant_ids
+        - from_output_keyed_by_address: third_party_client_default_grant_ids
       where_to_find: >-
         `GET /api/v2/client-grants?audience=<identifier>` on the Management
         API lists the API's grants; a default grant is the entry with

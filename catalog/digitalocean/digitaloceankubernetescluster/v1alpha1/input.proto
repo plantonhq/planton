@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1;
 import "catalog/digitalocean/digitaloceankubernetescluster/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-kubernetes-cluster stack-input
-message DigitalOceanKubernetesClusterStackInput {
-  //target cloud-resource
+//digital-ocean-kubernetes-cluster iac-input
+message DigitalOceanKubernetesClusterIacInput {
+  // the catalog object to deploy
   DigitalOceanKubernetesCluster target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

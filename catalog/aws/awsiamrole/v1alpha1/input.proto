@@ -5,9 +5,9 @@ package dev.planton.aws.awsiamrole.v1alpha1;
 import "catalog/aws/awsiamrole/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-iam-role stack-input
-message AwsIamRoleStackInput {
-  //target cloud-resource
+//aws-iam-role iac-input
+message AwsIamRoleIacInput {
+  // the catalog object to deploy
   AwsIamRole target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

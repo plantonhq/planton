@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awskinesisfirehose.v1alpha1;
 
-// AwsKinesisFirehoseStackOutputs captures observable identifiers from a
+// AwsKinesisFirehoseOutputs captures observable identifiers from a
 // provisioned Kinesis Data Firehose delivery stream. These outputs are used
 // by downstream resources (e.g., CloudWatch alarms monitoring delivery metrics,
 // IAM policies granting PutRecord access) and for operational reference.
-message AwsKinesisFirehoseStackOutputs {
+message AwsKinesisFirehoseOutputs {
   // The Amazon Resource Name (ARN) of the delivery stream. Used for IAM
   // policies, CloudWatch alarm dimensions, and as a reference in other
   // resources that need to send data to this delivery stream.

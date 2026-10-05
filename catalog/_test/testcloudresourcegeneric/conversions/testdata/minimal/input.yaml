@@ -1,9 +1,0 @@
-# Golden corpus: the minimal valid v1alpha1 document -- proves absent fields
-# stay absent (no op invents content the author never wrote).
-apiVersion: _test.planton.dev/v1alpha1
-kind: TestCloudResourceGeneric
-metadata:
-  name: torture-minimal
-spec:
-  requiredRef:
-    value: only-the-required-field

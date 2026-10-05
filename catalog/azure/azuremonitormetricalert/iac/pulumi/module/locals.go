@@ -5,7 +5,7 @@ import (
 
 	azuremonitormetricalertv1alpha1 "github.com/plantonhq/planton/catalog/azure/azuremonitormetricalert/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -50,11 +50,11 @@ var sensitivityStrings = map[azuremonitormetricalertv1alpha1.AzureMonitorMetricA
 	azuremonitormetricalertv1alpha1.AzureMonitorMetricAlertSensitivity_HIGH:   "High",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremonitormetricalertv1alpha1.AzureMonitorMetricAlertStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremonitormetricalertv1alpha1.AzureMonitorMetricAlertIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMonitorMetricAlert = stackInput.Target
-	target := stackInput.Target
+	locals.AzureMonitorMetricAlert = iacInput.Target
+	target := iacInput.Target
 
 	// The resource_group field is a StringValueOrRef. The platform middleware
 	// resolves valueFrom references before IaC modules run, so .GetValue()
@@ -66,7 +66,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azuremonitormetricalertv1
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureMonitorMetricAlert.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureMonitorMetricAlert.String()),
 	}
 
 	if target.Metadata.Id != "" {

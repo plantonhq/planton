@@ -88,7 +88,7 @@ type GcpEventarcTriggerSpec struct {
 	Labels map[string]string `protobuf:"bytes,10,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Receive events from an Eventarc SaaS PARTNER (e.g. Datadog): the
 	// module creates the partner channel alongside the trigger and wires the
-	// trigger to it. The channel's activation_token stack output must be
+	// trigger to it. The channel's activation_token output must be
 	// handed to the partner to complete the handshake — until then the
 	// channel stays PENDING and delivers nothing.
 	PartnerChannel *GcpEventarcTriggerPartnerChannel `protobuf:"bytes,11,opt,name=partner_channel,json=partnerChannel,proto3" json:"partner_channel,omitempty"`

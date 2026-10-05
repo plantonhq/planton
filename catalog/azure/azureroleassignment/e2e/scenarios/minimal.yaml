@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureroleassignment
+    e2e-catalog-kind: azureroleassignment
   annotations:
     planton.dev/e2e: "true"
   tags:

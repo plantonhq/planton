@@ -2,9 +2,9 @@
 
 ## Overview
 
-**KubernetesHorizontalPodAutoscaler** is a Planton component that creates and manages Kubernetes HorizontalPodAutoscalers — automatic replica scaling driven by observed metrics — as first-class, declaratively managed resources. An HPA points at one scale target (`scale_target`) and adjusts its replica count between a floor (`min_replicas`) and a ceiling (`max_replicas`), driven by one or more metrics.
+**KubernetesHorizontalPodAutoscaler** is a catalog kind that creates and manages Kubernetes HorizontalPodAutoscalers — automatic replica scaling driven by observed metrics — as first-class, declaratively managed resources. An HPA points at one scale target (`scale_target`) and adjusts its replica count between a floor (`min_replicas`) and a ceiling (`max_replicas`), driven by one or more metrics.
 
-The component covers the complete `autoscaling/v2` surface: resource utilization metrics (CPU/memory), per-container resource metrics, custom per-pod metrics, metrics on other objects, external metrics (queue depths, cloud load balancer QPS), and fine-grained scaling behavior — per-direction velocity policies and stabilization windows. There is nothing an upstream `autoscaling/v2` HPA can express that this spec cannot.
+The kind covers the complete `autoscaling/v2` surface: resource utilization metrics (CPU/memory), per-container resource metrics, custom per-pod metrics, metrics on other objects, external metrics (queue depths, cloud load balancer QPS), and fine-grained scaling behavior — per-direction velocity policies and stabilization windows. There is nothing an upstream `autoscaling/v2` HPA can express that this spec cannot.
 
 ## Purpose
 
@@ -13,7 +13,7 @@ Fixed replica counts are always wrong twice a day: too few at peak, too many at 
 **Key value over raw manifests:**
 
 - **Schema-level validation**: Every metric must carry exactly the source matching its declared type (a mismatch deploys a metric the controller silently ignores), every target exactly the value form matching its target type, floor ≤ ceiling, DaemonSet targets rejected, quantity and percentage format checks, and behavior contracts (a `disabled` direction cannot list policies) — all caught before anything reaches the cluster
-- **Namespace and target by value or reference**: `spec.namespace` accepts a literal or a `KubernetesNamespace` reference; `scale_target.name` accepts a literal or a reference to a `KubernetesDeployment`'s exported name, so an infra chart deploys the workload and its autoscaler in one run
+- **Namespace and target by value or reference**: `spec.namespace` accepts a literal or a `KubernetesNamespace` reference; `scale_target.name` accepts a literal or a reference to a `KubernetesDeployment`'s exported name, so an Infra Chart deploys the workload and its autoscaler in one run
 - **Deterministic defaults**: Both IaC modules apply the spec defaults (apps/v1 Deployment target, `min_replicas` 1) module-side and always send them explicitly, so the deployed object never depends on which engine applied it
 - **Dual IaC support**: Both Pulumi and Terraform implementations with feature parity
 - **Lifecycle management**: Integrated with Planton's deployment lifecycle for status tracking and outputs
@@ -72,7 +72,7 @@ Planton's KubernetesDeployment carries its own `availability.horizontal_pod_auto
 - **`spec.behavior`**: Per-direction velocity and stabilization tuning
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton labels for tracking and governance
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -83,7 +83,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace and scale-target name (literal values or resolved references)
 2. Merge user labels and annotations with standard Planton tracking labels

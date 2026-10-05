@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package dev.planton.aws.awscloudwatchalarm.v1alpha1;
 
-// AwsCloudwatchAlarmStackOutputs captures observable identifiers from a
+// AwsCloudwatchAlarmOutputs captures observable identifiers from a
 // provisioned CloudWatch metric alarm.
 //
 // The primary output is `alarm_arn`, which downstream resources (such as
 // composite alarms or dashboards) can reference via StringValueOrRef. The
 // `alarm_name` is useful for operational tooling and cross-referencing in
 // the CloudWatch console.
-message AwsCloudwatchAlarmStackOutputs {
+message AwsCloudwatchAlarmOutputs {
   // The Amazon Resource Name (ARN) of the metric alarm. This is the primary
   // identifier used to reference the alarm in composite alarms, dashboards,
   // and operational tooling.

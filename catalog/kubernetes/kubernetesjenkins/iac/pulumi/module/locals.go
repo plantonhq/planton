@@ -6,7 +6,7 @@ import (
 
 	kubernetesjenkinsv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesjenkins/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -31,17 +31,17 @@ type Locals struct {
 	HttpsRouteName             string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesjenkinsv1alpha1.KubernetesJenkinsStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *kubernetesjenkinsv1alpha1.KubernetesJenkinsIacInput) *Locals {
 	locals := &Locals{}
 	//assign value for the local variable to make it available across the project
-	locals.KubernetesJenkins = stackInput.Target
+	locals.KubernetesJenkins = iacInput.Target
 
-	target := stackInput.Target
+	target := iacInput.Target
 
 	locals.Labels = map[string]string{
 		kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
 		kuberneteslabelkeys.ResourceName: target.Metadata.Name,
-		kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesJenkins.String(),
+		kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesJenkins.String(),
 	}
 
 	if target.Metadata.Id != "" {

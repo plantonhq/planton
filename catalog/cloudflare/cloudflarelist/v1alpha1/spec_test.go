@@ -16,7 +16,7 @@ func validList() *CloudflareList {
 	return &CloudflareList{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareList",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-list"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-list"},
 		Spec: &CloudflareListSpec{
 			AccountId: validAccountID,
 			Kind:      CloudflareListKind_ip,

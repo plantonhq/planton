@@ -54,7 +54,7 @@ civo/civo-kubernetes-environment/
 - **Separate add-on files**: Each Kubernetes add-on in its own template file for clarity and maintainability (following planton-gcp-environment pattern)
 - **Conditional rendering**: All optional resources use Jinja2 `{% if %}` blocks for fine-grained control
 - **Dependency wiring**: Resources reference each other via `valueFrom` for automatic dependency resolution
-- **Correct kind names**: All Kubernetes add-ons use the exact kind names from `cloud_resource_kind.proto` (e.g., `KubernetesCertManager`, not `CertManagerKubernetes`)
+- **Correct kind names**: All Kubernetes add-ons use the exact kind names from `catalog_kind.proto` (e.g., `KubernetesCertManager`, not `CertManagerKubernetes`)
 
 ## Implementation Details
 
@@ -374,7 +374,7 @@ Teams working across clouds now have the same provisioning experience:
 **Platform Teams**:
 
 - Standardized Civo deployment approach
-- Reusable chart across projects/environments
+- Reusable chart across Infra Stacks and environments
 - Easier onboarding for new team members
 
 **Development Teams**:
@@ -437,12 +437,11 @@ planton chart build civo/civo-kubernetes-environment
 # Publish chart to Planton
 planton chart publish civo/civo-kubernetes-environment
 
-# Create an InfraProject from the chart
-planton project create --from-chart civo-kubernetes-environment \
-  --name my-civo-project \
+# Install the chart as an Infra Stack
+planton chart install my-civo-stack civo-kubernetes-environment \
   --org my-org \
   --env production \
-  --values ./civo-values.yaml
+  -f ./civo-values.yaml
 ```
 
 ### Minimal Configuration (Development)
@@ -495,7 +494,7 @@ params:
 - **Separate add-on files**: Adopted from `planton-gcp-environment` internal chart structure
 - **Conditional rendering**: Consistent with all environment charts (boolean flags)
 - **Resource dependencies**: Standard `valueFrom` pattern used across all InfraCharts
-- **Kind names**: Aligned with `cloud_resource_kind.proto` in Planton
+- **Kind names**: Aligned with `catalog_kind.proto` in Planton
 
 ## Provider-Specific Notes
 

@@ -37,7 +37,7 @@ type AzureStorageDataLakeGen2Filesystem struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureStorageDataLakeGen2FilesystemSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -90,7 +90,7 @@ func (x *AzureStorageDataLakeGen2Filesystem) GetKind() string {
 	return ""
 }
 
-func (x *AzureStorageDataLakeGen2Filesystem) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureStorageDataLakeGen2Filesystem) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,8 +114,8 @@ func (x *AzureStorageDataLakeGen2Filesystem) GetStatus() *AzureStorageDataLakeGe
 // AzureStorageDataLakeGen2FilesystemStatus holds the deployment status and outputs.
 type AzureStorageDataLakeGen2FilesystemStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureStorageDataLakeGen2FilesystemStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureStorageDataLakeGen2FilesystemOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureStorageDataLakeGen2FilesystemStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureStorageDataLakeGen2FilesystemStatus) GetOutputs() *AzureStorageDataLakeGen2FilesystemStackOutputs {
+func (x *AzureStorageDataLakeGen2FilesystemStatus) GetOutputs() *AzureStorageDataLakeGen2FilesystemOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_api_proto_r
 	"apiVersion\x12=\n" +
 	"\x04kind\x18\x02 \x01(\tB)\xbaH&r$\n" +
 	"\"AzureStorageDataLakeGen2FilesystemR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x81\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x81\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2e.dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x7f\n" +
-	"\x06status\x18\x05 \x01(\v2g.dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemStatusR\x06status\"\xb4\x01\n" +
-	"(AzureStorageDataLakeGen2FilesystemStatus\x12\x87\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2m.dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemStackOutputsR\aoutputsB\xea\x03\n" +
+	"\x06status\x18\x05 \x01(\v2g.dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemStatusR\x06status\"\xaf\x01\n" +
+	"(AzureStorageDataLakeGen2FilesystemStatus\x12\x82\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2h.dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemOutputsR\aoutputsB\xea\x03\n" +
 	"Acom.dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1B\bApiProtoP\x01Z\x81\x01github.com/plantonhq/planton/catalog/azure/azurestoragedatalakegen2filesystem/v1alpha1;azurestoragedatalakegen2filesystemv1alpha1\xa2\x02\x04DPAA\xaa\x02=Dev.Planton.Azure.Azurestoragedatalakegen2filesystem.V1alpha1\xca\x02=Dev\\Planton\\Azure\\Azurestoragedatalakegen2filesystem\\V1alpha1\xe2\x02IDev\\Planton\\Azure\\Azurestoragedatalakegen2filesystem\\V1alpha1\\GPBMetadata\xea\x02ADev::Planton::Azure::Azurestoragedatalakegen2filesystem::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_api_proto_ra
 
 var file_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_api_proto_goTypes = []any{
-	(*AzureStorageDataLakeGen2Filesystem)(nil),             // 0: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2Filesystem
-	(*AzureStorageDataLakeGen2FilesystemStatus)(nil),       // 1: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemStatus
-	(*shared.CloudResourceMetadata)(nil),                   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureStorageDataLakeGen2FilesystemSpec)(nil),         // 3: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemSpec
-	(*AzureStorageDataLakeGen2FilesystemStackOutputs)(nil), // 4: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemStackOutputs
+	(*AzureStorageDataLakeGen2Filesystem)(nil),        // 0: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2Filesystem
+	(*AzureStorageDataLakeGen2FilesystemStatus)(nil),  // 1: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemStatus
+	(*shared.CatalogObjectMetadata)(nil),              // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureStorageDataLakeGen2FilesystemSpec)(nil),    // 3: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemSpec
+	(*AzureStorageDataLakeGen2FilesystemOutputs)(nil), // 4: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemOutputs
 }
 var file_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2Filesystem.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2Filesystem.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2Filesystem.spec:type_name -> dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemSpec
 	1, // 2: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2Filesystem.status:type_name -> dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemStatus
-	4, // 3: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemStatus.outputs:type_name -> dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemStackOutputs
+	4, // 3: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemStatus.outputs:type_name -> dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

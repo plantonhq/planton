@@ -35,7 +35,7 @@ This preset creates an internal backend service wired into a VPC: IAM-authentica
 - **01-public-api-service** — the public-facing starting point
 - **03-gpu-inference** — GPU-backed model serving
 
-## Related Components
+## Related Kinds
 
 - [GcpCloudSql](/docs/catalog/gcp/gcpcloudsql) — the database this service connects to
 - [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — the runtime identity

@@ -5,11 +5,11 @@ Pulumi (Go) IaC module for Zero Trust infrastructure targets.
 ## Architecture
 
 ```
-main.go                   — Entrypoint loading the stack input
+main.go                   — Entrypoint loading the IaC input
 module/main.go            — Resources(): provider setup, resource, outputs
 module/locals.go          — Locals initialization
 module/target.go          — cloudflare.ZeroTrustAccessInfrastructureTarget
-module/outputs.go         — Stack output keys
+module/outputs.go         — output keys
 ```
 
 ## Behavior

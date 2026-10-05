@@ -1,10 +1,10 @@
 # AWS Elastic File System
 
-Deploys a fully managed NFS file system on Amazon EFS with configurable encryption, throughput modes, lifecycle tiering, per-AZ mount targets with optional static IPv4/IPv6 addressing, an IAM resource policy, and cross-region or cross-AZ disaster-recovery replication. Automatic daily backups via AWS Backup and storage-class lifecycle transitions are switched on from the same spec. Application-level entry points live on the separate [AWS EFS Access Point](/cloud-catalog/aws-efs-access-point) resource, which references this file system.
+Deploys a fully managed NFS file system on Amazon EFS with configurable encryption, throughput modes, lifecycle tiering, per-AZ mount targets with optional static IPv4/IPv6 addressing, an IAM resource policy, and cross-region or cross-AZ disaster-recovery replication. Automatic daily backups via AWS Backup and storage-class lifecycle transitions are switched on from the same spec. Application-level entry points live on the separate [AWS EFS Access Point](/infra-catalog/aws-efs-access-point) resource, which references this file system.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EFS File System** -- an elastic NFS file system with configurable encryption at rest, performance mode (generalPurpose or maxIO), throughput mode (bursting, provisioned, or elastic), and optional One Zone storage
 - **Mount Targets** -- one per entry in `mountTargets`, each placed in its subnet's Availability Zone; a row can pin a static IPv4/IPv6 address and choose its address family (IPv4-only, IPv6-only, or dual-stack)
@@ -18,14 +18,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **At least one subnet** in the target VPC. For regional (multi-AZ) file systems, declare one mount target per AZ for maximum availability. For One Zone file systems, declare exactly one mount target in a subnet of the pinned AZ. Subnet IDs can be provided directly or referenced from an AwsSubnet Cloud Resource via ValueFromRef.
-- **A security group** that allows inbound NFS traffic (TCP port 2049) from the clients that will mount the file system. Provide the ID directly or reference an AwsSecurityGroup Cloud Resource. Empty attaches the VPC's default security group.
-- **A KMS key** (optional) -- required only when using a customer-managed encryption key instead of the default AWS-managed `aws/elasticfilesystem` key. Provide the ARN directly or reference an AwsKmsKey Cloud Resource.
+- **At least one subnet** in the target VPC. For regional (multi-AZ) file systems, declare one mount target per AZ for maximum availability. For One Zone file systems, declare exactly one mount target in a subnet of the pinned AZ. Subnet IDs can be provided directly or referenced from an AwsSubnet Infra Component via ValueFromRef.
+- **A security group** that allows inbound NFS traffic (TCP port 2049) from the clients that will mount the file system. Provide the ID directly or reference an AwsSecurityGroup Infra Component. Empty attaches the VPC's default security group.
+- **A KMS key** (optional) -- required only when using a customer-managed encryption key instead of the default AWS-managed `aws/elasticfilesystem` key. Provide the ARN directly or reference an AwsKmsKey Infra Component.
 
 ## Deploy
 
@@ -61,7 +61,7 @@ spec:
 planton apply -f efs.yaml
 ```
 
-This creates an encrypted regional EFS file system with bursting throughput and mount targets in two AZs, with no lifecycle policies, resource policy, replication, or backup. A Stack Job tracks the provisioning in real time.
+This creates an encrypted regional EFS file system with bursting throughput and mount targets in two AZs, with no lifecycle policies, resource policy, replication, or backup. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -110,11 +110,11 @@ These are the most important decisions when configuring an EFS file system. Expl
 
 **Replication** -- Provide `replication` with a destination region and/or Availability Zone to keep a read-only DR replica in sync. Setting the AZ makes the replica a cheaper One Zone file system; same-region-different-AZ is a valid shape. Replicas are always encrypted. To replicate into an existing file system, reference it in `destinationFileSystemId` -- that file system must have set its own `replicationOverwriteProtection` to `DISABLED` first.
 
-**Access points** -- Application-level entry points (POSIX identity enforcement, root-directory pinning) are the separate [AWS EFS Access Point](/cloud-catalog/aws-efs-access-point) resource. Each access point references this file system's `file_system_id` output, and Lambda functions and ECS task definitions reference the access point's own outputs.
+**Access points** -- Application-level entry points (POSIX identity enforcement, root-directory pinning) are the separate [AWS EFS Access Point](/infra-catalog/aws-efs-access-point) resource. Each access point references this file system's `file_system_id` output, and Lambda functions and ECS task definitions reference the access point's own outputs.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -123,9 +123,9 @@ These are the most important decisions when configuring an EFS file system. Expl
 | **AwsKmsKey** (optional) | `kmsKeyId`, `replication.destinationKmsKeyId` | `status.outputs.key_arn` |
 | **AwsElasticFileSystem** (optional) | `replication.destinationFileSystemId` | `status.outputs.file_system_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -146,11 +146,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **One Zone dev** -- Encrypted single-AZ file system with bursting throughput. The low-cost shape for development and testing environments where AZ-level redundancy is not required. Start from the **One Zone Dev EFS** preset.
 
-**Production elastic tiered** -- Encrypted multi-AZ file system with elastic throughput and lifecycle tiering (IA after 30 days, Archive after 90 days, warm on access). Pair it with [AWS EFS Access Point](/cloud-catalog/aws-efs-access-point) resources for per-application isolation. Start from the **Production Elastic EFS with Lifecycle Tiering and DR Replication** preset.
+**Production elastic tiered** -- Encrypted multi-AZ file system with elastic throughput and lifecycle tiering (IA after 30 days, Archive after 90 days, warm on access). Pair it with [AWS EFS Access Point](/infra-catalog/aws-efs-access-point) resources for per-application isolation. Start from the **Production Elastic EFS with Lifecycle Tiering and DR Replication** preset.
 
 ## Works With
 
-- [**AWS EFS Access Point**](/cloud-catalog/aws-efs-access-point) -- application-specific entry points that enforce POSIX identity and root directory, referenced by Lambda and ECS task definitions
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides the subnets for mount target placement across Availability Zones
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- controls NFS traffic (TCP 2049) access to mount targets
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for encryption at rest (and for the replica's encryption)
+- [**AWS EFS Access Point**](/infra-catalog/aws-efs-access-point) -- application-specific entry points that enforce POSIX identity and root directory, referenced by Lambda and ECS task definitions
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides the subnets for mount target placement across Availability Zones
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- controls NFS traffic (TCP 2049) access to mount targets
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for encryption at rest (and for the replica's encryption)

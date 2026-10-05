@@ -5,10 +5,10 @@ package dev.planton.aws.awstransitgatewayroutetable.v1alpha1;
 import "catalog/aws/awstransitgatewayroutetable/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsTransitGatewayRouteTableStackInput is the input for the
+// AwsTransitGatewayRouteTableIacInput is the input for the
 // aws-transit-gateway-route-table IaC modules.
-message AwsTransitGatewayRouteTableStackInput {
-  // target cloud-resource
+message AwsTransitGatewayRouteTableIacInput {
+  // the catalog object to deploy
   AwsTransitGatewayRouteTable target = 1;
 
   // provider-config

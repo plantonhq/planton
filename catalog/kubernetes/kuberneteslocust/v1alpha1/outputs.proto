@@ -5,13 +5,13 @@ package dev.planton.kubernetes.kuberneteslocust.v1alpha1;
 import "catalog/kubernetes/kubernetes.proto";
 
 /**
- * **KubernetesLocustStackOutputs** — the composition handles a
+ * **KubernetesLocustOutputs** — the composition handles a
  * deployed Locust exports. Operators open the web UI through the
  * master endpoint (or the port-forward command); external workers
  * and automation dial the master bind endpoint; the web-UI
  * credential is exported as a Secret handle.
  */
-message KubernetesLocustStackOutputs {
+message KubernetesLocustOutputs {
   // Namespace Locust runs in.
   string namespace = 1;
 

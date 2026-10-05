@@ -4,7 +4,7 @@ Runs Kafka Connect without managing workers: a Google-operated Connect cluster a
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `managedkafka.googleapis.com` on the project (never disabled on destroy)
 - **Connect cluster** -- a `managed_kafka_connect_cluster` with its capacity and worker networks, carrying the platform attribution labels
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Managed Service for Apache Kafka admin permissions (`roles/managedkafka.admin`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Managed Service for Apache Kafka admin permissions (`roles/managedkafka.admin`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Required Dependencies
@@ -54,7 +54,7 @@ spec:
 planton apply -f managed-kafka-connect-cluster.yaml
 ```
 
-This creates a 3-vCPU Connect cluster for the `events` Kafka cluster with its workers on the `kafka` subnet. A Stack Job tracks the provisioning in real time.
+This creates a 3-vCPU Connect cluster for the `events` Kafka cluster with its workers on the `kafka` subnet. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -72,7 +72,7 @@ These are the most important decisions when configuring this component. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -80,9 +80,9 @@ These are the most important decisions when configuring this component. Explore 
 | **GcpManagedKafkaCluster** | `kafkaCluster` | `status.outputs.name` |
 | **GcpSubnetwork** | `networkConfigs[].primarySubnet` | `status.outputs.subnetwork_self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
@@ -100,6 +100,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Managed Kafka Cluster**](/cloud-catalog/gcp-managed-kafka-cluster) -- the Kafka cluster served
-- [**GCP Managed Kafka Connector**](/cloud-catalog/gcp-managed-kafka-connector) -- the pipelines that run here
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- the workers' interface
+- [**GCP Managed Kafka Cluster**](/infra-catalog/gcp-managed-kafka-cluster) -- the Kafka cluster served
+- [**GCP Managed Kafka Connector**](/infra-catalog/gcp-managed-kafka-connector) -- the pipelines that run here
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- the workers' interface

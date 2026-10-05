@@ -4,7 +4,7 @@ Deploys a Route 53 Resolver endpoint — the hybrid-DNS bridge between a VPC and
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Resolver Endpoint** — the endpoint itself, with 2–10 ENI placements across your subnets (optionally with pinned private IPs), its security groups, IP family (`endpointType`), DNS transport protocols (Do53 / DoH / DoH-FIPS), and the two CloudWatch metrics toggles
 - **Resolver Rules** — one per `rules` entry, keyed by rule name. FORWARD and DELEGATE rules bind to this endpoint; SYSTEM rules carry no endpoint binding because they restore recursive resolution instead of forwarding
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Route 53 Resolver permissions plus EC2 permissions for the endpoint's ENIs. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Route 53 Resolver permissions plus EC2 permissions for the endpoint's ENIs. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -84,7 +84,7 @@ spec:
 planton apply -f resolver-endpoint.yaml
 ```
 
-This creates an outbound endpoint on two ENIs, forwards `corp.example.com` queries from the app VPC to two on-prem name servers, and carves `aws.corp.example.com` back out to AWS's recursive resolution. A Stack Job tracks the provisioning in real time.
+This creates an outbound endpoint on two ENIs, forwards `corp.example.com` queries from the app VPC to two on-prem name servers, and carves `aws.corp.example.com` back out to AWS's recursive resolution. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -134,7 +134,7 @@ These are the most important decisions when configuring a resolver endpoint. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -142,9 +142,9 @@ These are the most important decisions when configuring a resolver endpoint. Exp
 | **AwsSecurityGroup** | `securityGroupIds` | `status.outputs.security_group_id` |
 | **AwsVpc** | `rules[].vpcIds` | `status.outputs.vpc_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -164,8 +164,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) — the VPCs whose queries each rule steers, wired via `rules[].vpcIds`
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) — where the endpoint ENIs live, wired via `ipAddresses[].subnetId`
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) — controls DNS traffic to and from the endpoint ENIs, wired via `securityGroupIds`
-- [**AWS Route 53 Resolver Query Logging**](/cloud-catalog/aws-route53-resolver-query-log) — logs the queries flowing through the same VPCs for audit and troubleshooting
-- [**AWS Route 53 Resolver DNS Firewall**](/cloud-catalog/aws-route53-resolver-firewall) — filters the same VPCs' DNS traffic before it ever reaches forwarding
+- [**AWS VPC**](/infra-catalog/aws-vpc) — the VPCs whose queries each rule steers, wired via `rules[].vpcIds`
+- [**AWS Subnet**](/infra-catalog/aws-subnet) — where the endpoint ENIs live, wired via `ipAddresses[].subnetId`
+- [**AWS Security Group**](/infra-catalog/aws-security-group) — controls DNS traffic to and from the endpoint ENIs, wired via `securityGroupIds`
+- [**AWS Route 53 Resolver Query Logging**](/infra-catalog/aws-route53-resolver-query-log) — logs the queries flowing through the same VPCs for audit and troubleshooting
+- [**AWS Route 53 Resolver DNS Firewall**](/infra-catalog/aws-route53-resolver-firewall) — filters the same VPCs' DNS traffic before it ever reaches forwarding

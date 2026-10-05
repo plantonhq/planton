@@ -1,5 +1,5 @@
 # Estimate model: the authored capacity footprints of this cluster-capacity
-# component's presets. A hand model instead of a capacity derivation because
+# kind's presets. A hand model instead of a capacity derivation because
 # the spec's `mode` field switches the replica semantics: deployment/
 # statefulset multiply resources by replicas, daemonset runs one pod PER
 # NODE (replicas is rejected there -- node membership is the multiplier and
@@ -7,11 +7,11 @@
 # workload at all. The derivation grammar cannot express mode-conditional
 # multipliers, and a mechanical "N instances x ..." basis would misread the
 # daemonset preset's reservation -- so each preset's footprint is stated by
-# hand, honest about its actual mode. Cluster-capacity components carry no
+# hand, honest about its actual mode. Cluster-capacity kinds carry no
 # priced lines -- the dollar value of the reservation is the target
-# cluster's node economics. Schema: finops/componentcostestimatemodel/v1.
+# cluster's node economics. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: kubernetesotelcollector
 spec:
@@ -20,7 +20,7 @@ spec:
   # state no scheduler reservation in their manifests -- they are honestly
   # omitted (the same shape the generator produces for a no-reservation
   # preset). The per-node semantics, the unbounded-when-unsized reality,
-  # and the HPA floor are disclosed in the component's cost profile.
+  # and the HPA floor are disclosed in the kind's cost profile.
   presets:
     - preset: 02-traces-gateway-to-tempo
       capacity_footprint:

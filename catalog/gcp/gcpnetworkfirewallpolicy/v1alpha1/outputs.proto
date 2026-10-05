@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1;
 
-// GcpNetworkFirewallPolicyStackOutputs captures the policy's identity after
+// GcpNetworkFirewallPolicyOutputs captures the policy's identity after
 // provisioning.
-message GcpNetworkFirewallPolicyStackOutputs {
+message GcpNetworkFirewallPolicyOutputs {
   // The policy's name in GCP, as declared (or defaulted from
   // metadata.name) -- what `gcloud compute network-firewall-policies
   // describe` takes.

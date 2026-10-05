@@ -5,10 +5,10 @@ package dev.planton.kubernetes.kubernetestelemetry.v1alpha1;
 import "catalog/kubernetes/kubernetestelemetry/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesTelemetryStackInput provides the inputs for creating the Telemetry
+// KubernetesTelemetryIacInput provides the inputs for creating the Telemetry
 // resource on a Kubernetes cluster.
-message KubernetesTelemetryStackInput {
-  // target cloud-resource
+message KubernetesTelemetryIacInput {
+  // the catalog object to deploy
   KubernetesTelemetry target = 1;
   // provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

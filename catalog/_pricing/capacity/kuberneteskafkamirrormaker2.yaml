@@ -9,9 +9,9 @@
 # target Kafka cluster), so no persistent volumes are bound. Mirror
 # connectors run INSIDE the declared workers: more mirrors add load,
 # not pods.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kuberneteskafkamirrormaker2
 spec:

@@ -31,7 +31,7 @@ Notes:
   authentication) always exists in the account and is referenced by name —
   it is never modeled as a resource.
 - Credentials, region, and deployment workflow live outside this spec in
-  stack inputs.
+  IaC inputs.
 
 ## Example
 

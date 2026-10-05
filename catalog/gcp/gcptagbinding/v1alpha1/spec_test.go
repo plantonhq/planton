@@ -41,7 +41,7 @@ var _ = ginkgo.Describe("GcpTagBindingSpec", func() {
 		return &GcpTagBinding{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpTagBinding",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "project-environment-prod",
 			},
 			Spec: &GcpTagBindingSpec{

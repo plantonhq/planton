@@ -1,5 +1,5 @@
 # StripeBillingPortalConfiguration Outputs
-# Maps to the StripeBillingPortalConfigurationStackOutputs protobuf message: the configuration a
+# Maps to the StripeBillingPortalConfigurationOutputs protobuf message: the configuration a
 # portal session names.
 
 output "id" {

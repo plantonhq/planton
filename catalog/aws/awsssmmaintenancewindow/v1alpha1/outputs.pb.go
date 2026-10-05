@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSsmMaintenanceWindowStackOutputs captures the observable state of
+// AwsSsmMaintenanceWindowOutputs captures the observable state of
 // the maintenance window after apply.
-type AwsSsmMaintenanceWindowStackOutputs struct {
+type AwsSsmMaintenanceWindowOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The window's AWS-generated ID ("mw-..." - also the provider's
 	// import ID).
@@ -39,20 +39,20 @@ type AwsSsmMaintenanceWindowStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsSsmMaintenanceWindowStackOutputs) Reset() {
-	*x = AwsSsmMaintenanceWindowStackOutputs{}
+func (x *AwsSsmMaintenanceWindowOutputs) Reset() {
+	*x = AwsSsmMaintenanceWindowOutputs{}
 	mi := &file_catalog_aws_awsssmmaintenancewindow_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSsmMaintenanceWindowStackOutputs) String() string {
+func (x *AwsSsmMaintenanceWindowOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSsmMaintenanceWindowStackOutputs) ProtoMessage() {}
+func (*AwsSsmMaintenanceWindowOutputs) ProtoMessage() {}
 
-func (x *AwsSsmMaintenanceWindowStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSsmMaintenanceWindowOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsssmmaintenancewindow_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *AwsSsmMaintenanceWindowStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSsmMaintenanceWindowStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSsmMaintenanceWindowStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSsmMaintenanceWindowOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSsmMaintenanceWindowOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsssmmaintenancewindow_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSsmMaintenanceWindowStackOutputs) GetWindowId() string {
+func (x *AwsSsmMaintenanceWindowOutputs) GetWindowId() string {
 	if x != nil {
 		return x.WindowId
 	}
 	return ""
 }
 
-func (x *AwsSsmMaintenanceWindowStackOutputs) GetTargetIds() map[string]string {
+func (x *AwsSsmMaintenanceWindowOutputs) GetTargetIds() map[string]string {
 	if x != nil {
 		return x.TargetIds
 	}
 	return nil
 }
 
-func (x *AwsSsmMaintenanceWindowStackOutputs) GetTaskIds() map[string]string {
+func (x *AwsSsmMaintenanceWindowOutputs) GetTaskIds() map[string]string {
 	if x != nil {
 		return x.TaskIds
 	}
@@ -94,12 +94,12 @@ var File_catalog_aws_awsssmmaintenancewindow_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_aws_awsssmmaintenancewindow_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/aws/awsssmmaintenancewindow/v1alpha1/outputs.proto\x120dev.planton.aws.awsssmmaintenancewindow.v1alpha1\"\xc1\x03\n" +
-	"#AwsSsmMaintenanceWindowStackOutputs\x12\x1b\n" +
-	"\twindow_id\x18\x01 \x01(\tR\bwindowId\x12\x83\x01\n" +
+	":catalog/aws/awsssmmaintenancewindow/v1alpha1/outputs.proto\x120dev.planton.aws.awsssmmaintenancewindow.v1alpha1\"\xb1\x03\n" +
+	"\x1eAwsSsmMaintenanceWindowOutputs\x12\x1b\n" +
+	"\twindow_id\x18\x01 \x01(\tR\bwindowId\x12~\n" +
 	"\n" +
-	"target_ids\x18\x02 \x03(\v2d.dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowStackOutputs.TargetIdsEntryR\ttargetIds\x12}\n" +
-	"\btask_ids\x18\x03 \x03(\v2b.dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowStackOutputs.TaskIdsEntryR\ataskIds\x1a<\n" +
+	"target_ids\x18\x02 \x03(\v2_.dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowOutputs.TargetIdsEntryR\ttargetIds\x12x\n" +
+	"\btask_ids\x18\x03 \x03(\v2].dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowOutputs.TaskIdsEntryR\ataskIds\x1a<\n" +
 	"\x0eTargetIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a:\n" +
@@ -122,13 +122,13 @@ func file_catalog_aws_awsssmmaintenancewindow_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_aws_awsssmmaintenancewindow_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_aws_awsssmmaintenancewindow_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSsmMaintenanceWindowStackOutputs)(nil), // 0: dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowStackOutputs
-	nil, // 1: dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowStackOutputs.TargetIdsEntry
-	nil, // 2: dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowStackOutputs.TaskIdsEntry
+	(*AwsSsmMaintenanceWindowOutputs)(nil), // 0: dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowOutputs
+	nil,                                    // 1: dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowOutputs.TargetIdsEntry
+	nil,                                    // 2: dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowOutputs.TaskIdsEntry
 }
 var file_catalog_aws_awsssmmaintenancewindow_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowStackOutputs.target_ids:type_name -> dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowStackOutputs.TargetIdsEntry
-	2, // 1: dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowStackOutputs.task_ids:type_name -> dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowStackOutputs.TaskIdsEntry
+	1, // 0: dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowOutputs.target_ids:type_name -> dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowOutputs.TargetIdsEntry
+	2, // 1: dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowOutputs.task_ids:type_name -> dev.planton.aws.awsssmmaintenancewindow.v1alpha1.AwsSsmMaintenanceWindowOutputs.TaskIdsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

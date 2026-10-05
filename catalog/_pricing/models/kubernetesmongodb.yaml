@@ -1,17 +1,17 @@
 # Estimate model: hand-computed capacity footprints for this
-# cluster-capacity component's presets. The derivation grammar cannot
+# cluster-capacity kind's presets. The derivation grammar cannot
 # traverse this kind's repeated replica_sets list (per-set size,
 # resources, and storage), nor add the config-server, mongos, and arbiter
 # terms a sharded topology brings, so each preset's totals are computed
 # by hand from its manifest: the sum over replica sets of size x
 # (resources + storage volume), plus config_server.size and mongos.size
 # terms when sharding is enabled (neither shipped preset shards).
-# Cluster-capacity components carry no priced lines -- the dollar value
+# Cluster-capacity kinds carry no priced lines -- the dollar value
 # of the reservation is the target cluster's node and storage-class
 # economics, which this catalog cannot know.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: kubernetesmongodb
 spec:

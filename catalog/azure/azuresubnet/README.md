@@ -13,7 +13,7 @@ the subnet.
 ## The Attach Model
 
 Azure attaches routing, filtering, and egress to subnets -- not the other
-way around. This component models that faithfully with three optional
+way around. This kind models that faithfully with three optional
 references:
 
 - **`route_table_id`** -- steer the subnet's traffic through user-defined

@@ -13,7 +13,7 @@ var Pulumi = &cobra.Command{
 }
 
 func init() {
-	Pulumi.PersistentFlags().String(string(flag.Manifest), "", "path of the component manifest file")
+	Pulumi.PersistentFlags().String(string(flag.Manifest), "", "path of the manifest file")
 
 	Pulumi.PersistentFlags().String(string(flag.InputDir), "", "directory containing target.yaml and credential yaml files")
 	Pulumi.PersistentFlags().String(string(flag.KustomizeDir), "", "directory containing kustomize configuration")
@@ -38,8 +38,8 @@ func init() {
 
 	iacflags.AddKubeContextFlag(Pulumi)
 
-	// Stack input file flag
-	Pulumi.PersistentFlags().StringP(string(flag.StackInput), "i", "", "path to a YAML file containing the stack input (bypasses building stack input from manifest)")
+	// IaC input file flag
+	Pulumi.PersistentFlags().StringP(string(flag.IacInput), "i", "", "path to a YAML file containing the IaC input (bypasses building IaC input from manifest)")
 
 	// Provider config flag (unified)
 	Pulumi.PersistentFlags().StringP(string(flag.ProviderConfig), "p", "", "path to provider credentials file")

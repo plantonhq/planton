@@ -1,7 +1,7 @@
 # AzureMonitorActionGroup - Terraform Module
 
-Terraform implementation for the AzureMonitorActionGroup deployment
-component.
+Terraform implementation for the AzureMonitorActionGroup
+kind.
 
 ## Resources Created
 

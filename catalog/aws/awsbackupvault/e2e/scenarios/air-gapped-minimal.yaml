@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsbackupvault
+    e2e-catalog-kind: awsbackupvault
   annotations:
     planton.dev/e2e: "true"
   tags:

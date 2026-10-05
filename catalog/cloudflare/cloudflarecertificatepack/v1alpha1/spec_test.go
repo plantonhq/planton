@@ -14,7 +14,7 @@ func validCertificatePack() *CloudflareCertificatePack {
 	return &CloudflareCertificatePack{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareCertificatePack",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-cert-pack"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-cert-pack"},
 		Spec: &CloudflareCertificatePackSpec{
 			ZoneId:               &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"}},
 			CertificateAuthority: "google",

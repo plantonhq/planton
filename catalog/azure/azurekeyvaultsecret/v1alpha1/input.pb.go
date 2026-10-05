@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureKeyVaultSecretStackInput is the input to the IaC modules
+// AzureKeyVaultSecretIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureKeyVaultSecretStackInput struct {
+type AzureKeyVaultSecretIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Key Vault secret resource to deploy.
 	Target *AzureKeyVaultSecret `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureKeyVaultSecretStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureKeyVaultSecretStackInput) Reset() {
-	*x = AzureKeyVaultSecretStackInput{}
+func (x *AzureKeyVaultSecretIacInput) Reset() {
+	*x = AzureKeyVaultSecretIacInput{}
 	mi := &file_catalog_azure_azurekeyvaultsecret_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureKeyVaultSecretStackInput) String() string {
+func (x *AzureKeyVaultSecretIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureKeyVaultSecretStackInput) ProtoMessage() {}
+func (*AzureKeyVaultSecretIacInput) ProtoMessage() {}
 
-func (x *AzureKeyVaultSecretStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureKeyVaultSecretIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurekeyvaultsecret_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureKeyVaultSecretStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureKeyVaultSecretStackInput.ProtoReflect.Descriptor instead.
-func (*AzureKeyVaultSecretStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureKeyVaultSecretIacInput.ProtoReflect.Descriptor instead.
+func (*AzureKeyVaultSecretIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurekeyvaultsecret_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureKeyVaultSecretStackInput) GetTarget() *AzureKeyVaultSecret {
+func (x *AzureKeyVaultSecretIacInput) GetTarget() *AzureKeyVaultSecret {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureKeyVaultSecretStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureKeyVaultSecretIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurekeyvaultsecret_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_azure_azurekeyvaultsecret_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/azure/azurekeyvaultsecret/v1alpha1/input.proto\x12.dev.planton.azure.azurekeyvaultsecret.v1alpha1\x1a4catalog/azure/azurekeyvaultsecret/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xcd\x01\n" +
-	"\x1dAzureKeyVaultSecretStackInput\x12[\n" +
+	"6catalog/azure/azurekeyvaultsecret/v1alpha1/input.proto\x12.dev.planton.azure.azurekeyvaultsecret.v1alpha1\x1a4catalog/azure/azurekeyvaultsecret/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xcb\x01\n" +
+	"\x1bAzureKeyVaultSecretIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.azure.azurekeyvaultsecret.v1alpha1.AzureKeyVaultSecretR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x82\x03\n" +
 	"2com.dev.planton.azure.azurekeyvaultsecret.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azurekeyvaultsecret_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_azure_azurekeyvaultsecret_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurekeyvaultsecret_v1alpha1_input_proto_goTypes = []any{
-	(*AzureKeyVaultSecretStackInput)(nil), // 0: dev.planton.azure.azurekeyvaultsecret.v1alpha1.AzureKeyVaultSecretStackInput
-	(*AzureKeyVaultSecret)(nil),           // 1: dev.planton.azure.azurekeyvaultsecret.v1alpha1.AzureKeyVaultSecret
-	(*azure.AzureProviderConfig)(nil),     // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureKeyVaultSecretIacInput)(nil), // 0: dev.planton.azure.azurekeyvaultsecret.v1alpha1.AzureKeyVaultSecretIacInput
+	(*AzureKeyVaultSecret)(nil),         // 1: dev.planton.azure.azurekeyvaultsecret.v1alpha1.AzureKeyVaultSecret
+	(*azure.AzureProviderConfig)(nil),   // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurekeyvaultsecret_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurekeyvaultsecret.v1alpha1.AzureKeyVaultSecretStackInput.target:type_name -> dev.planton.azure.azurekeyvaultsecret.v1alpha1.AzureKeyVaultSecret
-	2, // 1: dev.planton.azure.azurekeyvaultsecret.v1alpha1.AzureKeyVaultSecretStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurekeyvaultsecret.v1alpha1.AzureKeyVaultSecretIacInput.target:type_name -> dev.planton.azure.azurekeyvaultsecret.v1alpha1.AzureKeyVaultSecret
+	2, // 1: dev.planton.azure.azurekeyvaultsecret.v1alpha1.AzureKeyVaultSecretIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

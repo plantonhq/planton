@@ -2,7 +2,7 @@
 
 **Date**: September 30, 2026
 **Type**: Feature
-**Components**: StripeWebhookEndpoint, StripeBillingPortalConfiguration, StripePaymentMethodConfiguration; the permissions schema (`iac/componentpermissions/v1`), `pkg/iac/provider/stripe/stripekey`, `pkg/iac/stackinput/providerenvvars`, `pkg/providerparity`, `pkg/catalogbundle`, `pkg/cataloglogo`, `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `e2e/framework/runner`; the component forge rule and flow rules 014 and 021
+**Components**: StripeWebhookEndpoint, StripeBillingPortalConfiguration, StripePaymentMethodConfiguration; the permissions schema (`iac/catalogkindpermissions/v1`), `pkg/iac/provider/stripe/stripekey`, `pkg/iac/iacinput/providerenvvars`, `pkg/providerparity`, `pkg/catalogbundle`, `pkg/cataloglogo`, `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `e2e/framework/runner`; the catalog-kind forge rule and flow rules 014 and 021
 
 ## Summary
 
@@ -22,7 +22,7 @@
   - `catalog/stripe/aa_e2e`: a REST client, the harness with its live-key refusal, and deleted and deactivated verifiers;
   - `catalog/stripe/aa_import/catalog.yaml`, for plain-id imports;
   - `e2e/stripe` with `TestStripe<Kind>_Tofu` entrypoints;
-  - `make e2e-test-stripe` and a Stripe arm in `make e2e-test-component`;
+  - `make e2e-test-stripe` and a Stripe arm in `make e2e-test-kind`;
   - a build-check workflow, `e2e-stripe.yaml`.
 - **The E2E runner honors a kind's declared engines:** a lane whose binary the kind does not run on (`PLANTON_E2E_TF_BINARY=terraform` for an OpenTofu-only kind) is refused before any phase. `TerraformBinary()` is now the one place the HCL binary is chosen.
 - **"Proven" follows the declaration:** a kind counts as proven when its green live runs exercised every module it ships. That means both for the ordinary kind, and only the HCL module for an OpenTofu-only kind. Every existing green profile validates both engines, so no count changes. The parity pages say "every IaC engine the kind runs on", and all five were regenerated.
@@ -34,20 +34,20 @@
 - **Teaching:**
   - flow 014 gains the Stripe id-prefix pattern and the `provisioners` field;
   - flow 021 gains Stripe's brand terms, palette and object vocabulary;
-  - the component forge rule teaches the `_Tofu` entrypoint name for OpenTofu-only kinds;
-  - `architecture/component.md` lists the Stripe band.
+  - the kind forge rule teaches the `_Tofu` entrypoint name for OpenTofu-only kinds;
+  - `architecture/catalog-kind.md` lists the Stripe band.
 
 ## Verification
 
 - **Offline:**
-  - `make protos`, `make generate-cloud-resource-kind-map`, the registry snapshot, `make generate-reference` and `make generate-provider-parity-report`;
+  - `make protos`, `make generate-catalog-kind-map`, the registry snapshot, `make generate-reference` and `make generate-provider-parity-report`;
   - spec tests for all three kinds;
   - `validate-manifest` on every E2E manifest and preset;
   - `tofu fmt -check`, `init` and `validate`, plus an offline `tofu plan` from each E2E manifest (one object to add each);
   - `module verify --provisioner tofu` with engine validation;
   - `secret-coverage --check` and `validate-refs --check`;
   - `provider-parity --kind` for each kind (6/6, 7/7 and 62/62 arguments accounted) and `--check`;
-  - `go test` for crkreflect, permissions, importmap, e2e/profile, secretcoverage, refcheck, catalogbundle, catalogpage, presetvalidity, outputs, cost profiles, control profiles, specpath, actioninventory, providerparity, moduleverify's secret outputs, protodocs, refgen, tofumodule, providerenvvars, the runner, and the harness;
+  - `go test` for catalogkindreflect, permissions, importmap, e2e/profile, secretcoverage, refcheck, catalogbundle, catalogpage, presetvalidity, outputs, cost profiles, control profiles, specpath, actioninventory, providerparity, moduleverify's secret outputs, protodocs, refgen, tofumodule, providerenvvars, the runner, and the harness;
   - the E2E package compiles and vets under the `e2e` tag;
   - `defspack`.
 - **Red-proofed:** the harness's live-key refusal (without it, a fake live key reached Stripe's API), the runner's engine refusal, and the permissions arm.

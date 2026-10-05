@@ -1,4 +1,4 @@
-# The component defaults on their own: a single node on a 10Gi PVC
+# The kind defaults on their own: a single node on a 10Gi PVC
 # (the default storage class), operator-default image and sizing — the
 # verifier proves the live message round-trip through the management API
 # (declare a queue → publish a marker → get it back) with the

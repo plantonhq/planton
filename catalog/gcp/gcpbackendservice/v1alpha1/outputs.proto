@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpbackendservice.v1alpha1;
 
 // Outputs produced after provisioning a GCP Compute Engine backend service.
-message GcpBackendServiceStackOutputs {
+message GcpBackendServiceOutputs {
   // Self-link URI of the backend service. This is the value URL maps
   // reference as a default service or path-rule target — the composition
   // handle for routing traffic to these backends.

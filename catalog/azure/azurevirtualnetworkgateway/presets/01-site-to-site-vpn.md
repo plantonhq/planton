@@ -14,7 +14,7 @@ This preset creates a route-based VpnGw1AZ VPN gateway with BGP -- the standard 
 - **GatewaySubnet reference** -- resolves to the subnet's `subnet_id` output; the subnet's ARM name must be EXACTLY `GatewaySubnet` (/27+, no NSG, no other workloads)
 - **Public IP reference** -- a Standard static address the gateway binds exclusively (never share it with a NAT gateway or load balancer)
 - **`bgpEnabled` + ASN 65515** -- Azure's default ASN; dynamic route exchange for every tunnel that opts in
-- **Creation takes 25-45 minutes** and the gateway bills hourly from provisioning, tunnels or not; the verified figure lives in the component's generated estimate at `catalog/_pricing/estimates/azurevirtualnetworkgateway.yaml`
+- **Creation takes 25-45 minutes** and the gateway bills hourly from provisioning, tunnels or not; the verified figure lives in the kind's generated estimate at `catalog/_pricing/estimates/azurevirtualnetworkgateway.yaml`
 
 ## Placeholders to Replace
 

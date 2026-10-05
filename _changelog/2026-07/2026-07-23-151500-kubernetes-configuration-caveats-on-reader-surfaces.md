@@ -26,7 +26,7 @@ is user-supplied, so the guidance reduces to a tautology.
 ### Kept-CRD installs pin their namespace (cert-manager, external-secrets operator, KEDA)
 
 These kinds keep their CRDs on uninstall by default so that removing the
-component never cascade-deletes cluster-wide data (certificates, synced
+kind never cascade-deletes cluster-wide data (certificates, synced
 secrets, scaling declarations). The `namespace` field on each now teaches
 the consequence: chart-templated CRDs retain the Helm release's namespace
 in their ownership metadata, so a later install into a DIFFERENT namespace
@@ -76,7 +76,7 @@ the ones that deploy cleanly: a backup that reports Completed with
 unprotected volumes, a TLS policy the gateway silently ignores, a chart
 version that exists in the source tree but not in the repository, an
 install namespace that quietly became permanent. The catalog's contract is
-that the spec is enough to configure a component correctly — so these
+that the spec is enough to configure a kind correctly — so these
 constraints belong on the exact fields and doc sections their authors read,
 not in tribal memory.
 

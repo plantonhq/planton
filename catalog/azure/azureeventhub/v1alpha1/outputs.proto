@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.azure.azureeventhub.v1alpha1;
 
-// **AzureEventHubStackOutputs** captures the outputs of provisioning an
+// **AzureEventHubOutputs** captures the outputs of provisioning an
 // event hub.
 //
 // `event_hub_id` is the ARM identity hub-scoped kinds reference
 // (AzureEventHubConsumerGroup, AzureEventHubAuthorizationRule with
 // event_hub_id) and the scope for hub-level data-plane role assignments.
-message AzureEventHubStackOutputs {
+message AzureEventHubOutputs {
   // The Azure Resource Manager ID of the event hub.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{ns}/eventhubs/{name}
   //

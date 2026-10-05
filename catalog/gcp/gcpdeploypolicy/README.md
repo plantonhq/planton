@@ -4,7 +4,7 @@ Declares a Cloud Deploy deploy policy: rollout restrictions -- freeze windows --
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `clouddeploy.googleapis.com` on the policy's project (never disabled on destroy)
 - **Deploy policy** -- one `clouddeploy_deploy_policy`
@@ -88,7 +88,7 @@ planton apply -f deploy-policy.yaml
 - A weekly window sets both `startTime` and `endTime`, or neither.
 - A literal selector ID is a pipeline or target ID, or `*` -- never a full resource name.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -117,7 +117,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpDeliveryPipeline** -- pipelines the policy governs
 - **GcpDeployTarget** -- targets the policy governs

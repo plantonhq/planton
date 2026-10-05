@@ -7,7 +7,7 @@
 
 ## Summary
 
-Added `AliCloudVpnGateway` -- an Alibaba Cloud VPN Gateway component that bundles VPN gateway creation with customer gateways and IPsec VPN connections into a single deployable unit.
+Added `AliCloudVpnGateway` -- an Alibaba Cloud VPN Gateway kind that bundles VPN gateway creation with customer gateways and IPsec VPN connections into a single deployable unit.
 
 ## What's Included
 

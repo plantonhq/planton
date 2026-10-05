@@ -4,7 +4,7 @@ Deploys a table inside a Cloud Bigtable instance — the schema-bearing unit: co
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Bigtable Admin API enablement** (`bigtableadmin.googleapis.com`) on the target project (never disabled on destroy)
 - **Bigtable Table** -- a table inside the referenced instance, named for clients to open with project + instance + table name
@@ -22,7 +22,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **A Bigtable instance** the table will live in. Reference a GcpBigtableInstance Cloud Resource via ValueFromRef or provide the instance's short name directly.
+- **A Bigtable instance** the table will live in. Reference a GcpBigtableInstance Infra Component via ValueFromRef or provide the instance's short name directly.
 
 ## Deploy
 
@@ -57,7 +57,7 @@ spec:
 planton apply -f bigtable-table.yaml
 ```
 
-This creates a table with two GC-bounded families and deletion protection on (the PROTECTED default) — retention is the lever that controls storage cost. A Stack Job tracks the provisioning in real time.
+This creates a table with two GC-bounded families and deletion protection on (the PROTECTED default) — retention is the lever that controls storage cost. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,16 +90,16 @@ These are the most important decisions when configuring a Bigtable table. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpBigtableInstance** | `instance` | `status.outputs.instance_name` |
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -119,5 +119,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Bigtable Instance**](/cloud-catalog/gcp-bigtable-instance) -- the parent instance whose `instance_name` output this table references
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project when not inherited from the provider connection
+- [**GCP Bigtable Instance**](/infra-catalog/gcp-bigtable-instance) -- the parent instance whose `instance_name` output this table references
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project when not inherited from the provider connection

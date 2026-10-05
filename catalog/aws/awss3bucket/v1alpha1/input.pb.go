@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-s3-bucket stack-input
-type AwsS3BucketStackInput struct {
+// aws-s3-bucket iac-input
+type AwsS3BucketIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsS3Bucket `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsS3BucketStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsS3BucketStackInput) Reset() {
-	*x = AwsS3BucketStackInput{}
+func (x *AwsS3BucketIacInput) Reset() {
+	*x = AwsS3BucketIacInput{}
 	mi := &file_catalog_aws_awss3bucket_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsS3BucketStackInput) String() string {
+func (x *AwsS3BucketIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsS3BucketStackInput) ProtoMessage() {}
+func (*AwsS3BucketIacInput) ProtoMessage() {}
 
-func (x *AwsS3BucketStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsS3BucketIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awss3bucket_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsS3BucketStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsS3BucketStackInput.ProtoReflect.Descriptor instead.
-func (*AwsS3BucketStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsS3BucketIacInput.ProtoReflect.Descriptor instead.
+func (*AwsS3BucketIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awss3bucket_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsS3BucketStackInput) GetTarget() *AwsS3Bucket {
+func (x *AwsS3BucketIacInput) GetTarget() *AwsS3Bucket {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsS3BucketStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsS3BucketIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awss3bucket_v1alpha1_input_proto protoreflect.FileDescripto
 
 const file_catalog_aws_awss3bucket_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	",catalog/aws/awss3bucket/v1alpha1/input.proto\x12$dev.planton.aws.awss3bucket.v1alpha1\x1a*catalog/aws/awss3bucket/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xaf\x01\n" +
-	"\x15AwsS3BucketStackInput\x12I\n" +
+	",catalog/aws/awss3bucket/v1alpha1/input.proto\x12$dev.planton.aws.awss3bucket.v1alpha1\x1a*catalog/aws/awss3bucket/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xad\x01\n" +
+	"\x13AwsS3BucketIacInput\x12I\n" +
 	"\x06target\x18\x01 \x01(\v21.dev.planton.aws.awss3bucket.v1alpha1.AwsS3BucketR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xbe\x02\n" +
 	"(com.dev.planton.aws.awss3bucket.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awss3bucket_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awss3bucket_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awss3bucket_v1alpha1_input_proto_goTypes = []any{
-	(*AwsS3BucketStackInput)(nil), // 0: dev.planton.aws.awss3bucket.v1alpha1.AwsS3BucketStackInput
+	(*AwsS3BucketIacInput)(nil),   // 0: dev.planton.aws.awss3bucket.v1alpha1.AwsS3BucketIacInput
 	(*AwsS3Bucket)(nil),           // 1: dev.planton.aws.awss3bucket.v1alpha1.AwsS3Bucket
 	(*aws.AwsProviderConfig)(nil), // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awss3bucket_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awss3bucket.v1alpha1.AwsS3BucketStackInput.target:type_name -> dev.planton.aws.awss3bucket.v1alpha1.AwsS3Bucket
-	2, // 1: dev.planton.aws.awss3bucket.v1alpha1.AwsS3BucketStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awss3bucket.v1alpha1.AwsS3BucketIacInput.target:type_name -> dev.planton.aws.awss3bucket.v1alpha1.AwsS3Bucket
+	2, // 1: dev.planton.aws.awss3bucket.v1alpha1.AwsS3BucketIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

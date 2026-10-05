@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurebackupcontainerstorageaccount
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: backup_container_id
       derivations:
-        - from_stack_output: backup_container_id
+        - from_output: backup_container_id
       where_to_find: >-
         `az backup container list -g <rg> -v <vault>
         --backup-management-type AzureStorage --query "[].id"`, or

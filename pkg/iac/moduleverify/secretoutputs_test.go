@@ -3,7 +3,7 @@
 
 package moduleverify
 
-// A stack output the schema marks sensitive is a secret the resource generates, and the engine
+// An output the schema marks sensitive is a secret the resource generates, and the engine
 // sees it before the platform does: exported in the clear, it is printed in the engine's deploy
 // logs and kept readable in state. This suite pins that every official module of every kind
 // exports exactly its schema's secret outputs as secrets, in both engines, and that each check
@@ -15,7 +15,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 )
 
@@ -30,8 +30,8 @@ func secretOutputFindings(result *Result) []string {
 	return found
 }
 
-func TestStackOutputFields_ReadTheSchemasMarks(t *testing.T) {
-	fields, err := stackOutputFields(crkreflect.KindFromString("CloudflareZeroTrustAccessServiceToken"))
+func TestOutputFields_ReadTheSchemasMarks(t *testing.T) {
+	fields, err := outputFields(catalogkindreflect.KindFromString("CloudflareZeroTrustAccessServiceToken"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -46,8 +46,8 @@ func TestStackOutputFields_ReadTheSchemasMarks(t *testing.T) {
 func TestVerify_SecretOutputs_EveryOfficialModuleExportsExactlyItsSecrets(t *testing.T) {
 	root := repoRoot(t)
 	kindsWithSecrets := 0
-	for _, kind := range crkreflect.KindsList() {
-		fields, err := stackOutputFields(kind)
+	for _, kind := range catalogkindreflect.KindsList() {
+		fields, err := outputFields(kind)
 		if err != nil {
 			continue
 		}
@@ -58,8 +58,8 @@ func TestVerify_SecretOutputs_EveryOfficialModuleExportsExactlyItsSecrets(t *tes
 		if hasSecret {
 			kindsWithSecrets++
 		}
-		kindName := crkreflect.ExtractKindNameByKind(kind)
-		iacDir := filepath.Join(root, "catalog", crkreflect.ProviderDirName(crkreflect.GetProvider(kind)),
+		kindName := catalogkindreflect.ExtractKindNameByKind(kind)
+		iacDir := filepath.Join(root, "catalog", catalogkindreflect.ProviderDirName(catalogkindreflect.GetProvider(kind)),
 			strings.ToLower(kind.String()), "iac")
 		for _, engine := range []struct {
 			dir         string
@@ -81,7 +81,7 @@ func TestVerify_SecretOutputs_EveryOfficialModuleExportsExactlyItsSecrets(t *tes
 		}
 	}
 	if kindsWithSecrets < 16 {
-		t.Fatalf("found %d kinds with a secret output; the catalog carries at least 16 -- the walk is not reaching the stack outputs", kindsWithSecrets)
+		t.Fatalf("found %d kinds with a secret output; the catalog carries at least 16 -- the walk is not reaching the outputs", kindsWithSecrets)
 	}
 }
 

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMachineLearningWorkspaceStackOutputs** captures the outputs
+// **AzureMachineLearningWorkspaceOutputs** captures the outputs
 // of provisioning an Azure Machine Learning workspace.
-type AzureMachineLearningWorkspaceStackOutputs struct {
+type AzureMachineLearningWorkspaceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the workspace -- what datastores,
 	// compute, and outbound rules reference as their workspace_id.
@@ -59,20 +59,20 @@ type AzureMachineLearningWorkspaceStackOutputs struct {
 	sizeCache                 protoimpl.SizeCache
 }
 
-func (x *AzureMachineLearningWorkspaceStackOutputs) Reset() {
-	*x = AzureMachineLearningWorkspaceStackOutputs{}
+func (x *AzureMachineLearningWorkspaceOutputs) Reset() {
+	*x = AzureMachineLearningWorkspaceOutputs{}
 	mi := &file_catalog_azure_azuremachinelearningworkspace_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMachineLearningWorkspaceStackOutputs) String() string {
+func (x *AzureMachineLearningWorkspaceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMachineLearningWorkspaceStackOutputs) ProtoMessage() {}
+func (*AzureMachineLearningWorkspaceOutputs) ProtoMessage() {}
 
-func (x *AzureMachineLearningWorkspaceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMachineLearningWorkspaceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremachinelearningworkspace_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -84,61 +84,61 @@ func (x *AzureMachineLearningWorkspaceStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMachineLearningWorkspaceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMachineLearningWorkspaceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMachineLearningWorkspaceOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMachineLearningWorkspaceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremachinelearningworkspace_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMachineLearningWorkspaceStackOutputs) GetMachineLearningWorkspaceId() string {
+func (x *AzureMachineLearningWorkspaceOutputs) GetMachineLearningWorkspaceId() string {
 	if x != nil {
 		return x.MachineLearningWorkspaceId
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningWorkspaceStackOutputs) GetMachineLearningWorkspaceName() string {
+func (x *AzureMachineLearningWorkspaceOutputs) GetMachineLearningWorkspaceName() string {
 	if x != nil {
 		return x.MachineLearningWorkspaceName
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningWorkspaceStackOutputs) GetWorkspaceGuid() string {
+func (x *AzureMachineLearningWorkspaceOutputs) GetWorkspaceGuid() string {
 	if x != nil {
 		return x.WorkspaceGuid
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningWorkspaceStackOutputs) GetDiscoveryUrl() string {
+func (x *AzureMachineLearningWorkspaceOutputs) GetDiscoveryUrl() string {
 	if x != nil {
 		return x.DiscoveryUrl
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningWorkspaceStackOutputs) GetSystemAssignedIdentityPrincipalId() string {
+func (x *AzureMachineLearningWorkspaceOutputs) GetSystemAssignedIdentityPrincipalId() string {
 	if x != nil {
 		return x.SystemAssignedIdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningWorkspaceStackOutputs) GetFqdnOutboundRuleIds() map[string]string {
+func (x *AzureMachineLearningWorkspaceOutputs) GetFqdnOutboundRuleIds() map[string]string {
 	if x != nil {
 		return x.FqdnOutboundRuleIds
 	}
 	return nil
 }
 
-func (x *AzureMachineLearningWorkspaceStackOutputs) GetPrivateEndpointOutboundRuleIds() map[string]string {
+func (x *AzureMachineLearningWorkspaceOutputs) GetPrivateEndpointOutboundRuleIds() map[string]string {
 	if x != nil {
 		return x.PrivateEndpointOutboundRuleIds
 	}
 	return nil
 }
 
-func (x *AzureMachineLearningWorkspaceStackOutputs) GetServiceTagOutboundRuleIds() map[string]string {
+func (x *AzureMachineLearningWorkspaceOutputs) GetServiceTagOutboundRuleIds() map[string]string {
 	if x != nil {
 		return x.ServiceTagOutboundRuleIds
 	}
@@ -149,16 +149,16 @@ var File_catalog_azure_azuremachinelearningworkspace_v1alpha1_outputs_proto prot
 
 const file_catalog_azure_azuremachinelearningworkspace_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/azure/azuremachinelearningworkspace/v1alpha1/outputs.proto\x128dev.planton.azure.azuremachinelearningworkspace.v1alpha1\"\x8f\t\n" +
-	")AzureMachineLearningWorkspaceStackOutputs\x12A\n" +
+	"Bcatalog/azure/azuremachinelearningworkspace/v1alpha1/outputs.proto\x128dev.planton.azure.azuremachinelearningworkspace.v1alpha1\"\xfa\b\n" +
+	"$AzureMachineLearningWorkspaceOutputs\x12A\n" +
 	"\x1dmachine_learning_workspace_id\x18\x01 \x01(\tR\x1amachineLearningWorkspaceId\x12E\n" +
 	"\x1fmachine_learning_workspace_name\x18\x02 \x01(\tR\x1cmachineLearningWorkspaceName\x12%\n" +
 	"\x0eworkspace_guid\x18\x03 \x01(\tR\rworkspaceGuid\x12#\n" +
 	"\rdiscovery_url\x18\x04 \x01(\tR\fdiscoveryUrl\x12P\n" +
-	"%system_assigned_identity_principal_id\x18\x05 \x01(\tR!systemAssignedIdentityPrincipalId\x12\xb1\x01\n" +
-	"\x16fqdn_outbound_rule_ids\x18\x06 \x03(\v2|.dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceStackOutputs.FqdnOutboundRuleIdsEntryR\x13fqdnOutboundRuleIds\x12\xd4\x01\n" +
-	"\"private_endpoint_outbound_rule_ids\x18\a \x03(\v2\x87\x01.dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceStackOutputs.PrivateEndpointOutboundRuleIdsEntryR\x1eprivateEndpointOutboundRuleIds\x12\xc5\x01\n" +
-	"\x1dservice_tag_outbound_rule_ids\x18\b \x03(\v2\x82\x01.dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceStackOutputs.ServiceTagOutboundRuleIdsEntryR\x19serviceTagOutboundRuleIds\x1aF\n" +
+	"%system_assigned_identity_principal_id\x18\x05 \x01(\tR!systemAssignedIdentityPrincipalId\x12\xac\x01\n" +
+	"\x16fqdn_outbound_rule_ids\x18\x06 \x03(\v2w.dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceOutputs.FqdnOutboundRuleIdsEntryR\x13fqdnOutboundRuleIds\x12\xcf\x01\n" +
+	"\"private_endpoint_outbound_rule_ids\x18\a \x03(\v2\x82\x01.dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceOutputs.PrivateEndpointOutboundRuleIdsEntryR\x1eprivateEndpointOutboundRuleIds\x12\xbf\x01\n" +
+	"\x1dservice_tag_outbound_rule_ids\x18\b \x03(\v2}.dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceOutputs.ServiceTagOutboundRuleIdsEntryR\x19serviceTagOutboundRuleIds\x1aF\n" +
 	"\x18FqdnOutboundRuleIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aQ\n" +
@@ -184,15 +184,15 @@ func file_catalog_azure_azuremachinelearningworkspace_v1alpha1_outputs_proto_raw
 
 var file_catalog_azure_azuremachinelearningworkspace_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_catalog_azure_azuremachinelearningworkspace_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMachineLearningWorkspaceStackOutputs)(nil), // 0: dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceStackOutputs
-	nil, // 1: dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceStackOutputs.FqdnOutboundRuleIdsEntry
-	nil, // 2: dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceStackOutputs.PrivateEndpointOutboundRuleIdsEntry
-	nil, // 3: dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceStackOutputs.ServiceTagOutboundRuleIdsEntry
+	(*AzureMachineLearningWorkspaceOutputs)(nil), // 0: dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceOutputs
+	nil, // 1: dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceOutputs.FqdnOutboundRuleIdsEntry
+	nil, // 2: dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceOutputs.PrivateEndpointOutboundRuleIdsEntry
+	nil, // 3: dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceOutputs.ServiceTagOutboundRuleIdsEntry
 }
 var file_catalog_azure_azuremachinelearningworkspace_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceStackOutputs.fqdn_outbound_rule_ids:type_name -> dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceStackOutputs.FqdnOutboundRuleIdsEntry
-	2, // 1: dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceStackOutputs.private_endpoint_outbound_rule_ids:type_name -> dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceStackOutputs.PrivateEndpointOutboundRuleIdsEntry
-	3, // 2: dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceStackOutputs.service_tag_outbound_rule_ids:type_name -> dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceStackOutputs.ServiceTagOutboundRuleIdsEntry
+	1, // 0: dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceOutputs.fqdn_outbound_rule_ids:type_name -> dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceOutputs.FqdnOutboundRuleIdsEntry
+	2, // 1: dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceOutputs.private_endpoint_outbound_rule_ids:type_name -> dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceOutputs.PrivateEndpointOutboundRuleIdsEntry
+	3, // 2: dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceOutputs.service_tag_outbound_rule_ids:type_name -> dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceOutputs.ServiceTagOutboundRuleIdsEntry
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

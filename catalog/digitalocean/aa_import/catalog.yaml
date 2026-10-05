@@ -7,8 +7,8 @@ spec:
   # pinned terraform-provider-digitalocean (each resource's Importer in
   # digitalocean/<service>/resource_*.go is the source of truth; the docs'
   # Import sections confirm). The FORMAT lives here (provider knowledge,
-  # shared by every component); which concrete value fills each {placeholder}
-  # lives in the owning component's import-map.yaml. Correctness is
+  # shared by every kind); which concrete value fills each {placeholder}
+  # lives in the owning kind's import-map.yaml. Correctness is
   # machine-proven by the E2E import round-trip (deploy a fixture, set state
   # aside, re-import blind, plan must show zero diff) -- never by review
   # alone.

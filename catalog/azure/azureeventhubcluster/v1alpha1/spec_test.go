@@ -21,7 +21,7 @@ func minimalCluster() *AzureEventHubCluster {
 	return &AzureEventHubCluster{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureEventHubCluster",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-eh-cluster",
 		},
 		Spec: &AzureEventHubClusterSpec{

@@ -219,7 +219,7 @@ message AzureCosmosdbAccountSpec {
   // Whether key- and connection-string-based (local) authentication works
   // at all. Disable to force every data-plane caller through Entra ID and
   // Cosmos DB's data-plane RBAC -- the keyless posture. The account keys
-  // in the stack outputs stop authenticating when this is false.
+  // in the outputs stop authenticating when this is false.
   optional bool local_authentication_enabled = 24 [(dev.planton.shared.options.default) = "true"];
 
   // The minimum TLS version the account's endpoints accept. Unset means

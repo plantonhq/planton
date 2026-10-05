@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azuremonitorautoscalesetting
 spec:
   billing_model: free
   free_tier: An autoscale setting carries no meter -- Azure Monitor's pricing bills logs, metrics API use, alerts, and web tests, and autoscale appears on none of those meters. Rule evaluation runs on standard platform metrics, which Azure collects at no cost; predictive autoscale and scale-event notifications are equally free.
-  notes: "The setting is free; what it CONTROLS is the bill. Every instance it scales out is a full-priced resource -- the VM Scale Set VMs or App Service plan instances bill as their own catalog kinds, and profiles[].capacity.maximum is the real spend ceiling this resource writes (a generous maximum is a standing authorization to multiply the target's hourly cost up to that count). Scale-in rules and cooldowns are as much cost controls as availability controls. A rule whose metric_trigger evaluates CUSTOM metrics rides Application Insights / custom-metrics ingestion, which bills where those metrics are collected -- not here."
+  notes: "The setting is free; what it CONTROLS is the bill. Every instance it scales out is a full-priced resource -- the VM Scale Set VMs or App Service plan instances bill as their own components, and profiles[].capacity.maximum is the real spend ceiling this resource writes (a generous maximum is a standing authorization to multiply the target's hourly cost up to that count). Scale-in rules and cooldowns are as much cost controls as availability controls. A rule whose metric_trigger evaluates CUSTOM metrics rides Application Insights / custom-metrics ingestion, which bills where those metrics are collected -- not here."

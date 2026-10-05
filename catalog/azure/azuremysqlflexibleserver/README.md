@@ -89,7 +89,7 @@ set), `delegated_subnet_id`, `private_dns_zone_id`,
 `geo_redundant_backup_enabled`, the restore/replica trio, a `version`
 downgrade, and a `storage.size_gb` shrink.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

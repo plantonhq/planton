@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflareloadbalancer.v1alpha1;
 
-// CloudflareLoadBalancerStackOutputs describes the outputs after provisioning a Cloudflare Load Balancer.
-message CloudflareLoadBalancerStackOutputs {
+// CloudflareLoadBalancerOutputs describes the outputs after provisioning a Cloudflare Load Balancer.
+message CloudflareLoadBalancerOutputs {
   // Unique identifier of the Cloudflare load balancer.
   string load_balancer_id = 1;
   // The hostname DNS record associated with the load balancer.

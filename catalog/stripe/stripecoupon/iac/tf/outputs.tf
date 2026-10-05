@@ -1,5 +1,5 @@
 # StripeCoupon Outputs
-# Maps to the StripeCouponStackOutputs protobuf message.
+# Maps to the StripeCouponOutputs protobuf message.
 
 output "id" {
   description = "The coupon's Stripe id; it changes when the coupon is replaced"

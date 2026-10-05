@@ -61,12 +61,12 @@ export const menuProduct: MenuItem[] = [
   { label: 'CLI', subLabel: 'Everything Planton does, from your terminal', href: '/product/cli' },
   {
     label: 'Catalog',
-    subLabel: '700+ component kinds, each with its own fact sheet',
+    subLabel: '700+ catalog kinds, each with its own fact sheet',
     href: '/product/catalog',
   },
   {
     label: 'Import',
-    subLabel: 'Adopt the cloud resources you already run, without redeploying them',
+    subLabel: 'Adopt the cloud infrastructure you already run, without redeploying it',
     href: '/product/import',
   },
   {

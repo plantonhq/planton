@@ -143,8 +143,8 @@ spec:
 apis/dev/planton/provider/aws/awsroute53dnsrecord/v1/
 ├── spec.proto              # StringValueOrRef fields, updated validations
 ├── spec.pb.go              # Generated Go code
-├── stack_outputs.proto     # Renamed hosted_zone_id → zone_id
-├── stack_outputs.pb.go     # Generated
+├── outputs.proto     # Renamed hosted_zone_id → zone_id
+├── outputs.pb.go     # Generated
 ├── spec_test.go            # Updated test helpers and cases
 ├── README.md               # Updated documentation
 ├── examples.md             # Comprehensive value_from examples

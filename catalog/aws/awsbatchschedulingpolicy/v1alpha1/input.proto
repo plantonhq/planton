@@ -5,10 +5,10 @@ package dev.planton.aws.awsbatchschedulingpolicy.v1alpha1;
 import "catalog/aws/awsbatchschedulingpolicy/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBatchSchedulingPolicyStackInput is the input for the
+// AwsBatchSchedulingPolicyIacInput is the input for the
 // aws-batch-scheduling-policy IaC modules.
-message AwsBatchSchedulingPolicyStackInput {
-  // target cloud-resource
+message AwsBatchSchedulingPolicyIacInput {
+  // the catalog object to deploy
   AwsBatchSchedulingPolicy target = 1;
 
   // provider-config

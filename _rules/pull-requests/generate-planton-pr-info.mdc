@@ -71,12 +71,12 @@ Usage: In Ask mode, invoke explicitly as `@pr-info`.
 ## Repository-aware scope heuristics (Planton)
 Determine the `<scope-path>` from the changed files. Use the most impacted area by lines changed; if multiple, see multi-area guidance.
 
-- Catalog (components)
+- Catalog (kinds)
   - `catalog/<provider>/<kind>/**` → `catalog/<provider>/<kind>`
   - Multiple kinds under the same provider → `catalog/<provider>`
   - Shared proto surfaces (`shared/**`, `qa/**`, `iac/**`) → `shared`, `qa`, or `iac`
 
-- Charts (multi-cloud Lego blocks)
+- Charts (multi-kind compositions)
   - `charts/<provider>/<chart>/**` → `charts/<provider>/<chart>`
     - Examples: `charts/aws/eks-platform`, `charts/gcp/gke-environment`, `charts/azure/aks-environment`, `charts/digital-ocean/doks-environment`
   - Multiple charts under the same provider → `charts/<provider>`

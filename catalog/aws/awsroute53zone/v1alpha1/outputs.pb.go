@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRoute53ZoneStackOutputs captures observable identifiers from a
+// AwsRoute53ZoneOutputs captures observable identifiers from a
 // provisioned Route 53 hosted zone.
 //
 // The primary output is `zone_id` — the join key every DNS-composing resource
 // uses: AwsRoute53DnsRecord targets a zone by it, AwsCertManagerCert points
 // DNS validation at it, and AwsAlb/AwsNlb register their alias records
 // through it.
-type AwsRoute53ZoneStackOutputs struct {
+type AwsRoute53ZoneOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The hosted zone ID (e.g. "Z1D633PJN98FT9"). The identifier used by every
 	// resource that composes onto this zone.
@@ -66,20 +66,20 @@ type AwsRoute53ZoneStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AwsRoute53ZoneStackOutputs) Reset() {
-	*x = AwsRoute53ZoneStackOutputs{}
+func (x *AwsRoute53ZoneOutputs) Reset() {
+	*x = AwsRoute53ZoneOutputs{}
 	mi := &file_catalog_aws_awsroute53zone_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRoute53ZoneStackOutputs) String() string {
+func (x *AwsRoute53ZoneOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRoute53ZoneStackOutputs) ProtoMessage() {}
+func (*AwsRoute53ZoneOutputs) ProtoMessage() {}
 
-func (x *AwsRoute53ZoneStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRoute53ZoneOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsroute53zone_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -91,61 +91,61 @@ func (x *AwsRoute53ZoneStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRoute53ZoneStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRoute53ZoneStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRoute53ZoneOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRoute53ZoneOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsroute53zone_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRoute53ZoneStackOutputs) GetZoneId() string {
+func (x *AwsRoute53ZoneOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *AwsRoute53ZoneStackOutputs) GetZoneName() string {
+func (x *AwsRoute53ZoneOutputs) GetZoneName() string {
 	if x != nil {
 		return x.ZoneName
 	}
 	return ""
 }
 
-func (x *AwsRoute53ZoneStackOutputs) GetNameservers() []string {
+func (x *AwsRoute53ZoneOutputs) GetNameservers() []string {
 	if x != nil {
 		return x.Nameservers
 	}
 	return nil
 }
 
-func (x *AwsRoute53ZoneStackOutputs) GetPrimaryNameServer() string {
+func (x *AwsRoute53ZoneOutputs) GetPrimaryNameServer() string {
 	if x != nil {
 		return x.PrimaryNameServer
 	}
 	return ""
 }
 
-func (x *AwsRoute53ZoneStackOutputs) GetZoneArn() string {
+func (x *AwsRoute53ZoneOutputs) GetZoneArn() string {
 	if x != nil {
 		return x.ZoneArn
 	}
 	return ""
 }
 
-func (x *AwsRoute53ZoneStackOutputs) GetDsRecord() string {
+func (x *AwsRoute53ZoneOutputs) GetDsRecord() string {
 	if x != nil {
 		return x.DsRecord
 	}
 	return ""
 }
 
-func (x *AwsRoute53ZoneStackOutputs) GetDnskeyRecord() string {
+func (x *AwsRoute53ZoneOutputs) GetDnskeyRecord() string {
 	if x != nil {
 		return x.DnskeyRecord
 	}
 	return ""
 }
 
-func (x *AwsRoute53ZoneStackOutputs) GetKeySigningKeyTag() string {
+func (x *AwsRoute53ZoneOutputs) GetKeySigningKeyTag() string {
 	if x != nil {
 		return x.KeySigningKeyTag
 	}
@@ -156,8 +156,8 @@ var File_catalog_aws_awsroute53zone_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_aws_awsroute53zone_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awsroute53zone/v1alpha1/outputs.proto\x12'dev.planton.aws.awsroute53zone.v1alpha1\"\xb0\x02\n" +
-	"\x1aAwsRoute53ZoneStackOutputs\x12\x17\n" +
+	"1catalog/aws/awsroute53zone/v1alpha1/outputs.proto\x12'dev.planton.aws.awsroute53zone.v1alpha1\"\xab\x02\n" +
+	"\x15AwsRoute53ZoneOutputs\x12\x17\n" +
 	"\azone_id\x18\x01 \x01(\tR\x06zoneId\x12\x1b\n" +
 	"\tzone_name\x18\x02 \x01(\tR\bzoneName\x12 \n" +
 	"\vnameservers\x18\x03 \x03(\tR\vnameservers\x12.\n" +
@@ -182,7 +182,7 @@ func file_catalog_aws_awsroute53zone_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsroute53zone_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsroute53zone_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRoute53ZoneStackOutputs)(nil), // 0: dev.planton.aws.awsroute53zone.v1alpha1.AwsRoute53ZoneStackOutputs
+	(*AwsRoute53ZoneOutputs)(nil), // 0: dev.planton.aws.awsroute53zone.v1alpha1.AwsRoute53ZoneOutputs
 }
 var file_catalog_aws_awsroute53zone_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

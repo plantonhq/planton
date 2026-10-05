@@ -22,12 +22,12 @@ const (
 )
 
 // *
-// **KubernetesPlantonOperatorStackOutputs** — the composition handles a
+// **KubernetesPlantonOperatorOutputs** — the composition handles a
 // deployed Planton operator exports. The operator has no per-platform
 // surface of its own; KubernetesPlantonPlatform resources compose against
 // the CRD it installs, so the handles here identify the installation
 // rather than any platform.
-type KubernetesPlantonOperatorStackOutputs struct {
+type KubernetesPlantonOperatorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the operator runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -39,20 +39,20 @@ type KubernetesPlantonOperatorStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesPlantonOperatorStackOutputs) Reset() {
-	*x = KubernetesPlantonOperatorStackOutputs{}
+func (x *KubernetesPlantonOperatorOutputs) Reset() {
+	*x = KubernetesPlantonOperatorOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPlantonOperatorStackOutputs) String() string {
+func (x *KubernetesPlantonOperatorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPlantonOperatorStackOutputs) ProtoMessage() {}
+func (*KubernetesPlantonOperatorOutputs) ProtoMessage() {}
 
-func (x *KubernetesPlantonOperatorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPlantonOperatorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,19 +64,19 @@ func (x *KubernetesPlantonOperatorStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPlantonOperatorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesPlantonOperatorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPlantonOperatorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesPlantonOperatorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPlantonOperatorStackOutputs) GetNamespace() string {
+func (x *KubernetesPlantonOperatorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesPlantonOperatorStackOutputs) GetReleaseName() string {
+func (x *KubernetesPlantonOperatorOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
@@ -87,8 +87,8 @@ var File_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_outputs_proto pro
 
 const file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/kubernetes/kubernetesplantonoperator/v1alpha1/outputs.proto\x129dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1\"h\n" +
-	"%KubernetesPlantonOperatorStackOutputs\x12\x1c\n" +
+	"Ccatalog/kubernetes/kubernetesplantonoperator/v1alpha1/outputs.proto\x129dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1\"c\n" +
+	" KubernetesPlantonOperatorOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseNameB\xcc\x03\n" +
 	"=com.dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1B\fOutputsProtoP\x01Ztgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesplantonoperator/v1alpha1;kubernetesplantonoperatorv1alpha1\xa2\x02\x04DPKK\xaa\x029Dev.Planton.Kubernetes.Kubernetesplantonoperator.V1alpha1\xca\x029Dev\\Planton\\Kubernetes\\Kubernetesplantonoperator\\V1alpha1\xe2\x02EDev\\Planton\\Kubernetes\\Kubernetesplantonoperator\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Kubernetes::Kubernetesplantonoperator::V1alpha1b\x06proto3"
@@ -107,7 +107,7 @@ func file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_outputs_proto_ra
 
 var file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesPlantonOperatorStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorStackOutputs
+	(*KubernetesPlantonOperatorOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

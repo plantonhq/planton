@@ -31,7 +31,7 @@ type AwsEksCluster struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsEksClusterSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsEksCluster) GetKind() string {
 	return ""
 }
 
-func (x *AwsEksCluster) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsEksCluster) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *AwsEksCluster) GetStatus() *AwsEksClusterStatus {
 // aws-eks-cluster status
 type AwsEksClusterStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	aws-eks-cluster stack-outputs
-	Outputs       *AwsEksClusterStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	aws-eks-cluster outputs
+	Outputs       *AwsEksClusterOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AwsEksClusterStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsekscluster_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsEksClusterStatus) GetOutputs() *AwsEksClusterStackOutputs {
+func (x *AwsEksClusterStatus) GetOutputs() *AwsEksClusterOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_aws_awsekscluster_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12(\n" +
 	"\x04kind\x18\x02 \x01(\tB\x14\xbaH\x11r\x0f\n" +
 	"\rAwsEksClusterR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
 	"\x04spec\x18\x04 \x01(\v29.dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12S\n" +
-	"\x06status\x18\x05 \x01(\v2;.dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterStatusR\x06status\"r\n" +
-	"\x13AwsEksClusterStatus\x12[\n" +
-	"\aoutputs\x18\x01 \x01(\v2A.dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterStackOutputsR\aoutputsB\xca\x02\n" +
+	"\x06status\x18\x05 \x01(\v2;.dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterStatusR\x06status\"m\n" +
+	"\x13AwsEksClusterStatus\x12V\n" +
+	"\aoutputs\x18\x01 \x01(\v2<.dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterOutputsR\aoutputsB\xca\x02\n" +
 	"*com.dev.planton.aws.awsekscluster.v1alpha1B\bApiProtoP\x01ZUgithub.com/plantonhq/planton/catalog/aws/awsekscluster/v1alpha1;awseksclusterv1alpha1\xa2\x02\x04DPAA\xaa\x02&Dev.Planton.Aws.Awsekscluster.V1alpha1\xca\x02&Dev\\Planton\\Aws\\Awsekscluster\\V1alpha1\xe2\x022Dev\\Planton\\Aws\\Awsekscluster\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Aws::Awsekscluster::V1alpha1b\x06proto3"
 
 var (
@@ -187,15 +187,15 @@ var file_catalog_aws_awsekscluster_v1alpha1_api_proto_msgTypes = make([]protoimp
 var file_catalog_aws_awsekscluster_v1alpha1_api_proto_goTypes = []any{
 	(*AwsEksCluster)(nil),                // 0: dev.planton.aws.awsekscluster.v1alpha1.AwsEksCluster
 	(*AwsEksClusterStatus)(nil),          // 1: dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsEksClusterSpec)(nil),            // 3: dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterSpec
-	(*AwsEksClusterStackOutputs)(nil),    // 4: dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterStackOutputs
+	(*AwsEksClusterOutputs)(nil),         // 4: dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterOutputs
 }
 var file_catalog_aws_awsekscluster_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsekscluster.v1alpha1.AwsEksCluster.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsekscluster.v1alpha1.AwsEksCluster.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsekscluster.v1alpha1.AwsEksCluster.spec:type_name -> dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterSpec
 	1, // 2: dev.planton.aws.awsekscluster.v1alpha1.AwsEksCluster.status:type_name -> dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterStatus
-	4, // 3: dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterStatus.outputs:type_name -> dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterStackOutputs
+	4, // 3: dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterStatus.outputs:type_name -> dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -368,7 +368,7 @@ var _ = ginkgo.Describe("DigitalOceanVolumeSpec validations", func() {
 			input := &DigitalOceanVolume{
 				ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 				Kind:       "DigitalOceanVolume",
-				Metadata: &shared.CloudResourceMetadata{
+				Metadata: &shared.CatalogObjectMetadata{
 					Name: "test-volume",
 				},
 				Spec: makeValidMinimalSpec(),
@@ -381,7 +381,7 @@ var _ = ginkgo.Describe("DigitalOceanVolumeSpec validations", func() {
 			input := &DigitalOceanVolume{
 				ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 				Kind:       "DigitalOceanVolume",
-				Metadata: &shared.CloudResourceMetadata{
+				Metadata: &shared.CatalogObjectMetadata{
 					Name: "prod-db-data",
 					Labels: map[string]string{
 						"app": "postgres",

@@ -167,7 +167,7 @@ resource "aws_apprunner_service" "this" {
 #
 # One association per spec entry, keyed by domain name so entries add and
 # remove independently. App Runner issues the TLS certificate; the
-# per-domain validation CNAMEs surface as stack outputs for external DNS
+# per-domain validation CNAMEs surface as outputs for external DNS
 # (or AwsRoute53DnsRecord composition). The association resource returns as
 # soon as validation records are AVAILABLE -- it deliberately does not wait
 # for the domain to go active, because that requires the DNS records this

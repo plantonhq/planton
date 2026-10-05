@@ -5,7 +5,7 @@ import (
 
 	azuremonitoractiongroupv1alpha1 "github.com/plantonhq/planton/catalog/azure/azuremonitoractiongroup/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -15,11 +15,11 @@ type Locals struct {
 	AzureTags               map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremonitoractiongroupv1alpha1.AzureMonitorActionGroupStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremonitoractiongroupv1alpha1.AzureMonitorActionGroupIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMonitorActionGroup = stackInput.Target
-	target := stackInput.Target
+	locals.AzureMonitorActionGroup = iacInput.Target
+	target := iacInput.Target
 
 	// The resource_group field is a StringValueOrRef. The platform middleware
 	// resolves valueFrom references before IaC modules run, so .GetValue()
@@ -31,7 +31,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azuremonitoractiongroupv1
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureMonitorActionGroup.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureMonitorActionGroup.String()),
 	}
 
 	if target.Metadata.Id != "" {

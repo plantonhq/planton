@@ -9,9 +9,9 @@ import (
 	climanifest "github.com/plantonhq/planton/internal/cli/manifest"
 	"github.com/plantonhq/planton/internal/cli/ui"
 	"github.com/plantonhq/planton/internal/manifest"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/iacinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/iac/localmodule"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/iac/tofu/tofumodule"
 	"github.com/plantonhq/planton/pkg/kubernetes/kubecontext"
 	"github.com/plantonhq/planton/shared"
@@ -103,7 +103,7 @@ func applyHandler(cmd *cobra.Command, args []string) {
 	}
 
 	cliprint.PrintStep("Preparing Terraform execution...")
-	providerConfig, err := stackinputproviderconfig.GetFromFlagsSimple(cmd.Flags())
+	providerConfig, err := iacinputproviderconfig.GetFromFlagsSimple(cmd.Flags())
 	if err != nil {
 		cliprint.PrintError(fmt.Sprintf("failed to get provider config: %v", err))
 		os.Exit(1)

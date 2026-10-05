@@ -8,7 +8,7 @@
 
 The repository now carries an Apache-convention `NOTICE` file at the root, and
 — the substantive part — that attribution now travels with every first-party
-distribution channel: CLI release archives and per-component terraform module
+distribution channel: CLI release archives and per-kind terraform module
 zips both package `LICENSE` and `NOTICE` alongside the code they ship.
 Previously, terraform module zips on downloads.planton.dev contained only
 `.tf` files with no license statement at all.
@@ -23,7 +23,7 @@ the standard the license expects of others:
 - **CLI archives** (goreleaser) included `LICENSE` and `README` by default,
   but goreleaser's default file globs (`LICENSE*`, `README*`, `CHANGELOG`) do
   not cover `NOTICE` — a new NOTICE would silently not ship.
-- **Terraform module zips** — the per-component artifacts on
+- **Terraform module zips** — the per-kind artifacts on
   downloads.planton.dev, which are exactly the unit of the catalog someone is
   most likely to copy — were packaged from the module directory alone:
   **only `.tf` files, zero attribution, no license text**.
@@ -42,7 +42,7 @@ flowchart LR
    redistributor must reproduce it verbatim: product name,
    `Copyright 2024-2026 Planton Cloud, Inc.`, and a one-line attribution
    statement with the repo URL. No third-party inventory (third-party notices
-   live with the artifacts that redistribute those components).
+   live with the artifacts that redistribute those kinds).
 2. **`.goreleaser.yaml`** — an explicit `archives.files` list that mirrors
    goreleaser's defaults exactly and appends `NOTICE`. Current archive
    contents are unchanged; NOTICE is the only addition.
@@ -89,8 +89,8 @@ footers.
 ## Related Work
 
 - Chart README attribution footers (the existing `© Planton. Licensed under
-  Apache-2.0` convention) — the same principle at the per-component
-  documentation level; a lint to enforce it across all component READMEs is
+  Apache-2.0` convention) — the same principle at the per-kind
+  documentation level; a lint to enforce it across all kind READMEs is
   planned follow-up work.
 - Third-party notices for redistributed runtime dependencies (the desktop
   daemon's `third-party-notices` command and CDN license sidecars) — the

@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsMemorydbClusterStackOutputs captures observable identifiers and endpoints
+// AwsMemorydbClusterOutputs captures observable identifiers and endpoints
 // from a provisioned MemoryDB cluster. These outputs are used by downstream
 // resources to wire dependencies via StringValueOrRef.
-type AwsMemorydbClusterStackOutputs struct {
+type AwsMemorydbClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The DNS address of the cluster endpoint. Applications connect here for
 	// read-write operations. MemoryDB exposes a single cluster endpoint that
@@ -54,20 +54,20 @@ type AwsMemorydbClusterStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AwsMemorydbClusterStackOutputs) Reset() {
-	*x = AwsMemorydbClusterStackOutputs{}
+func (x *AwsMemorydbClusterOutputs) Reset() {
+	*x = AwsMemorydbClusterOutputs{}
 	mi := &file_catalog_aws_awsmemorydbcluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsMemorydbClusterStackOutputs) String() string {
+func (x *AwsMemorydbClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsMemorydbClusterStackOutputs) ProtoMessage() {}
+func (*AwsMemorydbClusterOutputs) ProtoMessage() {}
 
-func (x *AwsMemorydbClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsMemorydbClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsmemorydbcluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -79,54 +79,54 @@ func (x *AwsMemorydbClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsMemorydbClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsMemorydbClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsMemorydbClusterOutputs.ProtoReflect.Descriptor instead.
+func (*AwsMemorydbClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmemorydbcluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsMemorydbClusterStackOutputs) GetClusterEndpointAddress() string {
+func (x *AwsMemorydbClusterOutputs) GetClusterEndpointAddress() string {
 	if x != nil {
 		return x.ClusterEndpointAddress
 	}
 	return ""
 }
 
-func (x *AwsMemorydbClusterStackOutputs) GetClusterEndpointPort() int32 {
+func (x *AwsMemorydbClusterOutputs) GetClusterEndpointPort() int32 {
 	if x != nil {
 		return x.ClusterEndpointPort
 	}
 	return 0
 }
 
-func (x *AwsMemorydbClusterStackOutputs) GetClusterArn() string {
+func (x *AwsMemorydbClusterOutputs) GetClusterArn() string {
 	if x != nil {
 		return x.ClusterArn
 	}
 	return ""
 }
 
-func (x *AwsMemorydbClusterStackOutputs) GetClusterName() string {
+func (x *AwsMemorydbClusterOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *AwsMemorydbClusterStackOutputs) GetEnginePatchVersion() string {
+func (x *AwsMemorydbClusterOutputs) GetEnginePatchVersion() string {
 	if x != nil {
 		return x.EnginePatchVersion
 	}
 	return ""
 }
 
-func (x *AwsMemorydbClusterStackOutputs) GetSubnetGroupName() string {
+func (x *AwsMemorydbClusterOutputs) GetSubnetGroupName() string {
 	if x != nil {
 		return x.SubnetGroupName
 	}
 	return ""
 }
 
-func (x *AwsMemorydbClusterStackOutputs) GetParameterGroupName() string {
+func (x *AwsMemorydbClusterOutputs) GetParameterGroupName() string {
 	if x != nil {
 		return x.ParameterGroupName
 	}
@@ -137,8 +137,8 @@ var File_catalog_aws_awsmemorydbcluster_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awsmemorydbcluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awsmemorydbcluster/v1alpha1/outputs.proto\x12+dev.planton.aws.awsmemorydbcluster.v1alpha1\"\xe2\x02\n" +
-	"\x1eAwsMemorydbClusterStackOutputs\x128\n" +
+	"5catalog/aws/awsmemorydbcluster/v1alpha1/outputs.proto\x12+dev.planton.aws.awsmemorydbcluster.v1alpha1\"\xdd\x02\n" +
+	"\x19AwsMemorydbClusterOutputs\x128\n" +
 	"\x18cluster_endpoint_address\x18\x01 \x01(\tR\x16clusterEndpointAddress\x122\n" +
 	"\x15cluster_endpoint_port\x18\x02 \x01(\x05R\x13clusterEndpointPort\x12\x1f\n" +
 	"\vcluster_arn\x18\x03 \x01(\tR\n" +
@@ -163,7 +163,7 @@ func file_catalog_aws_awsmemorydbcluster_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awsmemorydbcluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsmemorydbcluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsMemorydbClusterStackOutputs)(nil), // 0: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterStackOutputs
+	(*AwsMemorydbClusterOutputs)(nil), // 0: dev.planton.aws.awsmemorydbcluster.v1alpha1.AwsMemorydbClusterOutputs
 }
 var file_catalog_aws_awsmemorydbcluster_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMonitorDataCollectionRuleStackOutputs** captures the outputs
+// **AzureMonitorDataCollectionRuleOutputs** captures the outputs
 // from provisioning an Azure Monitor data collection rule.
-type AzureMonitorDataCollectionRuleStackOutputs struct {
+type AzureMonitorDataCollectionRuleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The rule's ARM resource ID
 	// (.../providers/Microsoft.Insights/dataCollectionRules/{name}) --
@@ -43,20 +43,20 @@ type AzureMonitorDataCollectionRuleStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureMonitorDataCollectionRuleStackOutputs) Reset() {
-	*x = AzureMonitorDataCollectionRuleStackOutputs{}
+func (x *AzureMonitorDataCollectionRuleOutputs) Reset() {
+	*x = AzureMonitorDataCollectionRuleOutputs{}
 	mi := &file_catalog_azure_azuremonitordatacollectionrule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMonitorDataCollectionRuleStackOutputs) String() string {
+func (x *AzureMonitorDataCollectionRuleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMonitorDataCollectionRuleStackOutputs) ProtoMessage() {}
+func (*AzureMonitorDataCollectionRuleOutputs) ProtoMessage() {}
 
-func (x *AzureMonitorDataCollectionRuleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMonitorDataCollectionRuleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremonitordatacollectionrule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,33 +68,33 @@ func (x *AzureMonitorDataCollectionRuleStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMonitorDataCollectionRuleStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMonitorDataCollectionRuleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMonitorDataCollectionRuleOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMonitorDataCollectionRuleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremonitordatacollectionrule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMonitorDataCollectionRuleStackOutputs) GetDataCollectionRuleId() string {
+func (x *AzureMonitorDataCollectionRuleOutputs) GetDataCollectionRuleId() string {
 	if x != nil {
 		return x.DataCollectionRuleId
 	}
 	return ""
 }
 
-func (x *AzureMonitorDataCollectionRuleStackOutputs) GetDataCollectionRuleName() string {
+func (x *AzureMonitorDataCollectionRuleOutputs) GetDataCollectionRuleName() string {
 	if x != nil {
 		return x.DataCollectionRuleName
 	}
 	return ""
 }
 
-func (x *AzureMonitorDataCollectionRuleStackOutputs) GetImmutableId() string {
+func (x *AzureMonitorDataCollectionRuleOutputs) GetImmutableId() string {
 	if x != nil {
 		return x.ImmutableId
 	}
 	return ""
 }
 
-func (x *AzureMonitorDataCollectionRuleStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureMonitorDataCollectionRuleOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -105,8 +105,8 @@ var File_catalog_azure_azuremonitordatacollectionrule_v1alpha1_outputs_proto pro
 
 const file_catalog_azure_azuremonitordatacollectionrule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/azure/azuremonitordatacollectionrule/v1alpha1/outputs.proto\x129dev.planton.azure.azuremonitordatacollectionrule.v1alpha1\"\xf5\x01\n" +
-	"*AzureMonitorDataCollectionRuleStackOutputs\x125\n" +
+	"Ccatalog/azure/azuremonitordatacollectionrule/v1alpha1/outputs.proto\x129dev.planton.azure.azuremonitordatacollectionrule.v1alpha1\"\xf0\x01\n" +
+	"%AzureMonitorDataCollectionRuleOutputs\x125\n" +
 	"\x17data_collection_rule_id\x18\x01 \x01(\tR\x14dataCollectionRuleId\x129\n" +
 	"\x19data_collection_rule_name\x18\x02 \x01(\tR\x16dataCollectionRuleName\x12!\n" +
 	"\fimmutable_id\x18\x03 \x01(\tR\vimmutableId\x122\n" +
@@ -127,7 +127,7 @@ func file_catalog_azure_azuremonitordatacollectionrule_v1alpha1_outputs_proto_ra
 
 var file_catalog_azure_azuremonitordatacollectionrule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremonitordatacollectionrule_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMonitorDataCollectionRuleStackOutputs)(nil), // 0: dev.planton.azure.azuremonitordatacollectionrule.v1alpha1.AzureMonitorDataCollectionRuleStackOutputs
+	(*AzureMonitorDataCollectionRuleOutputs)(nil), // 0: dev.planton.azure.azuremonitordatacollectionrule.v1alpha1.AzureMonitorDataCollectionRuleOutputs
 }
 var file_catalog_azure_azuremonitordatacollectionrule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

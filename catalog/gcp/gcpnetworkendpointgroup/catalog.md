@@ -4,7 +4,7 @@ Builds a network endpoint group (NEG) -- a named set of IP:port endpoints a back
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions exactly one of:
+When you deploy this Infra Component, the IaC module provisions exactly one of:
 
 - **Zonal group** (`zone` set) -- a `compute.NetworkEndpointGroup` in that zone on your network, plus its membership written as one set through Google's bulk endpoint operation when `endpoints` is non-empty
 - **Global internet group** (`zone` empty) -- a `compute.GlobalNetworkEndpointGroup`, plus one `compute.GlobalNetworkEndpoint` per entry in `endpoints`
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions exactly one of:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with `roles/compute.networkAdmin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with `roles/compute.networkAdmin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Networks
@@ -65,7 +65,7 @@ spec:
 planton apply -f network-endpoint-group.yaml
 ```
 
-This creates a zonal group of two VM endpoints on port 8080 (the second on 8081) that a regional backend service can point at. A Stack Job tracks the provisioning in real time.
+This creates a zonal group of two VM endpoints on port 8080 (the second on 8081) that a regional backend service can point at. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,7 +83,7 @@ These are the most important decisions when configuring a network endpoint group
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -92,9 +92,9 @@ These are the most important decisions when configuring a network endpoint group
 | **GcpSubnetwork** | `subnetwork` | `status.outputs.subnetwork_self_link` |
 | **GcpComputeInstance** | `endpoints[].instance` | `status.outputs.instance_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -116,7 +116,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Backend Service**](/cloud-catalog/gcp-backend-service) -- consumes the group's `self_link` as a backend
-- [**GCP Region Network Endpoint Group**](/cloud-catalog/gcp-region-network-endpoint-group) -- serverless, PSC, and regional internet groups
-- [**GCP Compute Instance**](/cloud-catalog/gcp-compute-instance) -- the VMs a zonal group names
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network), [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- the zonal group's network placement
+- [**GCP Backend Service**](/infra-catalog/gcp-backend-service) -- consumes the group's `self_link` as a backend
+- [**GCP Region Network Endpoint Group**](/infra-catalog/gcp-region-network-endpoint-group) -- serverless, PSC, and regional internet groups
+- [**GCP Compute Instance**](/infra-catalog/gcp-compute-instance) -- the VMs a zonal group names
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network), [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- the zonal group's network placement

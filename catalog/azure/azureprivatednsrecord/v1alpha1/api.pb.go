@@ -33,7 +33,7 @@ type AzurePrivateDnsRecord struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzurePrivateDnsRecordSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *AzurePrivateDnsRecord) GetKind() string {
 	return ""
 }
 
-func (x *AzurePrivateDnsRecord) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzurePrivateDnsRecord) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,10 +111,10 @@ func (x *AzurePrivateDnsRecord) GetStatus() *AzurePrivateDnsRecordStatus {
 // DNS record deployment.
 type AzurePrivateDnsRecordStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-private-dns-record stack-outputs
-	Outputs       *AzurePrivateDnsRecordStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-private-dns-record outputs
+	Outputs       *AzurePrivateDnsRecordOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzurePrivateDnsRecordStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureprivatednsrecord_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzurePrivateDnsRecordStatus) GetOutputs() *AzurePrivateDnsRecordStackOutputs {
+func (x *AzurePrivateDnsRecordStatus) GetOutputs() *AzurePrivateDnsRecordOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azureprivatednsrecord_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15AzurePrivateDnsRecordR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
 	"\x04spec\x18\x04 \x01(\v2K.dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12e\n" +
-	"\x06status\x18\x05 \x01(\v2M.dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordStatusR\x06status\"\x8c\x01\n" +
-	"\x1bAzurePrivateDnsRecordStatus\x12m\n" +
-	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordStackOutputsR\aoutputsB\x8e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2M.dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordStatusR\x06status\"\x87\x01\n" +
+	"\x1bAzurePrivateDnsRecordStatus\x12h\n" +
+	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordOutputsR\aoutputsB\x8e\x03\n" +
 	"4com.dev.planton.azure.azureprivatednsrecord.v1alpha1B\bApiProtoP\x01Zggithub.com/plantonhq/planton/catalog/azure/azureprivatednsrecord/v1alpha1;azureprivatednsrecordv1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Azure.Azureprivatednsrecord.V1alpha1\xca\x020Dev\\Planton\\Azure\\Azureprivatednsrecord\\V1alpha1\xe2\x02<Dev\\Planton\\Azure\\Azureprivatednsrecord\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Azure::Azureprivatednsrecord::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_azure_azureprivatednsrecord_v1alpha1_api_proto_rawDescGZIP() [
 
 var file_catalog_azure_azureprivatednsrecord_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureprivatednsrecord_v1alpha1_api_proto_goTypes = []any{
-	(*AzurePrivateDnsRecord)(nil),             // 0: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecord
-	(*AzurePrivateDnsRecordStatus)(nil),       // 1: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzurePrivateDnsRecordSpec)(nil),         // 3: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordSpec
-	(*AzurePrivateDnsRecordStackOutputs)(nil), // 4: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordStackOutputs
+	(*AzurePrivateDnsRecord)(nil),        // 0: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecord
+	(*AzurePrivateDnsRecordStatus)(nil),  // 1: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzurePrivateDnsRecordSpec)(nil),    // 3: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordSpec
+	(*AzurePrivateDnsRecordOutputs)(nil), // 4: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordOutputs
 }
 var file_catalog_azure_azureprivatednsrecord_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecord.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecord.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecord.spec:type_name -> dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordSpec
 	1, // 2: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecord.status:type_name -> dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordStatus
-	4, // 3: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordStatus.outputs:type_name -> dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordStackOutputs
+	4, // 3: dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordStatus.outputs:type_name -> dev.planton.azure.azureprivatednsrecord.v1alpha1.AzurePrivateDnsRecordOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

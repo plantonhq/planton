@@ -176,7 +176,7 @@ does, its host and password references being the ordering.
   is the honest start on a small cluster), declare the vault's own `backup`
   block (S3, GCS, Azure Blob, or Cloudflare R2 by reference) and run the
   four-command login recipe the spec prints once the vault is initialized; a
-  declared restore additionally needs an `auto_unseal` arm, and the component
+  declared restore additionally needs an `auto_unseal` arm, and the kind's
   guide's runbook covers the rest.
 - **Scaling OpenFGA:** the servers are stateless — raise `replicas` on
   the deployed resource; the database is the shared truth. Its `3`

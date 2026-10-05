@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1;
 
-// GcpManagedKafkaClusterStackOutputs captures the cluster's identity. The
+// GcpManagedKafkaClusterOutputs captures the cluster's identity. The
 // bootstrap address is not an output (see the spec comment for how to read
 // it).
-message GcpManagedKafkaClusterStackOutputs {
+message GcpManagedKafkaClusterOutputs {
   // Full resource name --
   // projects/{project}/locations/{location}/clusters/{cluster_id}. What
   // topics, ACLs, and Kafka Connect clusters reference.

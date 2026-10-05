@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesistiobasecrds.v1alpha1;
 
-// KubernetesIstioBaseCrdsStackOutputs captures observable outputs from the Istio CRDs
+// KubernetesIstioBaseCrdsOutputs captures observable outputs from the Istio CRDs
 // installation.
-message KubernetesIstioBaseCrdsStackOutputs {
+message KubernetesIstioBaseCrdsOutputs {
   // Istio release the CRDs were installed from (the pinned SDK tag, e.g. "1.30.3").
   string installed_release = 1;
 

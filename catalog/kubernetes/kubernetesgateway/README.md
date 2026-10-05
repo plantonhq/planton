@@ -4,14 +4,14 @@
 
 ## Overview
 
-`KubernetesGateway` is a first-class Planton component that provisions an
+`KubernetesGateway` is a first-class catalog kind that provisions an
 upstream Gateway API `Gateway` resource at 100% fidelity with the standard
 channel of Gateway API v1.6.1. It models listeners, per-listener TLS
 termination/passthrough, requested addresses, infrastructure labels/annotations,
 gateway-wide frontend (mutual TLS) and backend client-certificate
 configuration, and route/listener-set attachment policy.
 
-Unlike a raw `KubernetesManifest`, this component gives you proto validation,
+Unlike a raw `KubernetesManifest`, this kind gives you proto validation,
 foreign-key wiring (to `KubernetesNamespace`, `KubernetesGatewayClass`, and the
 `KubernetesSecret`/`KubernetesConfigMap` objects its TLS references point at),
 typed Pulumi and Terraform modules, and InfraChart composability.
@@ -89,7 +89,7 @@ planton pulumi up --manifest gateway.yaml
 | `tls.certificate_refs` | `[]SecretObjectReference` | conditionally | TLS Secrets to terminate with (required for Terminate). Each `name` is an FK to `KubernetesSecret` -- typically wired with `valueFrom` against a `KubernetesCertificate`'s `status.outputs.secret_name`. |
 | `allowed_routes` | `KubernetesGatewayAllowedRoutes` | no | Which Route kinds/namespaces may attach. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
@@ -97,7 +97,7 @@ planton pulumi up --manifest gateway.yaml
 | `namespace` | Namespace the Gateway was created in. |
 | `gateway_class_name` | Name of the GatewayClass this Gateway belongs to. |
 
-## Related Components
+## Related Kinds
 
 - [`KubernetesGatewayApiCrds`](../kubernetesgatewayapicrds/) -- installs the Gateway API CRDs (prerequisite).
 - [`KubernetesGatewayClass`](../kubernetesgatewayclass/) -- defines the controller class this Gateway references.

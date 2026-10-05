@@ -1,5 +1,5 @@
 # Auth0PromptCustomText Outputs
-# Maps to the Auth0PromptCustomTextStackOutputs protobuf message: the custom
+# Maps to the Auth0PromptCustomTextOutputs protobuf message: the custom
 # text managed and its identifier.
 
 output "prompt" {

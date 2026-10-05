@@ -3,7 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "embedded",
     srcs = ["embedded.go"],
-    embedsrcs = ["specs/_test/testcloudresourcegeneric/conversions/v1alpha1_to_v1alpha2.yaml"],
+    embedsrcs = ["specs/_test/testcatalogkindgeneric/conversions/v1alpha1_to_v1alpha2.yaml"],
     importpath = "github.com/plantonhq/planton/pkg/conversion/embedded",
     visibility = ["//visibility:public"],
 )

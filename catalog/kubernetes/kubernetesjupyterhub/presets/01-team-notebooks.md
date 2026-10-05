@@ -7,7 +7,7 @@ own default of "any username, no password" never ships), gets their own
 JupyterLab server pod and a private 10Gi home volume that survives
 restarts, and idle servers stop themselves after an hour.
 
-Reach it over the port-forward command in the stack outputs, or compose
+Reach it over the port-forward command in the outputs, or compose
 a KubernetesService/Gateway route over the exported `proxy-public`
 service handle for a real URL.
 

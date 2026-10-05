@@ -4,7 +4,7 @@ Installs the External Secrets Operator (ESO) — the controller that syncs secre
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm Release** -- the `external-secrets` chart from `https://charts.external-secrets.io`, pinned to the chart version you choose (the release name is fixed to `external-secrets`; the CRDs and webhook configuration are cluster-global)
 - **Controller, Webhook, and cert-controller** -- the three ESO deployments, each tunable (replicas, resources)
@@ -16,7 +16,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -52,11 +52,11 @@ spec:
 planton apply -f external-secrets-operator.yaml
 ```
 
-This installs the operator into a new `external-secrets` namespace with CRDs installed and kept on uninstall — the standard single-installation path. A Stack Job tracks the provisioning in real time.
+This installs the operator into a new `external-secrets` namespace with CRDs installed and kept on uninstall — the standard single-installation path. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the namespace to one managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, wire the namespace to one managed by another Infra Component:
 
 ```yaml
 spec:
@@ -92,15 +92,15 @@ These are the most important decisions when configuring the operator. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,8 +120,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cluster Secret Store**](/cloud-catalog/kubernetes-cluster-secret-store) -- the cluster-scoped backend connection; deploy it after the operator (it references the operator's namespace output)
-- [**Secret Store**](/cloud-catalog/kubernetes-secret-store) -- the namespaced backend connection for per-team isolation
-- [**External Secret**](/cloud-catalog/kubernetes-external-secret) -- declares each secret to sync through those stores
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) -- can own the webhook's serving certificate via Helm values (`webhook.certManager`) in place of the cert-controller
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- consumes the materialized Secrets exactly like any other (env valueFrom, volume mounts)
+- [**Cluster Secret Store**](/infra-catalog/kubernetes-cluster-secret-store) -- the cluster-scoped backend connection; deploy it after the operator (it references the operator's namespace output)
+- [**Secret Store**](/infra-catalog/kubernetes-secret-store) -- the namespaced backend connection for per-team isolation
+- [**External Secret**](/infra-catalog/kubernetes-external-secret) -- declares each secret to sync through those stores
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) -- can own the webhook's serving certificate via Helm values (`webhook.certManager`) in place of the cert-controller
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- consumes the materialized Secrets exactly like any other (env valueFrom, volume mounts)

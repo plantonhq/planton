@@ -14,7 +14,7 @@ Pulumi Go module that manages the login-flow settings of an existing Auth0 tenan
 
 ## Environment Variables
 
-When `provider_config` is not set in the stack input, the module falls back to environment variables:
+When `provider_config` is not set in the IaC input, the module falls back to environment variables:
 
 | Variable | Description |
 |---|---|

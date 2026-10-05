@@ -1,4 +1,4 @@
-# Install manifest used when OTHER components declare KubernetesService as an
+# Install manifest used when OTHER kinds declare KubernetesService as an
 # E2E prerequisite (e.g. an Ingress scenario composing a real backend). Kept
 # deliberately minimal: a ClusterIP service with a stable name that consumer
 # scenarios reference.

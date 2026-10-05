@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awscloudwatchlogdelivery.v1alpha1;
 
-// AwsCloudwatchLogDeliveryStackOutputs captures the observable state
+// AwsCloudwatchLogDeliveryOutputs captures the observable state
 // of the delivery objects after apply.
-message AwsCloudwatchLogDeliveryStackOutputs {
+message AwsCloudwatchLogDeliveryOutputs {
   // The vended source's ARN. Empty when the vended arm has no source.
   string source_arn = 1;
 

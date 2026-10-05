@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0EmailTemplateStackOutputs names the template managed.
+// Auth0EmailTemplateOutputs names the template managed.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/email_template#attributes-reference
-type Auth0EmailTemplateStackOutputs struct {
+type Auth0EmailTemplateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// template is the email this resource customizes.
 	Template string `protobuf:"bytes,1,opt,name=template,proto3" json:"template,omitempty"`
@@ -34,20 +34,20 @@ type Auth0EmailTemplateStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Auth0EmailTemplateStackOutputs) Reset() {
-	*x = Auth0EmailTemplateStackOutputs{}
+func (x *Auth0EmailTemplateOutputs) Reset() {
+	*x = Auth0EmailTemplateOutputs{}
 	mi := &file_catalog_auth0_auth0emailtemplate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0EmailTemplateStackOutputs) String() string {
+func (x *Auth0EmailTemplateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0EmailTemplateStackOutputs) ProtoMessage() {}
+func (*Auth0EmailTemplateOutputs) ProtoMessage() {}
 
-func (x *Auth0EmailTemplateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0EmailTemplateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0emailtemplate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *Auth0EmailTemplateStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0EmailTemplateStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0EmailTemplateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0EmailTemplateOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0EmailTemplateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0emailtemplate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0EmailTemplateStackOutputs) GetTemplate() string {
+func (x *Auth0EmailTemplateOutputs) GetTemplate() string {
 	if x != nil {
 		return x.Template
 	}
 	return ""
 }
 
-func (x *Auth0EmailTemplateStackOutputs) GetEnabled() bool {
+func (x *Auth0EmailTemplateOutputs) GetEnabled() bool {
 	if x != nil {
 		return x.Enabled
 	}
@@ -82,8 +82,8 @@ var File_catalog_auth0_auth0emailtemplate_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_auth0_auth0emailtemplate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/auth0/auth0emailtemplate/v1alpha1/outputs.proto\x12-dev.planton.auth0.auth0emailtemplate.v1alpha1\"V\n" +
-	"\x1eAuth0EmailTemplateStackOutputs\x12\x1a\n" +
+	"7catalog/auth0/auth0emailtemplate/v1alpha1/outputs.proto\x12-dev.planton.auth0.auth0emailtemplate.v1alpha1\"Q\n" +
+	"\x19Auth0EmailTemplateOutputs\x12\x1a\n" +
 	"\btemplate\x18\x01 \x01(\tR\btemplate\x12\x18\n" +
 	"\aenabled\x18\x02 \x01(\bR\aenabledB\xfd\x02\n" +
 	"1com.dev.planton.auth0.auth0emailtemplate.v1alpha1B\fOutputsProtoP\x01Zagithub.com/plantonhq/planton/catalog/auth0/auth0emailtemplate/v1alpha1;auth0emailtemplatev1alpha1\xa2\x02\x04DPAA\xaa\x02-Dev.Planton.Auth0.Auth0emailtemplate.V1alpha1\xca\x02-Dev\\Planton\\Auth0\\Auth0emailtemplate\\V1alpha1\xe2\x029Dev\\Planton\\Auth0\\Auth0emailtemplate\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Auth0::Auth0emailtemplate::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_auth0_auth0emailtemplate_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_auth0_auth0emailtemplate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0emailtemplate_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0EmailTemplateStackOutputs)(nil), // 0: dev.planton.auth0.auth0emailtemplate.v1alpha1.Auth0EmailTemplateStackOutputs
+	(*Auth0EmailTemplateOutputs)(nil), // 0: dev.planton.auth0.auth0emailtemplate.v1alpha1.Auth0EmailTemplateOutputs
 }
 var file_catalog_auth0_auth0emailtemplate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareIpAccessRuleStackInput is the input to the IaC module.
+// CloudflareIpAccessRuleIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type CloudflareIpAccessRuleStackInput struct {
+type CloudflareIpAccessRuleIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// the catalog object to deploy to be deployed
 	Target *CloudflareIpAccessRule `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Cloudflare authentication
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type CloudflareIpAccessRuleStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareIpAccessRuleStackInput) Reset() {
-	*x = CloudflareIpAccessRuleStackInput{}
+func (x *CloudflareIpAccessRuleIacInput) Reset() {
+	*x = CloudflareIpAccessRuleIacInput{}
 	mi := &file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareIpAccessRuleStackInput) String() string {
+func (x *CloudflareIpAccessRuleIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareIpAccessRuleStackInput) ProtoMessage() {}
+func (*CloudflareIpAccessRuleIacInput) ProtoMessage() {}
 
-func (x *CloudflareIpAccessRuleStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareIpAccessRuleIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareIpAccessRuleStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareIpAccessRuleStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareIpAccessRuleStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareIpAccessRuleIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareIpAccessRuleIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareIpAccessRuleStackInput) GetTarget() *CloudflareIpAccessRule {
+func (x *CloudflareIpAccessRuleIacInput) GetTarget() *CloudflareIpAccessRule {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareIpAccessRuleStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareIpAccessRuleIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_input_proto protoref
 
 const file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	">catalog/cloudflare/cloudflareipaccessrule/v1alpha1/input.proto\x126dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1\x1a<catalog/cloudflare/cloudflareipaccessrule/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xe5\x01\n" +
-	" CloudflareIpAccessRuleStackInput\x12f\n" +
+	">catalog/cloudflare/cloudflareipaccessrule/v1alpha1/input.proto\x126dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1\x1a<catalog/cloudflare/cloudflareipaccessrule/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xe3\x01\n" +
+	"\x1eCloudflareIpAccessRuleIacInput\x12f\n" +
 	"\x06target\x18\x01 \x01(\v2N.dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xb5\x03\n" +
 	":com.dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_input_proto_rawDesc
 
 var file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareIpAccessRuleStackInput)(nil),    // 0: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleStackInput
+	(*CloudflareIpAccessRuleIacInput)(nil),      // 0: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleIacInput
 	(*CloudflareIpAccessRule)(nil),              // 1: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRule
 	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflareipaccessrule_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleStackInput.target:type_name -> dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRule
-	2, // 1: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleIacInput.target:type_name -> dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRule
+	2, // 1: dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1.CloudflareIpAccessRuleIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

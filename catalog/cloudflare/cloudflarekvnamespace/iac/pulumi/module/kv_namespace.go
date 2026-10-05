@@ -32,7 +32,7 @@ func kvNamespace(
 		return nil, errors.Wrap(err, "failed to create workers kv namespace")
 	}
 
-	// Export the namespace ID and URL-encoding support as stack outputs.
+	// Export the namespace ID and URL-encoding support as outputs.
 	ctx.Export(OpNamespaceId, createdKvNamespace.ID())
 	ctx.Export(OpSupportsUrlEncoding, createdKvNamespace.SupportsUrlEncoding)
 

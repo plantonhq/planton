@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuredataprotectionbackupinstance
 spec:
@@ -10,9 +10,9 @@ spec:
   values:
     - name: backup_instance_id
       derivations:
-        - from_stack_output: backup_instance_id
+        - from_output: backup_instance_id
       where_to_find: >-
         `az dataprotection backup-instance list -g <rg> --vault-name
         <vault> --query "[].id"` (instance names carry a
         service-derived suffix -- list and match, never compose by
-        hand), or the component's own backup_instance_id stack output.
+        hand), or the component's own backup_instance_id output.

@@ -5,7 +5,7 @@ import (
 
 	azureeventgridsystemtopicv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureeventgridsystemtopic/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -18,11 +18,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureeventgridsystemtopicv1alpha1.AzureEventgridSystemTopicStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureeventgridsystemtopicv1alpha1.AzureEventgridSystemTopicIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureEventgridSystemTopic = stackInput.Target
-	target := stackInput.Target
+	locals.AzureEventgridSystemTopic = iacInput.Target
+	target := iacInput.Target
 
 	// Metadata-derived tags first, then the user's spec tags merged over
 	// them: user tags deliberately win so an org's governance conventions
@@ -31,7 +31,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureeventgridsystemtopic
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureEventgridSystemTopic.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureEventgridSystemTopic.String()),
 	}
 
 	if target.Metadata.Id != "" {

@@ -4,7 +4,7 @@ Deploys a Compute Engine SSL policy — the control for which TLS protocol versi
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine SSL Policy** -- global (blank `region`) for global external Application Load Balancer proxies, or regional for regional external and internal ALB proxies; carries the COMPATIBLE/MODERN/RESTRICTED/FIPS_202205 profile or an explicit CUSTOM cipher-suite allowlist, applied to every referencing proxy's handshakes
 - **Compute Engine API enablement** -- `compute.googleapis.com` is enabled in the target project so a fresh project can host the policy; tearing down the policy never disables the API
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the policy will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef. The module enables the Compute Engine API itself, so the connection's principal needs permission to enable services (`serviceusage.services.enable`) on a fresh project.
+- **A GCP project** where the policy will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef. The module enables the Compute Engine API itself, so the connection's principal needs permission to enable services (`serviceusage.services.enable`) on a fresh project.
 
 ## Deploy
 
@@ -49,7 +49,7 @@ spec:
 planton apply -f ssl-policy.yaml
 ```
 
-This creates the recommended production posture: modern ciphers with a TLS 1.2 floor — the PCI-DSS baseline. A Stack Job tracks the provisioning in real time.
+This creates the recommended production posture: modern ciphers with a TLS 1.2 floor — the PCI-DSS baseline. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,15 +82,15 @@ These are the most important decisions when configuring an SSL policy. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -111,7 +111,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the policy is created
-- [**GCP Target HTTPS Proxy**](/cloud-catalog/gcp-target-https-proxy) -- consumes the policy's `self_link` in its `sslPolicy` field
-- [**GCP SSL Certificate**](/cloud-catalog/gcp-ssl-certificate) -- the served certificate alongside this policy's negotiation rules
-- [**GCP Managed SSL Certificate**](/cloud-catalog/gcp-managed-ssl-certificate) -- the Google-issued certificate alternative on the same proxy
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the policy is created
+- [**GCP Target HTTPS Proxy**](/infra-catalog/gcp-target-https-proxy) -- consumes the policy's `self_link` in its `sslPolicy` field
+- [**GCP SSL Certificate**](/infra-catalog/gcp-ssl-certificate) -- the served certificate alongside this policy's negotiation rules
+- [**GCP Managed SSL Certificate**](/infra-catalog/gcp-managed-ssl-certificate) -- the Google-issued certificate alternative on the same proxy

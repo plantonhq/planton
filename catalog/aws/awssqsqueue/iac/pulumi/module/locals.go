@@ -6,11 +6,11 @@ import (
 
 	awssqsqueuev1alpha1 "github.com/plantonhq/planton/catalog/aws/awssqsqueue/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 type Locals struct {
 	Target    *awssqsqueuev1alpha1.AwsSqsQueue
 	Spec      *awssqsqueuev1alpha1.AwsSqsQueueSpec
@@ -18,7 +18,7 @@ type Locals struct {
 	QueueName string // Derived queue name; includes `.fifo` suffix for FIFO queues.
 }
 
-func initializeLocals(ctx *pulumi.Context, in *awssqsqueuev1alpha1.AwsSqsQueueStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, in *awssqsqueuev1alpha1.AwsSqsQueueIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec
@@ -35,7 +35,7 @@ func initializeLocals(ctx *pulumi.Context, in *awssqsqueuev1alpha1.AwsSqsQueueSt
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.Target.Metadata.Org,
 		awstagkeys.Environment:  locals.Target.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsSqsQueue.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsSqsQueue.String(),
 		awstagkeys.ResourceId:   locals.Target.Metadata.Id,
 	}
 

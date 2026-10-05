@@ -42,7 +42,7 @@ const (
 //   - Targets are created as separate Terraform/Pulumi resources but are
 //     managed as a single unit with the rule.
 //   - Credentials, region, and deployment workflow live outside this spec in
-//     stack inputs.
+//     IaC inputs.
 type AwsEventBridgeRuleSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

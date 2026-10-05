@@ -4,7 +4,7 @@ package dev.planton.azure.azurerediscache.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureRedisCacheStackOutputs** captures the outputs of provisioning an
+// **AzureRedisCacheOutputs** captures the outputs of provisioning an
 // Azure Cache for Redis instance.
 //
 // For application connectivity, `primary_connection_string` is the
@@ -16,7 +16,7 @@ import "shared/options/options.proto";
 //
 // The access keys and connection strings are SECRET-BEARING: treat any
 // output that embeds them as a credential in downstream configuration.
-message AzureRedisCacheStackOutputs {
+message AzureRedisCacheOutputs {
   // The Azure Resource Manager ID of the Redis cache.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Cache/redis/{name}
   //

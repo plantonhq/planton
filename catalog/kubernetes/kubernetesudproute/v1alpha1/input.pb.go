@@ -25,9 +25,9 @@ const (
 // Input for the KubernetesUdpRoute IaC stack. The platform resolves all
 // StringValueOrRef references (namespace, parent and backend names) to literal
 // strings before passing this to the IaC engine.
-type KubernetesUdpRouteStackInput struct {
+type KubernetesUdpRouteIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Target cloud-resource.
+	// the catalog object to deploy.
 	Target *KubernetesUdpRoute `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// Kubernetes provider configuration (cluster credentials).
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesUdpRouteStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesUdpRouteStackInput) Reset() {
-	*x = KubernetesUdpRouteStackInput{}
+func (x *KubernetesUdpRouteIacInput) Reset() {
+	*x = KubernetesUdpRouteIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesudproute_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesUdpRouteStackInput) String() string {
+func (x *KubernetesUdpRouteIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesUdpRouteStackInput) ProtoMessage() {}
+func (*KubernetesUdpRouteIacInput) ProtoMessage() {}
 
-func (x *KubernetesUdpRouteStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesUdpRouteIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesudproute_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *KubernetesUdpRouteStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesUdpRouteStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesUdpRouteStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesUdpRouteIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesUdpRouteIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesudproute_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesUdpRouteStackInput) GetTarget() *KubernetesUdpRoute {
+func (x *KubernetesUdpRouteIacInput) GetTarget() *KubernetesUdpRoute {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesUdpRouteStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesUdpRouteIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_kubernetes_kubernetesudproute_v1alpha1_input_proto protoreflect
 
 const file_catalog_kubernetes_kubernetesudproute_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kubernetesudproute/v1alpha1/input.proto\x122dev.planton.kubernetes.kubernetesudproute.v1alpha1\x1a8catalog/kubernetes/kubernetesudproute/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd9\x01\n" +
-	"\x1cKubernetesUdpRouteStackInput\x12^\n" +
+	":catalog/kubernetes/kubernetesudproute/v1alpha1/input.proto\x122dev.planton.kubernetes.kubernetesudproute.v1alpha1\x1a8catalog/kubernetes/kubernetesudproute/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd7\x01\n" +
+	"\x1aKubernetesUdpRouteIacInput\x12^\n" +
 	"\x06target\x18\x01 \x01(\v2F.dev.planton.kubernetes.kubernetesudproute.v1alpha1.KubernetesUdpRouteR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x99\x03\n" +
 	"6com.dev.planton.kubernetes.kubernetesudproute.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_kubernetes_kubernetesudproute_v1alpha1_input_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetesudproute_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesudproute_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesUdpRouteStackInput)(nil),        // 0: dev.planton.kubernetes.kubernetesudproute.v1alpha1.KubernetesUdpRouteStackInput
+	(*KubernetesUdpRouteIacInput)(nil),          // 0: dev.planton.kubernetes.kubernetesudproute.v1alpha1.KubernetesUdpRouteIacInput
 	(*KubernetesUdpRoute)(nil),                  // 1: dev.planton.kubernetes.kubernetesudproute.v1alpha1.KubernetesUdpRoute
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesudproute_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesudproute.v1alpha1.KubernetesUdpRouteStackInput.target:type_name -> dev.planton.kubernetes.kubernetesudproute.v1alpha1.KubernetesUdpRoute
-	2, // 1: dev.planton.kubernetes.kubernetesudproute.v1alpha1.KubernetesUdpRouteStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesudproute.v1alpha1.KubernetesUdpRouteIacInput.target:type_name -> dev.planton.kubernetes.kubernetesudproute.v1alpha1.KubernetesUdpRoute
+	2, // 1: dev.planton.kubernetes.kubernetesudproute.v1alpha1.KubernetesUdpRouteIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

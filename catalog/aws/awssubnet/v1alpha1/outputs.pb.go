@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSubnetStackOutputs contains the values produced by deploying an AwsSubnet.
+// AwsSubnetOutputs contains the values produced by deploying an AwsSubnet.
 // Downstream components (compute, load balancers, databases, EKS/ECS, ...)
 // reference these via StringValueOrRef to compose a topology.
-type AwsSubnetStackOutputs struct {
+type AwsSubnetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The subnet's id (e.g. "subnet-0abc123").
 	SubnetId string `protobuf:"bytes,1,opt,name=subnet_id,json=subnetId,proto3" json:"subnet_id,omitempty"`
@@ -47,20 +47,20 @@ type AwsSubnetStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsSubnetStackOutputs) Reset() {
-	*x = AwsSubnetStackOutputs{}
+func (x *AwsSubnetOutputs) Reset() {
+	*x = AwsSubnetOutputs{}
 	mi := &file_catalog_aws_awssubnet_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSubnetStackOutputs) String() string {
+func (x *AwsSubnetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSubnetStackOutputs) ProtoMessage() {}
+func (*AwsSubnetOutputs) ProtoMessage() {}
 
-func (x *AwsSubnetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSubnetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssubnet_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,47 +72,47 @@ func (x *AwsSubnetStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSubnetStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSubnetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSubnetOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSubnetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssubnet_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSubnetStackOutputs) GetSubnetId() string {
+func (x *AwsSubnetOutputs) GetSubnetId() string {
 	if x != nil {
 		return x.SubnetId
 	}
 	return ""
 }
 
-func (x *AwsSubnetStackOutputs) GetSubnetArn() string {
+func (x *AwsSubnetOutputs) GetSubnetArn() string {
 	if x != nil {
 		return x.SubnetArn
 	}
 	return ""
 }
 
-func (x *AwsSubnetStackOutputs) GetAvailabilityZone() string {
+func (x *AwsSubnetOutputs) GetAvailabilityZone() string {
 	if x != nil {
 		return x.AvailabilityZone
 	}
 	return ""
 }
 
-func (x *AwsSubnetStackOutputs) GetCidrBlock() string {
+func (x *AwsSubnetOutputs) GetCidrBlock() string {
 	if x != nil {
 		return x.CidrBlock
 	}
 	return ""
 }
 
-func (x *AwsSubnetStackOutputs) GetRouteTableId() string {
+func (x *AwsSubnetOutputs) GetRouteTableId() string {
 	if x != nil {
 		return x.RouteTableId
 	}
 	return ""
 }
 
-func (x *AwsSubnetStackOutputs) GetRegion() string {
+func (x *AwsSubnetOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -123,8 +123,8 @@ var File_catalog_aws_awssubnet_v1alpha1_outputs_proto protoreflect.FileDescripto
 
 const file_catalog_aws_awssubnet_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	",catalog/aws/awssubnet/v1alpha1/outputs.proto\x12\"dev.planton.aws.awssubnet.v1alpha1\"\xdd\x01\n" +
-	"\x15AwsSubnetStackOutputs\x12\x1b\n" +
+	",catalog/aws/awssubnet/v1alpha1/outputs.proto\x12\"dev.planton.aws.awssubnet.v1alpha1\"\xd8\x01\n" +
+	"\x10AwsSubnetOutputs\x12\x1b\n" +
 	"\tsubnet_id\x18\x01 \x01(\tR\bsubnetId\x12\x1d\n" +
 	"\n" +
 	"subnet_arn\x18\x02 \x01(\tR\tsubnetArn\x12+\n" +
@@ -149,7 +149,7 @@ func file_catalog_aws_awssubnet_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awssubnet_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssubnet_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSubnetStackOutputs)(nil), // 0: dev.planton.aws.awssubnet.v1alpha1.AwsSubnetStackOutputs
+	(*AwsSubnetOutputs)(nil), // 0: dev.planton.aws.awssubnet.v1alpha1.AwsSubnetOutputs
 }
 var file_catalog_aws_awssubnet_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

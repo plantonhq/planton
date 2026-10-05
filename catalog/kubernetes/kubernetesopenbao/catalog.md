@@ -6,7 +6,7 @@ Know the seal lifecycle before you deploy: a fresh OpenBao server starts UNINITI
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **Helm Release** -- the `openbao` chart, creating:
@@ -26,7 +26,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -34,7 +34,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 - **A storage class** for the Raft data volume and the optional audit volume -- a PostgreSQL-stored vault claims no data volume (its audit volume, if declared, still needs one); dev is in-memory and needs none.
 - **A `KubernetesPostgres`** (only on PostgreSQL storage) with a database and owner role bootstrapped for the vault -- the host and the password Secret are declared by reference to it, so it must live in the vault's namespace (a Secret is namespace-local).
 - **As many schedulable nodes as replicas** -- the chart ships a REQUIRED hostname anti-affinity, so a three-replica cluster needs three nodes (relaxable through `helmValues` in labs only).
-- **A cloud KMS key or a central transit engine** (only when using auto-unseal) -- e.g. a GCP Cloud KMS crypto key with `roles/cloudkms.cryptoKeyEncrypterDecrypter` granted to the identity OpenBao runs as. ValueFromRef can resolve the project, key ring, and crypto key from other Cloud Resources.
+- **A cloud KMS key or a central transit engine** (only when using auto-unseal) -- e.g. a GCP Cloud KMS crypto key with `roles/cloudkms.cryptoKeyEncrypterDecrypter` granted to the identity OpenBao runs as. ValueFromRef can resolve the project, key ring, and crypto key from other Infra Components.
 - **Prometheus Operator CRDs** (only when enabling the ServiceMonitor) -- the install FAILS without them.
 
 ## Deploy
@@ -82,11 +82,11 @@ spec:
 planton apply -f openbao.yaml
 ```
 
-This deploys a three-node Raft cluster where each replica persists to its own 10Gi PVC, auditing every request to the servers' standard output from the first start, with an audit volume at `/openbao/audit` for the file sink. The bootstrap is yours by design: initialize once through pod 0 (`bao operator init` -- custody of the unseal key shares and root token is the whole point of a secrets manager), then unseal every pod; peers join automatically through the synthesized `retry_join`. A Stack Job tracks the provisioning in real time.
+This deploys a three-node Raft cluster where each replica persists to its own 10Gi PVC, auditing every request to the servers' standard output from the first start, with an audit volume at `/openbao/audit` for the file sink. The bootstrap is yours by design: initialize once through pod 0 (`bao operator init` -- custody of the unseal key shares and root token is the whole point of a secrets manager), then unseal every pod; peers join automatically through the synthesized `retry_join`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire OpenBao to dependencies managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire OpenBao to dependencies managed by other Infra Components:
 
 ```yaml
 spec:
@@ -101,7 +101,7 @@ spec:
       project:
         valueFrom:
           kind: GcpProject
-          name: infra-project
+          name: infra-stack
           fieldPath: status.outputs.project_id
       region: global
       keyRing:
@@ -149,7 +149,7 @@ These are the most important decisions when configuring OpenBao. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -169,9 +169,9 @@ These are the most important decisions when configuring OpenBao. Explore the ful
 | **CloudflareR2Bucket** (optional) | `backup.objectStore.r2.bucket` / `accountId` / `jurisdiction` | `status.outputs.bucket_name` / `account_id` / `jurisdiction` |
 | **CloudflareAccountApiToken** (optional) | `backup.objectStore.r2.credentials.accessKeyId` / `secretAccessKey` | `status.outputs.r2_access_key_id` / `r2_secret_access_key` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -197,7 +197,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **Production HA + GCP auto-unseal** -- The HA shape with the restart toil removed: the master key wrapped by a Cloud KMS crypto key via GKE Workload Identity -- no static credential anywhere. Start from the **Production HA + GCP Cloud KMS auto-unseal preset**.
 
-**GKE production HA with backups to GCS** -- The auto-unseal shape plus disaster recovery: hourly Raft snapshots landing keylessly in a Google Cloud Storage bucket, with the seal key, the bucket, and both identities (the server's and the backup job's) by reference to the catalog's GCP kinds. A fresh vault on the same KMS key with a `restore` block brings every secret back by declaration. Start from the **GKE production HA with Cloud KMS auto-unseal and GCS backups preset**; the full resource set is in the component guide.
+**GKE production HA with backups to GCS** -- The auto-unseal shape plus disaster recovery: hourly Raft snapshots landing keylessly in a Google Cloud Storage bucket, with the seal key, the bucket, and both identities (the server's and the backup job's) by reference to the catalog's GCP kinds. A fresh vault on the same KMS key with a `restore` block brings every secret back by declaration. Start from the **GKE production HA with Cloud KMS auto-unseal and GCS backups preset**; the full resource set is in the kind guide.
 
 **Production HA with backups to Cloudflare R2** -- Snapshots outside the cloud that runs the vault: the R2 bucket, its account and jurisdiction, and the writer token all by reference, the module doing the S3 translation. Runs on any cluster; pair it with an `autoUnseal` arm to make the restore declarative, or restore by hand on Shamir with the guide's runbook. Start from the **Production HA with Cloudflare R2 backups preset**.
 
@@ -205,11 +205,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the OpenBao install
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) -- backs the data and audit persistent volumes
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) -- issues the server TLS certificate Secret
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- wraps the master key for GCP Cloud KMS auto-unseal
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the workload identity for keyless KMS access
-- [**SeaweedFS**](/cloud-catalog/kubernetes-seaweed-fs) -- an in-cluster S3 endpoint for Raft snapshot backups
-- [**Cloudflare R2 Bucket**](/cloud-catalog/cloudflare-r2-bucket) and [**Cloudflare Account API Token**](/cloud-catalog/cloudflare-account-api-token) -- the R2 backup store and its credential, by reference
-- [**External Secrets Operator**](/cloud-catalog/kubernetes-external-secrets-operator) -- consumes the `api_endpoint` output as a ClusterSecretStore backend
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the OpenBao install
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) -- backs the data and audit persistent volumes
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) -- issues the server TLS certificate Secret
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- wraps the master key for GCP Cloud KMS auto-unseal
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the workload identity for keyless KMS access
+- [**SeaweedFS**](/infra-catalog/kubernetes-seaweed-fs) -- an in-cluster S3 endpoint for Raft snapshot backups
+- [**Cloudflare R2 Bucket**](/infra-catalog/cloudflare-r2-bucket) and [**Cloudflare Account API Token**](/infra-catalog/cloudflare-account-api-token) -- the R2 backup store and its credential, by reference
+- [**External Secrets Operator**](/infra-catalog/kubernetes-external-secrets-operator) -- consumes the `api_endpoint` output as a ClusterSecretStore backend

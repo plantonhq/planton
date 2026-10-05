@@ -1,22 +1,22 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceandatabasereplica
 spec:
   # DigitalOcean reads replicas by the (primary cluster, replica name)
   # pair -- the replica's own UUID has no read endpoint. Both halves are
-  # stack outputs, so zero user input when state is present.
+  # outputs, so zero user input when state is present.
   values:
     - name: cluster_id
       derivations:
-        - from_stack_output: cluster_id
+        - from_output: cluster_id
       where_to_find: >-
         DigitalOcean control panel -> Databases -> the PRIMARY cluster ->
         the UUID in the cluster's page URL, or `doctl databases list` (the
         ID column).
     - name: replica_name
       derivations:
-        - from_stack_output: replica_name
+        - from_output: replica_name
       where_to_find: >-
         DigitalOcean control panel -> Databases -> the primary cluster ->
         Settings -> Read-only replicas (the replica's name), or `doctl

@@ -65,7 +65,7 @@ be omitted. Item values are immutable — changing one replaces the entry.
 | `item_id` | The list item's identifier |
 | `list_id` | The list the entry was written to |
 
-## Related components
+## Related kinds
 
 - `CloudflareList` — the container this entry belongs to.
 - `CloudflareRuleset` — references the list (by name) from rule expressions.

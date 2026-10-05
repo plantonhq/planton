@@ -4,7 +4,7 @@ Deploys a VPC peering connection between two DigitalOcean VPCs, so resources in 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **VPC peering connection** -- one `digitalocean_vpc_peering` resource linking the two referenced VPCs. The module waits for the peering to reach ACTIVE before exporting outputs, and deletes retry through DigitalOcean's transient 403 responses while the peering settles.
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Two VPCs** -- DigitalOceanVpc resources (or literal VPC UUIDs) with non-overlapping IP ranges; DigitalOcean rejects overlapping peers.
 
 ### DigitalOcean Account
@@ -48,7 +48,7 @@ spec:
 planton apply -f do-vpc-peering.yaml
 ```
 
-This peers the two VPCs by literal UUID; the link is active within minutes and needs no route-table work on either side. A Stack Job tracks the provisioning in real time.
+This peers the two VPCs by literal UUID; the link is active within minutes and needs no route-table work on either side. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,16 +87,16 @@ These are the most important decisions when configuring a VPC peering. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **DigitalOceanVpc** | `vpc_1` | `status.outputs.vpc_id` |
 | **DigitalOceanVpc** | `vpc_2` | `status.outputs.vpc_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-`status.outputs` carries one value: `peering_id`, the connection's UUID (its API identity and import id). The lifecycle status is deliberately not an output -- both provisioners wait for ACTIVE before the apply succeeds, so a stored status could only ever read ACTIVE and would go stale the moment DigitalOcean moved the peering; anyone who needs it reads it live (`GET /v2/vpcs/peerings/{id}`), which is also how the E2E verifier asserts the peering. No downstream Cloud Resource consumes a peering by reference, so there is no ValueFromRef story to teach.
+`status.outputs` carries one value: `peering_id`, the connection's UUID (its API identity and import id). The lifecycle status is deliberately not an output -- both provisioners wait for ACTIVE before the apply succeeds, so a stored status could only ever read ACTIVE and would go stale the moment DigitalOcean moved the peering; anyone who needs it reads it live (`GET /v2/vpcs/peerings/{id}`), which is also how the E2E verifier asserts the peering. No downstream Infra Component consumes a peering by reference, so there is no ValueFromRef story to teach.
 
 ## Common Patterns
 
@@ -108,7 +108,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean VPC**](/cloud-catalog/digital-ocean-vpc) -- the two networks this connection links, wired by their `vpc_id` outputs
-- [**DigitalOcean Cloud Firewall**](/cloud-catalog/digital-ocean-firewall) -- per-host access control across the link; the peering itself filters nothing
-- [**DigitalOcean Droplet**](/cloud-catalog/digital-ocean-droplet) -- the workloads reaching across the peering by private address
-- [**DigitalOcean Database Cluster**](/cloud-catalog/digital-ocean-database-cluster) -- the classic far side: databases in a data VPC reached privately from the app VPC
+- [**DigitalOcean VPC**](/infra-catalog/digital-ocean-vpc) -- the two networks this connection links, wired by their `vpc_id` outputs
+- [**DigitalOcean Cloud Firewall**](/infra-catalog/digital-ocean-firewall) -- per-host access control across the link; the peering itself filters nothing
+- [**DigitalOcean Droplet**](/infra-catalog/digital-ocean-droplet) -- the workloads reaching across the peering by private address
+- [**DigitalOcean Database Cluster**](/infra-catalog/digital-ocean-database-cluster) -- the classic far side: databases in a data VPC reached privately from the app VPC

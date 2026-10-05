@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuretrafficmanagerprofile
 spec:
@@ -7,8 +7,8 @@ spec:
   values:
     - name: traffic_manager_profile_id
       derivations:
-        - from_stack_output: traffic_manager_profile_id
+        - from_output: traffic_manager_profile_id
       where_to_find: >-
         `az network traffic-manager profile show -g <resource-group> -n
         <name> --query id`, or the component's own
-        traffic_manager_profile_id stack output.
+        traffic_manager_profile_id output.

@@ -1,10 +1,10 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: gcpserviceconnectionpolicy
 spec:
   # Composed scenario: the policy needs a VPC and a subnet in its region,
-  # both installed from the prerequisite graph via this component's
+  # both installed from the prerequisite graph via this kind's
   # consumer-scoped overrides (run-scoped cloud names). deploy -> policy
   # posture verify -> destroy -> verify gone, on both provisioners. The
   # policy itself creates/deletes in seconds; the chain cost is the

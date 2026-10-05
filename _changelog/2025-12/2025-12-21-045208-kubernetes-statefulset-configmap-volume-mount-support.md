@@ -6,23 +6,23 @@
 
 ## Summary
 
-Enhanced the KubernetesStatefulSet component to support creating ConfigMaps from inline content and mounting them (along with Secrets, HostPaths, EmptyDirs, and PVCs) as volumes into containers. This enables deploying stateful applications like databases that require both persistent storage and configuration files—a common production pattern for StatefulSets.
+Enhanced the KubernetesStatefulSet kind to support creating ConfigMaps from inline content and mounting them (along with Secrets, HostPaths, EmptyDirs, and PVCs) as volumes into containers. This enables deploying stateful applications like databases that require both persistent storage and configuration files—a common production pattern for StatefulSets.
 
 ## Problem Statement / Motivation
 
-Deploying stateful applications like PostgreSQL or MongoDB often requires configuration files mounted alongside persistent volumes. Previously, KubernetesStatefulSet had limited volume mount support through a component-specific type that only handled basic PVC mounts from volumeClaimTemplates.
+Deploying stateful applications like PostgreSQL or MongoDB often requires configuration files mounted alongside persistent volumes. Previously, KubernetesStatefulSet had limited volume mount support through a kind-specific type that only handled basic PVC mounts from volumeClaimTemplates.
 
 ### Pain Points
 
 - **No declarative ConfigMap creation**: Users couldn't define configuration file content alongside their StatefulSet
 - **Limited volume mount support**: Only basic name/mountPath/readOnly were available
-- **Component-specific type**: `KubernetesStatefulSetContainerVolumeMount` was isolated from the shared volume mount ecosystem
+- **Kind-specific type**: `KubernetesStatefulSetContainerVolumeMount` was isolated from the shared volume mount ecosystem
 - **Inconsistency with Deployments**: KubernetesDeployment had richer volume support after its recent enhancement
 - **No support for Secrets, HostPaths, or EmptyDirs**: Missing common volume types needed for stateful workloads
 
 ## Solution / What's New
 
-Added comprehensive volume mount support to KubernetesStatefulSet, including inline ConfigMap creation. The solution replaces the component-specific `KubernetesStatefulSetContainerVolumeMount` with the shared `VolumeMount` type from `volume_mount.proto`, ensuring consistency across all Kubernetes workload components.
+Added comprehensive volume mount support to KubernetesStatefulSet, including inline ConfigMap creation. The solution replaces the kind-specific `KubernetesStatefulSetContainerVolumeMount` with the shared `VolumeMount` type from `volume_mount.proto`, ensuring consistency across all Kubernetes workload kinds.
 
 ### New Proto Fields
 
@@ -57,7 +57,7 @@ StatefulSets have special volume handling for `volumeClaimTemplates`. When a PVC
 - Added import for `dev/planton/provider/kubernetes/volume_mount.proto`
 - Added `config_maps` field (field 9) to `KubernetesStatefulSetSpec`
 - Replaced `KubernetesStatefulSetContainerVolumeMount` with shared `VolumeMount` type
-- Deleted the component-specific `KubernetesStatefulSetContainerVolumeMount` message
+- Deleted the kind-specific `KubernetesStatefulSetContainerVolumeMount` message
 
 ### Pulumi Module (Go)
 
@@ -167,7 +167,7 @@ spec:
 
 - **KubernetesStatefulSet users**: New capabilities for configuration management
 - **Database deployments**: Can now include custom config files declaratively
-- **Other workload components**: Pattern now consistent across Deployment, StatefulSet, and future DaemonSet, CronJob
+- **Other workload kinds**: Pattern now consistent across Deployment, StatefulSet, and future DaemonSet, CronJob
 
 ### Backward Compatibility
 
@@ -192,8 +192,8 @@ All validation steps passed:
 
 ```bash
 ✅ make protos        # Proto generation
-✅ go build ./...     # Component build
-✅ go test ./...      # Component tests
+✅ go build ./...     # Kind build
+✅ go test ./...      # Kind tests
 ```
 
 ## Related Work

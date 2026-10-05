@@ -1,4 +1,4 @@
 order:
-    - TestCloudResourceGeneric/consumer@dev
+    - TestCatalogKindGeneric/consumer@dev
 findings:
-    - external-relationship TestCloudResourceGeneric/consumer@dev metadata.relationships[0]
+    - external-relationship TestCatalogKindGeneric/consumer@dev metadata.relationships[0]

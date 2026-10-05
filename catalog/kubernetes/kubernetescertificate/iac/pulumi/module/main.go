@@ -20,11 +20,11 @@ import (
 // Ingress. Consumers that need the TLS Secret express the dependency through
 // composition; the E2E lanes verify issuance by polling the live cluster.
 // Terraform equivalent: kubectl_manifest without a wait_for block.
-func Resources(ctx *pulumi.Context, stackInput *kubernetescertificatev1alpha1.KubernetesCertificateStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetescertificatev1alpha1.KubernetesCertificateIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}

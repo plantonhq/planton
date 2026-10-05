@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesPlantonPlatformSpec** declares a self-hosted Planton
 platform — control plane, web console, identity server (Keycloak),
@@ -997,7 +997,7 @@ suffix), so it never writes over the source it restored from; declare
 one path.
 
 WHAT COMES BACK: every record the control plane keeps — organizations,
-environments, connections, projects, pipeline history, members, and
+environments, connections, Infra Stacks, pipeline history, members, and
 the identity realm with its users, so existing passwords sign in —
 AND the secrets manager's contents, because the vault stores in this
 same database: every connection credential, every managed secret, the

@@ -5,9 +5,9 @@ package dev.planton.aws.awsmskserverlesscluster.v1alpha1;
 import "catalog/aws/awsmskserverlesscluster/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// aws-msk-serverless-cluster stack-input
-message AwsMskServerlessClusterStackInput {
-  // target cloud-resource
+// aws-msk-serverless-cluster iac-input
+message AwsMskServerlessClusterIacInput {
+  // the catalog object to deploy
   AwsMskServerlessCluster target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

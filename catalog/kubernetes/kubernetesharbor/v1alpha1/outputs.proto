@@ -5,12 +5,12 @@ package dev.planton.kubernetes.kubernetesharbor.v1alpha1;
 import "catalog/kubernetes/kubernetes.proto";
 
 /**
- * **KubernetesHarborStackOutputs** — the composition handles a
+ * **KubernetesHarborOutputs** — the composition handles a
  * deployed Harbor exports: the front-door Service for exposure
  * kinds, the per-component Services, and the admin credential
  * Secret.
  */
-message KubernetesHarborStackOutputs {
+message KubernetesHarborOutputs {
   /** Namespace Harbor is installed into. */
   string namespace = 1;
 

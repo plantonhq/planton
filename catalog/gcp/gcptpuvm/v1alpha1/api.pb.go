@@ -31,7 +31,7 @@ type GcpTpuVm struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpTpuVmSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpTpuVm) GetKind() string {
 	return ""
 }
 
-func (x *GcpTpuVm) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpTpuVm) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpTpuVm) GetStatus() *GcpTpuVmStatus {
 // gcp-tpu-vm status
 type GcpTpuVmStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpTpuVmStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpTpuVmOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpTpuVmStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcptpuvm_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpTpuVmStatus) GetOutputs() *GcpTpuVmStackOutputs {
+func (x *GcpTpuVmStatus) GetOutputs() *GcpTpuVmOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -163,11 +163,11 @@ const file_catalog_gcp_gcptpuvm_v1alpha1_api_proto_rawDesc = "" +
 	"\x04kind\x18\x02 \x01(\tB\x0f\xbaH\fr\n" +
 	"\n" +
 	"\bGcpTpuVmR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12K\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12K\n" +
 	"\x04spec\x18\x04 \x01(\v2/.dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12I\n" +
-	"\x06status\x18\x05 \x01(\v21.dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmStatusR\x06status\"c\n" +
-	"\x0eGcpTpuVmStatus\x12Q\n" +
-	"\aoutputs\x18\x01 \x01(\v27.dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmStackOutputsR\aoutputsB\xa7\x02\n" +
+	"\x06status\x18\x05 \x01(\v21.dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmStatusR\x06status\"^\n" +
+	"\x0eGcpTpuVmStatus\x12L\n" +
+	"\aoutputs\x18\x01 \x01(\v22.dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmOutputsR\aoutputsB\xa7\x02\n" +
 	"%com.dev.planton.gcp.gcptpuvm.v1alpha1B\bApiProtoP\x01ZKgithub.com/plantonhq/planton/catalog/gcp/gcptpuvm/v1alpha1;gcptpuvmv1alpha1\xa2\x02\x04DPGG\xaa\x02!Dev.Planton.Gcp.Gcptpuvm.V1alpha1\xca\x02!Dev\\Planton\\Gcp\\Gcptpuvm\\V1alpha1\xe2\x02-Dev\\Planton\\Gcp\\Gcptpuvm\\V1alpha1\\GPBMetadata\xea\x02%Dev::Planton::Gcp::Gcptpuvm::V1alpha1b\x06proto3"
 
 var (
@@ -186,15 +186,15 @@ var file_catalog_gcp_gcptpuvm_v1alpha1_api_proto_msgTypes = make([]protoimpl.Mes
 var file_catalog_gcp_gcptpuvm_v1alpha1_api_proto_goTypes = []any{
 	(*GcpTpuVm)(nil),                     // 0: dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVm
 	(*GcpTpuVmStatus)(nil),               // 1: dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpTpuVmSpec)(nil),                 // 3: dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmSpec
-	(*GcpTpuVmStackOutputs)(nil),         // 4: dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmStackOutputs
+	(*GcpTpuVmOutputs)(nil),              // 4: dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmOutputs
 }
 var file_catalog_gcp_gcptpuvm_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVm.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVm.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVm.spec:type_name -> dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmSpec
 	1, // 2: dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVm.status:type_name -> dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmStatus
-	4, // 3: dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmStatus.outputs:type_name -> dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmStackOutputs
+	4, // 3: dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmStatus.outputs:type_name -> dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

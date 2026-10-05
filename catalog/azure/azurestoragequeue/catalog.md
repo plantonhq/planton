@@ -4,7 +4,7 @@ Deploys a Storage queue inside an Azure Storage Account -- the simple, massive-s
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Storage Queue** -- a queue on the referenced storage account (by ARM ID -- the control-plane path), with your data-plane metadata
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -49,7 +49,7 @@ spec:
 planton apply -f queue.yaml
 ```
 
-This creates an empty queue named `work-items` on the referenced account -- messages hold up to 64 KB, and the queue holds as many as the account's capacity allows. A Stack Job tracks the provisioning in real time.
+This creates an empty queue named `work-items` on the referenced account -- messages hold up to 64 KB, and the queue holds as many as the account's capacity allows. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -77,15 +77,15 @@ These are the most important decisions when configuring a queue. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureStorageAccount** | `storageAccountId` | `status.outputs.storage_account_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -107,6 +107,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the parent account and the source of the queue endpoint client URLs compose from
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- queue-scoped data-plane grants targeting `queue_id`
-- [**Azure Function App**](/cloud-catalog/azure-function-app) -- queue triggers consume messages by queue name
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the parent account and the source of the queue endpoint client URLs compose from
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- queue-scoped data-plane grants targeting `queue_id`
+- [**Azure Function App**](/infra-catalog/azure-function-app) -- queue triggers consume messages by queue name

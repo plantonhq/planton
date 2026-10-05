@@ -4,7 +4,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output name constants — one per KubernetesPlantonRunnerStackOutputs
+// Output name constants — one per KubernetesPlantonRunnerOutputs
 // field.
 const (
 	OpNamespace       = "namespace"
@@ -13,7 +13,7 @@ const (
 	OpRunnerName      = "runner_name"
 )
 
-// exportOutputs publishes the component's stack outputs — every value is
+// exportOutputs publishes the component's outputs — every value is
 // deterministic from the resolved inputs, so they export as plain strings.
 func exportOutputs(ctx *pulumi.Context, locals *Locals) {
 	ctx.Export(OpNamespace, pulumi.String(locals.Namespace))

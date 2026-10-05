@@ -4,7 +4,7 @@ Creates one AWS Config compliance check over the region's recorded configuration
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Config Rule** -- the compliance check itself: an account-scoped rule, or (when `organization` is set) an organization rule deployed to every member account, with the source arm deciding which provider resource renders
 - **Remediation Configuration** -- created only when `remediation` is set (account-scoped rules only); the SSM document AWS Config runs against non-compliant resources, manual or automatic with a retry contract
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with AWS Config permissions; for organization rules, its credentials must belong to the management account or the Config delegated administrator. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with AWS Config permissions; for organization rules, its credentials must belong to the management account or the Config delegated administrator. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -52,7 +52,7 @@ spec:
 planton apply -f aws-config-rule.yaml
 ```
 
-This creates an account-scoped rule running AWS's maintained versioning check against every recorded S3 bucket in the region. A Stack Job tracks the provisioning in real time.
+This creates an account-scoped rule running AWS's maintained versioning check against every recorded S3 bucket in the region. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -93,15 +93,15 @@ These are the most important decisions when configuring a Config rule. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsLambda** | `customLambda.functionArn` | `status.outputs.function_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,7 +121,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Config Recorder**](/cloud-catalog/aws-config-recorder) -- the regional prerequisite; rules only evaluate what the recorder captures
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) -- the evaluator behind `customLambda` rules, wired via `functionArn`
-- [**AWS Config Aggregator**](/cloud-catalog/aws-config-aggregator) -- rolls this rule's compliance results up across accounts and regions
-- [**AWS Config Conformance Pack**](/cloud-catalog/aws-config-conformance-pack) -- the packaged alternative when a whole set of related rules ships as one unit
+- [**AWS Config Recorder**](/infra-catalog/aws-config-recorder) -- the regional prerequisite; rules only evaluate what the recorder captures
+- [**AWS Lambda**](/infra-catalog/aws-lambda) -- the evaluator behind `customLambda` rules, wired via `functionArn`
+- [**AWS Config Aggregator**](/infra-catalog/aws-config-aggregator) -- rolls this rule's compliance results up across accounts and regions
+- [**AWS Config Conformance Pack**](/infra-catalog/aws-config-conformance-pack) -- the packaged alternative when a whole set of related rules ships as one unit

@@ -34,7 +34,7 @@ live E2E ran 4/4 dual-engine lanes green with a zero-orphan account sweep.
   and had serverless bounds wider than the service accepts (the real NCU
   range is 1–128 on both ends). **Its Terraform module had no `outputs.tf`
   at all** — a live cross-engine parity bug in which Terraform deploys
-  emitted zero stack outputs while Pulumi exported everything.
+  emitted zero outputs while Pulumi exported everything.
 - **Both kinds embedded a shadow security group** built from
   `allowed_cidrs` + a `vpc` field that existed only to feed it, carried
   hand-written legacy `variables.tf` contracts, exact `= 5.82.0` provider

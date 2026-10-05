@@ -4,7 +4,7 @@ Declares one Apache Superset install -- the open-source BI platform: dashboards,
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **The Helm release** -- the official `superset/superset` chart, rendering:
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -62,11 +62,11 @@ spec:
 planton apply -f team-bi.yaml
 ```
 
-This declares the smallest honest install: the web application against the named PostgreSQL, the session-signing key and admin password module-generated (sign in as `admin` with the password from the `team-bi-admin-auth` Secret), the official image at its pin. Without a cache this is the WEB-ONLY shape -- every query runs synchronously and the Celery family stays off. A Stack Job tracks the provisioning in real time.
+This declares the smallest honest install: the web application against the named PostgreSQL, the session-signing key and admin password module-generated (sign in as `admin` with the password from the `team-bi-admin-auth` Secret), the official image at its pin. Without a cache this is the WEB-ONLY shape -- every query runs synchronously and the Celery family stays off. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the metadata database (and cache) to resources managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the metadata database (and cache) to resources managed by other Infra Components:
 
 ```yaml
 spec:
@@ -122,7 +122,7 @@ These are the most important decisions when configuring Superset. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -131,9 +131,9 @@ These are the most important decisions when configuring Superset. Explore the fu
 | Valkey | `spec.cache.host` | `status.outputs.service` |
 | Valkey | `spec.cache.passwordSecret.secretName` | `status.outputs.password_secret.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -158,8 +158,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**PostgreSQL**](/cloud-catalog/kubernetes-postgres) -- the metadata database; the `metadataDatabase` foreign-key defaults point at it
-- [**Valkey**](/cloud-catalog/kubernetes-valkey) -- the natural cache/broker; the `cache` foreign-key defaults point at it
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the deployment
-- [**Trino**](/cloud-catalog/kubernetes-trino) -- the federated SQL engine Superset naturally fronts; connect its exported coordinator endpoint as a datasource
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) -- cluster monitoring for the web and worker tiers
+- [**PostgreSQL**](/infra-catalog/kubernetes-postgres) -- the metadata database; the `metadataDatabase` foreign-key defaults point at it
+- [**Valkey**](/infra-catalog/kubernetes-valkey) -- the natural cache/broker; the `cache` foreign-key defaults point at it
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the deployment
+- [**Trino**](/infra-catalog/kubernetes-trino) -- the federated SQL engine Superset naturally fronts; connect its exported coordinator endpoint as a datasource
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) -- cluster monitoring for the web and worker tiers

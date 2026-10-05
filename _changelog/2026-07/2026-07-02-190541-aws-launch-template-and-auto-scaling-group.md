@@ -99,7 +99,7 @@ with both Batch modules updated.
 ## Implementation Details
 
 - **Registry**: enum 234/235 with `kind_meta` (the ASG declares its
-  registry prerequisites, driving composed E2E); crkreflect map, gazelle,
+  registry prerequisites, driving composed E2E); catalogkindreflect map, gazelle,
   and the site catalog regenerated (`launch-template`,
   `auto-scaling-group` slugs).
 - **Terraform contracts are generator-owned**: both kinds' `variables.tf`

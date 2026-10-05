@@ -32,7 +32,7 @@ var _ = ginkgo.Describe("GcpGkeFleetMembershipSpec", func() {
 		return &GcpGkeFleetMembership{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpGkeFleetMembership",
-			Metadata:   &shared.CloudResourceMetadata{Name: "orders-cluster"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "orders-cluster"},
 			Spec: &GcpGkeFleetMembershipSpec{
 				GkeCluster: literal("projects/orders-prod/locations/us-central1/clusters/orders"),
 			},

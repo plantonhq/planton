@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0CustomDomainStackOutputs contains the custom domain as Auth0 created it:
+// Auth0CustomDomainOutputs contains the custom domain as Auth0 created it:
 // its identity, its state, and the DNS record that proves control of the name.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/custom_domain#read-only
 // https://www.pulumi.com/registry/packages/auth0/api-docs/customdomain/#outputs
-type Auth0CustomDomainStackOutputs struct {
+type Auth0CustomDomainOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the custom domain's identifier in Auth0 (cd_...). An
 	// Auth0CustomDomainVerification's custom_domain_id reads it.
@@ -62,20 +62,20 @@ type Auth0CustomDomainStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *Auth0CustomDomainStackOutputs) Reset() {
-	*x = Auth0CustomDomainStackOutputs{}
+func (x *Auth0CustomDomainOutputs) Reset() {
+	*x = Auth0CustomDomainOutputs{}
 	mi := &file_catalog_auth0_auth0customdomain_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0CustomDomainStackOutputs) String() string {
+func (x *Auth0CustomDomainOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0CustomDomainStackOutputs) ProtoMessage() {}
+func (*Auth0CustomDomainOutputs) ProtoMessage() {}
 
-func (x *Auth0CustomDomainStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0CustomDomainOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0customdomain_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -87,54 +87,54 @@ func (x *Auth0CustomDomainStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0CustomDomainStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0CustomDomainStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0CustomDomainOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0CustomDomainOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0customdomain_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0CustomDomainStackOutputs) GetId() string {
+func (x *Auth0CustomDomainOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Auth0CustomDomainStackOutputs) GetDomain() string {
+func (x *Auth0CustomDomainOutputs) GetDomain() string {
 	if x != nil {
 		return x.Domain
 	}
 	return ""
 }
 
-func (x *Auth0CustomDomainStackOutputs) GetStatus() string {
+func (x *Auth0CustomDomainOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *Auth0CustomDomainStackOutputs) GetOriginDomainName() string {
+func (x *Auth0CustomDomainOutputs) GetOriginDomainName() string {
 	if x != nil {
 		return x.OriginDomainName
 	}
 	return ""
 }
 
-func (x *Auth0CustomDomainStackOutputs) GetDnsRecordName() string {
+func (x *Auth0CustomDomainOutputs) GetDnsRecordName() string {
 	if x != nil {
 		return x.DnsRecordName
 	}
 	return ""
 }
 
-func (x *Auth0CustomDomainStackOutputs) GetDnsRecordType() string {
+func (x *Auth0CustomDomainOutputs) GetDnsRecordType() string {
 	if x != nil {
 		return x.DnsRecordType
 	}
 	return ""
 }
 
-func (x *Auth0CustomDomainStackOutputs) GetDnsRecordValue() string {
+func (x *Auth0CustomDomainOutputs) GetDnsRecordValue() string {
 	if x != nil {
 		return x.DnsRecordValue
 	}
@@ -145,8 +145,8 @@ var File_catalog_auth0_auth0customdomain_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_auth0_auth0customdomain_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/auth0/auth0customdomain/v1alpha1/outputs.proto\x12,dev.planton.auth0.auth0customdomain.v1alpha1\"\x87\x02\n" +
-	"\x1dAuth0CustomDomainStackOutputs\x12\x0e\n" +
+	"6catalog/auth0/auth0customdomain/v1alpha1/outputs.proto\x12,dev.planton.auth0.auth0customdomain.v1alpha1\"\x82\x02\n" +
+	"\x18Auth0CustomDomainOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06domain\x18\x02 \x01(\tR\x06domain\x12\x16\n" +
 	"\x06status\x18\x03 \x01(\tR\x06status\x12,\n" +
@@ -170,7 +170,7 @@ func file_catalog_auth0_auth0customdomain_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_auth0_auth0customdomain_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0customdomain_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0CustomDomainStackOutputs)(nil), // 0: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainStackOutputs
+	(*Auth0CustomDomainOutputs)(nil), // 0: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainOutputs
 }
 var file_catalog_auth0_auth0customdomain_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

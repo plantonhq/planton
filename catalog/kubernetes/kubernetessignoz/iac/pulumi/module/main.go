@@ -18,8 +18,8 @@ import (
 // hatch merges last with Helm -f semantics — the exact semantic twin of
 // the Terraform module's helm_release with
 // values = [typed, helm_values, re-pin].
-func Resources(ctx *pulumi.Context, stackInput *kubernetessignozv1alpha1.KubernetesSignozStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetessignozv1alpha1.KubernetesSignozIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// The collector Deployment (`<name>-otel-collector`) is the longest
 	// fullname-derived child; its pod names must fit Kubernetes'
@@ -34,13 +34,13 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetessignozv1alpha1.Kuberne
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

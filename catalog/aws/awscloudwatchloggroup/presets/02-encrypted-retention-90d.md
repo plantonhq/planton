@@ -29,4 +29,4 @@ This pattern provides customer-managed encryption and a 90-day retention window 
 - **Storage**: billed per GB-month for up to the 90 days events are retained
 - **KMS**: the customer-managed key adds a flat monthly per-key charge plus per-API-call usage
 
-The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awscloudwatchloggroup.yaml` — computed from the pinned price book, never hand-typed here.
+The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awscloudwatchloggroup.yaml` — computed from the pinned price book, never hand-typed here.

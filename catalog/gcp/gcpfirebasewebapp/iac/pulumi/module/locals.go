@@ -12,8 +12,8 @@ type Locals struct {
 	GcpFirebaseWebApp *gcpfirebasewebappv1alpha1.GcpFirebaseWebApp
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpfirebasewebappv1alpha1.GcpFirebaseWebAppStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpfirebasewebappv1alpha1.GcpFirebaseWebAppIacInput) *Locals {
 	return &Locals{
-		GcpFirebaseWebApp: stackInput.Target,
+		GcpFirebaseWebApp: iacInput.Target,
 	}
 }

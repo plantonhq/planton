@@ -12,6 +12,6 @@ This preset maps a GCP IAM principal (here, a service account email) to an Alloy
 - **userId is the IAM principal email** — must match the identity presented at connect time
 - **No password** — spec CEL rejects passwords on ALLOYDB_IAM_USER
 
-## Related Components
+## Related Kinds
 
 - [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — the identity behind IAM users

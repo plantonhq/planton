@@ -35,7 +35,7 @@ type AwsCloudwatchLogGroup struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration for the log group.
 	Spec *AwsCloudwatchLogGroupSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -88,7 +88,7 @@ func (x *AwsCloudwatchLogGroup) GetKind() string {
 	return ""
 }
 
-func (x *AwsCloudwatchLogGroup) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsCloudwatchLogGroup) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,7 +114,7 @@ func (x *AwsCloudwatchLogGroup) GetStatus() *AwsCloudwatchLogGroupStatus {
 type AwsCloudwatchLogGroupStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after provisioning.
-	Outputs       *AwsCloudwatchLogGroupStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsCloudwatchLogGroupOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AwsCloudwatchLogGroupStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchloggroup_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsCloudwatchLogGroupStatus) GetOutputs() *AwsCloudwatchLogGroupStackOutputs {
+func (x *AwsCloudwatchLogGroupStatus) GetOutputs() *AwsCloudwatchLogGroupOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_aws_awscloudwatchloggroup_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15AwsCloudwatchLogGroupR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
 	"\x04spec\x18\x04 \x01(\v2I.dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupStatusR\x06status\"\x8a\x01\n" +
-	"\x1bAwsCloudwatchLogGroupStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupStackOutputsR\aoutputsB\x82\x03\n" +
+	"\x06status\x18\x05 \x01(\v2K.dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupStatusR\x06status\"\x85\x01\n" +
+	"\x1bAwsCloudwatchLogGroupStatus\x12f\n" +
+	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupOutputsR\aoutputsB\x82\x03\n" +
 	"2com.dev.planton.aws.awscloudwatchloggroup.v1alpha1B\bApiProtoP\x01Zegithub.com/plantonhq/planton/catalog/aws/awscloudwatchloggroup/v1alpha1;awscloudwatchloggroupv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Aws.Awscloudwatchloggroup.V1alpha1\xca\x02.Dev\\Planton\\Aws\\Awscloudwatchloggroup\\V1alpha1\xe2\x02:Dev\\Planton\\Aws\\Awscloudwatchloggroup\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Aws::Awscloudwatchloggroup::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_aws_awscloudwatchloggroup_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awscloudwatchloggroup_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awscloudwatchloggroup_v1alpha1_api_proto_goTypes = []any{
-	(*AwsCloudwatchLogGroup)(nil),             // 0: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroup
-	(*AwsCloudwatchLogGroupStatus)(nil),       // 1: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsCloudwatchLogGroupSpec)(nil),         // 3: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupSpec
-	(*AwsCloudwatchLogGroupStackOutputs)(nil), // 4: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupStackOutputs
+	(*AwsCloudwatchLogGroup)(nil),        // 0: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroup
+	(*AwsCloudwatchLogGroupStatus)(nil),  // 1: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsCloudwatchLogGroupSpec)(nil),    // 3: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupSpec
+	(*AwsCloudwatchLogGroupOutputs)(nil), // 4: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupOutputs
 }
 var file_catalog_aws_awscloudwatchloggroup_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroup.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroup.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroup.spec:type_name -> dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupSpec
 	1, // 2: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroup.status:type_name -> dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupStatus
-	4, // 3: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupStatus.outputs:type_name -> dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupStackOutputs
+	4, // 3: dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupStatus.outputs:type_name -> dev.planton.aws.awscloudwatchloggroup.v1alpha1.AwsCloudwatchLogGroupOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

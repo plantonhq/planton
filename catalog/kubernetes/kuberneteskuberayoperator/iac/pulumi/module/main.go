@@ -32,8 +32,8 @@ import (
 // The typed spec renders into chart values (values.go); the helm_values
 // escape hatch merges last with Helm -f semantics — the exact semantic
 // twin of the Terraform module's helm_release values documents.
-func Resources(ctx *pulumi.Context, stackInput *kuberneteskuberayoperatorv1alpha1.KubernetesKubeRayOperatorStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kuberneteskuberayoperatorv1alpha1.KubernetesKubeRayOperatorIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// Fail-loud name budget: 63-char Kubernetes name limit minus the
 	// chart's longest derived suffix, "-leader-election" (16 chars, the
@@ -46,13 +46,13 @@ func Resources(ctx *pulumi.Context, stackInput *kuberneteskuberayoperatorv1alpha
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

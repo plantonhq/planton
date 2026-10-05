@@ -11,9 +11,9 @@
 # carries NO assumed default: zero is a legal declared value (the
 # field's own floor, and the KEDA arm scales to zero), so a default
 # would silently overwrite an honest zero. Schema:
-# finops/componentcapacityderivation/v1.
+# finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kuberneteslocust
 spec:

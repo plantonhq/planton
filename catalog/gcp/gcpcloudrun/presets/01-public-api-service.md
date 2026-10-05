@@ -27,6 +27,6 @@ This preset creates a public, scale-to-zero HTTP API: unauthenticated callers re
 - **02-private-vpc-service** — the same service locked to internal traffic with VPC egress and Cloud SQL
 - **03-gpu-inference** — GPU-backed model serving
 
-## Related Components
+## Related Kinds
 
 - [GcpRegionNetworkEndpointGroup](/docs/catalog/gcp/gcpregionnetworkendpointgroup) — bridge this service into a global HTTPS load balancer for custom domains

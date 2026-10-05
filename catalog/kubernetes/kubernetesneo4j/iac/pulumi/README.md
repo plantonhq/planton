@@ -1,6 +1,6 @@
 # KubernetesNeo4j Pulumi Module
 
-Pulumi (Go) module for the KubernetesNeo4j component: installs Neo4j — the
+Pulumi (Go) module for the KubernetesNeo4j kind: installs Neo4j — the
 graph database behind knowledge graphs, GraphRAG and agent-memory
 architectures — from the official Neo4j Helm chart (`neo4j` at
 https://helm.neo4j.com/neo4j) as a real Helm release

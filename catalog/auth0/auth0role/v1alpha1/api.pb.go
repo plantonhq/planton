@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0Role is a component that manages an Auth0 Role.
+// Auth0Role is a kind that manages an Auth0 Role.
 // Roles are named collections of permissions (scopes) that implement Auth0's
 // role-based access control (RBAC). A role groups permissions defined on one or
 // more Auth0 Resource Servers (APIs) and can then be assigned to users.
@@ -88,12 +88,12 @@ type Auth0Role struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "Auth0Role" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the role within Planton (default role name when spec.name is empty)
 	// - org: Organization that owns this role
 	// - env: Environment (development, staging, production)
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the desired configuration for the Auth0 role.
 	// This includes the role name, description, and the set of granted permissions.
 	Spec *Auth0RoleSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -149,7 +149,7 @@ func (x *Auth0Role) GetKind() string {
 	return ""
 }
 
-func (x *Auth0Role) GetMetadata() *shared.CloudResourceMetadata {
+func (x *Auth0Role) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -174,10 +174,10 @@ func (x *Auth0Role) GetStatus() *Auth0RoleStatus {
 // This is populated by the deployment system and contains read-only outputs.
 type Auth0RoleStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs from the Auth0 role deployment.
+	// outputs contains the outputs from the Auth0 role deployment.
 	// These values are populated after successful deployment and include
 	// the role ID, name, and description.
-	Outputs       *Auth0RoleStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *Auth0RoleOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -212,7 +212,7 @@ func (*Auth0RoleStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0role_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Auth0RoleStatus) GetOutputs() *Auth0RoleStackOutputs {
+func (x *Auth0RoleStatus) GetOutputs() *Auth0RoleOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -230,11 +230,11 @@ const file_catalog_auth0_auth0role_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12$\n" +
 	"\x04kind\x18\x02 \x01(\tB\x10\xbaH\rr\v\n" +
 	"\tAuth0RoleR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12O\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12O\n" +
 	"\x04spec\x18\x04 \x01(\v23.dev.planton.auth0.auth0role.v1alpha1.Auth0RoleSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12M\n" +
-	"\x06status\x18\x05 \x01(\v25.dev.planton.auth0.auth0role.v1alpha1.Auth0RoleStatusR\x06status\"h\n" +
-	"\x0fAuth0RoleStatus\x12U\n" +
-	"\aoutputs\x18\x01 \x01(\v2;.dev.planton.auth0.auth0role.v1alpha1.Auth0RoleStackOutputsR\aoutputsB\xba\x02\n" +
+	"\x06status\x18\x05 \x01(\v25.dev.planton.auth0.auth0role.v1alpha1.Auth0RoleStatusR\x06status\"c\n" +
+	"\x0fAuth0RoleStatus\x12P\n" +
+	"\aoutputs\x18\x01 \x01(\v26.dev.planton.auth0.auth0role.v1alpha1.Auth0RoleOutputsR\aoutputsB\xba\x02\n" +
 	"(com.dev.planton.auth0.auth0role.v1alpha1B\bApiProtoP\x01ZOgithub.com/plantonhq/planton/catalog/auth0/auth0role/v1alpha1;auth0rolev1alpha1\xa2\x02\x04DPAA\xaa\x02$Dev.Planton.Auth0.Auth0role.V1alpha1\xca\x02$Dev\\Planton\\Auth0\\Auth0role\\V1alpha1\xe2\x020Dev\\Planton\\Auth0\\Auth0role\\V1alpha1\\GPBMetadata\xea\x02(Dev::Planton::Auth0::Auth0role::V1alpha1b\x06proto3"
 
 var (
@@ -253,15 +253,15 @@ var file_catalog_auth0_auth0role_v1alpha1_api_proto_msgTypes = make([]protoimpl.
 var file_catalog_auth0_auth0role_v1alpha1_api_proto_goTypes = []any{
 	(*Auth0Role)(nil),                    // 0: dev.planton.auth0.auth0role.v1alpha1.Auth0Role
 	(*Auth0RoleStatus)(nil),              // 1: dev.planton.auth0.auth0role.v1alpha1.Auth0RoleStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*Auth0RoleSpec)(nil),                // 3: dev.planton.auth0.auth0role.v1alpha1.Auth0RoleSpec
-	(*Auth0RoleStackOutputs)(nil),        // 4: dev.planton.auth0.auth0role.v1alpha1.Auth0RoleStackOutputs
+	(*Auth0RoleOutputs)(nil),             // 4: dev.planton.auth0.auth0role.v1alpha1.Auth0RoleOutputs
 }
 var file_catalog_auth0_auth0role_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.auth0.auth0role.v1alpha1.Auth0Role.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.auth0.auth0role.v1alpha1.Auth0Role.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.auth0.auth0role.v1alpha1.Auth0Role.spec:type_name -> dev.planton.auth0.auth0role.v1alpha1.Auth0RoleSpec
 	1, // 2: dev.planton.auth0.auth0role.v1alpha1.Auth0Role.status:type_name -> dev.planton.auth0.auth0role.v1alpha1.Auth0RoleStatus
-	4, // 3: dev.planton.auth0.auth0role.v1alpha1.Auth0RoleStatus.outputs:type_name -> dev.planton.auth0.auth0role.v1alpha1.Auth0RoleStackOutputs
+	4, // 3: dev.planton.auth0.auth0role.v1alpha1.Auth0RoleStatus.outputs:type_name -> dev.planton.auth0.auth0role.v1alpha1.Auth0RoleOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

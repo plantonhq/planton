@@ -25,7 +25,7 @@ Four signing backends cover the full upstream surface (the config is shared with
 
 ## Deploys never block on readiness
 
-Issuer readiness depends on external reachability (the ACME server, Vault, DNS) that is not part of applying the resource. Neither engine waits for Ready — the same posture as Ingress never blocking on a controller. Check `kubectl get clusterissuer` (or compose consumers through references, which is what infra charts do).
+Issuer readiness depends on external reachability (the ACME server, Vault, DNS) that is not part of applying the resource. Neither engine waits for Ready — the same posture as Ingress never blocking on a controller. Check `kubectl get clusterissuer` (or compose consumers through references, which is what Infra Charts do).
 
 ## Essential Configuration Fields
 
@@ -40,7 +40,7 @@ Issuer readiness depends on external reachability (the ACME server, Vault, DNS) 
 - Use the Let's Encrypt **staging** server while testing: production rate limits are strict and exhaustible
 - Wildcards need DNS-01; HTTP-01 needs public port-80 reachability
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

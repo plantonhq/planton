@@ -1,10 +1,10 @@
 # Azure Event Hub
 
-Deploys an event hub inside an Azure Event Hubs namespace -- one partitioned, replayable event stream. Producers append events to partitions; consumers read them through consumer groups, each keeping its own offset, so the same stream feeds real-time processing, batch analytics, and archival independently. Hubs are many-per-namespace with independent lifecycles, which is why the hub is a first-class Cloud Resource referencing the namespace rather than a list folded into it. Kafka clients see the hub as a topic, unchanged. Capture — continuous Avro archival to Blob Storage — folds into the same spec, because Azure models it as a property of the hub.
+Deploys an event hub inside an Azure Event Hubs namespace -- one partitioned, replayable event stream. Producers append events to partitions; consumers read them through consumer groups, each keeping its own offset, so the same stream feeds real-time processing, batch analytics, and archival independently. Hubs are many-per-namespace with independent lifecycles, which is why the hub is a first-class Infra Component referencing the namespace rather than a list folded into it. Kafka clients see the hub as a topic, unchanged. Capture — continuous Avro archival to Blob Storage — folds into the same spec, because Azure models it as a property of the hub.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Event Hub** -- on the referenced namespace, with your chosen partition count and exactly one retention model: a simple day count, or the hour-granular block with Kafka-style log compaction
 - **Capture** -- when `captureDescription` is set: continuous archival of every event to Azure Blob Storage in Avro format on a size-or-interval cadence, with SAS or managed-identity authentication
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -54,7 +54,7 @@ spec:
 planton apply -f event-hub.yaml
 ```
 
-This creates an eight-partition hub named `telemetry` on the `telemetry-hubs` namespace with a three-day replay window. A Stack Job tracks the provisioning in real time.
+This creates an eight-partition hub named `telemetry` on the `telemetry-hubs` namespace with a three-day replay window. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,7 +87,7 @@ These are the most important decisions when configuring an event hub. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -96,9 +96,9 @@ These are the most important decisions when configuring an event hub. Explore th
 | **AzureStorageAccount** | `captureDescription.destination.storageAccountId` | `status.outputs.storage_account_id` |
 | **AzureUserAssignedIdentity** | `captureDescription.destination.storageAuthenticationId` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,9 +120,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Event Hub Namespace**](/cloud-catalog/azure-event-hub-namespace) -- the parent namespace every hub references
-- [**Azure Event Hub Consumer Group**](/cloud-catalog/azure-event-hub-consumer-group) -- one per consuming application; offsets never collide
-- [**Azure Event Hub Authorization Rule**](/cloud-catalog/azure-event-hub-authorization-rule) -- hub-scoped SAS credentials referencing `event_hub_id`
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the capture destination's account
-- [**Azure Storage Container**](/cloud-catalog/azure-storage-container) -- where captured archives land
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- keyless data-plane grants scoped to `event_hub_id`
+- [**Azure Event Hub Namespace**](/infra-catalog/azure-event-hub-namespace) -- the parent namespace every hub references
+- [**Azure Event Hub Consumer Group**](/infra-catalog/azure-event-hub-consumer-group) -- one per consuming application; offsets never collide
+- [**Azure Event Hub Authorization Rule**](/infra-catalog/azure-event-hub-authorization-rule) -- hub-scoped SAS credentials referencing `event_hub_id`
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the capture destination's account
+- [**Azure Storage Container**](/infra-catalog/azure-storage-container) -- where captured archives land
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- keyless data-plane grants scoped to `event_hub_id`

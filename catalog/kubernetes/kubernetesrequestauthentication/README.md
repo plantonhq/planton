@@ -163,7 +163,7 @@ When the target is a Service, a ServiceEntry, or any resource not managed as a
 Planton kind, pass the literal name with `value:`. `selector.match_labels` is a plain
 label match, not a foreign key -- istiod resolves it at runtime, so it creates no
 automatic DAG edge to the workloads it selects. To order this policy relative to those
-workloads in an infra chart, declare the dependency on `metadata.relationships`:
+workloads in an Infra Chart, declare the dependency on `metadata.relationships`:
 
 ```yaml
 metadata:
@@ -188,14 +188,14 @@ spec:
 
 See `GUIDE.md` for the full composability rationale.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `request_authentication_name` | Name of the created RequestAuthentication (equals metadata.name). |
 | `namespace` | Namespace the RequestAuthentication was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Peer Authentication](../kubernetespeerauthentication)
 - [Kubernetes Istio](../kubernetesistio)

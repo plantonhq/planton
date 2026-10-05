@@ -5,7 +5,7 @@ import (
 
 	awseksfargateprofilev1alpha1 "github.com/plantonhq/planton/catalog/aws/awseksfargateprofile/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -20,22 +20,22 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awseksfargateprofilev1alpha1.AwsEksFargateProfileStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awseksfargateprofilev1alpha1.AwsEksFargateProfileIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsEksFargateProfile = stackInput.Target
+	locals.AwsEksFargateProfile = iacInput.Target
 
-	locals.FargateProfileName = stackInput.Target.Metadata.Name
+	locals.FargateProfileName = iacInput.Target.Metadata.Name
 	if len(locals.FargateProfileName) > 63 {
 		locals.FargateProfileName = locals.FargateProfileName[:63]
 	}
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 	locals.AwsTags = map[string]string{
 		awstagkeys.Name:         metadata.Name,
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsEksFargateProfile.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsEksFargateProfile.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeBillingMeterStackOutputs identifies the meter and its alerts.
+// StripeBillingMeterOutputs identifies the meter and its alerts.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/billing_meter
-type StripeBillingMeterStackOutputs struct {
+type StripeBillingMeterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the meter's Stripe id (mtr_...), the value a metered StripePrice's recurring.meter
 	// references. It changes when the meter is replaced.
@@ -40,20 +40,20 @@ type StripeBillingMeterStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *StripeBillingMeterStackOutputs) Reset() {
-	*x = StripeBillingMeterStackOutputs{}
+func (x *StripeBillingMeterOutputs) Reset() {
+	*x = StripeBillingMeterOutputs{}
 	mi := &file_catalog_stripe_stripebillingmeter_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeBillingMeterStackOutputs) String() string {
+func (x *StripeBillingMeterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeBillingMeterStackOutputs) ProtoMessage() {}
+func (*StripeBillingMeterOutputs) ProtoMessage() {}
 
-func (x *StripeBillingMeterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripeBillingMeterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripebillingmeter_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,33 +65,33 @@ func (x *StripeBillingMeterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeBillingMeterStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripeBillingMeterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeBillingMeterOutputs.ProtoReflect.Descriptor instead.
+func (*StripeBillingMeterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripebillingmeter_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeBillingMeterStackOutputs) GetId() string {
+func (x *StripeBillingMeterOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripeBillingMeterStackOutputs) GetEventName() string {
+func (x *StripeBillingMeterOutputs) GetEventName() string {
 	if x != nil {
 		return x.EventName
 	}
 	return ""
 }
 
-func (x *StripeBillingMeterStackOutputs) GetStatus() string {
+func (x *StripeBillingMeterOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *StripeBillingMeterStackOutputs) GetAlertIds() map[string]string {
+func (x *StripeBillingMeterOutputs) GetAlertIds() map[string]string {
 	if x != nil {
 		return x.AlertIds
 	}
@@ -102,13 +102,13 @@ var File_catalog_stripe_stripebillingmeter_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_stripe_stripebillingmeter_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/stripe/stripebillingmeter/v1alpha1/outputs.proto\x12.dev.planton.stripe.stripebillingmeter.v1alpha1\"\x9f\x02\n" +
-	"\x1eStripeBillingMeterStackOutputs\x12\x0e\n" +
+	"8catalog/stripe/stripebillingmeter/v1alpha1/outputs.proto\x12.dev.planton.stripe.stripebillingmeter.v1alpha1\"\x95\x02\n" +
+	"\x19StripeBillingMeterOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"event_name\x18\x02 \x01(\tR\teventName\x12\x16\n" +
-	"\x06status\x18\x03 \x01(\tR\x06status\x12y\n" +
-	"\talert_ids\x18\x04 \x03(\v2\\.dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStackOutputs.AlertIdsEntryR\balertIds\x1a;\n" +
+	"\x06status\x18\x03 \x01(\tR\x06status\x12t\n" +
+	"\talert_ids\x18\x04 \x03(\v2W.dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterOutputs.AlertIdsEntryR\balertIds\x1a;\n" +
 	"\rAlertIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x83\x03\n" +
@@ -128,11 +128,11 @@ func file_catalog_stripe_stripebillingmeter_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_stripe_stripebillingmeter_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_stripe_stripebillingmeter_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripeBillingMeterStackOutputs)(nil), // 0: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStackOutputs
-	nil,                                    // 1: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStackOutputs.AlertIdsEntry
+	(*StripeBillingMeterOutputs)(nil), // 0: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterOutputs
+	nil,                               // 1: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterOutputs.AlertIdsEntry
 }
 var file_catalog_stripe_stripebillingmeter_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStackOutputs.alert_ids:type_name -> dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterStackOutputs.AlertIdsEntry
+	1, // 0: dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterOutputs.alert_ids:type_name -> dev.planton.stripe.stripebillingmeter.v1alpha1.StripeBillingMeterOutputs.AlertIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

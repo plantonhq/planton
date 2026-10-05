@@ -22,7 +22,7 @@ The **AzureTrafficManagerProfile** component deploys a Traffic Manager profile -
 
 ## Future Enhancements
 
-- Endpoint objects are a separate component (AzureTrafficManagerEndpoint) by design -- one profile serves many endpoints with independent lifecycles.
+- Endpoint objects are a separate kind (AzureTrafficManagerEndpoint) by design -- one profile serves many endpoints with independent lifecycles.
 
 ---
 

@@ -4,7 +4,7 @@ Names a place your releases go. A Cloud Deploy target is one environment a deliv
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- the Cloud Deploy API on the target's project
 - **Target** -- the deployment target
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Deploy targets in the target's project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Deploy targets in the target's project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -45,7 +45,7 @@ spec:
 planton apply -f deploy-target.yaml
 ```
 
-This creates a target that deploys Cloud Run services into the staging project's us-central1 region. A Stack Job tracks the provisioning in real time.
+This creates a target that deploys Cloud Run services into the staging project's us-central1 region. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -63,7 +63,7 @@ These are the most important decisions when configuring a target. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -77,9 +77,9 @@ These are the most important decisions when configuring a target. Explore the fu
 | **GcpGcsBucket** | `executionConfigs[].artifactStorage` | `status.outputs.url` |
 | **GcpCloudBuildWorkerPool** | `executionConfigs[].workerPool` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -99,8 +99,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Delivery Pipeline**](/cloud-catalog/gcp-delivery-pipeline) -- the pipeline that deploys to the target
-- [**GCP Deploy Custom Target Type**](/cloud-catalog/gcp-deploy-custom-target-type) -- the type behind a custom target
-- [**GCP Deploy Policy**](/cloud-catalog/gcp-deploy-policy) -- rollout restrictions on targets
-- [**GCP Cloud Build Worker Pool**](/cloud-catalog/gcp-cloud-build-worker-pool) -- private machines for deploy jobs
-- [**GCP GKE Cluster**](/cloud-catalog/gcp-gke-cluster) -- clusters to deploy to
+- [**GCP Delivery Pipeline**](/infra-catalog/gcp-delivery-pipeline) -- the pipeline that deploys to the target
+- [**GCP Deploy Custom Target Type**](/infra-catalog/gcp-deploy-custom-target-type) -- the type behind a custom target
+- [**GCP Deploy Policy**](/infra-catalog/gcp-deploy-policy) -- rollout restrictions on targets
+- [**GCP Cloud Build Worker Pool**](/infra-catalog/gcp-cloud-build-worker-pool) -- private machines for deploy jobs
+- [**GCP GKE Cluster**](/infra-catalog/gcp-gke-cluster) -- clusters to deploy to

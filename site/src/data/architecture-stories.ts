@@ -49,7 +49,7 @@ export const ARCHITECTURES: Record<ProviderId, WorkflowStory> = {
     id: 'gcp', version: 1, context: 'GCP / AI on Kubernetes',
     title: 'Your own AI inference stack.',
     setup: 'Provision the cloud foundation and the workloads inside it. Choose your model and run it on your GPU capacity.',
-    takeaway: 'Cloud infrastructure and Kubernetes workloads in one architecture.', scope: `${scope} vLLM is a custom Kubernetes workload, not a dedicated catalog component. Model access, weights, GPU quota, and application configuration are required.`,
+    takeaway: 'Cloud infrastructure and Kubernetes workloads in one architecture.', scope: `${scope} vLLM is a custom Kubernetes workload, not a dedicated catalog kind. Model access, weights, GPU quota, and application configuration are required.`,
     nodes: [
       { id: 'network', label: 'Cloud Network', detail: 'VPC + Subnet', icon: 'GcpVpcNetwork', phase: 0 },
       { id: 'cluster', label: 'GKE Cluster', detail: 'Kubernetes + CPU Nodes', icon: 'GcpGkeCluster', phase: 1 },

@@ -81,7 +81,7 @@
   registration proof is the first user.
 
 - **A new tier-wiring guard** (`hack/guards/ensure_e2e_tier_wiring.sh`
-  plus its lint workflow) asserts every Kubernetes component with a
+  plus its lint workflow) asserts every Kubernetes kind with a
   runnable E2E profile has BOTH engine test entrypoints and appears in
   its Makefile tier regexes. Its first run caught five silent drifts —
   a missing Terraform entrypoint that made one kind's lane unrunnable,
@@ -99,7 +99,7 @@
 
 ## Why
 
-"E2E passed" is a customer-grade promise: every one of these components
+"E2E passed" is a customer-grade promise: every one of these kinds
 can be deployed by a customer today, on either engine, with its
 behavioral guarantees — GitOps convergence, workflow durability,
 messaging durability, pipeline execution, runner reconciliation —

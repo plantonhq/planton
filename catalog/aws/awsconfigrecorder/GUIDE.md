@@ -1,4 +1,4 @@
-# AwsConfigRecorder — Component Guide
+# AwsConfigRecorder — Kind Guide
 
 Authored operational judgment for the Config recorder singleton: the
 design decisions behind the spec's shape, and what to know before
@@ -21,7 +21,7 @@ operating configuration recording in production.
   those rules so the manifest fails first.
 - **Aggregation split out.** The aggregator and its authorization
   reference NO recorder — aggregation works in an account with zero
-  recorders — so they are their own component, not arms here.
+  recorders — so they are their own kind, not arms here.
 
 ## Operating configuration recording in production
 

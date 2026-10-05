@@ -34,7 +34,7 @@ type AzureApplicationGateway struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureApplicationGatewaySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureApplicationGateway) GetKind() string {
 	return ""
 }
 
-func (x *AzureApplicationGateway) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureApplicationGateway) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureApplicationGateway) GetStatus() *AzureApplicationGatewayStatus {
 // AzureApplicationGatewayStatus holds the deployment status and outputs.
 type AzureApplicationGatewayStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureApplicationGatewayStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureApplicationGatewayOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureApplicationGatewayStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureapplicationgateway_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureApplicationGatewayStatus) GetOutputs() *AzureApplicationGatewayStackOutputs {
+func (x *AzureApplicationGatewayStatus) GetOutputs() *AzureApplicationGatewayOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azureapplicationgateway_v1alpha1_api_proto_rawDesc = ""
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17AzureApplicationGatewayR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
 	"\x04spec\x18\x04 \x01(\v2O.dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewaySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12i\n" +
-	"\x06status\x18\x05 \x01(\v2Q.dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStatusR\x06status\"\x92\x01\n" +
-	"\x1dAzureApplicationGatewayStatus\x12q\n" +
-	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStackOutputsR\aoutputsB\x9c\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Q.dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStatusR\x06status\"\x8d\x01\n" +
+	"\x1dAzureApplicationGatewayStatus\x12l\n" +
+	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayOutputsR\aoutputsB\x9c\x03\n" +
 	"6com.dev.planton.azure.azureapplicationgateway.v1alpha1B\bApiProtoP\x01Zkgithub.com/plantonhq/planton/catalog/azure/azureapplicationgateway/v1alpha1;azureapplicationgatewayv1alpha1\xa2\x02\x04DPAA\xaa\x022Dev.Planton.Azure.Azureapplicationgateway.V1alpha1\xca\x022Dev\\Planton\\Azure\\Azureapplicationgateway\\V1alpha1\xe2\x02>Dev\\Planton\\Azure\\Azureapplicationgateway\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Azure::Azureapplicationgateway::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azureapplicationgateway_v1alpha1_api_proto_rawDescGZIP()
 
 var file_catalog_azure_azureapplicationgateway_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureapplicationgateway_v1alpha1_api_proto_goTypes = []any{
-	(*AzureApplicationGateway)(nil),             // 0: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGateway
-	(*AzureApplicationGatewayStatus)(nil),       // 1: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureApplicationGatewaySpec)(nil),         // 3: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewaySpec
-	(*AzureApplicationGatewayStackOutputs)(nil), // 4: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStackOutputs
+	(*AzureApplicationGateway)(nil),        // 0: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGateway
+	(*AzureApplicationGatewayStatus)(nil),  // 1: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureApplicationGatewaySpec)(nil),    // 3: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewaySpec
+	(*AzureApplicationGatewayOutputs)(nil), // 4: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayOutputs
 }
 var file_catalog_azure_azureapplicationgateway_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGateway.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGateway.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGateway.spec:type_name -> dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewaySpec
 	1, // 2: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGateway.status:type_name -> dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStatus
-	4, // 3: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStatus.outputs:type_name -> dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStackOutputs
+	4, // 3: dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayStatus.outputs:type_name -> dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

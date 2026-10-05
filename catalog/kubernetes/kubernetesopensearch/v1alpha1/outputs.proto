@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesopensearch.v1alpha1;
 
-//kubernetes-open-search stack outputs
-message KubernetesOpenSearchStackOutputs {
+//kubernetes-open-search outputs
+message KubernetesOpenSearchOutputs {
   //namespace the cluster runs in.
   string namespace = 1;
 

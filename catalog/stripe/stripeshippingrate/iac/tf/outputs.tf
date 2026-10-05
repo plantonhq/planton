@@ -1,5 +1,5 @@
 # StripeShippingRate Outputs
-# Maps to the StripeShippingRateStackOutputs protobuf message.
+# Maps to the StripeShippingRateOutputs protobuf message.
 
 output "id" {
   description = "The shipping rate's Stripe id (shr_...); it changes when the rate is replaced"

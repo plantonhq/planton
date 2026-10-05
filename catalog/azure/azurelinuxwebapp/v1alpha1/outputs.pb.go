@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureLinuxWebAppStackOutputs** captures the outputs of provisioning an
+// **AzureLinuxWebAppOutputs** captures the outputs of provisioning an
 // Azure Linux Web App.
 //
 // The primary output is `web_app_id`, the ARM resource ID. The
@@ -40,7 +40,7 @@ const (
 // **Leaf resource**: Nothing references AzureLinuxWebApp outputs downstream.
 // These outputs are consumed by users, infra chart visibility, and external
 // DNS/domain configuration.
-type AzureLinuxWebAppStackOutputs struct {
+type AzureLinuxWebAppOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Web App.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Web/sites/{name}
@@ -98,20 +98,20 @@ type AzureLinuxWebAppStackOutputs struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *AzureLinuxWebAppStackOutputs) Reset() {
-	*x = AzureLinuxWebAppStackOutputs{}
+func (x *AzureLinuxWebAppOutputs) Reset() {
+	*x = AzureLinuxWebAppOutputs{}
 	mi := &file_catalog_azure_azurelinuxwebapp_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureLinuxWebAppStackOutputs) String() string {
+func (x *AzureLinuxWebAppOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureLinuxWebAppStackOutputs) ProtoMessage() {}
+func (*AzureLinuxWebAppOutputs) ProtoMessage() {}
 
-func (x *AzureLinuxWebAppStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureLinuxWebAppOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurelinuxwebapp_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -123,82 +123,82 @@ func (x *AzureLinuxWebAppStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureLinuxWebAppStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureLinuxWebAppStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureLinuxWebAppOutputs.ProtoReflect.Descriptor instead.
+func (*AzureLinuxWebAppOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurelinuxwebapp_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureLinuxWebAppStackOutputs) GetWebAppId() string {
+func (x *AzureLinuxWebAppOutputs) GetWebAppId() string {
 	if x != nil {
 		return x.WebAppId
 	}
 	return ""
 }
 
-func (x *AzureLinuxWebAppStackOutputs) GetDefaultHostname() string {
+func (x *AzureLinuxWebAppOutputs) GetDefaultHostname() string {
 	if x != nil {
 		return x.DefaultHostname
 	}
 	return ""
 }
 
-func (x *AzureLinuxWebAppStackOutputs) GetOutboundIpAddresses() []string {
+func (x *AzureLinuxWebAppOutputs) GetOutboundIpAddresses() []string {
 	if x != nil {
 		return x.OutboundIpAddresses
 	}
 	return nil
 }
 
-func (x *AzureLinuxWebAppStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureLinuxWebAppOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureLinuxWebAppStackOutputs) GetIdentityTenantId() string {
+func (x *AzureLinuxWebAppOutputs) GetIdentityTenantId() string {
 	if x != nil {
 		return x.IdentityTenantId
 	}
 	return ""
 }
 
-func (x *AzureLinuxWebAppStackOutputs) GetCustomDomainVerificationId() string {
+func (x *AzureLinuxWebAppOutputs) GetCustomDomainVerificationId() string {
 	if x != nil {
 		return x.CustomDomainVerificationId
 	}
 	return ""
 }
 
-func (x *AzureLinuxWebAppStackOutputs) GetKind() string {
+func (x *AzureLinuxWebAppOutputs) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AzureLinuxWebAppStackOutputs) GetPossibleOutboundIpAddresses() []string {
+func (x *AzureLinuxWebAppOutputs) GetPossibleOutboundIpAddresses() []string {
 	if x != nil {
 		return x.PossibleOutboundIpAddresses
 	}
 	return nil
 }
 
-func (x *AzureLinuxWebAppStackOutputs) GetHostingEnvironmentId() string {
+func (x *AzureLinuxWebAppOutputs) GetHostingEnvironmentId() string {
 	if x != nil {
 		return x.HostingEnvironmentId
 	}
 	return ""
 }
 
-func (x *AzureLinuxWebAppStackOutputs) GetSiteCredentialName() string {
+func (x *AzureLinuxWebAppOutputs) GetSiteCredentialName() string {
 	if x != nil {
 		return x.SiteCredentialName
 	}
 	return ""
 }
 
-func (x *AzureLinuxWebAppStackOutputs) GetSiteCredentialPassword() string {
+func (x *AzureLinuxWebAppOutputs) GetSiteCredentialPassword() string {
 	if x != nil {
 		return x.SiteCredentialPassword
 	}
@@ -209,8 +209,8 @@ var File_catalog_azure_azurelinuxwebapp_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_azure_azurelinuxwebapp_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/azure/azurelinuxwebapp/v1alpha1/outputs.proto\x12+dev.planton.azure.azurelinuxwebapp.v1alpha1\x1a\x1cshared/options/options.proto\"\xc1\x04\n" +
-	"\x1cAzureLinuxWebAppStackOutputs\x12\x1c\n" +
+	"5catalog/azure/azurelinuxwebapp/v1alpha1/outputs.proto\x12+dev.planton.azure.azurelinuxwebapp.v1alpha1\x1a\x1cshared/options/options.proto\"\xbc\x04\n" +
+	"\x17AzureLinuxWebAppOutputs\x12\x1c\n" +
 	"\n" +
 	"web_app_id\x18\x01 \x01(\tR\bwebAppId\x12)\n" +
 	"\x10default_hostname\x18\x02 \x01(\tR\x0fdefaultHostname\x122\n" +
@@ -240,7 +240,7 @@ func file_catalog_azure_azurelinuxwebapp_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_azure_azurelinuxwebapp_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurelinuxwebapp_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureLinuxWebAppStackOutputs)(nil), // 0: dev.planton.azure.azurelinuxwebapp.v1alpha1.AzureLinuxWebAppStackOutputs
+	(*AzureLinuxWebAppOutputs)(nil), // 0: dev.planton.azure.azurelinuxwebapp.v1alpha1.AzureLinuxWebAppOutputs
 }
 var file_catalog_azure_azurelinuxwebapp_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

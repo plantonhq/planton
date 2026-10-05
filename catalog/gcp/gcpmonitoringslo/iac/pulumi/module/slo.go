@@ -59,7 +59,7 @@ func slo(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) error {
 			}
 		}
 		// The service follows the kind's deletion contract: destroying the
-		// SLO kind destroys the service it created.
+		// SLO component destroys the service it created.
 		if spec.DeletionPolicy != "" {
 			customServiceArgs.DeletionPolicy = pulumi.String(spec.DeletionPolicy)
 		}

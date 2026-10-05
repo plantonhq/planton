@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesTelemetryStackOutputs captures observable outputs after the Telemetry
+// KubernetesTelemetryOutputs captures observable outputs after the Telemetry
 // resource is created on the target cluster. Telemetry has no controller-reconciled
 // status subresource that is useful to surface here (istiod programs the data plane),
 // so only the resource identity is exported.
-type KubernetesTelemetryStackOutputs struct {
+type KubernetesTelemetryOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created Telemetry resource (equals metadata.name).
 	TelemetryName string `protobuf:"bytes,1,opt,name=telemetry_name,json=telemetryName,proto3" json:"telemetry_name,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesTelemetryStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesTelemetryStackOutputs) Reset() {
-	*x = KubernetesTelemetryStackOutputs{}
+func (x *KubernetesTelemetryOutputs) Reset() {
+	*x = KubernetesTelemetryOutputs{}
 	mi := &file_catalog_kubernetes_kubernetestelemetry_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesTelemetryStackOutputs) String() string {
+func (x *KubernetesTelemetryOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesTelemetryStackOutputs) ProtoMessage() {}
+func (*KubernetesTelemetryOutputs) ProtoMessage() {}
 
-func (x *KubernetesTelemetryStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesTelemetryOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetestelemetry_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *KubernetesTelemetryStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesTelemetryStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesTelemetryStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesTelemetryOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesTelemetryOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetestelemetry_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesTelemetryStackOutputs) GetTelemetryName() string {
+func (x *KubernetesTelemetryOutputs) GetTelemetryName() string {
 	if x != nil {
 		return x.TelemetryName
 	}
 	return ""
 }
 
-func (x *KubernetesTelemetryStackOutputs) GetNamespace() string {
+func (x *KubernetesTelemetryOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -83,8 +83,8 @@ var File_catalog_kubernetes_kubernetestelemetry_v1alpha1_outputs_proto protorefl
 
 const file_catalog_kubernetes_kubernetestelemetry_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/kubernetes/kubernetestelemetry/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kubernetestelemetry.v1alpha1\"f\n" +
-	"\x1fKubernetesTelemetryStackOutputs\x12%\n" +
+	"=catalog/kubernetes/kubernetestelemetry/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kubernetestelemetry.v1alpha1\"a\n" +
+	"\x1aKubernetesTelemetryOutputs\x12%\n" +
 	"\x0etelemetry_name\x18\x01 \x01(\tR\rtelemetryName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\xa2\x03\n" +
 	"7com.dev.planton.kubernetes.kubernetestelemetry.v1alpha1B\fOutputsProtoP\x01Zhgithub.com/plantonhq/planton/catalog/kubernetes/kubernetestelemetry/v1alpha1;kubernetestelemetryv1alpha1\xa2\x02\x04DPKK\xaa\x023Dev.Planton.Kubernetes.Kubernetestelemetry.V1alpha1\xca\x023Dev\\Planton\\Kubernetes\\Kubernetestelemetry\\V1alpha1\xe2\x02?Dev\\Planton\\Kubernetes\\Kubernetestelemetry\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Kubernetes::Kubernetestelemetry::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_kubernetes_kubernetestelemetry_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetestelemetry_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetestelemetry_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesTelemetryStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryStackOutputs
+	(*KubernetesTelemetryOutputs)(nil), // 0: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryOutputs
 }
 var file_catalog_kubernetes_kubernetestelemetry_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

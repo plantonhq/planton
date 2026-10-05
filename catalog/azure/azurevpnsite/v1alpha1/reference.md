@@ -6,7 +6,7 @@
 
 **apiVersion**: `azure.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **AzureVpnSiteSpec** defines a VPN site -- the Virtual WAN world's
 DESCRIPTION of one branch location: its internet links (each with a

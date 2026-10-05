@@ -13,9 +13,11 @@ Use user-facing terms consistently across all documentation. These terms come fr
 
 | Use This | Not This | Notes |
 |----------|----------|-------|
-| Planton | Planton, Planton | Branding changed; all docs use "Planton" |
-| Cloud Resource | Lego Block, legoblock | "Lego Block" is internal UI naming only |
-| Deployment Component (catalog item) | Cloud Resource Kind | User browses a catalog of Deployment Components |
+| Infra Component | resource, component (alone) | One deployed instance of a catalog kind in one environment |
+| catalog kind | component (for a type), resource type | A type the Infra Catalog offers (AwsS3Bucket); users browse the catalog of kinds |
+| Infra Stack | project, deployment | One Infra Chart installed into one environment |
+| Infra Job | run, deploy job | The IaC work for one Infra Component |
+| provider resource | Infra Component (for what lives in the cloud account) | What a module creates in the cloud account; one Infra Component creates several |
 | connection | credential | Except when describing the credential object itself |
 | Secrets Manager | Config Manager | User-facing product name |
 | Infrastructure (section) | Infra Hub | Section names use user-oriented vocabulary |
@@ -28,10 +30,10 @@ Use user-facing terms consistently across all documentation. These terms come fr
 Internal identifiers do not belong in user-facing documentation prose unless the user directly writes or reads them.
 
 **Never use in prose:**
-- Message type names: `CloudResourceSpec`, `ServicePipelineConfiguration`, `InfraChartParam`
+- Message type names: `InfraComponentSpec`, `ServicePipelineConfiguration`, `InfraChartParam`
 - Field names in running text (acceptable inside YAML code blocks where users type them)
 - Enum value names: `DEPLOYMENT_TARGET_KUBERNETES`, `BUILD_METHOD_BUILDPACKS`
-- RPC method names: `CreateCloudResource`, `GetService`, `ListPipelines`
+- RPC method names: `CreateInfraComponent`, `GetService`, `ListPipelines`
 
 **Acceptable:**
 - `apiVersion` and `kind` in YAML manifests users author
@@ -39,7 +41,7 @@ Internal identifiers do not belong in user-facing documentation prose unless the
 - Values that appear in CLI output users read
 - YAML field names inside code blocks
 
-Translate internal identifiers into plain language: "deployment target" not `DeploymentTarget`, "cloud resource" not `CloudResource`.
+Translate internal identifiers into plain language: "deployment target" not `DeploymentTarget`, "Infra Component" not `InfraComponent`.
 
 ## Where the Full Strategy Lives
 

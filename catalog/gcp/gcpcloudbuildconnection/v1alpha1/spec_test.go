@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -20,12 +20,12 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: value}}
 }
 
-func reference(kind cloudresourcekind.CloudResourceKind, name string) *foreignkeyv1.StringValueOrRef {
+func reference(kind catalogkind.CatalogKind, name string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Kind: kind, Name: name}}}
 }
 
 func secret(name string) *foreignkeyv1.StringValueOrRef {
-	return reference(cloudresourcekind.CloudResourceKind_GcpSecretManagerSecret, name)
+	return reference(catalogkind.CatalogKind_GcpSecretManagerSecret, name)
 }
 
 func token(name string) *GcpCloudBuildConnectionUserTokenCredential {
@@ -45,7 +45,7 @@ var _ = ginkgo.Describe("GcpCloudBuildConnectionSpec", func() {
 		return &GcpCloudBuildConnection{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudBuildConnection",
-			Metadata:   &shared.CloudResourceMetadata{Name: "github"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "github"},
 			Spec:       &GcpCloudBuildConnectionSpec{Location: "us-central1"},
 		}
 	}
@@ -54,7 +54,7 @@ var _ = ginkgo.Describe("GcpCloudBuildConnectionSpec", func() {
 		gomega.Expect(validator.Validate(minimal())).To(gomega.Succeed())
 
 		github := minimal()
-		github.Spec.ProjectId = reference(cloudresourcekind.CloudResourceKind_GcpProject, "ci")
+		github.Spec.ProjectId = reference(catalogkind.CatalogKind_GcpProject, "ci")
 		github.Spec.ConnectionId = "acme-github"
 		github.Spec.Annotations = map[string]string{"owner": "platform"}
 		github.Spec.GithubConfig = &GcpCloudBuildConnectionGithubConfig{

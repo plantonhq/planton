@@ -31,7 +31,7 @@ type KubernetesGrafana struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesGrafanaSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesGrafana) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesGrafana) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesGrafana) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesGrafana) GetStatus() *KubernetesGrafanaStatus {
 // grafana-kubernetes status.
 type KubernetesGrafanaStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesGrafanaStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesGrafanaOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesGrafanaStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgrafana_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesGrafanaStatus) GetOutputs() *KubernetesGrafanaStackOutputs {
+func (x *KubernetesGrafanaStatus) GetOutputs() *KubernetesGrafanaOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesgrafana_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11KubernetesGrafanaR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12d\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12d\n" +
 	"\x04spec\x18\x04 \x01(\v2H.dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12b\n" +
-	"\x06status\x18\x05 \x01(\v2J.dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStatusR\x06status\"\x85\x01\n" +
-	"\x17KubernetesGrafanaStatus\x12j\n" +
-	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStackOutputsR\aoutputsB\x90\x03\n" +
+	"\x06status\x18\x05 \x01(\v2J.dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStatusR\x06status\"\x80\x01\n" +
+	"\x17KubernetesGrafanaStatus\x12e\n" +
+	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaOutputsR\aoutputsB\x90\x03\n" +
 	"5com.dev.planton.kubernetes.kubernetesgrafana.v1alpha1B\bApiProtoP\x01Zdgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesgrafana/v1alpha1;kubernetesgrafanav1alpha1\xa2\x02\x04DPKK\xaa\x021Dev.Planton.Kubernetes.Kubernetesgrafana.V1alpha1\xca\x021Dev\\Planton\\Kubernetes\\Kubernetesgrafana\\V1alpha1\xe2\x02=Dev\\Planton\\Kubernetes\\Kubernetesgrafana\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Kubernetes::Kubernetesgrafana::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesgrafana_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesGrafana)(nil),             // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafana
-	(*KubernetesGrafanaStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesGrafanaSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec
-	(*KubernetesGrafanaStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStackOutputs
+	(*KubernetesGrafana)(nil),            // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafana
+	(*KubernetesGrafanaStatus)(nil),      // 1: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesGrafanaSpec)(nil),        // 3: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec
+	(*KubernetesGrafanaOutputs)(nil),     // 4: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaOutputs
 }
 var file_catalog_kubernetes_kubernetesgrafana_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafana.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafana.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafana.spec:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaSpec
 	1, // 2: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafana.status:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStatus
-	4, // 3: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesgrafana.v1alpha1.KubernetesGrafanaOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

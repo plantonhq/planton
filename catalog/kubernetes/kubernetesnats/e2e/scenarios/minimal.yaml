@@ -1,4 +1,4 @@
-# The component defaults: a single server with JetStream persistence ON
+# The kind defaults: a single server with JetStream persistence ON
 # (the kind's posture — the chart's raw default is off), no auth, the
 # nats-box utility pod. The verifier proves MESSAGING on every lane: the
 # StatefulSet rolled out → a real nats.go client completes a pub/sub

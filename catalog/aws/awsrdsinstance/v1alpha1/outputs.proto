@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsrdsinstance.v1alpha1;
 
-// AwsRdsInstanceStackOutputs captures the observable identifiers and
+// AwsRdsInstanceOutputs captures the observable identifiers and
 // connection endpoint of the RDS DB instance after deployment.
-message AwsRdsInstanceStackOutputs {
+message AwsRdsInstanceOutputs {
   // The instance identifier (e.g. "orders-db").
   string instance_identifier = 1;
 

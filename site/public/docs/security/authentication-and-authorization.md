@@ -185,7 +185,7 @@ This means Planton does not store a flat list of "Alice can access Resource X." 
 The practical benefit is that you manage access at the right level of granularity and it propagates automatically:
 
 - Grant someone admin on the **organization** → they are admin on every environment and every resource within it
-- Grant someone viewer on an **environment** → they can view every cloud resource and service in that environment
+- Grant someone viewer on an **environment** → they can view every Infra Component and service in that environment
 - Grant a **team** admin on an environment → every member of that team (including members of nested sub-teams) inherits admin access
 
 You do not need to manually assign permissions to each individual resource. The authorization engine computes effective permissions by traversing the relationship graph.
@@ -199,11 +199,11 @@ graph TD
     Org[Organization] --> Env1[Environment: dev]
     Org --> Env2[Environment: staging]
     Org --> Env3[Environment: production]
-    Env1 --> CR1[Cloud Resources]
+    Env1 --> CR1[Infra Components]
     Env1 --> S1[Services]
-    Env2 --> CR2[Cloud Resources]
+    Env2 --> CR2[Infra Components]
     Env2 --> S2[Services]
-    Env3 --> CR3[Cloud Resources]
+    Env3 --> CR3[Infra Components]
     Env3 --> S3[Services]
 ```
 
@@ -211,10 +211,10 @@ Each level inherits permissions from its parent:
 
 | If you are... | Then you automatically have... |
 |---------------|-------------------------------|
-| Organization **admin** | Admin on all environments, all cloud resources, all services in the organization |
-| Organization **viewer** | Viewer on all environments, all cloud resources, all services |
-| Environment **admin** | Admin on all cloud resources and services in that environment |
-| Environment **viewer** | Viewer on all cloud resources and services in that environment |
+| Organization **admin** | Admin on all environments, all Infra Components, all services in the organization |
+| Organization **viewer** | Viewer on all environments, all Infra Components, all services |
+| Environment **admin** | Admin on all Infra Components and services in that environment |
+| Environment **viewer** | Viewer on all Infra Components and services in that environment |
 
 You can also grant permissions directly on individual resources when you need more granular control.
 

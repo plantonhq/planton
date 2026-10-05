@@ -452,7 +452,7 @@ message WorkloadPodAffinity {
 message WorkloadPodAffinityTerm {
   /**
    * Labels of the pods to match against — for self-anti-affinity, the workload's own
-   * selector labels (exported as the `selector_labels` stack output).
+   * selector labels (exported as the `selector_labels` output).
    */
   map<string, string> match_labels = 1 [(buf.validate.field).map.min_pairs = 1];
 

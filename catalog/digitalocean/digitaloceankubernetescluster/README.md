@@ -1,8 +1,8 @@
 # DigitalOcean Kubernetes Cluster
 
-Managed Kubernetes on DigitalOcean: one Planton component models the full `digitalocean_kubernetes_cluster` resource — version and region placement, the inline default node pool (labels, taints, tags, autoscaling, GPU partitioning), a highly available control plane, surge and automatic upgrades, maintenance policy, control-plane firewall, pod/service/worker subnets, isolated workers, SSO, cluster-autoscaler tuning, container-registry integration, kubeconfig expiry, destroy-time cleanup, and every managed addon toggle.
+Managed Kubernetes on DigitalOcean: one catalog kind models the full `digitalocean_kubernetes_cluster` resource — version and region placement, the inline default node pool (labels, taints, tags, autoscaling, GPU partitioning), a highly available control plane, surge and automatic upgrades, maintenance policy, control-plane firewall, pod/service/worker subnets, isolated workers, SSO, cluster-autoscaler tuning, container-registry integration, kubeconfig expiry, destroy-time cleanup, and every managed addon toggle.
 
-## What this component models
+## What this kind models
 
 The spec maps one-to-one onto DigitalOcean's managed Kubernetes cluster:
 
@@ -87,7 +87,7 @@ Both provisioners export the identical output set:
 
 ## Behavior worth knowing
 
-- **`kubernetesVersion` is the creation pin.** Both provisioners deliberately ignore later drift on it: DigitalOcean's auto-upgrade moves the live version forward, and the provider destroys and recreates the whole cluster when the configured version is lower than the live one. Patch upgrades ride `autoUpgrade`; this component does not drive in-place upgrades through a spec edit.
+- **`kubernetesVersion` is the creation pin.** Both provisioners deliberately ignore later drift on it: DigitalOcean's auto-upgrade moves the live version forward, and the provider destroys and recreates the whole cluster when the configured version is lower than the live one. Patch upgrades ride `autoUpgrade`; this kind does not drive in-place upgrades through a spec edit.
 - **The default pool's `size` replaces the entire cluster.** So does `gpuPartitionMode`. Size the inline pool deliberately and grow with separate `DigitalOceanKubernetesNodePool` resources.
 - **HA is one-way.** Once `highlyAvailable` is true, it cannot be turned back off.
 - **`destroyAllAssociatedResources` is dangerous.** On destroy it also deletes the load balancers, volumes, and volume snapshots the cluster created. It never affects the running cluster.

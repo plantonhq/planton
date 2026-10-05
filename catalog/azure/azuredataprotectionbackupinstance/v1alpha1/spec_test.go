@@ -40,7 +40,7 @@ func validResource() *AzureDataProtectionBackupInstance {
 	return &AzureDataProtectionBackupInstance{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureDataProtectionBackupInstance",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-backup-instance",
 		},
 		Spec: &AzureDataProtectionBackupInstanceSpec{

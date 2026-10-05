@@ -28,7 +28,7 @@ func validTunnel() *CloudflareZeroTrustTunnel {
 	return &CloudflareZeroTrustTunnel{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustTunnel",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-tunnel"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-tunnel"},
 		Spec: &CloudflareZeroTrustTunnelSpec{
 			AccountId: validAccountID,
 			Name:      "prod-tunnel",

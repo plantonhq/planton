@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsOrganizationStackOutputs captures the observable state of the
+// AwsOrganizationOutputs captures the observable state of the
 // organization after apply.
-type AwsOrganizationStackOutputs struct {
+type AwsOrganizationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The organization's AWS-generated ID ("o-..." - also the
 	// provider's import ID).
@@ -48,20 +48,20 @@ type AwsOrganizationStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AwsOrganizationStackOutputs) Reset() {
-	*x = AwsOrganizationStackOutputs{}
+func (x *AwsOrganizationOutputs) Reset() {
+	*x = AwsOrganizationOutputs{}
 	mi := &file_catalog_aws_awsorganization_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsOrganizationStackOutputs) String() string {
+func (x *AwsOrganizationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsOrganizationStackOutputs) ProtoMessage() {}
+func (*AwsOrganizationOutputs) ProtoMessage() {}
 
-func (x *AwsOrganizationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsOrganizationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsorganization_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -73,54 +73,54 @@ func (x *AwsOrganizationStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsOrganizationStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsOrganizationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsOrganizationOutputs.ProtoReflect.Descriptor instead.
+func (*AwsOrganizationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsorganization_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsOrganizationStackOutputs) GetOrganizationId() string {
+func (x *AwsOrganizationOutputs) GetOrganizationId() string {
 	if x != nil {
 		return x.OrganizationId
 	}
 	return ""
 }
 
-func (x *AwsOrganizationStackOutputs) GetArn() string {
+func (x *AwsOrganizationOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsOrganizationStackOutputs) GetManagementAccountId() string {
+func (x *AwsOrganizationOutputs) GetManagementAccountId() string {
 	if x != nil {
 		return x.ManagementAccountId
 	}
 	return ""
 }
 
-func (x *AwsOrganizationStackOutputs) GetManagementAccountArn() string {
+func (x *AwsOrganizationOutputs) GetManagementAccountArn() string {
 	if x != nil {
 		return x.ManagementAccountArn
 	}
 	return ""
 }
 
-func (x *AwsOrganizationStackOutputs) GetManagementAccountEmail() string {
+func (x *AwsOrganizationOutputs) GetManagementAccountEmail() string {
 	if x != nil {
 		return x.ManagementAccountEmail
 	}
 	return ""
 }
 
-func (x *AwsOrganizationStackOutputs) GetRootId() string {
+func (x *AwsOrganizationOutputs) GetRootId() string {
 	if x != nil {
 		return x.RootId
 	}
 	return ""
 }
 
-func (x *AwsOrganizationStackOutputs) GetResourcePolicyId() string {
+func (x *AwsOrganizationOutputs) GetResourcePolicyId() string {
 	if x != nil {
 		return x.ResourcePolicyId
 	}
@@ -131,8 +131,8 @@ var File_catalog_aws_awsorganization_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_aws_awsorganization_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awsorganization/v1alpha1/outputs.proto\x12(dev.planton.aws.awsorganization.v1alpha1\"\xc3\x02\n" +
-	"\x1bAwsOrganizationStackOutputs\x12'\n" +
+	"2catalog/aws/awsorganization/v1alpha1/outputs.proto\x12(dev.planton.aws.awsorganization.v1alpha1\"\xbe\x02\n" +
+	"\x16AwsOrganizationOutputs\x12'\n" +
 	"\x0forganization_id\x18\x01 \x01(\tR\x0eorganizationId\x12\x10\n" +
 	"\x03arn\x18\x02 \x01(\tR\x03arn\x122\n" +
 	"\x15management_account_id\x18\x03 \x01(\tR\x13managementAccountId\x124\n" +
@@ -156,7 +156,7 @@ func file_catalog_aws_awsorganization_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awsorganization_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsorganization_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsOrganizationStackOutputs)(nil), // 0: dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationStackOutputs
+	(*AwsOrganizationOutputs)(nil), // 0: dev.planton.aws.awsorganization.v1alpha1.AwsOrganizationOutputs
 }
 var file_catalog_aws_awsorganization_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

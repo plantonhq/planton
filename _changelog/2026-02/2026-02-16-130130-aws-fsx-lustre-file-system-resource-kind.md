@@ -6,30 +6,30 @@
 
 ## Summary
 
-Added `AwsFsxLustreFileSystem` as a new cloud resource kind in Planton, providing declarative management of Amazon FSx for Lustre file systems — high-performance storage optimized for HPC, ML training, and batch processing workloads. This is the first of a planned family of FSx components, following a key design decision to model each FSx type as a separate resource kind.
+Added `AwsFsxLustreFileSystem` as a new catalog kind in Planton, providing declarative management of Amazon FSx for Lustre file systems — high-performance storage optimized for HPC, ML training, and batch processing workloads. This is the first of a planned family of FSx kinds, following a key design decision to model each FSx type as a separate resource kind.
 
 ## Problem Statement / Motivation
 
-FSx for Lustre is a critical AWS service for compute-intensive workloads, but it was missing from Planton's resource catalog. The original plan treated all FSx types (Lustre, Windows, OpenZFS, ONTAP) as a single component, which would have produced a confusing, unmaintainable abstraction.
+FSx for Lustre is a critical AWS service for compute-intensive workloads, but it was missing from Planton's resource catalog. The original plan treated all FSx types (Lustre, Windows, OpenZFS, ONTAP) as a single kind, which would have produced a confusing, unmaintainable abstraction.
 
 ### Pain Points
 
 - No declarative way to provision Lustre file systems through Planton
-- The original single-component design would have created a massive spec where ~80% of fields are irrelevant for any given FSx type
+- The original single-kind design would have created a massive spec where ~80% of fields are irrelevant for any given FSx type
 - Each FSx type is a fundamentally different Terraform resource with distinct schemas, sub-resources, and use cases
 
 ## Solution / What's New
 
-### Design Decision: Split FSx Into Separate Components
+### Design Decision: Split FSx Into Separate Kinds
 
 Deep research into the Terraform provider revealed that AWS FSx is a family of four completely separate services. Following the same pattern used for ElastiCache (Redis/Memcached/Serverless), FSx was split into separate resource kinds:
 
-- `AwsFsxLustreFileSystem` (enum 291) — this component
+- `AwsFsxLustreFileSystem` (enum 291) — this kind
 - `AwsFsxOpenzfsFileSystem` (enum 292) — planned
 - `AwsFsxWindowsFileSystem` (enum 293) — planned
 - `AwsFsxOntapFileSystem` (enum 294) — planned
 
-### Component Architecture
+### Kind Architecture
 
 ```mermaid
 flowchart TB
@@ -38,7 +38,7 @@ flowchart TB
     Spec --> Terraform[Terraform Module]
     Pulumi --> FSx[aws_fsx_lustre_file_system]
     Terraform --> FSx
-    FSx --> Outputs[Stack Outputs]
+    FSx --> Outputs[Outputs]
     Outputs --> DNS[dns_name]
     Outputs --> Mount[mount_name]
     Outputs --> FSID[file_system_id]
@@ -50,9 +50,9 @@ flowchart TB
 ### Proto API (4 files)
 
 - **spec.proto**: 18 fields covering deployment type, storage, networking, encryption, S3 integration, logging, backups, maintenance, and metadata configuration. Includes 9 CEL cross-field validations (e.g., HDD requires PERSISTENT_1, metadata_configuration requires PERSISTENT_2).
-- **stack_outputs.proto**: 8 outputs (file_system_id, arn, dns_name, mount_name, network_interface_ids, vpc_id, file_system_type_version, owner_id).
+- **outputs.proto**: 8 outputs (file_system_id, arn, dns_name, mount_name, network_interface_ids, vpc_id, file_system_type_version, owner_id).
 - **api.proto**: KRM envelope wiring.
-- **stack_input.proto**: IaC module input (target + provider config).
+- **iac_input.proto**: IaC module input (target + provider config).
 
 ### IaC Modules
 
@@ -83,14 +83,14 @@ flowchart TB
 - Declarative provisioning of Lustre file systems through Planton CLI
 - Clean separation of FSx types prevents spec pollution and confusion
 - Rich cross-field validations catch misconfigurations before deployment
-- StringValueOrRef integration enables infra chart wiring (VPC, SG, KMS, CloudWatch)
+- StringValueOrRef integration enables Infra Chart wiring (VPC, SG, KMS, CloudWatch)
 - Three presets cover the most common Lustre deployment patterns
 
 ## Impact
 
 - **Users**: Can now deploy FSx Lustre via `planton pulumi up --manifest lustre.yaml`
-- **Platform**: FSx family expansion path is clear (5 more components planned)
-- **Infra Charts**: Enables ML notebook and HPC cluster infra charts with Lustre backing storage
+- **Platform**: FSx family expansion path is clear (5 more kinds planned)
+- **Infra Charts**: Enables ML notebook and HPC cluster Infra Charts with Lustre backing storage
 
 ## Related Work
 

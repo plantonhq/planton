@@ -35,10 +35,10 @@ type AzureDataProtectionBackupPolicy struct {
 	// Resource kind. Must be "AzureDataProtectionBackupPolicy".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Data Protection backup policy specification.
 	Spec *AzureDataProtectionBackupPolicySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureDataProtectionBackupPolicyStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -88,7 +88,7 @@ func (x *AzureDataProtectionBackupPolicy) GetKind() string {
 	return ""
 }
 
-func (x *AzureDataProtectionBackupPolicy) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureDataProtectionBackupPolicy) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureDataProtectionBackupPolicy) GetStatus() *AzureDataProtectionBackup
 // AzureDataProtectionBackupPolicyStatus holds the deployment outputs.
 type AzureDataProtectionBackupPolicyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureDataProtectionBackupPolicyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureDataProtectionBackupPolicyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureDataProtectionBackupPolicyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureDataProtectionBackupPolicyStatus) GetOutputs() *AzureDataProtectionBackupPolicyStackOutputs {
+func (x *AzureDataProtectionBackupPolicyStatus) GetOutputs() *AzureDataProtectionBackupPolicyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_api_proto_rawD
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
 	"\x1fAzureDataProtectionBackupPolicyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
 	"\x04spec\x18\x04 \x01(\v2_.dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12y\n" +
-	"\x06status\x18\x05 \x01(\v2a.dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyStatusR\x06status\"\xab\x01\n" +
-	"%AzureDataProtectionBackupPolicyStatus\x12\x81\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2g.dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyStackOutputsR\aoutputsB\xd4\x03\n" +
+	"\x06status\x18\x05 \x01(\v2a.dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyStatusR\x06status\"\xa5\x01\n" +
+	"%AzureDataProtectionBackupPolicyStatus\x12|\n" +
+	"\aoutputs\x18\x01 \x01(\v2b.dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyOutputsR\aoutputsB\xd4\x03\n" +
 	">com.dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1B\bApiProtoP\x01Z{github.com/plantonhq/planton/catalog/azure/azuredataprotectionbackuppolicy/v1alpha1;azuredataprotectionbackuppolicyv1alpha1\xa2\x02\x04DPAA\xaa\x02:Dev.Planton.Azure.Azuredataprotectionbackuppolicy.V1alpha1\xca\x02:Dev\\Planton\\Azure\\Azuredataprotectionbackuppolicy\\V1alpha1\xe2\x02FDev\\Planton\\Azure\\Azuredataprotectionbackuppolicy\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Azure::Azuredataprotectionbackuppolicy::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_api_proto_rawDe
 
 var file_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_api_proto_goTypes = []any{
-	(*AzureDataProtectionBackupPolicy)(nil),             // 0: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicy
-	(*AzureDataProtectionBackupPolicyStatus)(nil),       // 1: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyStatus
-	(*shared.CloudResourceMetadata)(nil),                // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureDataProtectionBackupPolicySpec)(nil),         // 3: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicySpec
-	(*AzureDataProtectionBackupPolicyStackOutputs)(nil), // 4: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyStackOutputs
+	(*AzureDataProtectionBackupPolicy)(nil),        // 0: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicy
+	(*AzureDataProtectionBackupPolicyStatus)(nil),  // 1: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyStatus
+	(*shared.CatalogObjectMetadata)(nil),           // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureDataProtectionBackupPolicySpec)(nil),    // 3: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicySpec
+	(*AzureDataProtectionBackupPolicyOutputs)(nil), // 4: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyOutputs
 }
 var file_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicy.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicy.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicy.spec:type_name -> dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicySpec
 	1, // 2: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicy.status:type_name -> dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyStatus
-	4, // 3: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyStatus.outputs:type_name -> dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyStackOutputs
+	4, // 3: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyStatus.outputs:type_name -> dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

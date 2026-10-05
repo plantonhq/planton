@@ -1,7 +1,7 @@
 # AzureStorageLocalUser - Terraform Module
 
-Terraform implementation for the AzureStorageLocalUser deployment
-component.
+Terraform implementation for the AzureStorageLocalUser
+kind.
 
 ## Resources Created
 

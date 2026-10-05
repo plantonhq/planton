@@ -27,7 +27,7 @@ This preset creates a Cloud Router with a NAT gateway that covers all subnets in
 - **02-static-ip-allowlisting** — stable egress IPs for partner allowlisting or compliance
 - **03-private-nat** — NAT between VPC networks (Network Connectivity Center spokes)
 
-## Related Components
+## Related Kinds
 
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — the network the router attaches to
 - [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — scope NAT to specific subnetworks when needed

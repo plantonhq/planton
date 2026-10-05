@@ -8,11 +8,11 @@ import (
 	openfgastorev1 "github.com/plantonhq/planton/catalog/openfga/openfgastore/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/provisionerannotationkeys"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 func openFgaStore(provisionerLabel string) *openfgastorev1.OpenFgaStore {
-	m := &openfgastorev1.OpenFgaStore{Kind: "OpenFgaStore", Metadata: &shared.CloudResourceMetadata{Name: "store"}}
+	m := &openfgastorev1.OpenFgaStore{Kind: "OpenFgaStore", Metadata: &shared.CatalogObjectMetadata{Name: "store"}}
 	if provisionerLabel != "" {
 		m.Metadata.Annotations = map[string]string{provisionerannotationkeys.ProvisionerAnnotationKey: provisionerLabel}
 	}
@@ -20,7 +20,7 @@ func openFgaStore(provisionerLabel string) *openfgastorev1.OpenFgaStore {
 }
 
 func TestRequire_RefusesAnEngineTheKindDoesNotRunOn(t *testing.T) {
-	err := Require(cloudresourcekind.CloudResourceKind_OpenFgaStore, ProvisionerTypePulumi)
+	err := Require(catalogkind.CatalogKind_OpenFgaStore, ProvisionerTypePulumi)
 	if err == nil {
 		t.Fatal("Pulumi on an OpenTofu-and-Terraform kind must be refused")
 	}
@@ -29,7 +29,7 @@ func TestRequire_RefusesAnEngineTheKindDoesNotRunOn(t *testing.T) {
 		t.Errorf("refusal reads\n  %s\nwant\n  %s", err, want)
 	}
 	for _, p := range []ProvisionerType{ProvisionerTypeTofu, ProvisionerTypeTerraform} {
-		if err := Require(cloudresourcekind.CloudResourceKind_OpenFgaStore, p); err != nil {
+		if err := Require(catalogkind.CatalogKind_OpenFgaStore, p); err != nil {
 			t.Errorf("%s is declared and must pass: %v", p, err)
 		}
 	}
@@ -37,7 +37,7 @@ func TestRequire_RefusesAnEngineTheKindDoesNotRunOn(t *testing.T) {
 
 func TestRequire_AnUndeclaredKindRunsOnEveryEngine(t *testing.T) {
 	for _, p := range everyEngine {
-		if err := Require(cloudresourcekind.CloudResourceKind_AwsS3Bucket, p); err != nil {
+		if err := Require(catalogkind.CatalogKind_AwsS3Bucket, p); err != nil {
 			t.Errorf("%s: %v", p, err)
 		}
 	}
@@ -70,7 +70,7 @@ func TestForManifest_UnlabeledManifestAsksAmongTheKindsEngines(t *testing.T) {
 		t.Errorf("the prompt offers the declared engines in order, got %v", allowed)
 	}
 
-	s3 := &awss3bucketv1.AwsS3Bucket{Kind: "AwsS3Bucket", Metadata: &shared.CloudResourceMetadata{Name: "b"}}
+	s3 := &awss3bucketv1.AwsS3Bucket{Kind: "AwsS3Bucket", Metadata: &shared.CatalogObjectMetadata{Name: "b"}}
 	if got, _ := ForManifest(s3); got != ProvisionerTypeUnspecified {
 		t.Errorf("an undeclared kind still asks, got %v", got)
 	}

@@ -13,9 +13,9 @@ import (
 // Resources is the entry-point expected by the Planton CLI.
 func Resources(
 	ctx *pulumi.Context,
-	stackInput *cloudflareworkerv1alpha1.CloudflareWorkerStackInput,
+	iacInput *cloudflareworkerv1alpha1.CloudflareWorkerIacInput,
 ) error {
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	cloudflareProvider, err := pulumicloudflareprovider.Get(ctx, locals.CloudflareProviderConfig)
 	if err != nil {

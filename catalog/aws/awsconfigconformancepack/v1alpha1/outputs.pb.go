@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsConfigConformancePackStackOutputs captures the observable state
+// AwsConfigConformancePackOutputs captures the observable state
 // of the conformance pack after apply.
-type AwsConfigConformancePackStackOutputs struct {
+type AwsConfigConformancePackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The pack's name (also the provider's import ID, at either scope).
 	PackName string `protobuf:"bytes,1,opt,name=pack_name,json=packName,proto3" json:"pack_name,omitempty"`
@@ -39,20 +39,20 @@ type AwsConfigConformancePackStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsConfigConformancePackStackOutputs) Reset() {
-	*x = AwsConfigConformancePackStackOutputs{}
+func (x *AwsConfigConformancePackOutputs) Reset() {
+	*x = AwsConfigConformancePackOutputs{}
 	mi := &file_catalog_aws_awsconfigconformancepack_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsConfigConformancePackStackOutputs) String() string {
+func (x *AwsConfigConformancePackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsConfigConformancePackStackOutputs) ProtoMessage() {}
+func (*AwsConfigConformancePackOutputs) ProtoMessage() {}
 
-func (x *AwsConfigConformancePackStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsConfigConformancePackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsconfigconformancepack_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *AwsConfigConformancePackStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsConfigConformancePackStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsConfigConformancePackStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsConfigConformancePackOutputs.ProtoReflect.Descriptor instead.
+func (*AwsConfigConformancePackOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsconfigconformancepack_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsConfigConformancePackStackOutputs) GetPackName() string {
+func (x *AwsConfigConformancePackOutputs) GetPackName() string {
 	if x != nil {
 		return x.PackName
 	}
 	return ""
 }
 
-func (x *AwsConfigConformancePackStackOutputs) GetPackArn() string {
+func (x *AwsConfigConformancePackOutputs) GetPackArn() string {
 	if x != nil {
 		return x.PackArn
 	}
 	return ""
 }
 
-func (x *AwsConfigConformancePackStackOutputs) GetRegion() string {
+func (x *AwsConfigConformancePackOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -94,8 +94,8 @@ var File_catalog_aws_awsconfigconformancepack_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_aws_awsconfigconformancepack_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awsconfigconformancepack/v1alpha1/outputs.proto\x121dev.planton.aws.awsconfigconformancepack.v1alpha1\"v\n" +
-	"$AwsConfigConformancePackStackOutputs\x12\x1b\n" +
+	";catalog/aws/awsconfigconformancepack/v1alpha1/outputs.proto\x121dev.planton.aws.awsconfigconformancepack.v1alpha1\"q\n" +
+	"\x1fAwsConfigConformancePackOutputs\x12\x1b\n" +
 	"\tpack_name\x18\x01 \x01(\tR\bpackName\x12\x19\n" +
 	"\bpack_arn\x18\x02 \x01(\tR\apackArn\x12\x16\n" +
 	"\x06region\x18\x03 \x01(\tR\x06regionB\x9b\x03\n" +
@@ -115,7 +115,7 @@ func file_catalog_aws_awsconfigconformancepack_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_aws_awsconfigconformancepack_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsconfigconformancepack_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsConfigConformancePackStackOutputs)(nil), // 0: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackStackOutputs
+	(*AwsConfigConformancePackOutputs)(nil), // 0: dev.planton.aws.awsconfigconformancepack.v1alpha1.AwsConfigConformancePackOutputs
 }
 var file_catalog_aws_awsconfigconformancepack_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

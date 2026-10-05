@@ -10,7 +10,7 @@ import (
 // kubernetesClusterVerifier verifies a DigitalOceanKubernetesCluster via
 // GET /v2/kubernetes/clusters/{id}. Beyond existence, it asserts the live
 // cluster is running and checks every identity and wiring value the module
-// CLAIMS in its stack outputs -- the API endpoint, the URN, the public IPv4,
+// CLAIMS in its outputs -- the API endpoint, the URN, the public IPv4,
 // the default pool's id, and the pod and service subnets -- against the
 // live cluster. Outputs are contractually identical across both engines, so
 // one assertion protects both, and an absent output simply means "not
@@ -35,7 +35,7 @@ func (*kubernetesClusterVerifier) VerifyAbsent(ctx context.Context, client *godo
 		}
 		return pkgerrors.Wrapf(err, "digitaloceankubernetescluster verify-absent failed for %q", id)
 	}
-	return &StillExistsError{Component: "digitaloceankubernetescluster", ID: id}
+	return &StillExistsError{Kind: "digitaloceankubernetescluster", ID: id}
 }
 
 func (v *kubernetesClusterVerifier) VerifyExistsFromOutputs(ctx context.Context, client *godo.Client, outputs map[string]interface{}) error {
@@ -111,7 +111,7 @@ func getKubernetesCluster(ctx context.Context, client *godo.Client, id string) (
 
 // kubernetesNodePoolVerifier verifies a DigitalOceanKubernetesNodePool. The
 // API addresses node pools as /v2/kubernetes/clusters/{cluster_id}/node_pools/{id},
-// and the kind's stack outputs carry BOTH ids, so the outputs form addresses
+// and the kind's outputs carry BOTH ids, so the outputs form addresses
 // the pool directly -- one GET validates both claimed outputs against live
 // state at once, and the same GET carries the pool's live health: every
 // node must be running and the pool must have at least one. Health is
@@ -143,7 +143,7 @@ func (*kubernetesNodePoolVerifier) VerifyAbsent(ctx context.Context, client *god
 		return pkgerrors.Wrapf(err, "digitaloceankubernetesnodepool verify-absent failed for %q", id)
 	}
 	if exists {
-		return &StillExistsError{Component: "digitaloceankubernetesnodepool", ID: id}
+		return &StillExistsError{Kind: "digitaloceankubernetesnodepool", ID: id}
 	}
 	return nil
 }
@@ -210,7 +210,7 @@ func (v *kubernetesNodePoolVerifier) VerifyAbsentFromOutputs(ctx context.Context
 		}
 		return pkgerrors.Wrapf(err, "digitaloceankubernetesnodepool verify-absent failed for %q", poolID)
 	}
-	return &StillExistsError{Component: "digitaloceankubernetesnodepool", ID: poolID}
+	return &StillExistsError{Kind: "digitaloceankubernetesnodepool", ID: poolID}
 }
 
 func kubernetesNodePoolExists(ctx context.Context, client *godo.Client, poolID string) (bool, error) {

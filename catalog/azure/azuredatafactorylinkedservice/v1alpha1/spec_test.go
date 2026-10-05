@@ -44,7 +44,7 @@ func validResource() *AzureDataFactoryLinkedService {
 	return &AzureDataFactoryLinkedService{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureDataFactoryLinkedService",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-adf-linked-service",
 		},
 		Spec: &AzureDataFactoryLinkedServiceSpec{

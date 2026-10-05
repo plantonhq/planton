@@ -44,7 +44,7 @@ spec:
 | `minSize` | int | No (default 1) | Warm floor kept provisioned at all times (memory-only billing while idle). |
 | `setAsAccountDefault` | bool | No (default false) | Claim this configuration as the account/region default for App Runner services created WITHOUT an explicit configuration. One default per account/region; claiming displaces the previous holder; only future services are affected; one-way at AWS (destroy never restores the previous default). |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

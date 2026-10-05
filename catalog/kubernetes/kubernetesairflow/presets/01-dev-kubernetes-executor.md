@@ -5,7 +5,7 @@ DAG processor and triggerer against a composed KubernetesPostgres named
 `airflow-db` in the same Kubernetes namespace, running tasks with the
 KubernetesExecutor — every task is its own ephemeral pod, so there is
 no broker to operate and no idle worker fleet. Log in over the
-port-forward command in the stack outputs with the admin user
+port-forward command in the outputs with the admin user
 (password in the `dev-airflow-admin-auth` Secret).
 
 The database references do all the wiring: the host resolves to the

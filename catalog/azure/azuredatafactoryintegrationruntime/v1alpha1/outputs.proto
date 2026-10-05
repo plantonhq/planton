@@ -4,10 +4,10 @@ package dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureDataFactoryIntegrationRuntimeStackOutputs** captures the
+// **AzureDataFactoryIntegrationRuntimeOutputs** captures the
 // outputs from provisioning an Azure Data Factory integration
 // runtime.
-message AzureDataFactoryIntegrationRuntimeStackOutputs {
+message AzureDataFactoryIntegrationRuntimeOutputs {
   // The integration runtime's Azure Resource Manager ID
   // ({factory_id}/integrationRuntimes/{name}) -- the same ID shape
   // for all three flavors.

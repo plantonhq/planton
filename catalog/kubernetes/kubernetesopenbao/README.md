@@ -7,7 +7,7 @@ Foundation-governed secrets manager (MPL-2.0 fork of Vault): secret
 storage, dynamic secrets, encryption as a service — from the official
 `openbao` chart (0.28.x = server 2.6.x).
 
-Not the right component when:
+Not the right kind when:
 
 - **A managed service already covers you** — the platform's managed
   cloud KMS and secret-manager kinds exist for teams that want keys
@@ -21,7 +21,7 @@ Not the right component when:
 The fact everything else follows from: a fresh server starts
 UNINITIALIZED and SEALED. `bao operator init` (which generates the
 unseal key shares and the root token) and unsealing are RUNTIME API
-operations no deployment tool performs — this component deliberately
+operations no deployment tool performs — this kind deliberately
 does not try. Until then the pod reports NotReady BY DESIGN (the
 readiness probe is `bao status`, non-zero for sealed servers); the
 chart keeps sealed pods addressable through its Services, so

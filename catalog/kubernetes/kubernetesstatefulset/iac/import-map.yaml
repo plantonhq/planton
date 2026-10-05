@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesstatefulset
 spec:
@@ -11,32 +11,32 @@ spec:
   values:
     - name: stateful_set_name
       derivations:
-        - from_stack_output: stateful_set_name
+        - from_output: stateful_set_name
         - from_metadata_name: true
       where_to_find: >-
         `kubectl get statefulsets -A` (NAME column).
     - name: stateful_set_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `kubectl get statefulsets -A` (NAMESPACE column).
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the workload's namespace.
     - name: service_name
       derivations:
-        - from_stack_output: service
+        - from_output: service
         - from_metadata_name: true
       where_to_find: >-
         `kubectl get services -n <namespace>` — the governing Service shares
         the workload's name.
     - name: service_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the workload.
@@ -48,7 +48,7 @@ spec:
         present when the disruption budget is enabled.
     - name: pdb_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the workload.
@@ -61,7 +61,7 @@ spec:
         literal secret env values.
     - name: secret_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the workload.

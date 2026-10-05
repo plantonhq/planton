@@ -104,16 +104,16 @@ message GcpCloudSqlSpec {
 message GcpCloudSql {
   string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1'];
   string kind = 2 [(buf.validate.field).string.const = 'GcpCloudSql'];
-  dev.planton.shared.CloudResourceMetadata metadata = 3;
+  dev.planton.shared.CatalogObjectMetadata metadata = 3;
   GcpCloudSqlSpec spec = 4;
   GcpCloudSqlStatus status = 5;
 }
 ```
 
-**File**: `apis/project/planton/provider/gcp/gcpcloudsql/v1/stack_outputs.proto`
+**File**: `apis/project/planton/provider/gcp/gcpcloudsql/v1/outputs.proto`
 
 ```protobuf
-message GcpCloudSqlStackOutputs {
+message GcpCloudSqlOutputs {
   string instance_name = 1;
   string connection_name = 2;
   string private_ip = 3;
@@ -380,7 +380,7 @@ After successful deployment, the CLI exports:
 
 ```bash
 # Get connection information
-planton stack-outputs --manifest postgres-production.yaml
+planton outputs --manifest postgres-production.yaml
 
 # Outputs:
 # instance_name: postgres-production
@@ -395,8 +395,8 @@ planton stack-outputs --manifest postgres-production.yaml
 **Proto Files Created**: 4
 - `api.proto` (33 lines)
 - `spec.proto` (153 lines)
-- `stack_input.proto` (14 lines)
-- `stack_outputs.proto` (23 lines)
+- `iac_input.proto` (14 lines)
+- `outputs.proto` (23 lines)
 
 **Pulumi Module**: 5 Go files
 - `main.go` (55 lines)
@@ -464,7 +464,7 @@ Used map for maximum flexibility:
 ### User Impact
 
 - **New Capability**: GCP users can now deploy Cloud SQL instances via Planton
-- **Consistent Experience**: Same YAML-based workflow as other cloud resources
+- **Consistent Experience**: Same YAML-based workflow as other catalog kinds
 - **Faster Provisioning**: 5-10 minutes for basic instance vs 20-30 minutes manual setup
 - **Fewer Errors**: Validation catches 90%+ of common configuration mistakes
 
@@ -497,14 +497,14 @@ Used map for maximum flexibility:
 - 🔲 Validate authorized networks restrictions
 - 🔲 Verify database flags applied correctly
 - 🔲 Test Terraform module deployment
-- 🔲 Verify stack outputs accuracy
+- 🔲 Verify outputs accuracy
 
 ## Related Work
 
 **Builds On**:
 - GCP Provider Framework (`pkg/iac/pulumi/pulumimodule/provider/gcp/`)
-- Cloud Resource Metadata patterns (`project/planton/shared/metadata.proto`)
-- Stack input/output conventions
+- Catalog Object Metadata patterns (`project/planton/shared/metadata.proto`)
+- IaC input/output conventions
 
 **Similar Resources**:
 - `GcpGkeCluster`: GKE cluster management on GCP

@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureContainerAppEnvironmentStackOutputs** captures the outputs of
+// **AzureContainerAppEnvironmentOutputs** captures the outputs of
 // provisioning an Azure Container Apps Managed Environment.
 //
 // The primary output is `environment_id`, referenced by everything that
@@ -36,7 +36,7 @@ const (
 // platform-reserved outputs matter for network planning in VNet-injected
 // environments; `custom_domain_verification_id` is the TXT-record value
 // that proves domain ownership for a custom DNS suffix.
-type AzureContainerAppEnvironmentStackOutputs struct {
+type AzureContainerAppEnvironmentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Container App Environment.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/managedEnvironments/{name}
@@ -87,20 +87,20 @@ type AzureContainerAppEnvironmentStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureContainerAppEnvironmentStackOutputs) Reset() {
-	*x = AzureContainerAppEnvironmentStackOutputs{}
+func (x *AzureContainerAppEnvironmentOutputs) Reset() {
+	*x = AzureContainerAppEnvironmentOutputs{}
 	mi := &file_catalog_azure_azurecontainerappenvironment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureContainerAppEnvironmentStackOutputs) String() string {
+func (x *AzureContainerAppEnvironmentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureContainerAppEnvironmentStackOutputs) ProtoMessage() {}
+func (*AzureContainerAppEnvironmentOutputs) ProtoMessage() {}
 
-func (x *AzureContainerAppEnvironmentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureContainerAppEnvironmentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecontainerappenvironment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -112,68 +112,68 @@ func (x *AzureContainerAppEnvironmentStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureContainerAppEnvironmentStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureContainerAppEnvironmentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureContainerAppEnvironmentOutputs.ProtoReflect.Descriptor instead.
+func (*AzureContainerAppEnvironmentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerappenvironment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureContainerAppEnvironmentStackOutputs) GetEnvironmentId() string {
+func (x *AzureContainerAppEnvironmentOutputs) GetEnvironmentId() string {
 	if x != nil {
 		return x.EnvironmentId
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentStackOutputs) GetEnvironmentName() string {
+func (x *AzureContainerAppEnvironmentOutputs) GetEnvironmentName() string {
 	if x != nil {
 		return x.EnvironmentName
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentStackOutputs) GetDefaultDomain() string {
+func (x *AzureContainerAppEnvironmentOutputs) GetDefaultDomain() string {
 	if x != nil {
 		return x.DefaultDomain
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentStackOutputs) GetStaticIpAddress() string {
+func (x *AzureContainerAppEnvironmentOutputs) GetStaticIpAddress() string {
 	if x != nil {
 		return x.StaticIpAddress
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentStackOutputs) GetPlatformReservedCidr() string {
+func (x *AzureContainerAppEnvironmentOutputs) GetPlatformReservedCidr() string {
 	if x != nil {
 		return x.PlatformReservedCidr
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentStackOutputs) GetPlatformReservedDnsIpAddress() string {
+func (x *AzureContainerAppEnvironmentOutputs) GetPlatformReservedDnsIpAddress() string {
 	if x != nil {
 		return x.PlatformReservedDnsIpAddress
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentStackOutputs) GetDockerBridgeCidr() string {
+func (x *AzureContainerAppEnvironmentOutputs) GetDockerBridgeCidr() string {
 	if x != nil {
 		return x.DockerBridgeCidr
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentStackOutputs) GetCustomDomainVerificationId() string {
+func (x *AzureContainerAppEnvironmentOutputs) GetCustomDomainVerificationId() string {
 	if x != nil {
 		return x.CustomDomainVerificationId
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureContainerAppEnvironmentOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -184,8 +184,8 @@ var File_catalog_azure_azurecontainerappenvironment_v1alpha1_outputs_proto proto
 
 const file_catalog_azure_azurecontainerappenvironment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/azure/azurecontainerappenvironment/v1alpha1/outputs.proto\x127dev.planton.azure.azurecontainerappenvironment.v1alpha1\"\xf2\x03\n" +
-	"(AzureContainerAppEnvironmentStackOutputs\x12%\n" +
+	"Acatalog/azure/azurecontainerappenvironment/v1alpha1/outputs.proto\x127dev.planton.azure.azurecontainerappenvironment.v1alpha1\"\xed\x03\n" +
+	"#AzureContainerAppEnvironmentOutputs\x12%\n" +
 	"\x0eenvironment_id\x18\x01 \x01(\tR\renvironmentId\x12)\n" +
 	"\x10environment_name\x18\x02 \x01(\tR\x0fenvironmentName\x12%\n" +
 	"\x0edefault_domain\x18\x03 \x01(\tR\rdefaultDomain\x12*\n" +
@@ -211,7 +211,7 @@ func file_catalog_azure_azurecontainerappenvironment_v1alpha1_outputs_proto_rawD
 
 var file_catalog_azure_azurecontainerappenvironment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecontainerappenvironment_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureContainerAppEnvironmentStackOutputs)(nil), // 0: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentStackOutputs
+	(*AzureContainerAppEnvironmentOutputs)(nil), // 0: dev.planton.azure.azurecontainerappenvironment.v1alpha1.AzureContainerAppEnvironmentOutputs
 }
 var file_catalog_azure_azurecontainerappenvironment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

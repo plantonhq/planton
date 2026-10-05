@@ -23,12 +23,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// metadata of a cloud-resource
-type CloudResourceMetadata struct {
+// metadata of an infra-component
+type CatalogObjectMetadata struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// name of the cloud-resource
+	// name of the infra-component
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// slug for the cloud-resource: its handle in references (valueFrom, $secret/<slug>), the CLI
+	// slug for the infra-component: its handle in references (valueFrom, $secret/<slug>), the CLI
 	// and the names Planton creates from it. lowercase letters and digits joined by single hyphens
 	// (my-app-2) -- the one alphabet every system a slug is written into accepts: DNS labels,
 	// secret store names (GCP joins segments with '_', Azure allows only letters, digits and '-'),
@@ -49,28 +49,28 @@ type CloudResourceMetadata struct {
 	Annotations map[string]string `protobuf:"bytes,7,rep,name=annotations,proto3" json:"annotations,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// tags for the resource
 	Tags []string `protobuf:"bytes,8,rep,name=tags,proto3" json:"tags,omitempty"`
-	// explicit relationships for the cloud-resource with other cloud-resources
-	Relationships []*v1.CloudResourceRelationship `protobuf:"bytes,9,rep,name=relationships,proto3" json:"relationships,omitempty"`
+	// explicit relationships for the infra-component with other infra-components
+	Relationships []*v1.InfraComponentRelationship `protobuf:"bytes,9,rep,name=relationships,proto3" json:"relationships,omitempty"`
 	// group for visual organization in DAG (e.g., "app/services", "infrastructure/networking")
 	Group         string `protobuf:"bytes,10,opt,name=group,proto3" json:"group,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudResourceMetadata) Reset() {
-	*x = CloudResourceMetadata{}
+func (x *CatalogObjectMetadata) Reset() {
+	*x = CatalogObjectMetadata{}
 	mi := &file_shared_metadata_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudResourceMetadata) String() string {
+func (x *CatalogObjectMetadata) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudResourceMetadata) ProtoMessage() {}
+func (*CatalogObjectMetadata) ProtoMessage() {}
 
-func (x *CloudResourceMetadata) ProtoReflect() protoreflect.Message {
+func (x *CatalogObjectMetadata) ProtoReflect() protoreflect.Message {
 	mi := &file_shared_metadata_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,75 +82,75 @@ func (x *CloudResourceMetadata) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudResourceMetadata.ProtoReflect.Descriptor instead.
-func (*CloudResourceMetadata) Descriptor() ([]byte, []int) {
+// Deprecated: Use CatalogObjectMetadata.ProtoReflect.Descriptor instead.
+func (*CatalogObjectMetadata) Descriptor() ([]byte, []int) {
 	return file_shared_metadata_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudResourceMetadata) GetName() string {
+func (x *CatalogObjectMetadata) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *CloudResourceMetadata) GetSlug() string {
+func (x *CatalogObjectMetadata) GetSlug() string {
 	if x != nil {
 		return x.Slug
 	}
 	return ""
 }
 
-func (x *CloudResourceMetadata) GetId() string {
+func (x *CatalogObjectMetadata) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *CloudResourceMetadata) GetOrg() string {
+func (x *CatalogObjectMetadata) GetOrg() string {
 	if x != nil {
 		return x.Org
 	}
 	return ""
 }
 
-func (x *CloudResourceMetadata) GetEnv() string {
+func (x *CatalogObjectMetadata) GetEnv() string {
 	if x != nil {
 		return x.Env
 	}
 	return ""
 }
 
-func (x *CloudResourceMetadata) GetLabels() map[string]string {
+func (x *CatalogObjectMetadata) GetLabels() map[string]string {
 	if x != nil {
 		return x.Labels
 	}
 	return nil
 }
 
-func (x *CloudResourceMetadata) GetAnnotations() map[string]string {
+func (x *CatalogObjectMetadata) GetAnnotations() map[string]string {
 	if x != nil {
 		return x.Annotations
 	}
 	return nil
 }
 
-func (x *CloudResourceMetadata) GetTags() []string {
+func (x *CatalogObjectMetadata) GetTags() []string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-func (x *CloudResourceMetadata) GetRelationships() []*v1.CloudResourceRelationship {
+func (x *CatalogObjectMetadata) GetRelationships() []*v1.InfraComponentRelationship {
 	if x != nil {
 		return x.Relationships
 	}
 	return nil
 }
 
-func (x *CloudResourceMetadata) GetGroup() string {
+func (x *CatalogObjectMetadata) GetGroup() string {
 	if x != nil {
 		return x.Group
 	}
@@ -161,18 +161,18 @@ var File_shared_metadata_proto protoreflect.FileDescriptor
 
 const file_shared_metadata_proto_rawDesc = "" +
 	"\n" +
-	"\x15shared/metadata.proto\x12\x12dev.planton.shared\x1a\x1bbuf/validate/validate.proto\x1a)shared/relationship/v1/relationship.proto\"\xce\x05\n" +
-	"\x15CloudResourceMetadata\x12\x12\n" +
+	"\x15shared/metadata.proto\x12\x12dev.planton.shared\x1a\x1bbuf/validate/validate.proto\x1a)shared/relationship/v1/relationship.proto\"\xcf\x05\n" +
+	"\x15CatalogObjectMetadata\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\xb5\x01\n" +
 	"\x04slug\x18\x02 \x01(\tB\xa0\x01\xbaH\x9c\x01\xba\x01\x98\x01\n" +
 	"\rmetadata.slug\x12OA slug is lowercase letters and digits joined by single hyphens, like my-app-2.\x1a6this == '' || this.matches('^[a-z0-9]+(-[a-z0-9]+)*$')R\x04slug\x12\x0e\n" +
 	"\x02id\x18\x03 \x01(\tR\x02id\x12\x10\n" +
 	"\x03org\x18\x04 \x01(\tR\x03org\x12\x10\n" +
 	"\x03env\x18\x05 \x01(\tR\x03env\x12M\n" +
-	"\x06labels\x18\x06 \x03(\v25.dev.planton.shared.CloudResourceMetadata.LabelsEntryR\x06labels\x12\\\n" +
-	"\vannotations\x18\a \x03(\v2:.dev.planton.shared.CloudResourceMetadata.AnnotationsEntryR\vannotations\x12\x12\n" +
-	"\x04tags\x18\b \x03(\tR\x04tags\x12c\n" +
-	"\rrelationships\x18\t \x03(\v2=.dev.planton.shared.relationship.v1.CloudResourceRelationshipR\rrelationships\x12\x14\n" +
+	"\x06labels\x18\x06 \x03(\v25.dev.planton.shared.CatalogObjectMetadata.LabelsEntryR\x06labels\x12\\\n" +
+	"\vannotations\x18\a \x03(\v2:.dev.planton.shared.CatalogObjectMetadata.AnnotationsEntryR\vannotations\x12\x12\n" +
+	"\x04tags\x18\b \x03(\tR\x04tags\x12d\n" +
+	"\rrelationships\x18\t \x03(\v2>.dev.planton.shared.relationship.v1.InfraComponentRelationshipR\rrelationships\x12\x14\n" +
 	"\x05group\x18\n" +
 	" \x01(\tR\x05group\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
@@ -197,15 +197,15 @@ func file_shared_metadata_proto_rawDescGZIP() []byte {
 
 var file_shared_metadata_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_shared_metadata_proto_goTypes = []any{
-	(*CloudResourceMetadata)(nil),        // 0: dev.planton.shared.CloudResourceMetadata
-	nil,                                  // 1: dev.planton.shared.CloudResourceMetadata.LabelsEntry
-	nil,                                  // 2: dev.planton.shared.CloudResourceMetadata.AnnotationsEntry
-	(*v1.CloudResourceRelationship)(nil), // 3: dev.planton.shared.relationship.v1.CloudResourceRelationship
+	(*CatalogObjectMetadata)(nil),         // 0: dev.planton.shared.CatalogObjectMetadata
+	nil,                                   // 1: dev.planton.shared.CatalogObjectMetadata.LabelsEntry
+	nil,                                   // 2: dev.planton.shared.CatalogObjectMetadata.AnnotationsEntry
+	(*v1.InfraComponentRelationship)(nil), // 3: dev.planton.shared.relationship.v1.InfraComponentRelationship
 }
 var file_shared_metadata_proto_depIdxs = []int32{
-	1, // 0: dev.planton.shared.CloudResourceMetadata.labels:type_name -> dev.planton.shared.CloudResourceMetadata.LabelsEntry
-	2, // 1: dev.planton.shared.CloudResourceMetadata.annotations:type_name -> dev.planton.shared.CloudResourceMetadata.AnnotationsEntry
-	3, // 2: dev.planton.shared.CloudResourceMetadata.relationships:type_name -> dev.planton.shared.relationship.v1.CloudResourceRelationship
+	1, // 0: dev.planton.shared.CatalogObjectMetadata.labels:type_name -> dev.planton.shared.CatalogObjectMetadata.LabelsEntry
+	2, // 1: dev.planton.shared.CatalogObjectMetadata.annotations:type_name -> dev.planton.shared.CatalogObjectMetadata.AnnotationsEntry
+	3, // 2: dev.planton.shared.CatalogObjectMetadata.relationships:type_name -> dev.planton.shared.relationship.v1.InfraComponentRelationship
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

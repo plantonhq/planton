@@ -10,7 +10,7 @@ set -euo pipefail
 # _changelog/2026-06/2026-06-04-191500-helm-provider-v3-migration-and-externaldns-parity.md.
 #
 # WHAT IT CHECKS
-# For each `catalog/<provider>/<component>/iac/tf` module (a dir containing *.tf files):
+# For each `catalog/<provider>/<kind>/iac/tf` module (a dir containing *.tf files):
 #   - collect the provider local names referenced by `resource "<name>_..."` /
 #     `data "<name>_..."` (the prefix before the first underscore; e.g. helm_release ->
 #     helm, kubernetes_manifest -> kubernetes, random_password -> random),
@@ -19,7 +19,7 @@ set -euo pipefail
 # The builtin `terraform_*` data sources (terraform_remote_state) need no pin and are ignored.
 #
 # This is a static check (no network, no cluster, no credentials), so it covers every
-# module -- including e2e `skip`/`deferred` components that never run a real apply.
+# module -- including e2e `skip`/`deferred` kinds that never run a real apply.
 
 repo_root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root_dir"

@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpcloudsqluser.v1alpha1;
 import "catalog/gcp/gcpcloudsqluser/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-cloud-sql-user stack-input
-message GcpCloudSqlUserStackInput {
-  //target cloud-resource
+//gcp-cloud-sql-user iac-input
+message GcpCloudSqlUserIacInput {
+  // the catalog object to deploy
   GcpCloudSqlUser target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

@@ -5,7 +5,7 @@ import (
 
 	azurekeyvaultkeyv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurekeyvaultkey/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -63,11 +63,11 @@ var keyOperationStrings = map[azurekeyvaultkeyv1alpha1.AzureKeyVaultKeyOperation
 	azurekeyvaultkeyv1alpha1.AzureKeyVaultKeyOperation_WRAP_KEY:   "wrapKey",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurekeyvaultkeyv1alpha1.AzureKeyVaultKeyStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurekeyvaultkeyv1alpha1.AzureKeyVaultKeyIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureKeyVaultKey = stackInput.Target
-	target := stackInput.Target
+	locals.AzureKeyVaultKey = iacInput.Target
+	target := iacInput.Target
 
 	locals.KeyVaultId = target.Spec.KeyVaultId.GetValue()
 
@@ -86,7 +86,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurekeyvaultkeyv1alpha1.
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureKeyVaultKey.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureKeyVaultKey.String()),
 	}
 
 	if target.Metadata.Id != "" {

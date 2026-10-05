@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockinferenceprofile.v1alpha1;
 
-// AwsBedrockInferenceProfileStackOutputs captures observable identifiers
+// AwsBedrockInferenceProfileOutputs captures observable identifiers
 // from a provisioned Bedrock application inference profile.
-message AwsBedrockInferenceProfileStackOutputs {
+message AwsBedrockInferenceProfileOutputs {
   // ARN of the inference profile - the modelId applications pass to
   // InvokeModel/Converse and the resource IAM policies scope to.
   string inference_profile_arn = 1;

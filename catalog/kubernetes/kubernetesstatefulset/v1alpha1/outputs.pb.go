@@ -22,11 +22,11 @@ const (
 )
 
 // *
-// **KubernetesStatefulSetStackOutputs** captures the observable handles of a deployed
+// **KubernetesStatefulSetOutputs** captures the observable handles of a deployed
 // stateful set. Downstream resources compose on these: routes and network policies
 // match `selector_labels`, clients connect through `service` / `kube_endpoint`, and
 // member-aware clients address individual replicas through `pod_dns_template`.
-type KubernetesStatefulSetStackOutputs struct {
+type KubernetesStatefulSetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The namespace the workload was deployed into.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -64,20 +64,20 @@ type KubernetesStatefulSetStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesStatefulSetStackOutputs) Reset() {
-	*x = KubernetesStatefulSetStackOutputs{}
+func (x *KubernetesStatefulSetOutputs) Reset() {
+	*x = KubernetesStatefulSetOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesstatefulset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesStatefulSetStackOutputs) String() string {
+func (x *KubernetesStatefulSetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesStatefulSetStackOutputs) ProtoMessage() {}
+func (*KubernetesStatefulSetOutputs) ProtoMessage() {}
 
-func (x *KubernetesStatefulSetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesStatefulSetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesstatefulset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -89,54 +89,54 @@ func (x *KubernetesStatefulSetStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesStatefulSetStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesStatefulSetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesStatefulSetOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesStatefulSetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesstatefulset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesStatefulSetStackOutputs) GetNamespace() string {
+func (x *KubernetesStatefulSetOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesStatefulSetStackOutputs) GetStatefulSetName() string {
+func (x *KubernetesStatefulSetOutputs) GetStatefulSetName() string {
 	if x != nil {
 		return x.StatefulSetName
 	}
 	return ""
 }
 
-func (x *KubernetesStatefulSetStackOutputs) GetService() string {
+func (x *KubernetesStatefulSetOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *KubernetesStatefulSetStackOutputs) GetSelectorLabels() string {
+func (x *KubernetesStatefulSetOutputs) GetSelectorLabels() string {
 	if x != nil {
 		return x.SelectorLabels
 	}
 	return ""
 }
 
-func (x *KubernetesStatefulSetStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesStatefulSetOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
 	return ""
 }
 
-func (x *KubernetesStatefulSetStackOutputs) GetKubeEndpoint() string {
+func (x *KubernetesStatefulSetOutputs) GetKubeEndpoint() string {
 	if x != nil {
 		return x.KubeEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesStatefulSetStackOutputs) GetPodDnsTemplate() string {
+func (x *KubernetesStatefulSetOutputs) GetPodDnsTemplate() string {
 	if x != nil {
 		return x.PodDnsTemplate
 	}
@@ -147,8 +147,8 @@ var File_catalog_kubernetes_kubernetesstatefulset_v1alpha1_outputs_proto protore
 
 const file_catalog_kubernetes_kubernetesstatefulset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/kubernetes/kubernetesstatefulset/v1alpha1/outputs.proto\x125dev.planton.kubernetes.kubernetesstatefulset.v1alpha1\"\xb1\x02\n" +
-	"!KubernetesStatefulSetStackOutputs\x12\x1c\n" +
+	"?catalog/kubernetes/kubernetesstatefulset/v1alpha1/outputs.proto\x125dev.planton.kubernetes.kubernetesstatefulset.v1alpha1\"\xac\x02\n" +
+	"\x1cKubernetesStatefulSetOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12*\n" +
 	"\x11stateful_set_name\x18\x02 \x01(\tR\x0fstatefulSetName\x12\x18\n" +
 	"\aservice\x18\x03 \x01(\tR\aservice\x12'\n" +
@@ -172,7 +172,7 @@ func file_catalog_kubernetes_kubernetesstatefulset_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_kubernetes_kubernetesstatefulset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesstatefulset_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesStatefulSetStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesstatefulset.v1alpha1.KubernetesStatefulSetStackOutputs
+	(*KubernetesStatefulSetOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesstatefulset.v1alpha1.KubernetesStatefulSetOutputs
 }
 var file_catalog_kubernetes_kubernetesstatefulset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -29,7 +29,7 @@ func validCluster() *AwsDocumentDb {
 	return &AwsDocumentDb{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsDocumentDb",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-docdb",
 		},
 		Spec: &AwsDocumentDbSpec{

@@ -2,7 +2,7 @@
 
 ## Overview
 
-**KubernetesRbac** is a Planton component that models a complete RBAC grant: *"give these subjects these permissions in this scope."* One resource bundles the role definition and its binding — the unit in which RBAC is actually reasoned about — instead of splitting Role, RoleBinding, ClusterRole, and ClusterRoleBinding into four coordinating resources.
+**KubernetesRbac** is a catalog kind that models a complete RBAC grant: *"give these subjects these permissions in this scope."* One resource bundles the role definition and its binding — the unit in which RBAC is actually reasoned about — instead of splitting Role, RoleBinding, ClusterRole, and ClusterRoleBinding into four coordinating resources.
 
 ## The Grant Model
 
@@ -68,7 +68,7 @@ Each entry is exactly one of:
 - **`user`**: a name as asserted by the cluster's authenticator (OIDC claim, certificate CN, cloud IAM mapping) — Kubernetes has no User objects
 - **`group`**: an authenticator-asserted group, e.g. an OIDC groups claim or `system:authenticated`
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -78,7 +78,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the scope namespace and any ServiceAccount subject references
 2. Create the Role or ClusterRole (when `createRole` is set) with the given rules or aggregation rule

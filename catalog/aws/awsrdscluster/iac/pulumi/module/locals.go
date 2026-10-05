@@ -6,7 +6,7 @@ import (
 
 	awsrdsclusterv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsrdscluster/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -20,11 +20,11 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awsrdsclusterv1alpha1.AwsRdsClusterStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awsrdsclusterv1alpha1.AwsRdsClusterIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsRdsCluster = stackInput.Target
+	locals.AwsRdsCluster = iacInput.Target
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 	locals.ClusterIdentifier = metadata.Name
 
 	// Resource-identity tags match the Terraform module key-for-key.
@@ -33,7 +33,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *awsrdsclusterv1alpha1.AwsRd
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsRdsCluster.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsRdsCluster.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

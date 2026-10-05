@@ -17,7 +17,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurecosmosdbsqlroleassignment
+    e2e-catalog-kind: azurecosmosdbsqlroleassignment
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AzureUserAssignedIdentity, catalog/azure/azurecosmosdbsqlroleassignment/e2e/sql-account.yaml, catalog/azure/azurecosmosdbsqlroleassignment/e2e/custom-role.yaml"

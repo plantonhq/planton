@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceanproject
 spec:
@@ -14,7 +14,7 @@ spec:
   values:
     - name: project_id
       derivations:
-        - from_stack_output: project_id
+        - from_output: project_id
       where_to_find: >-
         DigitalOcean control panel -> the project -> Settings (the UUID in
         the page URL), or `doctl projects list` (the ID column).

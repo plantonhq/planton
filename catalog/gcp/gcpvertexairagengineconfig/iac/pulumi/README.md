@@ -10,7 +10,7 @@ Vertex AI RAG Engine's managed vector database from the Planton spec: one
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `rag_engine_config` |
-| `module/locals.go` | Carries the stack input (a singleton Google names; no derived name, no labels) |
+| `module/locals.go` | Carries the IaC input (a singleton Google names; no derived name, no labels) |
 | `module/rag_engine_config.go` | Enables the API and maps the spec's tier enum to the matching empty block |
 | `module/outputs.go` | Output key constants (`name`, `location`) |
 

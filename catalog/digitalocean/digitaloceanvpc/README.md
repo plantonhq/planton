@@ -2,7 +2,7 @@
 
 A DigitalOcean Virtual Private Cloud described once in a Planton manifest: a private, isolated network for Droplets, Kubernetes clusters, load balancers, and databases within one region. The VPC's name comes from the resource's `metadata.name`; the spec carries the region, an optional description, and an optional IP range — omit the range and DigitalOcean assigns a non-conflicting one.
 
-## What this component models
+## What this kind models
 
 The spec maps onto DigitalOcean's `digitalocean_vpc` in full:
 

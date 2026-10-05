@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kubernetesseaweedfs
 spec:
@@ -63,7 +63,7 @@ spec:
         reference: Defaults to false; true renders ServiceMonitors for Prometheus scraping on every enabled tier -- requires the Prometheus Operator CRDs (a KubernetesKubePrometheusStack composes naturally).
     - control_id: backup-recovery
       status: not_applicable
-      notes: No backup seam is modeled -- this component IS the catalog's in-cluster object store; durability inside it comes from the replication placement code (see multi-zone-ha), and off-cluster copies are an operational concern (e.g. weed backup / bucket-to-bucket sync) outside this spec.
+      notes: No backup seam is modeled -- this kind IS the catalog's in-cluster object store; durability inside it comes from the replication placement code (see multi-zone-ha), and off-cluster copies are an operational concern (e.g. weed backup / bucket-to-bucket sync) outside this spec.
     - control_id: backup-retention-policy
       status: configurable
       field_path: s3.buckets

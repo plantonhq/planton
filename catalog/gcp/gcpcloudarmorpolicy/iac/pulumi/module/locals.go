@@ -7,7 +7,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpcloudarmorpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudarmorpolicy/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -32,10 +32,10 @@ type Locals struct {
 	IsRegional bool
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudarmorpolicyv1alpha1.GcpCloudArmorPolicyStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpcloudarmorpolicyv1alpha1.GcpCloudArmorPolicyIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpCloudArmorPolicy = stackInput.Target
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpCloudArmorPolicy = iacInput.Target
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 
 	locals.ProjectId = locals.GcpCloudArmorPolicy.Spec.ProjectId.GetValue()
 
@@ -54,7 +54,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudarmorpolicyv1alpha1
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = strconv.FormatBool(true)
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.PolicyName
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpCloudArmorPolicy.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpCloudArmorPolicy.String())
 
 	if locals.GcpCloudArmorPolicy.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = locals.GcpCloudArmorPolicy.Metadata.Org

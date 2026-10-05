@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesgharunnerscalesetcontroller.v1alpha1;
 import "catalog/kubernetes/kubernetesgharunnerscalesetcontroller/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesGhaRunnerScaleSetControllerStackInput defines the inputs required for the IaC modules.
-message KubernetesGhaRunnerScaleSetControllerStackInput {
-  // target cloud-resource
+// KubernetesGhaRunnerScaleSetControllerIacInput defines the inputs required for the IaC modules.
+message KubernetesGhaRunnerScaleSetControllerIacInput {
+  // the catalog object to deploy
   KubernetesGhaRunnerScaleSetController target = 1;
   // provider-config for Kubernetes
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

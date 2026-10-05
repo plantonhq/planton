@@ -16,7 +16,7 @@ message CloudflareLoadBalancerMonitor {
   string kind = 2 [(buf.validate.field).string.const = 'CloudflareLoadBalancerMonitor'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   CloudflareLoadBalancerMonitorSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,7 +27,7 @@ message CloudflareLoadBalancerMonitor {
 
 // cloudflare-load-balancer-monitor status
 message CloudflareLoadBalancerMonitorStatus {
-  //stack-outputs
-  //  cloudflare-load-balancer-monitor stack-outputs
-  CloudflareLoadBalancerMonitorStackOutputs outputs = 1;
+  //outputs
+  //  cloudflare-load-balancer-monitor outputs
+  CloudflareLoadBalancerMonitorOutputs outputs = 1;
 }

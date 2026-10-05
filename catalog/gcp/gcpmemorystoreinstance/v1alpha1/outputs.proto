@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpmemorystoreinstance.v1alpha1;
 
-// GcpMemorystoreInstanceStackOutputs captures observable values produced after
+// GcpMemorystoreInstanceOutputs captures observable values produced after
 // provisioning a Memorystore instance.
 //
 // The instance uses Private Service Connect (PSC) for connectivity. The
 // discovery_address and discovery_port fields provide the primary connection
 // endpoint that clients should use.
-message GcpMemorystoreInstanceStackOutputs {
+message GcpMemorystoreInstanceOutputs {
   // IP address of the instance's discovery endpoint.
   // Clients connect to this address for cluster topology discovery and
   // command routing. Works for both CLUSTER and CLUSTER_DISABLED modes.

@@ -231,7 +231,7 @@ func buildPrometheusSpec(locals *Locals) (map[string]interface{}, error) {
 		prometheusSpec["enableRemoteWriteReceiver"] = true
 	}
 
-	// Discovery: the component default is cluster-wide (`all_monitors`) —
+	// Discovery: the kind's default is cluster-wide (`all_monitors`) —
 	// every catalog kind's service_monitor toggle and any user-authored
 	// monitor lights up without extra wiring. The chart's own default is
 	// release-fenced; `release_managed_only` restores it by rendering

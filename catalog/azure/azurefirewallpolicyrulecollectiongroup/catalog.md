@@ -4,7 +4,7 @@ Deploys an Azure Firewall Policy Rule Collection Group — an ordered document o
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Rule Collection Group** -- the ordered rule document with its application, network, and DNAT collections, nested under the parent policy
 
@@ -14,12 +14,12 @@ The group is an ARM CHILD of the policy: it has no region, resource group, or ta
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Firewall Policy** for the group to nest under — reference an AzureFirewallPolicy Cloud Resource via ValueFromRef.
+- **An Azure Firewall Policy** for the group to nest under — reference an AzureFirewallPolicy Infra Component via ValueFromRef.
 - **A priority plan**: leave gaps between groups (100, 200, 300…) so future documents slot in without renumbering; the security baseline takes the low numbers so nothing outranks it.
 - **For FQDN network rules and FQDN translation targets**: the parent policy's DNS proxy must be enabled.
 
@@ -64,7 +64,7 @@ spec:
 planton apply -f rule-collection-group.yaml
 ```
 
-This creates the group under the `egress-baseline` policy with one application collection allowing HTTPS to `*.github.com` -- every firewall attached to the policy enforces it, and the payments team redeploys it without touching the policy or anyone else's rules. A Stack Job tracks the provisioning in real time.
+This creates the group under the `egress-baseline` policy with one application collection allowing HTTPS to `*.github.com` -- every firewall attached to the policy enforces it, and the payments team redeploys it without touching the policy or anyone else's rules. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -109,16 +109,16 @@ These are the most important decisions when configuring a Rule Collection Group.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureFirewallPolicy** | `firewallPolicyId` | `status.outputs.firewall_policy_id` |
 | **AzureIpGroup** | every rule type's `sourceIpGroups[]` (network rules also `destinationIpGroups[]`) | `status.outputs.ip_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -137,6 +137,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Firewall Policy**](/cloud-catalog/azure-firewall-policy) -- the parent this rule document nests under
-- [**Azure Firewall**](/cloud-catalog/azure-firewall) -- the enforcement instance that attaches the parent policy
-- [**Azure IP Group**](/cloud-catalog/azure-ip-group) -- named address sets the rules reference (source and destination)
+- [**Azure Firewall Policy**](/infra-catalog/azure-firewall-policy) -- the parent this rule document nests under
+- [**Azure Firewall**](/infra-catalog/azure-firewall) -- the enforcement instance that attaches the parent policy
+- [**Azure IP Group**](/infra-catalog/azure-ip-group) -- named address sets the rules reference (source and destination)

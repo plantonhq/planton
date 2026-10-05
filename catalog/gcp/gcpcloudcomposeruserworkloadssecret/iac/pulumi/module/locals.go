@@ -11,13 +11,13 @@ type Locals struct {
 	GcpCloudComposerUserWorkloadsSecret *gcpcloudcomposeruserworkloadssecretv1alpha1.GcpCloudComposerUserWorkloadsSecret
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudcomposeruserworkloadssecretv1alpha1.GcpCloudComposerUserWorkloadsSecretStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpcloudcomposeruserworkloadssecretv1alpha1.GcpCloudComposerUserWorkloadsSecretIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpCloudComposerUserWorkloadsSecret = stackInput.Target
+	locals.GcpCloudComposerUserWorkloadsSecret = iacInput.Target
 
 	// Kubernetes Secrets carry no GCP labels surface — no platform
 	// attribution labels are stamped, identically on both engines.
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

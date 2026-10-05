@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -29,7 +29,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -48,7 +48,7 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 		input = &KubernetesOpenBao{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesOpenBao",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "openbao",
 			},
 			Spec: &KubernetesOpenBaoSpec{
@@ -63,7 +63,7 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "openbao", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "openbao", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -240,7 +240,7 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 		ginkgo.It("a TLS cert secret from a Certificate reference should be valid", func() {
 			input.Spec.Tls = &KubernetesOpenBaoTls{
 				Enabled:        true,
-				CertSecretName: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesCertificate, "openbao-cert", "status.outputs.secret_name"),
+				CertSecretName: valueFrom(catalogkind.CatalogKind_KubernetesCertificate, "openbao-cert", "status.outputs.secret_name"),
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
@@ -303,7 +303,7 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 
 		ginkgo.It("an S3-compatible endpoint by SeaweedFS reference with access keys should be valid", func() {
 			s3 := s3WithKeys("")
-			s3.EndpointUrl = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesSeaweedFs, "object-store", "status.outputs.s3_endpoint")
+			s3.EndpointUrl = valueFrom(catalogkind.CatalogKind_KubernetesSeaweedFs, "object-store", "status.outputs.s3_endpoint")
 			s3.ForcePathStyle = true
 			input.Spec.Backup = backupWith(&KubernetesOpenBaoBackupObjectStore_S3{S3: s3})
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
@@ -317,12 +317,12 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 
 		ginkgo.It("a keyless gcs store with a GKE identity by reference should be valid", func() {
 			input.Spec.Backup = backupWith(&KubernetesOpenBaoBackupObjectStore_Gcs{Gcs: &KubernetesOpenBaoGcsObjectStore{
-				Bucket:  valueFrom(cloudresourcekind.CloudResourceKind_GcpGcsBucket, "backups", "status.outputs.bucket_name"),
+				Bucket:  valueFrom(catalogkind.CatalogKind_GcpGcsBucket, "backups", "status.outputs.bucket_name"),
 				Keyless: true,
 			}})
 			input.Spec.Backup.WorkloadIdentity = &kubernetes.KubernetesWorkloadIdentity{
 				Provider: &kubernetes.KubernetesWorkloadIdentity_Gke{Gke: &kubernetes.KubernetesWorkloadIdentityGke{
-					ServiceAccountEmail: valueFrom(cloudresourcekind.CloudResourceKind_GcpServiceAccount, "openbao-backup", "status.outputs.email"),
+					ServiceAccountEmail: valueFrom(catalogkind.CatalogKind_GcpServiceAccount, "openbao-backup", "status.outputs.email"),
 				}},
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
@@ -331,7 +331,7 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 		ginkgo.It("a gcs store with a service-account key by reference should be valid", func() {
 			input.Spec.Backup = backupWith(&KubernetesOpenBaoBackupObjectStore_Gcs{Gcs: &KubernetesOpenBaoGcsObjectStore{
 				Bucket:            literal("openbao-backups"),
-				ServiceAccountKey: valueFrom(cloudresourcekind.CloudResourceKind_GcpServiceAccount, "openbao-backup", "status.outputs.key_base64"),
+				ServiceAccountKey: valueFrom(catalogkind.CatalogKind_GcpServiceAccount, "openbao-backup", "status.outputs.key_base64"),
 			}})
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
@@ -940,10 +940,10 @@ func raftServer() *KubernetesOpenBaoServer {
 // application-user Secret as the password, both by reference.
 func postgresqlByReference() *KubernetesOpenBaoServer_Postgresql {
 	return &KubernetesOpenBaoServer_Postgresql{Postgresql: &KubernetesOpenBaoPostgresqlStorage{
-		Host:     valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "identity-db", "status.outputs.rw_service"),
+		Host:     valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "identity-db", "status.outputs.rw_service"),
 		Database: "openbao",
 		PasswordSecret: &KubernetesOpenBaoPostgresqlPasswordSecret{
-			SecretName: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "identity-db", "status.outputs.password_secret.name"),
+			SecretName: valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "identity-db", "status.outputs.password_secret.name"),
 		},
 	}}
 }
@@ -979,12 +979,12 @@ func eksIdentity() *kubernetes.KubernetesWorkloadIdentity {
 // reference onto the catalog's bucket and token kinds.
 func r2ByReference() *KubernetesOpenBaoR2ObjectStore {
 	return &KubernetesOpenBaoR2ObjectStore{
-		Bucket:       valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "backups", "status.outputs.bucket_name"),
-		AccountId:    valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "backups", "status.outputs.account_id"),
-		Jurisdiction: valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "backups", "status.outputs.jurisdiction"),
+		Bucket:       valueFrom(catalogkind.CatalogKind_CloudflareR2Bucket, "backups", "status.outputs.bucket_name"),
+		AccountId:    valueFrom(catalogkind.CatalogKind_CloudflareR2Bucket, "backups", "status.outputs.account_id"),
+		Jurisdiction: valueFrom(catalogkind.CatalogKind_CloudflareR2Bucket, "backups", "status.outputs.jurisdiction"),
 		Credentials: &KubernetesOpenBaoR2Credentials{
-			AccessKeyId:     valueFrom(cloudresourcekind.CloudResourceKind_CloudflareAccountApiToken, "backups-writer", "status.outputs.r2_access_key_id"),
-			SecretAccessKey: valueFrom(cloudresourcekind.CloudResourceKind_CloudflareAccountApiToken, "backups-writer", "status.outputs.r2_secret_access_key"),
+			AccessKeyId:     valueFrom(catalogkind.CatalogKind_CloudflareAccountApiToken, "backups-writer", "status.outputs.r2_access_key_id"),
+			SecretAccessKey: valueFrom(catalogkind.CatalogKind_CloudflareAccountApiToken, "backups-writer", "status.outputs.r2_secret_access_key"),
 		},
 	}
 }

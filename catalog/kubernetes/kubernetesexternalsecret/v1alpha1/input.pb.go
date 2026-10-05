@@ -23,9 +23,9 @@ const (
 )
 
 // input for kubernetes-external-secret stack
-type KubernetesExternalSecretStackInput struct {
+type KubernetesExternalSecretIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *KubernetesExternalSecret `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesExternalSecretStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesExternalSecretStackInput) Reset() {
-	*x = KubernetesExternalSecretStackInput{}
+func (x *KubernetesExternalSecretIacInput) Reset() {
+	*x = KubernetesExternalSecretIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesExternalSecretStackInput) String() string {
+func (x *KubernetesExternalSecretIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesExternalSecretStackInput) ProtoMessage() {}
+func (*KubernetesExternalSecretIacInput) ProtoMessage() {}
 
-func (x *KubernetesExternalSecretStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesExternalSecretIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesExternalSecretStackInput) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesExternalSecretStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesExternalSecretStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesExternalSecretIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesExternalSecretIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesExternalSecretStackInput) GetTarget() *KubernetesExternalSecret {
+func (x *KubernetesExternalSecretIacInput) GetTarget() *KubernetesExternalSecret {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesExternalSecretStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesExternalSecretIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_input_proto protor
 
 const file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/kubernetes/kubernetesexternalsecret/v1alpha1/input.proto\x128dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1\x1a>catalog/kubernetes/kubernetesexternalsecret/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xeb\x01\n" +
-	"\"KubernetesExternalSecretStackInput\x12j\n" +
+	"@catalog/kubernetes/kubernetesexternalsecret/v1alpha1/input.proto\x128dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1\x1a>catalog/kubernetes/kubernetesexternalsecret/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe9\x01\n" +
+	" KubernetesExternalSecretIacInput\x12j\n" +
 	"\x06target\x18\x01 \x01(\v2R.dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xc3\x03\n" +
 	"<com.dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_input_proto_rawDe
 
 var file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesExternalSecretStackInput)(nil),  // 0: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretStackInput
+	(*KubernetesExternalSecretIacInput)(nil),    // 0: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretIacInput
 	(*KubernetesExternalSecret)(nil),            // 1: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecret
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretStackInput.target:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecret
-	2, // 1: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretIacInput.target:type_name -> dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecret
+	2, // 1: dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

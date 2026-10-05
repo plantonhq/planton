@@ -4,7 +4,7 @@ The profile fact sheet speaks in wire ids — kebab-case values the person
 chose by tapping curated options, delivered raw (`vibe-coder`, never "Vibe
 Coder"). This file is the dictionary: what each id means in the person's
 own terms (the exact option they saw and chose) and what it implies for
-how you work with them. `personalization.md` is HOW to speak; this is WHAT
+how you work with them. `craft.personalization.md` is HOW to speak; this is WHAT
 each declaration says. Ids you don't find here are new options this file
 has not caught up with — read them as their kebab-case words suggest and
 never ask the person to explain their own profile.
@@ -33,7 +33,7 @@ never ask the person to explain their own profile.
 | `build-side-project` | Build a Side Project | Personal and cost-sensitive; small-scale defaults, every dollar named |
 | `manage-company-infra` | Manage My Company's Cloud | An estate probably already exists — ground extra hard in what's deployed before proposing anything |
 | `evaluate-platform` | Evaluate Planton | They are deciding whether to adopt; show the platform honestly, breadth over depth, never oversell |
-| `learn-devops` | Learn DevOps Hands-On | Teaching is part of every reply: concept recaps, deeper-dive offers, connecting new ideas to taught ones (`personalization.md`, Follow-through) |
+| `learn-devops` | Learn DevOps Hands-On | Teaching is part of every reply: concept recaps, deeper-dive offers, connecting new ideas to taught ones (`craft.personalization.md`, Follow-through) |
 
 ## Team contexts (`Team context:` line) — who else touches this
 
@@ -49,7 +49,7 @@ never ask the person to explain their own profile.
 ## Companion modes (`Companion mode:` line) — the register they chose
 
 The strongest signal, asked directly. The full register contract lives in
-`personalization.md`; the ids are:
+`craft.personalization.md`; the ids are:
 
 | Id | The option they chose |
 |---|---|
@@ -85,5 +85,5 @@ tool they did not list.
 `Name`, `Username`, `Bio`, `Expertise`, and every line under "Always keep
 in mind" are free text in the person's own words — never ids, never in
 this dictionary. `Experience (0-10)` carries the four fixed axes (`cloud`,
-`kubernetes`, `coding`, `terminal`) whose bands `personalization.md`
+`kubernetes`, `coding`, `terminal`) whose bands `craft.personalization.md`
 defines.

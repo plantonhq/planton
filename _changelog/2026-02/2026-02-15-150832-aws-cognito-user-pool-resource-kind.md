@@ -6,24 +6,24 @@
 
 ## Summary
 
-Added AwsCognitoUserPool (R12) as a new AWS cloud resource kind in Planton, providing managed user directory and authentication services with bundled app clients and an optional hosted UI domain. The component delivers 4 proto files, 47 passing validation tests, full Pulumi and Terraform modules with feature parity, 7 examples, 3 presets, and production-quality documentation.
+Added AwsCognitoUserPool (R12) as a new AWS catalog kind in Planton, providing managed user directory and authentication services with bundled app clients and an optional hosted UI domain. The kind delivers 4 proto files, 47 passing validation tests, full Pulumi and Terraform modules with feature parity, 7 examples, 3 presets, and production-quality documentation.
 
 ## Problem Statement / Motivation
 
-AWS Cognito User Pools is the primary managed authentication service for web and mobile applications on AWS. Before this addition, Planton users needing user authentication had to manage Cognito infrastructure manually or outside the framework. This gap prevented infra charts from expressing auth-enabled deployment patterns -- a critical capability for serverless-api and web application charts where the user pool, API Gateway JWT authorizer, and Lambda functions must be wired together.
+AWS Cognito User Pools is the primary managed authentication service for web and mobile applications on AWS. Before this addition, Planton users needing user authentication had to manage Cognito infrastructure manually or outside the framework. This gap prevented Infra Charts from expressing auth-enabled deployment patterns -- a critical capability for serverless-api and web application charts where the user pool, API Gateway JWT authorizer, and Lambda functions must be wired together.
 
 ### Pain Points
 
 - No declarative way to provision a Cognito User Pool with app clients through Planton
-- Infra charts could not express JWT authorizer dependencies (issuer URL, client IDs)
+- Infra Charts could not express JWT authorizer dependencies (issuer URL, client IDs)
 - Manual Cognito setup is error-prone: identity model choices (username vs alias attributes) are permanent (ForceNew)
 - App clients require careful OAuth/OIDC configuration that benefits from validation guardrails
 
 ## Solution / What's New
 
-A complete AwsCognitoUserPool deployment component following established Planton patterns (SNS subscription bundling, Redis parameter group bundling).
+A complete AwsCognitoUserPool catalog kind following established Planton patterns (SNS subscription bundling, Redis parameter group bundling).
 
-### Component Architecture
+### Kind Architecture
 
 ```mermaid
 flowchart TB
@@ -39,7 +39,7 @@ flowchart TB
         cogDomain[aws_cognito_user_pool_domain]
     end
     
-    subgraph outputs [Stack Outputs]
+    subgraph outputs [Outputs]
         poolId[user_pool_id]
         poolEndpoint[user_pool_endpoint]
         clientIds[client_ids map]
@@ -58,8 +58,8 @@ flowchart TB
 ### Key Design Decisions
 
 - **Bundled app clients**: A pool without clients cannot authenticate anything. Each client's `name` field keys the `client_ids` and `client_secrets` output maps, enabling downstream `valueFrom` references.
-- **Bundled domain**: Required for hosted UI and OAuth endpoints, ~70% of pools use it. Simpler than a separate component.
-- **Identity providers deferred**: Social/OIDC/SAML providers have independent lifecycles and will be a separate AwsCognitoIdentityProvider component (queued as next).
+- **Bundled domain**: Required for hosted UI and OAuth endpoints, ~70% of pools use it. Simpler than a separate kind.
+- **Identity providers deferred**: Social/OIDC/SAML providers have independent lifecycles and will be a separate AwsCognitoIdentityProvider kind (queued as next).
 - **SMS excluded from v1**: Requires separate IAM role + SNS setup. Most deployments start email-only.
 - **Token validity in explicit units**: Access/ID tokens in minutes, refresh tokens in days -- eliminates the confusing unit selection from TF/Pulumi.
 
@@ -75,9 +75,9 @@ flowchart TB
   - Lambda triggers: 10 hooks, all StringValueOrRef -> AwsLambda
   - App clients: repeated with OAuth flows, scopes, token validity, auth flows, security settings
   - Domain: optional with custom domain certificate requirement
-- **stack_outputs.proto**: 7 outputs including `client_ids` and `client_secrets` maps
+- **outputs.proto**: 7 outputs including `client_ids` and `client_secrets` maps
 - **api.proto**: KRM wiring with `aws.planton.dev/v1` / `AwsCognitoUserPool`
-- **stack_input.proto**: Standard stack input with AwsProviderConfig
+- **iac_input.proto**: Standard IaC input with AwsProviderConfig
 
 ### Validation Tests (47 tests)
 
@@ -102,11 +102,11 @@ flowchart TB
 
 ### Enum Registration
 
-- `AwsCognitoUserPool = 300` in `cloud_resource_kind.proto` under "Auth / Identity" category
+- `AwsCognitoUserPool = 300` in `catalog_kind.proto` under "Auth / Identity" category
 
 ## Benefits
 
-- **Infra chart composability**: `user_pool_endpoint` and `client_ids` enable JWT authorizer wiring in API Gateway charts
+- **Infra Chart composability**: `user_pool_endpoint` and `client_ids` enable JWT authorizer wiring in API Gateway charts
 - **Validation guardrails**: 15 CEL rules catch common misconfiguration (wrong identity model, MFA without token, DEVELOPER email without SES)
 - **ForceNew documentation**: Critical permanent choices (identity model, case sensitivity, client secrets) are documented prominently
 - **Multi-client support**: SPA + server-side client patterns supported with separate OAuth configs and output maps

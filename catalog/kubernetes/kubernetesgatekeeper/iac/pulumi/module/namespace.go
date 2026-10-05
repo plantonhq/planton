@@ -22,11 +22,11 @@ import (
 // (empty = the chart default, true), matching what the hook itself
 // would stamp. Terraform twin: locals.namespace_labels.
 func namespace(ctx *pulumi.Context,
-	stackInput *kubernetesgatekeeperv1alpha1.KubernetesGatekeeperStackInput,
+	iacInput *kubernetesgatekeeperv1alpha1.KubernetesGatekeeperIacInput,
 	locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
 ) (*kubernetescorev1.Namespace, error) {
-	if !stackInput.Target.Spec.CreateNamespace {
+	if !iacInput.Target.Spec.CreateNamespace {
 		return nil, nil
 	}
 
@@ -34,7 +34,7 @@ func namespace(ctx *pulumi.Context,
 	for k, v := range locals.Labels {
 		namespaceLabels[k] = v
 	}
-	hooks := stackInput.Target.Spec.GetHooks()
+	hooks := iacInput.Target.Spec.GetHooks()
 	if hooks == nil || hooks.LabelNamespace == nil || hooks.GetLabelNamespace() {
 		namespaceLabels["admission.gatekeeper.sh/ignore"] = "no-self-managing"
 	}

@@ -4,7 +4,7 @@ Deploys an Azure Virtual Machine — the compute instance itself: its size, boot
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Linux or Windows Virtual Machine** -- exactly one OS profile (the spec enforces it): the VM with its size, boot source, admin credentials, patch mode, and licensing
 - **OS Disk** -- the one deliberately inline disk, born and dying with the VM: caching, storage SKU, optional explicit size, optional ephemeral mode, and encryption posture
@@ -13,19 +13,19 @@ When you deploy this Cloud Resource, the IaC module provisions:
 - **Key Vault Certificates** -- created only when `secrets` entries are configured; certificates installed onto the VM at provisioning from a deployment-enabled vault
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically and merged with the user tags
 
-The network interface, managed data disks, and user-assigned identities are NOT created here — they are first-class Cloud Resources this VM references.
+The network interface, managed data disks, and user-assigned identities are NOT created here — they are first-class Infra Components this VM references.
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the VM will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
-- **At least one Network Interface** in the same region. Reference an AzureNetworkInterface Cloud Resource via ValueFromRef (its subnet, IPs, and NSG are configured there), or provide an ARM ID.
+- **An Azure Resource Group** where the VM will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
+- **At least one Network Interface** in the same region. Reference an AzureNetworkInterface Infra Component via ValueFromRef (its subnet, IPs, and NSG are configured there), or provide an ARM ID.
 - **An SSH public key** (Linux) or an **admin password** (Windows). Passwords are secret material — store them as org secrets and reference them; the platform rejects plaintext.
 
 ## Deploy
@@ -75,7 +75,7 @@ spec:
 planton apply -f virtual-machine.yaml
 ```
 
-This creates an Ubuntu 24.04 LTS VM (Standard_D2s_v5 — 2 vCPUs, 8 GiB), Premium SSD OS disk inheriting the image's size, SSH-key-only authentication, a system-assigned managed identity, and managed-storage boot diagnostics. A Stack Job tracks the provisioning in real time.
+This creates an Ubuntu 24.04 LTS VM (Standard_D2s_v5 — 2 vCPUs, 8 GiB), Premium SSD OS disk inheriting the image's size, SSH-key-only authentication, a system-assigned managed identity, and managed-storage boot diagnostics. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -125,7 +125,7 @@ These are the most important decisions when configuring a Virtual Machine. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -137,9 +137,9 @@ These are the most important decisions when configuring a Virtual Machine. Explo
 | **AzureDiskEncryptionSet** (optional) | `osDisk.diskEncryptionSetId`, `osDisk.secureVmDiskEncryptionSetId` | `status.outputs.disk_encryption_set_id` |
 | **AzureKeyVault** (optional) | `secrets[].keyVaultId` | `status.outputs.key_vault_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -148,7 +148,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `public_ip_address` | Public IP of the primary NIC (when one is configured NIC-side) | SSH/RDP access, DNS A records |
 | `system_assigned_identity_principal_id` | Principal ID of the system-assigned identity (when enabled) | AzureRoleAssignment grants on Azure resources |
 
-The VM also surfaces `vm_name`, `computer_name`, and `virtual_machine_guid` (the 128-bit GUID licensing and inventory systems key on, stable across restarts) for reference; no downstream Cloud Resource consumes them.
+The VM also surfaces `vm_name`, `computer_name`, and `virtual_machine_guid` (the 128-bit GUID licensing and inventory systems key on, stable across restarts) for reference; no downstream Infra Component consumes them.
 
 ## Common Patterns
 
@@ -162,10 +162,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the VM is created
-- [**Azure Network Interface**](/cloud-catalog/azure-network-interface) -- provides the VM's network presence (subnet, IPs, NSG)
-- [**Azure Managed Disk**](/cloud-catalog/azure-managed-disk) -- provides boot and data disks that outlive the machine
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- provides shared workload identities
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- grants the VM's identities access to Azure resources
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- provides certificates installed at provisioning
-- [**Azure Disk Encryption Set**](/cloud-catalog/azure-disk-encryption-set) -- provides customer-managed keys for the OS disk
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the VM is created
+- [**Azure Network Interface**](/infra-catalog/azure-network-interface) -- provides the VM's network presence (subnet, IPs, NSG)
+- [**Azure Managed Disk**](/infra-catalog/azure-managed-disk) -- provides boot and data disks that outlive the machine
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- provides shared workload identities
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- grants the VM's identities access to Azure resources
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- provides certificates installed at provisioning
+- [**Azure Disk Encryption Set**](/infra-catalog/azure-disk-encryption-set) -- provides customer-managed keys for the OS disk

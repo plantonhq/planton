@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurevpnserverconfiguration
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: vpn_server_configuration_id
       derivations:
-        - from_stack_output: vpn_server_configuration_id
+        - from_output: vpn_server_configuration_id
       where_to_find: >-
         Portal -> VPN server configurations (search the resource type)
         -> the configuration -> Properties -> Resource ID, or `az

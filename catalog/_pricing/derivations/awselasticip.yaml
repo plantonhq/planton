@@ -5,9 +5,9 @@
 # the same rules against live manifests. In-use and idle bill at the same
 # hourly rate but on different meters, so attachment picks the price slug,
 # never the amount. Prices live in the provider's price book
-# (../pricebook/). Schema: finops/componentcostderivation/v1.
+# (../pricebook/). Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awselasticip
 spec:

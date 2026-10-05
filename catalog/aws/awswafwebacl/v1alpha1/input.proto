@@ -5,10 +5,10 @@ package dev.planton.aws.awswafwebacl.v1alpha1;
 import "catalog/aws/awswafwebacl/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsWafWebAclStackInput provides the inputs required by Pulumi/Terraform
+// AwsWafWebAclIacInput provides the inputs required by Pulumi/Terraform
 // modules to provision a WAFv2 Web ACL.
-message AwsWafWebAclStackInput {
-  // target cloud-resource
+message AwsWafWebAclIacInput {
+  // the catalog object to deploy
   AwsWafWebAcl target = 1;
   // provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

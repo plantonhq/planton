@@ -19,41 +19,41 @@ func (c *recordingChecker) ReadResource(path string) (map[string]interface{}, bo
 }
 
 func TestEveryStripeKindHasAVerifier(t *testing.T) {
-	for _, component := range []string{
+	for _, kind := range []string{
 		"stripewebhookendpoint", "stripeeventdestination", "stripebillingportalconfiguration", "stripepaymentmethodconfiguration",
 		"stripepaymentmethoddomain", "striperadarvaluelist", "stripeproduct", "stripeprice", "stripeentitlementfeature",
 		"stripecoupon", "stripepromotioncode", "stripeshippingrate", "stripetaxrate", "stripebillingmeter", "stripepaymentlink",
 	} {
-		if _, err := GetVerifier(component); err != nil {
+		if _, err := GetVerifier(kind); err != nil {
 			t.Error(err)
 		}
 	}
 	if _, err := GetVerifier("stripeunknown"); err == nil {
-		t.Error("an unknown component must be refused")
+		t.Error("an unknown kind must be refused")
 	}
 }
 
 func TestDeletedKinds_ExistThenGone(t *testing.T) {
-	for component, path := range map[string]string{
+	for kind, path := range map[string]string{
 		"stripewebhookendpoint":  "v1/webhook_endpoints/obj_1",
 		"stripeeventdestination": "v2/core/event_destinations/obj_1",
 		"striperadarvaluelist":   "v1/radar/value_lists/obj_1",
 		"stripecoupon":           "v1/coupons/obj_1",
 	} {
-		v, _ := GetVerifier(component)
+		v, _ := GetVerifier(kind)
 		checker := &recordingChecker{objects: map[string]map[string]interface{}{path: {"id": "obj_1"}}}
 		if err := v.VerifyExists(checker, "obj_1"); err != nil {
-			t.Fatalf("%s: %v", component, err)
+			t.Fatalf("%s: %v", kind, err)
 		}
 		if checker.asked[0] != path {
-			t.Errorf("%s: read %q, want %q", component, checker.asked[0], path)
+			t.Errorf("%s: read %q, want %q", kind, checker.asked[0], path)
 		}
 		if err := v.VerifyDestroyed(checker, "obj_1"); err == nil || !strings.Contains(err.Error(), "still exists after destroy") {
-			t.Errorf("%s: an object that survives destroy must fail, got %v", component, err)
+			t.Errorf("%s: an object that survives destroy must fail, got %v", kind, err)
 		}
 		delete(checker.objects, path)
 		if err := v.VerifyDestroyed(checker, "obj_1"); err != nil {
-			t.Errorf("%s: a deleted object passes, got %v", component, err)
+			t.Errorf("%s: a deleted object passes, got %v", kind, err)
 		}
 	}
 }
@@ -80,7 +80,7 @@ func TestPaymentMethodDomain_StillPresentAfterDestroy(t *testing.T) {
 }
 
 func TestConfigurations_ActiveThenDeactivatedNotGone(t *testing.T) {
-	for component, path := range map[string]string{
+	for kind, path := range map[string]string{
 		"stripebillingportalconfiguration": "v1/billing_portal/configurations/cfg_1",
 		"stripepaymentmethodconfiguration": "v1/payment_method_configurations/cfg_1",
 		"stripeproduct":                    "v1/products/cfg_1",
@@ -91,24 +91,24 @@ func TestConfigurations_ActiveThenDeactivatedNotGone(t *testing.T) {
 		"stripetaxrate":                    "v1/tax_rates/cfg_1",
 		"stripepaymentlink":                "v1/payment_links/cfg_1",
 	} {
-		v, _ := GetVerifier(component)
+		v, _ := GetVerifier(kind)
 		checker := &recordingChecker{objects: map[string]map[string]interface{}{path: {"active": true}}}
 		if err := v.VerifyExists(checker, "cfg_1"); err != nil {
-			t.Fatalf("%s: %v", component, err)
+			t.Fatalf("%s: %v", kind, err)
 		}
 		if checker.asked[0] != path {
-			t.Errorf("%s: read %q, want %q", component, checker.asked[0], path)
+			t.Errorf("%s: read %q, want %q", kind, checker.asked[0], path)
 		}
 		if err := v.VerifyDestroyed(checker, "cfg_1"); err == nil || !strings.Contains(err.Error(), "active=true") {
-			t.Errorf("%s: a configuration still active after destroy must fail, got %v", component, err)
+			t.Errorf("%s: a configuration still active after destroy must fail, got %v", kind, err)
 		}
 		checker.objects[path] = map[string]interface{}{"active": false}
 		if err := v.VerifyDestroyed(checker, "cfg_1"); err != nil {
-			t.Errorf("%s: a deactivated configuration passes, got %v", component, err)
+			t.Errorf("%s: a deactivated configuration passes, got %v", kind, err)
 		}
 		delete(checker.objects, path)
 		if err := v.VerifyDestroyed(checker, "cfg_1"); err == nil || !strings.Contains(err.Error(), "not found") {
-			t.Errorf("%s: a configuration Stripe no longer has must fail -- Stripe keeps deactivated ones, got %v", component, err)
+			t.Errorf("%s: a configuration Stripe no longer has must fail -- Stripe keeps deactivated ones, got %v", kind, err)
 		}
 	}
 }
@@ -141,12 +141,12 @@ func TestBillingMeter_StatusActiveThenInactive(t *testing.T) {
 	}
 }
 
-func childVerifier(t *testing.T, component string) ChildVerifier {
+func childVerifier(t *testing.T, kind string) ChildVerifier {
 	t.Helper()
-	v, _ := GetVerifier(component)
+	v, _ := GetVerifier(kind)
 	cv, ok := v.(ChildVerifier)
 	if !ok {
-		t.Fatalf("%s folds children and must verify them", component)
+		t.Fatalf("%s folds children and must verify them", kind)
 	}
 	return cv
 }
@@ -154,35 +154,35 @@ func childVerifier(t *testing.T, component string) ChildVerifier {
 // Folded children are proven like their parent: a Radar list's items and a product's feature
 // links are deleted with it, and a meter's alerts are only forgotten.
 func TestFoldedChildren_DeletedKinds(t *testing.T) {
-	for component, tc := range map[string]struct {
+	for kind, tc := range map[string]struct {
 		output string
 		path   string
 	}{
 		"striperadarvaluelist": {"item_ids", "v1/radar/value_list_items/rsli_1"},
 		"stripeproduct":        {"product_feature_ids", "v1/products/parent_1/features/prodft_1"},
 	} {
-		cv := childVerifier(t, component)
+		cv := childVerifier(t, kind)
 		if cv.ChildOutput() != tc.output {
-			t.Errorf("%s: child output %q, want %q", component, cv.ChildOutput(), tc.output)
+			t.Errorf("%s: child output %q, want %q", kind, cv.ChildOutput(), tc.output)
 		}
 		id := tc.path[strings.LastIndex(tc.path, "/")+1:]
 		children := map[string]string{"key": id}
 		checker := &recordingChecker{objects: map[string]map[string]interface{}{tc.path: {"id": id}}}
 		if err := cv.VerifyChildrenExist(checker, "parent_1", children); err != nil {
-			t.Fatalf("%s: %v", component, err)
+			t.Fatalf("%s: %v", kind, err)
 		}
 		if checker.asked[0] != tc.path {
-			t.Errorf("%s: read %q, want %q", component, checker.asked[0], tc.path)
+			t.Errorf("%s: read %q, want %q", kind, checker.asked[0], tc.path)
 		}
 		if err := cv.VerifyChildrenDestroyed(checker, "parent_1", children); err == nil || !strings.Contains(err.Error(), "still exists after destroy, which deletes it") {
-			t.Errorf("%s: a child that survives destroy must fail, got %v", component, err)
+			t.Errorf("%s: a child that survives destroy must fail, got %v", kind, err)
 		}
 		delete(checker.objects, tc.path)
 		if err := cv.VerifyChildrenDestroyed(checker, "parent_1", children); err != nil {
-			t.Errorf("%s: a deleted child passes, got %v", component, err)
+			t.Errorf("%s: a deleted child passes, got %v", kind, err)
 		}
 		if err := cv.VerifyChildrenExist(checker, "parent_1", children); err == nil || !strings.Contains(err.Error(), "not found after deploy") {
-			t.Errorf("%s: a child missing after deploy must fail, got %v", component, err)
+			t.Errorf("%s: a child missing after deploy must fail, got %v", kind, err)
 		}
 	}
 }
@@ -214,9 +214,9 @@ func TestFoldedChildren_MeterAlertsAreForgotten(t *testing.T) {
 // output the module never writes.
 func TestOnlyFoldingKindsVerifyChildren(t *testing.T) {
 	folding := map[string]bool{"striperadarvaluelist": true, "stripeproduct": true, "stripebillingmeter": true}
-	for component, v := range verifiers {
-		if _, ok := v.(ChildVerifier); ok != folding[component] {
-			t.Errorf("%s: child verifier %t, want %t", component, ok, folding[component])
+	for kind, v := range verifiers {
+		if _, ok := v.(ChildVerifier); ok != folding[kind] {
+			t.Errorf("%s: child verifier %t, want %t", kind, ok, folding[kind])
 		}
 	}
 }

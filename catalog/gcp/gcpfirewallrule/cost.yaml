@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpfirewallrule
 spec:
   billing_model: free
-  free_tier: "Google's Cloud NGFW pricing page states it outright: VPC firewall rules are free of charge. This resource is exactly that -- a classic VPC firewall rule (Cloud NGFW Essentials class) -- so creating, holding, and evaluating it costs nothing at any rule count, priority, or traffic volume. The paid Cloud NGFW tiers meter FIREWALL POLICIES using Standard features (FQDN objects, threat intelligence -- $0.0193/GiB evaluated) or Enterprise features (IDPS firewall endpoints at $1.75/hour plus $0.0193/GiB inspected), and hierarchical policies bill per VM -- all different resources this component can never create or trigger."
+  free_tier: "Google's Cloud NGFW pricing page states it outright: VPC firewall rules are free of charge. This resource is exactly that -- a classic VPC firewall rule (Cloud NGFW Essentials class) -- so creating, holding, and evaluating it costs nothing at any rule count, priority, or traffic volume. The paid Cloud NGFW tiers meter FIREWALL POLICIES using Standard features (FQDN objects, threat intelligence -- $0.0193/GiB evaluated) or Enterprise features (IDPS firewall endpoints at $1.75/hour plus $0.0193/GiB inspected), and hierarchical policies bill per VM -- all different resources this kind can never create or trigger."
   notes: "One field starts a meter: log_config enables Firewall Rules Logging, whose log generation bills under Network Telemetry ($0.25/GiB for the first 10 TiB tier, cheaper above) plus standard Cloud Logging ingestion for what is retained -- on a high-traffic allow rule with INCLUDE_ALL_METADATA that is real money, so scope logging deliberately. Everything else on this spec is free enforcement configuration; the traffic the rule allows or denies bills on the resources sending and receiving it (VM egress, NAT, load balancers), never on the rule. Deleting or ABANDONing a rule costs nothing -- an abandoned rule keeps enforcing, free at rest."

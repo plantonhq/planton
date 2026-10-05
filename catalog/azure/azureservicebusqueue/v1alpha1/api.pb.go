@@ -36,7 +36,7 @@ type AzureServiceBusQueue struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureServiceBusQueueSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *AzureServiceBusQueue) GetKind() string {
 	return ""
 }
 
-func (x *AzureServiceBusQueue) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureServiceBusQueue) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *AzureServiceBusQueue) GetStatus() *AzureServiceBusQueueStatus {
 // AzureServiceBusQueueStatus holds the deployment status and outputs.
 type AzureServiceBusQueueStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureServiceBusQueueStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureServiceBusQueueOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzureServiceBusQueueStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureservicebusqueue_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureServiceBusQueueStatus) GetOutputs() *AzureServiceBusQueueStackOutputs {
+func (x *AzureServiceBusQueueStatus) GetOutputs() *AzureServiceBusQueueOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azureservicebusqueue_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14AzureServiceBusQueueR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
 	"\x04spec\x18\x04 \x01(\v2I.dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueStatusR\x06status\"\x89\x01\n" +
-	"\x1aAzureServiceBusQueueStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueStackOutputsR\aoutputsB\x87\x03\n" +
+	"\x06status\x18\x05 \x01(\v2K.dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueStatusR\x06status\"\x84\x01\n" +
+	"\x1aAzureServiceBusQueueStatus\x12f\n" +
+	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueOutputsR\aoutputsB\x87\x03\n" +
 	"3com.dev.planton.azure.azureservicebusqueue.v1alpha1B\bApiProtoP\x01Zegithub.com/plantonhq/planton/catalog/azure/azureservicebusqueue/v1alpha1;azureservicebusqueuev1alpha1\xa2\x02\x04DPAA\xaa\x02/Dev.Planton.Azure.Azureservicebusqueue.V1alpha1\xca\x02/Dev\\Planton\\Azure\\Azureservicebusqueue\\V1alpha1\xe2\x02;Dev\\Planton\\Azure\\Azureservicebusqueue\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Azure::Azureservicebusqueue::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_azure_azureservicebusqueue_v1alpha1_api_proto_rawDescGZIP() []
 
 var file_catalog_azure_azureservicebusqueue_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureservicebusqueue_v1alpha1_api_proto_goTypes = []any{
-	(*AzureServiceBusQueue)(nil),             // 0: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueue
-	(*AzureServiceBusQueueStatus)(nil),       // 1: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureServiceBusQueueSpec)(nil),         // 3: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueSpec
-	(*AzureServiceBusQueueStackOutputs)(nil), // 4: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueStackOutputs
+	(*AzureServiceBusQueue)(nil),         // 0: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueue
+	(*AzureServiceBusQueueStatus)(nil),   // 1: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureServiceBusQueueSpec)(nil),     // 3: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueSpec
+	(*AzureServiceBusQueueOutputs)(nil),  // 4: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueOutputs
 }
 var file_catalog_azure_azureservicebusqueue_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueue.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueue.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueue.spec:type_name -> dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueSpec
 	1, // 2: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueue.status:type_name -> dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueStatus
-	4, // 3: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueStatus.outputs:type_name -> dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueStackOutputs
+	4, // 3: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueStatus.outputs:type_name -> dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Compute Engine health check.
-type GcpHealthCheckStackOutputs struct {
+type GcpHealthCheckOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Self-link URI of the health check. This is the value backend services
 	// reference in their health_checks list — the composition handle for the
@@ -43,20 +43,20 @@ type GcpHealthCheckStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpHealthCheckStackOutputs) Reset() {
-	*x = GcpHealthCheckStackOutputs{}
+func (x *GcpHealthCheckOutputs) Reset() {
+	*x = GcpHealthCheckOutputs{}
 	mi := &file_catalog_gcp_gcphealthcheck_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpHealthCheckStackOutputs) String() string {
+func (x *GcpHealthCheckOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpHealthCheckStackOutputs) ProtoMessage() {}
+func (*GcpHealthCheckOutputs) ProtoMessage() {}
 
-func (x *GcpHealthCheckStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpHealthCheckOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcphealthcheck_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,33 +68,33 @@ func (x *GcpHealthCheckStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpHealthCheckStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpHealthCheckStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpHealthCheckOutputs.ProtoReflect.Descriptor instead.
+func (*GcpHealthCheckOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcphealthcheck_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpHealthCheckStackOutputs) GetSelfLink() string {
+func (x *GcpHealthCheckOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpHealthCheckStackOutputs) GetHealthCheckName() string {
+func (x *GcpHealthCheckOutputs) GetHealthCheckName() string {
 	if x != nil {
 		return x.HealthCheckName
 	}
 	return ""
 }
 
-func (x *GcpHealthCheckStackOutputs) GetType() string {
+func (x *GcpHealthCheckOutputs) GetType() string {
 	if x != nil {
 		return x.Type
 	}
 	return ""
 }
 
-func (x *GcpHealthCheckStackOutputs) GetRegion() string {
+func (x *GcpHealthCheckOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -105,8 +105,8 @@ var File_catalog_gcp_gcphealthcheck_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_gcp_gcphealthcheck_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/gcp/gcphealthcheck/v1alpha1/outputs.proto\x12'dev.planton.gcp.gcphealthcheck.v1alpha1\"\x91\x01\n" +
-	"\x1aGcpHealthCheckStackOutputs\x12\x1b\n" +
+	"1catalog/gcp/gcphealthcheck/v1alpha1/outputs.proto\x12'dev.planton.gcp.gcphealthcheck.v1alpha1\"\x8c\x01\n" +
+	"\x15GcpHealthCheckOutputs\x12\x1b\n" +
 	"\tself_link\x18\x01 \x01(\tR\bselfLink\x12*\n" +
 	"\x11health_check_name\x18\x02 \x01(\tR\x0fhealthCheckName\x12\x12\n" +
 	"\x04type\x18\x03 \x01(\tR\x04type\x12\x16\n" +
@@ -127,7 +127,7 @@ func file_catalog_gcp_gcphealthcheck_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_gcp_gcphealthcheck_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcphealthcheck_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpHealthCheckStackOutputs)(nil), // 0: dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckStackOutputs
+	(*GcpHealthCheckOutputs)(nil), // 0: dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckOutputs
 }
 var file_catalog_gcp_gcphealthcheck_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

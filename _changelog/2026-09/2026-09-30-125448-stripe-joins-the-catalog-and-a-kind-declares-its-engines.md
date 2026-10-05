@@ -2,7 +2,7 @@
 
 **Date**: September 30, 2026
 **Type**: Feature
-**Components**: the provider enum and kind band (`shared/cloudresourcekind`), `catalog/stripe`, `pkg/iac/stackinput/providerenvvars`, `pkg/iac/stackinput/providerdetect`, `pkg/iac/stackinput/stackinputproviderconfig`, `pkg/providerparity`, `pkg/crkreflect`, `pkg/anatomy`, `pkg/iac/provisioner`, `pkg/iac/tofu/tofumodule`, `pkg/iac/pulumi/pulumimodule`, `pkg/setdeploy`, `pkg/iac/moduleverify`, `pkg/iac/eject`, `pkg/e2e/profile`, the CLI's engine prompt; OpenFgaStore, OpenFgaAuthorizationModel, OpenFgaRelationshipTuple; the provider and component forge rules
+**Components**: the provider enum and kind band (`shared/catalogkind`), `catalog/stripe`, `pkg/iac/iacinput/providerenvvars`, `pkg/iac/iacinput/providerdetect`, `pkg/iac/iacinput/iacinputproviderconfig`, `pkg/providerparity`, `pkg/catalogkindreflect`, `pkg/anatomy`, `pkg/iac/provisioner`, `pkg/iac/tofu/tofumodule`, `pkg/iac/pulumi/pulumimodule`, `pkg/setdeploy`, `pkg/iac/moduleverify`, `pkg/iac/eject`, `pkg/e2e/profile`, the CLI's engine prompt; OpenFgaStore, OpenFgaAuthorizationModel, OpenFgaRelationshipTuple; the provider and catalog-kind forge rules
 
 ## Summary
 
@@ -14,7 +14,7 @@
 
 - **`stripe = 29`** with the band `10000–10999`. `StripeProviderConfig` has `api_key` (required; its secrecy is stated in the comment), `mode` (`StripeMode`, required) and `stripe_account` (optional). The credential loader emits `STRIPE_API_KEY` and `STRIPE_ACCOUNT`. When a key is present, it refuses an undeclared mode, a key of the other mode and a key that is neither secret nor restricted, naming the key's prefix and never the key. The provider detection, display name and credentials-required arms are wired.
 - **Provider parity:** `stripe/stripe` is pinned exactly at `0.3.0`, and its schema artifact comes from OpenTofu's registry. The ledger `dispositions/stripe.yaml` records every resource with its reason, including what each planned kind's destroy does in Stripe (deleted, deactivated, or only removed from state). `catalog/stripe/provider-config-parity.yaml` holds the provider block at total accounting. The artifact test's provider-block floor is "at least one argument" (Stripe's provider takes two); the guard still catches a dropped block.
-- **`kind_meta.provisioners`** (field 12, `repeated string` of IacProvisioner names, because the kind proto cannot import `shared/iac.proto` without a package cycle). `crkreflect.Provisioners` and `RunsOn` read it, and a registry test holds every value to a real, non-duplicated engine name.
+- **`kind_meta.provisioners`** (field 12, `repeated string` of IacProvisioner names, because the kind proto cannot import `shared/iac.proto` without a package cycle). `catalogkindreflect.Provisioners` and `RunsOn` read it, and a registry test holds every value to a real, non-duplicated engine name.
 - **The anatomy gate holds the tree to the declaration:** a declared kind carries exactly the modules its engines run (`iac/pulumi` for pulumi, `iac/tf` for tofu or terraform), and a module for an undeclared engine is the new `module-for-undeclared-engine` violation. Undeclared kinds still owe both modules.
 - **One policy, in `pkg/iac/provisioner`:** `ForManifest`, `Require`, `Allowed` and `ModuleFamily`.
   - The CLI's single-manifest commands and `planton init` resolve through it. A kind with one engine is not prompted for; a kind with several is prompted among only those.
@@ -23,12 +23,12 @@
   - `planton module verify`, `planton module eject` and E2E profile discovery refuse an undeclared engine.
   - The duplicated engine-to-module-family switch in the CLI is now `ModuleFamily()`.
 - **OpenFGA:** its kinds declare `["tofu", "terraform"]`. Their Pulumi placeholders are deleted and `openfga` leaves the Pulumi module release matrix. Its protos, READMEs and catalog page describe the engines it runs on and how to choose, instead of a `--provisioner` flag that does not exist.
-- **Teaching:** the provider forge rule's stale steps are fixed (`ProviderConfigProto`, the display-name and credentials-required arms, Bazel deps, `putIfSet` and the empty-config test, where a credential guard belongs). The component forge rule, flow rule 014, `architecture/`, `MODULE_PARITY.md`, the catalog bundle's comment and the multi-cloud-catalog skill describe kinds that declare fewer engines. The proto-docs index and the reference tree are regenerated; the Kubernetes workload references list OpenFGA's new enum comment.
+- **Teaching:** the provider forge rule's stale steps are fixed (`ProviderConfigProto`, the display-name and credentials-required arms, Bazel deps, `putIfSet` and the empty-config test, where a credential guard belongs). The kind forge rule, flow rule 014, `architecture/`, `MODULE_PARITY.md`, the catalog bundle's comment and the multi-cloud-catalog skill describe kinds that declare fewer engines. The proto-docs index and the reference tree are regenerated; the Kubernetes workload references list OpenFGA's new enum comment.
 - **Generator output:** gazelle, run by `make protos`, adds a missing test dependency to AzureFrontDoorOrigin's `v1alpha1/BUILD.bazel`.
 
 ## Verification
 
-- **Offline:** `make protos`, `make generate-reference`; `go test` for providerenvvars, providerdetect, crkreflect, providerparity, anatomy, provisioner, tofumodule, pulumimodule, setdeploy, moduleverify, eject, e2e/profile, catalogbundle, protodocs and refgen; `defspack`. The mode guard, the anatomy rule and every refusal were red-proofed: each test fails with its check removed.
+- **Offline:** `make protos`, `make generate-reference`; `go test` for providerenvvars, providerdetect, catalogkindreflect, providerparity, anatomy, provisioner, tofumodule, pulumimodule, setdeploy, moduleverify, eject, e2e/profile, catalogbundle, protodocs and refgen; `defspack`. The mode guard, the anatomy rule and every refusal were red-proofed: each test fails with its check removed.
 - **The accounting:** `planton provider-parity --provider stripe --ga-schema stripe` reads 25 model-planned, 21 deferred, 3 excluded-deprecated, provider block 2 of 2 matched.
 - **Not run live:** no Stripe kind exists yet; the refusals are proven in tests against OpenFGA's real declaration.
 - **Known, not from this change:** the anatomy gate fails on `catalog/kubernetes/kubernetesplantonplatform/v1alpha1/sizing_gate_test.go` (a test file in a version directory, from an earlier commit).

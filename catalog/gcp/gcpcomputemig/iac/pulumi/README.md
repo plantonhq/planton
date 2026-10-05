@@ -30,7 +30,7 @@ iac/pulumi/
     ├── per_instance_config.go     # Stateful per-instance configs
     ├── resize_request.go          # Queued capacity requests
     ├── locals.go                  # Names, label merge, location selector
-    └── outputs.go                 # Stack output constants
+    └── outputs.go                 # Output constants
 ```
 
 ## The reference-link contract (how the layers wire)
@@ -93,7 +93,7 @@ The module also enables `compute.googleapis.com` on the target project
 (`disable_on_destroy` false — tearing down one group never disables
 Compute Engine project-wide).
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|
@@ -105,7 +105,7 @@ Compute Engine project-wide).
 
 ## Local development
 
-`stack-input.yaml` carries a ready smoke manifest. Run the module directly:
+`iac-input.yaml` carries a ready smoke manifest. Run the module directly:
 
 ```bash
 planton apply --manifest ../../e2e/manifest.yaml --module-dir .

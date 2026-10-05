@@ -28,9 +28,9 @@ func (c *recordingChecker) ReadResource(path string) (map[string]interface{}, bo
 // plain id passes through unchanged under the same escaping.
 func TestFormatPathEscapesReservedCharacters(t *testing.T) {
 	cases := []struct {
-		component string
-		id        string
-		wantPath  string
+		kind     string
+		id       string
+		wantPath string
 	}{
 		{"auth0user", "auth0|66f1c2d3e4a5b6c7d8e9f0a1", "users/auth0%7C66f1c2d3e4a5b6c7d8e9f0a1"},
 		{"auth0role", "rol_abc123", "roles/rol_abc123"},
@@ -39,16 +39,16 @@ func TestFormatPathEscapesReservedCharacters(t *testing.T) {
 		{"auth0clientfrommetadatadocument", "tpc_AbCdEf123", "clients/tpc_AbCdEf123"},
 	}
 	for _, tc := range cases {
-		v, err := GetVerifier(tc.component)
+		v, err := GetVerifier(tc.kind)
 		if err != nil {
-			t.Fatalf("%s: %v", tc.component, err)
+			t.Fatalf("%s: %v", tc.kind, err)
 		}
 		checker := &recordingChecker{exists: true}
 		if err := v.VerifyExists(checker, tc.id); err != nil {
-			t.Fatalf("%s: unexpected error: %v", tc.component, err)
+			t.Fatalf("%s: unexpected error: %v", tc.kind, err)
 		}
 		if checker.path != tc.wantPath {
-			t.Errorf("%s: path = %q, want %q", tc.component, checker.path, tc.wantPath)
+			t.Errorf("%s: path = %q, want %q", tc.kind, checker.path, tc.wantPath)
 		}
 	}
 }
@@ -56,26 +56,26 @@ func TestFormatPathEscapesReservedCharacters(t *testing.T) {
 // The id output defaults to "id" for every kind that does not name its own;
 // the user kind reads its identifier from user_id, the API's own name for it.
 func TestIDOutputDefaultsAndOverrides(t *testing.T) {
-	for component, want := range map[string]string{
+	for kind, want := range map[string]string{
 		"auth0client":                     "id",
 		"auth0role":                       "id",
 		"auth0eventstream":                "id",
 		"auth0user":                       "user_id",
 		"auth0clientfrommetadatadocument": "client_id",
 	} {
-		v, err := GetVerifier(component)
+		v, err := GetVerifier(kind)
 		if err != nil {
-			t.Fatalf("%s: %v", component, err)
+			t.Fatalf("%s: %v", kind, err)
 		}
 		if got := v.IDOutput(); got != want {
-			t.Errorf("%s: IDOutput() = %q, want %q", component, got, want)
+			t.Errorf("%s: IDOutput() = %q, want %q", kind, got, want)
 		}
 	}
 }
 
 func TestGetVerifierUnknownComponent(t *testing.T) {
 	if _, err := GetVerifier("auth0nothing"); err == nil {
-		t.Fatal("expected an error for an unregistered component")
+		t.Fatal("expected an error for an unregistered kind")
 	}
 }
 

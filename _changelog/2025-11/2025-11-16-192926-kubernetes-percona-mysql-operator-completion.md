@@ -1,4 +1,4 @@
-# KubernetesPerconaMysqlOperator Component Completion to 100%
+# KubernetesPerconaMysqlOperator Kind Completion to 100%
 
 **Date**: November 16, 2025
 **Type**: Enhancement  
@@ -6,11 +6,11 @@
 
 ## Summary
 
-Completed the KubernetesPerconaMysqlOperator deployment component from 82.21% to 100% by addressing critical testing gaps, standardizing module structures, adding documentation, and resolving a significant Helm chart version discrepancy between Pulumi and Terraform implementations. This work ensures production-grade reliability for managing Percona XtraDB Cluster (PXC) operators on Kubernetes with full validation coverage and consistent IaC tool behavior.
+Completed the KubernetesPerconaMysqlOperator catalog kind from 82.21% to 100% by addressing critical testing gaps, standardizing module structures, adding documentation, and resolving a significant Helm chart version discrepancy between Pulumi and Terraform implementations. This work ensures production-grade reliability for managing Percona XtraDB Cluster (PXC) operators on Kubernetes with full validation coverage and consistent IaC tool behavior.
 
 ## Problem Statement / Motivation
 
-The KubernetesPerconaMysqlOperator component was at 82.21% completion with multiple blocking issues affecting both reliability and consistency:
+The KubernetesPerconaMysqlOperator kind was at 82.21% completion with multiple blocking issues affecting both reliability and consistency:
 
 ### Critical Gaps
 
@@ -24,7 +24,7 @@ The KubernetesPerconaMysqlOperator component was at 82.21% completion with multi
 
 The chart version mismatch was particularly concerning:
 - **Different Capabilities**: PXC operator provides Galera synchronous replication; PS operator provides standalone MySQL
-- **Operational Confusion**: Same component specification could deploy different database architectures depending on IaC tool choice
+- **Operational Confusion**: Same kind specification could deploy different database architectures depending on IaC tool choice
 - **Documentation Mismatch**: Research docs recommended PXC operator, but Terraform silently used PS operator
 
 ## Solution / What's New
@@ -43,7 +43,7 @@ var _ = ginkgo.Describe("KubernetesPerconaMysqlOperator Validation Tests", func(
         input = &KubernetesPerconaMysqlOperator{
             ApiVersion: "kubernetes.planton.dev/v1",
             Kind:       "KubernetesPerconaMysqlOperator",
-            Metadata:   &shared.CloudResourceMetadata{Name: "test-percona-mysql-operator"},
+            Metadata:   &shared.CatalogObjectMetadata{Name: "test-percona-mysql-operator"},
             Spec:       &KubernetesPerconaMysqlOperatorSpec{
                 TargetCluster: &kubernetes.KubernetesAddonTargetCluster{},
                 Namespace:     "percona-mysql-operator",
@@ -177,7 +177,7 @@ resource "helm_release" "percona_mysql_operator" {
 
 Created `overview.md` explaining the module's design philosophy:
 
-> The Percona Operator for MySQL Kubernetes Pulumi module streamlines deployment of the Percona XtraDB Cluster (PXC) operator within Kubernetes environments. By accepting a `KubernetesPerconaMysqlOperatorStackInput` specification with target cluster credentials, namespace settings, and container resource allocations, the module establishes a Kubernetes provider, creates a dedicated namespace, and leverages the official Percona Helm chart repository to install the PXC operator (`pxc-operator`) with management of highly-available MySQL clusters featuring Galera synchronous replication, enterprise-grade features including high availability, disaster recovery, and automated backups.
+> The Percona Operator for MySQL Kubernetes Pulumi module streamlines deployment of the Percona XtraDB Cluster (PXC) operator within Kubernetes environments. By accepting a `KubernetesPerconaMysqlOperatorIacInput` specification with target cluster credentials, namespace settings, and container resource allocations, the module establishes a Kubernetes provider, creates a dedicated namespace, and leverages the official Percona Helm chart repository to install the PXC operator (`pxc-operator`) with management of highly-available MySQL clusters featuring Galera synchronous replication, enterprise-grade features including high availability, disaster recovery, and automated backups.
 
 ## Implementation Details
 
@@ -191,7 +191,7 @@ Created `overview.md` explaining the module's design philosophy:
 - **Use Cases**: Production workloads requiring HA
 - **Version**: 1.18.0 (actively maintained)
 
-**PS Operator (`ps-operator`) - Deprecated in This Component**:
+**PS Operator (`ps-operator`) - Deprecated in This Kind**:
 - **Technology**: Standalone Percona Server for MySQL
 - **High Availability**: Manual replication setup
 - **Nodes**: Single-node or manual master-slave
@@ -264,7 +264,7 @@ ok   1.092s
 ```
 
 ### Code Organization
-- **Standardized Files**: Pulumi uses `main.go`/`locals.go` like all components
+- **Standardized Files**: Pulumi uses `main.go`/`locals.go` like all kinds
 - **Terraform Best Practices**: Separate files for locals, outputs, resources
 - **Maintainability**: Clear separation of concerns
 
@@ -318,7 +318,7 @@ Percona XtraDB Cluster is a high-availability solution for MySQL:
 ```
 User → planton CLI
   ↓
-Stack Input (spec.proto)
+IaC Input (spec.proto)
   ↓
 Pulumi/Terraform Module → pxc-operator Helm Chart v1.18.0
   ↓
@@ -340,7 +340,7 @@ Operator deployment includes:
 
 ## Related Work
 
-### Component Completion Series
+### Kind Completion Series
 Part of coordinated Percona operator standardization:
 - ✅ **KubernetesPerconaMongoOperator**: 90.40% → 100%
 - ✅ **KubernetesPerconaMysqlOperator**: 82.21% → 100% (this changelog)
@@ -414,7 +414,7 @@ As PXC operator evolves:
 
 ## File Locations
 
-**Component Root**:
+**Kind Root**:
 - `apis/dev/planton/provider/kubernetes/kubernetesperconamysqloperator/v1/`
 
 **Key Files**:
@@ -430,7 +430,7 @@ As PXC operator evolves:
 
 **Status**: ✅ Production Ready
 **Timeline**: Completed in single iteration (November 16, 2025)
-**Component Score**: 100.00% (previously 82.21%)
+**Kind Score**: 100.00% (previously 82.21%)
 **Spec Changes**: None - No protobuf API modifications
 **Helm Chart**: Aligned to `pxc-operator` v1.18.0 (both Pulumi and Terraform)
 

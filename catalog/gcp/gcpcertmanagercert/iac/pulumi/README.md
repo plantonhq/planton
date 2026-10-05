@@ -16,22 +16,23 @@ planton pulumi up --manifest certificate.yaml
 
 ### Standalone Usage
 
-1. Set the stack input as an environment variable:
+1. Set the IaC input as an environment variable. The module reads a `GcpCertManagerCertIacInput` from `IAC_INPUT_YAML` (YAML content), `IAC_INPUT_YAML_FILE` (a path to that YAML) or the Pulumi config key `planton:iac-input`; the manifest goes under `target`:
 
 ```bash
-export PLANTON_CLOUD_RESOURCE_MANIFEST=$(cat <<EOF
-apiVersion: gcp.planton.dev/v1alpha1
-kind: GcpCertManagerCert
-metadata:
-  name: web-cert
-spec:
-  projectId:
-    value: my-gcp-project
-  managed:
-    domains:
-      - app.example.com
-    dnsAuthorizations:
-      - value: projects/my-gcp-project/locations/global/dnsAuthorizations/app-auth
+export IAC_INPUT_YAML=$(cat <<EOF
+target:
+  apiVersion: gcp.planton.dev/v1alpha1
+  kind: GcpCertManagerCert
+  metadata:
+    name: web-cert
+  spec:
+    projectId:
+      value: my-gcp-project
+    managed:
+      domains:
+        - app.example.com
+      dnsAuthorizations:
+        - value: projects/my-gcp-project/locations/global/dnsAuthorizations/app-auth
 EOF
 )
 ```
@@ -50,7 +51,7 @@ pulumi up
 
 ## Inputs
 
-The module reads its configuration from the `GcpCertManagerCertStackInput` proto message:
+The module reads its configuration from the `GcpCertManagerCertIacInput` proto message:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|

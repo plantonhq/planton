@@ -20,7 +20,7 @@ The original GCP Cloud Run Environment chart was minimal, containing only a basi
 - Frontend and backend Cloud Run services
 - DNS zone for custom domains
 
-Creating these resources individually as "Lego blocks" worked but was time-consuming and error-prone, requiring manual orchestration of dependencies.
+Creating these resources individually as "Catalog kinds" worked but was time-consuming and error-prone, requiring manual orchestration of dependencies.
 
 ### Pain Points
 
@@ -322,17 +322,16 @@ planton chart build gcp/cloud-run-environment
 # Publish chart to platform
 planton chart publish gcp/cloud-run-environment
 
-# Create project from chart
-planton project create --from-chart gcp/cloud-run-environment \
-  --name odwen-prod \
-  --values ./odwen-prod-values.yaml
+# Install the chart as an Infra Stack
+planton chart install odwen-prod gcp/cloud-run-environment \
+  -f ./odwen-prod-values.yaml
 ```
 
 ## Documentation Enhancements
 
 ### README Sections Added
 
-1. **Included Cloud Resources (conditional)**: Table showing which resources are always/conditionally created
+1. **Included Infra Components (conditional)**: Table showing which resources are always/conditionally created
 2. **Boolean Flags Explained**: How each flag controls resource creation
 3. **Chart Input Values**: Complete parameter reference organized by category
 4. **Resource Dependencies and Deployment Order**: Visual diagram and detailed explanation
@@ -508,10 +507,10 @@ Potential improvements for future iterations:
 - Synthetic relationships (metadata.relationships field)
 - Conditional Jinja2 rendering in templates
 - DAG visualization in web console
-- InfraProject automatic pipeline triggering
+- InfraStack automatic pipeline triggering
 
 ### Platform Features Used
-- CloudResourceMetadata relationships field
+- CatalogObjectMetadata relationships field
 - RelationshipType enum (depends_on, uses, runs_on, managed_by)
 - Relationship grouping for visualization
 - Automatic DAG construction from relationships

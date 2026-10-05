@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurevirtualmachine.v1alpha1;
 
-// **AzureVirtualMachineStackOutputs** captures the outputs of provisioning
+// **AzureVirtualMachineOutputs** captures the outputs of provisioning
 // an Azure Virtual Machine.
-message AzureVirtualMachineStackOutputs {
+message AzureVirtualMachineOutputs {
   // The Azure Resource Manager ID of the VM -- what role assignments,
   // diagnostics, and backup policies scope to.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachines/{name}

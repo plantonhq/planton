@@ -4,9 +4,9 @@
 # form (Write includes Read); the stripe/stripe provider (0.3.0, iac/tf/provider.tf) sends it as
 # a bearer token. Resource names are the form's labels. Every group is `derived` (static analysis
 # of the module and the provider's calls, cited in notes) until a live run under a key built from
-# exactly this file upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# exactly this file upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: stripepaymentmethodconfiguration
 spec:

@@ -1,0 +1,80 @@
+---
+alwaysApply: false
+---
+RULE NUMBER
+019
+
+TITLE
+Forge: Seed the Kind GUIDE.md and Regenerate the Reference
+
+ROLE
+You are the Planton Code Partner working inside the developer's local workspace in Cursor. This rule seeds the newly forged kind's authored wisdom layer -- its `GUIDE.md` -- from what THIS forging session just learned, then regenerates the catalog reference so the new kind's generated pages exist and link the guide. You have just read the provider's documentation, designed the spec, and written the IaC module: you currently know more about this kind's judgment calls than any later session will.
+
+SCOPE
+- Creates `catalog/<provider>/<kindfolder>/GUIDE.md` (the KIND ROOT, beside `README.md` and `catalog.md`)
+- Runs `make generate-reference` (whole-catalog; writes the new kind's `reference.md`, the guide head link, and the updated indexes)
+- Does not modify any other existing files
+
+PREREQUISITES
+- The kind's spec, IaC modules, README, e2e manifest, and presets exist (rules 001-018 complete)
+- The kind's catalog page exists (rule 020 runs first in this phase -- the guide grounds its claims partly on `catalog.md`)
+- `_rules/docs/write-catalog-kind-guide.mdc` -- the authoring standard this rule follows
+
+GUIDE.MD IS THE DURABLE-JUDGMENT HOME
+The guide is where a forging session's durable judgment lives: operational recipes,
+design rationale, deployment-landscape insight, and parity accounting (the pinned
+provider version, compositions, and recorded exclusions with their reasons). Anything
+a later session would need to understand WHY the kind is shaped the way it is
+belongs here -- there is no separate research document. Research WORKING notes
+(scratch surveys, raw provider-doc digests) are never committed; distill what is
+durable into the guide and let the rest go.
+
+SEQUENTIAL STEPS
+
+1) **Collect the session's judgment**
+   Before it evaporates, list what this forging session learned that the schema cannot carry:
+   - Internal conventions the kind participates in (state ownership, flags whose
+     semantics have consequences, kinds that supersede inline conveniences)
+   - Judgment calls made while designing the spec (why a field is a reference, why a
+     default is what it is) -- ONLY where a composer's decision depends on them
+   - Diagram impact: what this kind renders as, and what choices hide or reveal
+     infrastructure on the architecture diagram
+   - What it pairs with (from the foreign keys just declared) and what well-known name
+     it substitutes for, if any
+
+2) **Filter by the five laws**
+   Apply `_rules/docs/write-catalog-kind-guide.mdc` -- especially: no general cloud
+   knowledge, judgment framing with consequences, every claim grounded in the files this
+   session just wrote. If honest filtering leaves almost nothing, write the short guide
+   that remains -- never pad. A three-paragraph guide that changes decisions is success.
+
+3) **Write the guide**
+   Create `GUIDE.md` at the kind root following the write rule's shape.
+
+4) **Regenerate the reference**
+   Run `make generate-reference`. This materializes the new kind's `reference.md`
+   (with the `**Guide**:` head link), the provider index row (Example and Guide
+   columns), the root index counts, and the graph edges -- the freshness gate fails
+   the tree if this step is skipped.
+
+5) **Self-validate**
+   - `go test ./pkg/explain/refgen/` passes (drift gate + wisdom guardrails: embedded
+     manifests validate, links resolve, placement correct)
+   - The new `reference.md` head carries the Guide link
+
+OUTPUT
+- The guide's path and a one-line summary of the judgment it carries
+- Confirmation that the reference regeneration ran and the gates pass
+
+SUCCESS
+- `GUIDE.md` exists at the kind root and follows the write rule
+- `make generate-reference` run; drift gate and wisdom guardrails green
+- No general-knowledge filler; every claim grounded in this session's own artifacts
+
+NOTES
+- This rule is part of the forge sequence (Phase 9 in the orchestrator)
+- The guide is a LIVING document: it will be extended as adoption feedback arrives;
+  seeding it now preserves knowledge that only exists during the forging session
+- Check whether the provider's catalog is settled before investing heavily in guide
+  content -- wisdom authored against a catalog under active rework will be wrong
+  before it is read; in that case seed only what is structural and certain

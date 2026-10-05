@@ -20,7 +20,7 @@ AWS Key Management Service (KMS) customer-managed keys provide encryption, signi
 - `xks_key_id` — the existing key in the external key manager (external key stores only)
 - `grants` — scoped, revocable per-principal key access without key-policy edits: grantee/retiring principals (reference an `AwsIamRole` or pass a literal IAM principal ARN — never a bare service principal, which AWS rejects on this parameter), operations, optional encryption-context constraints, retire-vs-revoke teardown
 
-## Stack outputs
+## Outputs
 
 - `key_id` — generated key ID
 - `key_arn` — join key for encryption-at-rest fields
@@ -29,7 +29,7 @@ AWS Key Management Service (KMS) customer-managed keys provide encryption, signi
 
 ## How it works
 
-The Planton CLI validates the manifest, generates stack inputs, and invokes IaC backends:
+The Planton CLI validates the manifest, generates IaC inputs, and invokes IaC backends:
 
 - Pulumi (Go modules under `iac/pulumi`)
 - Terraform (modules under `iac/tf`)

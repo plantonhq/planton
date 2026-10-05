@@ -5,7 +5,7 @@ package outputs
 
 import (
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/protobuf/proto"
 )
@@ -20,7 +20,7 @@ type TransformOptions struct {
 }
 
 // TransformRaw takes raw IaC outputs (as produced by Pulumi automation API
-// or Terraform JSON) and returns a typed StackOutputs proto message. It
+// or Terraform JSON) and returns a typed Outputs proto message. It
 // supports three override levels discovered from the module directory:
 //
 //  1. transform-outputs executable -- full programmatic control
@@ -34,7 +34,7 @@ type TransformOptions struct {
 //
 // If opts is nil or opts.ModuleDir is empty, the generic path is used.
 func TransformRaw(
-	kind cloudresourcekind.CloudResourceKind,
+	kind catalogkind.CatalogKind,
 	rawOutputs map[string]interface{},
 	opts *TransformOptions,
 ) (proto.Message, map[string]string, error) {

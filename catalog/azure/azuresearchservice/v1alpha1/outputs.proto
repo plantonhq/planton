@@ -4,9 +4,9 @@ package dev.planton.azure.azuresearchservice.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureSearchServiceStackOutputs** captures the outputs of
+// **AzureSearchServiceOutputs** captures the outputs of
 // provisioning an Azure AI Search service.
-message AzureSearchServiceStackOutputs {
+message AzureSearchServiceOutputs {
   // The Azure Resource Manager ID of the service -- what shared
   // private links and diagnostic settings reference.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Search/searchServices/{name}

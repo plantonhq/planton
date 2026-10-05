@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpPlantonRunnerStackOutputs captures the observable identifiers of a
+// GcpPlantonRunnerOutputs captures the observable identifiers of a
 // deployed runner appliance -- the handles for day-2 operations: tailing
 // the runner's logs, granting its service account permissions, and
 // finding the service in GCP tooling.
-type GcpPlantonRunnerStackOutputs struct {
+type GcpPlantonRunnerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The fully qualified name of the Cloud Run service keeping the runner
 	// running (projects/{project}/locations/{region}/services/{name}). The
@@ -56,20 +56,20 @@ type GcpPlantonRunnerStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpPlantonRunnerStackOutputs) Reset() {
-	*x = GcpPlantonRunnerStackOutputs{}
+func (x *GcpPlantonRunnerOutputs) Reset() {
+	*x = GcpPlantonRunnerOutputs{}
 	mi := &file_catalog_gcp_gcpplantonrunner_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpPlantonRunnerStackOutputs) String() string {
+func (x *GcpPlantonRunnerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpPlantonRunnerStackOutputs) ProtoMessage() {}
+func (*GcpPlantonRunnerOutputs) ProtoMessage() {}
 
-func (x *GcpPlantonRunnerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpPlantonRunnerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpplantonrunner_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -81,54 +81,54 @@ func (x *GcpPlantonRunnerStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpPlantonRunnerStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpPlantonRunnerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpPlantonRunnerOutputs.ProtoReflect.Descriptor instead.
+func (*GcpPlantonRunnerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpplantonrunner_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpPlantonRunnerStackOutputs) GetServiceName() string {
+func (x *GcpPlantonRunnerOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *GcpPlantonRunnerStackOutputs) GetServiceShortName() string {
+func (x *GcpPlantonRunnerOutputs) GetServiceShortName() string {
 	if x != nil {
 		return x.ServiceShortName
 	}
 	return ""
 }
 
-func (x *GcpPlantonRunnerStackOutputs) GetServiceAccountEmail() string {
+func (x *GcpPlantonRunnerOutputs) GetServiceAccountEmail() string {
 	if x != nil {
 		return x.ServiceAccountEmail
 	}
 	return ""
 }
 
-func (x *GcpPlantonRunnerStackOutputs) GetTokenSecretId() string {
+func (x *GcpPlantonRunnerOutputs) GetTokenSecretId() string {
 	if x != nil {
 		return x.TokenSecretId
 	}
 	return ""
 }
 
-func (x *GcpPlantonRunnerStackOutputs) GetRunnerName() string {
+func (x *GcpPlantonRunnerOutputs) GetRunnerName() string {
 	if x != nil {
 		return x.RunnerName
 	}
 	return ""
 }
 
-func (x *GcpPlantonRunnerStackOutputs) GetProjectId() string {
+func (x *GcpPlantonRunnerOutputs) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *GcpPlantonRunnerStackOutputs) GetRegion() string {
+func (x *GcpPlantonRunnerOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -139,8 +139,8 @@ var File_catalog_gcp_gcpplantonrunner_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpplantonrunner_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpplantonrunner/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpplantonrunner.v1alpha1\"\xa3\x02\n" +
-	"\x1cGcpPlantonRunnerStackOutputs\x12!\n" +
+	"3catalog/gcp/gcpplantonrunner/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpplantonrunner.v1alpha1\"\x9e\x02\n" +
+	"\x17GcpPlantonRunnerOutputs\x12!\n" +
 	"\fservice_name\x18\x01 \x01(\tR\vserviceName\x12,\n" +
 	"\x12service_short_name\x18\x02 \x01(\tR\x10serviceShortName\x122\n" +
 	"\x15service_account_email\x18\x03 \x01(\tR\x13serviceAccountEmail\x12&\n" +
@@ -166,7 +166,7 @@ func file_catalog_gcp_gcpplantonrunner_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpplantonrunner_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpplantonrunner_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpPlantonRunnerStackOutputs)(nil), // 0: dev.planton.gcp.gcpplantonrunner.v1alpha1.GcpPlantonRunnerStackOutputs
+	(*GcpPlantonRunnerOutputs)(nil), // 0: dev.planton.gcp.gcpplantonrunner.v1alpha1.GcpPlantonRunnerOutputs
 }
 var file_catalog_gcp_gcpplantonrunner_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

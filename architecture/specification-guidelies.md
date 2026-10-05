@@ -300,7 +300,7 @@ service_mesh_config:
 1. **Cleaner User Experience**: Lowercase values are easier to read and type
 2. **No Namespace Collisions**: Protobuf nesting prevents enum value conflicts
 3. **Better IDE Support**: Nested enums provide better code completion
-4. **Consistent Patterns**: All components follow the same style
+4. **Consistent Patterns**: All kinds follow the same style
 
 ### Exceptions
 

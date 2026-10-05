@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflaresecretsstore
 spec:
@@ -13,7 +13,7 @@ spec:
         id field).
     - name: store_id
       derivations:
-        - from_stack_output: store_id
+        - from_output: store_id
       where_to_find: >-
         `GET /accounts/<account_id>/secrets_store/stores` on the Cloudflare
         v4 API (the id field of the account's store -- Cloudflare allows one

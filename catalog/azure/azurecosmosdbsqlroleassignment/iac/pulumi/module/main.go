@@ -9,12 +9,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurecosmosdbsqlroleassignmentv1alpha1.AzureCosmosdbSqlRoleAssignmentStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurecosmosdbsqlroleassignmentv1alpha1.AzureCosmosdbSqlRoleAssignmentIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -73,7 +73,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecosmosdbsqlroleassignmentv1
 		return errors.Wrapf(err, "failed to create cosmosdb sql role assignment for principal %s", locals.PrincipalId)
 	}
 
-	// Export stack outputs -- the grant record's ARM identity.
+	// Export outputs -- the grant record's ARM identity.
 	ctx.Export(OpRoleAssignmentId, createdRoleAssignment.ID())
 	ctx.Export(OpRoleAssignmentGuid, createdRoleAssignment.Name)
 	ctx.Export(OpCosmosdbAccountName, pulumi.String(accountName))

@@ -4,7 +4,7 @@ Deploys a Vertex AI Workbench instance -- a managed JupyterLab environment backe
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Workbench Instance** -- a managed `workbench.Instance` in the specified GCP project and zone, configured with the chosen machine type, disk layout, and notebook environment (VM image or container image)
 - **Boot Disk** -- configurable disk type (PD_SSD by default), size (150 GB default), and optional CMEK encryption via Cloud KMS
@@ -20,13 +20,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the notebook instance will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef. The module enables the Notebooks and Compute Engine APIs itself, so the connection's principal needs permission to enable services on a fresh project.
-- **A VPC network and subnet** (if using private networking) -- the instance can be placed in a specific VPC/subnet with optional public IP disabled. Provide self-links directly or reference GcpVpcNetwork and GcpSubnetwork Cloud Resources via ValueFromRef.
+- **A GCP project** where the notebook instance will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef. The module enables the Notebooks and Compute Engine APIs itself, so the connection's principal needs permission to enable services on a fresh project.
+- **A VPC network and subnet** (if using private networking) -- the instance can be placed in a specific VPC/subnet with optional public IP disabled. Provide self-links directly or reference GcpVpcNetwork and GcpSubnetwork Infra Components via ValueFromRef.
 - **Cloud KMS key** (if using CMEK) -- a key in the same region as the instance for boot and/or data disk encryption.
 - **GPU quota** (if using accelerators) -- sufficient GPU quota in the target zone for the chosen accelerator type.
 
@@ -58,7 +58,7 @@ spec:
 planton apply -f vertex-ai-notebook.yaml
 ```
 
-This creates a Workbench instance with the default deep learning VM image, 150 GB SSD boot disk, 100 GB data disk, no GPU, and public IP access via the Vertex AI proxy. A Stack Job tracks the provisioning in real time.
+This creates a Workbench instance with the default deep learning VM image, 150 GB SSD boot disk, 100 GB data disk, no GPU, and public IP access via the Vertex AI proxy. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -107,7 +107,7 @@ These are the most important decisions when configuring a Vertex AI Notebook. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -119,9 +119,9 @@ These are the most important decisions when configuring a Vertex AI Notebook. Ex
 | **GcpKmsKey** (optional) | `dataDisk.kmsKey` | `status.outputs.key_id` |
 | **GcpServiceAccount** (optional) | `serviceAccount` | `status.outputs.email` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -146,8 +146,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the notebook instance is created
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- provides the VPC network for private notebook access
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- provides the subnet for instance placement within the VPC
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides customer-managed encryption keys for boot and data disks
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- provides the VM identity for accessing GCP resources
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the notebook instance is created
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC network for private notebook access
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- provides the subnet for instance placement within the VPC
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides customer-managed encryption keys for boot and data disks
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- provides the VM identity for accessing GCP resources

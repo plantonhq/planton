@@ -14,13 +14,13 @@ This is the classic single-node RDS shape. For Aurora's shared-storage clusters 
 - **Engine configuration** -- inline `parameters` and `options` (module-managed parameter and option groups with family/version derived from the pinned engine version -- the same own-XOR-existing idiom as the cluster kind) or existing groups by name.
 - **Integrations** -- IAM database authentication, feature-scoped engine `iamRoles` (one association per entry; `featureName` is required and engine-specific), CloudWatch log exports, Performance Insights, Enhanced Monitoring, Database Insights, Active Directory join (AWS-managed or self-managed), license models and character sets for Oracle/SQL Server.
 
-## Stack outputs
+## Outputs
 
 `instance_identifier`, `arn`, `resource_id`, `endpoint` (address:port), `address`, `port`, `hosted_zone_id`, `engine_version_actual`, `master_user_secret_arn`, `db_subnet_group_name`, `db_parameter_group_name`, `option_group_name`.
 
 ## How it works
 
-Planton provisions via the Pulumi or Terraform module in `iac/`, both implementing the same contract at full parity. The API contract is protobuf-based (`spec.proto`); stack execution is orchestrated using `AwsRdsInstanceStackInput` (provider credentials + IaC info).
+Planton provisions via the Pulumi or Terraform module in `iac/`, both implementing the same contract at full parity. The API contract is protobuf-based (`spec.proto`); stack execution is orchestrated using `AwsRdsInstanceIacInput` (provider credentials + IaC info).
 
 ## References
 

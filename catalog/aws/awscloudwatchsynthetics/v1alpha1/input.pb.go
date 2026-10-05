@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudwatchSyntheticsStackInput is the input for the IaC modules
+// AwsCloudwatchSyntheticsIacInput is the input for the IaC modules
 // that manage CloudWatch Synthetics canaries and groups.
-type AwsCloudwatchSyntheticsStackInput struct {
+type AwsCloudwatchSyntheticsIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsCloudwatchSynthetics resource to deploy.
 	Target *AwsCloudwatchSynthetics `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsCloudwatchSyntheticsStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsCloudwatchSyntheticsStackInput) Reset() {
-	*x = AwsCloudwatchSyntheticsStackInput{}
+func (x *AwsCloudwatchSyntheticsIacInput) Reset() {
+	*x = AwsCloudwatchSyntheticsIacInput{}
 	mi := &file_catalog_aws_awscloudwatchsynthetics_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudwatchSyntheticsStackInput) String() string {
+func (x *AwsCloudwatchSyntheticsIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudwatchSyntheticsStackInput) ProtoMessage() {}
+func (*AwsCloudwatchSyntheticsIacInput) ProtoMessage() {}
 
-func (x *AwsCloudwatchSyntheticsStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudwatchSyntheticsIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudwatchsynthetics_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsCloudwatchSyntheticsStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudwatchSyntheticsStackInput.ProtoReflect.Descriptor instead.
-func (*AwsCloudwatchSyntheticsStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudwatchSyntheticsIacInput.ProtoReflect.Descriptor instead.
+func (*AwsCloudwatchSyntheticsIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchsynthetics_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudwatchSyntheticsStackInput) GetTarget() *AwsCloudwatchSynthetics {
+func (x *AwsCloudwatchSyntheticsIacInput) GetTarget() *AwsCloudwatchSynthetics {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsCloudwatchSyntheticsStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsCloudwatchSyntheticsIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awscloudwatchsynthetics_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_aws_awscloudwatchsynthetics_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awscloudwatchsynthetics/v1alpha1/input.proto\x120dev.planton.aws.awscloudwatchsynthetics.v1alpha1\x1a6catalog/aws/awscloudwatchsynthetics/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd3\x01\n" +
-	"!AwsCloudwatchSyntheticsStackInput\x12a\n" +
+	"8catalog/aws/awscloudwatchsynthetics/v1alpha1/input.proto\x120dev.planton.aws.awscloudwatchsynthetics.v1alpha1\x1a6catalog/aws/awscloudwatchsynthetics/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd1\x01\n" +
+	"\x1fAwsCloudwatchSyntheticsIacInput\x12a\n" +
 	"\x06target\x18\x01 \x01(\v2I.dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"4com.dev.planton.aws.awscloudwatchsynthetics.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awscloudwatchsynthetics_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_aws_awscloudwatchsynthetics_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudwatchsynthetics_v1alpha1_input_proto_goTypes = []any{
-	(*AwsCloudwatchSyntheticsStackInput)(nil), // 0: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackInput
-	(*AwsCloudwatchSynthetics)(nil),           // 1: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSynthetics
-	(*aws.AwsProviderConfig)(nil),             // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsCloudwatchSyntheticsIacInput)(nil), // 0: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsIacInput
+	(*AwsCloudwatchSynthetics)(nil),         // 1: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSynthetics
+	(*aws.AwsProviderConfig)(nil),           // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awscloudwatchsynthetics_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackInput.target:type_name -> dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSynthetics
-	2, // 1: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsIacInput.target:type_name -> dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSynthetics
+	2, // 1: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

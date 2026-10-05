@@ -1,7 +1,7 @@
 # AWS Messaging Family — SQS, SNS, and EventBridge to 90/10
 
 **Date:** 2026-07-05
-**Scope:** Components #26–#30 — `AwsSqsQueue`, `AwsSnsTopic`, `AwsSnsSubscription` (new kind), `AwsEventBridgeBus`, `AwsEventBridgeRule`
+**Scope:** Kinds #26–#30 — `AwsSqsQueue`, `AwsSnsTopic`, `AwsSnsSubscription` (new kind), `AwsEventBridgeBus`, `AwsEventBridgeRule`
 
 ## Summary
 
@@ -91,7 +91,7 @@ to `AwsSnsSubscription` nodes.
   surface with the DLQ arm offline-proven, while SQS-as-DLQ wiring runs live
   in the EventBridge bus lane.
 - **All five E2E profiles used `status: pending`** — not a valid
-  `ComponentE2EProfile` enum value; the profile loader aborts on the first
+  `CatalogKindE2EProfile` enum value; the profile loader aborts on the first
   invalid profile, breaking CI matrix discovery for the entire AWS provider.
 
 ## Validation

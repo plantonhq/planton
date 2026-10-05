@@ -5,7 +5,7 @@ The **AzurePrivateDnsRecord** component deploys one DNS record set in an Azure P
 ## Purpose
 
 - **Private names as configuration**: the entries that used to live in hosts files or hand-run `az` commands become declarative resources beside the services they name.
-- **One component, every record type**: A, AAAA, CNAME, MX, PTR, SRV, and TXT -- the record type is whichever typed payload the spec carries, so a record can never be declared with a shape its type cannot hold.
+- **One kind, every record type**: A, AAAA, CNAME, MX, PTR, SRV, and TXT -- the record type is whichever typed payload the spec carries, so a record can never be declared with a shape its type cannot hold.
 - **Deploy-time values wire by reference**: CNAME targets and TXT values accept references to other components' outputs, so names minted at deploy time flow in without hand-copying.
 
 ## Key Features

@@ -7,7 +7,7 @@ import "catalog/auth0/auth0clientfrommetadatadocument/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0clientfrommetadatadocument/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0ClientFromMetadataDocument is a component that registers an application
+// Auth0ClientFromMetadataDocument is a kind that registers an application
 // in an Auth0 tenant from its Client ID Metadata Document -- a JSON file the
 // application's owner hosts at an https URL. Auth0 fetches the document and
 // registers the application from it: the path an MCP client takes to onboard
@@ -43,12 +43,12 @@ message Auth0ClientFromMetadataDocument {
   // Must be "Auth0ClientFromMetadataDocument" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'Auth0ClientFromMetadataDocument'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the registration within Planton
   // - org: Organization that owns it
   // - env: Environment it is deployed from
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the document's URL and the settings the tenant sets over it.
   Auth0ClientFromMetadataDocumentSpec spec = 4 [(buf.validate.field).required = true];
@@ -61,7 +61,7 @@ message Auth0ClientFromMetadataDocument {
 // Auth0ClientFromMetadataDocumentStatus represents the current state of an
 // Auth0ClientFromMetadataDocument resource. Populated by the deployment system.
 message Auth0ClientFromMetadataDocumentStatus {
-  // outputs contains the stack outputs: the registered application's id, what
+  // outputs contains the outputs: the registered application's id, what
   // Auth0 took from the document, and the document's validation result.
-  Auth0ClientFromMetadataDocumentStackOutputs outputs = 1;
+  Auth0ClientFromMetadataDocumentOutputs outputs = 1;
 }

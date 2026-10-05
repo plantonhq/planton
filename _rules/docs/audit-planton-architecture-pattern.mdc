@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Rule: Audit Architecture Pattern
 
-**Purpose**: Guide an AI agent through auditing a file in the catalog's patterns library (`catalog/patterns/`). Verifies the composition wisdom is grounded, current against every composed kind's schema, and structurally sound.
+**Purpose**: Guide an AI agent through auditing a file in the catalog's patterns library (`catalog/_patterns/`). Verifies the composition wisdom is grounded, current against every composed kind's schema, and structurally sound.
 
 **Trigger**: User references this rule or asks to audit/verify/review an architecture pattern.
 

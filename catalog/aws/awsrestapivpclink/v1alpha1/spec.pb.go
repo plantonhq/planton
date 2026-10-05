@@ -30,11 +30,11 @@ const (
 // services: the link fronts a Network Load Balancer in your VPC, and
 // integrations with connection_type VPC_LINK route through it instead
 // of the public internet. One link is shared by many APIs and owns its
-// own network attachment - which is why it is its own component rather
+// own network attachment - which is why it is its own kind rather
 // than part of AwsRestApiGateway.
 //
 // (HTTP APIs use a different link resource that attaches to subnets
-// directly - that is the AwsHttpApiVpcLink component. The two are not
+// directly - that is the AwsHttpApiVpcLink kind. The two are not
 // interchangeable.)
 //
 // Provisioning takes several minutes while AWS builds the network

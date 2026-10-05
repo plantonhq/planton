@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-client-vpn stack-input
-type AwsClientVpnStackInput struct {
+// aws-client-vpn iac-input
+type AwsClientVpnIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsClientVpn `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsClientVpnStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsClientVpnStackInput) Reset() {
-	*x = AwsClientVpnStackInput{}
+func (x *AwsClientVpnIacInput) Reset() {
+	*x = AwsClientVpnIacInput{}
 	mi := &file_catalog_aws_awsclientvpn_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsClientVpnStackInput) String() string {
+func (x *AwsClientVpnIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsClientVpnStackInput) ProtoMessage() {}
+func (*AwsClientVpnIacInput) ProtoMessage() {}
 
-func (x *AwsClientVpnStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsClientVpnIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsclientvpn_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsClientVpnStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsClientVpnStackInput.ProtoReflect.Descriptor instead.
-func (*AwsClientVpnStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsClientVpnIacInput.ProtoReflect.Descriptor instead.
+func (*AwsClientVpnIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsclientvpn_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsClientVpnStackInput) GetTarget() *AwsClientVpn {
+func (x *AwsClientVpnIacInput) GetTarget() *AwsClientVpn {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsClientVpnStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsClientVpnIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awsclientvpn_v1alpha1_input_proto protoreflect.FileDescript
 
 const file_catalog_aws_awsclientvpn_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/aws/awsclientvpn/v1alpha1/input.proto\x12%dev.planton.aws.awsclientvpn.v1alpha1\x1a+catalog/aws/awsclientvpn/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb2\x01\n" +
-	"\x16AwsClientVpnStackInput\x12K\n" +
+	"-catalog/aws/awsclientvpn/v1alpha1/input.proto\x12%dev.planton.aws.awsclientvpn.v1alpha1\x1a+catalog/aws/awsclientvpn/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb0\x01\n" +
+	"\x14AwsClientVpnIacInput\x12K\n" +
 	"\x06target\x18\x01 \x01(\v23.dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xc5\x02\n" +
 	")com.dev.planton.aws.awsclientvpn.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awsclientvpn_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsclientvpn_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsclientvpn_v1alpha1_input_proto_goTypes = []any{
-	(*AwsClientVpnStackInput)(nil), // 0: dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnStackInput
-	(*AwsClientVpn)(nil),           // 1: dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpn
-	(*aws.AwsProviderConfig)(nil),  // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsClientVpnIacInput)(nil),  // 0: dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnIacInput
+	(*AwsClientVpn)(nil),          // 1: dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpn
+	(*aws.AwsProviderConfig)(nil), // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsclientvpn_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnStackInput.target:type_name -> dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpn
-	2, // 1: dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnIacInput.target:type_name -> dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpn
+	2, // 1: dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

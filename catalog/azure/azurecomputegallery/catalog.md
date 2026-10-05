@@ -4,7 +4,7 @@ Deploys an Azure Compute Gallery -- the shared library an organization keeps its
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute gallery** -- the gallery itself, with its description and optional sharing profile (Private, Groups, or Community with its public publishing identity)
 - **Azure Tags** -- your governance tags merged over the Planton-derived resource tags (organization, environment, resource ID); a user tag with the same key wins
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -50,7 +50,7 @@ spec:
 planton apply -f compute-gallery.yaml
 ```
 
-This creates a private, RBAC-only gallery -- free at rest, ready for image definitions and published versions. A Stack Job tracks the provisioning in real time.
+This creates a private, RBAC-only gallery -- free at rest, ready for image definitions and published versions. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ These are the most important decisions when configuring a compute gallery. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,6 +112,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the gallery lives in
-- [**Azure Compute Gallery Image**](/cloud-catalog/azure-compute-gallery-image) -- the image definitions created inside the gallery, referencing its `gallery_name` output
-- [**Azure Virtual Machine**](/cloud-catalog/azure-virtual-machine) -- deploys from the published, region-replicated image versions
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the gallery lives in
+- [**Azure Compute Gallery Image**](/infra-catalog/azure-compute-gallery-image) -- the image definitions created inside the gallery, referencing its `gallery_name` output
+- [**Azure Virtual Machine**](/infra-catalog/azure-virtual-machine) -- deploys from the published, region-replicated image versions

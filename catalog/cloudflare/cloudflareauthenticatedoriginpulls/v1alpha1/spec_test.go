@@ -32,7 +32,7 @@ func validAop(spec *CloudflareAuthenticatedOriginPullsSpec) *CloudflareAuthentic
 	return &CloudflareAuthenticatedOriginPulls{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareAuthenticatedOriginPulls",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-aop",
 		},
 		Spec: spec,

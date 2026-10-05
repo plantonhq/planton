@@ -36,7 +36,7 @@ var _ = ginkgo.Describe("GcpEventarcTriggerSpec", func() {
 		return &GcpEventarcTrigger{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpEventarcTrigger",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-trigger",
 			},
 			Spec: &GcpEventarcTriggerSpec{

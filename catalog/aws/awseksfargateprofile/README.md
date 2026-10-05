@@ -56,7 +56,7 @@ profile is an independent object with its own lifecycle:
   at validation time; immutability is documented where it applies.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `fargate_profile_arn`: the profile's ARN
 - `fargate_profile_name`: the profile's name

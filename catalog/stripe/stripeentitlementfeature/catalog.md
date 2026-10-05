@@ -1,10 +1,10 @@
 # Stripe Entitlement Feature
 
-Declares one capability a customer can be entitled to -- API access, single sign-on, extra seats -- identified by a lookup key your application checks. Products grant features, and Stripe tells your application which features each subscribed customer holds. One Cloud Resource per feature.
+Declares one capability a customer can be entitled to -- API access, single sign-on, extra seats -- identified by a lookup key your application checks. Products grant features, and Stripe tells your application which features each subscribed customer holds. One Infra Component per feature.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module creates one entitlement feature in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module creates one entitlement feature in the Stripe account your Stripe connection's key belongs to:
 
 - **The lookup key** -- the name your code checks a customer's active entitlements for
 - **The name** -- your team's label in the Dashboard
@@ -46,7 +46,7 @@ spec:
 planton apply -f stripe-entitlement-feature.yaml
 ```
 
-A Stack Job tracks the change in real time.
+An Infra Job tracks the change in real time.
 
 ## Key Configuration
 
@@ -60,11 +60,11 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -84,4 +84,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Stripe Product**](/cloud-catalog/stripe-product) -- grants the feature to everyone who buys it.
+- [**Stripe Product**](/infra-catalog/stripe-product) -- grants the feature to everyone who buys it.

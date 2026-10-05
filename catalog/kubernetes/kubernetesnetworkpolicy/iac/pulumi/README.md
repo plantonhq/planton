@@ -8,7 +8,7 @@ This Pulumi module creates and manages a Kubernetes `networking/v1` NetworkPolic
 
 ```
 iac/pulumi/
-├── main.go              # Entrypoint: loads stack input, calls module
+├── main.go              # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml          # Pulumi project configuration
 ├── Makefile             # Make targets for preview/up/down/refresh
 └── module/
@@ -20,7 +20,7 @@ iac/pulumi/
 
 ## How It Works
 
-1. **Stack Input Loading**: The entrypoint loads `KubernetesNetworkPolicyStackInput` from Pulumi config
+1. **IaC Input Loading**: The entrypoint loads `KubernetesNetworkPolicyIacInput` from Pulumi config
 2. **Locals Initialization**: `locals.go` computes:
    - Standard Planton labels merged with user labels (identity keys cannot be overridden)
    - User annotations
@@ -28,7 +28,7 @@ iac/pulumi/
    - The resolved policy types: the explicit `policy_types` when set, otherwise the Kubernetes inference rule (ingress always; egress only when egress rules exist)
 3. **Provider Creation**: Kubernetes provider is initialized from `provider_config`
 4. **NetworkPolicy Creation**: A single `networking/v1` NetworkPolicy is created with the pod selector, policy types, and ingress/egress rules
-5. **Output Export**: Policy name, namespace, and the governed directions are exported as stack outputs
+5. **Output Export**: Policy name, namespace, and the governed directions are exported as outputs
 
 ## Semantics Preserved by the Module
 

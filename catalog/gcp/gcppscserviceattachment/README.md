@@ -4,7 +4,7 @@ Publishes a service through Private Service Connect — the PRODUCER half. A ser
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Service attachment** -- the `compute_service_attachment` in your region, pointing at `targetService` (your internal load balancer's forwarding rule), translating consumer traffic into `natSubnets`, and enforcing `connectionPreference` with its accept and reject lists
 
@@ -86,7 +86,7 @@ planton apply -f psc-service-attachment.yaml
 - Each accept-list consumer names **exactly one** of `projectId`, `network`, `endpointUrl`.
 - **`attachmentName`** matches `^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$`; **`domainNames`** entries end with a dot.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -117,7 +117,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpGlobalForwardingRule](/docs/catalog/gcp/gcpglobalforwardingrule) — the producer's internal load balancer this publishes, and the consumer's PSC endpoint that targets it
 - [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — the PSC NAT subnets

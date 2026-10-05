@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -25,7 +25,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -80,7 +80,7 @@ var _ = ginkgo.Describe("KubernetesVelero Validation Tests", func() {
 		input = &KubernetesVelero{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesVelero",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-velero",
 			},
 			Spec: &KubernetesVeleroSpec{
@@ -96,7 +96,7 @@ var _ = ginkgo.Describe("KubernetesVelero Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "velero", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "velero", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -109,7 +109,7 @@ var _ = ginkgo.Describe("KubernetesVelero Validation Tests", func() {
 			// The one-run composition shape: the backup role deploys in the
 			// same run and its ARN flows in by reference.
 			input.Spec.BackupStorage.GetS3().IrsaRoleArn = valueFrom(
-				cloudresourcekind.CloudResourceKind_AwsIamRole, "velero-backups", "status.outputs.role_arn")
+				catalogkind.CatalogKind_AwsIamRole, "velero-backups", "status.outputs.role_arn")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -145,7 +145,7 @@ var _ = ginkgo.Describe("KubernetesVelero Validation Tests", func() {
 			input.Spec.BackupStorage = gcsBackend(&KubernetesVeleroGcsBackend{
 				Bucket: "velero-backups",
 				WorkloadIdentityServiceAccountEmail: valueFrom(
-					cloudresourcekind.CloudResourceKind_GcpServiceAccount, "velero-backups", "status.outputs.email"),
+					catalogkind.CatalogKind_GcpServiceAccount, "velero-backups", "status.outputs.email"),
 			})
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
@@ -175,7 +175,7 @@ var _ = ginkgo.Describe("KubernetesVelero Validation Tests", func() {
 			// the same run and its client id flows in by reference.
 			azure := validAzureBlob()
 			azure.WorkloadIdentityClientId = valueFrom(
-				cloudresourcekind.CloudResourceKind_AzureUserAssignedIdentity, "velero-backups", "status.outputs.client_id")
+				catalogkind.CatalogKind_AzureUserAssignedIdentity, "velero-backups", "status.outputs.client_id")
 			input.Spec.BackupStorage = azureBackend(azure)
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})

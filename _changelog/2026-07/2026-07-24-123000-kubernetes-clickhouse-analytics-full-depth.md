@@ -57,6 +57,6 @@ Spec tests for both kinds (every CEL rule accept+reject locked); offline
 `tofu` plan and `pulumi preview` proofs across full-surface and minimal
 shapes for all four modules, including a hostile `helm_values`
 fullname-hijack repel; secret-coverage, reference, containment,
-import-map and stack-outputs conformance gates; repo-wide Bazel build;
+import-map and outputs conformance gates; repo-wide Bazel build;
 e2e-build/e2e-vet; license footers; all presets and scenario manifests
 CLI-validated.

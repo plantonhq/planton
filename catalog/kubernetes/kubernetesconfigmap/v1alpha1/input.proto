@@ -6,11 +6,11 @@ import "catalog/kubernetes/kubernetesconfigmap/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 /**
- * **KubernetesConfigMapStackInput** defines the input structure for deploying a Kubernetes
+ * **KubernetesConfigMapIacInput** defines the input structure for deploying a Kubernetes
  * ConfigMap. It carries the target ConfigMap specification and the Kubernetes cluster
  * configuration the IaC modules (Pulumi and Terraform) need to reach the cluster.
  */
-message KubernetesConfigMapStackInput {
+message KubernetesConfigMapIacInput {
   /**
    * The target ConfigMap resource to be created.
    * Contains the complete specification including metadata, data entries, and immutability.

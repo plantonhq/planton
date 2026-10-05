@@ -12,10 +12,10 @@ type Locals struct {
 // initializeLocals mirrors the Terraform module's locals. A user grant
 // carries no tags (ARM data-plane user entries are untagged -- the
 // provider exposes none), so there is no tag map to derive.
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremongoclusteruserv1alpha1.AzureMongoClusterUserStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremongoclusteruserv1alpha1.AzureMongoClusterUserIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMongoClusterUser = stackInput.Target
+	locals.AzureMongoClusterUser = iacInput.Target
 
 	return locals
 }

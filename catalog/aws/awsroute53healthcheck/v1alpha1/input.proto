@@ -5,10 +5,10 @@ package dev.planton.aws.awsroute53healthcheck.v1alpha1;
 import "catalog/aws/awsroute53healthcheck/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsRoute53HealthCheckStackInput is the input for the
+// AwsRoute53HealthCheckIacInput is the input for the
 // aws-route53-health-check IaC modules.
-message AwsRoute53HealthCheckStackInput {
-  // target cloud-resource
+message AwsRoute53HealthCheckIacInput {
+  // the catalog object to deploy
   AwsRoute53HealthCheck target = 1;
 
   // provider-config

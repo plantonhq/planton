@@ -5,7 +5,7 @@ import (
 
 	gcpcloudrundomainmappingv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrundomainmapping/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -23,8 +23,8 @@ type Locals struct {
 	GcpLabels map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudrundomainmappingv1alpha1.GcpCloudRunDomainMappingStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpcloudrundomainmappingv1alpha1.GcpCloudRunDomainMappingIacInput) *Locals {
+	target := iacInput.Target
 
 	gcpLabels := map[string]string{}
 	for key, value := range target.Spec.Labels {
@@ -32,7 +32,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudrundomainmappingv1a
 	}
 	gcpLabels[gcplabelkeys.Resource] = "true"
 	gcpLabels[gcplabelkeys.ResourceName] = target.Metadata.Name
-	gcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpCloudRunDomainMapping.String())
+	gcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpCloudRunDomainMapping.String())
 
 	if target.Metadata.Org != "" {
 		gcpLabels[gcplabelkeys.Organization] = target.Metadata.Org

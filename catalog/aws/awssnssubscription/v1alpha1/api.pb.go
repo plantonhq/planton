@@ -35,7 +35,7 @@ type AwsSnsSubscription struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, environment,
 	// labels) and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration of the subscription.
 	Spec *AwsSnsSubscriptionSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds post-deployment information.
@@ -88,7 +88,7 @@ func (x *AwsSnsSubscription) GetKind() string {
 	return ""
 }
 
-func (x *AwsSnsSubscription) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsSnsSubscription) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,7 +114,7 @@ type AwsSnsSubscriptionStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the observable values returned by Pulumi/Terraform
 	// after provisioning.
-	Outputs       *AwsSnsSubscriptionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsSnsSubscriptionOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AwsSnsSubscriptionStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssnssubscription_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsSnsSubscriptionStatus) GetOutputs() *AwsSnsSubscriptionStackOutputs {
+func (x *AwsSnsSubscriptionStatus) GetOutputs() *AwsSnsSubscriptionOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_aws_awssnssubscription_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12AwsSnsSubscriptionR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionStatusR\x06status\"\x81\x01\n" +
-	"\x18AwsSnsSubscriptionStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionStackOutputsR\aoutputsB\xed\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionStatusR\x06status\"|\n" +
+	"\x18AwsSnsSubscriptionStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionOutputsR\aoutputsB\xed\x02\n" +
 	"/com.dev.planton.aws.awssnssubscription.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awssnssubscription/v1alpha1;awssnssubscriptionv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awssnssubscription.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awssnssubscription\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awssnssubscription\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awssnssubscription::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_aws_awssnssubscription_v1alpha1_api_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awssnssubscription_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awssnssubscription_v1alpha1_api_proto_goTypes = []any{
-	(*AwsSnsSubscription)(nil),             // 0: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscription
-	(*AwsSnsSubscriptionStatus)(nil),       // 1: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsSnsSubscriptionSpec)(nil),         // 3: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionSpec
-	(*AwsSnsSubscriptionStackOutputs)(nil), // 4: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionStackOutputs
+	(*AwsSnsSubscription)(nil),           // 0: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscription
+	(*AwsSnsSubscriptionStatus)(nil),     // 1: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsSnsSubscriptionSpec)(nil),       // 3: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionSpec
+	(*AwsSnsSubscriptionOutputs)(nil),    // 4: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionOutputs
 }
 var file_catalog_aws_awssnssubscription_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscription.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscription.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscription.spec:type_name -> dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionSpec
 	1, // 2: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscription.status:type_name -> dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionStatus
-	4, // 3: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionStatus.outputs:type_name -> dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionStackOutputs
+	4, // 3: dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionStatus.outputs:type_name -> dev.planton.aws.awssnssubscription.v1alpha1.AwsSnsSubscriptionOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

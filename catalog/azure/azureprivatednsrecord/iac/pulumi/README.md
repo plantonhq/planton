@@ -24,4 +24,4 @@ Exactly one of the SDK's private DNS record resources: `privatedns.ARecord`, `pr
 
 ## Required Permissions
 
-Least-privilege runner permissions for this component are declared in [`../permissions.yaml`](../permissions.yaml).
+Least-privilege runner permissions for this kind are declared in [`../permissions.yaml`](../permissions.yaml).

@@ -4,7 +4,7 @@ Creates a Google Cloud HA VPN gateway and the Cloud Router its tunnels speak BGP
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **HA VPN gateway** -- the `compute_ha_vpn_gateway` with two interfaces (public IPs, or Interconnect attachments when pinned)
 - **Cloud Router** -- the `compute_router` with the BGP ASN and default advertisement every session inherits
@@ -84,7 +84,7 @@ planton apply -f ha-vpn-gateway.yaml
 - **`vpnInterfaces`** at most 2, unique ids, and only with `router.encryptedInterconnectRouter: true`.
 - Names match `^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -117,7 +117,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpHaVpnConnection](/docs/catalog/gcp/gcphavpnconnection) — a site or peer cloud connected through this gateway
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — the network the gateway attaches to

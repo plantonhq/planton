@@ -4,9 +4,9 @@
 # the meter spins when a pipeline's Execute Data Flow activity (or a
 # debug session) runs it -- Spark cluster time billed per vCore-hour on
 # the Azure Data Factory V2 service against the factory. Schema:
-# finops/componentcostprofile/v1.
+# finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azuredatafactorydataflow
 spec:
@@ -30,5 +30,5 @@ spec:
     - each execution also bills one orchestration activity run on the factory (Execute Data Flow is a pipeline activity)
     - Microsoft's pricing page notes data flows additionally bill the managed disk and blob storage required for execution and debugging
     - Data Factory operations bill on the factory -- read/write per 50,000 entity operations (authoring this data flow included) and monitoring per 50,000 run records
-    - the systems the flow reads and writes (through its datasets and linked services) bill their own storage and request meters as their own kinds
+    - the systems the flow reads and writes (through its datasets and linked services) bill their own storage and request meters as their own components
   notes: "The definition never appears on the invoice -- an idle data flow costs exactly nothing, and there is no inactive-entity fee for data flows (that meter exists only for pipelines). All execution spend is decided OUTSIDE this spec: the pipeline that runs it (how often), and the Azure integration runtime of the Execute Data Flow activity (cluster size, compute class, time-to-live -- a warm TTL cluster keeps billing vCore-hours between runs on the factory's side). Rates verified live from Microsoft's Data Factory data-pipeline pricing page and the Retail Prices API (serviceName 'Azure Data Factory v2', eastus) on 2026-08-18."

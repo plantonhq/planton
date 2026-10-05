@@ -5,14 +5,14 @@ package dev.planton.kubernetes.kubernetesairflow.v1alpha1;
 import "catalog/kubernetes/kubernetes.proto";
 
 /**
- * **KubernetesAirflowStackOutputs** — the composition handles a
+ * **KubernetesAirflowOutputs** — the composition handles a
  * deployed Airflow exports. Humans and API clients reach the API
  * server (UI + REST API) through its service handle (compose
  * exposure kinds over it); the admin credential and the module-owned
  * connection Secrets are exported by NAME for downstream
  * composition.
  */
-message KubernetesAirflowStackOutputs {
+message KubernetesAirflowOutputs {
   // Namespace Airflow runs in.
   string namespace = 1;
 

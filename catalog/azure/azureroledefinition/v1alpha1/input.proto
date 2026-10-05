@@ -5,10 +5,10 @@ package dev.planton.azure.azureroledefinition.v1alpha1;
 import "catalog/azure/azureroledefinition/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureRoleDefinitionStackInput is the input to the IaC module.
+// AzureRoleDefinitionIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-message AzureRoleDefinitionStackInput {
-  // target cloud-resource to be deployed
+message AzureRoleDefinitionIacInput {
+  // the catalog object to deploy to be deployed
   AzureRoleDefinition target = 1;
   // provider-config for Azure authentication
   dev.planton.azure.AzureProviderConfig provider_config = 2;

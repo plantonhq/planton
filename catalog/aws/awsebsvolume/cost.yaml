@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsebsvolume
 spec:
@@ -60,4 +60,4 @@ spec:
     - snapshots the owner takes (and the final_snapshot safety net) bill standard snapshot storage per GB-month of changed blocks until deleted
     - the one-time volume-initialization fee follows the referenced snapshot's full size, and the one-time clone fee follows the source volume's written blocks -- both invisible to this manifest
     - customer-managed KMS key charges (monthly key fee, per-request grants and data-key operations) bill on the referenced AwsKmsKey component
-  notes: "Storage, provisioned IOPS, and provisioned throughput all bill per-second with a 60-second minimum -- but they bill around the clock, so a volume is committed spend the moment it exists. Deleting the volume is the only off switch: detaching it, stopping the instance, or emptying the filesystem changes nothing. gp3's excess-over-included billing (3,000 IOPS and 125 MiB/s free baselines) is why this component is hand-modeled rather than derivation-driven -- derivation rules cannot subtract the included baseline from the provisioned value."
+  notes: "Storage, provisioned IOPS, and provisioned throughput all bill per-second with a 60-second minimum -- but they bill around the clock, so a volume is committed spend the moment it exists. Deleting the volume is the only off switch: detaching it, stopping the instance, or emptying the filesystem changes nothing. gp3's excess-over-included billing (3,000 IOPS and 125 MiB/s free baselines) is why this kind is hand-modeled rather than derivation-driven -- derivation rules cannot subtract the included baseline from the provisioned value."

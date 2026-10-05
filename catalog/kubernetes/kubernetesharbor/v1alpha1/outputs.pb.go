@@ -23,11 +23,11 @@ const (
 )
 
 // *
-// **KubernetesHarborStackOutputs** — the composition handles a
+// **KubernetesHarborOutputs** — the composition handles a
 // deployed Harbor exports: the front-door Service for exposure
 // kinds, the per-component Services, and the admin credential
 // Secret.
-type KubernetesHarborStackOutputs struct {
+type KubernetesHarborOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// * Namespace Harbor is installed into.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -82,20 +82,20 @@ type KubernetesHarborStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesHarborStackOutputs) Reset() {
-	*x = KubernetesHarborStackOutputs{}
+func (x *KubernetesHarborOutputs) Reset() {
+	*x = KubernetesHarborOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesharbor_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesHarborStackOutputs) String() string {
+func (x *KubernetesHarborOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesHarborStackOutputs) ProtoMessage() {}
+func (*KubernetesHarborOutputs) ProtoMessage() {}
 
-func (x *KubernetesHarborStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesHarborOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesharbor_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -107,103 +107,103 @@ func (x *KubernetesHarborStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesHarborStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesHarborStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesHarborOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesHarborOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesharbor_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesHarborStackOutputs) GetNamespace() string {
+func (x *KubernetesHarborOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesHarborStackOutputs) GetExposeService() string {
+func (x *KubernetesHarborOutputs) GetExposeService() string {
 	if x != nil {
 		return x.ExposeService
 	}
 	return ""
 }
 
-func (x *KubernetesHarborStackOutputs) GetKubeEndpoint() string {
+func (x *KubernetesHarborOutputs) GetKubeEndpoint() string {
 	if x != nil {
 		return x.KubeEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesHarborStackOutputs) GetExternalUrl() string {
+func (x *KubernetesHarborOutputs) GetExternalUrl() string {
 	if x != nil {
 		return x.ExternalUrl
 	}
 	return ""
 }
 
-func (x *KubernetesHarborStackOutputs) GetCoreService() string {
+func (x *KubernetesHarborOutputs) GetCoreService() string {
 	if x != nil {
 		return x.CoreService
 	}
 	return ""
 }
 
-func (x *KubernetesHarborStackOutputs) GetPortalService() string {
+func (x *KubernetesHarborOutputs) GetPortalService() string {
 	if x != nil {
 		return x.PortalService
 	}
 	return ""
 }
 
-func (x *KubernetesHarborStackOutputs) GetRegistryService() string {
+func (x *KubernetesHarborOutputs) GetRegistryService() string {
 	if x != nil {
 		return x.RegistryService
 	}
 	return ""
 }
 
-func (x *KubernetesHarborStackOutputs) GetJobserviceService() string {
+func (x *KubernetesHarborOutputs) GetJobserviceService() string {
 	if x != nil {
 		return x.JobserviceService
 	}
 	return ""
 }
 
-func (x *KubernetesHarborStackOutputs) GetTrivyService() string {
+func (x *KubernetesHarborOutputs) GetTrivyService() string {
 	if x != nil {
 		return x.TrivyService
 	}
 	return ""
 }
 
-func (x *KubernetesHarborStackOutputs) GetDatabaseService() string {
+func (x *KubernetesHarborOutputs) GetDatabaseService() string {
 	if x != nil {
 		return x.DatabaseService
 	}
 	return ""
 }
 
-func (x *KubernetesHarborStackOutputs) GetRedisService() string {
+func (x *KubernetesHarborOutputs) GetRedisService() string {
 	if x != nil {
 		return x.RedisService
 	}
 	return ""
 }
 
-func (x *KubernetesHarborStackOutputs) GetAdminUsername() string {
+func (x *KubernetesHarborOutputs) GetAdminUsername() string {
 	if x != nil {
 		return x.AdminUsername
 	}
 	return ""
 }
 
-func (x *KubernetesHarborStackOutputs) GetAdminPasswordSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesHarborOutputs) GetAdminPasswordSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.AdminPasswordSecret
 	}
 	return nil
 }
 
-func (x *KubernetesHarborStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesHarborOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -214,8 +214,8 @@ var File_catalog_kubernetes_kubernetesharbor_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_kubernetes_kubernetesharbor_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kubernetesharbor/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetesharbor.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xfe\x04\n" +
-	"\x1cKubernetesHarborStackOutputs\x12\x1c\n" +
+	":catalog/kubernetes/kubernetesharbor/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetesharbor.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xf9\x04\n" +
+	"\x17KubernetesHarborOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12%\n" +
 	"\x0eexpose_service\x18\x02 \x01(\tR\rexposeService\x12#\n" +
 	"\rkube_endpoint\x18\x03 \x01(\tR\fkubeEndpoint\x12!\n" +
@@ -247,11 +247,11 @@ func file_catalog_kubernetes_kubernetesharbor_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetesharbor_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesharbor_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesHarborStackOutputs)(nil),   // 0: dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarborStackOutputs
+	(*KubernetesHarborOutputs)(nil),        // 0: dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarborOutputs
 	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetesharbor_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarborStackOutputs.admin_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarborOutputs.admin_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

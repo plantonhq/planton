@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurerecoveryservicesvault.v1alpha1;
 
-// **AzureRecoveryServicesVaultStackOutputs** captures the outputs of
+// **AzureRecoveryServicesVaultOutputs** captures the outputs of
 // provisioning a Recovery Services vault.
-message AzureRecoveryServicesVaultStackOutputs {
+message AzureRecoveryServicesVaultOutputs {
   // The Azure Resource Manager ID of the vault.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.RecoveryServices/vaults/{name}
   string recovery_services_vault_id = 1;

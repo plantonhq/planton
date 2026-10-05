@@ -25,7 +25,7 @@ unspecified spec deploys identically on both engines.
 
 ## Inputs
 
-The module receives an `AzurePublicIpPrefixStackInput` containing:
+The module receives an `AzurePublicIpPrefixIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the prefix's ARM identity (references resolved to literals by the platform)
 - `target.spec.prefix_length` -- CIDR length of the reserved range; Azure defaults to 28 (16 addresses), /31 reserves 2, /29 reserves 8; smaller numbers reserve bigger ranges and bill for every reserved address

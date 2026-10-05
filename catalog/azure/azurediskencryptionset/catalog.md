@@ -4,7 +4,7 @@ Deploys an Azure Disk Encryption Set -- the bridge between Key Vault and server-
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Disk Encryption Set** -- in the specified region and resource group, bound to the referenced Key Vault key with the chosen encryption posture
 - **Managed identity** -- required: a system-assigned principal (the grant target surfaced in the outputs) or attached user-assigned identities that unwrap the key
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -60,7 +60,7 @@ spec:
 planton apply -f disk-encryption-set.yaml
 ```
 
-This creates the recommended posture: a system-assigned identity and automatic rotation following the key's versionless ID. Grant the identity vault crypto access after creation (via the `identity_principal_id` output), then point disks at the set. A Stack Job tracks the provisioning in real time.
+This creates the recommended posture: a system-assigned identity and automatic rotation following the key's versionless ID. Grant the identity vault crypto access after creation (via the `identity_principal_id` output), then point disks at the set. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,7 +91,7 @@ These are the most important decisions when configuring a disk encryption set. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -99,9 +99,9 @@ These are the most important decisions when configuring a disk encryption set. E
 | **AzureKeyVaultKey** | `keyVaultKeyId` | `status.outputs.versionless_id` |
 | **AzureUserAssignedIdentity** | `identity.identityIds[]` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,8 +120,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- hosts the key; must run purge protection
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the customer-managed key this set unwraps, referenced by `keyVaultKeyId` (its `versionless_id` for the rotating posture)
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- pre-provisioned unwrapping identities attached so vault grants can exist BEFORE the set deploys
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- grants the set's identity vault crypto access
-- [**Azure Managed Disk**](/cloud-catalog/azure-managed-disk) / [**Azure Virtual Machine**](/cloud-catalog/azure-virtual-machine) / [**Azure Virtual Machine Scale Set**](/cloud-catalog/azure-virtual-machine-scale-set) -- reference the set's ARM ID as their `disk_encryption_set_id` to encrypt disks through it
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- hosts the key; must run purge protection
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the customer-managed key this set unwraps, referenced by `keyVaultKeyId` (its `versionless_id` for the rotating posture)
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- pre-provisioned unwrapping identities attached so vault grants can exist BEFORE the set deploys
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- grants the set's identity vault crypto access
+- [**Azure Managed Disk**](/infra-catalog/azure-managed-disk) / [**Azure Virtual Machine**](/infra-catalog/azure-virtual-machine) / [**Azure Virtual Machine Scale Set**](/infra-catalog/azure-virtual-machine-scale-set) -- reference the set's ARM ID as their `disk_encryption_set_id` to encrypt disks through it

@@ -5,10 +5,10 @@ package dev.planton.aws.awsappsyncapi.v1alpha1;
 import "catalog/aws/awsappsyncapi/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsAppSyncApiStackInput is the input for the IaC modules that
+// AwsAppSyncApiIacInput is the input for the IaC modules that
 // manage an AppSync API with its data sources, resolvers, functions,
 // types, caching, API keys, channel namespaces, and custom domain.
-message AwsAppSyncApiStackInput {
+message AwsAppSyncApiIacInput {
   // target is the AwsAppSyncApi resource to deploy.
   AwsAppSyncApi target = 1;
   // provider_config contains the AWS provider credentials and configuration.

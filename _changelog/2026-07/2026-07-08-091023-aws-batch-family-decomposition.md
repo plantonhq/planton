@@ -14,7 +14,7 @@ kinds: `AwsBatchJobQueue` (363), `AwsBatchSchedulingPolicy` (364), and
 `AwsBatchJobDefinition` (365). The EventBridge Batch target now references the
 job definition kind through a typed foreign key. Two CLI defects found by this
 work were fixed at the root: every `planton tofu` command crashed reading an
-unregistered `--stack-input` flag, and `planton tofu load-tfvars` wrote its
+unregistered `--iac-input` flag, and `planton tofu load-tfvars` wrote its
 output to stderr.
 
 ## Problem Statement / Motivation
@@ -97,7 +97,7 @@ latest-ACTIVE consumers, and `deregister_on_new_revision` (default true)
 controls whether superseded revisions are deactivated. The deferred arms
 (multinode `node_properties`, multi-container `ecs_properties`, Batch-on-EKS
 `eks_properties` pod jobs, `enable_execute_command`, S3-files volumes) are
-recorded with reasons in the component docs.
+recorded with reasons in the kind docs.
 
 ### EventBridge seam (breaking)
 
@@ -109,9 +109,9 @@ rolls the rule through the graph.
 ## CLI Fixes (found by this work's offline gate)
 
 1. **`planton tofu` commands crashed on manifest resolution** with
-   `flag accessed but not defined: stack-input`. The shared manifest resolver
-   (`internal/cli/manifest/resolve_from_stack_input.go`) read the
-   `--stack-input` flag unconditionally, but only the pulumi command tree
+   `flag accessed but not defined: iac-input`. The shared manifest resolver
+   (`internal/cli/manifest/resolve_from_iac_input.go`) read the
+   `--iac-input` flag unconditionally, but only the pulumi command tree
    registers it. The resolver now treats an unregistered flag as "source
    absent", restoring `planton tofu init/plan/apply/destroy/refresh
    --manifest ...`.
@@ -157,7 +157,7 @@ primary and a Spot overflow environment, an environment can be replaced
 behind a queue with zero queue downtime, one fair-share policy can govern
 many queues, and "new job definition revision in, EventBridge rule rolls" is
 expressed in the resource graph. Every `planton tofu` user regains the
-manifest-driven command path the `--stack-input` crash had broken.
+manifest-driven command path the `--iac-input` crash had broken.
 
 ## Related Work
 

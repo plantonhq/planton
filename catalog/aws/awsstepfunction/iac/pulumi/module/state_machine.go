@@ -37,7 +37,7 @@ func stateMachine(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) e
 		RoleArn:    pulumi.String(spec.RoleArn.GetValue()),
 		Type:       pulumi.StringPtr(smType),
 		// Publish an immutable version on create and on every configuration
-		// change. The latest version's ARN is exported as a stack output so
+		// change. The latest version's ARN is exported as an output so
 		// consumers can pin executions to a snapshot instead of the mutable
 		// state machine.
 		Publish: pulumi.BoolPtr(spec.Publish),
@@ -132,7 +132,7 @@ func stateMachine(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) e
 		aliasArns[aliasSpec.Name] = createdAlias.Arn
 	}
 
-	// Export outputs matching AwsStepFunctionStackOutputs.
+	// Export outputs matching AwsStepFunctionOutputs.
 	ctx.Export(OpStateMachineArn, sm.Arn)
 	ctx.Export(OpStateMachineName, sm.Name)
 	ctx.Export(OpStateMachineVersionArn, sm.StateMachineVersionArn)

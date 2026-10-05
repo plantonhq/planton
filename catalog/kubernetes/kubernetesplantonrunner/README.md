@@ -78,7 +78,7 @@ The runner registers itself under `<env>-<metadata.name>`
 (`metadata.name` outside an environment) the moment it joins.
 
 Both a Pulumi module and a Terraform/OpenTofu module implement this
-component at full behavioral parity; the provisioner is an execution
+kind at full behavioral parity; the provisioner is an execution
 detail.
 
 ---

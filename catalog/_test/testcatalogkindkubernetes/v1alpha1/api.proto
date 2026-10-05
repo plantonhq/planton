@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package dev.planton._test.testcatalogkindkubernetes.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/_test/testcatalogkindkubernetes/v1alpha1/outputs.proto";
+import "catalog/_test/testcatalogkindkubernetes/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// TestCatalogKindKubernetes is permanent test infrastructure for
+// Kubernetes-specific proto processing tests. It mirrors the shape of real
+// Kubernetes catalog kinds (namespace, resources, env)
+// without coupling tests to any production resource kind.
+// For generic testing, use TestCatalogKindGeneric.
+message TestCatalogKindKubernetes {
+  string api_version = 1 [(buf.validate.field).string.const = '_test.planton.dev/v1alpha1'];
+  string kind = 2 [(buf.validate.field).string.const = 'TestCatalogKindKubernetes'];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
+  TestCatalogKindKubernetesSpec spec = 4;
+  TestCatalogKindKubernetesStatus status = 5;
+}
+
+message TestCatalogKindKubernetesStatus {
+  TestCatalogKindKubernetesOutputs outputs = 1;
+}

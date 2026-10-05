@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbackupsettings.v1alpha1;
 
-// AwsBackupSettingsStackOutputs captures the observable state of the
+// AwsBackupSettingsOutputs captures the observable state of the
 // Backup settings after apply.
-message AwsBackupSettingsStackOutputs {
+message AwsBackupSettingsOutputs {
   // The AWS account ID the global arm manages (the global settings
   // resource's own identity at AWS).
   string account_id = 1;

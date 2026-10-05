@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsiamgroup
 spec:
   billing_model: free
   free_tier: "An IAM group is a permission container inside AWS IAM, and the IAM FAQ is direct: 'IAM is offered at no additional charge.' No meter counts groups, group memberships, managed-policy attachments, or inline policies -- a group with one member and one policy costs exactly what a group with five thousand of each costs: nothing."
-  notes: "No field of this spec buys anything: the path is an organizational prefix, the users list is membership plumbing, and both policy arms -- managed_policy_arns (including AWS-managed literals like ReadOnlyAccess or PowerUserAccess) and inline_policies -- are authorization documents. The real spend lives entirely in what the member users DO with the permissions the group grants: the AWS services their credentials call bill on their own meters, against their own catalog kinds. The users themselves are AwsIamUser objects (equally free at IAM), and a deny-oriented inline policy -- like a deny-billing document -- restricts spend rather than creating it. Nothing about the group ever appears on an invoice."
+  notes: "No field of this spec buys anything: the path is an organizational prefix, the users list is membership plumbing, and both policy arms -- managed_policy_arns (including AWS-managed literals like ReadOnlyAccess or PowerUserAccess) and inline_policies -- are authorization documents. The real spend lives entirely in what the member users DO with the permissions the group grants: the AWS services their credentials call bill on their own meters, against their own components. The users themselves are AwsIamUser objects (equally free at IAM), and a deny-oriented inline policy -- like a deny-billing document -- restricts spend rather than creating it. Nothing about the group ever appears on an invoice."

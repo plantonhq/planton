@@ -31,7 +31,7 @@ type CloudflareTurnstileWidget struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareTurnstileWidgetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *CloudflareTurnstileWidget) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareTurnstileWidget) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareTurnstileWidget) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *CloudflareTurnstileWidget) GetStatus() *CloudflareTurnstileWidgetStatus
 // cloudflare-turnstile-widget status
 type CloudflareTurnstileWidgetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	cloudflare-turnstile-widget stack-outputs
-	Outputs       *CloudflareTurnstileWidgetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	cloudflare-turnstile-widget outputs
+	Outputs       *CloudflareTurnstileWidgetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareTurnstileWidgetStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareTurnstileWidgetStatus) GetOutputs() *CloudflareTurnstileWidgetStackOutputs {
+func (x *CloudflareTurnstileWidgetStatus) GetOutputs() *CloudflareTurnstileWidgetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_api_proto_rawDe
 	"apiVersion\x124\n" +
 	"\x04kind\x18\x02 \x01(\tB \xbaH\x1dr\x1b\n" +
 	"\x19CloudflareTurnstileWidgetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12t\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12t\n" +
 	"\x04spec\x18\x04 \x01(\v2X.dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12r\n" +
-	"\x06status\x18\x05 \x01(\v2Z.dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetStatusR\x06status\"\x9d\x01\n" +
-	"\x1fCloudflareTurnstileWidgetStatus\x12z\n" +
-	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetStackOutputsR\aoutputsB\xc8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Z.dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetStatusR\x06status\"\x98\x01\n" +
+	"\x1fCloudflareTurnstileWidgetStatus\x12u\n" +
+	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetOutputsR\aoutputsB\xc8\x03\n" +
 	"=com.dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1B\bApiProtoP\x01Ztgithub.com/plantonhq/planton/catalog/cloudflare/cloudflareturnstilewidget/v1alpha1;cloudflareturnstilewidgetv1alpha1\xa2\x02\x04DPCC\xaa\x029Dev.Planton.Cloudflare.Cloudflareturnstilewidget.V1alpha1\xca\x029Dev\\Planton\\Cloudflare\\Cloudflareturnstilewidget\\V1alpha1\xe2\x02EDev\\Planton\\Cloudflare\\Cloudflareturnstilewidget\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Cloudflare::Cloudflareturnstilewidget::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_api_proto_rawDes
 
 var file_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareTurnstileWidget)(nil),             // 0: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidget
-	(*CloudflareTurnstileWidgetStatus)(nil),       // 1: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetStatus
-	(*shared.CloudResourceMetadata)(nil),          // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareTurnstileWidgetSpec)(nil),         // 3: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetSpec
-	(*CloudflareTurnstileWidgetStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetStackOutputs
+	(*CloudflareTurnstileWidget)(nil),        // 0: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidget
+	(*CloudflareTurnstileWidgetStatus)(nil),  // 1: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetStatus
+	(*shared.CatalogObjectMetadata)(nil),     // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareTurnstileWidgetSpec)(nil),    // 3: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetSpec
+	(*CloudflareTurnstileWidgetOutputs)(nil), // 4: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetOutputs
 }
 var file_catalog_cloudflare_cloudflareturnstilewidget_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidget.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidget.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidget.spec:type_name -> dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetSpec
 	1, // 2: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidget.status:type_name -> dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetStatus
-	4, // 3: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetStatus.outputs:type_name -> dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetStatus.outputs:type_name -> dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1.CloudflareTurnstileWidgetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

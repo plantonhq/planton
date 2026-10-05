@@ -13,7 +13,7 @@ Register an enhanced fan-out consumer with an existing Kinesis stream using a di
 ## When to Use
 
 - Development and testing against an existing stream
-- Standalone consumer registration without infra chart composition
+- Standalone consumer registration without Infra Chart composition
 - Quick prototyping of enhanced fan-out patterns
 
 ## Cost

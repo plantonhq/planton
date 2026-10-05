@@ -212,7 +212,7 @@ func TestSplitManifestDocuments_MultiDocumentSplits(t *testing.T) {
 // one dependency's destroy failure must not stop the remaining teardowns
 // (stopping early would leak everything deployed before it), yet every
 // failure must surface in the returned error so the run FAILS instead of
-// silently leaking cloud resources -- the exact failure mode when an
+// silently leaking provider resources -- the exact failure mode when an
 // ephemeral backend's state disappears before teardown ("no stack named").
 func TestTeardownDependencies_AggregatesFailures(t *testing.T) {
 	origDestroy, origRemove := pulumiDestroyFn, pulumiRemoveStackFn
@@ -224,7 +224,7 @@ func TestTeardownDependencies_AggregatesFailures(t *testing.T) {
 	})
 
 	var destroyed []string
-	pulumiDestroyFn = func(moduleDir, stackName, backendURL, stackInputFilePath string) (*PulumiResult, error) {
+	pulumiDestroyFn = func(moduleDir, stackName, backendURL, iacInputFilePath string) (*PulumiResult, error) {
 		destroyed = append(destroyed, stackName)
 		if stackName == "stack-b" {
 			return nil, errors.New("no stack named 'stack-b' found")
@@ -312,7 +312,7 @@ spec: {}
 	}
 
 	counts := map[string]int{}
-	pulumiDestroyFn = func(moduleDir, stackName, backendURL, stackInputFilePath string) (*PulumiResult, error) {
+	pulumiDestroyFn = func(moduleDir, stackName, backendURL, iacInputFilePath string) (*PulumiResult, error) {
 		counts[stackName]++
 		return nil, errors.New("producer services are still using this connection")
 	}
@@ -338,7 +338,7 @@ func TestTeardownDependencies_AllCleanReturnsNil(t *testing.T) {
 	origDestroy, origRemove := pulumiDestroyFn, pulumiRemoveStackFn
 	t.Cleanup(func() { pulumiDestroyFn, pulumiRemoveStackFn = origDestroy, origRemove })
 
-	pulumiDestroyFn = func(moduleDir, stackName, backendURL, stackInputFilePath string) (*PulumiResult, error) {
+	pulumiDestroyFn = func(moduleDir, stackName, backendURL, iacInputFilePath string) (*PulumiResult, error) {
 		return &PulumiResult{}, nil
 	}
 	pulumiRemoveStackFn = func(moduleDir, stackName, backendURL string) error { return nil }
@@ -375,7 +375,7 @@ func writeScenarioManifest(t *testing.T, dir, annotationsYaml string) string {
 // annotation, and the harness expands the declared kind through its OWN
 // registry prerequisites -- so naming AwsAutoScalingGroup alone yields the
 // full VPC -> Subnet -> LaunchTemplate -> ASG chain in deploy order, without
-// the component kind carrying a false registry prerequisite.
+// the kind carrying a false registry prerequisite.
 func TestResolveDependencies_ScenarioDeclaredPrerequisites(t *testing.T) {
 	repoRoot := t.TempDir()
 	writeManifest(t, repoRoot, "catalog/aws/awsvpc/e2e/prerequisite.yaml")
@@ -438,7 +438,7 @@ func TestResolveDependencies_UnknownAnnotationKindErrors(t *testing.T) {
 	}
 }
 
-// Declaring the component's own kind as its prerequisite is a modeling
+// Declaring its own kind as its prerequisite is a modeling
 // mistake and must be rejected rather than deploying the kind twice.
 func TestResolveDependencies_SelfAnnotationErrors(t *testing.T) {
 	repoRoot := t.TempDir()
@@ -829,7 +829,7 @@ func TestResolveDependencies_SubstituteEntryShapeAndPresence(t *testing.T) {
 // A prerequisite of another provider installs from ITS provider's catalog: an
 // Auth0 verification whose scenario composes a Cloudflare DNS record resolves
 // the record's own registry prerequisite (the Cloudflare zone) under
-// catalog/cloudflare, never under the component's provider.
+// catalog/cloudflare, never under the kind's provider.
 func TestResolveDependencies_CrossProviderPrerequisiteUsesItsOwnProvider(t *testing.T) {
 	repoRoot := t.TempDir()
 	domainProfile := writeManifest(t, repoRoot, "catalog/auth0/auth0customdomain/e2e/prerequisite.yaml")
@@ -862,33 +862,33 @@ func TestResolveDependencies_CrossProviderPrerequisiteUsesItsOwnProvider(t *test
 }
 
 // A dependency deploys from its own provider's module directory and is
-// verified by its own provider's harness: the component's harness for a
+// verified by its own provider's harness: the kind's harness for a
 // same-provider kind, the registered one for another provider's kind, and a
 // plain refusal naming the fix when none is registered.
 func TestDependencyHarness_RoutesByTheKindsProvider(t *testing.T) {
-	componentHarness := &recordingHarness{}
+	kindHarness := &recordingHarness{}
 	cloudflareHarness := &recordingHarness{}
 	t.Cleanup(func() { delete(dependencyHarnesses, "cloudflare") })
 
-	got, providerDir, err := dependencyHarness("auth0", "auth0customdomain", componentHarness)
-	if err != nil || got != componentHarness || providerDir != "auth0" {
-		t.Fatalf("same-provider dependency: harness %v, provider %q, err %v; want the component's harness under auth0", got, providerDir, err)
+	got, providerDir, err := dependencyHarness("auth0", "auth0customdomain", kindHarness)
+	if err != nil || got != kindHarness || providerDir != "auth0" {
+		t.Fatalf("same-provider dependency: harness %v, provider %q, err %v; want the kind's harness under auth0", got, providerDir, err)
 	}
 
-	if _, _, err := dependencyHarness("auth0", "cloudflarednsrecord", componentHarness); err == nil ||
+	if _, _, err := dependencyHarness("auth0", "cloudflarednsrecord", kindHarness); err == nil ||
 		!strings.Contains(err.Error(), "RegisterDependencyHarness") {
 		t.Fatalf("unregistered cross-provider dependency: err %v, want a refusal naming RegisterDependencyHarness", err)
 	}
 
 	RegisterDependencyHarness("cloudflare", cloudflareHarness)
-	got, providerDir, err = dependencyHarness("auth0", "cloudflarednsrecord", componentHarness)
+	got, providerDir, err = dependencyHarness("auth0", "cloudflarednsrecord", kindHarness)
 	if err != nil || got != cloudflareHarness || providerDir != "cloudflare" {
 		t.Fatalf("registered cross-provider dependency: harness %v, provider %q, err %v; want the cloudflare harness", got, providerDir, err)
 	}
 	if cloudflareHarness.setups != 1 {
 		t.Errorf("cross-provider harness set up %d times, want once on first use", cloudflareHarness.setups)
 	}
-	if _, _, err := dependencyHarness("auth0", "cloudflarednszone", componentHarness); err != nil {
+	if _, _, err := dependencyHarness("auth0", "cloudflarednszone", kindHarness); err != nil {
 		t.Fatalf("second cross-provider dependency: %v", err)
 	}
 	if cloudflareHarness.setups != 1 {

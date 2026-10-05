@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -21,7 +21,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: value}}
 }
 
-func reference(kind cloudresourcekind.CloudResourceKind, name string) *foreignkeyv1.StringValueOrRef {
+func reference(kind catalogkind.CatalogKind, name string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Kind: kind, Name: name}}}
 }
 
@@ -48,7 +48,7 @@ var _ = ginkgo.Describe("GcpDeployPolicySpec", func() {
 		return &GcpDeployPolicy{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpDeployPolicy",
-			Metadata:   &shared.CloudResourceMetadata{Name: "prod-freeze"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "prod-freeze"},
 			Spec: &GcpDeployPolicySpec{
 				Location:  "us-central1",
 				Rules:     []*GcpDeployPolicyRule{weekendFreeze()},
@@ -59,7 +59,7 @@ var _ = ginkgo.Describe("GcpDeployPolicySpec", func() {
 
 	full := func() *GcpDeployPolicy {
 		msg := minimal()
-		msg.Spec.ProjectId = reference(cloudresourcekind.CloudResourceKind_GcpProject, "delivery")
+		msg.Spec.ProjectId = reference(catalogkind.CatalogKind_GcpProject, "delivery")
 		msg.Spec.DeployPolicyId = "prod-freeze"
 		msg.Spec.Description = "No production rollouts on weekends or over the year-end freeze"
 		msg.Spec.Labels = map[string]string{"team": "platform"}
@@ -87,8 +87,8 @@ var _ = ginkgo.Describe("GcpDeployPolicySpec", func() {
 		}})
 		msg.Spec.Selectors = []*GcpDeployPolicySelector{
 			{
-				DeliveryPipeline: &GcpDeployPolicyDeliveryPipelineSelector{Id: reference(cloudresourcekind.CloudResourceKind_GcpDeliveryPipeline, "web")},
-				Target:           &GcpDeployPolicyTargetSelector{Id: reference(cloudresourcekind.CloudResourceKind_GcpDeployTarget, "web-prod")},
+				DeliveryPipeline: &GcpDeployPolicyDeliveryPipelineSelector{Id: reference(catalogkind.CatalogKind_GcpDeliveryPipeline, "web")},
+				Target:           &GcpDeployPolicyTargetSelector{Id: reference(catalogkind.CatalogKind_GcpDeployTarget, "web-prod")},
 			},
 			{Target: &GcpDeployPolicyTargetSelector{Labels: map[string]string{"env": "prod"}}},
 			{DeliveryPipeline: &GcpDeployPolicyDeliveryPipelineSelector{Id: literal("*"), Labels: map[string]string{"tier": "critical"}}},

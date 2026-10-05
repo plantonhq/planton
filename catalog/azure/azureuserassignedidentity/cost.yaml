@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureuserassignedidentity
 spec:
   billing_model: free
   free_tier: A user-assigned managed identity is a standalone directory identity operated by the Microsoft.ManagedIdentity service. Azure charges nothing for the identity, for the tokens it issues, or for how many resources share it -- managed identities are a free platform capability.
-  notes: "No field of this spec buys anything: region, resource group, name, the REGIONAL isolation opt-in, and tags are all identity metadata. The identity does nothing billable by itself -- what it may DO is granted through AzureRoleAssignment resources and who may ACT AS it through AzureFederatedIdentityCredential resources, both also free -- and the real spend lives in the workloads and resources that use the identity, each billing as its own catalog kind."
+  notes: "No field of this spec buys anything: region, resource group, name, the REGIONAL isolation opt-in, and tags are all identity metadata. The identity does nothing billable by itself -- what it may DO is granted through AzureRoleAssignment resources and who may ACT AS it through AzureFederatedIdentityCredential resources, both also free -- and the real spend lives in the workloads and resources that use the identity, each billing as its own component."

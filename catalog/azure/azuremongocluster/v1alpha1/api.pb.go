@@ -37,7 +37,7 @@ type AzureMongoCluster struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureMongoClusterSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -90,7 +90,7 @@ func (x *AzureMongoCluster) GetKind() string {
 	return ""
 }
 
-func (x *AzureMongoCluster) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureMongoCluster) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -115,10 +115,10 @@ func (x *AzureMongoCluster) GetStatus() *AzureMongoClusterStatus {
 // for MongoDB vCore cluster deployment.
 type AzureMongoClusterStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-mongo-cluster stack-outputs
-	Outputs       *AzureMongoClusterStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-mongo-cluster outputs
+	Outputs       *AzureMongoClusterOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -153,7 +153,7 @@ func (*AzureMongoClusterStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremongocluster_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureMongoClusterStatus) GetOutputs() *AzureMongoClusterStackOutputs {
+func (x *AzureMongoClusterStatus) GetOutputs() *AzureMongoClusterOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -171,11 +171,11 @@ const file_catalog_azure_azuremongocluster_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AzureMongoClusterR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStatusR\x06status\"\x80\x01\n" +
-	"\x17AzureMongoClusterStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStackOutputsR\aoutputsB\xf2\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStatusR\x06status\"{\n" +
+	"\x17AzureMongoClusterStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterOutputsR\aoutputsB\xf2\x02\n" +
 	"0com.dev.planton.azure.azuremongocluster.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/azure/azuremongocluster/v1alpha1;azuremongoclusterv1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Azure.Azuremongocluster.V1alpha1\xca\x02,Dev\\Planton\\Azure\\Azuremongocluster\\V1alpha1\xe2\x028Dev\\Planton\\Azure\\Azuremongocluster\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Azure::Azuremongocluster::V1alpha1b\x06proto3"
 
 var (
@@ -192,17 +192,17 @@ func file_catalog_azure_azuremongocluster_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_azure_azuremongocluster_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremongocluster_v1alpha1_api_proto_goTypes = []any{
-	(*AzureMongoCluster)(nil),             // 0: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoCluster
-	(*AzureMongoClusterStatus)(nil),       // 1: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureMongoClusterSpec)(nil),         // 3: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterSpec
-	(*AzureMongoClusterStackOutputs)(nil), // 4: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStackOutputs
+	(*AzureMongoCluster)(nil),            // 0: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoCluster
+	(*AzureMongoClusterStatus)(nil),      // 1: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureMongoClusterSpec)(nil),        // 3: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterSpec
+	(*AzureMongoClusterOutputs)(nil),     // 4: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterOutputs
 }
 var file_catalog_azure_azuremongocluster_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoCluster.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoCluster.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoCluster.spec:type_name -> dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterSpec
 	1, // 2: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoCluster.status:type_name -> dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStatus
-	4, // 3: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStatus.outputs:type_name -> dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStackOutputs
+	4, // 3: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStatus.outputs:type_name -> dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

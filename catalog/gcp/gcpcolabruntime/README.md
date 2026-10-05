@@ -4,7 +4,7 @@ A Colab Enterprise runtime -- a notebook VM assigned to one user, built from a `
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project (never disabled on destroy)
 - **Runtime** -- a `colab_runtime` assigned to `runtimeUser` from the template, started or stopped to match `desiredState`
@@ -69,7 +69,7 @@ planton apply -f colab-runtime.yaml
 
 - `runtimeUser` is an email address; `desiredState` is `RUNNING` or `STOPPED`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -98,7 +98,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpColabRuntimeTemplate** -- the template the runtime is built from
 - **GcpColabSchedule** -- scheduled notebook runs instead of an interactive runtime

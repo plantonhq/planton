@@ -84,5 +84,5 @@ re-authenticates and re-queries after a server pod replacement; an
 import map covering the release, the anchor namespace, the
 module-materialized credentials Secret and its random_password
 companion (imported by value); presets and docs. Secret-coverage,
-outputs conformance, importmap conformance, crkreflect, the containment
+outputs conformance, importmap conformance, catalogkindreflect, the containment
 golden, the structural guards and `make build-go` all pass.

@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanDropletAutoscalePoolStackOutputs captures the key outputs
+// DigitalOceanDropletAutoscalePoolOutputs captures the key outputs
 // after provisioning a droplet autoscale pool.
 //
 // The pool's health is deliberately NOT an output: a status captured at
@@ -31,7 +31,7 @@ const (
 // verifier asserts it that way. Member droplet ids are likewise not outputs:
 // they churn by design, so firewalls and load balancers address the fleet
 // through the template's tags, never through this contract.
-type DigitalOceanDropletAutoscalePoolStackOutputs struct {
+type DigitalOceanDropletAutoscalePoolOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// UUID of the autoscale pool (the resource's API identity and its import
 	// id).
@@ -40,20 +40,20 @@ type DigitalOceanDropletAutoscalePoolStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDropletAutoscalePoolStackOutputs) Reset() {
-	*x = DigitalOceanDropletAutoscalePoolStackOutputs{}
+func (x *DigitalOceanDropletAutoscalePoolOutputs) Reset() {
+	*x = DigitalOceanDropletAutoscalePoolOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDropletAutoscalePoolStackOutputs) String() string {
+func (x *DigitalOceanDropletAutoscalePoolOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDropletAutoscalePoolStackOutputs) ProtoMessage() {}
+func (*DigitalOceanDropletAutoscalePoolOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanDropletAutoscalePoolStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDropletAutoscalePoolOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,12 +65,12 @@ func (x *DigitalOceanDropletAutoscalePoolStackOutputs) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDropletAutoscalePoolStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDropletAutoscalePoolStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDropletAutoscalePoolOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDropletAutoscalePoolOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDropletAutoscalePoolStackOutputs) GetPoolId() string {
+func (x *DigitalOceanDropletAutoscalePoolOutputs) GetPoolId() string {
 	if x != nil {
 		return x.PoolId
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_outputs_
 
 const file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Lcatalog/digitalocean/digitaloceandropletautoscalepool/v1alpha1/outputs.proto\x12Bdev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1\"U\n" +
-	",DigitalOceanDropletAutoscalePoolStackOutputs\x12\x17\n" +
+	"Lcatalog/digitalocean/digitaloceandropletautoscalepool/v1alpha1/outputs.proto\x12Bdev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1\"P\n" +
+	"'DigitalOceanDropletAutoscalePoolOutputs\x12\x17\n" +
 	"\apool_id\x18\x01 \x01(\tR\x06poolIdJ\x04\b\x02\x10\x03R\x06statusB\x8a\x04\n" +
 	"Fcom.dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1B\fOutputsProtoP\x01Z\x84\x01github.com/plantonhq/planton/catalog/digitalocean/digitaloceandropletautoscalepool/v1alpha1;digitaloceandropletautoscalepoolv1alpha1\xa2\x02\x04DPDD\xaa\x02BDev.Planton.Digitalocean.Digitaloceandropletautoscalepool.V1alpha1\xca\x02BDev\\Planton\\Digitalocean\\Digitaloceandropletautoscalepool\\V1alpha1\xe2\x02NDev\\Planton\\Digitalocean\\Digitaloceandropletautoscalepool\\V1alpha1\\GPBMetadata\xea\x02FDev::Planton::Digitalocean::Digitaloceandropletautoscalepool::V1alpha1b\x06proto3"
 
@@ -100,7 +100,7 @@ func file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_outputs
 
 var file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanDropletAutoscalePoolStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1.DigitalOceanDropletAutoscalePoolStackOutputs
+	(*DigitalOceanDropletAutoscalePoolOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1.DigitalOceanDropletAutoscalePoolOutputs
 }
 var file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

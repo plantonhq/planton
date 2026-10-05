@@ -1,10 +1,10 @@
 # DigitalOcean DNS Zone
 
-Deploys a DNS zone (domain) on DigitalOcean with optional inline DNS records covering every type the DigitalOcean API accepts -- A, AAAA, CNAME, MX, TXT, SRV, NS, CAA, and SOA -- plus the create-only apex-A convenience. DigitalOcean manages the authoritative nameservers for the zone, and record values can reference outputs from other Cloud Resources via ValueFromRef. The zone answers on DigitalOcean's nameservers the moment it exists, but the public internet only follows once the registrar's NS delegation is flipped -- and domain names are unique across ALL DigitalOcean accounts, so a name another account holds cannot be created.
+Deploys a DNS zone (domain) on DigitalOcean with optional inline DNS records covering every type the DigitalOcean API accepts -- A, AAAA, CNAME, MX, TXT, SRV, NS, CAA, and SOA -- plus the create-only apex-A convenience. DigitalOcean manages the authoritative nameservers for the zone, and record values can reference outputs from other Infra Components via ValueFromRef. The zone answers on DigitalOcean's nameservers the moment it exists, but the public internet only follows once the registrar's NS delegation is flipped -- and domain names are unique across ALL DigitalOcean accounts, so a name another account holds cannot be created.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DigitalOcean Domain** -- a DNS zone served by DigitalOcean's nameservers (`ns1.digitalocean.com`, `ns2.digitalocean.com`, `ns3.digitalocean.com`); optionally seeded with an untracked apex A record via `ipAddress`
 - **DNS Records** -- created only when `records` are provided; one DigitalOcean DNS record per value entry (multi-value records fan out), with type-specific fields for MX priority, SRV priority/weight/port, and CAA flags/tag enforced at validation time
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
@@ -52,7 +52,7 @@ spec:
 planton apply -f do-dns-zone.yaml
 ```
 
-This creates a DNS zone for `example.com` with a single A record pointing the apex at the specified IP address. A Stack Job tracks the provisioning in real time.
+This creates a DNS zone for `example.com` with a single A record pointing the apex at the specified IP address. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -64,7 +64,7 @@ These are the most important decisions when configuring a DNS zone. Explore the 
 
 **TTL** -- The `ttlSeconds` field controls how long resolvers cache the record; omit it to take DigitalOcean's default (1800 seconds). Use shorter TTLs (300) during migrations, longer (3600-86400) for stable records. Records that share a name share one TTL on DigitalOcean: give them the same value or leave them all unset, or the lone custom TTL is rewritten server-side on every run.
 
-**ValueFromRef in record values** -- Record `values` accept ValueFromRef references, so records can point at outputs of other Cloud Resources (a Droplet's `ipv4_address`, a load balancer's IP) instead of hardcoded values.
+**ValueFromRef in record values** -- Record `values` accept ValueFromRef references, so records can point at outputs of other Infra Components (a Droplet's `ipv4_address`, a load balancer's IP) instead of hardcoded values.
 
 **`ipAddress`** -- a create-only convenience that seeds an apex A record the platform never tracks afterwards. Prefer declaring the apex record in `records`; use `ipAddress` only when migrating a configuration that already relies on it. Applied at creation only: later edits are ignored rather than recreating the zone, so adopting an existing zone whose manifest carries it is safe.
 
@@ -72,13 +72,13 @@ These are the most important decisions when configuring a DNS zone. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies (record values may optionally reference any resource's outputs).
+This kind has no foreign key dependencies (record values may optionally reference any resource's outputs).
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -98,5 +98,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean DNS Record**](/cloud-catalog/digital-ocean-dns-record) -- standalone records referencing this zone's `zone_name` output, for records owned by other teams or charts
-- [**DigitalOcean App Platform App**](/cloud-catalog/digital-ocean-app) -- app custom domains reference the zone so App Platform manages their DNS records in it
+- [**DigitalOcean DNS Record**](/infra-catalog/digital-ocean-dns-record) -- standalone records referencing this zone's `zone_name` output, for records owned by other teams or charts
+- [**DigitalOcean App Platform App**](/infra-catalog/digital-ocean-app) -- app custom domains reference the zone so App Platform manages their DNS records in it

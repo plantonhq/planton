@@ -4,7 +4,7 @@ Keeps a pool of training machines warm on Vertex AI so custom training jobs and 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project
 - **Persistent resource** -- a `vertex.AiPersistentResource` with its machine pools, networking, and optional CMEK
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -50,7 +50,7 @@ spec:
 planton apply -f vertex-ai-persistent-resource.yaml
 ```
 
-This keeps one `n1-standard-4` machine provisioned for training jobs in `us-central1`. A Stack Job tracks the provisioning in real time.
+This keeps one `n1-standard-4` machine provisioned for training jobs in `us-central1`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -68,7 +68,7 @@ These are the most important decisions when configuring a persistent resource. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -78,9 +78,9 @@ These are the most important decisions when configuring a persistent resource. E
 | **GcpVpcNetwork** | `pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `status.outputs.network_name` |
 | **GcpKmsKey** | `kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -99,7 +99,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the network the resource peers with
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption
-- [**GCP Vertex AI TensorBoard**](/cloud-catalog/gcp-vertex-ai-tensorboard) -- where jobs on the resource stream metrics
-- [**GCP Vertex AI Dataset**](/cloud-catalog/gcp-vertex-ai-dataset) -- the data those jobs train on
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the network the resource peers with
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed encryption
+- [**GCP Vertex AI TensorBoard**](/infra-catalog/gcp-vertex-ai-tensorboard) -- where jobs on the resource stream metrics
+- [**GCP Vertex AI Dataset**](/infra-catalog/gcp-vertex-ai-dataset) -- the data those jobs train on

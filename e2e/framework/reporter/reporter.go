@@ -14,22 +14,22 @@ import (
 
 // Report is the top-level E2E test report structure.
 type Report struct {
-	Timestamp  time.Time         `json:"timestamp"`
-	Duration   time.Duration     `json:"duration"`
-	TotalTests int               `json:"total_tests"`
-	Passed     int               `json:"passed"`
-	Failed     int               `json:"failed"`
-	Results    []ComponentReport `json:"results"`
+	Timestamp  time.Time     `json:"timestamp"`
+	Duration   time.Duration `json:"duration"`
+	TotalTests int           `json:"total_tests"`
+	Passed     int           `json:"passed"`
+	Failed     int           `json:"failed"`
+	Results    []KindReport  `json:"results"`
 }
 
-// ComponentReport holds the outcome of one component's E2E test.
-type ComponentReport struct {
-	Component string        `json:"component"`
-	Engine    string        `json:"engine"`
-	Passed    bool          `json:"passed"`
-	Duration  time.Duration `json:"duration"`
-	Phases    []PhaseReport `json:"phases"`
-	Error     string        `json:"error,omitempty"`
+// KindReport holds the outcome of one kind's E2E test.
+type KindReport struct {
+	Kind     string        `json:"kind"`
+	Engine   string        `json:"engine"`
+	Passed   bool          `json:"passed"`
+	Duration time.Duration `json:"duration"`
+	Phases   []PhaseReport `json:"phases"`
+	Error    string        `json:"error,omitempty"`
 }
 
 // PhaseReport holds the outcome of a single test phase.
@@ -49,11 +49,11 @@ func NewReport(results []*runner.TestResult) *Report {
 
 	var totalDuration time.Duration
 	for _, r := range results {
-		cr := ComponentReport{
-			Component: r.Component,
-			Engine:    r.Engine,
-			Passed:    r.Passed,
-			Duration:  r.Duration,
+		cr := KindReport{
+			Kind:     r.Kind,
+			Engine:   r.Engine,
+			Passed:   r.Passed,
+			Duration: r.Duration,
 		}
 
 		for _, p := range r.Phases {
@@ -104,27 +104,27 @@ func (r *Report) WriteMarkdown(path string) error {
 		sb.WriteString("## Failed Tests\n\n")
 		for _, cr := range r.Results {
 			if !cr.Passed {
-				sb.WriteString(fmt.Sprintf("- **%s** (%s): %s\n", cr.Component, cr.Engine, cr.Error))
+				sb.WriteString(fmt.Sprintf("- **%s** (%s): %s\n", cr.Kind, cr.Engine, cr.Error))
 			}
 		}
 		sb.WriteString("\n")
 	}
 
 	sb.WriteString("## Results\n\n")
-	sb.WriteString("| Component | Engine | Status | Duration |\n")
+	sb.WriteString("| Kind | Engine | Status | Duration |\n")
 	sb.WriteString("|-----------|--------|--------|----------|\n")
 	for _, cr := range r.Results {
 		status := "PASS"
 		if !cr.Passed {
 			status = "FAIL"
 		}
-		sb.WriteString(fmt.Sprintf("| %s | %s | %s | %s |\n", cr.Component, cr.Engine, status, cr.Duration.Round(time.Millisecond)))
+		sb.WriteString(fmt.Sprintf("| %s | %s | %s | %s |\n", cr.Kind, cr.Engine, status, cr.Duration.Round(time.Millisecond)))
 	}
 	sb.WriteString("\n")
 
 	sb.WriteString("## Phase Details\n\n")
 	for _, cr := range r.Results {
-		sb.WriteString(fmt.Sprintf("### %s (%s)\n\n", cr.Component, cr.Engine))
+		sb.WriteString(fmt.Sprintf("### %s (%s)\n\n", cr.Kind, cr.Engine))
 		for _, p := range cr.Phases {
 			icon := "OK"
 			if !p.Passed {

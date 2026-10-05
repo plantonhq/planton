@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockModelAccessStackOutputs captures observable identifiers from a
+// AwsBedrockModelAccessOutputs captures observable identifiers from a
 // Bedrock model-access agreement.
-type AwsBedrockModelAccessStackOutputs struct {
+type AwsBedrockModelAccessOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The foundation model identifier the agreement covers. Matches
 	// spec.model_id - exported so charts can order model-consuming
@@ -33,20 +33,20 @@ type AwsBedrockModelAccessStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBedrockModelAccessStackOutputs) Reset() {
-	*x = AwsBedrockModelAccessStackOutputs{}
+func (x *AwsBedrockModelAccessOutputs) Reset() {
+	*x = AwsBedrockModelAccessOutputs{}
 	mi := &file_catalog_aws_awsbedrockmodelaccess_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockModelAccessStackOutputs) String() string {
+func (x *AwsBedrockModelAccessOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockModelAccessStackOutputs) ProtoMessage() {}
+func (*AwsBedrockModelAccessOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockModelAccessStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockModelAccessOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockmodelaccess_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,12 +58,12 @@ func (x *AwsBedrockModelAccessStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockModelAccessStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockModelAccessStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockModelAccessOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockModelAccessOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockmodelaccess_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockModelAccessStackOutputs) GetModelId() string {
+func (x *AwsBedrockModelAccessOutputs) GetModelId() string {
 	if x != nil {
 		return x.ModelId
 	}
@@ -74,8 +74,8 @@ var File_catalog_aws_awsbedrockmodelaccess_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_aws_awsbedrockmodelaccess_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awsbedrockmodelaccess/v1alpha1/outputs.proto\x12.dev.planton.aws.awsbedrockmodelaccess.v1alpha1\">\n" +
-	"!AwsBedrockModelAccessStackOutputs\x12\x19\n" +
+	"8catalog/aws/awsbedrockmodelaccess/v1alpha1/outputs.proto\x12.dev.planton.aws.awsbedrockmodelaccess.v1alpha1\"9\n" +
+	"\x1cAwsBedrockModelAccessOutputs\x12\x19\n" +
 	"\bmodel_id\x18\x01 \x01(\tR\amodelIdB\x86\x03\n" +
 	"2com.dev.planton.aws.awsbedrockmodelaccess.v1alpha1B\fOutputsProtoP\x01Zegithub.com/plantonhq/planton/catalog/aws/awsbedrockmodelaccess/v1alpha1;awsbedrockmodelaccessv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Aws.Awsbedrockmodelaccess.V1alpha1\xca\x02.Dev\\Planton\\Aws\\Awsbedrockmodelaccess\\V1alpha1\xe2\x02:Dev\\Planton\\Aws\\Awsbedrockmodelaccess\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Aws::Awsbedrockmodelaccess::V1alpha1b\x06proto3"
 
@@ -93,7 +93,7 @@ func file_catalog_aws_awsbedrockmodelaccess_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_aws_awsbedrockmodelaccess_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockmodelaccess_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockModelAccessStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockmodelaccess.v1alpha1.AwsBedrockModelAccessStackOutputs
+	(*AwsBedrockModelAccessOutputs)(nil), // 0: dev.planton.aws.awsbedrockmodelaccess.v1alpha1.AwsBedrockModelAccessOutputs
 }
 var file_catalog_aws_awsbedrockmodelaccess_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

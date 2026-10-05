@@ -218,7 +218,7 @@ var _ = ginkgo.Describe("AwsGlueCatalogDatabaseSpec validations", func() {
 		envelope := &AwsGlueCatalogDatabase{
 			ApiVersion: "wrong/v1",
 			Kind:       "AwsGlueCatalogDatabase",
-			Metadata:   &shared.CloudResourceMetadata{Name: "test-db"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "test-db"},
 			Spec:       spec,
 		}
 		err := protovalidate.Validate(envelope)
@@ -229,7 +229,7 @@ var _ = ginkgo.Describe("AwsGlueCatalogDatabaseSpec validations", func() {
 		envelope := &AwsGlueCatalogDatabase{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "WrongKind",
-			Metadata:   &shared.CloudResourceMetadata{Name: "test-db"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "test-db"},
 			Spec:       spec,
 		}
 		err := protovalidate.Validate(envelope)
@@ -250,7 +250,7 @@ var _ = ginkgo.Describe("AwsGlueCatalogDatabaseSpec validations", func() {
 		envelope := &AwsGlueCatalogDatabase{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsGlueCatalogDatabase",
-			Metadata:   &shared.CloudResourceMetadata{Name: "test-db"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "test-db"},
 		}
 		err := protovalidate.Validate(envelope)
 		gomega.Expect(err).NotTo(gomega.BeNil())
@@ -260,7 +260,7 @@ var _ = ginkgo.Describe("AwsGlueCatalogDatabaseSpec validations", func() {
 		envelope := &AwsGlueCatalogDatabase{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsGlueCatalogDatabase",
-			Metadata:   &shared.CloudResourceMetadata{Name: "analytics-db"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "analytics-db"},
 			Spec: &AwsGlueCatalogDatabaseSpec{
 				Region:      "us-west-2",
 				Description: "Analytics data catalog",

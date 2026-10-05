@@ -249,7 +249,7 @@ message DigitalOceanLoadBalancerSpec {
   // (Optional) Bring-your-own IP: an unassigned BYOIP address on the
   // account, in the balancer's region, assigned at creation. Consumed only
   // at create time; when unset DigitalOcean allocates the address. The
-  // assigned address is exported as the ip stack output either way.
+  // assigned address is exported as the ip output either way.
   string ip = 23 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string.ip = true

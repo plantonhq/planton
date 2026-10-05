@@ -34,7 +34,7 @@ type AzureMonitorActionGroup struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureMonitorActionGroupSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureMonitorActionGroup) GetKind() string {
 	return ""
 }
 
-func (x *AzureMonitorActionGroup) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureMonitorActionGroup) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureMonitorActionGroup) GetStatus() *AzureMonitorActionGroupStatus {
 // AzureMonitorActionGroupStatus holds the deployment status and outputs.
 type AzureMonitorActionGroupStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureMonitorActionGroupStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureMonitorActionGroupOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureMonitorActionGroupStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremonitoractiongroup_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureMonitorActionGroupStatus) GetOutputs() *AzureMonitorActionGroupStackOutputs {
+func (x *AzureMonitorActionGroupStatus) GetOutputs() *AzureMonitorActionGroupOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azuremonitoractiongroup_v1alpha1_api_proto_rawDesc = ""
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17AzureMonitorActionGroupR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
 	"\x04spec\x18\x04 \x01(\v2O.dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12i\n" +
-	"\x06status\x18\x05 \x01(\v2Q.dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupStatusR\x06status\"\x92\x01\n" +
-	"\x1dAzureMonitorActionGroupStatus\x12q\n" +
-	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupStackOutputsR\aoutputsB\x9c\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Q.dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupStatusR\x06status\"\x8d\x01\n" +
+	"\x1dAzureMonitorActionGroupStatus\x12l\n" +
+	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupOutputsR\aoutputsB\x9c\x03\n" +
 	"6com.dev.planton.azure.azuremonitoractiongroup.v1alpha1B\bApiProtoP\x01Zkgithub.com/plantonhq/planton/catalog/azure/azuremonitoractiongroup/v1alpha1;azuremonitoractiongroupv1alpha1\xa2\x02\x04DPAA\xaa\x022Dev.Planton.Azure.Azuremonitoractiongroup.V1alpha1\xca\x022Dev\\Planton\\Azure\\Azuremonitoractiongroup\\V1alpha1\xe2\x02>Dev\\Planton\\Azure\\Azuremonitoractiongroup\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Azure::Azuremonitoractiongroup::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azuremonitoractiongroup_v1alpha1_api_proto_rawDescGZIP()
 
 var file_catalog_azure_azuremonitoractiongroup_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremonitoractiongroup_v1alpha1_api_proto_goTypes = []any{
-	(*AzureMonitorActionGroup)(nil),             // 0: dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroup
-	(*AzureMonitorActionGroupStatus)(nil),       // 1: dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureMonitorActionGroupSpec)(nil),         // 3: dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupSpec
-	(*AzureMonitorActionGroupStackOutputs)(nil), // 4: dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupStackOutputs
+	(*AzureMonitorActionGroup)(nil),        // 0: dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroup
+	(*AzureMonitorActionGroupStatus)(nil),  // 1: dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureMonitorActionGroupSpec)(nil),    // 3: dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupSpec
+	(*AzureMonitorActionGroupOutputs)(nil), // 4: dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupOutputs
 }
 var file_catalog_azure_azuremonitoractiongroup_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroup.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroup.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroup.spec:type_name -> dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupSpec
 	1, // 2: dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroup.status:type_name -> dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupStatus
-	4, // 3: dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupStatus.outputs:type_name -> dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupStackOutputs
+	4, // 3: dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupStatus.outputs:type_name -> dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

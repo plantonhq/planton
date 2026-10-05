@@ -1,22 +1,22 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarednsrecord
 spec:
   # A DNS record's import identity is compound: the zone it lives in plus the
   # record's own Cloudflare-assigned id. Both are discoverable from a prior
-  # deploy's stack outputs; neither is derivable from metadata.
+  # deploy's outputs; neither is derivable from metadata.
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the
         Cloudflare v4 API (the id field).
     - name: dns_record_id
       derivations:
-        - from_stack_output: record_id
+        - from_output: record_id
       where_to_find: >-
         Cloudflare dashboard -> the zone -> DNS -> Records (open the record;
         the id is in the URL), or `GET /zones/<zone_id>/dns_records?name=<fqdn>`

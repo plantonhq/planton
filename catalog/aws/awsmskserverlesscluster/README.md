@@ -37,7 +37,7 @@ spec: { ... }
 
 The resource is effectively immutable: every field above is create-time (ForceNew) in the AWS provider — only tags change in place. SASL/IAM authentication is AWS's sole, mandatory scheme and is enabled unconditionally by both IaC modules, so it is not a spec field.
 
-## Stack outputs
+## Outputs
 
 | Output | Description |
 |---|---|

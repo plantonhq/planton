@@ -3,10 +3,10 @@ syntax = "proto3";
 package dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1;
 
 /**
- * **KubernetesKafkaMirrorMaker2StackOutputs** — the handles a
+ * **KubernetesKafkaMirrorMaker2Outputs** — the handles a
  * MirrorMaker 2 deployment exports.
  */
-message KubernetesKafkaMirrorMaker2StackOutputs {
+message KubernetesKafkaMirrorMaker2Outputs {
   // Namespace the MirrorMaker 2 deployment runs in.
   string namespace = 1;
 

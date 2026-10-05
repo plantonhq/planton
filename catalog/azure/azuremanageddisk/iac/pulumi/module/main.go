@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azuremanageddiskv1alpha1.AzureManagedDiskStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuremanageddiskv1alpha1.AzureManagedDiskIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -131,7 +131,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuremanageddiskv1alpha1.AzureMa
 		managedDiskArgs.DiskAccessId = pulumi.String(spec.DiskAccessId)
 	}
 	// Presence-guarded true-default optional bool: an absent spec value
-	// explicitly falls back to Azure's default so stack-input paths that
+	// explicitly falls back to Azure's default so iac-input paths that
 	// bypass the manifest loader deploy identically to the Terraform
 	// module's optional(bool, true) default.
 	if spec.PublicNetworkAccessEnabled != nil {
@@ -155,7 +155,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuremanageddiskv1alpha1.AzureMa
 		return errors.Wrapf(err, "failed to create managed disk %s", spec.Name)
 	}
 
-	// Export stack outputs from the created resource.
+	// Export outputs from the created resource.
 	ctx.Export(OpDiskId, createdManagedDisk.ID())
 	ctx.Export(OpDiskName, createdManagedDisk.Name)
 	ctx.Export(OpDiskSizeGb, createdManagedDisk.DiskSizeGb)

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudTrailStackOutputs captures the observable state of the
+// AwsCloudTrailOutputs captures the observable state of the
 // trail after apply.
-type AwsCloudTrailStackOutputs struct {
+type AwsCloudTrailOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The trail's ARN (also the provider's import ID).
 	TrailArn string `protobuf:"bytes,1,opt,name=trail_arn,json=trailArn,proto3" json:"trail_arn,omitempty"`
@@ -37,20 +37,20 @@ type AwsCloudTrailStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsCloudTrailStackOutputs) Reset() {
-	*x = AwsCloudTrailStackOutputs{}
+func (x *AwsCloudTrailOutputs) Reset() {
+	*x = AwsCloudTrailOutputs{}
 	mi := &file_catalog_aws_awscloudtrail_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudTrailStackOutputs) String() string {
+func (x *AwsCloudTrailOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudTrailStackOutputs) ProtoMessage() {}
+func (*AwsCloudTrailOutputs) ProtoMessage() {}
 
-func (x *AwsCloudTrailStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudTrailOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudtrail_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *AwsCloudTrailStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudTrailStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCloudTrailStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudTrailOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCloudTrailOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudtrail_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudTrailStackOutputs) GetTrailArn() string {
+func (x *AwsCloudTrailOutputs) GetTrailArn() string {
 	if x != nil {
 		return x.TrailArn
 	}
 	return ""
 }
 
-func (x *AwsCloudTrailStackOutputs) GetHomeRegion() string {
+func (x *AwsCloudTrailOutputs) GetHomeRegion() string {
 	if x != nil {
 		return x.HomeRegion
 	}
 	return ""
 }
 
-func (x *AwsCloudTrailStackOutputs) GetSnsTopicArn() string {
+func (x *AwsCloudTrailOutputs) GetSnsTopicArn() string {
 	if x != nil {
 		return x.SnsTopicArn
 	}
@@ -92,8 +92,8 @@ var File_catalog_aws_awscloudtrail_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awscloudtrail_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awscloudtrail/v1alpha1/outputs.proto\x12&dev.planton.aws.awscloudtrail.v1alpha1\"}\n" +
-	"\x19AwsCloudTrailStackOutputs\x12\x1b\n" +
+	"0catalog/aws/awscloudtrail/v1alpha1/outputs.proto\x12&dev.planton.aws.awscloudtrail.v1alpha1\"x\n" +
+	"\x14AwsCloudTrailOutputs\x12\x1b\n" +
 	"\ttrail_arn\x18\x01 \x01(\tR\btrailArn\x12\x1f\n" +
 	"\vhome_region\x18\x02 \x01(\tR\n" +
 	"homeRegion\x12\"\n" +
@@ -114,7 +114,7 @@ func file_catalog_aws_awscloudtrail_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awscloudtrail_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudtrail_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCloudTrailStackOutputs)(nil), // 0: dev.planton.aws.awscloudtrail.v1alpha1.AwsCloudTrailStackOutputs
+	(*AwsCloudTrailOutputs)(nil), // 0: dev.planton.aws.awscloudtrail.v1alpha1.AwsCloudTrailOutputs
 }
 var file_catalog_aws_awscloudtrail_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

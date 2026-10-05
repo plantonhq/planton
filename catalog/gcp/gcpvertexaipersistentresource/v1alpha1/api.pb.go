@@ -31,7 +31,7 @@ type GcpVertexAiPersistentResource struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpVertexAiPersistentResourceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpVertexAiPersistentResource) GetKind() string {
 	return ""
 }
 
-func (x *GcpVertexAiPersistentResource) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpVertexAiPersistentResource) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpVertexAiPersistentResource) GetStatus() *GcpVertexAiPersistentResour
 // gcp-vertex-ai-persistent-resource status
 type GcpVertexAiPersistentResourceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpVertexAiPersistentResourceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpVertexAiPersistentResourceOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpVertexAiPersistentResourceStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpVertexAiPersistentResourceStatus) GetOutputs() *GcpVertexAiPersistentResourceStackOutputs {
+func (x *GcpVertexAiPersistentResourceStatus) GetOutputs() *GcpVertexAiPersistentResourceOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x128\n" +
 	"\x04kind\x18\x02 \x01(\tB$\xbaH!r\x1f\n" +
 	"\x1dGcpVertexAiPersistentResourceR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12u\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12u\n" +
 	"\x04spec\x18\x04 \x01(\v2Y.dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12s\n" +
-	"\x06status\x18\x05 \x01(\v2[.dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceStatusR\x06status\"\xa2\x01\n" +
-	"#GcpVertexAiPersistentResourceStatus\x12{\n" +
-	"\aoutputs\x18\x01 \x01(\v2a.dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceStackOutputsR\aoutputsB\xba\x03\n" +
+	"\x06status\x18\x05 \x01(\v2[.dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceStatusR\x06status\"\x9d\x01\n" +
+	"#GcpVertexAiPersistentResourceStatus\x12v\n" +
+	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceOutputsR\aoutputsB\xba\x03\n" +
 	":com.dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1B\bApiProtoP\x01Zugithub.com/plantonhq/planton/catalog/gcp/gcpvertexaipersistentresource/v1alpha1;gcpvertexaipersistentresourcev1alpha1\xa2\x02\x04DPGG\xaa\x026Dev.Planton.Gcp.Gcpvertexaipersistentresource.V1alpha1\xca\x026Dev\\Planton\\Gcp\\Gcpvertexaipersistentresource\\V1alpha1\xe2\x02BDev\\Planton\\Gcp\\Gcpvertexaipersistentresource\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Gcp::Gcpvertexaipersistentresource::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_api_proto_goTypes = []any{
-	(*GcpVertexAiPersistentResource)(nil),             // 0: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResource
-	(*GcpVertexAiPersistentResourceStatus)(nil),       // 1: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceStatus
-	(*shared.CloudResourceMetadata)(nil),              // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpVertexAiPersistentResourceSpec)(nil),         // 3: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceSpec
-	(*GcpVertexAiPersistentResourceStackOutputs)(nil), // 4: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceStackOutputs
+	(*GcpVertexAiPersistentResource)(nil),        // 0: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResource
+	(*GcpVertexAiPersistentResourceStatus)(nil),  // 1: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceStatus
+	(*shared.CatalogObjectMetadata)(nil),         // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpVertexAiPersistentResourceSpec)(nil),    // 3: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceSpec
+	(*GcpVertexAiPersistentResourceOutputs)(nil), // 4: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceOutputs
 }
 var file_catalog_gcp_gcpvertexaipersistentresource_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResource.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResource.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResource.spec:type_name -> dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceSpec
 	1, // 2: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResource.status:type_name -> dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceStatus
-	4, // 3: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceStatus.outputs:type_name -> dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceStackOutputs
+	4, // 3: dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceStatus.outputs:type_name -> dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1.GcpVertexAiPersistentResourceOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

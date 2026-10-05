@@ -4,7 +4,7 @@ Deploys an Amazon SageMaker notebook instance — a managed EC2 workstation runn
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Notebook Instance Lifecycle Configuration** — created only when `lifecycleConfig` is set; carries the `onCreate` (runs once) and `onStart` (runs every start) scripts under a stable derived name (`<name>-lifecycle`), run as root under AWS's 5-minute limit
 - **SageMaker Notebook Instance** — the Jupyter workstation named from `metadata.name`, on an `ml.*` instance type with a 5–16384 GB storage volume, optional VPC placement, KMS volume encryption, root-access and IMDSv2 lockdown, platform selection, and up to four Git repositories cloned into the working directory
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreateNotebookInstance` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreateNotebookInstance` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -57,7 +57,7 @@ spec:
 planton apply -f notebook-instance.yaml
 ```
 
-This creates an ml.t3.medium Jupyter workstation with a 50 GB volume, bootstrapped once with the listed Python libraries. A Stack Job tracks the provisioning in real time.
+This creates an ml.t3.medium Jupyter workstation with a 50 GB volume, bootstrapped once with the listed Python libraries. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -105,7 +105,7 @@ These are the most important decisions when configuring a notebook instance. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -114,9 +114,9 @@ These are the most important decisions when configuring a notebook instance. Exp
 | **AwsSecurityGroup** | `securityGroupIds[]` | `status.outputs.security_group_id` |
 | **AwsKmsKey** | `kmsKeyArn` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -136,8 +136,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the role Jupyter's AWS calls run as, wired via `roleArn`
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) — VPC placement for private notebooks, wired via `subnetId`
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) — the notebook ENI's security groups, wired via `securityGroupIds`
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption for the ML storage volume
-- [**AWS SageMaker Image**](/cloud-catalog/aws-sagemaker-image) — custom kernel images for teams that outgrow lifecycle-script bootstrapping
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the role Jupyter's AWS calls run as, wired via `roleArn`
+- [**AWS Subnet**](/infra-catalog/aws-subnet) — VPC placement for private notebooks, wired via `subnetId`
+- [**AWS Security Group**](/infra-catalog/aws-security-group) — the notebook ENI's security groups, wired via `securityGroupIds`
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption for the ML storage volume
+- [**AWS SageMaker Image**](/infra-catalog/aws-sagemaker-image) — custom kernel images for teams that outgrow lifecycle-script bootstrapping

@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCodeBuildProjectStackOutputs captures observable identifiers and
+// AwsCodeBuildProjectOutputs captures observable identifiers and
 // endpoints from the AWS CodeBuild project deployment.
-type AwsCodeBuildProjectStackOutputs struct {
+type AwsCodeBuildProjectOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the CodeBuild project.
 	// Use this for IAM policies, EventBridge targets, and cross-resource references.
@@ -60,20 +60,20 @@ type AwsCodeBuildProjectStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsCodeBuildProjectStackOutputs) Reset() {
-	*x = AwsCodeBuildProjectStackOutputs{}
+func (x *AwsCodeBuildProjectOutputs) Reset() {
+	*x = AwsCodeBuildProjectOutputs{}
 	mi := &file_catalog_aws_awscodebuildproject_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCodeBuildProjectStackOutputs) String() string {
+func (x *AwsCodeBuildProjectOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCodeBuildProjectStackOutputs) ProtoMessage() {}
+func (*AwsCodeBuildProjectOutputs) ProtoMessage() {}
 
-func (x *AwsCodeBuildProjectStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCodeBuildProjectOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscodebuildproject_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -85,61 +85,61 @@ func (x *AwsCodeBuildProjectStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCodeBuildProjectStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCodeBuildProjectStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCodeBuildProjectOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCodeBuildProjectOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscodebuildproject_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCodeBuildProjectStackOutputs) GetProjectArn() string {
+func (x *AwsCodeBuildProjectOutputs) GetProjectArn() string {
 	if x != nil {
 		return x.ProjectArn
 	}
 	return ""
 }
 
-func (x *AwsCodeBuildProjectStackOutputs) GetProjectName() string {
+func (x *AwsCodeBuildProjectOutputs) GetProjectName() string {
 	if x != nil {
 		return x.ProjectName
 	}
 	return ""
 }
 
-func (x *AwsCodeBuildProjectStackOutputs) GetServiceRoleArn() string {
+func (x *AwsCodeBuildProjectOutputs) GetServiceRoleArn() string {
 	if x != nil {
 		return x.ServiceRoleArn
 	}
 	return ""
 }
 
-func (x *AwsCodeBuildProjectStackOutputs) GetBadgeUrl() string {
+func (x *AwsCodeBuildProjectOutputs) GetBadgeUrl() string {
 	if x != nil {
 		return x.BadgeUrl
 	}
 	return ""
 }
 
-func (x *AwsCodeBuildProjectStackOutputs) GetPublicProjectAlias() string {
+func (x *AwsCodeBuildProjectOutputs) GetPublicProjectAlias() string {
 	if x != nil {
 		return x.PublicProjectAlias
 	}
 	return ""
 }
 
-func (x *AwsCodeBuildProjectStackOutputs) GetWebhookUrl() string {
+func (x *AwsCodeBuildProjectOutputs) GetWebhookUrl() string {
 	if x != nil {
 		return x.WebhookUrl
 	}
 	return ""
 }
 
-func (x *AwsCodeBuildProjectStackOutputs) GetWebhookPayloadUrl() string {
+func (x *AwsCodeBuildProjectOutputs) GetWebhookPayloadUrl() string {
 	if x != nil {
 		return x.WebhookPayloadUrl
 	}
 	return ""
 }
 
-func (x *AwsCodeBuildProjectStackOutputs) GetWebhookSecret() string {
+func (x *AwsCodeBuildProjectOutputs) GetWebhookSecret() string {
 	if x != nil {
 		return x.WebhookSecret
 	}
@@ -150,8 +150,8 @@ var File_catalog_aws_awscodebuildproject_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_aws_awscodebuildproject_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awscodebuildproject/v1alpha1/outputs.proto\x12,dev.planton.aws.awscodebuildproject.v1alpha1\x1a\x1cshared/options/options.proto\"\xdc\x02\n" +
-	"\x1fAwsCodeBuildProjectStackOutputs\x12\x1f\n" +
+	"6catalog/aws/awscodebuildproject/v1alpha1/outputs.proto\x12,dev.planton.aws.awscodebuildproject.v1alpha1\x1a\x1cshared/options/options.proto\"\xd7\x02\n" +
+	"\x1aAwsCodeBuildProjectOutputs\x12\x1f\n" +
 	"\vproject_arn\x18\x01 \x01(\tR\n" +
 	"projectArn\x12!\n" +
 	"\fproject_name\x18\x02 \x01(\tR\vprojectName\x12(\n" +
@@ -178,7 +178,7 @@ func file_catalog_aws_awscodebuildproject_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_aws_awscodebuildproject_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscodebuildproject_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCodeBuildProjectStackOutputs)(nil), // 0: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectStackOutputs
+	(*AwsCodeBuildProjectOutputs)(nil), // 0: dev.planton.aws.awscodebuildproject.v1alpha1.AwsCodeBuildProjectOutputs
 }
 var file_catalog_aws_awscodebuildproject_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

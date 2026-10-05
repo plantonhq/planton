@@ -5,10 +5,10 @@ package dev.planton.aws.awsapprunnerautoscalingconfiguration.v1alpha1;
 import "catalog/aws/awsapprunnerautoscalingconfiguration/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsAppRunnerAutoScalingConfigurationStackInput is the input for the
+// AwsAppRunnerAutoScalingConfigurationIacInput is the input for the
 // aws-app-runner-auto-scaling-configuration IaC modules.
-message AwsAppRunnerAutoScalingConfigurationStackInput {
-  // target cloud-resource
+message AwsAppRunnerAutoScalingConfigurationIacInput {
+  // the catalog object to deploy
   AwsAppRunnerAutoScalingConfiguration target = 1;
 
   // provider-config

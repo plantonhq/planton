@@ -7,7 +7,7 @@ import (
 	kuberneteskafkaconnectorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kuberneteskafkaconnector/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/apiextensions"
 	kubernetesmeta "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
@@ -31,12 +31,12 @@ import (
 // ints. No await machinery: reconciliation belongs to the cluster
 // operator (which drives the connector through the Connect REST API), not
 // to applying the resource.
-func Resources(ctx *pulumi.Context, stackInput *kuberneteskafkaconnectorv1alpha1.KubernetesKafkaConnectorStackInput) error {
-	target := stackInput.Target
+func Resources(ctx *pulumi.Context, iacInput *kuberneteskafkaconnectorv1alpha1.KubernetesKafkaConnectorIacInput) error {
+	target := iacInput.Target
 	spec := target.Spec
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
@@ -44,7 +44,7 @@ func Resources(ctx *pulumi.Context, stackInput *kuberneteskafkaconnectorv1alpha1
 	labels := map[string]string{
 		kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
 		kuberneteslabelkeys.ResourceName: target.Metadata.Name,
-		kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesKafkaConnector.String(),
+		kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesKafkaConnector.String(),
 	}
 	if target.Metadata.Id != "" {
 		labels[kuberneteslabelkeys.ResourceId] = target.Metadata.Id

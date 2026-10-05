@@ -11,12 +11,12 @@ type Locals struct {
 	KeyVaultCertificateId string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefrontdoorsecretv1alpha1.AzureFrontDoorSecretStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefrontdoorsecretv1alpha1.AzureFrontDoorSecretIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFrontDoorSecret = stackInput.Target
-	locals.ProfileId = stackInput.Target.Spec.ProfileId.GetValue()
-	locals.KeyVaultCertificateId = stackInput.Target.Spec.KeyVaultCertificateId.GetValue()
+	locals.AzureFrontDoorSecret = iacInput.Target
+	locals.ProfileId = iacInput.Target.Spec.ProfileId.GetValue()
+	locals.KeyVaultCertificateId = iacInput.Target.Spec.KeyVaultCertificateId.GetValue()
 
 	// No Azure tags: ARM does not support tags on Front Door secrets,
 	// so the platform's identity tags live on the profile.

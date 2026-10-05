@@ -1,5 +1,5 @@
 # AwsLbTargetGroup install profile used as a prerequisite by composed
-# components (a listener's forward action, a rule's forward action). The
+# kinds (a listener's forward action, a rule's forward action). The
 # harness deploys it after the AwsVpc prerequisite (vpcId resolves against the
 # VPC) and captures target_group_arn for the dependent's references. Kept
 # deliberately simple -- an HTTP group for IP targets with default health
@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awslbtargetgroup
+    e2e-catalog-kind: awslbtargetgroup
   annotations:
     planton.dev/e2e: "true"
   tags:

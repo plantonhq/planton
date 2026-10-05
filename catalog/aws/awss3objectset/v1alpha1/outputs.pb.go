@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsS3ObjectSetStackOutputs captures observable outputs from the S3 object
+// AwsS3ObjectSetOutputs captures observable outputs from the S3 object
 // upload operations.
-type AwsS3ObjectSetStackOutputs struct {
+type AwsS3ObjectSetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The bucket the objects were uploaded to. Carried for downstream
 	// references and for E2E verification (HeadObject per key).
@@ -43,20 +43,20 @@ type AwsS3ObjectSetStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AwsS3ObjectSetStackOutputs) Reset() {
-	*x = AwsS3ObjectSetStackOutputs{}
+func (x *AwsS3ObjectSetOutputs) Reset() {
+	*x = AwsS3ObjectSetOutputs{}
 	mi := &file_catalog_aws_awss3objectset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsS3ObjectSetStackOutputs) String() string {
+func (x *AwsS3ObjectSetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsS3ObjectSetStackOutputs) ProtoMessage() {}
+func (*AwsS3ObjectSetOutputs) ProtoMessage() {}
 
-func (x *AwsS3ObjectSetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsS3ObjectSetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awss3objectset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,33 +68,33 @@ func (x *AwsS3ObjectSetStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsS3ObjectSetStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsS3ObjectSetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsS3ObjectSetOutputs.ProtoReflect.Descriptor instead.
+func (*AwsS3ObjectSetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awss3objectset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsS3ObjectSetStackOutputs) GetBucketId() string {
+func (x *AwsS3ObjectSetOutputs) GetBucketId() string {
 	if x != nil {
 		return x.BucketId
 	}
 	return ""
 }
 
-func (x *AwsS3ObjectSetStackOutputs) GetObjectArns() map[string]string {
+func (x *AwsS3ObjectSetOutputs) GetObjectArns() map[string]string {
 	if x != nil {
 		return x.ObjectArns
 	}
 	return nil
 }
 
-func (x *AwsS3ObjectSetStackOutputs) GetObjectEtags() map[string]string {
+func (x *AwsS3ObjectSetOutputs) GetObjectEtags() map[string]string {
 	if x != nil {
 		return x.ObjectEtags
 	}
 	return nil
 }
 
-func (x *AwsS3ObjectSetStackOutputs) GetObjectVersionIds() map[string]string {
+func (x *AwsS3ObjectSetOutputs) GetObjectVersionIds() map[string]string {
 	if x != nil {
 		return x.ObjectVersionIds
 	}
@@ -105,13 +105,13 @@ var File_catalog_aws_awss3objectset_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_aws_awss3objectset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awss3objectset/v1alpha1/outputs.proto\x12'dev.planton.aws.awss3objectset.v1alpha1\"\xf6\x04\n" +
-	"\x1aAwsS3ObjectSetStackOutputs\x12\x1b\n" +
-	"\tbucket_id\x18\x01 \x01(\tR\bbucketId\x12t\n" +
-	"\vobject_arns\x18\x02 \x03(\v2S.dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs.ObjectArnsEntryR\n" +
-	"objectArns\x12w\n" +
-	"\fobject_etags\x18\x03 \x03(\v2T.dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs.ObjectEtagsEntryR\vobjectEtags\x12\x87\x01\n" +
-	"\x12object_version_ids\x18\x04 \x03(\v2Y.dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs.ObjectVersionIdsEntryR\x10objectVersionIds\x1a=\n" +
+	"1catalog/aws/awss3objectset/v1alpha1/outputs.proto\x12'dev.planton.aws.awss3objectset.v1alpha1\"\xe2\x04\n" +
+	"\x15AwsS3ObjectSetOutputs\x12\x1b\n" +
+	"\tbucket_id\x18\x01 \x01(\tR\bbucketId\x12o\n" +
+	"\vobject_arns\x18\x02 \x03(\v2N.dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs.ObjectArnsEntryR\n" +
+	"objectArns\x12r\n" +
+	"\fobject_etags\x18\x03 \x03(\v2O.dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs.ObjectEtagsEntryR\vobjectEtags\x12\x82\x01\n" +
+	"\x12object_version_ids\x18\x04 \x03(\v2T.dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs.ObjectVersionIdsEntryR\x10objectVersionIds\x1a=\n" +
 	"\x0fObjectArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a>\n" +
@@ -137,15 +137,15 @@ func file_catalog_aws_awss3objectset_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awss3objectset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_catalog_aws_awss3objectset_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsS3ObjectSetStackOutputs)(nil), // 0: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs
-	nil,                                // 1: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs.ObjectArnsEntry
-	nil,                                // 2: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs.ObjectEtagsEntry
-	nil,                                // 3: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs.ObjectVersionIdsEntry
+	(*AwsS3ObjectSetOutputs)(nil), // 0: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs
+	nil,                           // 1: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs.ObjectArnsEntry
+	nil,                           // 2: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs.ObjectEtagsEntry
+	nil,                           // 3: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs.ObjectVersionIdsEntry
 }
 var file_catalog_aws_awss3objectset_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs.object_arns:type_name -> dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs.ObjectArnsEntry
-	2, // 1: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs.object_etags:type_name -> dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs.ObjectEtagsEntry
-	3, // 2: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs.object_version_ids:type_name -> dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackOutputs.ObjectVersionIdsEntry
+	1, // 0: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs.object_arns:type_name -> dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs.ObjectArnsEntry
+	2, // 1: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs.object_etags:type_name -> dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs.ObjectEtagsEntry
+	3, // 2: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs.object_version_ids:type_name -> dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetOutputs.ObjectVersionIdsEntry
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

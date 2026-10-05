@@ -10,7 +10,7 @@ This preset deploys a STANDARD_HA Redis instance — a primary with an automatic
 
 ## Key Configuration Choices
 
-- **STANDARD_HA with both zones pinned** — `locationId` + `alternativeLocationId` keep the primary and replica next to zonal workloads; failover flips `current_location_id` (watch the stack output)
+- **STANDARD_HA with both zones pinned** — `locationId` + `alternativeLocationId` keep the primary and replica next to zonal workloads; failover flips `current_location_id` (watch the output)
 - **AUTH + TLS** — clients present the `auth_string` output and must trust the `server_ca_certs` output's CA chain
 - **RDB every 12 hours, anchored at 03:00 UTC** — `rdbSnapshotStartTime` places snapshot I/O in the quiet window instead of wherever creation time fell
 - **Maintenance window to the minute** — Sunday 03:30 UTC, coordinated after the snapshot, with a `description` recording why the window sits there
@@ -28,6 +28,6 @@ This preset deploys a STANDARD_HA Redis instance — a primary with an automatic
 - **01-basic-cache** — when losing the cache on restart is acceptable
 - **03-private-services-access** — Shared VPC / PSA connectivity with read replicas and CMEK
 
-## Related Components
+## Related Kinds
 
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — the network the cache attaches to

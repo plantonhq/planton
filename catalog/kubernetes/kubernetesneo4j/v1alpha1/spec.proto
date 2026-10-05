@@ -152,7 +152,7 @@ message KubernetesNeo4jSpec {
    * deliberate override of the chart's LoadBalancer default; exposure
    * composes from first-class kinds instead. In-cluster clients use
    * the always-created default Service (= the resource name — the
-   * endpoints in the stack outputs), so this block matters only when
+   * endpoints in the outputs), so this block matters only when
    * exposing the server directly.
    */
   KubernetesNeo4jService service = 15;
@@ -280,7 +280,7 @@ message KubernetesNeo4jMemory {
  */
 message KubernetesNeo4jService {
   /**
-   * Service type: ClusterIP (the component default — NOT the chart's
+   * Service type: ClusterIP (the kind's default — NOT the chart's
    * LoadBalancer default), NodePort, or LoadBalancer.
    */
   optional string type = 1 [
@@ -320,7 +320,7 @@ message KubernetesNeo4jSslScope {
    * Existing TLS Secret (private.key + public.crt). Accepts a
    * literal name or a KubernetesCertificate reference — the
    * cert-manager seam (cert-manager Secrets carry tls.key/tls.crt;
-   * see the component docs for the key-name bridge).
+   * see the kind's docs for the key-name bridge).
    */
   dev.planton.shared.foreignkey.v1.StringValueOrRef secret = 1 [
     (dev.planton.shared.options.sensitive_exempt_reason) = "Name of an existing Kubernetes Secret (reference), not secret material",

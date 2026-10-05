@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRoute53ResolverEndpointStackInput is the input for the IaC
+// AwsRoute53ResolverEndpointIacInput is the input for the IaC
 // modules that manage a resolver endpoint with its forwarding rules.
-type AwsRoute53ResolverEndpointStackInput struct {
+type AwsRoute53ResolverEndpointIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsRoute53ResolverEndpoint resource to deploy.
 	Target *AwsRoute53ResolverEndpoint `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsRoute53ResolverEndpointStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsRoute53ResolverEndpointStackInput) Reset() {
-	*x = AwsRoute53ResolverEndpointStackInput{}
+func (x *AwsRoute53ResolverEndpointIacInput) Reset() {
+	*x = AwsRoute53ResolverEndpointIacInput{}
 	mi := &file_catalog_aws_awsroute53resolverendpoint_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRoute53ResolverEndpointStackInput) String() string {
+func (x *AwsRoute53ResolverEndpointIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRoute53ResolverEndpointStackInput) ProtoMessage() {}
+func (*AwsRoute53ResolverEndpointIacInput) ProtoMessage() {}
 
-func (x *AwsRoute53ResolverEndpointStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsRoute53ResolverEndpointIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsroute53resolverendpoint_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsRoute53ResolverEndpointStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRoute53ResolverEndpointStackInput.ProtoReflect.Descriptor instead.
-func (*AwsRoute53ResolverEndpointStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRoute53ResolverEndpointIacInput.ProtoReflect.Descriptor instead.
+func (*AwsRoute53ResolverEndpointIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsroute53resolverendpoint_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRoute53ResolverEndpointStackInput) GetTarget() *AwsRoute53ResolverEndpoint {
+func (x *AwsRoute53ResolverEndpointIacInput) GetTarget() *AwsRoute53ResolverEndpoint {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsRoute53ResolverEndpointStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsRoute53ResolverEndpointIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsroute53resolverendpoint_v1alpha1_input_proto protoreflec
 
 const file_catalog_aws_awsroute53resolverendpoint_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awsroute53resolverendpoint/v1alpha1/input.proto\x123dev.planton.aws.awsroute53resolverendpoint.v1alpha1\x1a9catalog/aws/awsroute53resolverendpoint/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdc\x01\n" +
-	"$AwsRoute53ResolverEndpointStackInput\x12g\n" +
+	";catalog/aws/awsroute53resolverendpoint/v1alpha1/input.proto\x123dev.planton.aws.awsroute53resolverendpoint.v1alpha1\x1a9catalog/aws/awsroute53resolverendpoint/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xda\x01\n" +
+	"\"AwsRoute53ResolverEndpointIacInput\x12g\n" +
 	"\x06target\x18\x01 \x01(\v2O.dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xa7\x03\n" +
 	"7com.dev.planton.aws.awsroute53resolverendpoint.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsroute53resolverendpoint_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_aws_awsroute53resolverendpoint_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsroute53resolverendpoint_v1alpha1_input_proto_goTypes = []any{
-	(*AwsRoute53ResolverEndpointStackInput)(nil), // 0: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackInput
-	(*AwsRoute53ResolverEndpoint)(nil),           // 1: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpoint
-	(*aws.AwsProviderConfig)(nil),                // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsRoute53ResolverEndpointIacInput)(nil), // 0: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointIacInput
+	(*AwsRoute53ResolverEndpoint)(nil),         // 1: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpoint
+	(*aws.AwsProviderConfig)(nil),              // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsroute53resolverendpoint_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackInput.target:type_name -> dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpoint
-	2, // 1: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointIacInput.target:type_name -> dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpoint
+	2, // 1: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

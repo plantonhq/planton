@@ -1,7 +1,7 @@
 # AzureMonitorActionGroup - Pulumi Module
 
-Pulumi (Go) implementation for the AzureMonitorActionGroup deployment
-component, at 100% behavioral parity with the Terraform module.
+Pulumi (Go) implementation for the AzureMonitorActionGroup
+kind, at 100% behavioral parity with the Terraform module.
 
 ## Resources Created
 

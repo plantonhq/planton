@@ -1,7 +1,7 @@
 # Kubernetes real-cluster E2E: the batched EKS lane framework, twelve cloud-fabric behavioral proofs, and three live-caught module fixes
 
 **Date**: 2026-07-23
-**Scope**: `apis/dev/planton/qa/componente2eprofile` (new `real_cluster` profile status), `e2e` + `e2e/framework` (external-lane cluster-profile matching, `${E2E_ENV:...}` manifest tokens, engine-restriction annotation, expanded-manifest basename preservation), `apis/dev/planton/provider/kubernetes/aa_e2e` (aws-eks cluster profile, `realcluster/aws-eks` batch runbook, seven new/extended behavioral verifiers), twelve new/updated E2E scenarios across ten kinds, `kubernetesexternaldns` (TF optional-scalar null-guard fix), `kuberneteskarpenternodepool` (TF template-nesting faithful-projection fix), Karpenter-family E2E profiles (deferred → real_cluster, both provisioners validated), `internal/cli/ui/e2ediscover` (REAL-CLUSTER status rendering), `_rules/deployment-component` (four timeless lessons)
+**Scope**: `apis/dev/planton/qa/catalogkinde2eprofile` (new `real_cluster` profile status), `e2e` + `e2e/framework` (external-lane cluster-profile matching, `${E2E_ENV:...}` manifest tokens, engine-restriction annotation, expanded-manifest basename preservation), `apis/dev/planton/provider/kubernetes/aa_e2e` (aws-eks cluster profile, `realcluster/aws-eks` batch runbook, seven new/extended behavioral verifiers), twelve new/updated E2E scenarios across ten kinds, `kubernetesexternaldns` (TF optional-scalar null-guard fix), `kuberneteskarpenternodepool` (TF template-nesting faithful-projection fix), Karpenter-family E2E profiles (deferred → real_cluster, both provisioners validated), `internal/cli/ui/e2ediscover` (REAL-CLUSTER status rendering), `_rules/catalog-kind` (four timeless lessons)
 
 ## What changed
 
@@ -22,7 +22,7 @@ autoscaling — now have a first-class home:
   constructor. Scenarios carrying it skip on local runs and execute in
   batched EKS runs. Used by the cloud-LB, IRSA, CSI-storage, preemption,
   and node-autoscaling scenarios of otherwise-locally-green kinds.
-- **The `real_cluster` component profile status** for kinds whose EVERY
+- **The `real_cluster` kind profile status** for kinds whose EVERY
   lane needs a real cluster (the Karpenter family): skipped wherever no
   external cluster is supplied, excluded from kind CI matrices (which build
   from `green`), runnable in every EKS batch.

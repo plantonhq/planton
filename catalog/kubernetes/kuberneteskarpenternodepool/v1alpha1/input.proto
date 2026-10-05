@@ -8,8 +8,8 @@ import "catalog/kubernetes/provider.proto";
 // Input for the KubernetesKarpenterNodePool IaC stack. The platform
 // resolves all StringValueOrRef references (the NodeClass name) to literal
 // strings before passing this to the IaC engine.
-message KubernetesKarpenterNodePoolStackInput {
-  // Target cloud-resource.
+message KubernetesKarpenterNodePoolIacInput {
+  // the catalog object to deploy.
   KubernetesKarpenterNodePool target = 1;
   // Kubernetes provider configuration (cluster credentials).
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

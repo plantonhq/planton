@@ -18,11 +18,11 @@ type Locals struct {
 // under its parent policy by ARM id, and carries no tags (ARM does not
 // support tags on rule collection groups -- they are child documents of
 // the policy, not top-level tracked resources).
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefirewallpolicyrulecollectiongroupv1alpha1.AzureFirewallPolicyRuleCollectionGroupStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefirewallpolicyrulecollectiongroupv1alpha1.AzureFirewallPolicyRuleCollectionGroupIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFirewallPolicyRuleCollectionGroup = stackInput.Target
-	locals.FirewallPolicyId = stackInput.Target.Spec.FirewallPolicyId.GetValue()
+	locals.AzureFirewallPolicyRuleCollectionGroup = iacInput.Target
+	locals.FirewallPolicyId = iacInput.Target.Spec.FirewallPolicyId.GetValue()
 
 	return locals
 }

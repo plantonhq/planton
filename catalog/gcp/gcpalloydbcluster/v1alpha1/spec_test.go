@@ -31,7 +31,7 @@ var _ = ginkgo.Describe("GcpAlloydbClusterSpec", func() {
 		return &GcpAlloydbCluster{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpAlloydbCluster",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-alloydb",
 			},
 			Spec: &GcpAlloydbClusterSpec{

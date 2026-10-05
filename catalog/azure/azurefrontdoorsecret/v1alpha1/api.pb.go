@@ -35,7 +35,7 @@ type AzureFrontDoorSecret struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureFrontDoorSecretSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -88,7 +88,7 @@ func (x *AzureFrontDoorSecret) GetKind() string {
 	return ""
 }
 
-func (x *AzureFrontDoorSecret) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureFrontDoorSecret) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureFrontDoorSecret) GetStatus() *AzureFrontDoorSecretStatus {
 // AzureFrontDoorSecretStatus holds the deployment status and outputs.
 type AzureFrontDoorSecretStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureFrontDoorSecretStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureFrontDoorSecretOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureFrontDoorSecretStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoorsecret_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureFrontDoorSecretStatus) GetOutputs() *AzureFrontDoorSecretStackOutputs {
+func (x *AzureFrontDoorSecretStatus) GetOutputs() *AzureFrontDoorSecretOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azurefrontdoorsecret_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14AzureFrontDoorSecretR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
 	"\x04spec\x18\x04 \x01(\v2I.dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretStatusR\x06status\"\x89\x01\n" +
-	"\x1aAzureFrontDoorSecretStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretStackOutputsR\aoutputsB\x87\x03\n" +
+	"\x06status\x18\x05 \x01(\v2K.dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretStatusR\x06status\"\x84\x01\n" +
+	"\x1aAzureFrontDoorSecretStatus\x12f\n" +
+	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretOutputsR\aoutputsB\x87\x03\n" +
 	"3com.dev.planton.azure.azurefrontdoorsecret.v1alpha1B\bApiProtoP\x01Zegithub.com/plantonhq/planton/catalog/azure/azurefrontdoorsecret/v1alpha1;azurefrontdoorsecretv1alpha1\xa2\x02\x04DPAA\xaa\x02/Dev.Planton.Azure.Azurefrontdoorsecret.V1alpha1\xca\x02/Dev\\Planton\\Azure\\Azurefrontdoorsecret\\V1alpha1\xe2\x02;Dev\\Planton\\Azure\\Azurefrontdoorsecret\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Azure::Azurefrontdoorsecret::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azurefrontdoorsecret_v1alpha1_api_proto_rawDescGZIP() []
 
 var file_catalog_azure_azurefrontdoorsecret_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurefrontdoorsecret_v1alpha1_api_proto_goTypes = []any{
-	(*AzureFrontDoorSecret)(nil),             // 0: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecret
-	(*AzureFrontDoorSecretStatus)(nil),       // 1: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureFrontDoorSecretSpec)(nil),         // 3: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretSpec
-	(*AzureFrontDoorSecretStackOutputs)(nil), // 4: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretStackOutputs
+	(*AzureFrontDoorSecret)(nil),         // 0: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecret
+	(*AzureFrontDoorSecretStatus)(nil),   // 1: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureFrontDoorSecretSpec)(nil),     // 3: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretSpec
+	(*AzureFrontDoorSecretOutputs)(nil),  // 4: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretOutputs
 }
 var file_catalog_azure_azurefrontdoorsecret_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecret.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecret.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecret.spec:type_name -> dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretSpec
 	1, // 2: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecret.status:type_name -> dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretStatus
-	4, // 3: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretStatus.outputs:type_name -> dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretStackOutputs
+	4, // 3: dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretStatus.outputs:type_name -> dev.planton.azure.azurefrontdoorsecret.v1alpha1.AzureFrontDoorSecretOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

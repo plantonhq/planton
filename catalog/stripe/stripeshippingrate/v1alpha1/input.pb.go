@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeShippingRateStackInput is the input to the StripeShippingRate IaC module.
+// StripeShippingRateIacInput is the input to the StripeShippingRate IaC module.
 // It contains the target resource and the Stripe provider configuration.
-type StripeShippingRateStackInput struct {
+type StripeShippingRateIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripeShippingRate resource to be deployed.
 	Target *StripeShippingRate `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripeShippingRateStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripeShippingRateStackInput) Reset() {
-	*x = StripeShippingRateStackInput{}
+func (x *StripeShippingRateIacInput) Reset() {
+	*x = StripeShippingRateIacInput{}
 	mi := &file_catalog_stripe_stripeshippingrate_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeShippingRateStackInput) String() string {
+func (x *StripeShippingRateIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeShippingRateStackInput) ProtoMessage() {}
+func (*StripeShippingRateIacInput) ProtoMessage() {}
 
-func (x *StripeShippingRateStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripeShippingRateIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripeshippingrate_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripeShippingRateStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeShippingRateStackInput.ProtoReflect.Descriptor instead.
-func (*StripeShippingRateStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeShippingRateIacInput.ProtoReflect.Descriptor instead.
+func (*StripeShippingRateIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripeshippingrate_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeShippingRateStackInput) GetTarget() *StripeShippingRate {
+func (x *StripeShippingRateIacInput) GetTarget() *StripeShippingRate {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripeShippingRateStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripeShippingRateIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripeshippingrate_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_stripe_stripeshippingrate_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/stripe/stripeshippingrate/v1alpha1/input.proto\x12.dev.planton.stripe.stripeshippingrate.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a4catalog/stripe/stripeshippingrate/v1alpha1/api.proto\"\xcd\x01\n" +
-	"\x1cStripeShippingRateStackInput\x12Z\n" +
+	"6catalog/stripe/stripeshippingrate/v1alpha1/input.proto\x12.dev.planton.stripe.stripeshippingrate.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a4catalog/stripe/stripeshippingrate/v1alpha1/api.proto\"\xcb\x01\n" +
+	"\x1aStripeShippingRateIacInput\x12Z\n" +
 	"\x06target\x18\x01 \x01(\v2B.dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\x81\x03\n" +
 	"2com.dev.planton.stripe.stripeshippingrate.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripeshippingrate_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_stripe_stripeshippingrate_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripeshippingrate_v1alpha1_input_proto_goTypes = []any{
-	(*StripeShippingRateStackInput)(nil), // 0: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateStackInput
-	(*StripeShippingRate)(nil),           // 1: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRate
-	(*stripe.StripeProviderConfig)(nil),  // 2: dev.planton.stripe.StripeProviderConfig
+	(*StripeShippingRateIacInput)(nil),  // 0: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateIacInput
+	(*StripeShippingRate)(nil),          // 1: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRate
+	(*stripe.StripeProviderConfig)(nil), // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripeshippingrate_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateStackInput.target:type_name -> dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRate
-	2, // 1: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateIacInput.target:type_name -> dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRate
+	2, // 1: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

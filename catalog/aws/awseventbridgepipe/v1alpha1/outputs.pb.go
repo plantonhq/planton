@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEventBridgePipeStackOutputs captures the observable state of the
+// AwsEventBridgePipeOutputs captures the observable state of the
 // pipe after apply.
-type AwsEventBridgePipeStackOutputs struct {
+type AwsEventBridgePipeOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The pipe's ARN.
 	PipeArn string `protobuf:"bytes,1,opt,name=pipe_arn,json=pipeArn,proto3" json:"pipe_arn,omitempty"`
@@ -34,20 +34,20 @@ type AwsEventBridgePipeStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsEventBridgePipeStackOutputs) Reset() {
-	*x = AwsEventBridgePipeStackOutputs{}
+func (x *AwsEventBridgePipeOutputs) Reset() {
+	*x = AwsEventBridgePipeOutputs{}
 	mi := &file_catalog_aws_awseventbridgepipe_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEventBridgePipeStackOutputs) String() string {
+func (x *AwsEventBridgePipeOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEventBridgePipeStackOutputs) ProtoMessage() {}
+func (*AwsEventBridgePipeOutputs) ProtoMessage() {}
 
-func (x *AwsEventBridgePipeStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEventBridgePipeOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awseventbridgepipe_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsEventBridgePipeStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEventBridgePipeStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEventBridgePipeStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEventBridgePipeOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEventBridgePipeOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseventbridgepipe_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEventBridgePipeStackOutputs) GetPipeArn() string {
+func (x *AwsEventBridgePipeOutputs) GetPipeArn() string {
 	if x != nil {
 		return x.PipeArn
 	}
 	return ""
 }
 
-func (x *AwsEventBridgePipeStackOutputs) GetPipeName() string {
+func (x *AwsEventBridgePipeOutputs) GetPipeName() string {
 	if x != nil {
 		return x.PipeName
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awseventbridgepipe_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awseventbridgepipe_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awseventbridgepipe/v1alpha1/outputs.proto\x12+dev.planton.aws.awseventbridgepipe.v1alpha1\"X\n" +
-	"\x1eAwsEventBridgePipeStackOutputs\x12\x19\n" +
+	"5catalog/aws/awseventbridgepipe/v1alpha1/outputs.proto\x12+dev.planton.aws.awseventbridgepipe.v1alpha1\"S\n" +
+	"\x19AwsEventBridgePipeOutputs\x12\x19\n" +
 	"\bpipe_arn\x18\x01 \x01(\tR\apipeArn\x12\x1b\n" +
 	"\tpipe_name\x18\x02 \x01(\tR\bpipeNameB\xf1\x02\n" +
 	"/com.dev.planton.aws.awseventbridgepipe.v1alpha1B\fOutputsProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awseventbridgepipe/v1alpha1;awseventbridgepipev1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awseventbridgepipe.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awseventbridgepipe\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awseventbridgepipe\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awseventbridgepipe::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_aws_awseventbridgepipe_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awseventbridgepipe_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awseventbridgepipe_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEventBridgePipeStackOutputs)(nil), // 0: dev.planton.aws.awseventbridgepipe.v1alpha1.AwsEventBridgePipeStackOutputs
+	(*AwsEventBridgePipeOutputs)(nil), // 0: dev.planton.aws.awseventbridgepipe.v1alpha1.AwsEventBridgePipeOutputs
 }
 var file_catalog_aws_awseventbridgepipe_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

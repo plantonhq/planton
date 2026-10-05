@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpDialogflowCxSecuritySettingsStackOutputs captures the identity Google
+// GcpDialogflowCxSecuritySettingsOutputs captures the identity Google
 // assigned the security settings.
-type GcpDialogflowCxSecuritySettingsStackOutputs struct {
+type GcpDialogflowCxSecuritySettingsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name -- what an agent's security_settings field takes:
 	// projects/{project}/locations/{location}/securitySettings/{id}.
@@ -36,20 +36,20 @@ type GcpDialogflowCxSecuritySettingsStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpDialogflowCxSecuritySettingsStackOutputs) Reset() {
-	*x = GcpDialogflowCxSecuritySettingsStackOutputs{}
+func (x *GcpDialogflowCxSecuritySettingsOutputs) Reset() {
+	*x = GcpDialogflowCxSecuritySettingsOutputs{}
 	mi := &file_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDialogflowCxSecuritySettingsStackOutputs) String() string {
+func (x *GcpDialogflowCxSecuritySettingsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDialogflowCxSecuritySettingsStackOutputs) ProtoMessage() {}
+func (*GcpDialogflowCxSecuritySettingsOutputs) ProtoMessage() {}
 
-func (x *GcpDialogflowCxSecuritySettingsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpDialogflowCxSecuritySettingsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *GcpDialogflowCxSecuritySettingsStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDialogflowCxSecuritySettingsStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpDialogflowCxSecuritySettingsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDialogflowCxSecuritySettingsOutputs.ProtoReflect.Descriptor instead.
+func (*GcpDialogflowCxSecuritySettingsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDialogflowCxSecuritySettingsStackOutputs) GetName() string {
+func (x *GcpDialogflowCxSecuritySettingsOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpDialogflowCxSecuritySettingsStackOutputs) GetSecuritySettingsId() string {
+func (x *GcpDialogflowCxSecuritySettingsOutputs) GetSecuritySettingsId() string {
 	if x != nil {
 		return x.SecuritySettingsId
 	}
 	return ""
 }
 
-func (x *GcpDialogflowCxSecuritySettingsStackOutputs) GetLocation() string {
+func (x *GcpDialogflowCxSecuritySettingsOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -91,8 +91,8 @@ var File_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_outputs_proto prot
 
 const file_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/gcp/gcpdialogflowcxsecuritysettings/v1alpha1/outputs.proto\x128dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1\"\x8f\x01\n" +
-	"+GcpDialogflowCxSecuritySettingsStackOutputs\x12\x12\n" +
+	"Bcatalog/gcp/gcpdialogflowcxsecuritysettings/v1alpha1/outputs.proto\x128dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1\"\x8a\x01\n" +
+	"&GcpDialogflowCxSecuritySettingsOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x120\n" +
 	"\x14security_settings_id\x18\x02 \x01(\tR\x12securitySettingsId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocationB\xcc\x03\n" +
@@ -112,7 +112,7 @@ func file_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_outputs_proto_raw
 
 var file_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpDialogflowCxSecuritySettingsStackOutputs)(nil), // 0: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsStackOutputs
+	(*GcpDialogflowCxSecuritySettingsOutputs)(nil), // 0: dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsOutputs
 }
 var file_catalog_gcp_gcpdialogflowcxsecuritysettings_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

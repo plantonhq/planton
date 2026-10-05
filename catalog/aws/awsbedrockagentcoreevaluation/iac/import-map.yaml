@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsbedrockagentcoreevaluation
 spec:
@@ -11,20 +11,20 @@ spec:
   values:
     - name: evaluator_id
       derivations:
-        - from_stack_output_keyed_by_address: evaluator_ids
+        - from_output_keyed_by_address: evaluator_ids
       where_to_find: >-
         `aws bedrock-agentcore-control list-evaluators` lists
         evaluatorId per evaluator; match each to its spec.evaluators
         entry by name.
     - name: harness_id
       derivations:
-        - from_stack_output_keyed_by_address: harness_ids
+        - from_output_keyed_by_address: harness_ids
       where_to_find: >-
         `aws bedrock-agentcore-control list-harnesses` lists harnessId
         per harness; match each to its spec.harnesses entry by name.
     - name: online_evaluation_config_id
       derivations:
-        - from_stack_output_keyed_by_address: online_evaluation_config_ids
+        - from_output_keyed_by_address: online_evaluation_config_ids
       where_to_find: >-
         `aws bedrock-agentcore-control list-online-evaluation-configs`
         lists onlineEvaluationConfigId; match each to its

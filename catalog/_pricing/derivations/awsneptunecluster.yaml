@@ -9,9 +9,9 @@
 # its own rate. Neptune Serverless never pauses to zero -- the scaling
 # floor bills NCU-hours around the clock, so a serverless cluster's
 # committed spend is min_capacity x 730 (1 NCU is the service minimum
-# when the floor is unset). Schema: finops/componentcostderivation/v1.
+# when the floor is unset). Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsneptunecluster
 spec:

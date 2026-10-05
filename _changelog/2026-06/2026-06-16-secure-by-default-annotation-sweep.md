@@ -6,7 +6,7 @@
 
 ## Summary
 
-Swept the cloud-resource specs and annotated every field that holds a real
+Swept the infra-component specs and annotated every field that holds a real
 user-supplied secret value with the `(dev.planton.shared.options.sensitive) = true`
 option, so that field becomes secret-by-default: downstream it can only hold a
 managed-secret reference (resolved just-in-time at deploy) and never plaintext.

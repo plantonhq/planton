@@ -2,9 +2,9 @@
 
 ## When NOT to Use This
 
-**A first-class catalog component always wins.** Typed components validate their configuration before anything reaches a cluster, export composable outputs other resources can reference, and teach their trade-offs field by field. A generic chart install does none of that — the chart's values surface is the contract, and a typo'd value is discovered when the chart's resources misbehave, not at validation.
+**A first-class catalog kind always wins.** Typed kinds validate their configuration before anything reaches a cluster, export composable outputs other resources can reference, and teach their trade-offs field by field. A generic chart install does none of that — the chart's values surface is the contract, and a typo'd value is discovered when the chart's resources misbehave, not at validation.
 
-**KubernetesHelmRelease is the catalog's sole intentional passthrough.** Reach for it only when the catalog has no component for the chart you need. It is never the recommended path where a first-class component exists.
+**KubernetesHelmRelease is the catalog's sole intentional passthrough.** Reach for it only when the catalog has no kind for the chart you need. It is never the recommended path where a first-class kind exists.
 
 ## Overview
 
@@ -82,7 +82,7 @@ Every refusal on the CRD path says three things, in this order and in stable wor
 
 Two things the messages say on purpose. A kept CRD the module re-adopts on reinstall shows as `create` in a Terraform plan, because the state has no record of it; the apply adopts it in place and the Pulumi log says so. And a chart with no CRDs is never refused for a CRD right it does not need: the ownership read and the permission probe run only over what the render produced.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs` — what `helm list` and `helm status` would show, exported identically by both engines:
 
@@ -128,7 +128,7 @@ helm status podinfo -n podinfo
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Optionally create the release namespace as an explicit, labeled module-owned resource (never via Helm's own create-namespace flag, which would create it unlabeled)
 2. Resolve the release name (`release_name` or `metadata.name`) and the Helm defaults for `timeout_seconds` (300) and `max_history` (10), so both engines send identical values whether or not the spec set them
@@ -143,17 +143,17 @@ This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules tha
 
 ## When to Use
 
-Use **KubernetesHelmRelease** when — and only when — the catalog has no first-class component for the chart you need:
+Use **KubernetesHelmRelease** when — and only when — the catalog has no first-class kind for the chart you need:
 
 - Third-party or vendor charts outside the catalog's coverage
 - Internal charts your organization publishes to a private repository or OCI registry
-- Migrating Helm-managed workloads into declarative management before (or instead of) modeling them as typed components
+- Migrating Helm-managed workloads into declarative management before (or instead of) modeling them as typed kinds
 
 **Do NOT use** when:
 
-- A first-class catalog component covers the workload — it always wins (validation before deploy, composable outputs, documented trade-offs)
+- A first-class catalog kind covers the workload — it always wins (validation before deploy, composable outputs, documented trade-offs)
 - You have raw manifests rather than a chart — that is KubernetesManifest's job
-- You want to render a chart without creating a release — this component deliberately does not do that; hooks and Helm tooling are the point
+- You want to render a chart without creating a release — this kind deliberately does not do that; hooks and Helm tooling are the point
 
 ## Prerequisites
 

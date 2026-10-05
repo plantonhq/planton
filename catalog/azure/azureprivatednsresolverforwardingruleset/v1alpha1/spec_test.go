@@ -47,7 +47,7 @@ func validResource() *AzurePrivateDnsResolverForwardingRuleset {
 	return &AzurePrivateDnsResolverForwardingRuleset{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzurePrivateDnsResolverForwardingRuleset",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ruleset",
 		},
 		Spec: &AzurePrivateDnsResolverForwardingRulesetSpec{

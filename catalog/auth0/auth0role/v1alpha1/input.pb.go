@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0RoleStackInput is the input to the Auth0Role IaC module.
+// Auth0RoleIacInput is the input to the Auth0Role IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-type Auth0RoleStackInput struct {
+type Auth0RoleIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the Auth0Role resource to be deployed.
 	Target *Auth0Role `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -38,20 +38,20 @@ type Auth0RoleStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *Auth0RoleStackInput) Reset() {
-	*x = Auth0RoleStackInput{}
+func (x *Auth0RoleIacInput) Reset() {
+	*x = Auth0RoleIacInput{}
 	mi := &file_catalog_auth0_auth0role_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0RoleStackInput) String() string {
+func (x *Auth0RoleIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0RoleStackInput) ProtoMessage() {}
+func (*Auth0RoleIacInput) ProtoMessage() {}
 
-func (x *Auth0RoleStackInput) ProtoReflect() protoreflect.Message {
+func (x *Auth0RoleIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0role_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *Auth0RoleStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0RoleStackInput.ProtoReflect.Descriptor instead.
-func (*Auth0RoleStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0RoleIacInput.ProtoReflect.Descriptor instead.
+func (*Auth0RoleIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0role_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0RoleStackInput) GetTarget() *Auth0Role {
+func (x *Auth0RoleIacInput) GetTarget() *Auth0Role {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *Auth0RoleStackInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
+func (x *Auth0RoleIacInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -86,8 +86,8 @@ var File_catalog_auth0_auth0role_v1alpha1_input_proto protoreflect.FileDescripto
 
 const file_catalog_auth0_auth0role_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	",catalog/auth0/auth0role/v1alpha1/input.proto\x12$dev.planton.auth0.auth0role.v1alpha1\x1a*catalog/auth0/auth0role/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xaf\x01\n" +
-	"\x13Auth0RoleStackInput\x12G\n" +
+	",catalog/auth0/auth0role/v1alpha1/input.proto\x12$dev.planton.auth0.auth0role.v1alpha1\x1a*catalog/auth0/auth0role/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xad\x01\n" +
+	"\x11Auth0RoleIacInput\x12G\n" +
 	"\x06target\x18\x01 \x01(\v2/.dev.planton.auth0.auth0role.v1alpha1.Auth0RoleR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.auth0.Auth0ProviderConfigR\x0eproviderConfigB\xbc\x02\n" +
 	"(com.dev.planton.auth0.auth0role.v1alpha1B\n" +
@@ -107,13 +107,13 @@ func file_catalog_auth0_auth0role_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_auth0_auth0role_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0role_v1alpha1_input_proto_goTypes = []any{
-	(*Auth0RoleStackInput)(nil),       // 0: dev.planton.auth0.auth0role.v1alpha1.Auth0RoleStackInput
+	(*Auth0RoleIacInput)(nil),         // 0: dev.planton.auth0.auth0role.v1alpha1.Auth0RoleIacInput
 	(*Auth0Role)(nil),                 // 1: dev.planton.auth0.auth0role.v1alpha1.Auth0Role
 	(*auth0.Auth0ProviderConfig)(nil), // 2: dev.planton.auth0.Auth0ProviderConfig
 }
 var file_catalog_auth0_auth0role_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.auth0.auth0role.v1alpha1.Auth0RoleStackInput.target:type_name -> dev.planton.auth0.auth0role.v1alpha1.Auth0Role
-	2, // 1: dev.planton.auth0.auth0role.v1alpha1.Auth0RoleStackInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
+	1, // 0: dev.planton.auth0.auth0role.v1alpha1.Auth0RoleIacInput.target:type_name -> dev.planton.auth0.auth0role.v1alpha1.Auth0Role
+	2, // 1: dev.planton.auth0.auth0role.v1alpha1.Auth0RoleIacInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

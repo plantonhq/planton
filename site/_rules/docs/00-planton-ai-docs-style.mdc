@@ -47,7 +47,7 @@ Commonly used in docs:
 | `concepts` | 🧩 | Core concepts |
 | `tour` | 🧭 | Platform tour |
 | `hierarchy` | 🌳 | Resource hierarchy |
-| `cloud` | ☁️ | Cloud resources, infrastructure |
+| `cloud` | ☁️ | Infra components, infrastructure |
 | `service` | 🛎️ | Services |
 | `pipeline` | 🔗 | Pipelines, integrations |
 | `deployment` | 🚀 | Deployment, getting started |
@@ -69,7 +69,7 @@ Full list: 200+ entries in `fileSystem.ts` `iconMap`. If an icon name is not fou
 
 - Fenced code blocks with language tags: `bash`, `yaml`, `json`, `ts`, `tsx`, `js`, `go`, `java`, `proto`, `hcl`, `dockerfile`, `sql`, `diff`, `text`, `mermaid`
 - Inline code with backticks for commands, file names, identifiers, and config keys
-- Internal links: absolute paths from docs root, no `.md` extension — `/docs/infrastructure/cloud-resources`
+- Internal links: absolute paths from docs root, no `.md` extension — `/docs/infrastructure/infra-components`
 - Anchor links: auto-generated from headings — `/docs/cli#install-on-windows`
 - No custom anchor syntax `{#custom-id}` — renders literally, does not work
 - Callouts: blockquotes with a bold lead — `> **Note:**`, `> **Tip:**`, `> **Warning:**`

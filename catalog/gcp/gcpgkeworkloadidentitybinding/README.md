@@ -13,12 +13,12 @@ handshake is one precise IAM grant — `roles/iam.workloadIdentityUser` on the
 GSA, to the principal
 `serviceAccount:{project}.svc.id.goog[{namespace}/{ksa}]`.
 
-This component owns exactly that grant, and constructs the brittle principal
+This kind owns exactly that grant, and constructs the brittle principal
 string from simple validated inputs — a typo'd principal is impossible by
 construction, and namespace/name are validated against Kubernetes naming
 rules before anything deploys.
 
-## What This Component Does — and Does Not — Manage
+## What This Kind Does — and Does Not — Manage
 
 - **Managed here (GCP side):** the additive IAM grant on the GSA. Additive
   means it merges into the GSA's IAM policy without touching any other
@@ -90,14 +90,14 @@ The GSA may live in a different project than the GKE cluster. `projectId`
 is always the CLUSTER's project (it names the workload-identity pool); the
 GSA's own project is inferred from its email.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `member` | The constructed workload-identity principal added to the GSA's policy |
 | `service_account_email` | The bound GSA email — the value the KSA annotation needs |
 
-## Related Components
+## Related Kinds
 
 - **GcpServiceAccount** — creates the GSA this binding targets
 - **GcpGkeCluster** — the cluster whose project hosts the identity pool

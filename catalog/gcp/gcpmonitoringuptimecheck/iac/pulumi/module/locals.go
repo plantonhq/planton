@@ -6,7 +6,7 @@ import (
 
 	gcpmonitoringuptimecheckv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringuptimecheck/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -24,8 +24,8 @@ type Locals struct {
 	GcpLabels map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpmonitoringuptimecheckv1alpha1.GcpMonitoringUptimeCheckStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpmonitoringuptimecheckv1alpha1.GcpMonitoringUptimeCheckIacInput) *Locals {
+	target := iacInput.Target
 
 	displayName := target.Spec.DisplayName
 	if displayName == "" {
@@ -38,7 +38,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpmonitoringuptimecheckv1a
 	}
 	gcpLabels[gcplabelkeys.Resource] = strconv.FormatBool(true)
 	gcpLabels[gcplabelkeys.ResourceName] = target.Metadata.Name
-	gcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpMonitoringUptimeCheck.String())
+	gcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpMonitoringUptimeCheck.String())
 
 	if target.Metadata.Org != "" {
 		gcpLabels[gcplabelkeys.Organization] = target.Metadata.Org

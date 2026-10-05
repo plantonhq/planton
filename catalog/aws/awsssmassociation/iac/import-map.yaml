@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsssmassociation
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: association_id
       derivations:
-        - from_stack_output: association_id
+        - from_output: association_id
       where_to_find: >-
         Systems Manager console -> State Manager (each association's
         Association id), or `aws ssm list-associations`

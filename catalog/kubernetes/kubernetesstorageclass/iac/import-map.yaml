@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesstorageclass
 spec:
@@ -8,7 +8,7 @@ spec:
   values:
     - name: storage_class_name
       derivations:
-        - from_stack_output: storage_class_name
+        - from_output: storage_class_name
         - from_spec_field: name
       where_to_find: >-
         `kubectl get storageclasses` (NAME column).

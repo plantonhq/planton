@@ -24,7 +24,7 @@ const (
 
 // *
 // **KubernetesSecretKeyRef** is a reference to a specific key within a Kubernetes Secret.
-// This allows components to retrieve sensitive values from existing secrets rather than
+// This allows kinds to retrieve sensitive values from existing secrets rather than
 // storing them as plain text in the configuration.
 type KubernetesSecretKeyRef struct {
 	state protoimpl.MessageState `protogen:"open.v1"`

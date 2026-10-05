@@ -8,9 +8,9 @@
 # the query-routing proxy (HAProxy or ProxySQL) runs its own replicas,
 # and ProxySQL adds a configuration-database volume per replica. The
 # fluent-bit log-collector sidecar rides inside every database node pod.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesmysql
 spec:

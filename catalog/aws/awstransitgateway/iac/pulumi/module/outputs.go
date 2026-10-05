@@ -1,7 +1,7 @@
 package module
 
 // Output keys for the AwsTransitGateway module. These constants match
-// the field names in AwsTransitGatewayStackOutputs.
+// the field names in AwsTransitGatewayOutputs.
 const (
 	OpTransitGatewayId               = "transit_gateway_id"
 	OpTransitGatewayArn              = "transit_gateway_arn"

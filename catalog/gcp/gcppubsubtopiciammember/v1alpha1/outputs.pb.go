@@ -25,7 +25,7 @@ const (
 // has no server-generated identity beyond its inputs; the outputs echo the
 // resolved grant so audits see exactly what was applied without re-resolving
 // references.
-type GcpPubSubTopicIamMemberStackOutputs struct {
+type GcpPubSubTopicIamMemberOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The topic whose IAM policy received the grant, as configured
 	// (projects/<project>/topics/<topic>), after reference resolution.
@@ -42,20 +42,20 @@ type GcpPubSubTopicIamMemberStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpPubSubTopicIamMemberStackOutputs) Reset() {
-	*x = GcpPubSubTopicIamMemberStackOutputs{}
+func (x *GcpPubSubTopicIamMemberOutputs) Reset() {
+	*x = GcpPubSubTopicIamMemberOutputs{}
 	mi := &file_catalog_gcp_gcppubsubtopiciammember_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpPubSubTopicIamMemberStackOutputs) String() string {
+func (x *GcpPubSubTopicIamMemberOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpPubSubTopicIamMemberStackOutputs) ProtoMessage() {}
+func (*GcpPubSubTopicIamMemberOutputs) ProtoMessage() {}
 
-func (x *GcpPubSubTopicIamMemberStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpPubSubTopicIamMemberOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcppubsubtopiciammember_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *GcpPubSubTopicIamMemberStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpPubSubTopicIamMemberStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpPubSubTopicIamMemberStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpPubSubTopicIamMemberOutputs.ProtoReflect.Descriptor instead.
+func (*GcpPubSubTopicIamMemberOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcppubsubtopiciammember_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpPubSubTopicIamMemberStackOutputs) GetTopic() string {
+func (x *GcpPubSubTopicIamMemberOutputs) GetTopic() string {
 	if x != nil {
 		return x.Topic
 	}
 	return ""
 }
 
-func (x *GcpPubSubTopicIamMemberStackOutputs) GetRole() string {
+func (x *GcpPubSubTopicIamMemberOutputs) GetRole() string {
 	if x != nil {
 		return x.Role
 	}
 	return ""
 }
 
-func (x *GcpPubSubTopicIamMemberStackOutputs) GetMember() string {
+func (x *GcpPubSubTopicIamMemberOutputs) GetMember() string {
 	if x != nil {
 		return x.Member
 	}
 	return ""
 }
 
-func (x *GcpPubSubTopicIamMemberStackOutputs) GetEtag() string {
+func (x *GcpPubSubTopicIamMemberOutputs) GetEtag() string {
 	if x != nil {
 		return x.Etag
 	}
@@ -104,8 +104,8 @@ var File_catalog_gcp_gcppubsubtopiciammember_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_gcp_gcppubsubtopiciammember_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcppubsubtopiciammember/v1alpha1/outputs.proto\x120dev.planton.gcp.gcppubsubtopiciammember.v1alpha1\"{\n" +
-	"#GcpPubSubTopicIamMemberStackOutputs\x12\x14\n" +
+	":catalog/gcp/gcppubsubtopiciammember/v1alpha1/outputs.proto\x120dev.planton.gcp.gcppubsubtopiciammember.v1alpha1\"v\n" +
+	"\x1eGcpPubSubTopicIamMemberOutputs\x12\x14\n" +
 	"\x05topic\x18\x01 \x01(\tR\x05topic\x12\x12\n" +
 	"\x04role\x18\x02 \x01(\tR\x04role\x12\x16\n" +
 	"\x06member\x18\x03 \x01(\tR\x06member\x12\x12\n" +
@@ -126,7 +126,7 @@ func file_catalog_gcp_gcppubsubtopiciammember_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_gcp_gcppubsubtopiciammember_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcppubsubtopiciammember_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpPubSubTopicIamMemberStackOutputs)(nil), // 0: dev.planton.gcp.gcppubsubtopiciammember.v1alpha1.GcpPubSubTopicIamMemberStackOutputs
+	(*GcpPubSubTopicIamMemberOutputs)(nil), // 0: dev.planton.gcp.gcppubsubtopiciammember.v1alpha1.GcpPubSubTopicIamMemberOutputs
 }
 var file_catalog_gcp_gcppubsubtopiciammember_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

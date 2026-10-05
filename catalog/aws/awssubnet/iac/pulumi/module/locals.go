@@ -5,7 +5,7 @@ import (
 
 	awssubnetv1alpha1 "github.com/plantonhq/planton/catalog/aws/awssubnet/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -14,11 +14,11 @@ type Locals struct {
 	AwsTags   map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awssubnetv1alpha1.AwsSubnetStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awssubnetv1alpha1.AwsSubnetIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsSubnet = stackInput.Target
+	locals.AwsSubnet = iacInput.Target
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 
 	// The settled tag convention, matching the Terraform module key-for-key:
 	// user labels merge in FIRST so the Name + planton.ai/* identity keys can
@@ -34,7 +34,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *awssubnetv1alpha1.AwsSubnet
 	locals.AwsTags[awstagkeys.Resource] = strconv.FormatBool(true)
 	locals.AwsTags[awstagkeys.Organization] = metadata.Org
 	locals.AwsTags[awstagkeys.Environment] = metadata.Env
-	locals.AwsTags[awstagkeys.ResourceKind] = cloudresourcekind.CloudResourceKind_AwsSubnet.String()
+	locals.AwsTags[awstagkeys.ResourceKind] = catalogkind.CatalogKind_AwsSubnet.String()
 	locals.AwsTags[awstagkeys.ResourceId] = metadata.Id
 
 	return locals

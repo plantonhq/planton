@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP BigQuery dataset.
-type GcpBigQueryDatasetStackOutputs struct {
+type GcpBigQueryDatasetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The short dataset ID (same as the spec's dataset_id input).
 	// This is the identifier used in BigQuery SQL queries, job configurations,
@@ -48,20 +48,20 @@ type GcpBigQueryDatasetStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpBigQueryDatasetStackOutputs) Reset() {
-	*x = GcpBigQueryDatasetStackOutputs{}
+func (x *GcpBigQueryDatasetOutputs) Reset() {
+	*x = GcpBigQueryDatasetOutputs{}
 	mi := &file_catalog_gcp_gcpbigquerydataset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpBigQueryDatasetStackOutputs) String() string {
+func (x *GcpBigQueryDatasetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpBigQueryDatasetStackOutputs) ProtoMessage() {}
+func (*GcpBigQueryDatasetOutputs) ProtoMessage() {}
 
-func (x *GcpBigQueryDatasetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpBigQueryDatasetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpbigquerydataset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -73,47 +73,47 @@ func (x *GcpBigQueryDatasetStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpBigQueryDatasetStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpBigQueryDatasetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpBigQueryDatasetOutputs.ProtoReflect.Descriptor instead.
+func (*GcpBigQueryDatasetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbigquerydataset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpBigQueryDatasetStackOutputs) GetDatasetId() string {
+func (x *GcpBigQueryDatasetOutputs) GetDatasetId() string {
 	if x != nil {
 		return x.DatasetId
 	}
 	return ""
 }
 
-func (x *GcpBigQueryDatasetStackOutputs) GetSelfLink() string {
+func (x *GcpBigQueryDatasetOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpBigQueryDatasetStackOutputs) GetProject() string {
+func (x *GcpBigQueryDatasetOutputs) GetProject() string {
 	if x != nil {
 		return x.Project
 	}
 	return ""
 }
 
-func (x *GcpBigQueryDatasetStackOutputs) GetCreationTime() int64 {
+func (x *GcpBigQueryDatasetOutputs) GetCreationTime() int64 {
 	if x != nil {
 		return x.CreationTime
 	}
 	return 0
 }
 
-func (x *GcpBigQueryDatasetStackOutputs) GetLocation() string {
+func (x *GcpBigQueryDatasetOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpBigQueryDatasetStackOutputs) GetEtag() string {
+func (x *GcpBigQueryDatasetOutputs) GetEtag() string {
 	if x != nil {
 		return x.Etag
 	}
@@ -124,8 +124,8 @@ var File_catalog_gcp_gcpbigquerydataset_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpbigquerydataset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpbigquerydataset/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpbigquerydataset.v1alpha1\"\xcb\x01\n" +
-	"\x1eGcpBigQueryDatasetStackOutputs\x12\x1d\n" +
+	"5catalog/gcp/gcpbigquerydataset/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpbigquerydataset.v1alpha1\"\xc6\x01\n" +
+	"\x19GcpBigQueryDatasetOutputs\x12\x1d\n" +
 	"\n" +
 	"dataset_id\x18\x01 \x01(\tR\tdatasetId\x12\x1b\n" +
 	"\tself_link\x18\x02 \x01(\tR\bselfLink\x12\x18\n" +
@@ -149,7 +149,7 @@ func file_catalog_gcp_gcpbigquerydataset_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpbigquerydataset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpbigquerydataset_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpBigQueryDatasetStackOutputs)(nil), // 0: dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDatasetStackOutputs
+	(*GcpBigQueryDatasetOutputs)(nil), // 0: dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDatasetOutputs
 }
 var file_catalog_gcp_gcpbigquerydataset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

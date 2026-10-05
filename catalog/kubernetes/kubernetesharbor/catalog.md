@@ -6,7 +6,7 @@ Know the address contract before you deploy: `externalUrl` is LOAD-BEARING for p
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **Credential Secrets** -- created BEFORE the release (the chart reads several at template time): the generated admin password in `<name>-admin-auth` (unless an existing Secret is named), inter-component secrets in `<name>-internal-auth`, and -- when declared -- the external Redis credential in `<name>-redis-auth` and storage credentials in `<name>-storage-auth`. The chart's publicly documented defaults (`Harbor12345`, `changeit`, `not-a-secure-key`) NEVER ship
@@ -22,7 +22,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -67,7 +67,7 @@ spec:
 planton apply -f harbor.yaml
 ```
 
-This creates the smallest honest Harbor: the chart's in-cluster PostgreSQL and Redis, artifact blobs on a 20Gi PersistentVolumeClaim, Trivy scanning on (the chart default), a generated admin password exported as a Secret handle, and a ClusterIP front door reached through the exported `port_forward_command`. A Stack Job tracks the provisioning in real time.
+This creates the smallest honest Harbor: the chart's in-cluster PostgreSQL and Redis, artifact blobs on a 20Gi PersistentVolumeClaim, Trivy scanning on (the chart default), a generated admin password exported as a Secret handle, and a ClusterIP front door reached through the exported `port_forward_command`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -112,7 +112,7 @@ These are the most important decisions when configuring Harbor on Kubernetes. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -123,9 +123,9 @@ These are the most important decisions when configuring Harbor on Kubernetes. Ex
 | **KubernetesValkey** | `cache.external.addr` | `status.outputs.kube_endpoint` |
 | **KubernetesSeaweedFs** | `storage.s3.endpoint` | `status.outputs.s3_endpoint` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -154,9 +154,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for Harbor's placement
-- [**PostgreSQL**](/cloud-catalog/kubernetes-postgres) -- the production database arm; its application Secret composes AS-IS
-- [**Valkey**](/cloud-catalog/kubernetes-valkey) -- the production cache arm (Redis protocol)
-- [**SeaweedFS**](/cloud-catalog/kubernetes-seaweed-fs) -- in-cluster S3-compatible artifact storage
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) -- front-door and internal-TLS certificates
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) -- provides the ServiceMonitor CRDs and scrapes the exporter
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for Harbor's placement
+- [**PostgreSQL**](/infra-catalog/kubernetes-postgres) -- the production database arm; its application Secret composes AS-IS
+- [**Valkey**](/infra-catalog/kubernetes-valkey) -- the production cache arm (Redis protocol)
+- [**SeaweedFS**](/infra-catalog/kubernetes-seaweed-fs) -- in-cluster S3-compatible artifact storage
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) -- front-door and internal-TLS certificates
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) -- provides the ServiceMonitor CRDs and scrapes the exporter

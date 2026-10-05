@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: auth0customdomain
 spec:
@@ -8,7 +8,7 @@ spec:
   values:
     - name: custom_domain_id
       derivations:
-        - from_stack_output: id
+        - from_output: id
       where_to_find: >-
         Auth0 dashboard -> Branding -> Custom Domains (the domain's id is in
         its details), or `GET /api/v2/custom-domains` on the Management API

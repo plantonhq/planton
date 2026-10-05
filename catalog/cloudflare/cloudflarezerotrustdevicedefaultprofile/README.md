@@ -45,7 +45,7 @@
 | `switch_locked`, `allowed_to_leave`, ... | bool | The toggle body; unset never sends, keeping Cloudflare's default. |
 | `lan_allow_minutes`, `lan_allow_subnet_size` | int | The LAN access window and subnet size. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

@@ -19,7 +19,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuredatafactorydataflow
+    e2e-catalog-kind: azuredatafactorydataflow
   annotations:
     planton.dev/e2e: "true"
     # The embedded flowlet is a prerequisite doc of this kind's own

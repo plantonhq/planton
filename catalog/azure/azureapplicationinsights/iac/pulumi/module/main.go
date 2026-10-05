@@ -8,13 +8,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureapplicationinsightsv1alpha1.AzureApplicationInsightsStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureapplicationinsightsv1alpha1.AzureApplicationInsightsIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -39,8 +39,8 @@ func Resources(ctx *pulumi.Context, stackInput *azureapplicationinsightsv1alpha1
 		ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 		ApplicationType:   pulumi.String(applicationTypeStrings[spec.ApplicationType]),
 		WorkspaceId:       pulumi.String(spec.WorkspaceId.GetValue()),
-		// Presence-guarded to the proto defaults: stack inputs built from a
-		// manifest materialize defaults, but direct stack-input paths do not.
+		// Presence-guarded to the proto defaults: IaC inputs built from a
+		// manifest materialize defaults, but direct iac-input paths do not.
 		RetentionInDays:                   pulumi.Int(int(presenceGuardedInt32(spec.RetentionInDays, 90))),
 		DailyDataCapInGb:                  pulumi.Float64(presenceGuardedFloat64(spec.DailyDataCapInGb, 100)),
 		SamplingPercentage:                pulumi.Float64(presenceGuardedFloat64(spec.SamplingPercentage, 100)),
@@ -61,7 +61,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureapplicationinsightsv1alpha1
 		return errors.Wrapf(err, "failed to create Application Insights %s", spec.ApplicationInsightsName)
 	}
 
-	// Export stack outputs. connection_string is the composition seam the
+	// Export outputs. connection_string is the composition seam the
 	// app-hosting kinds reference.
 	ctx.Export(OpApplicationInsightsId, createdInsights.ID())
 	ctx.Export(OpApplicationInsightsName, createdInsights.Name)

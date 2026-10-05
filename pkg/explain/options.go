@@ -2,7 +2,7 @@ package explain
 
 import (
 	"github.com/plantonhq/planton/pkg/refannotations"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/plantonhq/planton/shared/options"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -44,7 +44,7 @@ func SharedOptions(fd protoreflect.FieldDescriptor, f *Field) {
 		f.RecommendedDefault = proto.GetExtension(opts, options.E_Default).(string)
 	}
 	annotations := refannotations.Of(fd)
-	if annotations.DefaultKind != cloudresourcekind.CloudResourceKind_unspecified {
+	if annotations.DefaultKind != catalogkind.CatalogKind_unspecified {
 		f.RefKind = annotations.DefaultKind.String()
 	}
 	f.RefFieldPath = annotations.DefaultKindFieldPath

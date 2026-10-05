@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDataFactoryIntegrationRuntimeStackOutputs** captures the
+// **AzureDataFactoryIntegrationRuntimeOutputs** captures the
 // outputs from provisioning an Azure Data Factory integration
 // runtime.
-type AzureDataFactoryIntegrationRuntimeStackOutputs struct {
+type AzureDataFactoryIntegrationRuntimeOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The integration runtime's Azure Resource Manager ID
 	// ({factory_id}/integrationRuntimes/{name}) -- the same ID shape
@@ -48,20 +48,20 @@ type AzureDataFactoryIntegrationRuntimeStackOutputs struct {
 	sizeCache                 protoimpl.SizeCache
 }
 
-func (x *AzureDataFactoryIntegrationRuntimeStackOutputs) Reset() {
-	*x = AzureDataFactoryIntegrationRuntimeStackOutputs{}
+func (x *AzureDataFactoryIntegrationRuntimeOutputs) Reset() {
+	*x = AzureDataFactoryIntegrationRuntimeOutputs{}
 	mi := &file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataFactoryIntegrationRuntimeStackOutputs) String() string {
+func (x *AzureDataFactoryIntegrationRuntimeOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataFactoryIntegrationRuntimeStackOutputs) ProtoMessage() {}
+func (*AzureDataFactoryIntegrationRuntimeOutputs) ProtoMessage() {}
 
-func (x *AzureDataFactoryIntegrationRuntimeStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDataFactoryIntegrationRuntimeOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -73,33 +73,33 @@ func (x *AzureDataFactoryIntegrationRuntimeStackOutputs) ProtoReflect() protoref
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataFactoryIntegrationRuntimeStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDataFactoryIntegrationRuntimeStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataFactoryIntegrationRuntimeOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDataFactoryIntegrationRuntimeOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataFactoryIntegrationRuntimeStackOutputs) GetIntegrationRuntimeId() string {
+func (x *AzureDataFactoryIntegrationRuntimeOutputs) GetIntegrationRuntimeId() string {
 	if x != nil {
 		return x.IntegrationRuntimeId
 	}
 	return ""
 }
 
-func (x *AzureDataFactoryIntegrationRuntimeStackOutputs) GetIntegrationRuntimeName() string {
+func (x *AzureDataFactoryIntegrationRuntimeOutputs) GetIntegrationRuntimeName() string {
 	if x != nil {
 		return x.IntegrationRuntimeName
 	}
 	return ""
 }
 
-func (x *AzureDataFactoryIntegrationRuntimeStackOutputs) GetPrimaryAuthorizationKey() string {
+func (x *AzureDataFactoryIntegrationRuntimeOutputs) GetPrimaryAuthorizationKey() string {
 	if x != nil {
 		return x.PrimaryAuthorizationKey
 	}
 	return ""
 }
 
-func (x *AzureDataFactoryIntegrationRuntimeStackOutputs) GetSecondaryAuthorizationKey() string {
+func (x *AzureDataFactoryIntegrationRuntimeOutputs) GetSecondaryAuthorizationKey() string {
 	if x != nil {
 		return x.SecondaryAuthorizationKey
 	}
@@ -110,8 +110,8 @@ var File_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_outputs_proto
 
 const file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/azure/azuredatafactoryintegrationruntime/v1alpha1/outputs.proto\x12=dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1\x1a\x1cshared/options/options.proto\"\xa8\x02\n" +
-	".AzureDataFactoryIntegrationRuntimeStackOutputs\x124\n" +
+	"Gcatalog/azure/azuredatafactoryintegrationruntime/v1alpha1/outputs.proto\x12=dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1\x1a\x1cshared/options/options.proto\"\xa3\x02\n" +
+	")AzureDataFactoryIntegrationRuntimeOutputs\x124\n" +
 	"\x16integration_runtime_id\x18\x01 \x01(\tR\x14integrationRuntimeId\x128\n" +
 	"\x18integration_runtime_name\x18\x02 \x01(\tR\x16integrationRuntimeName\x12@\n" +
 	"\x19primary_authorization_key\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\x17primaryAuthorizationKey\x12D\n" +
@@ -132,7 +132,7 @@ func file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_outputs_prot
 
 var file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDataFactoryIntegrationRuntimeStackOutputs)(nil), // 0: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeStackOutputs
+	(*AzureDataFactoryIntegrationRuntimeOutputs)(nil), // 0: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeOutputs
 }
 var file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

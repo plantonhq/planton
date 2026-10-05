@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0CustomDomainStackInput is the input to the Auth0CustomDomain IaC module.
+// Auth0CustomDomainIacInput is the input to the Auth0CustomDomain IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-type Auth0CustomDomainStackInput struct {
+type Auth0CustomDomainIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the Auth0CustomDomain resource to be deployed.
 	Target *Auth0CustomDomain `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -38,20 +38,20 @@ type Auth0CustomDomainStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *Auth0CustomDomainStackInput) Reset() {
-	*x = Auth0CustomDomainStackInput{}
+func (x *Auth0CustomDomainIacInput) Reset() {
+	*x = Auth0CustomDomainIacInput{}
 	mi := &file_catalog_auth0_auth0customdomain_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0CustomDomainStackInput) String() string {
+func (x *Auth0CustomDomainIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0CustomDomainStackInput) ProtoMessage() {}
+func (*Auth0CustomDomainIacInput) ProtoMessage() {}
 
-func (x *Auth0CustomDomainStackInput) ProtoReflect() protoreflect.Message {
+func (x *Auth0CustomDomainIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0customdomain_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *Auth0CustomDomainStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0CustomDomainStackInput.ProtoReflect.Descriptor instead.
-func (*Auth0CustomDomainStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0CustomDomainIacInput.ProtoReflect.Descriptor instead.
+func (*Auth0CustomDomainIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0customdomain_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0CustomDomainStackInput) GetTarget() *Auth0CustomDomain {
+func (x *Auth0CustomDomainIacInput) GetTarget() *Auth0CustomDomain {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *Auth0CustomDomainStackInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
+func (x *Auth0CustomDomainIacInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -86,8 +86,8 @@ var File_catalog_auth0_auth0customdomain_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_auth0_auth0customdomain_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/auth0/auth0customdomain/v1alpha1/input.proto\x12,dev.planton.auth0.auth0customdomain.v1alpha1\x1a2catalog/auth0/auth0customdomain/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xc7\x01\n" +
-	"\x1bAuth0CustomDomainStackInput\x12W\n" +
+	"4catalog/auth0/auth0customdomain/v1alpha1/input.proto\x12,dev.planton.auth0.auth0customdomain.v1alpha1\x1a2catalog/auth0/auth0customdomain/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xc5\x01\n" +
+	"\x19Auth0CustomDomainIacInput\x12W\n" +
 	"\x06target\x18\x01 \x01(\v2?.dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.auth0.Auth0ProviderConfigR\x0eproviderConfigB\xf4\x02\n" +
 	"0com.dev.planton.auth0.auth0customdomain.v1alpha1B\n" +
@@ -107,13 +107,13 @@ func file_catalog_auth0_auth0customdomain_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_auth0_auth0customdomain_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0customdomain_v1alpha1_input_proto_goTypes = []any{
-	(*Auth0CustomDomainStackInput)(nil), // 0: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainStackInput
-	(*Auth0CustomDomain)(nil),           // 1: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomain
-	(*auth0.Auth0ProviderConfig)(nil),   // 2: dev.planton.auth0.Auth0ProviderConfig
+	(*Auth0CustomDomainIacInput)(nil), // 0: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainIacInput
+	(*Auth0CustomDomain)(nil),         // 1: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomain
+	(*auth0.Auth0ProviderConfig)(nil), // 2: dev.planton.auth0.Auth0ProviderConfig
 }
 var file_catalog_auth0_auth0customdomain_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainStackInput.target:type_name -> dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomain
-	2, // 1: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainStackInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
+	1, // 0: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainIacInput.target:type_name -> dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomain
+	2, // 1: dev.planton.auth0.auth0customdomain.v1alpha1.Auth0CustomDomainIacInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

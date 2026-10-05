@@ -1,4 +1,4 @@
-// Secret-coverage analyzer: walks every production cloud-resource kind and reports,
+// Secret-coverage analyzer: walks every production catalog kind and reports,
 // per string-bearing field, whether the secret-by-default `sensitive` annotation is
 // present, intentionally exempted, or missing on a field that looks like a secret.
 //
@@ -22,8 +22,8 @@ import (
 	"sort"
 
 	validatepb "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/plantonhq/planton/shared/options"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -49,7 +49,7 @@ const (
 type Finding struct {
 	Kind         string
 	Provider     string
-	Path         string // proto field-name dot path from the cloud-object root, e.g. "spec.registry_password"
+	Path         string // proto field-name dot path from the catalog-object root, e.g. "spec.registry_password"
 	FieldName    string // leaf field name, the heuristic input
 	Class        Classification
 	ExemptReason string   // populated when Class == Exempt
@@ -94,22 +94,22 @@ func classify(looks bool, isSensitive bool, exemptReason string, valueRule strin
 	}
 }
 
-// Analyze walks every production cloud-resource kind and returns the secret-relevant
+// Analyze walks every production catalog kind and returns the secret-relevant
 // findings, sorted deterministically. Hermetic `_test` kinds and unimplemented kinds
 // are skipped -- matching the kind-map codegen -- so the report reflects real surface.
 func Analyze() []Finding {
 	var findings []Finding
-	for _, kind := range crkreflect.KindsList() {
-		provider := crkreflect.GetProvider(kind)
-		if provider == cloudresourcekind.CloudResourceProvider_cloud_resource_provider_unspecified {
+	for _, kind := range catalogkindreflect.KindsList() {
+		provider := catalogkindreflect.GetProvider(kind)
+		if provider == catalogkind.CatalogProvider_catalog_provider_unspecified {
 			continue
 		}
-		// The `_test` provider holds hermetic fixtures (testcloudresourcegeneric); they
+		// The `_test` provider holds hermetic fixtures (testcatalogkindgeneric); they
 		// are exercised directly by unit tests, never counted in production coverage.
 		if provider.String()[0] == '_' {
 			continue
 		}
-		msg, err := crkreflect.NewInstance(kind)
+		msg, err := catalogkindreflect.NewInstance(kind)
 		if err != nil {
 			// Enum value exists but the API package is not implemented yet.
 			continue
@@ -126,7 +126,7 @@ func Analyze() []Finding {
 
 // CollectFindings walks a single SPEC message descriptor, rooting paths at "spec" to
 // match the enforcement walker's path format. Exposed so tests can drive it against
-// the hermetic testcloudresourcegeneric spec in isolation.
+// the hermetic testcatalogkindgeneric spec in isolation.
 func CollectFindings(specMd protoreflect.MessageDescriptor, kindName, provider string) []Finding {
 	var out []Finding
 	walk(specMd, "spec", kindName, provider, map[protoreflect.FullName]bool{}, &out)

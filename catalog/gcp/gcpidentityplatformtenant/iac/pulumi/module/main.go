@@ -7,8 +7,8 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *gcpidentityplatformtenantv1alpha1.GcpIdentityPlatformTenantStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcpidentityplatformtenantv1alpha1.GcpIdentityPlatformTenantIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// The Identity Toolkit API requires a quota project on user-credential
 	// calls: without user_project_override, a deploy under plain ADC
@@ -16,7 +16,7 @@ func Resources(ctx *pulumi.Context, stackInput *gcpidentityplatformtenantv1alpha
 	// "requires a quota project" (live-verified on the config kind — same
 	// API serves tenants). The override attributes quota to the resource's
 	// own project under every credential mode.
-	gcpProvider, err := pulumigoogleprovider.GetWithUserProjectOverride(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.GetWithUserProjectOverride(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

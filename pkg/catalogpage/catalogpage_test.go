@@ -102,13 +102,13 @@ These are the most important decisions.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
 | Acme Zone | spec.zoneId | status.outputs.zone_id |
 
-### What This Component Provides
+### What This Kind Provides
 
 | Output | Description | Common Downstream Use |
 |---|---|---|
@@ -120,7 +120,7 @@ Use it well.
 
 ## Works With
 
-- [**Acme Zone**](/cloud-catalog/acme-zone) - composes.
+- [**Acme Zone**](/infra-catalog/acme-zone) - composes.
 `
 
 // TestCheckPage_HermeticFixture proves every rule fires against synthetic
@@ -160,7 +160,7 @@ func TestCheckPage_HermeticFixture(t *testing.T) {
 	// The retired old-standard skeleton is nonstandard structure, and the
 	// finer checks stay quiet behind that one verdict.
 	oldA := "# Acme Widget\n\nDeploys an Acme widget with sensible defaults.\n\n" +
-		"## What Gets Created\n\n## Prerequisites\n\n## Quick Start\n\n## Configuration Reference\n\n## Stack Outputs\n\n## Related Components\n"
+		"## What Gets Created\n\n## Prerequisites\n\n## Quick Start\n\n## Configuration Reference\n\n## Outputs\n\n## Related Kinds\n"
 	if got := rulesOf(oldA); !got[RuleNonstandardStructure] || got[RuleMissingAnchor] || got[RuleInfraChartArm] {
 		t.Errorf("expected only %s from the old skeleton, got %v", RuleNonstandardStructure, got)
 	}
@@ -176,7 +176,7 @@ func TestCheckPage_HermeticFixture(t *testing.T) {
 	}
 	noRows := strings.Replace(conformingPage,
 		"| Dependency | Field | ValueFromRef Path |\n|---|---|---|\n| Acme Zone | spec.zoneId | status.outputs.zone_id |",
-		"This component has no foreign key dependencies.", 1)
+		"This kind has no foreign key dependencies.", 1)
 	if got := rulesOf(noRows); !got[RuleInfraChartArm] {
 		t.Errorf("expected %s when Consumes is empty and the arm is present, got %v", RuleInfraChartArm, got)
 	}

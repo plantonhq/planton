@@ -38,7 +38,7 @@ var _ = ginkgo.Describe("GcpRegionNetworkEndpointGroupSpec", func() {
 		return &GcpRegionNetworkEndpointGroup{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpRegionNetworkEndpointGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-neg",
 			},
 			Spec: &GcpRegionNetworkEndpointGroupSpec{

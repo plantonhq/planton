@@ -1,5 +1,5 @@
 # Auth0 Custom Domain Verification Test Manifest
-# This file is used for testing the Auth0CustomDomainVerification component.
+# This file is used for testing the Auth0CustomDomainVerification kind.
 #
 # Prerequisites:
 # 1. Set the following environment variables:

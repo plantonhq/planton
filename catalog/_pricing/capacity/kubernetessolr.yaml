@@ -9,9 +9,9 @@
 # unless zookeeper.external replaces it). The operand only -- the
 # Apache Solr Operator is a separate component (KubernetesSolrOperator)
 # with its own footprint. Schema:
-# finops/componentcapacityderivation/v1.
+# finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetessolr
 spec:

@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureSearchServiceStackOutputs** captures the outputs of
+// **AzureSearchServiceOutputs** captures the outputs of
 // provisioning an Azure AI Search service.
-type AzureSearchServiceStackOutputs struct {
+type AzureSearchServiceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the service -- what shared
 	// private links and diagnostic settings reference.
@@ -68,20 +68,20 @@ type AzureSearchServiceStackOutputs struct {
 	sizeCache                   protoimpl.SizeCache
 }
 
-func (x *AzureSearchServiceStackOutputs) Reset() {
-	*x = AzureSearchServiceStackOutputs{}
+func (x *AzureSearchServiceOutputs) Reset() {
+	*x = AzureSearchServiceOutputs{}
 	mi := &file_catalog_azure_azuresearchservice_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureSearchServiceStackOutputs) String() string {
+func (x *AzureSearchServiceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureSearchServiceStackOutputs) ProtoMessage() {}
+func (*AzureSearchServiceOutputs) ProtoMessage() {}
 
-func (x *AzureSearchServiceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureSearchServiceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuresearchservice_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -93,68 +93,68 @@ func (x *AzureSearchServiceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureSearchServiceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureSearchServiceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureSearchServiceOutputs.ProtoReflect.Descriptor instead.
+func (*AzureSearchServiceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuresearchservice_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureSearchServiceStackOutputs) GetSearchServiceId() string {
+func (x *AzureSearchServiceOutputs) GetSearchServiceId() string {
 	if x != nil {
 		return x.SearchServiceId
 	}
 	return ""
 }
 
-func (x *AzureSearchServiceStackOutputs) GetSearchServiceName() string {
+func (x *AzureSearchServiceOutputs) GetSearchServiceName() string {
 	if x != nil {
 		return x.SearchServiceName
 	}
 	return ""
 }
 
-func (x *AzureSearchServiceStackOutputs) GetEndpoint() string {
+func (x *AzureSearchServiceOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *AzureSearchServiceStackOutputs) GetPrimaryKey() string {
+func (x *AzureSearchServiceOutputs) GetPrimaryKey() string {
 	if x != nil {
 		return x.PrimaryKey
 	}
 	return ""
 }
 
-func (x *AzureSearchServiceStackOutputs) GetSecondaryKey() string {
+func (x *AzureSearchServiceOutputs) GetSecondaryKey() string {
 	if x != nil {
 		return x.SecondaryKey
 	}
 	return ""
 }
 
-func (x *AzureSearchServiceStackOutputs) GetDefaultQueryKey() string {
+func (x *AzureSearchServiceOutputs) GetDefaultQueryKey() string {
 	if x != nil {
 		return x.DefaultQueryKey
 	}
 	return ""
 }
 
-func (x *AzureSearchServiceStackOutputs) GetCustomerManagedKeyEncryptionComplianceStatus() string {
+func (x *AzureSearchServiceOutputs) GetCustomerManagedKeyEncryptionComplianceStatus() string {
 	if x != nil {
 		return x.CustomerManagedKeyEncryptionComplianceStatus
 	}
 	return ""
 }
 
-func (x *AzureSearchServiceStackOutputs) GetSystemAssignedIdentityPrincipalId() string {
+func (x *AzureSearchServiceOutputs) GetSystemAssignedIdentityPrincipalId() string {
 	if x != nil {
 		return x.SystemAssignedIdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureSearchServiceStackOutputs) GetSharedPrivateLinkServiceIds() map[string]string {
+func (x *AzureSearchServiceOutputs) GetSharedPrivateLinkServiceIds() map[string]string {
 	if x != nil {
 		return x.SharedPrivateLinkServiceIds
 	}
@@ -165,8 +165,8 @@ var File_catalog_azure_azuresearchservice_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_azure_azuresearchservice_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/azure/azuresearchservice/v1alpha1/outputs.proto\x12-dev.planton.azure.azuresearchservice.v1alpha1\x1a\x1cshared/options/options.proto\"\xde\x05\n" +
-	"\x1eAzureSearchServiceStackOutputs\x12*\n" +
+	"7catalog/azure/azuresearchservice/v1alpha1/outputs.proto\x12-dev.planton.azure.azuresearchservice.v1alpha1\x1a\x1cshared/options/options.proto\"\xd4\x05\n" +
+	"\x19AzureSearchServiceOutputs\x12*\n" +
 	"\x11search_service_id\x18\x01 \x01(\tR\x0fsearchServiceId\x12.\n" +
 	"\x13search_service_name\x18\x02 \x01(\tR\x11searchServiceName\x12\x1a\n" +
 	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x12%\n" +
@@ -175,8 +175,8 @@ const file_catalog_azure_azuresearchservice_v1alpha1_outputs_proto_rawDesc = "" 
 	"\rsecondary_key\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\fsecondaryKey\x120\n" +
 	"\x11default_query_key\x18\x06 \x01(\tB\x04\xa0\xa6\x1d\x01R\x0fdefaultQueryKey\x12g\n" +
 	"1customer_managed_key_encryption_compliance_status\x18\a \x01(\tR,customerManagedKeyEncryptionComplianceStatus\x12P\n" +
-	"%system_assigned_identity_principal_id\x18\b \x01(\tR!systemAssignedIdentityPrincipalId\x12\xb4\x01\n" +
-	"\x1fshared_private_link_service_ids\x18\t \x03(\v2n.dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStackOutputs.SharedPrivateLinkServiceIdsEntryR\x1bsharedPrivateLinkServiceIds\x1aN\n" +
+	"%system_assigned_identity_principal_id\x18\b \x01(\tR!systemAssignedIdentityPrincipalId\x12\xaf\x01\n" +
+	"\x1fshared_private_link_service_ids\x18\t \x03(\v2i.dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceOutputs.SharedPrivateLinkServiceIdsEntryR\x1bsharedPrivateLinkServiceIds\x1aN\n" +
 	" SharedPrivateLinkServiceIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xfd\x02\n" +
@@ -196,11 +196,11 @@ func file_catalog_azure_azuresearchservice_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_azure_azuresearchservice_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuresearchservice_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureSearchServiceStackOutputs)(nil), // 0: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStackOutputs
-	nil,                                    // 1: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStackOutputs.SharedPrivateLinkServiceIdsEntry
+	(*AzureSearchServiceOutputs)(nil), // 0: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceOutputs
+	nil,                               // 1: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceOutputs.SharedPrivateLinkServiceIdsEntry
 }
 var file_catalog_azure_azuresearchservice_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStackOutputs.shared_private_link_service_ids:type_name -> dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStackOutputs.SharedPrivateLinkServiceIdsEntry
+	1, // 0: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceOutputs.shared_private_link_service_ids:type_name -> dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceOutputs.SharedPrivateLinkServiceIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

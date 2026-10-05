@@ -55,7 +55,7 @@ spec:
         key: clientSecret
 {% endif %}
 {% endif %}
-  # Everything else rides the component's secure defaults: the local
+  # Everything else rides the kind's secure defaults: the local
   # admin user enabled (disable it only AFTER SSO works — the spec's own
   # warning), TLS-serving server, CRDs installed and KEPT on uninstall
   # (removing them would delete every Application in the cluster), and

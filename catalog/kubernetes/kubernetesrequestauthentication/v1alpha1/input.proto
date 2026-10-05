@@ -5,10 +5,10 @@ package dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1;
 import "catalog/kubernetes/kubernetesrequestauthentication/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesRequestAuthenticationStackInput provides the inputs for creating the
+// KubernetesRequestAuthenticationIacInput provides the inputs for creating the
 // RequestAuthentication on a Kubernetes cluster.
-message KubernetesRequestAuthenticationStackInput {
-  // target cloud-resource
+message KubernetesRequestAuthenticationIacInput {
+  // the catalog object to deploy
   KubernetesRequestAuthentication target = 1;
   // provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

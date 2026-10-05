@@ -1,14 +1,14 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awscostcategory
 spec:
   # The category imports by its cloud-generated ARN, derived from the
-  # stack output.
+  # output.
   values:
     - name: cost_category_arn
       derivations:
-        - from_stack_output: category_arn
+        - from_output: category_arn
       where_to_find: >-
         Cost Management console -> Cost Categories (the category's
         ARN), or `aws ce list-cost-category-definitions`

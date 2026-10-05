@@ -1,4 +1,4 @@
-# The component defaults against the composed telemetry store: the
+# The kind defaults against the composed telemetry store: the
 # ClickHouse fixture (registry prerequisite chain: AltinityOperator →
 # ClickHouse) wired through one valueFrom per field, one collector,
 # SQLite server state. Co-located with the fixture's namespace

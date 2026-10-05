@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureeventgridnamespacetopic
+    e2e-catalog-kind: azureeventgridnamespacetopic
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -1,12 +1,12 @@
-# AwsCloudTrailEventDataStore — Component Guide
+# AwsCloudTrailEventDataStore — Kind Guide
 
-Authored operational judgment for the CloudTrail Lake component: the
+Authored operational judgment for the CloudTrail Lake kind: the
 design decisions behind the spec's shape, and what to know before
 operating event data stores in production.
 
 ## Service availability: CloudTrail Lake is closed to new customers
 
-AWS no longer accepts new CloudTrail Lake customers: on an account that has never created an event data store, `CreateEventDataStore` fails with `InvalidParameterException: CloudTrail Lake is no longer accepting new customers. Existing customers can continue to use their event data stores.` (live-verified 2026-08-25, identical on both engines). This component therefore deploys ONLY on accounts grandfathered into the service — one that already holds (or previously created) an event data store. There is no known exception process. If your account is not grandfathered, use the AwsCloudTrail component's trail delivery to S3/CloudWatch instead; nothing in this component's spec can route around the account-level wall.
+AWS no longer accepts new CloudTrail Lake customers: on an account that has never created an event data store, `CreateEventDataStore` fails with `InvalidParameterException: CloudTrail Lake is no longer accepting new customers. Existing customers can continue to use their event data stores.` (live-verified 2026-08-25, identical on both engines). This component therefore deploys ONLY on accounts grandfathered into the service — one that already holds (or previously created) an event data store. There is no known exception process. If your account is not grandfathered, use the AwsCloudTrail kind's trail delivery to S3/CloudWatch instead; nothing in this kind's spec can route around the account-level wall.
 
 ## Design decisions
 

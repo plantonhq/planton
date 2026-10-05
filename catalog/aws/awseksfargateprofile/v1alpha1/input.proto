@@ -5,9 +5,9 @@ package dev.planton.aws.awseksfargateprofile.v1alpha1;
 import "catalog/aws/awseksfargateprofile/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-eks-fargate-profile stack-input
-message AwsEksFargateProfileStackInput {
-  //target cloud-resource
+//aws-eks-fargate-profile iac-input
+message AwsEksFargateProfileIacInput {
+  // the catalog object to deploy
   AwsEksFargateProfile target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

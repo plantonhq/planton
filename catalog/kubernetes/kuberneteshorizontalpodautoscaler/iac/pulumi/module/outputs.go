@@ -4,7 +4,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output key constants aligned with KubernetesHorizontalPodAutoscalerStackOutputs field names.
+// Output key constants aligned with KubernetesHorizontalPodAutoscalerOutputs field names.
 const (
 	OutputHorizontalPodAutoscalerName = "horizontal_pod_autoscaler_name"
 	OutputNamespace                   = "namespace"
@@ -13,7 +13,7 @@ const (
 	OutputMaxReplicas                 = "max_replicas"
 )
 
-// exportOutputs exports the stack outputs from the created HorizontalPodAutoscaler.
+// exportOutputs exports the outputs from the created HorizontalPodAutoscaler.
 func exportOutputs(ctx *pulumi.Context, locals *Locals) error {
 	ctx.Export(OutputHorizontalPodAutoscalerName, pulumi.String(locals.Name))
 	ctx.Export(OutputNamespace, pulumi.String(locals.Namespace))

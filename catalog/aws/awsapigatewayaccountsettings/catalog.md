@@ -12,7 +12,7 @@ Nothing is created at AWS — the API Gateway account object already exists in e
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with API Gateway account permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with API Gateway account permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -48,7 +48,7 @@ spec:
 planton apply -f apigw-account-settings.yaml
 ```
 
-This adopts the region's API Gateway account object and sets the referenced role as its CloudWatch logging role — stage-level logging on every REST API in the region works from here on. A Stack Job tracks the provisioning in real time.
+This adopts the region's API Gateway account object and sets the referenced role as its CloudWatch logging role — stage-level logging on every REST API in the region works from here on. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -70,7 +70,7 @@ The InfraPipeline resolves the dependency graph, creates the role first, then co
 
 These are the most important decisions when configuring API Gateway account settings. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Set this before enabling stage logging** — Stage-level execution/access logging on REST APIs fails silently without the account role: the stages deploy fine and log nothing, with no error anywhere. When API Gateway logs are mysteriously absent, this component is the first place to look.
+**Set this before enabling stage logging** — Stage-level execution/access logging on REST APIs fails silently without the account role: the stages deploy fine and log nothing, with no error anywhere. When API Gateway logs are mysteriously absent, this kind is the first place to look.
 
 **One role serves every API in the region** — The role is region-wide, not per-API. Use the managed `AmazonAPIGatewayPushToCloudWatchLogs` policy rather than a hand-rolled one; AWS validates the role's permissions at apply and rejects incomplete grants.
 
@@ -82,15 +82,15 @@ These are the most important decisions when configuring API Gateway account sett
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsIamRole** | `cloudwatchRoleArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-The outputs are AWS-reported echoes of the account object, not composition inputs — no catalog component consumes them via ValueFromRef. `account_id` is the provider's import ID for the singleton; `api_key_version` and `features` are AWS-managed informational fields; `throttle_burst_limit` and `throttle_rate_limit` report the account-level throttle ceilings every stage in the region shares — useful when sizing per-stage throttling, but read-only here.
+The outputs are AWS-reported echoes of the account object, not composition inputs — no catalog kind consumes them via ValueFromRef. `account_id` is the provider's import ID for the singleton; `api_key_version` and `features` are AWS-managed informational fields; `throttle_burst_limit` and `throttle_rate_limit` report the account-level throttle ceilings every stage in the region shares — useful when sizing per-stage throttling, but read-only here.
 
 ## Common Patterns
 
@@ -102,6 +102,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS REST API Gateway**](/cloud-catalog/aws-rest-api-gateway) — the stages whose execution/access logging depends on this account role
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the region-wide logging role API Gateway assumes
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) — where the execution and access logs land once the role is set
+- [**AWS REST API Gateway**](/infra-catalog/aws-rest-api-gateway) — the stages whose execution/access logging depends on this account role
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the region-wide logging role API Gateway assumes
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) — where the execution and access logs land once the role is set

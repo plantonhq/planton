@@ -18,17 +18,17 @@ import (
 // The release is named after metadata.name (NOT a fixed chart name):
 // multiple ExternalDNS instances per cluster — one per DNS provider / zone
 // set, separated by TXT owner IDs — are a first-class upstream pattern.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesexternaldnsv1alpha1.KubernetesExternalDnsStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesexternaldnsv1alpha1.KubernetesExternalDnsIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

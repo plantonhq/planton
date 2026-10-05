@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockProvisionedThroughputStackOutputs captures observable
+// AwsBedrockProvisionedThroughputOutputs captures observable
 // identifiers from a provisioned Bedrock throughput purchase.
-type AwsBedrockProvisionedThroughputStackOutputs struct {
+type AwsBedrockProvisionedThroughputOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ARN of the provisioned model - the modelId applications pass to
 	// InvokeModel/Converse to consume the dedicated capacity.
@@ -34,20 +34,20 @@ type AwsBedrockProvisionedThroughputStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AwsBedrockProvisionedThroughputStackOutputs) Reset() {
-	*x = AwsBedrockProvisionedThroughputStackOutputs{}
+func (x *AwsBedrockProvisionedThroughputOutputs) Reset() {
+	*x = AwsBedrockProvisionedThroughputOutputs{}
 	mi := &file_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockProvisionedThroughputStackOutputs) String() string {
+func (x *AwsBedrockProvisionedThroughputOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockProvisionedThroughputStackOutputs) ProtoMessage() {}
+func (*AwsBedrockProvisionedThroughputOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockProvisionedThroughputStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockProvisionedThroughputOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBedrockProvisionedThroughputStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockProvisionedThroughputStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockProvisionedThroughputStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockProvisionedThroughputOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockProvisionedThroughputOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockProvisionedThroughputStackOutputs) GetProvisionedModelArn() string {
+func (x *AwsBedrockProvisionedThroughputOutputs) GetProvisionedModelArn() string {
 	if x != nil {
 		return x.ProvisionedModelArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockProvisionedThroughputStackOutputs) GetProvisionedModelName() string {
+func (x *AwsBedrockProvisionedThroughputOutputs) GetProvisionedModelName() string {
 	if x != nil {
 		return x.ProvisionedModelName
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_outputs_proto prot
 
 const file_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/aws/awsbedrockprovisionedthroughput/v1alpha1/outputs.proto\x128dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1\"\x97\x01\n" +
-	"+AwsBedrockProvisionedThroughputStackOutputs\x122\n" +
+	"Bcatalog/aws/awsbedrockprovisionedthroughput/v1alpha1/outputs.proto\x128dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1\"\x92\x01\n" +
+	"&AwsBedrockProvisionedThroughputOutputs\x122\n" +
 	"\x15provisioned_model_arn\x18\x01 \x01(\tR\x13provisionedModelArn\x124\n" +
 	"\x16provisioned_model_name\x18\x02 \x01(\tR\x14provisionedModelNameB\xcc\x03\n" +
 	"<com.dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1B\fOutputsProtoP\x01Zygithub.com/plantonhq/planton/catalog/aws/awsbedrockprovisionedthroughput/v1alpha1;awsbedrockprovisionedthroughputv1alpha1\xa2\x02\x04DPAA\xaa\x028Dev.Planton.Aws.Awsbedrockprovisionedthroughput.V1alpha1\xca\x028Dev\\Planton\\Aws\\Awsbedrockprovisionedthroughput\\V1alpha1\xe2\x02DDev\\Planton\\Aws\\Awsbedrockprovisionedthroughput\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Aws::Awsbedrockprovisionedthroughput::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_outputs_proto_raw
 
 var file_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockProvisionedThroughputStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputStackOutputs
+	(*AwsBedrockProvisionedThroughputOutputs)(nil), // 0: dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1.AwsBedrockProvisionedThroughputOutputs
 }
 var file_catalog_aws_awsbedrockprovisionedthroughput_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

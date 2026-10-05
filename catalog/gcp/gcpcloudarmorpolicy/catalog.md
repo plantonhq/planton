@@ -4,7 +4,7 @@ Deploys a Cloud Armor security policy with configurable rules for IP allowlistin
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine API enablement** (`compute.googleapis.com`) on the target project (never disabled on destroy)
 - **Security Policy** -- a `compute.SecurityPolicy` (global, `region` empty) or a `compute.RegionSecurityPolicy` (`region` set) in the specified GCP project, configured with the chosen policy type, rules, and advanced options; exactly one of the two exists
@@ -20,13 +20,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the security policy will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
-- **An HTTP(S) load balancer** or backend service to attach the policy to (configured outside this Cloud Resource via the backend service's `securityPolicy` field).
+- **A GCP project** where the security policy will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
+- **An HTTP(S) load balancer** or backend service to attach the policy to (configured outside this Infra Component via the backend service's `securityPolicy` field).
 
 ## Deploy
 
@@ -67,7 +67,7 @@ spec:
 planton apply -f gcp-cloud-armor-policy.yaml
 ```
 
-This creates a CLOUD_ARMOR policy that allows traffic from RFC 1918 ranges and denies everything else with 403. The policy must be attached to a backend service separately. A Stack Job tracks the provisioning in real time.
+This creates a CLOUD_ARMOR policy that allows traffic from RFC 1918 ranges and denies everything else with 403. The policy must be attached to a backend service separately. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,15 +102,15 @@ These are the most important decisions when configuring a Cloud Armor policy. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -137,6 +137,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the security policy is created
-- [**GCP Backend Service**](/cloud-catalog/gcp-backend-service) -- consumes `policy_self_link` as its `securityPolicy` (backend WAF) or `edgeSecurityPolicy` (edge filtering); a regional backend service takes a regional policy from the same region
-- [**GCP Backend Bucket**](/cloud-catalog/gcp-backend-bucket) -- consumes a CLOUD_ARMOR_EDGE policy's `policy_self_link` as its `edgeSecurityPolicy`
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the security policy is created
+- [**GCP Backend Service**](/infra-catalog/gcp-backend-service) -- consumes `policy_self_link` as its `securityPolicy` (backend WAF) or `edgeSecurityPolicy` (edge filtering); a regional backend service takes a regional policy from the same region
+- [**GCP Backend Bucket**](/infra-catalog/gcp-backend-bucket) -- consumes a CLOUD_ARMOR_EDGE policy's `policy_self_link` as its `edgeSecurityPolicy`

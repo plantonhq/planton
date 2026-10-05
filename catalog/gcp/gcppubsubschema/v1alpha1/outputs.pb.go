@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Pub/Sub schema.
-type GcpPubSubSchemaStackOutputs struct {
+type GcpPubSubSchemaOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified schema resource path: projects/{project}/schemas/{name}.
 	// This is the exact string a topic's schema_settings.schema consumes —
@@ -41,20 +41,20 @@ type GcpPubSubSchemaStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpPubSubSchemaStackOutputs) Reset() {
-	*x = GcpPubSubSchemaStackOutputs{}
+func (x *GcpPubSubSchemaOutputs) Reset() {
+	*x = GcpPubSubSchemaOutputs{}
 	mi := &file_catalog_gcp_gcppubsubschema_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpPubSubSchemaStackOutputs) String() string {
+func (x *GcpPubSubSchemaOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpPubSubSchemaStackOutputs) ProtoMessage() {}
+func (*GcpPubSubSchemaOutputs) ProtoMessage() {}
 
-func (x *GcpPubSubSchemaStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpPubSubSchemaOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcppubsubschema_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *GcpPubSubSchemaStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpPubSubSchemaStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpPubSubSchemaStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpPubSubSchemaOutputs.ProtoReflect.Descriptor instead.
+func (*GcpPubSubSchemaOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcppubsubschema_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpPubSubSchemaStackOutputs) GetSchemaId() string {
+func (x *GcpPubSubSchemaOutputs) GetSchemaId() string {
 	if x != nil {
 		return x.SchemaId
 	}
 	return ""
 }
 
-func (x *GcpPubSubSchemaStackOutputs) GetSchemaName() string {
+func (x *GcpPubSubSchemaOutputs) GetSchemaName() string {
 	if x != nil {
 		return x.SchemaName
 	}
 	return ""
 }
 
-func (x *GcpPubSubSchemaStackOutputs) GetRevisionId() string {
+func (x *GcpPubSubSchemaOutputs) GetRevisionId() string {
 	if x != nil {
 		return x.RevisionId
 	}
@@ -96,8 +96,8 @@ var File_catalog_gcp_gcppubsubschema_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcppubsubschema_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcppubsubschema/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcppubsubschema.v1alpha1\"|\n" +
-	"\x1bGcpPubSubSchemaStackOutputs\x12\x1b\n" +
+	"2catalog/gcp/gcppubsubschema/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcppubsubschema.v1alpha1\"w\n" +
+	"\x16GcpPubSubSchemaOutputs\x12\x1b\n" +
 	"\tschema_id\x18\x01 \x01(\tR\bschemaId\x12\x1f\n" +
 	"\vschema_name\x18\x02 \x01(\tR\n" +
 	"schemaName\x12\x1f\n" +
@@ -119,7 +119,7 @@ func file_catalog_gcp_gcppubsubschema_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_gcp_gcppubsubschema_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcppubsubschema_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpPubSubSchemaStackOutputs)(nil), // 0: dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchemaStackOutputs
+	(*GcpPubSubSchemaOutputs)(nil), // 0: dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchemaOutputs
 }
 var file_catalog_gcp_gcppubsubschema_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

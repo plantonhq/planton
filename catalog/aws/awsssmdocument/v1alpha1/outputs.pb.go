@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSsmDocumentStackOutputs captures the observable state of the
+// AwsSsmDocumentOutputs captures the observable state of the
 // document after apply.
-type AwsSsmDocumentStackOutputs struct {
+type AwsSsmDocumentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The document's name (also the provider's import ID, and what
 	// associations reference).
@@ -43,20 +43,20 @@ type AwsSsmDocumentStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsSsmDocumentStackOutputs) Reset() {
-	*x = AwsSsmDocumentStackOutputs{}
+func (x *AwsSsmDocumentOutputs) Reset() {
+	*x = AwsSsmDocumentOutputs{}
 	mi := &file_catalog_aws_awsssmdocument_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSsmDocumentStackOutputs) String() string {
+func (x *AwsSsmDocumentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSsmDocumentStackOutputs) ProtoMessage() {}
+func (*AwsSsmDocumentOutputs) ProtoMessage() {}
 
-func (x *AwsSsmDocumentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSsmDocumentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsssmdocument_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,47 +68,47 @@ func (x *AwsSsmDocumentStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSsmDocumentStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSsmDocumentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSsmDocumentOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSsmDocumentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsssmdocument_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSsmDocumentStackOutputs) GetDocumentName() string {
+func (x *AwsSsmDocumentOutputs) GetDocumentName() string {
 	if x != nil {
 		return x.DocumentName
 	}
 	return ""
 }
 
-func (x *AwsSsmDocumentStackOutputs) GetDocumentArn() string {
+func (x *AwsSsmDocumentOutputs) GetDocumentArn() string {
 	if x != nil {
 		return x.DocumentArn
 	}
 	return ""
 }
 
-func (x *AwsSsmDocumentStackOutputs) GetDefaultVersion() string {
+func (x *AwsSsmDocumentOutputs) GetDefaultVersion() string {
 	if x != nil {
 		return x.DefaultVersion
 	}
 	return ""
 }
 
-func (x *AwsSsmDocumentStackOutputs) GetLatestVersion() string {
+func (x *AwsSsmDocumentOutputs) GetLatestVersion() string {
 	if x != nil {
 		return x.LatestVersion
 	}
 	return ""
 }
 
-func (x *AwsSsmDocumentStackOutputs) GetDocumentHash() string {
+func (x *AwsSsmDocumentOutputs) GetDocumentHash() string {
 	if x != nil {
 		return x.DocumentHash
 	}
 	return ""
 }
 
-func (x *AwsSsmDocumentStackOutputs) GetStatus() string {
+func (x *AwsSsmDocumentOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
@@ -119,8 +119,8 @@ var File_catalog_aws_awsssmdocument_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_aws_awsssmdocument_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awsssmdocument/v1alpha1/outputs.proto\x12'dev.planton.aws.awsssmdocument.v1alpha1\"\xf1\x01\n" +
-	"\x1aAwsSsmDocumentStackOutputs\x12#\n" +
+	"1catalog/aws/awsssmdocument/v1alpha1/outputs.proto\x12'dev.planton.aws.awsssmdocument.v1alpha1\"\xec\x01\n" +
+	"\x15AwsSsmDocumentOutputs\x12#\n" +
 	"\rdocument_name\x18\x01 \x01(\tR\fdocumentName\x12!\n" +
 	"\fdocument_arn\x18\x02 \x01(\tR\vdocumentArn\x12'\n" +
 	"\x0fdefault_version\x18\x03 \x01(\tR\x0edefaultVersion\x12%\n" +
@@ -143,7 +143,7 @@ func file_catalog_aws_awsssmdocument_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsssmdocument_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsssmdocument_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSsmDocumentStackOutputs)(nil), // 0: dev.planton.aws.awsssmdocument.v1alpha1.AwsSsmDocumentStackOutputs
+	(*AwsSsmDocumentOutputs)(nil), // 0: dev.planton.aws.awsssmdocument.v1alpha1.AwsSsmDocumentOutputs
 }
 var file_catalog_aws_awsssmdocument_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

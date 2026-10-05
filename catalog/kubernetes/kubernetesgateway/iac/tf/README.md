@@ -4,7 +4,7 @@ Creates a namespaced Kubernetes Gateway API `Gateway` via the `kubectl_manifest`
 resource (alekc/kubectl provider, apiVersion `gateway.networking.k8s.io/v1`,
 server-side apply). Unlike `kubernetes_manifest`, `kubectl_manifest` needs no
 cluster connection at plan time, so the Gateway can be planned before the
-Gateway API CRDs exist -- which is what lets an infra chart deploy the CRDs, a
+Gateway API CRDs exist -- which is what lets an Infra Chart deploy the CRDs, a
 GatewayClass, the Gateway, and its routes in a single run (and lets offline plan
 proofs work).
 
@@ -39,7 +39,7 @@ null-pruned), with every `StringValueOrRef` foreign key -- `namespace`,
 ## State Import
 
 Existing Gateways can be adopted into state. `kubectl_manifest` uses the
-composed import ID `apiVersion//kind//name//namespace`; the component's
+composed import ID `apiVersion//kind//name//namespace`; the kind's
 `iac/import-map.yaml` derives each part (apiVersion and kind are constants of
 this module).
 

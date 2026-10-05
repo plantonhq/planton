@@ -90,7 +90,7 @@ attributeCondition: assertion.repository_owner == "my-org"
 
 Without a condition on a multi-tenant issuer, any repository could mint tokens your pool accepts — always set one.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -118,7 +118,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **Soft delete without undelete-on-create**: GCP retains deleted providers for ~30 days, during which the provider ID cannot be reused; a create against a soft-deleted ID fails. Prefer `disabled: true` for temporary shutoffs.
 - **OIDC mapping requirement**: OIDC providers must map `google.subject` explicitly (`{"google.subject": "assertion.sub"}` is the common form); the spec validates this before deploy.
 
-## Related Components
+## Related Kinds
 
 - [GcpWorkloadIdentityPool](/docs/catalog/gcp/gcpworkloadidentitypool) — the pool this provider attaches to
 - [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — grant `roles/iam.workloadIdentityUser` to this provider's principals to enable impersonation

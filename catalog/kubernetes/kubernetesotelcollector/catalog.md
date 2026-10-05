@@ -1,10 +1,10 @@
 # OpenTelemetry Collector
 
-Declares one OpenTelemetry Collector -- a telemetry pipeline (receivers, processors, exporters wired into service pipelines) that the cluster's OpenTelemetry Operator reconciles into a running workload. This component is a DECLARATION, not an install: the engine is the separately deployed KubernetesOtelOperator, and one collector per pipeline shape is the grain -- a per-node log daemonset, a scalable traces gateway, an OTLP fan-in front door, or an injected sidecar. The pipeline document is the product: the operator validates it at admission, derives the collector Service and its ports from the declared receivers, and exports the in-cluster OTLP endpoints applications point at.
+Declares one OpenTelemetry Collector -- a telemetry pipeline (receivers, processors, exporters wired into service pipelines) that the cluster's OpenTelemetry Operator reconciles into a running workload. This kind is a DECLARATION, not an install: the engine is the separately deployed KubernetesOtelOperator, and one collector per pipeline shape is the grain -- a per-node log daemonset, a scalable traces gateway, an OTLP fan-in front door, or an injected sidecar. The pipeline document is the product: the operator validates it at admission, derives the collector Service and its ports from the declared receivers, and exports the in-cluster OTLP endpoints applications point at.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **OpenTelemetryCollector CR** -- the declaration the operator reconciles into the mode's workload:
@@ -20,7 +20,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -88,11 +88,11 @@ spec:
 planton apply -f traces-gateway.yaml
 ```
 
-This declares a two-replica traces gateway in the `observability` namespace: applications push OTLP spans to the exported endpoints, and the collector ships them to Tempo through the `memory_limiter` and `batch` processors. A Stack Job tracks the provisioning in real time.
+This declares a two-replica traces gateway in the `observability` namespace: applications push OTLP spans to the exported endpoints, and the collector ships them to Tempo through the `memory_limiter` and `batch` processors. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the collector to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the collector to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -126,15 +126,15 @@ These are the most important decisions when configuring the OpenTelemetry Collec
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef (every Service-derived output is empty in sidecar mode -- no standalone workload exists):
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef (every Service-derived output is empty in sidecar mode -- no standalone workload exists):
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -158,8 +158,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**OpenTelemetry Operator**](/cloud-catalog/kubernetes-otel-operator) -- the HARD prerequisite: the engine that reconciles this declaration
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the collector
-- [**Kubernetes ServiceAccount**](/cloud-catalog/kubernetes-service-account) + [**Kubernetes RBAC**](/cloud-catalog/kubernetes-rbac) -- the identity composition for cluster-state pipelines (`k8sattributes`, `kubeletstats`)
-- [**Grafana Loki**](/cloud-catalog/kubernetes-loki) -- a common logs backend: its gateway ingests OTLP at the `/otlp` route
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) -- scrapes the collector's own metrics through the monitoring Service
+- [**OpenTelemetry Operator**](/infra-catalog/kubernetes-otel-operator) -- the HARD prerequisite: the engine that reconciles this declaration
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the collector
+- [**Kubernetes ServiceAccount**](/infra-catalog/kubernetes-service-account) + [**Kubernetes RBAC**](/infra-catalog/kubernetes-rbac) -- the identity composition for cluster-state pipelines (`k8sattributes`, `kubeletstats`)
+- [**Grafana Loki**](/infra-catalog/kubernetes-loki) -- a common logs backend: its gateway ingests OTLP at the `/otlp` route
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) -- scrapes the collector's own metrics through the monitoring Service

@@ -20,7 +20,7 @@ A stranger's first screen is the sign-in page. Without a custom domain it sits o
 
 ## What Changed
 
-- **`catalog/auth0/auth0customdomain/` (8008, `a0cd`).** The complete component, built for 100% parity with `auth0_custom_domain`:
+- **`catalog/auth0/auth0customdomain/` (8008, `a0cd`).** The complete kind, built for 100% parity with `auth0_custom_domain`:
   - `domain`, `type`, `custom_client_ip_header`, `tls_policy` (`recommended` only, since Auth0 retired `compatible`, and valid only with Auth0-managed certificates), `domain_metadata` (ten pairs, 255-character values) and `relying_party_identifier`;
   - outputs `id`, `domain`, `status`, `origin_domain_name` and `dns_record_name` / `dns_record_type` / `dns_record_value`, named as `GcpCertManagerDnsAuthorization` names its validation record;
   - both modules pick the record with one rule (prefer the CNAME method, otherwise the first; a TXT method's `domain` is its name, and a CNAME's name is the domain itself), pinned by a Pulumi unit test and the outputs conformance case;

@@ -84,7 +84,7 @@ set), `delegated_subnet_id`, `geo_redundant_backup_enabled`,
 `customer_managed_key`, `cluster`, the restore/replica trio -- plus any
 `version` downgrade or `storage_mb` shrink.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

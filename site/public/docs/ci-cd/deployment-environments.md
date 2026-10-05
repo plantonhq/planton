@@ -167,7 +167,7 @@ Beside the durable environments you configure, the platform mints **preview envi
 
 Three things to know about them:
 
-- **They manage their own lifecycle.** A preview is created by the pull request and destroyed by it — closing the PR (merged or not) tears down its cloud resources and records, and an untouched preview expires on its own (72 hours by default, tunable per service). Deleting a preview environment by hand is refused; closing the pull request is the delete button.
+- **They manage their own lifecycle.** A preview is created by the pull request and destroyed by it — closing the PR (merged or not) tears down its Infra Components and records, and an untouched preview expires on its own (72 hours by default, tunable per service). Deleting a preview environment by hand is refused; closing the pull request is the delete button.
 - **They never join promotion order.** Your dev → staging → production walk is unchanged no matter how many previews exist.
 - **They are capped.** At most five previews per service exist at once; a pull request beyond the cap still builds, and its deploy explains the skip.
 

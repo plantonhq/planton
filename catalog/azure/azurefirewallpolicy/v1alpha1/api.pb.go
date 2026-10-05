@@ -36,10 +36,10 @@ type AzureFirewallPolicy struct {
 	// Resource kind. Must be "AzureFirewallPolicy".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Firewall policy specification.
 	Spec *AzureFirewallPolicySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureFirewallPolicyStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -89,7 +89,7 @@ func (x *AzureFirewallPolicy) GetKind() string {
 	return ""
 }
 
-func (x *AzureFirewallPolicy) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureFirewallPolicy) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *AzureFirewallPolicy) GetStatus() *AzureFirewallPolicyStatus {
 // AzureFirewallPolicyStatus holds the deployment outputs.
 type AzureFirewallPolicyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureFirewallPolicyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureFirewallPolicyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzureFirewallPolicyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefirewallpolicy_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureFirewallPolicyStatus) GetOutputs() *AzureFirewallPolicyStackOutputs {
+func (x *AzureFirewallPolicyStatus) GetOutputs() *AzureFirewallPolicyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azurefirewallpolicy_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13AzureFirewallPolicyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyStatusR\x06status\"\x86\x01\n" +
-	"\x19AzureFirewallPolicyStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyStackOutputsR\aoutputsB\x80\x03\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyStatusR\x06status\"\x81\x01\n" +
+	"\x19AzureFirewallPolicyStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyOutputsR\aoutputsB\x80\x03\n" +
 	"2com.dev.planton.azure.azurefirewallpolicy.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/azure/azurefirewallpolicy/v1alpha1;azurefirewallpolicyv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Azure.Azurefirewallpolicy.V1alpha1\xca\x02.Dev\\Planton\\Azure\\Azurefirewallpolicy\\V1alpha1\xe2\x02:Dev\\Planton\\Azure\\Azurefirewallpolicy\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Azure::Azurefirewallpolicy::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_azure_azurefirewallpolicy_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azurefirewallpolicy_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurefirewallpolicy_v1alpha1_api_proto_goTypes = []any{
-	(*AzureFirewallPolicy)(nil),             // 0: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicy
-	(*AzureFirewallPolicyStatus)(nil),       // 1: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureFirewallPolicySpec)(nil),         // 3: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicySpec
-	(*AzureFirewallPolicyStackOutputs)(nil), // 4: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyStackOutputs
+	(*AzureFirewallPolicy)(nil),          // 0: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicy
+	(*AzureFirewallPolicyStatus)(nil),    // 1: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureFirewallPolicySpec)(nil),      // 3: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicySpec
+	(*AzureFirewallPolicyOutputs)(nil),   // 4: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyOutputs
 }
 var file_catalog_azure_azurefirewallpolicy_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicy.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicy.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicy.spec:type_name -> dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicySpec
 	1, // 2: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicy.status:type_name -> dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyStatus
-	4, // 3: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyStatus.outputs:type_name -> dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyStackOutputs
+	4, // 3: dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyStatus.outputs:type_name -> dev.planton.azure.azurefirewallpolicy.v1alpha1.AzureFirewallPolicyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

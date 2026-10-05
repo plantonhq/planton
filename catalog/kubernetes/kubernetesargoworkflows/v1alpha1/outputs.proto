@@ -6,7 +6,7 @@ package dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1;
  * Outputs exported after deploying Argo Workflows — the handles
  * downstream resources and humans compose against.
  */
-message KubernetesArgoWorkflowsStackOutputs {
+message KubernetesArgoWorkflowsOutputs {
   /**
    * Namespace Argo Workflows is installed in.
    */

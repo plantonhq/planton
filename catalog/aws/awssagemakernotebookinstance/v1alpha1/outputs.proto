@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awssagemakernotebookinstance.v1alpha1;
 
-// AwsSagemakerNotebookInstanceStackOutputs captures observable
+// AwsSagemakerNotebookInstanceOutputs captures observable
 // identifiers from a provisioned notebook instance.
-message AwsSagemakerNotebookInstanceStackOutputs {
+message AwsSagemakerNotebookInstanceOutputs {
   // The notebook instance name (the AWS identity).
   string notebook_instance_name = 1;
 

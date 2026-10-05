@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsvpcpeering.v1alpha1;
 
-// AwsVpcPeeringStackOutputs captures the observable state of the
+// AwsVpcPeeringOutputs captures the observable state of the
 // peering connection after apply.
-message AwsVpcPeeringStackOutputs {
+message AwsVpcPeeringOutputs {
   // The peering connection's id (pcx-...) - what route tables and
   // accept-arm instances reference, and the provider's import ID.
   string peering_connection_id = 1;

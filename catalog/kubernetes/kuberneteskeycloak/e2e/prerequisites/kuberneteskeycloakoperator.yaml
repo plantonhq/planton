@@ -1,5 +1,5 @@
 # Consumer-scoped Keycloak Operator fixture for the KubernetesKeycloak
-# lanes. NAMESPACED WATCH (the component default): the operator watches
+# lanes. NAMESPACED WATCH (the kind's default): the operator watches
 # ONLY its own namespace, so every scenario co-locates its Keycloak CR
 # in e2e-keycloak beside this fixture. This fixture OWNS the shared
 # namespace (create_namespace: true); the PostgreSQL fixture joins it

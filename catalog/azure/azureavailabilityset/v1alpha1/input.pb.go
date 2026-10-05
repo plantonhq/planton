@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureAvailabilitySetStackInput is the input to the IaC modules
+// AzureAvailabilitySetIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureAvailabilitySetStackInput struct {
+type AzureAvailabilitySetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The availability set resource to deploy.
 	Target *AzureAvailabilitySet `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureAvailabilitySetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureAvailabilitySetStackInput) Reset() {
-	*x = AzureAvailabilitySetStackInput{}
+func (x *AzureAvailabilitySetIacInput) Reset() {
+	*x = AzureAvailabilitySetIacInput{}
 	mi := &file_catalog_azure_azureavailabilityset_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureAvailabilitySetStackInput) String() string {
+func (x *AzureAvailabilitySetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureAvailabilitySetStackInput) ProtoMessage() {}
+func (*AzureAvailabilitySetIacInput) ProtoMessage() {}
 
-func (x *AzureAvailabilitySetStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureAvailabilitySetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureavailabilityset_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureAvailabilitySetStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureAvailabilitySetStackInput.ProtoReflect.Descriptor instead.
-func (*AzureAvailabilitySetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureAvailabilitySetIacInput.ProtoReflect.Descriptor instead.
+func (*AzureAvailabilitySetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureavailabilityset_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureAvailabilitySetStackInput) GetTarget() *AzureAvailabilitySet {
+func (x *AzureAvailabilitySetIacInput) GetTarget() *AzureAvailabilitySet {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureAvailabilitySetStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureAvailabilitySetIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azureavailabilityset_v1alpha1_input_proto protoreflect.Fi
 
 const file_catalog_azure_azureavailabilityset_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/azure/azureavailabilityset/v1alpha1/input.proto\x12/dev.planton.azure.azureavailabilityset.v1alpha1\x1a5catalog/azure/azureavailabilityset/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd0\x01\n" +
-	"\x1eAzureAvailabilitySetStackInput\x12]\n" +
+	"7catalog/azure/azureavailabilityset/v1alpha1/input.proto\x12/dev.planton.azure.azureavailabilityset.v1alpha1\x1a5catalog/azure/azureavailabilityset/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xce\x01\n" +
+	"\x1cAzureAvailabilitySetIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x89\x03\n" +
 	"3com.dev.planton.azure.azureavailabilityset.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azureavailabilityset_v1alpha1_input_proto_rawDescGZIP() 
 
 var file_catalog_azure_azureavailabilityset_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureavailabilityset_v1alpha1_input_proto_goTypes = []any{
-	(*AzureAvailabilitySetStackInput)(nil), // 0: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetStackInput
-	(*AzureAvailabilitySet)(nil),           // 1: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySet
-	(*azure.AzureProviderConfig)(nil),      // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureAvailabilitySetIacInput)(nil), // 0: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetIacInput
+	(*AzureAvailabilitySet)(nil),         // 1: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySet
+	(*azure.AzureProviderConfig)(nil),    // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureavailabilityset_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetStackInput.target:type_name -> dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySet
-	2, // 1: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetIacInput.target:type_name -> dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySet
+	2, // 1: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

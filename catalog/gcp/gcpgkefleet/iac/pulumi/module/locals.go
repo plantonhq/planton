@@ -6,7 +6,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds the stack input. The fleet carries no labels: the pinned
+// Locals holds the IaC input. The fleet carries no labels: the pinned
 // SDK has no fleet labels argument, and both engines send the same
 // arguments.
 type Locals struct {
@@ -14,10 +14,10 @@ type Locals struct {
 	GcpGkeFleet       *gcpgkefleetv1alpha1.GcpGkeFleet
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpgkefleetv1alpha1.GcpGkeFleetStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpgkefleetv1alpha1.GcpGkeFleetIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpGkeFleet = stackInput.Target
+	locals.GcpGkeFleet = iacInput.Target
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

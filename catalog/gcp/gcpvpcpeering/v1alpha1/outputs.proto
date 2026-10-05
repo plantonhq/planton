@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpvpcpeering.v1alpha1;
 
-// GcpVpcPeeringStackOutputs captures this side of the peering after
+// GcpVpcPeeringOutputs captures this side of the peering after
 // provisioning.
-message GcpVpcPeeringStackOutputs {
+message GcpVpcPeeringOutputs {
   // The peering entry's name on this side's network -- the resolved value
   // (metadata.name when the spec left peering_name empty).
   string peering_name = 1;

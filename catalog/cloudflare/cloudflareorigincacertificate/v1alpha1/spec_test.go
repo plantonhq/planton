@@ -13,7 +13,7 @@ func validOriginCaCertificate() *CloudflareOriginCaCertificate {
 	return &CloudflareOriginCaCertificate{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareOriginCaCertificate",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-origin-cert"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-origin-cert"},
 		Spec: &CloudflareOriginCaCertificateSpec{
 			Hostnames: []string{"example.com", "*.example.com"},
 		},

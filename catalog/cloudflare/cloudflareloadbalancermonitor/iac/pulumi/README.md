@@ -7,19 +7,19 @@ check that `CloudflareLoadBalancerPool`s reference to probe their origins.
 
 ```
 iac/pulumi/
-├── main.go            # entrypoint (loads stack-input, calls module.Resources)
+├── main.go            # entrypoint (loads iac-input, calls module.Resources)
 ├── Pulumi.yaml
 ├── Makefile
 └── module/
     ├── main.go            # Resources(): provider setup + monitor()
-    ├── locals.go          # stack-input references
+    ├── locals.go          # iac-input references
     ├── monitor.go         # the cloudflare.LoadBalancerMonitor
     └── outputs.go         # output constant names
 ```
 
 ## Inputs
 
-A `CloudflareLoadBalancerMonitorStackInput` (target + provider config). Required
+A `CloudflareLoadBalancerMonitorIacInput` (target + provider config). Required
 spec field: `account_id`. The `type` enum's unspecified zero value maps to `http`.
 
 ## Outputs
@@ -31,6 +31,6 @@ spec field: `account_id`. The `type` enum's unspecified zero value maps to `http
 
 - **Load Balancing add-on** must be enabled on the account (paid add-on); otherwise
   the Load Balancing API returns `403`.
-- The provider is configured from the stack-input provider config /
+- The provider is configured from the iac-input provider config /
   `CLOUDFLARE_API_TOKEN`; the token needs
   **Account → Load Balancing: Monitors and Pools → Edit** (monitors are account-scoped).

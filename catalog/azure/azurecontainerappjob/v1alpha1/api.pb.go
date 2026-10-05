@@ -34,7 +34,7 @@ type AzureContainerAppJob struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureContainerAppJobSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureContainerAppJob) GetKind() string {
 	return ""
 }
 
-func (x *AzureContainerAppJob) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureContainerAppJob) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureContainerAppJob) GetStatus() *AzureContainerAppJobStatus {
 // AzureContainerAppJobStatus holds the deployment status and outputs.
 type AzureContainerAppJobStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureContainerAppJobStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureContainerAppJobOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureContainerAppJobStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerappjob_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureContainerAppJobStatus) GetOutputs() *AzureContainerAppJobStackOutputs {
+func (x *AzureContainerAppJobStatus) GetOutputs() *AzureContainerAppJobOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azurecontainerappjob_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14AzureContainerAppJobR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
 	"\x04spec\x18\x04 \x01(\v2I.dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobStatusR\x06status\"\x89\x01\n" +
-	"\x1aAzureContainerAppJobStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobStackOutputsR\aoutputsB\x87\x03\n" +
+	"\x06status\x18\x05 \x01(\v2K.dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobStatusR\x06status\"\x84\x01\n" +
+	"\x1aAzureContainerAppJobStatus\x12f\n" +
+	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobOutputsR\aoutputsB\x87\x03\n" +
 	"3com.dev.planton.azure.azurecontainerappjob.v1alpha1B\bApiProtoP\x01Zegithub.com/plantonhq/planton/catalog/azure/azurecontainerappjob/v1alpha1;azurecontainerappjobv1alpha1\xa2\x02\x04DPAA\xaa\x02/Dev.Planton.Azure.Azurecontainerappjob.V1alpha1\xca\x02/Dev\\Planton\\Azure\\Azurecontainerappjob\\V1alpha1\xe2\x02;Dev\\Planton\\Azure\\Azurecontainerappjob\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Azure::Azurecontainerappjob::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azurecontainerappjob_v1alpha1_api_proto_rawDescGZIP() []
 
 var file_catalog_azure_azurecontainerappjob_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurecontainerappjob_v1alpha1_api_proto_goTypes = []any{
-	(*AzureContainerAppJob)(nil),             // 0: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJob
-	(*AzureContainerAppJobStatus)(nil),       // 1: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureContainerAppJobSpec)(nil),         // 3: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobSpec
-	(*AzureContainerAppJobStackOutputs)(nil), // 4: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobStackOutputs
+	(*AzureContainerAppJob)(nil),         // 0: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJob
+	(*AzureContainerAppJobStatus)(nil),   // 1: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureContainerAppJobSpec)(nil),     // 3: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobSpec
+	(*AzureContainerAppJobOutputs)(nil),  // 4: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobOutputs
 }
 var file_catalog_azure_azurecontainerappjob_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJob.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJob.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJob.spec:type_name -> dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobSpec
 	1, // 2: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJob.status:type_name -> dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobStatus
-	4, // 3: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobStatus.outputs:type_name -> dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobStackOutputs
+	4, // 3: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobStatus.outputs:type_name -> dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -1,4 +1,4 @@
-# The component defaults on their own: the workflow controller with a
+# The kind defaults on their own: the workflow controller with a
 # cluster-wide watch, the Argo server in `client` auth mode, the runner
 # ServiceAccount created in the install namespace only. The verifier
 # proves the ENGINE on every lane: controller + server rolled out, an

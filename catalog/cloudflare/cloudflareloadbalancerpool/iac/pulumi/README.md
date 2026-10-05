@@ -8,19 +8,19 @@ select.
 
 ```
 iac/pulumi/
-├── main.go            # entrypoint (loads stack-input, calls module.Resources)
+├── main.go            # entrypoint (loads iac-input, calls module.Resources)
 ├── Pulumi.yaml
 ├── Makefile
 └── module/
     ├── main.go            # Resources(): provider setup + pool()
-    ├── locals.go          # stack-input references
+    ├── locals.go          # iac-input references
     ├── pool.go            # the cloudflare.LoadBalancerPool (origins, monitor, etc.)
     └── outputs.go         # output constant names
 ```
 
 ## Inputs
 
-A `CloudflareLoadBalancerPoolStackInput` (target + provider config). Required spec
+A `CloudflareLoadBalancerPoolIacInput` (target + provider config). Required spec
 fields: `account_id`, `name`, `origins[]`. Origin `address` and `monitor` arrive
 resolved via `StringValueOrRef.GetValue()`; the origin `host_header` is translated
 to the provider's origin `Header{ Hosts: [...] }`.
@@ -34,7 +34,7 @@ to the provider's origin `Header{ Hosts: [...] }`.
 
 - **Load Balancing add-on** must be enabled on the account (paid add-on); otherwise
   the Load Balancing API returns `403`.
-- The provider is configured from the stack-input provider config /
+- The provider is configured from the iac-input provider config /
   `CLOUDFLARE_API_TOKEN`; the token needs
   **Account → Load Balancing: Monitors and Pools → Edit** (pools are account-scoped).
 - **Origins must be globally routable** when a `monitor` is attached — Cloudflare

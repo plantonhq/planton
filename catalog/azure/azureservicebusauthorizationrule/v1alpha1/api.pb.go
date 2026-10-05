@@ -36,7 +36,7 @@ type AzureServiceBusAuthorizationRule struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureServiceBusAuthorizationRuleSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *AzureServiceBusAuthorizationRule) GetKind() string {
 	return ""
 }
 
-func (x *AzureServiceBusAuthorizationRule) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureServiceBusAuthorizationRule) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,8 +114,8 @@ func (x *AzureServiceBusAuthorizationRule) GetStatus() *AzureServiceBusAuthoriza
 // outputs.
 type AzureServiceBusAuthorizationRuleStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureServiceBusAuthorizationRuleStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureServiceBusAuthorizationRuleOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureServiceBusAuthorizationRuleStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureservicebusauthorizationrule_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureServiceBusAuthorizationRuleStatus) GetOutputs() *AzureServiceBusAuthorizationRuleStackOutputs {
+func (x *AzureServiceBusAuthorizationRuleStatus) GetOutputs() *AzureServiceBusAuthorizationRuleOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azureservicebusauthorizationrule_v1alpha1_api_proto_raw
 	"apiVersion\x12;\n" +
 	"\x04kind\x18\x02 \x01(\tB'\xbaH$r\"\n" +
 	" AzureServiceBusAuthorizationRuleR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12}\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12}\n" +
 	"\x04spec\x18\x04 \x01(\v2a.dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12{\n" +
-	"\x06status\x18\x05 \x01(\v2c.dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleStatusR\x06status\"\xae\x01\n" +
-	"&AzureServiceBusAuthorizationRuleStatus\x12\x83\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2i.dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleStackOutputsR\aoutputsB\xdb\x03\n" +
+	"\x06status\x18\x05 \x01(\v2c.dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleStatusR\x06status\"\xa8\x01\n" +
+	"&AzureServiceBusAuthorizationRuleStatus\x12~\n" +
+	"\aoutputs\x18\x01 \x01(\v2d.dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleOutputsR\aoutputsB\xdb\x03\n" +
 	"?com.dev.planton.azure.azureservicebusauthorizationrule.v1alpha1B\bApiProtoP\x01Z}github.com/plantonhq/planton/catalog/azure/azureservicebusauthorizationrule/v1alpha1;azureservicebusauthorizationrulev1alpha1\xa2\x02\x04DPAA\xaa\x02;Dev.Planton.Azure.Azureservicebusauthorizationrule.V1alpha1\xca\x02;Dev\\Planton\\Azure\\Azureservicebusauthorizationrule\\V1alpha1\xe2\x02GDev\\Planton\\Azure\\Azureservicebusauthorizationrule\\V1alpha1\\GPBMetadata\xea\x02?Dev::Planton::Azure::Azureservicebusauthorizationrule::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azureservicebusauthorizationrule_v1alpha1_api_proto_rawD
 
 var file_catalog_azure_azureservicebusauthorizationrule_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureservicebusauthorizationrule_v1alpha1_api_proto_goTypes = []any{
-	(*AzureServiceBusAuthorizationRule)(nil),             // 0: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRule
-	(*AzureServiceBusAuthorizationRuleStatus)(nil),       // 1: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleStatus
-	(*shared.CloudResourceMetadata)(nil),                 // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureServiceBusAuthorizationRuleSpec)(nil),         // 3: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleSpec
-	(*AzureServiceBusAuthorizationRuleStackOutputs)(nil), // 4: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleStackOutputs
+	(*AzureServiceBusAuthorizationRule)(nil),        // 0: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRule
+	(*AzureServiceBusAuthorizationRuleStatus)(nil),  // 1: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleStatus
+	(*shared.CatalogObjectMetadata)(nil),            // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureServiceBusAuthorizationRuleSpec)(nil),    // 3: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleSpec
+	(*AzureServiceBusAuthorizationRuleOutputs)(nil), // 4: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleOutputs
 }
 var file_catalog_azure_azureservicebusauthorizationrule_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRule.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRule.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRule.spec:type_name -> dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleSpec
 	1, // 2: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRule.status:type_name -> dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleStatus
-	4, // 3: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleStatus.outputs:type_name -> dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleStackOutputs
+	4, // 3: dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleStatus.outputs:type_name -> dev.planton.azure.azureservicebusauthorizationrule.v1alpha1.AzureServiceBusAuthorizationRuleOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

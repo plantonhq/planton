@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-managed-kafka-topic stack-input
-type GcpManagedKafkaTopicStackInput struct {
+// gcp-managed-kafka-topic iac-input
+type GcpManagedKafkaTopicIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpManagedKafkaTopic `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpManagedKafkaTopicStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpManagedKafkaTopicStackInput) Reset() {
-	*x = GcpManagedKafkaTopicStackInput{}
+func (x *GcpManagedKafkaTopicIacInput) Reset() {
+	*x = GcpManagedKafkaTopicIacInput{}
 	mi := &file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpManagedKafkaTopicStackInput) String() string {
+func (x *GcpManagedKafkaTopicIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpManagedKafkaTopicStackInput) ProtoMessage() {}
+func (*GcpManagedKafkaTopicIacInput) ProtoMessage() {}
 
-func (x *GcpManagedKafkaTopicStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpManagedKafkaTopicIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpManagedKafkaTopicStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpManagedKafkaTopicStackInput.ProtoReflect.Descriptor instead.
-func (*GcpManagedKafkaTopicStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpManagedKafkaTopicIacInput.ProtoReflect.Descriptor instead.
+func (*GcpManagedKafkaTopicIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpManagedKafkaTopicStackInput) GetTarget() *GcpManagedKafkaTopic {
+func (x *GcpManagedKafkaTopicIacInput) GetTarget() *GcpManagedKafkaTopic {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpManagedKafkaTopicStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpManagedKafkaTopicIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpmanagedkafkatopic/v1alpha1/input.proto\x12-dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1\x1a3catalog/gcp/gcpmanagedkafkatopic/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xca\x01\n" +
-	"\x1eGcpManagedKafkaTopicStackInput\x12[\n" +
+	"5catalog/gcp/gcpmanagedkafkatopic/v1alpha1/input.proto\x12-dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1\x1a3catalog/gcp/gcpmanagedkafkatopic/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc8\x01\n" +
+	"\x1cGcpManagedKafkaTopicIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopicR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xfd\x02\n" +
 	"1com.dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_input_proto_goTypes = []any{
-	(*GcpManagedKafkaTopicStackInput)(nil), // 0: dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopicStackInput
-	(*GcpManagedKafkaTopic)(nil),           // 1: dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopic
-	(*gcp.GcpProviderConfig)(nil),          // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpManagedKafkaTopicIacInput)(nil), // 0: dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopicIacInput
+	(*GcpManagedKafkaTopic)(nil),         // 1: dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopic
+	(*gcp.GcpProviderConfig)(nil),        // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpmanagedkafkatopic_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopicStackInput.target:type_name -> dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopic
-	2, // 1: dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopicStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopicIacInput.target:type_name -> dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopic
+	2, // 1: dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopicIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

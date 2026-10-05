@@ -6,7 +6,7 @@
 observability platform: traces, metrics and logs in one UI, stored in
 ClickHouse, ingested over OpenTelemetry.
 
-Not the right component when:
+Not the right kind when:
 
 - **You want the composed best-of-breed stack** — that is
   `KubernetesKubePrometheusStack` + `KubernetesGrafana` +

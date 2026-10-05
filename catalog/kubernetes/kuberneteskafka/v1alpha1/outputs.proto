@@ -3,13 +3,13 @@ syntax = "proto3";
 package dev.planton.kubernetes.kuberneteskafka.v1alpha1;
 
 /**
- * **KubernetesKafkaStackOutputs** — the composition handles a deployed
+ * **KubernetesKafkaOutputs** — the composition handles a deployed
  * Kafka cluster exports. Workloads compose against the bootstrap
  * endpoint; KubernetesKafkaTopic / KubernetesKafkaUser resources
  * compose against the cluster name; TLS clients fetch the cluster CA
  * from the exported Secret.
  */
-message KubernetesKafkaStackOutputs {
+message KubernetesKafkaOutputs {
   // Namespace the cluster runs in.
   string namespace = 1;
 

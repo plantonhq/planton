@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezerotrusttunnel
 spec:
@@ -18,7 +18,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: tunnel_id
       derivations:
-        - from_stack_output: tunnel_id
+        - from_output: tunnel_id
       where_to_find: >-
         Zero Trust dashboard -> Networks -> Tunnels -> the tunnel (the
         tunnel ID on its overview), or

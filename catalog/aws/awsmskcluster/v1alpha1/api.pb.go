@@ -31,7 +31,7 @@ type AwsMskCluster struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsMskClusterSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsMskCluster) GetKind() string {
 	return ""
 }
 
-func (x *AwsMskCluster) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsMskCluster) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsMskCluster) GetStatus() *AwsMskClusterStatus {
 // aws-msk-cluster status
 type AwsMskClusterStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsMskClusterStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsMskClusterOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsMskClusterStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmskcluster_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsMskClusterStatus) GetOutputs() *AwsMskClusterStackOutputs {
+func (x *AwsMskClusterStatus) GetOutputs() *AwsMskClusterOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awsmskcluster_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12(\n" +
 	"\x04kind\x18\x02 \x01(\tB\x14\xbaH\x11r\x0f\n" +
 	"\rAwsMskClusterR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
 	"\x04spec\x18\x04 \x01(\v29.dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12S\n" +
-	"\x06status\x18\x05 \x01(\v2;.dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterStatusR\x06status\"r\n" +
-	"\x13AwsMskClusterStatus\x12[\n" +
-	"\aoutputs\x18\x01 \x01(\v2A.dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterStackOutputsR\aoutputsB\xca\x02\n" +
+	"\x06status\x18\x05 \x01(\v2;.dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterStatusR\x06status\"m\n" +
+	"\x13AwsMskClusterStatus\x12V\n" +
+	"\aoutputs\x18\x01 \x01(\v2<.dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterOutputsR\aoutputsB\xca\x02\n" +
 	"*com.dev.planton.aws.awsmskcluster.v1alpha1B\bApiProtoP\x01ZUgithub.com/plantonhq/planton/catalog/aws/awsmskcluster/v1alpha1;awsmskclusterv1alpha1\xa2\x02\x04DPAA\xaa\x02&Dev.Planton.Aws.Awsmskcluster.V1alpha1\xca\x02&Dev\\Planton\\Aws\\Awsmskcluster\\V1alpha1\xe2\x022Dev\\Planton\\Aws\\Awsmskcluster\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Aws::Awsmskcluster::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_aws_awsmskcluster_v1alpha1_api_proto_msgTypes = make([]protoimp
 var file_catalog_aws_awsmskcluster_v1alpha1_api_proto_goTypes = []any{
 	(*AwsMskCluster)(nil),                // 0: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskCluster
 	(*AwsMskClusterStatus)(nil),          // 1: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsMskClusterSpec)(nil),            // 3: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterSpec
-	(*AwsMskClusterStackOutputs)(nil),    // 4: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterStackOutputs
+	(*AwsMskClusterOutputs)(nil),         // 4: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterOutputs
 }
 var file_catalog_aws_awsmskcluster_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskCluster.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskCluster.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskCluster.spec:type_name -> dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterSpec
 	1, // 2: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskCluster.status:type_name -> dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterStatus
-	4, // 3: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterStatus.outputs:type_name -> dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterStackOutputs
+	4, // 3: dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterStatus.outputs:type_name -> dev.planton.aws.awsmskcluster.v1alpha1.AwsMskClusterOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

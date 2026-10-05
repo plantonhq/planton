@@ -11,7 +11,7 @@ Ten Azure kinds whose metadata already described children "created inside" or "a
 - **`AzureDataFactory`** is a container: pipelines, data flows, datasets, linked services, triggers, and integration runtimes are all created against a factory's ARM ID. Exempt: the Azure-SSIS runtime's `expressVnetIntegration.subnetId`, `vnetIntegration.vnetId`, and `vnetIntegration.subnetId` -- the runtime lives in its factory and its nodes attach to a network (the AKS node pool's rule).
 - **`AzureEventgridTopic` and `AzureEventgridSystemTopic`** are containers: every event subscription is an ARM child created under the topic it listens to (`{topic_id}/providers/Microsoft.EventGrid/eventSubscriptions/{name}`) and cannot exist without it. Exempt: a Data Factory trigger's `eventgrid_topic_id` (the trigger lives in its factory and subscribes to the topic) and an Event Grid namespace's MQTT `route_topic_id` (the namespace lives in its group and routes into the topic).
 - **`AzureEventgridDomain` and `AzureEventgridNamespace`** are containers: every domain topic is an ARM child of its domain, every namespace topic of its namespace. Nothing else across the catalog names either kind, so nothing travels with these two marks.
-- The containment-decision registry (`shared/cloudresourcekind/testdata/containment_decisions.txt`) gains forty-two `contained` lines -- every typed reference into one of the ten from a kind that lives inside it -- and seventeen `exempt` lines: twelve moved from `contained`, five new because their targets were not rooms before this change. Nothing else moved.
+- The containment-decision registry (`shared/catalogkind/testdata/containment_decisions.txt`) gains forty-two `contained` lines -- every typed reference into one of the ten from a kind that lives inside it -- and seventeen `exempt` lines: twelve moved from `contained`, five new because their targets were not rooms before this change. Nothing else moved.
 
 ## Why
 
@@ -22,7 +22,7 @@ The ten travel together because every container mark regenerates the same kind-r
 ## How to check
 
 ```bash
-go test ./shared/cloudresourcekind/... -run TestContainmentDecisions   # green; 42 placements added, 17 reaches exempt
-grep -n -B1 'container_kind: true' shared/cloudresourcekind/cloud_resource_kind.proto | grep -c Azure   # the Azure container kinds, ten more than before
+go test ./shared/catalogkind/... -run TestContainmentDecisions   # green; 42 placements added, 17 reaches exempt
+grep -n -B1 'container_kind: true' shared/catalogkind/catalog_kind.proto | grep -c Azure   # the Azure container kinds, ten more than before
 grep -rln containment_exempt catalog/azure --include=spec.proto | wc -l
 ```

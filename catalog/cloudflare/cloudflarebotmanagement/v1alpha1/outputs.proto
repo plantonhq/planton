@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1;
 
-// CloudflareBotManagementStackOutputs captures the observable outputs after
+// CloudflareBotManagementOutputs captures the observable outputs after
 // applying a zone's Bot Management configuration.
-message CloudflareBotManagementStackOutputs {
+message CloudflareBotManagementOutputs {
   // The zone whose Bot Management configuration is managed. The configuration is
   // a zone singleton -- the zone ID is its identity (Cloudflare's rule ID for
   // this surface IS the zone ID).

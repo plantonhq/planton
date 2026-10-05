@@ -4,7 +4,7 @@ Creates a Cloud Monitoring service-level objective — the formal reliability ta
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SLO** -- a `monitoring.Slo` with the configured goal, period, and service-level indicator
 - **Monitoring service** (optional, count-gated) -- a `monitoring.CustomService` or `monitoring.GenericService` when the spec's service arm asks for one

@@ -22,7 +22,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsconfigrecorder
+    e2e-catalog-kind: awsconfigrecorder
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsIamRole,AwsS3Bucket"

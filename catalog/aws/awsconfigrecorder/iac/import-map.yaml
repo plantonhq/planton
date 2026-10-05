@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsconfigrecorder
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: recorder_name
       derivations:
-        - from_stack_output: recorder_name
+        - from_output: recorder_name
         - literal: default
       where_to_find: >-
         Always "default" -- AWS's one-recorder-per-region convention
@@ -17,7 +17,7 @@ spec:
         name).
     - name: delivery_channel_name
       derivations:
-        - from_stack_output: delivery_channel_name
+        - from_output: delivery_channel_name
         - literal: default
       where_to_find: >-
         Always "default" -- AWS's one-channel-per-region convention

@@ -4,7 +4,7 @@ Deploys a Client VPN endpoint on AWS — the managed OpenVPN server remote users
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Client VPN Endpoint** -- an OpenVPN-compatible endpoint with configurable transport (UDP/TCP on 443 or 1194), authentication options, split- or full-tunnel routing, session controls, DNS push, and optional CloudWatch connection logging
 - **Target Network Associations** -- one per subnet in `subnetIds` (VPC attachment), each activating the endpoint in that subnet's Availability Zone
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -68,7 +68,7 @@ spec:
 planton apply -f client-vpn.yaml
 ```
 
-This creates a certificate-authenticated endpoint with split-tunnel routing, the AWS-default UDP transport on port 443, two AZ associations, and authorization to reach the VPC CIDR. Connection logging is not configured — add `connectionLog` in production. A Stack Job tracks the provisioning in real time.
+This creates a certificate-authenticated endpoint with split-tunnel routing, the AWS-default UDP transport on port 443, two AZ associations, and authorization to reach the VPC CIDR. Connection logging is not configured — add `connectionLog` in production. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -122,7 +122,7 @@ These are the most important decisions when configuring a Client VPN. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -134,9 +134,9 @@ These are the most important decisions when configuring a Client VPN. Explore th
 | **AwsCloudwatchLogGroup** | `connectionLog.cloudwatchLogGroup` | `status.outputs.log_group_name` |
 | **AwsLambda** | `clientConnectOptions.lambdaFunctionArn` | `status.outputs.function_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -161,9 +161,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS ACM Certificate**](/cloud-catalog/aws-cert-manager-cert) -- the endpoint's TLS identity and (for certificate auth) the client CA chain
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- the VPC and subnets for per-subnet attachment
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- controls traffic between VPN clients and VPC resources
-- [**AWS Transit Gateway**](/cloud-catalog/aws-transit-gateway) -- hub-wide access without per-subnet associations
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) -- connection logging destination
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) -- the per-connection allow/deny posture hook
+- [**AWS ACM Certificate**](/infra-catalog/aws-cert-manager-cert) -- the endpoint's TLS identity and (for certificate auth) the client CA chain
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- the VPC and subnets for per-subnet attachment
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- controls traffic between VPN clients and VPC resources
+- [**AWS Transit Gateway**](/infra-catalog/aws-transit-gateway) -- hub-wide access without per-subnet associations
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) -- connection logging destination
+- [**AWS Lambda**](/infra-catalog/aws-lambda) -- the per-connection allow/deny posture hook

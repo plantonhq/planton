@@ -16,7 +16,7 @@ message GcpGkeFleetScope {
   string kind = 2 [(buf.validate.field).string.const = 'GcpGkeFleetScope'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   GcpGkeFleetScopeSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message GcpGkeFleetScope {
 
 //gcp-gke-fleet-scope status
 message GcpGkeFleetScopeStatus {
-  //stack-outputs
-  GcpGkeFleetScopeStackOutputs outputs = 1;
+  //outputs
+  GcpGkeFleetScopeOutputs outputs = 1;
 }

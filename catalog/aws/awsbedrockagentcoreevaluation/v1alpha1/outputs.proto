@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1;
 
-// AwsBedrockAgentCoreEvaluationStackOutputs captures observable
+// AwsBedrockAgentCoreEvaluationOutputs captures observable
 // identifiers from a provisioned AgentCore Evaluations bundle.
 // Downstream resources (online configs in other bundles referencing
 // custom evaluators, dashboards reading the output log groups) wire
 // dependencies via StringValueOrRef.
-message AwsBedrockAgentCoreEvaluationStackOutputs {
+message AwsBedrockAgentCoreEvaluationOutputs {
   // Evaluator IDs keyed by each `evaluators` entry's name.
   map<string, string> evaluator_ids = 1;
 

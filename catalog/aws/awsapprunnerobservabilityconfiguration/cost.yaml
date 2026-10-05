@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsapprunnerobservabilityconfiguration
 spec:
   billing_model: free
   free_tier: An observability configuration is a reusable tracing policy object in the App Runner control plane -- AWS's App Runner meters bill the compute and memory of container instances plus deployment and build fees, and none of those meters count observability configurations. Registering the configuration costs nothing whether zero services or a whole fleet reference it, and even the OpenTelemetry collector sidecar that referencing instances run is part of App Runner's managed runtime, not a separate charge.
-  notes: "No field of this spec buys anything on App Runner, but trace_configuration switches on a real downstream meter: services referencing this configuration forward request traces to AWS X-Ray, and X-Ray bills per trace recorded, retrieved, and scanned (beyond its perpetual free tier of 100,000 traces recorded per month) on the X-Ray line of the bill -- spend scales with the referencing services' request volume, not with this resource. A configuration created without trace_configuration is valid but inert and drives no meter anywhere. The referencing AwsAppRunnerService components carry the instance spend as their own catalog kinds."
+  notes: "No field of this spec buys anything on App Runner, but trace_configuration switches on a real downstream meter: services referencing this configuration forward request traces to AWS X-Ray, and X-Ray bills per trace recorded, retrieved, and scanned (beyond its perpetual free tier of 100,000 traces recorded per month) on the X-Ray line of the bill -- spend scales with the referencing services' request volume, not with this resource. A configuration created without trace_configuration is valid but inert and drives no meter anywhere. The referencing AwsAppRunnerService components carry the instance spend as their own components."

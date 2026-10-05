@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesPodMonitorStackOutputs captures observable outputs after the
+// KubernetesPodMonitorOutputs captures observable outputs after the
 // PodMonitor is created on the target cluster. Which Prometheus instances
 // scrape through it is decided by their selectors, and which targets it yields
 // by the pods alive at discovery time, so only the resource identity is
 // exported.
-type KubernetesPodMonitorStackOutputs struct {
+type KubernetesPodMonitorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created PodMonitor (equals metadata.name).
 	PodMonitorName string `protobuf:"bytes,1,opt,name=pod_monitor_name,json=podMonitorName,proto3" json:"pod_monitor_name,omitempty"`
@@ -36,20 +36,20 @@ type KubernetesPodMonitorStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesPodMonitorStackOutputs) Reset() {
-	*x = KubernetesPodMonitorStackOutputs{}
+func (x *KubernetesPodMonitorOutputs) Reset() {
+	*x = KubernetesPodMonitorOutputs{}
 	mi := &file_catalog_kubernetes_kubernetespodmonitor_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPodMonitorStackOutputs) String() string {
+func (x *KubernetesPodMonitorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPodMonitorStackOutputs) ProtoMessage() {}
+func (*KubernetesPodMonitorOutputs) ProtoMessage() {}
 
-func (x *KubernetesPodMonitorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPodMonitorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetespodmonitor_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *KubernetesPodMonitorStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPodMonitorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesPodMonitorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPodMonitorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesPodMonitorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetespodmonitor_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPodMonitorStackOutputs) GetPodMonitorName() string {
+func (x *KubernetesPodMonitorOutputs) GetPodMonitorName() string {
 	if x != nil {
 		return x.PodMonitorName
 	}
 	return ""
 }
 
-func (x *KubernetesPodMonitorStackOutputs) GetNamespace() string {
+func (x *KubernetesPodMonitorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -84,8 +84,8 @@ var File_catalog_kubernetes_kubernetespodmonitor_v1alpha1_outputs_proto protoref
 
 const file_catalog_kubernetes_kubernetespodmonitor_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetespodmonitor/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kubernetespodmonitor.v1alpha1\"j\n" +
-	" KubernetesPodMonitorStackOutputs\x12(\n" +
+	">catalog/kubernetes/kubernetespodmonitor/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kubernetespodmonitor.v1alpha1\"e\n" +
+	"\x1bKubernetesPodMonitorOutputs\x12(\n" +
 	"\x10pod_monitor_name\x18\x01 \x01(\tR\x0epodMonitorName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\xa9\x03\n" +
 	"8com.dev.planton.kubernetes.kubernetespodmonitor.v1alpha1B\fOutputsProtoP\x01Zjgithub.com/plantonhq/planton/catalog/kubernetes/kubernetespodmonitor/v1alpha1;kubernetespodmonitorv1alpha1\xa2\x02\x04DPKK\xaa\x024Dev.Planton.Kubernetes.Kubernetespodmonitor.V1alpha1\xca\x024Dev\\Planton\\Kubernetes\\Kubernetespodmonitor\\V1alpha1\xe2\x02@Dev\\Planton\\Kubernetes\\Kubernetespodmonitor\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Kubernetes::Kubernetespodmonitor::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_kubernetes_kubernetespodmonitor_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetespodmonitor_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetespodmonitor_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesPodMonitorStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorStackOutputs
+	(*KubernetesPodMonitorOutputs)(nil), // 0: dev.planton.kubernetes.kubernetespodmonitor.v1alpha1.KubernetesPodMonitorOutputs
 }
 var file_catalog_kubernetes_kubernetespodmonitor_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

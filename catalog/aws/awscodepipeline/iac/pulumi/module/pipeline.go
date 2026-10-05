@@ -152,7 +152,7 @@ func pipeline(
 	// pipeline_type/execution_mode pass through unmodified: the spec's
 	// V2/SUPERSEDED defaults are materialized by the platform when the
 	// manifest is loaded, so the module never re-derives them (one source
-	// of truth; same pass-through in the Terraform module). A raw stack
+	// of truth; same pass-through in the Terraform module). A raw IaC
 	// input that bypasses manifest loading and omits pipeline_type gets
 	// the PROVIDER default, which is V1.
 	args := &codepipeline.PipelineArgs{

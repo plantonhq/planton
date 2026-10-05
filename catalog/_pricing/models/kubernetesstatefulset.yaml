@@ -1,15 +1,15 @@
 # Estimate model: the authored capacity footprints of this cluster-capacity
-# component's presets. A hand model instead of a capacity derivation because
+# kind's presets. A hand model instead of a capacity derivation because
 # the reservation lives in spec.volume_claim_templates -- a repeated list the
 # derivation grammar cannot traverse (path resolution refuses to pick an
 # element of a repeated field), and a mechanical footprint that dropped the
 # very storage the presets declare would be dishonest. Each footprint is
 # computed from the preset manifest by hand and defended in its basis
-# sentence. Cluster-capacity components carry no priced lines -- the dollar
+# sentence. Cluster-capacity kinds carry no priced lines -- the dollar
 # value of the reservation is the target cluster's node and storage-class
-# economics. Schema: finops/componentcostestimatemodel/v1.
+# economics. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: kubernetesstatefulset
 spec:

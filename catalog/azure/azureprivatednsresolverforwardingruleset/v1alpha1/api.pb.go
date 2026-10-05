@@ -34,10 +34,10 @@ type AzurePrivateDnsResolverForwardingRuleset struct {
 	// Resource kind. Must be "AzurePrivateDnsResolverForwardingRuleset".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// DNS forwarding ruleset specification.
 	Spec *AzurePrivateDnsResolverForwardingRulesetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzurePrivateDnsResolverForwardingRulesetStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -87,7 +87,7 @@ func (x *AzurePrivateDnsResolverForwardingRuleset) GetKind() string {
 	return ""
 }
 
-func (x *AzurePrivateDnsResolverForwardingRuleset) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzurePrivateDnsResolverForwardingRuleset) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzurePrivateDnsResolverForwardingRuleset) GetStatus() *AzurePrivateDnsR
 // outputs.
 type AzurePrivateDnsResolverForwardingRulesetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzurePrivateDnsResolverForwardingRulesetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzurePrivateDnsResolverForwardingRulesetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzurePrivateDnsResolverForwardingRulesetStatus) Descriptor() ([]byte, []i
 	return file_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzurePrivateDnsResolverForwardingRulesetStatus) GetOutputs() *AzurePrivateDnsResolverForwardingRulesetStackOutputs {
+func (x *AzurePrivateDnsResolverForwardingRulesetStatus) GetOutputs() *AzurePrivateDnsResolverForwardingRulesetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_api_p
 	"apiVersion\x12C\n" +
 	"\x04kind\x18\x02 \x01(\tB/\xbaH,r*\n" +
 	"(AzurePrivateDnsResolverForwardingRulesetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8d\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8d\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2q.dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x8b\x01\n" +
-	"\x06status\x18\x05 \x01(\v2s.dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetStatusR\x06status\"\xc6\x01\n" +
-	".AzurePrivateDnsResolverForwardingRulesetStatus\x12\x93\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2y.dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetStackOutputsR\aoutputsB\x94\x04\n" +
+	"\x06status\x18\x05 \x01(\v2s.dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetStatusR\x06status\"\xc1\x01\n" +
+	".AzurePrivateDnsResolverForwardingRulesetStatus\x12\x8e\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2t.dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetOutputsR\aoutputsB\x94\x04\n" +
 	"Gcom.dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1B\bApiProtoP\x01Z\x8d\x01github.com/plantonhq/planton/catalog/azure/azureprivatednsresolverforwardingruleset/v1alpha1;azureprivatednsresolverforwardingrulesetv1alpha1\xa2\x02\x04DPAA\xaa\x02CDev.Planton.Azure.Azureprivatednsresolverforwardingruleset.V1alpha1\xca\x02CDev\\Planton\\Azure\\Azureprivatednsresolverforwardingruleset\\V1alpha1\xe2\x02ODev\\Planton\\Azure\\Azureprivatednsresolverforwardingruleset\\V1alpha1\\GPBMetadata\xea\x02GDev::Planton::Azure::Azureprivatednsresolverforwardingruleset::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_api_pr
 
 var file_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_api_proto_goTypes = []any{
-	(*AzurePrivateDnsResolverForwardingRuleset)(nil),             // 0: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRuleset
-	(*AzurePrivateDnsResolverForwardingRulesetStatus)(nil),       // 1: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetStatus
-	(*shared.CloudResourceMetadata)(nil),                         // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzurePrivateDnsResolverForwardingRulesetSpec)(nil),         // 3: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetSpec
-	(*AzurePrivateDnsResolverForwardingRulesetStackOutputs)(nil), // 4: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetStackOutputs
+	(*AzurePrivateDnsResolverForwardingRuleset)(nil),        // 0: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRuleset
+	(*AzurePrivateDnsResolverForwardingRulesetStatus)(nil),  // 1: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetStatus
+	(*shared.CatalogObjectMetadata)(nil),                    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzurePrivateDnsResolverForwardingRulesetSpec)(nil),    // 3: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetSpec
+	(*AzurePrivateDnsResolverForwardingRulesetOutputs)(nil), // 4: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetOutputs
 }
 var file_catalog_azure_azureprivatednsresolverforwardingruleset_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRuleset.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRuleset.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRuleset.spec:type_name -> dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetSpec
 	1, // 2: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRuleset.status:type_name -> dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetStatus
-	4, // 3: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetStatus.outputs:type_name -> dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetStackOutputs
+	4, // 3: dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetStatus.outputs:type_name -> dev.planton.azure.azureprivatednsresolverforwardingruleset.v1alpha1.AzurePrivateDnsResolverForwardingRulesetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

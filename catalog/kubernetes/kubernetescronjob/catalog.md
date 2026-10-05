@@ -4,7 +4,7 @@ Runs work on a recurring schedule on any Kubernetes cluster as a batch/v1 CronJo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **Kubernetes CronJob** -- the scheduled workload resource; at each matching time it stamps a Job from the template, and the history limits bound how many finished Jobs survive
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -60,11 +60,11 @@ spec:
 planton apply -f cronjob.yaml
 ```
 
-This runs the backup daily at 03:00 New York time, skipping a run if the previous one is still going (the Forbid default), with a 90-minute deadline so a hung run can never block the schedule. A Stack Job tracks the provisioning in real time.
+This runs the backup daily at 03:00 New York time, skipping a run if the previous one is still going (the Forbid default), with a 90-minute deadline so a hung run can never block the schedule. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the CronJob to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the CronJob to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -94,7 +94,7 @@ These are the most important decisions when configuring a Kubernetes CronJob. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -102,9 +102,9 @@ These are the most important decisions when configuring a Kubernetes CronJob. Ex
 | **KubernetesServiceAccount** | `jobTemplate.pod.serviceAccount` | `status.outputs.service_account_name` |
 | **KubernetesSecret** | `jobTemplate.pod.imagePullSecrets` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,7 +124,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the target namespace for the CronJob
-- [**Kubernetes ServiceAccount**](/cloud-catalog/kubernetes-service-account) -- keyless cloud access for each run via workload identity
-- [**Kubernetes Secret**](/cloud-catalog/kubernetes-secret) -- image pull secrets and referenced credential material
-- [**Kubernetes Job**](/cloud-catalog/kubernetes-job) -- the one-shot twin: the same batch surface without the schedule
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the target namespace for the CronJob
+- [**Kubernetes ServiceAccount**](/infra-catalog/kubernetes-service-account) -- keyless cloud access for each run via workload identity
+- [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) -- image pull secrets and referenced credential material
+- [**Kubernetes Job**](/infra-catalog/kubernetes-job) -- the one-shot twin: the same batch surface without the schedule

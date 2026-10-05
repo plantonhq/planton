@@ -4,7 +4,7 @@ Deploys an Azure Monitor autoscale setting -- the rule book that automatically a
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Autoscale setting** -- the scaling rule book bound to one target resource: capacity envelopes, metric rules, recurrence and fixed-date schedules, predictive autoscale, and scale-event notifications
 - **Azure Tags** -- Planton-derived metadata tags merged with the manifest's `tags` (user values win on key conflicts)
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **A resource group** -- the setting lives in a referenced resource group.
 - **A scalable target** -- the resource the setting controls, referenced by its ARM ID output (e.g. an AzureVirtualMachineScaleSet's `scale_set_id` or an AzureServicePlan's `service_plan_id`).
 
@@ -91,7 +91,7 @@ spec:
 planton apply -f autoscale-setting.yaml
 ```
 
-This creates the classic elastic pool: the scale set grows one instance at a time on sustained CPU above 75% and shrinks conservatively below 25%, inside a 2-10 instance envelope. A Stack Job tracks the provisioning in real time.
+This creates the classic elastic pool: the scale set grows one instance at a time on sustained CPU above 75% and shrinks conservatively below 25%, inside a 2-10 instance envelope. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -143,7 +143,7 @@ These are the most important decisions when configuring an autoscale setting. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -153,9 +153,9 @@ These are the most important decisions when configuring an autoscale setting. Ex
 
 `targetResourceId` and `metricResourceId` carry no default kind because many kinds can be the target -- reference the resource's `*_id` output explicitly with valueFrom (kind + fieldPath), or pass a literal ARM ID.
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no consumable outputs. `status.outputs` records the setting's ARM resource ID (`autoscale_setting_id`) and its name (`autoscale_setting_name`, which echoes the manifest's `name`), but an autoscale setting is a leaf: it acts on its target, and no catalog kind references a setting downstream.
+This kind has no consumable outputs. `status.outputs` records the setting's ARM resource ID (`autoscale_setting_id`) and its name (`autoscale_setting_name`, which echoes the manifest's `name`), but an autoscale setting is a leaf: it acts on its target, and no catalog kind references a setting downstream.
 
 ## Common Patterns
 
@@ -169,6 +169,6 @@ This component has no consumable outputs. `status.outputs` records the setting's
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the group the setting lives in
-- [**Azure Virtual Machine Scale Set**](/cloud-catalog/azure-virtual-machine-scale-set) -- the most common target, referenced by its `scale_set_id` output; also the only target predictive autoscale supports
-- [**Azure Service Plan**](/cloud-catalog/azure-service-plan) -- App Service plan targets (Standard tier or above), referenced by `service_plan_id`
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the group the setting lives in
+- [**Azure Virtual Machine Scale Set**](/infra-catalog/azure-virtual-machine-scale-set) -- the most common target, referenced by its `scale_set_id` output; also the only target predictive autoscale supports
+- [**Azure Service Plan**](/infra-catalog/azure-service-plan) -- App Service plan targets (Standard tier or above), referenced by `service_plan_id`

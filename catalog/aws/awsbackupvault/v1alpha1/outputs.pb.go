@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBackupVaultStackOutputs captures the observable state of the
+// AwsBackupVaultOutputs captures the observable state of the
 // backup vault after apply.
-type AwsBackupVaultStackOutputs struct {
+type AwsBackupVaultOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The vault's ARN (either arm) - what backup plan copy actions and
 	// air-gapped targeting reference.
@@ -35,20 +35,20 @@ type AwsBackupVaultStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBackupVaultStackOutputs) Reset() {
-	*x = AwsBackupVaultStackOutputs{}
+func (x *AwsBackupVaultOutputs) Reset() {
+	*x = AwsBackupVaultOutputs{}
 	mi := &file_catalog_aws_awsbackupvault_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBackupVaultStackOutputs) String() string {
+func (x *AwsBackupVaultOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBackupVaultStackOutputs) ProtoMessage() {}
+func (*AwsBackupVaultOutputs) ProtoMessage() {}
 
-func (x *AwsBackupVaultStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBackupVaultOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbackupvault_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsBackupVaultStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBackupVaultStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBackupVaultStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBackupVaultOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBackupVaultOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbackupvault_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBackupVaultStackOutputs) GetVaultArn() string {
+func (x *AwsBackupVaultOutputs) GetVaultArn() string {
 	if x != nil {
 		return x.VaultArn
 	}
 	return ""
 }
 
-func (x *AwsBackupVaultStackOutputs) GetVaultName() string {
+func (x *AwsBackupVaultOutputs) GetVaultName() string {
 	if x != nil {
 		return x.VaultName
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awsbackupvault_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_aws_awsbackupvault_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awsbackupvault/v1alpha1/outputs.proto\x12'dev.planton.aws.awsbackupvault.v1alpha1\"X\n" +
-	"\x1aAwsBackupVaultStackOutputs\x12\x1b\n" +
+	"1catalog/aws/awsbackupvault/v1alpha1/outputs.proto\x12'dev.planton.aws.awsbackupvault.v1alpha1\"S\n" +
+	"\x15AwsBackupVaultOutputs\x12\x1b\n" +
 	"\tvault_arn\x18\x01 \x01(\tR\bvaultArn\x12\x1d\n" +
 	"\n" +
 	"vault_name\x18\x02 \x01(\tR\tvaultNameB\xd5\x02\n" +
@@ -104,7 +104,7 @@ func file_catalog_aws_awsbackupvault_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsbackupvault_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbackupvault_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBackupVaultStackOutputs)(nil), // 0: dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultStackOutputs
+	(*AwsBackupVaultOutputs)(nil), // 0: dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultOutputs
 }
 var file_catalog_aws_awsbackupvault_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

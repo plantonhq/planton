@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awscloudwatchsynthetics
 spec:
@@ -60,4 +60,4 @@ spec:
     - the canary emits CloudWatch custom metrics per run, and executeStep()/executeHttpStep() instrumentation adds more, all at custom-metric rates
     - retries after failed runs bill as additional runs -- failure frequency is the monitored endpoint's behavior, not this manifest's
     - alarms watching canary metrics bill on their own AwsCloudwatchAlarm components; SSE_KMS key charges bill on the referenced AwsKmsKey
-  notes: "The per-run fee is the visible meter, but AWS's own pricing example shows the cascade routinely costing more than the runs: for five 5-minute canaries the page works out $53.57 of runs against $14.89 Lambda + $3.55 Logs + $1.25 S3 a month. Synthetics GROUPS carry no meter at all -- they are name-and-tags containers, so a groups-only instance of this component is genuinely free. The committed run count lives inside schedule.expression (a rate or cron string), which is why this component is hand-modeled: deriving runs per month requires interpreting that expression, arithmetic the derivation grammar cannot do."
+  notes: "The per-run fee is the visible meter, but AWS's own pricing example shows the cascade routinely costing more than the runs: for five 5-minute canaries the page works out $53.57 of runs against $14.89 Lambda + $3.55 Logs + $1.25 S3 a month. Synthetics GROUPS carry no meter at all -- they are name-and-tags containers, so a groups-only instance of this kind is genuinely free. The committed run count lives inside schedule.expression (a rate or cron string), which is why this kind is hand-modeled: deriving runs per month requires interpreting that expression, arithmetic the derivation grammar cannot do."

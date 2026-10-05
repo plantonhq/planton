@@ -27,16 +27,16 @@ import (
 // for the ObjectStores (the instance pods' plugin sidecar resolves them at
 // startup); the operator tolerates ScheduledBackups arriving with the
 // Cluster.
-func Resources(ctx *pulumi.Context, stackInput *kubernetespostgresv1alpha1.KubernetesPostgresStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetespostgresv1alpha1.KubernetesPostgresIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
 
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

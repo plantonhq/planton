@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpkmsautokeyconfig.v1alpha1;
 import "catalog/gcp/gcpkmsautokeyconfig/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-kms-autokey-config stack-input
-message GcpKmsAutokeyConfigStackInput {
-  //target cloud-resource
+//gcp-kms-autokey-config iac-input
+message GcpKmsAutokeyConfigIacInput {
+  // the catalog object to deploy
   GcpKmsAutokeyConfig target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

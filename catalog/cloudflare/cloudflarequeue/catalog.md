@@ -4,7 +4,7 @@ Deploys a Cloudflare Queue -- a managed, guaranteed-delivery message queue for C
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Queue** -- an account-scoped, named message queue with the chosen delivery settings
 - **Consumer** (optional) -- a push (Worker) or HTTP-pull consumer provisioned as its own provider resource, so editing it never recreates the queue
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Queues edit access (and Workers Scripts access when attaching a Worker consumer). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Queues edit access (and Workers Scripts access when attaching a Worker consumer). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -54,7 +54,7 @@ spec:
 planton apply -f cloudflare-queue.yaml
 ```
 
-This creates a queue consumed by the `orders-worker` Worker. A Stack Job tracks the provisioning in real time.
+This creates a queue consumed by the `orders-worker` Worker. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,7 +87,7 @@ These are the most important decisions when configuring a queue. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -96,9 +96,9 @@ These are the most important decisions when configuring a queue. Explore the ful
 
 Both accept a literal name or a ValueFromRef; `scriptName` applies only to worker (push) consumers.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,5 +120,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) -- produces to a queue (a `queues` binding) and/or consumes one (as the queue's worker consumer)
-- [**Cloudflare R2 Bucket**](/cloud-catalog/cloudflare-r2-bucket) -- emits event notifications to a queue
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) -- produces to a queue (a `queues` binding) and/or consumes one (as the queue's worker consumer)
+- [**Cloudflare R2 Bucket**](/infra-catalog/cloudflare-r2-bucket) -- emits event notifications to a queue

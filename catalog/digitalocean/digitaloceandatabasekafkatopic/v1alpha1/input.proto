@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceandatabasekafkatopic.v1alpha1;
 import "catalog/digitalocean/digitaloceandatabasekafkatopic/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-database-kafka-topic stack-input
-message DigitalOceanDatabaseKafkaTopicStackInput {
-  //target cloud-resource
+//digital-ocean-database-kafka-topic iac-input
+message DigitalOceanDatabaseKafkaTopicIacInput {
+  // the catalog object to deploy
   DigitalOceanDatabaseKafkaTopic target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

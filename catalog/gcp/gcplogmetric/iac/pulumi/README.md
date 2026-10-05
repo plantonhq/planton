@@ -26,7 +26,7 @@ iac/pulumi/
     ├── main.go                # Module coordinator
     ├── log_metric.go          # Metric creation + descriptor/bucket expansion
     ├── locals.go              # Resolved resource + derived values
-    └── outputs.go             # Stack output constants
+    └── outputs.go             # Output constants
 ```
 
 ## How the module maps the spec
@@ -47,7 +47,7 @@ The module also enables `logging.googleapis.com` on the target project
 (`disable_on_destroy` false — tearing down one metric never disables
 logging project-wide).
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|
@@ -55,7 +55,7 @@ logging project-wide).
 
 ## Local development
 
-`stack-input.yaml` carries a ready smoke manifest. Run the module directly:
+`iac-input.yaml` carries a ready smoke manifest. Run the module directly:
 
 ```bash
 planton apply --manifest ../../e2e/manifest.yaml --module-dir .

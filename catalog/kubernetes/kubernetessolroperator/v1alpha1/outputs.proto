@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetessolroperator.v1alpha1;
 
-//kubernetes-solr-operator stack outputs
-message KubernetesSolrOperatorStackOutputs {
+//kubernetes-solr-operator outputs
+message KubernetesSolrOperatorOutputs {
   //namespace the operator is installed into.
   string namespace = 1;
 

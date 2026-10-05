@@ -15,7 +15,7 @@ set -euo pipefail
 #   1. Release content packaging (tools/ci/release/package_content.sh)
 #      excludes _test in every selector AND refuses _test paths inside
 #      create_zip itself. The dry-run below exercises both.
-#   2. Module auto-tagging skips _test components (auto-tag.yaml).
+#   2. Module auto-tagging skips _test kinds (auto-tag.yaml).
 #
 # What _test content legitimately reaches: the kind registry, generated
 # stubs, and test/certification surfaces -- exactly what needs it.
@@ -31,7 +31,7 @@ if ! bash tools/ci/release/package_content.sh vGUARD --dry-run >/dev/null 2>&1; 
   failures+=("tools/ci/release/package_content.sh --dry-run failed -- a content selector matched _test provider content (or no longer matches the tree)")
 fi
 
-# 2. Module auto-tagging must skip _test components.
+# 2. Module auto-tagging must skip _test kinds.
 if ! grep -q '"_test"' .github/workflows/auto-tag.yaml; then
   failures+=(".github/workflows/auto-tag.yaml no longer skips the _test provider")
 fi

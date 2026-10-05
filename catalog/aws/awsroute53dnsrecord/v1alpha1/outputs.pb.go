@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRoute53DnsRecordStackOutputs captures the outputs after provisioning a Route53 DNS record.
+// AwsRoute53DnsRecordOutputs captures the outputs after provisioning a Route53 DNS record.
 // These outputs provide information about the created record for reference and integration.
-type AwsRoute53DnsRecordStackOutputs struct {
+type AwsRoute53DnsRecordOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The fully qualified domain name (FQDN) of the created DNS record.
 	// Example: "www.example.com" or "example.com" for apex records.
@@ -42,20 +42,20 @@ type AwsRoute53DnsRecordStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsRoute53DnsRecordStackOutputs) Reset() {
-	*x = AwsRoute53DnsRecordStackOutputs{}
+func (x *AwsRoute53DnsRecordOutputs) Reset() {
+	*x = AwsRoute53DnsRecordOutputs{}
 	mi := &file_catalog_aws_awsroute53dnsrecord_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRoute53DnsRecordStackOutputs) String() string {
+func (x *AwsRoute53DnsRecordOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRoute53DnsRecordStackOutputs) ProtoMessage() {}
+func (*AwsRoute53DnsRecordOutputs) ProtoMessage() {}
 
-func (x *AwsRoute53DnsRecordStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRoute53DnsRecordOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsroute53dnsrecord_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,40 +67,40 @@ func (x *AwsRoute53DnsRecordStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRoute53DnsRecordStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRoute53DnsRecordStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRoute53DnsRecordOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRoute53DnsRecordOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsroute53dnsrecord_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRoute53DnsRecordStackOutputs) GetFqdn() string {
+func (x *AwsRoute53DnsRecordOutputs) GetFqdn() string {
 	if x != nil {
 		return x.Fqdn
 	}
 	return ""
 }
 
-func (x *AwsRoute53DnsRecordStackOutputs) GetRecordType() string {
+func (x *AwsRoute53DnsRecordOutputs) GetRecordType() string {
 	if x != nil {
 		return x.RecordType
 	}
 	return ""
 }
 
-func (x *AwsRoute53DnsRecordStackOutputs) GetZoneId() string {
+func (x *AwsRoute53DnsRecordOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *AwsRoute53DnsRecordStackOutputs) GetIsAlias() bool {
+func (x *AwsRoute53DnsRecordOutputs) GetIsAlias() bool {
 	if x != nil {
 		return x.IsAlias
 	}
 	return false
 }
 
-func (x *AwsRoute53DnsRecordStackOutputs) GetSetIdentifier() string {
+func (x *AwsRoute53DnsRecordOutputs) GetSetIdentifier() string {
 	if x != nil {
 		return x.SetIdentifier
 	}
@@ -111,8 +111,8 @@ var File_catalog_aws_awsroute53dnsrecord_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_aws_awsroute53dnsrecord_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awsroute53dnsrecord/v1alpha1/outputs.proto\x12,dev.planton.aws.awsroute53dnsrecord.v1alpha1\"\xb1\x01\n" +
-	"\x1fAwsRoute53DnsRecordStackOutputs\x12\x12\n" +
+	"6catalog/aws/awsroute53dnsrecord/v1alpha1/outputs.proto\x12,dev.planton.aws.awsroute53dnsrecord.v1alpha1\"\xac\x01\n" +
+	"\x1aAwsRoute53DnsRecordOutputs\x12\x12\n" +
 	"\x04fqdn\x18\x01 \x01(\tR\x04fqdn\x12\x1f\n" +
 	"\vrecord_type\x18\x02 \x01(\tR\n" +
 	"recordType\x12\x17\n" +
@@ -135,7 +135,7 @@ func file_catalog_aws_awsroute53dnsrecord_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsroute53dnsrecord_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsroute53dnsrecord_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRoute53DnsRecordStackOutputs)(nil), // 0: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordStackOutputs
+	(*AwsRoute53DnsRecordOutputs)(nil), // 0: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordOutputs
 }
 var file_catalog_aws_awsroute53dnsrecord_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

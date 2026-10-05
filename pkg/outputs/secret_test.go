@@ -6,13 +6,13 @@ package outputs
 import (
 	"testing"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestSecretOutputs_ReadsTheSchemasMarks(t *testing.T) {
-	secrets, err := SecretOutputs(crkreflect.KindFromString("CloudflareZeroTrustAccessServiceToken"))
+	secrets, err := SecretOutputs(catalogkindreflect.KindFromString("CloudflareZeroTrustAccessServiceToken"))
 	require.NoError(t, err)
 	assert.True(t, secrets["client_secret"], "client_secret is marked sensitive in the schema")
 	assert.Contains(t, secrets, "client_id")

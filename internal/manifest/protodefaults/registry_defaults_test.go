@@ -14,7 +14,7 @@
 // contract drifts. One converter, one gate proving every authored default
 // against it.
 //
-// External test package: it imports the kind registry (crkreflect) and the
+// External test package: it imports the kind registry (catalogkindreflect) and the
 // manifest loader, both of which sit above this package in the import graph.
 package protodefaults_test
 
@@ -23,8 +23,8 @@ import (
 
 	"github.com/plantonhq/planton/internal/manifest"
 	"github.com/plantonhq/planton/internal/manifest/protodefaults"
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	options_pb "github.com/plantonhq/planton/shared/options"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -38,8 +38,8 @@ import (
 // never applies defaults there).
 func TestRegistryDefaultsConvert(t *testing.T) {
 	visited := map[protoreflect.FullName]bool{}
-	for kind, msg := range crkreflect.ToMessageMap {
-		if kind == cloudresourcekind.CloudResourceKind_unspecified || msg == nil {
+	for kind, msg := range catalogkindreflect.ToMessageMap {
+		if kind == catalogkind.CatalogKind_unspecified || msg == nil {
 			continue
 		}
 		walkDefaults(t, kind.String(), msg.ProtoReflect().Descriptor(), visited)
@@ -85,7 +85,7 @@ func walkDefaults(t *testing.T, kind string, md protoreflect.MessageDescriptor, 
 // applier resolves enum defaults by name only. Proven against a real enum
 // field descriptor so the red can never drift from production behavior.
 func TestEnumDefaultRejectsNumbers(t *testing.T) {
-	rulesetMsg := crkreflect.ToMessageMap[cloudresourcekind.CloudResourceKind_CloudflareRuleset]
+	rulesetMsg := catalogkindreflect.ToMessageMap[catalogkind.CatalogKind_CloudflareRuleset]
 	if rulesetMsg == nil {
 		t.Fatal("CloudflareRuleset not in the registry")
 	}

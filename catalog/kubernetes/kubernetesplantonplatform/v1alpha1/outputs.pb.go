@@ -22,13 +22,13 @@ const (
 )
 
 // *
-// **KubernetesPlantonPlatformStackOutputs** — the handles a deployed
+// **KubernetesPlantonPlatformOutputs** — the handles a deployed
 // Planton platform exports: everything a person (or the Planton desktop
 // app's connect-existing flow) needs to reach the platform's front door
 // and complete first-run setup. All values derive from the declaration
 // itself (the operator's naming is deterministic per platform name), so
 // they are stable from the first apply.
-type KubernetesPlantonPlatformStackOutputs struct {
+type KubernetesPlantonPlatformOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the platform lives in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -50,20 +50,20 @@ type KubernetesPlantonPlatformStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *KubernetesPlantonPlatformStackOutputs) Reset() {
-	*x = KubernetesPlantonPlatformStackOutputs{}
+func (x *KubernetesPlantonPlatformOutputs) Reset() {
+	*x = KubernetesPlantonPlatformOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPlantonPlatformStackOutputs) String() string {
+func (x *KubernetesPlantonPlatformOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPlantonPlatformStackOutputs) ProtoMessage() {}
+func (*KubernetesPlantonPlatformOutputs) ProtoMessage() {}
 
-func (x *KubernetesPlantonPlatformStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPlantonPlatformOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,47 +75,47 @@ func (x *KubernetesPlantonPlatformStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPlantonPlatformStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesPlantonPlatformStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPlantonPlatformOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesPlantonPlatformOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPlantonPlatformStackOutputs) GetNamespace() string {
+func (x *KubernetesPlantonPlatformOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesPlantonPlatformStackOutputs) GetPlatformName() string {
+func (x *KubernetesPlantonPlatformOutputs) GetPlatformName() string {
 	if x != nil {
 		return x.PlatformName
 	}
 	return ""
 }
 
-func (x *KubernetesPlantonPlatformStackOutputs) GetGatewayService() string {
+func (x *KubernetesPlantonPlatformOutputs) GetGatewayService() string {
 	if x != nil {
 		return x.GatewayService
 	}
 	return ""
 }
 
-func (x *KubernetesPlantonPlatformStackOutputs) GetSetupCodeSecret() string {
+func (x *KubernetesPlantonPlatformOutputs) GetSetupCodeSecret() string {
 	if x != nil {
 		return x.SetupCodeSecret
 	}
 	return ""
 }
 
-func (x *KubernetesPlantonPlatformStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesPlantonPlatformOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
 	return ""
 }
 
-func (x *KubernetesPlantonPlatformStackOutputs) GetSetupCodeCommand() string {
+func (x *KubernetesPlantonPlatformOutputs) GetSetupCodeCommand() string {
 	if x != nil {
 		return x.SetupCodeCommand
 	}
@@ -126,8 +126,8 @@ var File_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_outputs_proto pro
 
 const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/kubernetes/kubernetesplantonplatform/v1alpha1/outputs.proto\x129dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1\"\x9f\x02\n" +
-	"%KubernetesPlantonPlatformStackOutputs\x12\x1c\n" +
+	"Ccatalog/kubernetes/kubernetesplantonplatform/v1alpha1/outputs.proto\x129dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1\"\x9a\x02\n" +
+	" KubernetesPlantonPlatformOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12#\n" +
 	"\rplatform_name\x18\x02 \x01(\tR\fplatformName\x12'\n" +
 	"\x0fgateway_service\x18\x03 \x01(\tR\x0egatewayService\x12*\n" +
@@ -150,7 +150,7 @@ func file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_outputs_proto_ra
 
 var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesPlantonPlatformStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformStackOutputs
+	(*KubernetesPlantonPlatformOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformOutputs
 }
 var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

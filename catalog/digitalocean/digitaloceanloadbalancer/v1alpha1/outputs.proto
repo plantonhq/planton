@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1;
 
-// DigitalOceanLoadBalancerStackOutputs captures the outputs after provisioning a DigitalOcean Load Balancer.
-message DigitalOceanLoadBalancerStackOutputs {
+// DigitalOceanLoadBalancerOutputs captures the outputs after provisioning a DigitalOcean Load Balancer.
+message DigitalOceanLoadBalancerOutputs {
   // Retired field. dns_name promised a DNS name the DigitalOcean API never
   // exposes for load balancers; every module left it empty. Its number and
   // name must never be reused with a different meaning.

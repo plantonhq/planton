@@ -1,5 +1,5 @@
 # GcpServiceAccount install profile used as a prerequisite by composed
-# components (e.g. GcpProjectIamMember). The E2E harness deploys this identity
+# kinds (e.g. GcpProjectIamMember). The E2E harness deploys this identity
 # first (via its Pulumi module), captures its outputs, and resolves the
 # dependent's member reference (status.outputs.member) against them.
 # project_id is omitted so the account lands in the harness-exported test
@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpserviceaccount
+    e2e-catalog-kind: gcpserviceaccount
   annotations:
     planton.dev/e2e: "true"
   tags:

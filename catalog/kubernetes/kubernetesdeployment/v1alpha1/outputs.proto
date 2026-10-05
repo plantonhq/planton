@@ -3,12 +3,12 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesdeployment.v1alpha1;
 
 /**
- * **KubernetesDeploymentStackOutputs** captures the observable handles of a deployed
+ * **KubernetesDeploymentOutputs** captures the observable handles of a deployed
  * workload. Downstream resources compose on these: routes and network policies match
  * `selector_labels`, clients connect through `service` / `kube_endpoint`, and charts
  * wire dependents to the exported hostnames.
  */
-message KubernetesDeploymentStackOutputs {
+message KubernetesDeploymentOutputs {
   // The namespace the workload was deployed into.
   string namespace = 1;
 

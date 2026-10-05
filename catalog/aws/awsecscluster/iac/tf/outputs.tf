@@ -1,4 +1,4 @@
-# Stack outputs flatten onto AwsEcsClusterStackOutputs field-for-field;
+# Outputs flatten onto AwsEcsClusterOutputs field-for-field;
 # both engines export the same names so composition never depends on the
 # engine.
 

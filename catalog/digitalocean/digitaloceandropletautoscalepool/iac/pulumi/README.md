@@ -10,11 +10,11 @@ Provisions a pool of identical droplets with static or utilization-driven scalin
 
 ## Inputs
 
-`DigitalOceanDropletAutoscalePoolStackInput`: the target `DigitalOceanDropletAutoscalePool` resource and the DigitalOcean provider config (API token).
+`DigitalOceanDropletAutoscalePoolIacInput`: the target `DigitalOceanDropletAutoscalePool` resource and the DigitalOcean provider config (API token).
 
 ## Outputs
 
-Exactly the `DigitalOceanDropletAutoscalePoolStackOutputs` contract: `pool_id` (Pulumi's resource id). The pool's health is deliberately not exported (an apply-time status goes stale; live health is read from the API).
+Exactly the `DigitalOceanDropletAutoscalePoolOutputs` contract: `pool_id` (Pulumi's resource id). The pool's health is deliberately not exported (an apply-time status goes stale; live health is read from the API).
 
 ## Behavior notes
 

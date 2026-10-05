@@ -5,9 +5,9 @@
 # the same rules against live manifests. Prices live in the provider's
 # price book (../pricebook/). Grammar-reachable: the only paid meter is
 # the action-enabled flag, a presence check. Schema:
-# finops/componentcostderivation/v1.
+# finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsbudget
 spec:

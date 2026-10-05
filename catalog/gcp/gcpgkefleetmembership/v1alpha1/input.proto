@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpgkefleetmembership.v1alpha1;
 import "catalog/gcp/gcpgkefleetmembership/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-gke-fleet-membership stack-input
-message GcpGkeFleetMembershipStackInput {
-  //target cloud-resource
+//gcp-gke-fleet-membership iac-input
+message GcpGkeFleetMembershipIacInput {
+  // the catalog object to deploy
   GcpGkeFleetMembership target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

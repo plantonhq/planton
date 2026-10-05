@@ -1,10 +1,10 @@
 # AWS HTTP API Domain
 
-Deploys an API Gateway v2 custom domain name — the production front door for HTTP APIs. It binds an owned domain (e.g. `api.example.com`) to an ACM certificate ([AWS ACM Certificate](/cloud-catalog/aws-cert-manager-cert)) and routes requests onto one or more APIs — statically through path-key API mappings, dynamically through priority-ordered routing rules that match on base path or header, or both. The domain is deliberately its own resource: it outlives any one API, many APIs compose onto it under distinct path keys ("orders", "billing"), and the certificate rotates on its own lifecycle. DNS is composed, not embedded — the domain exports `target_domain_name` and `hosted_zone_id`, and an [AWS Route 53 DNS Record](/cloud-catalog/aws-route53-dns-record) alias points your name at them.
+Deploys an API Gateway v2 custom domain name — the production front door for HTTP APIs. It binds an owned domain (e.g. `api.example.com`) to an ACM certificate ([AWS ACM Certificate](/infra-catalog/aws-cert-manager-cert)) and routes requests onto one or more APIs — statically through path-key API mappings, dynamically through priority-ordered routing rules that match on base path or header, or both. The domain is deliberately its own resource: it outlives any one API, many APIs compose onto it under distinct path keys ("orders", "billing"), and the certificate rotates on its own lifecycle. DNS is composed, not embedded — the domain exports `target_domain_name` and `hosted_zone_id`, and an [AWS Route 53 DNS Record](/infra-catalog/aws-route53-dns-record) alias points your name at them.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API Gateway v2 Custom Domain** -- the REGIONAL endpoint with the TLS_1_2 security policy (v2 domains support only these, so the modules set both)
 - **Certificate Binding** -- TLS termination with the referenced ACM certificate (same region, covering the domain name), plus the ownership-verification certificate when Private-CA or imported-cert setups require it
@@ -17,9 +17,9 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **Certificate first** -- deploy the [AWS ACM Certificate](/cloud-catalog/aws-cert-manager-cert) (in the same region, covering the domain) before the domain and reference its `cert_arn` output.
-- **APIs to map** -- the [AWS HTTP API Gateway](/cloud-catalog/aws-http-api-gateway) resources whose `api_id` outputs the mappings reference.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **Certificate first** -- deploy the [AWS ACM Certificate](/infra-catalog/aws-cert-manager-cert) (in the same region, covering the domain) before the domain and reference its `cert_arn` output.
+- **APIs to map** -- the [AWS HTTP API Gateway](/infra-catalog/aws-http-api-gateway) resources whose `api_id` outputs the mappings reference.
 
 ### AWS Account
 
@@ -64,7 +64,7 @@ spec:
 planton apply -f http-api-domain.yaml
 ```
 
-This binds `api.example.com` to its certificate and serves the orders API at the domain root. A Stack Job tracks the provisioning in real time.
+This binds `api.example.com` to its certificate and serves the orders API at the domain root. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -106,7 +106,7 @@ These are the most important decisions when configuring a custom domain. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -116,9 +116,9 @@ These are the most important decisions when configuring a custom domain. Explore
 
 A routing rule's `apiId` takes a REST API id as a literal value — routing rules target REST APIs only, which live outside this catalog's HTTP API kind.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -140,7 +140,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS HTTP API Gateway**](/cloud-catalog/aws-http-api-gateway) -- the APIs mapped onto this domain (references `api_id`)
-- [**AWS ACM Certificate**](/cloud-catalog/aws-cert-manager-cert) -- TLS termination (references `cert_arn`)
-- [**AWS Route 53 DNS Record**](/cloud-catalog/aws-route53-dns-record) -- the alias that routes the domain to API Gateway (consumes `target_domain_name` + `hosted_zone_id`)
-- [**AWS HTTP API VPC Link**](/cloud-catalog/aws-http-api-vpc-link) -- lets the mapped APIs reach private backends behind this front door
+- [**AWS HTTP API Gateway**](/infra-catalog/aws-http-api-gateway) -- the APIs mapped onto this domain (references `api_id`)
+- [**AWS ACM Certificate**](/infra-catalog/aws-cert-manager-cert) -- TLS termination (references `cert_arn`)
+- [**AWS Route 53 DNS Record**](/infra-catalog/aws-route53-dns-record) -- the alias that routes the domain to API Gateway (consumes `target_domain_name` + `hosted_zone_id`)
+- [**AWS HTTP API VPC Link**](/infra-catalog/aws-http-api-vpc-link) -- lets the mapped APIs reach private backends behind this front door

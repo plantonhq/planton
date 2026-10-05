@@ -1,25 +1,25 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarewaitingroomevent
 spec:
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the
         Cloudflare v4 API (the id field).
     - name: waiting_room_id
       derivations:
-        - from_stack_output: waiting_room_id
+        - from_output: waiting_room_id
       where_to_find: >-
         The parent waiting room's id -- `status.outputs.waiting_room_id`
         of the CloudflareWaitingRoom, or `GET /zones/<zone_id>/waiting_rooms`.
     - name: event_id
       derivations:
-        - from_stack_output: event_id
+        - from_output: event_id
       where_to_find: >-
         Cloudflare dashboard -> Traffic -> Waiting Rooms -> the room's
         Events tab, or `GET /zones/<zone_id>/waiting_rooms/<waiting_room_id>/events`

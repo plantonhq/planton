@@ -11,7 +11,7 @@ the PROVIDER side of Azure Private Link.
 
 The Azure provider is built through the shared provider builder, which
 resolves the right credential mechanism (static client secret, keyless
-web identity, or ambient chain) from the stack input.
+web identity, or ambient chain) from the IaC input.
 
 ## Design Decisions
 
@@ -26,7 +26,7 @@ web identity, or ambient chain) from the stack input.
 
 ## Inputs
 
-The module receives an `AzurePrivateLinkServiceStackInput` containing:
+The module receives an `AzurePrivateLinkServiceIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the service's ARM identity (references resolved to literals by the platform)
 - `target.spec.nat_ip_configurations` -- 1-8 NAT addresses on policies-disabled subnets, exactly one primary

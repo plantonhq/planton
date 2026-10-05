@@ -4,7 +4,7 @@ Deploys a BigQuery table inside an existing dataset — a native table, a logica
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **BigQuery API enablement** (`bigquery.googleapis.com`) on the target project (never disabled on destroy)
 - **BigQuery Table** -- one of four shapes: a native table (BigQuery-managed storage, optionally partitioned and clustered), a logical view (a saved query evaluated at read time), a materialized view (precomputed, incrementally refreshed results), or an external table (data stays in GCS/Sheets/Bigtable and is read at query time)
@@ -22,7 +22,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **A BigQuery dataset** the table will live in. Reference a GcpBigQueryDataset Cloud Resource via ValueFromRef or provide the dataset ID directly. The dataset pins the location and supplies encryption/expiration defaults.
+- **A BigQuery dataset** the table will live in. Reference a GcpBigQueryDataset Infra Component via ValueFromRef or provide the dataset ID directly. The dataset pins the location and supplies encryption/expiration defaults.
 - **Cloud KMS key** (if using per-table CMEK) -- the BigQuery service agent must have `roles/cloudkms.cryptoKeyEncrypterDecrypter` on the key.
 
 ## Deploy
@@ -58,7 +58,7 @@ spec:
 planton apply -f bigquery-table.yaml
 ```
 
-This creates a day-partitioned, clustered native table with deletion protection on (the default) — the workhorse shape for event data. A Stack Job tracks the provisioning in real time.
+This creates a day-partitioned, clustered native table with deletion protection on (the default) — the workhorse shape for event data. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,7 +96,7 @@ These are the most important decisions when configuring a BigQuery table. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -105,9 +105,9 @@ These are the most important decisions when configuring a BigQuery table. Explor
 | **GcpKmsKey** (optional) | `kmsKeyName` | `status.outputs.key_id` |
 | **GcpBigQueryTable** (optional, per foreign key) | `tableConstraints.foreignKeys[].referencedTable.tableId` | `status.outputs.table_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,6 +132,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP BigQuery Dataset**](/cloud-catalog/gcp-big-query-dataset) -- the container that pins location and supplies encryption/expiration defaults
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project when not inherited from the provider connection
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides the per-table CMEK key
+- [**GCP BigQuery Dataset**](/infra-catalog/gcp-big-query-dataset) -- the container that pins location and supplies encryption/expiration defaults
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project when not inherited from the provider connection
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides the per-table CMEK key

@@ -21,13 +21,13 @@ type Locals struct {
 	ClusterName string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpredisclusterendpointsetv1alpha1.GcpRedisClusterEndpointSetStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpredisclusterendpointsetv1alpha1.GcpRedisClusterEndpointSetIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpRedisClusterEndpointSet = stackInput.Target
+	locals.GcpRedisClusterEndpointSet = iacInput.Target
 
 	cluster := locals.GcpRedisClusterEndpointSet.Spec.Cluster.GetValue()
 	locals.ClusterName = cluster[strings.LastIndex(cluster, "/")+1:]
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

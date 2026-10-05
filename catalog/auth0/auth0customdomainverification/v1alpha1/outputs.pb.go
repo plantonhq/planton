@@ -22,12 +22,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0CustomDomainVerificationStackOutputs contains the custom domain once Auth0
+// Auth0CustomDomainVerificationOutputs contains the custom domain once Auth0
 // has verified it.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/custom_domain_verification#read-only
 // https://www.pulumi.com/registry/packages/auth0/api-docs/customdomainverification/#outputs
-type Auth0CustomDomainVerificationStackOutputs struct {
+type Auth0CustomDomainVerificationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// custom_domain_id is the verified custom domain's identifier in Auth0 (cd_...).
 	CustomDomainId string `protobuf:"bytes,1,opt,name=custom_domain_id,json=customDomainId,proto3" json:"custom_domain_id,omitempty"`
@@ -48,20 +48,20 @@ type Auth0CustomDomainVerificationStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Auth0CustomDomainVerificationStackOutputs) Reset() {
-	*x = Auth0CustomDomainVerificationStackOutputs{}
+func (x *Auth0CustomDomainVerificationOutputs) Reset() {
+	*x = Auth0CustomDomainVerificationOutputs{}
 	mi := &file_catalog_auth0_auth0customdomainverification_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0CustomDomainVerificationStackOutputs) String() string {
+func (x *Auth0CustomDomainVerificationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0CustomDomainVerificationStackOutputs) ProtoMessage() {}
+func (*Auth0CustomDomainVerificationOutputs) ProtoMessage() {}
 
-func (x *Auth0CustomDomainVerificationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0CustomDomainVerificationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0customdomainverification_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -73,33 +73,33 @@ func (x *Auth0CustomDomainVerificationStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0CustomDomainVerificationStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0CustomDomainVerificationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0CustomDomainVerificationOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0CustomDomainVerificationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0customdomainverification_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0CustomDomainVerificationStackOutputs) GetCustomDomainId() string {
+func (x *Auth0CustomDomainVerificationOutputs) GetCustomDomainId() string {
 	if x != nil {
 		return x.CustomDomainId
 	}
 	return ""
 }
 
-func (x *Auth0CustomDomainVerificationStackOutputs) GetDomain() string {
+func (x *Auth0CustomDomainVerificationOutputs) GetDomain() string {
 	if x != nil {
 		return x.Domain
 	}
 	return ""
 }
 
-func (x *Auth0CustomDomainVerificationStackOutputs) GetOriginDomainName() string {
+func (x *Auth0CustomDomainVerificationOutputs) GetOriginDomainName() string {
 	if x != nil {
 		return x.OriginDomainName
 	}
 	return ""
 }
 
-func (x *Auth0CustomDomainVerificationStackOutputs) GetCnameApiKey() string {
+func (x *Auth0CustomDomainVerificationOutputs) GetCnameApiKey() string {
 	if x != nil {
 		return x.CnameApiKey
 	}
@@ -110,8 +110,8 @@ var File_catalog_auth0_auth0customdomainverification_v1alpha1_outputs_proto prot
 
 const file_catalog_auth0_auth0customdomainverification_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/auth0/auth0customdomainverification/v1alpha1/outputs.proto\x128dev.planton.auth0.auth0customdomainverification.v1alpha1\x1a\x1cshared/options/options.proto\"\xc5\x01\n" +
-	")Auth0CustomDomainVerificationStackOutputs\x12(\n" +
+	"Bcatalog/auth0/auth0customdomainverification/v1alpha1/outputs.proto\x128dev.planton.auth0.auth0customdomainverification.v1alpha1\x1a\x1cshared/options/options.proto\"\xc0\x01\n" +
+	"$Auth0CustomDomainVerificationOutputs\x12(\n" +
 	"\x10custom_domain_id\x18\x01 \x01(\tR\x0ecustomDomainId\x12\x16\n" +
 	"\x06domain\x18\x02 \x01(\tR\x06domain\x12,\n" +
 	"\x12origin_domain_name\x18\x03 \x01(\tR\x10originDomainName\x12(\n" +
@@ -132,7 +132,7 @@ func file_catalog_auth0_auth0customdomainverification_v1alpha1_outputs_proto_raw
 
 var file_catalog_auth0_auth0customdomainverification_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0customdomainverification_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0CustomDomainVerificationStackOutputs)(nil), // 0: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationStackOutputs
+	(*Auth0CustomDomainVerificationOutputs)(nil), // 0: dev.planton.auth0.auth0customdomainverification.v1alpha1.Auth0CustomDomainVerificationOutputs
 }
 var file_catalog_auth0_auth0customdomainverification_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -36,7 +36,7 @@ func minimalSpec() *AzureContainerAppEnvironmentDaprComponent {
 	return &AzureContainerAppEnvironmentDaprComponent{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureContainerAppEnvironmentDaprComponent",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-dapr-component",
 		},
 		Spec: &AzureContainerAppEnvironmentDaprComponentSpec{

@@ -19,8 +19,8 @@ CSI clone and snapshot-restore data proofs, and live scheduler preemption.
   otherwise — a profiled scenario can never run onto the wrong real
   cluster.
 - **`aws-eks` real-cluster scenario profile** (no local constructor; local
-  runs skip with the reason) and the **`real_cluster` component profile
-  status** (components whose every lane needs a real cluster — the
+  runs skip with the reason) and the **`real_cluster` kind profile
+  status** (kinds whose every lane needs a real cluster — the
   Karpenter family; excluded from kind CI matrices by construction).
 - **`${E2E_ENV:PLANTON_E2E_*}` manifest tokens** (prefix-fenced, loud on
   unset or non-prefixed names) so committed scenarios reference
@@ -63,7 +63,7 @@ CSI clone and snapshot-restore data proofs, and live scheduler preemption.
 
 ## Validation
 
-Smoke lane first (credential chain proof), then per-component lanes on both
+Smoke lane first (credential chain proof), then per-kind lanes on both
 engines with full six-phase runs; import round-trips for Karpenter (scoped
 multi-release), Ec2NodeClass, and NodePool; runner unit tests, targeted
 builds, `make build-go`, manifest CLI validation, and offline tofu proofs

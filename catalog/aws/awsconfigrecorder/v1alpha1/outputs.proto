@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsconfigrecorder.v1alpha1;
 
-// AwsConfigRecorderStackOutputs captures the observable state of the
+// AwsConfigRecorderOutputs captures the observable state of the
 // region's Config recording posture after apply.
-message AwsConfigRecorderStackOutputs {
+message AwsConfigRecorderOutputs {
   // The recorder's name - AWS's regional singleton convention
   // ("default"); also the provider's import ID for the recorder.
   string recorder_name = 1;

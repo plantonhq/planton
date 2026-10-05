@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Stack Outputs — matching AwsFsxDataRepositoryAssociationStackOutputs
+# Outputs — matching AwsFsxDataRepositoryAssociationOutputs
 # ---------------------------------------------------------------------------
 # Primary consumers: FSx data repository tasks (association_id) and IAM
 # resource-level policies (association_arn).

@@ -1,13 +1,13 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate: the attachment itself carries no meter -- Azure's Virtual WAN
 # price list has hourly connection units for BRANCHES (VPN, ExpressRoute,
 # point-to-site), not for VNet attachments -- so an idle connection bills
 # nothing, and everything it does cost follows traffic.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurevirtualhubconnection
 spec:

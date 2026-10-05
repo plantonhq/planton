@@ -10,12 +10,12 @@ import (
 // Resources is the primary entry point for the AwsNlb Pulumi
 // module. It creates the NLB and optional DNS records; listeners and target
 // groups are separate resources that attach to the NLB by ARN.
-func Resources(ctx *pulumi.Context, stackInput *awsnlbv1alpha1.AwsNlbStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsnlbv1alpha1.AwsNlbIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.Nlb.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.Nlb.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurepointtositevpngateway
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: point_to_site_vpn_gateway_id
       derivations:
-        - from_stack_output: point_to_site_vpn_gateway_id
+        - from_output: point_to_site_vpn_gateway_id
       where_to_find: >-
         Portal -> Virtual WAN -> Hubs -> the hub -> VPN (Point to
         site) -> Gateway configuration -> Properties -> Resource ID,

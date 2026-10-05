@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureServiceBusTopicStackOutputs** captures the outputs of provisioning
+// **AzureServiceBusTopicOutputs** captures the outputs of provisioning
 // a Service Bus topic.
 //
 // No connection string here on purpose: credentials are minted by
 // AzureServiceBusAuthorizationRule (namespace- or topic-scoped) or granted
 // keyless via Entra data-plane roles on topic_id. Subscriptions reference
 // the topic by topic_id.
-type AzureServiceBusTopicStackOutputs struct {
+type AzureServiceBusTopicOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the topic. The parent reference for
 	// AzureServiceBusSubscription and topic-scoped SAS rules, and the scope
@@ -47,20 +47,20 @@ type AzureServiceBusTopicStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureServiceBusTopicStackOutputs) Reset() {
-	*x = AzureServiceBusTopicStackOutputs{}
+func (x *AzureServiceBusTopicOutputs) Reset() {
+	*x = AzureServiceBusTopicOutputs{}
 	mi := &file_catalog_azure_azureservicebustopic_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureServiceBusTopicStackOutputs) String() string {
+func (x *AzureServiceBusTopicOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureServiceBusTopicStackOutputs) ProtoMessage() {}
+func (*AzureServiceBusTopicOutputs) ProtoMessage() {}
 
-func (x *AzureServiceBusTopicStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureServiceBusTopicOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureservicebustopic_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,26 +72,26 @@ func (x *AzureServiceBusTopicStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureServiceBusTopicStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureServiceBusTopicStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureServiceBusTopicOutputs.ProtoReflect.Descriptor instead.
+func (*AzureServiceBusTopicOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureservicebustopic_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureServiceBusTopicStackOutputs) GetTopicId() string {
+func (x *AzureServiceBusTopicOutputs) GetTopicId() string {
 	if x != nil {
 		return x.TopicId
 	}
 	return ""
 }
 
-func (x *AzureServiceBusTopicStackOutputs) GetTopicName() string {
+func (x *AzureServiceBusTopicOutputs) GetTopicName() string {
 	if x != nil {
 		return x.TopicName
 	}
 	return ""
 }
 
-func (x *AzureServiceBusTopicStackOutputs) GetNamespaceName() string {
+func (x *AzureServiceBusTopicOutputs) GetNamespaceName() string {
 	if x != nil {
 		return x.NamespaceName
 	}
@@ -102,8 +102,8 @@ var File_catalog_azure_azureservicebustopic_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_azure_azureservicebustopic_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azureservicebustopic/v1alpha1/outputs.proto\x12/dev.planton.azure.azureservicebustopic.v1alpha1\"\x83\x01\n" +
-	" AzureServiceBusTopicStackOutputs\x12\x19\n" +
+	"9catalog/azure/azureservicebustopic/v1alpha1/outputs.proto\x12/dev.planton.azure.azureservicebustopic.v1alpha1\"~\n" +
+	"\x1bAzureServiceBusTopicOutputs\x12\x19\n" +
 	"\btopic_id\x18\x01 \x01(\tR\atopicId\x12\x1d\n" +
 	"\n" +
 	"topic_name\x18\x02 \x01(\tR\ttopicName\x12%\n" +
@@ -124,7 +124,7 @@ func file_catalog_azure_azureservicebustopic_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_azure_azureservicebustopic_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureservicebustopic_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureServiceBusTopicStackOutputs)(nil), // 0: dev.planton.azure.azureservicebustopic.v1alpha1.AzureServiceBusTopicStackOutputs
+	(*AzureServiceBusTopicOutputs)(nil), // 0: dev.planton.azure.azureservicebustopic.v1alpha1.AzureServiceBusTopicOutputs
 }
 var file_catalog_azure_azureservicebustopic_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

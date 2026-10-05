@@ -22,12 +22,12 @@ const (
 )
 
 // *
-// **KubernetesServiceStackOutputs** captures the observable handles of a deployed
+// **KubernetesServiceOutputs** captures the observable handles of a deployed
 // Service. Downstream resources compose on these: Ingress backends and sibling
 // workloads connect through `kube_endpoint`, external-dns publishes the
 // load-balancer address, and operators reach the workload locally through the
 // port-forward command.
-type KubernetesServiceStackOutputs struct {
+type KubernetesServiceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the Service object as created in the cluster.
 	ServiceName string `protobuf:"bytes,1,opt,name=service_name,json=serviceName,proto3" json:"service_name,omitempty"`
@@ -65,20 +65,20 @@ type KubernetesServiceStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesServiceStackOutputs) Reset() {
-	*x = KubernetesServiceStackOutputs{}
+func (x *KubernetesServiceOutputs) Reset() {
+	*x = KubernetesServiceOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesservice_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesServiceStackOutputs) String() string {
+func (x *KubernetesServiceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesServiceStackOutputs) ProtoMessage() {}
+func (*KubernetesServiceOutputs) ProtoMessage() {}
 
-func (x *KubernetesServiceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesServiceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesservice_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -90,61 +90,61 @@ func (x *KubernetesServiceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesServiceStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesServiceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesServiceOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesServiceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesservice_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesServiceStackOutputs) GetServiceName() string {
+func (x *KubernetesServiceOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesServiceStackOutputs) GetNamespace() string {
+func (x *KubernetesServiceOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesServiceStackOutputs) GetType() string {
+func (x *KubernetesServiceOutputs) GetType() string {
 	if x != nil {
 		return x.Type
 	}
 	return ""
 }
 
-func (x *KubernetesServiceStackOutputs) GetClusterIp() string {
+func (x *KubernetesServiceOutputs) GetClusterIp() string {
 	if x != nil {
 		return x.ClusterIp
 	}
 	return ""
 }
 
-func (x *KubernetesServiceStackOutputs) GetLoadBalancerIp() string {
+func (x *KubernetesServiceOutputs) GetLoadBalancerIp() string {
 	if x != nil {
 		return x.LoadBalancerIp
 	}
 	return ""
 }
 
-func (x *KubernetesServiceStackOutputs) GetLoadBalancerHostname() string {
+func (x *KubernetesServiceOutputs) GetLoadBalancerHostname() string {
 	if x != nil {
 		return x.LoadBalancerHostname
 	}
 	return ""
 }
 
-func (x *KubernetesServiceStackOutputs) GetKubeEndpoint() string {
+func (x *KubernetesServiceOutputs) GetKubeEndpoint() string {
 	if x != nil {
 		return x.KubeEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesServiceStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesServiceOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -155,8 +155,8 @@ var File_catalog_kubernetes_kubernetesservice_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_kubernetes_kubernetesservice_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesservice/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesservice.v1alpha1\"\xca\x02\n" +
-	"\x1dKubernetesServiceStackOutputs\x12!\n" +
+	";catalog/kubernetes/kubernetesservice/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesservice.v1alpha1\"\xc5\x02\n" +
+	"\x18KubernetesServiceOutputs\x12!\n" +
 	"\fservice_name\x18\x01 \x01(\tR\vserviceName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x12\n" +
 	"\x04type\x18\x03 \x01(\tR\x04type\x12\x1d\n" +
@@ -182,7 +182,7 @@ func file_catalog_kubernetes_kubernetesservice_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesservice_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesservice_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesServiceStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesservice.v1alpha1.KubernetesServiceStackOutputs
+	(*KubernetesServiceOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesservice.v1alpha1.KubernetesServiceOutputs
 }
 var file_catalog_kubernetes_kubernetesservice_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

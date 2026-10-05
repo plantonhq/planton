@@ -4,7 +4,7 @@ Deploys one EBS snapshot from exactly one of three sources: a live volume, an ex
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EBS Snapshot** — exactly one of three provider resources per the configured source arm: a volume snapshot (`volumeId`), a snapshot copy (`copyFrom`), or a disk-image import (`importFrom`); all three expose the same downstream surface (id, ARN, owner, size)
 - **Fast Snapshot Restore** — one per zone in `fastRestoreAvailabilityZones`, created only when the list is non-empty; billed per zone-hour while enabled
@@ -15,12 +15,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, including EC2 permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, including EC2 permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **The source volume** (volume arm) — in the same region; reference an AwsEbsVolume Cloud Resource or pass a literal `vol-...` id.
+- **The source volume** (volume arm) — in the same region; reference an AwsEbsVolume Infra Component or pass a literal `vol-...` id.
 - **The disk image and the vmimport role** (import arm) — the image staged in S3 (or reachable by URL), and the VM Import/Export service role (`vmimport` by convention, or the role named in `importFrom.roleName`) with AWS's documented trust and S3 policy. The service validates the role only when the task runs, so a missing role fails the create after several minutes, not at plan.
 - **KMS key sharing** (only when sharing encrypted snapshots) — `shareWithAccountIds` grants createVolumePermission, but an encrypted snapshot is useless to the peer until the KMS key also grants them decrypt.
 
@@ -52,7 +52,7 @@ spec:
 planton apply -f ebs-snapshot.yaml
 ```
 
-This snapshots the referenced volume in place, ready to restore from before the upgrade goes sideways. A Stack Job tracks the provisioning in real time.
+This snapshots the referenced volume in place, ready to restore from before the upgrade goes sideways. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,7 +89,7 @@ These are the most important decisions when configuring an EBS snapshot. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -98,9 +98,9 @@ These are the most important decisions when configuring an EBS snapshot. Explore
 | **AwsKmsKey** (optional, copy arm) | `copyFrom.kmsKeyId` | `status.outputs.key_arn` |
 | **AwsKmsKey** (optional, import arm) | `importFrom.kmsKeyId` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,6 +121,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS EBS Volume**](/cloud-catalog/aws-ebs-volume) — the source the volume arm captures, and the consumer that restores from `snapshot_id`
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — the key copies and imports encrypt under, wired via `copyFrom.kmsKeyId` or `importFrom.kmsKeyId`
-- [**AWS Data Lifecycle Manager Policy**](/cloud-catalog/aws-dlm-lifecycle-policy) — the automation for recurring snapshots; this kind covers the deliberate one-off captures DLM does not
+- [**AWS EBS Volume**](/infra-catalog/aws-ebs-volume) — the source the volume arm captures, and the consumer that restores from `snapshot_id`
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — the key copies and imports encrypt under, wired via `copyFrom.kmsKeyId` or `importFrom.kmsKeyId`
+- [**AWS Data Lifecycle Manager Policy**](/infra-catalog/aws-dlm-lifecycle-policy) — the automation for recurring snapshots; this kind covers the deliberate one-off captures DLM does not

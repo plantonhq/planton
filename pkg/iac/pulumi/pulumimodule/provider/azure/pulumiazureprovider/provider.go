@@ -1,5 +1,5 @@
 // Package pulumiazureprovider is the single, convergent place where every Azure pulumi-azure
-// "classic" module builds its azure.Provider from the stack input's AzureProviderConfig. It
+// "classic" module builds its azure.Provider from the IaC input's AzureProviderConfig. It
 // mirrors the sibling per-cloud builders (e.g. pulumiazurenativeprovider, pulumiawsprovider,
 // pulumigoogleprovider) so a coding agent can learn the Azure credential-resolution path by
 // reading one file.

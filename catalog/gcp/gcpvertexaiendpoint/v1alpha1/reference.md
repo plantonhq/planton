@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpVertexAiEndpointSpec defines the configuration for a GCP Vertex AI
 Endpoint -- a stable serving surface for deploying machine learning models.
@@ -309,7 +309,7 @@ characters. Accepted forms:
     dataset must exist and the table must not.
 
 A plain string (not a reference) because the bq:// URI scheme has no
-matching stack output on the BigQuery kinds; compose by writing the
+matching output on the BigQuery kinds; compose by writing the
 dataset's project and ID into the URI.
 
 - rule: {"string":{"maxLen":"2000"}}

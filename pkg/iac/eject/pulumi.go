@@ -10,13 +10,13 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/internal/cli/cliprint"
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // engineModulePath is the Go module every catalog module builds inside — and
 // therefore the dependency the ejected copy's synthesized go.mod requires:
-// the component's generated stubs and the engine helpers (stack-input
+// the kind's generated stubs and the engine helpers (iac-input
 // loading) resolve from its published releases.
 const engineModulePath = "github.com/plantonhq/planton"
 
@@ -26,14 +26,14 @@ const engineModulePath = "github.com/plantonhq/planton"
 const goDirectiveVersion = "1.26"
 
 // releaseTagPattern recognizes the plain release tags published to the Go
-// module proxy. Anything else (a branch name, "dev", a component point-tag)
+// module proxy. Anything else (a branch name, "dev", a kind point-tag)
 // cannot be a go.mod require version.
 var releaseTagPattern = regexp.MustCompile(`^v\d+\.\d+\.\d+$`)
 
 // preparePulumiCopy turns the copied catalog module into a standalone,
 // user-owned Go module: self-imports rewritten, go.mod synthesized,
 // Pulumi.yaml guaranteed, and (unless skipped) dependencies resolved.
-func preparePulumiCopy(outputDir string, kind cloudresourcekind.CloudResourceKind, kindName string, in Input, result *Result) error {
+func preparePulumiCopy(outputDir string, kind catalogkind.CatalogKind, kindName string, in Input, result *Result) error {
 	if in.GoModulePath == "" {
 		return errors.New("a Go module path is required to eject a pulumi module")
 	}
@@ -74,8 +74,8 @@ func preparePulumiCopy(outputDir string, kind cloudresourcekind.CloudResourceKin
 // two modules at once and Go rejects the build with an ambiguous-import
 // error. The copy must own a distinct module path, which also states the
 // truth — the ejected module belongs to the user now.
-func rewriteSelfImports(outputDir string, kind cloudresourcekind.CloudResourceKind, kindName, goModulePath string) error {
-	providerSegment := strings.ReplaceAll(crkreflect.GetProvider(kind).String(), "_", "")
+func rewriteSelfImports(outputDir string, kind catalogkind.CatalogKind, kindName, goModulePath string) error {
+	providerSegment := strings.ReplaceAll(catalogkindreflect.GetProvider(kind).String(), "_", "")
 	originalPrefix := fmt.Sprintf("%s/catalog/%s/%s/iac/pulumi", engineModulePath, providerSegment, strings.ToLower(kindName))
 
 	return filepath.WalkDir(outputDir, func(path string, d os.DirEntry, err error) error {

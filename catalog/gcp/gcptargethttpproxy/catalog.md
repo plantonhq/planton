@@ -4,7 +4,7 @@ Deploys a Compute Engine target HTTP proxy — the plaintext-HTTP frontend adapt
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine Target HTTP Proxy** -- global, or regional when `region` is set; bound to the configured URL map, with optional keep-alive tuning and (global only) Traffic Director bind
 - **Compute Engine API enablement** -- `compute.googleapis.com` is enabled in the target project; tearing down the proxy never disables the API
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
@@ -49,7 +49,7 @@ spec:
 planton apply -f target-http-proxy.yaml
 ```
 
-This creates the redirect half: a port-80 forwarding rule pointing here upgrades every request to HTTPS. A Stack Job tracks the provisioning in real time.
+This creates the redirect half: a port-80 forwarding rule pointing here upgrades every request to HTTPS. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -80,16 +80,16 @@ These are the most important decisions when configuring a target HTTP proxy. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpUrlMap** | `urlMap` | `status.outputs.self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -113,7 +113,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the proxy is created
-- [**GCP URL Map**](/cloud-catalog/gcp-url-map) -- the routing table this proxy consults
-- [**GCP Global Forwarding Rule**](/cloud-catalog/gcp-global-forwarding-rule) -- consumes this proxy's `self_link` as its target
-- [**GCP Target HTTPS Proxy**](/cloud-catalog/gcp-target-https-proxy) -- the TLS sibling serving the application half
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the proxy is created
+- [**GCP URL Map**](/infra-catalog/gcp-url-map) -- the routing table this proxy consults
+- [**GCP Global Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- consumes this proxy's `self_link` as its target
+- [**GCP Target HTTPS Proxy**](/infra-catalog/gcp-target-https-proxy) -- the TLS sibling serving the application half

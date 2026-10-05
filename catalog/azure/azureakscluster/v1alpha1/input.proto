@@ -5,9 +5,9 @@ package dev.planton.azure.azureakscluster.v1alpha1;
 import "catalog/azure/azureakscluster/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-aks-cluster stack-input
-message AzureAksClusterStackInput {
-  //target cloud-resource
+//azure-aks-cluster iac-input
+message AzureAksClusterIacInput {
+  // the catalog object to deploy
   AzureAksCluster target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

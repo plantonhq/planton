@@ -72,7 +72,7 @@ clusterConfig:
 
 The factors express how much of the metric-suggested change the autoscaler applies per evaluation: `1.0` is maximally aggressive (act on everything), `0.05` moves in ~5% steps. The min-worker fractions filter noise — e.g. `0.1` ignores any recommendation that would change the cluster by less than 10%.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -92,7 +92,7 @@ The factors express how much of the metric-suggested change the autoscaler appli
 
 Nothing. Every configurable argument of `google_dataproc_autoscaling_policy` at the pinned provider is representable through this spec — including `deletionPolicy` (the API's own referenced-by-a-cluster guard still applies on top of it).
 
-## Related Components
+## Related Kinds
 
 - **GcpDataprocCluster** — attaches this policy via `clusterConfig.autoscalingPolicyUri`
 - **GcpProject** — provides the GCP project ID

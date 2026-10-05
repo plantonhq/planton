@@ -4,7 +4,7 @@ Deploys a Data Lake Storage Gen2 filesystem inside an Azure Storage Account -- t
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Data Lake Gen2 Filesystem** -- a filesystem on the referenced storage account (by ARM ID -- the control-plane path), with optional default encryption scope, root ownership (owner and owning group), the root path's POSIX ACL, and free-form properties
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -51,7 +51,7 @@ spec:
 planton apply -f filesystem.yaml
 ```
 
-This creates the `raw` filesystem on the `datalake-account` account with Azure's default ownership and no ACL -- engines address it as `abfss://raw@{account}.dfs.core.windows.net/`. A Stack Job tracks the provisioning in real time.
+This creates the `raw` filesystem on the `datalake-account` account with Azure's default ownership and no ACL -- engines address it as `abfss://raw@{account}.dfs.core.windows.net/`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -73,7 +73,7 @@ These are the most important decisions when configuring a filesystem. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -81,9 +81,9 @@ These are the most important decisions when configuring a filesystem. Explore th
 | **AzureStorageEncryptionScope** | `defaultEncryptionScope` | `status.outputs.encryption_scope_name` |
 | **AzureUserAssignedIdentity** | `owner`, `group`, per-ACE `objectId` | `status.outputs.principal_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -105,7 +105,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the HNS parent account and the source of the dfs endpoint zones compose URLs from
-- [**Azure Storage Encryption Scope**](/cloud-catalog/azure-storage-encryption-scope) -- per-zone key isolation through `defaultEncryptionScope`
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- workload identities owning zones and appearing in ACL entries by `principal_id`
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- zone-scoped data-plane grants targeting `filesystem_id`, refined per path by the ACL
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the HNS parent account and the source of the dfs endpoint zones compose URLs from
+- [**Azure Storage Encryption Scope**](/infra-catalog/azure-storage-encryption-scope) -- per-zone key isolation through `defaultEncryptionScope`
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- workload identities owning zones and appearing in ACL entries by `principal_id`
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- zone-scoped data-plane grants targeting `filesystem_id`, refined per path by the ACL

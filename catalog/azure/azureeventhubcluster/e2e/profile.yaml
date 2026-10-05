@@ -1,5 +1,5 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: azureeventhubcluster
 spec:
@@ -9,7 +9,7 @@ spec:
   # create-verify-destroy cycle is impossible inside any reasonable
   # window -- the destroy phase would spin against
   # ClusterMoratoriumInEffect for hours at dedicated-tier cost. The
-  # component stands on its green offline gate: 100% parity audit, full
+  # kind stands on its green offline gate: 100% parity audit, full
   # tofu plan rendering the composed Dedicated sku, spec tests covering
   # every validation rule, and the outputs conformance case.
   tier: 1

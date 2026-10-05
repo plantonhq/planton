@@ -31,7 +31,7 @@ type GcpVertexAiFeatureGroup struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpVertexAiFeatureGroupSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpVertexAiFeatureGroup) GetKind() string {
 	return ""
 }
 
-func (x *GcpVertexAiFeatureGroup) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpVertexAiFeatureGroup) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpVertexAiFeatureGroup) GetStatus() *GcpVertexAiFeatureGroupStatus {
 // gcp-vertex-ai-feature-group status
 type GcpVertexAiFeatureGroupStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpVertexAiFeatureGroupStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpVertexAiFeatureGroupOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpVertexAiFeatureGroupStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpVertexAiFeatureGroupStatus) GetOutputs() *GcpVertexAiFeatureGroupStackOutputs {
+func (x *GcpVertexAiFeatureGroupStatus) GetOutputs() *GcpVertexAiFeatureGroupOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17GcpVertexAiFeatureGroupR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
 	"\x04spec\x18\x04 \x01(\v2M.dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12g\n" +
-	"\x06status\x18\x05 \x01(\v2O.dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupStatusR\x06status\"\x90\x01\n" +
-	"\x1dGcpVertexAiFeatureGroupStatus\x12o\n" +
-	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupStackOutputsR\aoutputsB\x90\x03\n" +
+	"\x06status\x18\x05 \x01(\v2O.dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupStatusR\x06status\"\x8b\x01\n" +
+	"\x1dGcpVertexAiFeatureGroupStatus\x12j\n" +
+	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupOutputsR\aoutputsB\x90\x03\n" +
 	"4com.dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1B\bApiProtoP\x01Zigithub.com/plantonhq/planton/catalog/gcp/gcpvertexaifeaturegroup/v1alpha1;gcpvertexaifeaturegroupv1alpha1\xa2\x02\x04DPGG\xaa\x020Dev.Planton.Gcp.Gcpvertexaifeaturegroup.V1alpha1\xca\x020Dev\\Planton\\Gcp\\Gcpvertexaifeaturegroup\\V1alpha1\xe2\x02<Dev\\Planton\\Gcp\\Gcpvertexaifeaturegroup\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Gcp::Gcpvertexaifeaturegroup::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_api_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_api_proto_goTypes = []any{
-	(*GcpVertexAiFeatureGroup)(nil),             // 0: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroup
-	(*GcpVertexAiFeatureGroupStatus)(nil),       // 1: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpVertexAiFeatureGroupSpec)(nil),         // 3: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupSpec
-	(*GcpVertexAiFeatureGroupStackOutputs)(nil), // 4: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupStackOutputs
+	(*GcpVertexAiFeatureGroup)(nil),        // 0: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroup
+	(*GcpVertexAiFeatureGroupStatus)(nil),  // 1: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpVertexAiFeatureGroupSpec)(nil),    // 3: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupSpec
+	(*GcpVertexAiFeatureGroupOutputs)(nil), // 4: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupOutputs
 }
 var file_catalog_gcp_gcpvertexaifeaturegroup_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroup.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroup.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroup.spec:type_name -> dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupSpec
 	1, // 2: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroup.status:type_name -> dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupStatus
-	4, // 3: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupStatus.outputs:type_name -> dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupStackOutputs
+	4, // 3: dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupStatus.outputs:type_name -> dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1.GcpVertexAiFeatureGroupOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

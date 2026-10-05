@@ -9,7 +9,7 @@ Create and manage an [API Gateway v1 VPC link](https://docs.aws.amazon.com/apiga
 services inside a VPC.
 
 One link is shared by many APIs and owns its own network attachment,
-which is why it is its own component rather than a field on
+which is why it is its own kind rather than a field on
 [AwsRestApiGateway](../awsrestapigateway).
 
 HTTP APIs use a different link that attaches to subnets directly —

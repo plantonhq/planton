@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudwatchDashboardStackInput is the input for the IaC modules
+// AwsCloudwatchDashboardIacInput is the input for the IaC modules
 // that manage a CloudWatch dashboard.
-type AwsCloudwatchDashboardStackInput struct {
+type AwsCloudwatchDashboardIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsCloudwatchDashboard resource to deploy.
 	Target *AwsCloudwatchDashboard `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsCloudwatchDashboardStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsCloudwatchDashboardStackInput) Reset() {
-	*x = AwsCloudwatchDashboardStackInput{}
+func (x *AwsCloudwatchDashboardIacInput) Reset() {
+	*x = AwsCloudwatchDashboardIacInput{}
 	mi := &file_catalog_aws_awscloudwatchdashboard_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudwatchDashboardStackInput) String() string {
+func (x *AwsCloudwatchDashboardIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudwatchDashboardStackInput) ProtoMessage() {}
+func (*AwsCloudwatchDashboardIacInput) ProtoMessage() {}
 
-func (x *AwsCloudwatchDashboardStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudwatchDashboardIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudwatchdashboard_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsCloudwatchDashboardStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudwatchDashboardStackInput.ProtoReflect.Descriptor instead.
-func (*AwsCloudwatchDashboardStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudwatchDashboardIacInput.ProtoReflect.Descriptor instead.
+func (*AwsCloudwatchDashboardIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchdashboard_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudwatchDashboardStackInput) GetTarget() *AwsCloudwatchDashboard {
+func (x *AwsCloudwatchDashboardIacInput) GetTarget() *AwsCloudwatchDashboard {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsCloudwatchDashboardStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsCloudwatchDashboardIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awscloudwatchdashboard_v1alpha1_input_proto protoreflect.Fi
 
 const file_catalog_aws_awscloudwatchdashboard_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/aws/awscloudwatchdashboard/v1alpha1/input.proto\x12/dev.planton.aws.awscloudwatchdashboard.v1alpha1\x1a5catalog/aws/awscloudwatchdashboard/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd0\x01\n" +
-	" AwsCloudwatchDashboardStackInput\x12_\n" +
+	"7catalog/aws/awscloudwatchdashboard/v1alpha1/input.proto\x12/dev.planton.aws.awscloudwatchdashboard.v1alpha1\x1a5catalog/aws/awscloudwatchdashboard/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xce\x01\n" +
+	"\x1eAwsCloudwatchDashboardIacInput\x12_\n" +
 	"\x06target\x18\x01 \x01(\v2G.dev.planton.aws.awscloudwatchdashboard.v1alpha1.AwsCloudwatchDashboardR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x8b\x03\n" +
 	"3com.dev.planton.aws.awscloudwatchdashboard.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awscloudwatchdashboard_v1alpha1_input_proto_rawDescGZIP() 
 
 var file_catalog_aws_awscloudwatchdashboard_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudwatchdashboard_v1alpha1_input_proto_goTypes = []any{
-	(*AwsCloudwatchDashboardStackInput)(nil), // 0: dev.planton.aws.awscloudwatchdashboard.v1alpha1.AwsCloudwatchDashboardStackInput
-	(*AwsCloudwatchDashboard)(nil),           // 1: dev.planton.aws.awscloudwatchdashboard.v1alpha1.AwsCloudwatchDashboard
-	(*aws.AwsProviderConfig)(nil),            // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsCloudwatchDashboardIacInput)(nil), // 0: dev.planton.aws.awscloudwatchdashboard.v1alpha1.AwsCloudwatchDashboardIacInput
+	(*AwsCloudwatchDashboard)(nil),         // 1: dev.planton.aws.awscloudwatchdashboard.v1alpha1.AwsCloudwatchDashboard
+	(*aws.AwsProviderConfig)(nil),          // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awscloudwatchdashboard_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscloudwatchdashboard.v1alpha1.AwsCloudwatchDashboardStackInput.target:type_name -> dev.planton.aws.awscloudwatchdashboard.v1alpha1.AwsCloudwatchDashboard
-	2, // 1: dev.planton.aws.awscloudwatchdashboard.v1alpha1.AwsCloudwatchDashboardStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awscloudwatchdashboard.v1alpha1.AwsCloudwatchDashboardIacInput.target:type_name -> dev.planton.aws.awscloudwatchdashboard.v1alpha1.AwsCloudwatchDashboard
+	2, // 1: dev.planton.aws.awscloudwatchdashboard.v1alpha1.AwsCloudwatchDashboardIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

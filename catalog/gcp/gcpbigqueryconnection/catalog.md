@@ -4,7 +4,7 @@ Lets BigQuery reach data it does not store: query Cloud SQL and Spanner in place
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `bigqueryconnection.googleapis.com` on the project (never disabled on destroy)
 - **Connection** -- a `bigquery_connection` with its one arm
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with BigQuery connection admin permissions (`roles/bigquery.connectionAdmin`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with BigQuery connection admin permissions (`roles/bigquery.connectionAdmin`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -48,7 +48,7 @@ spec:
 planton apply -f bigquery-connection.yaml
 ```
 
-This creates a cloud-resource connection in the US multi-region and outputs the service account BigQuery acts as through it. A Stack Job tracks the provisioning in real time.
+This creates a cloud-resource connection in the US multi-region and outputs the service account BigQuery acts as through it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -66,7 +66,7 @@ These are the most important decisions when configuring this component. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -74,9 +74,9 @@ These are the most important decisions when configuring this component. Explore 
 | **GcpCloudSql** | `cloudSql.instanceId` | `status.outputs.connection_name` |
 | **GcpKmsKey** | `kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
@@ -96,6 +96,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cloud SQL**](/cloud-catalog/gcp-cloud-sql) -- federated-query source
-- [**GCP BigQuery Dataset**](/cloud-catalog/gcp-bigquery-dataset) -- where external tables live
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- credential encryption
+- [**GCP Cloud SQL**](/infra-catalog/gcp-cloud-sql) -- federated-query source
+- [**GCP BigQuery Dataset**](/infra-catalog/gcp-bigquery-dataset) -- where external tables live
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- credential encryption

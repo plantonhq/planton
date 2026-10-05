@@ -8,7 +8,7 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 
-	componentv1 "github.com/plantonhq/planton/qa/componente2eprofile/v1"
+	kindv1 "github.com/plantonhq/planton/qa/catalogkinde2eprofile/v1"
 	providerv1 "github.com/plantonhq/planton/qa/providere2eprofile/v1"
 )
 
@@ -25,15 +25,15 @@ func LoadProviderProfile(repoRoot, provider string) (*providerv1.ProviderE2EProf
 	return p, nil
 }
 
-// LoadComponentProfile reads and parses a component's E2E profile from disk.
-func LoadComponentProfile(repoRoot, provider, component string) (*componentv1.ComponentE2EProfile, error) {
-	path, err := ComponentProfilePath(repoRoot, provider, component)
+// LoadKindProfile reads and parses a kind's E2E profile from disk.
+func LoadKindProfile(repoRoot, provider, kindDir string) (*kindv1.CatalogKindE2EProfile, error) {
+	path, err := KindProfilePath(repoRoot, provider, kindDir)
 	if err != nil {
 		return nil, err
 	}
-	p := &componentv1.ComponentE2EProfile{}
+	p := &kindv1.CatalogKindE2EProfile{}
 	if err := loadYAMLProto(path, p); err != nil {
-		return nil, errors.Wrapf(err, "loading component E2E profile for %s/%s", provider, component)
+		return nil, errors.Wrapf(err, "loading catalog kind E2E profile for %s/%s", provider, kindDir)
 	}
 	return p, nil
 }

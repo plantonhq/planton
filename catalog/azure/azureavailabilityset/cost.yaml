@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureavailabilityset
 spec:
   billing_model: free
   free_tier: An availability set is a placement instruction -- the grouping that tells Azure to spread member VMs across separate fault and update domains. Microsoft documents it plainly ("there's no extra cost for using availability sets; you only pay for each VM instance that you create"); the set has no meter, and holding one with any domain configuration never bills.
-  notes: "No field of this spec buys anything: the fault and update domain counts, the managed flag, and the proximity placement group reference are placement metadata Azure's scheduler reads for free. The real spend lives entirely in the VIRTUAL MACHINES that join the set -- each AzureVirtualMachine bills its own compute, disks, and networking as its own catalog kind, and it bills exactly the same inside or outside a set. Spreading VMs across fault domains costs nothing; running the VMs is the bill."
+  notes: "No field of this spec buys anything: the fault and update domain counts, the managed flag, and the proximity placement group reference are placement metadata Azure's scheduler reads for free. The real spend lives entirely in the VIRTUAL MACHINES that join the set -- each AzureVirtualMachine bills its own compute, disks, and networking as its own component, and it bills exactly the same inside or outside a set. Spreading VMs across fault domains costs nothing; running the VMs is the bill."

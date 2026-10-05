@@ -2,11 +2,11 @@
 
 Installs the Tekton Operator — the lifecycle manager maintained by the Tekton project — from its official single-file release manifest (the in-repo Helm chart is unpublished and is not a distribution channel). The operator reconciles a `TektonConfig` declaration (declared with **Tekton**) into running Tekton components — Pipelines, Triggers, Dashboard, Chains — managing their installation, upgrades, and removal through `TektonInstallerSet` resources.
 
-This component installs the **manager only**. Installing it deploys NO pipeline runtime: automatic component installation is disabled by design, so the KubernetesTekton declaration is the single owner of what Tekton actually runs on the cluster.
+This kind installs the **manager only**. Installing it deploys NO pipeline runtime: automatic component installation is disabled by design, so the KubernetesTekton declaration is the single owner of what Tekton actually runs on the cluster.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module applies the release manifest's documents:
+When you deploy this Infra Component, the IaC module applies the release manifest's documents:
 
 - **The `tekton-operator` namespace** — the manifest's FIXED installation namespace, baked into its own cross-references (the webhook Service, the RBAC subjects); it is not configurable
 - **14 `operator.tekton.dev` CRDs** (including `tektonconfigs.operator.tekton.dev`) — documents of the applied manifest, so they install AND delete with this resource; see the destroy ordering under Key Configuration
@@ -49,7 +49,7 @@ spec: {}
 planton apply -f tekton-operator.yaml
 ```
 
-An empty spec is the complete install: the release manifest's own defaults, in its fixed namespace, with automatic component installation disabled. Declare a **Tekton** resource next to choose what actually runs. A Stack Job tracks the provisioning in real time.
+An empty spec is the complete install: the release manifest's own defaults, in its fixed namespace, with automatic component installation disabled. Declare a **Tekton** resource next to choose what actually runs. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -69,11 +69,11 @@ These are the most important decisions when configuring the Tekton Operator. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component's spec is self-contained — no fields reference other resources' outputs, and it has no cluster-side prerequisites beyond registry reachability.
+This kind's spec is self-contained — no fields reference other resources' outputs, and it has no cluster-side prerequisites beyond registry reachability.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -98,5 +98,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Tekton**](/cloud-catalog/kubernetes-tekton) — the cluster's TektonConfig declaration this operator reconciles; deploy the operator FIRST, and destroy the declaration FIRST on the way out.
-- [**Kubernetes Manifest**](/cloud-catalog/kubernetes-manifest) — Tasks, Pipelines, and their runs are plain custom resources once the Tekton installation converges.
+- [**Tekton**](/infra-catalog/kubernetes-tekton) — the cluster's TektonConfig declaration this operator reconciles; deploy the operator FIRST, and destroy the declaration FIRST on the way out.
+- [**Kubernetes Manifest**](/infra-catalog/kubernetes-manifest) — Tasks, Pipelines, and their runs are plain custom resources once the Tekton installation converges.

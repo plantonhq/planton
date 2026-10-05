@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsKinesisStreamConsumerStackInput is the input envelope passed to IaC
+// AwsKinesisStreamConsumerIacInput is the input envelope passed to IaC
 // modules for provisioning.
-type AwsKinesisStreamConsumerStackInput struct {
+type AwsKinesisStreamConsumerIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the fully-specified AwsKinesisStreamConsumer resource to provision.
 	Target *AwsKinesisStreamConsumer `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -36,20 +36,20 @@ type AwsKinesisStreamConsumerStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsKinesisStreamConsumerStackInput) Reset() {
-	*x = AwsKinesisStreamConsumerStackInput{}
+func (x *AwsKinesisStreamConsumerIacInput) Reset() {
+	*x = AwsKinesisStreamConsumerIacInput{}
 	mi := &file_catalog_aws_awskinesisstreamconsumer_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsKinesisStreamConsumerStackInput) String() string {
+func (x *AwsKinesisStreamConsumerIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsKinesisStreamConsumerStackInput) ProtoMessage() {}
+func (*AwsKinesisStreamConsumerIacInput) ProtoMessage() {}
 
-func (x *AwsKinesisStreamConsumerStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsKinesisStreamConsumerIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awskinesisstreamconsumer_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AwsKinesisStreamConsumerStackInput) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsKinesisStreamConsumerStackInput.ProtoReflect.Descriptor instead.
-func (*AwsKinesisStreamConsumerStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsKinesisStreamConsumerIacInput.ProtoReflect.Descriptor instead.
+func (*AwsKinesisStreamConsumerIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awskinesisstreamconsumer_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsKinesisStreamConsumerStackInput) GetTarget() *AwsKinesisStreamConsumer {
+func (x *AwsKinesisStreamConsumerIacInput) GetTarget() *AwsKinesisStreamConsumer {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsKinesisStreamConsumerStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsKinesisStreamConsumerIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -84,8 +84,8 @@ var File_catalog_aws_awskinesisstreamconsumer_v1alpha1_input_proto protoreflect.
 
 const file_catalog_aws_awskinesisstreamconsumer_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/aws/awskinesisstreamconsumer/v1alpha1/input.proto\x121dev.planton.aws.awskinesisstreamconsumer.v1alpha1\x1a7catalog/aws/awskinesisstreamconsumer/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd6\x01\n" +
-	"\"AwsKinesisStreamConsumerStackInput\x12c\n" +
+	"9catalog/aws/awskinesisstreamconsumer/v1alpha1/input.proto\x121dev.planton.aws.awskinesisstreamconsumer.v1alpha1\x1a7catalog/aws/awskinesisstreamconsumer/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd4\x01\n" +
+	" AwsKinesisStreamConsumerIacInput\x12c\n" +
 	"\x06target\x18\x01 \x01(\v2K.dev.planton.aws.awskinesisstreamconsumer.v1alpha1.AwsKinesisStreamConsumerR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x99\x03\n" +
 	"5com.dev.planton.aws.awskinesisstreamconsumer.v1alpha1B\n" +
@@ -105,13 +105,13 @@ func file_catalog_aws_awskinesisstreamconsumer_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_aws_awskinesisstreamconsumer_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awskinesisstreamconsumer_v1alpha1_input_proto_goTypes = []any{
-	(*AwsKinesisStreamConsumerStackInput)(nil), // 0: dev.planton.aws.awskinesisstreamconsumer.v1alpha1.AwsKinesisStreamConsumerStackInput
-	(*AwsKinesisStreamConsumer)(nil),           // 1: dev.planton.aws.awskinesisstreamconsumer.v1alpha1.AwsKinesisStreamConsumer
-	(*aws.AwsProviderConfig)(nil),              // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsKinesisStreamConsumerIacInput)(nil), // 0: dev.planton.aws.awskinesisstreamconsumer.v1alpha1.AwsKinesisStreamConsumerIacInput
+	(*AwsKinesisStreamConsumer)(nil),         // 1: dev.planton.aws.awskinesisstreamconsumer.v1alpha1.AwsKinesisStreamConsumer
+	(*aws.AwsProviderConfig)(nil),            // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awskinesisstreamconsumer_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awskinesisstreamconsumer.v1alpha1.AwsKinesisStreamConsumerStackInput.target:type_name -> dev.planton.aws.awskinesisstreamconsumer.v1alpha1.AwsKinesisStreamConsumer
-	2, // 1: dev.planton.aws.awskinesisstreamconsumer.v1alpha1.AwsKinesisStreamConsumerStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awskinesisstreamconsumer.v1alpha1.AwsKinesisStreamConsumerIacInput.target:type_name -> dev.planton.aws.awskinesisstreamconsumer.v1alpha1.AwsKinesisStreamConsumer
+	2, // 1: dev.planton.aws.awskinesisstreamconsumer.v1alpha1.AwsKinesisStreamConsumerIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

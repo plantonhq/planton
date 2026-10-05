@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awseksaddon.v1alpha1;
 
-// AwsEksAddonStackOutputs describes the values returned after
+// AwsEksAddonOutputs describes the values returned after
 // provisioning an EKS managed add-on.
-message AwsEksAddonStackOutputs {
+message AwsEksAddonOutputs {
   // addon_arn is the Amazon Resource Name of the add-on --
   // arn:aws:eks:<region>:<account>:addon/<cluster>/<addon-name>/<uuid>.
   string addon_arn = 1;

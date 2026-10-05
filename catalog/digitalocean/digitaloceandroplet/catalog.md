@@ -4,7 +4,7 @@ Deploys a DigitalOcean Droplet with configurable sizing, region and VPC placemen
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DigitalOcean Droplet** -- a virtual machine using the configured size slug, base image, and optional cloud-init user data; placed in the specified region and VPC, or DigitalOcean's choice of region and its default VPC when omitted
 - **SSH Key Injection** -- created only when `sshKeys` are provided; injects account-registered keys at first boot
@@ -17,12 +17,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
 
-- **A VPC network** (optional) -- provide the VPC UUID directly or reference a DigitalOceanVpc Cloud Resource via ValueFromRef; omit to use the region's default VPC.
+- **A VPC network** (optional) -- provide the VPC UUID directly or reference a DigitalOceanVpc Infra Component via ValueFromRef; omit to use the region's default VPC.
 - **SSH keys** (recommended) -- registered on your account (`doctl compute ssh-key list`); keys are injected at create only.
 - **A valid Droplet size slug** (e.g., `"s-2vcpu-4gb"`) -- check available sizes via `doctl compute size list`.
 - **A valid image slug** (e.g., `"ubuntu-24-04-x64"`) -- check available images via `doctl compute image list --public`.
@@ -60,7 +60,7 @@ spec:
 planton apply -f do-droplet.yaml
 ```
 
-This creates a Droplet with the specified size and image in the NYC3 region, reachable with your SSH key. A Stack Job tracks the provisioning in real time.
+This creates a Droplet with the specified size and image in the NYC3 region, reachable with your SSH key. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,7 +95,7 @@ These are the most important decisions when configuring a Droplet. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -103,9 +103,9 @@ These are the most important decisions when configuring a Droplet. Explore the f
 | **DigitalOceanVolume** (optional) | `volumeIds` | `status.outputs.volume_id` |
 | **DigitalOceanSshKey** (optional) | `sshKeys` | `status.outputs.ssh_key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,7 +126,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean VPC**](/cloud-catalog/digital-ocean-vpc) -- provides the private network for Droplet placement
-- [**DigitalOcean Volume**](/cloud-catalog/digital-ocean-volume) -- provides block storage volumes attached to the Droplet
-- [**DigitalOcean Load Balancer**](/cloud-catalog/digital-ocean-load-balancer) -- routes traffic to Droplets by ID or tag
-- [**DigitalOcean Cloud Firewall**](/cloud-catalog/digital-ocean-firewall) -- secures Droplets by ID or tag
+- [**DigitalOcean VPC**](/infra-catalog/digital-ocean-vpc) -- provides the private network for Droplet placement
+- [**DigitalOcean Volume**](/infra-catalog/digital-ocean-volume) -- provides block storage volumes attached to the Droplet
+- [**DigitalOcean Load Balancer**](/infra-catalog/digital-ocean-load-balancer) -- routes traffic to Droplets by ID or tag
+- [**DigitalOcean Cloud Firewall**](/infra-catalog/digital-ocean-firewall) -- secures Droplets by ID or tag

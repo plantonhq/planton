@@ -26,7 +26,7 @@ Notes:
 - `advanced_security_options.enabled` cannot be disabled once turned on (ForceNew).
 - Domain name must match `^[a-z][0-9a-z\-]{2,27}$` (3-28 chars, lowercase, hyphens).
 - Engine version format: "OpenSearch_X.Y" or "Elasticsearch_X.Y".
-- Credentials, region, and deployment workflow live outside this spec in stack inputs.
+- Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 
 ## Example
 

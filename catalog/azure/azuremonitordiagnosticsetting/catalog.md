@@ -4,7 +4,7 @@ Deploys an Azure Monitor diagnostic setting -- how a resource's platform telemet
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Diagnostic Setting** -- a `Microsoft.Insights/diagnosticSettings` EXTENSION resource living ON the target (any ARM resource -- a Key Vault, an AKS cluster, a gateway, a subscription), carrying the category selections and destination routing. A target can carry up to five settings
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -60,7 +60,7 @@ spec:
 planton apply -f diagnostic-setting.yaml
 ```
 
-This routes every current AND future log category of the vault (the allLogs group tracks new ones automatically) plus its metrics into the workspace, landing in modern resource-specific tables. A Stack Job tracks the provisioning in real time.
+This routes every current AND future log category of the vault (the allLogs group tracks new ones automatically) plus its metrics into the workspace, landing in modern resource-specific tables. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,7 +94,7 @@ These are the most important decisions when configuring a diagnostic setting. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -104,9 +104,9 @@ These are the most important decisions when configuring a diagnostic setting. Ex
 | **AzureEventHubAuthorizationRule** | `eventhubAuthorizationRuleId` | `status.outputs.authorization_rule_id` |
 | **AzureEventHub** | `eventhubName` | `status.outputs.event_hub_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-The setting is a leaf in the dependency graph: `status.outputs` carries only its own identifiers (`diagnostic_setting_id`, `diagnostic_setting_name`) and the as-deployed `target_resource_id` as a routing audit trail -- no downstream Cloud Resource consumes them.
+The setting is a leaf in the dependency graph: `status.outputs` carries only its own identifiers (`diagnostic_setting_id`, `diagnostic_setting_name`) and the as-deployed `target_resource_id` as a routing audit trail -- no downstream Infra Component consumes them.
 
 ## Common Patterns
 
@@ -120,7 +120,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Log Analytics Workspace**](/cloud-catalog/azure-log-analytics-workspace) -- the queryable, alertable destination
-- [**Azure Monitor Scheduled Query Alert**](/cloud-catalog/azure-monitor-scheduled-query-alert) -- watches the workspace this setting fills
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the archival destination
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- the classic audit-log target
+- [**Azure Log Analytics Workspace**](/infra-catalog/azure-log-analytics-workspace) -- the queryable, alertable destination
+- [**Azure Monitor Scheduled Query Alert**](/infra-catalog/azure-monitor-scheduled-query-alert) -- watches the workspace this setting fills
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the archival destination
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- the classic audit-log target

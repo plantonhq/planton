@@ -1,22 +1,22 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceandatabasedb
 spec:
   # The logical database's identity is the (cluster, name) pair --
-  # DigitalOcean mints no standalone id. Both halves are stack outputs, so
+  # DigitalOcean mints no standalone id. Both halves are outputs, so
   # zero user input when state is present.
   values:
     - name: cluster_id
       derivations:
-        - from_stack_output: cluster_id
+        - from_output: cluster_id
       where_to_find: >-
         DigitalOcean control panel -> Databases -> the cluster -> the UUID
         in the cluster's page URL, or `doctl databases list` (the ID
         column).
     - name: database_name
       derivations:
-        - from_stack_output: database_name
+        - from_output: database_name
       where_to_find: >-
         DigitalOcean control panel -> Databases -> the cluster -> Users &
         Databases tab (the database's name), or `doctl databases db list

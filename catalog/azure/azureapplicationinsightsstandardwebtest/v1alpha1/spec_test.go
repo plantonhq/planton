@@ -33,7 +33,7 @@ func validResource() *AzureApplicationInsightsStandardWebTest {
 	return &AzureApplicationInsightsStandardWebTest{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureApplicationInsightsStandardWebTest",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-webtest",
 		},
 		Spec: &AzureApplicationInsightsStandardWebTestSpec{

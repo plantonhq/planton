@@ -11,14 +11,14 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/internal/cli/cliprint"
 	"github.com/plantonhq/planton/internal/manifest"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/backendconfig"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule"
 )
 
 // Remove deletes a Pulumi stack and all its configuration/state from the backend.
 // This is a destructive operation that removes the stack metadata.
-// Note: This does NOT destroy cloud resources - run 'pulumi destroy' first if needed.
+// Note: This does NOT destroy provider resources - run 'pulumi destroy' first if needed.
 func Remove(moduleDir, stackFqdn, targetManifestPath string, valueOverrides map[string]string, force bool, moduleVersion string, noCleanup bool) error {
 	manifestObject, err := manifest.LoadWithOverrides(targetManifestPath, valueOverrides)
 	if err != nil {
@@ -41,7 +41,7 @@ func Remove(moduleDir, stackFqdn, targetManifestPath string, valueOverrides map[
 		return errors.New("Pulumi stack FQDN is required. Provide it via --stack flag or set pulumi.planton.dev/stack.fqdn label in manifest")
 	}
 
-	kindName, err := crkreflect.ExtractKindFromProto(manifestObject)
+	kindName, err := catalogkindreflect.ExtractKindFromProto(manifestObject)
 	if err != nil {
 		return errors.Wrapf(err, "failed to extract kind name from manifest proto")
 	}

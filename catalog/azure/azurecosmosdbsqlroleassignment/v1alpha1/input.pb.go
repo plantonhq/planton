@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-cosmosdb-sql-role-assignment stack-input
-type AzureCosmosdbSqlRoleAssignmentStackInput struct {
+// azure-cosmosdb-sql-role-assignment iac-input
+type AzureCosmosdbSqlRoleAssignmentIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AzureCosmosdbSqlRoleAssignment `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureCosmosdbSqlRoleAssignmentStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureCosmosdbSqlRoleAssignmentStackInput) Reset() {
-	*x = AzureCosmosdbSqlRoleAssignmentStackInput{}
+func (x *AzureCosmosdbSqlRoleAssignmentIacInput) Reset() {
+	*x = AzureCosmosdbSqlRoleAssignmentIacInput{}
 	mi := &file_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureCosmosdbSqlRoleAssignmentStackInput) String() string {
+func (x *AzureCosmosdbSqlRoleAssignmentIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureCosmosdbSqlRoleAssignmentStackInput) ProtoMessage() {}
+func (*AzureCosmosdbSqlRoleAssignmentIacInput) ProtoMessage() {}
 
-func (x *AzureCosmosdbSqlRoleAssignmentStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureCosmosdbSqlRoleAssignmentIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureCosmosdbSqlRoleAssignmentStackInput) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureCosmosdbSqlRoleAssignmentStackInput.ProtoReflect.Descriptor instead.
-func (*AzureCosmosdbSqlRoleAssignmentStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureCosmosdbSqlRoleAssignmentIacInput.ProtoReflect.Descriptor instead.
+func (*AzureCosmosdbSqlRoleAssignmentIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureCosmosdbSqlRoleAssignmentStackInput) GetTarget() *AzureCosmosdbSqlRoleAssignment {
+func (x *AzureCosmosdbSqlRoleAssignmentIacInput) GetTarget() *AzureCosmosdbSqlRoleAssignment {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureCosmosdbSqlRoleAssignmentStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureCosmosdbSqlRoleAssignmentIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_input_proto proto
 
 const file_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/azure/azurecosmosdbsqlroleassignment/v1alpha1/input.proto\x129dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1\x1a?catalog/azure/azurecosmosdbsqlroleassignment/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xee\x01\n" +
-	"(AzureCosmosdbSqlRoleAssignmentStackInput\x12q\n" +
+	"Acatalog/azure/azurecosmosdbsqlroleassignment/v1alpha1/input.proto\x129dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1\x1a?catalog/azure/azurecosmosdbsqlroleassignment/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xec\x01\n" +
+	"&AzureCosmosdbSqlRoleAssignmentIacInput\x12q\n" +
 	"\x06target\x18\x01 \x01(\v2Y.dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xcf\x03\n" +
 	"=com.dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_input_proto_rawD
 
 var file_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_input_proto_goTypes = []any{
-	(*AzureCosmosdbSqlRoleAssignmentStackInput)(nil), // 0: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentStackInput
-	(*AzureCosmosdbSqlRoleAssignment)(nil),           // 1: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignment
-	(*azure.AzureProviderConfig)(nil),                // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureCosmosdbSqlRoleAssignmentIacInput)(nil), // 0: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentIacInput
+	(*AzureCosmosdbSqlRoleAssignment)(nil),         // 1: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignment
+	(*azure.AzureProviderConfig)(nil),              // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentStackInput.target:type_name -> dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignment
-	2, // 1: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentIacInput.target:type_name -> dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignment
+	2, // 1: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

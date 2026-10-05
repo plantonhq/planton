@@ -230,7 +230,7 @@ All changes verified with:
 # Regenerate protocol buffer stubs
 make protos
 
-# Run component-specific tests
+# Run kind-specific tests
 go test ./apis/dev/planton/provider/cloudflare/cloudflareworker/v1/
 
 # Full project build

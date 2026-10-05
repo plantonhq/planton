@@ -16,7 +16,7 @@
  * planton-platform checkout:
  *
  *   1. the router's website list -- `site_roots` and `site_files` in its params
- *      file (infrastructure/desktop/Infra.foundation.InfraProject.foundation-apex-router.yaml),
+ *      file (infrastructure/desktop/Infra.foundation.InfraStack.foundation-apex-router.yaml),
  *      the one place the website's paths are declared;
  *   2. the reserved handles -- PlatformReservedHandles.java's RESERVED_HANDLES.
  *
@@ -40,7 +40,7 @@ const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const repoRoot = path.resolve(siteRoot, '..');
 const platformDir = process.env.PLANTON_PLATFORM_DIR ?? path.resolve(repoRoot, '..', 'planton-platform');
 
-const ROUTER_PARAMS = 'infrastructure/desktop/Infra.foundation.InfraProject.foundation-apex-router.yaml';
+const ROUTER_PARAMS = 'infrastructure/desktop/Infra.foundation.InfraStack.foundation-apex-router.yaml';
 const HANDLES = 'product/libs/java/domain/reserved-handles/src/main/java/ai/planton/reservedhandles/PlatformReservedHandles.java';
 
 /** Root files the export ships that the router must hand to the site exactly. */
@@ -62,8 +62,7 @@ async function loadRegistry() {
   // Node runs the data files directly through type stripping; the files carry
   // .ts extensions on their relative imports for exactly this.
   const mod = await import(pathToFileURL(path.join(siteRoot, 'src/data/site-pages.ts')).href);
-  const retired = await import(pathToFileURL(path.join(siteRoot, 'src/data/retired-routes.ts')).href);
-  return { pages: mod.SITE_PAGES, retired: retired.RETIRED_ROUTES, unregistered: mod.UNREGISTERED_PREFIXES };
+  return { pages: mod.SITE_PAGES, unregistered: mod.UNREGISTERED_PREFIXES };
 }
 
 /** The first path segment of a route, e.g. "/trust/the-record" -> "trust"; "/" -> null. */
@@ -100,22 +99,17 @@ async function main() {
     return;
   }
 
-  const { pages, retired, unregistered } = await loadRegistry();
+  const { pages, unregistered } = await loadRegistry();
   const router = readRouterList();
   const reserved = readReservedHandles();
   if (!router) fail(`the router's website list not found at ${path.join(platformDir, ROUTER_PARAMS)}`);
   if (!reserved) fail(`reserved handles not found at ${path.join(platformDir, HANDLES)}`);
   if (process.exitCode) return;
 
-  // The site's top-level segments: registered pages, retired paths (the router must still deliver them
-  // to the site so the redirect can happen), and the noindex prefixes served by their own layouts.
+  // The site's top-level segments: registered pages and the noindex prefixes served by their own layouts.
   const segments = new Set();
   for (const p of pages) {
     const seg = firstSegment(p.path);
-    if (seg) segments.add(seg);
-  }
-  for (const r of retired) {
-    const seg = firstSegment(r.from);
     if (seg) segments.add(seg);
   }
   for (const prefix of unregistered) segments.add(firstSegment(prefix));

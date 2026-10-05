@@ -15,7 +15,7 @@ import (
 )
 
 // TestSecretOutputShape is the CI guardrail for secret outputs: every `sensitive` mark in a
-// kind's stack outputs sits on a top-level field, carries no value rule, and no output carries
+// kind's outputs sits on a top-level field, carries no value rule, and no output carries
 // an exemption reason.
 func TestSecretOutputShape(t *testing.T) {
 	for _, v := range OutputShapeViolations() {
@@ -44,7 +44,7 @@ func TestCollectOutputShapeViolations_FiresOnEachBrokenShape(t *testing.T) {
 		Dependency: []string{"shared/options/options.proto"},
 		MessageType: []*descriptorpb.DescriptorProto{
 			{
-				Name: proto.String("FixtureStackOutputs"),
+				Name: proto.String("FixtureOutputs"),
 				Field: []*descriptorpb.FieldDescriptorProto{
 					{Name: proto.String("client_secret"), Number: proto.Int32(1), Type: str, Label: optional, Options: sensitive()},
 					{Name: proto.String("site_token"), Number: proto.Int32(2), Type: str, Label: optional, Options: exempt},
@@ -64,7 +64,7 @@ func TestCollectOutputShapeViolations_FiresOnEachBrokenShape(t *testing.T) {
 	}
 
 	got := map[string]string{}
-	for _, v := range collectOutputShapeViolations(file.Messages().ByName("FixtureStackOutputs"), "Fixture") {
+	for _, v := range collectOutputShapeViolations(file.Messages().ByName("FixtureOutputs"), "Fixture") {
 		got[v.Path] = v.Reason
 	}
 	if _, ok := got["status.outputs.client_secret"]; ok {

@@ -4,7 +4,7 @@ A Vector Search collection -- a schema'd store of data objects with one or more 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `vectorsearch.googleapis.com` on the project (never disabled on destroy)
 - **Collection** -- a `vector_search_collection` with the data schema and vector fields
@@ -79,7 +79,7 @@ planton apply -f vector-search-collection.yaml
 - A dense field's embedding config requires `modelId`, `taskType` (one of Google's eight), and `textTemplate`.
 - Collection and index ids are RFC 1035; metric, norm, and mode values are Google's; replica bounds are 1-1000.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -109,7 +109,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpKmsKey** -- customer-managed encryption for the collection
 - **GcpVertexAiRagEngineConfig** -- RAG Engine, which can use a collection as its vector database

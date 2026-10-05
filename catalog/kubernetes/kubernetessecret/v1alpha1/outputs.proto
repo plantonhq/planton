@@ -3,10 +3,10 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetessecret.v1alpha1;
 
 /**
- * **KubernetesSecretStackOutputs** captures observable outputs from a Kubernetes Secret deployment.
+ * **KubernetesSecretOutputs** captures observable outputs from a Kubernetes Secret deployment.
  * These outputs provide essential information for referencing the secret in other resources.
  */
-message KubernetesSecretStackOutputs {
+message KubernetesSecretOutputs {
   /**
    * The name of the created Kubernetes Secret.
    * This is the primary identifier for referencing the secret in other resources.

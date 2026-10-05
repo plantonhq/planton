@@ -1,7 +1,7 @@
 # Minimal GcpGkeCluster scenario: a ZONAL Standard cluster with GKE-managed
 # pod/service ranges — the fastest cluster GKE can create, exercising the
 # no-ip_allocation module branch. The harness deploys GcpVpcNetwork (registry
-# prerequisite) and this component's consumer-scoped GcpSubnetwork, then
+# prerequisite) and this kind's consumer-scoped GcpSubnetwork, then
 # creates the cluster. project_id is deliberately omitted (ambient project).
 # deletion_protection is explicitly false so the ephemeral destroy just works.
 apiVersion: gcp.planton.dev/v1alpha1
@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpgkecluster
+    e2e-catalog-kind: gcpgkecluster
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-cloud-build-repository stack-input
-type GcpCloudBuildRepositoryStackInput struct {
+// gcp-cloud-build-repository iac-input
+type GcpCloudBuildRepositoryIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpCloudBuildRepository `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpCloudBuildRepositoryStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpCloudBuildRepositoryStackInput) Reset() {
-	*x = GcpCloudBuildRepositoryStackInput{}
+func (x *GcpCloudBuildRepositoryIacInput) Reset() {
+	*x = GcpCloudBuildRepositoryIacInput{}
 	mi := &file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudBuildRepositoryStackInput) String() string {
+func (x *GcpCloudBuildRepositoryIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudBuildRepositoryStackInput) ProtoMessage() {}
+func (*GcpCloudBuildRepositoryIacInput) ProtoMessage() {}
 
-func (x *GcpCloudBuildRepositoryStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudBuildRepositoryIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpCloudBuildRepositoryStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudBuildRepositoryStackInput.ProtoReflect.Descriptor instead.
-func (*GcpCloudBuildRepositoryStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudBuildRepositoryIacInput.ProtoReflect.Descriptor instead.
+func (*GcpCloudBuildRepositoryIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudBuildRepositoryStackInput) GetTarget() *GcpCloudBuildRepository {
+func (x *GcpCloudBuildRepositoryIacInput) GetTarget() *GcpCloudBuildRepository {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpCloudBuildRepositoryStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpCloudBuildRepositoryIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpcloudbuildrepository_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/gcp/gcpcloudbuildrepository/v1alpha1/input.proto\x120dev.planton.gcp.gcpcloudbuildrepository.v1alpha1\x1a6catalog/gcp/gcpcloudbuildrepository/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd3\x01\n" +
-	"!GcpCloudBuildRepositoryStackInput\x12a\n" +
+	"8catalog/gcp/gcpcloudbuildrepository/v1alpha1/input.proto\x120dev.planton.gcp.gcpcloudbuildrepository.v1alpha1\x1a6catalog/gcp/gcpcloudbuildrepository/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd1\x01\n" +
+	"\x1fGcpCloudBuildRepositoryIacInput\x12a\n" +
 	"\x06target\x18\x01 \x01(\v2I.dev.planton.gcp.gcpcloudbuildrepository.v1alpha1.GcpCloudBuildRepositoryR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"4com.dev.planton.gcp.gcpcloudbuildrepository.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_input_proto_goTypes = []any{
-	(*GcpCloudBuildRepositoryStackInput)(nil), // 0: dev.planton.gcp.gcpcloudbuildrepository.v1alpha1.GcpCloudBuildRepositoryStackInput
-	(*GcpCloudBuildRepository)(nil),           // 1: dev.planton.gcp.gcpcloudbuildrepository.v1alpha1.GcpCloudBuildRepository
-	(*gcp.GcpProviderConfig)(nil),             // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpCloudBuildRepositoryIacInput)(nil), // 0: dev.planton.gcp.gcpcloudbuildrepository.v1alpha1.GcpCloudBuildRepositoryIacInput
+	(*GcpCloudBuildRepository)(nil),         // 1: dev.planton.gcp.gcpcloudbuildrepository.v1alpha1.GcpCloudBuildRepository
+	(*gcp.GcpProviderConfig)(nil),           // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpcloudbuildrepository_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpcloudbuildrepository.v1alpha1.GcpCloudBuildRepositoryStackInput.target:type_name -> dev.planton.gcp.gcpcloudbuildrepository.v1alpha1.GcpCloudBuildRepository
-	2, // 1: dev.planton.gcp.gcpcloudbuildrepository.v1alpha1.GcpCloudBuildRepositoryStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpcloudbuildrepository.v1alpha1.GcpCloudBuildRepositoryIacInput.target:type_name -> dev.planton.gcp.gcpcloudbuildrepository.v1alpha1.GcpCloudBuildRepository
+	2, // 1: dev.planton.gcp.gcpcloudbuildrepository.v1alpha1.GcpCloudBuildRepositoryIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

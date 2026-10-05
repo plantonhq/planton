@@ -31,7 +31,7 @@ var _ = ginkgo.Describe("KubernetesExternalDns Validation Tests", func() {
 		input = &KubernetesExternalDns{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesExternalDns",
-			Metadata:   &shared.CloudResourceMetadata{Name: "external-dns"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "external-dns"},
 			Spec: &KubernetesExternalDnsSpec{
 				Namespace:       literal("external-dns"),
 				CreateNamespace: true,

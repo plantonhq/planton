@@ -89,7 +89,7 @@ func buildBackendHttpSettings(settings []*azureapplicationgatewayv1alpha1.AzureA
 			args.Path = pulumi.String(setting.Path)
 		}
 		// Presence-guarded: unset falls back to Azure's default (30s) --
-		// stack inputs built from a manifest do NOT materialize proto
+		// IaC inputs built from a manifest do NOT materialize proto
 		// defaults.
 		if setting.RequestTimeout != nil {
 			args.RequestTimeout = pulumi.Int(int(setting.GetRequestTimeout()))

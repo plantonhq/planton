@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpCloudSqlUserStackOutputs captures values returned after provisioning a
+// GcpCloudSqlUserOutputs captures values returned after provisioning a
 // Cloud SQL user.
-type GcpCloudSqlUserStackOutputs struct {
+type GcpCloudSqlUserOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The user name as stored by Cloud SQL. For IAM users on MySQL this is
 	// the truncated form (email without the "@domain" suffix) — the name
@@ -35,20 +35,20 @@ type GcpCloudSqlUserStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCloudSqlUserStackOutputs) Reset() {
-	*x = GcpCloudSqlUserStackOutputs{}
+func (x *GcpCloudSqlUserOutputs) Reset() {
+	*x = GcpCloudSqlUserOutputs{}
 	mi := &file_catalog_gcp_gcpcloudsqluser_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudSqlUserStackOutputs) String() string {
+func (x *GcpCloudSqlUserOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudSqlUserStackOutputs) ProtoMessage() {}
+func (*GcpCloudSqlUserOutputs) ProtoMessage() {}
 
-func (x *GcpCloudSqlUserStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudSqlUserOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudsqluser_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *GcpCloudSqlUserStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudSqlUserStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudSqlUserStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudSqlUserOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudSqlUserOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudsqluser_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudSqlUserStackOutputs) GetUserName() string {
+func (x *GcpCloudSqlUserOutputs) GetUserName() string {
 	if x != nil {
 		return x.UserName
 	}
 	return ""
 }
 
-func (x *GcpCloudSqlUserStackOutputs) GetInstanceName() string {
+func (x *GcpCloudSqlUserOutputs) GetInstanceName() string {
 	if x != nil {
 		return x.InstanceName
 	}
@@ -83,8 +83,8 @@ var File_catalog_gcp_gcpcloudsqluser_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcpcloudsqluser_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpcloudsqluser/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpcloudsqluser.v1alpha1\"_\n" +
-	"\x1bGcpCloudSqlUserStackOutputs\x12\x1b\n" +
+	"2catalog/gcp/gcpcloudsqluser/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpcloudsqluser.v1alpha1\"Z\n" +
+	"\x16GcpCloudSqlUserOutputs\x12\x1b\n" +
 	"\tuser_name\x18\x01 \x01(\tR\buserName\x12#\n" +
 	"\rinstance_name\x18\x02 \x01(\tR\finstanceNameB\xdc\x02\n" +
 	",com.dev.planton.gcp.gcpcloudsqluser.v1alpha1B\fOutputsProtoP\x01ZYgithub.com/plantonhq/planton/catalog/gcp/gcpcloudsqluser/v1alpha1;gcpcloudsqluserv1alpha1\xa2\x02\x04DPGG\xaa\x02(Dev.Planton.Gcp.Gcpcloudsqluser.V1alpha1\xca\x02(Dev\\Planton\\Gcp\\Gcpcloudsqluser\\V1alpha1\xe2\x024Dev\\Planton\\Gcp\\Gcpcloudsqluser\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Gcp::Gcpcloudsqluser::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_gcp_gcpcloudsqluser_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_gcp_gcpcloudsqluser_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudsqluser_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudSqlUserStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudsqluser.v1alpha1.GcpCloudSqlUserStackOutputs
+	(*GcpCloudSqlUserOutputs)(nil), // 0: dev.planton.gcp.gcpcloudsqluser.v1alpha1.GcpCloudSqlUserOutputs
 }
 var file_catalog_gcp_gcpcloudsqluser_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

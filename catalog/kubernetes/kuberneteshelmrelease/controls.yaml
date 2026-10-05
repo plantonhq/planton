@@ -4,9 +4,9 @@
 # intentional passthrough -- a generic Helm install -- so most postures
 # belong to the PACKAGED CHART, and this profile says so honestly rather
 # than claiming stances the spec cannot enforce. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kuberneteshelmrelease
 spec:

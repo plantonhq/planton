@@ -9,7 +9,7 @@ Enterprise clustering is built by installing MULTIPLE KubernetesNeo4j
 resources that share the same `cluster_name` — each member is its own
 first-class resource, not a replicas knob.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a replicas field** — there is none, by design. Community
   cannot cluster (the spec rejects `cluster_name` on community), and
@@ -17,7 +17,7 @@ Also not the right component when:
   each requiring `accept_license_agreement: true` and a valid Neo4j
   license.
 - **You want a managed graph database** — use a managed cloud service;
-  this component is for running Neo4j ON the Kubernetes cluster
+  this kind is for running Neo4j ON the Kubernetes cluster
   itself.
 - **You expect a public endpoint out of the box** — the chart's
   default LoadBalancer Service is DELIBERATELY overridden to
@@ -60,7 +60,7 @@ carries the `NEO4J_AUTH` key.
   Pending) on every install. This component pins it to ClusterIP
   unless `service.type` says otherwise. In-cluster clients use the
   always-created default Service (= the resource name — the endpoints
-  in the stack outputs).
+  in the outputs).
 - **TLS has a key-name bridge.** The chart mounts `private.key` and
   `public.crt` from each `ssl` scope's Secret (its subPath defaults);
   cert-manager-issued Secrets carry `tls.key`/`tls.crt` instead. The
@@ -127,7 +127,7 @@ carries the `NEO4J_AUTH` key.
   / `spec.image` / `spec.helm_values`**: JVM tuning, the air-gap image
   path, and the escape hatch
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

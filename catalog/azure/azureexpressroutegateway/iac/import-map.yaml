@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azureexpressroutegateway
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: express_route_gateway_id
       derivations:
-        - from_stack_output: express_route_gateway_id
+        - from_output: express_route_gateway_id
       where_to_find: >-
         Portal -> Virtual WAN -> Hubs -> the hub -> ExpressRoute -> the
         gateway -> JSON View -> Resource ID, or `az network express-route

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1;
 
-// **AzureManagedRedisAccessPolicyAssignmentStackOutputs** captures the
+// **AzureManagedRedisAccessPolicyAssignmentOutputs** captures the
 // outputs of granting Managed Redis data-plane access to an identity.
-message AzureManagedRedisAccessPolicyAssignmentStackOutputs {
+message AzureManagedRedisAccessPolicyAssignmentOutputs {
   // The Azure Resource Manager ID of the access policy assignment.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Cache/redisEnterprise/{cluster}/databases/default/accessPolicyAssignments/{objectId}
   string access_policy_assignment_id = 1;

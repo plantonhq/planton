@@ -15,8 +15,8 @@ kind-selection moment, and a divergence from every sibling.
 The kind now has a proper catalog page in the family shape: what a
 Ruleset is (the unified engine behind WAF, rate limiting, cache, origin,
 redirect, transform, and configuration rules), what gets created, scope
-and List prerequisites, the configuration reference at a glance, stack
-outputs, and related components. The site now serves it at the clean
+and List prerequisites, the configuration reference at a glance,
+outputs, and related kinds. The site now serves it at the clean
 `ruleset` slug; the deep-dive remains where it belongs, as the kind's
 in-repo technical reference (`docs/README.md`).
 

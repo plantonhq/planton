@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureaifoundry.v1alpha1;
 
-// **AzureAiFoundryStackOutputs** captures the outputs of provisioning
+// **AzureAiFoundryOutputs** captures the outputs of provisioning
 // an Azure AI Foundry hub.
-message AzureAiFoundryStackOutputs {
+message AzureAiFoundryOutputs {
   // The Azure Resource Manager ID of the hub -- what
   // AzureAiFoundryProject resources reference as their
   // ai_services_hub_id.

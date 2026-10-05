@@ -5,9 +5,9 @@ package dev.planton.aws.awsbedrockagentcoretools.v1alpha1;
 import "catalog/aws/awsbedrockagentcoretools/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBedrockAgentCoreToolsStackInput is the input for the IaC modules
+// AwsBedrockAgentCoreToolsIacInput is the input for the IaC modules
 // that deploy the AgentCore tools bundle.
-message AwsBedrockAgentCoreToolsStackInput {
+message AwsBedrockAgentCoreToolsIacInput {
   // target is the AwsBedrockAgentCoreTools resource to deploy.
   AwsBedrockAgentCoreTools target = 1;
   // provider_config contains the AWS provider credentials and configuration.

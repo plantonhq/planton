@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.aws.awsfsxontapvolume.v1alpha1;
 
-// AwsFsxOntapVolumeStackOutputs captures observable identifiers from a
+// AwsFsxOntapVolumeOutputs captures observable identifiers from a
 // provisioned FSx for ONTAP Volume. These outputs are used by downstream
 // resources and monitoring tools.
 //
@@ -12,7 +12,7 @@ package dev.planton.aws.awsfsxontapvolume.v1alpha1;
 // - SnapMirror: needs `uuid` for replication relationships
 // - Monitoring: needs `volume_id` for CloudWatch metrics
 // - FlexCache: needs `flexcache_endpoint_type` to identify origin volumes
-message AwsFsxOntapVolumeStackOutputs {
+message AwsFsxOntapVolumeOutputs {
   // The ID of the volume (e.g., "fsvol-0123456789abcdef0"). Primary identifier
   // used in AWS APIs and CloudWatch metrics for this volume.
   string volume_id = 1;

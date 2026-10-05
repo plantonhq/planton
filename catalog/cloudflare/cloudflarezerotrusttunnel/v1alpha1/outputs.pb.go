@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustTunnelStackOutputs captures the outputs after provisioning a
+// CloudflareZeroTrustTunnelOutputs captures the outputs after provisioning a
 // Cloudflare Tunnel.
-type CloudflareZeroTrustTunnelStackOutputs struct {
+type CloudflareZeroTrustTunnelOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned UUID of the tunnel. Referenced by routes
 	// (CloudflareZeroTrustTunnelRoute) and used to build the CNAME target.
@@ -46,20 +46,20 @@ type CloudflareZeroTrustTunnelStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustTunnelStackOutputs) Reset() {
-	*x = CloudflareZeroTrustTunnelStackOutputs{}
+func (x *CloudflareZeroTrustTunnelOutputs) Reset() {
+	*x = CloudflareZeroTrustTunnelOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrusttunnel_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustTunnelStackOutputs) String() string {
+func (x *CloudflareZeroTrustTunnelOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustTunnelStackOutputs) ProtoMessage() {}
+func (*CloudflareZeroTrustTunnelOutputs) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustTunnelStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustTunnelOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrusttunnel_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,47 +71,47 @@ func (x *CloudflareZeroTrustTunnelStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustTunnelStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustTunnelStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustTunnelOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustTunnelOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrusttunnel_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustTunnelStackOutputs) GetTunnelId() string {
+func (x *CloudflareZeroTrustTunnelOutputs) GetTunnelId() string {
 	if x != nil {
 		return x.TunnelId
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustTunnelStackOutputs) GetTunnelCname() string {
+func (x *CloudflareZeroTrustTunnelOutputs) GetTunnelCname() string {
 	if x != nil {
 		return x.TunnelCname
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustTunnelStackOutputs) GetTunnelToken() string {
+func (x *CloudflareZeroTrustTunnelOutputs) GetTunnelToken() string {
 	if x != nil {
 		return x.TunnelToken
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustTunnelStackOutputs) GetTunnelStatus() string {
+func (x *CloudflareZeroTrustTunnelOutputs) GetTunnelStatus() string {
 	if x != nil {
 		return x.TunnelStatus
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustTunnelStackOutputs) GetAccountTag() string {
+func (x *CloudflareZeroTrustTunnelOutputs) GetAccountTag() string {
 	if x != nil {
 		return x.AccountTag
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustTunnelStackOutputs) GetCreatedOn() string {
+func (x *CloudflareZeroTrustTunnelOutputs) GetCreatedOn() string {
 	if x != nil {
 		return x.CreatedOn
 	}
@@ -122,8 +122,8 @@ var File_catalog_cloudflare_cloudflarezerotrusttunnel_v1alpha1_outputs_proto pro
 
 const file_catalog_cloudflare_cloudflarezerotrusttunnel_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/cloudflare/cloudflarezerotrusttunnel/v1alpha1/outputs.proto\x129dev.planton.cloudflare.cloudflarezerotrusttunnel.v1alpha1\x1a\x1cshared/options/options.proto\"\xf5\x01\n" +
-	"%CloudflareZeroTrustTunnelStackOutputs\x12\x1b\n" +
+	"Ccatalog/cloudflare/cloudflarezerotrusttunnel/v1alpha1/outputs.proto\x129dev.planton.cloudflare.cloudflarezerotrusttunnel.v1alpha1\x1a\x1cshared/options/options.proto\"\xf0\x01\n" +
+	" CloudflareZeroTrustTunnelOutputs\x12\x1b\n" +
 	"\ttunnel_id\x18\x01 \x01(\tR\btunnelId\x12!\n" +
 	"\ftunnel_cname\x18\x02 \x01(\tR\vtunnelCname\x12'\n" +
 	"\ftunnel_token\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\vtunnelToken\x12#\n" +
@@ -148,7 +148,7 @@ func file_catalog_cloudflare_cloudflarezerotrusttunnel_v1alpha1_outputs_proto_ra
 
 var file_catalog_cloudflare_cloudflarezerotrusttunnel_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrusttunnel_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareZeroTrustTunnelStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrusttunnel.v1alpha1.CloudflareZeroTrustTunnelStackOutputs
+	(*CloudflareZeroTrustTunnelOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrusttunnel.v1alpha1.CloudflareZeroTrustTunnelOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrusttunnel_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

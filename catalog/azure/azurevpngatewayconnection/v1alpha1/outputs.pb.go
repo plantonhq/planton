@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureVpnGatewayConnectionStackOutputs** captures the outputs of
+// **AzureVpnGatewayConnectionOutputs** captures the outputs of
 // provisioning a VPN gateway connection.
-type AzureVpnGatewayConnectionStackOutputs struct {
+type AzureVpnGatewayConnectionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the connection (a child of the
 	// gateway).
@@ -35,20 +35,20 @@ type AzureVpnGatewayConnectionStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureVpnGatewayConnectionStackOutputs) Reset() {
-	*x = AzureVpnGatewayConnectionStackOutputs{}
+func (x *AzureVpnGatewayConnectionOutputs) Reset() {
+	*x = AzureVpnGatewayConnectionOutputs{}
 	mi := &file_catalog_azure_azurevpngatewayconnection_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVpnGatewayConnectionStackOutputs) String() string {
+func (x *AzureVpnGatewayConnectionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVpnGatewayConnectionStackOutputs) ProtoMessage() {}
+func (*AzureVpnGatewayConnectionOutputs) ProtoMessage() {}
 
-func (x *AzureVpnGatewayConnectionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureVpnGatewayConnectionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevpngatewayconnection_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureVpnGatewayConnectionStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVpnGatewayConnectionStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureVpnGatewayConnectionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVpnGatewayConnectionOutputs.ProtoReflect.Descriptor instead.
+func (*AzureVpnGatewayConnectionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevpngatewayconnection_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVpnGatewayConnectionStackOutputs) GetConnectionId() string {
+func (x *AzureVpnGatewayConnectionOutputs) GetConnectionId() string {
 	if x != nil {
 		return x.ConnectionId
 	}
 	return ""
 }
 
-func (x *AzureVpnGatewayConnectionStackOutputs) GetConnectionName() string {
+func (x *AzureVpnGatewayConnectionOutputs) GetConnectionName() string {
 	if x != nil {
 		return x.ConnectionName
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurevpngatewayconnection_v1alpha1_outputs_proto protoref
 
 const file_catalog_azure_azurevpngatewayconnection_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/azure/azurevpngatewayconnection/v1alpha1/outputs.proto\x124dev.planton.azure.azurevpngatewayconnection.v1alpha1\"u\n" +
-	"%AzureVpnGatewayConnectionStackOutputs\x12#\n" +
+	">catalog/azure/azurevpngatewayconnection/v1alpha1/outputs.proto\x124dev.planton.azure.azurevpngatewayconnection.v1alpha1\"p\n" +
+	" AzureVpnGatewayConnectionOutputs\x12#\n" +
 	"\rconnection_id\x18\x01 \x01(\tR\fconnectionId\x12'\n" +
 	"\x0fconnection_name\x18\x02 \x01(\tR\x0econnectionNameB\xae\x03\n" +
 	"8com.dev.planton.azure.azurevpngatewayconnection.v1alpha1B\fOutputsProtoP\x01Zogithub.com/plantonhq/planton/catalog/azure/azurevpngatewayconnection/v1alpha1;azurevpngatewayconnectionv1alpha1\xa2\x02\x04DPAA\xaa\x024Dev.Planton.Azure.Azurevpngatewayconnection.V1alpha1\xca\x024Dev\\Planton\\Azure\\Azurevpngatewayconnection\\V1alpha1\xe2\x02@Dev\\Planton\\Azure\\Azurevpngatewayconnection\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Azure::Azurevpngatewayconnection::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_azure_azurevpngatewayconnection_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_azure_azurevpngatewayconnection_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurevpngatewayconnection_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureVpnGatewayConnectionStackOutputs)(nil), // 0: dev.planton.azure.azurevpngatewayconnection.v1alpha1.AzureVpnGatewayConnectionStackOutputs
+	(*AzureVpnGatewayConnectionOutputs)(nil), // 0: dev.planton.azure.azurevpngatewayconnection.v1alpha1.AzureVpnGatewayConnectionOutputs
 }
 var file_catalog_azure_azurevpngatewayconnection_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

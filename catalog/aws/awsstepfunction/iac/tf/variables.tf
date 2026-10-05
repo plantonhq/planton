@@ -1,5 +1,5 @@
 variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name        = string
     id          = optional(string, "")
@@ -45,7 +45,7 @@ variable "spec" {
     # Publish a version of the state machine on every create and on every
     # configuration update. Published versions are immutable snapshots
     # (definition + role + logging/tracing/encryption at publish time) addressed
-    # by the version ARN exported in stack outputs. Versions are the foundation
+    # by the version ARN exported in outputs. Versions are the foundation
     # for alias-based traffic shifting and safe rollbacks: point consumers at a
     # version ARN (or an alias routing between two versions) instead of the
     # mutable state machine ARN. When false (the default), executions always run

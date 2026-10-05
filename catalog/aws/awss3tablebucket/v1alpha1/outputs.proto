@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awss3tablebucket.v1alpha1;
 
-// AwsS3TableBucketStackOutputs captures the observable state of the
+// AwsS3TableBucketOutputs captures the observable state of the
 // table bucket and its contents after apply.
-message AwsS3TableBucketStackOutputs {
+message AwsS3TableBucketOutputs {
   // The table bucket's ARN - what catalog integrations, policies,
   // and replication destinations reference, and the provider's
   // import ID.

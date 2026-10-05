@@ -27,16 +27,16 @@ import (
 // external reachability (the ACME server, Vault, DNS) that is not part of
 // applying the resource. Terraform equivalent: kubectl_manifest without a
 // wait_for block.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesissuerv1alpha1.KubernetesIssuerStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesissuerv1alpha1.KubernetesIssuerIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
-	result, err := certmanagerissuer.BuildSpec(locals.IssuerName, stackInput.Target.Spec.Config)
+	result, err := certmanagerissuer.BuildSpec(locals.IssuerName, iacInput.Target.Spec.Config)
 	if err != nil {
 		return errors.Wrap(err, "failed to build issuer spec")
 	}

@@ -3,14 +3,14 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1;
 
 /**
- * **KubernetesPlantonPlatformStackOutputs** — the handles a deployed
+ * **KubernetesPlantonPlatformOutputs** — the handles a deployed
  * Planton platform exports: everything a person (or the Planton desktop
  * app's connect-existing flow) needs to reach the platform's front door
  * and complete first-run setup. All values derive from the declaration
  * itself (the operator's naming is deterministic per platform name), so
  * they are stable from the first apply.
  */
-message KubernetesPlantonPlatformStackOutputs {
+message KubernetesPlantonPlatformOutputs {
   // Namespace the platform lives in.
   string namespace = 1;
 

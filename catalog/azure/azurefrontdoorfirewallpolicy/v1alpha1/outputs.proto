@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1;
 
-// **AzureFrontDoorFirewallPolicyStackOutputs** captures the outputs of
+// **AzureFrontDoorFirewallPolicyOutputs** captures the outputs of
 // provisioning an Azure Front Door WAF policy.
-message AzureFrontDoorFirewallPolicyStackOutputs {
+message AzureFrontDoorFirewallPolicyOutputs {
   // The Azure Resource Manager ID of the WAF policy -- what
   // AzureFrontDoorSecurityPolicy's firewall_policy_id references to
   // attach this policy to a profile's domains (the policy enforces

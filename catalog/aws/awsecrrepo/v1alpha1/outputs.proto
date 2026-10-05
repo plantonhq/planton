@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.aws.awsecrrepo.v1alpha1;
 
-// aws-ecr-repo stack outputs
-message AwsEcrRepoStackOutputs {
+// aws-ecr-repo outputs
+message AwsEcrRepoOutputs {
   // The repository name, matching spec.repository_name
   string repository_name = 1;
 

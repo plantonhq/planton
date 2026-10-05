@@ -5,9 +5,9 @@ package dev.planton.aws.awsconfigrecorder.v1alpha1;
 import "catalog/aws/awsconfigrecorder/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsConfigRecorderStackInput is the input for the IaC modules that
+// AwsConfigRecorderIacInput is the input for the IaC modules that
 // manage the region's AWS Config recording posture.
-message AwsConfigRecorderStackInput {
+message AwsConfigRecorderIacInput {
   // target is the AwsConfigRecorder resource to deploy.
   AwsConfigRecorder target = 1;
   // provider_config contains the AWS provider credentials and configuration.

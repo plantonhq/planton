@@ -6,9 +6,9 @@ go_library(
     importpath = "github.com/plantonhq/planton/internal/cli/ui/validateoutputs",
     visibility = ["//:__subpackages__"],
     deps = [
-        "//pkg/crkreflect",
+        "//pkg/catalogkindreflect",
         "//pkg/outputs",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@com_github_charmbracelet_lipgloss//:lipgloss",
     ],
 )

@@ -18,9 +18,9 @@
   verified facts the derive branch rests on, and the failure standard:
   every precondition, error, and refusal names what was observed, what it
   means, and the next step — mechanism-only text is a defect.
-  (`_rules/component/forge/forge-planton-component.mdc`,
-  `_rules/component/forge/README.md`,
-  `_rules/component/update/update-planton-component.mdc`.)
+  (`_rules/catalog-kind/forge/forge-catalog-kind.mdc`,
+  `_rules/catalog-kind/forge/README.md`,
+  `_rules/catalog-kind/update/update-catalog-kind.mdc`.)
 - **Two guards make the retired shape unshippable.** The anatomy gate
   (`pkg/anatomy`) no longer admits `iac/crds/`; it is an unexpected entry
   with the remedy in its message, and the four kinds that still carry it

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kuberneteskeda.v1alpha1;
 
-// KubernetesKedaStackOutputs captures observable outputs after KEDA is
+// KubernetesKedaOutputs captures observable outputs after KEDA is
 // installed on the target cluster.
-message KubernetesKedaStackOutputs {
+message KubernetesKedaOutputs {
   // Namespace KEDA was installed into (the resolved spec.namespace).
   // ScaledObjects live NEXT TO their workloads, not here — this is where
   // the engine runs.

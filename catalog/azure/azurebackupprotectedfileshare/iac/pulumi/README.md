@@ -8,7 +8,7 @@ Puts one Azure Files share under a backup policy's protection in a Recovery Serv
 
 - `backup.ProtectedFileShare` -- the protected item (`.../protectionContainers/StorageContainer;storage;{sa-rg};{sa-name}/protectedItems/AzureFileShare;{system-name}`)
 
-## Stack Outputs
+## Outputs
 
 - `backup_protected_file_share_id` -- the protected item's full ARM ID (Azure names it by the share's SYSTEM name, not its friendly name)
 

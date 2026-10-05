@@ -1,10 +1,10 @@
 # Stripe Billing Meter
 
-Declares a usage meter -- API requests summed per customer, the latest seat count -- that a metered price bills, with alerts when a customer's usage crosses a threshold. One Cloud Resource per meter.
+Declares a usage meter -- API requests summed per customer, the latest seat count -- that a metered price bills, with alerts when a customer's usage crosses a threshold. One Infra Component per meter.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module creates, in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module creates, in the Stripe account your Stripe connection's key belongs to:
 
 - **The meter** -- the event name your application sends, and how events add up per customer
 - **Its alerts** -- one per declared threshold, each sending `billing.alert.triggered` when a customer reaches it
@@ -49,7 +49,7 @@ spec:
 planton apply -f stripe-billing-meter.yaml
 ```
 
-A Stack Job tracks the change in real time.
+An Infra Job tracks the change in real time.
 
 ## Key Configuration
 
@@ -63,11 +63,11 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -115,5 +115,5 @@ spec:
 
 ## Works With
 
-- [**Stripe Price**](/cloud-catalog/stripe-price) -- a metered price bills what the meter counts.
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- your application reads the event name by reference.
+- [**Stripe Price**](/infra-catalog/stripe-price) -- a metered price bills what the meter counts.
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- your application reads the event name by reference.

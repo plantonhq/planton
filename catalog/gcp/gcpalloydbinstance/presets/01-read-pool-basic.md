@@ -26,7 +26,7 @@ This preset adds a single-node READ_POOL instance to an existing AlloyDB cluster
 - **02-read-pool-ha** — regional pool with two nodes
 - **03-read-pool-production** — connectors, TLS, and query insights
 
-## Related Components
+## Related Kinds
 
 - [GcpAlloydbCluster](/docs/catalog/gcp/gcpalloydbcluster) — the cluster this instance attaches to
 - [GcpAlloydbUser](/docs/catalog/gcp/gcpalloydbuser) — application credentials on the same cluster

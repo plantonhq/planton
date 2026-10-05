@@ -631,7 +631,7 @@ resource "kubernetes_daemon_set_v1" "this" {
             # sleep action the Pulumi module renders. A spec using the sleep hook
             # deploys identically through Pulumi; on Terraform express the same
             # drain with exec ["/bin/sleep", "N"] (requires a sleep binary in the
-            # image). Stack outputs are unaffected.
+            # image). Outputs are unaffected.
             dynamic "lifecycle" {
               for_each = try(container.value.lifecycle, null) != null ? [container.value.lifecycle] : []
               content {

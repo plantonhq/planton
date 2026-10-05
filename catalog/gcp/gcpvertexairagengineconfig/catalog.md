@@ -4,7 +4,7 @@ Turns Vertex AI RAG Engine's managed vector database on for a project and locati
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project
 - **RAG Engine configuration** -- a `vertex.AiRagEngineConfig` for the location, set to the declared tier
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with `roles/aiplatform.admin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with `roles/aiplatform.admin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -43,7 +43,7 @@ spec:
 planton apply -f rag-engine-config.yaml
 ```
 
-This sets the Scaled tier for `us-central1` and guards it against an accidental destroy. A Stack Job tracks the provisioning in real time.
+This sets the Scaled tier for `us-central1` and guards it against an accidental destroy. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -61,15 +61,15 @@ These are the most important decisions when configuring the RAG Engine tier. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -86,5 +86,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Vector Search Collection**](/cloud-catalog/gcp-vector-search-collection) -- an external vector database RAG Engine can use instead of its managed one
-- [**GCP Vertex AI Agent Engine**](/cloud-catalog/gcp-vertex-ai-agent-engine) -- the agent runtime that consumes RAG corpora
+- [**GCP Vector Search Collection**](/infra-catalog/gcp-vector-search-collection) -- an external vector database RAG Engine can use instead of its managed one
+- [**GCP Vertex AI Agent Engine**](/infra-catalog/gcp-vertex-ai-agent-engine) -- the agent runtime that consumes RAG corpora

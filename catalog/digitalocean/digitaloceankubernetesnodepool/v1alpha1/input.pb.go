@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// digital-ocean-kubernetes-node-pool stack-input
-type DigitalOceanKubernetesNodePoolStackInput struct {
+// digital-ocean-kubernetes-node-pool iac-input
+type DigitalOceanKubernetesNodePoolIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *DigitalOceanKubernetesNodePool `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type DigitalOceanKubernetesNodePoolStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *DigitalOceanKubernetesNodePoolStackInput) Reset() {
-	*x = DigitalOceanKubernetesNodePoolStackInput{}
+func (x *DigitalOceanKubernetesNodePoolIacInput) Reset() {
+	*x = DigitalOceanKubernetesNodePoolIacInput{}
 	mi := &file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanKubernetesNodePoolStackInput) String() string {
+func (x *DigitalOceanKubernetesNodePoolIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanKubernetesNodePoolStackInput) ProtoMessage() {}
+func (*DigitalOceanKubernetesNodePoolIacInput) ProtoMessage() {}
 
-func (x *DigitalOceanKubernetesNodePoolStackInput) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanKubernetesNodePoolIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *DigitalOceanKubernetesNodePoolStackInput) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanKubernetesNodePoolStackInput.ProtoReflect.Descriptor instead.
-func (*DigitalOceanKubernetesNodePoolStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanKubernetesNodePoolIacInput.ProtoReflect.Descriptor instead.
+func (*DigitalOceanKubernetesNodePoolIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanKubernetesNodePoolStackInput) GetTarget() *DigitalOceanKubernetesNodePool {
+func (x *DigitalOceanKubernetesNodePoolIacInput) GetTarget() *DigitalOceanKubernetesNodePool {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *DigitalOceanKubernetesNodePoolStackInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
+func (x *DigitalOceanKubernetesNodePoolIacInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_input_prot
 
 const file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Hcatalog/digitalocean/digitaloceankubernetesnodepool/v1alpha1/input.proto\x12@dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1\x1aFcatalog/digitalocean/digitaloceankubernetesnodepool/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\x83\x02\n" +
-	"(DigitalOceanKubernetesNodePoolStackInput\x12x\n" +
+	"Hcatalog/digitalocean/digitaloceankubernetesnodepool/v1alpha1/input.proto\x12@dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1\x1aFcatalog/digitalocean/digitaloceankubernetesnodepool/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\x81\x02\n" +
+	"&DigitalOceanKubernetesNodePoolIacInput\x12x\n" +
 	"\x06target\x18\x01 \x01(\v2`.dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1.DigitalOceanKubernetesNodePoolR\x06target\x12]\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v24.dev.planton.digitalocean.DigitalOceanProviderConfigR\x0eproviderConfigB\xfa\x03\n" +
 	"Dcom.dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_input_pro
 
 var file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_input_proto_goTypes = []any{
-	(*DigitalOceanKubernetesNodePoolStackInput)(nil), // 0: dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1.DigitalOceanKubernetesNodePoolStackInput
-	(*DigitalOceanKubernetesNodePool)(nil),           // 1: dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1.DigitalOceanKubernetesNodePool
-	(*digitalocean.DigitalOceanProviderConfig)(nil),  // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
+	(*DigitalOceanKubernetesNodePoolIacInput)(nil),  // 0: dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1.DigitalOceanKubernetesNodePoolIacInput
+	(*DigitalOceanKubernetesNodePool)(nil),          // 1: dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1.DigitalOceanKubernetesNodePool
+	(*digitalocean.DigitalOceanProviderConfig)(nil), // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
 }
 var file_catalog_digitalocean_digitaloceankubernetesnodepool_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1.DigitalOceanKubernetesNodePoolStackInput.target:type_name -> dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1.DigitalOceanKubernetesNodePool
-	2, // 1: dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1.DigitalOceanKubernetesNodePoolStackInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
+	1, // 0: dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1.DigitalOceanKubernetesNodePoolIacInput.target:type_name -> dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1.DigitalOceanKubernetesNodePool
+	2, // 1: dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1.DigitalOceanKubernetesNodePoolIacInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

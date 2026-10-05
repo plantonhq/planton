@@ -4,7 +4,7 @@ Deploys a Cloudflare Logpush job that continuously ships one log dataset — HTT
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Logpush Job** -- one `cloudflare_logpush_job` on the account or zone scope, shipping the chosen dataset to the configured destination
 - **Logpush Ownership Challenge** -- created only when `generateOwnershipChallenge` is `true`; makes Cloudflare drop a challenge file into the destination so you can prove you control it. The challenge is one-shot at Cloudflare: it cannot be read back, updated, or imported, and destroying it only removes it from state
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Logs Write on the target account or zone. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Logs Write on the target account or zone. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -53,7 +53,7 @@ spec:
 planton apply -f logpush-job.yaml
 ```
 
-This creates an enabled zone-scoped job shipping the zone's HTTP request logs to a same-account R2 bucket in one-minute batches — same-account R2 needs no ownership proof, so logs flow after this single apply. A Stack Job tracks the provisioning in real time.
+This creates an enabled zone-scoped job shipping the zone's HTTP request logs to a same-account R2 bucket in one-minute batches — same-account R2 needs no ownership proof, so logs flow after this single apply. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,15 +91,15 @@ These are the most important decisions when configuring a Logpush job. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -119,6 +119,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- the scope for every zone dataset; wire `zoneId` via ValueFromRef.
-- [**Cloudflare R2 Bucket**](/cloud-catalog/cloudflare-r2-bucket) -- the usual same-account destination, and the only kind that skips the ownership handshake.
-- [**Cloudflare Notification Policy**](/cloud-catalog/cloudflare-notification-policy) -- alerts when a job starts failing or gets disabled, closing the silent-delete gap.
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- the scope for every zone dataset; wire `zoneId` via ValueFromRef.
+- [**Cloudflare R2 Bucket**](/infra-catalog/cloudflare-r2-bucket) -- the usual same-account destination, and the only kind that skips the ownership handshake.
+- [**Cloudflare Notification Policy**](/infra-catalog/cloudflare-notification-policy) -- alerts when a job starts failing or gets disabled, closing the silent-delete gap.

@@ -6,7 +6,7 @@ Schemas live in a compacted Kafka topic (`_schemas` by convention) on the connec
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Deployment + Service** — the registry engine (Karapace has no official Helm chart; the module owns the manifests)
 - **Optional second Deployment** — the Kafka REST-proxy role (`<name>-rest`) when `restProxy.enabled` is true
@@ -53,7 +53,7 @@ spec:
 planton apply -f karapace-registry.yaml
 ```
 
-This creates a single-replica registry storing schemas in the connected Kafka cluster's `_schemas` topic, reachable in-cluster at the exported endpoint. A Stack Job tracks the provisioning in real time.
+This creates a single-replica registry storing schemas in the connected Kafka cluster's `_schemas` topic, reachable in-cluster at the exported endpoint. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,7 +87,7 @@ These are the most important decisions when configuring a Karapace registry. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -98,9 +98,9 @@ These are the most important decisions when configuring a Karapace registry. Exp
 | **KubernetesCertificate** | `serverTls.secretName` | `status.outputs.secret_name` |
 | **KubernetesSecret** | `httpAuthentication.basic.secretName` | `status.outputs.secret_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,8 +122,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Apache Kafka**](/cloud-catalog/kubernetes-kafka) — the cluster storing schemas; wire `bootstrapServers` from its outputs
-- [**Kafka User**](/cloud-catalog/kubernetes-kafka-user) — operator-generated SASL credentials via `passwordSecret`
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) — cert-manager-issued TLS for `serverTls`
-- [**Kafka Connect**](/cloud-catalog/kubernetes-kafka-connect) — Connect converters point `schema.registry.url` at the `endpoint` output
-- [**Kafka UI**](/cloud-catalog/kubernetes-kafka-ui) — schema-aware browsing wired through the same endpoint
+- [**Apache Kafka**](/infra-catalog/kubernetes-kafka) — the cluster storing schemas; wire `bootstrapServers` from its outputs
+- [**Kafka User**](/infra-catalog/kubernetes-kafka-user) — operator-generated SASL credentials via `passwordSecret`
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) — cert-manager-issued TLS for `serverTls`
+- [**Kafka Connect**](/infra-catalog/kubernetes-kafka-connect) — Connect converters point `schema.registry.url` at the `endpoint` output
+- [**Kafka UI**](/infra-catalog/kubernetes-kafka-ui) — schema-aware browsing wired through the same endpoint

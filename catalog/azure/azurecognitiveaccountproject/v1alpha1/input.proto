@@ -5,10 +5,10 @@ package dev.planton.azure.azurecognitiveaccountproject.v1alpha1;
 import "catalog/azure/azurecognitiveaccountproject/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureCognitiveAccountProjectStackInput is the input to the IaC
+// AzureCognitiveAccountProjectIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-message AzureCognitiveAccountProjectStackInput {
+message AzureCognitiveAccountProjectIacInput {
   // The AI Foundry project resource to deploy.
   AzureCognitiveAccountProject target = 1;
 

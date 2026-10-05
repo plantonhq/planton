@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurednsrecord
 spec:
   billing_model: free
   free_tier: A record set -- one (name, type) pair and all its values, whatever the payload (A, AAAA, CNAME, MX, SRV, CAA, TXT, NS, PTR) -- never bills. Azure public DNS has no per-record meter; alias records and TTL choices are equally free.
-  notes: "No field of this spec buys anything: the nine typed payloads, ttl_seconds, and tags are all free record-set data. The real spend lives in the hosted zone the record is created in -- AzureDnsZone bills a fixed monthly fee per zone plus a per-million-queries rate, and this record's answers count toward that zone's query volume. An alias target (target_resource_id) points at a resource like a Public IP that bills as its own catalog kind."
+  notes: "No field of this spec buys anything: the nine typed payloads, ttl_seconds, and tags are all free record-set data. The real spend lives in the hosted zone the record is created in -- AzureDnsZone bills a fixed monthly fee per zone plus a per-million-queries rate, and this record's answers count toward that zone's query volume. An alias target (target_resource_id) points at a resource like a Public IP that bills as its own component."

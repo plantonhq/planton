@@ -4,7 +4,7 @@ Attaches a Google Cloud project to a Shared VPC host (`GcpSharedVpcHost`) as a S
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Shared VPC attachment** -- the `compute_shared_vpc_service_project` binding a service project to its host
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module whose identity holds `roles/compute.xpnAdmin` on the organization (or a folder above both projects). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module whose identity holds `roles/compute.xpnAdmin` on the organization (or a folder above both projects). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Shared VPC Host and Project
 
@@ -48,7 +48,7 @@ spec:
 planton apply -f shared-vpc-service-project.yaml
 ```
 
-This attaches the payments project to the organization's network host. A Stack Job tracks the provisioning in real time.
+This attaches the payments project to the organization's network host. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,16 +82,16 @@ These are the most important decisions when configuring an attachment. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpSharedVpcHost** | `hostProjectId` | `status.outputs.host_project_id` |
 | **GcpProject** | `serviceProjectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -108,7 +108,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Shared VPC Host**](/cloud-catalog/gcp-shared-vpc-host) -- the host this project attaches to
-- [**GCP Project**](/cloud-catalog/gcp-project) -- the service project
-- [**GCP Project IAM Member**](/cloud-catalog/gcp-project-iam-member) -- the `networkUser` grants on the host
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- the host's subnetworks the service project uses
+- [**GCP Shared VPC Host**](/infra-catalog/gcp-shared-vpc-host) -- the host this project attaches to
+- [**GCP Project**](/infra-catalog/gcp-project) -- the service project
+- [**GCP Project IAM Member**](/infra-catalog/gcp-project-iam-member) -- the `networkUser` grants on the host
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- the host's subnetworks the service project uses

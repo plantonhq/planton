@@ -28,11 +28,11 @@ var aceTypeStrings = map[azurestoragedatalakegen2filesystemv1alpha1.AzureStorage
 	azurestoragedatalakegen2filesystemv1alpha1.AzureStorageDataLakeGen2FilesystemAceType_OTHER: "other",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurestoragedatalakegen2filesystemv1alpha1.AzureStorageDataLakeGen2FilesystemStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurestoragedatalakegen2filesystemv1alpha1.AzureStorageDataLakeGen2FilesystemIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureStorageDataLakeGen2Filesystem = stackInput.Target
-	locals.StorageAccountId = stackInput.Target.Spec.StorageAccountId.GetValue()
+	locals.AzureStorageDataLakeGen2Filesystem = iacInput.Target
+	locals.StorageAccountId = iacInput.Target.Spec.StorageAccountId.GetValue()
 
 	// No Azure tags: ARM does not support tags on this resource (the
 	// properties map is the filesystem-level metadata surface), so the

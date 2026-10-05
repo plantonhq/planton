@@ -4,7 +4,7 @@ Deploys an EC2 Auto Scaling group — the fleet manager that keeps a set of inst
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Auto Scaling Group** -- the fleet with its bounds, subnet spread, health model, capacity source (single template or mixed-instances policy), Capacity Reservation targeting, traffic sources (VPC Lattice / Classic ELB), and terminate-hook retention policy
 - **Scaling Policies** -- one per `scalingPolicies` entry (target tracking, step, simple, or predictive — with pair, split, or fully customized forecast metrics); target tracking's underlying CloudWatch alarms are created and managed by AWS; `disabled` pauses a policy without deleting it
@@ -17,12 +17,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A launch template with an AMI** -- the group requires the template it references to carry an image. Reference an AwsLaunchTemplate Cloud Resource or pass a literal lt- ID.
+- **A launch template with an AMI** -- the group requires the template it references to carry an image. Reference an AwsLaunchTemplate Infra Component or pass a literal lt- ID.
 - **Subnets in at least two availability zones** -- the fault-tolerance floor; the group rebalances across the zones its subnets cover.
 - **Target groups** (for load-balanced fleets) -- reference AwsLbTargetGroup resources and pair them with the ELB health check type.
 
@@ -86,7 +86,7 @@ spec:
 planton apply -f auto-scaling-group.yaml
 ```
 
-This runs the full production loop: a two-instance floor across two zones, ELB health checks replacing wedged processes, a CPU thermostat at 60%, and rolling surge rollouts (110%/100%) with auto-rollback whenever the launch template publishes a new version. A Stack Job tracks the provisioning in real time.
+This runs the full production loop: a two-instance floor across two zones, ELB health checks replacing wedged processes, a CPU thermostat at 60%, and rolling surge rollouts (110%/100%) with auto-rollback whenever the launch template publishes a new version. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -134,7 +134,7 @@ These are the most important decisions when configuring an auto-scaling group. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -146,9 +146,9 @@ These are the most important decisions when configuring an auto-scaling group. E
 | **AwsSnsTopic** (hooks + notifications) | `lifecycleHooks[].notificationTargetArn`, `notifications.topic` | `status.outputs.topic_arn` |
 | **AwsIamRole** (hook publish role) | `lifecycleHooks[].roleArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -169,8 +169,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Launch Template**](/cloud-catalog/aws-launch-template) -- the blueprint every instance launches from; publishing a version rolls this fleet via instance refresh
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- the zones capacity spreads across
-- [**AWS LB Target Group**](/cloud-catalog/aws-lb-target-group) -- the traffic contract; pair with ELB health checks
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) -- fleet lifecycle notifications and lifecycle-hook delivery
-- [**AWS CloudWatch Alarm**](/cloud-catalog/aws-cloudwatch-alarm) -- step-scaling triggers and instance-refresh watch alarms
+- [**AWS Launch Template**](/infra-catalog/aws-launch-template) -- the blueprint every instance launches from; publishing a version rolls this fleet via instance refresh
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- the zones capacity spreads across
+- [**AWS LB Target Group**](/infra-catalog/aws-lb-target-group) -- the traffic contract; pair with ELB health checks
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) -- fleet lifecycle notifications and lifecycle-hook delivery
+- [**AWS CloudWatch Alarm**](/infra-catalog/aws-cloudwatch-alarm) -- step-scaling triggers and instance-refresh watch alarms

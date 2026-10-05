@@ -36,7 +36,7 @@ var _ = ginkgo.Describe("KubernetesKarpenterEc2NodeClass Validation Tests", func
 		input = &KubernetesKarpenterEc2NodeClass{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesKarpenterEc2NodeClass",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "default-al2023",
 			},
 			Spec: &KubernetesKarpenterEc2NodeClassSpec{

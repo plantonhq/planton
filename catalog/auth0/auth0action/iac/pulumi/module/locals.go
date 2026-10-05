@@ -19,13 +19,13 @@ type Locals struct {
 	TriggerBinding   *auth0actionv1alpha1.Auth0ActionTriggerBinding
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *auth0actionv1alpha1.Auth0ActionStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *auth0actionv1alpha1.Auth0ActionIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.Auth0Action = stackInput.Target
+	locals.Auth0Action = iacInput.Target
 
-	spec := stackInput.Target.Spec
-	metadata := stackInput.Target.Metadata
+	spec := iacInput.Target.Spec
+	metadata := iacInput.Target.Metadata
 
 	locals.ActionName = metadata.Name
 	locals.Code = spec.Code

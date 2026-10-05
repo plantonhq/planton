@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added `api_grants` support to the Auth0Client deployment component, enabling Machine-to-Machine (M2M) applications to be fully configured with API access authorization without manual Auth0 Dashboard intervention. This closes a critical gap where M2M apps could authenticate but couldn't access any APIs without manual configuration.
+Added `api_grants` support to the Auth0Client catalog kind, enabling Machine-to-Machine (M2M) applications to be fully configured with API access authorization without manual Auth0 Dashboard intervention. This closes a critical gap where M2M apps could authenticate but couldn't access any APIs without manual configuration.
 
 ## Problem Statement / Motivation
 
-The Auth0Client component allowed creating M2M applications with OAuth grant types, but did not support authorizing clients for specific APIs. This meant that after deploying an M2M client via Planton, operators had to manually log into the Auth0 Dashboard to authorize the client and grant API scopes.
+The Auth0Client kind allowed creating M2M applications with OAuth grant types, but did not support authorizing clients for specific APIs. This meant that after deploying an M2M client via Planton, operators had to manually log into the Auth0 Dashboard to authorize the client and grant API scopes.
 
 ### Pain Points
 
@@ -165,8 +165,8 @@ resource "auth0_client_grant" "api_grants" {
 
 ## Related Work
 
-- Issue: `_issues/2026-01-06-061930.deployment-component.feat.auth0-client-api-grants.md`
-- Related component: Auth0Connection (may benefit from similar patterns)
+- Issue: `_issues/2026-01-06-061930.catalog-kind.feat.auth0-client-api-grants.md`
+- Related kind: Auth0Connection (may benefit from similar patterns)
 - InfraChart: `planton-auth0-tenant-stack` can now be fully automated
 
 ## Usage Examples
@@ -205,5 +205,5 @@ api_grants:
 
 **Status**: ✅ Production Ready
 **Timeline**: Single session implementation
-**Validation**: Proto generation, component tests, and full build passed
+**Validation**: Proto generation, kind tests, and full build passed
 

@@ -34,10 +34,10 @@ type AzureDataProtectionBackupVault struct {
 	// Resource kind. Must be "AzureDataProtectionBackupVault".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Data Protection backup vault specification.
 	Spec *AzureDataProtectionBackupVaultSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureDataProtectionBackupVaultStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -87,7 +87,7 @@ func (x *AzureDataProtectionBackupVault) GetKind() string {
 	return ""
 }
 
-func (x *AzureDataProtectionBackupVault) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureDataProtectionBackupVault) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureDataProtectionBackupVault) GetStatus() *AzureDataProtectionBackupV
 // AzureDataProtectionBackupVaultStatus holds the deployment outputs.
 type AzureDataProtectionBackupVaultStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureDataProtectionBackupVaultStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureDataProtectionBackupVaultOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureDataProtectionBackupVaultStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredataprotectionbackupvault_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureDataProtectionBackupVaultStatus) GetOutputs() *AzureDataProtectionBackupVaultStackOutputs {
+func (x *AzureDataProtectionBackupVaultStatus) GetOutputs() *AzureDataProtectionBackupVaultOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azuredataprotectionbackupvault_v1alpha1_api_proto_rawDe
 	"apiVersion\x129\n" +
 	"\x04kind\x18\x02 \x01(\tB%\xbaH\"r \n" +
 	"\x1eAzureDataProtectionBackupVaultR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
 	"\x04spec\x18\x04 \x01(\v2].dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12w\n" +
-	"\x06status\x18\x05 \x01(\v2_.dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultStatusR\x06status\"\xa7\x01\n" +
-	"$AzureDataProtectionBackupVaultStatus\x12\x7f\n" +
-	"\aoutputs\x18\x01 \x01(\v2e.dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultStackOutputsR\aoutputsB\xcd\x03\n" +
+	"\x06status\x18\x05 \x01(\v2_.dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultStatusR\x06status\"\xa2\x01\n" +
+	"$AzureDataProtectionBackupVaultStatus\x12z\n" +
+	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultOutputsR\aoutputsB\xcd\x03\n" +
 	"=com.dev.planton.azure.azuredataprotectionbackupvault.v1alpha1B\bApiProtoP\x01Zygithub.com/plantonhq/planton/catalog/azure/azuredataprotectionbackupvault/v1alpha1;azuredataprotectionbackupvaultv1alpha1\xa2\x02\x04DPAA\xaa\x029Dev.Planton.Azure.Azuredataprotectionbackupvault.V1alpha1\xca\x029Dev\\Planton\\Azure\\Azuredataprotectionbackupvault\\V1alpha1\xe2\x02EDev\\Planton\\Azure\\Azuredataprotectionbackupvault\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Azure::Azuredataprotectionbackupvault::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azuredataprotectionbackupvault_v1alpha1_api_proto_rawDes
 
 var file_catalog_azure_azuredataprotectionbackupvault_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuredataprotectionbackupvault_v1alpha1_api_proto_goTypes = []any{
-	(*AzureDataProtectionBackupVault)(nil),             // 0: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVault
-	(*AzureDataProtectionBackupVaultStatus)(nil),       // 1: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultStatus
-	(*shared.CloudResourceMetadata)(nil),               // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureDataProtectionBackupVaultSpec)(nil),         // 3: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultSpec
-	(*AzureDataProtectionBackupVaultStackOutputs)(nil), // 4: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultStackOutputs
+	(*AzureDataProtectionBackupVault)(nil),        // 0: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVault
+	(*AzureDataProtectionBackupVaultStatus)(nil),  // 1: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultStatus
+	(*shared.CatalogObjectMetadata)(nil),          // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureDataProtectionBackupVaultSpec)(nil),    // 3: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultSpec
+	(*AzureDataProtectionBackupVaultOutputs)(nil), // 4: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultOutputs
 }
 var file_catalog_azure_azuredataprotectionbackupvault_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVault.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVault.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVault.spec:type_name -> dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultSpec
 	1, // 2: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVault.status:type_name -> dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultStatus
-	4, // 3: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultStatus.outputs:type_name -> dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultStackOutputs
+	4, // 3: dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultStatus.outputs:type_name -> dev.planton.azure.azuredataprotectionbackupvault.v1alpha1.AzureDataProtectionBackupVaultOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

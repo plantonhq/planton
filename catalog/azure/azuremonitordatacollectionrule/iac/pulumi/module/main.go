@@ -15,12 +15,12 @@ var identityTypeStrings = map[azuremonitordatacollectionrulev1alpha1.AzureMonito
 	azuremonitordatacollectionrulev1alpha1.AzureMonitorDataCollectionRuleIdentityType_USER_ASSIGNED:   "UserAssigned",
 }
 
-func Resources(ctx *pulumi.Context, stackInput *azuremonitordatacollectionrulev1alpha1.AzureMonitorDataCollectionRuleStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuremonitordatacollectionrulev1alpha1.AzureMonitorDataCollectionRuleIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}

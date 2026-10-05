@@ -6,12 +6,12 @@ import "catalog/kubernetes/kubernetespriorityclass/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 /**
- * **KubernetesPriorityClassStackInput** defines the input structure for
+ * **KubernetesPriorityClassIacInput** defines the input structure for
  * deploying a Kubernetes PriorityClass. It carries the target class
  * specification and the Kubernetes cluster configuration the IaC modules
  * (Pulumi and Terraform) need to reach the cluster.
  */
-message KubernetesPriorityClassStackInput {
+message KubernetesPriorityClassIacInput {
   /**
    * The target PriorityClass resource to be created.
    * Contains the complete specification including metadata, priority value,

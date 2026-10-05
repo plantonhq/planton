@@ -1,7 +1,7 @@
 # AzureApplicationSecurityGroup - Terraform Module
 
 Terraform implementation for the AzureApplicationSecurityGroup
-component.
+kind.
 
 ## Resources Created
 

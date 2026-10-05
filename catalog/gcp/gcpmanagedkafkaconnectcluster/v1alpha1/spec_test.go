@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("GcpManagedKafkaConnectClusterSpec", func() {
 		return &GcpManagedKafkaConnectCluster{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpManagedKafkaConnectCluster",
-			Metadata:   &shared.CloudResourceMetadata{Name: "events-connect"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "events-connect"},
 			Spec: &GcpManagedKafkaConnectClusterSpec{
 				Location:       "us-central1",
 				KafkaCluster:   litRef("projects/p/locations/us-central1/clusters/events"),

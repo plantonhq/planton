@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesairflow
 spec:
@@ -27,14 +27,14 @@ spec:
         the resource's name.
     - name: release_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `helm list -A` (NAMESPACE column); conventionally "airflow".
     # ── the optional anchor namespace ──────────────────────────────────
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the installation
@@ -43,7 +43,7 @@ spec:
     - name: secret_name
       tofu_resource_name: fernet_key
       derivations:
-        - from_stack_output: fernet_key_secret_name
+        - from_output: fernet_key_secret_name
         - from_metadata_name_suffix: "-fernet-key"
       where_to_find: >-
         "<resource-name>-fernet-key" when module-generated (a
@@ -52,7 +52,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: fernet_key
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -80,7 +80,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: api_secret_key
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -105,7 +105,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: webserver_secret_key
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -130,7 +130,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: jwt_secret
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -155,7 +155,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: admin_auth
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -179,7 +179,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: redis_password
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -197,7 +197,7 @@ spec:
     - name: secret_name
       tofu_resource_name: metadata_conn
       derivations:
-        - from_stack_output: metadata_connection_secret_name
+        - from_output: metadata_connection_secret_name
         - from_metadata_name_suffix: "-metadata-conn"
       where_to_find: >-
         Always "<resource-name>-metadata-conn" — the SQLAlchemy URI the
@@ -205,7 +205,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: metadata_conn
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -219,14 +219,14 @@ spec:
     - name: secret_namespace
       tofu_resource_name: result_backend_conn
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
     - name: secret_name
       tofu_resource_name: broker_url
       derivations:
-        - from_stack_output: broker_url_secret_name
+        - from_output: broker_url_secret_name
         - from_metadata_name_suffix: "-broker-url"
       where_to_find: >-
         "<resource-name>-broker-url" on the bundled-Redis and composed
@@ -235,7 +235,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: broker_url
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -249,7 +249,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: log_read_conn
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -264,7 +264,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: pgbouncer_config
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -280,7 +280,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: pgbouncer_stats
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.

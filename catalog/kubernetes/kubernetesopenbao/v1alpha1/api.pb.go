@@ -32,8 +32,8 @@ type KubernetesOpenBao struct {
 	ApiVersion string `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	// Resource kind identifier.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// Standard cloud resource metadata.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// Standard catalog object metadata.
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// OpenBao deployment specification.
 	Spec *KubernetesOpenBaoSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// Deployment status and outputs.
@@ -86,7 +86,7 @@ func (x *KubernetesOpenBao) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesOpenBao) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesOpenBao) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *KubernetesOpenBao) GetStatus() *KubernetesOpenBaoStatus {
 // KubernetesOpenBaoStatus represents the deployment status.
 type KubernetesOpenBaoStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the deployment.
-	Outputs       *KubernetesOpenBaoStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the deployment.
+	Outputs       *KubernetesOpenBaoOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*KubernetesOpenBaoStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesOpenBaoStatus) GetOutputs() *KubernetesOpenBaoStackOutputs {
+func (x *KubernetesOpenBaoStatus) GetOutputs() *KubernetesOpenBaoOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_kubernetes_kubernetesopenbao_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11KubernetesOpenBaoR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12d\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12d\n" +
 	"\x04spec\x18\x04 \x01(\v2H.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12b\n" +
-	"\x06status\x18\x05 \x01(\v2J.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStatusR\x06status\"\x85\x01\n" +
-	"\x17KubernetesOpenBaoStatus\x12j\n" +
-	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStackOutputsR\aoutputsB\x90\x03\n" +
+	"\x06status\x18\x05 \x01(\v2J.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStatusR\x06status\"\x80\x01\n" +
+	"\x17KubernetesOpenBaoStatus\x12e\n" +
+	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoOutputsR\aoutputsB\x90\x03\n" +
 	"5com.dev.planton.kubernetes.kubernetesopenbao.v1alpha1B\bApiProtoP\x01Zdgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesopenbao/v1alpha1;kubernetesopenbaov1alpha1\xa2\x02\x04DPKK\xaa\x021Dev.Planton.Kubernetes.Kubernetesopenbao.V1alpha1\xca\x021Dev\\Planton\\Kubernetes\\Kubernetesopenbao\\V1alpha1\xe2\x02=Dev\\Planton\\Kubernetes\\Kubernetesopenbao\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Kubernetes::Kubernetesopenbao::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_kubernetes_kubernetesopenbao_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_kubernetes_kubernetesopenbao_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesopenbao_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesOpenBao)(nil),             // 0: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBao
-	(*KubernetesOpenBaoStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesOpenBaoSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec
-	(*KubernetesOpenBaoStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStackOutputs
+	(*KubernetesOpenBao)(nil),            // 0: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBao
+	(*KubernetesOpenBaoStatus)(nil),      // 1: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesOpenBaoSpec)(nil),        // 3: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec
+	(*KubernetesOpenBaoOutputs)(nil),     // 4: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoOutputs
 }
 var file_catalog_kubernetes_kubernetesopenbao_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBao.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBao.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBao.spec:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec
 	1, // 2: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBao.status:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStatus
-	4, // 3: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -5,9 +5,9 @@ package dev.planton.aws.awsecstaskdefinition.v1alpha1;
 import "catalog/aws/awsecstaskdefinition/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-ecs-task-definition stack-input
-message AwsEcsTaskDefinitionStackInput {
-  //target cloud-resource
+//aws-ecs-task-definition iac-input
+message AwsEcsTaskDefinitionIacInput {
+  // the catalog object to deploy
   AwsEcsTaskDefinition target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

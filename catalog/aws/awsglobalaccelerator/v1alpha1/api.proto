@@ -7,7 +7,7 @@ import "catalog/aws/awsglobalaccelerator/v1alpha1/outputs.proto";
 import "catalog/aws/awsglobalaccelerator/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// AwsGlobalAccelerator is a component for creating and managing
+// AwsGlobalAccelerator is a kind for creating and managing
 // AWS Global Accelerator resources — a networking service that improves
 // availability and performance by routing traffic through the AWS global
 // network to optimal regional endpoints.
@@ -19,7 +19,7 @@ message AwsGlobalAccelerator {
   string kind = 2 [(buf.validate.field).string.const = 'AwsGlobalAccelerator'];
 
   // metadata contains standard resource metadata including name, labels, and annotations.
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec defines the desired state of the Global Accelerator.
   AwsGlobalAcceleratorSpec spec = 4 [(buf.validate.field).required = true];
@@ -31,5 +31,5 @@ message AwsGlobalAccelerator {
 // AwsGlobalAcceleratorStatus contains the status and outputs for the Global Accelerator.
 message AwsGlobalAcceleratorStatus {
   // outputs contains the values exported from the IaC stack after deployment.
-  AwsGlobalAcceleratorStackOutputs outputs = 1;
+  AwsGlobalAcceleratorOutputs outputs = 1;
 }

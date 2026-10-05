@@ -10,10 +10,9 @@ This module implements the CloudflareD1Database resource using Pulumi's Go SDK a
 
 ```
 iac/pulumi/
-├── main.go              # Entrypoint - loads stack input and calls module
+├── main.go              # Entrypoint - loads IaC input and calls module
 ├── Pulumi.yaml          # Pulumi project configuration
-├── Makefile            # Build and deployment targets
-├── debug.sh            # Debug helper script
+├── BUILD.bazel          # Bazel build target
 └── module/
     ├── main.go         # Module entry point
     ├── locals.go       # Locals initialization
@@ -23,7 +22,7 @@ iac/pulumi/
 
 ## Inputs
 
-The module accepts a `CloudflareD1DatabaseStackInput` protobuf message containing:
+The module accepts a `CloudflareD1DatabaseIacInput` protobuf message containing:
 
 ### Provider Configuration
 
@@ -52,7 +51,7 @@ The CloudflareD1Database resource containing:
 
 ## Outputs
 
-The module exports the following stack outputs:
+The module exports the following outputs:
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -90,7 +89,7 @@ If `region` is unspecified or `cloudflare_d1_region_unspecified`, the field is o
 
 ### Via Planton CLI
 
-The typical usage is through the Planton CLI, which handles stack input creation and Pulumi execution:
+The typical usage is through the Planton CLI, which handles IaC input creation and Pulumi execution:
 
 ```bash
 planton apply -f database.yaml
@@ -105,8 +104,12 @@ For debugging or manual execution:
    export CLOUDFLARE_API_TOKEN="your-cloudflare-api-token"
    ```
 
-2. **Create Stack Input File**:
-   Create a `stack-input.json` file with the CloudflareD1DatabaseStackInput protobuf structure serialized to JSON.
+2. **Create IaC Input File**:
+   Create a `iac-input.json` file with the CloudflareD1DatabaseIacInput protobuf structure serialized to JSON (the manifest under `target`), and point the module at it:
+   ```bash
+   export IAC_INPUT_YAML_FILE=iac-input.json
+   ```
+   The module reads its input from the Pulumi config key `planton:iac-input`, `IAC_INPUT_YAML` (content) or `IAC_INPUT_YAML_FILE` (a path); JSON is valid YAML.
 
 3. **Run Pulumi**:
    ```bash
@@ -115,19 +118,17 @@ For debugging or manual execution:
 
 ### Debug Mode
 
-Use the provided `debug.sh` script to run Pulumi with verbose logging:
+Run Pulumi with verbose logging:
 
 ```bash
-./debug.sh
+pulumi up --logtostderr -v=9
 ```
-
-This sets `PULUMI_LOG_LEVEL=debug` and runs `pulumi up` with detailed output.
 
 ## Implementation Details
 
 ### Locals Initialization
 
-The `initializeLocals` function copies the stack input into a `Locals` struct for easy access throughout the module:
+The `initializeLocals` function copies the IaC input into a `Locals` struct for easy access throughout the module:
 
 ```go
 type Locals struct {
@@ -141,7 +142,7 @@ type Locals struct {
 The module uses a shared Pulumi Cloudflare provider helper to instantiate the provider with credentials:
 
 ```go
-cloudflareProvider, err := pulumicloudflareprovider.Get(ctx, stackInput.ProviderConfig)
+cloudflareProvider, err := pulumicloudflareprovider.Get(ctx, iacInput.ProviderConfig)
 ```
 
 ### Database Resource Creation
@@ -152,7 +153,7 @@ The `database` function creates the `cloudflare.D1Database` resource:
 2. Optionally adds `PrimaryLocationHint` if region is specified
 3. Optionally adds `ReadReplication` if read_replication is specified
 4. Creates the resource with the Cloudflare provider
-5. Exports stack outputs
+5. Exports outputs
 
 ### Read Replication Handling
 
@@ -182,7 +183,7 @@ Errors bubble up to the Pulumi CLI, which displays them to the user.
 
 ### Unit Tests
 
-The module does not include unit tests (Pulumi modules are typically integration-tested). The component-level tests in `v1/spec_test.go` validate the protobuf spec.
+The module does not include unit tests (Pulumi modules are typically integration-tested). The kind-level tests in `v1/spec_test.go` validate the protobuf spec.
 
 ### Integration Testing
 
@@ -191,7 +192,7 @@ To test the module end-to-end:
 1. Create a test manifest in `e2e/manifest.yaml`
 2. Run `planton apply -f e2e/manifest.yaml`
 3. Verify the database is created in the Cloudflare dashboard
-4. Verify outputs: `planton output database-id`
+4. Verify outputs: the update prints them under `Outputs:`; read one again with `pulumi stack output database_id --stack <org>/<project>/<stack>`
 5. Clean up: `planton destroy -f e2e/manifest.yaml`
 
 ## Dependencies
@@ -257,9 +258,9 @@ export CLOUDFLARE_API_TOKEN="your-token"
 ## Support
 
 For issues specific to this Pulumi module, check:
-1. Component tests pass: `go test ./v1/`
-2. Pulumi build succeeds: `make build`
-3. Stack input is valid: Validate against protobuf schema
+1. Kind tests pass: `go test ./catalog/cloudflare/cloudflared1database/...`
+2. Pulumi build succeeds: `go build .` in this directory
+3. IaC input is valid: Validate against protobuf schema
 
 For general Cloudflare D1 questions, see [../../README.md](../../README.md).
 

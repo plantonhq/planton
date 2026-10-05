@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureexpressroutegateway.v1alpha1;
 
-// **AzureExpressRouteGatewayStackOutputs** captures the outputs of
+// **AzureExpressRouteGatewayOutputs** captures the outputs of
 // provisioning an ExpressRoute Gateway and its connections.
-message AzureExpressRouteGatewayStackOutputs {
+message AzureExpressRouteGatewayOutputs {
   // The Azure Resource Manager ID of the gateway.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/expressRouteGateways/{name}
   string express_route_gateway_id = 1;

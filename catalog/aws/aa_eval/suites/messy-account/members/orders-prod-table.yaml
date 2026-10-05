@@ -16,7 +16,7 @@ metadata:
   env: prod
   labels:
     managed-by: planton-e2e
-    e2e-component: awsdynamodb
+    e2e-catalog-kind: awsdynamodb
   annotations:
     planton.dev/e2e: "true"
   tags:

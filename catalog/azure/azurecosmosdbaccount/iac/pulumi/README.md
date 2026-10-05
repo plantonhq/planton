@@ -1,7 +1,7 @@
 # AzureCosmosdbAccount - Pulumi Module
 
-Pulumi implementation for the AzureCosmosdbAccount deployment
-component.
+Pulumi implementation for the AzureCosmosdbAccount
+kind.
 
 ## Architecture
 
@@ -26,7 +26,7 @@ this account, so the module creates exactly one resource.
   declares ENABLE_MONGO itself; the module never rewrites what the
   user declared (most capability changes recreate the account, so
   hidden capabilities would hide recreate triggers).
-- **Presence-guarded defaults** -- stack inputs built from a manifest
+- **Presence-guarded defaults** -- IaC inputs built from a manifest
   do not materialize proto defaults, so the true-default bools
   (public network access, access-key metadata writes, local auth) and
   the BoundedStaleness dials (5/100) fall back to the proto defaults
@@ -47,6 +47,6 @@ this account, so the module creates exactly one resource.
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless web-identity (OIDC), and
 ambient credential chains. Never construct a provider inline.

@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpFirestoreBackupScheduleSpec", func() {
 		return &GcpFirestoreBackupSchedule{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpFirestoreBackupSchedule",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "daily-backups",
 			},
 			Spec: &GcpFirestoreBackupScheduleSpec{

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: stripebillingmeter
 spec:
@@ -7,13 +7,13 @@ spec:
   values:
     - name: billing_meter_id
       derivations:
-        - from_stack_output: id
+        - from_output: id
       where_to_find: >-
         Stripe Dashboard -> Billing -> Meters (the meter's id, mtr_..., on its page), or `GET
         /v1/billing/meters`.
     - name: billing_alert_id
       derivations:
-        - from_stack_output_keyed_by_address: alert_ids
+        - from_output_keyed_by_address: alert_ids
       where_to_find: >-
         The id of each alert: the `alert_ids` output keyed by the alert's title, or `GET
         /v1/billing/alerts?meter=<meter id>` (the id of the entry whose title matches). One

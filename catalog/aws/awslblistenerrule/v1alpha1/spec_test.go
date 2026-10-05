@@ -49,7 +49,7 @@ func minimalValidRule() *AwsLbListenerRule {
 	return &AwsLbListenerRule{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsLbListenerRule",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "api-route",
 		},
 		Spec: &AwsLbListenerRuleSpec{

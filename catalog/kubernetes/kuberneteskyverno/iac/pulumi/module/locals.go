@@ -6,11 +6,11 @@ import (
 
 	kuberneteskyvernov1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kuberneteskyverno/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds computed values derived from the stack input for use across
+// Locals holds computed values derived from the IaC input for use across
 // the module. Every resolution here has an exact twin in the Terraform
 // module's locals.tf — keep them in lockstep.
 type Locals struct {
@@ -57,8 +57,8 @@ type Locals struct {
 // twin uses a precondition): the chart derives child names from the
 // fullname and silently truncates past 63 chars, breaking its own
 // name-based wiring.
-func initializeLocals(_ *pulumi.Context, stackInput *kuberneteskyvernov1alpha1.KubernetesKyvernoStackInput) (*Locals, error) {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *kuberneteskyvernov1alpha1.KubernetesKyvernoIacInput) (*Locals, error) {
+	target := iacInput.Target
 	spec := target.Spec
 
 	if len(target.Metadata.Name) > vars.FullnameMaxLen {
@@ -73,7 +73,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *kuberneteskyvernov1alpha1.K
 	labels := map[string]string{
 		kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
 		kuberneteslabelkeys.ResourceName: target.Metadata.Name,
-		kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesKyverno.String(),
+		kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesKyverno.String(),
 	}
 	if target.Metadata.Id != "" {
 		labels[kuberneteslabelkeys.ResourceId] = target.Metadata.Id

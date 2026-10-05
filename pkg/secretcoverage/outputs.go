@@ -7,19 +7,19 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-// A stack output marked `sensitive` is a secret the resource generates. Which outputs are secrets
+// An output marked `sensitive` is a secret the resource generates. Which outputs are secrets
 // cannot be read off their names (an `access_key` is a key id in one kind and a PEM private key
 // in another, and a credential-bearing `uri` looks like any address), so the name heuristic
 // above stays on the spec, and `planton module verify` holds both engines to the schema's marks
 // instead. What this file pins is the shape those marks may take, because the engines and the
 // platform both decide secrecy per top-level output:
 //
-//   - `sensitive` sits only on a top-level field of the kind's StackOutputs;
+//   - `sensitive` sits only on a top-level field of the kind's Outputs;
 //   - `sensitive_exempt_reason` never appears in outputs (it answers the name heuristic, which
 //     does not run there);
 //   - a marked output carries no value rule, since on Planton it holds a `$secret/` reference.
@@ -31,15 +31,15 @@ type OutputShapeViolation struct {
 	Reason string
 }
 
-// OutputShapeViolations walks every production kind's stack outputs.
+// OutputShapeViolations walks every production kind's outputs.
 func OutputShapeViolations() []OutputShapeViolation {
 	var out []OutputShapeViolation
-	for _, kind := range crkreflect.KindsList() {
-		provider := crkreflect.GetProvider(kind)
-		if provider == cloudresourcekind.CloudResourceProvider_cloud_resource_provider_unspecified || provider.String()[0] == '_' {
+	for _, kind := range catalogkindreflect.KindsList() {
+		provider := catalogkindreflect.GetProvider(kind)
+		if provider == catalogkind.CatalogProvider_catalog_provider_unspecified || provider.String()[0] == '_' {
 			continue
 		}
-		msg, err := crkreflect.NewInstance(kind)
+		msg, err := catalogkindreflect.NewInstance(kind)
 		if err != nil {
 			continue
 		}
@@ -62,7 +62,7 @@ func OutputShapeViolations() []OutputShapeViolation {
 	return out
 }
 
-// collectOutputShapeViolations walks one StackOutputs message descriptor, rooting paths at
+// collectOutputShapeViolations walks one Outputs message descriptor, rooting paths at
 // "status.outputs". Exposed to the tests through the package.
 func collectOutputShapeViolations(outputsMd protoreflect.MessageDescriptor, kindName string) []OutputShapeViolation {
 	var out []OutputShapeViolation
@@ -80,7 +80,7 @@ func collectOutputShapeViolations(outputsMd protoreflect.MessageDescriptor, kind
 			sensitive, exemptReason := leafOptions(fd)
 			if sensitive && !topLevel {
 				out = append(out, OutputShapeViolation{kindName, path,
-					"a secret output must be a top-level stack-outputs field: both engines decide secrecy per top-level output"})
+					"a secret output must be a top-level outputs field: both engines decide secrecy per top-level output"})
 			}
 			if exemptReason != "" {
 				out = append(out, OutputShapeViolation{kindName, path,

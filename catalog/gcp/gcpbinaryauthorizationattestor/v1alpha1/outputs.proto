@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpbinaryauthorizationattestor.v1alpha1;
 
-// GcpBinaryAuthorizationAttestorStackOutputs carries the attestor's
+// GcpBinaryAuthorizationAttestorOutputs carries the attestor's
 // identity, its note, and the identity it reads attestations with.
-message GcpBinaryAuthorizationAttestorStackOutputs {
+message GcpBinaryAuthorizationAttestorOutputs {
   // Full resource name: projects/{project}/attestors/{attestor_name}. The
   // form a GcpBinaryAuthorizationPolicy rule's require_attestations_by
   // takes.

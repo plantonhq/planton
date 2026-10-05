@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureipgroup
 spec:
   billing_model: free
   free_tier: An IP Group is pure configuration -- a named list of IP addresses and CIDR ranges that firewall rules reference by ARM id. Azure has no meter for IP Groups; the group, its entries (up to 5,000), and every rule reference to it cost nothing.
-  notes: "No field of this spec buys anything: cidrs is the address list itself, and name/region/resource_group/tags are placement and governance. The real spend lives in the components that CONSUME the group -- Azure Firewall and Firewall Policy bill their own deployment hours and data processing as their own catalog kinds, exactly the same whether their rules enumerate literal CIDRs or reference this group."
+  notes: "No field of this spec buys anything: cidrs is the address list itself, and name/region/resource_group/tags are placement and governance. The real spend lives in the components that CONSUME the group -- Azure Firewall and Firewall Policy bill their own deployment hours and data processing as their own components, exactly the same whether their rules enumerate literal CIDRs or reference this group."

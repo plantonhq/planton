@@ -1,5 +1,5 @@
 # AwsSecurityGroup install profile used as a prerequisite by composed
-# components. Publishes one named document per consumer-specific fixture
+# kinds. Publishes one named document per consumer-specific fixture
 # shape; consumers select the instance they need by name.
 #
 # Document 1 -- Kafka broker group (AwsMskCluster): brokers must attach at
@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awssecuritygroup
+    e2e-catalog-kind: awssecuritygroup
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -59,7 +59,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awssecuritygroup
+    e2e-catalog-kind: awssecuritygroup
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -95,7 +95,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awssecuritygroup
+    e2e-catalog-kind: awssecuritygroup
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -142,7 +142,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awssecuritygroup
+    e2e-catalog-kind: awssecuritygroup
   annotations:
     planton.dev/e2e: "true"
   tags:

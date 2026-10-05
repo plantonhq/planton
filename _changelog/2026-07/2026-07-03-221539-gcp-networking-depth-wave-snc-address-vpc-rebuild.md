@@ -19,7 +19,7 @@ Regional `google_compute_address` was absent from the catalog entirely while its
 - PSA capacity could not be grown (the hidden range was fixed at creation); GCP's own growth path is appending ranges to the connection.
 - The hidden resources were invisible to the resource graph — no ordering relationships, no cross-chart ownership.
 - `GcpRouterNat.nat_ip_names` named regional addresses that had no kind to reference.
-- The VPC's Terraform module exported only 3 of 5 declared stack outputs (`network_name` and `network_id` missing) — FK targets of `GcpCloudRun` and `GcpCloudSql` silently resolved empty on Terraform deployments.
+- The VPC's Terraform module exported only 3 of 5 declared outputs (`network_name` and `network_id` missing) — FK targets of `GcpCloudRun` and `GcpCloudSql` silently resolved empty on Terraform deployments.
 - The VPC spec was thin: 4 real knobs vs the provider's ~12 (no MTU, ULA IPv6, firewall-policy order, network profile, BGP best-path block, or default-route suppression).
 
 ## Solution / What's New
@@ -46,7 +46,7 @@ The regional reservation node, split from the global kind per the addresses spli
 - **Removed** `private_services_access` (message + field) and the two PSA outputs; both modules dropped the hidden global-address + connection resources. All 18 inbound `default_kind = GcpVpc` refs resolve through name-keyed output paths untouched by the removal (`validate-refs` green).
 - **Fixed the TF output parity defect**: `network_name` and `network_id` now exported by Terraform (previously Pulumi-only — their FK consumers silently resolved empty on TF deployments).
 - **Added the provider floor**: `description`, `mtu` (1300–8896), `enable_ula_internal_ipv6` + `internal_ipv6_range`, `network_firewall_policy_enforcement_order`, `network_profile`, BGP best-path block (`mode` / `always_compare_med` / `inter_region_cost`), `delete_default_routes_on_create`. Outputs gained `gateway_ipv4` and `internal_ipv6_range`. All fields verified GA on released 6.50.0; provider pin moved `6.19.0` → `~> 6.0`.
-- **Anatomy conformance**: hack manifest created at the canonical `iac/hack/manifest.yaml` (legacy `hack/` copy and a stale `stack-input.yaml` deleted); spec test rebuilt (17 cases); presets/docs/catalog-page rewritten to the composed-PSA world.
+- **Anatomy conformance**: hack manifest created at the canonical `iac/hack/manifest.yaml` (legacy `hack/` copy and a stale `iac-input.yaml` deleted); spec test rebuilt (17 cases); presets/docs/catalog-page rewritten to the composed-PSA world.
 - **Terraform enum contract fixed en route**: the tfvars converter emits proto enum NAMES as strings (`"REGIONAL"`), but the old `variables.tf` typed `routing_mode` as a number — set-explicitly manifests failed at plan time. Now typed as a validated string.
 
 ### GcpGlobalAddress extensions

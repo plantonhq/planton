@@ -95,7 +95,7 @@ planton tofu apply --manifest project.yaml
    `status.outputs.project_id` via `valueFrom`, so a project rename never
    ripples.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
@@ -103,7 +103,7 @@ planton tofu apply --manifest project.yaml
 | `project_number` | The numeric identifier assigned by Google |
 | `name` | The display name |
 
-## Related Components
+## Related Kinds
 
 - **GcpFolder** — the folder the project is placed in by reference
 - **GcpOrgPolicy** — guardrails scoped to the project

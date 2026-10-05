@@ -24,6 +24,6 @@ compliance findings.
 
 - Switch `Operation: Install` to remediate (pair with a maintenance
   window and the baseline you govern via
-  [AWS SSM Patch Baseline](/cloud-catalog/aws-ssm-patch-baseline))
+  [AWS SSM Patch Baseline](/infra-catalog/aws-ssm-patch-baseline))
 - Add `outputLocation` to keep command output in S3
 - Gate runs on a Change Calendar with `calendarNames`

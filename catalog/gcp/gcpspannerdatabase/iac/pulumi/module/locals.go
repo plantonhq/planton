@@ -15,15 +15,15 @@ type Locals struct {
 	DatabaseName       string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpspannerdatabasev1alpha1.GcpSpannerDatabaseStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpspannerdatabasev1alpha1.GcpSpannerDatabaseIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpSpannerDatabase = stackInput.Target
+	locals.GcpSpannerDatabase = iacInput.Target
 
 	locals.DatabaseName = locals.GcpSpannerDatabase.Spec.DatabaseName
 	if locals.DatabaseName == "" {
 		locals.DatabaseName = locals.GcpSpannerDatabase.Metadata.Name
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

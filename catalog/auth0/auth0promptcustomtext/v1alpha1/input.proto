@@ -5,9 +5,9 @@ package dev.planton.auth0.auth0promptcustomtext.v1alpha1;
 import "catalog/auth0/auth0promptcustomtext/v1alpha1/api.proto";
 import "catalog/auth0/provider.proto";
 
-// Auth0PromptCustomTextStackInput is the input to the Auth0PromptCustomText IaC module.
+// Auth0PromptCustomTextIacInput is the input to the Auth0PromptCustomText IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-message Auth0PromptCustomTextStackInput {
+message Auth0PromptCustomTextIacInput {
   // target is the Auth0PromptCustomText resource to be deployed.
   Auth0PromptCustomText target = 1;
 

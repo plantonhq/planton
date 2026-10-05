@@ -2,7 +2,7 @@
 
 ## Overview
 
-Creates a compute instance on an Azure Machine Learning workspace using the classic `pulumi-azure` (azurerm-bridged) SDK, from the kind's typed stack input.
+Creates a compute instance on an Azure Machine Learning workspace using the classic `pulumi-azure` (azurerm-bridged) SDK, from the kind's typed IaC input.
 
 ## Design Decisions
 
@@ -13,7 +13,7 @@ Creates a compute instance on an Azure Machine Learning workspace using the clas
 
 ## Inputs
 
-The module consumes `AzureMachineLearningComputeInstanceStackInput`: the target resource (metadata + spec) and the Azure provider configuration. The workspace and subnet references arrive pre-resolved; `GetValue()` returns the literal ARM ID.
+The module consumes `AzureMachineLearningComputeInstanceIacInput`: the target resource (metadata + spec) and the Azure provider configuration. The workspace and subnet references arrive pre-resolved; `GetValue()` returns the literal ARM ID.
 
 ## Outputs
 

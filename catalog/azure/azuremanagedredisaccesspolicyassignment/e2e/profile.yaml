@@ -1,5 +1,5 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: azuremanagedredisaccesspolicyassignment
 spec:
@@ -18,7 +18,7 @@ spec:
     Deferred by owner decision: the scenario-local Managed Redis
     cluster fixture provisions and deletes in tens of minutes, so the
     dual-engine chain exceeds the pre-approved live-E2E window. The
-    component stands on its green offline gate -- 100% parity audit,
+    kind stands on its green offline gate -- 100% parity audit,
     full tofu plan, spec tests, and the outputs conformance case. The
     scenario runs unchanged once a live window is approved.
   validated_provisioners: []

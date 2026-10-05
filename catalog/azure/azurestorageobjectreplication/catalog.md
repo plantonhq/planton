@@ -4,7 +4,7 @@ Deploys an object replication policy between TWO Azure Storage Accounts -- async
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Object Replication Policy (both sides)** -- the destination-side policy (authoritative) and the source-side mirror, with your container-to-container rules, backfill choices, and prefix filters
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -66,7 +66,7 @@ spec:
 planton apply -f replication.yaml
 ```
 
-This bootstraps DR for one container: the whole container backfills once, then new blobs stream asynchronously. A Stack Job tracks the provisioning in real time.
+This bootstraps DR for one container: the whole container backfills once, then new blobs stream asynchronously. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -115,16 +115,16 @@ These are the most important decisions when configuring a replication policy. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureStorageAccount** | `sourceStorageAccountId`, `destinationStorageAccountId` | `status.outputs.storage_account_id` |
 | **AzureStorageContainer** | per-rule `sourceContainerName`, `destinationContainerName` | `status.outputs.container_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no consumable outputs: nothing downstream composes with a replication policy, so no output has a ValueFromRef consumer. `status.outputs` still carries what operations needs -- `policy_id` (the server-assigned GUID shared by both sides, what `az storage account or-policy show --policy-id` and the monitoring surfaces key on) and the two ARM IDs (`source_object_replication_id`, `destination_object_replication_id`), because one policy materializes as TWO ARM resources, one on each account.
+This kind has no consumable outputs: nothing downstream composes with a replication policy, so no output has a ValueFromRef consumer. `status.outputs` still carries what operations needs -- `policy_id` (the server-assigned GUID shared by both sides, what `az storage account or-policy show --policy-id` and the monitoring surfaces key on) and the two ARM IDs (`source_object_replication_id`, `destination_object_replication_id`), because one policy materializes as TWO ARM resources, one on each account.
 
 ## Common Patterns
 
@@ -136,5 +136,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- both ends of the pair; the source needs versioning + change feed, the destination versioning
-- [**Azure Storage Container**](/cloud-catalog/azure-storage-container) -- the per-rule source and destination containers, referenced by name
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- both ends of the pair; the source needs versioning + change feed, the destination versioning
+- [**Azure Storage Container**](/infra-catalog/azure-storage-container) -- the per-rule source and destination containers, referenced by name

@@ -121,7 +121,7 @@ planton apply -f backend-service.yaml
 
 Identical semantics to the backend bucket's CDN policy (cache modes, TTLs, negative caching, serve-while-stale, coalescing, signed-URL cache age, bypass headers), with a richer cache key: `includeHost`, `includeProtocol`, `includeQueryString`, `queryStringWhitelist`/`queryStringBlacklist` (mutually exclusive), `includeHttpHeaders`, and `includeNamedCookies`.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -151,11 +151,11 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **Immutability**: `backendServiceName`, `projectId`, and `region` are ForceNew; `loadBalancingScheme` cannot change in place except via the EXTERNAL→EXTERNAL_MANAGED canary migration. Everything else — backends, CDN policy, affinity, IAP — updates in place.
 - **One health check**: GCP allows at most one health check per backend service, so the spec models it singular. A service with no health check is only valid when every backend is an internet or serverless NEG.
 - **Instance groups and NEGs don't mix**: all backends of one service must be the same family; GCP rejects mixed backend lists.
-- **Secrets**: `iap.oauth2ClientSecret`, `securitySettings.awsV4Authentication.accessKey`, and each `signedUrlKeys[].keyValue` are secret material — reference-only in the control plane, marked secret in Pulumi state, never in stack outputs.
+- **Secrets**: `iap.oauth2ClientSecret`, `securitySettings.awsV4Authentication.accessKey`, and each `signedUrlKeys[].keyValue` are secret material — reference-only in the control plane, marked secret in Pulumi state, never in outputs.
 - **Scheme applicability is validated pre-deploy**: CDN only on external schemes; circuit breakers and max-stream-duration only on INTERNAL_SELF_MANAGED; outlier detection on INTERNAL_SELF_MANAGED/EXTERNAL_MANAGED; consistent hash only with MAGLEV/RING_HASH. The spec rejects incoherent combinations before GCP would.
 - **Cloud Armor attach semantics**: the provider applies `securityPolicy`/`edgeSecurityPolicy` via dedicated set-policy API calls — changing only a policy reference is a targeted update, not a full resource patch.
 
-## Related Components
+## Related Kinds
 
 - [GcpHealthCheck](/docs/catalog/gcp/gcphealthcheck) — the probe deciding which backends receive traffic
 - [GcpBackendBucket](/docs/catalog/gcp/gcpbackendbucket) — the static-content counterpart for GCS origins

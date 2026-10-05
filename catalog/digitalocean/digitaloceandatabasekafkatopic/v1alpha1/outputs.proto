@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceandatabasekafkatopic.v1alpha1;
 
-// DigitalOceanDatabaseKafkaTopicStackOutputs captures the key outputs after
+// DigitalOceanDatabaseKafkaTopicOutputs captures the key outputs after
 // provisioning a Kafka topic. DigitalOcean has no standalone topic id --
 // the (cluster, topic name) pair IS the identity -- so both halves are
 // exported for consumers and verification tooling.
@@ -13,7 +13,7 @@ package dev.planton.digitalocean.digitaloceandatabasekafkatopic.v1alpha1;
 // stale "active" in stored outputs is worse than no value. Live state is
 // read from the API by whoever needs it -- the E2E verifier asserts it that
 // way.
-message DigitalOceanDatabaseKafkaTopicStackOutputs {
+message DigitalOceanDatabaseKafkaTopicOutputs {
   // Retired: `state` (an apply-time provisioning snapshot). Never reuse
   // the number or the name.
   reserved 3;

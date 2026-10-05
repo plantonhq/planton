@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureaifoundryproject
 spec:
   billing_model: free
   free_tier: An AI Foundry project is the workspace one AI team works in -- ARM-wise a Machine Learning workspace of kind "Project" linked to its hub, inheriting the ML workspace class's no-charge posture; Microsoft's Foundry pricing states the platform itself is free, with individual features billed at their own rates. Creating and holding any number of projects in a hub never bills.
-  notes: "No field of this spec buys anything: the hub linkage, identity, and naming are team-scoping metadata, and the project even inherits its companions (vault, storage, insights, registry) from the hub rather than attaching its own. The real spend is what the team CONSUMES inside the project -- model deployments billed per token (serverless) or per hour (managed compute), agent runs, fine-tuning jobs, and attached AI services -- each a separate catalog kind or metered service. The hub's companion resources bill once at the hub, regardless of how many projects share them."
+  notes: "No field of this spec buys anything: the hub linkage, identity, and naming are team-scoping metadata, and the project even inherits its companions (vault, storage, insights, registry) from the hub rather than attaching its own. The real spend is what the team CONSUMES inside the project -- model deployments billed per token (serverless) or per hour (managed compute), agent runs, fine-tuning jobs, and attached AI services -- each a separate component or metered service. The hub's companion resources bill once at the hub, regardless of how many projects share them."

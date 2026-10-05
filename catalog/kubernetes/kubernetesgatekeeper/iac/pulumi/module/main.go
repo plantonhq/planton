@@ -25,17 +25,17 @@ import (
 // upgrades, and uninstall KEEPS them by design. Constraint-template CRDs
 // Gatekeeper creates at runtime also survive uninstall until their
 // templates are deleted.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesgatekeeperv1alpha1.KubernetesGatekeeperStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesgatekeeperv1alpha1.KubernetesGatekeeperIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

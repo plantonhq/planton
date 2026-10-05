@@ -6,7 +6,7 @@
 
 ## Summary
 
-Merged `main` into `refactor/aws/bring-components-to-90-10-coverage-contd-2`,
+Merged `main` into `refactor/aws/bring-kinds-to-90-10-coverage-contd-2`,
 reconciling the completed AWS catalog rebuild with everything that landed on
 main since the branches diverged — the AwsPlantonRunner appliance, the
 import-map/eval surface, the platform-keys annotations convention, the Helm
@@ -43,7 +43,7 @@ not mechanical resolution.
 
 - **Kind enum**: `AwsPlantonRunner` keeps 354 — it is released and backs a
   live deployment. `AwsRoute53HealthCheck` (never released) moves to **376**,
-  the next free AWS slot. Generated stubs and the crkreflect kind map were
+  the next free AWS slot. Generated stubs and the catalogkindreflect kind map were
   regenerated, and the full enum was verified duplicate-free (450 kinds).
 - **`charts/aws/eks-environment`**: deleted. The clean-slate 17-chart AWS
   catalog is the canonical surface; main's chart targeted the pre-rebuild
@@ -66,7 +66,7 @@ not mechanical resolution.
   import catalog entries were kept (they reference `spec.repository_name`,
   which the rebuilt spec retains).
 - **Generated artifacts regenerated, never hand-merged**: proto stubs
-  (`make protos`), the crkreflect kind map, `go.sum` (`go mod tidy`), and
+  (`make protos`), the catalogkindreflect kind map, `go.sum` (`go mod tidy`), and
   the site catalog mirror (copy-docs + structure + stats).
 
 ## Verification
@@ -75,7 +75,7 @@ All offline gates ran green on the merged tree:
 
 - `aa_e2e` verify package and `-tags=e2e` harness compile cleanly.
 - Spec tests: `awsroute53healthcheck`, `awsecrrepo`, `awsplantonrunner`,
-  `awscognitouserpool`; framework tests: `pkg/crkreflect`, `pkg/outputs`,
+  `awscognitouserpool`; framework tests: `pkg/catalogkindreflect`, `pkg/outputs`,
   `pkg/refcheck`.
 - Working-tree CLI guards: `validate-refs --check` (all foreign keys
   resolve) and `secret-coverage --check` (gate passed).

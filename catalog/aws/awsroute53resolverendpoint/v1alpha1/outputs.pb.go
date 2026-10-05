@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRoute53ResolverEndpointStackOutputs captures the observable state
+// AwsRoute53ResolverEndpointOutputs captures the observable state
 // of the resolver endpoint after apply.
-type AwsRoute53ResolverEndpointStackOutputs struct {
+type AwsRoute53ResolverEndpointOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The endpoint's id (rslvr-in-... / rslvr-out-...) - the provider's
 	// import ID.
@@ -46,20 +46,20 @@ type AwsRoute53ResolverEndpointStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AwsRoute53ResolverEndpointStackOutputs) Reset() {
-	*x = AwsRoute53ResolverEndpointStackOutputs{}
+func (x *AwsRoute53ResolverEndpointOutputs) Reset() {
+	*x = AwsRoute53ResolverEndpointOutputs{}
 	mi := &file_catalog_aws_awsroute53resolverendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRoute53ResolverEndpointStackOutputs) String() string {
+func (x *AwsRoute53ResolverEndpointOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRoute53ResolverEndpointStackOutputs) ProtoMessage() {}
+func (*AwsRoute53ResolverEndpointOutputs) ProtoMessage() {}
 
-func (x *AwsRoute53ResolverEndpointStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRoute53ResolverEndpointOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsroute53resolverendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,47 +71,47 @@ func (x *AwsRoute53ResolverEndpointStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRoute53ResolverEndpointStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRoute53ResolverEndpointStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRoute53ResolverEndpointOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRoute53ResolverEndpointOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsroute53resolverendpoint_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRoute53ResolverEndpointStackOutputs) GetEndpointId() string {
+func (x *AwsRoute53ResolverEndpointOutputs) GetEndpointId() string {
 	if x != nil {
 		return x.EndpointId
 	}
 	return ""
 }
 
-func (x *AwsRoute53ResolverEndpointStackOutputs) GetEndpointArn() string {
+func (x *AwsRoute53ResolverEndpointOutputs) GetEndpointArn() string {
 	if x != nil {
 		return x.EndpointArn
 	}
 	return ""
 }
 
-func (x *AwsRoute53ResolverEndpointStackOutputs) GetHostVpcId() string {
+func (x *AwsRoute53ResolverEndpointOutputs) GetHostVpcId() string {
 	if x != nil {
 		return x.HostVpcId
 	}
 	return ""
 }
 
-func (x *AwsRoute53ResolverEndpointStackOutputs) GetIpAddresses() []string {
+func (x *AwsRoute53ResolverEndpointOutputs) GetIpAddresses() []string {
 	if x != nil {
 		return x.IpAddresses
 	}
 	return nil
 }
 
-func (x *AwsRoute53ResolverEndpointStackOutputs) GetRuleIds() map[string]string {
+func (x *AwsRoute53ResolverEndpointOutputs) GetRuleIds() map[string]string {
 	if x != nil {
 		return x.RuleIds
 	}
 	return nil
 }
 
-func (x *AwsRoute53ResolverEndpointStackOutputs) GetRuleAssociationIds() map[string]string {
+func (x *AwsRoute53ResolverEndpointOutputs) GetRuleAssociationIds() map[string]string {
 	if x != nil {
 		return x.RuleAssociationIds
 	}
@@ -122,15 +122,15 @@ var File_catalog_aws_awsroute53resolverendpoint_v1alpha1_outputs_proto protorefl
 
 const file_catalog_aws_awsroute53resolverendpoint_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/aws/awsroute53resolverendpoint/v1alpha1/outputs.proto\x123dev.planton.aws.awsroute53resolverendpoint.v1alpha1\"\xe0\x04\n" +
-	"&AwsRoute53ResolverEndpointStackOutputs\x12\x1f\n" +
+	"=catalog/aws/awsroute53resolverendpoint/v1alpha1/outputs.proto\x123dev.planton.aws.awsroute53resolverendpoint.v1alpha1\"\xd0\x04\n" +
+	"!AwsRoute53ResolverEndpointOutputs\x12\x1f\n" +
 	"\vendpoint_id\x18\x01 \x01(\tR\n" +
 	"endpointId\x12!\n" +
 	"\fendpoint_arn\x18\x02 \x01(\tR\vendpointArn\x12\x1e\n" +
 	"\vhost_vpc_id\x18\x03 \x01(\tR\thostVpcId\x12!\n" +
-	"\fip_addresses\x18\x04 \x03(\tR\vipAddresses\x12\x83\x01\n" +
-	"\brule_ids\x18\x05 \x03(\v2h.dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackOutputs.RuleIdsEntryR\aruleIds\x12\xa5\x01\n" +
-	"\x14rule_association_ids\x18\x06 \x03(\v2s.dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackOutputs.RuleAssociationIdsEntryR\x12ruleAssociationIds\x1a:\n" +
+	"\fip_addresses\x18\x04 \x03(\tR\vipAddresses\x12~\n" +
+	"\brule_ids\x18\x05 \x03(\v2c.dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointOutputs.RuleIdsEntryR\aruleIds\x12\xa0\x01\n" +
+	"\x14rule_association_ids\x18\x06 \x03(\v2n.dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointOutputs.RuleAssociationIdsEntryR\x12ruleAssociationIds\x1a:\n" +
 	"\fRuleIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aE\n" +
@@ -153,13 +153,13 @@ func file_catalog_aws_awsroute53resolverendpoint_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_aws_awsroute53resolverendpoint_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_aws_awsroute53resolverendpoint_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRoute53ResolverEndpointStackOutputs)(nil), // 0: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackOutputs
-	nil, // 1: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackOutputs.RuleIdsEntry
-	nil, // 2: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackOutputs.RuleAssociationIdsEntry
+	(*AwsRoute53ResolverEndpointOutputs)(nil), // 0: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointOutputs
+	nil, // 1: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointOutputs.RuleIdsEntry
+	nil, // 2: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointOutputs.RuleAssociationIdsEntry
 }
 var file_catalog_aws_awsroute53resolverendpoint_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackOutputs.rule_ids:type_name -> dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackOutputs.RuleIdsEntry
-	2, // 1: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackOutputs.rule_association_ids:type_name -> dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackOutputs.RuleAssociationIdsEntry
+	1, // 0: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointOutputs.rule_ids:type_name -> dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointOutputs.RuleIdsEntry
+	2, // 1: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointOutputs.rule_association_ids:type_name -> dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointOutputs.RuleAssociationIdsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -27,7 +27,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input = &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "my-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -47,7 +47,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "full-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -86,7 +86,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "rs256-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -104,7 +104,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "hs256-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -122,7 +122,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "ps256-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -140,7 +140,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "access-token-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -156,7 +156,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "authz-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -172,7 +172,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "rfc9068-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -188,7 +188,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "rfc9068-authz-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -206,7 +206,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "rbac-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -235,7 +235,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "min-lifetime-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -251,7 +251,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "max-lifetime-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -267,7 +267,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "web-lifetime-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -286,7 +286,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "scoped-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -323,7 +323,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "nodesc-scope-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -362,7 +362,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-api",
 					},
 					Spec: nil,
@@ -377,7 +377,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "wrong.api.version/v1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -394,7 +394,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "WrongKind",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -411,7 +411,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -429,7 +429,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -447,7 +447,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -465,7 +465,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -483,7 +483,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -501,7 +501,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -519,7 +519,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -537,7 +537,7 @@ var _ = ginkgo.Describe("Auth0ResourceServer Validation Tests", func() {
 				input := &Auth0ResourceServer{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0ResourceServer",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-api",
 					},
 					Spec: &Auth0ResourceServerSpec{
@@ -565,7 +565,7 @@ func apiWith(spec *Auth0ResourceServerSpec) *Auth0ResourceServer {
 	return &Auth0ResourceServer{
 		ApiVersion: "auth0.planton.dev/v1alpha1",
 		Kind:       "Auth0ResourceServer",
-		Metadata:   &shared.CloudResourceMetadata{Name: "api"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "api"},
 		Spec:       spec,
 	}
 }

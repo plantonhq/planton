@@ -26,7 +26,7 @@ import "shared/options/options.proto";
  * of metadata). Auth is ON by default: the chart materializes an
  * admin and a read-only credential pair in the
  * `<name>-s3-secret` Secret (stable across upgrades, kept on
- * uninstall) — the stack outputs point at it. Buckets declared in
+ * uninstall) — the outputs point at it. Buckets declared in
  * `s3.buckets` are created by the chart's post-install hook.
  *
  * STORAGE: the chart's out-of-the-box storage is hostPath (bare-metal
@@ -97,7 +97,7 @@ message KubernetesSeaweedFsSpec {
 
   /**
    * S3 gateway. Empty = enabled with auth, embedded on the filer —
-   * the component's reason to exist. Declare explicitly to add
+   * the kind's reason to exist. Declare explicitly to add
    * buckets, wire an existing credential config, or split the
    * gateway into its own Deployment.
    */
@@ -292,17 +292,17 @@ message KubernetesSeaweedFsFiler {
  */
 message KubernetesSeaweedFsS3 {
   /**
-   * Serve the S3 API. Component default: true (unset renders as
+   * Serve the S3 API. Kind default: true (unset renders as
    * enabled — this kind IS the catalog's S3 store); set false
    * explicitly for a pure filer/POSIX deployment.
    */
   optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
 
   /**
-   * Require S3 credentials. Component default: true — the chart
+   * Require S3 credentials. Kind default: true — the chart
    * materializes admin + read-only credential pairs in the
    * `<name>-s3-secret` Secret (generated once, stable across
-   * upgrades, kept on uninstall; surfaced in the stack outputs).
+   * upgrades, kept on uninstall; surfaced in the outputs).
    * False serves an OPEN in-cluster S3 endpoint — dev only.
    */
   optional bool enable_auth = 2 [(dev.planton.shared.options.default) = "true"];

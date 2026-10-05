@@ -3,7 +3,7 @@
 ## Overview
 
 Creates an Azure AI Foundry project using the classic `pulumi-azure`
-(azurerm-bridged) SDK, from the kind's typed stack input.
+(azurerm-bridged) SDK, from the kind's typed IaC input.
 
 ## Design Decisions
 
@@ -23,7 +23,7 @@ Creates an Azure AI Foundry project using the classic `pulumi-azure`
 
 ## Inputs
 
-The module consumes `AzureAiFoundryProjectStackInput`: the target
+The module consumes `AzureAiFoundryProjectIacInput`: the target
 resource (metadata + spec) and the Azure provider configuration. The
 hub and identity references arrive pre-resolved; `GetValue()` returns
 the literal ARM ID.

@@ -57,13 +57,13 @@ spec:
   singleUser:
     # The OOM ceiling for each user's notebook pod — a runaway notebook
     # dies at it instead of taking the node down (the upstream default is
-    # unlimited). The guarantee keeps the component's default (1G); users
+    # unlimited). The guarantee keeps the kind's default (1G); users
     # needing more capacity belong on the Ray cluster next door.
     memoryLimit: "{{ values.notebook_memory_limit }}"
     extraEnv:
       # The platform's pre-wired client environment — both values are
       # render-known literals composed from names this chart itself
-      # controls (this env surface is a plain map by the component's
+      # controls (this env surface is a plain map by the kind's
       # design: no references, no secrets — secret material would land
       # readably in the hub's values-embedding Secret).
       #

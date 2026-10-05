@@ -45,6 +45,6 @@ planton tofu apply --manifest e2e/manifest.yaml --auto-approve
 planton tofu destroy --manifest e2e/manifest.yaml --auto-approve
 ```
 
-**Note**: Cluster credentials are provided via stack input (CLI), not in the manifest `spec`.
+**Note**: Cluster credentials are provided via IaC input (CLI), not in the manifest `spec`.
 
 See [`e2e/manifest.yaml`](../../e2e/manifest.yaml) for a minimal test manifest.

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1;
 
-// CloudflareWorkersKvPairStackOutputs captures the outputs after writing a
+// CloudflareWorkersKvPairOutputs captures the outputs after writing a
 // Workers KV entry.
-message CloudflareWorkersKvPairStackOutputs {
+message CloudflareWorkersKvPairOutputs {
   // The entry's key name.
   string key_name = 1;
 

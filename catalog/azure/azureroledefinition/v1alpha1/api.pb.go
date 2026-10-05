@@ -35,7 +35,7 @@ type AzureRoleDefinition struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureRoleDefinitionSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -88,7 +88,7 @@ func (x *AzureRoleDefinition) GetKind() string {
 	return ""
 }
 
-func (x *AzureRoleDefinition) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureRoleDefinition) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureRoleDefinition) GetStatus() *AzureRoleDefinitionStatus {
 // AzureRoleDefinitionStatus holds the deployment status and outputs.
 type AzureRoleDefinitionStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureRoleDefinitionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureRoleDefinitionOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureRoleDefinitionStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureroledefinition_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureRoleDefinitionStatus) GetOutputs() *AzureRoleDefinitionStackOutputs {
+func (x *AzureRoleDefinitionStatus) GetOutputs() *AzureRoleDefinitionOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azureroledefinition_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13AzureRoleDefinitionR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionStatusR\x06status\"\x86\x01\n" +
-	"\x19AzureRoleDefinitionStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionStackOutputsR\aoutputsB\x80\x03\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionStatusR\x06status\"\x81\x01\n" +
+	"\x19AzureRoleDefinitionStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionOutputsR\aoutputsB\x80\x03\n" +
 	"2com.dev.planton.azure.azureroledefinition.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/azure/azureroledefinition/v1alpha1;azureroledefinitionv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Azure.Azureroledefinition.V1alpha1\xca\x02.Dev\\Planton\\Azure\\Azureroledefinition\\V1alpha1\xe2\x02:Dev\\Planton\\Azure\\Azureroledefinition\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Azure::Azureroledefinition::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azureroledefinition_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azureroledefinition_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureroledefinition_v1alpha1_api_proto_goTypes = []any{
-	(*AzureRoleDefinition)(nil),             // 0: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinition
-	(*AzureRoleDefinitionStatus)(nil),       // 1: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureRoleDefinitionSpec)(nil),         // 3: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionSpec
-	(*AzureRoleDefinitionStackOutputs)(nil), // 4: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionStackOutputs
+	(*AzureRoleDefinition)(nil),          // 0: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinition
+	(*AzureRoleDefinitionStatus)(nil),    // 1: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureRoleDefinitionSpec)(nil),      // 3: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionSpec
+	(*AzureRoleDefinitionOutputs)(nil),   // 4: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionOutputs
 }
 var file_catalog_azure_azureroledefinition_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinition.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinition.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinition.spec:type_name -> dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionSpec
 	1, // 2: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinition.status:type_name -> dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionStatus
-	4, // 3: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionStatus.outputs:type_name -> dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionStackOutputs
+	4, // 3: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionStatus.outputs:type_name -> dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

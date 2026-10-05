@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azurestorageshare.v1alpha1;
 
-// **AzureStorageShareStackOutputs** captures the outputs of provisioning
+// **AzureStorageShareOutputs** captures the outputs of provisioning
 // an Azure Files share.
 //
 // No URL output on purpose: the share's data-plane URL is the ACCOUNT's
@@ -10,7 +10,7 @@ package dev.planton.azure.azurestorageshare.v1alpha1;
 // endpoint (partitioned-DNS accounts use a different hostname than the
 // classic shared DNS). Compose mount paths from AzureStorageAccount's
 // primary_file_endpoint output + share_name.
-message AzureStorageShareStackOutputs {
+message AzureStorageShareOutputs {
   // The Azure Resource Manager ID of the share -- the management-plane
   // identity ARM reads and policy target.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Storage/storageAccounts/{account}/fileServices/default/shares/{name}

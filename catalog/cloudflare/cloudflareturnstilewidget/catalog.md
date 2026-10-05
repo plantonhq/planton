@@ -4,16 +4,16 @@ Provisions a Cloudflare Turnstile widget: a privacy-preserving CAPTCHA alternati
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Turnstile Widget** -- a configured widget scoped to your account and domains
-- **Site key and secret key** -- exported as stack outputs (the secret is sensitive)
+- **Site key and secret key** -- exported as outputs (the secret is sensitive)
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Turnstile edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Turnstile edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -50,7 +50,7 @@ spec:
 planton apply -f cloudflare-turnstile-widget.yaml
 ```
 
-This creates a managed-mode widget for the listed domains. A Stack Job tracks the provisioning in real time; the site and secret keys appear in `status.outputs` once issued.
+This creates a managed-mode widget for the listed domains. An Infra Job tracks the provisioning in real time; the site and secret keys appear in `status.outputs` once issued.
 
 ## Key Configuration
 
@@ -68,13 +68,13 @@ These are the most important decisions when configuring a Turnstile widget. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies -- the widget is account-scoped, and its served domains travel as plain strings.
+This kind has no foreign key dependencies -- the widget is account-scoped, and its served domains travel as plain strings.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -93,4 +93,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) -- verifies Turnstile tokens server-side by referencing the widget's `secret` output as a secret binding
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) -- verifies Turnstile tokens server-side by referencing the widget's `secret` output as a secret binding

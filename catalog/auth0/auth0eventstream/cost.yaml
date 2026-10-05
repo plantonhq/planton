@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: auth0eventstream
 spec:
   billing_model: free
   free_tier: "Auth0 publishes no per-object price for event streams -- no meter charges for creating one or for the events it delivers. Auth0's pricing feature matrix (auth0.com/pricing, Extensibility section, retrieved 2026-08-22) gates event streams by COUNT per plan: 1 on Free, 3 on Essentials, 4 on Professional, 8 on Enterprise. Within your plan's allowance, each stream is free."
-  notes: "The real spend lives in the tenant subscription that hosts this object: Auth0 bills by plan tier plus monthly active users (Free up to 25,000 MAUs; Essentials from $35/month B2C or $150/month B2B; Professional from $240/month B2C or $800/month B2B; Enterprise custom; yearly billing is 11x monthly -- auth0.com/pricing, retrieved 2026-08-22). Needing a 2nd stream forces at least Essentials, a 4th forces Professional, a 5th forces Enterprise, per the same matrix. Delivery also creates spend OUTSIDE Auth0: an eventbridge destination puts events onto the customer's AWS account, where EventBridge bills per event published on its own meters, and a webhook destination is received by infrastructure the customer runs and pays for as its own catalog kind."
+  notes: "The real spend lives in the tenant subscription that hosts this object: Auth0 bills by plan tier plus monthly active users (Free up to 25,000 MAUs; Essentials from $35/month B2C or $150/month B2B; Professional from $240/month B2C or $800/month B2B; Enterprise custom; yearly billing is 11x monthly -- auth0.com/pricing, retrieved 2026-08-22). Needing a 2nd stream forces at least Essentials, a 4th forces Professional, a 5th forces Enterprise, per the same matrix. Delivery also creates spend OUTSIDE Auth0: an eventbridge destination puts events onto the customer's AWS account, where EventBridge bills per event published on its own meters, and a webhook destination is received by infrastructure the customer runs and pays for as its own component."

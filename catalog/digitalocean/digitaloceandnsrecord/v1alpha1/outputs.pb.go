@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanDnsRecordStackOutputs captures the outputs after provisioning a
+// DigitalOceanDnsRecordOutputs captures the outputs after provisioning a
 // DigitalOcean DNS record.
-type DigitalOceanDnsRecordStackOutputs struct {
+type DigitalOceanDnsRecordOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique identifier of the created DNS record. DigitalOcean assigns a
 	// NUMERIC id (exported here as its string form); together with the domain
@@ -45,20 +45,20 @@ type DigitalOceanDnsRecordStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDnsRecordStackOutputs) Reset() {
-	*x = DigitalOceanDnsRecordStackOutputs{}
+func (x *DigitalOceanDnsRecordOutputs) Reset() {
+	*x = DigitalOceanDnsRecordOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDnsRecordStackOutputs) String() string {
+func (x *DigitalOceanDnsRecordOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDnsRecordStackOutputs) ProtoMessage() {}
+func (*DigitalOceanDnsRecordOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanDnsRecordStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDnsRecordOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,40 +70,40 @@ func (x *DigitalOceanDnsRecordStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDnsRecordStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDnsRecordStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDnsRecordOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDnsRecordOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDnsRecordStackOutputs) GetRecordId() string {
+func (x *DigitalOceanDnsRecordOutputs) GetRecordId() string {
 	if x != nil {
 		return x.RecordId
 	}
 	return ""
 }
 
-func (x *DigitalOceanDnsRecordStackOutputs) GetHostname() string {
+func (x *DigitalOceanDnsRecordOutputs) GetHostname() string {
 	if x != nil {
 		return x.Hostname
 	}
 	return ""
 }
 
-func (x *DigitalOceanDnsRecordStackOutputs) GetRecordType() string {
+func (x *DigitalOceanDnsRecordOutputs) GetRecordType() string {
 	if x != nil {
 		return x.RecordType
 	}
 	return ""
 }
 
-func (x *DigitalOceanDnsRecordStackOutputs) GetDomain() string {
+func (x *DigitalOceanDnsRecordOutputs) GetDomain() string {
 	if x != nil {
 		return x.Domain
 	}
 	return ""
 }
 
-func (x *DigitalOceanDnsRecordStackOutputs) GetTtlSeconds() int32 {
+func (x *DigitalOceanDnsRecordOutputs) GetTtlSeconds() int32 {
 	if x != nil {
 		return x.TtlSeconds
 	}
@@ -114,8 +114,8 @@ var File_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_outputs_proto proto
 
 const file_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/digitalocean/digitaloceandnsrecord/v1alpha1/outputs.proto\x127dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1\"\xb6\x01\n" +
-	"!DigitalOceanDnsRecordStackOutputs\x12\x1b\n" +
+	"Acatalog/digitalocean/digitaloceandnsrecord/v1alpha1/outputs.proto\x127dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1\"\xb1\x01\n" +
+	"\x1cDigitalOceanDnsRecordOutputs\x12\x1b\n" +
 	"\trecord_id\x18\x01 \x01(\tR\brecordId\x12\x1a\n" +
 	"\bhostname\x18\x02 \x01(\tR\bhostname\x12\x1f\n" +
 	"\vrecord_type\x18\x03 \x01(\tR\n" +
@@ -139,7 +139,7 @@ func file_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_outputs_proto_rawD
 
 var file_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanDnsRecordStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordStackOutputs
+	(*DigitalOceanDnsRecordOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordOutputs
 }
 var file_catalog_digitalocean_digitaloceandnsrecord_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -7,7 +7,7 @@
 orchestration, AI-agent pipelines) from the official `temporal` Helm
 chart, on a database you bring.
 
-Not the right component when:
+Not the right kind when:
 
 - **You want managed Temporal** — that is Temporal Cloud; point your
   workers at it and deploy nothing here.

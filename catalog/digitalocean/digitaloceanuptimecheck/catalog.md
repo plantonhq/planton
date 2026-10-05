@@ -4,7 +4,7 @@ Deploys an availability and latency probe on any external endpoint -- a site, an
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Uptime check** -- the probe itself: target, protocol (`ping`, `http`, or `https`), and vantage regions, as one `digitalocean_uptime_check` resource
 - **Uptime alerts** -- created only when `alerts` rows are set: one `digitalocean_uptime_alert` per row (`down`, `down_global`, `latency`, `ssl_expiry`), each carrying its own notification channels, with Slack webhook URLs accepted only as managed-secret references and encrypted in Pulumi stack state
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### DigitalOcean Account
 
@@ -59,7 +59,7 @@ spec:
 planton apply -f do-uptime-check.yaml
 ```
 
-This probes the site over https from all four vantage regions and mails ops (a verified member of the DigitalOcean team) only when every region agrees it is down. Probing starts immediately, and results appear in the control panel's Monitoring -> Uptime section. A Stack Job tracks the provisioning in real time.
+This probes the site over https from all four vantage regions and mails ops (a verified member of the DigitalOcean team) only when every region agrees it is down. Probing starts immediately, and results appear in the control panel's Monitoring -> Uptime section. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -83,13 +83,13 @@ These are the most important decisions when configuring an uptime check. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies -- the probed target is an external endpoint, declared as a literal URL, hostname, or IP.
+This kind has no foreign key dependencies -- the probed target is an external endpoint, declared as a literal URL, hostname, or IP.
 
-### What This Component Provides
+### What This Kind Provides
 
-`status.outputs` carries `check_id`, the check's UUID -- its API identity and its import id -- and `alert_ids`, the composed rows' UUIDs keyed by `<row index>-<alert name>` (each row imports as `{check_id},{alert_id}`, and the map supplies the second half so adopting a whole check needs no lookup). No downstream Cloud Resource consumes an uptime check by reference, so there is no ValueFromRef story to teach.
+`status.outputs` carries `check_id`, the check's UUID -- its API identity and its import id -- and `alert_ids`, the composed rows' UUIDs keyed by `<row index>-<alert name>` (each row imports as `{check_id},{alert_id}`, and the map supplies the second half so adopting a whole check needs no lookup). No downstream Infra Component consumes an uptime check by reference, so there is no ValueFromRef story to teach.
 
 ## Common Patterns
 
@@ -103,6 +103,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Monitor Alert**](/cloud-catalog/digital-ocean-monitor-alert) -- the inside view: metric alerts on the droplets, balancers, and databases behind the endpoint this check probes from outside
-- [**DigitalOcean Load Balancer**](/cloud-catalog/digital-ocean-load-balancer) -- the public entry point most checks end up probing
-- [**DigitalOcean App Platform App**](/cloud-catalog/digital-ocean-app) -- App Platform's default ingress and custom domains are natural probe targets
+- [**DigitalOcean Monitor Alert**](/infra-catalog/digital-ocean-monitor-alert) -- the inside view: metric alerts on the droplets, balancers, and databases behind the endpoint this check probes from outside
+- [**DigitalOcean Load Balancer**](/infra-catalog/digital-ocean-load-balancer) -- the public entry point most checks end up probing
+- [**DigitalOcean App Platform App**](/infra-catalog/digital-ocean-app) -- App Platform's default ingress and custom domains are natural probe targets

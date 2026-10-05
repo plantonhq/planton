@@ -65,7 +65,7 @@ message GcpServiceAccountSpec {
   // federation wherever the workload supports it). When present, a key is
   // created with the configured algorithm and formats, and the private key
   // (unless public_key_data supplies your own public key) is exported in
-  // stack outputs as `key_base64` — treat that output as a live credential.
+  // outputs as `key_base64` — treat that output as a live credential.
   GcpServiceAccountUserManagedKey user_managed_key = 6;
 
   // IAM roles granted to this service account at the PROJECT scope, e.g.
@@ -120,7 +120,7 @@ message GcpServiceAccountSpec {
 message GcpServiceAccountUserManagedKey {
   // Two mutually exclusive key flows exist:
   //   - GENERATE (default): GCP generates the key pair and returns the
-  //     private key once (exported as the key_base64 stack output).
+  //     private key once (exported as the key_base64 output).
   //     algorithm / private_key_type / public_key_type shape the result.
   //   - UPLOAD: you supply your own public key via public_key_data; GCP
   //     never sees or returns a private key (key_base64 stays empty).
@@ -168,7 +168,7 @@ message GcpServiceAccountUserManagedKey {
 
   // Your own public key (base64-encoded X.509 PEM) — the UPLOAD flow: the
   // matching private key never leaves your custody and GCP returns no
-  // private key material (the key_base64 stack output stays empty).
+  // private key material (the key_base64 output stays empty).
   // The strongest key posture when a user-managed key is unavoidable.
   string public_key_data = 4;
 

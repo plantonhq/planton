@@ -31,7 +31,7 @@ type CloudflareEmailRoutingZone struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareEmailRoutingZoneSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *CloudflareEmailRoutingZone) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareEmailRoutingZone) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareEmailRoutingZone) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *CloudflareEmailRoutingZone) GetStatus() *CloudflareEmailRoutingZoneStat
 // cloudflare-email-routing-zone status
 type CloudflareEmailRoutingZoneStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	cloudflare-email-routing-zone stack-outputs
-	Outputs       *CloudflareEmailRoutingZoneStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	cloudflare-email-routing-zone outputs
+	Outputs       *CloudflareEmailRoutingZoneOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareEmailRoutingZoneStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareEmailRoutingZoneStatus) GetOutputs() *CloudflareEmailRoutingZoneStackOutputs {
+func (x *CloudflareEmailRoutingZoneStatus) GetOutputs() *CloudflareEmailRoutingZoneOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_api_proto_rawD
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aCloudflareEmailRoutingZoneR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12v\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12v\n" +
 	"\x04spec\x18\x04 \x01(\v2Z.dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12t\n" +
-	"\x06status\x18\x05 \x01(\v2\\.dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneStatusR\x06status\"\xa0\x01\n" +
-	" CloudflareEmailRoutingZoneStatus\x12|\n" +
-	"\aoutputs\x18\x01 \x01(\v2b.dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneStackOutputsR\aoutputsB\xcf\x03\n" +
+	"\x06status\x18\x05 \x01(\v2\\.dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneStatusR\x06status\"\x9b\x01\n" +
+	" CloudflareEmailRoutingZoneStatus\x12w\n" +
+	"\aoutputs\x18\x01 \x01(\v2].dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneOutputsR\aoutputsB\xcf\x03\n" +
 	">com.dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1B\bApiProtoP\x01Zvgithub.com/plantonhq/planton/catalog/cloudflare/cloudflareemailroutingzone/v1alpha1;cloudflareemailroutingzonev1alpha1\xa2\x02\x04DPCC\xaa\x02:Dev.Planton.Cloudflare.Cloudflareemailroutingzone.V1alpha1\xca\x02:Dev\\Planton\\Cloudflare\\Cloudflareemailroutingzone\\V1alpha1\xe2\x02FDev\\Planton\\Cloudflare\\Cloudflareemailroutingzone\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Cloudflare::Cloudflareemailroutingzone::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_api_proto_rawDe
 
 var file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareEmailRoutingZone)(nil),             // 0: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZone
-	(*CloudflareEmailRoutingZoneStatus)(nil),       // 1: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareEmailRoutingZoneSpec)(nil),         // 3: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneSpec
-	(*CloudflareEmailRoutingZoneStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneStackOutputs
+	(*CloudflareEmailRoutingZone)(nil),        // 0: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZone
+	(*CloudflareEmailRoutingZoneStatus)(nil),  // 1: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareEmailRoutingZoneSpec)(nil),    // 3: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneSpec
+	(*CloudflareEmailRoutingZoneOutputs)(nil), // 4: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneOutputs
 }
 var file_catalog_cloudflare_cloudflareemailroutingzone_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZone.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZone.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZone.spec:type_name -> dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneSpec
 	1, // 2: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZone.status:type_name -> dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneStatus
-	4, // 3: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneStatus.outputs:type_name -> dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneStatus.outputs:type_name -> dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1.CloudflareEmailRoutingZoneOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

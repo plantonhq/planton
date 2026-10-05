@@ -34,7 +34,7 @@ type CloudflareZeroTrustGatewayPolicy struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareZeroTrustGatewayPolicySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *CloudflareZeroTrustGatewayPolicy) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareZeroTrustGatewayPolicy) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareZeroTrustGatewayPolicy) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *CloudflareZeroTrustGatewayPolicy) GetStatus() *CloudflareZeroTrustGatew
 // Gateway policy.
 type CloudflareZeroTrustGatewayPolicyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareZeroTrustGatewayPolicyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareZeroTrustGatewayPolicyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*CloudflareZeroTrustGatewayPolicyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareZeroTrustGatewayPolicyStatus) GetOutputs() *CloudflareZeroTrustGatewayPolicyStackOutputs {
+func (x *CloudflareZeroTrustGatewayPolicyStatus) GetOutputs() *CloudflareZeroTrustGatewayPolicyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_api_prot
 	"apiVersion\x12;\n" +
 	"\x04kind\x18\x02 \x01(\tB'\xbaH$r\"\n" +
 	" CloudflareZeroTrustGatewayPolicyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x82\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x82\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2f.dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x80\x01\n" +
-	"\x06status\x18\x05 \x01(\v2h.dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyStatusR\x06status\"\xb3\x01\n" +
-	"&CloudflareZeroTrustGatewayPolicyStatus\x12\x88\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2n.dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyStackOutputsR\aoutputsB\xfa\x03\n" +
+	"\x06status\x18\x05 \x01(\v2h.dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyStatusR\x06status\"\xae\x01\n" +
+	"&CloudflareZeroTrustGatewayPolicyStatus\x12\x83\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2i.dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyOutputsR\aoutputsB\xfa\x03\n" +
 	"Dcom.dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1B\bApiProtoP\x01Z\x82\x01github.com/plantonhq/planton/catalog/cloudflare/cloudflarezerotrustgatewaypolicy/v1alpha1;cloudflarezerotrustgatewaypolicyv1alpha1\xa2\x02\x04DPCC\xaa\x02@Dev.Planton.Cloudflare.Cloudflarezerotrustgatewaypolicy.V1alpha1\xca\x02@Dev\\Planton\\Cloudflare\\Cloudflarezerotrustgatewaypolicy\\V1alpha1\xe2\x02LDev\\Planton\\Cloudflare\\Cloudflarezerotrustgatewaypolicy\\V1alpha1\\GPBMetadata\xea\x02DDev::Planton::Cloudflare::Cloudflarezerotrustgatewaypolicy::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_api_proto
 
 var file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareZeroTrustGatewayPolicy)(nil),             // 0: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicy
-	(*CloudflareZeroTrustGatewayPolicyStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyStatus
-	(*shared.CloudResourceMetadata)(nil),                 // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareZeroTrustGatewayPolicySpec)(nil),         // 3: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicySpec
-	(*CloudflareZeroTrustGatewayPolicyStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyStackOutputs
+	(*CloudflareZeroTrustGatewayPolicy)(nil),        // 0: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicy
+	(*CloudflareZeroTrustGatewayPolicyStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyStatus
+	(*shared.CatalogObjectMetadata)(nil),            // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareZeroTrustGatewayPolicySpec)(nil),    // 3: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicySpec
+	(*CloudflareZeroTrustGatewayPolicyOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicy.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicy.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicy.spec:type_name -> dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicySpec
 	1, // 2: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicy.status:type_name -> dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyStatus
-	4, // 3: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1.CloudflareZeroTrustGatewayPolicyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

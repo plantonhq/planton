@@ -2,7 +2,7 @@
 # Catalog Data Guard
 # =============================================================================
 # Fails the PR when the catalog's authored data products break their
-# contracts: a component cost profile (cost.yaml), control profile
+# contracts: a catalog kind cost profile (cost.yaml), control profile
 # (controls.yaml), or runner permissions manifest (iac/permissions.yaml)
 # that fails strict schema parsing, references a control the central catalog
 # does not define, skips a control the catalog does define, names a spec
@@ -21,7 +21,7 @@
 # (catalog/_compliance/) and the whole cost-estimate pipeline
 # (catalog/_pricing/): the price books' pinned prices must carry sources
 # and retrieval dates, the estimate models' quantities must name declared
-# meters and resolvable prices, cluster-capacity components' capacity
+# meters and resolvable prices, cluster-capacity kinds' capacity
 # derivations must bind real spec structure, and the GENERATED estimates
 # must be byte-identical to a fresh generation -- every multiplication and
 # total re-computed exactly, every model/price-book/cost.yaml disagreement

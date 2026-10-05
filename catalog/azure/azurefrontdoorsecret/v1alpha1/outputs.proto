@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefrontdoorsecret.v1alpha1;
 
-// **AzureFrontDoorSecretStackOutputs** captures the outputs of
+// **AzureFrontDoorSecretOutputs** captures the outputs of
 // provisioning an Azure Front Door secret.
-message AzureFrontDoorSecretStackOutputs {
+message AzureFrontDoorSecretOutputs {
   // The Azure Resource Manager ID of the secret -- what
   // AzureFrontDoorCustomDomain's tls.secret_id references to terminate
   // TLS with the wrapped certificate.

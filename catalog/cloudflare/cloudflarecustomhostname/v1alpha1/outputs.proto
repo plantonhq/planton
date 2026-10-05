@@ -2,17 +2,17 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1;
 
-// CloudflareCustomHostnameStackOutputs captures the outputs after onboarding a
+// CloudflareCustomHostnameOutputs captures the outputs after onboarding a
 // custom hostname. The ownership-verification fields are what the customer adds to
 // their DNS (or serves over HTTP) to prove control and activate the hostname.
-message CloudflareCustomHostnameStackOutputs {
+message CloudflareCustomHostnameOutputs {
   // The custom hostname identifier.
   string custom_hostname_id = 1;
 
   // Field 2 (status) was removed: hostname activation is asynchronous (a
   // fresh hostname transitions pending -> pending_validation -> active as
   // ownership verification and DCV complete), so a point-in-time phase can
-  // never be a stable stack output -- it flips on the first refresh after
+  // never be a stable output -- it flips on the first refresh after
   // the transition and re-plans forever (the same class measured live on
   // the Authenticated Origin Pulls certificate, 2026-08-28). Read
   // activation status from the Cloudflare API or dashboard instead.
@@ -40,7 +40,7 @@ message CloudflareCustomHostnameStackOutputs {
   // appears seconds later, flipping the first refresh-inclusive re-plan to
   // "changes outside" plus an output change -- the idempotency failure is
   // output-only). A value that transitions server-side without any config
-  // change is never a stable stack output (the async-phase-output class,
+  // change is never a stable output (the async-phase-output class,
   // list form). Read verification errors from the Cloudflare API or
   // dashboard instead.
   reserved 8;

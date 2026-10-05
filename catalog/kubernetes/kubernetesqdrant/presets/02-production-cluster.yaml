@@ -16,7 +16,7 @@ spec:
   # (stable across upgrades) and keeps it in its own
   # <name>-apikey Secret — key `api-key` (read-write) /
   # `read-only-api-key`. Key material never lands in rendered Helm
-  # values; the Secret name is in the stack outputs. Hand the
+  # values; the Secret name is in the outputs. Hand the
   # read-only key to query-side consumers so a leaked retrieval
   # credential cannot mutate collections.
   api_key:

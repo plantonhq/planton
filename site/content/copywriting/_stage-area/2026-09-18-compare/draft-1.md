@@ -26,7 +26,7 @@ The story's spine, verbatim: Proof at creation, not observation after: every cha
 
 **What Planton does at the same moment.**
 - Priced Before It Exists. Every deployment-changing job is born with a verified monthly cost: an exact figure with line items when the pricing rules can derive one, a range otherwise, and plainly "unpriced" when neither is possible. A zero never stands in for unknown. (ch 3, proof 0)
-- Controls Stated With Evidence. Every covered component states which of a fixed list of 17 technical controls it enforces, with evidence for each claim. (ch 3, proof 3)
+- Controls Stated With Evidence. Every covered kind states which of a fixed list of 17 technical controls it enforces, with evidence for each claim. (ch 3, proof 3)
 - Stamped on the Record. The full configuration is embedded into the job when it is created, and the job is immutable: the resource may change later; the job never does. (ch 5, proof 0)
 
 **When you run both.** Keep the posture tool for the estate you already have and for whatever Planton did not create. Planton hands it a smaller problem: everything that went through Planton arrives priced, within budget, inside your rules, and stamped with the controls it enforces. A complement, never a replacement. (ch 11, proof 0)
@@ -38,8 +38,8 @@ The story's spine, verbatim: Proof at creation, not observation after: every cha
 **What they do.** Orchestrators that run the Terraform your team writes, and guardrail tools that check it at plan time, field name by field name. Some estimate cost at plan time. The writing is still yours. (ch 11)
 
 **What Planton does at the same moment.**
-- Typed Self-Service, Not Authoring. Every component is a typed schema over an open-source module. A person or an agent writes a short manifest, the schema validates it before anything touches your cloud, and the module that runs is the same one every time. (ch 11 claim; the validation docs the Coding Agents page already links)
-- One Vocabulary, Not a Hundred Field Names. Every component reports its controls against the same fixed list, so what you check is one vocabulary, not each kind's field names. (ch 11, proof 1)
+- Typed Self-Service, Not Authoring. Every kind is a typed schema over an open-source module. A person or an agent writes a short manifest, the schema validates it before anything touches your cloud, and the module that runs is the same one every time. (ch 11 claim; the validation docs the Coding Agents page already links)
+- One Vocabulary, Not a Hundred Field Names. Every kind reports its controls against the same fixed list, so what you check is one vocabulary, not each kind's field names. (ch 11, proof 1)
 - Every Door Obeys the Same Rules. A platform team writes the rules once and every request obeys them, whether it came from a person in the console, a script on the CLI, or a coding agent at two in the morning. (ch 4 claim)
 
 **When you run both.** Keep the orchestrator for the Terraform you already run outside Planton. Your Terraform stays yours: the modules are open-source Terraform and Pulumi, what you already run is adopted, not rewritten, and if you leave, you take your manifests and keep deploying them with the open-source CLI. (ch 11, proof 1; ch 8, proof 1)
@@ -61,9 +61,9 @@ The story's spine, verbatim: Proof at creation, not observation after: every cha
 
 ## You Will Ask
 
-- **Why not just Terraform?** Planton runs Terraform; it does not compete with it. Every component in the catalog is a typed schema over a pre-written, tested open-source module, shipped for both OpenTofu and Pulumi, and you choose which engine runs without changing your manifest. What changes is who writes what: a person or an agent writes a short manifest, the schema validates it before anything touches your cloud, and the module that runs is the same one every time. (ch 2, 11; question bank entry 1) → /product/open-source
-- **Is this another abstraction layer I will be fighting in six months?** Each provider keeps its full native configuration; Planton does not pretend one cloud's network is another's. What is consistent is the structure and the workflow: every component a typed schema over an open-source module, reporting its controls against one fixed list. What you already run is adopted, not rewritten, and if you leave, the modules and your manifests go with you. (ch 11; question bank entry 1) → /product/import
-- **Is it a set of operators reconciling my cluster?** No. Nothing runs in your cluster watching your resources. Every change is one stack job: it plans, pauses at the gates you set, applies from a runner in your own network, and is kept and queryable with the exact configuration embedded. A control loop cannot naturally pause between the plan and the apply; a job can, and that pause is where your approvals live. The trade is that nothing self-heals: a job runs when a person, a push, or an agent asks. (ch 5; question bank entry 7) → /trust/the-record
+- **Why not just Terraform?** Planton runs Terraform; it does not compete with it. Every kind in the catalog is a typed schema over a pre-written, tested open-source module, shipped for both OpenTofu and Pulumi, and you choose which engine runs without changing your manifest. What changes is who writes what: a person or an agent writes a short manifest, the schema validates it before anything touches your cloud, and the module that runs is the same one every time. (ch 2, 11; question bank entry 1) → /product/open-source
+- **Is this another abstraction layer I will be fighting in six months?** Each provider keeps its full native configuration; Planton does not pretend one cloud's network is another's. What is consistent is the structure and the workflow: every kind a typed schema over an open-source module, reporting its controls against one fixed list. What you already run is adopted, not rewritten, and if you leave, the modules and your manifests go with you. (ch 11; question bank entry 1) → /product/import
+- **Is it a set of operators reconciling my cluster?** No. Nothing runs in your cluster watching your resources. Every change is one Infra Job: it plans, pauses at the gates you set, applies from a runner in your own network, and is kept and queryable with the exact configuration embedded. A control loop cannot naturally pause between the plan and the apply; a job can, and that pause is where your approvals live. The trade is that nothing self-heals: a job runs when a person, a push, or an agent asks. (ch 5; question bank entry 7) → /trust/the-record
 
 ## Read Next
 

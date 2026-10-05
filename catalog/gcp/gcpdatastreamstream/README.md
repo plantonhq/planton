@@ -4,7 +4,7 @@ Continuous change data capture from one source database into BigQuery or Cloud S
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Stream** -- a `datastream_stream` with one source arm, one destination arm, a backfill mode, and optional per-table rules
 
@@ -97,7 +97,7 @@ planton apply -f datastream-stream.yaml
 - Rule sets: exactly one object identifier, at least one rule, each rule exactly one of partitioning or clustering, each partitioning exactly one kind.
 - Values follow Google's lists and ranges: MongoDB backfill concurrency 0-50, GCS rotation 15-60 seconds, durations in seconds.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -125,7 +125,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpDatastreamConnectionProfile** -- the source and destination
 - **GcpDatastreamPrivateConnection** -- private reachability for sources

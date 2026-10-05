@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpMonitoringDashboardStackInput struct {
+type GcpMonitoringDashboardIacInput struct {
 	state          protoimpl.MessageState  `protogen:"open.v1"`
 	Target         *GcpMonitoringDashboard `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig  `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpMonitoringDashboardStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpMonitoringDashboardStackInput) Reset() {
-	*x = GcpMonitoringDashboardStackInput{}
+func (x *GcpMonitoringDashboardIacInput) Reset() {
+	*x = GcpMonitoringDashboardIacInput{}
 	mi := &file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpMonitoringDashboardStackInput) String() string {
+func (x *GcpMonitoringDashboardIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpMonitoringDashboardStackInput) ProtoMessage() {}
+func (*GcpMonitoringDashboardIacInput) ProtoMessage() {}
 
-func (x *GcpMonitoringDashboardStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpMonitoringDashboardIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpMonitoringDashboardStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpMonitoringDashboardStackInput.ProtoReflect.Descriptor instead.
-func (*GcpMonitoringDashboardStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpMonitoringDashboardIacInput.ProtoReflect.Descriptor instead.
+func (*GcpMonitoringDashboardIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpMonitoringDashboardStackInput) GetTarget() *GcpMonitoringDashboard {
+func (x *GcpMonitoringDashboardIacInput) GetTarget() *GcpMonitoringDashboard {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpMonitoringDashboardStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpMonitoringDashboardIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpmonitoringdashboard_v1alpha1_input_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpmonitoringdashboard/v1alpha1/input.proto\x12/dev.planton.gcp.gcpmonitoringdashboard.v1alpha1\x1a5catalog/gcp/gcpmonitoringdashboard/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd0\x01\n" +
-	" GcpMonitoringDashboardStackInput\x12_\n" +
+	"7catalog/gcp/gcpmonitoringdashboard/v1alpha1/input.proto\x12/dev.planton.gcp.gcpmonitoringdashboard.v1alpha1\x1a5catalog/gcp/gcpmonitoringdashboard/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xce\x01\n" +
+	"\x1eGcpMonitoringDashboardIacInput\x12_\n" +
 	"\x06target\x18\x01 \x01(\v2G.dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboardR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\x8b\x03\n" +
 	"3com.dev.planton.gcp.gcpmonitoringdashboard.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_input_proto_rawDescGZIP() 
 
 var file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_input_proto_goTypes = []any{
-	(*GcpMonitoringDashboardStackInput)(nil), // 0: dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboardStackInput
-	(*GcpMonitoringDashboard)(nil),           // 1: dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboard
-	(*gcp.GcpProviderConfig)(nil),            // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpMonitoringDashboardIacInput)(nil), // 0: dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboardIacInput
+	(*GcpMonitoringDashboard)(nil),         // 1: dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboard
+	(*gcp.GcpProviderConfig)(nil),          // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpmonitoringdashboard_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboardStackInput.target:type_name -> dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboard
-	2, // 1: dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboardStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboardIacInput.target:type_name -> dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboard
+	2, // 1: dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboardIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

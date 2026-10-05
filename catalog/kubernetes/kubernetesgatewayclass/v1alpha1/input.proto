@@ -6,8 +6,8 @@ import "catalog/kubernetes/kubernetesgatewayclass/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 // Input for the KubernetesGatewayClass IaC stack.
-message KubernetesGatewayClassStackInput {
-  // Target cloud-resource.
+message KubernetesGatewayClassIacInput {
+  // the catalog object to deploy.
   KubernetesGatewayClass target = 1;
   // Kubernetes provider configuration (cluster credentials).
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

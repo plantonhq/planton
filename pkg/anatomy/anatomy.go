@@ -1,18 +1,18 @@
 // Package anatomy is the machine-enforced constitution of the catalog's
-// shape: every component folder follows ONE canonical anatomy, checked file
+// shape: every kind folder follows ONE canonical anatomy, checked file
 // by file, so anatomy drift is unshippable instead of auditable.
 //
 // The canonical anatomy (one rule: version dirs hold only the versioned
-// contract; the component root holds the living component):
+// contract; the kind root holds the living kind):
 //
 //	catalog/<provider>/<kind>/
-//	├── README.md          the GitHub-facing component page       (required)
+//	├── README.md          the GitHub-facing kind page       (required)
 //	├── catalog.md         the catalog page                       (required)
-//	├── logo.svg           the component logo                     (required)
+//	├── logo.svg           the kind logo                     (required)
 //	├── GUIDE.md           authored operational judgment          (optional)
-//	├── cost.yaml          the component's cost profile           (required)
-//	├── controls.yaml      the component's control profile        (required)
-//	├── iac/               ONE live module set per component      (required)
+//	├── cost.yaml          the kind's cost profile           (required)
+//	├── controls.yaml      the kind's control profile        (required)
+//	├── iac/               ONE live module set per kind      (required)
 //	│   ├── pulumi/        with README.md, no Makefile            (required*)
 //	│   ├── tf/            with README.md, no .gitignore          (required*)
 //	│   ├── permissions.yaml   runner least-privilege manifest    (required)
@@ -31,24 +31,24 @@
 // module for an engine the kind refuses can never ship.
 //
 // Two prefix conventions coexist deliberately: underscore dirs at the catalog
-// root (_docs/, _patterns/, _compliance/, _pricing/) hold non-component
+// root (_docs/, _patterns/, _compliance/, _pricing/) hold non-kind
 // content Go tooling must ignore (_compliance/ carries the authored control
-// catalog and framework crosswalks the per-component controls.yaml files
+// catalog and framework crosswalks the per-kind controls.yaml files
 // reference; _pricing/ carries the per-preset cost estimates priced from the
-// components' cost.yaml profiles at published list prices),
+// kinds' cost.yaml profiles at published list prices),
 // while aa_-prefixed dirs inside providers (aa_e2e/, aa_eval/, aa_import/)
 // hold provider infrastructure that CONTAINS buildable Go -- Go tooling skips
 // underscore dirs entirely, so Go-bearing infrastructure cannot use one.
 // (_test is underscore-prefixed AND a registered provider; walkers key off
 // the registry, never the prefix.)
 //
-// The walk is keyed off the kind registry (crkreflect), never directory
+// The walk is keyed off the kind registry (catalogkindreflect), never directory
 // prefixes: a directory that does not resolve to a registered kind is a
 // violation, and a registered kind without a directory is one too.
 //
 // The descriptor of accepted gaps lives in baseline.yaml -- a burn-down list
 // mirroring pkg/secretcoverage's baseline (a reader who knows one knows
-// both). The CI lane is .github/workflows/lint.component-anatomy.yaml.
+// both). The CI lane is .github/workflows/lint.kind-anatomy.yaml.
 package anatomy
 
 import (
@@ -59,9 +59,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // versionDirRe is the maturity-channel grammar. Never a bare v* glob: that
@@ -70,7 +70,7 @@ var versionDirRe = regexp.MustCompile(`^v[0-9]+((alpha|beta)[0-9]+)?$`)
 
 // Violation is one anatomy rule broken at one path.
 type Violation struct {
-	// Path is repo-root-relative (a component dir, or a file inside one).
+	// Path is repo-root-relative (a kind dir, or a file inside one).
 	Path string
 	// Rule is the stable rule identifier (baseline entries key on it).
 	Rule string
@@ -83,8 +83,8 @@ func (v Violation) ID() string { return v.Path + ":" + v.Rule }
 
 // Rule identifiers. Stable: baseline.yaml entries reference them.
 const (
-	RuleUnregisteredDir       = "unregistered-component-dir"
-	RuleMissingComponent      = "missing-component-dir"
+	RuleUnregisteredDir       = "unregistered-kind-dir"
+	RuleMissingKind           = "missing-kind-dir"
 	RuleUnexpectedEntry       = "unexpected-entry"
 	RuleMissingReadme         = "missing-readme"
 	RuleMissingCatalogPage    = "missing-catalog-md"
@@ -106,10 +106,10 @@ const (
 	RuleMissingPermissions    = "missing-permissions"
 )
 
-// componentEntries is the CLOSED set of names allowed at a component root
+// kindEntries is the CLOSED set of names allowed at a kind root
 // (plus version dirs, matched by grammar). An entry outside this set is the
 // exact drift class this gate exists to catch.
-var componentEntries = map[string]bool{
+var kindEntries = map[string]bool{
 	"README.md":     true,
 	"catalog.md":    true,
 	"GUIDE.md":      true,
@@ -139,7 +139,7 @@ var versionEntries = map[string]bool{
 }
 
 // requiredContractProtos are the version-dir protos every kind must serve.
-// input/outputs carry the KEPT {Kind}StackInput / {Kind}StackOutputs
+// input/outputs carry the KEPT {Kind}IacInput / {Kind}Outputs
 // messages -- the filenames are layout, the message names are identity.
 var requiredContractProtos = []string{
 	"api.proto", "spec.proto", "input.proto", "outputs.proto",
@@ -159,9 +159,9 @@ func Check(repoRoot string) ([]Violation, error) {
 	}
 
 	// Every registered kind must be found on disk (completeness half).
-	unseenKinds := map[cloudresourcekind.CloudResourceKind]bool{}
-	for _, k := range crkreflect.KindsList() {
-		if k != cloudresourcekind.CloudResourceKind_unspecified {
+	unseenKinds := map[catalogkind.CatalogKind]bool{}
+	for _, k := range catalogkindreflect.KindsList() {
+		if k != catalogkind.CatalogKind_unspecified {
 			unseenKinds[k] = true
 		}
 	}
@@ -172,7 +172,7 @@ func Check(repoRoot string) ([]Violation, error) {
 	}
 	for _, p := range providers {
 		if p.Name() == "_docs" || p.Name() == "_patterns" || p.Name() == "_compliance" || p.Name() == "_pricing" {
-			continue // non-component homes at the catalog root
+			continue // non-kind homes at the catalog root
 		}
 		if !p.IsDir() {
 			add(filepath.Join("catalog", p.Name()), RuleUnexpectedEntry,
@@ -206,14 +206,14 @@ func Check(repoRoot string) ([]Violation, error) {
 			if strings.HasPrefix(e.Name(), "aa_") {
 				continue // declared provider infrastructure (Go-bearing, so not underscore-prefixed)
 			}
-			kind := crkreflect.KindFromString(e.Name())
-			if kind == cloudresourcekind.CloudResourceKind_unspecified {
+			kind := catalogkindreflect.KindFromString(e.Name())
+			if kind == catalogkind.CatalogKind_unspecified {
 				add(rel, RuleUnregisteredDir,
 					"directory does not resolve to a registered kind -- typo'd, renamed, or missing its registry entry")
 				continue
 			}
 			delete(unseenKinds, kind)
-			checkComponent(repoRoot, rel, kind, add)
+			checkKind(repoRoot, rel, kind, add)
 		}
 	}
 
@@ -223,15 +223,15 @@ func Check(repoRoot string) ([]Violation, error) {
 	}
 	sort.Strings(missing)
 	for _, name := range missing {
-		add(name, RuleMissingComponent, "registered kind has no component directory in the catalog")
+		add(name, RuleMissingKind, "registered kind has no kind directory in the catalog")
 	}
 
 	sort.Slice(vs, func(i, j int) bool { return vs[i].ID() < vs[j].ID() })
 	return vs, nil
 }
 
-func checkComponent(repoRoot, componentRel string, kind cloudresourcekind.CloudResourceKind, add func(rel, rule, detail string)) {
-	dir := filepath.Join(repoRoot, componentRel)
+func checkKind(repoRoot, kindRel string, kind catalogkind.CatalogKind, add func(rel, rule, detail string)) {
+	dir := filepath.Join(repoRoot, kindRel)
 	entries, _ := os.ReadDir(dir)
 
 	names := map[string]bool{}
@@ -241,17 +241,17 @@ func checkComponent(repoRoot, componentRel string, kind cloudresourcekind.CloudR
 		switch {
 		case e.IsDir() && versionDirRe.MatchString(e.Name()):
 			versionDirs++
-			checkVersionDir(repoRoot, filepath.Join(componentRel, e.Name()), add)
-		case componentEntries[e.Name()]:
-			// allowed living-component entry
+			checkVersionDir(repoRoot, filepath.Join(kindRel, e.Name()), add)
+		case kindEntries[e.Name()]:
+			// allowed living-kind entry
 		default:
-			add(filepath.Join(componentRel, e.Name()), RuleUnexpectedEntry,
-				"not part of the component anatomy -- the living component holds only its declared classes")
+			add(filepath.Join(kindRel, e.Name()), RuleUnexpectedEntry,
+				"not part of the kind anatomy -- the living kind holds only its declared classes")
 		}
 	}
 
 	if versionDirs == 0 {
-		add(componentRel, RuleMissingProto, "component has no version directory serving its contract")
+		add(kindRel, RuleMissingProto, "kind has no version directory serving its contract")
 	}
 	for name, rule := range map[string]string{
 		"README.md":     RuleMissingReadme,
@@ -261,7 +261,7 @@ func checkComponent(repoRoot, componentRel string, kind cloudresourcekind.CloudR
 		"controls.yaml": RuleMissingControlProfile,
 	} {
 		if !names[name] {
-			add(componentRel, rule, "required at the component root")
+			add(kindRel, rule, "required at the kind root")
 		}
 	}
 
@@ -269,9 +269,9 @@ func checkComponent(repoRoot, componentRel string, kind cloudresourcekind.CloudR
 	// kind's declared engines run -- each with a README, no build-system or
 	// VCS residue.
 	if !names["iac"] {
-		add(componentRel, RuleMissingIac, "every component ships its module set at the root")
+		add(kindRel, RuleMissingIac, "every kind ships its module set at the root")
 	} else {
-		iacRel := filepath.Join(componentRel, "iac")
+		iacRel := filepath.Join(kindRel, "iac")
 		iacEntries, _ := os.ReadDir(filepath.Join(repoRoot, iacRel))
 		hasPermissions := false
 		for _, e := range iacEntries {
@@ -305,11 +305,11 @@ func checkComponent(repoRoot, componentRel string, kind cloudresourcekind.CloudR
 				if engine == "tf" {
 					rule = RuleMissingTf
 				}
-				detail := "one live module set per component means both engines"
+				detail := "one live module set per kind means both engines"
 				if declared != "" {
 					detail = kind.String() + " runs on " + declared + ", which needs iac/" + engine
 				}
-				add(componentRel, rule, detail)
+				add(kindRel, rule, detail)
 				continue
 			case present && !wanted[engine]:
 				add(engineRel, RuleUndeclaredEngine,
@@ -334,9 +334,9 @@ func checkComponent(repoRoot, componentRel string, kind cloudresourcekind.CloudR
 	// presets/: complete manifests with their load-bearing .md sidecars
 	// (the site silently drops a preset without one).
 	if !names["presets"] {
-		add(componentRel, RuleMissingPresets, "every component ships presets at the root")
+		add(kindRel, RuleMissingPresets, "every kind ships presets at the root")
 	} else {
-		presetsRel := filepath.Join(componentRel, "presets")
+		presetsRel := filepath.Join(kindRel, "presets")
 		presetEntries, _ := os.ReadDir(filepath.Join(repoRoot, presetsRel))
 		for _, e := range presetEntries {
 			switch {
@@ -357,7 +357,7 @@ func checkComponent(repoRoot, componentRel string, kind cloudresourcekind.CloudR
 	// e2e/: declared-optional (tiered), but its shape is still closed at the
 	// directory level: free-form manifest yamls plus the three known dirs.
 	if names["e2e"] {
-		e2eRel := filepath.Join(componentRel, "e2e")
+		e2eRel := filepath.Join(kindRel, "e2e")
 		e2eEntries, _ := os.ReadDir(filepath.Join(repoRoot, e2eRel))
 		for _, e := range e2eEntries {
 			switch {
@@ -379,7 +379,7 @@ func checkVersionDir(repoRoot, versionRel string, add func(rel, rule, detail str
 		names[e.Name()] = true
 		if !versionEntries[e.Name()] {
 			add(filepath.Join(versionRel, e.Name()), RuleUnexpectedEntry,
-				"version dirs hold only the versioned contract -- living-component content belongs at the component root")
+				"version dirs hold only the versioned contract -- living-kind content belongs at the kind root")
 		}
 	}
 	for _, proto := range requiredContractProtos {
@@ -408,8 +408,8 @@ func checkVersionDir(repoRoot, versionRel string, add func(rel, rule, detail str
 // (one HCL module serves both). declared names the engines for messages, and
 // is empty for an undeclared kind. A declaration naming no real engine is the
 // registry tests' finding; here it reads as undeclared.
-func moduleFamilies(kind cloudresourcekind.CloudResourceKind) (wanted map[string]bool, declared string) {
-	provisioners, err := crkreflect.Provisioners(kind)
+func moduleFamilies(kind catalogkind.CatalogKind) (wanted map[string]bool, declared string) {
+	provisioners, err := catalogkindreflect.Provisioners(kind)
 	if err != nil || len(provisioners) == 0 {
 		return map[string]bool{"pulumi": true, "tf": true}, ""
 	}

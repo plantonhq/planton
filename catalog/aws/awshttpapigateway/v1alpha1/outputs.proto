@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awshttpapigateway.v1alpha1;
 
-// AwsHttpApiGatewayStackOutputs captures observable identifiers from a provisioned
+// AwsHttpApiGatewayOutputs captures observable identifiers from a provisioned
 // AWS API Gateway HTTP API. These outputs are used by downstream resources
 // (e.g., CloudFront distributions, CloudWatch alarms, Lambda permissions) to wire
 // dependencies via StringValueOrRef.
-message AwsHttpApiGatewayStackOutputs {
+message AwsHttpApiGatewayOutputs {
   // The API Gateway API identifier. Used for constructing resource ARNs
   // and referencing the API in other AWS services.
   string api_id = 1;

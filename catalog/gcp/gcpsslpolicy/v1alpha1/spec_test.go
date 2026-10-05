@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpSslPolicySpec", func() {
 		return &GcpSslPolicy{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpSslPolicy",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-ssl-policy",
 			},
 			Spec: &GcpSslPolicySpec{},

@@ -35,7 +35,7 @@ Each entry in `natIps` references an existing reservation:
 - **01-all-subnets-auto** — when egress IPs do not need to be stable
 - **03-private-nat** — NAT between VPC networks (Network Connectivity Center spokes)
 
-## Related Components
+## Related Kinds
 
 - [GcpAddress](/docs/catalog/gcp/gcpaddress) — the reserved egress IPs this preset references
 - [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — the scoped workload subnetwork

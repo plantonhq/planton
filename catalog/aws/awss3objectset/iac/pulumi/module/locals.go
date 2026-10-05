@@ -3,7 +3,7 @@ package module
 import (
 	"strconv"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 
 	awss3objectsetv1alpha1 "github.com/plantonhq/planton/catalog/aws/awss3objectset/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
@@ -15,10 +15,10 @@ type Locals struct {
 	AwsTags        map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *awss3objectsetv1alpha1.AwsS3ObjectSetStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awss3objectsetv1alpha1.AwsS3ObjectSetIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AwsS3ObjectSet = stackInput.Target
+	locals.AwsS3ObjectSet = iacInput.Target
 
 	target := locals.AwsS3ObjectSet
 
@@ -32,7 +32,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *awss3objectsetv1alpha1.Aw
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: target.Metadata.Org,
 		awstagkeys.Environment:  target.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsS3ObjectSet.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsS3ObjectSet.String(),
 		awstagkeys.ResourceId:   target.Metadata.Id,
 	}
 

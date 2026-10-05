@@ -11,7 +11,7 @@ both apply the CRDs via server-side apply, so they co-own rather than conflict).
 
 ## When to Use This
 
-This is the lightweight prerequisite for the typed Istio API components on clusters that
+This is the lightweight prerequisite for the typed Istio API kinds on clusters that
 use the Istio policy/config APIs **without running a mesh**:
 
 - `KubernetesDestinationRule`
@@ -23,7 +23,7 @@ use the Istio policy/config APIs **without running a mesh**:
 - `KubernetesEnvoyFilter`
 
 Those kinds only need the CRDs present so their objects can be applied and server-side
-validated — they do not need a control plane. Each declares this component as its
+validated — they do not need a control plane. Each declares this kind as its
 prerequisite. It is the Istio analog of `KubernetesGatewayApiCrds` for the Gateway API
 family.
 

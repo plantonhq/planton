@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureContainerInstanceStackInput is the input to the IaC modules
+// AzureContainerInstanceIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureContainerInstanceStackInput struct {
+type AzureContainerInstanceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The container group resource to deploy.
 	Target *AzureContainerInstance `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureContainerInstanceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureContainerInstanceStackInput) Reset() {
-	*x = AzureContainerInstanceStackInput{}
+func (x *AzureContainerInstanceIacInput) Reset() {
+	*x = AzureContainerInstanceIacInput{}
 	mi := &file_catalog_azure_azurecontainerinstance_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureContainerInstanceStackInput) String() string {
+func (x *AzureContainerInstanceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureContainerInstanceStackInput) ProtoMessage() {}
+func (*AzureContainerInstanceIacInput) ProtoMessage() {}
 
-func (x *AzureContainerInstanceStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureContainerInstanceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecontainerinstance_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureContainerInstanceStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureContainerInstanceStackInput.ProtoReflect.Descriptor instead.
-func (*AzureContainerInstanceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureContainerInstanceIacInput.ProtoReflect.Descriptor instead.
+func (*AzureContainerInstanceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerinstance_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureContainerInstanceStackInput) GetTarget() *AzureContainerInstance {
+func (x *AzureContainerInstanceIacInput) GetTarget() *AzureContainerInstance {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureContainerInstanceStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureContainerInstanceIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurecontainerinstance_v1alpha1_input_proto protoreflect.
 
 const file_catalog_azure_azurecontainerinstance_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azurecontainerinstance/v1alpha1/input.proto\x121dev.planton.azure.azurecontainerinstance.v1alpha1\x1a7catalog/azure/azurecontainerinstance/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd6\x01\n" +
-	" AzureContainerInstanceStackInput\x12a\n" +
+	"9catalog/azure/azurecontainerinstance/v1alpha1/input.proto\x121dev.planton.azure.azurecontainerinstance.v1alpha1\x1a7catalog/azure/azurecontainerinstance/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd4\x01\n" +
+	"\x1eAzureContainerInstanceIacInput\x12a\n" +
 	"\x06target\x18\x01 \x01(\v2I.dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x97\x03\n" +
 	"5com.dev.planton.azure.azurecontainerinstance.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azurecontainerinstance_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_azure_azurecontainerinstance_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecontainerinstance_v1alpha1_input_proto_goTypes = []any{
-	(*AzureContainerInstanceStackInput)(nil), // 0: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceStackInput
-	(*AzureContainerInstance)(nil),           // 1: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstance
-	(*azure.AzureProviderConfig)(nil),        // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureContainerInstanceIacInput)(nil), // 0: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceIacInput
+	(*AzureContainerInstance)(nil),         // 1: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstance
+	(*azure.AzureProviderConfig)(nil),      // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurecontainerinstance_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceStackInput.target:type_name -> dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstance
-	2, // 1: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceIacInput.target:type_name -> dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstance
+	2, // 1: dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

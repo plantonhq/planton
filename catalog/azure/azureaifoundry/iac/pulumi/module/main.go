@@ -9,16 +9,16 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureaifoundryv1alpha1.AzureAiFoundryStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureaifoundryv1alpha1.AzureAiFoundryIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient
 	// chain). The machine_learning features flag makes destroy purge the soft-delete ghost
 	// that would otherwise keep holding the hub NAME (hubs are ML workspaces at ARM and the
 	// provider default leaves the ghost); a soft-delete recovery window is not part of this
 	// module's contract -- mirrors the Terraform module's provider features block.
-	azureProvider, err := pulumiazureprovider.GetWithFeatures(ctx, stackInput.ProviderConfig,
+	azureProvider, err := pulumiazureprovider.GetWithFeatures(ctx, iacInput.ProviderConfig,
 		azure.ProviderFeaturesArgs{
 			MachineLearning: azure.ProviderFeaturesMachineLearningArgs{
 				PurgeSoftDeletedWorkspaceOnDestroy: pulumi.Bool(true),
@@ -77,7 +77,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureaifoundryv1alpha1.AzureAiFo
 
 	// Optional-with-default-true in the spec; the provider's own
 	// default is "Enabled". Presence-guard with the proto default so
-	// manifest-driven stack inputs (nil optional) send the same wire
+	// manifest-driven IaC inputs (nil optional) send the same wire
 	// value the Terraform module's optional(bool, true) carries.
 	publicNetworkAccess := "Enabled"
 	if spec.PublicNetworkAccessEnabled != nil && !*spec.PublicNetworkAccessEnabled {

@@ -6,7 +6,7 @@ import (
 
 	gcpcertificatemapv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertificatemap/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -26,8 +26,8 @@ type Locals struct {
 	GcpLabels map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpcertificatemapv1alpha1.GcpCertificateMapStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpcertificatemapv1alpha1.GcpCertificateMapIacInput) *Locals {
+	target := iacInput.Target
 
 	mapName := target.Spec.MapName
 	if mapName == "" {
@@ -40,7 +40,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpcertificatemapv1alpha1.G
 	}
 	gcpLabels[gcplabelkeys.Resource] = strconv.FormatBool(true)
 	gcpLabels[gcplabelkeys.ResourceName] = target.Metadata.Name
-	gcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpCertificateMap.String())
+	gcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpCertificateMap.String())
 	if target.Metadata.Org != "" {
 		gcpLabels[gcplabelkeys.Organization] = target.Metadata.Org
 	}

@@ -13,14 +13,14 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 
 	// The corpus converts between BOTH torture-kind versions; the old
 	// version's package is linked explicitly so its descriptors resolve (only
 	// the served version reaches the binary through the kind registry). A
 	// future kind's first graduation must add its old version's package here
 	// the same way, or the descriptor lookup below fails loudly.
-	_ "github.com/plantonhq/planton/catalog/_test/testcloudresourcegeneric/v1alpha1"
+	_ "github.com/plantonhq/planton/catalog/_test/testcatalogkindgeneric/v1alpha1"
 )
 
 // The golden corpus: every conversion spec in the catalog must carry fixture
@@ -72,12 +72,12 @@ func loadDoc(t *testing.T, path string) map[string]any {
 // package-path convention the registry gates enforce.
 func messageDescriptor(t *testing.T, kindName, version string) protoreflect.MessageDescriptor {
 	t.Helper()
-	kind := crkreflect.KindFromString(kindName)
-	served, err := crkreflect.NewInstance(kind)
+	kind := catalogkindreflect.KindFromString(kindName)
+	served, err := catalogkindreflect.NewInstance(kind)
 	if err != nil {
 		t.Fatalf("kind %q is not in the registry: %v", kindName, err)
 	}
-	servedVersion, err := crkreflect.KindVersion(kind)
+	servedVersion, err := catalogkindreflect.KindVersion(kind)
 	if err != nil {
 		t.Fatalf("kind %q has no version: %v", kindName, err)
 	}

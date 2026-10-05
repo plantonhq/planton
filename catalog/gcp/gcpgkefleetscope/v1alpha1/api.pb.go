@@ -31,7 +31,7 @@ type GcpGkeFleetScope struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpGkeFleetScopeSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpGkeFleetScope) GetKind() string {
 	return ""
 }
 
-func (x *GcpGkeFleetScope) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpGkeFleetScope) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpGkeFleetScope) GetStatus() *GcpGkeFleetScopeStatus {
 // gcp-gke-fleet-scope status
 type GcpGkeFleetScopeStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpGkeFleetScopeStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpGkeFleetScopeOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpGkeFleetScopeStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgkefleetscope_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpGkeFleetScopeStatus) GetOutputs() *GcpGkeFleetScopeStackOutputs {
+func (x *GcpGkeFleetScopeStatus) GetOutputs() *GcpGkeFleetScopeOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpgkefleetscope_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10GcpGkeFleetScopeR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
 	"\x04spec\x18\x04 \x01(\v2?.dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Y\n" +
-	"\x06status\x18\x05 \x01(\v2A.dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeStatusR\x06status\"{\n" +
-	"\x16GcpGkeFleetScopeStatus\x12a\n" +
-	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeStackOutputsR\aoutputsB\xdf\x02\n" +
+	"\x06status\x18\x05 \x01(\v2A.dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeStatusR\x06status\"v\n" +
+	"\x16GcpGkeFleetScopeStatus\x12\\\n" +
+	"\aoutputs\x18\x01 \x01(\v2B.dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeOutputsR\aoutputsB\xdf\x02\n" +
 	"-com.dev.planton.gcp.gcpgkefleetscope.v1alpha1B\bApiProtoP\x01Z[github.com/plantonhq/planton/catalog/gcp/gcpgkefleetscope/v1alpha1;gcpgkefleetscopev1alpha1\xa2\x02\x04DPGG\xaa\x02)Dev.Planton.Gcp.Gcpgkefleetscope.V1alpha1\xca\x02)Dev\\Planton\\Gcp\\Gcpgkefleetscope\\V1alpha1\xe2\x025Dev\\Planton\\Gcp\\Gcpgkefleetscope\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Gcp::Gcpgkefleetscope::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_gcp_gcpgkefleetscope_v1alpha1_api_proto_msgTypes = make([]proto
 var file_catalog_gcp_gcpgkefleetscope_v1alpha1_api_proto_goTypes = []any{
 	(*GcpGkeFleetScope)(nil),             // 0: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScope
 	(*GcpGkeFleetScopeStatus)(nil),       // 1: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpGkeFleetScopeSpec)(nil),         // 3: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeSpec
-	(*GcpGkeFleetScopeStackOutputs)(nil), // 4: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeStackOutputs
+	(*GcpGkeFleetScopeOutputs)(nil),      // 4: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeOutputs
 }
 var file_catalog_gcp_gcpgkefleetscope_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScope.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScope.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScope.spec:type_name -> dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeSpec
 	1, // 2: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScope.status:type_name -> dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeStatus
-	4, // 3: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeStatus.outputs:type_name -> dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeStackOutputs
+	4, // 3: dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeStatus.outputs:type_name -> dev.planton.gcp.gcpgkefleetscope.v1alpha1.GcpGkeFleetScopeOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

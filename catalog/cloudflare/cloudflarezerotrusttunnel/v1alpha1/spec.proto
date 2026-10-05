@@ -10,7 +10,7 @@ import "shared/options/options.proto";
 // outbound-only connection from a private network to Cloudflare's edge. A tunnel exposes
 // private HTTP/TCP/SSH/RDP services via public hostnames (ingress rules) and/or makes
 // private IP ranges reachable to WARP clients (via CloudflareZeroTrustTunnelRoute). The
-// connector (cloudflared) authenticates with the tunnel token exported in the stack
+// connector (cloudflared) authenticates with the tunnel token exported in the
 // outputs, so no inbound firewall ports are ever opened.
 //
 // When managed remotely (config_src = cloudflare, the default), the ingress rules are

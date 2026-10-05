@@ -39,9 +39,9 @@
     - [High Availability](#high-availability)
     - [Cost Optimized](#cost-optimized)
     - [Use-Case Variants](#use-case-variants)
-    - [Components with Few Presets](#components-with-few-presets)
+    - [Kinds with Few Presets](#kinds-with-few-presets)
   - [Guidelines](#guidelines)
-    - [How Many Presets Per Component](#how-many-presets-per-component)
+    - [How Many Presets Per Kind](#how-many-presets-per-kind)
     - [Quality Standards](#quality-standards)
     - [Authoring Workflow](#authoring-workflow)
   - [Complete Example](#complete-example)
@@ -54,7 +54,7 @@
 
 ## What Are Presets?
 
-A **preset** is a production-quality, directly deployable YAML manifest paired with a companion markdown document. Together, they represent a specific, real-world configuration pattern for an Planton component.
+A **preset** is a production-quality, directly deployable YAML manifest paired with a companion markdown document. Together, they represent a specific, real-world configuration pattern for a catalog kind.
 
 ### Technical Definition
 
@@ -66,16 +66,16 @@ A preset consists of two files:
 
 ### What Presets Are NOT
 
-- **Not documentation** -- Presets are deployable artifacts, not prose with embedded YAML. That role belongs to the component `README.md`.
+- **Not documentation** -- Presets are deployable artifacts, not prose with embedded YAML. That role belongs to the kind `README.md`.
 - **Not example manifests** -- Presets represent production-quality configurations. The canonical validated example manifest lives at `e2e/manifest.yaml`.
 - **Not abstractions** -- Each preset is a complete, concrete manifest. There is no templating engine or variable substitution system. Users copy a preset, replace angle-bracket placeholders with real values, and deploy.
-- **Not exhaustive** -- Presets cover common patterns, not every possible configuration. Advanced or niche configurations are documented in the component `README.md` or left to the user.
+- **Not exhaustive** -- Presets cover common patterns, not every possible configuration. Advanced or niche configurations are documented in the kind `README.md` or left to the user.
 
 ---
 
 ## Why Presets Exist
 
-Planton's consistent KRM structure makes infrastructure deployment predictable, but early adopters report a recurring friction point: **the gap between understanding a component's API and knowing what configuration to actually deploy.**
+Planton's consistent KRM structure makes infrastructure deployment predictable, but early adopters report a recurring friction point: **the gap between understanding a kind's API and knowing what configuration to actually deploy.**
 
 ### The Problem
 
@@ -87,7 +87,7 @@ Consider `AwsAlb`. Its `spec.proto` defines fields for subnets, security groups,
 - Should I enable DNS management or handle it separately?
 - What combination of these fields represents a "standard production" ALB?
 
-The answers are available across the component's `README.md`, `catalog.md`, `GUIDE.md` (where one exists), and provider documentation, but the user must synthesize them. Presets eliminate this synthesis step.
+The answers are available across the kind's `README.md`, `catalog.md`, `GUIDE.md` (where one exists), and provider documentation, but the user must synthesize them. Presets eliminate this synthesis step.
 
 ### The Solution
 
@@ -101,9 +101,9 @@ Rank 01 answers the question: **"If you had 30 seconds to deploy this resource a
 
 ## Relationship to Other Artifacts
 
-Each component has several YAML-related artifacts. They serve different purposes for different audiences:
+Each kind has several YAML-related artifacts. They serve different purposes for different audiences:
 
-**Presets** (`presets/*.yaml` at the component root):
+**Presets** (`presets/*.yaml` at the kind root):
 
 - **Purpose:** Ready-to-deploy configuration templates for common use cases
 - **Audience:** Platform engineers who want a fast, opinionated starting point
@@ -111,23 +111,23 @@ Each component has several YAML-related artifacts. They serve different purposes
 - **Deployability:** Directly deployable after replacing placeholders
 - **StringValueOrRef:** Uses proto-correct `value:` wrapper form (see [StringValueOrRef Fields](#stringvalueorref-fields))
 
-**README** (`README.md` at the component root):
+**README** (`README.md` at the kind root):
 
 - **Purpose:** Documentation showing various configuration scenarios with explanatory prose
-- **Audience:** Users learning the component's capabilities
+- **Audience:** Users learning the kind's capabilities
 - **Format:** YAML blocks embedded in markdown with descriptions
 - **Deployability:** Informational -- may use simplified YAML for readability
 - **StringValueOrRef:** Currently uses simplified plain-string form for readability (see [Known Issues](#known-issues))
 
-**Example Manifest** (`e2e/manifest.yaml` at the component root):
+**Example Manifest** (`e2e/manifest.yaml` at the kind root):
 
 - **Purpose:** The canonical validated example manifest, exercised during IaC module development and CI
-- **Audience:** Component developers testing their Pulumi/Terraform code
+- **Audience:** Kind developers testing their Pulumi/Terraform code
 - **Format:** Complete KRM manifest with concrete, working values
 - **Deployability:** Deployable in test environments -- values are chosen for validation, not production
 - **StringValueOrRef:** Uses proto-correct `value:` wrapper form
 
-**Relationship summary:** Presets complement rather than replace existing artifacts. A user might discover a component through its README, understand its capabilities and design rationale via `catalog.md` and `GUIDE.md`, then grab a preset as their starting point for actual deployment.
+**Relationship summary:** Presets complement rather than replace existing artifacts. A user might discover a kind through its README, understand its capabilities and design rationale via `catalog.md` and `GUIDE.md`, then grab a preset as their starting point for actual deployment.
 
 ---
 
@@ -135,10 +135,10 @@ Each component has several YAML-related artifacts. They serve different purposes
 
 ### Location
 
-Presets live in a `presets/` directory at the component root (version directories such as `v1alpha1/` hold only the versioned API contract):
+Presets live in a `presets/` directory at the kind root (version directories such as `v1alpha1/` hold only the versioned API contract):
 
 ```
-catalog/{provider}/{component}/presets/
+catalog/{provider}/{kind}/presets/
 ```
 
 **Examples:**
@@ -164,7 +164,7 @@ Each preset is a pair of files sharing the same base name:
 - `02` = second most common
 - `03`, `04`, ... = increasingly specialized
 
-**Description:** Lowercase, hyphenated, no spaces. Describes the configuration pattern -- not the component name (which is already encoded in the directory path).
+**Description:** Lowercase, hyphenated, no spaces. Describes the configuration pattern -- not the kind name (which is already encoded in the directory path).
 
 **Examples:**
 
@@ -177,7 +177,7 @@ Each preset is a pair of files sharing the same base name:
 **Rules:**
 
 - Every `.yaml` file MUST have a companion `.md` file with the same base name
-- Ranks are unique within a component -- no two presets share a rank
+- Ranks are unique within a kind -- no two presets share a rank
 - Descriptions should be concise but unambiguous (3-5 words typical)
 
 ### Ranking Methodology
@@ -221,7 +221,7 @@ kind: <Kind>
 metadata:
   name: <descriptive-name>
 spec:
-  # Component-specific configuration
+  # Kind-specific configuration
 ```
 
 All four fields (`apiVersion`, `kind`, `metadata`, `spec`) are required. The `status` field is never included in presets -- it is system-managed at deployment time.
@@ -404,7 +404,7 @@ A table or list documenting every placeholder in the YAML, what it expects, and 
 
 #### Related Presets
 
-When relevant, reference other presets in the same component:
+When relevant, reference other presets in the same kind:
 
 ```markdown
 ## Related Presets
@@ -424,7 +424,7 @@ When relevant, reference other presets in the same component:
 
 ## Common Preset Patterns
 
-Not every pattern applies to every component. Use the following as a reference for identifying which presets a component should have:
+Not every pattern applies to every kind. Use the following as a reference for identifying which presets a kind should have:
 
 ### Standard Production (Almost Always Rank 01)
 
@@ -448,27 +448,27 @@ Spot instances, smaller sizes, fewer replicas, shorter retention. Suitable for n
 
 ### Use-Case Variants
 
-Component-specific patterns that represent meaningfully different configurations:
+Kind-specific patterns that represent meaningfully different configurations:
 
 - Database: read replicas, multi-master, single-writer
 - Kubernetes workloads: stateless vs. stateful, GPU-enabled, batch processing
 - Networking: TCP vs. HTTP, gRPC-optimized, WebSocket-capable
 
-### Components with Few Presets
+### Kinds with Few Presets
 
-Simple components (DNS records, IAM roles, security groups) may only have 1-2 presets. Do NOT force patterns that don't naturally exist. A single well-crafted preset is better than three artificial ones.
+Simple kinds (DNS records, IAM roles, security groups) may only have 1-2 presets. Do NOT force patterns that don't naturally exist. A single well-crafted preset is better than three artificial ones.
 
 ---
 
 ## Guidelines
 
-### How Many Presets Per Component
+### How Many Presets Per Kind
 
-- **Minimum:** 1 preset per component (every component gets at least one)
-- **Recommended:** 2-4 for most components
-- **Maximum:** 5-6 for components with high variety (e.g., load balancers, databases, Kubernetes workloads)
+- **Minimum:** 1 preset per kind (every kind gets at least one)
+- **Recommended:** 2-4 for most kinds
+- **Maximum:** 5-6 for kinds with high variety (e.g., load balancers, databases, Kubernetes workloads)
 
-**Resist the urge to create presets for edge cases.** If a configuration serves fewer than 10% of deployments, document it in the component's `README.md` instead of creating a preset.
+**Resist the urge to create presets for edge cases.** If a configuration serves fewer than 10% of deployments, document it in the kind's `README.md` instead of creating a preset.
 
 ### Quality Standards
 
@@ -483,7 +483,7 @@ A preset is production-quality when:
 
 ### Authoring Workflow
 
-When creating presets for a component:
+When creating presets for a kind:
 
 1. **Read `spec.proto`** -- Understand all available fields, their types, validations, and default annotations
 2. **Read `api.proto`** -- Extract the exact `apiVersion` and `kind` constant values
@@ -573,7 +573,7 @@ production ALB configuration.
 
 ### StringValueOrRef Inconsistency in Legacy Docs
 
-Some legacy component documentation used a simplified YAML form for `StringValueOrRef` fields -- plain strings instead of the proto-correct `value:` wrapper:
+Some legacy kind documentation used a simplified YAML form for `StringValueOrRef` fields -- plain strings instead of the proto-correct `value:` wrapper:
 
 ```yaml
 # Simplified form (technically incorrect for deserialization)

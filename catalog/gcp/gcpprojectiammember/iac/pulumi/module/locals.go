@@ -11,8 +11,8 @@ type Locals struct {
 	GcpProjectIamMember *gcpprojectiammemberv1alpha1.GcpProjectIamMember
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcpprojectiammemberv1alpha1.GcpProjectIamMemberStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *gcpprojectiammemberv1alpha1.GcpProjectIamMemberIacInput) *Locals {
 	return &Locals{
-		GcpProjectIamMember: stackInput.Target,
+		GcpProjectIamMember: iacInput.Target,
 	}
 }

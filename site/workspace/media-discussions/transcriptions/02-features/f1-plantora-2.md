@@ -11,7 +11,7 @@ Suresh Attaluri  2:20
 Right? I think we can talk about the journey, like, before showing it on the platform, okay, we ended up building that feature, like, Why? Why? Is a problem that we faced? Yeah. And maybe we
 
 Swarup Donepudi  2:33  
-should also talk about the feature that we already planned but haven't implemented it yet, which is the stack job summary, it's not it's right on the board. It's like, we want to leverage the same APA resource chats to also do stack job summary and have the provide the ability. So we dive into those duties. And just trying to remind that, because I just thought about it. So we started off this discussion, we only talked about sharing chats and ABA resources level chats, but stack job summaries and ability to converse on the stack job failures right within the chat is something that we plan in the pipeline. So we'll also talk about it. So yeah, where do you want to begin? Like, what? Why do you what prompted us to, okay,
+should also talk about the feature that we already planned but haven't implemented it yet, which is the infra job summary, it's not it's right on the board. It's like, we want to leverage the same APA resource chats to also do infra job summary and have the provide the ability. So we dive into those duties. And just trying to remind that, because I just thought about it. So we started off this discussion, we only talked about sharing chats and ABA resources level chats, but infra job summaries and ability to converse on the infra job failures right within the chat is something that we plan in the pipeline. So we'll also talk about it. So yeah, where do you want to begin? Like, what? Why do you what prompted us to, okay,
 
 Suresh Attaluri  3:23  
 so those things, so we will our plant, the Chatbot, the Chatbot, yeah, and we're doing things at different levels, like we're provisioning resources, we're Testing and all we're doing all those stuff, but those charts, in a way, are isolated and only limited to the person who has requested the or created those charts. Yeah, and there's no aspect of collaborating with other team members, yeah, and we felt that collaboration is a thing that is needed, yeah, so that multiple peoples can put on their request in a single chat. Yeah, that's the whole intent. And
@@ -26,7 +26,7 @@ Swarup Donepudi  5:26
 yeah. So when you say resource, you're talking about any multi cloud deployment,
 
 Suresh Attaluri  5:30  
-deployment. AP, yeah, deployment component, any deployed resource, yeah, yeah, will have a chat associated with it, okay? And any, anything, any request put over there will be communicated or will be shown to sorry.
+deployment. AP, yeah, infra component, any deployed resource, yeah, yeah, will have a chat associated with it, okay? And any, anything, any request put over there will be communicated or will be shown to sorry.
 
 Swarup Donepudi  5:53  
 Everyone can access conversation. It's not intentionally, anyone sharing anything, the very default nature of those conversations, they begin right close to where the deployment configuration can be found on the console app, and the conversation is going to live there, so anyone who has access to that configuration can also Explore historical conversation that happened on that resource. Right? So
@@ -83,13 +83,13 @@ Suresh Attaluri  12:57
 yeah, you're getting Satish email id recommendation is because they belong to this. Yeah.
 
 Swarup Donepudi  13:03  
-Also, we forgot about the teams aspect, yes. So you can share the chat with the entire team without having to invite each so this is very powerful feature to me, like if you want to collaborate with and bring everyone on your team. So that's, again, very powerful addition to the mix. So yeah, that's, that's, that's, that's good. So let's now go to the resource level chat. So I am on an AWS DynamoDB table that I deployed yesterday. And yeah, I can do ask plantora, and I can go back to the history of this conversation. And as you can see, I already made a few changes. Not even made a few changes. I started by asking, Why is the last time job failing? I saw that, and it says, I need the stack job ID. I said, Can you look it up from the details? And it says, I currently do not have the capability to look up in saddle. I said, the stack job ID is in straighter section of the API resource. And it did look it up and and then I said, Okay, now that you know, I asked, Did you find it out? By the way, it says, Please hold on for a moment. And I was, I was surprised that it would come back with another message. But that doesn't happen,
+Also, we forgot about the teams aspect, yes. So you can share the chat with the entire team without having to invite each so this is very powerful feature to me, like if you want to collaborate with and bring everyone on your team. So that's, again, very powerful addition to the mix. So yeah, that's, that's, that's, that's good. So let's now go to the resource level chat. So I am on an AWS DynamoDB table that I deployed yesterday. And yeah, I can do ask plantora, and I can go back to the history of this conversation. And as you can see, I already made a few changes. Not even made a few changes. I started by asking, Why is the last time job failing? I saw that, and it says, I need the infra job ID. I said, Can you look it up from the details? And it says, I currently do not have the capability to look up in saddle. I said, the infra job ID is in straighter section of the API resource. And it did look it up and and then I said, Okay, now that you know, I asked, Did you find it out? By the way, it says, Please hold on for a moment. And I was, I was surprised that it would come back with another message. But that doesn't happen,
 
 Suresh Attaluri  14:31  
 right? Oh, that doesn't happen. I don't know why it is asking, yeah, did you find out?
 
 Swarup Donepudi  14:39  
-And yeah, I just waited for a couple seconds, and I asked you to find out, and then it actually came back by looking up the details of that stack job ID and figured out from the error messages that, oh, this is what is causing the failure, and here is how you can fix it. So overall, as like, what we are trying to discuss here is the advantage of resource level chance, and anyone who has access, which can be discovered by going to the permissions management and we say, Show inherited permissions, and yeah, like All these different people have access to this resource, yeah, so the
+And yeah, I just waited for a couple seconds, and I asked you to find out, and then it actually came back by looking up the details of that infra job ID and figured out from the error messages that, oh, this is what is causing the failure, and here is how you can fix it. So overall, as like, what we are trying to discuss here is the advantage of resource level chance, and anyone who has access, which can be discovered by going to the permissions management and we say, Show inherited permissions, and yeah, like All these different people have access to this resource, yeah, so the
 
 Suresh Attaluri  15:23  
 organization level? Yeah, that is where we they can, since they have a organization, but they can see that, yeah, this
@@ -101,25 +101,25 @@ Suresh Attaluri  16:22
 The beauty of this individual charts is now I can continue the chart where you have left, like, figure out the root cause. Now I it's not required for me to start the whole chart from the beginning, yeah. I can start where it was left, and I can try to fix this issue, right? Yeah,
 
 Swarup Donepudi  16:41  
-yeah. This is definitely another powerful feature. So now we move on to the third aspect of this discussion that we wanted to talk, which was, Okay, interesting I'm unable to navigate to the that's a Bucha. Okay, so another area where we have already planned and we haven't actually rolled out this additional collaboration aspect of these chats is as soon as whether a pulumi or a telephone stack execution is completed, our system will automatically do a summary of what happened as part of that Stackdriver, and make that as a summary for here and the developers, or anyone who is who is a stakeholder of that particular deployment, they can start conversations on the summary itself, and we, we are, those are that is also essentially an API resource level chat, the APA resource here being the stack job itself,
+yeah. This is definitely another powerful feature. So now we move on to the third aspect of this discussion that we wanted to talk, which was, Okay, interesting I'm unable to navigate to the that's a Bucha. Okay, so another area where we have already planned and we haven't actually rolled out this additional collaboration aspect of these chats is as soon as whether a pulumi or a telephone stack execution is completed, our system will automatically do a summary of what happened as part of that Stackdriver, and make that as a summary for here and the developers, or anyone who is who is a stakeholder of that particular deployment, they can start conversations on the summary itself, and we, we are, those are that is also essentially an API resource level chat, the APA resource here being the infra job itself,
 
 Suresh Attaluri  17:53  
 yeah. But this has to be handled somewhat different, yeah.
 
 Swarup Donepudi  17:58  
-Experience is going to be different, as opposed to having a conversational deployed resource versus this, these are not at resource level. These are at the stack job level. We are the scope. The chart is only scoped for that particular stand job. Yes.
+Experience is going to be different, as opposed to having a conversational deployed resource versus this, these are not at resource level. These are at the infra job level. We are the scope. The chart is only scoped for that particular stand job. Yes.
 
 Suresh Attaluri  18:15  
-So initially, the only difference that I see is initially, when we create a chart for AWS DynamoDB resource as as a platform, we are doing nothing, nothing, yeah, but when we talk about stack job, yeah, so we are triggering some analysis
+So initially, the only difference that I see is initially, when we create a chart for AWS DynamoDB resource as as a platform, we are doing nothing, nothing, yeah, but when we talk about infra job, yeah, so we are triggering some analysis
 
 Swarup Donepudi  18:32  
-to follow up on your thought of like, who, when is that conversation on an API resource or a deployed component begins is when the first message is like, the developer will start. The conversation will always begin when a developer wants to have a conversation, whereas with stack job, it's a asynchronous,
+to follow up on your thought of like, who, when is that conversation on an API resource or a deployed component begins is when the first message is like, the developer will start. The conversation will always begin when a developer wants to have a conversation, whereas with infra job, it's a asynchronous,
 
 Suresh Attaluri  18:57  
 the initial conversation will be started by the platform
 
 Swarup Donepudi  19:01  
-plan control the back end, and then the developers can continue that conversation by asking more questions around the summary itself. Yes, and we want to make these tag job summaries and the follow up conversations to be far more effective by making or by enabling the chat bot, or by providing chat bot with all the necessary context to provide as much relevant response as possible. And when I say more context, I'm talking about all the input that was used to run the stack job and the pulumi or TerraForm code that was used to execute that stack job as input, the system has all of that information, but we need to enable the bot. We need to build that capability into the bot to bring all of this information so that the bot can provide will have more context. For example, if it is an error, then bot will look at the input. Bot will look at the COVID or TerraForm code, and it has a better chance of identifying what could have caused that failure. Yes, so I believe that is another huge value that we can provide to the developers, because deployment values are one of the biggest frustration causing areas, and we have an opportunity to solve it very effectively. So I think that definitely concludes
+plan control the back end, and then the developers can continue that conversation by asking more questions around the summary itself. Yes, and we want to make these tag job summaries and the follow up conversations to be far more effective by making or by enabling the chat bot, or by providing chat bot with all the necessary context to provide as much relevant response as possible. And when I say more context, I'm talking about all the input that was used to run the infra job and the pulumi or TerraForm code that was used to execute that infra job as input, the system has all of that information, but we need to enable the bot. We need to build that capability into the bot to bring all of this information so that the bot can provide will have more context. For example, if it is an error, then bot will look at the input. Bot will look at the COVID or TerraForm code, and it has a better chance of identifying what could have caused that failure. Yes, so I believe that is another huge value that we can provide to the developers, because deployment values are one of the biggest frustration causing areas, and we have an opportunity to solve it very effectively. So I think that definitely concludes
 
 Suresh Attaluri  20:35  
 our I think this feature also comes under that operate part, because I'm trying to deploy something.
@@ -161,7 +161,7 @@ Unknown Speaker  25:50
 Yeah, third video for collaboration, collaboration. And
 
 Swarup Donepudi  25:53  
-do you think we should add a fourth video talking about the value for deployments assistance, like stack job insights or that's also collaboration in a way, but it also has the added benefit, which is not
+do you think we should add a fourth video talking about the value for deployments assistance, like infra job insights or that's also collaboration in a way, but it also has the added benefit, which is not
 
 Suresh Attaluri  26:09  
 applied To API resources like we discussed earlier, also true. It falls under the category, yeah,
@@ -263,10 +263,10 @@ Suresh Attaluri  32:47
 the user too. Yeah, with whom the chat was shared, they will. Yeah, I think
 
 Swarup Donepudi  32:54  
-we'll see that doesn't matter. I guess whatever we are already showing is definitely a step improvement. So people, as long as they understand the overall collaboration, they it makes sense that they can, we can only say that the now they can collaborate too. So it's okay to, like, not show everything you skip the stack jobs, collaboration here. What do you think? Yes, yeah, it's not. Collaboration is not the key, right there is it's going to be around the developer doing something to resolve his own deployment. But as per, the team has access to the chat, but it doesn't. I think we can sell a stack
+we'll see that doesn't matter. I guess whatever we are already showing is definitely a step improvement. So people, as long as they understand the overall collaboration, they it makes sense that they can, we can only say that the now they can collaborate too. So it's okay to, like, not show everything you skip the infra jobs, collaboration here. What do you think? Yes, yeah, it's not. Collaboration is not the key, right there is it's going to be around the developer doing something to resolve his own deployment. But as per, the team has access to the chat, but it doesn't. I think we can sell a stack
 
 Suresh Attaluri  33:36  
-job level. It's less of a collaboration resource is stack job is life of charge less, right? Because a new stack job, we can be triggered and the a PhD resource state gets changed. So I believe stack job charts will have less conversations over there. Yeah, but more of analysis, friend,
+job level. It's less of a collaboration resource is infra job is life of charge less, right? Because a new infra job, we can be triggered and the a PhD resource state gets changed. So I believe infra job charts will have less conversations over there. Yeah, but more of analysis, friend,
 
 Swarup Donepudi  34:02  
 explain. Successful. Nobody even looks at what happened,

@@ -6,7 +6,7 @@
 
 - A sentence changes in the record that owns it (`src/data/*.ts`), beside the comment naming its chapter or document. A template (`src/components/<group>/`) renders records and states nothing; if a template would need a new string, the string belongs in the record.
 - A new page is a registry entry in `src/data/site-pages.ts` (title, description under 160 characters, group, chapters), a record, a route file on `pageMetadata(path)`, a template composed from `src/components/marketing/`, a menu entry in `packages/website-shell/src/data/navigation.ts` where the site map wants one, and capture scenes in `scripts/capture-pages.mjs`. A new top-level path is also a passthrough clause and a reserved handle; the apex guard names what is missing.
-- A removed page is a retired route in `src/data/retired-routes.ts` with an eight-line stub on `retiredRouteMetadata`; the link gate refuses a forward to a forward and any link to a retired path.
+- A removed page is deleted with its registry entry and every link to it; the link gate fails on any link left pointing at it, and the site's 404 answers the address.
 - A primitive the page genuinely needs joins `components/marketing/` on the palette's role classes with a docstring saying when to use it; a near-duplicate of one that exists converges on it instead.
 - Never a hex, never a typed number, never a button that is not a door from `doors.ts`.
 

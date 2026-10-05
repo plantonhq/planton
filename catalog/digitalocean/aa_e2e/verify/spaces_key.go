@@ -81,7 +81,7 @@ func (v *spacesKeyVerifier) VerifyAbsentFromOutputs(ctx context.Context, client 
 		}
 		return pkgerrors.Wrapf(err, "digitaloceanspaceskey verify-absent failed for %q", accessKey)
 	}
-	return &StillExistsError{Component: "digitaloceanspaceskey", ID: accessKey}
+	return &StillExistsError{Kind: "digitaloceanspaceskey", ID: accessKey}
 }
 
 // spacesPairSignatureAccepted signs one ListBuckets against the Spaces S3

@@ -35,8 +35,8 @@ import (
 // destroy cleanly. Helm --wait would couple the install to control-plane
 // reachability; the E2E verifier owns the install-level proof instead
 // (the same posture as the runner appliances on the cloud substrates).
-func Resources(ctx *pulumi.Context, stackInput *kubernetesplantonrunnerv1alpha1.KubernetesPlantonRunnerStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesplantonrunnerv1alpha1.KubernetesPlantonRunnerIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// FAIL LOUDLY below the enrollment-contract floor: charts before
 	// 0.4.0 silently IGNORE the enrollment values — the runner would
@@ -53,13 +53,13 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesplantonrunnerv1alpha1.
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

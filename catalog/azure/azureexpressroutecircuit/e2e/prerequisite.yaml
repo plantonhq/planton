@@ -1,5 +1,5 @@
 # AzureExpressRouteCircuit install profile used as a fixture by composed
-# components (declared via prerequisites: [AzureExpressRouteCircuit] in
+# kinds (declared via prerequisites: [AzureExpressRouteCircuit] in
 # the kind registry -- the peering kind's chain). The harness deploys
 # this document after the fixture resource group and captures its
 # outputs -- express_route_circuit_name in particular -- for dependents'
@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureexpressroutecircuit
+    e2e-catalog-kind: azureexpressroutecircuit
   annotations:
     planton.dev/e2e: "true"
   tags:

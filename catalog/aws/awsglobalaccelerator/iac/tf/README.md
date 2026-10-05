@@ -38,7 +38,7 @@ planton tofu apply --manifest e2e/manifest.yaml --auto-approve
 planton tofu destroy --manifest e2e/manifest.yaml --auto-approve
 ```
 
-**Note**: Credentials are provided via stack input (CLI), not in the
+**Note**: Credentials are provided via IaC input (CLI), not in the
 manifest `spec`.
 
 For a working example, see [`e2e/manifest.yaml`](../../e2e/manifest.yaml).

@@ -33,7 +33,7 @@ func minimalValidEgressOnlyInternetGateway() *AwsEgressOnlyInternetGateway {
 	return &AwsEgressOnlyInternetGateway{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsEgressOnlyInternetGateway",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-egress-only-internet-gateway",
 		},
 		Spec: &AwsEgressOnlyInternetGatewaySpec{
@@ -64,7 +64,7 @@ var _ = ginkgo.Describe("AwsEgressOnlyInternetGatewaySpec Validation Tests", fun
 				input := &AwsEgressOnlyInternetGateway{
 					ApiVersion: "aws.planton.dev/v1alpha1",
 					Kind:       "AwsEgressOnlyInternetGateway",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "full-egress-only-internet-gateway",
 						Org:  "acme-corp",
 						Env:  "production",
@@ -111,7 +111,7 @@ var _ = ginkgo.Describe("AwsEgressOnlyInternetGatewaySpec Validation Tests", fun
 				input := &AwsEgressOnlyInternetGateway{
 					ApiVersion: "aws.planton.dev/v1alpha1",
 					Kind:       "AwsEgressOnlyInternetGateway",
-					Metadata:   &shared.CloudResourceMetadata{Name: "test-egress-only-internet-gateway"},
+					Metadata:   &shared.CatalogObjectMetadata{Name: "test-egress-only-internet-gateway"},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())

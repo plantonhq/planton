@@ -13,7 +13,7 @@ metadata:
   env: prod
   labels:
     managed-by: planton-e2e
-    e2e-component: awssecuritygroup
+    e2e-catalog-kind: awssecuritygroup
   annotations:
     planton.dev/e2e: "true"
   tags:

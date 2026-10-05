@@ -9,7 +9,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurecosmosdbmongodatabase
+    e2e-catalog-kind: azurecosmosdbmongodatabase
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/azure/azurecosmosdbmongodatabase/e2e/mongo-account.yaml"

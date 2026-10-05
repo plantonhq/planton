@@ -21,7 +21,7 @@ message AzureRedisCacheAccessPolicyAssignment {
   string kind = 2 [(buf.validate.field).string.const = 'AzureRedisCacheAccessPolicyAssignment'];
 
   // metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
   AzureRedisCacheAccessPolicyAssignmentSpec spec = 4 [(buf.validate.field).required = true];
@@ -33,6 +33,6 @@ message AzureRedisCacheAccessPolicyAssignment {
 // AzureRedisCacheAccessPolicyAssignmentStatus holds the deployment status
 // and outputs.
 message AzureRedisCacheAccessPolicyAssignmentStatus {
-  // stack-outputs
-  AzureRedisCacheAccessPolicyAssignmentStackOutputs outputs = 1;
+  // outputs
+  AzureRedisCacheAccessPolicyAssignmentOutputs outputs = 1;
 }

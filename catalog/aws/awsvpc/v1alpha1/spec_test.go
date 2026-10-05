@@ -28,7 +28,7 @@ func minimalValidVpc() *AwsVpc {
 	return &AwsVpc{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsVpc",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-vpc",
 		},
 		Spec: &AwsVpcSpec{
@@ -147,7 +147,7 @@ var _ = ginkgo.Describe("AwsVpcSpec Validation Tests", func() {
 
 			ginkgo.It("should not return a validation error with full metadata set", func() {
 				input := minimalValidVpc()
-				input.Metadata = &shared.CloudResourceMetadata{
+				input.Metadata = &shared.CatalogObjectMetadata{
 					Name:   "full-vpc",
 					Org:    "acme-corp",
 					Env:    "production",
@@ -187,7 +187,7 @@ var _ = ginkgo.Describe("AwsVpcSpec Validation Tests", func() {
 				input := &AwsVpc{
 					ApiVersion: "aws.planton.dev/v1alpha1",
 					Kind:       "AwsVpc",
-					Metadata:   &shared.CloudResourceMetadata{Name: "test-vpc"},
+					Metadata:   &shared.CatalogObjectMetadata{Name: "test-vpc"},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())

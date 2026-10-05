@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureCosmosdbMongoCollectionStackOutputs** captures the outputs of
+// **AzureCosmosdbMongoCollectionOutputs** captures the outputs of
 // provisioning a Cosmos DB MongoDB API collection.
 //
 // No endpoint or credential outputs on purpose: connectivity and the
 // MongoDB connection strings live on the ACCOUNT (AzureCosmosdbAccount's
 // outputs); the collection is addressed inside that connection by
 // database and collection name.
-type AzureCosmosdbMongoCollectionStackOutputs struct {
+type AzureCosmosdbMongoCollectionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the collection -- the management-
 	// plane identity ARM reads and policy target.
@@ -48,20 +48,20 @@ type AzureCosmosdbMongoCollectionStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureCosmosdbMongoCollectionStackOutputs) Reset() {
-	*x = AzureCosmosdbMongoCollectionStackOutputs{}
+func (x *AzureCosmosdbMongoCollectionOutputs) Reset() {
+	*x = AzureCosmosdbMongoCollectionOutputs{}
 	mi := &file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureCosmosdbMongoCollectionStackOutputs) String() string {
+func (x *AzureCosmosdbMongoCollectionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureCosmosdbMongoCollectionStackOutputs) ProtoMessage() {}
+func (*AzureCosmosdbMongoCollectionOutputs) ProtoMessage() {}
 
-func (x *AzureCosmosdbMongoCollectionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureCosmosdbMongoCollectionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -73,33 +73,33 @@ func (x *AzureCosmosdbMongoCollectionStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureCosmosdbMongoCollectionStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureCosmosdbMongoCollectionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureCosmosdbMongoCollectionOutputs.ProtoReflect.Descriptor instead.
+func (*AzureCosmosdbMongoCollectionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureCosmosdbMongoCollectionStackOutputs) GetMongoCollectionId() string {
+func (x *AzureCosmosdbMongoCollectionOutputs) GetMongoCollectionId() string {
 	if x != nil {
 		return x.MongoCollectionId
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbMongoCollectionStackOutputs) GetMongoCollectionName() string {
+func (x *AzureCosmosdbMongoCollectionOutputs) GetMongoCollectionName() string {
 	if x != nil {
 		return x.MongoCollectionName
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbMongoCollectionStackOutputs) GetMongoDatabaseName() string {
+func (x *AzureCosmosdbMongoCollectionOutputs) GetMongoDatabaseName() string {
 	if x != nil {
 		return x.MongoDatabaseName
 	}
 	return ""
 }
 
-func (x *AzureCosmosdbMongoCollectionStackOutputs) GetCosmosdbAccountName() string {
+func (x *AzureCosmosdbMongoCollectionOutputs) GetCosmosdbAccountName() string {
 	if x != nil {
 		return x.CosmosdbAccountName
 	}
@@ -110,8 +110,8 @@ var File_catalog_azure_azurecosmosdbmongocollection_v1alpha1_outputs_proto proto
 
 const file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/azure/azurecosmosdbmongocollection/v1alpha1/outputs.proto\x127dev.planton.azure.azurecosmosdbmongocollection.v1alpha1\"\xf2\x01\n" +
-	"(AzureCosmosdbMongoCollectionStackOutputs\x12.\n" +
+	"Acatalog/azure/azurecosmosdbmongocollection/v1alpha1/outputs.proto\x127dev.planton.azure.azurecosmosdbmongocollection.v1alpha1\"\xed\x01\n" +
+	"#AzureCosmosdbMongoCollectionOutputs\x12.\n" +
 	"\x13mongo_collection_id\x18\x01 \x01(\tR\x11mongoCollectionId\x122\n" +
 	"\x15mongo_collection_name\x18\x02 \x01(\tR\x13mongoCollectionName\x12.\n" +
 	"\x13mongo_database_name\x18\x03 \x01(\tR\x11mongoDatabaseName\x122\n" +
@@ -132,7 +132,7 @@ func file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_outputs_proto_rawD
 
 var file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureCosmosdbMongoCollectionStackOutputs)(nil), // 0: dev.planton.azure.azurecosmosdbmongocollection.v1alpha1.AzureCosmosdbMongoCollectionStackOutputs
+	(*AzureCosmosdbMongoCollectionOutputs)(nil), // 0: dev.planton.azure.azurecosmosdbmongocollection.v1alpha1.AzureCosmosdbMongoCollectionOutputs
 }
 var file_catalog_azure_azurecosmosdbmongocollection_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

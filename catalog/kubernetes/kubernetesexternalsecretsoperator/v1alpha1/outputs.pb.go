@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesExternalSecretsOperatorStackOutputs captures observable outputs
+// KubernetesExternalSecretsOperatorOutputs captures observable outputs
 // after the operator installation completes.
-type KubernetesExternalSecretsOperatorStackOutputs struct {
+type KubernetesExternalSecretsOperatorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the operator is installed in. Store resources reference it as
 	// the home for credential Secrets that cluster-scoped stores read.
@@ -40,20 +40,20 @@ type KubernetesExternalSecretsOperatorStackOutputs struct {
 	sizeCache                protoimpl.SizeCache
 }
 
-func (x *KubernetesExternalSecretsOperatorStackOutputs) Reset() {
-	*x = KubernetesExternalSecretsOperatorStackOutputs{}
+func (x *KubernetesExternalSecretsOperatorOutputs) Reset() {
+	*x = KubernetesExternalSecretsOperatorOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesExternalSecretsOperatorStackOutputs) String() string {
+func (x *KubernetesExternalSecretsOperatorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesExternalSecretsOperatorStackOutputs) ProtoMessage() {}
+func (*KubernetesExternalSecretsOperatorOutputs) ProtoMessage() {}
 
-func (x *KubernetesExternalSecretsOperatorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesExternalSecretsOperatorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *KubernetesExternalSecretsOperatorStackOutputs) ProtoReflect() protorefl
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesExternalSecretsOperatorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesExternalSecretsOperatorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesExternalSecretsOperatorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesExternalSecretsOperatorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesExternalSecretsOperatorStackOutputs) GetNamespace() string {
+func (x *KubernetesExternalSecretsOperatorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesExternalSecretsOperatorStackOutputs) GetReleaseName() string {
+func (x *KubernetesExternalSecretsOperatorOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesExternalSecretsOperatorStackOutputs) GetControllerServiceAccount() string {
+func (x *KubernetesExternalSecretsOperatorOutputs) GetControllerServiceAccount() string {
 	if x != nil {
 		return x.ControllerServiceAccount
 	}
@@ -95,8 +95,8 @@ var File_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_outputs_p
 
 const file_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Kcatalog/kubernetes/kubernetesexternalsecretsoperator/v1alpha1/outputs.proto\x12Adev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1\"\xae\x01\n" +
-	"-KubernetesExternalSecretsOperatorStackOutputs\x12\x1c\n" +
+	"Kcatalog/kubernetes/kubernetesexternalsecretsoperator/v1alpha1/outputs.proto\x12Adev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1\"\xa9\x01\n" +
+	"(KubernetesExternalSecretsOperatorOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12<\n" +
 	"\x1acontroller_service_account\x18\x03 \x01(\tR\x18controllerServiceAccountB\x85\x04\n" +
@@ -116,7 +116,7 @@ func file_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_outputs_
 
 var file_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesExternalSecretsOperatorStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorStackOutputs
+	(*KubernetesExternalSecretsOperatorOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1.KubernetesExternalSecretsOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetesexternalsecretsoperator_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

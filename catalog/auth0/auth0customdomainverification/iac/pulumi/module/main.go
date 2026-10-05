@@ -7,15 +7,15 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Resources verifies the custom domain from the stack input in the tenant the
+// Resources verifies the custom domain from the IaC input in the tenant the
 // provider's credential belongs to.
-func Resources(ctx *pulumi.Context, stackInput *auth0customdomainverificationv1alpha1.Auth0CustomDomainVerificationStackInput) error {
-	locals := initializeLocals(stackInput)
+func Resources(ctx *pulumi.Context, iacInput *auth0customdomainverificationv1alpha1.Auth0CustomDomainVerificationIacInput) error {
+	locals := initializeLocals(iacInput)
 
 	// Setup Auth0 provider with credentials from provider config.
 	var provider *auth0.Provider
 	var err error
-	providerConfig := stackInput.ProviderConfig
+	providerConfig := iacInput.ProviderConfig
 
 	if providerConfig == nil {
 		// Use default provider (assumes credentials from environment variables).

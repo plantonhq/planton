@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a Cloud Monitoring uptime check.
-type GcpMonitoringUptimeCheckStackOutputs struct {
+type GcpMonitoringUptimeCheckOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The server-assigned resource name of the uptime check.
 	// Format: projects/{project}/uptimeCheckConfigs/{uptime_check_id}
@@ -36,20 +36,20 @@ type GcpMonitoringUptimeCheckStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpMonitoringUptimeCheckStackOutputs) Reset() {
-	*x = GcpMonitoringUptimeCheckStackOutputs{}
+func (x *GcpMonitoringUptimeCheckOutputs) Reset() {
+	*x = GcpMonitoringUptimeCheckOutputs{}
 	mi := &file_catalog_gcp_gcpmonitoringuptimecheck_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpMonitoringUptimeCheckStackOutputs) String() string {
+func (x *GcpMonitoringUptimeCheckOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpMonitoringUptimeCheckStackOutputs) ProtoMessage() {}
+func (*GcpMonitoringUptimeCheckOutputs) ProtoMessage() {}
 
-func (x *GcpMonitoringUptimeCheckStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpMonitoringUptimeCheckOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmonitoringuptimecheck_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *GcpMonitoringUptimeCheckStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpMonitoringUptimeCheckStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpMonitoringUptimeCheckStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpMonitoringUptimeCheckOutputs.ProtoReflect.Descriptor instead.
+func (*GcpMonitoringUptimeCheckOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmonitoringuptimecheck_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpMonitoringUptimeCheckStackOutputs) GetUptimeCheckName() string {
+func (x *GcpMonitoringUptimeCheckOutputs) GetUptimeCheckName() string {
 	if x != nil {
 		return x.UptimeCheckName
 	}
 	return ""
 }
 
-func (x *GcpMonitoringUptimeCheckStackOutputs) GetUptimeCheckId() string {
+func (x *GcpMonitoringUptimeCheckOutputs) GetUptimeCheckId() string {
 	if x != nil {
 		return x.UptimeCheckId
 	}
@@ -84,8 +84,8 @@ var File_catalog_gcp_gcpmonitoringuptimecheck_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_gcp_gcpmonitoringuptimecheck_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpmonitoringuptimecheck/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpmonitoringuptimecheck.v1alpha1\"z\n" +
-	"$GcpMonitoringUptimeCheckStackOutputs\x12*\n" +
+	";catalog/gcp/gcpmonitoringuptimecheck/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpmonitoringuptimecheck.v1alpha1\"u\n" +
+	"\x1fGcpMonitoringUptimeCheckOutputs\x12*\n" +
 	"\x11uptime_check_name\x18\x01 \x01(\tR\x0fuptimeCheckName\x12&\n" +
 	"\x0fuptime_check_id\x18\x02 \x01(\tR\ruptimeCheckIdB\x9b\x03\n" +
 	"5com.dev.planton.gcp.gcpmonitoringuptimecheck.v1alpha1B\fOutputsProtoP\x01Zkgithub.com/plantonhq/planton/catalog/gcp/gcpmonitoringuptimecheck/v1alpha1;gcpmonitoringuptimecheckv1alpha1\xa2\x02\x04DPGG\xaa\x021Dev.Planton.Gcp.Gcpmonitoringuptimecheck.V1alpha1\xca\x021Dev\\Planton\\Gcp\\Gcpmonitoringuptimecheck\\V1alpha1\xe2\x02=Dev\\Planton\\Gcp\\Gcpmonitoringuptimecheck\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Gcp::Gcpmonitoringuptimecheck::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_gcp_gcpmonitoringuptimecheck_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_gcp_gcpmonitoringuptimecheck_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmonitoringuptimecheck_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpMonitoringUptimeCheckStackOutputs)(nil), // 0: dev.planton.gcp.gcpmonitoringuptimecheck.v1alpha1.GcpMonitoringUptimeCheckStackOutputs
+	(*GcpMonitoringUptimeCheckOutputs)(nil), // 0: dev.planton.gcp.gcpmonitoringuptimecheck.v1alpha1.GcpMonitoringUptimeCheckOutputs
 }
 var file_catalog_gcp_gcpmonitoringuptimecheck_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

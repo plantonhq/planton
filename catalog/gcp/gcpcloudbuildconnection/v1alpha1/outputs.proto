@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcloudbuildconnection.v1alpha1;
 
-// GcpCloudBuildConnectionStackOutputs carries the connection's identity
+// GcpCloudBuildConnectionOutputs carries the connection's identity
 // and how far its installation has come.
-message GcpCloudBuildConnectionStackOutputs {
+message GcpCloudBuildConnectionOutputs {
   // Full resource name:
   // projects/{project}/locations/{location}/connections/{connection_id}.
   // The value a GcpCloudBuildRepository's parent_connection takes.

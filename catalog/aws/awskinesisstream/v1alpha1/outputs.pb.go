@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsKinesisStreamStackOutputs captures observable identifiers from a provisioned
+// AwsKinesisStreamOutputs captures observable identifiers from a provisioned
 // Kinesis Data Stream. These outputs are used by downstream resources (e.g.,
 // Kinesis Firehose delivery streams, Lambda event source mappings, EventBridge
 // targets) to wire dependencies via StringValueOrRef.
-type AwsKinesisStreamStackOutputs struct {
+type AwsKinesisStreamOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the Kinesis stream. This is the primary
 	// identifier used for IAM policies, cross-service permissions, and as a
@@ -40,20 +40,20 @@ type AwsKinesisStreamStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsKinesisStreamStackOutputs) Reset() {
-	*x = AwsKinesisStreamStackOutputs{}
+func (x *AwsKinesisStreamOutputs) Reset() {
+	*x = AwsKinesisStreamOutputs{}
 	mi := &file_catalog_aws_awskinesisstream_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsKinesisStreamStackOutputs) String() string {
+func (x *AwsKinesisStreamOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsKinesisStreamStackOutputs) ProtoMessage() {}
+func (*AwsKinesisStreamOutputs) ProtoMessage() {}
 
-func (x *AwsKinesisStreamStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsKinesisStreamOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awskinesisstream_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,19 +65,19 @@ func (x *AwsKinesisStreamStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsKinesisStreamStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsKinesisStreamStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsKinesisStreamOutputs.ProtoReflect.Descriptor instead.
+func (*AwsKinesisStreamOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awskinesisstream_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsKinesisStreamStackOutputs) GetStreamArn() string {
+func (x *AwsKinesisStreamOutputs) GetStreamArn() string {
 	if x != nil {
 		return x.StreamArn
 	}
 	return ""
 }
 
-func (x *AwsKinesisStreamStackOutputs) GetStreamName() string {
+func (x *AwsKinesisStreamOutputs) GetStreamName() string {
 	if x != nil {
 		return x.StreamName
 	}
@@ -88,8 +88,8 @@ var File_catalog_aws_awskinesisstream_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_aws_awskinesisstream_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awskinesisstream/v1alpha1/outputs.proto\x12)dev.planton.aws.awskinesisstream.v1alpha1\"^\n" +
-	"\x1cAwsKinesisStreamStackOutputs\x12\x1d\n" +
+	"3catalog/aws/awskinesisstream/v1alpha1/outputs.proto\x12)dev.planton.aws.awskinesisstream.v1alpha1\"Y\n" +
+	"\x17AwsKinesisStreamOutputs\x12\x1d\n" +
 	"\n" +
 	"stream_arn\x18\x01 \x01(\tR\tstreamArn\x12\x1f\n" +
 	"\vstream_name\x18\x02 \x01(\tR\n" +
@@ -110,7 +110,7 @@ func file_catalog_aws_awskinesisstream_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awskinesisstream_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awskinesisstream_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsKinesisStreamStackOutputs)(nil), // 0: dev.planton.aws.awskinesisstream.v1alpha1.AwsKinesisStreamStackOutputs
+	(*AwsKinesisStreamOutputs)(nil), // 0: dev.planton.aws.awskinesisstream.v1alpha1.AwsKinesisStreamOutputs
 }
 var file_catalog_aws_awskinesisstream_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

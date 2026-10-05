@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesgrafana.v1alpha1;
 
-//grafana-kubernetes stack outputs
-message KubernetesGrafanaStackOutputs {
+//grafana-kubernetes outputs
+message KubernetesGrafanaOutputs {
   //namespace Grafana runs in.
   string namespace = 1;
 

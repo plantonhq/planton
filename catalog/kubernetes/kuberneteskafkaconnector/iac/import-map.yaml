@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kuberneteskafkaconnector
 spec:
@@ -18,14 +18,14 @@ spec:
     - name: name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: connector_name
+        - from_output: connector_name
       where_to_find: >-
         The KafkaConnector CR's metadata.name (equals the Planton
         resource name and the connector's name in Connect) —
         `kubectl get kafkaconnector -A` (NAME column).
     - name: namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         The Connect cluster's namespace (the placement contract) —

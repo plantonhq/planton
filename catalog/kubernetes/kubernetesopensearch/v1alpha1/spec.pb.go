@@ -58,7 +58,7 @@ const (
 // for anything real, bring a custom `security.config` (your own
 // internal_users.yml and admin credentials) or rotate the admin
 // password through the security API immediately after install.
-// Clients read credentials from the Secret named in the stack
+// Clients read credentials from the Secret named in the
 // outputs — no credential ever appears in this spec unless you bring
 // your own security config.
 //
@@ -927,10 +927,10 @@ type KubernetesOpenSearchTlsTransport struct {
 	Generate *bool `protobuf:"varint,1,opt,name=generate,proto3,oneof" json:"generate,omitempty"`
 	// *
 	// Issue one certificate per node (hostname-pinned) instead of a
-	// shared certificate. Component default: true (the stronger
+	// shared certificate. Kind default: true (the stronger
 	// posture); the operator's OWN default is a single shared
 	// certificate — the modules always render this field explicitly, so
-	// the component default governs.
+	// the kind's default governs.
 	PerNode *bool `protobuf:"varint,2,opt,name=per_node,json=perNode,proto3,oneof" json:"per_node,omitempty"`
 	// *
 	// Existing TLS Secret (ca.crt, tls.key, tls.crt) to use when

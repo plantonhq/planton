@@ -20,8 +20,8 @@ type Locals struct {
 	IsRegional bool
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcptargethttpsproxyv1alpha1.GcpTargetHttpsProxyStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(ctx *pulumi.Context, iacInput *gcptargethttpsproxyv1alpha1.GcpTargetHttpsProxyIacInput) *Locals {
+	target := iacInput.Target
 
 	proxyName := target.Spec.ProxyName
 	if proxyName == "" {

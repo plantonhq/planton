@@ -4,7 +4,7 @@ Deploys one Kubernetes RBAC grant as a single resource: a scope (one namespace o
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Role or ClusterRole** -- created when the grant defines a role from policy rules (or an aggregation rule at cluster scope); skipped when binding an existing role by name
 - **RoleBinding or ClusterRoleBinding** -- created when subjects are listed; a grant with a defined role and no subjects creates the role only (a permission set published for later grants)
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Kubernetes Cluster
 
-- For namespace-scoped grants, the target namespace must already exist. Use the Kubernetes Namespace component to manage namespaces declaratively.
+- For namespace-scoped grants, the target namespace must already exist. Use the Kubernetes Namespace kind to manage namespaces declaratively.
 - When binding an existing role, that Role or ClusterRole must already exist (the built-ins -- view, edit, admin, cluster-admin -- always do).
 
 ## Deploy
@@ -58,11 +58,11 @@ spec:
 planton apply -f rbac.yaml
 ```
 
-This creates a Role permitting read access to ConfigMaps and Secrets in `backend-services`, bound to the `checkout-identity` ServiceAccount through a RoleBinding. A Stack Job tracks the provisioning in real time.
+This creates a Role permitting read access to ConfigMaps and Secrets in `backend-services`, bound to the `checkout-identity` ServiceAccount through a RoleBinding. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the grant to the namespace and identity managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, wire the grant to the namespace and identity managed by other Infra Components:
 
 ```yaml
 spec:
@@ -100,7 +100,7 @@ These are the most important decisions when configuring a Kubernetes RBAC grant.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -108,9 +108,9 @@ These are the most important decisions when configuring a Kubernetes RBAC grant.
 | **KubernetesServiceAccount** | `subjects[].serviceAccount.name` | `spec.name` |
 | **KubernetesNamespace** | `subjects[].serviceAccount.namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -134,6 +134,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes ServiceAccount**](/cloud-catalog/kubernetes-service-account) -- the usual subject: identity there, permissions here.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- namespace-scoped grants reference their namespace so charts deploy in dependency order.
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) and the other workload kinds -- run as the granted ServiceAccount to exercise the permissions.
+- [**Kubernetes ServiceAccount**](/infra-catalog/kubernetes-service-account) -- the usual subject: identity there, permissions here.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- namespace-scoped grants reference their namespace so charts deploy in dependency order.
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) and the other workload kinds -- run as the granted ServiceAccount to exercise the permissions.

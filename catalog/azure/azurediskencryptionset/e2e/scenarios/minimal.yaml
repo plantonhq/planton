@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurediskencryptionset
+    e2e-catalog-kind: azurediskencryptionset
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/azure/azurediskencryptionset/e2e/fixture-uai.yaml,catalog/azure/azurediskencryptionset/e2e/fixture-vault.yaml,catalog/azure/azurediskencryptionset/e2e/fixture-key.yaml,catalog/azure/azurediskencryptionset/e2e/fixture-grant.yaml"

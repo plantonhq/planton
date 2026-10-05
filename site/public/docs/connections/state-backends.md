@@ -15,7 +15,7 @@ tags:
 
 Every infrastructure deployment managed by Planton uses an Infrastructure as Code (IaC) engine — Pulumi, Terraform, or OpenTofu — under the hood. These engines track the state of your infrastructure in state files: a record of what resources exist, their current configuration, and the relationships between them. Without state, the IaC engine cannot determine what to create, update, or delete on the next deployment.
 
-State backend connections tell Planton where to store these state files. Every new organization starts with Planton-managed backends for both Pulumi and Terraform/OpenTofu, so you can deploy infrastructure immediately. OpenTofu uses the same state format and backend configuration as Terraform, so a single Terraform state backend serves both engines. If you need state to live in your own cloud account, you configure a self-managed backend and Planton handles reading, writing, and locking state during deployments. Import operations also write to the state backend — when you [import an existing cloud resource](/docs/infrastructure/importing-resources), the runner writes the resource's current state to the backend without modifying the actual infrastructure.
+State backend connections tell Planton where to store these state files. Every new organization starts with Planton-managed backends for both Pulumi and Terraform/OpenTofu, so you can deploy infrastructure immediately. OpenTofu uses the same state format and backend configuration as Terraform, so a single Terraform state backend serves both engines. If you need state to live in your own cloud account, you configure a self-managed backend and Planton handles reading, writing, and locking state during deployments. Import operations also write to the state backend — when you [import an existing provider resource](/docs/infrastructure/importing-resources), the runner writes the resource's current state to the backend without modifying the actual infrastructure.
 
 ## Why State Backend Choice Matters
 
@@ -31,7 +31,7 @@ There is no universally right answer. The choice depends on your security requir
 
 Every new organization comes with two pre-configured state backends: one for Pulumi and one for Terraform/OpenTofu. Planton provisions and manages the underlying storage, so you can start deploying infrastructure without any state backend configuration.
 
-Planton-managed backends are the default for new organizations. When a stack job runs, it uses the organization's default backend automatically. You do not need to select a backend, provide credentials, or manage storage buckets.
+Planton-managed backends are the default for new organizations. When an Infra Job runs, it uses the organization's default backend automatically. You do not need to select a backend, provide credentials, or manage storage buckets.
 
 **Limitations:**
 
@@ -46,7 +46,7 @@ When you configure a self-managed state backend (S3, GCS, Azure Blob, Cloudflare
 
 ### Provide Credentials
 
-Planton resolves credentials from the platform's secrets system at deploy time and injects them into the IaC engine. You store secrets (access keys, service account keys, access tokens) in Planton, and the runner receives them just before executing a stack job.
+Planton resolves credentials from the platform's secrets system at deploy time and injects them into the IaC engine. You store secrets (access keys, service account keys, access tokens) in Planton, and the runner receives them just before executing an Infra Job.
 
 This is the default mode. Use it when:
 
@@ -81,16 +81,16 @@ flowchart TB
     AuthMode{"Authentication mode?"}
     InlineAuth["Planton resolves credentials from secrets"]
     RunnerAuth["Runner uses environment credentials"]
-    StackJob["Stack job executes"]
+    InfraJob["Infra Job executes"]
 
     Deploy --> BackendType
     BackendType -->|"Platform Managed"| PlatformManaged
     BackendType -->|"Self-managed"| AuthMode
     AuthMode -->|"Provide Credentials"| InlineAuth
     AuthMode -->|"Runner Environment"| RunnerAuth
-    PlatformManaged --> StackJob
-    InlineAuth --> StackJob
-    RunnerAuth --> StackJob
+    PlatformManaged --> InfraJob
+    InlineAuth --> InfraJob
+    RunnerAuth --> InfraJob
 ```
 
 ## Pulumi Backends
@@ -263,15 +263,15 @@ To move from the Planton-managed default to your own storage:
 3. Choose the authentication mode and provide credentials if using Provide Credentials.
 4. Mark the new connection as the default for your organization.
 
-New deployments use the new default backend. The Planton-managed connection remains in your organization but is no longer used for new stack jobs. Existing resources keep their state in the Planton-managed backend until you move them. Move them all at once, from **Settings → State Backends** in the console or from the CLI:
+New deployments use the new default backend. The Planton-managed connection remains in your organization but is no longer used for new Infra Jobs. Existing resources keep their state in the Planton-managed backend until you move them. Move them all at once, from **Settings → State Backends** in the console or from the CLI:
 
 ```bash
 # See what still lives in Planton-managed storage
-planton state-backend list-planton-managed
+planton infra state-backend list-planton-managed
 
 # Preview the move, then run it (give --to once per provisioner)
-planton state-backend move-off-planton --to <your-backend> --dry-run
-planton state-backend move-off-planton --to <your-backend>
+planton infra state-backend move-off-planton --to <your-backend> --dry-run
+planton infra state-backend move-off-planton --to <your-backend>
 ```
 
 To move a single resource, use `planton tofu state migrate-backend <kind> <name> --destination-state-backend <slug>` (or `planton pulumi state migrate-backend` for Pulumi). Moving every resource off Planton-managed state is what lets a runner of your own carry your deploys (see [Planton-Hosted Runners](/docs/runner/planton-hosted-runners#running-deploys-on-your-own-runner)).
@@ -281,6 +281,6 @@ To move a single resource, use `planton tofu state migrate-backend <kind> <name>
 - [Connections Overview](/docs/connections) — Understanding the Connect system
 - [State Encryption](/docs/connections/state-encryption) — The key every backend names, and how to change it
 - [Infrastructure](/docs/infrastructure) — How infrastructure deployments use state backends
-- [Infrastructure: Stack Jobs](/docs/infrastructure/stack-jobs) — The atomic execution units that read and write state
+- [Infrastructure: Infra Jobs](/docs/infrastructure/infra-jobs) — The atomic execution units that read and write state
 - [Importing Resources](/docs/infrastructure/importing-resources) — Import operations that write to the state backend
 - [Runner: Deployment](/docs/runner/deployment) — Deploying runners in your own infrastructure (relevant for Runner Environment auth mode)

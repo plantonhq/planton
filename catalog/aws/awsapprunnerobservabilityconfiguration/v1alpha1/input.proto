@@ -5,10 +5,10 @@ package dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1;
 import "catalog/aws/awsapprunnerobservabilityconfiguration/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsAppRunnerObservabilityConfigurationStackInput is the input for the
+// AwsAppRunnerObservabilityConfigurationIacInput is the input for the
 // aws-app-runner-observability-configuration IaC modules.
-message AwsAppRunnerObservabilityConfigurationStackInput {
-  // target cloud-resource
+message AwsAppRunnerObservabilityConfigurationIacInput {
+  // the catalog object to deploy
   AwsAppRunnerObservabilityConfiguration target = 1;
 
   // provider-config

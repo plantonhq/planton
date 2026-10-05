@@ -1,18 +1,18 @@
 # DigitalOcean Kubernetes Node Pool -- Pulumi Module
 
-Deploys a `digitalocean:index/kubernetesNodePool:KubernetesNodePool` from a `DigitalOceanKubernetesNodePool` stack input: owning cluster, Droplet size, fixed or autoscaled node count, Kubernetes labels and taints, and DigitalOcean tags. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`.
+Deploys a `digitalocean:index/kubernetesNodePool:KubernetesNodePool` from a `DigitalOceanKubernetesNodePool` IaC input: owning cluster, Droplet size, fixed or autoscaled node count, Kubernetes labels and taints, and DigitalOcean tags. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`.
 
 ## Module structure
 
-- `main.go` -- Pulumi program entry point reading the stack input
+- `main.go` -- Pulumi program entry point reading the IaC input
 - `module/main.go` -- `Resources()`: locals, provider, node pool
-- `module/locals.go` -- stack-input references and the standard Planton label map
-- `module/node_pool.go` -- the node-pool resource and stack-output exports
+- `module/locals.go` -- iac-input references and the standard Planton label map
+- `module/node_pool.go` -- the node-pool resource and output exports
 - `module/outputs.go` -- output key constants (the kind's outputs.proto contract)
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Terraform module: `node_pool_id`, `cluster_id`.
+Exactly the kind's output contract, identical to the Terraform module: `node_pool_id`, `cluster_id`.
 
 The pool's nodes (`Nodes[*].Id`, `Nodes[*].DropletId`) are deliberately not exported: DOKS replaces nodes by design (autoscaling, upgrades, auto-repair), so an apply-time list is stale the next time the pool changes shape. Droplet-scoped wiring goes through the pool's tags.
 

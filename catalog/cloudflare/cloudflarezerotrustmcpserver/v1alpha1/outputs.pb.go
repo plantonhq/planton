@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustMcpServerStackOutputs captures the observable outputs
+// CloudflareZeroTrustMcpServerOutputs captures the observable outputs
 // after registering the MCP server.
-type CloudflareZeroTrustMcpServerStackOutputs struct {
+type CloudflareZeroTrustMcpServerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The server's identifier -- what MCP portals reference in their
 	// servers[] rows.
@@ -32,20 +32,20 @@ type CloudflareZeroTrustMcpServerStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustMcpServerStackOutputs) Reset() {
-	*x = CloudflareZeroTrustMcpServerStackOutputs{}
+func (x *CloudflareZeroTrustMcpServerOutputs) Reset() {
+	*x = CloudflareZeroTrustMcpServerOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustMcpServerStackOutputs) String() string {
+func (x *CloudflareZeroTrustMcpServerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustMcpServerStackOutputs) ProtoMessage() {}
+func (*CloudflareZeroTrustMcpServerOutputs) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustMcpServerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustMcpServerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,12 +57,12 @@ func (x *CloudflareZeroTrustMcpServerStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustMcpServerStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustMcpServerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustMcpServerOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustMcpServerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustMcpServerStackOutputs) GetServerId() string {
+func (x *CloudflareZeroTrustMcpServerOutputs) GetServerId() string {
 	if x != nil {
 		return x.ServerId
 	}
@@ -73,8 +73,8 @@ var File_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_outputs_proto 
 
 const file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/cloudflare/cloudflarezerotrustmcpserver/v1alpha1/outputs.proto\x12<dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1\"G\n" +
-	"(CloudflareZeroTrustMcpServerStackOutputs\x12\x1b\n" +
+	"Fcatalog/cloudflare/cloudflarezerotrustmcpserver/v1alpha1/outputs.proto\x12<dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1\"B\n" +
+	"#CloudflareZeroTrustMcpServerOutputs\x12\x1b\n" +
 	"\tserver_id\x18\x01 \x01(\tR\bserverIdB\xe1\x03\n" +
 	"@com.dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1B\fOutputsProtoP\x01Zzgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarezerotrustmcpserver/v1alpha1;cloudflarezerotrustmcpserverv1alpha1\xa2\x02\x04DPCC\xaa\x02<Dev.Planton.Cloudflare.Cloudflarezerotrustmcpserver.V1alpha1\xca\x02<Dev\\Planton\\Cloudflare\\Cloudflarezerotrustmcpserver\\V1alpha1\xe2\x02HDev\\Planton\\Cloudflare\\Cloudflarezerotrustmcpserver\\V1alpha1\\GPBMetadata\xea\x02@Dev::Planton::Cloudflare::Cloudflarezerotrustmcpserver::V1alpha1b\x06proto3"
 
@@ -92,7 +92,7 @@ func file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_outputs_proto
 
 var file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareZeroTrustMcpServerStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1.CloudflareZeroTrustMcpServerStackOutputs
+	(*CloudflareZeroTrustMcpServerOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1.CloudflareZeroTrustMcpServerOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustmcpserver_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

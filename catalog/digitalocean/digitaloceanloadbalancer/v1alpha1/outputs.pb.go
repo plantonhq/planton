@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanLoadBalancerStackOutputs captures the outputs after provisioning a DigitalOcean Load Balancer.
-type DigitalOceanLoadBalancerStackOutputs struct {
+// DigitalOceanLoadBalancerOutputs captures the outputs after provisioning a DigitalOcean Load Balancer.
+type DigitalOceanLoadBalancerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique identifier (UUID) of the created DigitalOcean Load Balancer.
 	LoadBalancerId string `protobuf:"bytes,1,opt,name=load_balancer_id,json=loadBalancerId,proto3" json:"load_balancer_id,omitempty"`
@@ -38,20 +38,20 @@ type DigitalOceanLoadBalancerStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanLoadBalancerStackOutputs) Reset() {
-	*x = DigitalOceanLoadBalancerStackOutputs{}
+func (x *DigitalOceanLoadBalancerOutputs) Reset() {
+	*x = DigitalOceanLoadBalancerOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanLoadBalancerStackOutputs) String() string {
+func (x *DigitalOceanLoadBalancerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanLoadBalancerStackOutputs) ProtoMessage() {}
+func (*DigitalOceanLoadBalancerOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanLoadBalancerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanLoadBalancerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,33 +63,33 @@ func (x *DigitalOceanLoadBalancerStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanLoadBalancerStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanLoadBalancerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanLoadBalancerOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanLoadBalancerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanLoadBalancerStackOutputs) GetLoadBalancerId() string {
+func (x *DigitalOceanLoadBalancerOutputs) GetLoadBalancerId() string {
 	if x != nil {
 		return x.LoadBalancerId
 	}
 	return ""
 }
 
-func (x *DigitalOceanLoadBalancerStackOutputs) GetIp() string {
+func (x *DigitalOceanLoadBalancerOutputs) GetIp() string {
 	if x != nil {
 		return x.Ip
 	}
 	return ""
 }
 
-func (x *DigitalOceanLoadBalancerStackOutputs) GetUrn() string {
+func (x *DigitalOceanLoadBalancerOutputs) GetUrn() string {
 	if x != nil {
 		return x.Urn
 	}
 	return ""
 }
 
-func (x *DigitalOceanLoadBalancerStackOutputs) GetIpv6() string {
+func (x *DigitalOceanLoadBalancerOutputs) GetIpv6() string {
 	if x != nil {
 		return x.Ipv6
 	}
@@ -100,8 +100,8 @@ var File_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_outputs_proto pr
 
 const file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/digitalocean/digitaloceanloadbalancer/v1alpha1/outputs.proto\x12:dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1\"\x96\x01\n" +
-	"$DigitalOceanLoadBalancerStackOutputs\x12(\n" +
+	"Dcatalog/digitalocean/digitaloceanloadbalancer/v1alpha1/outputs.proto\x12:dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1\"\x91\x01\n" +
+	"\x1fDigitalOceanLoadBalancerOutputs\x12(\n" +
 	"\x10load_balancer_id\x18\x01 \x01(\tR\x0eloadBalancerId\x12\x0e\n" +
 	"\x02ip\x18\x02 \x01(\tR\x02ip\x12\x10\n" +
 	"\x03urn\x18\x04 \x01(\tR\x03urn\x12\x12\n" +
@@ -122,7 +122,7 @@ func file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_outputs_proto_r
 
 var file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanLoadBalancerStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerStackOutputs
+	(*DigitalOceanLoadBalancerOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerOutputs
 }
 var file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -3,7 +3,7 @@
 The judgment this guide carries: before hand-rolling a stateful system on
 this kind, check whether the catalog already runs that system for you —
 the most common StatefulSet mistake on this platform is rebuilding what an
-operator-backed component does better.
+operator-backed kind does better.
 
 ## Check the catalog before building
 

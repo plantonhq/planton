@@ -6,7 +6,7 @@ import (
 
 	validatepb "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	"github.com/plantonhq/planton/pkg/refannotations"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"github.com/plantonhq/planton/shared/options"
 	"google.golang.org/protobuf/proto"
@@ -59,7 +59,7 @@ func extractFieldSemantics(fd protoreflect.FieldDescriptor) (*ProtoFieldSemantic
 
 	// 4. dev.planton.shared.foreignkey.v1.default_kind
 	if proto.HasExtension(opts, foreignkeyv1.E_DefaultKind) {
-		kind := proto.GetExtension(opts, foreignkeyv1.E_DefaultKind).(cloudresourcekind.CloudResourceKind)
+		kind := proto.GetExtension(opts, foreignkeyv1.E_DefaultKind).(catalogkind.CatalogKind)
 		kindStr := kind.String()
 		sem.ForeignKeyKind = &kindStr
 		hasAnySemantic = true

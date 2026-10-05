@@ -6,7 +6,7 @@
 
 **apiVersion**: `digital-ocean.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 DigitalOceanProjectSpec models the full digitalocean_project resource
 surface: the account-level organizational container that groups droplets,
@@ -129,7 +129,7 @@ managed as code.
 contains. Every DigitalOcean resource exposes a URN of the form
 "do:<type>:<id>" -- for example "do:droplet:123456",
 "do:dbaas:6ec9c684-...", "do:space:my-bucket", "do:domain:example.com".
-Use a literal URN, or reference the producing resource's urn stack
+Use a literal URN, or reference the producing resource's urn
 output with an explicit valueFrom.kind -- the list is polymorphic
 across kinds (droplets, load balancers, buckets, domains, ...), so no
 single default kind applies and each reference names its own. The

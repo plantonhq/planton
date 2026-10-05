@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpCloudRunWorkerPoolStackOutputs captures the observable values of a
+// GcpCloudRunWorkerPoolOutputs captures the observable values of a
 // Cloud Run worker pool after provisioning. A worker pool has no URL: it
 // receives no requests, so there is nothing to reach it at -- the outputs
 // identify it and report the revision that is running.
-type GcpCloudRunWorkerPoolStackOutputs struct {
+type GcpCloudRunWorkerPoolOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name
 	// (projects/{project}/locations/{region}/workerPools/{name}).
@@ -53,20 +53,20 @@ type GcpCloudRunWorkerPoolStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCloudRunWorkerPoolStackOutputs) Reset() {
-	*x = GcpCloudRunWorkerPoolStackOutputs{}
+func (x *GcpCloudRunWorkerPoolOutputs) Reset() {
+	*x = GcpCloudRunWorkerPoolOutputs{}
 	mi := &file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudRunWorkerPoolStackOutputs) String() string {
+func (x *GcpCloudRunWorkerPoolOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudRunWorkerPoolStackOutputs) ProtoMessage() {}
+func (*GcpCloudRunWorkerPoolOutputs) ProtoMessage() {}
 
-func (x *GcpCloudRunWorkerPoolStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudRunWorkerPoolOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -78,68 +78,68 @@ func (x *GcpCloudRunWorkerPoolStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudRunWorkerPoolStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudRunWorkerPoolStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudRunWorkerPoolOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudRunWorkerPoolOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudRunWorkerPoolStackOutputs) GetName() string {
+func (x *GcpCloudRunWorkerPoolOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpCloudRunWorkerPoolStackOutputs) GetWorkerPoolName() string {
+func (x *GcpCloudRunWorkerPoolOutputs) GetWorkerPoolName() string {
 	if x != nil {
 		return x.WorkerPoolName
 	}
 	return ""
 }
 
-func (x *GcpCloudRunWorkerPoolStackOutputs) GetUid() string {
+func (x *GcpCloudRunWorkerPoolOutputs) GetUid() string {
 	if x != nil {
 		return x.Uid
 	}
 	return ""
 }
 
-func (x *GcpCloudRunWorkerPoolStackOutputs) GetLocation() string {
+func (x *GcpCloudRunWorkerPoolOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpCloudRunWorkerPoolStackOutputs) GetProjectId() string {
+func (x *GcpCloudRunWorkerPoolOutputs) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *GcpCloudRunWorkerPoolStackOutputs) GetLatestCreatedRevision() string {
+func (x *GcpCloudRunWorkerPoolOutputs) GetLatestCreatedRevision() string {
 	if x != nil {
 		return x.LatestCreatedRevision
 	}
 	return ""
 }
 
-func (x *GcpCloudRunWorkerPoolStackOutputs) GetLatestReadyRevision() string {
+func (x *GcpCloudRunWorkerPoolOutputs) GetLatestReadyRevision() string {
 	if x != nil {
 		return x.LatestReadyRevision
 	}
 	return ""
 }
 
-func (x *GcpCloudRunWorkerPoolStackOutputs) GetObservedGeneration() string {
+func (x *GcpCloudRunWorkerPoolOutputs) GetObservedGeneration() string {
 	if x != nil {
 		return x.ObservedGeneration
 	}
 	return ""
 }
 
-func (x *GcpCloudRunWorkerPoolStackOutputs) GetEtag() string {
+func (x *GcpCloudRunWorkerPoolOutputs) GetEtag() string {
 	if x != nil {
 		return x.Etag
 	}
@@ -150,8 +150,8 @@ var File_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/gcp/gcpcloudrunworkerpool/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1\"\xdf\x02\n" +
-	"!GcpCloudRunWorkerPoolStackOutputs\x12\x12\n" +
+	"8catalog/gcp/gcpcloudrunworkerpool/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1\"\xda\x02\n" +
+	"\x1cGcpCloudRunWorkerPoolOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12(\n" +
 	"\x10worker_pool_name\x18\x02 \x01(\tR\x0eworkerPoolName\x12\x10\n" +
 	"\x03uid\x18\x03 \x01(\tR\x03uid\x12\x1a\n" +
@@ -178,7 +178,7 @@ func file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudRunWorkerPoolStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolStackOutputs
+	(*GcpCloudRunWorkerPoolOutputs)(nil), // 0: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolOutputs
 }
 var file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

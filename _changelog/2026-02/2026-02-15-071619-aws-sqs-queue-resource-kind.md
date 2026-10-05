@@ -1,4 +1,4 @@
-# AwsSqsQueue Resource Kind — First AWS Expansion Component
+# AwsSqsQueue Resource Kind — First AWS Expansion Kind
 
 **Date**: February 15, 2026
 **Type**: Feature
@@ -6,21 +6,21 @@
 
 ## Summary
 
-Added the AwsSqsQueue resource kind (enum 225) as the first new AWS component in the cloud-provider-expansion project. The component supports both Standard and FIFO queue types with dead letter queue routing, dual encryption modes (SSE-SQS and SSE-KMS), IAM access policies via `google.protobuf.Struct`, and comprehensive delivery tuning — backed by both Pulumi and Terraform modules with full feature parity.
+Added the AwsSqsQueue resource kind (enum 225) as the first new AWS kind in the cloud-provider-expansion project. The kind supports both Standard and FIFO queue types with dead letter queue routing, dual encryption modes (SSE-SQS and SSE-KMS), IAM access policies via `google.protobuf.Struct`, and comprehensive delivery tuning — backed by both Pulumi and Terraform modules with full feature parity.
 
 ## Problem Statement / Motivation
 
-Planton's AWS coverage stood at 25 resource kinds, lacking foundational messaging services. SQS is the most fundamental building block for event-driven architectures, microservice decoupling, and serverless workflows on AWS. Without it, infra charts for serverless-api, event-driven, and microservices patterns couldn't express the message queuing layer.
+Planton's AWS coverage stood at 25 resource kinds, lacking foundational messaging services. SQS is the most fundamental building block for event-driven architectures, microservice decoupling, and serverless workflows on AWS. Without it, Infra Charts for serverless-api, event-driven, and microservices patterns couldn't express the message queuing layer.
 
 ### Pain Points
 
 - No SQS support meant users couldn't model message-driven architectures declaratively
-- Infra charts for event-driven patterns (Lambda -> SQS -> Lambda) were impossible
+- Infra Charts for event-driven patterns (Lambda -> SQS -> Lambda) were impossible
 - Dead letter queue patterns — critical for production resilience — had no representation
 
 ## Solution / What's New
 
-A complete deployment component following Planton's ideal state checklist:
+A complete catalog kind following Planton's ideal state checklist:
 
 ### Proto API (4 files + tests)
 
@@ -45,17 +45,17 @@ A complete deployment component following Planton's ideal state checklist:
 
 - Production-quality README with field reference, use cases, and validation rules
 - Examples covering: minimal, DLQ pattern, FIFO, KMS encryption, SNS fan-out with IAM policy
-- Catalog page for the component registry
+- Catalog page for the kind registry
 - Research docs with design rationale
 - 2 presets: `01-standard-queue` (long polling, SSE-SQS) and `02-fifo-with-deduplication` (high-throughput FIFO with DLQ)
 
 ## Implementation Details
 
-### Component File Tree
+### Kind File Tree
 
 ```
 apis/dev/planton/provider/aws/awssqsqueue/v1/
-├── spec.proto, api.proto, stack_input.proto, stack_outputs.proto
+├── spec.proto, api.proto, iac_input.proto, outputs.proto
 ├── spec_test.go (25 tests)
 ├── README.md, examples.md, catalog-page.md
 ├── docs/README.md
@@ -75,15 +75,15 @@ apis/dev/planton/provider/aws/awssqsqueue/v1/
 ## Benefits
 
 - **First step in AWS expansion**: Opens the path for the remaining 31 new AWS resource kinds
-- **Messaging foundation**: Enables serverless-api, event-driven, and microservices infra charts
+- **Messaging foundation**: Enables serverless-api, event-driven, and microservices Infra Charts
 - **DLQ pattern**: Production-resilience pattern available from day one
 - **Dual encryption**: Compliance-ready with both SSE-SQS (zero cost) and SSE-KMS (audit trail)
-- **google.protobuf.Struct precedent**: Establishes the pattern for IAM policies across all future components
+- **google.protobuf.Struct precedent**: Establishes the pattern for IAM policies across all future kinds
 
 ## Impact
 
 - AWS resource coverage: 25 → 26 kinds
-- New enum: `AwsSqsQueue = 225` in `cloud_resource_kind.proto`
+- New enum: `AwsSqsQueue = 225` in `catalog_kind.proto`
 - 44 files changed, ~2960 lines added
 - All 25 validation tests passing
 

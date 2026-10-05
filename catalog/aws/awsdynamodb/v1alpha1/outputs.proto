@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsdynamodb.v1alpha1;
 
-// AwsDynamodbStackOutputs captures the observable identifiers of a
+// AwsDynamodbOutputs captures the observable identifiers of a
 // DynamoDB table after provisioning.
-message AwsDynamodbStackOutputs {
+message AwsDynamodbOutputs {
   // The table name -- what SDK calls, IAM policy resources, and
   // application configuration reference.
   string table_name = 1;

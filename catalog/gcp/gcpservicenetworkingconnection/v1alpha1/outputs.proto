@@ -4,7 +4,7 @@ package dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1;
 
 // Outputs produced after provisioning a GCP private services access
 // connection.
-message GcpServiceNetworkingConnectionStackOutputs {
+message GcpServiceNetworkingConnectionOutputs {
   // Name of the VPC peering GCP created on the network for this connection
   // (e.g. servicenetworking-googleapis-com). This is the peering an operator
   // looks for on the network's peerings list when auditing private services

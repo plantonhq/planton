@@ -36,11 +36,11 @@ func parseNamespaceName(namespaceId string) (string, error) {
 	return parts[1], nil
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureservicebustopicv1alpha1.AzureServiceBusTopicStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureservicebustopicv1alpha1.AzureServiceBusTopicIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureServiceBusTopic = stackInput.Target
-	locals.NamespaceId = stackInput.Target.Spec.NamespaceId.GetValue()
+	locals.AzureServiceBusTopic = iacInput.Target
+	locals.NamespaceId = iacInput.Target.Spec.NamespaceId.GetValue()
 
 	// Topics carry no Azure tags: ARM does not support tags on Service Bus
 	// entities, so the platform's identity tags live on the parent

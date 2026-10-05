@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1;
 
-// AwsTransitGatewayVpcAttachmentStackOutputs captures observable identifiers
+// AwsTransitGatewayVpcAttachmentOutputs captures observable identifiers
 // from a provisioned Transit Gateway VPC attachment.
 //
 // The attachment ID is the join key of the Transit Gateway routing surface:
 // AwsTransitGatewayRouteTable resources associate it, accept propagations
 // from it, and target it in static routes.
-message AwsTransitGatewayVpcAttachmentStackOutputs {
+message AwsTransitGatewayVpcAttachmentOutputs {
   // The Transit Gateway attachment ID (e.g., "tgw-attach-0123456789abcdef0").
   // Referenced by route table associations, propagations, and static routes.
   string attachment_id = 1;

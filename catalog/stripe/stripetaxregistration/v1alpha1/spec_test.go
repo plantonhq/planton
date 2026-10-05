@@ -19,7 +19,7 @@ func registration(spec *StripeTaxRegistrationSpec) *StripeTaxRegistration {
 	return &StripeTaxRegistration{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripeTaxRegistration",
-		Metadata:   &shared.CloudResourceMetadata{Name: "de-oss"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "de-oss"},
 		Spec:       spec,
 	}
 }

@@ -4,11 +4,11 @@ package dev.planton.azure.azurestoragelocaluser.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureStorageLocalUserStackOutputs** captures the outputs of
+// **AzureStorageLocalUserOutputs** captures the outputs of
 // provisioning a storage local user. The password is the user's login
 // secret: Planton keeps it in the organization's secret store, and the output
 // holds a reference -- hand the password to the partner over a secure channel.
-message AzureStorageLocalUserStackOutputs {
+message AzureStorageLocalUserOutputs {
   // The local user's Azure Resource Manager ID.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Storage/storageAccounts/{account}/localUsers/{name}
   string local_user_id = 1;

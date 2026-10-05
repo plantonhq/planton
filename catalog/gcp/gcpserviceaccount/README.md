@@ -85,7 +85,7 @@ An empty block (`userManagedKey: {}`) creates the classic 2048-bit RSA JSON key.
 
 The role lists are a convenience for the common "identity plus its obvious roles" case. For grants that deserve to be visible, independently-owned nodes in the resource graph — custom roles, conditional grants, grants owned by a different chart — use [GcpProjectIamMember](/docs/catalog/gcp/gcpprojectiammember), which references this account's `member` output directly.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -116,7 +116,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **Additive grants**: all role grants use member-level (additive) semantics — they never clobber other members' bindings on the same role.
 - **Email reuse caution**: deleting and recreating an account produces the same email but a different `unique_id`; IAM bindings referencing the old account do not transfer.
 
-## Related Components
+## Related Kinds
 
 - [GcpProjectIamMember](/docs/catalog/gcp/gcpprojectiammember) — first-class additive grant referencing this account's `member` output
 - [GcpIamCustomRole](/docs/catalog/gcp/gcpiamcustomrole) — least-privilege role definitions to grant to this account

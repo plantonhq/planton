@@ -4,7 +4,7 @@ Creates a managed online deployment on an Azure Machine Learning online endpoint
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Online Deployment** -- an ARM child of the endpoint (`.../onlineEndpoints/{endpoint}/deployments/{name}`) with its model, environment, instance fleet, and probes
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f azure-machine-learning-online-deployment.yaml
 ```
 
-This creates a two-instance `blue` deployment serving registered model version 3; it provisions its instances in ten to twenty minutes, and the endpoint's traffic map then routes to it by name. A Stack Job tracks the provisioning in real time.
+This creates a two-instance `blue` deployment serving registered model version 3; it provisions its instances in ten to twenty minutes, and the endpoint's traffic map then routes to it by name. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,15 +84,15 @@ These are the most important decisions when configuring the deployment. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureMachineLearningOnlineEndpoint** | `endpointId` | `status.outputs.online_endpoint_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -108,5 +108,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Machine Learning Online Endpoint**](/cloud-catalog/azure-machine-learning-online-endpoint) -- the parent endpoint and traffic dial
-- [**Azure Machine Learning Workspace**](/cloud-catalog/azure-machine-learning-workspace) -- where models, environments, and code assets live
+- [**Azure Machine Learning Online Endpoint**](/infra-catalog/azure-machine-learning-online-endpoint) -- the parent endpoint and traffic dial
+- [**Azure Machine Learning Workspace**](/infra-catalog/azure-machine-learning-workspace) -- where models, environments, and code assets live

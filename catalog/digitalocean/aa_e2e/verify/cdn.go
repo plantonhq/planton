@@ -34,7 +34,7 @@ func (v *cdnVerifier) VerifyAbsent(ctx context.Context, client *godo.Client, id 
 		}
 		return pkgerrors.Wrapf(err, "digitaloceancdn verify-absent failed for %q", id)
 	}
-	return &StillExistsError{Component: "digitaloceancdn", ID: id}
+	return &StillExistsError{Kind: "digitaloceancdn", ID: id}
 }
 
 func (v *cdnVerifier) VerifyExistsFromOutputs(ctx context.Context, client *godo.Client, outputs map[string]interface{}) error {

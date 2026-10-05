@@ -3,7 +3,7 @@
 ## Security
 ## Platform Security Posture
 
-The certifications below are Auth0's own published claims about their hosted platform (verify current status on Auth0's compliance page). They describe the vendor's service — never this Planton component, and never your deployment: configuring this resource does not make your application certified, authorized, or compliant with any framework.
+The certifications below are Auth0's own published claims about their hosted platform (verify current status on Auth0's compliance page). They describe the vendor's service — never this catalog kind, and never your deployment: configuring this resource does not make your application certified, authorized, or compliant with any framework.
 
 Auth0's published certifications and security standards:
 
@@ -118,7 +118,7 @@ The tenant's face (its name, logo and support contacts) and its behavior (sessio
 ## Cost
 ## Pricing Model
 
-Auth0 pricing is based on the plan tier and monthly active users, not on settings. The friendly name, logo and support contacts are editable on every plan, the Free plan included; the settings in Plan Boundaries need a higher plan, an add-on, or Early Access. Page customization beyond the logo is gated on a custom domain rather than a plan: Universal Login page templates need one (Auth0's Free plan includes one custom domain), and this component doesn't touch them.
+Auth0 pricing is based on the plan tier and monthly active users, not on settings. The friendly name, logo and support contacts are editable on every plan, the Free plan included; the settings in Plan Boundaries need a higher plan, an add-on, or Early Access. Page customization beyond the logo is gated on a custom domain rather than a plan: Universal Login page templates need one (Auth0's Free plan includes one custom domain), and this kind doesn't touch them.
 
 ## Cost Impact
 

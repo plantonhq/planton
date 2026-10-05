@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpvertexaiindex
 spec:
@@ -31,4 +31,4 @@ spec:
     - an undeployed index with no data bills nothing -- Google publishes no at-rest storage meter for the index object; every build charge follows GiB actually processed
     - serving bills per node-hour (machine type x region) and starts only when a GcpVertexAiDeployedIndex places this index onto a GcpVertexAiIndexEndpoint
     - the embedding files at contents_delta_uri live in Cloud Storage and bill as ordinary GCS storage on their bucket's project
-  notes: "An index is a corpus with a build meter: creating the object is free, and the money follows GiB -- $3.00 per GiB processed for batch builds and compactions, $0.45 per GiB ingested for streaming upserts (Vertex AI pricing page, Vector Search section, all regions). The expensive meter -- serving node-hours -- belongs to the deployment components; deletion_policy ABANDON leaves the corpus standing for them to keep serving."
+  notes: "An index is a corpus with a build meter: creating the object is free, and the money follows GiB -- $3.00 per GiB processed for batch builds and compactions, $0.45 per GiB ingested for streaming upserts (Vertex AI pricing page, Vector Search section, all regions). The expensive meter -- serving node-hours -- belongs to the catalog kinds; deletion_policy ABANDON leaves the corpus standing for them to keep serving."

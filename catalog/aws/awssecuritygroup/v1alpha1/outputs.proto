@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.aws.awssecuritygroup.v1alpha1;
 
-//aws-security-group stack outputs
-message AwsSecurityGroupStackOutputs {
+//aws-security-group outputs
+message AwsSecurityGroupOutputs {
   // the unique ID of the security group (sg-...). The join key other
   // resources reference to attach this group.
   string security_group_id = 1;

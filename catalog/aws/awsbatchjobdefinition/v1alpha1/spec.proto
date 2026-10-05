@@ -19,7 +19,7 @@ import "shared/options/options.proto";
 // Job definitions are revisioned and revisions are immutable in AWS: every
 // change to this spec REGISTERS A NEW REVISION of the name rather than
 // mutating the old one. The name comes from metadata.name. Because the
-// job_definition_arn stack output carries the revision, an EventBridge rule
+// job_definition_arn output carries the revision, an EventBridge rule
 // that references it by output picks up each new revision on its next
 // deployment -- "change the image tag, the schedule runs the new code"
 // falls out of the composition.

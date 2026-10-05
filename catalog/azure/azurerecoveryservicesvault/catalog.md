@@ -4,7 +4,7 @@ Creates a Recovery Services vault -- the safe that classic Azure Backup data (VM
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Recovery Services Vault** -- with its redundancy, immutability, encryption, identity, and monitoring posture
 - **Resource Guard Association** -- created only when `resourceGuardId` is set: Multi-User Authorization on privileged vault operations, one guard per vault (ARM pins the association's name to `VaultProxy`)
@@ -53,11 +53,11 @@ spec:
 planton apply -f vault.yaml
 ```
 
-This creates a Standard-SKU vault with geo-redundant backup storage and cross-region restore enabled, Microsoft-managed encryption, and every built-in alert switch at its all-on default. A Stack Job tracks the provisioning in real time.
+This creates a Standard-SKU vault with geo-redundant backup storage and cross-region restore enabled, Microsoft-managed encryption, and every built-in alert switch at its all-on default. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When the resource group, identity, and key are Cloud Resources in the same chart, wire the compliance-grade shape by reference:
+When the resource group, identity, and key are Infra Components in the same chart, wire the compliance-grade shape by reference:
 
 ```yaml
 spec:
@@ -106,7 +106,7 @@ These are the most important decisions when configuring an Azure Recovery Servic
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
@@ -115,9 +115,9 @@ These are the most important decisions when configuring an Azure Recovery Servic
 | Azure Key Vault Key | `encryption.keyId` | `status.outputs.versionless_id` |
 | Azure Data Protection Resource Guard | `resourceGuardId` | `status.outputs.resource_guard_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -136,12 +136,12 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- where the vault lives; reference its `resource_group_name` output.
-- [**Azure Backup Policy (VM)**](/cloud-catalog/azure-backup-policy-vm) -- schedule and retention for VM backups, addressed by the vault's name output.
-- [**Azure Backup Policy (File Share)**](/cloud-catalog/azure-backup-policy-file-share) -- schedule and retention for file-share backups in this vault.
-- [**Azure Backup Protected VM**](/cloud-catalog/azure-backup-protected-vm) -- puts a VM under a policy in this vault.
-- [**Azure Backup Protected File Share**](/cloud-catalog/azure-backup-protected-file-share) -- puts a file share under a policy in this vault.
-- [**Azure Backup Container (Storage Account)**](/cloud-catalog/azure-backup-container-storage-account) -- registers a storage account with this vault ahead of file-share protection.
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the customer-managed key for `encryption.keyId`; the versionless reference rotates automatically.
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the identity that unwraps the key; grantable before the vault exists.
-- [**Azure Data Protection Resource Guard**](/cloud-catalog/azure-data-protection-resource-guard) -- Multi-User Authorization over privileged vault operations.
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- where the vault lives; reference its `resource_group_name` output.
+- [**Azure Backup Policy (VM)**](/infra-catalog/azure-backup-policy-vm) -- schedule and retention for VM backups, addressed by the vault's name output.
+- [**Azure Backup Policy (File Share)**](/infra-catalog/azure-backup-policy-file-share) -- schedule and retention for file-share backups in this vault.
+- [**Azure Backup Protected VM**](/infra-catalog/azure-backup-protected-vm) -- puts a VM under a policy in this vault.
+- [**Azure Backup Protected File Share**](/infra-catalog/azure-backup-protected-file-share) -- puts a file share under a policy in this vault.
+- [**Azure Backup Container (Storage Account)**](/infra-catalog/azure-backup-container-storage-account) -- registers a storage account with this vault ahead of file-share protection.
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the customer-managed key for `encryption.keyId`; the versionless reference rotates automatically.
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the identity that unwraps the key; grantable before the vault exists.
+- [**Azure Data Protection Resource Guard**](/infra-catalog/azure-data-protection-resource-guard) -- Multi-User Authorization over privileged vault operations.

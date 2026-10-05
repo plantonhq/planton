@@ -5,9 +5,9 @@ package dev.planton.aws.awsrestapidomain.v1alpha1;
 import "catalog/aws/awsrestapidomain/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsRestApiDomainStackInput is the input for the IaC modules that
+// AwsRestApiDomainIacInput is the input for the IaC modules that
 // deploy the custom domain.
-message AwsRestApiDomainStackInput {
+message AwsRestApiDomainIacInput {
   // target is the AwsRestApiDomain resource to deploy.
   AwsRestApiDomain target = 1;
   // provider_config contains the AWS provider credentials and configuration.

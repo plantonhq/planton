@@ -24,17 +24,17 @@ import (
 // operator (image pulls, worker group formation, connector startup) that
 // is not part of applying the resources — the never-block-on-a-controller
 // posture of every operator-CR kind in the catalog.
-func Resources(ctx *pulumi.Context, stackInput *kuberneteskafkamirrormaker2v1alpha1.KubernetesKafkaMirrorMaker2StackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kuberneteskafkamirrormaker2v1alpha1.KubernetesKafkaMirrorMaker2IacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// exportOutputs exports stack outputs for the Auth0 Resource Server
+// exportOutputs exports outputs for the Auth0 Resource Server
 func exportOutputs(ctx *pulumi.Context, resourceServer *auth0.ResourceServer, defaultGrantIds pulumi.StringMap) error {
 	// Export core identifiers
 	ctx.Export("id", resourceServer.ID())

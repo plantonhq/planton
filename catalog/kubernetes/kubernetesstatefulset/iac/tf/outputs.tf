@@ -1,4 +1,4 @@
-# Stack outputs — must flatten onto KubernetesStatefulSetStackOutputs
+# Outputs — must flatten onto KubernetesStatefulSetOutputs
 # (outputs.proto) identically to the Pulumi module's exports.
 
 output "namespace" {

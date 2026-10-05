@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremssqlfailovergroup.v1alpha1;
 
-// **AzureMssqlFailoverGroupStackOutputs** captures the outputs of
+// **AzureMssqlFailoverGroupOutputs** captures the outputs of
 // provisioning an Azure SQL Failover Group.
-message AzureMssqlFailoverGroupStackOutputs {
+message AzureMssqlFailoverGroupOutputs {
   // The Azure Resource Manager ID of the failover group.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Sql/servers/{server}/failoverGroups/{name}
   string failover_group_id = 1;

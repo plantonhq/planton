@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRoute53ResolverFirewallStackOutputs captures the observable state
+// AwsRoute53ResolverFirewallOutputs captures the observable state
 // of the DNS Firewall rule group after apply.
-type AwsRoute53ResolverFirewallStackOutputs struct {
+type AwsRoute53ResolverFirewallOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The rule group's id (rslvr-frg-...) - the provider's import ID and
 	// half of each rule's composite import ID.
@@ -48,20 +48,20 @@ type AwsRoute53ResolverFirewallStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsRoute53ResolverFirewallStackOutputs) Reset() {
-	*x = AwsRoute53ResolverFirewallStackOutputs{}
+func (x *AwsRoute53ResolverFirewallOutputs) Reset() {
+	*x = AwsRoute53ResolverFirewallOutputs{}
 	mi := &file_catalog_aws_awsroute53resolverfirewall_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRoute53ResolverFirewallStackOutputs) String() string {
+func (x *AwsRoute53ResolverFirewallOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRoute53ResolverFirewallStackOutputs) ProtoMessage() {}
+func (*AwsRoute53ResolverFirewallOutputs) ProtoMessage() {}
 
-func (x *AwsRoute53ResolverFirewallStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRoute53ResolverFirewallOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsroute53resolverfirewall_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -73,47 +73,47 @@ func (x *AwsRoute53ResolverFirewallStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRoute53ResolverFirewallStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRoute53ResolverFirewallStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRoute53ResolverFirewallOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRoute53ResolverFirewallOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsroute53resolverfirewall_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRoute53ResolverFirewallStackOutputs) GetRuleGroupId() string {
+func (x *AwsRoute53ResolverFirewallOutputs) GetRuleGroupId() string {
 	if x != nil {
 		return x.RuleGroupId
 	}
 	return ""
 }
 
-func (x *AwsRoute53ResolverFirewallStackOutputs) GetRuleGroupArn() string {
+func (x *AwsRoute53ResolverFirewallOutputs) GetRuleGroupArn() string {
 	if x != nil {
 		return x.RuleGroupArn
 	}
 	return ""
 }
 
-func (x *AwsRoute53ResolverFirewallStackOutputs) GetShareStatus() string {
+func (x *AwsRoute53ResolverFirewallOutputs) GetShareStatus() string {
 	if x != nil {
 		return x.ShareStatus
 	}
 	return ""
 }
 
-func (x *AwsRoute53ResolverFirewallStackOutputs) GetDomainListIds() map[string]string {
+func (x *AwsRoute53ResolverFirewallOutputs) GetDomainListIds() map[string]string {
 	if x != nil {
 		return x.DomainListIds
 	}
 	return nil
 }
 
-func (x *AwsRoute53ResolverFirewallStackOutputs) GetAssociationIds() map[string]string {
+func (x *AwsRoute53ResolverFirewallOutputs) GetAssociationIds() map[string]string {
 	if x != nil {
 		return x.AssociationIds
 	}
 	return nil
 }
 
-func (x *AwsRoute53ResolverFirewallStackOutputs) GetRuleMatchIds() map[string]string {
+func (x *AwsRoute53ResolverFirewallOutputs) GetRuleMatchIds() map[string]string {
 	if x != nil {
 		return x.RuleMatchIds
 	}
@@ -124,14 +124,14 @@ var File_catalog_aws_awsroute53resolverfirewall_v1alpha1_outputs_proto protorefl
 
 const file_catalog_aws_awsroute53resolverfirewall_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/aws/awsroute53resolverfirewall/v1alpha1/outputs.proto\x123dev.planton.aws.awsroute53resolverfirewall.v1alpha1\"\xa5\x06\n" +
-	"&AwsRoute53ResolverFirewallStackOutputs\x12\"\n" +
+	"=catalog/aws/awsroute53resolverfirewall/v1alpha1/outputs.proto\x123dev.planton.aws.awsroute53resolverfirewall.v1alpha1\"\x91\x06\n" +
+	"!AwsRoute53ResolverFirewallOutputs\x12\"\n" +
 	"\rrule_group_id\x18\x01 \x01(\tR\vruleGroupId\x12$\n" +
 	"\x0erule_group_arn\x18\x02 \x01(\tR\fruleGroupArn\x12!\n" +
-	"\fshare_status\x18\x03 \x01(\tR\vshareStatus\x12\x96\x01\n" +
-	"\x0fdomain_list_ids\x18\x04 \x03(\v2n.dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackOutputs.DomainListIdsEntryR\rdomainListIds\x12\x98\x01\n" +
-	"\x0fassociation_ids\x18\x05 \x03(\v2o.dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackOutputs.AssociationIdsEntryR\x0eassociationIds\x12\x93\x01\n" +
-	"\x0erule_match_ids\x18\x06 \x03(\v2m.dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackOutputs.RuleMatchIdsEntryR\fruleMatchIds\x1a@\n" +
+	"\fshare_status\x18\x03 \x01(\tR\vshareStatus\x12\x91\x01\n" +
+	"\x0fdomain_list_ids\x18\x04 \x03(\v2i.dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallOutputs.DomainListIdsEntryR\rdomainListIds\x12\x93\x01\n" +
+	"\x0fassociation_ids\x18\x05 \x03(\v2j.dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallOutputs.AssociationIdsEntryR\x0eassociationIds\x12\x8e\x01\n" +
+	"\x0erule_match_ids\x18\x06 \x03(\v2h.dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallOutputs.RuleMatchIdsEntryR\fruleMatchIds\x1a@\n" +
 	"\x12DomainListIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aA\n" +
@@ -157,15 +157,15 @@ func file_catalog_aws_awsroute53resolverfirewall_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_aws_awsroute53resolverfirewall_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_catalog_aws_awsroute53resolverfirewall_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRoute53ResolverFirewallStackOutputs)(nil), // 0: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackOutputs
-	nil, // 1: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackOutputs.DomainListIdsEntry
-	nil, // 2: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackOutputs.AssociationIdsEntry
-	nil, // 3: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackOutputs.RuleMatchIdsEntry
+	(*AwsRoute53ResolverFirewallOutputs)(nil), // 0: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallOutputs
+	nil, // 1: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallOutputs.DomainListIdsEntry
+	nil, // 2: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallOutputs.AssociationIdsEntry
+	nil, // 3: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallOutputs.RuleMatchIdsEntry
 }
 var file_catalog_aws_awsroute53resolverfirewall_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackOutputs.domain_list_ids:type_name -> dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackOutputs.DomainListIdsEntry
-	2, // 1: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackOutputs.association_ids:type_name -> dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackOutputs.AssociationIdsEntry
-	3, // 2: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackOutputs.rule_match_ids:type_name -> dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallStackOutputs.RuleMatchIdsEntry
+	1, // 0: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallOutputs.domain_list_ids:type_name -> dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallOutputs.DomainListIdsEntry
+	2, // 1: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallOutputs.association_ids:type_name -> dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallOutputs.AssociationIdsEntry
+	3, // 2: dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallOutputs.rule_match_ids:type_name -> dev.planton.aws.awsroute53resolverfirewall.v1alpha1.AwsRoute53ResolverFirewallOutputs.RuleMatchIdsEntry
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

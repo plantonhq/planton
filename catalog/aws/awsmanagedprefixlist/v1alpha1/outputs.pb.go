@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsManagedPrefixListStackOutputs captures the observable state of
+// AwsManagedPrefixListOutputs captures the observable state of
 // the prefix list after apply.
-type AwsManagedPrefixListStackOutputs struct {
+type AwsManagedPrefixListOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The prefix list's id (pl-...) - what security-group rules, NACL
 	// rules, and route tables reference, and the provider's import ID.
@@ -39,20 +39,20 @@ type AwsManagedPrefixListStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsManagedPrefixListStackOutputs) Reset() {
-	*x = AwsManagedPrefixListStackOutputs{}
+func (x *AwsManagedPrefixListOutputs) Reset() {
+	*x = AwsManagedPrefixListOutputs{}
 	mi := &file_catalog_aws_awsmanagedprefixlist_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsManagedPrefixListStackOutputs) String() string {
+func (x *AwsManagedPrefixListOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsManagedPrefixListStackOutputs) ProtoMessage() {}
+func (*AwsManagedPrefixListOutputs) ProtoMessage() {}
 
-func (x *AwsManagedPrefixListStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsManagedPrefixListOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsmanagedprefixlist_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *AwsManagedPrefixListStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsManagedPrefixListStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsManagedPrefixListStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsManagedPrefixListOutputs.ProtoReflect.Descriptor instead.
+func (*AwsManagedPrefixListOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmanagedprefixlist_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsManagedPrefixListStackOutputs) GetPrefixListId() string {
+func (x *AwsManagedPrefixListOutputs) GetPrefixListId() string {
 	if x != nil {
 		return x.PrefixListId
 	}
 	return ""
 }
 
-func (x *AwsManagedPrefixListStackOutputs) GetPrefixListArn() string {
+func (x *AwsManagedPrefixListOutputs) GetPrefixListArn() string {
 	if x != nil {
 		return x.PrefixListArn
 	}
 	return ""
 }
 
-func (x *AwsManagedPrefixListStackOutputs) GetOwnerId() string {
+func (x *AwsManagedPrefixListOutputs) GetOwnerId() string {
 	if x != nil {
 		return x.OwnerId
 	}
 	return ""
 }
 
-func (x *AwsManagedPrefixListStackOutputs) GetVersion() string {
+func (x *AwsManagedPrefixListOutputs) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
@@ -101,8 +101,8 @@ var File_catalog_aws_awsmanagedprefixlist_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_aws_awsmanagedprefixlist_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/aws/awsmanagedprefixlist/v1alpha1/outputs.proto\x12-dev.planton.aws.awsmanagedprefixlist.v1alpha1\"\xa5\x01\n" +
-	" AwsManagedPrefixListStackOutputs\x12$\n" +
+	"7catalog/aws/awsmanagedprefixlist/v1alpha1/outputs.proto\x12-dev.planton.aws.awsmanagedprefixlist.v1alpha1\"\xa0\x01\n" +
+	"\x1bAwsManagedPrefixListOutputs\x12$\n" +
 	"\x0eprefix_list_id\x18\x01 \x01(\tR\fprefixListId\x12&\n" +
 	"\x0fprefix_list_arn\x18\x02 \x01(\tR\rprefixListArn\x12\x19\n" +
 	"\bowner_id\x18\x03 \x01(\tR\aownerId\x12\x18\n" +
@@ -123,7 +123,7 @@ func file_catalog_aws_awsmanagedprefixlist_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_aws_awsmanagedprefixlist_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsmanagedprefixlist_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsManagedPrefixListStackOutputs)(nil), // 0: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListStackOutputs
+	(*AwsManagedPrefixListOutputs)(nil), // 0: dev.planton.aws.awsmanagedprefixlist.v1alpha1.AwsManagedPrefixListOutputs
 }
 var file_catalog_aws_awsmanagedprefixlist_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

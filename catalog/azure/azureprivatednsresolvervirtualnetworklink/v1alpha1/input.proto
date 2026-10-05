@@ -5,10 +5,10 @@ package dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1;
 import "catalog/azure/azureprivatednsresolvervirtualnetworklink/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzurePrivateDnsResolverVirtualNetworkLinkStackInput is the input to
+// AzurePrivateDnsResolverVirtualNetworkLinkIacInput is the input to
 // the IaC modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-message AzurePrivateDnsResolverVirtualNetworkLinkStackInput {
+message AzurePrivateDnsResolverVirtualNetworkLinkIacInput {
   // The virtual network link resource to deploy.
   AzurePrivateDnsResolverVirtualNetworkLink target = 1;
 

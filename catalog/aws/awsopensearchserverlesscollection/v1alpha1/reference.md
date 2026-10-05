@@ -6,7 +6,7 @@
 
 **apiVersion**: `aws.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 AwsOpenSearchServerlessCollectionSpec defines the desired configuration
 for an Amazon OpenSearch Serverless collection - a fully managed,
@@ -43,7 +43,7 @@ Create-time-immutable (ForceNew) fields: the name (metadata.name),
 key choice. Network, data-access, and retention rules update in place.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

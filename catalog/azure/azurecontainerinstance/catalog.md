@@ -4,7 +4,7 @@ Deploys an Azure Container Instance container group -- serverless containers bil
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Container group** -- the containers with their images, CPU/memory, ports, environment, volumes, and probes; init containers; registry credentials; managed identity; optional Log Analytics diagnostics, custom DNS, customer-managed-key encryption, and the network posture (a public IP with optional DNS label, a private IP in a delegated subnet, or no IP at all)
 - **Azure Tags** -- your governance tags merged over the Planton-derived resource tags (organization, environment, resource ID); a user tag with the same key wins
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -61,7 +61,7 @@ spec:
 planton apply -f container-instance.yaml
 ```
 
-This runs one always-restarting Linux container on a public IP at `hello-web-acme.eastus.azurecontainer.io`, billed per second while it runs. A Stack Job tracks the provisioning in real time.
+This runs one always-restarting Linux container on a public IP at `hello-web-acme.eastus.azurecontainer.io`, billed per second while it runs. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -132,7 +132,7 @@ These are the most important decisions when configuring a container group. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -145,9 +145,9 @@ These are the most important decisions when configuring a container group. Explo
 | **AzureLogAnalyticsWorkspace** (diagnostics) | `diagnosticsLogAnalytics.workspaceId` / `workspaceKey` | `status.outputs.workspace_customer_id` / `status.outputs.primary_shared_key` |
 | **AzureKeyVaultKey** (CMK encryption) | `keyVaultKeyId` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -169,10 +169,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the container group lives in
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- the delegated subnet private groups join
-- [**Azure Container Registry**](/cloud-catalog/azure-container-registry) -- the private registry images pull from
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- keyless registry pulls and the containers' own Azure access
-- [**Azure Storage Share**](/cloud-catalog/azure-storage-share) / [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the persistent `azureFile` volume form
-- [**Azure Log Analytics Workspace**](/cloud-catalog/azure-log-analytics-workspace) -- destination for container logs and events
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- customer-managed-key encryption of the group's ephemeral state
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the container group lives in
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- the delegated subnet private groups join
+- [**Azure Container Registry**](/infra-catalog/azure-container-registry) -- the private registry images pull from
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- keyless registry pulls and the containers' own Azure access
+- [**Azure Storage Share**](/infra-catalog/azure-storage-share) / [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the persistent `azureFile` volume form
+- [**Azure Log Analytics Workspace**](/infra-catalog/azure-log-analytics-workspace) -- destination for container logs and events
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- customer-managed-key encryption of the group's ephemeral state

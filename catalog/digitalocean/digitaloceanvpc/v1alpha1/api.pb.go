@@ -31,7 +31,7 @@ type DigitalOceanVpc struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *DigitalOceanVpcSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *DigitalOceanVpc) GetKind() string {
 	return ""
 }
 
-func (x *DigitalOceanVpc) GetMetadata() *shared.CloudResourceMetadata {
+func (x *DigitalOceanVpc) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *DigitalOceanVpc) GetStatus() *DigitalOceanVpcStatus {
 // digital-ocean-vpc status
 type DigitalOceanVpcStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	digital-ocean-vpc stack-outputs
-	Outputs       *DigitalOceanVpcStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	digital-ocean-vpc outputs
+	Outputs       *DigitalOceanVpcOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*DigitalOceanVpcStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanvpc_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *DigitalOceanVpcStatus) GetOutputs() *DigitalOceanVpcStackOutputs {
+func (x *DigitalOceanVpcStatus) GetOutputs() *DigitalOceanVpcOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_digitalocean_digitaloceanvpc_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fDigitalOceanVpcR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12b\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12b\n" +
 	"\x04spec\x18\x04 \x01(\v2F.dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12`\n" +
-	"\x06status\x18\x05 \x01(\v2H.dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcStatusR\x06status\"\x81\x01\n" +
-	"\x15DigitalOceanVpcStatus\x12h\n" +
-	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcStackOutputsR\aoutputsB\x8e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2H.dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcStatusR\x06status\"|\n" +
+	"\x15DigitalOceanVpcStatus\x12c\n" +
+	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcOutputsR\aoutputsB\x8e\x03\n" +
 	"5com.dev.planton.digitalocean.digitaloceanvpc.v1alpha1B\bApiProtoP\x01Zbgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanvpc/v1alpha1;digitaloceanvpcv1alpha1\xa2\x02\x04DPDD\xaa\x021Dev.Planton.Digitalocean.Digitaloceanvpc.V1alpha1\xca\x021Dev\\Planton\\Digitalocean\\Digitaloceanvpc\\V1alpha1\xe2\x02=Dev\\Planton\\Digitalocean\\Digitaloceanvpc\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Digitalocean::Digitaloceanvpc::V1alpha1b\x06proto3"
 
 var (
@@ -187,15 +187,15 @@ var file_catalog_digitalocean_digitaloceanvpc_v1alpha1_api_proto_msgTypes = make
 var file_catalog_digitalocean_digitaloceanvpc_v1alpha1_api_proto_goTypes = []any{
 	(*DigitalOceanVpc)(nil),              // 0: dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpc
 	(*DigitalOceanVpcStatus)(nil),        // 1: dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*DigitalOceanVpcSpec)(nil),          // 3: dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcSpec
-	(*DigitalOceanVpcStackOutputs)(nil),  // 4: dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcStackOutputs
+	(*DigitalOceanVpcOutputs)(nil),       // 4: dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcOutputs
 }
 var file_catalog_digitalocean_digitaloceanvpc_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpc.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpc.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpc.spec:type_name -> dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcSpec
 	1, // 2: dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpc.status:type_name -> dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcStatus
-	4, // 3: dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcStackOutputs
+	4, // 3: dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceanvpc.v1alpha1.DigitalOceanVpcOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

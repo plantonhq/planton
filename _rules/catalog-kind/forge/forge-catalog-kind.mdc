@@ -1,0 +1,1706 @@
+---
+alwaysApply: false
+---
+
+# Forge: Create Complete Kind
+
+## Purpose
+
+This orchestrator rule scaffolds a **complete kind** from scratch, following the ideal state defined in `architecture/catalog-kind.md`.
+
+## Role
+
+You are the Planton Code Partner. This rule orchestrates all forge flow rules to create a production-ready, fully-documented kind that matches the ideal state checklist.
+
+## Design Philosophy (NON-NEGOTIABLE): World-Class Per Kind
+
+Planton is multi-cloud, but the user is almost always a **single-cloud user** who came to
+deploy *one specific thing*. Breadth of coverage is **never** an excuse for a generic or
+shallow kind. Forge every kind — its `spec.proto`, validations, outputs, IaC, docs,
+and presets — as if the entire framework existed **solely** to give a world-class
+self-service experience for that one resource.
+
+The bar for every kind:
+
+> *"If this were the only kind Planton shipped, would this be the best self-service
+> experience for this resource that exists anywhere?"* If not, it is not done.
+
+- **Derive scope from the source of truth, not from a sibling.** Determine the field set,
+  defaults, required/immutable (ForceNew) attributes, and behavior from the provider's
+  authoritative reference — read **first**, via local search, not from memory or the web.
+  For cloud providers with an official Terraform provider, that clone is the floor
+  (e.g. `terraform-provider-aws` `internal/service/<service>/`, and the matching Pulumi SDK).
+  For Kubernetes, there is no single Terraform-provider floor: the authoritative reference is
+  the pinned upstream artifact for that kind (Helm chart `values.yaml`/templates, CRD
+  schemas, or core Kubernetes API types), cloned locally for search — never designed from web
+  memory or assumptions. Upstream validators/docs are the floor for the field *set*, not
+  automatic truth for every constraint; live rejection wins. Design for complete, typed
+  coverage of what real advanced use needs — not a generic map passthrough of upstream knobs.
+- **Read provider source for FACTS; never copy its code text.** The Terraform provider
+  repos are MPL-2.0 (file-level copyleft that must not be mixed into this Apache-2.0
+  work), and Terraform core and other HashiCorp repos are BUSL (not open source at all).
+  Field sets, defaults, validation bounds, and ForceNew behavior are facts — extract them
+  freely; the module implementation is original authorship informed by those facts. If a
+  snippet seems so canonical it can only be written one way, that is a fact, not an
+  expression — reproduce it from the schema, never paste it. This does NOT restrict normal
+  dependency usage: consuming the Pulumi provider SDKs from go.mod and calling their APIs
+  is exactly what those Apache-2.0 SDKs are for.
+- **Mirror a sibling's STRUCTURE, never its DEPTH.** Copying the nearest sibling's *shape*
+  (the four protos, FK refs, output naming, file layout) is correct and required. Copying its
+  *field coverage or quality ceiling* is NOT — much of the existing surface was authored
+  before this philosophy and is an unreliable proxy for "complete." Matching a shallow sibling
+  propagates and compounds shallowness. When a sibling is visibly thin, design to the
+  world-class bar instead, and note the gap.
+- **Every provider stands on its own merit — never cross-reference providers for design.**
+  Users do not choose Planton for multi-cloud breadth; they choose it for a world-class
+  self-service experience of the *one* cloud they care about. So a kind's design — what
+  it models, its fields, decomposition, and depth — is derived only from the target provider's
+  own authoritative API, never from how another provider's Planton kind modeled a similar
+  concept. Every provider is being rebuilt to this same bar concurrently, so a sibling
+  *provider*'s kind is an outdated, incomplete reference that only drags quality down.
+  (Structure is the sole cross-provider constant — see the STRUCTURE-not-DEPTH bullet above.)
+- **A provider object with no identity or lifecycle of its own belongs to the kind it
+  serves.** When an object is keyed by its parent, created and destroyed with it, and
+  referenced by nothing else (an API's default grants for third-party applications,
+  one per subject type), the parent's kind models it as a field and its module declares
+  it. A kind of its own would claim the same provider resource type that other kinds
+  already declare for their own purposes (a client's per-API grants), and the two
+  would fight over it.
+- **Docs are part of the experience, not polish.** Dense intent-explaining field comments,
+  empathetic CEL messages, richly-commented Terraform and Pulumi module code (explaining
+  *why*/trade-offs/provider quirks/non-obvious ordering, not narration -- the module-comment
+  bar defined in `architecture/catalog-kind.md` §4.1), and teaching presets are how a
+  coding agent (the primary consumer) and a human learn the kind. A bare field set -- or a
+  working but uncommented module -- is not world-class even if it is complete.
+- **Improve this workflow as you use it.** If forging a kind required knowledge this rule
+  or its flow rules did not give you — an undocumented mechanism you had to reverse-engineer, a
+  wrong or misleading implication, a missing step, or a stale path — amend this rule, the
+  relevant flow rule, or `architecture/catalog-kind.md` in the same session, as
+  timeless guidance (never naming a project or a task), so the next agent forging the next
+  kind never has to re-learn it. The workflow is expected to get sharper with every use.
+- **Knowledge lands where its READER lives.** Workflow lessons (above) serve the next
+  BUILDING agent — but most lessons, especially live-E2E ones, are CONFIGURATION lessons
+  whose reader is the next agent or human writing a manifest, and they must land on the
+  surface that reader will actually be looking at: live-caught constraints upstream docs do
+  not state go into the spec proto's FIELD comments (the manifest author's surface);
+  mechanism explanations go into the module comments of BOTH engines; operational recipes
+  and cross-kind prerequisites go into `GUIDE.md` / the kind-root `catalog.md` / preset
+  explainers. The test: if a future manifest could repeat the mistake, the warning must sit
+  on the field its author will be reading when they make it — a lesson recorded only in a
+  workflow rule is NOT captured. (The update rule's "Knowledge lands where its READER
+  lives" section carries the full reader-to-surface table.)
+
+- **A value another resource produces takes a reference.** Any spec field whose value is a
+  hostname, an address, a name server, a target or an identifier that another catalog kind
+  can output is a `StringValueOrRef` (a `repeated StringValueOrRef` for a list), never a bare
+  string: a DNS record's values, addresses, name servers, mail exchanges, SRV / HTTPS / SVCB /
+  URI targets and pointers; a zone's seeded apex address. Checks that apply to a literal
+  (an IPv4 or IPv6 address, a length) move to CEL on the literal
+  (`this.all(v, !has(v.value) || v.value.isIp(4))`). Material no resource outputs (a CAA
+  tag and value, an SSHFP fingerprint, a TLSA certificate, a DS digest) stays a plain
+  string. Terraform receives a reference as the plain string it resolves to, so only the
+  Pulumi module changes (`.GetValue()`).
+- **A reference names its kinds, or it is plain text.** A `StringValueOrRef` declares what it
+  can point at: one `default_kind` with its `default_kind_field_path`, or, when the value
+  legitimately comes from several kinds, one `(dev.planton.shared.foreignkey.v1.candidate)`
+  entry per kind and output (a kind may appear twice when two of its outputs fit -- a
+  subnetwork's primary and secondary ranges). When both are declared, the default kind is one
+  of the candidates, on the same path. A field no catalog kind can produce (an operator's own
+  pre-existing group name) is a plain `string`, never a reference that names no kind. A
+  field that can point at ANY kind (an Azure resource ID for a diagnostic setting) declares
+  neither and says so in its comment. Kind knowledge never lives in prose ("reference X via
+  an explicit valueFrom.kind") or in a console list: declare it, so every picker, graph and
+  agent reads the same set. `refcheck`'s registry gate resolves every declared key.
+- **A reference's grain is its type, never a sibling selector.** When a reference can mean a
+  namespaced or a cluster-scoped object (an Issuer or a ClusterIssuer, a SecretStore or a
+  ClusterSecretStore), model it as a `oneof` of typed arms, each with its own `default_kind`
+  and a one-arm CEL rule -- the `KubernetesCertificate` issuer reference, and the shared
+  `CertManagerIssuerRef` -- never one reference beside a `kind` string or enum: the
+  platform's readers see the annotation, not the data, so a sibling selector resolves the
+  wrong kind.
+- **A rule on a value that may be a reference is written about the literal.** A shape rule
+  (a pattern, a CIDR or IP format, a length) on a `StringValueOrRef` reads the literal arm
+  only (`!has(this.value) || this.value.isIpPrefix()`), and a rule on a plain string is
+  written about the literal and nothing else -- never an arm that spells a platform's token
+  grammar (`^\$secret/...`). A platform that resolves `$secret/` and `$var/` tokens sets the
+  rule aside for the token and applies it to the value the token resolves to, before the
+  module runs.
+- **A per-install identity comes from the install itself.** When a kind keys something
+  durable outside the cluster or account by a name (a backup series in an object store, an
+  archive prefix, a registration), a destroy and recreate from the same declaration must not
+  reuse its predecessor's key: the store may refuse, quietly, to write one install's history
+  over another's. Derive the key from an object the stack creates earlier in the same run
+  and that lives and dies with the install (its UID), the way `KubernetesPostgres` names its
+  backup series after its ObjectStore's UID; expose the effective key as an output; and
+  offer an optional explicit override for continuing a known key. A random value held only
+  in IaC state is the wrong tool: an import mints a new one. A number a person must remember
+  to bump is the wrong tool too.
+
+This philosophy governs every flow rule below; the per-rule steps are how it is executed, not
+a substitute for it.
+
+## What Forge Creates
+
+A complete kind includes:
+
+✅ **Proto API Definitions** - All 4 proto files with validations and tests
+✅ **IaC Modules** - Both Pulumi and Terraform at **100% behavioral parity** (see the Parity Mandate below)
+✅ **Documentation** - User-facing README, catalog page, module docs, and the authored GUIDE.md
+✅ **Supporting Files** - The e2e test manifest and module docs
+✅ **Registry Entry** - Registered in catalog_kind.proto
+✅ **Import Recipes** - Provider-catalog entries + catalog kind import map, round-trip proven (Phase 6c)
+✅ **Presets** - Ready-to-deploy configuration templates (2-3 common patterns)
+✅ **Validation** - Build and test validation passed
+
+**Result:** 95-100% completion score when audited against ideal state!
+
+## Parity Mandate (NON-NEGOTIABLE)
+
+A kind ships **two** IaC implementations of the SAME contract: a Pulumi
+module (`iac/pulumi/module/`) and an OpenTofu/Terraform module (`iac/tf/`). For an
+identical `iac-input` they MUST produce the **same** provider resources, names, labels,
+selectors, environment, dependency ordering, and outputs. **The default is 100%
+behavioral parity.** This is not a "nice to have" -- a silent divergence means the
+deployed result depends on which provisioner a resource happens to use, which on a real
+platform breaks auth, networking, or data depending on the field that drifted.
+
+**Neither engine is privileged — both must be behaviorally identical.** The arbiter of
+"correct" is the proto contract (`spec.proto` + `outputs.proto`) and the intended
+behavior, NOT one engine. When the two engines disagree, determine which is right and bring
+the other into line; when you author or change one engine, reconcile the other in the SAME
+session. (In the forge sequence Pulumi is generated first, so Terraform is reconciled
+against the existing Pulumi module — but if the Pulumi module is the one that is wrong, fix
+Pulumi.)
+
+**The one exception: a kind that declares fewer engines.** When the provider publishes no
+Pulumi provider, or its kinds are proven on OpenTofu alone (OpenFGA runs on OpenTofu and
+Terraform; Stripe on OpenTofu only), the kind says so in its enum entry --
+`provisioners: ["tofu"]` or `["tofu", "terraform"]` in `kind_meta` (flow rule 014) -- and
+ships only `iac/tf/`. Skip Phase 5 (the Pulumi rules) and the Phase 6b gate, which has no
+pair to compare. Never write a placeholder Pulumi module that succeeds while creating
+nothing: the anatomy gate fails a declared kind that carries `iac/pulumi/`, and the CLI
+(`pkg/iac/provisioner`) and the platform refuse the undeclared engine before anything runs,
+in one sentence naming the engines the kind runs on. The kind's E2E profile lists only its
+declared engines in `validated_provisioners`, and each test entrypoint is named for one of
+them: the matrix builder schedules `Test<Kind>_<Provisioner>` with the provisioner name
+capitalized, so an OpenTofu-only kind's entrypoint is `Test<Kind>_Tofu` (it still passes the
+framework's `"terraform"` engine, which runs the `tofu` binary; the runner refuses any binary
+the kind does not declare). No `_Pulumi` entrypoint exists for such a kind. `e2e/stripe/` is
+the worked example.
+
+**Deviation is allowed ONLY with a strong, documented technical reason.** If the two
+engines genuinely cannot match (a provider feature exists in one SDK but not the other, an
+operator names a resource differently, etc.), you MUST:
+
+1. Keep the divergence as small as possible (match everything that CAN match).
+2. Add an inline comment in BOTH modules at the point of divergence, prefixed
+   `# PARITY-EXCEPTION:` (HCL) / `// PARITY-EXCEPTION:` (Go), stating exactly what differs
+   and the technical reason.
+3. Ensure the divergence does NOT change the outputs (the proto contract is the same
+   for both engines regardless of internal differences).
+
+An undocumented divergence is a defect, not a deviation. The cross-engine parity gate
+(below) and `@audit-catalog-kind` both treat an unexplained mismatch as a critical gap.
+
+**Reference:** `pkg/iac/MODULE_PARITY.md` is the authoritative parity-dimension checklist
+and explains the automated guards (`pkg/outputs` conformance + `planton validate-outputs`).
+Read it before authoring either engine.
+
+## Secret-by-default (sensitive fields) (NON-NEGOTIABLE)
+
+A field that holds a secret (a password, token, API/client *secret*, private key/PEM, PSK,
+storage/registry access-key *secret*, or a credential-bearing connection string) MUST be
+annotated `(dev.planton.shared.options.sensitive) = true` in `spec.proto`. Downstream
+platforms then force it to be a managed-secret REFERENCE (`$secret/<slug>`), reject plaintext
+at create/update, and resolve the reference just-in-time at deploy -- so the secret never lives
+in plaintext in the control plane. The annotation applies to string fields and to the literal
+value of `StringValueOrRef` fields, and composes with the foreign-key
+`(dev.planton.shared.foreignkey.v1.default_kind)` annotation (a sensitive FK offers a managed
+secret OR a cross-resource reference, never plaintext).
+
+A field whose NAME merely *looks* like a secret (a public key, an access-key *id*, a resource
+*name*, a key *algorithm*) is NOT a secret -- exempt it with
+`(dev.planton.shared.options.sensitive_exempt_reason) = "<why>"`. Never set both options on one
+field. Exempt only what the gate actually flags: the guard matches by name PATTERN, and an
+exemption on a field the pattern never matches (e.g. `secret_arn` -- `*_arn` names are treated
+as references, not secrets) is itself a gate failure ("pointless exemption"). Run
+`planton secret-coverage --check` first and annotate from its report; for unflagged
+reference-carrying names, let the field comment state the not-secret rationale instead.
+
+This is identified in rule 001 and applied in rule 002. The ratcheting gate
+`planton secret-coverage --check` fails the build on any unannotated secret-looking field, so a
+forged kind is not done until the gate is green. Authority: the option comments in
+`shared/options/options.proto`.
+
+Terraform outputs corollary: when a provider object contains ANY sensitive member, never
+null-guard the whole object in an output expression (`x.obj != null ? x.obj.leaf : null`) --
+comparing a partially-sensitive object yields a sensitive condition that taints the entire
+conditional, and `tofu apply` refuses the unmarked output ("Output refers to sensitive
+values"). The offline plan gate cannot catch this (output sensitivity is enforced only at
+apply). Use direct leaf access with `try(x.obj.leaf, null)` instead: it carries only the
+leaf's own sensitivity and degrades to null when the object is absent. Truly sensitive leaf
+outputs additionally carry `sensitive = true` as always.
+
+## Credentials the module can mint are minted, never required (NON-NEGOTIABLE)
+
+When a kind materializes a credential into a Kubernetes Secret (or any equivalent
+store the module creates), the spec NEVER requires the person to supply that credential:
+the field is optional and `sensitive`, a declared value (a managed-secret reference) is
+used as given, and an empty one means the module generates the credential itself --
+`random_password` in Terraform and `random.RandomPassword` in Pulumi, with identical
+alphabet and length in both engines, letters and digits only (symbols are the one class
+that can need quoting in a chart's init script or a client URL), keyed by the
+credential's identity (the username, never a list index, so a spec reorder never swaps
+passwords) and with `lifecycle.ignore_changes` / `pulumi.IgnoreChanges` on every
+generation-shape argument so an imported credential never regenerates on plan. The
+Secret the credential lands in is reported as an output (a `KubernetesSecretKey` naming
+the Secret and the key), and a consumer reads it from there, never from the manifest.
+When the chart itself would otherwise mint a credential and log it once, the module
+mints it instead: a credential nobody can find afterwards is not a credential.
+A field that requires a secret the module could have generated is a forge defect; the
+import map gains the generated resource's by-value row (the update rule's
+`random_password` guards), the e2e `minimal` scenario declares the user without the
+password so the cheapest scenario proves generation, and the presets ship no placeholder
+password. Reference shapes: `KubernetesValkey` (per-user), `KubernetesNeo4j`
+(single admin, declared-or-generated), `KubernetesNats`, `KubernetesSuperset`.
+The same law holds where there is no Secret to land in -- a SaaS identity provider
+whose user the module creates: the minted credential is reported as a sensitive
+output (`sensitive = true` in Terraform, `pulumi.ToSecret` in Pulumi), set ONLY when
+the module generated it, so a declared credential is never echoed back and the output
+is the credential's first home for the store that owns it. Reference shape: `Auth0User`.
+When both ends of a link need the SAME secret (a VPN pre-shared key), one end generates
+it and exports it as a scalar sensitive output, and the other end's field is a sensitive
+reference to that output; the comments say plainly that exactly one end generates.
+Reference shape: `GcpHaVpnConnection`.
+
+## Environment values that can carry secrets have a home for them (NON-NEGOTIABLE)
+
+An environment variable written into a runtime's configuration is read by anyone who can
+view the resource, so a spec field holding environment values is marked
+`(dev.planton.shared.options.secret_home) = "<sibling>"`, naming the field in the same
+message where the kind keeps a secret instead; the platform refuses a secret reference in
+the marked field and points at the home. Both modules read the home (`planton module
+verify` checks it). Where the home sits follows the provider's own shape:
+
+- **The provider lists variables as entries** (Cloud Run): the home is a sensitive arm
+  on the same entry (`value` / `secret_value`), at most one arm set.
+- **Google already has a secret list beside the plain one** (Cloud Functions'
+  `secret_environment_variables`, Agent Engine's `secret_env`): the home is that list,
+  and each of its entries gains a sensitive `value` arm beside the secret reference --
+  the Kubernetes `SecretEnvVar` `oneof source` shape.
+- **The provider models variables as a map** (Workflows, Composer): the home is a
+  sensitive sibling map (the Azure Container Instances `secure_environment_variables`
+  grain).
+
+The module keeps every value the home receives in a Secret Manager secret it owns (one
+secret per variable, replicated where the runtime runs), grants exactly the runtime's
+identity `roles/secretmanager.secretAccessor` on exactly that secret, and orders the
+runtime after the grant. When Google's runtime resolves a Secret Manager reference
+itself, the variable is injected natively; when it cannot (Workflows, Composer), the
+variable carries the secret VERSION's resource name and the field comment shows how the
+runtime reads it (the Workflows Secret Manager connector, the Secret Manager client).
+A runtime that can neither inject a secret nor know the identity it will run as (Model
+Garden's prebuilt serving containers, a Colab runtime template) gets no home: its
+environment field's comment says plainly that values are stored in plain text and names
+where secrets belong instead. The rendered offline sweep asserts the plaintext test
+value appears nowhere in the runtime resource's planned attributes. Reference shapes:
+`GcpCloudRun` (per entry), `GcpCloudFunction` (Google's secret list), `GcpWorkflow`
+(sibling map, pointer form).
+
+FOREIGN-KEY FIELD-PATH FORMAT (verify against the CONSUMING API)
+When wiring `default_kind_field_path` for a network/resource reference, verify which
+address format the consuming API accepts -- GCP APIs are inconsistent. Compute-family
+APIs accept full `https://` self-links, but several service APIs (AlloyDB,
+Service Networking) reject them with "malformed network path" and require the
+relative resource path (`projects/{project}/global/networks/{name}`). Pick the
+producing kind's output that matches (`network_id` vs `network_self_link`) and record
+the expected format in the field comment. A wrong format passes every offline gate and
+fails only at live create.
+
+**Run registry-driven guards with a freshly built CLI, never the installed binary.**
+`secret-coverage`, `validate-refs`, and every other command that walks the kind registry
+reads the protos COMPILED INTO the binary, not the working tree -- a stale installed
+`planton` reports false gaps (fields it predates) and false stale-baseline entries
+(exemptions it predates), and can equally report false greens. Build from the working
+tree first (`go build -o /tmp/planton-dev .` at the repo root -- the root package is the
+CLI main) and run the guard through that binary. The same false-result class applies in
+reverse: a green from an old binary proves nothing about the current tree. The
+`go test ./pkg/secretcoverage/ ./pkg/refcheck/` suites always test the working tree and
+are the cheaper equivalent gate when no CLI invocation is needed.
+
+## Usage
+
+```
+@forge-catalog-kind <KindName> --provider <provider>
+```
+
+**Examples:**
+```
+@forge-catalog-kind CloudflareD1Database --provider cloudflare
+@forge-catalog-kind GcpCertManagerCert --provider gcp
+@forge-catalog-kind PostgresKubernetes --provider kubernetes --category workload
+```
+
+## Execution Sequence
+
+The following 21 rules execute in order. Each rule is atomic and can be run individually if needed. Rule numbers are stable identities, not execution positions — Phase 2 runs rules 014-015 and Phase 9 runs rule 020 before rule 019.
+
+### Phase 1: Proto API Definitions (Rules 001-006)
+
+1. **001-spec-proto** - Generate spec.proto (minimal schema, no validations)
+   - **Includes proactive default identification**: Every field is reviewed against provider docs.
+     Fields with well-known defaults (ports, content types, protocols, storage classes, etc.)
+     are marked `optional` with `(dev.planton.shared.options.default)` so Planton middleware
+     handles defaults centrally. This eliminates defensive default logic in IaC modules.
+2. **002-spec-validate** - Add buf.validate rules and CEL validations
+   - Also verifies that all identified defaults carry the formal `optional` + default field option.
+   - **Also annotates secret-by-default fields** -- every secret-bearing field gets
+     `(dev.planton.shared.options.sensitive) = true`; every name-heuristic look-alike that is NOT a
+     secret gets `(sensitive_exempt_reason)`; never both. See rule `002-spec-validate`
+     ("SENSITIVE FIELD OPTIONS") and the Secret-by-default section below.
+   - **Every CEL `message` must be a user-facing, empathetic string** -- see rule `002-spec-validate` ("VALIDATION MESSAGE QUALITY"). These messages are rendered directly in UIs and CLIs. Write them like a knowledgeable colleague, not a compiler.
+3. **003-spec-tests** - Generate spec_test.go with validation tests
+4. **004-outputs** - Generate outputs.proto (deployment outputs; the message stays `<Kind>Outputs`)
+5. **005-api** - Generate api.proto (KRM wiring: metadata/spec/status)
+6. **006-input** - Generate input.proto (inputs to IaC modules; the message stays `<Kind>IacInput`)
+
+### Phase 2: Registration and Stubs (Rules 014-015)
+
+7. **014-catalog-kind** - Add enum entry to catalog_kind.proto
+8. **015-generate-proto-stubs** - Generate .pb.go stubs (make protos)
+
+### Phase 3: Documentation (Rule 007)
+
+9. **007-readme** - Generate the kind-root README.md (user-facing GitHub page)
+
+### Phase 4: Supporting Files (Rule 008)
+
+10. **008-e2e-manifest** - Generate the kind-root e2e/manifest.yaml (the kind's
+    complete, protovalidate-valid example manifest -- embedded as the reference page's
+    Example block AND deployed by the E2E framework, which treats its presence as the
+    testability marker). Because it round-trips into its typed message, no run token can
+    stand in a number field there, so a date the vendor requires in the future is a
+    near-future literal the vendor accepts, with an inline note saying what range it takes.
+    A scenario under `e2e/scenarios/` is expanded before it is parsed, so its dates come
+    from the lane's clock instead: `${E2E_UNIX_TIME_PLUS:<offset>}` (days then a duration,
+    like `30d` or `1m10s`) is the lane's start plus the offset, the same instant in every
+    manifest one lane expands. A vendor that bounds how far ahead a date may sit makes every
+    literal go stale (Stripe refuses a promotion code's expiry or a tax registration's
+    start more than five years out). An object that outlives destroy, and that the vendor
+    holds one of per place, must be left ended by its lane: Stripe keeps one tax
+    registration per country or state until it has ended, so the scenarios start a minute
+    after the lane and expire seconds later.
+
+### Phase 5: Pulumi Implementation (Rules 009-011)
+
+11. **009-pulumi-module** - Generate module/ (main.go, locals.go, outputs.go, resources), richly commented to the module-comment bar
+12. **010-pulumi-entrypoint** - Generate entrypoint (main.go, Pulumi.yaml -- nothing else)
+13. **011-pulumi-readme** - Generate iac/pulumi/README.md
+
+**CR-rendering kinds — verify the generated SDK can actually CARRY the CRD
+before adopting it.** crd2pulumi flattens a CRD field typed as a map of
+NESTED objects (schemas using `additionalProperties` with object values —
+e.g. name-keyed backup-storage maps) into `map[string]map[string]string`,
+a generated type that structurally cannot hold the nested bodies; any
+adapter that smuggles heterogeneous values through it panics at runtime
+inside the provider's input marshaling. When the CRD carries such a field,
+render the WHOLE CR with `apiextensions.NewCustomResource` +
+`kubernetes.UntypedArgs` (a plain nested `map[string]interface{}` — the
+exact twin of the Terraform module's `yamlencode` locals), record the
+reason in the builder's header comment, and do not generate the typed
+package at all: an SDK no module consumes is dead weight. The operator's
+server-side schema validation plus the live E2E lanes are the shape-error
+safety net the typed SDK would have been.
+
+**Operator kinds — own every cluster-scoped object the operator creates
+at RUNTIME.** Some operators register cluster-scoped singletons at startup
+(the classic case: a fixed-name Fail-closed `ValidatingWebhookConfiguration`
+pointing at a Service in the operator's own namespace). Kubernetes never
+garbage-collects a cluster-scoped dependent of a namespaced owner, and an
+operator that finds the object already present typically refreshes only
+parts of it — so left to the operator, UNINSTALL strands an object that
+can brick the whole cluster's admissions. Read the operator's startup
+source in the clone for such registrations; when found, the module renders
+the object itself (created BEFORE the release, deleted with the resource),
+ignores the operator-managed fields (CA bundles, ownerReferences) via
+`ignore_changes` / `IgnoreChanges`, and — on the Pulumi side — annotates it
+`pulumi.com/patchForce: "true"` so server-side apply adopts an instance a
+previous operator created instead of failing on the field conflict. The
+E2E verifier asserts the object exists while deployed and is GONE after
+destroy.
+
+### Phase 6: Terraform Implementation (Rules 012-013)
+
+14. **012-terraform-module** - Generate tf/ (variables.tf, main.tf, locals.tf, outputs.tf, provider.tf), richly commented to the module-comment bar
+    - **variables.tf is GENERATED, never hand-mirrored**: run
+      `planton tofu generate-variables <Kind> --output-file catalog/<provider>/<kind>/iac/tf/variables.tf`
+      from the working tree (after the proto stubs regenerate) and commit the generator's
+      output (`tofu fmt` it). A hand-written mirror silently drops fields — the module then
+      never renders them and every offline gate stays green (the drift surfaces only live,
+      as a spec field that does nothing). Re-run the generator after every spec change.
+    - Rule 012 ends with the mandatory **PARITY WITH PULUMI** reconciliation (see that rule).
+      Terraform is authored AFTER Pulumi in the sequence, so it is reconciled field-by-field
+      against the existing Pulumi module — fixing whichever engine is wrong, since neither is
+      privileged (the proto contract + intended behavior decide correctness).
+15. **013-terraform-readme** - Generate iac/tf/README.md
+
+### Phase 6b: Cross-Engine Parity Gate (orchestrator gate -- no flow-rule file)
+
+After BOTH engines exist, the orchestrator runs an explicit reconciliation gate before
+moving on. This is a hard gate: do not proceed to presets/validation while an
+**undocumented** divergence remains. Walk the parity-dimension checklist from
+`pkg/iac/MODULE_PARITY.md` and confirm Pulumi (`iac/pulumi/module/*.go`) and Terraform
+(`iac/tf/*.tf`) agree on each, for an identical `iac-input`:
+
+- **Namespace / scope source** -- both read the same spec field (e.g. `spec.namespace`),
+  not a derived or resource-id value.
+- **Resource naming basis** -- created objects (CRs, operator names, secret names, pod
+  annotations) key off the SAME field on both sides (`metadata.name` is the established basis).
+- **Labels** -- identical keys AND values (the `kuberneteslabelkeys` set; kind value is the
+  `CatalogKind` enum string; conditional labels like `id` appear under the same condition).
+- **Selectors** -- pod/service selectors match the labels the operator/chart actually applies
+  (a wrong selector "succeeds" but matches zero pods).
+- **Spec feature coverage** -- every field in `spec.proto` is honored by BOTH engines
+  (backup, restore, ingress, env injection, sizing, etc.). A field implemented on one side
+  and ignored on the other is a parity defect.
+- **Dependency ordering** -- the same `depends_on`/relationship edges exist on both sides.
+- **Outputs** -- both engines emit output shapes that flatten onto the SAME
+  `outputs.proto` fields. Verify with the automated guard, not by eye:
+  ```bash
+  planton validate-outputs --kind <Kind> --module-dir catalog/<provider>/<kind>/iac/tf --sample-outputs <sample>.json
+  ```
+  Expect full proto population and zero unmapped outputs. Add/extend the per-kind case in
+  `pkg/outputs/conformance_test.go` so the parity bar is enforced in CI thereafter.
+
+For any dimension that genuinely cannot match, apply the Parity Mandate's
+`PARITY-EXCEPTION:` protocol (documented in BOTH modules) -- otherwise fix the lagging
+engine in this session. Report the gate result (parity achieved, or the explicit list of
+documented exceptions) in the progress output.
+
+### Phase 6c: Import recipes (orchestrator step -- no flow-rule file)
+
+Every kind with a Terraform module ships its import-ID recipes, so the
+platform's guided import can derive identifiers instead of asking the user
+(`pkg/iac/importmap/README.md` is the authoritative reference):
+
+1. **Provider catalog** (`catalog/<provider>/aa_import/catalog.yaml`):
+   an entry per resource type the module declares -- the import-ID format from
+   the PROVIDER's import documentation (read the provider docs/source, never
+   guess), the Pulumi type token, and any `config_only_attributes` (attributes
+   that exist only in IaC configuration -- `force_destroy`-class delete
+   behavior, and the kubernetes provider's `wait_for_*` lifecycle knobs
+   (`wait_for_rollout`, `wait_for_load_balancer`,
+   `wait_for_service_account_token`), and write-only credentials the API never
+   returns (an email provider's `credentials`) -- import can never carry them; declare
+   them when the resource type first enters the catalog, or every consumer's
+   round-trip lane fails on the same knob later). When a provider's importer
+   fails to read back ONE nested block (found only by running the round-trip),
+   declare it as a dotted `write_normalized_attributes` sub-path
+   (e.g. `"spec.update_strategy"`) -- never tolerate a whole structural
+   attribute like `spec`, which would blind the proof. Two limits of the
+   tolerance vocabulary, both measured live: (a) a tolerance covers
+   in-place UPDATES only -- a config-only attribute the provider marks
+   `ForceNew` (create-only initialization arguments the API never returns,
+   such as a volume's initial filesystem) plans a REPLACE after a blind
+   import, which the oracle refuses no matter what is declared; the modules
+   `ignore_changes` such arguments in both engines when they have no
+   post-create meaning (this is also what keeps an adopted resource from
+   being destroyed on its first apply), and a scenario carrying write-only
+   ForceNew SECRETS opts out with the reason-carrying
+   `planton.dev/e2e-import-roundtrip-skip` annotation instead (rotation is
+   supposed to replace); (b) a scenario whose spec leaves unset an argument the
+   provider has no computed value for, on an object that already holds a value
+   (a tenant-wide object earlier lanes set, a setting a registration document
+   seeds), plans that value's removal after a blind import. That is the
+   adoption rule measured, not a recipe defect: the scenario opts out with the
+   skip annotation naming the argument, and a sibling scenario that declares
+   the value proves the recipe; (c) a resource type whose upstream importer is
+   missing OR defective is excluded from the round-trip ONLY by
+   `not_importable_upstream_reason` in place of `id_format` -- a `notes`
+   sentence saying "excluded" is not machine-honored, and the runner will
+   attempt the import.
+2. **Kind map** (the kind-root `iac/import-map.yaml`): the value source per
+   `{placeholder}` -- prefer derivable sources (metadata.name, spec field,
+   output, ARN part, address key); `where_to_find` is mandatory when
+   nothing derives. The file's presence IS enrollment: the offline conformance
+   guard (`TestImportMapConformance`, rides `make test`) auto-discovers it, and
+   the platform bundles it into the import wizard's catalog data.
+3. **Live round-trip proof** (merge gate, non-negotiable): run the kind's
+   E2E lane with `PLANTON_E2E_IMPORT_ROUNDTRIP=1` (terraform engine). The
+   phase deploys the fixture, sets its state aside, re-imports every resource
+   blind through the recipes, and requires the follow-up plan to propose no
+   real change. A new or changed import map does not merge without this lane
+   green; record the result in the README ledger
+   (`pkg/iac/importmap/README.md`).
+
+Design the e2e scenario so every module resource actually deploys (a
+conditional satellite that no scenario exercises is a recipe that has never
+been proven). When a resource cannot be composed live, say so in the profile
+header and treat its recipe as offline-validated only.
+
+### Phase 6d: Provider-parity manifest (orchestrator step -- no flow-rule file)
+
+For providers instrumented with committed schema artifacts
+(`pkg/providerparity/schemas/`), author the kind's
+`iac/provider-parity.yaml` NOW, while the modeling judgment is fresh --
+retrofitting it later means re-deriving every naming decision:
+
+1. Run the accounting for the new kind from the repository root:
+   ```bash
+   planton provider-parity --provider <provider> --ga-schema <ga-schema> --kind <Kind>
+   ```
+2. For every unaccounted argument, record the judgment in the manifest:
+   a `mappings` entry (rename or subtree; e.g. plural repeated field vs the
+   provider's singular block), an `exclusions` entry with the REASON, or --
+   for a plumbing resource whose arguments are module decisions (API
+   enablement, module-wired parent linkage) -- the resource-level `internal`
+   disposition. For every uncovered spec field, either fix the mapping or
+   record a `specExclusions` entry (platform-level fields).
+   An argument that makes the provider create a SECOND object inline -- a
+   `*_data` block such as a product's `default_price_data` (a price) or a
+   price's `product_data` (a product), or a file's inline link -- is never
+   offered: the module would neither track, update nor destroy that object,
+   so destroy would leave it live and its drift would go unseen. Exclude it
+   with that reason, point the spec comment and the GUIDE at the kind a
+   reader declares instead, and let a reference compose the two.
+   An argument the provider accepts but can't send -- an in-place update the
+   vendor's API has no field for, or a write-only value whose change plans
+   nothing -- is never a silent drop or a pending change forever: the module
+   tracks it in a `terraform_data` tracker that replaces the resource
+   (flow rule 012 has the recipe), the manifest judges the tracker
+   `internal`, the provider's import catalog records `terraform_data` as not
+   importable (an imported tracker would replace the object), and the spec
+   field says a change replaces the object.
+3. Re-run with `--check`; the kind must be at total accounting and OUT of
+   `pkg/providerparity/baseline.yaml` (a new kind never ships pre-baselined
+   debt). File presence IS enrollment -- the `lint.provider-parity` CI lane
+   holds the kind to the manifest from this commit on.
+4. The new kind changes the accounting, so regenerate the committed public
+   parity page in the same change: `make generate-provider-parity-report`
+   (its drift test fails CI whenever the accounting moved and the page did
+   not). Also record the kind's breadth effect: if the dispositions ledger
+   (`pkg/providerparity/dispositions/`) carried the consumed resources as
+   planned or deferred, the accounting now flags those entries stale --
+   remove them.
+
+A provider can carry a committed schema before it is enrolled (no
+`catalog/<provider>/terraform-parity.md` yet): enrollment waits until every
+EXISTING kind of the provider is at total accounting, because the shared
+baseline never grows and enrolling a provider whose older kinds are in debt
+would add them to it. Its new kinds are held to the same bar regardless --
+`--kind` needs no enrollment -- so run step 1 and ship the kind at total
+accounting; steps 3 and 4 begin when the provider enrolls. The manifest
+records only divergences: a kind whose every argument matches its spec field
+by exact name is at total accounting with no `provider-parity.yaml` at all.
+
+For a provider without schema artifacts, skip silently -- the gate reports
+NOT INSTRUMENTED there.
+
+### Phase 7: Presets (Rule 018)
+
+16. **018-presets** - Generate initial presets (2-3 common configuration templates)
+    - Reads `spec.proto` to identify field combinations that produce distinct deployment patterns
+    - Creates ranked YAML manifests + companion markdown in the kind-root `presets/`
+    - Follows conventions from `architecture/presets.md`
+
+### Phase 7b: Catalog data sidecars (orchestrator step -- no flow-rule file)
+
+Every kind ships three authored data files; the anatomy gate requires
+them and the `lint.catalog-data` lane holds their content to schema:
+
+1. **`cost.yaml`** (kind root, schema `finops/catalogkindcostprofile/v1`):
+   declare the billing model, the always-on baseline charges, and the spec
+   fields that drive the bill (field paths are spec-relative proto names --
+   the gate resolves each against the served contract). State the estimate
+   exclusions honestly: what no manifest can predict (traffic, storage
+   growth, data transfer).
+2. **`controls.yaml`** (kind root, schema
+   `compliance/catalogkindcontrolprofile/v1`): examine EVERY control in
+   `catalog/_compliance/controls-catalog.yaml` -- enforced_by_default /
+   configurable (with the field path) / not_applicable (with the reason).
+   Every enforced/configurable claim carries evidence a reviewer can verify
+   (provider guarantee, spec default, spec validation rule, or module
+   source). Never name compliance frameworks here; the central crosswalks
+   own that mapping.
+3. **`iac/permissions.yaml`** (schema `iac/catalogkindpermissions/v1`): the
+   least-privilege permissions the runner's cloud principal needs, grouped
+   the way a policy author would group them. Derive from the module's
+   declared resources and mark every entry `derived` (notes cite the
+   terraform resource types it covers); the live capture lane upgrades
+   entries to `proven`. Defend every wildcard in notes.
+
+`catalog/aws/awsalb` and `catalog/aws/awsdynamodb` are the reference
+examples. Validate with `go test ./pkg/finops/... ./pkg/compliance/...
+./pkg/iac/permissions/... ./pkg/iac/actioninventory/` -- file presence is
+enrollment, so the sidecars are gated from this commit on. The last package
+proves every permission name exists in the provider's own inventory
+snapshot; a permission under a service prefix the snapshot does not yet
+cover fails it until `make generate-action-inventory ARMS=<provider>`
+refreshes the snapshot in the same change. A name the refreshed snapshot
+still lacks is invented: find the permission the provider actually checks
+(its predefined roles list them), never keep the guess.
+
+### Phase 8: Final Validation (Rules 016-017)
+
+17. **016-build-validation** - Verify kind Go code compiles AND the Pulumi entrypoint
+    builds as the release builds it. Runs BOTH `go build ./catalog/<provider>/<kind>/...`
+    (recursive, catches module/proto errors) and
+    `go build -o /dev/null ./catalog/<provider>/<kind>/iac/pulumi` (non-recursive,
+    the release contract -- requires a `package main` at the entrypoint root). Also asserts the
+    entrypoint lives at `iac/pulumi/` root with no `main/` or `entrypoint/` subdir, AND that
+    `iac/pulumi/Pulumi.yaml` exists: without the project file `pulumi stack init` fails at
+    deploy time with a misleading "pass the fully qualified name" error, and NO offline check
+    (go build, tofu validate, spec tests) can catch its absence -- only a live run does.
+18. **017-test-validation** - Run `go test -v ./catalog/<provider>/<kind>/v1alpha1/` (verify kind tests pass)
+    - Validates spec_test.go tests all buf.validate rules
+    - Ensures validation rules are syntactically and semantically correct
+
+### Phase 9: Catalog Page + Guide + Reference Regeneration (Rules 020, 019)
+
+19. **020-catalog-md** - Write the kind's `catalog.md` (THE catalog page, at the
+    kind root) following `_rules/docs/write-catalog-kind-catalog-md.mdc`:
+    the head-shape machine contract (the bundle parses the H1 and first sentence as
+    the kind's display name and description), the mandatory section structure, the
+    three Deploy arms, judgment-first Key Configuration, and patterns naming the
+    presets from rule 018. Runs FIRST in this phase — the guide grounds its claims
+    partly on the catalog page. The anatomy gate requires this file at the kind
+    root.
+20. **019-guide** - Seed the kind's `GUIDE.md` (the authored wisdom layer at the
+    kind root) from what this forging session learned -- internal conventions,
+    judgment calls, operational recipes, parity accounting, diagram impact -- following
+    `_rules/docs/write-catalog-kind-guide.mdc`.
+    Then run `make generate-reference`: the new kind's reference page, its guide head
+    link, and the catalog indexes all materialize in one pass, and the reference
+    freshness gate fails any new kind whose pages were not regenerated.
+
+### Phase 10: Logo (Rule 021)
+
+21. **021-logo** - Author the kind's `logo.svg` under the logo law: one kind, one
+    glyph. The provider's official mark, unaltered, ONLY when the kind IS the product;
+    the Planton brand mark on Planton's own kinds; a Planton-drawn glyph that says what
+    the kind is everywhere else (every child of a product, every configuration object,
+    every grant), never containing or modifying a provider mark. Every file carries its
+    provenance in a `<desc>`. Then `go test ./pkg/cataloglogo/` -- three rules
+    (`malformed-svg`, `missing-provenance`, `shared-glyph`), each failure saying what to
+    do; a new kind never enters the gate's baseline.
+
+## Error Handling
+
+- Each rule retries up to 3 times on fixable errors
+- Build/compilation errors are fixed automatically when possible
+- If a rule fails after 3 attempts, the process stops with clear error message
+- You can resume from the failed rule after fixing issues
+
+## Progress Tracking
+
+The orchestrator provides progress updates:
+```
+[1/21] ✅ Generated spec.proto
+[2/21] ✅ Added validations
+[3/21] ✅ Generated tests
+...
+[20/21] ✅ Guide seeded and reference regenerated
+[21/21] ✅ Authored logo.svg (catalog-logo gate green)
+
+🎉 Kind creation complete!
+Run @audit-catalog-kind to verify 100% ideal state compliance.
+```
+
+## Post-Forge Validation
+
+After forge completes, validate the kind:
+
+```
+@audit-catalog-kind <KindName>
+```
+
+Expected result: **95-100% completion score**
+
+If score is lower, the audit report will identify gaps and suggest fixes.
+
+## Post-Forge Live E2E Validation (provider credentials)
+
+Steps 018–019 prove the kind compiles and its schema validates. **Live E2E**
+proves the IaC modules actually create, verify, and destroy real resources via
+the provider API. Every kind ships an `e2e/profile.yaml` + `e2e/scenarios/*.yaml`,
+and the provider harness (`catalog/<provider>/aa_e2e/`) runs them
+on both Pulumi and Terraform.
+
+Live E2E needs provider credentials. **Never ask the human to paste them, and never
+fabricate them.** Acquire them with this do-first, two-tier protocol. (Note: `gh`
+can `secret list` names but CANNOT read Actions secret VALUES — they are write-only.
+Only the CI runner can read them.)
+
+**Profile honesty is non-negotiable.** `e2e/profile.yaml` may claim
+`status: green` with `validated_provisioners` entries ONLY after a live
+deploy → verify → destroy run has actually passed on those provisioners.
+Until then, author the profile as `status: pending_proof` with an empty
+`validated_provisioners` list — the status that says "fully authored and
+offline-validated, live lanes not yet run." Reserve `status: deferred` (with
+a `deferred_reason` stating what blocks it — the field is `deferred_reason`;
+protojson silently drops unknown keys, so a misspelled key vanishes without
+an error) for kinds with a KNOWN blocker or failure. A profile that
+overclaims is a lie in the release ledger; flip it to green in the same
+session the lanes pass, never before.
+
+**The authoring and proving phases may be executed by different sessions.**
+Everything up to and including the offline gates (specs, both engine modules,
+spec tests, presets, docs, import maps, scenarios/fixtures/verifiers compiled
+via `e2e-build`/`e2e-vet`, static proofs) is the authoring phase and ends
+with the profile at `pending_proof`. The live-E2E phase below is the proving
+phase: whichever session executes it owns the kinds completely while proving
+— including spec/preset/docs changes when live evidence demands them — and
+finishes by flipping the profile, filling `validated_provisioners`, landing
+live-caught lessons on the surfaces their readers use, and regenerating the
+CI matrix. Note the mechanics either way: the test entrypoints SKIP
+kinds whose profile is `pending_proof` or `deferred`, so such a profile
+can never run its own lanes — flip the profile to green immediately before
+executing the lanes, and if they do not pass by session end, flip it back in
+the same commit. Honesty is judged on the COMMITTED state, not the
+mid-session working tree.
+
+### Wire the kind into the provider E2E first (required for either tier)
+
+A new kind is only exercised once it is registered in the provider harness:
+
+- `aa_e2e/verify/verifier.go` — add a verifier keyed on the kind dir name.
+  SaaS providers use the `apiPathVerifier` pattern (`&apiPathVerifier{kind:
+  "<kind>", pathFormat: "<api-path>/%s"}`); cloud-SDK providers (e.g. AWS)
+  implement the three-method `Verifier` interface against the provider SDK,
+  keyed on the API's own identifier for the resource and treating the provider's
+  typed not-found error as the absent signal. The destroy check asserts what the
+  provider's destroy really leaves, never plain absence: GONE for a deleted
+  object, still readable and INACTIVE for one the vendor only archives or
+  deactivates, and still PRESENT for one the provider merely forgets (its
+  destroy makes no call) -- the last proves the GUIDE's "the vendor keeps it"
+  and catches a provider that starts deleting. Read inactive the way the
+  vendor reports it (a flag on most objects, a status field on some). A kind
+  that folds children (a list's items, a parent's links, a meter's alerts)
+  proves each child's destroy truth too, from the map output that keys the
+  children's ids: a folded child is not proven because its parent is.
+  Stripe's `verify/verifier.go` carries all three shapes, both inactive
+  forms, and the child checks.
+- `e2e/<provider>/<provider>_test.go` — add `Test<Kind>_Pulumi` / `Test<Kind>_Terraform` entrypoints. Scenarios are auto-discovered; the entry funcs are not.
+- **Test-name discovery is registry-driven.** The GitHub Actions matrix builder in
+  `pkg/e2e/profile/discover.go` maps kind directory names (e.g. `awslambda`) to
+  Go test `-run` regexes via `catalogkindreflect.KindFromString` +
+  `ExtractKindNameByKind` — **do not** add hand-maintained PascalCase entries per
+  kind. The only exceptions live in the small `testNameOverrides` map, reserved for
+  genuine, verified deviations where the test entrypoint spelling differs from the
+  enum name; a new kind whose entrypoints follow the enum name needs no entry.
+
+**Composed scenarios are registry-driven, with a scenario-level extension for
+optional composition.** The harness resolves a kind's E2E dependencies
+from the kind registry's `kind_meta.prerequisites` annotation (transitively),
+NOT from the presence of an `e2e/prerequisite.yaml` file — that file is merely
+the install manifest used once a dependency is declared (falling back to the
+dependency's `scenarios/minimal.yaml`). Declare a registry prerequisite only
+when the dependency is genuinely required for the kind to function (a required
+ref) — the registry is the honest statement of what a kind needs to deploy,
+and it propagates transitively into every consumer's dependency chain, so a
+padded registry taxes every downstream lane. For OPTIONAL references that only
+a particular scenario composes (an instance's subnet, a cluster's capacity
+group), the scenario manifest declares its own additional dependencies via the
+`planton.dev/e2e-prerequisites` metadata annotation (comma-separated). Each
+entry is either a kind name (e.g. `"AwsSubnet,AwsSecurityGroup"`) or a
+repo-relative manifest path (recognized by containing a `/`). Declared kinds
+expand through their own registry graphs, merge and dedupe with the
+kind's registry prerequisites, and deploy in topological order — so
+annotating the top of a chain is enough. Manifest-path entries deploy that
+exact document as an EXTRA INSTANCE of whatever kind it declares (how a
+scenario gets a SECOND instance of a kind, e.g. a peering's remote network),
+after the kind-driven chain, each preceded by its own not-yet-deployed
+transitive prerequisites — a path entry never substitutes for the kind's
+install profile. Path entries deploy in the order listed, and a reference is
+not a prerequisite: when a path entry reads a kind the chain would otherwise
+deploy after it, name that kind in the annotation first (the tenant settings'
+default-domain scenario lists `Auth0CustomDomain`, then the CNAME fixture that
+reads it, then the verification fixture that waits for the CNAME). A
+prerequisite may belong to ANOTHER provider (an Auth0 domain's verification
+waits for a Cloudflare DNS record): the runner reads each prerequisite's
+provider from its kind, installs it from that provider's catalog and module,
+and verifies it with that provider's harness -- which the suite lends in its
+`TestMain` with `runner.RegisterDependencyHarness("<provider>", <harness>)`,
+set up only when a scenario first needs it, and torn down with
+`runner.TeardownDependencyHarnesses`. The prerequisite deploys with that
+provider's ambient credentials, so the scenario's `e2e-required-env` names the
+arrangement it needs. Each prerequisite deploys on ITS OWN kind's engine,
+whatever the lane runs: on Pulumi when the kind has a Pulumi module, and on
+the HCL lane (its `iac/tf` module in a disposable working copy with local
+state) when the kind declares HCL engines only -- so an OpenTofu-only kind
+can be a prerequisite, and its `e2e/prerequisite.yaml` is written exactly as
+any other. Unknown kinds and self-references fail loudly. Singular AND
+repeated `StringValueOrRef` fields both resolve, refs nested inside (repeated)
+spec messages resolve too, and a repeated list can mix literals with
+references. Audit the annotation against EVERY `valueFrom` kind the scenario
+references: a reference to a kind that is neither a registry prerequisite nor
+annotated stays UNRESOLVED, and the failure mode is engine-asymmetric and
+live-only — the Terraform lane fails at apply with "Null value found in list"
+(the tfvars renderer emits a null element for the unresolved ref) while the
+Pulumi module silently sends an empty string, which some AWS APIs accept, so a
+green Pulumi lane can mask the gap until the Terraform lane runs.
+
+**Install manifests declare their own composed fixtures the same way.** The
+resolver also reads the `planton.dev/e2e-prerequisites` annotation on each
+prerequisite's OWN install manifest (recursively, cycle-checked) and orders
+those fixtures BEFORE the declaring kind — so when a dependency's install
+manifest references sibling fixtures via `valueFrom` (the zip-backed Lambda
+scenario referencing the S3 object-set fixture that stages its code), the
+chain deploys in resolvable order with no per-consumer wiring. Put the
+annotation on the install manifest that carries the references; consumers of
+that kind inherit the ordering automatically.
+
+**But a MANIFEST-PATH fixture's own file annotations are NOT edges.** The
+recursive annotation walk above applies to KIND install profiles
+(`prerequisite.yaml` / minimal scenarios); a path entry contributes only its
+kind's registry prerequisites. When one path fixture depends on another (a
+ServiceAccount fixture needing a Namespace fixture), list BOTH paths on the
+scenario's annotation in deploy order — path entries deploy exactly in
+listed order. An annotation placed on the path fixture's own file is
+silently ignored, and the failure is live-only (the dependent fixture
+deploys into a namespace that does not exist).
+
+**Multi-instance prerequisites.** A prerequisite install profile
+(`e2e/prerequisite.yaml`) may carry multiple `---`-separated documents of the
+kind when real topologies need more than one instance — e.g. a load balancer
+or EKS cluster requires two subnets in different availability zones, so the
+subnet profile publishes a two-AZ pair. Each document deploys as its own
+stack, and its outputs are captured under its own `metadata.name`. Resolution
+is name-aware: a `valueFrom` reference picks the instance whose name it
+addresses; when the name matches no deployed instance but exactly one
+instance of the kind exists, that sole instance is used (so scenario names
+are not coupled to profile names); a name matching none of SEVERAL instances
+fails loudly. A reference's explicit `kind`/`fieldPath` win over the field's
+`default_kind`/`default_kind_field_path` annotations.
+
+**A prerequisite kind needs its own verifier and install manifest.** The
+harness VERIFIES every dependency it deploys (and its absence after
+teardown), so declaring a kind in `prerequisites` requires that kind to
+have a registered verifier in `aa_e2e/verify/verifier.go` and an install
+manifest (`e2e/prerequisite.yaml` or `scenarios/minimal.yaml`) -- even if
+the kind has never had E2E coverage of its own. A dependency without a
+verifier fails every consumer's DEPENDENCIES-UP phase with "no verifier
+registered", after the resource has already deployed.
+
+**Consumer-specific fixture shapes live in the shared profile.** There is
+exactly ONE prerequisite profile per kind, shared by every consumer that
+declares the kind in `prerequisites` — so when consumers need differently
+SHAPED instances (e.g. IAM roles with different trust policies and managed
+policies: an instance-profile role, an EKS control-plane role, an EKS worker
+role), the profile publishes one named document per shape and each consumer's
+scenario references its instance by name. Fixtures must carry everything the
+consumer requires of them (a role fixture attaches its own managed policies),
+because modules never mutate a resource they merely reference — see the
+composition principle in the doctrine. Extra fixture instances deployed for
+other consumers are harmless when the resource is free and fast (IAM roles);
+weigh the cost for expensive kinds.
+
+**Run live E2E serially per account — never parallelize lanes.** Prerequisite
+fixtures deliberately use FIXED manifest names and CIDRs (stable identities are
+what make orphan sweeps and name-aware resolution possible), so two concurrent
+runs in the same account collide on IAM role names and subnet CIDRs and both
+fail their DEPENDENCIES-UP phase. Batch a family's runs one after another; the
+time saved by parallelism is an illusion here.
+
+The Kubernetes analog: kind-cluster lanes for DISJOINT kinds may run in
+parallel, but lanes must serialize whenever one lane's kind is another
+lane's prerequisite fixture, or the kind is a cluster singleton (a fixed
+release name / cluster-scoped APIService or CRDs) — the two runs contend for
+one identity.
+
+**Kubernetes cluster profiles: scenarios that need a cluster the default kind
+cluster cannot be.** Some kinds change what the CLUSTER ITSELF is — a CNI
+must install onto a cluster created WITHOUT a default CNI, and behavioral
+proofs that depend on such a kind (NetworkPolicy enforcement needs an
+enforcing CNI) inherit the requirement. The harness supports this via the
+`planton.dev/e2e-cluster-profile` scenario annotation: the test entrypoints
+route the annotated scenario to a dedicated persistent kind cluster built for
+that profile, created lazily on first use (see the aa_e2e README for the
+profile table and mechanics). Rules when designing lanes around a profile:
+the profile cluster is typically single-node, so chart defaults sized for HA
+(a 2-replica anti-affine operator) can never fully schedule — scenario
+manifests must size those knobs to the topology or the atomic install waits
+forever. The same class hides in RESOURCE REQUESTS, not just topology: read
+every companion workload's default requests at the pin — including computed
+factors (memcached charts request memory at 1.2× the allocated size, so an
+"8192MB cache" default renders a ~9.8Gi request that no small node can ever
+schedule; the pod stays Pending and the atomic install rolls the whole
+release back, reading as "the kind won't install"). A default request
+that exceeds a small node's allocatable is a product caveat, not just a lane
+problem: teach it on the sizing field's spec comment and in the dev preset,
+and size it in every kind-lane scenario (the disk_size class). A CNI-less
+cluster's nodes are NotReady BY DESIGN until the CNI
+kind installs, so never gate the profile's creation on node readiness —
+assert the NotReady→Ready transition in the kind's install verifier
+instead, where it becomes part of the proof; and behavioral scenarios that
+merely CONSUME the profile kind declare it a scenario-level prerequisite
+(annotation), never a registry prerequisite — the kind under test
+deploys fine without it on ordinary clusters.
+
+**Real-cluster lanes fit what is already on the cluster.** A real cluster
+(`aws-eks`, `gcp-gke` profiles) arrives with residents — the GKE management
+cluster carries cert-manager and CloudNativePG from the Planton operator; the
+EKS batch carried its own load-balancer controller — and the singleton kinds
+forbid a second copy. Two scenario annotations declare the fit, both per
+scenario: `planton.dev/e2e-prerequisite-install-manifest: "Kind=path"`
+SUBSTITUTES the kind's install profile (the manifest takes the kind's slot in
+the chain — for a prerequisite that must arrive in a shape its consumer-wide
+profile does not describe on THIS cluster), and
+`planton.dev/e2e-resident-prerequisites: "Kind"` prunes a kind the cluster
+already has (refused on scenarios not pinned to a real-cluster profile —
+nothing is resident on a harness-owned cluster; the Postgres GKE recovery
+lane declares CloudNativePG and cert-manager resident and adds only the
+backup-plugin kind beside them, the very shape under test). A manifest-path
+entry in `e2e-prerequisites` can never do either: it only ever ADDS an
+instance. Prefer declaring the resident and adding the missing sibling kind
+over substituting a posture-flipped profile: a kind whose install profile
+needs a boolean to become "only the part the cluster lacks" is two kinds. Real clusters also add TIME: an instance whose anti-affinity makes
+the autoscaler add a node pays node provisioning plus a cold image pull
+(live-measured ~4 minutes per instance on GKE) — size verifier readiness
+windows for the topology on fresh nodes, not one pod on a warm kind node.
+
+**Restore proofs read the backup the seed wrote — through `${E2E_SETUP:NAME}`.**
+A backup's storage location exists only after the seed takes it, and it is
+exactly what the restore manifest must declare. The setup script publishes
+`NAME=value` lines to `$E2E_SETUP_OUTPUT`; the runner expands the scenario's
+`${E2E_SETUP:NAME}` tokens after SETUP, before VALIDATE. Never hardcode a
+backup name only one run produced, and never let two lanes share an
+archive path: carry `${E2E_RUN_ID}` in the backup destination — Barman
+refuses to archive into a path holding another cluster's WAL (the cluster
+stays healthy while ContinuousArchiving stays false forever; live-caught),
+and PBM keys its metadata by the storage path. The seeded evidence must be
+readable by the credential the proof authenticates with: a marker table the
+seed created as the superuser fails the application user's read with
+"permission denied" on a credential that authenticated perfectly (live-caught
+— own the table by the application role).
+
+**Behavioral proofs whose driver CR is served by the kind under test are
+VERIFIER-OWNED.** Scenario fixtures deploy BEFORE the kind under test, so
+a fixture cannot carry a custom resource whose CRD the kind itself
+installs (a KEDA ScaledObject, an operator's workload CR) — and chaining a
+second instance of the kind to fix the ordering trips its
+fixed-release-name singleton. The honest shape: fixtures carry only what needs
+nothing from the kind (a plain target Deployment); the behavioral
+verifier applies the driver CR via kubectl AFTER the install assertions pass,
+asserts the behavior, and deletes what it applied in a defer — active cluster
+interaction is established verifier grain (`kubectl top` gates, live curl
+probes), and verifier-owned cleanup keeps a failed assertion from leaking a CR
+that blocks later lanes. And never kill a lane mid-install to "free" the cluster: an
+interrupted Helm install orphans its release in `pending-install` state, which
+blocks every later install of the same name with a misleading name-in-use
+error. Sweep with `helm uninstall <release> -n <namespace>` (plus the fixture
+namespaces) before re-running.
+
+**Verifier assertions against OTLP/protojson APIs match BASE64 IDs, not
+hex.** An API that returns protojson-encoded protobuf (Tempo's trace query,
+any OTLP surface) renders `bytes` fields — trace and span IDs above all — as
+BASE64. A verifier that greps the response for the hex ID it pushed will
+hold the successful response and still report failure, and every retry
+budget then expires "unable to retrieve" what was retrieved on the first
+try (caught live). Convert the pushed ID's bytes to base64 for the success
+check; keep hex only for human-facing log lines.
+
+**Verifier proof objects are deleted CONFIRMED, never fire-and-forget —
+controllers add finalizers to objects they observe.** A `--wait=false`
+delete in a cleanup defer looks clean and leaks: sidecar services
+(archival watchers, result recorders) attach their own finalizers to
+workload CRs, and a proof object still pending such a finalizer when the
+destroy phase kills its processor can never finish deleting — it wedges
+its namespace in Terminating and poisons every later lane on the shared
+cluster (caught live: a proof run's archival finalizer held a namespace
+for half an hour). Cleanup = issue the delete, POLL the object gone
+within a bounded budget while the stack that serves the finalizer is
+still alive, and strip finalizers as the last resort — a verifier-owned
+proof object's durability guarantees are meaningless on its way out.
+
+**A pod-replacement proof gates on a NEW pod UID, never on phase or
+readiness alone.** A terminating pod keeps reporting phase Running (and
+can remain Ready) for its whole grace period, and a StatefulSet's status
+lags the deletion — so any wait keyed on phase/readiness straight after
+`kubectl delete pod --wait=false` returns instantly against the DYING
+pod, and the "post-replacement" assertions then run against the old
+server (caught live twice; for a bootstrap-gated server the follow-up
+bootstrap call is silently burned as a no-op on the old pod and the real
+replacement never gets it). Capture `metadata.uid` BEFORE the delete and
+wait for the same-named pod with a DIFFERENT uid via the shared
+`waitForPodReplaced` helper in `aa_e2e/verify/` — `requireReady=true`
+for self-readying servers, `requireReady=false` (phase Running) for
+pods whose readiness is deliberately gated on out-of-band bootstrap the
+verifier performs next.
+
+**A web UI's identity is proven through its own API, never brand text in
+the SPA document.** A modern UI's index.html is an opaque asset bundle —
+its text content (even the product name) is an upstream build detail that
+changes without notice (caught live: a UI whose document carries no
+product-identifying text at all). Read the UI server's source at the pin
+for an unconditional API route (a settings/config endpoint) and assert
+its response CONTRACT (a known JSON key), not its wording.
+
+**An auth-gate probe targets a route the SERVER SOURCE proves requires
+authentication — anonymous-by-design endpoints are never gates.** Products
+with a public/private visibility model (registries, artifact stores, wikis)
+deliberately serve anonymous reads of the public subset, so "any endpoint
+without credentials answers 401" is a false contract (caught live: an
+unauthenticated project listing answered 200 with the public subset against
+a correctly-secured install). Pick the gate route by reading the handler at
+the pin (an explicit require-authenticated guard), and when the product's
+real guard is per-resource visibility, prove THAT surface too: create the
+proof resource private and assert the anonymous data-plane access is
+rejected — the strongest gate is the one a customer's security actually
+depends on.
+
+**A browser-session gate discriminates on the server's OWN login
+contract, never on a redirect-followed page fetch.** Web apps redirect
+anonymous page requests to their login page, so "GET a protected page
+with a redirect-following client and expect non-200" is a false
+contract: the refused session lands on the login page and reads 200
+exactly like a signed-in one (caught live: the probe reported
+wrong-password sign-ins as successes against a correctly-secured
+install, on every lane). Read the login handler at the pin for the
+refusal status (e.g. a 403 form re-render vs a success redirect) and
+assert THAT on the login POST itself; then prove the session on an
+authenticated API identity route (200 + the identity for a signed-in
+jar, 401/403 for an anonymous one) — API routes answer status codes,
+never redirects, so they discriminate under any client.
+
+**A verifier's tunnel Service names and pod selectors are read from the
+chart's Service and pod templates at the pin, never inferred from the
+Deployment-name pattern.** A chart that names its Deployments
+`<fullname>-<kind>` may still name the kind's Service plain
+`<fullname>` (caught by review: a tunnel to `svc/<name>-coordinator`
+against a chart whose coordinator Service is `<name>` — every lane would
+have failed at tunnel open). Read `service-*.yaml` for the name and the
+pod template's `labels:` block for the selector, and verify the chosen
+selector is UNIQUE against every sibling workload the chart renders
+(workers, schedulers, hook Jobs).
+
+**A template read is only as truthful as the clone's checked-out REF —
+verify it against the pinned chart version before trusting the read.**
+When one clone serves two pins (the app tag for image/server truths, the
+chart tag for template truths), its working tree sits on whichever ref
+was needed last, and a template read from the wrong ref produces
+confident false conclusions (caught live: a pod-selector "fix" built on
+an app-tag checkout whose in-tree chart was several minor versions
+behind the served chart — the old chart stamped legacy `app`/`release`
+labels, the served chart stamps `app.kubernetes.io/*`, and the "fixed"
+selector matched zero pods). Before any template-derived claim, confirm
+`git describe --tags` (or the in-tree `Chart.yaml` version) matches the
+pinned CHART version — and when live pods disagree with a template read,
+trust the pods and re-check the ref.
+
+**A chart's CRD posture is read from WHERE the CRDs live, never assumed
+from chart ownership language.** `crds/` directory = Helm's install-once
+posture: created on first install, never upgraded, NEVER removed on
+uninstall — destroy must assert the CRDs SURVIVE (caught live: a destroy
+assertion built on "release-owned CRDs delete with the release" failed
+against a chart whose CRDs ride `crds/` and are untouched by uninstall).
+Templated CRDs (in `templates/`) are release-owned and delete/keep per
+their annotations; hook-applied CRDs follow the hook's own posture. The
+posture claim in the spec/docs/verifier must cite which of the three the
+chart actually uses at the pin.
+
+**Scenarios needing owner-arranged external credentials declare them with
+the `planton.dev/e2e-required-env` annotation.** Unset `${E2E_ENV:...}`
+tokens fail expansion LOUDLY by design (right when a batch bootstrap was
+supposed to export them, wrong for credentials only a human can arrange —
+a sandbox account PAT, an external tenant). The annotation lists the
+variables (comma-separated); lanes then SKIP the scenario with the reason
+wherever they are absent — an honest, self-documenting deferral that
+keeps CI green — and run it live wherever the owner exported them. Record
+the matching deferred-E2E row with the unblock.
+
+**One-way-hash credentials in E2E artifacts must be VERIFIED pairings.** When
+a scenario or fixture carries a one-way hash (a bcrypt htpasswd tenant
+password, a pre-hashed basic-auth entry) whose PLAINTEXT a verifier must use
+live, the pairing is unprovable by reading and silently breaks: the hash
+validates as a manifest, every offline gate passes, and only the live 401
+exposes a hash that never matched its claimed plaintext. At authoring time,
+generate AND mechanically verify the pair (`htpasswd -nbBC 10 <user> <pass>`
+then `htpasswd -vbB <file> <user> <pass>`), record both commands in the
+artifact's comment, and keep the plaintext as a named constant beside the
+verifier that uses it — the two sides change only together.
+
+**Isolate the run from OTHER suites on the same machine.** Serial-within-your-
+provider is not enough when a different provider's E2E suite runs concurrently
+on the same machine (multiple agents share these workstations): the suites
+share the global Pulumi state (`~/.pulumi` login/credentials) and `$TMPDIR`
+(where each run's ephemeral file backend lives), and the interference surfaces
+as `no stack named '<stack>' found` on a stack that was just deployed — the
+resources are then orphaned because teardown cannot find the state either.
+Machine-level temp cleaners can destroy the ephemeral backend the same way.
+Run every live lane with a private, durable environment:
+
+```bash
+mkdir -p ~/planton-e2e-tmp/pulumi-home
+export TMPDIR=~/planton-e2e-tmp PULUMI_HOME=~/planton-e2e-tmp/pulumi-home
+go test -tags e2e ./e2e/<provider>/... -run 'Test<Kind>' -v -count=1
+```
+
+(`-count=1` matters too: a cached `go test` result silently replays the old
+run instead of touching the cloud.) **Export `GITHUB_TOKEN` for every live
+lane** (`GITHUB_TOKEN=$(gh auth token)`): a fresh private `PULUMI_HOME` has no
+plugin cache, so every Pulumi command resolves plugins through anonymous
+GitHub API calls, and a few back-to-back lanes exhaust the anonymous rate
+limit. The failure then lands WHEREVER the next plugin resolution happens —
+including `pulumi destroy` and `pulumi stack rm` during DEPENDENCIES-DOWN —
+so fixtures orphan and every later lane fails its DEPENDENCIES-UP with
+`EntityAlreadyExists`/`BucketAlreadyOwnedByYou` name conflicts. The log line
+`GitHub rate limit exceeded ... You can set GITHUB_TOKEN` buried in a
+teardown error is the signature; the token lifts the limit entirely. **The
+private TMPDIR must be a SHORT path** — never a nested `mktemp -d` chain. Terraform/OpenTofu providers are
+go-plugin processes that hand-shake over unix domain sockets created under
+`$TMPDIR`, and macOS caps a socket path at 104 bytes; a deep TMPDIR (e.g.
+`/var/folders/.../T/tmp.X/tmp.Y/tmp.Z`) overflows that limit and every
+Terraform lane fails at provider-schema time with the cryptic
+`Unrecognized remote plugin message` — which looks like a corrupted plugin
+but is purely the socket path length. Pulumi lanes are unaffected, so a
+"Pulumi passes / Terraform fails to even instantiate the provider" split is
+the signature of this failure. If a lane still fails this way, the
+leaked resources remain recoverable through the backend directory left under
+`$TMPDIR` — `pulumi destroy --stack <name>` with `PULUMI_BACKEND_URL=file://…`
+from the dependency's module directory, then sweep the account.
+
+**Prerequisite teardown failures FAIL the run.** The harness destroys
+prerequisites in reverse order after the kind's own lifecycle, and any
+destroy/stack-removal failure (e.g. the ephemeral backend state vanished
+before teardown) fails the run's DEPENDENCIES-DOWN phase — a green run
+therefore guarantees zero orphaned prerequisites. When that phase is red,
+real provider resources may still exist: sweep the account for the scenario's
+`planton-e2e`-tagged resources before re-running.
+
+**A service's FIRST-ever use in an account can fail on its service-linked
+role.** AWS services that operate through a service-linked role (SLR) —
+Redshift's `AWSServiceRoleForRedshift` is one — auto-create that role on the
+account's first create call, and the very first call can fail with
+`InvalidParameterValue: Unable to assume the SLR on the customer account`
+while the role propagates. The SLR then exists (verify with `aws iam
+get-role --role-name <SLR>`), and the retry succeeds. Treat this error class
+as a first-use transient, not a module bug: confirm the SLR now exists and
+re-run the lane before touching any code.
+
+**Reference field paths must be output-backed.** The E2E resolver (like the
+production flattening it mirrors) resolves `valueFrom` references against the
+referenced instance's captured OUTPUTS — a `field_path` under
+`status.outputs.*` resolves; one under `metadata.*` cannot and fails the
+composed scenario. Design rule, not just a test rule: point every
+`default_kind_field_path` at an output. If a kind's natural join key is
+its name, export a `name` output and reference that — never `metadata.name`.
+A list of plain values is addressed one element at a time — a zone's name
+servers as `status.outputs.nameservers.0`, `.1`, ... — and the index ends the
+path; a reference to the whole list is refused offline (`pkg/refcheck`),
+because a reference feeds one string and the flattened outputs hold only the
+elements.
+
+### Tier 1 — Local run (preferred: fast on-machine loop)
+
+Local credentials live in a gitignored `.env.e2e` at the repo root (ignored via
+`.gitignore`; NEVER commit it). The harness reads credentials from environment
+variables — discover the exact names by reading the harness `Setup`
+(`aa_e2e/harness.go`); e.g. Auth0 uses `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`,
+`AUTH0_CLIENT_SECRET`. Before a live lane of a kind that is ONE per tenant or
+account (a tenant's settings, branding, prompt or email provider; an account's
+settings), confirm which tenant the ambient credentials reach: the lane applies
+and destroys that tenant's one object, so a shell that happens to carry a
+shared tenant's credentials would rewrite what its users see. Such lanes run
+only against a dedicated test tenant, and a local lane never inherits the
+shell's provider credentials: it unsets them (`env -u AUTH0_DOMAIN -u
+AUTH0_CLIENT_ID -u AUTH0_CLIENT_SECRET`) and sets the test tenant's for that one
+command, read from the vault.
+
+```bash
+# Confirm which provider secrets exist (names only) and match the harness env vars:
+gh secret list
+
+# If .env.e2e exists, source it and run ONLY this kind's scenarios:
+set -a; source .env.e2e; set +a
+go test -tags e2e ./e2e/<provider>/... -run 'Test<Kind>' -v -count=1
+```
+
+If `.env.e2e` is absent, do NOT invent it: tell the human exactly which variables it
+must contain (from the harness) and that it is gitignored, then use Tier 2 so the
+validation still happens this session.
+
+### Tier 2 — CI dispatch (fallback: Actions injects the secrets)
+
+```bash
+git push -u origin <feature-branch>
+gh workflow run e2e-<provider>.yaml --ref <feature-branch>
+RUN_ID=$(gh run list --workflow=e2e-<provider>.yaml --branch <feature-branch> --limit 1 --json databaseId -q '.[0].databaseId')
+gh run watch "$RUN_ID" --exit-status --interval 20
+```
+
+Then confirm the new kind actually ran (not skipped) and passed both provisioners:
+
+```bash
+gh run view "$RUN_ID" --log | rg -i '<kind>'
+# expect: ✓ <Kind> pulumi <scenario> ... ✓ <Kind> terraform <scenario>
+```
+
+Keep self-contained scenarios self-contained: a `minimal.yaml` should not depend on
+resources that may not exist in the test tenant (e.g. an Auth0 role's `minimal`
+scenario omits permissions so it needs no pre-existing resource server). Add a
+richer scenario (seeding the dependency) when you need live coverage of dependent
+fields.
+
+**An upstream doc's example class is not evidence it ships in the
+image.** Docs and in-repo examples routinely reference plugins/classes
+that the SHIPPED image no longer carries (distributions trim default
+classpaths; examples go stale against their own images). Before
+designing a proof, preset, or documented example on "class X runs on
+the stock image", verify against the RUNNING image itself — the
+service's own plugin/capability listing (e.g. a Connect worker's
+connector-plugins endpoint) or the image's directory contents. Every
+offline gate passes on the stale claim; only a live lane exposes it,
+as a resource that sits NotReady with "class not found". When the live
+check contradicts the upstream example, the live truth is what goes on
+the reader surfaces (spec comments, presets, docs), marked as verified
+live.
+
+**The same discipline applies to the official image's VARIANT when the
+module owns the manifests.** Projects that publish a bare package image
+(`pip install <app>` on a slim base) often publish a dependency-complete
+sibling (`-full`, `-all`, an extras matrix) — and the bare variant may
+be unable to BOOT the arms the spec models (database drivers,
+object-store clients, even the auth feature's own dependency can live
+in extras). Before pinning a default image, read the image's OWN build
+file at the pin (its Dockerfile/extras list, not the tag name) and
+verify every modeled arm's dependency is in the chosen variant; probe
+the chosen tag's registry manifest. A driverless default crash-loops
+at first boot behind every green offline gate. Grep the server's own
+startup/create-app path for hard-required environment (signing keys,
+secret-key material a framework refuses to start without): each such
+requirement is module-generated Secret material wired by design, never
+discovered by a customer at boot — and when the server requires the
+value be consistent across replicas, sourcing every replica from ONE
+module-owned Secret satisfies it by construction.
+
+**Model the upstream's built-in sandbox arm when one exists.** Cloud-talking
+addons (DNS publishers, secret-store operators, ...) cannot prove their
+provider hop on a kind cluster — but many upstreams ship a first-class
+in-process backend for exactly this (a DNS provider that holds records in
+memory, a secret store that serves declared literals, a node-autoscaler
+simulation provider). Model it as a typed spec arm, documented as
+sandbox/test-only: users get a safe evaluation arm, and the kind-cluster
+E2E lanes get a FULLY verifiable path (the controller runs its real
+reconcile loop and the verifier can assert end-state, e.g. a synced
+Secret's contents), instead of settling for install-only assertions.
+Also read the controller's error handling before designing credential-less
+lanes: some providers crash-loop on a bad credential (a 4xx at first sync)
+while others log-and-retry — only the latter class supports an
+install-proves-out lane with no real account. **Before authoring a fixture
+for a sandbox arm, check whether the CHART renders the sandbox's
+supporting objects itself** (grep the templates for the arm's
+`cloudProvider`/mode conditional): pre-creating an object the chart also
+templates fails the install with Helm's release-ownership error ("exists
+and cannot be imported into the current release"), and the failure is
+live-only — every offline gate passes. When the chart is self-contained
+for the arm, the scenario needs no fixture at all.
+
+**Keep-on-uninstall CRDs come in TWO classes with different blast radii —
+know which one the chart ships before writing the guidance.** (1)
+Chart-TEMPLATED CRDs kept via `helm.sh/resource-policy: keep` are
+release-owned: they retain `meta.helm.sh/release-namespace` ownership
+annotations, so a later install of the same release in a DIFFERENT
+namespace hits the release-ownership error on objects that "should not
+exist" — live-only, and easy to trigger by moving a scenario between
+namespaces; scenarios for such kinds need a stable, dedicated namespace.
+(2) `crds/`-directory CRDs are created RAW by Helm on first install with
+NO ownership metadata at all (verified in the Helm source) — they pin
+nothing and collide with nothing, but Helm also never UPGRADES them:
+a chart-version upgrade runs new controller code against old CRDs. That
+is why such charts land on the DERIVE branch of the decision tree below
+(the module re-applies the pinned version's CRDs on every bump) rather
+than on a spec/docs story of "apply the new CRDs yourself". One more
+corollary of surviving CRDs, either class: operators that AUTO-DETECT an
+integration by CRD presence (cert-manager is the classic) are fooled by
+controller-less remnants on a long-lived cluster — a dead-webhook dry-run
+failure at reconcile, not install. Two release-ownership corollaries:
+(1) never place a kind's E2E scenario in `kube-system` or another
+shared system namespace — the cleanup phase asserts namespace absence,
+which a system namespace can never satisfy (and upstream docs defaulting to
+kube-system are a docs default, not an E2E-compatible one); (2) when
+sweeping kept CRDs manually, enumerate by the `meta.helm.sh/release-name`
+annotation, never by an API-group name grep — CRD bundles routinely span
+groups (Karpenter's fleet CRDs live in karpenter.sh, karpenter.k8s.aws AND
+autoscaling.x-k8s.io), and one missed CRD reproduces the collision.
+
+**Every chart that carries CRDs is placed on ONE decision tree before
+any module code is written — the catalog has exactly three shapes and no
+fourth.** Read the chart at the PIN (`helm pull --untar`; `crds/`
+directory, `templates/`, and the values file) and choose:
+
+1. **The chart owns its CRD lifecycle** (CRDs templated behind an
+   install switch AND a keep switch that stamps
+   `helm.sh/resource-policy: keep` — the cert-manager shape). The spec
+   carries the shared `crds { install, keep_on_uninstall }` message
+   (both `optional bool`, both defaulting true) and the module maps
+   those two fields into the chart's own values. Nothing else: no
+   module-side CRD resources, no second copy of the schema.
+2. **Upstream publishes a SEPARATE CRD chart** (Karpenter's
+   `karpenter-crd`). The module installs it as a second, kept
+   `helm_release` ahead of the operator release, pinned to the same
+   version, and the operator release skips CRDs.
+3. **Everything else — the module DERIVES the CRD set from the pinned
+   version.** This branch covers charts that template CRDs release-owned
+   with no keep knob (an uninstall would cascade-delete every CR and its
+   data), charts that ship CRDs only in Helm's install-once `crds/`
+   directory, and operators whose CRDs are published only as a bundle
+   beside the chart. The module renders the pinned chart with its CRD
+   switch ON and CRDs included (`data "helm_template"` under the helm
+   provider 3.x; the Helm SDK's client-only dry-run install with CRDs
+   included on Pulumi — both return the same document set, verified),
+   or fetches the pinned upstream bundle by a URL derived from the
+   version; filters the documents to `kind: CustomResourceDefinition`;
+   applies each one keyed by its OWN `metadata.name` as a KEPT resource
+   (server-side apply with force; `apply_only` on `kubectl_manifest`;
+   the classic-yaml ConfigGroup with a retainOnDelete transformation
+   and the shared upsert provider seam on Pulumi) BEFORE the release;
+   and installs the release with `skip_crds = true` and the chart's own
+   CRD switch pinned OFF after the `helm_values` merge (a user override
+   must never re-arm the cascade). The mechanics are shared, never
+   hand-rolled per kind: one Go package for Pulumi
+   (`pkg/iac/pulumi/pulumimodule/provider/kubernetes/keptcrds`, over the
+   engine-neutral `pkg/kubernetes/helmcrds`), one canonical Terraform
+   block (`helm_crds.tf`, written by `planton tofu generate-helm-crds`)
+   that every module carries byte-identically under a drift test.
+   Per-kind code supplies one contract, the twin of the other engine's:
+   `keptcrds.Args` on Pulumi and the `local.helm_crds_args` object on
+   Terraform — the chart identity, the release's own values, the render
+   override that turns the chart's CRDs on, the API versions the chart
+   gates on, the bundle URL when one exists, and the kind's policy.
+
+**Which rendered CRDs the module owns follows ONE rule, stated in the
+primitive and repeated nowhere else.** Helm has two CRD surfaces: the
+`crds/` directory (install-once; `skip_crds` governs it) and the
+templates (ordinary release resources). A module that supplies a render
+override has turned the chart's switch on for the render and pinned it
+off for the release, so EVERY CRD the render produces is the module's — a
+typed kind's case. A module that supplies no override renders exactly
+what the release renders: the `crds/` surface is the module's, and CRDs
+the chart templates stay Helm's. Templated CRDs the chart marks
+`helm.sh/resource-policy: keep` are the chart owning its lifecycle (branch
+1) and need nothing; templated CRDs WITHOUT that mark would be deleted
+with the release along with every custom resource built on them, so the
+plan refuses them with their names and the remedies unless the spec
+accepts Helm-managed CRDs. Only the generic Helm kind, whose chart is the
+user's, supplies no override and carries that acceptance dial
+(`crds.allow_helm_managed`); a typed kind always pins the switch. A
+post-render hook that would strip or keep-mark templated CRDs generically
+is not available where the engines run (the Pulumi SDK's post-render
+takes a bare command and the runner ships no helper binary), so the
+refusal, not a hook, is the design. A typed kind sets `expect_crds` so a
+render that yields no module-owned CRD is a failure (the chart's switch
+was renamed, or the chart stopped shipping CRDs); the generic kind does
+not, because most charts carry none.
+
+**Two invariants, both machine-enforced.** (1) **A module is its
+directory.** Nothing outside `iac/tf/` or `iac/pulumi/` is ever read:
+release packaging zips exactly that directory, and the Pulumi binary
+lane runs from a generated workspace that holds only `Pulumi.yaml` — a
+relative read of a sibling path returns nothing at best and plans zero
+resources at worst, behind a green e2e lane that copied a tree releases
+never ship. The anatomy gate forbids `iac/crds/`; the self-containment
+guard (`hack/guards/ensure_modules_are_self_contained.sh`) forbids
+parent-path reads in either engine. (2) **A module derives, never
+copies, what a pinned artifact already carries.** A vendored CRD is
+frozen at one version while `chart_version` moves with the user, so the
+schema silently stops matching the operator it serves — the API server
+accepts fields the controller ignores, or rejects fields the controller
+needs. There is no fail-loud count guard that fixes this; only
+derivation does.
+
+**Facts the derive branch rests on, all verified at the pin.** The
+render runs with the REAL release name and namespace, so release-derived
+values inside a CRD (a conversion-webhook `clientConfig`, a cert-manager
+`inject-ca-from` annotation) come out correct without token substitution
+— and a runtime reconciler (cert-manager's CA injector) is the only
+correct keeper of a conversion webhook's trust, which is why such a kind
+models cert-manager as a REQUIRED posture. Charts gate templates on
+`.Capabilities`: pass the API versions the chart checks
+(`api_versions`/`APIVersions`) or the render silently drops them.
+Templated CRDs arrive in the rendered manifests; `crds/`-directory CRDs
+arrive on the separate CRDs surface — read BOTH and filter by kind.
+Rendering needs the chart repository at PLAN time; the install needs it
+anyway, so nothing new is required of the network, but the failure now
+happens earlier and must say so. The render consults the local Helm
+repository configuration: a stale repository entry on the operator's
+machine fails every render and every install identically. Per-version
+bundle URLs must be the form that survives the next release (Apache's
+`dist` tree holds only the CURRENT release; `archive.apache.org` holds
+every release). Retained CRDs are RE-ADOPTED on the next install: the
+Pulumi provider's create fails AlreadyExists even under SSA unless the
+retained resources route through the upsert seam
+(`pulumikubernetesprovider.GetWithKubernetesProviderConfigUpsert`) —
+ordinary resources keep create-conflict semantics; `kubectl_manifest`
+server-side apply adopts natively.
+
+**A FIRST-PARTY chart is derived from the PUBLISHED package at the pin,
+exactly like any other chart — and the typed spec may only claim LIVE
+proof for what that published schema carries.** The working tree's CRD
+routinely runs AHEAD of the last published chart (unreleased schema
+changes between cuts); deriving from the published artifact makes the
+staged-from-tree mistake structurally impossible, but the discipline on
+the spec remains: diff the published CRD's field set against the spec,
+and keep any spec field the published schema would prune OUT of the live
+scenarios (offline hack manifests carry it) until a published line
+admits it.
+
+**Every failure explains itself — in the module, the guard, and the
+verifier.** A precondition, an error, a plan-time refusal, or a status
+text for the CRD lifecycle carries three parts in order: what was
+OBSERVED (with the value — the chart, the version, the CRD name, the
+owner found), what it most likely MEANS (one root cause per message,
+never a list of maybes), and the exact NEXT STEP (a field to change, a
+command to run, an upstream fact to check). Text that names only the
+mechanism ("count mismatch", "conflict", "not found", "precondition
+failed") is a defect. Wording is stable so an agent can match it and
+act without a human. The anticipated set, each with a negative e2e lane
+asserting on the three parts: chart repository unreachable at plan time;
+pinned version not published (HTTP and OCI); CRD already exists owned by
+another release or tool; CRD schema downgrade attempted; render produced
+zero CRDs for a chart expected to carry them; the chart templates CRDs
+as Helm-managed resources without the keep mark and the spec has not
+accepted that; CRD apply denied by RBAC; bundle URL 404; stale local
+repository configuration; a private repository refusing the credentials;
+no cluster connection at all (a local deploy with neither KUBECONFIG nor
+the default kubeconfig — refused before any engine starts, never left to
+the providers' "connection refused to localhost"); a required CLI flag
+left empty (refused with the flag's copyable example, never a bare
+"please provide"). The CLI carries the same three labels
+(`ui.Failure` in `internal/cli/ui`; `pkg/failure` is the shared type)
+so a person or an agent reads one vocabulary in the module, the guard,
+and the command line. A change that adds a branch to the shared
+mechanics adds that branch's failures and lanes in the same change.
+
+**Where each explanation lives is layered, not either-or.** A module
+refuses IN PLACE wherever its own code can see the fact (a precondition
+or postcondition on a data source's result; a check in the Pulumi
+program), so an ejected module run with plain `tofu` still explains
+itself as far as HCL allows. A failure that kills the read itself (a
+repository host that does not resolve, an API server answering
+Forbidden at apply) reaches HCL only as the provider's raw text, and the
+layer that runs the engine — the CLI's engine runners, the e2e harness,
+the platform runner — recognizes those texts (`pkg/failure.Explain`)
+and appends the same three parts the Pulumi twin gives in-process, from
+one vocabulary, never repeating what the module already said. Two facts
+the CRD primitive verified the hard way: server-side apply with force
+adopts a kept CRD on reinstall AND silently takes over a CRD nobody
+stamped, so every CRD about to be written is read BY NAME first and one
+read answers both "is it ours" (the source label) and "is it newer" (the
+version stamp) — a CRD someone else owns is refused with that owner
+named (Helm's release annotations, another module's stamp, the field
+managers, or the honest absence of any mark) and two remedies (leave it
+with its owner through `crds.install = false`, or hand it over with the
+two printed `kubectl` commands); and a permission probe
+(SelfSubjectAccessReview) or a read runs only when the render produced
+something to write, so a chart with no CRDs is never refused for a CRD
+right it does not need.
+
+**An operator's DESTROY contract is read from its controller source,
+never assumed from a sibling kind's posture.** Operators split into two
+teardown classes: finalizer-processed (the controller holds the CR's
+deletion open and unwinds kinds itself — deletion HANGS without a
+running operator) and owner-reference garbage collection (children carry
+ownerReferences; Kubernetes GC completes teardown with or without the
+operator). The classes invert the destroy-ordering story, the delete
+timeout's meaning, the absence verifier's design (one-shot vs polled
+drain), and whether cluster-scoped satellites strand (a namespaced owner
+NEVER garbage-collects a cluster-scoped dependent — those need the
+operator's own janitor or an honest residue note). Grep the controller
+for `Finalizer`/`DeletionTimestamp` before writing any destroy prose,
+verifier, or ordering guidance; a sibling kind's posture is evidence
+about that sibling only (caught in review: destroy guidance authored on
+a finalizer-based sibling's contract against a GC-based operator — every
+claim inverted).
+
+**Two chart-audit probes that only fail LIVE — run them at the pin,
+before any design lands.** (1) HEAD every DEFAULT image reference's
+registry manifest: chart defaults can point at registries that no longer
+exist (verified live — an entire upstream registry namespace deleted),
+and the failure is a pod stuck in ImagePullBackOff behind a green
+offline gate. A dead default gets re-pointed at the maintainer's live
+repository at the same tag, loudly commented and overridable. (2)
+Compute the chart's LONGEST child-name suffix: charts truncate their
+fullname at 63 characters but not the names derived from it, so an
+ordinary release name can push a child Service past the Kubernetes name
+cap and fail mid-install; when the budget breaks realistic names, pin
+`fullnameOverride` to metadata.name and record the resulting name-length
+budget on the spec.
+
+**Map the chart's image-value SHAPE, not the spec's.** Charts take the
+image reference either as one combined `image.repository` or SPLIT
+across `image.registry` + `image.repository` with the registry
+defaulting to docker.io — read the pod template at the pin to know
+which. When the spec's air-gap field carries a full reference
+("my.registry.com/org/app") and the chart wants the split shape, the
+module must split it (the first path segment is a registry exactly when
+it contains a dot, a port colon, or is `localhost` — the container
+runtimes' own rule); mapped verbatim, the chart re-prefixes its default
+registry and every mirror override dies in ImagePullBackOff. This class
+is identically wrong in BOTH engines, so cross-engine parity review
+never catches it — only the chart template read does.
+
+**A scalar-looking chart value may be a STRUCTURED block — the templates'
+`.Values` accesses are the shape truth, not values.yaml alone.** A value
+that reads like a plain setting (an instance identifier, a toggle-with-
+options) is sometimes a nested object whose sub-fields the templates
+access directly (`.Values.x.enabled`, `.Values.x.explicitID`); rendering
+a bare string onto it makes Helm's template evaluation fail at install
+("can't evaluate field ... in type string") on any manifest that sets
+the field — identically in BOTH engines, invisible to every offline
+gate that never renders the chart. Before mapping any spec scalar onto
+a chart value, grep the templates for that value's field accesses; a
+single `.Values.<key>.<subfield>` hit means the module renders the
+structured shape, however plain the spec field stays.
+
+**Read every chart default that PLACES resources by namespace or
+cluster-scoped name — silence adopts it.** Charts ship list/map defaults
+whose entries name namespaces (or fixed cluster-scoped names) and plant
+real resources there — a runner-RBAC namespace list defaulting to
+`["default"]` creates ServiceAccounts and RoleBindings in the cluster's
+`default` namespace on every install that does not override it. A module
+that renders such a list only when the spec declares entries has
+silently adopted the chart's placement; destroy assertions then fail
+zero-orphan checks in namespaces the kind never claimed. Either
+ALWAYS render the list (the spec's entries, else an explicit empty list
+— lists REPLACE under Helm merge semantics) or adopt the default
+consciously with the reason taught on the spec field.
+
+**An operator distribution may auto-create its own workload CR — find
+the switch and disable it, or the declaration kind fights its manager.**
+Some operator release manifests ship a config default (an env var / a
+defaults ConfigMap key) that makes the operator CREATE its own instance
+of the very CR a companion declaration kind renders — a
+default-configuration singleton with a fixed name, materialized at
+controller startup. Left on, the operator and the declaration module
+co-write one object and fight through server-side apply field
+ownership; installs are order-dependent and updates flap. When splitting
+an operator kind from its workload-declaration kind, sweep the
+distribution for auto-install/auto-create switches (grep the controller
+source for the env keys its startup reads) and patch them OFF in the
+module as a design invariant, not a spec knob — then have the E2E
+verifier assert the CR does NOT exist after installing the operator
+alone (the regression is silent otherwise).
+
+**Fenced env tokens must satisfy the field's own CEL pre-expansion —
+embed the token inside the validated shape.** `${E2E_ENV:PLANTON_E2E_*}`
+tokens expand at lane runtime, but `validate-manifest` and the scenario
+gates parse the RAW file: a token standing alone in a field whose CEL
+demands a format (an `https://` URL prefix, a scheme, a prefix-anchored
+pattern) fails validation before any lane runs. Put the constant part
+of the format in the manifest and the token inside it
+(`https://github.com/${E2E_ENV:PLANTON_E2E_GITHUB_REPO_PATH}`) so the
+committed manifest passes its own CEL and the env var carries only the
+variable segment. Fields with no format CEL (credentials, ARNs, names)
+take the bare token.
+
+**Behavioral drivers against PERSISTENT external stores need run-unique
+names.** A verifier-owned driver CR whose name doubles as a key in an
+external store (a Velero Backup's name keys its object-store records) must
+carry a run-unique suffix: on a real, persistent bucket the store copy
+outlives the CR — deleting the CR never purges the store and the location
+sync even resurrects it — so a second lane reusing a fixed name fails with
+"already exists in object storage". Ephemeral in-cluster fixtures (a MinIO
+that dies with the scenario) mask this class completely: the kind lanes
+stay green while every real-cluster lane after the first fails.
+
+**Verifier-owned driver resources keyed in PERSISTENT external stores need
+run-unique names.** A verifier-owned CR whose name doubles as a key in an
+external store that outlives the lane (a Velero Backup's records in the
+object-store bucket, which the BSL sync even resurrects after the CR is
+deleted) can never reuse a fixed name across lanes: the second lane fails
+with an "already exists" that no kind-cluster run reproduces (ephemeral
+fixtures start empty; the real-cluster batch's bucket persists). Derive the
+name per run and let the resource's own TTL expire the store residue.
+
+**Saturation fixtures must not await rollout.** A pressure fixture DESIGNED
+to leave trailing replicas Pending (capacity saturation for preemption or
+autoscaling proofs) deadlocks any deploy that awaits workload readiness —
+set the fixture's skip-await knob and say in the manifest why it is
+load-bearing, or the fixture times out its own deploy on both engines.
+
+**Expanded/resolved manifest copies must keep the scenario's basename.**
+The runner rewrites scenario manifests to temp copies at two points (run-ID/
+environment token expansion and foreign-key reference resolution), and
+verifier dispatch keys behavioral variants off the scenario NAME in the
+manifest path. A randomly named copy silently demotes the scenario to its
+plain verifier — the lane still passes, install-grade, and the behavioral
+claim becomes an overclaim nobody notices. Both rewrite sites preserve the
+basename by contract; any future manifest-rewriting step must do the same,
+and a behavioral lane's proof lines (the verifier's own `[verify]`
+behavioral output) — not its PASS alone — are what a session may cite as
+evidence.
+
+**Soft-delete-reserved identifiers need the `${E2E_RUN_ID}` token.** Some provider
+resources reserve their user-chosen identifier long after deletion (e.g. GCP
+workload identity pools/providers and KMS key rings hold their IDs through a
+soft-delete retention window, with no undelete-on-create). A scenario or
+prerequisite manifest that hardcodes such an identifier can never be deployed
+twice — the second engine's run minutes later collides with the first run's
+soft-deleted ghost. Embed `${E2E_RUN_ID}` in the cloud-side identifier field
+(e.g. `poolId: e2e-smoke-${E2E_RUN_ID}`); the shared runner expands it to an
+engine-scoped per-run value in both scenario and prerequisite manifests. Keep
+`metadata.name` fixed — prerequisite FK resolution and human debugging key off
+it, and only the cloud-side identifier needs uniqueness. Note the raw manifest
+will not pass `planton validate` until the token is substituted; validate it
+with a sample value substituted.
+
+When the identifier's character class forbids hyphens (letters/numbers/
+underscores only, e.g. a Vertex AI `deployed_index_id`), use the
+`${E2E_RUN_ID_UNDERSCORE}` variant — the plain token carries the runner's
+hyphenated engine suffix and would break the field. The hold class extends
+beyond names: a failed/undeploying Vertex AI DeployedIndex holds its
+user-chosen sub-resource ID with a 400 that SURVIVES deleting the parent
+endpoint, so a fixed ID fails across engines and back-to-back runs even
+with fresh prerequisites (see `e2e/README.md`).
+
+**Regional outputs: emit the spec region, not the provider attribute.** On
+released google/google-beta 6.x lines the `.region` attribute on regional
+resources (NEGs, subnetworks, regional health checks) may be a region self-link
+(`https://www.googleapis.com/compute/v1/projects/.../regions/us-central1`) rather
+than the plain name (`us-central1`). Outputs and E2E verifiers expect the
+plain name — export `var.spec.region` / `pulumi.String(spec.Region)` instead of
+the resource's `.region` attribute when the output proto documents a region name.
+
+## Reference
+
+- **Ideal State Definition:** `architecture/catalog-kind.md`
+- **Individual Flow Rules:** `_rules/catalog-kind/forge/flow/`
+- **Anatomy Conformance Gate:** `pkg/anatomy` (CI lane `.github/workflows/lint.kind-anatomy.yaml`) -- the machine-enforced constitution of the kind layout; run it instead of auditing file inventories by hand
+
+## Notes
+
+- All steps run non-interactively (no user input required)
+- Uses local backends by default (Pulumi local, Terraform local)
+- Generated code follows Planton conventions
+- Both IaC implementations are at 100% behavioral parity (Parity Mandate + Phase 6b gate); any divergence is documented inline with `PARITY-EXCEPTION:`
+- All documentation is substantial and production-ready
+- Kind is immediately usable after forge completes
+
+## Success Criteria
+
+After forge completes, the kind should have:
+
+✅ All 4 proto files with validations
+✅ **Every CEL message is user-facing quality** (clear, actionable, empathetic -- see rule `002-spec-validate`, "VALIDATION MESSAGE QUALITY")
+✅ **Every secret-bearing field annotated `(sensitive)`; every look-alike non-secret exempted with `sensitive_exempt_reason`** (see the Secret-by-default section)
+✅ **`planton secret-coverage --check` passes** (no unannotated secret-looking field)
+✅ Generated .pb.go stubs
+✅ spec_test.go with validation tests
+✅ **Kind tests execute and pass** (validates buf.validate rules)
+✅ Registered in catalog_kind.proto
+✅ Complete user-facing documentation (kind-root README.md)
+✅ Kind-root `e2e/manifest.yaml` -- complete, protovalidate-valid, embedded as the reference Example and deployed by the E2E framework
+✅ Pulumi module that compiles and works
+✅ **Pulumi entrypoint at canonical root** (`iac/pulumi/main.go` is `package main`; no `main/` or `entrypoint/` subdir)
+✅ Terraform module that validates and works
+✅ **Both IaC modules richly commented to the module-comment bar** (explain why/trade-offs/provider quirks/ordering, not narration -- see `architecture/catalog-kind.md` §4.1)
+✅ **Cross-engine parity gate passed** (Phase 6b) -- Pulumi and Terraform agree on namespace, naming basis, labels, selectors, feature coverage, dependency ordering, and outputs; any divergence carries a `PARITY-EXCEPTION:` comment in both modules
+✅ **Import recipes shipped and proven** (Phase 6c) -- catalog entries for every module resource type, catalog kind import map with derivable-first value sources, offline conformance green, live import round-trip green
+✅ Supporting files (e2e manifest, module overviews)
+✅ Initial presets generated (2-3 common configuration templates)
+✅ Build validation passed -- BOTH `go build ./catalog/<provider>/<kind>/...` AND the release-equivalent `go build -o /dev/null ./catalog/<provider>/<kind>/iac/pulumi`
+✅ Kind test validation passed (`go test -v ./catalog/<provider>/<kind>/v1alpha1/`)
+✅ **Anatomy conformance gate green** (`pkg/anatomy`; CI lane `lint.kind-anatomy.yaml`) -- the kind's file layout is machine-checked, so never audit the inventory by hand
+
+**Result:** A production-ready kind matching 95-100% of ideal state with all tests passing!

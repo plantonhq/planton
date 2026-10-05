@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1;
 
-// CloudflareZeroTrustOrganizationStackOutputs captures the observable
+// CloudflareZeroTrustOrganizationOutputs captures the observable
 // outputs after applying the organization configuration.
-message CloudflareZeroTrustOrganizationStackOutputs {
+message CloudflareZeroTrustOrganizationOutputs {
   // The team domain users sign in through, without the
   // .cloudflareaccess.com suffix -- what Access applications and WARP
   // enrollment reference.

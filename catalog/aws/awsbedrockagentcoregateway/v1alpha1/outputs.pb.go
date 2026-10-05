@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockAgentCoreGatewayStackOutputs captures observable identifiers
+// AwsBedrockAgentCoreGatewayOutputs captures observable identifiers
 // from a provisioned AgentCore gateway. Downstream resources (agents and
 // harnesses using the gateway as a tool, MCP clients) wire dependencies
 // via StringValueOrRef.
-type AwsBedrockAgentCoreGatewayStackOutputs struct {
+type AwsBedrockAgentCoreGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique gateway identifier (e.g. "my-gateway-abc123de45").
 	GatewayId string `protobuf:"bytes,1,opt,name=gateway_id,json=gatewayId,proto3" json:"gateway_id,omitempty"`
@@ -43,20 +43,20 @@ type AwsBedrockAgentCoreGatewayStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBedrockAgentCoreGatewayStackOutputs) Reset() {
-	*x = AwsBedrockAgentCoreGatewayStackOutputs{}
+func (x *AwsBedrockAgentCoreGatewayOutputs) Reset() {
+	*x = AwsBedrockAgentCoreGatewayOutputs{}
 	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockAgentCoreGatewayStackOutputs) String() string {
+func (x *AwsBedrockAgentCoreGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockAgentCoreGatewayStackOutputs) ProtoMessage() {}
+func (*AwsBedrockAgentCoreGatewayOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockAgentCoreGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockAgentCoreGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,40 +68,40 @@ func (x *AwsBedrockAgentCoreGatewayStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockAgentCoreGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockAgentCoreGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockAgentCoreGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockAgentCoreGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockAgentCoreGatewayStackOutputs) GetGatewayId() string {
+func (x *AwsBedrockAgentCoreGatewayOutputs) GetGatewayId() string {
 	if x != nil {
 		return x.GatewayId
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentCoreGatewayStackOutputs) GetGatewayArn() string {
+func (x *AwsBedrockAgentCoreGatewayOutputs) GetGatewayArn() string {
 	if x != nil {
 		return x.GatewayArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentCoreGatewayStackOutputs) GetGatewayUrl() string {
+func (x *AwsBedrockAgentCoreGatewayOutputs) GetGatewayUrl() string {
 	if x != nil {
 		return x.GatewayUrl
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentCoreGatewayStackOutputs) GetWorkloadIdentityArn() string {
+func (x *AwsBedrockAgentCoreGatewayOutputs) GetWorkloadIdentityArn() string {
 	if x != nil {
 		return x.WorkloadIdentityArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentCoreGatewayStackOutputs) GetTargetIds() map[string]string {
+func (x *AwsBedrockAgentCoreGatewayOutputs) GetTargetIds() map[string]string {
 	if x != nil {
 		return x.TargetIds
 	}
@@ -112,17 +112,17 @@ var File_catalog_aws_awsbedrockagentcoregateway_v1alpha1_outputs_proto protorefl
 
 const file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/aws/awsbedrockagentcoregateway/v1alpha1/outputs.proto\x123dev.planton.aws.awsbedrockagentcoregateway.v1alpha1\"\x87\x03\n" +
-	"&AwsBedrockAgentCoreGatewayStackOutputs\x12\x1d\n" +
+	"=catalog/aws/awsbedrockagentcoregateway/v1alpha1/outputs.proto\x123dev.planton.aws.awsbedrockagentcoregateway.v1alpha1\"\xfd\x02\n" +
+	"!AwsBedrockAgentCoreGatewayOutputs\x12\x1d\n" +
 	"\n" +
 	"gateway_id\x18\x01 \x01(\tR\tgatewayId\x12\x1f\n" +
 	"\vgateway_arn\x18\x02 \x01(\tR\n" +
 	"gatewayArn\x12\x1f\n" +
 	"\vgateway_url\x18\x03 \x01(\tR\n" +
 	"gatewayUrl\x122\n" +
-	"\x15workload_identity_arn\x18\x04 \x01(\tR\x13workloadIdentityArn\x12\x89\x01\n" +
+	"\x15workload_identity_arn\x18\x04 \x01(\tR\x13workloadIdentityArn\x12\x84\x01\n" +
 	"\n" +
-	"target_ids\x18\x05 \x03(\v2j.dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayStackOutputs.TargetIdsEntryR\ttargetIds\x1a<\n" +
+	"target_ids\x18\x05 \x03(\v2e.dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOutputs.TargetIdsEntryR\ttargetIds\x1a<\n" +
 	"\x0eTargetIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xa9\x03\n" +
@@ -142,11 +142,11 @@ func file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockAgentCoreGatewayStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayStackOutputs
-	nil, // 1: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayStackOutputs.TargetIdsEntry
+	(*AwsBedrockAgentCoreGatewayOutputs)(nil), // 0: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOutputs
+	nil, // 1: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOutputs.TargetIdsEntry
 }
 var file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayStackOutputs.target_ids:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayStackOutputs.TargetIdsEntry
+	1, // 0: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOutputs.target_ids:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOutputs.TargetIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

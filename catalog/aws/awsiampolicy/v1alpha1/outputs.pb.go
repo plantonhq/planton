@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsIamPolicyStackOutputs captures the observable outputs of a provisioned
+// AwsIamPolicyOutputs captures the observable outputs of a provisioned
 // customer-managed IAM policy, for roles/users (managed_policy_arns,
 // permissions_boundary) and IAM permission statements to reference.
-type AwsIamPolicyStackOutputs struct {
+type AwsIamPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ARN of the managed policy (e.g.
 	// "arn:aws:iam::123456789012:policy/s3-read-only"). The primary handle other
@@ -42,20 +42,20 @@ type AwsIamPolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsIamPolicyStackOutputs) Reset() {
-	*x = AwsIamPolicyStackOutputs{}
+func (x *AwsIamPolicyOutputs) Reset() {
+	*x = AwsIamPolicyOutputs{}
 	mi := &file_catalog_aws_awsiampolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsIamPolicyStackOutputs) String() string {
+func (x *AwsIamPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsIamPolicyStackOutputs) ProtoMessage() {}
+func (*AwsIamPolicyOutputs) ProtoMessage() {}
 
-func (x *AwsIamPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsIamPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsiampolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,26 +67,26 @@ func (x *AwsIamPolicyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsIamPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsIamPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsIamPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*AwsIamPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiampolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsIamPolicyStackOutputs) GetPolicyArn() string {
+func (x *AwsIamPolicyOutputs) GetPolicyArn() string {
 	if x != nil {
 		return x.PolicyArn
 	}
 	return ""
 }
 
-func (x *AwsIamPolicyStackOutputs) GetPolicyId() string {
+func (x *AwsIamPolicyOutputs) GetPolicyId() string {
 	if x != nil {
 		return x.PolicyId
 	}
 	return ""
 }
 
-func (x *AwsIamPolicyStackOutputs) GetPolicyName() string {
+func (x *AwsIamPolicyOutputs) GetPolicyName() string {
 	if x != nil {
 		return x.PolicyName
 	}
@@ -97,8 +97,8 @@ var File_catalog_aws_awsiampolicy_v1alpha1_outputs_proto protoreflect.FileDescri
 
 const file_catalog_aws_awsiampolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/aws/awsiampolicy/v1alpha1/outputs.proto\x12%dev.planton.aws.awsiampolicy.v1alpha1\"w\n" +
-	"\x18AwsIamPolicyStackOutputs\x12\x1d\n" +
+	"/catalog/aws/awsiampolicy/v1alpha1/outputs.proto\x12%dev.planton.aws.awsiampolicy.v1alpha1\"r\n" +
+	"\x13AwsIamPolicyOutputs\x12\x1d\n" +
 	"\n" +
 	"policy_arn\x18\x01 \x01(\tR\tpolicyArn\x12\x1b\n" +
 	"\tpolicy_id\x18\x02 \x01(\tR\bpolicyId\x12\x1f\n" +
@@ -120,7 +120,7 @@ func file_catalog_aws_awsiampolicy_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsiampolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsiampolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsIamPolicyStackOutputs)(nil), // 0: dev.planton.aws.awsiampolicy.v1alpha1.AwsIamPolicyStackOutputs
+	(*AwsIamPolicyOutputs)(nil), // 0: dev.planton.aws.awsiampolicy.v1alpha1.AwsIamPolicyOutputs
 }
 var file_catalog_aws_awsiampolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

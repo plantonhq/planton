@@ -1,5 +1,5 @@
 // Command refgen generates the committed markdown reference for the cloud
-// component catalog from the descriptors compiled into the binary, via the
+// kind catalog from the descriptors compiled into the binary, via the
 // explain engine's markdown renderer: one reference.md co-located with each
 // kind's protos, plus the catalog-level files (per-provider indexes, the
 // root index, the foreign-key graph, the commons page).

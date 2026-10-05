@@ -36,7 +36,7 @@ var _ = ginkgo.Describe("GcpArtifactRegistryRepoSpec", func() {
 		return &GcpArtifactRegistryRepo{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpArtifactRegistryRepo",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-artifact-repo",
 			},
 			Spec: &GcpArtifactRegistryRepoSpec{

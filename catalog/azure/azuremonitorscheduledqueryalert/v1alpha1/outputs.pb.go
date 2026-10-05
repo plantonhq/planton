@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMonitorScheduledQueryAlertStackOutputs** captures the outputs of
+// **AzureMonitorScheduledQueryAlertOutputs** captures the outputs of
 // provisioning an Azure Monitor scheduled query alert rule.
-type AzureMonitorScheduledQueryAlertStackOutputs struct {
+type AzureMonitorScheduledQueryAlertOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the scheduled query alert rule.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Insights/scheduledQueryRules/{name}
@@ -39,20 +39,20 @@ type AzureMonitorScheduledQueryAlertStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureMonitorScheduledQueryAlertStackOutputs) Reset() {
-	*x = AzureMonitorScheduledQueryAlertStackOutputs{}
+func (x *AzureMonitorScheduledQueryAlertOutputs) Reset() {
+	*x = AzureMonitorScheduledQueryAlertOutputs{}
 	mi := &file_catalog_azure_azuremonitorscheduledqueryalert_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMonitorScheduledQueryAlertStackOutputs) String() string {
+func (x *AzureMonitorScheduledQueryAlertOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMonitorScheduledQueryAlertStackOutputs) ProtoMessage() {}
+func (*AzureMonitorScheduledQueryAlertOutputs) ProtoMessage() {}
 
-func (x *AzureMonitorScheduledQueryAlertStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMonitorScheduledQueryAlertOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremonitorscheduledqueryalert_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *AzureMonitorScheduledQueryAlertStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMonitorScheduledQueryAlertStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMonitorScheduledQueryAlertStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMonitorScheduledQueryAlertOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMonitorScheduledQueryAlertOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremonitorscheduledqueryalert_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMonitorScheduledQueryAlertStackOutputs) GetScheduledQueryAlertId() string {
+func (x *AzureMonitorScheduledQueryAlertOutputs) GetScheduledQueryAlertId() string {
 	if x != nil {
 		return x.ScheduledQueryAlertId
 	}
 	return ""
 }
 
-func (x *AzureMonitorScheduledQueryAlertStackOutputs) GetScheduledQueryAlertName() string {
+func (x *AzureMonitorScheduledQueryAlertOutputs) GetScheduledQueryAlertName() string {
 	if x != nil {
 		return x.ScheduledQueryAlertName
 	}
 	return ""
 }
 
-func (x *AzureMonitorScheduledQueryAlertStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureMonitorScheduledQueryAlertOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -94,8 +94,8 @@ var File_catalog_azure_azuremonitorscheduledqueryalert_v1alpha1_outputs_proto pr
 
 const file_catalog_azure_azuremonitorscheduledqueryalert_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/azure/azuremonitorscheduledqueryalert/v1alpha1/outputs.proto\x12:dev.planton.azure.azuremonitorscheduledqueryalert.v1alpha1\"\xd7\x01\n" +
-	"+AzureMonitorScheduledQueryAlertStackOutputs\x127\n" +
+	"Dcatalog/azure/azuremonitorscheduledqueryalert/v1alpha1/outputs.proto\x12:dev.planton.azure.azuremonitorscheduledqueryalert.v1alpha1\"\xd2\x01\n" +
+	"&AzureMonitorScheduledQueryAlertOutputs\x127\n" +
 	"\x18scheduled_query_alert_id\x18\x01 \x01(\tR\x15scheduledQueryAlertId\x12;\n" +
 	"\x1ascheduled_query_alert_name\x18\x02 \x01(\tR\x17scheduledQueryAlertName\x122\n" +
 	"\x15identity_principal_id\x18\x03 \x01(\tR\x13identityPrincipalIdB\xd8\x03\n" +
@@ -115,7 +115,7 @@ func file_catalog_azure_azuremonitorscheduledqueryalert_v1alpha1_outputs_proto_r
 
 var file_catalog_azure_azuremonitorscheduledqueryalert_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremonitorscheduledqueryalert_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMonitorScheduledQueryAlertStackOutputs)(nil), // 0: dev.planton.azure.azuremonitorscheduledqueryalert.v1alpha1.AzureMonitorScheduledQueryAlertStackOutputs
+	(*AzureMonitorScheduledQueryAlertOutputs)(nil), // 0: dev.planton.azure.azuremonitorscheduledqueryalert.v1alpha1.AzureMonitorScheduledQueryAlertOutputs
 }
 var file_catalog_azure_azuremonitorscheduledqueryalert_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

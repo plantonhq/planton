@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1;
 
-// KubernetesMetricsServerStackOutputs captures observable outputs after the
+// KubernetesMetricsServerOutputs captures observable outputs after the
 // metrics-server installation.
-message KubernetesMetricsServerStackOutputs {
+message KubernetesMetricsServerOutputs {
   // Kubernetes namespace metrics-server was installed into.
   string namespace = 1;
 

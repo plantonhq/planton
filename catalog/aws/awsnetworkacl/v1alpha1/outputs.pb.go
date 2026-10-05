@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsNetworkAclStackOutputs captures the observable state of the
+// AwsNetworkAclOutputs captures the observable state of the
 // network ACL after apply.
-type AwsNetworkAclStackOutputs struct {
+type AwsNetworkAclOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ACL's id (acl-...) - the provider's import ID.
 	NetworkAclId string `protobuf:"bytes,1,opt,name=network_acl_id,json=networkAclId,proto3" json:"network_acl_id,omitempty"`
@@ -35,20 +35,20 @@ type AwsNetworkAclStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsNetworkAclStackOutputs) Reset() {
-	*x = AwsNetworkAclStackOutputs{}
+func (x *AwsNetworkAclOutputs) Reset() {
+	*x = AwsNetworkAclOutputs{}
 	mi := &file_catalog_aws_awsnetworkacl_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsNetworkAclStackOutputs) String() string {
+func (x *AwsNetworkAclOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsNetworkAclStackOutputs) ProtoMessage() {}
+func (*AwsNetworkAclOutputs) ProtoMessage() {}
 
-func (x *AwsNetworkAclStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsNetworkAclOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsnetworkacl_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,26 +60,26 @@ func (x *AwsNetworkAclStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsNetworkAclStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsNetworkAclStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsNetworkAclOutputs.ProtoReflect.Descriptor instead.
+func (*AwsNetworkAclOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsnetworkacl_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsNetworkAclStackOutputs) GetNetworkAclId() string {
+func (x *AwsNetworkAclOutputs) GetNetworkAclId() string {
 	if x != nil {
 		return x.NetworkAclId
 	}
 	return ""
 }
 
-func (x *AwsNetworkAclStackOutputs) GetNetworkAclArn() string {
+func (x *AwsNetworkAclOutputs) GetNetworkAclArn() string {
 	if x != nil {
 		return x.NetworkAclArn
 	}
 	return ""
 }
 
-func (x *AwsNetworkAclStackOutputs) GetOwnerId() string {
+func (x *AwsNetworkAclOutputs) GetOwnerId() string {
 	if x != nil {
 		return x.OwnerId
 	}
@@ -90,8 +90,8 @@ var File_catalog_aws_awsnetworkacl_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awsnetworkacl_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awsnetworkacl/v1alpha1/outputs.proto\x12&dev.planton.aws.awsnetworkacl.v1alpha1\"\x84\x01\n" +
-	"\x19AwsNetworkAclStackOutputs\x12$\n" +
+	"0catalog/aws/awsnetworkacl/v1alpha1/outputs.proto\x12&dev.planton.aws.awsnetworkacl.v1alpha1\"\x7f\n" +
+	"\x14AwsNetworkAclOutputs\x12$\n" +
 	"\x0enetwork_acl_id\x18\x01 \x01(\tR\fnetworkAclId\x12&\n" +
 	"\x0fnetwork_acl_arn\x18\x02 \x01(\tR\rnetworkAclArn\x12\x19\n" +
 	"\bowner_id\x18\x03 \x01(\tR\aownerIdB\xce\x02\n" +
@@ -111,7 +111,7 @@ func file_catalog_aws_awsnetworkacl_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsnetworkacl_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsnetworkacl_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsNetworkAclStackOutputs)(nil), // 0: dev.planton.aws.awsnetworkacl.v1alpha1.AwsNetworkAclStackOutputs
+	(*AwsNetworkAclOutputs)(nil), // 0: dev.planton.aws.awsnetworkacl.v1alpha1.AwsNetworkAclOutputs
 }
 var file_catalog_aws_awsnetworkacl_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

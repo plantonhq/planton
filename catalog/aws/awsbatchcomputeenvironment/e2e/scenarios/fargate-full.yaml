@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsbatchcomputeenvironment
+    e2e-catalog-kind: awsbatchcomputeenvironment
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsSecurityGroup"

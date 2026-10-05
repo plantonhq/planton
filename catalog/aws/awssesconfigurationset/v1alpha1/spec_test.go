@@ -23,7 +23,7 @@ func minimalConfigSet() *AwsSesConfigurationSet {
 	return &AwsSesConfigurationSet{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsSesConfigurationSet",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "txn-set",
 		},
 		Spec: &AwsSesConfigurationSetSpec{Region: "us-west-2"},

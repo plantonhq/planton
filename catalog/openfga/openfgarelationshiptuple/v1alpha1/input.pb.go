@@ -22,18 +22,18 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// OpenFgaRelationshipTupleStackInput is the input message for the OpenFGA Relationship Tuple IaC modules.
+// OpenFgaRelationshipTupleIacInput is the input message for the OpenFGA Relationship Tuple IaC modules.
 //
 // This message aggregates all information needed to deploy an OpenFGA Relationship Tuple:
 // - The target OpenFgaRelationshipTuple resource specification
 // - The OpenFGA provider configuration (credentials for API access)
 //
-// IMPORTANT: OpenFGA only has a Terraform provider, so this component ships one
+// IMPORTANT: OpenFGA only has a Terraform provider, so this kind ships one
 // HCL module, run by OpenTofu or Terraform; Pulumi is refused for it.
 //
 // The Terraform module receives this as input and uses it to create
 // the relationship tuple via the OpenFGA API.
-type OpenFgaRelationshipTupleStackInput struct {
+type OpenFgaRelationshipTupleIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the OpenFgaRelationshipTuple resource to deploy.
 	// Contains the complete specification of the desired tuple configuration.
@@ -54,20 +54,20 @@ type OpenFgaRelationshipTupleStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *OpenFgaRelationshipTupleStackInput) Reset() {
-	*x = OpenFgaRelationshipTupleStackInput{}
+func (x *OpenFgaRelationshipTupleIacInput) Reset() {
+	*x = OpenFgaRelationshipTupleIacInput{}
 	mi := &file_catalog_openfga_openfgarelationshiptuple_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *OpenFgaRelationshipTupleStackInput) String() string {
+func (x *OpenFgaRelationshipTupleIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*OpenFgaRelationshipTupleStackInput) ProtoMessage() {}
+func (*OpenFgaRelationshipTupleIacInput) ProtoMessage() {}
 
-func (x *OpenFgaRelationshipTupleStackInput) ProtoReflect() protoreflect.Message {
+func (x *OpenFgaRelationshipTupleIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_openfga_openfgarelationshiptuple_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -79,19 +79,19 @@ func (x *OpenFgaRelationshipTupleStackInput) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use OpenFgaRelationshipTupleStackInput.ProtoReflect.Descriptor instead.
-func (*OpenFgaRelationshipTupleStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use OpenFgaRelationshipTupleIacInput.ProtoReflect.Descriptor instead.
+func (*OpenFgaRelationshipTupleIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_openfga_openfgarelationshiptuple_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *OpenFgaRelationshipTupleStackInput) GetTarget() *OpenFgaRelationshipTuple {
+func (x *OpenFgaRelationshipTupleIacInput) GetTarget() *OpenFgaRelationshipTuple {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *OpenFgaRelationshipTupleStackInput) GetProviderConfig() *openfga.OpenFgaProviderConfig {
+func (x *OpenFgaRelationshipTupleIacInput) GetProviderConfig() *openfga.OpenFgaProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -102,8 +102,8 @@ var File_catalog_openfga_openfgarelationshiptuple_v1alpha1_input_proto protorefl
 
 const file_catalog_openfga_openfgarelationshiptuple_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/openfga/openfgarelationshiptuple/v1alpha1/input.proto\x125dev.planton.openfga.openfgarelationshiptuple.v1alpha1\x1a;catalog/openfga/openfgarelationshiptuple/v1alpha1/api.proto\x1a\x1ecatalog/openfga/provider.proto\"\xe2\x01\n" +
-	"\"OpenFgaRelationshipTupleStackInput\x12g\n" +
+	"=catalog/openfga/openfgarelationshiptuple/v1alpha1/input.proto\x125dev.planton.openfga.openfgarelationshiptuple.v1alpha1\x1a;catalog/openfga/openfgarelationshiptuple/v1alpha1/api.proto\x1a\x1ecatalog/openfga/provider.proto\"\xe0\x01\n" +
+	" OpenFgaRelationshipTupleIacInput\x12g\n" +
 	"\x06target\x18\x01 \x01(\v2O.dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleR\x06target\x12S\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2*.dev.planton.openfga.OpenFgaProviderConfigR\x0eproviderConfigB\xb1\x03\n" +
 	"9com.dev.planton.openfga.openfgarelationshiptuple.v1alpha1B\n" +
@@ -123,13 +123,13 @@ func file_catalog_openfga_openfgarelationshiptuple_v1alpha1_input_proto_rawDescG
 
 var file_catalog_openfga_openfgarelationshiptuple_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_openfga_openfgarelationshiptuple_v1alpha1_input_proto_goTypes = []any{
-	(*OpenFgaRelationshipTupleStackInput)(nil), // 0: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleStackInput
-	(*OpenFgaRelationshipTuple)(nil),           // 1: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTuple
-	(*openfga.OpenFgaProviderConfig)(nil),      // 2: dev.planton.openfga.OpenFgaProviderConfig
+	(*OpenFgaRelationshipTupleIacInput)(nil), // 0: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleIacInput
+	(*OpenFgaRelationshipTuple)(nil),         // 1: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTuple
+	(*openfga.OpenFgaProviderConfig)(nil),    // 2: dev.planton.openfga.OpenFgaProviderConfig
 }
 var file_catalog_openfga_openfgarelationshiptuple_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleStackInput.target:type_name -> dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTuple
-	2, // 1: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleStackInput.provider_config:type_name -> dev.planton.openfga.OpenFgaProviderConfig
+	1, // 0: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleIacInput.target:type_name -> dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTuple
+	2, // 1: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleIacInput.provider_config:type_name -> dev.planton.openfga.OpenFgaProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

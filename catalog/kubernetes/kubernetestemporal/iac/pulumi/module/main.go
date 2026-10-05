@@ -15,8 +15,8 @@ import (
 // the helm_values escape hatch merges last with Helm -f semantics — the
 // exact semantic twin of the Terraform module's helm_release with
 // values = [typed, helm_values].
-func Resources(ctx *pulumi.Context, stackInput *kubernetestemporalv1alpha1.KubernetesTemporalStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetestemporalv1alpha1.KubernetesTemporalIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// FAIL LOUDLY on names past the chart's fullname budget: child names
 	// are `<fullname>-<component>` and the chart's componentname helper
@@ -32,13 +32,13 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetestemporalv1alpha1.Kuber
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

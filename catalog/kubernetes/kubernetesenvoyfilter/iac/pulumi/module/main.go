@@ -11,11 +11,11 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *kubernetesenvoyfilterv1alpha1.KubernetesEnvoyFilterStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesenvoyfilterv1alpha1.KubernetesEnvoyFilterIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubeProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
@@ -32,7 +32,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesenvoyfilterv1alpha1.Ku
 
 // createEnvoyFilter creates the namespaced Istio EnvoyFilter using the typed crd2pulumi SDK
 // (istionetworkingv1alpha3.NewEnvoyFilter), consistent with every other Planton Istio
-// component. EnvoyFilter is the only Istio API component still served at networking/v1alpha3
+// kind. EnvoyFilter is the only Istio API kind still served at networking/v1alpha3
 // (it has not graduated to v1). Every block is attached only when present so unset fields
 // fall through to istiod's defaults.
 func createEnvoyFilter(
@@ -44,7 +44,7 @@ func createEnvoyFilter(
 
 	// The typed resource's Spec field is a PtrInput satisfied by the Args value itself
 	// (not the SpecPtr() wrapper, which marshals to the wrong element type and panics at
-	// `pulumi up`); assigned directly below, mirroring the sibling Istio components.
+	// `pulumi up`); assigned directly below, mirroring the sibling Istio kinds.
 	efSpec := istionetworkingv1alpha3.EnvoyFilterSpecArgs{}
 
 	if patches := spec.GetConfigPatches(); len(patches) > 0 {

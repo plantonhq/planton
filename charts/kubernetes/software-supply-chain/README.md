@@ -77,7 +77,7 @@ runner fleet for its controller — each pair inside its own toggle.
 
 Every credential this chart deploys lives in one key-value secret, and each
 secret parameter references one of its keys (`$secret/<slug>/<key>`), so the
-platform resolves them at deploy and never stores them with the project.
+platform resolves them at deploy and never stores them with the Infra Stack.
 Create it once per install, generating the S3 pair and the identities
 document from the same values (letters only: config parsers mangle digits
 first, `#`, `$` and braces):

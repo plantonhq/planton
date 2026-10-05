@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (KubernetesOpenFgaStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (KubernetesOpenFgaOutputs).
 #
 # The service name is the chart's ClusterIP Service — openfga.fullname,
 # pinned to the resource name via fullnameOverride; the endpoints are

@@ -30,9 +30,9 @@ import "shared/options/options.proto";
  *
  * SECURITY: `security.authentication_type: basic` bootstraps
  * basic-auth with operator-generated credentials in a Secret (see
- * stack outputs); no credential ever appears in this spec.
+ * outputs); no credential ever appears in this spec.
  *
- * EXPOSURE: in-cluster access rides the common Service (see stack
+ * EXPOSURE: in-cluster access rides the common Service (see
  * outputs). The `external` block models the operator's own
  * Ingress/ExternalDNS exposure; composing a KubernetesIngress or
  * Gateway API route over the common service handle is equally valid
@@ -367,7 +367,7 @@ message KubernetesSolrSecurity {
    * the OPERATOR uses against secured pods. Empty = the operator
    * bootstraps security.json plus admin/solr/k8s-oper users and
    * writes their credentials to `<name>-solrcloud-basic-auth`
-   * (see stack outputs). If you later rotate that password through
+   * (see outputs). If you later rotate that password through
    * Solr's security API, update the Secret too — the operator locks
    * itself out otherwise (upstream contract).
    */

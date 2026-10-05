@@ -37,8 +37,8 @@ attachment to one named Service port with `sectionName`.
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<backend-namespace>` | Namespace of the backend Service (the policy must live there too) | Your infra chart / cluster namespaces |
-| `<backend-service-resource>` | Name of the `KubernetesService` resource the policy secures (inside `valueFrom.name`) | Your infra chart / `planton` resource listing |
+| `<backend-namespace>` | Namespace of the backend Service (the policy must live there too) | Your Infra Chart / cluster namespaces |
+| `<backend-service-resource>` | Name of the `KubernetesService` resource the policy secures (inside `valueFrom.name`) | Your Infra Chart / `planton` resource listing |
 | `<trust-bundle-configmap-resource>` | Name of the `KubernetesConfigMap` resource carrying the mesh CA bundle under `ca.crt` (inside `valueFrom.name`) | Your mesh's trust-bundle distribution (SPIRE bundle publisher, trust-manager) |
 | `backend.internal.example.com` | SNI sent to the backend (certificate selection only) | Your backend's serving config |
 | `spiffe://cluster.example.com/ns/payments/sa/backend` | The backend workload's SPIFFE ID | Your mesh trust domain + the workload's namespace/service account |

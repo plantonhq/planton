@@ -9,7 +9,7 @@ with MQTT and STOMP via plugins. For append-only event STREAMING and
 replayable logs at scale, use KubernetesKafka instead: consumers that
 re-read history are a log's job, not a queue's.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want the operator itself** — installing and configuring the
   RabbitMQ Cluster Operator is KubernetesRabbitMqOperator; this
@@ -150,7 +150,7 @@ the CR — migration-only, discouraged.
 - **`spec.image` / `spec.image_pull_secrets`**: the air-gap /
   private-mirror path — the image must stay a `-management` variant
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

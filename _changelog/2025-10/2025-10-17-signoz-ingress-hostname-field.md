@@ -154,7 +154,7 @@ type Locals struct {
     // ... other fields
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *signozkubernetesv1.SignozKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *signozkubernetesv1.SignozKubernetesIacInput) *Locals {
     // SigNoz UI ingress
     if target.Spec.SignozIngress != nil &&
         target.Spec.SignozIngress.Enabled &&
@@ -203,7 +203,7 @@ type Locals struct {
     // ... other fields
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *signozkubernetesv1.SignozKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *signozkubernetesv1.SignozKubernetesIacInput) *Locals {
     // SigNoz UI ingress
     if target.Spec.Ingress != nil &&
         target.Spec.Ingress.Ui != nil &&

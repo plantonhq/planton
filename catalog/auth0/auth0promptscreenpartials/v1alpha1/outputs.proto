@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.auth0.auth0promptscreenpartials.v1alpha1;
 
-// Auth0PromptScreenPartialsStackOutputs names the prompt managed.
+// Auth0PromptScreenPartialsOutputs names the prompt managed.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/prompt_screen_partials#attributes-reference
-message Auth0PromptScreenPartialsStackOutputs {
+message Auth0PromptScreenPartialsOutputs {
   // prompt_type is the prompt whose screens the partials extend.
   string prompt_type = 1;
 }

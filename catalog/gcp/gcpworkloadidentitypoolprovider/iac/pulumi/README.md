@@ -29,7 +29,7 @@ iac/pulumi/
     ├── main.go                              # Module coordinator
     ├── workload_identity_pool_provider.go   # Provider resource creation
     ├── locals.go                            # Resolved resource holder
-    └── outputs.go                           # Stack output constants
+    └── outputs.go                           # Output constants
 ```
 
 ## Quick Start
@@ -43,7 +43,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the provider specification (GitHub Actions example):
+Provide a `iac-input.yaml` with the provider specification (GitHub Actions example):
 
 ```yaml
 target:
@@ -79,7 +79,7 @@ pulumi stack output name   # the audience string for token exchange
 
 ## Inputs
 
-The module consumes `GcpWorkloadIdentityPoolProviderStackInput`:
+The module consumes `GcpWorkloadIdentityPoolProviderIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|

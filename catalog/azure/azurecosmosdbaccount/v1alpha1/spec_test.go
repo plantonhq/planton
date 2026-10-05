@@ -28,7 +28,7 @@ func minimalSpec() *AzureCosmosdbAccount {
 	return &AzureCosmosdbAccount{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureCosmosdbAccount",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-cosmos-account",
 		},
 		Spec: &AzureCosmosdbAccountSpec{

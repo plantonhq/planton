@@ -48,7 +48,7 @@ The top-level container, typically representing a company or team.
 Logical groupings that separate resources by deployment stage or purpose.
 
 **What belongs here:**
-- Cloud Resources deployed via Infra Hub
+- Infra Components deployed via Infra Hub
 - Services deployed via Service Hub
 - Environment-specific connection authorizations
 
@@ -69,13 +69,13 @@ Logical groupings that separate resources by deployment stage or purpose.
 
 The actual infrastructure and applications.
 
-- **Cloud Resources** — VPCs, databases, Kubernetes clusters, storage buckets, and other infrastructure deployed through Infra Hub
+- **Infra Components** — VPCs, databases, Kubernetes clusters, storage buckets, and other infrastructure deployed through Infra Hub
 - **Services** — applications from Git repositories deployed through Service Hub
 
 **Key facts:**
 - Every resource belongs to exactly one environment
 - Resources have unique identifiers within their environment
-- Cloud Resources are provisioned by Stack Jobs; Services are deployed by Pipelines
+- Infra Components are provisioned by Infra Jobs; Services are deployed by Pipelines
 
 ## Slugs
 
@@ -100,10 +100,10 @@ Organization  Environment
 Clicking the context selector opens a dropdown where you can switch between environments. The console updates to show resources scoped to your selection:
 
 - **Organization level** — manage connections, billing, settings, team members
-- **Environment level** — deploy and manage cloud resources and services
+- **Environment level** — deploy and manage Infra Components and Services
 
 <!-- SCREENSHOT: Context selector
-  Page: /orgs/{org}/cloud-resources (header area)
+  Page: /orgs/{org}/infra-components (header area)
   Action: Click context selector dropdown to expand org/environment hierarchy
   Focus: The context selector dropdown in the top-left header
   Alt: Context selector dropdown showing organization and environment selection

@@ -14,13 +14,13 @@ import (
 // references), and launch mechanics come either from the inline knobs or
 // from a referenced AwsLaunchTemplate -- the spec's CEL rules enforce
 // AWS's mutual exclusions between the two styles.
-func Resources(ctx *pulumi.Context, stackInput *awseksnodegroupv1alpha1.AwsEksNodeGroupStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awseksnodegroupv1alpha1.AwsEksNodeGroupIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which
+	// Build the AWS provider from the IaC input via the shared builder, which
 	// resolves the right credential mechanism (static keys, keyless web identity,
 	// or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsEksNodeGroup.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsEksNodeGroup.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

@@ -5,7 +5,7 @@
 # attachment, and the capacity contract live. No queries run, so RPU
 # charges are effectively zero. No security groups are given, so AWS
 # attaches the VPC's default group (the documented default this
-# component preserves). Full metadata is supplied for tagging/orphan
+# kind preserves). Full metadata is supplied for tagging/orphan
 # cleanup.
 #
 # Free governance arms (depth-closure additions):
@@ -26,7 +26,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsredshiftserverlessworkgroup
+    e2e-catalog-kind: awsredshiftserverlessworkgroup
   annotations:
     planton.dev/e2e: "true"
   tags:

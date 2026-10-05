@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesrabbitmqoperator.v1alpha1;
 import "catalog/kubernetes/kubernetesrabbitmqoperator/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// kubernetes-rabbit-mq-operator stack-input
-message KubernetesRabbitMqOperatorStackInput {
-  // target cloud-resource
+// kubernetes-rabbit-mq-operator iac-input
+message KubernetesRabbitMqOperatorIacInput {
+  // the catalog object to deploy
   KubernetesRabbitMqOperator target = 1;
   // provider-credential
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

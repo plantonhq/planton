@@ -42,7 +42,7 @@ func wrap(spec *DigitalOceanKubernetesClusterSpec) *DigitalOceanKubernetesCluste
 	return &DigitalOceanKubernetesCluster{
 		ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 		Kind:       "DigitalOceanKubernetesCluster",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-k8s-cluster",
 		},
 		Spec: spec,

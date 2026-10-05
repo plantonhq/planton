@@ -328,7 +328,7 @@ message AzureFunctionAppSpec {
   //
   // When identity is configured with SYSTEM_ASSIGNED, the function app gets
   // a system-assigned identity whose principal_id and tenant_id are exported
-  // as stack outputs.
+  // as outputs.
   AzureFunctionAppIdentity identity = 27;
 
   // User Assigned Identity ID for accessing Key Vault references.

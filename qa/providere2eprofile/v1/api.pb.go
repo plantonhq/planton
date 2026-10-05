@@ -44,7 +44,7 @@ type ProviderE2EProfile struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *ProviderE2EProfileSpec       `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -94,7 +94,7 @@ func (x *ProviderE2EProfile) GetKind() string {
 	return ""
 }
 
-func (x *ProviderE2EProfile) GetMetadata() *shared.CloudResourceMetadata {
+func (x *ProviderE2EProfile) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -117,7 +117,7 @@ const file_qa_providere2eprofile_v1_api_proto_rawDesc = "" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
 	"\x04kind\x18\x02 \x01(\tR\x04kind\x12E\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataR\bmetadata\x12P\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataR\bmetadata\x12P\n" +
 	"\x04spec\x18\x04 \x01(\v2<.dev.planton.qa.providere2eprofile.v1.ProviderE2EProfileSpecR\x04specB\xb5\x02\n" +
 	"(com.dev.planton.qa.providere2eprofile.v1B\bApiProtoP\x01ZJgithub.com/plantonhq/planton/qa/providere2eprofile/v1;providere2eprofilev1\xa2\x02\x04DPQP\xaa\x02$Dev.Planton.Qa.Providere2eprofile.V1\xca\x02$Dev\\Planton\\Qa\\Providere2eprofile\\V1\xe2\x020Dev\\Planton\\Qa\\Providere2eprofile\\V1\\GPBMetadata\xea\x02(Dev::Planton::Qa::Providere2eprofile::V1b\x06proto3"
 
@@ -136,11 +136,11 @@ func file_qa_providere2eprofile_v1_api_proto_rawDescGZIP() []byte {
 var file_qa_providere2eprofile_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_qa_providere2eprofile_v1_api_proto_goTypes = []any{
 	(*ProviderE2EProfile)(nil),           // 0: dev.planton.qa.providere2eprofile.v1.ProviderE2EProfile
-	(*shared.CloudResourceMetadata)(nil), // 1: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 1: dev.planton.shared.CatalogObjectMetadata
 	(*ProviderE2EProfileSpec)(nil),       // 2: dev.planton.qa.providere2eprofile.v1.ProviderE2EProfileSpec
 }
 var file_qa_providere2eprofile_v1_api_proto_depIdxs = []int32{
-	1, // 0: dev.planton.qa.providere2eprofile.v1.ProviderE2EProfile.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	1, // 0: dev.planton.qa.providere2eprofile.v1.ProviderE2EProfile.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	2, // 1: dev.planton.qa.providere2eprofile.v1.ProviderE2EProfile.spec:type_name -> dev.planton.qa.providere2eprofile.v1.ProviderE2EProfileSpec
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type

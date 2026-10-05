@@ -1,5 +1,5 @@
 order:
-    - TestCloudResourceGeneric/producer@dev
-    - TestCloudResourceGeneric/consumer@dev
+    - TestCatalogKindGeneric/producer@dev
+    - TestCatalogKindGeneric/consumer@dev
 findings:
-    - env-external-value-from TestCloudResourceGeneric/consumer@dev spec.optional_ref
+    - env-external-value-from TestCatalogKindGeneric/consumer@dev spec.optional_ref

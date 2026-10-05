@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureEventHubConsumerGroupStackOutputs** captures the outputs of
+// **AzureEventHubConsumerGroupOutputs** captures the outputs of
 // provisioning a consumer group.
-type AzureEventHubConsumerGroupStackOutputs struct {
+type AzureEventHubConsumerGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the consumer group.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{ns}/eventhubs/{hub}/consumergroups/{name}
@@ -35,20 +35,20 @@ type AzureEventHubConsumerGroupStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AzureEventHubConsumerGroupStackOutputs) Reset() {
-	*x = AzureEventHubConsumerGroupStackOutputs{}
+func (x *AzureEventHubConsumerGroupOutputs) Reset() {
+	*x = AzureEventHubConsumerGroupOutputs{}
 	mi := &file_catalog_azure_azureeventhubconsumergroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventHubConsumerGroupStackOutputs) String() string {
+func (x *AzureEventHubConsumerGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventHubConsumerGroupStackOutputs) ProtoMessage() {}
+func (*AzureEventHubConsumerGroupOutputs) ProtoMessage() {}
 
-func (x *AzureEventHubConsumerGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureEventHubConsumerGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventhubconsumergroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureEventHubConsumerGroupStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventHubConsumerGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureEventHubConsumerGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventHubConsumerGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AzureEventHubConsumerGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventhubconsumergroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventHubConsumerGroupStackOutputs) GetConsumerGroupId() string {
+func (x *AzureEventHubConsumerGroupOutputs) GetConsumerGroupId() string {
 	if x != nil {
 		return x.ConsumerGroupId
 	}
 	return ""
 }
 
-func (x *AzureEventHubConsumerGroupStackOutputs) GetConsumerGroupName() string {
+func (x *AzureEventHubConsumerGroupOutputs) GetConsumerGroupName() string {
 	if x != nil {
 		return x.ConsumerGroupName
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azureeventhubconsumergroup_v1alpha1_outputs_proto protore
 
 const file_catalog_azure_azureeventhubconsumergroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azureeventhubconsumergroup/v1alpha1/outputs.proto\x125dev.planton.azure.azureeventhubconsumergroup.v1alpha1\"\x84\x01\n" +
-	"&AzureEventHubConsumerGroupStackOutputs\x12*\n" +
+	"?catalog/azure/azureeventhubconsumergroup/v1alpha1/outputs.proto\x125dev.planton.azure.azureeventhubconsumergroup.v1alpha1\"\x7f\n" +
+	"!AzureEventHubConsumerGroupOutputs\x12*\n" +
 	"\x11consumer_group_id\x18\x01 \x01(\tR\x0fconsumerGroupId\x12.\n" +
 	"\x13consumer_group_name\x18\x02 \x01(\tR\x11consumerGroupNameB\xb5\x03\n" +
 	"9com.dev.planton.azure.azureeventhubconsumergroup.v1alpha1B\fOutputsProtoP\x01Zqgithub.com/plantonhq/planton/catalog/azure/azureeventhubconsumergroup/v1alpha1;azureeventhubconsumergroupv1alpha1\xa2\x02\x04DPAA\xaa\x025Dev.Planton.Azure.Azureeventhubconsumergroup.V1alpha1\xca\x025Dev\\Planton\\Azure\\Azureeventhubconsumergroup\\V1alpha1\xe2\x02ADev\\Planton\\Azure\\Azureeventhubconsumergroup\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Azure::Azureeventhubconsumergroup::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_azure_azureeventhubconsumergroup_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_azure_azureeventhubconsumergroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventhubconsumergroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureEventHubConsumerGroupStackOutputs)(nil), // 0: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupStackOutputs
+	(*AzureEventHubConsumerGroupOutputs)(nil), // 0: dev.planton.azure.azureeventhubconsumergroup.v1alpha1.AzureEventHubConsumerGroupOutputs
 }
 var file_catalog_azure_azureeventhubconsumergroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

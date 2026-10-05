@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpalloydbinstance.v1alpha1;
 
-// GcpAlloydbInstanceStackOutputs captures values returned after provisioning
+// GcpAlloydbInstanceOutputs captures values returned after provisioning
 // an AlloyDB instance.
-message GcpAlloydbInstanceStackOutputs {
+message GcpAlloydbInstanceOutputs {
   // Fully qualified instance resource name.
   // Format: projects/{project}/locations/{location}/clusters/{cluster}/instances/{instance}
   string instance_name = 1;

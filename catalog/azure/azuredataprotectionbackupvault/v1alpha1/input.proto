@@ -5,10 +5,10 @@ package dev.planton.azure.azuredataprotectionbackupvault.v1alpha1;
 import "catalog/azure/azuredataprotectionbackupvault/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureDataProtectionBackupVaultStackInput is the input to the IaC
+// AzureDataProtectionBackupVaultIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-message AzureDataProtectionBackupVaultStackInput {
+message AzureDataProtectionBackupVaultIacInput {
   // The Data Protection backup vault resource to deploy.
   AzureDataProtectionBackupVault target = 1;
 

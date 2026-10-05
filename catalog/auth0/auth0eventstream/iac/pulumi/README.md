@@ -45,9 +45,9 @@ make test
 ./debug.sh
 ```
 
-## Stack Input
+## IaC Input
 
-The module expects a stack input with the following structure:
+The module expects an IaC input with the following structure:
 
 ```yaml
 target:

@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	fkv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "google-idp"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "google-idp"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -49,7 +49,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "facebook-idp"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "facebook-idp"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -73,7 +73,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "amazon-idp"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "amazon-idp"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -96,7 +96,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "apple-idp"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "apple-idp"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -121,7 +121,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "okta-oidc"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "okta-oidc"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -143,7 +143,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "azure-oidc"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "azure-oidc"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -172,7 +172,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "saml-idp"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "saml-idp"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -193,7 +193,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "saml-full"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "saml-full"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -218,7 +218,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "google-mapped"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "google-mapped"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -246,7 +246,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "oidc-with-ids"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "oidc-with-ids"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -269,13 +269,13 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "google-ref"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "google-ref"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region: "us-west-2",
 				UserPoolId: &fkv1.StringValueOrRef{
 					LiteralOrRef: &fkv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &fkv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AwsCognitoUserPool,
+							Kind:      catalogkind.CatalogKind_AwsCognitoUserPool,
 							Name:      "my-pool",
 							FieldPath: "status.outputs.user_pool_id",
 						},
@@ -304,7 +304,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "no-pool"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "no-pool"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				ProviderName: "Google",
 				ProviderType: "Google",
@@ -325,7 +325,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "no-name"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "no-name"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -348,7 +348,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "no-type"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "no-type"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -371,7 +371,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "no-config"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "no-config"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -391,7 +391,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "mismatch-google-saml"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "mismatch-google-saml"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -412,7 +412,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "mismatch-oidc-google"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "mismatch-oidc-google"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -435,7 +435,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "mismatch-saml-fb"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "mismatch-saml-fb"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -462,7 +462,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "long-name"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "long-name"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -489,7 +489,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "saml-both"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "saml-both"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -511,7 +511,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "saml-none"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "saml-none"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -534,7 +534,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "oidc-bad-method"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "oidc-bad-method"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -561,7 +561,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "google-no-client"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "google-no-client"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -583,7 +583,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "oidc-no-issuer"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "oidc-no-issuer"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -604,7 +604,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "apple-no-team"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "apple-no-team"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -636,7 +636,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "too-many-ids"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "too-many-ids"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -664,7 +664,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "wrong.planton.dev/v1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "test"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "test"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "pool-id"}},
@@ -685,7 +685,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "WrongKind",
-			Metadata:   &shared.CloudResourceMetadata{Name: "test"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "test"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "pool-id"}},
@@ -726,7 +726,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "test"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "test"},
 		}
 		err := protovalidate.Validate(input)
 		gomega.Expect(err).NotTo(gomega.BeNil())
@@ -740,7 +740,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "google-idp"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "google-idp"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},
@@ -761,7 +761,7 @@ var _ = ginkgo.Describe("AwsCognitoIdentityProviderSpec validations", func() {
 		input := &AwsCognitoIdentityProvider{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCognitoIdentityProvider",
-			Metadata:   &shared.CloudResourceMetadata{Name: "corp-okta"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "corp-okta"},
 			Spec: &AwsCognitoIdentityProviderSpec{
 				Region:       "us-west-2",
 				UserPoolId:   &fkv1.StringValueOrRef{LiteralOrRef: &fkv1.StringValueOrRef_Value{Value: "us-east-1_Ab1Cd2EfG"}},

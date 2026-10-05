@@ -24,7 +24,7 @@ const properties = [
   {
     title: 'The Operator Does The Rest',
     description:
-      'Postgres, Redis, Temporal, control plane, console, identity, gateway and runner — with per-component health in plain language.',
+      'Postgres, Redis, Temporal, control plane, console, identity, gateway and runner — with per-service health in plain language.',
   },
 ];
 

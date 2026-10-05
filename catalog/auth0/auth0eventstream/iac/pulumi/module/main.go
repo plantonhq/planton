@@ -8,13 +8,13 @@ import (
 )
 
 // Resources creates an Auth0 Event Stream with all configured parameters
-func Resources(ctx *pulumi.Context, stackInput *auth0eventstreamv1alpha1.Auth0EventStreamStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *auth0eventstreamv1alpha1.Auth0EventStreamIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// Setup Auth0 provider with credentials from provider config
 	var provider *auth0.Provider
 	var err error
-	providerConfig := stackInput.ProviderConfig
+	providerConfig := iacInput.ProviderConfig
 
 	if providerConfig == nil {
 		// Use default provider (assumes credentials from environment variables)
@@ -41,6 +41,6 @@ func Resources(ctx *pulumi.Context, stackInput *auth0eventstreamv1alpha1.Auth0Ev
 		return errors.Wrap(err, "failed to create Auth0 event stream")
 	}
 
-	// Export stack outputs
+	// Export outputs
 	return exportOutputs(ctx, createdEventStream, locals)
 }

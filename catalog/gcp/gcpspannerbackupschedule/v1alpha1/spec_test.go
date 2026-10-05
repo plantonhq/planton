@@ -31,7 +31,7 @@ var _ = ginkgo.Describe("GcpSpannerBackupScheduleSpec", func() {
 		return &GcpSpannerBackupSchedule{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpSpannerBackupSchedule",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-backup-schedule",
 			},
 			Spec: &GcpSpannerBackupScheduleSpec{

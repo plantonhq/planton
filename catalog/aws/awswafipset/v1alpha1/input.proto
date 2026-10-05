@@ -5,9 +5,9 @@ package dev.planton.aws.awswafipset.v1alpha1;
 import "catalog/aws/awswafipset/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsWafIpSetStackInput is the input for the aws-waf-ip-set IaC modules.
-message AwsWafIpSetStackInput {
-  // target cloud-resource
+// AwsWafIpSetIacInput is the input for the aws-waf-ip-set IaC modules.
+message AwsWafIpSetIacInput {
+  // the catalog object to deploy
   AwsWafIpSet target = 1;
 
   // provider-config

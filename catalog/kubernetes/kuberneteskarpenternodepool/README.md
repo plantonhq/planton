@@ -7,7 +7,7 @@ NodePool does nothing without a Karpenter installation
 (KubernetesKarpenter) on the cluster; its CRD does not even exist before
 the engine's CRD release is applied.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You need the cloud-level machine template** — AMIs, subnets,
   security groups, and IAM live in the NodeClass the pool references
@@ -101,7 +101,7 @@ time, not at apply.
   values the launched fleet must span (1–50), the
   instance-type-diversity knob for spot pools
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azureprivatednszone.v1alpha1;
 
-// **AzurePrivateDnsZoneStackOutputs** captures the outputs of provisioning
+// **AzurePrivateDnsZoneOutputs** captures the outputs of provisioning
 // an Azure Private DNS zone.
 //
 // The primary output is `zone_id`, the join key for everything that
@@ -12,7 +12,7 @@ package dev.planton.azure.azureprivatednszone.v1alpha1;
 // - AzurePrivateEndpoint (private_dns_zone_id for DNS zone group registration)
 // - AzurePostgresqlFlexibleServer / AzureMysqlFlexibleServer
 //   (private_dns_zone_id for VNet-integrated deployment)
-message AzurePrivateDnsZoneStackOutputs {
+message AzurePrivateDnsZoneOutputs {
   // The Azure Resource Manager ID of the private DNS zone.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/privateDnsZones/{name}
   // This is the primary output referenced by downstream resources via StringValueOrRef.

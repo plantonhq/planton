@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.openfga.openfgarelationshiptuple.v1alpha1;
 
-// OpenFgaRelationshipTupleStackOutputs contains the outputs from an OpenFGA Relationship Tuple deployment.
+// OpenFgaRelationshipTupleOutputs contains the outputs from an OpenFGA Relationship Tuple deployment.
 //
 // Unlike other OpenFGA resources, relationship tuples don't have a unique ID returned by the API.
 // The tuple is uniquely identified by the combination of (store_id, user, relation, object).
@@ -11,7 +11,7 @@ package dev.planton.openfga.openfgarelationshiptuple.v1alpha1;
 //
 // Reference:
 // - Terraform: https://registry.terraform.io/providers/openfga/openfga/latest/docs/resources/relationship_tuple
-message OpenFgaRelationshipTupleStackOutputs {
+message OpenFgaRelationshipTupleOutputs {
   // user is the subject of the relationship tuple that was created.
   // This echoes back the user field from the spec.
   string user = 1;

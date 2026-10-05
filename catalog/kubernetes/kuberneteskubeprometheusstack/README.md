@@ -9,7 +9,7 @@ the norm.** The chart installs the monitoring.coreos.com CRDs
 cluster must set `skip_crds` and fence its discovery, an advanced
 posture, not the default.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You only want dashboards** — deploy `KubernetesGrafana` and point
   it at existing datasources. The stack's bundled Grafana exists to
@@ -129,7 +129,7 @@ pre-loaded with the matching dashboards.
 - **`spec.image_registry` / `spec.image_pull_secrets` /
   `spec.helm_values`**: the air-gap path and the escape hatch
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

@@ -28,7 +28,7 @@ import "shared/options/options.proto";
 //   directory) in `supported_identity_providers`.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 message AwsCognitoUserPoolClientSpec {
   // The AWS region where the resource will be created.
   // Example: "us-west-2", "eu-west-1"

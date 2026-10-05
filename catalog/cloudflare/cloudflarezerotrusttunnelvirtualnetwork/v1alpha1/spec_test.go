@@ -16,7 +16,7 @@ func validVirtualNetwork() *CloudflareZeroTrustTunnelVirtualNetwork {
 	return &CloudflareZeroTrustTunnelVirtualNetwork{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustTunnelVirtualNetwork",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-vnet"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-vnet"},
 		Spec: &CloudflareZeroTrustTunnelVirtualNetworkSpec{
 			AccountId: validAccountID,
 			Name:      "prod-vnet",

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEcsServiceStackOutputs captures the observable outputs of a
+// AwsEcsServiceOutputs captures the observable outputs of a
 // provisioned ECS service.
-type AwsEcsServiceStackOutputs struct {
+type AwsEcsServiceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ARN of the service (e.g. "arn:aws:ecs:us-west-2:123456789012:
 	// service/my-cluster/api"). The primary handle for IAM policies, audit
@@ -44,20 +44,20 @@ type AwsEcsServiceStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AwsEcsServiceStackOutputs) Reset() {
-	*x = AwsEcsServiceStackOutputs{}
+func (x *AwsEcsServiceOutputs) Reset() {
+	*x = AwsEcsServiceOutputs{}
 	mi := &file_catalog_aws_awsecsservice_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEcsServiceStackOutputs) String() string {
+func (x *AwsEcsServiceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEcsServiceStackOutputs) ProtoMessage() {}
+func (*AwsEcsServiceOutputs) ProtoMessage() {}
 
-func (x *AwsEcsServiceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEcsServiceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsecsservice_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,33 +69,33 @@ func (x *AwsEcsServiceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEcsServiceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEcsServiceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEcsServiceOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEcsServiceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsecsservice_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEcsServiceStackOutputs) GetServiceArn() string {
+func (x *AwsEcsServiceOutputs) GetServiceArn() string {
 	if x != nil {
 		return x.ServiceArn
 	}
 	return ""
 }
 
-func (x *AwsEcsServiceStackOutputs) GetServiceName() string {
+func (x *AwsEcsServiceOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *AwsEcsServiceStackOutputs) GetClusterArn() string {
+func (x *AwsEcsServiceOutputs) GetClusterArn() string {
 	if x != nil {
 		return x.ClusterArn
 	}
 	return ""
 }
 
-func (x *AwsEcsServiceStackOutputs) GetTaskDefinitionArn() string {
+func (x *AwsEcsServiceOutputs) GetTaskDefinitionArn() string {
 	if x != nil {
 		return x.TaskDefinitionArn
 	}
@@ -106,8 +106,8 @@ var File_catalog_aws_awsecsservice_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awsecsservice_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awsecsservice/v1alpha1/outputs.proto\x12&dev.planton.aws.awsecsservice.v1alpha1\"\xb0\x01\n" +
-	"\x19AwsEcsServiceStackOutputs\x12\x1f\n" +
+	"0catalog/aws/awsecsservice/v1alpha1/outputs.proto\x12&dev.planton.aws.awsecsservice.v1alpha1\"\xab\x01\n" +
+	"\x14AwsEcsServiceOutputs\x12\x1f\n" +
 	"\vservice_arn\x18\x01 \x01(\tR\n" +
 	"serviceArn\x12!\n" +
 	"\fservice_name\x18\x02 \x01(\tR\vserviceName\x12\x1f\n" +
@@ -130,7 +130,7 @@ func file_catalog_aws_awsecsservice_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsecsservice_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsecsservice_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEcsServiceStackOutputs)(nil), // 0: dev.planton.aws.awsecsservice.v1alpha1.AwsEcsServiceStackOutputs
+	(*AwsEcsServiceOutputs)(nil), // 0: dev.planton.aws.awsecsservice.v1alpha1.AwsEcsServiceOutputs
 }
 var file_catalog_aws_awsecsservice_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

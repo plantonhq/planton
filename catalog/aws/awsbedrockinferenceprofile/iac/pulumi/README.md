@@ -13,4 +13,4 @@ Provisions an Amazon Bedrock application inference profile using Pulumi
 ## Usage
 
 The module is executed by the Planton platform through the entrypoint in
-`main.go`, which loads the `AwsBedrockInferenceProfileStackInput`.
+`main.go`, which loads the `AwsBedrockInferenceProfileIacInput`.

@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanFirewallStackOutputs captures the identifiers exported after a
+// DigitalOceanFirewallOutputs captures the identifiers exported after a
 // firewall is provisioned. The firewall's live status and pending per-Droplet
 // changes are deliberately NOT outputs: they are apply-time snapshots that go
 // stale immediately; verification reads them from the live API instead.
-type DigitalOceanFirewallStackOutputs struct {
+type DigitalOceanFirewallOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique ID of the firewall (a UUID assigned by DigitalOcean).
 	FirewallId    string `protobuf:"bytes,1,opt,name=firewall_id,json=firewallId,proto3" json:"firewall_id,omitempty"`
@@ -33,20 +33,20 @@ type DigitalOceanFirewallStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanFirewallStackOutputs) Reset() {
-	*x = DigitalOceanFirewallStackOutputs{}
+func (x *DigitalOceanFirewallOutputs) Reset() {
+	*x = DigitalOceanFirewallOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanFirewallStackOutputs) String() string {
+func (x *DigitalOceanFirewallOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanFirewallStackOutputs) ProtoMessage() {}
+func (*DigitalOceanFirewallOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanFirewallStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanFirewallOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,12 +58,12 @@ func (x *DigitalOceanFirewallStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanFirewallStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanFirewallStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanFirewallOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanFirewallOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanFirewallStackOutputs) GetFirewallId() string {
+func (x *DigitalOceanFirewallOutputs) GetFirewallId() string {
 	if x != nil {
 		return x.FirewallId
 	}
@@ -74,8 +74,8 @@ var File_catalog_digitalocean_digitaloceanfirewall_v1alpha1_outputs_proto protor
 
 const file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/digitalocean/digitaloceanfirewall/v1alpha1/outputs.proto\x126dev.planton.digitalocean.digitaloceanfirewall.v1alpha1\"C\n" +
-	" DigitalOceanFirewallStackOutputs\x12\x1f\n" +
+	"@catalog/digitalocean/digitaloceanfirewall/v1alpha1/outputs.proto\x126dev.planton.digitalocean.digitaloceanfirewall.v1alpha1\">\n" +
+	"\x1bDigitalOceanFirewallOutputs\x12\x1f\n" +
 	"\vfirewall_id\x18\x01 \x01(\tR\n" +
 	"firewallIdB\xb5\x03\n" +
 	":com.dev.planton.digitalocean.digitaloceanfirewall.v1alpha1B\fOutputsProtoP\x01Zlgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanfirewall/v1alpha1;digitaloceanfirewallv1alpha1\xa2\x02\x04DPDD\xaa\x026Dev.Planton.Digitalocean.Digitaloceanfirewall.V1alpha1\xca\x026Dev\\Planton\\Digitalocean\\Digitaloceanfirewall\\V1alpha1\xe2\x02BDev\\Planton\\Digitalocean\\Digitaloceanfirewall\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Digitalocean::Digitaloceanfirewall::V1alpha1b\x06proto3"
@@ -94,7 +94,7 @@ func file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanFirewallStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewallStackOutputs
+	(*DigitalOceanFirewallOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewallOutputs
 }
 var file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

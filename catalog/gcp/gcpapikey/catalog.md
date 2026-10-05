@@ -4,7 +4,7 @@ Creates a Google Cloud API key: the project-scoped credential a client applicati
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API key** -- the `apikeys_key` in the project's `global` location, named by `keyId`, with its display name and optional service-account binding
 - **Restrictions** -- at most one client arm (`androidKeyRestrictions`, `iosKeyRestrictions`, `browserKeyRestrictions`, `serverKeyRestrictions`) plus any number of `apiTargets`, updated in place whenever the spec changes
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Project
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f api-key.yaml
 ```
 
-This creates a key only the signed Android app can present, and only against the Firebase installation and FCM registration APIs. The `uid` output is what a Firebase app registration references; the `key_string` output is what ships in the app. A Stack Job tracks the provisioning in real time.
+This creates a key only the signed Android app can present, and only against the Firebase installation and FCM registration APIs. The `uid` output is what a Firebase app registration references; the `key_string` output is what ships in the app. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -93,16 +93,16 @@ These are the most important decisions when configuring an API key. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 | **GcpServiceAccount** (optional) | `serviceAccountEmail` | `status.outputs.email` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,6 +124,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Firebase Project**](/cloud-catalog/gcp-firebase-project) -- Firebase enabled on the same project; the app registrations that reference this key live inside it
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the project the key belongs to
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the identity a service-account-bound key authenticates as
+- [**GCP Firebase Project**](/infra-catalog/gcp-firebase-project) -- Firebase enabled on the same project; the app registrations that reference this key live inside it
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the project the key belongs to
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the identity a service-account-bound key authenticates as

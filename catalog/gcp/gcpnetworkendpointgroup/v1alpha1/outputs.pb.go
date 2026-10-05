@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpNetworkEndpointGroupStackOutputs captures the group after
+// GcpNetworkEndpointGroupOutputs captures the group after
 // provisioning -- above all the self_link a backend service names in its
 // backends[].group.
-type GcpNetworkEndpointGroupStackOutputs struct {
+type GcpNetworkEndpointGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Self-link URI of the group: the value a GcpBackendService backend
 	// names. A zonal link carries zones/{zone}, a global one says global.
@@ -44,20 +44,20 @@ type GcpNetworkEndpointGroupStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpNetworkEndpointGroupStackOutputs) Reset() {
-	*x = GcpNetworkEndpointGroupStackOutputs{}
+func (x *GcpNetworkEndpointGroupOutputs) Reset() {
+	*x = GcpNetworkEndpointGroupOutputs{}
 	mi := &file_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpNetworkEndpointGroupStackOutputs) String() string {
+func (x *GcpNetworkEndpointGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpNetworkEndpointGroupStackOutputs) ProtoMessage() {}
+func (*GcpNetworkEndpointGroupOutputs) ProtoMessage() {}
 
-func (x *GcpNetworkEndpointGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpNetworkEndpointGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,40 +69,40 @@ func (x *GcpNetworkEndpointGroupStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpNetworkEndpointGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpNetworkEndpointGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpNetworkEndpointGroupOutputs.ProtoReflect.Descriptor instead.
+func (*GcpNetworkEndpointGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpNetworkEndpointGroupStackOutputs) GetSelfLink() string {
+func (x *GcpNetworkEndpointGroupOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpNetworkEndpointGroupStackOutputs) GetNegName() string {
+func (x *GcpNetworkEndpointGroupOutputs) GetNegName() string {
 	if x != nil {
 		return x.NegName
 	}
 	return ""
 }
 
-func (x *GcpNetworkEndpointGroupStackOutputs) GetNegId() string {
+func (x *GcpNetworkEndpointGroupOutputs) GetNegId() string {
 	if x != nil {
 		return x.NegId
 	}
 	return ""
 }
 
-func (x *GcpNetworkEndpointGroupStackOutputs) GetZone() string {
+func (x *GcpNetworkEndpointGroupOutputs) GetZone() string {
 	if x != nil {
 		return x.Zone
 	}
 	return ""
 }
 
-func (x *GcpNetworkEndpointGroupStackOutputs) GetSize() string {
+func (x *GcpNetworkEndpointGroupOutputs) GetSize() string {
 	if x != nil {
 		return x.Size
 	}
@@ -113,8 +113,8 @@ var File_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpnetworkendpointgroup/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1\"\x9c\x01\n" +
-	"#GcpNetworkEndpointGroupStackOutputs\x12\x1b\n" +
+	":catalog/gcp/gcpnetworkendpointgroup/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1\"\x97\x01\n" +
+	"\x1eGcpNetworkEndpointGroupOutputs\x12\x1b\n" +
 	"\tself_link\x18\x01 \x01(\tR\bselfLink\x12\x19\n" +
 	"\bneg_name\x18\x02 \x01(\tR\anegName\x12\x15\n" +
 	"\x06neg_id\x18\x03 \x01(\tR\x05negId\x12\x12\n" +
@@ -136,7 +136,7 @@ func file_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpNetworkEndpointGroupStackOutputs)(nil), // 0: dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpointGroupStackOutputs
+	(*GcpNetworkEndpointGroupOutputs)(nil), // 0: dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpointGroupOutputs
 }
 var file_catalog_gcp_gcpnetworkendpointgroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureVpnGatewayStackOutputs** captures the outputs of provisioning
+// **AzureVpnGatewayOutputs** captures the outputs of provisioning
 // a Virtual WAN VPN gateway and its NAT rule children.
-type AzureVpnGatewayStackOutputs struct {
+type AzureVpnGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the gateway -- what a connection
 	// references as its vpn_gateway_id.
@@ -52,20 +52,20 @@ type AzureVpnGatewayStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureVpnGatewayStackOutputs) Reset() {
-	*x = AzureVpnGatewayStackOutputs{}
+func (x *AzureVpnGatewayOutputs) Reset() {
+	*x = AzureVpnGatewayOutputs{}
 	mi := &file_catalog_azure_azurevpngateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVpnGatewayStackOutputs) String() string {
+func (x *AzureVpnGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVpnGatewayStackOutputs) ProtoMessage() {}
+func (*AzureVpnGatewayOutputs) ProtoMessage() {}
 
-func (x *AzureVpnGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureVpnGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevpngateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -77,47 +77,47 @@ func (x *AzureVpnGatewayStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVpnGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureVpnGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVpnGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*AzureVpnGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevpngateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVpnGatewayStackOutputs) GetVpnGatewayId() string {
+func (x *AzureVpnGatewayOutputs) GetVpnGatewayId() string {
 	if x != nil {
 		return x.VpnGatewayId
 	}
 	return ""
 }
 
-func (x *AzureVpnGatewayStackOutputs) GetVpnGatewayName() string {
+func (x *AzureVpnGatewayOutputs) GetVpnGatewayName() string {
 	if x != nil {
 		return x.VpnGatewayName
 	}
 	return ""
 }
 
-func (x *AzureVpnGatewayStackOutputs) GetBgpAsn() int64 {
+func (x *AzureVpnGatewayOutputs) GetBgpAsn() int64 {
 	if x != nil {
 		return x.BgpAsn
 	}
 	return 0
 }
 
-func (x *AzureVpnGatewayStackOutputs) GetPublicIpAddresses() []string {
+func (x *AzureVpnGatewayOutputs) GetPublicIpAddresses() []string {
 	if x != nil {
 		return x.PublicIpAddresses
 	}
 	return nil
 }
 
-func (x *AzureVpnGatewayStackOutputs) GetPrivateIpAddresses() []string {
+func (x *AzureVpnGatewayOutputs) GetPrivateIpAddresses() []string {
 	if x != nil {
 		return x.PrivateIpAddresses
 	}
 	return nil
 }
 
-func (x *AzureVpnGatewayStackOutputs) GetNatRuleIds() map[string]string {
+func (x *AzureVpnGatewayOutputs) GetNatRuleIds() map[string]string {
 	if x != nil {
 		return x.NatRuleIds
 	}
@@ -128,14 +128,14 @@ var File_catalog_azure_azurevpngateway_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_azure_azurevpngateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/azure/azurevpngateway/v1alpha1/outputs.proto\x12*dev.planton.azure.azurevpngateway.v1alpha1\"\xa2\x03\n" +
-	"\x1bAzureVpnGatewayStackOutputs\x12$\n" +
+	"4catalog/azure/azurevpngateway/v1alpha1/outputs.proto\x12*dev.planton.azure.azurevpngateway.v1alpha1\"\x98\x03\n" +
+	"\x16AzureVpnGatewayOutputs\x12$\n" +
 	"\x0evpn_gateway_id\x18\x01 \x01(\tR\fvpnGatewayId\x12(\n" +
 	"\x10vpn_gateway_name\x18\x02 \x01(\tR\x0evpnGatewayName\x12\x17\n" +
 	"\abgp_asn\x18\x03 \x01(\x03R\x06bgpAsn\x12.\n" +
 	"\x13public_ip_addresses\x18\x04 \x03(\tR\x11publicIpAddresses\x120\n" +
-	"\x14private_ip_addresses\x18\x05 \x03(\tR\x12privateIpAddresses\x12y\n" +
-	"\fnat_rule_ids\x18\x06 \x03(\v2W.dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayStackOutputs.NatRuleIdsEntryR\n" +
+	"\x14private_ip_addresses\x18\x05 \x03(\tR\x12privateIpAddresses\x12t\n" +
+	"\fnat_rule_ids\x18\x06 \x03(\v2R.dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayOutputs.NatRuleIdsEntryR\n" +
 	"natRuleIds\x1a=\n" +
 	"\x0fNatRuleIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -156,11 +156,11 @@ func file_catalog_azure_azurevpngateway_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_azure_azurevpngateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurevpngateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureVpnGatewayStackOutputs)(nil), // 0: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayStackOutputs
-	nil,                                 // 1: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayStackOutputs.NatRuleIdsEntry
+	(*AzureVpnGatewayOutputs)(nil), // 0: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayOutputs
+	nil,                            // 1: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayOutputs.NatRuleIdsEntry
 }
 var file_catalog_azure_azurevpngateway_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayStackOutputs.nat_rule_ids:type_name -> dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayStackOutputs.NatRuleIdsEntry
+	1, // 0: dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayOutputs.nat_rule_ids:type_name -> dev.planton.azure.azurevpngateway.v1alpha1.AzureVpnGatewayOutputs.NatRuleIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

@@ -6,11 +6,11 @@
 
 ## Summary
 
-Fixed OCI Helm chart deployment for both `KubernetesGhaRunnerScaleSetController` and `KubernetesGhaRunnerScaleSet` components. The Pulumi and Terraform modules were incorrectly splitting the OCI registry URL into `repository` and `chart` parameters, which doesn't work with OCI-based Helm charts.
+Fixed OCI Helm chart deployment for both `KubernetesGhaRunnerScaleSetController` and `KubernetesGhaRunnerScaleSet` kinds. The Pulumi and Terraform modules were incorrectly splitting the OCI registry URL into `repository` and `chart` parameters, which doesn't work with OCI-based Helm charts.
 
 ## Problem Statement
 
-When deploying GitHub Actions Runner infrastructure using the `KubernetesGhaRunnerScaleSetController` component, the Helm chart deployment failed with:
+When deploying GitHub Actions Runner infrastructure using the `KubernetesGhaRunnerScaleSetController` kind, the Helm chart deployment failed with:
 
 ```
 error: kubernetes:helm.sh/v3:Release resource 'arc': property chart value 
@@ -45,7 +45,7 @@ For OCI charts, the **full URL must be passed as the `chart` parameter**, not sp
 
 ## Solution
 
-Updated both Pulumi and Terraform modules for both GHA runner components to use the correct OCI chart URL pattern.
+Updated both Pulumi and Terraform modules for both GHA runner kinds to use the correct OCI chart URL pattern.
 
 ### KubernetesGhaRunnerScaleSetController
 
@@ -77,13 +77,13 @@ Same pattern - combined `chart_repo` + `chart_name` into single `chart_oci` and 
 
 ### KubernetesGhaRunnerScaleSet
 
-Applied identical fix pattern to the runner scale set component.
+Applied identical fix pattern to the runner scale set kind.
 
 ## Implementation Details
 
 ### Files Changed
 
-| Component | File | Change |
+| Kind | File | Change |
 |-----------|------|--------|
 | Controller Pulumi | `kubernetesgharunnerscalesetcontroller/v1/iac/pulumi/module/vars.go` | Combined URL into `HelmChartOCI` |
 | Controller Pulumi | `kubernetesgharunnerscalesetcontroller/v1/iac/pulumi/module/controller.go` | Removed `RepositoryOpts` |
@@ -132,7 +132,7 @@ flowchart LR
 ## Related Work
 
 - Planton project: `_projects/2025-12/20251220.01.planton-dev-env-setup/`
-- InfraChart: `planton-gha-runners` (uses these deployment components)
+- InfraChart: `planton-gha-runners` (uses these catalog kinds)
 - Design decision: `design-decisions/self-hosted-gha-runners.md`
 
 ---

@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP global address.
-type GcpGlobalAddressStackOutputs struct {
+type GcpGlobalAddressOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The reserved IP address or the start of the reserved CIDR range.
 	// For EXTERNAL addresses this is a public IP. For INTERNAL VPC_PEERING addresses
@@ -41,20 +41,20 @@ type GcpGlobalAddressStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpGlobalAddressStackOutputs) Reset() {
-	*x = GcpGlobalAddressStackOutputs{}
+func (x *GcpGlobalAddressOutputs) Reset() {
+	*x = GcpGlobalAddressOutputs{}
 	mi := &file_catalog_gcp_gcpglobaladdress_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpGlobalAddressStackOutputs) String() string {
+func (x *GcpGlobalAddressOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpGlobalAddressStackOutputs) ProtoMessage() {}
+func (*GcpGlobalAddressOutputs) ProtoMessage() {}
 
-func (x *GcpGlobalAddressStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpGlobalAddressOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpglobaladdress_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,33 +66,33 @@ func (x *GcpGlobalAddressStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpGlobalAddressStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpGlobalAddressStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpGlobalAddressOutputs.ProtoReflect.Descriptor instead.
+func (*GcpGlobalAddressOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpglobaladdress_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpGlobalAddressStackOutputs) GetAddress() string {
+func (x *GcpGlobalAddressOutputs) GetAddress() string {
 	if x != nil {
 		return x.Address
 	}
 	return ""
 }
 
-func (x *GcpGlobalAddressStackOutputs) GetSelfLink() string {
+func (x *GcpGlobalAddressOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpGlobalAddressStackOutputs) GetCreationTimestamp() string {
+func (x *GcpGlobalAddressOutputs) GetCreationTimestamp() string {
 	if x != nil {
 		return x.CreationTimestamp
 	}
 	return ""
 }
 
-func (x *GcpGlobalAddressStackOutputs) GetName() string {
+func (x *GcpGlobalAddressOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
@@ -103,8 +103,8 @@ var File_catalog_gcp_gcpglobaladdress_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpglobaladdress_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpglobaladdress/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpglobaladdress.v1alpha1\"\x98\x01\n" +
-	"\x1cGcpGlobalAddressStackOutputs\x12\x18\n" +
+	"3catalog/gcp/gcpglobaladdress/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpglobaladdress.v1alpha1\"\x93\x01\n" +
+	"\x17GcpGlobalAddressOutputs\x12\x18\n" +
 	"\aaddress\x18\x01 \x01(\tR\aaddress\x12\x1b\n" +
 	"\tself_link\x18\x02 \x01(\tR\bselfLink\x12-\n" +
 	"\x12creation_timestamp\x18\x03 \x01(\tR\x11creationTimestamp\x12\x12\n" +
@@ -125,7 +125,7 @@ func file_catalog_gcp_gcpglobaladdress_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpglobaladdress_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpglobaladdress_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpGlobalAddressStackOutputs)(nil), // 0: dev.planton.gcp.gcpglobaladdress.v1alpha1.GcpGlobalAddressStackOutputs
+	(*GcpGlobalAddressOutputs)(nil), // 0: dev.planton.gcp.gcpglobaladdress.v1alpha1.GcpGlobalAddressOutputs
 }
 var file_catalog_gcp_gcpglobaladdress_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

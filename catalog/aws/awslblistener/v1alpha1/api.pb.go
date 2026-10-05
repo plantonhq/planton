@@ -31,7 +31,7 @@ type AwsLbListener struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsLbListenerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsLbListener) GetKind() string {
 	return ""
 }
 
-func (x *AwsLbListener) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsLbListener) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsLbListener) GetStatus() *AwsLbListenerStatus {
 // aws-lb-listener status
 type AwsLbListenerStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsLbListenerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsLbListenerOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsLbListenerStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awslblistener_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsLbListenerStatus) GetOutputs() *AwsLbListenerStackOutputs {
+func (x *AwsLbListenerStatus) GetOutputs() *AwsLbListenerOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awslblistener_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12(\n" +
 	"\x04kind\x18\x02 \x01(\tB\x14\xbaH\x11r\x0f\n" +
 	"\rAwsLbListenerR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
 	"\x04spec\x18\x04 \x01(\v29.dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12S\n" +
-	"\x06status\x18\x05 \x01(\v2;.dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerStatusR\x06status\"r\n" +
-	"\x13AwsLbListenerStatus\x12[\n" +
-	"\aoutputs\x18\x01 \x01(\v2A.dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerStackOutputsR\aoutputsB\xca\x02\n" +
+	"\x06status\x18\x05 \x01(\v2;.dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerStatusR\x06status\"m\n" +
+	"\x13AwsLbListenerStatus\x12V\n" +
+	"\aoutputs\x18\x01 \x01(\v2<.dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerOutputsR\aoutputsB\xca\x02\n" +
 	"*com.dev.planton.aws.awslblistener.v1alpha1B\bApiProtoP\x01ZUgithub.com/plantonhq/planton/catalog/aws/awslblistener/v1alpha1;awslblistenerv1alpha1\xa2\x02\x04DPAA\xaa\x02&Dev.Planton.Aws.Awslblistener.V1alpha1\xca\x02&Dev\\Planton\\Aws\\Awslblistener\\V1alpha1\xe2\x022Dev\\Planton\\Aws\\Awslblistener\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Aws::Awslblistener::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_aws_awslblistener_v1alpha1_api_proto_msgTypes = make([]protoimp
 var file_catalog_aws_awslblistener_v1alpha1_api_proto_goTypes = []any{
 	(*AwsLbListener)(nil),                // 0: dev.planton.aws.awslblistener.v1alpha1.AwsLbListener
 	(*AwsLbListenerStatus)(nil),          // 1: dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsLbListenerSpec)(nil),            // 3: dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerSpec
-	(*AwsLbListenerStackOutputs)(nil),    // 4: dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerStackOutputs
+	(*AwsLbListenerOutputs)(nil),         // 4: dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerOutputs
 }
 var file_catalog_aws_awslblistener_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awslblistener.v1alpha1.AwsLbListener.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awslblistener.v1alpha1.AwsLbListener.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awslblistener.v1alpha1.AwsLbListener.spec:type_name -> dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerSpec
 	1, // 2: dev.planton.aws.awslblistener.v1alpha1.AwsLbListener.status:type_name -> dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerStatus
-	4, // 3: dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerStatus.outputs:type_name -> dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerStackOutputs
+	4, // 3: dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerStatus.outputs:type_name -> dev.planton.aws.awslblistener.v1alpha1.AwsLbListenerOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

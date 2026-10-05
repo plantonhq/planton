@@ -1,5 +1,5 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: azuremanagedredis
 spec:
@@ -19,7 +19,7 @@ spec:
   deferred_reason: >-
     Deferred by owner decision: a Managed Redis cluster provisions and
     deletes in tens of minutes, so the dual-engine suite exceeds the
-    pre-approved live-E2E window. The component stands on its green
+    pre-approved live-E2E window. The kind stands on its green
     offline gate -- 100% parity audit, full tofu plan rendering the
     SKU/CMK/module/persistence seams, spec tests covering every
     validation rule, and the outputs conformance case. The scenario

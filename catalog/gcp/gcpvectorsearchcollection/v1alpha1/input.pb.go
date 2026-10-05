@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-vector-search-collection stack-input
-type GcpVectorSearchCollectionStackInput struct {
+// gcp-vector-search-collection iac-input
+type GcpVectorSearchCollectionIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpVectorSearchCollection `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpVectorSearchCollectionStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpVectorSearchCollectionStackInput) Reset() {
-	*x = GcpVectorSearchCollectionStackInput{}
+func (x *GcpVectorSearchCollectionIacInput) Reset() {
+	*x = GcpVectorSearchCollectionIacInput{}
 	mi := &file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVectorSearchCollectionStackInput) String() string {
+func (x *GcpVectorSearchCollectionIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVectorSearchCollectionStackInput) ProtoMessage() {}
+func (*GcpVectorSearchCollectionIacInput) ProtoMessage() {}
 
-func (x *GcpVectorSearchCollectionStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpVectorSearchCollectionIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpVectorSearchCollectionStackInput) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVectorSearchCollectionStackInput.ProtoReflect.Descriptor instead.
-func (*GcpVectorSearchCollectionStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVectorSearchCollectionIacInput.ProtoReflect.Descriptor instead.
+func (*GcpVectorSearchCollectionIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVectorSearchCollectionStackInput) GetTarget() *GcpVectorSearchCollection {
+func (x *GcpVectorSearchCollectionIacInput) GetTarget() *GcpVectorSearchCollection {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpVectorSearchCollectionStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpVectorSearchCollectionIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpvectorsearchcollection_v1alpha1_input_proto protoreflect
 
 const file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpvectorsearchcollection/v1alpha1/input.proto\x122dev.planton.gcp.gcpvectorsearchcollection.v1alpha1\x1a8catalog/gcp/gcpvectorsearchcollection/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd9\x01\n" +
-	"#GcpVectorSearchCollectionStackInput\x12e\n" +
+	":catalog/gcp/gcpvectorsearchcollection/v1alpha1/input.proto\x122dev.planton.gcp.gcpvectorsearchcollection.v1alpha1\x1a8catalog/gcp/gcpvectorsearchcollection/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd7\x01\n" +
+	"!GcpVectorSearchCollectionIacInput\x12e\n" +
 	"\x06target\x18\x01 \x01(\v2M.dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xa0\x03\n" +
 	"6com.dev.planton.gcp.gcpvectorsearchcollection.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_input_proto_rawDescGZIP
 
 var file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_input_proto_goTypes = []any{
-	(*GcpVectorSearchCollectionStackInput)(nil), // 0: dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionStackInput
-	(*GcpVectorSearchCollection)(nil),           // 1: dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollection
-	(*gcp.GcpProviderConfig)(nil),               // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpVectorSearchCollectionIacInput)(nil), // 0: dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionIacInput
+	(*GcpVectorSearchCollection)(nil),         // 1: dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollection
+	(*gcp.GcpProviderConfig)(nil),             // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionStackInput.target:type_name -> dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollection
-	2, // 1: dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionIacInput.target:type_name -> dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollection
+	2, // 1: dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

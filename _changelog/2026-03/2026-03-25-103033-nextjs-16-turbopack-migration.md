@@ -76,7 +76,7 @@ import typescript from "eslint-config-next/typescript";
 |---------|-------------|-------|
 | Static browser value in effect | `useSyncExternalStore` | SearchTrigger |
 | Derived state in effect | `useMemo` | TableOfContents, TutorialsPageClient |
-| Derived config from props | `useMemo` with override layers | StackJobLogger |
+| Derived config from props | `useMemo` with override layers | InfraJobLogger |
 | URL hash sync on mount | `requestAnimationFrame` callback | InvestorDeckV2, MeetsDeck, useExplainerState |
 | State reset on prop change | `requestAnimationFrame` callback | DocsSidebar, MarkdownViewDialog, TourPage |
 | DOM position via setState | Direct ref-based DOM manipulation | Tooltip |

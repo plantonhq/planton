@@ -11,19 +11,19 @@ tags:
 
 # Deployment Stage
 
-After the build stage produces a container image or worker script, the deployment stage takes over. It resolves deployment manifests, creates a deployment task for each target environment, and provisions each one through a Stack Job. This page explains what happens during that process — how manifests are produced, how environments are matched, and how you can use the same system for local development.
+After the build stage produces a container image or worker script, the deployment stage takes over. It resolves deployment manifests, creates a deployment task for each target environment, and provisions each one through an Infra Job. This page explains what happens during that process — how manifests are produced, how environments are matched, and how you can use the same system for local development.
 
 For the high-level pipeline model (triggers, stages, cancellation, approval gates), see [Pipelines](/docs/ci-cd/pipelines). For supported platforms and the choice between Git-based and inline configuration, see [Deployment Targets](/docs/ci-cd/deployment-targets).
 
 ## How Manifests Are Resolved
 
-The deployment stage produces cloud resource manifests through one of two paths, depending on how the service is configured:
+The deployment stage produces catalog object manifests through one of two paths, depending on how the service is configured:
 
 **Git-based** (default): The pipeline reads deployment manifests from a `_kustomize` directory in your repository. During the build stage, a kustomize-build task processes each overlay directory and stores the merged manifests. The deployment stage reads those manifests and creates one deployment task per environment.
 
 **Inline** (UI-based): Deployment targets are defined directly in the Service configuration. The deployment stage reads them from the service spec, substitutes template variables (such as `{{ .Image }}` for the built container image reference and `{{ .CommitSHA }}` for the Git commit), and creates one deployment task per target.
 
-Both paths converge at the same point: a set of cloud resource manifests, one per environment, ready to be provisioned through Planton's infrastructure layer.
+Both paths converge at the same point: a set of catalog object manifests, one per environment, ready to be provisioned through Planton's infrastructure layer.
 
 ## The Kustomize Model
 
@@ -173,7 +173,7 @@ For each resolved manifest (excluding the local overlay), the deployment stage c
 1. **Environment matching** — If the service has deployment environment filters configured, only matching overlays produce tasks. See [Deployment Environments](/docs/ci-cd/deployment-environments).
 2. **Ordering** — Tasks execute sequentially following the organization's promotion policy (for example: dev, then staging, then production).
 3. **Manual gates** — If a deployment target requires manual approval, the pipeline pauses at that task until a team member approves or rejects. See [Pipelines](/docs/ci-cd/pipelines#manual-approval-gates).
-4. **Stack Job creation** — Each task provisions the cloud resource manifest through a [Stack Job](/docs/infrastructure/stack-jobs). The Stack Job applies the infrastructure changes and reports completion.
+4. **Infra Job creation** — Each task provisions the catalog object manifest through an [Infra Job](/docs/infrastructure/infra-jobs). The Infra Job applies the infrastructure changes and reports completion.
 5. **Failure handling** — If a deployment task fails, all subsequent tasks are cancelled. No partial rollouts across environments.
 
 ## How the Image Is Pulled
@@ -182,7 +182,7 @@ The deployment stage injects the built image into every manifest that receives o
 
 - **Kubernetes workloads** get their registry login filled onto `pod.imageRegistries` from the service's registry connection when that connection holds a login a cluster can keep — a stored token or key, or GHCR's read-only pull token — with the password as a `$secret/` reference the runner resolves inside the cluster's account. The run's environment row states what was filled, or why nothing was (*ECR issues only twelve-hour tokens — the cluster pulls with its own AWS identity*; *add a read-only pull token to the registry connection, or declare the login on the workload's imageRegistries*). A login you already declared for the same registry is never overwritten.
 - **Cloud Run** pulls private images only from Artifact Registry; the service wizard warns at authoring time when the registry is anything else. **ECS** pulls from ECR with the task execution role and from other registries with the Secrets Manager credential the task definition declares.
-- **A reference that has no value yet** — a pull secret named in `pod.imagePullSecrets` that was never deployed — is refused before the stack job is created, naming the field and the resource, instead of producing a pod stuck in `ImagePullBackOff`.
+- **A reference that has no value yet** — a pull secret named in `pod.imagePullSecrets` that was never deployed — is refused before the Infra Job is created, naming the field and the resource, instead of producing a pod stuck in `ImagePullBackOff`.
 
 The three ways a workload can pull, and when to use each, are in [Pulling Private Images](/docs/connections/container-registries#pulling-private-images).
 
@@ -228,5 +228,5 @@ The last line is the door for a git-maintained service that has never been pushe
 - [Pipelines](/docs/ci-cd/pipelines) — The full pipeline model including build stage and triggers
 - [Deployment Targets](/docs/ci-cd/deployment-targets) — Supported platforms and the Git-based vs inline choice
 - [Deployment Environments](/docs/ci-cd/deployment-environments) — Controlling which environments a service deploys to
-- [Stack Jobs](/docs/infrastructure/stack-jobs) — How infrastructure changes are provisioned
+- [Infra Jobs](/docs/infrastructure/infra-jobs) — How infrastructure changes are provisioned
 - [Secrets](/docs/secrets) — Variable and secret management

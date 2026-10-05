@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -35,7 +35,7 @@ func minimalSpec() *AzureManagedRedisGeoReplication {
 	return &AzureManagedRedisGeoReplication{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureManagedRedisGeoReplication",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-geo-replication",
 		},
 		Spec: &AzureManagedRedisGeoReplicationSpec{
@@ -70,7 +70,7 @@ var _ = ginkgo.Describe("AzureManagedRedisGeoReplicationSpec Validation Tests", 
 				{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AzureManagedRedis,
+							Kind:      catalogkind.CatalogKind_AzureManagedRedis,
 							Name:      "app-cache-west",
 							FieldPath: "status.outputs.managed_redis_id",
 						},

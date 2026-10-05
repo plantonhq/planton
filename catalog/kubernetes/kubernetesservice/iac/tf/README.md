@@ -18,7 +18,7 @@ iac/tf/
 ├── variables.tf    # Input variables mirroring spec.proto
 ├── locals.tf       # Derived values: labels, namespace default, enum → API string translation
 ├── main.tf         # Creates kubernetes_service_v1 resource
-├── outputs.tf      # Exports the eight stack outputs
+├── outputs.tf      # Exports the eight outputs
 └── README.md       # This file
 ```
 

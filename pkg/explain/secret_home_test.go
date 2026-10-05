@@ -10,7 +10,7 @@ package explain
 import (
 	"testing"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/shared/options"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -55,7 +55,7 @@ func TestEverySecretHomeNamesAnExistingSiblingThatAcceptsSecrets(t *testing.T) {
 			}
 		}
 	}
-	for _, message := range crkreflect.ToMessageMap {
+	for _, message := range catalogkindreflect.ToMessageMap {
 		walk(message.ProtoReflect().Descriptor())
 	}
 	if marked < markedFieldsFloor {

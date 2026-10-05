@@ -15,7 +15,7 @@ import "shared/foreignkey/v1/foreign_key.proto";
 //
 // 100% fidelity with the upstream istio.io/api EnvoyFilter
 // (networking/v1alpha3/envoy_filter.proto, served as networking.istio.io/v1alpha3 — this
-// is the only typed Istio API component still on v1alpha3; it has NOT graduated to v1),
+// is the only typed Istio API kind still on v1alpha3; it has NOT graduated to v1),
 // pinned to the 1.30 line (tag 1.30.3). Upstream spec fields are flattened directly after
 // the Planton namespaced envelope (namespace); there is no nested
 // `envoy_filter` sub-message.
@@ -68,7 +68,7 @@ message KubernetesEnvoyFilterSpec {
   //       - kind: KubernetesDeployment
   //         name: "{{ values.app }}"
   //         type: depends_on
-  // See the component's "Composing in Infra Charts" docs for the full pattern.
+  // See the kind's "Composing in Infra Charts" docs for the full pattern.
   dev.planton.kubernetes.KubernetesIstioApiNetworkingWorkloadSelector workload_selector = 3;
 
   // One or more patches with match conditions, applied in list order within a context.
@@ -96,7 +96,7 @@ message KubernetesEnvoyFilterSpec {
   // covers a Service, a ServiceEntry, or anything created outside Planton; istiod
   // resolves group/kind/name at runtime, so order this EnvoyFilter after such a target
   // with metadata.relationships (`uses` -> KubernetesService / KubernetesServiceEntry).
-  // See the component's "Composing in Infra Charts" docs.
+  // See the kind's "Composing in Infra Charts" docs.
   repeated dev.planton.kubernetes.KubernetesIstioApiPolicyTargetReference target_refs = 6 [(buf.validate.field).repeated.max_items = 16];
 }
 

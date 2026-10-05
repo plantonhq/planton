@@ -31,8 +31,8 @@ type Locals struct {
 	AssociationNames []string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpnetworkfirewallpolicyv1alpha1.GcpNetworkFirewallPolicyStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpnetworkfirewallpolicyv1alpha1.GcpNetworkFirewallPolicyIacInput) *Locals {
+	target := iacInput.Target
 	spec := target.Spec
 
 	policyName := spec.PolicyName

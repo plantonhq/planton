@@ -8,7 +8,7 @@ This preset creates a bucket that serves a static website directly over S3's web
 - Redirect buckets and simple HTTP-only content
 - Learning/demo environments
 
-For production websites, prefer a **private** bucket behind CloudFront with Origin Access Control — that adds TLS, caching, and keeps the bucket unexposed. See the `AwsCloudFront` component.
+For production websites, prefer a **private** bucket behind CloudFront with Origin Access Control — that adds TLS, caching, and keeps the bucket unexposed. See the `AwsCloudFront` kind.
 
 ## Key Configuration Choices
 

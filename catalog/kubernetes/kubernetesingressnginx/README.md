@@ -2,7 +2,7 @@
 
 ## When NOT to Use This
 
-**This component is the controller only — the machinery that answers
+**This kind is the controller only — the machinery that answers
 traffic, not the routing rules.** Routing rules are separate first-class
 resources: create KubernetesIngress objects that reference this controller's
 `ingress_class_name` output. TLS certificates come from cert-manager
@@ -118,7 +118,7 @@ daemon_set`) on such clusters.
 - **`spec.helm_values`**: escape hatch for chart values beyond the typed
   fields — never the primary interface
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|
@@ -142,7 +142,7 @@ KubernetesExternalDns publishes DNS records for the LB address the cloud
 assigns; cert-manager kinds (KubernetesCertManager, issuers,
 KubernetesCertificate) mint the certificates that Ingresses — or the
 `default_tls_certificate` field — consume. A cluster with a public +
-internal split runs two instances of this component, each with its own
+internal split runs two instances of this kind, each with its own
 ingress class and Service annotations.
 
 ```yaml

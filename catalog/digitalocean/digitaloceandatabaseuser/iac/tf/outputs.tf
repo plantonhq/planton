@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanDatabaseUserStackOutputs
+# Outputs — exactly the DigitalOceanDatabaseUserOutputs
 # contract, identical across both provisioners. The (cluster, name) pair is
 # the user's API identity; DigitalOcean mints no standalone user id.
 

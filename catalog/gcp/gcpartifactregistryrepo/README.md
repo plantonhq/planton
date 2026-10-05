@@ -66,7 +66,7 @@ This creates a private Docker repository at `us-central1-docker.pkg.dev/{project
 | `iamMembers` | list | No | Additive grants: `role` + `member` (+ optional IAM condition) |
 | `deletionPolicy` | string | No | `DELETE` (default: destroy removes the repository and every artifact), `PREVENT` (destroy fails), `ABANDON` (leaves the repository serving unmanaged). Mutable |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

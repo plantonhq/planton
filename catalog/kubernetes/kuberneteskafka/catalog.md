@@ -1,10 +1,10 @@
 # Apache Kafka
 
-Deploys an Apache Kafka cluster on Kubernetes as Strimzi `Kafka` + `KafkaNodePool` custom resources in **KRaft mode** — Kafka's built-in Raft metadata quorum; ZooKeeper does not exist in this architecture. The cluster is declared as node pools (independently scalable groups of nodes carrying the `controller` and/or `broker` roles), listeners (how clients reach the brokers, from in-cluster plaintext to cloud LoadBalancers with TLS and SASL), and broker configuration. The Strimzi cluster operator (installed separately as Strimzi Kafka Operator) reconciles the declaration into brokers, controllers, certificates, and the per-cluster entity operators. Topics and users are first-class Cloud Resources — Kafka Topic and Kafka User — never embedded in this spec.
+Deploys an Apache Kafka cluster on Kubernetes as Strimzi `Kafka` + `KafkaNodePool` custom resources in **KRaft mode** — Kafka's built-in Raft metadata quorum; ZooKeeper does not exist in this architecture. The cluster is declared as node pools (independently scalable groups of nodes carrying the `controller` and/or `broker` roles), listeners (how clients reach the brokers, from in-cluster plaintext to cloud LoadBalancers with TLS and SASL), and broker configuration. The Strimzi cluster operator (installed separately as Strimzi Kafka Operator) reconciles the declaration into brokers, controllers, certificates, and the per-cluster entity operators. Topics and users are first-class Infra Components — Kafka Topic and Kafka User — never embedded in this spec.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** — created only when `createNamespace` is `true`; otherwise deploys into an existing namespace. One namespace per cluster is the recommended posture: node pool resources carry the pool's own name, so two clusters sharing a namespace collide on same-named pools.
 - **Strimzi `Kafka` resource** — the cluster declaration (listeners, broker configuration, authorization, entity operators, Cruise Control, metrics, CAs, rack awareness, JVM, maintenance windows), reconciled by the watching Strimzi operator.
@@ -23,7 +23,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Kubernetes Cluster
 
-- **Strimzi Kafka Operator watching the target namespace** — the declared prerequisite. Install it as the Strimzi Kafka Operator Cloud Resource; its chart default watches its OWN namespace only, so the simplest posture is the operator and this cluster in the same namespace. Without a watching operator the cluster is accepted by the API server and silently never reconciled.
+- **Strimzi Kafka Operator watching the target namespace** — the declared prerequisite. Install it as the Strimzi Kafka Operator Infra Component; its chart default watches its OWN namespace only, so the simplest posture is the operator and this cluster in the same namespace. Without a watching operator the cluster is accepted by the API server and silently never reconciled.
 - **A storage class** for persistent volumes — Kafka is a storage-bound system; persistent-claim storage is the default and the only production-sane choice.
 - **Cloud LB / DNS controllers where the listeners need them** — a `loadbalancer` listener's annotations are answered by a specific controller (e.g. the AWS Load Balancer Controller for the `external` family); external-dns for automatic DNS records.
 
@@ -79,11 +79,11 @@ spec:
 planton apply -f kafka.yaml
 ```
 
-This creates a KRaft cluster with a 3-node controller quorum, three brokers on 100Gi persistent volumes, one TLS listener with SCRAM authentication, and the recommended durability settings — one broker can be lost without losing acknowledged writes from `acks=all` producers. A Stack Job tracks the provisioning in real time.
+This creates a KRaft cluster with a 3-node controller quorum, three brokers on 100Gi persistent volumes, one TLS listener with SCRAM authentication, and the recommended durability settings — one broker can be lost without losing acknowledged writes from `acks=all` producers. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the cluster to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, wire the cluster to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -115,7 +115,7 @@ These are the most important decisions when configuring an Apache Kafka deployme
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -123,7 +123,7 @@ These are the most important decisions when configuring an Apache Kafka deployme
 | **KubernetesStorageClass** | `nodePools[].storage.storageClass` (and per JBOD volume) | `metadata.name` |
 | **KubernetesCertificate** | `listeners[].configuration.brokerCertChainAndKey.secretName` | `status.outputs.secret_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains values that applications and downstream resources can consume:
 
@@ -149,9 +149,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Strimzi Kafka Operator**](/cloud-catalog/kubernetes-strimzi-kafka-operator) — the declared prerequisite: it must watch this cluster's namespace
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — provides the namespace (one per cluster)
-- [**Kafka Topic**](/cloud-catalog/kubernetes-kafka-topic) — topics as first-class resources, reconciled by this cluster's topic operator
-- [**Kafka User**](/cloud-catalog/kubernetes-kafka-user) — authenticated principals + ACLs, reconciled by this cluster's user operator
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) — custom listener server certificates (the cert-manager seam)
-- [**ExternalDNS**](/cloud-catalog/kubernetes-external-dns) — DNS records for external listener addresses
+- [**Strimzi Kafka Operator**](/infra-catalog/kubernetes-strimzi-kafka-operator) — the declared prerequisite: it must watch this cluster's namespace
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — provides the namespace (one per cluster)
+- [**Kafka Topic**](/infra-catalog/kubernetes-kafka-topic) — topics as first-class resources, reconciled by this cluster's topic operator
+- [**Kafka User**](/infra-catalog/kubernetes-kafka-user) — authenticated principals + ACLs, reconciled by this cluster's user operator
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) — custom listener server certificates (the cert-manager seam)
+- [**ExternalDNS**](/infra-catalog/kubernetes-external-dns) — DNS records for external listener addresses

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezerotrustgatewaysettings
 spec:
@@ -13,15 +13,15 @@ spec:
         id field). The settings and logging singletons import as the bare
         account id; PAC files import as
         "<account_id>/<pacfile_id>".
-    # The file id is server-assigned at creation, but a prior deploy's stack
+    # The file id is server-assigned at creation, but a prior deploy's
     # outputs carry every id in the pacfile_ids map keyed by the file's name
     # (the same key the modules' per-row resources use), so each instance's
     # id derives blind.
     - name: pacfile_id
       derivations:
-        - from_stack_output_keyed_by_address: pacfile_ids
+        - from_output_keyed_by_address: pacfile_ids
       where_to_find: >-
-        A prior deploy's stack outputs carry the ids in the pacfile_ids map,
+        A prior deploy's outputs carry the ids in the pacfile_ids map,
         keyed by the PAC file's name. For fresh adoption without outputs:
         `GET /accounts/<account_id>/gateway/pacfiles` on the Cloudflare v4
         API (the id field of the file whose name/slug matches the spec row).

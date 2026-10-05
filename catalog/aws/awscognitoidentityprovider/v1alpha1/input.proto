@@ -5,9 +5,9 @@ package dev.planton.aws.awscognitoidentityprovider.v1alpha1;
 import "catalog/aws/awscognitoidentityprovider/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsCognitoIdentityProviderStackInput provides the inputs required by
+// AwsCognitoIdentityProviderIacInput provides the inputs required by
 // Pulumi/Terraform modules to provision a Cognito Identity Provider.
-message AwsCognitoIdentityProviderStackInput {
+message AwsCognitoIdentityProviderIacInput {
   // target is the fully-specified AwsCognitoIdentityProvider resource to provision.
   AwsCognitoIdentityProvider target = 1;
 

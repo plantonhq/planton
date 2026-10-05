@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a fleet team scope from th
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `scope` |
-| `module/locals.go` | Stack input, attribution labels, the label merge |
+| `module/locals.go` | IaC input, attribution labels, the label merge |
 | `module/scope.go` | API enablement, the scope and its children, the membership-name parser, the outputs |
 | `module/outputs.go` | Output key constants (`name`, `scope_id`, `uid`) |
 

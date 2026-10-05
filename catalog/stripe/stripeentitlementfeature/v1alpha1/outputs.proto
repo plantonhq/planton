@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.stripe.stripeentitlementfeature.v1alpha1;
 
-// StripeEntitlementFeatureStackOutputs identifies the feature.
+// StripeEntitlementFeatureOutputs identifies the feature.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/entitlements_feature
-message StripeEntitlementFeatureStackOutputs {
+message StripeEntitlementFeatureOutputs {
   // id is the feature's Stripe id (feat_...), the value a StripeProduct's features reference.
   string id = 1;
 

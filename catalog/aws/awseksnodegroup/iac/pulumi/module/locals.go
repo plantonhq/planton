@@ -5,7 +5,7 @@ import (
 
 	awseksnodegroupv1alpha1 "github.com/plantonhq/planton/catalog/aws/awseksnodegroup/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -20,22 +20,22 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awseksnodegroupv1alpha1.AwsEksNodeGroupStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awseksnodegroupv1alpha1.AwsEksNodeGroupIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsEksNodeGroup = stackInput.Target
+	locals.AwsEksNodeGroup = iacInput.Target
 
-	locals.NodeGroupName = stackInput.Target.Metadata.Name
+	locals.NodeGroupName = iacInput.Target.Metadata.Name
 	if len(locals.NodeGroupName) > 63 {
 		locals.NodeGroupName = locals.NodeGroupName[:63]
 	}
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 	locals.AwsTags = map[string]string{
 		awstagkeys.Name:         metadata.Name,
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsEksNodeGroup.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsEksNodeGroup.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

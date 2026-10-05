@@ -46,7 +46,7 @@ Key design notes:
 - Storage capacity can grow in place (never shrink; growth on SCRATCH_1
   replaces the file system).
 - Credentials, region, and deployment workflow live outside this spec in
-  stack inputs.
+  IaC inputs.
 
 ## Example
 

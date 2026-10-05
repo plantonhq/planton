@@ -1,4 +1,4 @@
-# AWS FSx ONTAP Storage Virtual Machine Component
+# AWS FSx ONTAP Storage Virtual Machine Kind
 
 **Date**: February 16, 2026
 **Type**: Feature
@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsFsxOntapStorageVirtualMachine (R29e) as a new AWS cloud resource kind, completing the second-to-last piece of the FSx ONTAP hierarchy. The SVM provides multi-protocol data access (NFS, SMB, iSCSI) and serves as the parent container for ONTAP volumes. This component features a flattened Active Directory configuration that simplifies the user experience compared to the native provider's nested structure.
+Added AwsFsxOntapStorageVirtualMachine (R29e) as a new AWS catalog kind, completing the second-to-last piece of the FSx ONTAP hierarchy. The SVM provides multi-protocol data access (NFS, SMB, iSCSI) and serves as the parent container for ONTAP volumes. This kind features a flattened Active Directory configuration that simplifies the user experience compared to the native provider's nested structure.
 
 ## Problem Statement / Motivation
 
@@ -20,9 +20,9 @@ FSx for ONTAP uses a three-tier architecture: File System → Storage Virtual Ma
 
 ## Solution / What's New
 
-A complete deployment component for FSx ONTAP Storage Virtual Machines with:
+A complete catalog kind for FSx ONTAP Storage Virtual Machines with:
 
-- **Proto API** — spec.proto with 5 fields + 1 nested message (flattened AD configuration), 5 CEL cross-field validations, stack_outputs.proto with 12 fields across 4 endpoint types
+- **Proto API** — spec.proto with 5 fields + 1 nested message (flattened AD configuration), 5 CEL cross-field validations, outputs.proto with 12 fields across 4 endpoint types
 - **Pulumi module** — 4 Go files with `ApplyT()` endpoint extraction for all 4 endpoint types (iSCSI, management, NFS, SMB)
 - **Terraform module** — 4 HCL files with dynamic `active_directory_configuration` block
 - **39 spec tests** — comprehensive validation coverage, all passing
@@ -58,9 +58,9 @@ flowchart TB
     SVM -.-> |svm_id| VOL
 ```
 
-### Component Files
+### Kind Files
 
-- **Proto**: 4 files (spec.proto, api.proto, stack_outputs.proto, stack_input.proto)
+- **Proto**: 4 files (spec.proto, api.proto, outputs.proto, iac_input.proto)
 - **Pulumi**: 4 module files (main.go, locals.go, outputs.go, svm.go) + entrypoint
 - **Terraform**: 4 HCL files (main.tf, variables.tf, outputs.tf, provider.tf)
 - **Tests**: spec_test.go with 39 validations (13 happy path, 15 field-level, 8 CEL, 3 API envelope)
@@ -81,14 +81,14 @@ SMB endpoints are only populated when Active Directory is configured.
 
 - Completes the SVM layer in the FSx ONTAP hierarchy, unblocking volume creation (R29f)
 - Flattened AD configuration reduces YAML complexity for end users
-- 12 stack outputs enable downstream volume resources to reference SVM endpoints via `valueFrom`
+- 12 outputs enable downstream volume resources to reference SVM endpoints via `valueFrom`
 - Multi-tenancy support — multiple SVMs on a single file system for workload isolation
 
 ## Impact
 
 - **End users**: Can now provision ONTAP SVMs for NFS, SMB, and iSCSI workloads
-- **Downstream components**: AwsFsxOntapVolume (R29f) can now reference `svm_id` from these outputs
-- **Registry**: Registered as enum 295 in `cloud_resource_kind.proto` with id_prefix `awsfxosvm`
+- **Downstream kinds**: AwsFsxOntapVolume (R29f) can now reference `svm_id` from these outputs
+- **Registry**: Registered as enum 295 in `catalog_kind.proto` with id_prefix `awsfxosvm`
 
 ## Related Work
 

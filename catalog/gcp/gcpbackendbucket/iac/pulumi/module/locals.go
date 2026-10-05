@@ -15,8 +15,8 @@ type Locals struct {
 	BackendBucketName string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcpbackendbucketv1alpha1.GcpBackendBucketStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(ctx *pulumi.Context, iacInput *gcpbackendbucketv1alpha1.GcpBackendBucketIacInput) *Locals {
+	target := iacInput.Target
 
 	backendBucketName := target.Spec.BackendBucketName
 	if backendBucketName == "" {

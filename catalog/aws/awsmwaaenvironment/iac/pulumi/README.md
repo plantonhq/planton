@@ -13,7 +13,7 @@ Network ingress is composed, never embedded: the environment attaches the refere
 
 ### As a Pulumi program
 
-The module is designed to be invoked from the entry point in `main.go`, which loads an `AwsMwaaEnvironmentStackInput` and calls `module.Resources()`:
+The module is designed to be invoked from the entry point in `main.go`, which loads an `AwsMwaaEnvironmentIacInput` and calls `module.Resources()`:
 
 ```go
 package main
@@ -21,30 +21,30 @@ package main
 import (
     awsmwaaenvironmentv1 "github.com/plantonhq/planton/catalog/aws/awsmwaaenvironment/v1alpha1"
     "github.com/plantonhq/planton/catalog/aws/awsmwaaenvironment/iac/pulumi/module"
-    "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+    "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
     "github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
     pulumi.Run(func(ctx *pulumi.Context) error {
-        stackInput := &awsmwaaenvironmentv1.AwsMwaaEnvironmentStackInput{}
-        if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
+        iacInput := &awsmwaaenvironmentv1.AwsMwaaEnvironmentIacInput{}
+        if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
             return err
         }
-        return module.Resources(ctx, stackInput)
+        return module.Resources(ctx, iacInput)
     })
 }
 ```
 
-### Stack Input
+### IaC Input
 
-The stack input is an `AwsMwaaEnvironmentStackInput` protobuf message containing:
+The IaC input is an `AwsMwaaEnvironmentIacInput` protobuf message containing:
 - `target` — the `AwsMwaaEnvironment` resource (metadata + spec).
 - `provider_config` — optional AWS credentials (region, access key, secret key, session token).
 
 ### Outputs
 
-The module exports the stack outputs declared in `AwsMwaaEnvironmentStackOutputs` (see `module/outputs.go` for keys). Access them via `pulumi stack output`:
+The module exports the outputs declared in `AwsMwaaEnvironmentOutputs` (see `module/outputs.go` for keys). Access them via `pulumi stack output`:
 
 ```bash
 pulumi stack output environment_arn
@@ -56,7 +56,7 @@ pulumi stack output webserver_url
 | File | Purpose |
 |------|---------|
 | `Pulumi.yaml` | Pulumi project metadata (name: `aws-mwaa-environment`, runtime: Go) |
-| `main.go` | Entry point — loads stack input, runs Pulumi program |
+| `main.go` | Entry point — loads IaC input, runs Pulumi program |
 | `module/main.go` | Orchestrator — resource creation flow + output exports |
 | `module/locals.go` | Locals initialization (identity tags, naming basis, resolved target) |
 | `module/environment.go` | MWAA Environment resource with all configuration blocks |
@@ -66,7 +66,7 @@ pulumi stack output webserver_url
 
 - Go 1.21+
 - Pulumi CLI v3+
-- AWS credentials (ambient or via stack input)
+- AWS credentials (ambient or via IaC input)
 - `pulumi-aws` plugin v7
 
 ## Running Locally
@@ -75,7 +75,7 @@ pulumi stack output webserver_url
 # Navigate to the Pulumi module directory
 cd catalog/aws/awsmwaaenvironment/iac/pulumi
 
-# Set stack configuration (or provide via stack input JSON)
+# Set stack configuration (or provide via IaC input JSON)
 pulumi stack init dev
 pulumi config set aws:region us-east-1
 

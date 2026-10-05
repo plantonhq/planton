@@ -5,7 +5,7 @@ import (
 
 	azurepostgresqlflexibleserverv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurepostgresqlflexibleserver/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -48,18 +48,18 @@ var principalTypeStrings = map[azurepostgresqlflexibleserverv1alpha1.AzurePostgr
 	azurepostgresqlflexibleserverv1alpha1.AzurePostgresqlFlexibleServerAadPrincipalType_SERVICE_PRINCIPAL: "ServicePrincipal",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurepostgresqlflexibleserverv1alpha1.AzurePostgresqlFlexibleServerStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurepostgresqlflexibleserverv1alpha1.AzurePostgresqlFlexibleServerIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzurePostgresqlFlexibleServer = stackInput.Target
-	target := stackInput.Target
+	locals.AzurePostgresqlFlexibleServer = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzurePostgresqlFlexibleServer.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzurePostgresqlFlexibleServer.String()),
 	}
 
 	if target.Metadata.Id != "" {

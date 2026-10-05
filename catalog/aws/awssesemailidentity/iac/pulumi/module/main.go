@@ -8,10 +8,10 @@ import (
 )
 
 // Resources creates the SES email identity, its satellites, and exports outputs.
-func Resources(ctx *pulumi.Context, stackInput *awssesemailidentityv1alpha1.AwsSesEmailIdentityStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awssesemailidentityv1alpha1.AwsSesEmailIdentityIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsSesEmailIdentity.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsSesEmailIdentity.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

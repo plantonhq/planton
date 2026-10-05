@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorfirewallpolicyv1alpha1.AzureFrontDoorFirewallPolicyStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurefrontdoorfirewallpolicyv1alpha1.AzureFrontDoorFirewallPolicyIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -32,7 +32,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorfirewallpolicyv1al
 	}
 
 	// enabled / request_body_check_enabled default true on the provider;
-	// send them only when the spec carries an explicit choice (stack
+	// send them only when the spec carries an explicit choice (IaC
 	// inputs never materialize proto defaults, so absence means "take
 	// Azure's default").
 	if spec.Enabled != nil {
@@ -91,7 +91,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorfirewallpolicyv1al
 		return errors.Wrapf(err, "failed to create front door firewall policy %s", spec.PolicyName)
 	}
 
-	// Export stack outputs. firewall_policy_id is what
+	// Export outputs. firewall_policy_id is what
 	// AzureFrontDoorSecurityPolicy's firewall_policy_id references --
 	// the policy enforces nothing until a security policy associates it.
 	ctx.Export(OpFirewallPolicyId, createdPolicy.ID())

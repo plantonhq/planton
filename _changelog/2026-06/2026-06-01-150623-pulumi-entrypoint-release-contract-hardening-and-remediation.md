@@ -1,4 +1,4 @@
-# Pulumi Entrypoint Release-Contract Hardening and Component Remediation
+# Pulumi Entrypoint Release-Contract Hardening and Kind Remediation
 
 **Date**: June 1, 2026
 **Type**: Bug Fix
@@ -6,22 +6,22 @@
 
 ## Summary
 
-The Pulumi modules release was failing because several deployment components had no
+The Pulumi modules release was failing because several catalog kinds had no
 buildable `package main` entrypoint at their `iac/pulumi/` root. The forge quality gate
 never caught this: it validated with a recursive `go build ./.../v1/...`, which compiles
 whatever packages exist (e.g. the `module/` library) and passes even when the entrypoint is
 missing or misplaced — a strictly weaker contract than the release. This change makes forge
 validate exactly what the release builds, fixes the stale generation paths and dead
 authoring-guide references that let the divergence get authored in the first place, adds a
-machine-enforced CI guard, and remediates every divergent component across AWS, Scaleway,
+machine-enforced CI guard, and remediates every divergent kind across AWS, Scaleway,
 and GCP so the release builds clean.
 
 ## Problem Statement / Motivation
 
-The `release.pulumi-modules` workflow builds each component non-recursively:
+The `release.pulumi-modules` workflow builds each kind non-recursively:
 
 ```bash
-go build -o <bin> ./apis/dev/planton/provider/<provider>/<component>/v1/iac/pulumi
+go build -o <bin> ./apis/dev/planton/provider/<provider>/<kind>/v1/iac/pulumi
 ```
 
 That form requires a `package main` at the directory root and fails with
@@ -32,8 +32,8 @@ while the release was structurally guaranteed to fail.
 
 ### Pain Points
 
-- Release pulumi-modules legs failed for components with a missing/misplaced entrypoint
-  (initially observed on AWS; the new guard also surfaced a broken Scaleway component).
+- Release pulumi-modules legs failed for kinds with a missing/misplaced entrypoint
+  (initially observed on AWS; the new guard also surfaced a broken Scaleway kind).
 - Forge validation gave false confidence — it tested a weaker contract than production.
 - The two Pulumi writer scripts and 7 flow rules still referenced the pre-migration path
   `apis/project/planton/provider/...`, so running them literally wrote files into a dead tree.
@@ -66,37 +66,37 @@ flowchart TB
   rationale so it is not regressed.
 - `_scripts/pulumi_entrypoint_write.py` `run_go_build` now builds the entrypoint
   non-recursively, so `--build` fails on a missing/misplaced root main.
-- `forge-planton-component.mdc` and `audit/audit-planton-component.mdc` enforce the same
+- `forge-catalog-kind.mdc` and `audit/audit-catalog-kind.mdc` enforce the same
   invariant in their success criteria and Category 4.2.
 
 ### Layer 2 — Stale generation paths corrected
 
 Replaced `apis/project/planton/provider` with `apis/dev/planton/provider` in 7 flow rules and
 5 writer scripts (`pulumi_entrypoint_write.py`, `pulumi_module_write.py`,
-`terraform_module_write.py`, `stack_outputs_reader.py`, `hack_manifest_write.py`).
+`terraform_module_write.py`, `outputs_reader.py`, `hack_manifest_write.py`).
 
 ### Layer 3 — Dead authoring guides repointed
 
 Removed all `.cursor/info/*.md` references across 19 rules. The Validation Message standard is
 now homed inline in `002-spec-validate`; other rules cite it. Every authoring rule now points
-to live reference components (`awsvpc`, `awsalb`) and the live `architecture/presets.md`.
+to live reference kinds (`awsvpc`, `awsalb`) and the live `architecture/presets.md`.
 
 ### Layer 4 — Machine-enforced CI guard
 
-`hack/guards/ensure_pulumi_entrypoints.sh` scans every component and fails if any lacks a root
+`hack/guards/ensure_pulumi_entrypoints.sh` scans every kind and fails if any lacks a root
 `package main` or has a non-empty `main/`/`entrypoint/` subdir. It runs as a PR check
 (`.github/workflows/lint.iac-entrypoints.yaml`) and as a `preflight` job gating the release
 matrix, so a broken entrypoint is rejected in seconds instead of after long matrix builds.
 
 ## Implementation Details
 
-### Component remediation (8 components)
+### Kind remediation (8 kinds)
 
-Every divergent component was brought to the canonical root-entrypoint layout (modeled on
-`aws/awsvpc/v1/iac/pulumi`: `main.go` as `package main` loading `<Kind>StackInput` and calling
+Every divergent kind was brought to the canonical root-entrypoint layout (modeled on
+`aws/awsvpc/v1/iac/pulumi`: `main.go` as `package main` loading `<Kind>IacInput` and calling
 `module.Resources`, plus `Pulumi.yaml`, `Makefile`, `debug.sh`).
 
-| Component | Divergence | Remediation |
+| Kind | Divergence | Remediation |
 |-----------|-----------|-------------|
 | `aws/awscognitouserpool` | entrypoint in `main/` subdir | relocated to root, normalized Pulumi.yaml, deleted `main/` |
 | `aws/awselasticfilesystem` | entrypoint in `main/` subdir | relocated to root, normalized Pulumi.yaml, deleted `main/` |
@@ -114,9 +114,9 @@ the stale `main/` targets.
 
 - Guard passes clean; no `main/`/`entrypoint/` subdirs remain repo-wide.
 - Release-equivalent build (`go build -o /dev/null ./.../v1/iac/pulumi`) passes for all 8
-  components on `linux/amd64`; the 4 authored entrypoints + Scaleway also pass on `darwin/arm64`.
+  kinds on `linux/amd64`; the 4 authored entrypoints + Scaleway also pass on `darwin/arm64`.
 - `go vet` clean across all remediated entrypoints.
-- Efficacy proof: on a broken component the OLD recursive build returns exit 0 while the NEW
+- Efficacy proof: on a broken kind the OLD recursive build returns exit 0 while the NEW
   non-recursive build fails with `no Go files` — the gate now catches what it previously missed.
 
 ## Benefits

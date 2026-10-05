@@ -1,10 +1,10 @@
 # Stripe Shipping Rate
 
-Declares a shipping option -- standard at 5 dollars in 3 to 5 business days, free express overnight -- that customers choose in Checkout or on a payment link. One Cloud Resource per option.
+Declares a shipping option -- standard at 5 dollars in 3 to 5 business days, free express overnight -- that customers choose in Checkout or on a payment link. One Infra Component per option.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module creates one shipping rate in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module creates one shipping rate in the Stripe account your Stripe connection's key belongs to:
 
 - **The price of shipping** -- a fixed amount, in one or more currencies
 - **The delivery window** -- shown to customers when they choose it
@@ -50,7 +50,7 @@ spec:
 planton apply -f stripe-shipping-rate.yaml
 ```
 
-A Stack Job tracks the change in real time.
+An Infra Job tracks the change in real time.
 
 ## Key Configuration
 
@@ -64,11 +64,11 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -87,5 +87,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Stripe Payment Link**](/cloud-catalog/stripe-payment-link) -- offers the rate on a hosted page, naming it by reference in `shippingOptions`.
-- [**Stripe Product**](/cloud-catalog/stripe-product) -- the physical goods it ships.
+- [**Stripe Payment Link**](/infra-catalog/stripe-payment-link) -- offers the rate on a hosted page, naming it by reference in `shippingOptions`.
+- [**Stripe Product**](/infra-catalog/stripe-product) -- the physical goods it ships.

@@ -4,7 +4,7 @@ Deploys an Amazon Bedrock flow — a node graph that orchestrates prompts, agent
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Bedrock Flow** — the flow with its DRAFT definition: every node from `definition.nodes` and every edge from `definition.connections`, validated server-side by AWS at create/update time
 - **Flow Encryption** — configured only when `customerEncryptionKeyArn` is set; without it AWS encrypts the flow with a Bedrock-managed key
@@ -15,7 +15,7 @@ The module creates the DRAFT definition only — flows do not auto-prepare, so a
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Bedrock flow permissions (`bedrock:CreateFlow` and its read/update/delete siblings, plus `iam:PassRole` on the execution role). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Bedrock flow permissions (`bedrock:CreateFlow` and its read/update/delete siblings, plus `iam:PassRole` on the execution role). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -95,7 +95,7 @@ spec:
 planton apply -f flow.yaml
 ```
 
-This creates a three-node summarization pipeline: input document in, one Nova Micro prompt node, summary out. A Stack Job tracks the provisioning in real time.
+This creates a three-node summarization pipeline: input document in, one Nova Micro prompt node, summary out. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -152,7 +152,7 @@ These are the most important decisions when configuring a flow. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -165,9 +165,9 @@ These are the most important decisions when configuring a flow. Explore the full
 | **AwsLambda** | `definition.nodes[].lambdaFunction.lambdaArn` | `status.outputs.function_arn` |
 | **AwsS3Bucket** | `definition.nodes[].retrieval.bucketName`, `definition.nodes[].storage.bucketName` | `status.outputs.bucket_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -188,11 +188,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the execution role the flow assumes, wired via `executionRoleArn`
-- [**AWS Bedrock Prompt**](/cloud-catalog/aws-bedrock-prompt) — versioned templates prompt nodes reference via `promptArn`
-- [**AWS Bedrock Agent**](/cloud-catalog/aws-bedrock-agent) — agents flow nodes delegate to through their alias ARNs
-- [**AWS Bedrock Knowledge Base**](/cloud-catalog/aws-bedrock-knowledge-base) — retrieval sources knowledge-base nodes query
-- [**AWS Bedrock Guardrail**](/cloud-catalog/aws-bedrock-guardrail) — content-safety policies pinned onto prompt and knowledge-base nodes
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — functions LambdaFunction nodes invoke
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — buckets Retrieval and Storage nodes read from and write to
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption via `customerEncryptionKeyArn`
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the execution role the flow assumes, wired via `executionRoleArn`
+- [**AWS Bedrock Prompt**](/infra-catalog/aws-bedrock-prompt) — versioned templates prompt nodes reference via `promptArn`
+- [**AWS Bedrock Agent**](/infra-catalog/aws-bedrock-agent) — agents flow nodes delegate to through their alias ARNs
+- [**AWS Bedrock Knowledge Base**](/infra-catalog/aws-bedrock-knowledge-base) — retrieval sources knowledge-base nodes query
+- [**AWS Bedrock Guardrail**](/infra-catalog/aws-bedrock-guardrail) — content-safety policies pinned onto prompt and knowledge-base nodes
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — functions LambdaFunction nodes invoke
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — buckets Retrieval and Storage nodes read from and write to
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption via `customerEncryptionKeyArn`

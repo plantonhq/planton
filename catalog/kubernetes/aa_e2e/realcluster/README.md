@@ -16,7 +16,7 @@ cluster through the harness's external-cluster lane.
 # 2. Source the generated env file (lane selection + identifier exports):
 source ~/.planton-e2e/planton-e2e-eks/env.sh
 
-# 3. Run targeted per-component lanes (NEVER tier-wide sweeps):
+# 3. Run targeted per-kind lanes (NEVER tier-wide sweeps):
 go test -tags=e2e -timeout=30m -v -count=1 -run 'Test.*KubernetesVelero_' ./e2e/
 
 # 4. Tear down and verify zero residue:
@@ -36,10 +36,10 @@ The env file exports two kinds of variables:
 
 ## Why targeted invocations
 
-Component-level create/verify/destroy is identical to the kind lanes; only
-the cluster outlives the run. Run one component's entrypoints at a time:
+Kind-level create/verify/destroy is identical to the kind lanes; only
+the cluster outlives the run. Run one kind's entrypoints at a time:
 capacity managers (Karpenter, ClusterAutoscaler) must never overlap, and a
-tier-wide sweep wastes the batch on components already proven on kind.
+tier-wide sweep wastes the batch on kinds already proven on kind.
 
 ## aws-eks batch
 
@@ -65,7 +65,7 @@ Runs against an EXISTING GKE cluster with Workload Identity (the batch never
 creates or deletes the cluster). Everything the lanes need beside the cluster
 is created FROM THE CATALOG through the CLI's set lane — one dependency-ordered
 `planton apply -f <dir>` over the rendered manifests, references resolved
-between them exactly as an infra chart would — so the batch is itself a proof
+between them exactly as an Infra Chart would — so the batch is itself a proof
 that the resource set the guides document composes.
 
 | Asset | Purpose |

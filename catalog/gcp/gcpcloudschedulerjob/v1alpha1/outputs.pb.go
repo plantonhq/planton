@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Cloud Scheduler job.
-type GcpCloudSchedulerJobStackOutputs struct {
+type GcpCloudSchedulerJobOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The fully qualified job ID.
 	// Format: projects/{project}/locations/{location}/jobs/{name}
@@ -38,20 +38,20 @@ type GcpCloudSchedulerJobStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCloudSchedulerJobStackOutputs) Reset() {
-	*x = GcpCloudSchedulerJobStackOutputs{}
+func (x *GcpCloudSchedulerJobOutputs) Reset() {
+	*x = GcpCloudSchedulerJobOutputs{}
 	mi := &file_catalog_gcp_gcpcloudschedulerjob_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudSchedulerJobStackOutputs) String() string {
+func (x *GcpCloudSchedulerJobOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudSchedulerJobStackOutputs) ProtoMessage() {}
+func (*GcpCloudSchedulerJobOutputs) ProtoMessage() {}
 
-func (x *GcpCloudSchedulerJobStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudSchedulerJobOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudschedulerjob_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *GcpCloudSchedulerJobStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudSchedulerJobStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudSchedulerJobStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudSchedulerJobOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudSchedulerJobOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudschedulerjob_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudSchedulerJobStackOutputs) GetJobId() string {
+func (x *GcpCloudSchedulerJobOutputs) GetJobId() string {
 	if x != nil {
 		return x.JobId
 	}
 	return ""
 }
 
-func (x *GcpCloudSchedulerJobStackOutputs) GetJobName() string {
+func (x *GcpCloudSchedulerJobOutputs) GetJobName() string {
 	if x != nil {
 		return x.JobName
 	}
 	return ""
 }
 
-func (x *GcpCloudSchedulerJobStackOutputs) GetState() string {
+func (x *GcpCloudSchedulerJobOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
@@ -93,8 +93,8 @@ var File_catalog_gcp_gcpcloudschedulerjob_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpcloudschedulerjob_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpcloudschedulerjob/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcpcloudschedulerjob.v1alpha1\"j\n" +
-	" GcpCloudSchedulerJobStackOutputs\x12\x15\n" +
+	"7catalog/gcp/gcpcloudschedulerjob/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcpcloudschedulerjob.v1alpha1\"e\n" +
+	"\x1bGcpCloudSchedulerJobOutputs\x12\x15\n" +
 	"\x06job_id\x18\x01 \x01(\tR\x05jobId\x12\x19\n" +
 	"\bjob_name\x18\x02 \x01(\tR\ajobName\x12\x14\n" +
 	"\x05state\x18\x03 \x01(\tR\x05stateB\xff\x02\n" +
@@ -114,7 +114,7 @@ func file_catalog_gcp_gcpcloudschedulerjob_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_gcp_gcpcloudschedulerjob_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudschedulerjob_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudSchedulerJobStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudschedulerjob.v1alpha1.GcpCloudSchedulerJobStackOutputs
+	(*GcpCloudSchedulerJobOutputs)(nil), // 0: dev.planton.gcp.gcpcloudschedulerjob.v1alpha1.GcpCloudSchedulerJobOutputs
 }
 var file_catalog_gcp_gcpcloudschedulerjob_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

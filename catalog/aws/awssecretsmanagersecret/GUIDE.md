@@ -1,6 +1,6 @@
-# AwsSecretsManagerSecret — Component Guide
+# AwsSecretsManagerSecret — Kind Guide
 
-The authored wisdom layer for this component: internal conventions, judgment
+The authored wisdom layer for this kind: internal conventions, judgment
 calls, and operational judgment earned while building it. The reference for
 fields is `v1alpha1/reference.md`; this file explains the decisions the
 schema alone cannot.

@@ -4,7 +4,7 @@ Provisions an AWS ElastiCache Serverless cache — a fully managed, auto-scaling
 
 ## When to Use
 
-| Use Case | Component |
+| Use Case | Kind |
 |---|---|
 | Serverless, pay-per-use caching with zero node management | **AwsServerlessElasticache** (this) |
 | Provisioned Redis/Valkey with explicit node types and topology control | [AwsRedisElasticache](../awsrediselasticache/) |
@@ -82,7 +82,7 @@ Choose provisioned when:
 |---|---|---|---|
 | `user_group_id` | StringValueOrRef | No | Redis ACL user group via `AwsElasticacheUserGroup`. Exactly one group. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |---|---|---|

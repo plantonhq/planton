@@ -1,17 +1,17 @@
-# KubernetesZalandoPostgresOperator Component Completion
+# KubernetesZalandoPostgresOperator Kind Completion
 
 **Date:** 2025-11-16  
-**Component:** KubernetesZalandoPostgresOperator  
-**Type:** Component Completion  
+**Kind:** KubernetesZalandoPostgresOperator  
+**Type:** Kind Completion  
 **Status:** Production Ready
 
 ## Overview
 
-Completed the KubernetesZalandoPostgresOperator deployment component by creating all missing user-facing documentation, completing the broken Terraform implementation, and adding comprehensive supporting documentation. This work brings the component from 74.28% completion to **~100% completion** (fully production-ready).
+Completed the KubernetesZalandoPostgresOperator catalog kind by creating all missing user-facing documentation, completing the broken Terraform implementation, and adding comprehensive supporting documentation. This work brings the kind from 74.28% completion to **~100% completion** (fully production-ready).
 
 ## ⚠️ Spec Changes
 
-**NO SPEC CHANGES** - All protobuf API definitions (`spec.proto`, `stack_outputs.proto`, `api.proto`) remain unchanged. This work focused exclusively on:
+**NO SPEC CHANGES** - All protobuf API definitions (`spec.proto`, `outputs.proto`, `api.proto`) remain unchanged. This work focused exclusively on:
 - Adding missing user-facing documentation
 - Completing the broken Terraform implementation
 - Adding supporting documentation for developers
@@ -20,13 +20,13 @@ The API is backward compatible and requires no upstream changes.
 
 ## Motivation
 
-The KubernetesZalandoPostgresOperator component had excellent technical implementation (Protobuf, Pulumi, tests, research docs) but suffered from critical gaps that prevented production adoption:
+The KubernetesZalandoPostgresOperator kind had excellent technical implementation (Protobuf, Pulumi, tests, research docs) but suffered from critical gaps that prevented production adoption:
 
 - **CRITICAL**: Missing all user-facing documentation (README.md, examples.md)
 - **CRITICAL**: Terraform module was non-functional (empty main.tf, copy-paste errors in variables.tf, missing locals.tf and outputs.tf)
 - **IMPORTANT**: No supporting documentation for developers (Pulumi README, overview.md, hack/manifest.yaml)
 
-These gaps made it impossible for users to discover, understand, or deploy the component via Terraform.
+These gaps made it impossible for users to discover, understand, or deploy the kind via Terraform.
 
 ## Changes Made
 
@@ -35,7 +35,7 @@ These gaps made it impossible for users to discover, understand, or deploy the c
 #### Created `v1/README.md` (6.67%)
 Comprehensive user documentation including:
 
-- **Component Overview**: Purpose and capabilities
+- **Kind Overview**: Purpose and capabilities
 - **Key Features**: 
   - Operator management with resource control
   - Cloudflare R2 backup integration with WAL-G
@@ -53,7 +53,7 @@ Comprehensive user documentation including:
 - **Best Practices**: Resource sizing, backup strategy, security, HA
 - **Troubleshooting**: Common issues and debugging commands
 - **Limitations**: Known constraints (R2 only, single operator, etc.)
-- **Related Components**: Links to similar components
+- **Related Kinds**: Links to similar kinds
 - **References**: External documentation links
 
 **File Size**: ~22 KB, 400+ lines
@@ -78,7 +78,7 @@ Practical examples including:
 ### 2. Complete Terraform Implementation (1.78% → 4.44%)
 
 #### Fixed `iac/tf/variables.tf`
-**Before**: Copy-paste errors from another component (mentioned "GitLab" instead of Postgres Operator)
+**Before**: Copy-paste errors from another kind (mentioned "GitLab" instead of Postgres Operator)
 
 **After**: Complete, correct variable definitions:
 - `metadata` object with name, id, org, env, labels
@@ -129,7 +129,7 @@ Data transformations and computed values:
 **File Size**: ~5 KB, 145 lines
 
 #### Created `iac/tf/outputs.tf`
-Mirrors `stack_outputs.proto`:
+Mirrors `outputs.proto`:
 
 - `namespace`: Operator namespace
 - `service`: Service name
@@ -264,7 +264,7 @@ terraform fmt -recursive iac/tf/
 - ✅ **FIXED**: Terraform variables.tf (removed copy-paste errors)
 - ✅ **CREATED**: Terraform locals.tf with complete logic
 - ✅ **CREATED**: Terraform main.tf from scratch (was empty)
-- ✅ **CREATED**: Terraform outputs.tf mirroring stack_outputs.proto
+- ✅ **CREATED**: Terraform outputs.tf mirroring outputs.proto
 - ✅ **ADDED**: Pulumi README.md for module documentation
 - ✅ **ADDED**: Pulumi overview.md with architecture details
 - ✅ **ADDED**: hack/manifest.yaml for local testing
@@ -272,7 +272,7 @@ terraform fmt -recursive iac/tf/
 
 ## Production Readiness
 
-The component is now **fully production-ready** for both Pulumi and Terraform users:
+The kind is now **fully production-ready** for both Pulumi and Terraform users:
 
 ### Pulumi Users ✅
 - Complete, tested module with 6 focused files
@@ -453,14 +453,14 @@ Future improvements could include:
 
 This completion follows the pattern established by:
 - KubernetesTemporal (completed earlier today)
-- KubernetesPostgres (reference component)
+- KubernetesPostgres (reference kind)
 - CertManager (excellent README structure)
 
 ## References
 
 - Audit Report: `docs/audit/2025-11-14-062658.md`
 - Spec Definition: `spec.proto`
-- Stack Outputs: `stack_outputs.proto`
+- Outputs: `outputs.proto`
 - Pulumi Implementation: `iac/pulumi/module/`
 - Terraform Module: `iac/tf/`
 - Zalando Operator: https://github.com/zalando/postgres-operator
@@ -475,13 +475,13 @@ This completion follows the pattern established by:
 
 ## Summary
 
-The KubernetesZalandoPostgresOperator component is now fully complete and production-ready. The addition of comprehensive user-facing documentation, complete Terraform implementation, and supporting documentation brings the component to 100% completion. Users can now:
+The KubernetesZalandoPostgresOperator kind is now fully complete and production-ready. The addition of comprehensive user-facing documentation, complete Terraform implementation, and supporting documentation brings the kind to 100% completion. Users can now:
 
-1. **Understand** the component through README.md
+1. **Understand** the kind through README.md
 2. **Learn** from practical examples in examples.md
 3. **Deploy** using either Pulumi or Terraform
 4. **Troubleshoot** using documented debugging steps
 5. **Extend** the implementation using architecture documentation
 
-The component follows Planton best practices and is ready for production use.
+The kind follows Planton best practices and is ready for production use.
 

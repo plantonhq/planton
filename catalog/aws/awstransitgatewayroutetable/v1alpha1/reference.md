@@ -44,7 +44,7 @@ and peering attachments all surface as Transit Gateway attachments that a
 routing domain must be able to include.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

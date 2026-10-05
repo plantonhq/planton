@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureServicePlanStackOutputs** captures the outputs of provisioning an
+// **AzureServicePlanOutputs** captures the outputs of provisioning an
 // Azure App Service Plan.
 //
 // The primary output is `service_plan_id`, which downstream app kinds
@@ -31,7 +31,7 @@ const (
 //
 // The remaining outputs are informational -- useful for debugging,
 // auditing, cost tracking, and infra-chart visibility.
-type AzureServicePlanStackOutputs struct {
+type AzureServicePlanOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Service Plan.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Web/serverFarms/{name}
@@ -59,20 +59,20 @@ type AzureServicePlanStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureServicePlanStackOutputs) Reset() {
-	*x = AzureServicePlanStackOutputs{}
+func (x *AzureServicePlanOutputs) Reset() {
+	*x = AzureServicePlanOutputs{}
 	mi := &file_catalog_azure_azureserviceplan_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureServicePlanStackOutputs) String() string {
+func (x *AzureServicePlanOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureServicePlanStackOutputs) ProtoMessage() {}
+func (*AzureServicePlanOutputs) ProtoMessage() {}
 
-func (x *AzureServicePlanStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureServicePlanOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureserviceplan_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -84,47 +84,47 @@ func (x *AzureServicePlanStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureServicePlanStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureServicePlanStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureServicePlanOutputs.ProtoReflect.Descriptor instead.
+func (*AzureServicePlanOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureserviceplan_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureServicePlanStackOutputs) GetServicePlanId() string {
+func (x *AzureServicePlanOutputs) GetServicePlanId() string {
 	if x != nil {
 		return x.ServicePlanId
 	}
 	return ""
 }
 
-func (x *AzureServicePlanStackOutputs) GetServicePlanName() string {
+func (x *AzureServicePlanOutputs) GetServicePlanName() string {
 	if x != nil {
 		return x.ServicePlanName
 	}
 	return ""
 }
 
-func (x *AzureServicePlanStackOutputs) GetOsType() string {
+func (x *AzureServicePlanOutputs) GetOsType() string {
 	if x != nil {
 		return x.OsType
 	}
 	return ""
 }
 
-func (x *AzureServicePlanStackOutputs) GetSkuName() string {
+func (x *AzureServicePlanOutputs) GetSkuName() string {
 	if x != nil {
 		return x.SkuName
 	}
 	return ""
 }
 
-func (x *AzureServicePlanStackOutputs) GetKind() string {
+func (x *AzureServicePlanOutputs) GetKind() string {
 	if x != nil {
 		return x.Kind
 	}
 	return ""
 }
 
-func (x *AzureServicePlanStackOutputs) GetReserved() bool {
+func (x *AzureServicePlanOutputs) GetReserved() bool {
 	if x != nil {
 		return x.Reserved
 	}
@@ -135,8 +135,8 @@ var File_catalog_azure_azureserviceplan_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_azure_azureserviceplan_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/azure/azureserviceplan/v1alpha1/outputs.proto\x12+dev.planton.azure.azureserviceplan.v1alpha1\"\xd6\x01\n" +
-	"\x1cAzureServicePlanStackOutputs\x12&\n" +
+	"5catalog/azure/azureserviceplan/v1alpha1/outputs.proto\x12+dev.planton.azure.azureserviceplan.v1alpha1\"\xd1\x01\n" +
+	"\x17AzureServicePlanOutputs\x12&\n" +
 	"\x0fservice_plan_id\x18\x01 \x01(\tR\rservicePlanId\x12*\n" +
 	"\x11service_plan_name\x18\x02 \x01(\tR\x0fservicePlanName\x12\x17\n" +
 	"\aos_type\x18\x03 \x01(\tR\x06osType\x12\x19\n" +
@@ -159,7 +159,7 @@ func file_catalog_azure_azureserviceplan_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_azure_azureserviceplan_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureserviceplan_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureServicePlanStackOutputs)(nil), // 0: dev.planton.azure.azureserviceplan.v1alpha1.AzureServicePlanStackOutputs
+	(*AzureServicePlanOutputs)(nil), // 0: dev.planton.azure.azureserviceplan.v1alpha1.AzureServicePlanOutputs
 }
 var file_catalog_azure_azureserviceplan_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

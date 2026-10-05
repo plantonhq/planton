@@ -43,8 +43,8 @@ import (
 // The typed spec renders into chart values (values.go); the helm_values
 // escape hatch merges last with Helm -f semantics — the exact semantic
 // twin of the Terraform module's helm_release values documents.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesoteloperatorv1alpha1.KubernetesOtelOperatorStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesoteloperatorv1alpha1.KubernetesOtelOperatorIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// Fail-loud name budget: 63-char Kubernetes name limit minus the
 	// chart's longest derived suffix, "-controller-manager-service-cert"
@@ -56,13 +56,13 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesoteloperatorv1alpha1.K
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}
@@ -85,7 +85,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesoteloperatorv1alpha1.K
 	// (see keptcrds for the mechanics and the failure vocabulary).
 	// crds.install false is the bring-your-own-CRDs arm: nothing is
 	// applied and the release still skips CRDs.
-	crds := stackInput.Target.Spec.GetCrds()
+	crds := iacInput.Target.Spec.GetCrds()
 	createdCrds, err := keptcrds.Apply(ctx, keptcrds.Args{
 		Source: helmcrds.Source{
 			Repository:  vars.HelmChartRepo,
@@ -102,7 +102,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesoteloperatorv1alpha1.K
 		Namespace:       locals.Namespace,
 		Install:         crds == nil || crds.Install == nil || crds.GetInstall(),
 		KeepOnUninstall: crds == nil || crds.KeepOnUninstall == nil || crds.GetKeepOnUninstall(),
-		ProviderConfig:  stackInput.ProviderConfig,
+		ProviderConfig:  iacInput.ProviderConfig,
 		ProviderName:    "kubernetes-crd-upsert",
 	})
 	if err != nil {

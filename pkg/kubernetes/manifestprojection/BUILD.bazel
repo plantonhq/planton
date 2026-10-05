@@ -14,7 +14,7 @@ go_library(
         "//pkg/iac/specprojection",
         "//pkg/refannotations",
         "//shared",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "//shared/options",
         "@com_github_pkg_errors//:errors",
         "@org_golang_google_protobuf//proto",
@@ -31,7 +31,7 @@ go_test(
     embed = [":manifestprojection"],
     deps = [
         "//catalog/kubernetes/kubernetesprometheusrule/v1alpha1",
-        "//pkg/crkreflect",
+        "//pkg/catalogkindreflect",
         "//pkg/iac/specprojection",
         "//shared",
         "//shared/foreignkey/v1:foreignkey",

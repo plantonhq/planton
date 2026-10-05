@@ -4,7 +4,7 @@ Creates a topic on a DigitalOcean managed Kafka cluster with the full per-topic 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kafka Topic** -- the named topic on the referenced cluster, with your partition count, replication factor, and per-topic configuration; unset config leaves defer to the Kafka server default
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Kafka Database Cluster** -- a DigitalOceanDatabaseCluster running the `kafka` engine (DigitalOcean rejects topic calls on other engines).
 
 ### DigitalOcean Account
@@ -52,7 +52,7 @@ spec:
 planton apply -f kafka-topic.yaml
 ```
 
-This creates an `orders-events` topic with six partitions, three replicas, and seven-day time-based retention on the referenced Kafka cluster. A Stack Job tracks the provisioning in real time.
+This creates an `orders-events` topic with six partitions, three replicas, and seven-day time-based retention on the referenced Kafka cluster. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,7 +87,7 @@ These are the most important decisions when configuring a Kafka topic. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -95,9 +95,9 @@ These are the most important decisions when configuring a Kafka topic. Explore t
 
 The referenced cluster must run the `kafka` engine; a literal cluster UUID is accepted in place of the reference.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` carries the topic's identity pair -- `cluster_id` and `topic_name`, both echoes of resolved inputs. DigitalOcean mints no standalone topic id: the (cluster, name) pair is the identity. The topic's provisioning state is deliberately not an output: creation is asynchronous and a state captured at apply time goes stale, so anyone who needs it reads it live from the API (`GET /v2/databases/{cluster_id}/topics/{name}`), which is also how the E2E verifier asserts it. Producers and consumers connect through the cluster's connection outputs -- host, port, and credentials from its users -- and address the topic by name; there is no output here for downstream Cloud Resources to wire.
+After provisioning, `status.outputs` carries the topic's identity pair -- `cluster_id` and `topic_name`, both echoes of resolved inputs. DigitalOcean mints no standalone topic id: the (cluster, name) pair is the identity. The topic's provisioning state is deliberately not an output: creation is asynchronous and a state captured at apply time goes stale, so anyone who needs it reads it live from the API (`GET /v2/databases/{cluster_id}/topics/{name}`), which is also how the E2E verifier asserts it. Producers and consumers connect through the cluster's connection outputs -- host, port, and credentials from its users -- and address the topic by name; there is no output here for downstream Infra Components to wire.
 
 ## Common Patterns
 
@@ -109,6 +109,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Database Cluster**](/cloud-catalog/digital-ocean-database-cluster) -- the Kafka-engine cluster the topic lives on, and the source of connection host, port, and credentials
-- [**DigitalOcean Database User**](/cloud-catalog/digital-ocean-database-user) -- per-user Kafka ACLs pair this topic's name with produce/consume permissions
-- [**DigitalOcean Kafka Schema**](/cloud-catalog/digital-ocean-database-kafka-schema) -- registers the message schema for the topic under the `<topic>-value` subject convention
+- [**DigitalOcean Database Cluster**](/infra-catalog/digital-ocean-database-cluster) -- the Kafka-engine cluster the topic lives on, and the source of connection host, port, and credentials
+- [**DigitalOcean Database User**](/infra-catalog/digital-ocean-database-user) -- per-user Kafka ACLs pair this topic's name with produce/consume permissions
+- [**DigitalOcean Kafka Schema**](/infra-catalog/digital-ocean-database-kafka-schema) -- registers the message schema for the topic under the `<topic>-value` subject convention

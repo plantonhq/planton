@@ -1,15 +1,15 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate quantities: the vault itself carries no meter -- Microsoft's Key
 # Vault price list bills OPERATIONS (per 10,000 transactions), certificate
 # renewals (per request), scheduled key rotations (per rotation), and
 # Premium HSM-protected keys (per key per month) -- so an idle vault bills
 # nothing, and everything it does cost follows the objects inside it and
 # the calls made against them.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurekeyvault
 spec:

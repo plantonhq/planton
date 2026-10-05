@@ -4,7 +4,7 @@ Deploys the Istio service mesh control plane on a Kubernetes cluster: istiod, th
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Istio CRDs** -- applied by the module itself via server-side apply, outside any Helm release. Module-owned CRDs are co-ownable with the CRDs-only Istio Base CRDs component, so a cluster running just the CRDs upgrades to the full mesh with a plain redeploy.
 - **base Helm Release** -- the validation-webhook plumbing and cluster-wide resources istiod requires.
@@ -18,7 +18,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -60,11 +60,11 @@ spec:
 planton apply -f istio.yaml
 ```
 
-This installs the control plane into `istio-system` with a production trust domain and eviction protection for istiod; everything else runs on the chart defaults. A Stack Job tracks the provisioning in real time.
+This installs the control plane into `istio-system` with a production trust domain and eviction protection for istiod; everything else runs on the chart defaults. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the control plane to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, wire the control plane to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -101,15 +101,15 @@ These are the most important decisions when configuring an Istio mesh. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources and operators can reference:
+After provisioning, `status.outputs` contains values that downstream Infra Components and operators can reference:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -134,8 +134,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Istio Destination Rule**](/cloud-catalog/kubernetes-destination-rule) and [**Istio Service Entry**](/cloud-catalog/kubernetes-service-entry) -- traffic management against this control plane.
-- [**Istio Peer Authentication**](/cloud-catalog/kubernetes-peer-authentication), [**Istio Request Authentication**](/cloud-catalog/kubernetes-request-authentication), and [**Istio Authorization Policy**](/cloud-catalog/kubernetes-authorization-policy) -- mesh security policy.
-- [**Istio Telemetry**](/cloud-catalog/kubernetes-telemetry) -- observability configuration; [**Istio Envoy Filter**](/cloud-catalog/kubernetes-envoy-filter) -- the extensibility escape hatch.
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- Gateways using the exported `gateway_class_name` are provisioned by this control plane, with [**Kubernetes HTTPRoute**](/cloud-catalog/kubernetes-http-route) and its siblings attaching to them.
-- [**Istio Base CRDs**](/cloud-catalog/kubernetes-istio-base-crds) -- the CRDs-only alternative for clusters that need the API types without the mesh runtime; upgrading to this full mesh later is a plain redeploy.
+- [**Istio Destination Rule**](/infra-catalog/kubernetes-destination-rule) and [**Istio Service Entry**](/infra-catalog/kubernetes-service-entry) -- traffic management against this control plane.
+- [**Istio Peer Authentication**](/infra-catalog/kubernetes-peer-authentication), [**Istio Request Authentication**](/infra-catalog/kubernetes-request-authentication), and [**Istio Authorization Policy**](/infra-catalog/kubernetes-authorization-policy) -- mesh security policy.
+- [**Istio Telemetry**](/infra-catalog/kubernetes-telemetry) -- observability configuration; [**Istio Envoy Filter**](/infra-catalog/kubernetes-envoy-filter) -- the extensibility escape hatch.
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- Gateways using the exported `gateway_class_name` are provisioned by this control plane, with [**Kubernetes HTTPRoute**](/infra-catalog/kubernetes-http-route) and its siblings attaching to them.
+- [**Istio Base CRDs**](/infra-catalog/kubernetes-istio-base-crds) -- the CRDs-only alternative for clusters that need the API types without the mesh runtime; upgrading to this full mesh later is a plain redeploy.

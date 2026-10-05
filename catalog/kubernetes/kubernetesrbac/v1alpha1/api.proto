@@ -24,7 +24,7 @@ message KubernetesRbac {
 
   // Metadata for the RBAC grant resource.
   // Includes standard fields like name, organization, environment, etc.
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // Specification of the desired state for the RBAC grant.
   // Defines the scope, the role (created or existing), and the subjects.
@@ -42,5 +42,5 @@ message KubernetesRbac {
 message KubernetesRbacStatus {
   // Outputs from the RBAC grant deployment.
   // Contains the created object names and kinds for downstream composition.
-  KubernetesRbacStackOutputs outputs = 1;
+  KubernetesRbacOutputs outputs = 1;
 }

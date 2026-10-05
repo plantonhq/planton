@@ -40,7 +40,7 @@ var _ = ginkgo.Describe("GcpDatastreamPrivateConnectionSpec", func() {
 		return &GcpDatastreamPrivateConnection{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpDatastreamPrivateConnection",
-			Metadata:   &shared.CloudResourceMetadata{Name: "data-vpc"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "data-vpc"},
 			Spec: &GcpDatastreamPrivateConnectionSpec{
 				Location:         "us-central1",
 				VpcPeeringConfig: peering(),

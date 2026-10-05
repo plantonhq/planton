@@ -4,7 +4,7 @@ Stores a bring-your-own TLS certificate on a Container App Environment -- the ce
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Environment Certificate** -- on the referenced Container App Environment, sourced exactly one way: a Key Vault reference the environment keeps current across renewals, or an inline PFX upload whose rotation is manual
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -51,7 +51,7 @@ spec:
 planton apply -f certificate.yaml
 ```
 
-This stores a Key-Vault-sourced certificate named `app.example.com` on the environment, read with the environment's system-assigned identity and following vault renewals automatically. A Stack Job tracks the provisioning in real time.
+This stores a Key-Vault-sourced certificate named `app.example.com` on the environment, read with the environment's system-assigned identity and following vault renewals automatically. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,7 +89,7 @@ These are the most important decisions when configuring a certificate. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -97,9 +97,9 @@ These are the most important decisions when configuring a certificate. Explore t
 | **AzureKeyVaultCertificate** | `certificateKeyVault.keyVaultSecretId` (Key Vault source) | `status.outputs.versionless_secret_id` |
 | **AzureUserAssignedIdentity** | `certificateKeyVault.identity` (optional) | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,8 +122,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Container App Environment**](/cloud-catalog/azure-container-app-environment) -- where the certificate is stored
-- [**Azure Container App Custom Domain**](/cloud-catalog/azure-container-app-custom-domain) -- binds the certificate to an app's hostname
-- [**Azure Key Vault Certificate**](/cloud-catalog/azure-key-vault-certificate) -- the vault-managed source whose renewals propagate
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- an optional shared identity for the vault read
-- [**Azure Container App Environment Managed Certificate**](/cloud-catalog/azure-container-app-environment-managed-certificate) -- the free, Azure-renewed alternative for single hostnames
+- [**Azure Container App Environment**](/infra-catalog/azure-container-app-environment) -- where the certificate is stored
+- [**Azure Container App Custom Domain**](/infra-catalog/azure-container-app-custom-domain) -- binds the certificate to an app's hostname
+- [**Azure Key Vault Certificate**](/infra-catalog/azure-key-vault-certificate) -- the vault-managed source whose renewals propagate
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- an optional shared identity for the vault read
+- [**Azure Container App Environment Managed Certificate**](/infra-catalog/azure-container-app-environment-managed-certificate) -- the free, Azure-renewed alternative for single hostnames

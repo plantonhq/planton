@@ -4,7 +4,7 @@
 // per-kind GET paths -- no cloud CLI).
 //
 // Standing convention: verification reads everything it needs from the
-// component's stack outputs. A zone-scoped kind's outputs must therefore
+// component's outputs. A zone-scoped kind's outputs must therefore
 // carry the zone_id alongside the resource's own identifier (a Cloudflare
 // resource's API identity is compound -- zones/{zone_id}/<collection>/{id}).
 // When enrolling a kind whose outputs lack its scope, add the output to the
@@ -81,9 +81,9 @@ type API interface {
 }
 
 // Verifier checks a single component's Cloudflare resource for
-// existence/absence from its stack outputs.
+// existence/absence from its outputs.
 type Verifier interface {
-	// IDOutputKey is the stack-output key carrying the resource's primary
+	// IDOutputKey is the output key carrying the resource's primary
 	// identifier -- used to confirm the deploy produced a verifiable handle.
 	IDOutputKey() string
 	// VerifyExists returns an error unless the resource exists.
@@ -93,13 +93,13 @@ type Verifier interface {
 }
 
 // apiPathVerifier is the common implementation: one GET path template whose
-// placeholders are filled, in order, from the named stack-output keys.
+// placeholders are filled, in order, from the named output keys.
 // Account-scoped resources set accountScoped, which prepends the harness
 // account to the path ("accounts/%s/..." with the first placeholder filled
 // from API.AccountID(), never from outputs -- account IDs are harness scope,
 // not deploy results).
 type apiPathVerifier struct {
-	component     string
+	kind          string
 	pathFormat    string
 	outputKeys    []string
 	accountScoped bool
@@ -158,11 +158,11 @@ func (v *apiPathVerifier) VerifyExists(ctx context.Context, api API, outputs map
 	}
 	exists, err := v.probe(ctx, api, path)
 	if err != nil {
-		return errors.Wrapf(err, "%s verify-exists failed", v.component)
+		return errors.Wrapf(err, "%s verify-exists failed", v.kind)
 	}
 	if !exists {
 		return errors.Errorf("%s %s not found after deploy (GET %s)",
-			v.component, outputs[v.IDOutputKey()], path)
+			v.kind, outputs[v.IDOutputKey()], path)
 	}
 	return nil
 }
@@ -188,14 +188,14 @@ func (v *apiPathVerifier) VerifyAbsent(ctx context.Context, api API, outputs map
 		var probeErr error
 		exists, probeErr = v.probe(ctx, api, path)
 		if probeErr != nil {
-			return errors.Wrapf(probeErr, "%s verify-absent failed", v.component)
+			return errors.Wrapf(probeErr, "%s verify-absent failed", v.kind)
 		}
 		if !exists {
 			return nil
 		}
 	}
 	return errors.Errorf("%s %s still exists after destroy (GET %s)",
-		v.component, outputs[v.IDOutputKey()], path)
+		v.kind, outputs[v.IDOutputKey()], path)
 }
 
 // probe selects the existence check: the plain status-code probe, or the
@@ -230,21 +230,21 @@ func (v *apiPathVerifier) buildPath(api API, outputs map[string]string) (string,
 	}
 	if accountScoped {
 		if api.AccountID() == "" {
-			return "", errors.Errorf("%s is account-scoped but the harness has no account ID", v.component)
+			return "", errors.Errorf("%s is account-scoped but the harness has no account ID", v.kind)
 		}
 		values = append(values, api.AccountID())
 	}
 	for _, key := range v.outputKeys {
 		value := outputs[key]
 		if value == "" {
-			return "", errors.Errorf("%s outputs carry no %q -- cannot verify", v.component, key)
+			return "", errors.Errorf("%s outputs carry no %q -- cannot verify", v.kind, key)
 		}
 		values = append(values, value)
 	}
 	return fmt.Sprintf(pathFormat, values...), nil
 }
 
-// verifiers maps a component directory name to its verifier. A kind
+// verifiers maps a kind directory name to its verifier. A kind
 // registers here in the wave that enrolls it for E2E (its profile +
 // scenarios), and every kind that appears in another kind's registry
 // prerequisites needs its entry before that consumer's lane can run --
@@ -253,32 +253,32 @@ var verifiers = map[string]Verifier{
 	// The zone is the central fixture: most zone-scoped lanes install it as
 	// their prerequisite before the component under test deploys.
 	"cloudflarednszone": &apiPathVerifier{
-		component:  "cloudflarednszone",
+		kind:       "cloudflarednszone",
 		pathFormat: "zones/%s",
 		outputKeys: []string{"zone_id"},
 	},
 	"cloudflarednsrecord": &apiPathVerifier{
-		component:  "cloudflarednsrecord",
+		kind:       "cloudflarednsrecord",
 		pathFormat: "zones/%s/dns_records/%s",
 		outputKeys: []string{"zone_id", "record_id"},
 	},
 	// Existence GET is the provider Read path (accounts/.../workers/services/{name}),
 	// not workers/scripts/{name}. Account comes from the harness, never from outputs.
 	"cloudflareworker": &apiPathVerifier{
-		component:     "cloudflareworker",
+		kind:          "cloudflareworker",
 		pathFormat:    "accounts/%s/workers/services/%s",
 		outputKeys:    []string{"script_name"},
 		accountScoped: true,
 	},
 	"cloudflareloadbalancer": &apiPathVerifier{
-		component:  "cloudflareloadbalancer",
+		kind:       "cloudflareloadbalancer",
 		pathFormat: "zones/%s/load_balancers/%s",
 		outputKeys: []string{"zone_id", "load_balancer_id"},
 	},
 	// The pool is account-scoped (it is the load balancer's registry
 	// prerequisite, so its fixture is verified right after install).
 	"cloudflareloadbalancerpool": &apiPathVerifier{
-		component:     "cloudflareloadbalancerpool",
+		kind:          "cloudflareloadbalancerpool",
 		pathFormat:    "accounts/%s/load_balancers/pools/%s",
 		outputKeys:    []string{"pool_id"},
 		accountScoped: true,
@@ -292,18 +292,18 @@ var verifiers = map[string]Verifier{
 	// plain existence probe below would fail verify-absent against a
 	// perfectly clean teardown.
 	"cloudflareemailroutingzone": &apiPathVerifier{
-		component:  "cloudflareemailroutingzone",
+		kind:       "cloudflareemailroutingzone",
 		pathFormat: "zones/%s/email/routing",
 		outputKeys: []string{"zone_id"},
 	},
 	"cloudflareemailroutingrule": &apiPathVerifier{
-		component:  "cloudflareemailroutingrule",
+		kind:       "cloudflareemailroutingrule",
 		pathFormat: "zones/%s/email/routing/rules/%s",
 		outputKeys: []string{"zone_id", "rule_id"},
 	},
 	// Destination addresses are account-scoped (shared across zones).
 	"cloudflareemailroutingaddress": &apiPathVerifier{
-		component:     "cloudflareemailroutingaddress",
+		kind:          "cloudflareemailroutingaddress",
 		pathFormat:    "accounts/%s/email/routing/addresses/%s",
 		outputKeys:    []string{"address_id"},
 		accountScoped: true,
@@ -313,14 +313,14 @@ var verifiers = map[string]Verifier{
 	// arm would need an accounts/%s/rulesets/%s variant reading the harness
 	// account).
 	"cloudflareruleset": &apiPathVerifier{
-		component:  "cloudflareruleset",
+		kind:       "cloudflareruleset",
 		pathFormat: "zones/%s/rulesets/%s",
 		outputKeys: []string{"zone_id", "ruleset_id"},
 	},
 	// The namespace is also the KV pair's install fixture, so this entry
 	// serves both its own lanes and the pair's fixture verification.
 	"cloudflarekvnamespace": &apiPathVerifier{
-		component:     "cloudflarekvnamespace",
+		kind:          "cloudflarekvnamespace",
 		pathFormat:    "accounts/%s/storage/kv/namespaces/%s",
 		outputKeys:    []string{"namespace_id"},
 		accountScoped: true,
@@ -329,7 +329,7 @@ var verifiers = map[string]Verifier{
 	// value when present). Keys are path-escaped by the API client; scenario
 	// keys stay slash-free so the import ID stays parseable too.
 	"cloudflareworkerskvpair": &apiPathVerifier{
-		component:     "cloudflareworkerskvpair",
+		kind:          "cloudflareworkerskvpair",
 		pathFormat:    "accounts/%s/storage/kv/namespaces/%s/values/%s",
 		outputKeys:    []string{"namespace_id", "key_name"},
 		accountScoped: true,
@@ -337,7 +337,7 @@ var verifiers = map[string]Verifier{
 	// Note the singular "database" in the D1 path -- the provider's own Read
 	// path, not the plural most Cloudflare collections use.
 	"cloudflared1database": &apiPathVerifier{
-		component:     "cloudflared1database",
+		kind:          "cloudflared1database",
 		pathFormat:    "accounts/%s/d1/database/%s",
 		outputKeys:    []string{"database_id"},
 		accountScoped: true,
@@ -345,7 +345,7 @@ var verifiers = map[string]Verifier{
 	// The queue is also the R2 event-notification scenario's install fixture
 	// (a scenario-declared prerequisite), so this entry serves both.
 	"cloudflarequeue": &apiPathVerifier{
-		component:     "cloudflarequeue",
+		kind:          "cloudflarequeue",
 		pathFormat:    "accounts/%s/queues/%s",
 		outputKeys:    []string{"queue_id"},
 		accountScoped: true,
@@ -355,13 +355,13 @@ var verifiers = map[string]Verifier{
 	// for default-jurisdiction buckets, which is all the live scenarios
 	// create; a non-default arm would need a header-aware client extension.
 	"cloudflarer2bucket": &apiPathVerifier{
-		component:     "cloudflarer2bucket",
+		kind:          "cloudflarer2bucket",
 		pathFormat:    "accounts/%s/r2/buckets/%s",
 		outputKeys:    []string{"bucket_name"},
 		accountScoped: true,
 	},
 	"cloudflarehyperdriveconfig": &apiPathVerifier{
-		component:     "cloudflarehyperdriveconfig",
+		kind:          "cloudflarehyperdriveconfig",
 		pathFormat:    "accounts/%s/hyperdrive/configs/%s",
 		outputKeys:    []string{"hyperdrive_id"},
 		accountScoped: true,
@@ -373,13 +373,13 @@ var verifiers = map[string]Verifier{
 	// recorded as not-wired, a follow-up if a zone-scoped arm is ever
 	// queued).
 	"cloudflarezerotrustaccessapplication": &apiPathVerifier{
-		component:     "cloudflarezerotrustaccessapplication",
+		kind:          "cloudflarezerotrustaccessapplication",
 		pathFormat:    "accounts/%s/access/apps/%s",
 		outputKeys:    []string{"application_id"},
 		accountScoped: true,
 	},
 	"cloudflarezerotrustaccessgroup": &apiPathVerifier{
-		component:     "cloudflarezerotrustaccessgroup",
+		kind:          "cloudflarezerotrustaccessgroup",
 		pathFormat:    "accounts/%s/access/groups/%s",
 		outputKeys:    []string{"group_id"},
 		accountScoped: true,
@@ -387,7 +387,7 @@ var verifiers = map[string]Verifier{
 	// The policy is also the Access application's self-hosted fixture (a
 	// scenario-declared prerequisite), so this entry serves both.
 	"cloudflarezerotrustaccesspolicy": &apiPathVerifier{
-		component:     "cloudflarezerotrustaccesspolicy",
+		kind:          "cloudflarezerotrustaccesspolicy",
 		pathFormat:    "accounts/%s/access/policies/%s",
 		outputKeys:    []string{"policy_id"},
 		accountScoped: true,
@@ -396,7 +396,7 @@ var verifiers = map[string]Verifier{
 	// Cloudflared tunnels SOFT-DELETE: the GET answers 200 with deleted_at
 	// set after destroy, so the probe is the deleted_at-aware one.
 	"cloudflarezerotrusttunnel": &apiPathVerifier{
-		component:     "cloudflarezerotrusttunnel",
+		kind:          "cloudflarezerotrusttunnel",
 		pathFormat:    "accounts/%s/cfd_tunnel/%s",
 		outputKeys:    []string{"tunnel_id"},
 		accountScoped: true,
@@ -405,7 +405,7 @@ var verifiers = map[string]Verifier{
 	// Routes and virtual networks live under teamnet/, not cfd_tunnel/.
 	// Routes soft-delete like tunnels; virtual networks 404 honestly.
 	"cloudflarezerotrusttunnelroute": &apiPathVerifier{
-		component:     "cloudflarezerotrusttunnelroute",
+		kind:          "cloudflarezerotrusttunnelroute",
 		pathFormat:    "accounts/%s/teamnet/routes/%s",
 		outputKeys:    []string{"route_id"},
 		accountScoped: true,
@@ -414,7 +414,7 @@ var verifiers = map[string]Verifier{
 	// Also the route's isolated-vnet fixture (a scenario-declared
 	// prerequisite), so this entry serves both.
 	"cloudflarezerotrusttunnelvirtualnetwork": &apiPathVerifier{
-		component:     "cloudflarezerotrusttunnelvirtualnetwork",
+		kind:          "cloudflarezerotrusttunnelvirtualnetwork",
 		pathFormat:    "accounts/%s/teamnet/virtual_networks/%s",
 		outputKeys:    []string{"virtual_network_id"},
 		accountScoped: true,
@@ -424,13 +424,13 @@ var verifiers = map[string]Verifier{
 	// than 404ing (measured in the provider's own destroy checks at
 	// v5.23.0). The status-enum probe treats those as gone.
 	"cloudflarecertificatepack": &apiPathVerifier{
-		component:      "cloudflarecertificatepack",
+		kind:           "cloudflarecertificatepack",
 		pathFormat:     "zones/%s/ssl/certificate_packs/%s",
 		outputKeys:     []string{"zone_id", "certificate_pack_id"},
 		absentStatuses: []string{"pending_deletion", "deleted"},
 	},
 	"cloudflarecustomhostname": &apiPathVerifier{
-		component:      "cloudflarecustomhostname",
+		kind:           "cloudflarecustomhostname",
 		pathFormat:     "zones/%s/custom_hostnames/%s",
 		outputKeys:     []string{"zone_id", "custom_hostname_id"},
 		absentStatuses: []string{"pending_deletion", "deleted"},
@@ -438,7 +438,7 @@ var verifiers = map[string]Verifier{
 	// Zone singleton: no resource id -- zone_id is the identity and the
 	// only output the verifier keys on (email-routing-settings precedent).
 	"cloudflarecustomhostnamefallbackorigin": &apiPathVerifier{
-		component:      "cloudflarecustomhostnamefallbackorigin",
+		kind:           "cloudflarecustomhostnamefallbackorigin",
 		pathFormat:     "zones/%s/custom_hostnames/fallback_origin",
 		outputKeys:     []string{"zone_id"},
 		absentStatuses: []string{"pending_deletion", "deleted"},
@@ -447,11 +447,11 @@ var verifiers = map[string]Verifier{
 	// while the zone does; destroy is a NO-OP -- per-class contract in
 	// zone_settings.go). Each probes its own family's settings endpoint.
 	"cloudflarezonesettings": &settingsSingletonVerifier{
-		component:  "cloudflarezonesettings",
+		kind:       "cloudflarezonesettings",
 		pathFormat: "zones/%s/settings",
 	},
 	"cloudflarecachesettings": &settingsSingletonVerifier{
-		component: "cloudflarecachesettings",
+		kind: "cloudflarecachesettings",
 		// Smart tiered cache is the family's one surface measured answering
 		// on EVERY plan (editable:true on a Free zone even before any
 		// write). The natural-looking cache_reserve surface is plan-gated
@@ -461,11 +461,11 @@ var verifiers = map[string]Verifier{
 		pathFormat: "zones/%s/cache/tiered_cache_smart_topology_enable",
 	},
 	"cloudflarezonetlssettings": &settingsSingletonVerifier{
-		component:  "cloudflarezonetlssettings",
+		kind:       "cloudflarezonetlssettings",
 		pathFormat: "zones/%s/ssl/universal/settings",
 	},
 	"cloudflarelist": &apiPathVerifier{
-		component:     "cloudflarelist",
+		kind:          "cloudflarelist",
 		pathFormat:    "accounts/%s/rules/lists/%s",
 		outputKeys:    []string{"list_id"},
 		accountScoped: true,
@@ -473,14 +473,14 @@ var verifiers = map[string]Verifier{
 	// List-item delete is an async bulk POST the provider never polls;
 	// a single GET immediately after destroy races the 404.
 	"cloudflarelistitem": &apiPathVerifier{
-		component:     "cloudflarelistitem",
+		kind:          "cloudflarelistitem",
 		pathFormat:    "accounts/%s/rules/lists/%s/items/%s",
 		outputKeys:    []string{"list_id", "item_id"},
 		accountScoped: true,
 		absentRetries: 5,
 	},
 	"cloudflareloadbalancermonitor": &apiPathVerifier{
-		component:     "cloudflareloadbalancermonitor",
+		kind:          "cloudflareloadbalancermonitor",
 		pathFormat:    "accounts/%s/load_balancers/monitors/%s",
 		outputKeys:    []string{"monitor_id"},
 		accountScoped: true,
@@ -488,7 +488,7 @@ var verifiers = map[string]Verifier{
 	// Identity is the project NAME, not a UUID -- the provider's Read is
 	// GET accounts/{a}/pages/projects/{name}.
 	"cloudflarepagesproject": &apiPathVerifier{
-		component:     "cloudflarepagesproject",
+		kind:          "cloudflarepagesproject",
 		pathFormat:    "accounts/%s/pages/projects/%s",
 		outputKeys:    []string{"project_name"},
 		accountScoped: true,
@@ -496,7 +496,7 @@ var verifiers = map[string]Verifier{
 	// Identity is the sitekey. Path segment is challenges/widgets, not
 	// turnstile/.
 	"cloudflareturnstilewidget": &apiPathVerifier{
-		component:     "cloudflareturnstilewidget",
+		kind:          "cloudflareturnstilewidget",
 		pathFormat:    "accounts/%s/challenges/widgets/%s",
 		outputKeys:    []string{"sitekey"},
 		accountScoped: true,
@@ -508,7 +508,7 @@ var verifiers = map[string]Verifier{
 	// as absence. Revocation reaches reads within seconds (measured 4-15s
 	// live 2026-08-28); the retry budget rides out that beat.
 	"cloudflareorigincacertificate": &apiPathVerifier{
-		component:     "cloudflareorigincacertificate",
+		kind:          "cloudflareorigincacertificate",
 		pathFormat:    "certificates/%s",
 		outputKeys:    []string{"certificate_id"},
 		revokedAt:     true,
@@ -518,13 +518,13 @@ var verifiers = map[string]Verifier{
 	// honestly on the read after (the account-scoped arm is the one the live
 	// scenarios run; both resources are dual-scope at the provider).
 	"cloudflarezerotrustaccessidentityprovider": &apiPathVerifier{
-		component:     "cloudflarezerotrustaccessidentityprovider",
+		kind:          "cloudflarezerotrustaccessidentityprovider",
 		pathFormat:    "accounts/%s/access/identity_providers/%s",
 		outputKeys:    []string{"identity_provider_id"},
 		accountScoped: true,
 	},
 	"cloudflarezerotrustaccessservicetoken": &apiPathVerifier{
-		component:     "cloudflarezerotrustaccessservicetoken",
+		kind:          "cloudflarezerotrustaccessservicetoken",
 		pathFormat:    "accounts/%s/access/service_tokens/%s",
 		outputKeys:    []string{"service_token_id"},
 		accountScoped: true,
@@ -534,7 +534,7 @@ var verifiers = map[string]Verifier{
 	// probe is honest either way: a clean 404 AND a tombstoned 200 with
 	// deleted_at set both count as absent (the tunnel/route precedent).
 	"cloudflarezerotrustgatewaypolicy": &apiPathVerifier{
-		component:     "cloudflarezerotrustgatewaypolicy",
+		kind:          "cloudflarezerotrustgatewaypolicy",
 		pathFormat:    "accounts/%s/gateway/rules/%s",
 		outputKeys:    []string{"policy_id"},
 		accountScoped: true,
@@ -543,7 +543,7 @@ var verifiers = map[string]Verifier{
 	// Zero Trust lists (gateway/lists/, distinct from the rules/lists/ family
 	// above) delete for real and 404 honestly.
 	"cloudflarezerotrustlist": &apiPathVerifier{
-		component:     "cloudflarezerotrustlist",
+		kind:          "cloudflarezerotrustlist",
 		pathFormat:    "accounts/%s/gateway/lists/%s",
 		outputKeys:    []string{"list_id"},
 		accountScoped: true,
@@ -553,7 +553,7 @@ var verifiers = map[string]Verifier{
 	// the two scopes are separate API collections, so the probe follows the
 	// deploy's own scope: a non-empty zone_id output selects the zone path.
 	"cloudflareipaccessrule": &apiPathVerifier{
-		component:      "cloudflareipaccessrule",
+		kind:           "cloudflareipaccessrule",
 		pathFormat:     "accounts/%s/firewall/access_rules/rules/%s",
 		zonePathFormat: "zones/%s/firewall/access_rules/rules/%s",
 		outputKeys:     []string{"rule_id"},
@@ -563,12 +563,12 @@ var verifiers = map[string]Verifier{
 	// (empty Delete body). Verify-absent asserts the surface still
 	// answers -- the settings-singleton class.
 	"cloudflarebotmanagement": &settingsSingletonVerifier{
-		component:  "cloudflarebotmanagement",
+		kind:       "cloudflarebotmanagement",
 		pathFormat: "zones/%s/bot_management",
 	},
 	// Snippets delete for real (by name) and 404 honestly.
 	"cloudflaresnippet": &apiPathVerifier{
-		component:  "cloudflaresnippet",
+		kind:       "cloudflaresnippet",
 		pathFormat: "zones/%s/snippets/%s",
 		outputKeys: []string{"zone_id", "snippet_name"},
 	},
@@ -576,27 +576,27 @@ var verifiers = map[string]Verifier{
 	// table. GET keeps answering 200 with an empty result array -- a
 	// plain existence probe would false-fail verify-absent.
 	"cloudflaresnippetrules": &apiPathVerifier{
-		component:        "cloudflaresnippetrules",
+		kind:             "cloudflaresnippetrules",
 		pathFormat:       "zones/%s/snippets/snippet_rules",
 		outputKeys:       []string{"zone_id"},
 		emptyResultArray: true,
 	},
 	// Standalone health checks delete for real and 404 honestly.
 	"cloudflarehealthcheck": &apiPathVerifier{
-		component:  "cloudflarehealthcheck",
+		kind:       "cloudflarehealthcheck",
 		pathFormat: "zones/%s/healthchecks/%s",
 		outputKeys: []string{"zone_id", "healthcheck_id"},
 	},
 	// Waiting rooms delete for real and 404 honestly. The folded
 	// bypass-rules list dies with the room.
 	"cloudflarewaitingroom": &apiPathVerifier{
-		component:  "cloudflarewaitingroom",
+		kind:       "cloudflarewaitingroom",
 		pathFormat: "zones/%s/waiting_rooms/%s",
 		outputKeys: []string{"zone_id", "waiting_room_id"},
 	},
 	// Waiting-room events delete for real and 404 honestly.
 	"cloudflarewaitingroomevent": &apiPathVerifier{
-		component:  "cloudflarewaitingroomevent",
+		kind:       "cloudflarewaitingroomevent",
 		pathFormat: "zones/%s/waiting_rooms/%s/events/%s",
 		outputKeys: []string{"zone_id", "waiting_room_id", "event_id"},
 	},
@@ -604,7 +604,7 @@ var verifiers = map[string]Verifier{
 	// states (deployment and deletion are asynchronous) -- a 200 whose
 	// status reads deleted counts as absent.
 	"cloudflarecustomsslcertificate": &apiPathVerifier{
-		component:      "cloudflarecustomsslcertificate",
+		kind:           "cloudflarecustomsslcertificate",
 		pathFormat:     "zones/%s/custom_certificates/%s",
 		outputKeys:     []string{"zone_id", "certificate_id"},
 		absentStatuses: []string{"deleted"},
@@ -613,7 +613,7 @@ var verifiers = map[string]Verifier{
 	// a deleted certificate answers 400 code 1472 "Certificate not found."
 	// (measured 2026-08-28), which the client classifies as absent.
 	"cloudflaremtlscertificate": &apiPathVerifier{
-		component:     "cloudflaremtlscertificate",
+		kind:          "cloudflaremtlscertificate",
 		pathFormat:    "accounts/%s/mtls_certificates/%s",
 		outputKeys:    []string{"certificate_id"},
 		accountScoped: true,
@@ -623,7 +623,7 @@ var verifiers = map[string]Verifier{
 	// associations revert rather than delete -- verify-absent asserts the
 	// settings surface still answers, per the settings-singleton contract.
 	"cloudflareauthenticatedoriginpulls": &settingsSingletonVerifier{
-		component:  "cloudflareauthenticatedoriginpulls",
+		kind:       "cloudflareauthenticatedoriginpulls",
 		pathFormat: "zones/%s/origin_tls_client_auth/settings",
 	},
 	// AOP client certificates delete for real but asynchronously: the API
@@ -631,7 +631,7 @@ var verifiers = map[string]Verifier{
 	// The live arm is the hostname-scoped upload (the zone-scoped surface
 	// is plan-proven offline), so the probe speaks the hostname path.
 	"cloudflareauthenticatedoriginpullscertificate": &apiPathVerifier{
-		component:      "cloudflareauthenticatedoriginpullscertificate",
+		kind:           "cloudflareauthenticatedoriginpullscertificate",
 		pathFormat:     "zones/%s/origin_tls_client_auth/hostnames/certificates/%s",
 		outputKeys:     []string{"zone_id", "certificate_id"},
 		absentStatuses: []string{"pending_deletion", "deleted"},
@@ -645,7 +645,7 @@ var verifiers = map[string]Verifier{
 	// Identity is the workflow NAME -- the provider's Read is
 	// GET accounts/{a}/workflows/{name}.
 	"cloudflareworkflow": &apiPathVerifier{
-		component:     "cloudflareworkflow",
+		kind:          "cloudflareworkflow",
 		pathFormat:    "accounts/%s/workflows/%s",
 		outputKeys:    []string{"workflow_name"},
 		accountScoped: true,
@@ -656,7 +656,7 @@ var verifiers = map[string]Verifier{
 	// cloudflare-go v7). One store per account: a create-conflict on an
 	// account with an existing store is a lane fact, not a verifier one.
 	"cloudflaresecretsstore": &apiPathVerifier{
-		component:     "cloudflaresecretsstore",
+		kind:          "cloudflaresecretsstore",
 		pathFormat:    "accounts/%s/secrets_store/stores/%s",
 		outputKeys:    []string{"store_id"},
 		accountScoped: true,
@@ -664,7 +664,7 @@ var verifiers = map[string]Verifier{
 	// Store secrets delete for real; the value never round-trips (write-
 	// only) but the record itself 404s honestly once gone.
 	"cloudflaresecretsstoresecret": &apiPathVerifier{
-		component:     "cloudflaresecretsstoresecret",
+		kind:          "cloudflaresecretsstoresecret",
 		pathFormat:    "accounts/%s/secrets_store/stores/%s/secrets/%s",
 		outputKeys:    []string{"store_id", "secret_id"},
 		accountScoped: true,
@@ -673,7 +673,7 @@ var verifiers = map[string]Verifier{
 	// (the URL slug). Dynamic routes are folded resources that die with
 	// the gateway; the gateway probe is the honest single handle.
 	"cloudflareaigateway": &apiPathVerifier{
-		component:     "cloudflareaigateway",
+		kind:          "cloudflareaigateway",
 		pathFormat:    "accounts/%s/ai-gateway/gateways/%s",
 		outputKeys:    []string{"gateway_id"},
 		accountScoped: true,
@@ -683,14 +683,14 @@ var verifiers = map[string]Verifier{
 	// provider -- verify-absent asserts the organization surface still
 	// answers. The folded key-rotation cadence rides the same account.
 	"cloudflarezerotrustorganization": &settingsSingletonVerifier{
-		component:  "cloudflarezerotrustorganization",
+		kind:       "cloudflarezerotrustorganization",
 		pathFormat: "accounts/%s/access/organizations",
 		idKey:      "account_id",
 	},
 	// Infrastructure targets delete for real and 404 honestly (the
 	// generated Read removes on 404; no tombstone fields exist).
 	"cloudflarezerotrustaccessinfrastructuretarget": &apiPathVerifier{
-		component:     "cloudflarezerotrustaccessinfrastructuretarget",
+		kind:          "cloudflarezerotrustaccessinfrastructuretarget",
 		pathFormat:    "accounts/%s/infrastructure/targets/%s",
 		outputKeys:    []string{"target_id"},
 		accountScoped: true,
@@ -698,7 +698,7 @@ var verifiers = map[string]Verifier{
 	// MCP portals delete for real and 404 honestly. Identity is the
 	// user-chosen portal id (slug).
 	"cloudflarezerotrustmcpportal": &apiPathVerifier{
-		component:     "cloudflarezerotrustmcpportal",
+		kind:          "cloudflarezerotrustmcpportal",
 		pathFormat:    "accounts/%s/access/ai-controls/mcp/portals/%s",
 		outputKeys:    []string{"portal_id"},
 		accountScoped: true,
@@ -707,7 +707,7 @@ var verifiers = map[string]Verifier{
 	// user-chosen server id; the status enum on the object is sync state,
 	// never a deletion tombstone.
 	"cloudflarezerotrustmcpserver": &apiPathVerifier{
-		component:     "cloudflarezerotrustmcpserver",
+		kind:          "cloudflarezerotrustmcpserver",
 		pathFormat:    "accounts/%s/access/ai-controls/mcp/servers/%s",
 		outputKeys:    []string{"server_id"},
 		accountScoped: true,
@@ -717,14 +717,14 @@ var verifiers = map[string]Verifier{
 	// the PAC-file rows delete for real and ride the same lane. The
 	// configuration surface is the honest single handle.
 	"cloudflarezerotrustgatewaysettings": &settingsSingletonVerifier{
-		component:  "cloudflarezerotrustgatewaysettings",
+		kind:       "cloudflarezerotrustgatewaysettings",
 		pathFormat: "accounts/%s/gateway/configuration",
 		idKey:      "account_id",
 	},
 	// Gateway DNS locations delete for real and 404 honestly (no
 	// tombstone fields in the SDK's Location struct).
 	"cloudflarezerotrustdnslocation": &apiPathVerifier{
-		component:     "cloudflarezerotrustdnslocation",
+		kind:          "cloudflarezerotrustdnslocation",
 		pathFormat:    "accounts/%s/gateway/locations/%s",
 		outputKeys:    []string{"location_id"},
 		accountScoped: true,
@@ -735,7 +735,7 @@ var verifiers = map[string]Verifier{
 	// The folded fallback-domain list and zone-certificate toggle are also
 	// no-op-destroy surfaces riding the same lane.
 	"cloudflarezerotrustdevicedefaultprofile": &settingsSingletonVerifier{
-		component:  "cloudflarezerotrustdevicedefaultprofile",
+		kind:       "cloudflarezerotrustdevicedefaultprofile",
 		pathFormat: "accounts/%s/devices/policy",
 		idKey:      "account_id",
 	},
@@ -743,7 +743,7 @@ var verifiers = map[string]Verifier{
 	// tombstone fields; the folded per-profile fallback list rides the
 	// profile and retires with it).
 	"cloudflarezerotrustdevicecustomprofile": &apiPathVerifier{
-		component:     "cloudflarezerotrustdevicecustomprofile",
+		kind:          "cloudflarezerotrustdevicecustomprofile",
 		pathFormat:    "accounts/%s/devices/policy/%s",
 		outputKeys:    []string{"policy_id"},
 		accountScoped: true,
@@ -751,7 +751,7 @@ var verifiers = map[string]Verifier{
 	// Posture rules delete for real and 404 honestly (the rule's enabled
 	// flag is server-computed sync state, never a deletion tombstone).
 	"cloudflarezerotrustdeviceposturerule": &apiPathVerifier{
-		component:     "cloudflarezerotrustdeviceposturerule",
+		kind:          "cloudflarezerotrustdeviceposturerule",
 		pathFormat:    "accounts/%s/devices/posture/%s",
 		outputKeys:    []string{"rule_id"},
 		accountScoped: true,
@@ -762,13 +762,13 @@ var verifiers = map[string]Verifier{
 	// offline. The folded ownership challenge is a one-shot POST with no
 	// read surface at all -- nothing to verify, nothing to orphan.
 	"cloudflarelogpushjob": &apiPathVerifier{
-		component:  "cloudflarelogpushjob",
+		kind:       "cloudflarelogpushjob",
 		pathFormat: "zones/%s/logpush/jobs/%s",
 		outputKeys: []string{"zone_id", "job_id"},
 	},
 	// Notification policies delete for real and 404 honestly.
 	"cloudflarenotificationpolicy": &apiPathVerifier{
-		component:     "cloudflarenotificationpolicy",
+		kind:          "cloudflarenotificationpolicy",
 		pathFormat:    "accounts/%s/alerting/v3/policies/%s",
 		outputKeys:    []string{"policy_id"},
 		accountScoped: true,
@@ -777,7 +777,7 @@ var verifiers = map[string]Verifier{
 	// field is a server-side echo inferred from the URL, never a
 	// tombstone).
 	"cloudflarenotificationwebhook": &apiPathVerifier{
-		component:     "cloudflarenotificationwebhook",
+		kind:          "cloudflarenotificationwebhook",
 		pathFormat:    "accounts/%s/alerting/v3/destinations/webhooks/%s",
 		outputKeys:    []string{"webhook_id"},
 		accountScoped: true,
@@ -786,7 +786,7 @@ var verifiers = map[string]Verifier{
 	// site tag. The folded rules ride the site (deleting the site retires
 	// its ruleset and rules).
 	"cloudflarewebanalyticssite": &apiPathVerifier{
-		component:     "cloudflarewebanalyticssite",
+		kind:          "cloudflarewebanalyticssite",
 		pathFormat:    "accounts/%s/rum/site_info/%s",
 		outputKeys:    []string{"site_tag"},
 		accountScoped: true,
@@ -795,19 +795,19 @@ var verifiers = map[string]Verifier{
 	// revoked are status values on a live object, never deletion
 	// tombstones).
 	"cloudflareaccountapitoken": &apiPathVerifier{
-		component:     "cloudflareaccountapitoken",
+		kind:          "cloudflareaccountapitoken",
 		pathFormat:    "accounts/%s/tokens/%s",
 		outputKeys:    []string{"token_id"},
 		accountScoped: true,
 	},
 }
 
-// GetVerifier returns the verifier for a component, or an error if none is
+// GetVerifier returns the verifier for a kind, or an error if none is
 // registered.
-func GetVerifier(component string) (Verifier, error) {
-	v, ok := verifiers[component]
+func GetVerifier(kind string) (Verifier, error) {
+	v, ok := verifiers[kind]
 	if !ok {
-		return nil, errors.Errorf("no Cloudflare verifier registered for component %q", component)
+		return nil, errors.Errorf("no Cloudflare verifier registered for kind %q", kind)
 	}
 	return v, nil
 }

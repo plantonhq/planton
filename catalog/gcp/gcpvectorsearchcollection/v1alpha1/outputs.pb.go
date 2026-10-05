@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpVectorSearchCollectionStackOutputs captures what the Vector Search
+// GcpVectorSearchCollectionOutputs captures what the Vector Search
 // collection and its indexes resolved to.
-type GcpVectorSearchCollectionStackOutputs struct {
+type GcpVectorSearchCollectionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name of the collection:
 	// projects/{project}/locations/{location}/collections/{collection_id}.
@@ -43,20 +43,20 @@ type GcpVectorSearchCollectionStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVectorSearchCollectionStackOutputs) Reset() {
-	*x = GcpVectorSearchCollectionStackOutputs{}
+func (x *GcpVectorSearchCollectionOutputs) Reset() {
+	*x = GcpVectorSearchCollectionOutputs{}
 	mi := &file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVectorSearchCollectionStackOutputs) String() string {
+func (x *GcpVectorSearchCollectionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVectorSearchCollectionStackOutputs) ProtoMessage() {}
+func (*GcpVectorSearchCollectionOutputs) ProtoMessage() {}
 
-func (x *GcpVectorSearchCollectionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVectorSearchCollectionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,40 +68,40 @@ func (x *GcpVectorSearchCollectionStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVectorSearchCollectionStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVectorSearchCollectionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVectorSearchCollectionOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVectorSearchCollectionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVectorSearchCollectionStackOutputs) GetName() string {
+func (x *GcpVectorSearchCollectionOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpVectorSearchCollectionStackOutputs) GetCollectionId() string {
+func (x *GcpVectorSearchCollectionOutputs) GetCollectionId() string {
 	if x != nil {
 		return x.CollectionId
 	}
 	return ""
 }
 
-func (x *GcpVectorSearchCollectionStackOutputs) GetLocation() string {
+func (x *GcpVectorSearchCollectionOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpVectorSearchCollectionStackOutputs) GetIndexNames() []string {
+func (x *GcpVectorSearchCollectionOutputs) GetIndexNames() []string {
 	if x != nil {
 		return x.IndexNames
 	}
 	return nil
 }
 
-func (x *GcpVectorSearchCollectionStackOutputs) GetIndexCount() int32 {
+func (x *GcpVectorSearchCollectionOutputs) GetIndexCount() int32 {
 	if x != nil {
 		return x.IndexCount
 	}
@@ -112,8 +112,8 @@ var File_catalog_gcp_gcpvectorsearchcollection_v1alpha1_outputs_proto protorefle
 
 const file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/gcp/gcpvectorsearchcollection/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpvectorsearchcollection.v1alpha1\"\xbe\x01\n" +
-	"%GcpVectorSearchCollectionStackOutputs\x12\x12\n" +
+	"<catalog/gcp/gcpvectorsearchcollection/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpvectorsearchcollection.v1alpha1\"\xb9\x01\n" +
+	" GcpVectorSearchCollectionOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12#\n" +
 	"\rcollection_id\x18\x02 \x01(\tR\fcollectionId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x12\x1f\n" +
@@ -137,7 +137,7 @@ func file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVectorSearchCollectionStackOutputs)(nil), // 0: dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionStackOutputs
+	(*GcpVectorSearchCollectionOutputs)(nil), // 0: dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionOutputs
 }
 var file_catalog_gcp_gcpvectorsearchcollection_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -6,7 +6,7 @@ spec:
   namespace:
     value: trino
   create_namespace: true
-  # Everything else is the component's defaults — and the defaults are
+  # Everything else is the kind's defaults — and the defaults are
   # deliberately SECURED and immediately queryable: PASSWORD
   # authentication ON with a module-generated admin (Secret
   # `trino-auth`, key `password` — upstream ships NO authentication;

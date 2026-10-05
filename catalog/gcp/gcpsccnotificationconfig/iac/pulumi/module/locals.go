@@ -11,10 +11,10 @@ type Locals struct {
 	GcpSccNotificationConfig *gcpsccnotificationconfigv1alpha1.GcpSccNotificationConfig
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpsccnotificationconfigv1alpha1.GcpSccNotificationConfigStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpsccnotificationconfigv1alpha1.GcpSccNotificationConfigIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpSccNotificationConfig = stackInput.Target
+	locals.GcpSccNotificationConfig = iacInput.Target
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

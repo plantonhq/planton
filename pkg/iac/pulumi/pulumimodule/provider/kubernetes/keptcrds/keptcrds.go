@@ -48,8 +48,8 @@ import (
 
 	"github.com/pkg/errors"
 	kubernetesprovider "github.com/plantonhq/planton/catalog/kubernetes"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
 	"github.com/plantonhq/planton/pkg/kubernetes/execcredential"
 	"github.com/plantonhq/planton/pkg/kubernetes/helmcrds"
 	"github.com/plantonhq/planton/pkg/kubernetes/kubeconfig"
@@ -120,7 +120,7 @@ func Apply(ctx *pulumi.Context, args Args) ([]pulumi.Resource, error) {
 	// repository is unreachable, a downgrade is pending), and none of them
 	// may stand between a user and deleting their stack: register nothing
 	// and let the destroy proceed.
-	if stackinput.IsDestroy() {
+	if iacinput.IsDestroy() {
 		return nil, nil
 	}
 

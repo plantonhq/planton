@@ -4,7 +4,7 @@
 # The auth oneof arrives with exactly one arm populated (spec CEL).
 
 variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name        = string
     id          = optional(string, "")

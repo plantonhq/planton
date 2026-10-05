@@ -270,7 +270,7 @@ locals {
   health_check_path     = "/_health"
   registry_probe_scheme = local.server_tls != null ? "HTTPS" : "HTTP"
 
-  # ---- stack-output endpoints -------------------------------------------------------------
+  # ---- output endpoints -------------------------------------------------------------
   endpoint            = "${local.scheme}://${local.registry_name}.${local.namespace}.svc.cluster.local:${local.registry_port}"
   rest_proxy_endpoint = local.rest_enabled ? "http://${local.rest_name}.${local.namespace}.svc.cluster.local:${local.rest_port}" : ""
 }

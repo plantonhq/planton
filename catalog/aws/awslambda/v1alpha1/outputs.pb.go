@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsLambdaStackOutputs captures the observable identifiers of a
+// AwsLambdaOutputs captures the observable identifiers of a
 // deployed Lambda function -- the join keys other resources and
 // clients use to compose with it:
 // - API integrations (HTTP API Gateway) take `invoke_arn`
 // - event-source mappings and trigger configs take `function_arn`
 // - SDK calls and IAM policies take `function_name` or `function_arn`
 // - alias-routed clients take the alias ARN from `alias_arns`
-type AwsLambdaStackOutputs struct {
+type AwsLambdaOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The function ARN -- the join key for event-source mappings,
 	// trigger configurations (Cognito, Firehose), resource policies,
@@ -62,20 +62,20 @@ type AwsLambdaStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsLambdaStackOutputs) Reset() {
-	*x = AwsLambdaStackOutputs{}
+func (x *AwsLambdaOutputs) Reset() {
+	*x = AwsLambdaOutputs{}
 	mi := &file_catalog_aws_awslambda_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsLambdaStackOutputs) String() string {
+func (x *AwsLambdaOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsLambdaStackOutputs) ProtoMessage() {}
+func (*AwsLambdaOutputs) ProtoMessage() {}
 
-func (x *AwsLambdaStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsLambdaOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awslambda_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -87,61 +87,61 @@ func (x *AwsLambdaStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsLambdaStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsLambdaStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsLambdaOutputs.ProtoReflect.Descriptor instead.
+func (*AwsLambdaOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awslambda_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsLambdaStackOutputs) GetFunctionArn() string {
+func (x *AwsLambdaOutputs) GetFunctionArn() string {
 	if x != nil {
 		return x.FunctionArn
 	}
 	return ""
 }
 
-func (x *AwsLambdaStackOutputs) GetFunctionName() string {
+func (x *AwsLambdaOutputs) GetFunctionName() string {
 	if x != nil {
 		return x.FunctionName
 	}
 	return ""
 }
 
-func (x *AwsLambdaStackOutputs) GetInvokeArn() string {
+func (x *AwsLambdaOutputs) GetInvokeArn() string {
 	if x != nil {
 		return x.InvokeArn
 	}
 	return ""
 }
 
-func (x *AwsLambdaStackOutputs) GetQualifiedArn() string {
+func (x *AwsLambdaOutputs) GetQualifiedArn() string {
 	if x != nil {
 		return x.QualifiedArn
 	}
 	return ""
 }
 
-func (x *AwsLambdaStackOutputs) GetVersion() string {
+func (x *AwsLambdaOutputs) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
 	return ""
 }
 
-func (x *AwsLambdaStackOutputs) GetFunctionUrl() string {
+func (x *AwsLambdaOutputs) GetFunctionUrl() string {
 	if x != nil {
 		return x.FunctionUrl
 	}
 	return ""
 }
 
-func (x *AwsLambdaStackOutputs) GetAliasArns() map[string]string {
+func (x *AwsLambdaOutputs) GetAliasArns() map[string]string {
 	if x != nil {
 		return x.AliasArns
 	}
 	return nil
 }
 
-func (x *AwsLambdaStackOutputs) GetLogGroupName() string {
+func (x *AwsLambdaOutputs) GetLogGroupName() string {
 	if x != nil {
 		return x.LogGroupName
 	}
@@ -152,17 +152,17 @@ var File_catalog_aws_awslambda_v1alpha1_outputs_proto protoreflect.FileDescripto
 
 const file_catalog_aws_awslambda_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	",catalog/aws/awslambda/v1alpha1/outputs.proto\x12\"dev.planton.aws.awslambda.v1alpha1\"\xad\x03\n" +
-	"\x15AwsLambdaStackOutputs\x12!\n" +
+	",catalog/aws/awslambda/v1alpha1/outputs.proto\x12\"dev.planton.aws.awslambda.v1alpha1\"\xa3\x03\n" +
+	"\x10AwsLambdaOutputs\x12!\n" +
 	"\ffunction_arn\x18\x01 \x01(\tR\vfunctionArn\x12#\n" +
 	"\rfunction_name\x18\x02 \x01(\tR\ffunctionName\x12\x1d\n" +
 	"\n" +
 	"invoke_arn\x18\x03 \x01(\tR\tinvokeArn\x12#\n" +
 	"\rqualified_arn\x18\x04 \x01(\tR\fqualifiedArn\x12\x18\n" +
 	"\aversion\x18\x05 \x01(\tR\aversion\x12!\n" +
-	"\ffunction_url\x18\x06 \x01(\tR\vfunctionUrl\x12g\n" +
+	"\ffunction_url\x18\x06 \x01(\tR\vfunctionUrl\x12b\n" +
 	"\n" +
-	"alias_arns\x18\a \x03(\v2H.dev.planton.aws.awslambda.v1alpha1.AwsLambdaStackOutputs.AliasArnsEntryR\taliasArns\x12$\n" +
+	"alias_arns\x18\a \x03(\v2C.dev.planton.aws.awslambda.v1alpha1.AwsLambdaOutputs.AliasArnsEntryR\taliasArns\x12$\n" +
 	"\x0elog_group_name\x18\b \x01(\tR\flogGroupName\x1a<\n" +
 	"\x0eAliasArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -183,11 +183,11 @@ func file_catalog_aws_awslambda_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awslambda_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awslambda_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsLambdaStackOutputs)(nil), // 0: dev.planton.aws.awslambda.v1alpha1.AwsLambdaStackOutputs
-	nil,                           // 1: dev.planton.aws.awslambda.v1alpha1.AwsLambdaStackOutputs.AliasArnsEntry
+	(*AwsLambdaOutputs)(nil), // 0: dev.planton.aws.awslambda.v1alpha1.AwsLambdaOutputs
+	nil,                      // 1: dev.planton.aws.awslambda.v1alpha1.AwsLambdaOutputs.AliasArnsEntry
 }
 var file_catalog_aws_awslambda_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awslambda.v1alpha1.AwsLambdaStackOutputs.alias_arns:type_name -> dev.planton.aws.awslambda.v1alpha1.AwsLambdaStackOutputs.AliasArnsEntry
+	1, // 0: dev.planton.aws.awslambda.v1alpha1.AwsLambdaOutputs.alias_arns:type_name -> dev.planton.aws.awslambda.v1alpha1.AwsLambdaOutputs.AliasArnsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

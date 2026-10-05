@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEfsAccessPointStackOutputs captures observable identifiers from a
+// AwsEfsAccessPointOutputs captures observable identifiers from a
 // provisioned EFS access point.
 //
 // Primary consumers:
@@ -29,7 +29,7 @@ const (
 //   - ECS (task definition EFS volumes): needs `access_point_id`
 //   - IAM policies conditioning on elasticfilesystem:AccessPointArn: need
 //     `access_point_arn`
-type AwsEfsAccessPointStackOutputs struct {
+type AwsEfsAccessPointOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the access point (e.g., "fsap-0123456789abcdef0"). ECS task
 	// definition EFS volume authorization references this.
@@ -50,20 +50,20 @@ type AwsEfsAccessPointStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsEfsAccessPointStackOutputs) Reset() {
-	*x = AwsEfsAccessPointStackOutputs{}
+func (x *AwsEfsAccessPointOutputs) Reset() {
+	*x = AwsEfsAccessPointOutputs{}
 	mi := &file_catalog_aws_awsefsaccesspoint_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEfsAccessPointStackOutputs) String() string {
+func (x *AwsEfsAccessPointOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEfsAccessPointStackOutputs) ProtoMessage() {}
+func (*AwsEfsAccessPointOutputs) ProtoMessage() {}
 
-func (x *AwsEfsAccessPointStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEfsAccessPointOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsefsaccesspoint_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,33 +75,33 @@ func (x *AwsEfsAccessPointStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEfsAccessPointStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEfsAccessPointStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEfsAccessPointOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEfsAccessPointOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsefsaccesspoint_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEfsAccessPointStackOutputs) GetAccessPointId() string {
+func (x *AwsEfsAccessPointOutputs) GetAccessPointId() string {
 	if x != nil {
 		return x.AccessPointId
 	}
 	return ""
 }
 
-func (x *AwsEfsAccessPointStackOutputs) GetAccessPointArn() string {
+func (x *AwsEfsAccessPointOutputs) GetAccessPointArn() string {
 	if x != nil {
 		return x.AccessPointArn
 	}
 	return ""
 }
 
-func (x *AwsEfsAccessPointStackOutputs) GetFileSystemId() string {
+func (x *AwsEfsAccessPointOutputs) GetFileSystemId() string {
 	if x != nil {
 		return x.FileSystemId
 	}
 	return ""
 }
 
-func (x *AwsEfsAccessPointStackOutputs) GetFileSystemArn() string {
+func (x *AwsEfsAccessPointOutputs) GetFileSystemArn() string {
 	if x != nil {
 		return x.FileSystemArn
 	}
@@ -112,8 +112,8 @@ var File_catalog_aws_awsefsaccesspoint_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awsefsaccesspoint_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awsefsaccesspoint/v1alpha1/outputs.proto\x12*dev.planton.aws.awsefsaccesspoint.v1alpha1\"\xbf\x01\n" +
-	"\x1dAwsEfsAccessPointStackOutputs\x12&\n" +
+	"4catalog/aws/awsefsaccesspoint/v1alpha1/outputs.proto\x12*dev.planton.aws.awsefsaccesspoint.v1alpha1\"\xba\x01\n" +
+	"\x18AwsEfsAccessPointOutputs\x12&\n" +
 	"\x0faccess_point_id\x18\x01 \x01(\tR\raccessPointId\x12(\n" +
 	"\x10access_point_arn\x18\x02 \x01(\tR\x0eaccessPointArn\x12$\n" +
 	"\x0efile_system_id\x18\x03 \x01(\tR\ffileSystemId\x12&\n" +
@@ -134,7 +134,7 @@ func file_catalog_aws_awsefsaccesspoint_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsefsaccesspoint_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsefsaccesspoint_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEfsAccessPointStackOutputs)(nil), // 0: dev.planton.aws.awsefsaccesspoint.v1alpha1.AwsEfsAccessPointStackOutputs
+	(*AwsEfsAccessPointOutputs)(nil), // 0: dev.planton.aws.awsefsaccesspoint.v1alpha1.AwsEfsAccessPointOutputs
 }
 var file_catalog_aws_awsefsaccesspoint_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

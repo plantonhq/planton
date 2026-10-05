@@ -1,5 +1,5 @@
 # Auth0EmailTemplate Outputs
-# Maps to the Auth0EmailTemplateStackOutputs protobuf message: the template
+# Maps to the Auth0EmailTemplateOutputs protobuf message: the template
 # managed.
 
 output "template" {

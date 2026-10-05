@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareAccountApiTokenStackInput is the input to the IaC module. It
+// CloudflareAccountApiTokenIacInput is the input to the IaC module. It
 // contains the target resource and provider configuration.
-type CloudflareAccountApiTokenStackInput struct {
+type CloudflareAccountApiTokenIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// the catalog object to deploy to be deployed
 	Target *CloudflareAccountApiToken `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Cloudflare authentication
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type CloudflareAccountApiTokenStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareAccountApiTokenStackInput) Reset() {
-	*x = CloudflareAccountApiTokenStackInput{}
+func (x *CloudflareAccountApiTokenIacInput) Reset() {
+	*x = CloudflareAccountApiTokenIacInput{}
 	mi := &file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareAccountApiTokenStackInput) String() string {
+func (x *CloudflareAccountApiTokenIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareAccountApiTokenStackInput) ProtoMessage() {}
+func (*CloudflareAccountApiTokenIacInput) ProtoMessage() {}
 
-func (x *CloudflareAccountApiTokenStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareAccountApiTokenIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareAccountApiTokenStackInput) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareAccountApiTokenStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareAccountApiTokenStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareAccountApiTokenIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareAccountApiTokenIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareAccountApiTokenStackInput) GetTarget() *CloudflareAccountApiToken {
+func (x *CloudflareAccountApiTokenIacInput) GetTarget() *CloudflareAccountApiToken {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareAccountApiTokenStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareAccountApiTokenIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_input_proto proto
 
 const file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/cloudflare/cloudflareaccountapitoken/v1alpha1/input.proto\x129dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1\x1a?catalog/cloudflare/cloudflareaccountapitoken/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xee\x01\n" +
-	"#CloudflareAccountApiTokenStackInput\x12l\n" +
+	"Acatalog/cloudflare/cloudflareaccountapitoken/v1alpha1/input.proto\x129dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1\x1a?catalog/cloudflare/cloudflareaccountapitoken/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xec\x01\n" +
+	"!CloudflareAccountApiTokenIacInput\x12l\n" +
 	"\x06target\x18\x01 \x01(\v2T.dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1.CloudflareAccountApiTokenR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xca\x03\n" +
 	"=com.dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_input_proto_rawD
 
 var file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareAccountApiTokenStackInput)(nil), // 0: dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1.CloudflareAccountApiTokenStackInput
+	(*CloudflareAccountApiTokenIacInput)(nil),   // 0: dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1.CloudflareAccountApiTokenIacInput
 	(*CloudflareAccountApiToken)(nil),           // 1: dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1.CloudflareAccountApiToken
 	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflareaccountapitoken_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1.CloudflareAccountApiTokenStackInput.target:type_name -> dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1.CloudflareAccountApiToken
-	2, // 1: dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1.CloudflareAccountApiTokenStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1.CloudflareAccountApiTokenIacInput.target:type_name -> dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1.CloudflareAccountApiToken
+	2, // 1: dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1.CloudflareAccountApiTokenIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

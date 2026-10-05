@@ -15,7 +15,7 @@ Exactly one of, per the spec's variant:
 - `dataprotection.BackupInstancePostgresqlFlexibleServer`
 - `dataprotection.BackupInstanceDataLakeStorage`
 
-## Stack Outputs
+## Outputs
 
 - `backup_instance_id` -- the instance's full ARM ID (whichever variant ran)
 - `backup_instance_name` -- the instance's name, unique on its vault

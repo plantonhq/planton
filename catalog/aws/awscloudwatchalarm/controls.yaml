@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awscloudwatchalarm
 spec:
@@ -46,7 +46,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: spec_validation
-        reference: The spec's metric_source_required CEL rule makes an alarm without a signal unrepresentable -- one of metric_name, metric_queries, or evaluation_criteria must be set, so every instance of this component IS a monitoring integration, continuously evaluating its metric or query.
+        reference: The spec's metric_source_required CEL rule makes an alarm without a signal unrepresentable -- one of metric_name, metric_queries, or evaluation_criteria must be set, so every instance of this kind IS a monitoring integration, continuously evaluating its metric or query.
       notes: alarm_actions, ok_actions, and insufficient_data_actions route state transitions to SNS topics or other targets; actions_enabled=false suppresses actions during tuning without stopping evaluation.
     - control_id: backup-recovery
       status: not_applicable

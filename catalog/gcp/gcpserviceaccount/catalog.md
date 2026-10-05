@@ -4,7 +4,7 @@ Deploys a GCP service account with optional JSON key generation and configurable
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Service Account** -- a `serviceaccount.Account` in the specified GCP project with the given account ID and display name
 - **Service Account Key** -- created only when the `userManagedKey` block is present; either generates a private key (exported base64) shaped by algorithm/format fields, or registers your own uploaded public key
@@ -15,12 +15,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the service account will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the service account will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **IAM API** (`iam.googleapis.com`) enabled in the target project.
 - **Organization ID** (if using `orgIamRoles`) -- the numeric GCP organization ID for organization-level role bindings.
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f gcp-service-account.yaml
 ```
 
-This creates a service account with logging and monitoring permissions, no JSON key. Pair with GKE Workload Identity for keyless pod authentication. A Stack Job tracks the provisioning in real time.
+This creates a service account with logging and monitoring permissions, no JSON key. Pair with GKE Workload Identity for keyless pod authentication. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,15 +89,15 @@ These are the most important decisions when configuring a service account. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -119,7 +119,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the service account is created
-- [**GCP Project IAM Member**](/cloud-catalog/gcp-project-iam-member) -- consumes the `member` output to grant this account project-scope roles as first-class resources
-- [**GCP Service Account IAM Member**](/cloud-catalog/gcp-service-account-iam-member) -- consumes the `name` output to control who may impersonate or act as this account
-- [**GCP IAM Custom Role**](/cloud-catalog/gcp-iam-custom-role) -- its `name` output slots into `projectIamRoles` for least-privilege custom bundles
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the service account is created
+- [**GCP Project IAM Member**](/infra-catalog/gcp-project-iam-member) -- consumes the `member` output to grant this account project-scope roles as first-class resources
+- [**GCP Service Account IAM Member**](/infra-catalog/gcp-service-account-iam-member) -- consumes the `name` output to control who may impersonate or act as this account
+- [**GCP IAM Custom Role**](/infra-catalog/gcp-iam-custom-role) -- its `name` output slots into `projectIamRoles` for least-privilege custom bundles

@@ -1,0 +1,99 @@
+---
+alwaysApply: false
+---
+RULE NUMBER
+004
+
+TITLE
+Forge: Generate outputs.proto for a resource (observable outputs only)
+
+ROLE
+You are the Planton Code Partner working inside the developer’s local workspace in Cursor. This rule creates `outputs.proto` for a resource to capture observable outputs. Do not create/modify other files.
+
+SCOPE
+- Detect provider and kind.
+- Do not manually create folders; writer tool handles directories.
+- Generate `outputs.proto` defining `<Kind>Outputs` with non-secret observable outputs only.
+  (The FILE is `outputs.proto`; the MESSAGE name stays `<Kind>Outputs` -- the message name
+  is the identity every downstream consumer keys on.)
+
+TOOLS
+- Reader: `_rules/catalog-kind/_scripts/outputs_reader.py`
+- Writer+Build: `_rules/catalog-kind/_scripts/outputs_write_and_build.py`
+- Reference kinds (live ground truth): `catalog/aws/awsvpc/v1alpha1/outputs.proto`
+  and `catalog/aws/awsalb/v1alpha1/outputs.proto` -- canonical examples of observable, non-secret outputs.
+
+SEQUENTIAL STEPS
+1) Read: `python3 _rules/catalog-kind/_scripts/outputs_reader.py --provider <provider> --kindfolder <kindfolder>`
+2) Draft: Following the reference kind `outputs.proto` files (and the skeleton below), author `outputs.proto` content accordingly.
+3) Write+Build: `cat <<'PROTO' | python3 _rules/catalog-kind/_scripts/outputs_write_and_build.py --provider <provider> --kindfolder <kindfolder> --stdin | cat`
+   - If `build_succeeded` is false, refine content and retry (≤6).
+
+OUTPUT
+- Show created/updated path and key JSON fields from tools.
+- On success: confirm file path. On error: brief fix and rerun (≤6).
+
+SUCCESS
+- Correct path, syntax, and package.
+- Practical, non-secret outputs only.
+- Writer tool reports `build_succeeded: true`.
+
+OUTPUT STYLE IN CHAT
+- Show a concise tree of the created/updated path and fields added.
+- Show the non-interactive command(s) to run.
+- If successful: confirm the file/folder path to inspect.
+- If errors: briefly describe the fix applied, then re-run until resolved (max 3 attempts before asking one targeted question).
+
+EXAMPLE SKELETON (adapt to actual schema; do not copy verbatim)
+```proto
+syntax = "proto3";
+
+package dev.planton.aws.awscloudfront.v1alpha1;
+
+// AwsCloudFrontOutputs captures observable identifiers from CloudFront.
+message AwsCloudFrontOutputs {
+  // distribution id
+  string distribution_id = 1;
+  // distribution domain name (e.g., d123.cloudfront.net)
+  string domain_name = 2;
+  // hosted zone id for alias records
+  string hosted_zone_id = 3;
+}
+```
+
+NOTES
+- Secrets belong in external secret managers, not in outputs. When the provider
+  offers a managed-secret indirection, export the secret's ARN/identifier instead of the
+  material (e.g. a managed master password exported as its Secrets Manager ARN).
+- Narrow exception -- provider-minted credentials with NO vault indirection: when the
+  cloud itself mints a credential at create time, offers no managed-secret handle for it,
+  and the output is the only wire to the consuming application (e.g. an IAM user's
+  secret access key, a Cognito app client secret), export it. Mark it clearly: a
+  "Sensitive -- treat as a credential" sentence in the proto field comment, and
+  `sensitive = true` on the Terraform output. Never apply this exception to material the
+  MODULE generates (keys/PEMs the module creates do not belong in outputs at all).
+- Keep field names stable; other modules/tests reference these outputs downstream.
+- A resource's live STATUS or health is never an output. Outputs are identity and wiring
+  surfaces (ids, hostnames, endpoints, ARNs); a status captured at apply time goes stale
+  the moment the cloud changes it (a member fails, a cluster upgrades, a pool scales), and a
+  stale "active" in stored outputs is worse than no value. Health belongs to whoever reads
+  it live -- the E2E verifier asserts it from the API, a console reads it on demand. The
+  same holds for volatile metrics (utilization, timestamps) and for member/child ids that
+  churn by design (autoscaled droplets): consumers address such fleets through tags or
+  selectors, not through an output that is wrong an hour later.
+- Export the ids of IMPLICIT sub-resources that other kinds target, constructed from
+  the parent's id when the provider offers no readback -- ARM/cloud APIs often hang
+  capabilities off a sub-resource nothing materializes explicitly (e.g. a storage
+  account's `blobServices/default`, where diagnostic settings must point to capture
+  data-access logs, while the account-level id exposes only account metrics). A
+  consumer that cannot reach the real telemetry/grant scope by reference is a
+  composition gap identical to a missing output.
+- Map-typed outputs (`map<string, string>`, e.g. per-subnet mount-target IDs) are
+  first-class: both engines emit them as nested objects, the flattener dot-flattens
+  each entry (`field.some-key = value`), and the transformer routes the remaining
+  path segments back into the proto map with the key VERBATIM -- so map keys may
+  freely contain hyphens and dots (subnet IDs, object paths). Always add a
+  `pkg/outputs/conformance_test.go` case that includes the map fields in
+  `mustPopulate`; the conformance case is the only guard proving the map shape
+  round-trips (an un-cased map field can silently arrive empty in the platform's
+  typed outputs).

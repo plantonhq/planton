@@ -6,21 +6,21 @@
 
 ## Summary
 
-Added the AwsEventBridgeRule (R04) deployment component to Planton — the fourth new AWS resource kind in the cloud provider expansion project. EventBridge rules are the routing layer of event-driven architectures, matching incoming events by pattern or schedule and delivering them to targets like Lambda, SQS, SNS, and Step Functions.
+Added the AwsEventBridgeRule (R04) catalog kind to Planton — the fourth new AWS resource kind in the cloud provider expansion project. EventBridge rules are the routing layer of event-driven architectures, matching incoming events by pattern or schedule and delivering them to targets like Lambda, SQS, SNS, and Step Functions.
 
 ## Problem Statement / Motivation
 
-EventBridge rules are the core routing mechanism for event-driven architectures on AWS. Without them, EventBridge buses receive events but cannot route them to processing targets. The existing AwsEventBridgeBus (R03) component creates custom buses, but buses need rules to become useful.
+EventBridge rules are the core routing mechanism for event-driven architectures on AWS. Without them, EventBridge buses receive events but cannot route them to processing targets. The existing AwsEventBridgeBus (R03) kind creates custom buses, but buses need rules to become useful.
 
 ### Pain Points
 
 - No way to define EventBridge routing rules through Planton
-- Infra charts for event-driven architectures were blocked without rule support
+- Infra Charts for event-driven architectures were blocked without rule support
 - Manual Terraform/Pulumi code was required for event routing configuration
 
 ## Solution / What's New
 
-A complete deployment component covering the EventBridge rule lifecycle with bundled targets. The component follows the established AwsSnsTopic pattern of bundling child resources (targets) with the parent resource (rule).
+A complete catalog kind covering the EventBridge rule lifecycle with bundled targets. The kind follows the established AwsSnsTopic pattern of bundling child resources (targets) with the parent resource (rule).
 
 ### Key Design Decisions
 
@@ -82,14 +82,14 @@ Comprehensive coverage: happy path (8), rule-level CEL (4), field constraints (2
 
 - **Complete event routing**: Bus + Rule covers the full EventBridge lifecycle
 - **Production-ready reliability**: Per-target DLQ and retry policy out of the box
-- **Infra chart composability**: StringValueOrRef enables wiring rules to buses, Lambda functions, SQS queues, and IAM roles in dependency-aware templates
+- **Infra Chart composability**: StringValueOrRef enables wiring rules to buses, Lambda functions, SQS queues, and IAM roles in dependency-aware templates
 - **80/20 coverage**: Supports 90%+ of real-world EventBridge target types without spec bloat
 
 ## Impact
 
-- **New component**: `apis/dev/planton/provider/aws/awseventbridgerule/v1/` (~48 files, ~3200 lines)
-- **Enum registration**: AwsEventBridgeRule = 228 in cloud_resource_kind.proto
-- **Infra charts**: Unblocks event-driven architecture charts that require rule routing
+- **New kind**: `apis/dev/planton/provider/aws/awseventbridgerule/v1/` (~48 files, ~3200 lines)
+- **Enum registration**: AwsEventBridgeRule = 228 in catalog_kind.proto
+- **Infra Charts**: Unblocks event-driven architecture charts that require rule routing
 - **Downstream references**: Rules reference AwsEventBridgeBus (bus_name), AwsLambda (function_arn), AwsSqsQueue (queue_arn), AwsSnsTopic (topic_arn), AwsIamRole (role_arn)
 
 ## Related Work

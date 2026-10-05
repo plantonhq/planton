@@ -22,10 +22,10 @@ const (
 )
 
 // *
-// **KubernetesPriorityClassStackOutputs** captures the observable handles of
+// **KubernetesPriorityClassOutputs** captures the observable handles of
 // a deployed PriorityClass. `priority_class_name` is the composition handle
 // workload pod specs reference.
-type KubernetesPriorityClassStackOutputs struct {
+type KubernetesPriorityClassOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the PriorityClass object as created in the cluster — the
 	// value pods put in `priority_class_name`.
@@ -36,20 +36,20 @@ type KubernetesPriorityClassStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesPriorityClassStackOutputs) Reset() {
-	*x = KubernetesPriorityClassStackOutputs{}
+func (x *KubernetesPriorityClassOutputs) Reset() {
+	*x = KubernetesPriorityClassOutputs{}
 	mi := &file_catalog_kubernetes_kubernetespriorityclass_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPriorityClassStackOutputs) String() string {
+func (x *KubernetesPriorityClassOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPriorityClassStackOutputs) ProtoMessage() {}
+func (*KubernetesPriorityClassOutputs) ProtoMessage() {}
 
-func (x *KubernetesPriorityClassStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPriorityClassOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetespriorityclass_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *KubernetesPriorityClassStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPriorityClassStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesPriorityClassStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPriorityClassOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesPriorityClassOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetespriorityclass_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPriorityClassStackOutputs) GetPriorityClassName() string {
+func (x *KubernetesPriorityClassOutputs) GetPriorityClassName() string {
 	if x != nil {
 		return x.PriorityClassName
 	}
 	return ""
 }
 
-func (x *KubernetesPriorityClassStackOutputs) GetValue() int32 {
+func (x *KubernetesPriorityClassOutputs) GetValue() int32 {
 	if x != nil {
 		return x.Value
 	}
@@ -84,8 +84,8 @@ var File_catalog_kubernetes_kubernetespriorityclass_v1alpha1_outputs_proto proto
 
 const file_catalog_kubernetes_kubernetespriorityclass_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/kubernetes/kubernetespriorityclass/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetespriorityclass.v1alpha1\"k\n" +
-	"#KubernetesPriorityClassStackOutputs\x12.\n" +
+	"Acatalog/kubernetes/kubernetespriorityclass/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetespriorityclass.v1alpha1\"f\n" +
+	"\x1eKubernetesPriorityClassOutputs\x12.\n" +
 	"\x13priority_class_name\x18\x01 \x01(\tR\x11priorityClassName\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\x05R\x05valueB\xbe\x03\n" +
 	";com.dev.planton.kubernetes.kubernetespriorityclass.v1alpha1B\fOutputsProtoP\x01Zpgithub.com/plantonhq/planton/catalog/kubernetes/kubernetespriorityclass/v1alpha1;kubernetespriorityclassv1alpha1\xa2\x02\x04DPKK\xaa\x027Dev.Planton.Kubernetes.Kubernetespriorityclass.V1alpha1\xca\x027Dev\\Planton\\Kubernetes\\Kubernetespriorityclass\\V1alpha1\xe2\x02CDev\\Planton\\Kubernetes\\Kubernetespriorityclass\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Kubernetes::Kubernetespriorityclass::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_kubernetes_kubernetespriorityclass_v1alpha1_outputs_proto_rawD
 
 var file_catalog_kubernetes_kubernetespriorityclass_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetespriorityclass_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesPriorityClassStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetespriorityclass.v1alpha1.KubernetesPriorityClassStackOutputs
+	(*KubernetesPriorityClassOutputs)(nil), // 0: dev.planton.kubernetes.kubernetespriorityclass.v1alpha1.KubernetesPriorityClassOutputs
 }
 var file_catalog_kubernetes_kubernetespriorityclass_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

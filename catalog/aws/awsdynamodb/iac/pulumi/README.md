@@ -34,18 +34,18 @@ planton pulumi destroy \
   --module-dir .
 ```
 
-Credentials are passed via the stack input through the CLI, not in `spec`.
+Credentials are passed via the IaC input through the CLI, not in `spec`.
 
 ## Files
 
-- `main.go` — entrypoint loading the stack input
-- `module/main.go` — orchestration and stack-output exports
+- `main.go` — entrypoint loading the IaC input
+- `module/main.go` — orchestration and output exports
 - `module/locals.go` — naming basis and identity tags
 - `module/table.go` — the `dynamodb.Table` resource
 - `module/satellites.go` — resource policy, Kinesis streaming
   destination, and contributor insights (table + per-GSI)
 - `module/outputs.go` — output-key constants matching
-  `AwsDynamodbStackOutputs`
+  `AwsDynamodbOutputs`
 
 ## Outputs
 

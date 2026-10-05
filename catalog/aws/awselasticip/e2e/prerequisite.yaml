@@ -1,4 +1,4 @@
-# AwsElasticIp install profile used as a prerequisite by composed components (e.g.
+# AwsElasticIp install profile used as a prerequisite by composed kinds (e.g.
 # AwsNatGateway, whose public form needs a stable outbound address). The E2E
 # harness deploys this EIP first (via its Pulumi module), captures its outputs,
 # and resolves the dependent's allocation_id reference against them. Full metadata
@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awselasticip
+    e2e-catalog-kind: awselasticip
   annotations:
     planton.dev/e2e: "true"
   tags:

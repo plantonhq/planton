@@ -30,7 +30,7 @@ func validCertificate(spec *CloudflareMtlsCertificateSpec) *CloudflareMtlsCertif
 	return &CloudflareMtlsCertificate{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareMtlsCertificate",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-mtls-certificate",
 		},
 		Spec: spec,

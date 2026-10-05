@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 //
 // Model access creates no taggable resources (the agreement and the
 // use-case form carry no tag surface at AWS), so the shared identity-tag
@@ -15,7 +15,7 @@ type Locals struct {
 	Spec   *awsbedrockmodelaccessv1alpha1.AwsBedrockModelAccessSpec
 }
 
-func initializeLocals(_ *pulumi.Context, in *awsbedrockmodelaccessv1alpha1.AwsBedrockModelAccessStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awsbedrockmodelaccessv1alpha1.AwsBedrockModelAccessIacInput) *Locals {
 	return &Locals{
 		Target: in.Target,
 		Spec:   in.Target.Spec,

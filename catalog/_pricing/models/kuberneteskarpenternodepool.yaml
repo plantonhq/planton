@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. All three presets are genuinely zero-committed: a
 # NodePool is a fleet SHAPE, not a fleet -- zero nodes exist until pods go
@@ -7,9 +7,9 @@
 # (rate-delegated), and consolidation reclaims capacity as demand recedes.
 # Stated in exclusions, never padded into fabricated dollars. The one mode
 # that WOULD commit spend -- the alpha static `replicas` field -- is pinned
-# by no committed preset. Schema: finops/componentcostestimatemodel/v1.
+# by no committed preset. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: kuberneteskarpenternodepool
 spec:

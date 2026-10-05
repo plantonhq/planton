@@ -8,12 +8,12 @@ import (
 )
 
 // Resources creates the AWS Batch job queue and exports its outputs.
-func Resources(ctx *pulumi.Context, stackInput *awsbatchjobqueuev1alpha1.AwsBatchJobQueueStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsbatchjobqueuev1alpha1.AwsBatchJobQueueIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsBatchJobQueue.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsBatchJobQueue.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

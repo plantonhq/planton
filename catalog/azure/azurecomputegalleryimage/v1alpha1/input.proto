@@ -5,10 +5,10 @@ package dev.planton.azure.azurecomputegalleryimage.v1alpha1;
 import "catalog/azure/azurecomputegalleryimage/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureComputeGalleryImageStackInput is the input to the IaC modules
+// AzureComputeGalleryImageIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureComputeGalleryImageStackInput {
+message AzureComputeGalleryImageIacInput {
   // The gallery image resource to deploy.
   AzureComputeGalleryImage target = 1;
 

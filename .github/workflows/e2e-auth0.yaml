@@ -1,7 +1,7 @@
 # =============================================================================
 # Auth0 E2E Tests
 # =============================================================================
-# Runs E2E tests for Auth0 components against a test tenant of their own,
+# Runs E2E tests for Auth0 kinds against a test tenant of their own,
 # never one that serves people: a run applies and destroys what it declares,
 # and several kinds are one per tenant (settings, branding, prompt, email
 # provider), so a run rewrites that tenant's sign-in page and emails while it
@@ -15,7 +15,7 @@
 #
 # Architecture:
 #   1. build-check: compile E2E code + go vet (fast gate, every trigger)
-#   2. e2e: run all Auth0 component tests (both Pulumi and Terraform)
+#   2. e2e: run all Auth0 kind tests (both Pulumi and Terraform)
 #
 # Triggers:
 #   - Pull requests (path-filtered): build-check only
@@ -85,7 +85,7 @@ jobs:
         run: go vet -tags=e2e ./e2e/auth0/...
 
   # ============================================================================
-  # E2E -- run all Auth0 component tests
+  # E2E -- run all Auth0 kind tests
   # ============================================================================
   e2e:
     needs: build-check

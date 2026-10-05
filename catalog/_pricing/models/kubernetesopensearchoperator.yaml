@@ -1,5 +1,5 @@
 # Estimate model: hand-computed capacity footprints for this
-# cluster-capacity component's presets. A derivation cannot state this
+# cluster-capacity kind's presets. A derivation cannot state this
 # kind honestly: the chart SHIPS default manager resources (100m CPU /
 # 350Mi requests, 200m CPU / 500Mi limits), applied whenever a manifest
 # omits resources, and the derivation grammar reads only explicit
@@ -11,12 +11,12 @@
 # chart-sized reservation beside the manager's, not modeled here. The
 # operator binds no persistent volumes; the search clusters it
 # reconciles reserve their own capacity on their KubernetesOpenSearch
-# resources. Cluster-capacity components carry no priced lines -- the
+# resources. Cluster-capacity kinds carry no priced lines -- the
 # dollar value of the reservation is the target cluster's node
 # economics, which this catalog cannot know.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: kubernetesopensearchoperator
 spec:

@@ -17,13 +17,13 @@ import (
 // AccessPolicyAssociation resource keyed by the policy name -- adding,
 // re-scoping, or removing one association diffs in place and never
 // touches the entry or its siblings.
-func Resources(ctx *pulumi.Context, stackInput *awseksaccessentryv1alpha1.AwsEksAccessEntryStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awseksaccessentryv1alpha1.AwsEksAccessEntryIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which
+	// Build the AWS provider from the IaC input via the shared builder, which
 	// resolves the right credential mechanism (static keys, keyless web identity,
 	// or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsEksAccessEntry.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsEksAccessEntry.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

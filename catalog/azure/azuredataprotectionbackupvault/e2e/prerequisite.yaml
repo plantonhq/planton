@@ -1,5 +1,5 @@
 # AzureDataProtectionBackupVault install profile used as a fixture by
-# composed components (declared via prerequisites:
+# composed kinds (declared via prerequisites:
 # [AzureDataProtectionBackupVault] in the kind registry -- the backup
 # policy lane today, the backup instance lanes next). The harness
 # deploys this document after the fixture resource group and captures
@@ -38,7 +38,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuredataprotectionbackupvault
+    e2e-catalog-kind: azuredataprotectionbackupvault
   annotations:
     planton.dev/e2e: "true"
   tags:

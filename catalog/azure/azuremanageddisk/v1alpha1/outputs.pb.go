@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureManagedDiskStackOutputs** captures the outputs of provisioning an
+// **AzureManagedDiskOutputs** captures the outputs of provisioning an
 // Azure Managed Disk.
-type AzureManagedDiskStackOutputs struct {
+type AzureManagedDiskOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the disk. This is the primary
 	// output: AzureVirtualMachine's data_disk_attachments references it to
@@ -40,20 +40,20 @@ type AzureManagedDiskStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureManagedDiskStackOutputs) Reset() {
-	*x = AzureManagedDiskStackOutputs{}
+func (x *AzureManagedDiskOutputs) Reset() {
+	*x = AzureManagedDiskOutputs{}
 	mi := &file_catalog_azure_azuremanageddisk_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureManagedDiskStackOutputs) String() string {
+func (x *AzureManagedDiskOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureManagedDiskStackOutputs) ProtoMessage() {}
+func (*AzureManagedDiskOutputs) ProtoMessage() {}
 
-func (x *AzureManagedDiskStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureManagedDiskOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremanageddisk_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *AzureManagedDiskStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureManagedDiskStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureManagedDiskStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureManagedDiskOutputs.ProtoReflect.Descriptor instead.
+func (*AzureManagedDiskOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremanageddisk_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureManagedDiskStackOutputs) GetDiskId() string {
+func (x *AzureManagedDiskOutputs) GetDiskId() string {
 	if x != nil {
 		return x.DiskId
 	}
 	return ""
 }
 
-func (x *AzureManagedDiskStackOutputs) GetDiskName() string {
+func (x *AzureManagedDiskOutputs) GetDiskName() string {
 	if x != nil {
 		return x.DiskName
 	}
 	return ""
 }
 
-func (x *AzureManagedDiskStackOutputs) GetDiskSizeGb() int32 {
+func (x *AzureManagedDiskOutputs) GetDiskSizeGb() int32 {
 	if x != nil {
 		return x.DiskSizeGb
 	}
@@ -95,8 +95,8 @@ var File_catalog_azure_azuremanageddisk_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_azure_azuremanageddisk_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/azure/azuremanageddisk/v1alpha1/outputs.proto\x12+dev.planton.azure.azuremanageddisk.v1alpha1\"v\n" +
-	"\x1cAzureManagedDiskStackOutputs\x12\x17\n" +
+	"5catalog/azure/azuremanageddisk/v1alpha1/outputs.proto\x12+dev.planton.azure.azuremanageddisk.v1alpha1\"q\n" +
+	"\x17AzureManagedDiskOutputs\x12\x17\n" +
 	"\adisk_id\x18\x01 \x01(\tR\x06diskId\x12\x1b\n" +
 	"\tdisk_name\x18\x02 \x01(\tR\bdiskName\x12 \n" +
 	"\fdisk_size_gb\x18\x03 \x01(\x05R\n" +
@@ -117,7 +117,7 @@ func file_catalog_azure_azuremanageddisk_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_azure_azuremanageddisk_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremanageddisk_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureManagedDiskStackOutputs)(nil), // 0: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskStackOutputs
+	(*AzureManagedDiskOutputs)(nil), // 0: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskOutputs
 }
 var file_catalog_azure_azuremanageddisk_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

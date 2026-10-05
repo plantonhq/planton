@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesauthorizationpolicy
 spec:
@@ -19,13 +19,13 @@ spec:
     - name: name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: authorization_policy_name
+        - from_output: authorization_policy_name
       where_to_find: >-
         The AuthorizationPolicy's metadata.name (equals the Planton resource name) —
         `kubectl get authorizationpolicies -A` (NAME column).
     - name: namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         The namespace the resource lives in — `kubectl get authorizationpolicies -A`

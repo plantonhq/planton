@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSnsTopicStackOutputs captures observable identifiers from a provisioned SNS topic.
+// AwsSnsTopicOutputs captures observable identifiers from a provisioned SNS topic.
 // These outputs are used by downstream resources (e.g., AwsSnsSubscription topic
 // references, EventBridge targets, CloudWatch alarm actions) to wire dependencies
 // via StringValueOrRef.
-type AwsSnsTopicStackOutputs struct {
+type AwsSnsTopicOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the SNS topic. This is the primary
 	// identifier used for IAM policies, cross-service permissions, subscription
@@ -45,20 +45,20 @@ type AwsSnsTopicStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AwsSnsTopicStackOutputs) Reset() {
-	*x = AwsSnsTopicStackOutputs{}
+func (x *AwsSnsTopicOutputs) Reset() {
+	*x = AwsSnsTopicOutputs{}
 	mi := &file_catalog_aws_awssnstopic_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSnsTopicStackOutputs) String() string {
+func (x *AwsSnsTopicOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSnsTopicStackOutputs) ProtoMessage() {}
+func (*AwsSnsTopicOutputs) ProtoMessage() {}
 
-func (x *AwsSnsTopicStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSnsTopicOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssnstopic_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,33 +70,33 @@ func (x *AwsSnsTopicStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSnsTopicStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSnsTopicStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSnsTopicOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSnsTopicOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssnstopic_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSnsTopicStackOutputs) GetTopicArn() string {
+func (x *AwsSnsTopicOutputs) GetTopicArn() string {
 	if x != nil {
 		return x.TopicArn
 	}
 	return ""
 }
 
-func (x *AwsSnsTopicStackOutputs) GetTopicName() string {
+func (x *AwsSnsTopicOutputs) GetTopicName() string {
 	if x != nil {
 		return x.TopicName
 	}
 	return ""
 }
 
-func (x *AwsSnsTopicStackOutputs) GetOwner() string {
+func (x *AwsSnsTopicOutputs) GetOwner() string {
 	if x != nil {
 		return x.Owner
 	}
 	return ""
 }
 
-func (x *AwsSnsTopicStackOutputs) GetBeginningArchiveTime() string {
+func (x *AwsSnsTopicOutputs) GetBeginningArchiveTime() string {
 	if x != nil {
 		return x.BeginningArchiveTime
 	}
@@ -107,8 +107,8 @@ var File_catalog_aws_awssnstopic_v1alpha1_outputs_proto protoreflect.FileDescrip
 
 const file_catalog_aws_awssnstopic_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/aws/awssnstopic/v1alpha1/outputs.proto\x12$dev.planton.aws.awssnstopic.v1alpha1\"\xa1\x01\n" +
-	"\x17AwsSnsTopicStackOutputs\x12\x1b\n" +
+	".catalog/aws/awssnstopic/v1alpha1/outputs.proto\x12$dev.planton.aws.awssnstopic.v1alpha1\"\x9c\x01\n" +
+	"\x12AwsSnsTopicOutputs\x12\x1b\n" +
 	"\ttopic_arn\x18\x01 \x01(\tR\btopicArn\x12\x1d\n" +
 	"\n" +
 	"topic_name\x18\x02 \x01(\tR\ttopicName\x12\x14\n" +
@@ -130,7 +130,7 @@ func file_catalog_aws_awssnstopic_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awssnstopic_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssnstopic_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSnsTopicStackOutputs)(nil), // 0: dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicStackOutputs
+	(*AwsSnsTopicOutputs)(nil), // 0: dev.planton.aws.awssnstopic.v1alpha1.AwsSnsTopicOutputs
 }
 var file_catalog_aws_awssnstopic_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

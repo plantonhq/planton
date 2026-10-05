@@ -25,7 +25,7 @@ The Percona Distribution for PostgreSQL Operator (based on Crunchy Data's PGO) p
 
 ### 1. PerconaPostgresqlOperator API Resource
 
-New Kubernetes cloud resource kind for deploying the Percona PostgreSQL operator:
+New Kubernetes catalog kind for deploying the Percona PostgreSQL operator:
 
 ```yaml
 apiVersion: kubernetes.planton.dev/v1
@@ -53,9 +53,9 @@ spec:
 - Namespace isolation
 - Helm chart-based installation
 
-### 2. CloudResourceKind Registration
+### 2. CatalogKind Registration
 
-Added `PerconaPostgresqlOperator` to the cloud resource kind enum:
+Added `PerconaPostgresqlOperator` to the catalog kind enum:
 
 ```protobuf
 PerconaPostgresqlOperator = 838 [(kind_meta) = {
@@ -107,7 +107,7 @@ The Percona Distribution for PostgreSQL Operator manages:
 **Key Files**:
 - `main.go` - Main Pulumi program
 - `module/percona_operator.go` - Helm release and namespace creation
-- `module/outputs.go` - Stack outputs
+- `module/outputs.go` - Outputs
 - `module/vars.go` - Configuration variables
 
 **Helm Chart**:
@@ -150,8 +150,8 @@ The operator installs three Custom Resource Definitions:
 **Complete API Structure**:
 - `api.proto` - Main API resource definition with validations
 - `spec.proto` - Operator specification with container resources
-- `stack_input.proto` - Pulumi stack input structure
-- `stack_outputs.proto` - Deployment outputs (namespace)
+- `iac_input.proto` - Pulumi IaC input structure
+- `outputs.proto` - Deployment outputs (namespace)
 
 ### Deployment Verification
 
@@ -422,11 +422,11 @@ Not recommended for existing deployments. Both operators manage PostgreSQL but w
 Two test manifests have been created for easy deployment:
 
 1. **Planton Environment** (development/testing):
-   - Path: `planton/ops/organizations/planton/infra-hub/cloud-resources/kubernetes/addon/percona-postgresql-operator.yaml`
+   - Path: `planton/ops/organizations/planton/infra-hub/infra-components/kubernetes/addon/percona-postgresql-operator.yaml`
    - Cluster: `k8scred_01k789v5ewezr0f45j5zht9ysj`
 
 2. **App-Prod Environment** (production):
-   - Path: `planton/ops/organizations/planton/infra-hub/cloud-resources/app-prod/kubernetes/addon/percona-postgresql-operator.yaml`
+   - Path: `planton/ops/organizations/planton/infra-hub/infra-components/app-prod/kubernetes/addon/percona-postgresql-operator.yaml`
    - Cluster: `k8scred_01jp6qzdsj70s228htskj53214`
 
 Both manifests include complete deployment commands in their respective README files.

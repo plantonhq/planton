@@ -1,4 +1,4 @@
-# GCP Components: Remove metadata.name Dependency, Add Explicit Resource Name Fields
+# GCP Kinds: Remove metadata.name Dependency, Add Explicit Resource Name Fields
 
 **Date**: November 19, 2025
 **Type**: Breaking Change, Refactoring
@@ -6,11 +6,11 @@
 
 ## Summary
 
-Refactored 6 GCP deployment components to eliminate dependency on `metadata.name` for actual GCP resource naming. Each component now has explicit name fields in `spec.proto` (e.g., `network_name`, `bucket_name`, `cluster_name`) that directly control the GCP resource names, while `metadata.name` remains for Planton organizational labels. This provides better clarity, portability, and alignment with GCP's explicit naming requirements.
+Refactored 6 GCP catalog kinds to eliminate dependency on `metadata.name` for actual GCP resource naming. Each kind now has explicit name fields in `spec.proto` (e.g., `network_name`, `bucket_name`, `cluster_name`) that directly control the GCP resource names, while `metadata.name` remains for Planton organizational labels. This provides better clarity, portability, and alignment with GCP's explicit naming requirements.
 
 ## Problem Statement
 
-Previously, GCP components used `metadata.name` for dual purposes:
+Previously, GCP kinds used `metadata.name` for dual purposes:
 
 1. **Planton organizational identifier** - Resource tracking, labels, references
 2. **Actual GCP resource name** - The name of the VPC network, GCS bucket, GKE cluster, etc.
@@ -52,9 +52,9 @@ name = var.metadata.name  # Not obvious this becomes GCP resource name
 
 ## Solution / What's New
 
-We systematically added explicit name fields to the `spec` section of 6 GCP components, making GCP resource names first-class configuration:
+We systematically added explicit name fields to the `spec` section of 6 GCP kinds, making GCP resource names first-class configuration:
 
-### Components Refactored
+### Kinds Refactored
 
 1. **GcpVpc** → Added `network_name`
 2. **GcpSubnetwork** → Added `subnetwork_name`
@@ -100,7 +100,7 @@ This means labels continue to use `metadata.name`, while GCP resources use the n
 
 ### Phase 1: Proto Schema Updates
 
-Added required name fields to all 6 component spec files with comprehensive validation:
+Added required name fields to all 6 kind spec files with comprehensive validation:
 
 **Example: GcpVpc**
 ```protobuf
@@ -126,7 +126,7 @@ message GcpVpcSpec {
 
 ### Phase 2: Pulumi Code Updates
 
-**File**: `apis/dev/planton/provider/gcp/<component>/v1/iac/pulumi/module/*.go`
+**File**: `apis/dev/planton/provider/gcp/<kind>/v1/iac/pulumi/module/*.go`
 
 Updated resource creation to use spec name fields:
 
@@ -144,13 +144,13 @@ Name: pulumi.String(locals.GcpVpc.Spec.NetworkName),
 locals.GcpLabels = map[string]string{
     gcplabelkeys.Resource:     strconv.FormatBool(true),
     gcplabelkeys.ResourceName: locals.GcpVpc.Metadata.Name,  // ← Unchanged
-    gcplabelkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_GcpVpc.String()),
+    gcplabelkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_GcpVpc.String()),
 }
 ```
 
 ### Phase 3: Terraform Code Updates
 
-**File**: `apis/dev/planton/provider/gcp/<component>/v1/iac/tf/variables.tf`
+**File**: `apis/dev/planton/provider/gcp/<kind>/v1/iac/tf/variables.tf`
 
 Added name fields with validation:
 
@@ -201,7 +201,7 @@ locals {
 
 **File**: `spec_test.go`
 
-Added comprehensive validation tests for each component:
+Added comprehensive validation tests for each kind:
 
 ```go
 // Positive test - valid name
@@ -224,7 +224,7 @@ Spec: &GcpVpcSpec{
 NetworkName: "INVALID-NAME",  // Uppercase not allowed
 ```
 
-Added 3 test cases per component:
+Added 3 test cases per kind:
 - ✅ Valid name (happy path)
 - ❌ Missing name (required field validation)
 - ❌ Invalid format (pattern validation)
@@ -256,7 +256,7 @@ Updated test manifests with realistic name values for local development.
 
 ## Special Case: GcpRouterNat
 
-This component required **two name fields** because it creates two GCP resources:
+This kind required **two name fields** because it creates two GCP resources:
 
 ```protobuf
 message GcpRouterNatSpec {
@@ -347,9 +347,9 @@ All name fields include:
 - Min/max length validation (where applicable)
 - Compile-time type checking
 
-### 6. Consistent Pattern Across Components
+### 6. Consistent Pattern Across Kinds
 
-All GCP components now follow the same pattern:
+All GCP kinds now follow the same pattern:
 - Spec field for resource name
 - Metadata.name for Planton tracking
 - Labels use metadata.name
@@ -359,7 +359,7 @@ All GCP components now follow the same pattern:
 
 ### Breaking Change for Users
 
-**Migration Required**: All existing manifests using these 6 components must add the new name field(s) to their spec.
+**Migration Required**: All existing manifests using these 6 kinds must add the new name field(s) to their spec.
 
 **Before**:
 ```yaml
@@ -384,7 +384,7 @@ spec:
   network_name: prod-network  # ← REQUIRED NEW FIELD
 ```
 
-### Components Affected
+### Kinds Affected
 
 Users must update manifests for:
 - ✅ GcpVpc (add `network_name`)
@@ -396,9 +396,9 @@ Users must update manifests for:
 
 ### Files Modified
 
-**Total: ~54 files across 6 components**
+**Total: ~54 files across 6 kinds**
 
-Per component:
+Per kind:
 - 1 `spec.proto` (schema definition)
 - 1 `spec.pb.go` (regenerated stub)
 - 3-4 Pulumi module files (`locals.go`, `*.go`)
@@ -410,7 +410,7 @@ Per component:
 ### Code Quality
 
 - ✅ All proto validations tested
-- ✅ All component tests passed (6/6)
+- ✅ All kind tests passed (6/6)
 - ✅ Full build successful
 - ✅ Full test suite passed
 - ✅ Feature parity maintained between Pulumi and Terraform
@@ -425,7 +425,7 @@ Per component:
 4. Terraform implementation updates (18 files)
 5. Test enhancements (6 files)
 6. Documentation updates (12+ files)
-7. Verification (component tests + full build)
+7. Verification (kind tests + full build)
 
 **Result**: All changes validated and tested in one pass.
 
@@ -433,7 +433,7 @@ Per component:
 
 ### Naming Validation Patterns
 
-Each component enforces GCP-specific naming rules:
+Each kind enforces GCP-specific naming rules:
 
 **Standard Pattern** (VPC, Subnet, Router, NAT):
 - 1-63 characters
@@ -514,7 +514,7 @@ This provides:
 
 ### Test Coverage
 
-Enhanced `spec_test.go` for all components with:
+Enhanced `spec_test.go` for all kinds with:
 
 **Required field tests**:
 ```go
@@ -595,11 +595,11 @@ Now it's explicit that this resource creates:
 
 ### For Existing Manifests
 
-**Step 1**: Identify which GCP components you're using
+**Step 1**: Identify which GCP kinds you're using
 
 **Step 2**: Add the appropriate name field(s) to each manifest's spec:
 
-| Component | Field(s) to Add |
+| Kind | Field(s) to Add |
 |-----------|----------------|
 | GcpVpc | `network_name` |
 | GcpSubnetwork | `subnetwork_name` |
@@ -641,7 +641,7 @@ validation error:
 
 ### Architecture Alignment
 
-This refactoring aligns with Planton's design principles from `architecture/deployment-component.md`:
+This refactoring aligns with Planton's design principles from `architecture/catalog-kind.md`:
 
 > **80/20 Scoping**: Fields reflect research findings (not every possible provider option)
 
@@ -650,19 +650,19 @@ Explicit name fields are essential (part of the 20%) and should be in the spec.
 ### Future Enhancements
 
 This pattern can be extended to other cloud providers:
-- AWS components (VPC, subnets, clusters)
-- Azure components (VNets, subnets, AKS)
-- Other GCP components not yet refactored
+- AWS kinds (VPC, subnets, clusters)
+- Azure kinds (VNets, subnets, AKS)
+- Other GCP kinds not yet refactored
 
 ### Consistency with Kubernetes Resources
 
-This follows the pattern already established in Kubernetes workload components, where resource names are explicit in the spec rather than derived from metadata.
+This follows the pattern already established in Kubernetes workload kinds, where resource names are explicit in the spec rather than derived from metadata.
 
 ## Lessons Learned
 
 ### What Worked Well
 
-1. **Systematic approach**: Updating all 6 components in one pass ensured consistency
+1. **Systematic approach**: Updating all 6 kinds in one pass ensured consistency
 2. **Test-driven**: Adding validation tests before implementation caught issues early
 3. **Separation of concerns**: Keeping labels using metadata.name while resources use spec fields provided clear boundaries
 4. **Pattern validation**: GCP naming rules enforced at proto level prevent deployment failures
@@ -671,7 +671,7 @@ This follows the pattern already established in Kubernetes workload components, 
 
 1. **Label vs Resource naming**: Initially unclear whether labels should use new fields - decision: keep using metadata.name
 2. **GcpRouterNat complexity**: Required two name fields for two resources - solved with clear naming (router_name, nat_name)
-3. **Test coverage**: Needed to add missing test cases for new required fields across all components
+3. **Test coverage**: Needed to add missing test cases for new required fields across all kinds
 
 ---
 

@@ -31,7 +31,7 @@ type DigitalOceanDroplet struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *DigitalOceanDropletSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *DigitalOceanDroplet) GetKind() string {
 	return ""
 }
 
-func (x *DigitalOceanDroplet) GetMetadata() *shared.CloudResourceMetadata {
+func (x *DigitalOceanDroplet) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *DigitalOceanDroplet) GetStatus() *DigitalOceanDropletStatus {
 // digital-ocean-droplet status
 type DigitalOceanDropletStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	digital-ocean-droplet stack-outputs
-	Outputs       *DigitalOceanDropletStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	digital-ocean-droplet outputs
+	Outputs       *DigitalOceanDropletOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*DigitalOceanDropletStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandroplet_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *DigitalOceanDropletStatus) GetOutputs() *DigitalOceanDropletStackOutputs {
+func (x *DigitalOceanDropletStatus) GetOutputs() *DigitalOceanDropletOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_digitalocean_digitaloceandroplet_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13DigitalOceanDropletR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
 	"\x04spec\x18\x04 \x01(\v2N.dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12h\n" +
-	"\x06status\x18\x05 \x01(\v2P.dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletStatusR\x06status\"\x8d\x01\n" +
-	"\x19DigitalOceanDropletStatus\x12p\n" +
-	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletStackOutputsR\aoutputsB\xaa\x03\n" +
+	"\x06status\x18\x05 \x01(\v2P.dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletStatusR\x06status\"\x88\x01\n" +
+	"\x19DigitalOceanDropletStatus\x12k\n" +
+	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletOutputsR\aoutputsB\xaa\x03\n" +
 	"9com.dev.planton.digitalocean.digitaloceandroplet.v1alpha1B\bApiProtoP\x01Zjgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceandroplet/v1alpha1;digitaloceandropletv1alpha1\xa2\x02\x04DPDD\xaa\x025Dev.Planton.Digitalocean.Digitaloceandroplet.V1alpha1\xca\x025Dev\\Planton\\Digitalocean\\Digitaloceandroplet\\V1alpha1\xe2\x02ADev\\Planton\\Digitalocean\\Digitaloceandroplet\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Digitalocean::Digitaloceandroplet::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_digitalocean_digitaloceandroplet_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_digitalocean_digitaloceandroplet_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_digitalocean_digitaloceandroplet_v1alpha1_api_proto_goTypes = []any{
-	(*DigitalOceanDroplet)(nil),             // 0: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDroplet
-	(*DigitalOceanDropletStatus)(nil),       // 1: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*DigitalOceanDropletSpec)(nil),         // 3: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletSpec
-	(*DigitalOceanDropletStackOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletStackOutputs
+	(*DigitalOceanDroplet)(nil),          // 0: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDroplet
+	(*DigitalOceanDropletStatus)(nil),    // 1: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*DigitalOceanDropletSpec)(nil),      // 3: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletSpec
+	(*DigitalOceanDropletOutputs)(nil),   // 4: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletOutputs
 }
 var file_catalog_digitalocean_digitaloceandroplet_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDroplet.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDroplet.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDroplet.spec:type_name -> dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletSpec
 	1, // 2: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDroplet.status:type_name -> dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletStatus
-	4, // 3: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletStackOutputs
+	4, // 3: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

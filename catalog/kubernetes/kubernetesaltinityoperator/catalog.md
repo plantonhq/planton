@@ -4,7 +4,7 @@ Installs the Altinity ClickHouse Operator — the Apache-2.0 operator for runnin
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm release (altinity-clickhouse-operator)** — the operator Deployment with its metrics-exporter sidecar, its RBAC (cluster-wide by default, namespace-scoped Roles when `namespaceScopedRbac` is set), the chart-managed credentials Secret, and the `<name>-metrics` Service
 - **The four ClickHouse CRDs** (`clickhouse.altinity.com` and `clickhouse-keeper.altinity.com` API groups) — shipped in the chart's `crds/` directory: Helm installs them on first install and NEVER deletes them on uninstall, so destroying the operator never cascade-deletes ClickHouse clusters or their data; the chart's pre-install/pre-upgrade hook job server-side-applies them on every install and upgrade
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** — an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** — an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f clickhouse-operator.yaml
 ```
 
-This installs the operator cluster-wide — because this manifest widens the watch scope to `[".*"]`, ClickHouse resources in any namespace reconcile into running clusters (the chart default watches only the operator's own namespace). A Stack Job tracks the provisioning in real time.
+This installs the operator cluster-wide — because this manifest widens the watch scope to `[".*"]`, ClickHouse resources in any namespace reconcile into running clusters (the chart default watches only the operator's own namespace). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,15 +91,15 @@ These are the most important decisions when configuring the Altinity ClickHouse 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,6 +120,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**ClickHouse**](/cloud-catalog/kubernetes-click-house) — the ClickHouse clusters this operator reconciles; deploy the operator FIRST, and keep clusters inside the watched namespaces.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — reference a managed namespace to compose governance (quotas, pod-security labels) with the installation.
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) — scrapes the fleet-wide `metrics_endpoint`; pair with `serviceMonitorEnabled` when the Prometheus Operator manages scrape targets.
+- [**ClickHouse**](/infra-catalog/kubernetes-click-house) — the ClickHouse clusters this operator reconciles; deploy the operator FIRST, and keep clusters inside the watched namespaces.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — reference a managed namespace to compose governance (quotas, pod-security labels) with the installation.
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) — scrapes the fleet-wide `metrics_endpoint`; pair with `serviceMonitorEnabled` when the Prometheus Operator manages scrape targets.

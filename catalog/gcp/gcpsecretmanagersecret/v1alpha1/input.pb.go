@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpSecretManagerSecretStackInput struct {
+type GcpSecretManagerSecretIacInput struct {
 	state          protoimpl.MessageState  `protogen:"open.v1"`
 	Target         *GcpSecretManagerSecret `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig  `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpSecretManagerSecretStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpSecretManagerSecretStackInput) Reset() {
-	*x = GcpSecretManagerSecretStackInput{}
+func (x *GcpSecretManagerSecretIacInput) Reset() {
+	*x = GcpSecretManagerSecretIacInput{}
 	mi := &file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSecretManagerSecretStackInput) String() string {
+func (x *GcpSecretManagerSecretIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSecretManagerSecretStackInput) ProtoMessage() {}
+func (*GcpSecretManagerSecretIacInput) ProtoMessage() {}
 
-func (x *GcpSecretManagerSecretStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpSecretManagerSecretIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpSecretManagerSecretStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSecretManagerSecretStackInput.ProtoReflect.Descriptor instead.
-func (*GcpSecretManagerSecretStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSecretManagerSecretIacInput.ProtoReflect.Descriptor instead.
+func (*GcpSecretManagerSecretIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSecretManagerSecretStackInput) GetTarget() *GcpSecretManagerSecret {
+func (x *GcpSecretManagerSecretIacInput) GetTarget() *GcpSecretManagerSecret {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpSecretManagerSecretStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpSecretManagerSecretIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpsecretmanagersecret_v1alpha1_input_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpsecretmanagersecret/v1alpha1/input.proto\x12/dev.planton.gcp.gcpsecretmanagersecret.v1alpha1\x1a5catalog/gcp/gcpsecretmanagersecret/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd0\x01\n" +
-	" GcpSecretManagerSecretStackInput\x12_\n" +
+	"7catalog/gcp/gcpsecretmanagersecret/v1alpha1/input.proto\x12/dev.planton.gcp.gcpsecretmanagersecret.v1alpha1\x1a5catalog/gcp/gcpsecretmanagersecret/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xce\x01\n" +
+	"\x1eGcpSecretManagerSecretIacInput\x12_\n" +
 	"\x06target\x18\x01 \x01(\v2G.dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecretR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\x8b\x03\n" +
 	"3com.dev.planton.gcp.gcpsecretmanagersecret.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_input_proto_rawDescGZIP() 
 
 var file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_input_proto_goTypes = []any{
-	(*GcpSecretManagerSecretStackInput)(nil), // 0: dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecretStackInput
-	(*GcpSecretManagerSecret)(nil),           // 1: dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecret
-	(*gcp.GcpProviderConfig)(nil),            // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpSecretManagerSecretIacInput)(nil), // 0: dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecretIacInput
+	(*GcpSecretManagerSecret)(nil),         // 1: dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecret
+	(*gcp.GcpProviderConfig)(nil),          // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpsecretmanagersecret_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecretStackInput.target:type_name -> dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecret
-	2, // 1: dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecretStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecretIacInput.target:type_name -> dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecret
+	2, // 1: dev.planton.gcp.gcpsecretmanagersecret.v1alpha1.GcpSecretManagerSecretIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

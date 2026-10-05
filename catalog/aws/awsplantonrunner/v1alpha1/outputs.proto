@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsplantonrunner.v1alpha1;
 
-// AwsPlantonRunnerStackOutputs captures the observable identifiers of a
+// AwsPlantonRunnerOutputs captures the observable identifiers of a
 // deployed runner appliance -- the handles for day-2 operations: tailing
 // the runner's logs, granting its runtime role permissions, and letting
 // private targets admit traffic from its security group.
-message AwsPlantonRunnerStackOutputs {
+message AwsPlantonRunnerOutputs {
   // The ARN of the compute service keeping the runner running (e.g.
   // "arn:aws:ecs:us-west-2:123456789012:service/<name>/<name>"). The
   // primary handle for inspecting the appliance with AWS tooling.

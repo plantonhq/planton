@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurecontainerappenvironmentcertificate
 spec:
   billing_model: free
   free_tier: The certificate is bring-your-own TLS material stored on the Container App Environment -- an inline PFX upload or a Key Vault reference the environment keeps current. Microsoft.App environment certificates carry no meter; storing one and serving it to any number of custom-domain bindings never bills.
-  notes: "No field of this spec buys anything: the name, the environment reference, the PFX blob, and the Key Vault pointer are all certificate storage handled by the environment at no charge. The real spend lives in the ENVIRONMENT's plan that runs the apps behind the certificate -- consumption vCPU/memory/requests or dedicated workload profiles, the AzureContainerAppEnvironment kind's bill -- and, on the Key Vault path, in the vault holding the source certificate, which bills as its own kind. The certificate itself (EV/OV/wildcard) is bought outside Azure from your CA."
+  notes: "No field of this spec buys anything: the name, the environment reference, the PFX blob, and the Key Vault pointer are all certificate storage handled by the environment at no charge. The real spend lives in the ENVIRONMENT's plan that runs the apps behind the certificate -- consumption vCPU/memory/requests or dedicated workload profiles, the AzureContainerAppEnvironment component's bill -- and, on the Key Vault path, in the vault holding the source certificate, which bills as its own component. The certificate itself (EV/OV/wildcard) is bought outside Azure from your CA."

@@ -31,7 +31,7 @@ type DigitalOceanLoadBalancer struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *DigitalOceanLoadBalancerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *DigitalOceanLoadBalancer) GetKind() string {
 	return ""
 }
 
-func (x *DigitalOceanLoadBalancer) GetMetadata() *shared.CloudResourceMetadata {
+func (x *DigitalOceanLoadBalancer) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *DigitalOceanLoadBalancer) GetStatus() *DigitalOceanLoadBalancerStatus {
 // digital-ocean-load-balancer status
 type DigitalOceanLoadBalancerStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	digital-ocean-load-balancer stack-outputs
-	Outputs       *DigitalOceanLoadBalancerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	digital-ocean-load-balancer outputs
+	Outputs       *DigitalOceanLoadBalancerOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*DigitalOceanLoadBalancerStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *DigitalOceanLoadBalancerStatus) GetOutputs() *DigitalOceanLoadBalancerStackOutputs {
+func (x *DigitalOceanLoadBalancerStatus) GetOutputs() *DigitalOceanLoadBalancerOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_api_proto_rawD
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18DigitalOceanLoadBalancerR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12t\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12t\n" +
 	"\x04spec\x18\x04 \x01(\v2X.dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12r\n" +
-	"\x06status\x18\x05 \x01(\v2Z.dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerStatusR\x06status\"\x9c\x01\n" +
-	"\x1eDigitalOceanLoadBalancerStatus\x12z\n" +
-	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerStackOutputsR\aoutputsB\xcd\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Z.dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerStatusR\x06status\"\x97\x01\n" +
+	"\x1eDigitalOceanLoadBalancerStatus\x12u\n" +
+	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerOutputsR\aoutputsB\xcd\x03\n" +
 	">com.dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1B\bApiProtoP\x01Ztgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanloadbalancer/v1alpha1;digitaloceanloadbalancerv1alpha1\xa2\x02\x04DPDD\xaa\x02:Dev.Planton.Digitalocean.Digitaloceanloadbalancer.V1alpha1\xca\x02:Dev\\Planton\\Digitalocean\\Digitaloceanloadbalancer\\V1alpha1\xe2\x02FDev\\Planton\\Digitalocean\\Digitaloceanloadbalancer\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Digitalocean::Digitaloceanloadbalancer::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_api_proto_rawDe
 
 var file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_api_proto_goTypes = []any{
-	(*DigitalOceanLoadBalancer)(nil),             // 0: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancer
-	(*DigitalOceanLoadBalancerStatus)(nil),       // 1: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*DigitalOceanLoadBalancerSpec)(nil),         // 3: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec
-	(*DigitalOceanLoadBalancerStackOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerStackOutputs
+	(*DigitalOceanLoadBalancer)(nil),        // 0: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancer
+	(*DigitalOceanLoadBalancerStatus)(nil),  // 1: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*DigitalOceanLoadBalancerSpec)(nil),    // 3: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec
+	(*DigitalOceanLoadBalancerOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerOutputs
 }
 var file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancer.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancer.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancer.spec:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec
 	1, // 2: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancer.status:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerStatus
-	4, // 3: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerStackOutputs
+	4, // 3: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -58,11 +58,11 @@ import (
 // Always destroy the KubernetesTekton resource FIRST while the operator
 // still runs (TektonInstallerSet finalizers are operator-processed; see
 // the spec's destroy note).
-func Resources(ctx *pulumi.Context, stackInput *kubernetestektonoperatorv1alpha1.KubernetesTektonOperatorStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetestektonoperatorv1alpha1.KubernetesTektonOperatorIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}

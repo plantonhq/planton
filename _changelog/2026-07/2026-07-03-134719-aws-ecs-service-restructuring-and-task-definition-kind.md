@@ -149,7 +149,7 @@ association.
 `container`, `alb`, and `iam` blocks are removed; the container blueprint
 lives in the new `AwsEcsTaskDefinition` kind referenced via
 `task_definition`; load-balancer wiring is `load_balancers[]` with
-target-group refs. Stack outputs drop `service_url`,
+target-group refs. Outputs drop `service_url`,
 `service_discovery_name`, `target_group_arn`, `ecs_cluster_name`, and the
 log-group outputs (now on the task definition). Nobody uses the system
 yet; no migration path is provided by design.

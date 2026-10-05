@@ -7,9 +7,9 @@
 # license model, Multi-AZ) through the price book's attribute identities.
 # A read replica inherits engine and storage from its source instance --
 # those rules price under STATED assumptions, per their basis prose.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsrdsinstance
 spec:

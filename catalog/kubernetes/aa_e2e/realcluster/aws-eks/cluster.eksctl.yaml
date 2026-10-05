@@ -9,7 +9,7 @@
 #   - karpenter.sh/discovery cluster tag propagates to the cluster security
 #     group; subnets are tagged by bootstrap.sh (eksctl only propagates
 #     metadata tags to resources CloudFormation creates directly).
-#   - system: fixed two-node group that hosts every component under test.
+#   - system: fixed two-node group that hosts every kind under test.
 #     Deliberately UNTAGGED for cluster-autoscaler discovery so the CA lane
 #     can only ever scale the group built for it.
 #   - ca-scale: min 0 / max 2 group carrying the CA auto-discovery tags
@@ -25,7 +25,7 @@
 #     serve the PVC data-source and Velero CSI-snapshot lanes; gp2 (in-tree)
 #     is not snapshot-capable, so bootstrap.sh also applies a gp3
 #     StorageClass and a VolumeSnapshotClass.
-#   - IRSA roles for the components under test are created by bootstrap.sh
+#   - IRSA roles for the kinds under test are created by bootstrap.sh
 #     (roleOnly — the Helm charts create the ServiceAccounts; the roles'
 #     trust policies bind to each chart's rendered SA name, verified in the
 #     modules' vars.go/locals.go derivations).

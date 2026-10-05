@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 func TestRunTransformExecutable_HappyPath(t *testing.T) {
@@ -15,7 +15,7 @@ func TestRunTransformExecutable_HappyPath(t *testing.T) {
 		"name":      "my-resource",
 	}
 
-	got, err := runTransformExecutable(dir, cloudresourcekind.CloudResourceKind_Auth0ResourceServer, raw)
+	got, err := runTransformExecutable(dir, catalogkind.CatalogKind_Auth0ResourceServer, raw)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -35,7 +35,7 @@ func TestRunTransformExecutable_NonZeroExit(t *testing.T) {
 	dir := filepath.Join("testdata", "modules", "bad-executable")
 	raw := map[string]interface{}{"key": "value"}
 
-	_, err := runTransformExecutable(dir, cloudresourcekind.CloudResourceKind_Auth0ResourceServer, raw)
+	_, err := runTransformExecutable(dir, catalogkind.CatalogKind_Auth0ResourceServer, raw)
 	if err == nil {
 		t.Fatal("expected error for non-zero exit, got nil")
 	}
@@ -45,7 +45,7 @@ func TestRunTransformExecutable_FileNotFound(t *testing.T) {
 	dir := filepath.Join("testdata", "modules", "empty")
 	raw := map[string]interface{}{"key": "value"}
 
-	_, err := runTransformExecutable(dir, cloudresourcekind.CloudResourceKind_Auth0ResourceServer, raw)
+	_, err := runTransformExecutable(dir, catalogkind.CatalogKind_Auth0ResourceServer, raw)
 	if err == nil {
 		t.Fatal("expected error for missing executable, got nil")
 	}
@@ -55,7 +55,7 @@ func TestRunTransformExecutable_EmptyOutputs(t *testing.T) {
 	dir := filepath.Join("testdata", "modules", "with-executable")
 	raw := map[string]interface{}{}
 
-	got, err := runTransformExecutable(dir, cloudresourcekind.CloudResourceKind_Auth0ResourceServer, raw)
+	got, err := runTransformExecutable(dir, catalogkind.CatalogKind_Auth0ResourceServer, raw)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -72,7 +72,7 @@ func TestRunTransformExecutable_MalformedOutputScript(t *testing.T) {
 	}
 
 	raw := map[string]interface{}{"key": "value"}
-	_, err := runTransformExecutable(dir, cloudresourcekind.CloudResourceKind_Auth0ResourceServer, raw)
+	_, err := runTransformExecutable(dir, catalogkind.CatalogKind_Auth0ResourceServer, raw)
 	if err == nil {
 		t.Fatal("expected error for malformed JSON output, got nil")
 	}

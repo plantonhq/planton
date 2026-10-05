@@ -5,7 +5,7 @@ import (
 
 	azureappinsightswebtestv1 "github.com/plantonhq/planton/catalog/azure/azureapplicationinsightsstandardwebtest/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -18,11 +18,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureappinsightswebtestv1.AzureApplicationInsightsStandardWebTestStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureappinsightswebtestv1.AzureApplicationInsightsStandardWebTestIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureApplicationInsightsStandardWebTest = stackInput.Target
-	target := stackInput.Target
+	locals.AzureApplicationInsightsStandardWebTest = iacInput.Target
+	target := iacInput.Target
 	spec := target.Spec
 
 	locals.ResourceGroupName = spec.ResourceGroup.GetValue()
@@ -31,7 +31,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureappinsightswebtestv1
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureApplicationInsightsStandardWebTest.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureApplicationInsightsStandardWebTest.String()),
 	}
 	if target.Metadata.Id != "" {
 		locals.AzureTags[azuretagkeys.ResourceId] = target.Metadata.Id

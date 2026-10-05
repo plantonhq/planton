@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureKeyVaultCertificateStackOutputs** captures the outputs of
+// **AzureKeyVaultCertificateOutputs** captures the outputs of
 // provisioning a Key Vault certificate -- the identifiers downstream
 // resources reference to terminate TLS with it.
-type AzureKeyVaultCertificateStackOutputs struct {
+type AzureKeyVaultCertificateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The certificate's versioned data-plane ID:
 	// https://{vault}.vault.azure.net/certificates/{name}/{version}. Pins
@@ -63,20 +63,20 @@ type AzureKeyVaultCertificateStackOutputs struct {
 	sizeCache                    protoimpl.SizeCache
 }
 
-func (x *AzureKeyVaultCertificateStackOutputs) Reset() {
-	*x = AzureKeyVaultCertificateStackOutputs{}
+func (x *AzureKeyVaultCertificateOutputs) Reset() {
+	*x = AzureKeyVaultCertificateOutputs{}
 	mi := &file_catalog_azure_azurekeyvaultcertificate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureKeyVaultCertificateStackOutputs) String() string {
+func (x *AzureKeyVaultCertificateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureKeyVaultCertificateStackOutputs) ProtoMessage() {}
+func (*AzureKeyVaultCertificateOutputs) ProtoMessage() {}
 
-func (x *AzureKeyVaultCertificateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureKeyVaultCertificateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurekeyvaultcertificate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -88,68 +88,68 @@ func (x *AzureKeyVaultCertificateStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureKeyVaultCertificateStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureKeyVaultCertificateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureKeyVaultCertificateOutputs.ProtoReflect.Descriptor instead.
+func (*AzureKeyVaultCertificateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurekeyvaultcertificate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureKeyVaultCertificateStackOutputs) GetCertificateId() string {
+func (x *AzureKeyVaultCertificateOutputs) GetCertificateId() string {
 	if x != nil {
 		return x.CertificateId
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultCertificateStackOutputs) GetVersionlessId() string {
+func (x *AzureKeyVaultCertificateOutputs) GetVersionlessId() string {
 	if x != nil {
 		return x.VersionlessId
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultCertificateStackOutputs) GetSecretId() string {
+func (x *AzureKeyVaultCertificateOutputs) GetSecretId() string {
 	if x != nil {
 		return x.SecretId
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultCertificateStackOutputs) GetVersionlessSecretId() string {
+func (x *AzureKeyVaultCertificateOutputs) GetVersionlessSecretId() string {
 	if x != nil {
 		return x.VersionlessSecretId
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultCertificateStackOutputs) GetCertificateName() string {
+func (x *AzureKeyVaultCertificateOutputs) GetCertificateName() string {
 	if x != nil {
 		return x.CertificateName
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultCertificateStackOutputs) GetVersion() string {
+func (x *AzureKeyVaultCertificateOutputs) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultCertificateStackOutputs) GetThumbprint() string {
+func (x *AzureKeyVaultCertificateOutputs) GetThumbprint() string {
 	if x != nil {
 		return x.Thumbprint
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultCertificateStackOutputs) GetResourceManagerId() string {
+func (x *AzureKeyVaultCertificateOutputs) GetResourceManagerId() string {
 	if x != nil {
 		return x.ResourceManagerId
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultCertificateStackOutputs) GetResourceManagerVersionlessId() string {
+func (x *AzureKeyVaultCertificateOutputs) GetResourceManagerVersionlessId() string {
 	if x != nil {
 		return x.ResourceManagerVersionlessId
 	}
@@ -160,8 +160,8 @@ var File_catalog_azure_azurekeyvaultcertificate_v1alpha1_outputs_proto protorefl
 
 const file_catalog_azure_azurekeyvaultcertificate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azurekeyvaultcertificate/v1alpha1/outputs.proto\x123dev.planton.azure.azurekeyvaultcertificate.v1alpha1\"\xa1\x03\n" +
-	"$AzureKeyVaultCertificateStackOutputs\x12%\n" +
+	"=catalog/azure/azurekeyvaultcertificate/v1alpha1/outputs.proto\x123dev.planton.azure.azurekeyvaultcertificate.v1alpha1\"\x9c\x03\n" +
+	"\x1fAzureKeyVaultCertificateOutputs\x12%\n" +
 	"\x0ecertificate_id\x18\x01 \x01(\tR\rcertificateId\x12%\n" +
 	"\x0eversionless_id\x18\x02 \x01(\tR\rversionlessId\x12\x1b\n" +
 	"\tsecret_id\x18\x03 \x01(\tR\bsecretId\x122\n" +
@@ -189,7 +189,7 @@ func file_catalog_azure_azurekeyvaultcertificate_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_azure_azurekeyvaultcertificate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurekeyvaultcertificate_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureKeyVaultCertificateStackOutputs)(nil), // 0: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateStackOutputs
+	(*AzureKeyVaultCertificateOutputs)(nil), // 0: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateOutputs
 }
 var file_catalog_azure_azurekeyvaultcertificate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

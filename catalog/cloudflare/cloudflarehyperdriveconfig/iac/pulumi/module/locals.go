@@ -12,9 +12,9 @@ type Locals struct {
 	CloudflareHyperdriveConfig *cloudflarehyperdriveconfigv1alpha1.CloudflareHyperdriveConfig
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarehyperdriveconfigv1alpha1.CloudflareHyperdriveConfigStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarehyperdriveconfigv1alpha1.CloudflareHyperdriveConfigIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareHyperdriveConfig = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareHyperdriveConfig = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

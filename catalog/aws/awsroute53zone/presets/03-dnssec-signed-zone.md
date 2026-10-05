@@ -1,6 +1,6 @@
 # DNSSEC-Signed Public Zone
 
-This preset creates a public Route53 hosted zone with DNSSEC signing enabled: Route 53 signs the zone's records with a key-signing key (KSK) backed by an asymmetric KMS key, protecting resolvers from spoofed and cache-poisoned answers. Signing the zone is HALF the chain of trust — the `ds_record` stack output must also be registered with the parent (your domain registrar) before any resolver validates the zone.
+This preset creates a public Route53 hosted zone with DNSSEC signing enabled: Route 53 signs the zone's records with a key-signing key (KSK) backed by an asymmetric KMS key, protecting resolvers from spoofed and cache-poisoned answers. Signing the zone is HALF the chain of trust — the `ds_record` output must also be registered with the parent (your domain registrar) before any resolver validates the zone.
 
 ## When to Use
 

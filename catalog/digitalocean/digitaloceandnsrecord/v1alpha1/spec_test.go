@@ -32,7 +32,7 @@ func record() *DigitalOceanDnsRecord {
 	return &DigitalOceanDnsRecord{
 		ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 		Kind:       "DigitalOceanDnsRecord",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-record",
 		},
 		Spec: &DigitalOceanDnsRecordSpec{

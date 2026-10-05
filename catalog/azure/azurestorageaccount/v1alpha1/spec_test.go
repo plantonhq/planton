@@ -34,7 +34,7 @@ func minimalSpec() *AzureStorageAccount {
 	return &AzureStorageAccount{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureStorageAccount",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-storage-account",
 		},
 		Spec: &AzureStorageAccountSpec{

@@ -10,9 +10,9 @@
 # the shared DAG and log volumes are single cluster-wide reservations.
 # Anything only the chart sizes (statsd-exporter, migration and
 # bootstrap Jobs, git-sync sidecars) is excluded loudly below.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesairflow
 spec:
@@ -95,4 +95,4 @@ spec:
         - field_path: helm_values
           op: is_set
       text: the helm_values overlay merges last and can override any modeled value, including resources and replica counts -- this footprint states the typed spec's declaration
-    - text: the statsd-exporter and the migration and admin-bootstrap Jobs carry only chart-default sizing; the metadata database and any composed Valkey broker are separate components with their own footprints
+    - text: the statsd-exporter and the migration and admin-bootstrap Jobs carry only chart-default sizing; the metadata database and any composed Valkey broker are separate Infra Components with their own footprints

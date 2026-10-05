@@ -1,5 +1,5 @@
 # AzureVirtualHub install profile used as a fixture by composed
-# components (declared via prerequisites: [AzureVirtualHub] in the kind
+# kinds (declared via prerequisites: [AzureVirtualHub] in the kind
 # registry -- the hub connection, the ExpressRoute gateway, and the VPN
 # gateway family that follows them). The harness deploys this document
 # after the fixture WAN and captures its outputs -- virtual_hub_id in
@@ -23,7 +23,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurevirtualhub
+    e2e-catalog-kind: azurevirtualhub
   annotations:
     planton.dev/e2e: "true"
   tags:

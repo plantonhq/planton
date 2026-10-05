@@ -32,7 +32,7 @@ However, Terraform users still had to clone the entire monorepo to access a sing
 
 ### Zip Artifacts for All Terraform Modules
 
-Each Terraform module's `tf/` folder is now zipped and attached to releases as `terraform-{component}.zip`.
+Each Terraform module's `tf/` folder is now zipped and attached to releases as `terraform-{kind}.zip`.
 
 ```mermaid
 flowchart TB
@@ -104,7 +104,7 @@ strategy:
 
 **Key characteristics:**
 - **11 parallel jobs** (one per provider)
-- **Dynamic discovery**: Scans each provider for components with `v1/iac/tf` folders
+- **Dynamic discovery**: Scans each provider for kinds with `v1/iac/tf` folders
 - **No platform matrix needed**: Terraform is platform-agnostic (unlike Pulumi's 4 platforms)
 - **Fast execution**: Just zip + upload, no compilation
 
@@ -112,7 +112,7 @@ strategy:
 
 The `auto-release.terraform-modules.yaml` now includes three new steps:
 
-1. **Zip Terraform module**: Creates `terraform-{component}.zip` from the `tf/` folder
+1. **Zip Terraform module**: Creates `terraform-{kind}.zip` from the `tf/` folder
 2. **Create GitHub Release**: Enhanced release notes with download instructions
 3. **Upload zip to release**: Attaches the zip artifact
 
@@ -132,7 +132,7 @@ The `auto-release.terraform-modules.yaml` now includes three new steps:
 | Jobs per provider (semantic) | 4 | 1 |
 | Total jobs (semantic) | 44 | 11 |
 | Artifact format | `.gz` compressed binary | `.zip` folder contents |
-| Artifact naming | `pulumi-{component}_{platform}.gz` | `terraform-{component}.zip` |
+| Artifact naming | `pulumi-{kind}_{platform}.gz` | `terraform-{kind}.zip` |
 
 ## Benefits
 

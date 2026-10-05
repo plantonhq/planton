@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpHaVpnConnectionSpec connects one HA VPN gateway (GcpHaVpnGateway) to
 ONE peer -- an on-premises site, another cloud, or another Google Cloud
@@ -49,7 +49,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcphavpnconnection
+    e2e-catalog-kind: gcphavpnconnection
   annotations:
     planton.dev/e2e: "true"
     # Google-to-Google in one project: the hub gateway is the registry

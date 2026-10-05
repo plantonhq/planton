@@ -45,7 +45,7 @@ func notificationWebhook(
 	// POST answers {"result":{"id":...}} while the GET returns the full
 	// body), so the resource's computed `type` is empty after create. This
 	// read-after-create performs the GET the create response omitted; the
-	// type stack output rides it instead of the resource attribute.
+	// type output rides it instead of the resource attribute.
 	lookedUp := cloudflare.LookupNotificationPolicyWebhooksOutput(
 		ctx,
 		cloudflare.LookupNotificationPolicyWebhooksOutputArgs{

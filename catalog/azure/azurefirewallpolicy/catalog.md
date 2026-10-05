@@ -4,7 +4,7 @@ Deploys an Azure Firewall Policy — the reusable rule-and-inspection document A
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Firewall Policy** -- the policy document with its tier, threat-intelligence mode, and every configured block (allowlist, DNS, IDPS, identity, TLS certificate, analytics, explicit proxy, SNAT ranges)
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically and merged with the user tags
@@ -15,7 +15,7 @@ The sku and threat-intelligence mode are always sent explicitly (Standard/Alert 
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -58,7 +58,7 @@ spec:
 planton apply -f firewall-policy.yaml
 ```
 
-This creates a STANDARD policy with threat intelligence in deny and the DNS proxy on, ready for rule collection groups to nest under it and firewalls to attach it. A Stack Job tracks the provisioning in real time. The DNS proxy makes FQDN-based network rules deterministic — point spoke DNS at the attached firewall's private IP.
+This creates a STANDARD policy with threat intelligence in deny and the DNS proxy on, ready for rule collection groups to nest under it and firewalls to attach it. An Infra Job tracks the provisioning in real time. The DNS proxy makes FQDN-based network rules deterministic — point spoke DNS at the attached firewall's private IP.
 
 ### InfraChart
 
@@ -100,7 +100,7 @@ These are the most important decisions when configuring a Firewall Policy. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -111,9 +111,9 @@ These are the most important decisions when configuring a Firewall Policy. Explo
 | **AzureLogAnalyticsWorkspace** | `insights.defaultLogAnalyticsWorkspaceId` | `status.outputs.workspace_id` |
 | **AzureIpGroup** | `intrusionDetection.trafficBypass[].sourceIpGroups[]` / `destinationIpGroups[]` | `status.outputs.ip_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,10 +132,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the policy is created
-- [**Azure Firewall**](/cloud-catalog/azure-firewall) -- the enforcement instance that attaches this policy (`firewallPolicyId`)
-- [**Azure Firewall Policy Rule Collection Group**](/cloud-catalog/azure-firewall-policy-rule-collection-group) -- the ordered rule documents that nest under this policy
-- [**Azure IP Group**](/cloud-catalog/azure-ip-group) -- named address sets the policy's IDPS bypasses (and its rule groups) reference
-- [**Azure Key Vault Certificate**](/cloud-catalog/azure-key-vault-certificate) -- holds the intermediate CA TLS inspection signs with
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the identity that reads the CA from Key Vault
-- [**Azure Log Analytics Workspace**](/cloud-catalog/azure-log-analytics-workspace) -- receives policy analytics
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the policy is created
+- [**Azure Firewall**](/infra-catalog/azure-firewall) -- the enforcement instance that attaches this policy (`firewallPolicyId`)
+- [**Azure Firewall Policy Rule Collection Group**](/infra-catalog/azure-firewall-policy-rule-collection-group) -- the ordered rule documents that nest under this policy
+- [**Azure IP Group**](/infra-catalog/azure-ip-group) -- named address sets the policy's IDPS bypasses (and its rule groups) reference
+- [**Azure Key Vault Certificate**](/infra-catalog/azure-key-vault-certificate) -- holds the intermediate CA TLS inspection signs with
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the identity that reads the CA from Key Vault
+- [**Azure Log Analytics Workspace**](/infra-catalog/azure-log-analytics-workspace) -- receives policy analytics

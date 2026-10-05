@@ -31,7 +31,7 @@ type GcpVertexAiModelGardenDeployment struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpVertexAiModelGardenDeploymentSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpVertexAiModelGardenDeployment) GetKind() string {
 	return ""
 }
 
-func (x *GcpVertexAiModelGardenDeployment) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpVertexAiModelGardenDeployment) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpVertexAiModelGardenDeployment) GetStatus() *GcpVertexAiModelGardenDe
 // gcp-vertex-ai-model-garden-deployment status
 type GcpVertexAiModelGardenDeploymentStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpVertexAiModelGardenDeploymentStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpVertexAiModelGardenDeploymentOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpVertexAiModelGardenDeploymentStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpVertexAiModelGardenDeploymentStatus) GetOutputs() *GcpVertexAiModelGardenDeploymentStackOutputs {
+func (x *GcpVertexAiModelGardenDeploymentStatus) GetOutputs() *GcpVertexAiModelGardenDeploymentOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_api_proto_rawDe
 	"apiVersion\x12;\n" +
 	"\x04kind\x18\x02 \x01(\tB'\xbaH$r\"\n" +
 	" GcpVertexAiModelGardenDeploymentR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
 	"\x04spec\x18\x04 \x01(\v2_.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12y\n" +
-	"\x06status\x18\x05 \x01(\v2a.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentStatusR\x06status\"\xac\x01\n" +
-	"&GcpVertexAiModelGardenDeploymentStatus\x12\x81\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2g.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentStackOutputsR\aoutputsB\xcf\x03\n" +
+	"\x06status\x18\x05 \x01(\v2a.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentStatusR\x06status\"\xa6\x01\n" +
+	"&GcpVertexAiModelGardenDeploymentStatus\x12|\n" +
+	"\aoutputs\x18\x01 \x01(\v2b.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentOutputsR\aoutputsB\xcf\x03\n" +
 	"=com.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1B\bApiProtoP\x01Z{github.com/plantonhq/planton/catalog/gcp/gcpvertexaimodelgardendeployment/v1alpha1;gcpvertexaimodelgardendeploymentv1alpha1\xa2\x02\x04DPGG\xaa\x029Dev.Planton.Gcp.Gcpvertexaimodelgardendeployment.V1alpha1\xca\x029Dev\\Planton\\Gcp\\Gcpvertexaimodelgardendeployment\\V1alpha1\xe2\x02EDev\\Planton\\Gcp\\Gcpvertexaimodelgardendeployment\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Gcp::Gcpvertexaimodelgardendeployment::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_api_proto_rawDes
 
 var file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_api_proto_goTypes = []any{
-	(*GcpVertexAiModelGardenDeployment)(nil),             // 0: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeployment
-	(*GcpVertexAiModelGardenDeploymentStatus)(nil),       // 1: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentStatus
-	(*shared.CloudResourceMetadata)(nil),                 // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpVertexAiModelGardenDeploymentSpec)(nil),         // 3: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentSpec
-	(*GcpVertexAiModelGardenDeploymentStackOutputs)(nil), // 4: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentStackOutputs
+	(*GcpVertexAiModelGardenDeployment)(nil),        // 0: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeployment
+	(*GcpVertexAiModelGardenDeploymentStatus)(nil),  // 1: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentStatus
+	(*shared.CatalogObjectMetadata)(nil),            // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpVertexAiModelGardenDeploymentSpec)(nil),    // 3: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentSpec
+	(*GcpVertexAiModelGardenDeploymentOutputs)(nil), // 4: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentOutputs
 }
 var file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeployment.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeployment.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeployment.spec:type_name -> dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentSpec
 	1, // 2: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeployment.status:type_name -> dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentStatus
-	4, // 3: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentStatus.outputs:type_name -> dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentStackOutputs
+	4, // 3: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentStatus.outputs:type_name -> dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

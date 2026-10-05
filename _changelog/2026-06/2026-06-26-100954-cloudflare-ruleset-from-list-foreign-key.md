@@ -143,7 +143,7 @@ from_list:
 
 ## Impact
 
-- Infra charts can now wire a Bulk Redirect list and the ruleset that applies it
+- Infra Charts can now wire a Bulk Redirect list and the ruleset that applies it
   as dependency-aware nodes, deployed in topological order.
 - Existing manifests using `from_list` must adopt the value-or-ref shape (see
   Breaking Changes).

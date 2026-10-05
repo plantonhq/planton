@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureservicebusdisasterrecoveryconfig
+    e2e-catalog-kind: azureservicebusdisasterrecoveryconfig
   annotations:
     planton.dev/e2e: "true"
     # Primary then partner, in deploy order.

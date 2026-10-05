@@ -28,7 +28,7 @@ func validGateway(spec *CloudflareAiGatewaySpec) *CloudflareAiGateway {
 	return &CloudflareAiGateway{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareAiGateway",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ai-gateway",
 		},
 		Spec: spec,

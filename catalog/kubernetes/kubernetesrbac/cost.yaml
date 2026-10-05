@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kubernetesrbac
 spec:
   billing_model: free
   free_tier: An RBAC grant renders pure authorization objects -- Role/RoleBinding in namespace scope, ClusterRole/ClusterRoleBinding in cluster scope. Like cloud IAM roles, they reserve no compute and no cloud SKU bills for them.
-  notes: "No field of this spec buys anything: scope, the role's policy rules, and the subjects define who may do what against the Kubernetes API -- evaluated by the API server the cluster already runs. Real spend lives in the workloads and clusters the granted subjects operate, each a separate catalog kind with its own cost profile."
+  notes: "No field of this spec buys anything: scope, the role's policy rules, and the subjects define who may do what against the Kubernetes API -- evaluated by the API server the cluster already runs. Real spend lives in the workloads and clusters the granted subjects operate, each a separate component with its own cost profile."

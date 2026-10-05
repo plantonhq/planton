@@ -1,7 +1,7 @@
 # Kubernetes Istio family at full depth: 1.30.3 rebuild, ambient-first mesh kind, live routing and enforcement proofs
 
 **Date**: 2026-07-22
-**Scope**: `apis/dev/planton/provider/kubernetes` (istio_api.proto shared types; kubernetesistio + kubernetesistiobasecrds rebuilt; kubernetesdestinationrule, kubernetesserviceentry, kubernetespeerauthentication, kubernetesrequestauthentication, kubernetesauthorizationpolicy, kubernetestelemetry, kubernetesenvoyfilter reconciled), `pkg/kubernetes/kubernetestypes` (istio pin release-1.26 → 1.30.3), `pkg/iac/importmap` + `apis/dev/planton/iac/componentimportmap` (tofu_resource_name scoping), `pkg/iac/tofu/generators` (kubectl_manifest module generation), eight component import maps, `aa_e2e/verify` (three new verifiers), `e2e` + `e2e/framework/runner` (per-manifest dependency stacks) + Makefile tiers, `pkg/outputs`, site catalog, `_rules/deployment-component/update`
+**Scope**: `apis/dev/planton/provider/kubernetes` (istio_api.proto shared types; kubernetesistio + kubernetesistiobasecrds rebuilt; kubernetesdestinationrule, kubernetesserviceentry, kubernetespeerauthentication, kubernetesrequestauthentication, kubernetesauthorizationpolicy, kubernetestelemetry, kubernetesenvoyfilter reconciled), `pkg/kubernetes/kubernetestypes` (istio pin release-1.26 → 1.30.3), `pkg/iac/importmap` + `apis/dev/planton/iac/catalogkindimportmap` (tofu_resource_name scoping), `pkg/iac/tofu/generators` (kubectl_manifest module generation), eight catalog kind import maps, `aa_e2e/verify` (three new verifiers), `e2e` + `e2e/framework/runner` (per-manifest dependency stacks) + Makefile tiers, `pkg/outputs`, site catalog, `_rules/catalog-kind/update`
 
 ## What changed
 
@@ -71,7 +71,7 @@ an istiod-provisioned gateway, and live authorization-policy enforcement.
 
 ### Import framework: multi-release modules and name-keyed bundles
 
-- `ComponentImportMap` value declarations can be scoped to one Terraform
+- `CatalogKindImportMap` value declarations can be scoped to one Terraform
   logical resource via `tofu_resource_name` — needed the first time a module
   declared several resources of one type whose ID placeholders differ (the
   mesh's four Helm releases). Scoped declarations win, unscoped are the

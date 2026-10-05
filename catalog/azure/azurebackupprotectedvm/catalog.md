@@ -4,7 +4,7 @@ Registers one virtual machine under a backup policy's protection in a Recovery S
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Protected item** -- the vault-side registration binding the VM to the policy (ARM: `.../protectedItems/VM;iaasvmcontainerv2;{vm-rg};{vm-name}`; ARM derives the item's name from the VM's group and name), carrying the optional disk filters and protection posture
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -53,7 +53,7 @@ spec:
 planton apply -f protected-vm.yaml
 ```
 
-This registers the VM under the policy with all disks backed up and an Azure-managed protection posture -- the item reads `IRPending` until the policy's first scheduled backup runs. A Stack Job tracks the provisioning in real time.
+This registers the VM under the policy with all disks backed up and an Azure-managed protection posture -- the item reads `IRPending` until the policy's first scheduled backup runs. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -105,7 +105,7 @@ These are the most important decisions when configuring a protected VM. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -114,9 +114,9 @@ These are the most important decisions when configuring a protected VM. Explore 
 | **AzureVirtualMachine** | `sourceVmId` | `status.outputs.vm_id` |
 | **AzureBackupPolicyVm** | `backupPolicyId` | `status.outputs.backup_policy_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component is the end of the backup chain: its only output, `backup_protected_vm_id`, is the protected item's ARM ID, and no downstream Cloud Resource consumes it. Restores run from the vault in the portal or CLI (`az backup restore`), not through references to this binding.
+This kind is the end of the backup chain: its only output, `backup_protected_vm_id`, is the protected item's ARM ID, and no downstream Infra Component consumes it. Restores run from the vault in the portal or CLI (`az backup restore`), not through references to this binding.
 
 ## Common Patterns
 
@@ -128,7 +128,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the vault's resource group, where the protected item lives
-- [**Azure Recovery Services Vault**](/cloud-catalog/azure-recovery-services-vault) -- the vault that protects the VM
-- [**Azure Virtual Machine**](/cloud-catalog/azure-virtual-machine) -- the machine being protected, referenced by its `vm_id` output
-- [**Azure Backup Policy (VM)**](/cloud-catalog/azure-backup-policy-vm) -- the schedule and retention the VM binds to
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the vault's resource group, where the protected item lives
+- [**Azure Recovery Services Vault**](/infra-catalog/azure-recovery-services-vault) -- the vault that protects the VM
+- [**Azure Virtual Machine**](/infra-catalog/azure-virtual-machine) -- the machine being protected, referenced by its `vm_id` output
+- [**Azure Backup Policy (VM)**](/infra-catalog/azure-backup-policy-vm) -- the schedule and retention the VM binds to

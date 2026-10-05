@@ -22,10 +22,10 @@ const (
 )
 
 // *
-// **KubernetesJobStackOutputs** captures the observable handles of a deployed
+// **KubernetesJobOutputs** captures the observable handles of a deployed
 // Job. Jobs front no Service, so the useful handles are the object's identity
 // and the label selector for finding its pods.
-type KubernetesJobStackOutputs struct {
+type KubernetesJobOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The namespace the Job was created in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -40,20 +40,20 @@ type KubernetesJobStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesJobStackOutputs) Reset() {
-	*x = KubernetesJobStackOutputs{}
+func (x *KubernetesJobOutputs) Reset() {
+	*x = KubernetesJobOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesjob_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesJobStackOutputs) String() string {
+func (x *KubernetesJobOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesJobStackOutputs) ProtoMessage() {}
+func (*KubernetesJobOutputs) ProtoMessage() {}
 
-func (x *KubernetesJobStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesJobOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesjob_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *KubernetesJobStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesJobStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesJobStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesJobOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesJobOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesjob_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesJobStackOutputs) GetNamespace() string {
+func (x *KubernetesJobOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesJobStackOutputs) GetJobName() string {
+func (x *KubernetesJobOutputs) GetJobName() string {
 	if x != nil {
 		return x.JobName
 	}
 	return ""
 }
 
-func (x *KubernetesJobStackOutputs) GetSelectorLabels() string {
+func (x *KubernetesJobOutputs) GetSelectorLabels() string {
 	if x != nil {
 		return x.SelectorLabels
 	}
@@ -95,8 +95,8 @@ var File_catalog_kubernetes_kubernetesjob_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_kubernetes_kubernetesjob_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/kubernetes/kubernetesjob/v1alpha1/outputs.proto\x12-dev.planton.kubernetes.kubernetesjob.v1alpha1\"}\n" +
-	"\x19KubernetesJobStackOutputs\x12\x1c\n" +
+	"7catalog/kubernetes/kubernetesjob/v1alpha1/outputs.proto\x12-dev.planton.kubernetes.kubernetesjob.v1alpha1\"x\n" +
+	"\x14KubernetesJobOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x19\n" +
 	"\bjob_name\x18\x02 \x01(\tR\ajobName\x12'\n" +
 	"\x0fselector_labels\x18\x03 \x01(\tR\x0eselectorLabelsB\xf8\x02\n" +
@@ -116,7 +116,7 @@ func file_catalog_kubernetes_kubernetesjob_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_kubernetes_kubernetesjob_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesjob_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesJobStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobStackOutputs
+	(*KubernetesJobOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesjob.v1alpha1.KubernetesJobOutputs
 }
 var file_catalog_kubernetes_kubernetesjob_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

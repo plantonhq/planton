@@ -4,7 +4,7 @@ Provisions an AWS Certificate Manager (ACM) certificate in any of ACM's three cr
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ACM Certificate** -- an Amazon-issued public certificate (the default), an imported certificate distributing your own material, or a private certificate issued by your ACM Private CA
 - **Route53 DNS Validation Records** -- created only for DNS-validated certificates when `route53HostedZoneId` is set; one CNAME per domain, deduplicated when a wildcard and its apex share a record
@@ -15,12 +15,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A Route53 public hosted zone** (optional, DNS validation) -- when the zone is authoritative for every certificate domain, validation records are created and renewals stay fully automatic. Provide the zone ID directly or reference an AwsRoute53Zone Cloud Resource via ValueFromRef. When DNS lives elsewhere (Cloudflare, your registrar), skip the zone and create the exported records manually.
+- **A Route53 public hosted zone** (optional, DNS validation) -- when the zone is authoritative for every certificate domain, validation records are created and renewals stay fully automatic. Provide the zone ID directly or reference an AwsRoute53Zone Infra Component via ValueFromRef. When DNS lives elsewhere (Cloudflare, your registrar), skip the zone and create the exported records manually.
 - **An ACM Private CA** (private mode only) -- the certificate authority ARN that signs private certificates. Clients must trust its root.
 - **Certificate material** (imported mode only) -- the PEM certificate body and its unencrypted private key, provided as a secret reference.
 
@@ -52,7 +52,7 @@ spec:
 planton apply -f cert-manager-cert.yaml
 ```
 
-This requests an Amazon-issued certificate for `api.example.com` with DNS validation, automatically creating the required CNAME record in the specified Route53 hosted zone and waiting for issuance. Certificates issued in `us-east-1` can be used with CloudFront distributions globally. A Stack Job tracks the provisioning in real time.
+This requests an Amazon-issued certificate for `api.example.com` with DNS validation, automatically creating the required CNAME record in the specified Route53 hosted zone and waiting for issuance. Certificates issued in `us-east-1` can be used with CloudFront distributions globally. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,16 +89,16 @@ These are the most important decisions when configuring an ACM certificate. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsRoute53Zone** (optional) | `route53HostedZoneId` | `status.outputs.zone_id` |
 | **AwsPrivateCa** (private mode only) | `certificateAuthorityArn` | `status.outputs.certificate_authority_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,7 +120,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Route 53 Zone**](/cloud-catalog/aws-route53-zone) -- provides the hosted zone for managed DNS validation records
-- [**AWS Private Certificate Authority**](/cloud-catalog/aws-private-ca) -- signs private certificates, wired via `certificateAuthorityArn`
-- [**AWS ALB**](/cloud-catalog/aws-alb) -- consumes the certificate on HTTPS listeners via `cert_arn`
-- [**AWS CloudFront**](/cloud-catalog/aws-cloud-front) -- consumes us-east-1 certificates for custom domain TLS
+- [**AWS Route 53 Zone**](/infra-catalog/aws-route53-zone) -- provides the hosted zone for managed DNS validation records
+- [**AWS Private Certificate Authority**](/infra-catalog/aws-private-ca) -- signs private certificates, wired via `certificateAuthorityArn`
+- [**AWS ALB**](/infra-catalog/aws-alb) -- consumes the certificate on HTTPS listeners via `cert_arn`
+- [**AWS CloudFront**](/infra-catalog/aws-cloud-front) -- consumes us-east-1 certificates for custom domain TLS

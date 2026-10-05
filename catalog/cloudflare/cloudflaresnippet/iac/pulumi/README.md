@@ -5,16 +5,16 @@ Pulumi (Go) IaC module for a small JavaScript snippet at the zone's edge, invoke
 ## Architecture
 
 ```
-main.go                    — Entrypoint loading the stack input
+main.go                    — Entrypoint loading the IaC input
 module/main.go             — Resources(): provider setup, resource, outputs
 module/locals.go           — Locals initialization
 module/snippet.go          — cloudflare.Snippet
-module/outputs.go          — Stack output keys
+module/outputs.go          — output keys
 ```
 
 ## Behavior
 
-Mirrors the Terraform module's contract exactly: name-as-identity upsert, `main_module` sent as metadata, byte-stable files, `snippet_name` / `zone_id` stack outputs.
+Mirrors the Terraform module's contract exactly: name-as-identity upsert, `main_module` sent as metadata, byte-stable files, `snippet_name` / `zone_id` outputs.
 
 ## Outputs
 

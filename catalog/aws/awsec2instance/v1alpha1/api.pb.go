@@ -34,7 +34,7 @@ type AwsEc2Instance struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration data defining how the EC2 instance is deployed.
 	Spec *AwsEc2InstanceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -87,7 +87,7 @@ func (x *AwsEc2Instance) GetKind() string {
 	return ""
 }
 
-func (x *AwsEc2Instance) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsEc2Instance) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,7 +112,7 @@ func (x *AwsEc2Instance) GetStatus() *AwsEc2InstanceStatus {
 type AwsEc2InstanceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after provisioning.
-	Outputs       *AwsEc2InstanceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsEc2InstanceOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AwsEc2InstanceStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsec2instance_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsEc2InstanceStatus) GetOutputs() *AwsEc2InstanceStackOutputs {
+func (x *AwsEc2InstanceStatus) GetOutputs() *AwsEc2InstanceOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_aws_awsec2instance_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eAwsEc2InstanceR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceStatusR\x06status\"u\n" +
-	"\x14AwsEc2InstanceStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceStackOutputsR\aoutputsB\xd1\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceStatusR\x06status\"p\n" +
+	"\x14AwsEc2InstanceStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceOutputsR\aoutputsB\xd1\x02\n" +
 	"+com.dev.planton.aws.awsec2instance.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/aws/awsec2instance/v1alpha1;awsec2instancev1alpha1\xa2\x02\x04DPAA\xaa\x02'Dev.Planton.Aws.Awsec2instance.V1alpha1\xca\x02'Dev\\Planton\\Aws\\Awsec2instance\\V1alpha1\xe2\x023Dev\\Planton\\Aws\\Awsec2instance\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Aws::Awsec2instance::V1alpha1b\x06proto3"
 
 var (
@@ -188,15 +188,15 @@ var file_catalog_aws_awsec2instance_v1alpha1_api_proto_msgTypes = make([]protoim
 var file_catalog_aws_awsec2instance_v1alpha1_api_proto_goTypes = []any{
 	(*AwsEc2Instance)(nil),               // 0: dev.planton.aws.awsec2instance.v1alpha1.AwsEc2Instance
 	(*AwsEc2InstanceStatus)(nil),         // 1: dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsEc2InstanceSpec)(nil),           // 3: dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceSpec
-	(*AwsEc2InstanceStackOutputs)(nil),   // 4: dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceStackOutputs
+	(*AwsEc2InstanceOutputs)(nil),        // 4: dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceOutputs
 }
 var file_catalog_aws_awsec2instance_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsec2instance.v1alpha1.AwsEc2Instance.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsec2instance.v1alpha1.AwsEc2Instance.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsec2instance.v1alpha1.AwsEc2Instance.spec:type_name -> dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceSpec
 	1, // 2: dev.planton.aws.awsec2instance.v1alpha1.AwsEc2Instance.status:type_name -> dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceStatus
-	4, // 3: dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceStatus.outputs:type_name -> dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceStackOutputs
+	4, // 3: dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceStatus.outputs:type_name -> dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

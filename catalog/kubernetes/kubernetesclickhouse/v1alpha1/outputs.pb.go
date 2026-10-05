@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-click-house stack outputs
-type KubernetesClickHouseStackOutputs struct {
+// kubernetes-click-house outputs
+type KubernetesClickHouseOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the cluster runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -58,20 +58,20 @@ type KubernetesClickHouseStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesClickHouseStackOutputs) Reset() {
-	*x = KubernetesClickHouseStackOutputs{}
+func (x *KubernetesClickHouseOutputs) Reset() {
+	*x = KubernetesClickHouseOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesClickHouseStackOutputs) String() string {
+func (x *KubernetesClickHouseOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesClickHouseStackOutputs) ProtoMessage() {}
+func (*KubernetesClickHouseOutputs) ProtoMessage() {}
 
-func (x *KubernetesClickHouseStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesClickHouseOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -83,75 +83,75 @@ func (x *KubernetesClickHouseStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesClickHouseStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesClickHouseStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesClickHouseOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesClickHouseOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesClickHouseStackOutputs) GetNamespace() string {
+func (x *KubernetesClickHouseOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesClickHouseStackOutputs) GetChiName() string {
+func (x *KubernetesClickHouseOutputs) GetChiName() string {
 	if x != nil {
 		return x.ChiName
 	}
 	return ""
 }
 
-func (x *KubernetesClickHouseStackOutputs) GetClusterName() string {
+func (x *KubernetesClickHouseOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *KubernetesClickHouseStackOutputs) GetServiceName() string {
+func (x *KubernetesClickHouseOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesClickHouseStackOutputs) GetTcpEndpoint() string {
+func (x *KubernetesClickHouseOutputs) GetTcpEndpoint() string {
 	if x != nil {
 		return x.TcpEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesClickHouseStackOutputs) GetHttpEndpoint() string {
+func (x *KubernetesClickHouseOutputs) GetHttpEndpoint() string {
 	if x != nil {
 		return x.HttpEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesClickHouseStackOutputs) GetAuthSecretName() string {
+func (x *KubernetesClickHouseOutputs) GetAuthSecretName() string {
 	if x != nil {
 		return x.AuthSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesClickHouseStackOutputs) GetKeeperName() string {
+func (x *KubernetesClickHouseOutputs) GetKeeperName() string {
 	if x != nil {
 		return x.KeeperName
 	}
 	return ""
 }
 
-func (x *KubernetesClickHouseStackOutputs) GetKeeperServiceName() string {
+func (x *KubernetesClickHouseOutputs) GetKeeperServiceName() string {
 	if x != nil {
 		return x.KeeperServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesClickHouseStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesClickHouseOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -162,8 +162,8 @@ var File_catalog_kubernetes_kubernetesclickhouse_v1alpha1_outputs_proto protoref
 
 const file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesclickhouse/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kubernetesclickhouse.v1alpha1\"\x96\x03\n" +
-	" KubernetesClickHouseStackOutputs\x12\x1c\n" +
+	">catalog/kubernetes/kubernetesclickhouse/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kubernetesclickhouse.v1alpha1\"\x91\x03\n" +
+	"\x1bKubernetesClickHouseOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x19\n" +
 	"\bchi_name\x18\x02 \x01(\tR\achiName\x12!\n" +
 	"\fcluster_name\x18\x03 \x01(\tR\vclusterName\x12!\n" +
@@ -192,7 +192,7 @@ func file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesClickHouseStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseStackOutputs
+	(*KubernetesClickHouseOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesclickhouse.v1alpha1.KubernetesClickHouseOutputs
 }
 var file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

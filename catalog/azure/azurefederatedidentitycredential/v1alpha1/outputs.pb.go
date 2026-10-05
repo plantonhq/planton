@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFederatedIdentityCredentialStackOutputs** captures the outputs of
+// **AzureFederatedIdentityCredentialOutputs** captures the outputs of
 // provisioning a federated identity credential. The ARM resource ID is the
 // credential's identity for automation; the trust coordinates (issuer,
 // subject, audience) are exported as deployed so downstream tooling -- CI
 // configuration generators, cluster onboarding jobs -- can wire the external
 // side of the trust without re-reading the spec.
-type AzureFederatedIdentityCredentialStackOutputs struct {
+type AzureFederatedIdentityCredentialOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The full Azure Resource Manager ID of the federated identity credential.
 	// Format: {identity-id}/federatedIdentityCredentials/{name}
@@ -53,20 +53,20 @@ type AzureFederatedIdentityCredentialStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureFederatedIdentityCredentialStackOutputs) Reset() {
-	*x = AzureFederatedIdentityCredentialStackOutputs{}
+func (x *AzureFederatedIdentityCredentialOutputs) Reset() {
+	*x = AzureFederatedIdentityCredentialOutputs{}
 	mi := &file_catalog_azure_azurefederatedidentitycredential_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFederatedIdentityCredentialStackOutputs) String() string {
+func (x *AzureFederatedIdentityCredentialOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFederatedIdentityCredentialStackOutputs) ProtoMessage() {}
+func (*AzureFederatedIdentityCredentialOutputs) ProtoMessage() {}
 
-func (x *AzureFederatedIdentityCredentialStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFederatedIdentityCredentialOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefederatedidentitycredential_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -78,47 +78,47 @@ func (x *AzureFederatedIdentityCredentialStackOutputs) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFederatedIdentityCredentialStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFederatedIdentityCredentialStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFederatedIdentityCredentialOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFederatedIdentityCredentialOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefederatedidentitycredential_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFederatedIdentityCredentialStackOutputs) GetFederatedIdentityCredentialId() string {
+func (x *AzureFederatedIdentityCredentialOutputs) GetFederatedIdentityCredentialId() string {
 	if x != nil {
 		return x.FederatedIdentityCredentialId
 	}
 	return ""
 }
 
-func (x *AzureFederatedIdentityCredentialStackOutputs) GetName() string {
+func (x *AzureFederatedIdentityCredentialOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AzureFederatedIdentityCredentialStackOutputs) GetUserAssignedIdentityId() string {
+func (x *AzureFederatedIdentityCredentialOutputs) GetUserAssignedIdentityId() string {
 	if x != nil {
 		return x.UserAssignedIdentityId
 	}
 	return ""
 }
 
-func (x *AzureFederatedIdentityCredentialStackOutputs) GetIssuer() string {
+func (x *AzureFederatedIdentityCredentialOutputs) GetIssuer() string {
 	if x != nil {
 		return x.Issuer
 	}
 	return ""
 }
 
-func (x *AzureFederatedIdentityCredentialStackOutputs) GetSubject() string {
+func (x *AzureFederatedIdentityCredentialOutputs) GetSubject() string {
 	if x != nil {
 		return x.Subject
 	}
 	return ""
 }
 
-func (x *AzureFederatedIdentityCredentialStackOutputs) GetAudience() string {
+func (x *AzureFederatedIdentityCredentialOutputs) GetAudience() string {
 	if x != nil {
 		return x.Audience
 	}
@@ -129,8 +129,8 @@ var File_catalog_azure_azurefederatedidentitycredential_v1alpha1_outputs_proto p
 
 const file_catalog_azure_azurefederatedidentitycredential_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/azure/azurefederatedidentitycredential/v1alpha1/outputs.proto\x12;dev.planton.azure.azurefederatedidentitycredential.v1alpha1\"\x94\x02\n" +
-	",AzureFederatedIdentityCredentialStackOutputs\x12G\n" +
+	"Ecatalog/azure/azurefederatedidentitycredential/v1alpha1/outputs.proto\x12;dev.planton.azure.azurefederatedidentitycredential.v1alpha1\"\x8f\x02\n" +
+	"'AzureFederatedIdentityCredentialOutputs\x12G\n" +
 	" federated_identity_credential_id\x18\x01 \x01(\tR\x1dfederatedIdentityCredentialId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x129\n" +
 	"\x19user_assigned_identity_id\x18\x03 \x01(\tR\x16userAssignedIdentityId\x12\x16\n" +
@@ -153,7 +153,7 @@ func file_catalog_azure_azurefederatedidentitycredential_v1alpha1_outputs_proto_
 
 var file_catalog_azure_azurefederatedidentitycredential_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefederatedidentitycredential_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFederatedIdentityCredentialStackOutputs)(nil), // 0: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialStackOutputs
+	(*AzureFederatedIdentityCredentialOutputs)(nil), // 0: dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialOutputs
 }
 var file_catalog_azure_azurefederatedidentitycredential_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

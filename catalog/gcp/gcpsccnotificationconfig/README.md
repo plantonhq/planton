@@ -4,7 +4,7 @@ Streams Security Command Center findings to a Pub/Sub topic as they are created 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `securitycenter.googleapis.com` on a project config's project (never disabled on destroy)
 - **Notification config** -- one `scc_v2_{project,folder,organization}_notification_config`, chosen by the scope
@@ -70,7 +70,7 @@ planton apply -f scc-notification-config.yaml
 - `location` is `global` or a residency location; `deletionPolicy` takes only Google's values.
 - `pubsubTopic` is required off the project scope and has the form `projects/{project}/topics/{topic}`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -98,7 +98,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpPubSubTopic** -- the destination topic
 - **GcpSccMuteConfig** -- mute noise before it is streamed

@@ -4,9 +4,9 @@ package dev.planton.azure.azurecognitiveaccount.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureCognitiveAccountStackOutputs** captures the outputs of
+// **AzureCognitiveAccountOutputs** captures the outputs of
 // provisioning an Azure AI services account.
-message AzureCognitiveAccountStackOutputs {
+message AzureCognitiveAccountOutputs {
   // The Azure Resource Manager ID of the account -- what model
   // deployments and projects reference as their cognitive_account_id.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.CognitiveServices/accounts/{name}

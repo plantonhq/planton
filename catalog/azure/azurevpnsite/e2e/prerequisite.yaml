@@ -1,4 +1,4 @@
-# AzureVpnSite install profile used as a fixture by composed components
+# AzureVpnSite install profile used as a fixture by composed kinds
 # (declared via prerequisites: [AzureVpnSite] in the kind registry --
 # the VPN gateway connection). The harness deploys this document after
 # the fixture WAN and captures its outputs -- vpn_site_id and the
@@ -22,7 +22,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurevpnsite
+    e2e-catalog-kind: azurevpnsite
   annotations:
     planton.dev/e2e: "true"
   tags:

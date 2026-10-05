@@ -5,7 +5,7 @@ import (
 
 	awselasticacheusergroupv1alpha1 "github.com/plantonhq/planton/catalog/aws/awselasticacheusergroup/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -20,11 +20,11 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awselasticacheusergroupv1alpha1.AwsElasticacheUserGroupStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awselasticacheusergroupv1alpha1.AwsElasticacheUserGroupIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsElasticacheUserGroup = stackInput.Target
+	locals.AwsElasticacheUserGroup = iacInput.Target
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 	locals.UserGroupId = metadata.Name
 
 	// Resource-identity tags match the Terraform module key-for-key.
@@ -33,7 +33,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *awselasticacheusergroupv1al
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsElasticacheUserGroup.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsElasticacheUserGroup.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

@@ -6,7 +6,7 @@ display_name: SaaS OIDC App
 
 Federate a SaaS application into Cloudflare Access over OIDC. Cloudflare acts as the
 identity provider; it issues the OAuth `client_id` / `client_secret` (exported as
-stack outputs) that you paste into the SaaS provider's SSO settings.
+outputs) that you paste into the SaaS provider's SSO settings.
 
 ## When to use
 

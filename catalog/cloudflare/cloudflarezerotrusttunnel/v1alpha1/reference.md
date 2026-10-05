@@ -6,13 +6,13 @@
 
 **apiVersion**: `cloudflare.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 CloudflareZeroTrustTunnelSpec configures a Cloudflare Tunnel (cloudflared): a secure,
 outbound-only connection from a private network to Cloudflare's edge. A tunnel exposes
 private HTTP/TCP/SSH/RDP services via public hostnames (ingress rules) and/or makes
 private IP ranges reachable to WARP clients (via CloudflareZeroTrustTunnelRoute). The
-connector (cloudflared) authenticates with the tunnel token exported in the stack
+connector (cloudflared) authenticates with the tunnel token exported in the
 outputs, so no inbound firewall ports are ever opened.
 
 When managed remotely (config_src = cloudflare, the default), the ingress rules are

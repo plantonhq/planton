@@ -1,10 +1,10 @@
 # ExternalDNS
 
-Installs the ExternalDNS controller from the official Helm chart, watching your cluster's Services, Ingresses, and Gateway API routes and publishing their hostnames as records in a real DNS provider — so a hostname exists the moment the workload does, and disappears with it. The spec is deliberately two-sided, because the cluster often runs in one environment while the zone lives in another (an EKS cluster publishing into Cloudflare is an ordinary case, not an exception): one arm selects WHERE records are written (Route 53, Cloud DNS, Azure DNS, Cloudflare, a webhook provider, or the in-memory sandbox), and workload identity plus per-provider credentials select HOW the controller authenticates. One installation manages one provider; clusters publishing to several deploy several instances of this component.
+Installs the ExternalDNS controller from the official Helm chart, watching your cluster's Services, Ingresses, and Gateway API routes and publishing their hostnames as records in a real DNS provider — so a hostname exists the moment the workload does, and disappears with it. The spec is deliberately two-sided, because the cluster often runs in one environment while the zone lives in another (an EKS cluster publishing into Cloudflare is an ordinary case, not an exception): one arm selects WHERE records are written (Route 53, Cloud DNS, Azure DNS, Cloudflare, a webhook provider, or the in-memory sandbox), and workload identity plus per-provider credentials select HOW the controller authenticates. One installation manages one provider; clusters publishing to several deploy several instances of this kind.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise installs into an existing namespace
 - **Helm Release** -- the `external-dns` chart from kubernetes-sigs, rendering the controller Deployment, its ServiceAccount (annotated for workload identity when configured), and RBAC (a ClusterRole, or a namespace-scoped Role when `namespaced` is true)
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -68,11 +68,11 @@ spec:
 planton apply -f external-dns.yaml
 ```
 
-This installs the controller keylessly via IRSA, watching Services and Ingresses and fully reconciling (including deletes of records it owns) one hosted zone scoped to `acme-corp.com`. A Stack Job tracks the provisioning in real time.
+This installs the controller keylessly via IRSA, watching Services and Ingresses and fully reconciling (including deletes of records it owns) one hosted zone scoped to `acme-corp.com`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the zone filter and the IAM identity to resources managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, wire the zone filter and the IAM identity to resources managed by other Infra Components:
 
 ```yaml
 spec:
@@ -123,7 +123,7 @@ These are the most important decisions when configuring an External DNS installa
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -137,9 +137,9 @@ These are the most important decisions when configuring an External DNS installa
 | **AzureUserAssignedIdentity** | `workloadIdentity.aks.clientId` | `status.outputs.client_id` |
 | **CloudflareDnsZone** | `cloudflare.zoneIdFilters[]` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -163,12 +163,12 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- where the controller runs
-- [**Ingress NGINX**](/cloud-catalog/kubernetes-ingress-nginx) -- the entry point whose Ingress hostnames this controller publishes
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) -- the HTTPS half of the same completeness story: a public endpoint needs its name resolvable AND its certificate signed
-- [**AWS Route 53 Zone**](/cloud-catalog/aws-route53-zone) -- the Route 53 zone referenced by `zoneIdFilters`
-- [**GCP DNS Zone**](/cloud-catalog/gcp-dns-zone) -- the Cloud DNS zone referenced by `zoneIdFilters`
-- [**Azure DNS Zone**](/cloud-catalog/azure-dns-zone) -- the Azure zone referenced by `zoneIdFilters`
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- the Cloudflare zone referenced by `zoneIdFilters`
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the IRSA identity and the cross-account `assumeRole` target
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the identity GKE Workload Identity federates with
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- where the controller runs
+- [**Ingress NGINX**](/infra-catalog/kubernetes-ingress-nginx) -- the entry point whose Ingress hostnames this controller publishes
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) -- the HTTPS half of the same completeness story: a public endpoint needs its name resolvable AND its certificate signed
+- [**AWS Route 53 Zone**](/infra-catalog/aws-route53-zone) -- the Route 53 zone referenced by `zoneIdFilters`
+- [**GCP DNS Zone**](/infra-catalog/gcp-dns-zone) -- the Cloud DNS zone referenced by `zoneIdFilters`
+- [**Azure DNS Zone**](/infra-catalog/azure-dns-zone) -- the Azure zone referenced by `zoneIdFilters`
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- the Cloudflare zone referenced by `zoneIdFilters`
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the IRSA identity and the cross-account `assumeRole` target
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the identity GKE Workload Identity federates with

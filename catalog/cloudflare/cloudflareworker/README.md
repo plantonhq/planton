@@ -145,7 +145,7 @@ literal id or a `valueFrom` reference to the producing resource:
 `secrets[].value` is secret-by-default: provide a managed-secret reference,
 resolved just-in-time at deploy. Plain configuration belongs in `vars`.
 
-## Related components
+## Related kinds
 
 - `CloudflareKvNamespace` / `CloudflareWorkersKvPair`, `CloudflareD1Database`,
   `CloudflareR2Bucket`, `CloudflareHyperdriveConfig`, `CloudflareDnsZone`.

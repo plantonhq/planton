@@ -15,7 +15,7 @@ Terraform/OpenTofu module that manages the words one Universal Login prompt show
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `prompt`, `language`, and `screens` (screen name to `texts`, a map of text key to words) |
 
 ## Outputs

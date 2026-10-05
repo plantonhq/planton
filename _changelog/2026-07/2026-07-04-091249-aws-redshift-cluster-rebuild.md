@@ -87,7 +87,7 @@ graph TB
 Naming basis converged on `metadata.name`; generator-owned `variables.tf`
 under `TestVariablesTFDrift`; provider floor lifted to `>= 6.0.0`; the
 Pulumi module completed its entrypoint anatomy (`Makefile`,
-`stack-input.yaml`); zero PARITY-EXCEPTIONs (pulumi-aws v7.35.0 carries the
+`iac-input.yaml`); zero PARITY-EXCEPTIONs (pulumi-aws v7.35.0 carries the
 full surface). Outputs modernized: the managed-SG output dropped; endpoint,
 DNS name, namespace ARN, and the managed admin-password secret ARN exported
 identically by both engines.

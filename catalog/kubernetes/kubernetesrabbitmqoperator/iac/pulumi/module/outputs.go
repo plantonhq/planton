@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output name constants — one per KubernetesRabbitMqOperatorStackOutputs
+// Output name constants — one per KubernetesRabbitMqOperatorOutputs
 // field.
 const (
 	OpNamespace       = "namespace"

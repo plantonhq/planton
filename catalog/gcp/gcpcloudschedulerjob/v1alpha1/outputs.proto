@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpcloudschedulerjob.v1alpha1;
 
 // Outputs produced after provisioning a GCP Cloud Scheduler job.
-message GcpCloudSchedulerJobStackOutputs {
+message GcpCloudSchedulerJobOutputs {
   // The fully qualified job ID.
   // Format: projects/{project}/locations/{location}/jobs/{name}
   // This is the value downstream resources use to reference this job.

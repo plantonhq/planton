@@ -4,7 +4,7 @@ Deploys an autoscaling fleet of self-hosted GitHub Actions runners for ONE GitHu
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **Helm Release** -- the `gha-runner-scale-set` chart, creating:
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -61,11 +61,11 @@ spec:
 planton apply -f build-runners.yaml
 ```
 
-This registers a fleet named `build-runners` for one repository: workflows say `runs-on: build-runners`, runners exist only while jobs run (scale-to-zero), and at most 10 run at once. The credential lives in a Secret you created -- it never rides the manifest. A Stack Job tracks the provisioning in real time.
+This registers a fleet named `build-runners` for one repository: workflows say `runs-on: build-runners`, runners exist only while jobs run (scale-to-zero), and at most 10 run at once. The credential lives in a Secret you created -- it never rides the manifest. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the fleet to a namespace managed by another Cloud Resource -- and, in `kubernetes` container mode, to a managed StorageClass:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the fleet to a namespace managed by another Infra Component -- and, in `kubernetes` container mode, to a managed StorageClass:
 
 ```yaml
 spec:
@@ -106,11 +106,11 @@ These are the most important decisions when configuring a GitHub Actions Runner 
 
 **Network seams for locked-down clusters** -- `proxy` routes listener and runner egress through corporate proxies (per-scheme URL + an existing credential Secret NAME with `username`/`password` keys; put in-cluster hosts in `noProxy`). `githubServerTls` trusts a private CA towards a self-signed GHES (a CA ConfigMap reference; the runner mount path also sets NODE_EXTRA_CA_CERTS).
 
-**The controller reference is for fenced controllers only** -- Leave `controllerServiceAccount` EMPTY with a cluster-wide controller (the chart auto-discovers it). It is required when the controller was fenced with `watchSingleNamespace` -- wire the name from the controller's `service_account_name` stack output.
+**The controller reference is for fenced controllers only** -- Leave `controllerServiceAccount` EMPTY with a cluster-wide controller (the chart auto-discovers it). It is required when the controller was fenced with `watchSingleNamespace` -- wire the name from the controller's `service_account_name` output.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -118,9 +118,9 @@ These are the most important decisions when configuring a GitHub Actions Runner 
 | **KubernetesStorageClass** | `containerMode.kubernetesWorkVolume.storageClass` | `metadata.name` |
 | **KubernetesConfigMap** | `githubServerTls.configMapName` | `metadata.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -141,7 +141,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GitHub Actions Runner Scale Set Controller**](/cloud-catalog/kubernetes-gha-runner-scale-set-controller) -- the prerequisite engine that reconciles this fleet into listener and runner pods
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the fleet
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) -- backs the per-runner work volumes in `kubernetes` container mode
-- [**Kubernetes ConfigMap**](/cloud-catalog/kubernetes-config-map) -- holds the private CA certificate for a self-signed GitHub Enterprise Server
+- [**GitHub Actions Runner Scale Set Controller**](/infra-catalog/kubernetes-gha-runner-scale-set-controller) -- the prerequisite engine that reconciles this fleet into listener and runner pods
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the fleet
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) -- backs the per-runner work volumes in `kubernetes` container mode
+- [**Kubernetes ConfigMap**](/infra-catalog/kubernetes-config-map) -- holds the private CA certificate for a self-signed GitHub Enterprise Server

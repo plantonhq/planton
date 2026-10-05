@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Compute Engine custom im
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `image` |
-| `module/locals.go` | Stack input, the image name default, attribution labels |
+| `module/locals.go` | IaC input, the image name default, attribution labels |
 | `module/image.go` | API enablement, the image, the Secure Boot mapping, the outputs |
 | `module/outputs.go` | Output key constants (`name`, `self_link`, `family`, `disk_size_gb`, `image_id`) |
 

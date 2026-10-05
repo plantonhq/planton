@@ -1,7 +1,7 @@
 # AzureMonitorMetricAlert - Terraform Module
 
-Terraform implementation for the AzureMonitorMetricAlert deployment
-component.
+Terraform implementation for the AzureMonitorMetricAlert
+kind.
 
 ## Resources Created
 

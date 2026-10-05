@@ -5,7 +5,7 @@ package dev.planton.gcp.gcpbigtabletable.v1alpha1;
 import "catalog/gcp/gcpbigtabletable/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-message GcpBigtableTableStackInput {
+message GcpBigtableTableIacInput {
   GcpBigtableTable target = 1;
   dev.planton.gcp.GcpProviderConfig provider_config = 2;
 }

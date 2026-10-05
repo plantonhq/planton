@@ -1,10 +1,10 @@
 # AWS App Runner Auto Scaling Configuration
 
-Deploys an App Runner auto scaling configuration — the reusable scaling policy that controls how App Runner scales a service's instance count in response to request concurrency. It is deliberately its own resource: any number of [App Runner services](/cloud-catalog/aws-app-runner-service) reference one configuration by ARN, so a fleet adopts a common scaling posture that is tuned in one place. AWS versions these configurations — a change registers a new revision under the same name, and the revision-carrying ARN rolls referencing services on their next deployment.
+Deploys an App Runner auto scaling configuration — the reusable scaling policy that controls how App Runner scales a service's instance count in response to request concurrency. It is deliberately its own resource: any number of [App Runner services](/infra-catalog/aws-app-runner-service) reference one configuration by ARN, so a fleet adopts a common scaling posture that is tuned in one place. AWS versions these configurations — a change registers a new revision under the same name, and the revision-carrying ARN rolls referencing services on their next deployment.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **App Runner Auto Scaling Configuration** -- a named, versioned scaling policy; the resource name is the configuration name and each value change registers a new revision under it
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -48,7 +48,7 @@ spec:
 planton apply -f app-runner-auto-scaling.yaml
 ```
 
-This registers a scaling posture with three warm instances and a lowered concurrency ceiling. A Stack Job tracks the provisioning in real time.
+This registers a scaling posture with three warm instances and a lowered concurrency ceiling. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -68,13 +68,13 @@ These are the most important decisions when configuring an auto scaling configur
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — it is a leaf resource: App Runner services reference its ARN, never the other way around.
+This kind has no foreign key dependencies — it is a leaf resource: App Runner services reference its ARN, never the other way around.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -95,4 +95,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS App Runner Service**](/cloud-catalog/aws-app-runner-service) -- adopts this scaling posture via `autoScalingConfigurationArn` (consumes `configuration_arn`)
+- [**AWS App Runner Service**](/infra-catalog/aws-app-runner-service) -- adopts this scaling posture via `autoScalingConfigurationArn` (consumes `configuration_arn`)

@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsnlb.v1alpha1;
 
-// AwsNlbStackOutputs captures observable identifiers from a
+// AwsNlbOutputs captures observable identifiers from a
 // provisioned Network Load Balancer, for listeners (which attach by ARN),
 // Route53 alias records, and Global Accelerator endpoints to reference.
-message AwsNlbStackOutputs {
+message AwsNlbOutputs {
   // ARN of the Network Load Balancer. The primary handle other resources
   // reference via status.outputs.load_balancer_arn -- listeners attach
   // through it, and IAM policies, CloudWatch alarms, and Global Accelerator

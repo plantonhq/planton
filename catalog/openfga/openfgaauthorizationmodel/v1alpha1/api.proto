@@ -7,7 +7,7 @@ import "catalog/openfga/openfgaauthorizationmodel/v1alpha1/outputs.proto";
 import "catalog/openfga/openfgaauthorizationmodel/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// OpenFgaAuthorizationModel is a component that creates an authorization model in OpenFGA.
+// OpenFgaAuthorizationModel is a kind that creates an authorization model in OpenFGA.
 //
 // An authorization model defines the types, relations, and access rules for fine-grained
 // authorization. It is the schema that determines what relationship tuples mean and how
@@ -22,7 +22,7 @@ import "shared/metadata.proto";
 // IMPORTANT: Authorization models are immutable. Each model_json change creates a new model ID.
 //
 // IMPORTANT: OpenFGA only has a Terraform provider - there is no Pulumi provider available.
-// This component runs on OpenTofu or Terraform (kind_meta.provisioners), and Planton refuses
+// This kind runs on OpenTofu or Terraform (kind_meta.provisioners), and Planton refuses
 // Pulumi for it before anything runs.
 //
 // Use cases:
@@ -59,12 +59,12 @@ message OpenFgaAuthorizationModel {
   // Must be "OpenFgaAuthorizationModel" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'OpenFgaAuthorizationModel'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the model within Planton
   // - org: Organization that owns this model
   // - env: Environment (development, staging, production)
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the desired configuration for the OpenFGA authorization model.
   // Includes the target store ID and the model definition in JSON format.
@@ -79,8 +79,8 @@ message OpenFgaAuthorizationModel {
 // OpenFgaAuthorizationModelStatus represents the current state of an OpenFGA Authorization Model resource.
 // This is populated by the deployment system and contains read-only outputs.
 message OpenFgaAuthorizationModelStatus {
-  // outputs contains the stack outputs from the OpenFGA authorization model deployment.
+  // outputs contains the outputs from the OpenFGA authorization model deployment.
   // These values are populated after successful deployment and include
   // the model identifier.
-  OpenFgaAuthorizationModelStackOutputs outputs = 1;
+  OpenFgaAuthorizationModelOutputs outputs = 1;
 }

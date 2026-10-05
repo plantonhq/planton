@@ -19,6 +19,6 @@ This preset uploads a small static-site asset set — an HTML entry page, a fing
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<aws-region>` | AWS region where the bucket lives (e.g., `us-west-2`) | Must match the bucket's region |
-| `<s3-bucket-resource-name>` | Name of the `AwsS3Bucket` resource providing the bucket | Your infra project's resource list |
+| `<s3-bucket-resource-name>` | Name of the `AwsS3Bucket` resource providing the bucket | Your Infra Stack's resource list |
 | `<project-name>` | Project tag applied to every object in the set | Your tagging convention |
 | `<site-title>` | The HTML title of the entry page | Your site content |

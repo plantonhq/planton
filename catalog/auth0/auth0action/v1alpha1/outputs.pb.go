@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0ActionStackOutputs contains the outputs from an Auth0 Action deployment.
+// Auth0ActionOutputs contains the outputs from an Auth0 Action deployment.
 // These outputs provide essential identifiers and status information for referencing
 // the action in trigger bindings and monitoring its deployment state.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/action#attributes-reference
 // https://www.pulumi.com/registry/packages/auth0/api-docs/action/#outputs
-type Auth0ActionStackOutputs struct {
+type Auth0ActionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the unique identifier of the Auth0 action.
 	// This is assigned by Auth0 and used to reference the action in trigger bindings
@@ -47,20 +47,20 @@ type Auth0ActionStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Auth0ActionStackOutputs) Reset() {
-	*x = Auth0ActionStackOutputs{}
+func (x *Auth0ActionOutputs) Reset() {
+	*x = Auth0ActionOutputs{}
 	mi := &file_catalog_auth0_auth0action_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0ActionStackOutputs) String() string {
+func (x *Auth0ActionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0ActionStackOutputs) ProtoMessage() {}
+func (*Auth0ActionOutputs) ProtoMessage() {}
 
-func (x *Auth0ActionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0ActionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0action_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,33 +72,33 @@ func (x *Auth0ActionStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0ActionStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0ActionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0ActionOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0ActionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0action_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0ActionStackOutputs) GetId() string {
+func (x *Auth0ActionOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Auth0ActionStackOutputs) GetName() string {
+func (x *Auth0ActionOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *Auth0ActionStackOutputs) GetVersionId() string {
+func (x *Auth0ActionOutputs) GetVersionId() string {
 	if x != nil {
 		return x.VersionId
 	}
 	return ""
 }
 
-func (x *Auth0ActionStackOutputs) GetRuntime() string {
+func (x *Auth0ActionOutputs) GetRuntime() string {
 	if x != nil {
 		return x.Runtime
 	}
@@ -109,8 +109,8 @@ var File_catalog_auth0_auth0action_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_auth0_auth0action_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/auth0/auth0action/v1alpha1/outputs.proto\x12&dev.planton.auth0.auth0action.v1alpha1\"v\n" +
-	"\x17Auth0ActionStackOutputs\x12\x0e\n" +
+	"0catalog/auth0/auth0action/v1alpha1/outputs.proto\x12&dev.planton.auth0.auth0action.v1alpha1\"q\n" +
+	"\x12Auth0ActionOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
@@ -132,7 +132,7 @@ func file_catalog_auth0_auth0action_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_auth0_auth0action_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0action_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0ActionStackOutputs)(nil), // 0: dev.planton.auth0.auth0action.v1alpha1.Auth0ActionStackOutputs
+	(*Auth0ActionOutputs)(nil), // 0: dev.planton.auth0.auth0action.v1alpha1.Auth0ActionOutputs
 }
 var file_catalog_auth0_auth0action_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSagemakerMlflowAppStackOutputs captures observable identifiers
+// AwsSagemakerMlflowAppOutputs captures observable identifiers
 // from a provisioned MLflow app. The ARN is the app's AWS identity
 // (all API operations key on it).
-type AwsSagemakerMlflowAppStackOutputs struct {
+type AwsSagemakerMlflowAppOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name of the MLflow app (the AWS identity).
 	AppArn string `protobuf:"bytes,1,opt,name=app_arn,json=appArn,proto3" json:"app_arn,omitempty"`
@@ -34,20 +34,20 @@ type AwsSagemakerMlflowAppStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsSagemakerMlflowAppStackOutputs) Reset() {
-	*x = AwsSagemakerMlflowAppStackOutputs{}
+func (x *AwsSagemakerMlflowAppOutputs) Reset() {
+	*x = AwsSagemakerMlflowAppOutputs{}
 	mi := &file_catalog_aws_awssagemakermlflowapp_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSagemakerMlflowAppStackOutputs) String() string {
+func (x *AwsSagemakerMlflowAppOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSagemakerMlflowAppStackOutputs) ProtoMessage() {}
+func (*AwsSagemakerMlflowAppOutputs) ProtoMessage() {}
 
-func (x *AwsSagemakerMlflowAppStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSagemakerMlflowAppOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssagemakermlflowapp_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsSagemakerMlflowAppStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSagemakerMlflowAppStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSagemakerMlflowAppStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSagemakerMlflowAppOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSagemakerMlflowAppOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakermlflowapp_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSagemakerMlflowAppStackOutputs) GetAppArn() string {
+func (x *AwsSagemakerMlflowAppOutputs) GetAppArn() string {
 	if x != nil {
 		return x.AppArn
 	}
 	return ""
 }
 
-func (x *AwsSagemakerMlflowAppStackOutputs) GetAppName() string {
+func (x *AwsSagemakerMlflowAppOutputs) GetAppName() string {
 	if x != nil {
 		return x.AppName
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awssagemakermlflowapp_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_aws_awssagemakermlflowapp_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awssagemakermlflowapp/v1alpha1/outputs.proto\x12.dev.planton.aws.awssagemakermlflowapp.v1alpha1\"W\n" +
-	"!AwsSagemakerMlflowAppStackOutputs\x12\x17\n" +
+	"8catalog/aws/awssagemakermlflowapp/v1alpha1/outputs.proto\x12.dev.planton.aws.awssagemakermlflowapp.v1alpha1\"R\n" +
+	"\x1cAwsSagemakerMlflowAppOutputs\x12\x17\n" +
 	"\aapp_arn\x18\x01 \x01(\tR\x06appArn\x12\x19\n" +
 	"\bapp_name\x18\x02 \x01(\tR\aappNameB\x86\x03\n" +
 	"2com.dev.planton.aws.awssagemakermlflowapp.v1alpha1B\fOutputsProtoP\x01Zegithub.com/plantonhq/planton/catalog/aws/awssagemakermlflowapp/v1alpha1;awssagemakermlflowappv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Aws.Awssagemakermlflowapp.V1alpha1\xca\x02.Dev\\Planton\\Aws\\Awssagemakermlflowapp\\V1alpha1\xe2\x02:Dev\\Planton\\Aws\\Awssagemakermlflowapp\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Aws::Awssagemakermlflowapp::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_aws_awssagemakermlflowapp_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_aws_awssagemakermlflowapp_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssagemakermlflowapp_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSagemakerMlflowAppStackOutputs)(nil), // 0: dev.planton.aws.awssagemakermlflowapp.v1alpha1.AwsSagemakerMlflowAppStackOutputs
+	(*AwsSagemakerMlflowAppOutputs)(nil), // 0: dev.planton.aws.awssagemakermlflowapp.v1alpha1.AwsSagemakerMlflowAppOutputs
 }
 var file_catalog_aws_awssagemakermlflowapp_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

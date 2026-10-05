@@ -4,7 +4,7 @@ Declares one Apache Airflow 3 install -- the official Helm chart (`1.22.0` = Air
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **The Helm release** -- the official `apache-airflow/airflow` chart at the pinned `chartVersion`, rendering:
@@ -22,7 +22,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -71,11 +71,11 @@ spec:
 planton apply -f daily-pipelines.yaml
 ```
 
-This declares the untouched-defaults install: Airflow 3.2.2 (the chart pin's release), the KubernetesExecutor (no broker, no workers), an existing PostgreSQL reached by hostname with its password read from a co-located Secret, and DAGs git-synced from the repository's default branch on every component -- a merged PR is a deployed pipeline. A Stack Job tracks the provisioning in real time.
+This declares the untouched-defaults install: Airflow 3.2.2 (the chart pin's release), the KubernetesExecutor (no broker, no workers), an existing PostgreSQL reached by hostname with its password read from a co-located Secret, and DAGs git-synced from the repository's default branch on every component -- a merged PR is a deployed pipeline. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire Airflow to a database managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire Airflow to a database managed by another Infra Component:
 
 ```yaml
 spec:
@@ -115,7 +115,7 @@ These are the most important decisions when configuring Airflow. Explore the ful
 
 **PgBouncer is PostgreSQL-only** -- Airflow opens MANY short-lived connections (every task heartbeat is one); production installs on PostgreSQL should enable it (pool defaults 10/5/100). The spec rejects it against a MySQL database, and the module composes the PgBouncer config Secret from the declared credentials -- the chart's password-in-values path is never used.
 
-**Security keys are STABLE by default** -- empty fields = module-generated Fernet key, API secret key, and JWT secret with stable values (the chart would regenerate them on every upgrade render, logging out every UI session). Bring your own by naming Secrets with the chart's exact expected keys. THE DESTRUCTIVE TRUTH: losing the Fernet key orphans every connection password and variable Airflow has stored -- back up `fernet_key_secret_name` (a stack output), share it across DR replicas, rotate only via Airflow's documented procedure.
+**Security keys are STABLE by default** -- empty fields = module-generated Fernet key, API secret key, and JWT secret with stable values (the chart would regenerate them on every upgrade render, logging out every UI session). Bring your own by naming Secrets with the chart's exact expected keys. THE DESTRUCTIVE TRUTH: losing the Fernet key orphans every connection password and variable Airflow has stored -- back up `fernet_key_secret_name` (an output), share it across DR replicas, rotate only via Airflow's documented procedure.
 
 **Task logs live somewhere, decide where** -- empty `logging` = pod-local (lost on rotation, dev only). `persistence` puts them on the shared volume; the `elasticsearch`/`opensearch` remote-read arms point the UI's READ path at a search backend your tasks ALREADY ship logs to -- shipping is your log pipeline's job (an OTel collector composes), never implied by this field.
 
@@ -123,7 +123,7 @@ These are the most important decisions when configuring Airflow. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -135,9 +135,9 @@ These are the most important decisions when configuring Airflow. Explore the ful
 | **KubernetesValkey** | `broker.valkey.passwordSecret.secretName` | `status.outputs.password_secret.name` |
 | **KubernetesOpenSearch** | `logging.opensearch.host` | `status.outputs.service_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -162,8 +162,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**PostgreSQL**](/cloud-catalog/kubernetes-postgres) -- the recommended metadata database; the `database.postgres` foreign-key defaults point at it
-- [**Valkey**](/cloud-catalog/kubernetes-valkey) -- the licensing-clean Celery broker; the `broker.valkey` foreign-key defaults point at it
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the deployment
-- [**KEDA**](/cloud-catalog/kubernetes-keda) -- the runtime prerequisite for queue-driven worker autoscaling
-- [**OpenSearch**](/cloud-catalog/kubernetes-open-search) -- a remote-read backend for task logs; the `logging.opensearch` host default composes its client Service
+- [**PostgreSQL**](/infra-catalog/kubernetes-postgres) -- the recommended metadata database; the `database.postgres` foreign-key defaults point at it
+- [**Valkey**](/infra-catalog/kubernetes-valkey) -- the licensing-clean Celery broker; the `broker.valkey` foreign-key defaults point at it
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the deployment
+- [**KEDA**](/infra-catalog/kubernetes-keda) -- the runtime prerequisite for queue-driven worker autoscaling
+- [**OpenSearch**](/infra-catalog/kubernetes-open-search) -- a remote-read backend for task logs; the `logging.opensearch` host default composes its client Service

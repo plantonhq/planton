@@ -1,7 +1,7 @@
 # AzureWebApplicationFirewallPolicy - Pulumi Module
 
-Pulumi implementation for the AzureWebApplicationFirewallPolicy deployment
-component.
+Pulumi implementation for the AzureWebApplicationFirewallPolicy
+kind.
 
 ## Architecture
 
@@ -22,7 +22,7 @@ referencing its ID, so the module creates exactly one resource.
   materializes Prevention** -- azurerm's own defaults, sent explicitly so
   both engines produce the same ARM payload.
 - **Presence guards on every optional-with-default field** (rule enabled,
-  settings dials, excluded-rule-set version): stack inputs built from a
+  settings dials, excluded-rule-set version): IaC inputs built from a
   manifest do not materialize proto defaults, so unset falls back to the
   documented default explicitly.
 - **`file_upload_enforcement` is forwarded only on explicit presence** --
@@ -32,7 +32,7 @@ referencing its ID, so the module creates exactly one resource.
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless (web identity), and ambient
 credential chains. Never construct the provider inline.
 

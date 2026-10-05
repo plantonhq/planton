@@ -5,9 +5,9 @@
 # ../estimates/awstransitgatewayvpcattachment.yaml; a server-side estimator
 # evaluates the same rules against live manifests. Prices live in the
 # provider's price book (../pricebook/).
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awstransitgatewayvpcattachment
 spec:

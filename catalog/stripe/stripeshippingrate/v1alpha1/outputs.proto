@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.stripe.stripeshippingrate.v1alpha1;
 
-// StripeShippingRateStackOutputs identifies the shipping rate.
+// StripeShippingRateOutputs identifies the shipping rate.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/shipping_rate
-message StripeShippingRateStackOutputs {
+message StripeShippingRateOutputs {
   // id is the shipping rate's Stripe id (shr_...), the value a StripePaymentLink's shipping
   // options and a Checkout session reference. It changes when the rate is replaced.
   string id = 1;

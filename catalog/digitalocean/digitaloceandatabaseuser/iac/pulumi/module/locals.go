@@ -11,9 +11,9 @@ type Locals struct {
 	DigitalOceanDatabaseUser *digitaloceandatabaseuserv1alpha1.DigitalOceanDatabaseUser
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *digitaloceandatabaseuserv1alpha1.DigitalOceanDatabaseUserStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *digitaloceandatabaseuserv1alpha1.DigitalOceanDatabaseUserIacInput) *Locals {
 	return &Locals{
-		DigitalOceanDatabaseUser: stackInput.Target,
+		DigitalOceanDatabaseUser: iacInput.Target,
 	}
 }

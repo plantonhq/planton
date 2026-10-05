@@ -204,7 +204,7 @@ func TestControlPlaneDeployment_NoMessageBrokerEnvVars(t *testing.T) {
 		"NATS_API_RESOURCES_STREAM",
 		"NATS_INFRA_PIPELINE_STATUS_STREAM",
 		"NATS_PIPELINE_STATUS_STREAM",
-		"NATS_STACK_JOB_STATUS_STREAM",
+		"NATS_INFRA_JOB_STATUS_STREAM",
 		"NATS_WEBHOOKS_STREAM",
 	} {
 		if _, present := envMap[name]; present {
@@ -852,7 +852,7 @@ func TestControlPlaneDeployment_TektonBuildEnv(t *testing.T) {
 		"TEKTON_PIPELINE_FILE_PATH_IN_REPO_KUSTOMIZE",
 		"TEKTON_INFRA_PIPELINE_DISK_SIZE",
 		"TEMPORAL_TASK_QUEUE_INFRA_PIPELINE_BUILD_STAGE",
-		"TEMPORAL_TASK_QUEUE_INFRA_PROJECT_GIT_COMMIT",
+		"TEMPORAL_TASK_QUEUE_INFRA_STACK_GIT_COMMIT",
 	} {
 		if _, present := envMap[retired]; present {
 			t.Errorf("%s must not be set: the control plane reads no such variable", retired)

@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanDatabaseReplicaStackOutputs captures the key outputs after
+// DigitalOceanDatabaseReplicaOutputs captures the key outputs after
 // provisioning a read-only replica of a DigitalOcean database cluster. The
 // primary's cluster id and the replica name are echoed so consumers (and
 // verification tooling) can address the replica -- DigitalOcean's replica
@@ -32,7 +32,7 @@ const (
 // The connection URIs are assembled by the provisioners from the replica's
 // live connection details and embed credentials, so equality across
 // engines is asserted on host/port, never on the full URI.
-type DigitalOceanDatabaseReplicaStackOutputs struct {
+type DigitalOceanDatabaseReplicaOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// UUID of the replica itself.
 	ReplicaId string `protobuf:"bytes,1,opt,name=replica_id,json=replicaId,proto3" json:"replica_id,omitempty"`
@@ -63,20 +63,20 @@ type DigitalOceanDatabaseReplicaStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDatabaseReplicaStackOutputs) Reset() {
-	*x = DigitalOceanDatabaseReplicaStackOutputs{}
+func (x *DigitalOceanDatabaseReplicaOutputs) Reset() {
+	*x = DigitalOceanDatabaseReplicaOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDatabaseReplicaStackOutputs) String() string {
+func (x *DigitalOceanDatabaseReplicaOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDatabaseReplicaStackOutputs) ProtoMessage() {}
+func (*DigitalOceanDatabaseReplicaOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanDatabaseReplicaStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDatabaseReplicaOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -88,82 +88,82 @@ func (x *DigitalOceanDatabaseReplicaStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDatabaseReplicaStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDatabaseReplicaStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDatabaseReplicaOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDatabaseReplicaOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDatabaseReplicaStackOutputs) GetReplicaId() string {
+func (x *DigitalOceanDatabaseReplicaOutputs) GetReplicaId() string {
 	if x != nil {
 		return x.ReplicaId
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseReplicaStackOutputs) GetClusterId() string {
+func (x *DigitalOceanDatabaseReplicaOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseReplicaStackOutputs) GetReplicaName() string {
+func (x *DigitalOceanDatabaseReplicaOutputs) GetReplicaName() string {
 	if x != nil {
 		return x.ReplicaName
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseReplicaStackOutputs) GetHost() string {
+func (x *DigitalOceanDatabaseReplicaOutputs) GetHost() string {
 	if x != nil {
 		return x.Host
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseReplicaStackOutputs) GetPrivateHost() string {
+func (x *DigitalOceanDatabaseReplicaOutputs) GetPrivateHost() string {
 	if x != nil {
 		return x.PrivateHost
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseReplicaStackOutputs) GetPort() uint32 {
+func (x *DigitalOceanDatabaseReplicaOutputs) GetPort() uint32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-func (x *DigitalOceanDatabaseReplicaStackOutputs) GetDatabase() string {
+func (x *DigitalOceanDatabaseReplicaOutputs) GetDatabase() string {
 	if x != nil {
 		return x.Database
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseReplicaStackOutputs) GetUser() string {
+func (x *DigitalOceanDatabaseReplicaOutputs) GetUser() string {
 	if x != nil {
 		return x.User
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseReplicaStackOutputs) GetPassword() string {
+func (x *DigitalOceanDatabaseReplicaOutputs) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseReplicaStackOutputs) GetUri() string {
+func (x *DigitalOceanDatabaseReplicaOutputs) GetUri() string {
 	if x != nil {
 		return x.Uri
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseReplicaStackOutputs) GetPrivateUri() string {
+func (x *DigitalOceanDatabaseReplicaOutputs) GetPrivateUri() string {
 	if x != nil {
 		return x.PrivateUri
 	}
@@ -174,8 +174,8 @@ var File_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_outputs_proto
 
 const file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/digitalocean/digitaloceandatabasereplica/v1alpha1/outputs.proto\x12=dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1\x1a\x1cshared/options/options.proto\"\xe6\x02\n" +
-	"'DigitalOceanDatabaseReplicaStackOutputs\x12\x1d\n" +
+	"Gcatalog/digitalocean/digitaloceandatabasereplica/v1alpha1/outputs.proto\x12=dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1\x1a\x1cshared/options/options.proto\"\xe1\x02\n" +
+	"\"DigitalOceanDatabaseReplicaOutputs\x12\x1d\n" +
 	"\n" +
 	"replica_id\x18\x01 \x01(\tR\treplicaId\x12\x1d\n" +
 	"\n" +
@@ -207,7 +207,7 @@ func file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_outputs_prot
 
 var file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanDatabaseReplicaStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaStackOutputs
+	(*DigitalOceanDatabaseReplicaOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaOutputs
 }
 var file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

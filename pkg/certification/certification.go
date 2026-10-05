@@ -26,7 +26,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 )
 
 // TortureKindRoot returns the torture kind's directory (all versions),
@@ -39,7 +39,7 @@ func TortureKindRoot(t *testing.T) string {
 		t.Fatal("cannot resolve caller location")
 	}
 	repoRoot := filepath.Join(filepath.Dir(thisFile), "..", "..")
-	dir := filepath.Join(repoRoot, "catalog", "_test", "testcloudresourcegeneric")
+	dir := filepath.Join(repoRoot, "catalog", "_test", "testcatalogkindgeneric")
 	if _, err := os.Stat(dir); err != nil {
 		t.Fatalf("torture kind directory missing: %v", err)
 	}
@@ -52,7 +52,7 @@ func TortureKindRoot(t *testing.T) string {
 // automatically.
 func TortureKindDir(t *testing.T) string {
 	t.Helper()
-	versionDir, err := crkreflect.ComponentVersionDir("testcloudresourcegeneric")
+	versionDir, err := catalogkindreflect.KindVersionDir("testcatalogkindgeneric")
 	if err != nil {
 		t.Fatalf("resolving the torture kind's served version: %v", err)
 	}
@@ -65,7 +65,7 @@ func TortureKindDir(t *testing.T) string {
 
 // TortureManifestPath returns the canonical known-good torture manifest (the
 // kind's default preset -- one source of truth for "a valid manifest").
-// Presets live at the component root: the living component is version-agnostic,
+// Presets live at the kind root: the living kind is version-agnostic,
 // authored against the served (hub) version.
 func TortureManifestPath(t *testing.T) string {
 	t.Helper()

@@ -67,7 +67,7 @@ func validResource() *AzureMonitorAutoscaleSetting {
 	return &AzureMonitorAutoscaleSetting{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMonitorAutoscaleSetting",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-autoscale",
 		},
 		Spec: &AzureMonitorAutoscaleSettingSpec{

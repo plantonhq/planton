@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpSharedVpcServiceProjectStackInput struct {
+type GcpSharedVpcServiceProjectIacInput struct {
 	state          protoimpl.MessageState      `protogen:"open.v1"`
 	Target         *GcpSharedVpcServiceProject `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig      `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpSharedVpcServiceProjectStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpSharedVpcServiceProjectStackInput) Reset() {
-	*x = GcpSharedVpcServiceProjectStackInput{}
+func (x *GcpSharedVpcServiceProjectIacInput) Reset() {
+	*x = GcpSharedVpcServiceProjectIacInput{}
 	mi := &file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSharedVpcServiceProjectStackInput) String() string {
+func (x *GcpSharedVpcServiceProjectIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSharedVpcServiceProjectStackInput) ProtoMessage() {}
+func (*GcpSharedVpcServiceProjectIacInput) ProtoMessage() {}
 
-func (x *GcpSharedVpcServiceProjectStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpSharedVpcServiceProjectIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpSharedVpcServiceProjectStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSharedVpcServiceProjectStackInput.ProtoReflect.Descriptor instead.
-func (*GcpSharedVpcServiceProjectStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSharedVpcServiceProjectIacInput.ProtoReflect.Descriptor instead.
+func (*GcpSharedVpcServiceProjectIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSharedVpcServiceProjectStackInput) GetTarget() *GcpSharedVpcServiceProject {
+func (x *GcpSharedVpcServiceProjectIacInput) GetTarget() *GcpSharedVpcServiceProject {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpSharedVpcServiceProjectStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpSharedVpcServiceProjectIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_input_proto protoreflec
 
 const file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpsharedvpcserviceproject/v1alpha1/input.proto\x123dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1\x1a9catalog/gcp/gcpsharedvpcserviceproject/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xdc\x01\n" +
-	"$GcpSharedVpcServiceProjectStackInput\x12g\n" +
+	";catalog/gcp/gcpsharedvpcserviceproject/v1alpha1/input.proto\x123dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1\x1a9catalog/gcp/gcpsharedvpcserviceproject/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xda\x01\n" +
+	"\"GcpSharedVpcServiceProjectIacInput\x12g\n" +
 	"\x06target\x18\x01 \x01(\v2O.dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xa7\x03\n" +
 	"7com.dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_input_proto_goTypes = []any{
-	(*GcpSharedVpcServiceProjectStackInput)(nil), // 0: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectStackInput
-	(*GcpSharedVpcServiceProject)(nil),           // 1: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProject
-	(*gcp.GcpProviderConfig)(nil),                // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpSharedVpcServiceProjectIacInput)(nil), // 0: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectIacInput
+	(*GcpSharedVpcServiceProject)(nil),         // 1: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProject
+	(*gcp.GcpProviderConfig)(nil),              // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpsharedvpcserviceproject_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectStackInput.target:type_name -> dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProject
-	2, // 1: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectIacInput.target:type_name -> dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProject
+	2, // 1: dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

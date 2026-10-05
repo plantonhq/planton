@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -8,9 +8,9 @@
 # derivation grammar's quantities are products of single factors -- it cannot
 # sum a field over repeated elements), and the memory factor rides an
 # UNSET-defaulted field (2048) the presets never write. Same adjudication
-# class as azurecontainerapp. Schema: finops/componentcostestimatemodel/v1.
+# class as azurecontainerapp. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: azurefunctionappflexconsumption
 spec:

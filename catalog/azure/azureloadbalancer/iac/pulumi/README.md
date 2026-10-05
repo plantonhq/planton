@@ -1,6 +1,6 @@
 # AzureLoadBalancer Pulumi Module
 
-Pulumi implementation for the AzureLoadBalancer component.
+Pulumi implementation for the AzureLoadBalancer kind.
 
 ## Architecture
 
@@ -15,7 +15,7 @@ The module creates:
 
 ```
 iac/pulumi/
-├── main.go              # Entrypoint: loads stack input, calls module
+├── main.go              # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml          # Pulumi project configuration
 ├── Makefile             # Build and test targets
 ├── debug.sh             # Delve debugger script

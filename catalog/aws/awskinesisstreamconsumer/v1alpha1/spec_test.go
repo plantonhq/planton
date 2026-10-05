@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/types/known/structpb"
 )
@@ -27,7 +27,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 		input := &AwsKinesisStreamConsumer{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsKinesisStreamConsumer",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "my-consumer",
 			},
 			Spec: &AwsKinesisStreamConsumerSpec{
@@ -47,7 +47,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 		input := &AwsKinesisStreamConsumer{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsKinesisStreamConsumer",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "analytics-consumer",
 			},
 			Spec: &AwsKinesisStreamConsumerSpec{
@@ -55,7 +55,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 				StreamArn: &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AwsKinesisStream,
+							Kind:      catalogkind.CatalogKind_AwsKinesisStream,
 							Name:      "my-stream",
 							FieldPath: "status.outputs.stream_arn",
 						},
@@ -71,7 +71,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 		input := &AwsKinesisStreamConsumer{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsKinesisStreamConsumer",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "audit-consumer",
 				Org:  "acme",
 				Env:  "production",
@@ -102,7 +102,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 		input := &AwsKinesisStreamConsumer{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsKinesisStreamConsumer",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-consumer",
 			},
 			Spec: &AwsKinesisStreamConsumerSpec{
@@ -121,7 +121,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 		input := &AwsKinesisStreamConsumer{
 			ApiVersion: "wrong.planton.dev/v1",
 			Kind:       "AwsKinesisStreamConsumer",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-consumer",
 			},
 			Spec: &AwsKinesisStreamConsumerSpec{
@@ -141,7 +141,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 		input := &AwsKinesisStreamConsumer{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "WrongKind",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-consumer",
 			},
 			Spec: &AwsKinesisStreamConsumerSpec{
@@ -178,7 +178,7 @@ var _ = ginkgo.Describe("AwsKinesisStreamConsumerSpec validations", func() {
 		input := &AwsKinesisStreamConsumer{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsKinesisStreamConsumer",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-consumer",
 			},
 		}

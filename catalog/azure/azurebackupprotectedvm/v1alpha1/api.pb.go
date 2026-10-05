@@ -34,10 +34,10 @@ type AzureBackupProtectedVm struct {
 	// Resource kind. Must be "AzureBackupProtectedVm".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Protected VM specification.
 	Spec *AzureBackupProtectedVmSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureBackupProtectedVmStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -87,7 +87,7 @@ func (x *AzureBackupProtectedVm) GetKind() string {
 	return ""
 }
 
-func (x *AzureBackupProtectedVm) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureBackupProtectedVm) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureBackupProtectedVm) GetStatus() *AzureBackupProtectedVmStatus {
 // AzureBackupProtectedVmStatus holds the deployment outputs.
 type AzureBackupProtectedVmStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureBackupProtectedVmStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureBackupProtectedVmOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureBackupProtectedVmStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurebackupprotectedvm_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureBackupProtectedVmStatus) GetOutputs() *AzureBackupProtectedVmStackOutputs {
+func (x *AzureBackupProtectedVmStatus) GetOutputs() *AzureBackupProtectedVmOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azurebackupprotectedvm_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16AzureBackupProtectedVmR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
 	"\x04spec\x18\x04 \x01(\v2M.dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12g\n" +
-	"\x06status\x18\x05 \x01(\v2O.dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmStatusR\x06status\"\x8f\x01\n" +
-	"\x1cAzureBackupProtectedVmStatus\x12o\n" +
-	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmStackOutputsR\aoutputsB\x95\x03\n" +
+	"\x06status\x18\x05 \x01(\v2O.dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmStatusR\x06status\"\x8a\x01\n" +
+	"\x1cAzureBackupProtectedVmStatus\x12j\n" +
+	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmOutputsR\aoutputsB\x95\x03\n" +
 	"5com.dev.planton.azure.azurebackupprotectedvm.v1alpha1B\bApiProtoP\x01Zigithub.com/plantonhq/planton/catalog/azure/azurebackupprotectedvm/v1alpha1;azurebackupprotectedvmv1alpha1\xa2\x02\x04DPAA\xaa\x021Dev.Planton.Azure.Azurebackupprotectedvm.V1alpha1\xca\x021Dev\\Planton\\Azure\\Azurebackupprotectedvm\\V1alpha1\xe2\x02=Dev\\Planton\\Azure\\Azurebackupprotectedvm\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Azure::Azurebackupprotectedvm::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azurebackupprotectedvm_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_azure_azurebackupprotectedvm_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurebackupprotectedvm_v1alpha1_api_proto_goTypes = []any{
-	(*AzureBackupProtectedVm)(nil),             // 0: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVm
-	(*AzureBackupProtectedVmStatus)(nil),       // 1: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureBackupProtectedVmSpec)(nil),         // 3: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmSpec
-	(*AzureBackupProtectedVmStackOutputs)(nil), // 4: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmStackOutputs
+	(*AzureBackupProtectedVm)(nil),        // 0: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVm
+	(*AzureBackupProtectedVmStatus)(nil),  // 1: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureBackupProtectedVmSpec)(nil),    // 3: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmSpec
+	(*AzureBackupProtectedVmOutputs)(nil), // 4: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmOutputs
 }
 var file_catalog_azure_azurebackupprotectedvm_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVm.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVm.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVm.spec:type_name -> dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmSpec
 	1, // 2: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVm.status:type_name -> dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmStatus
-	4, // 3: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmStatus.outputs:type_name -> dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmStackOutputs
+	4, // 3: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmStatus.outputs:type_name -> dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

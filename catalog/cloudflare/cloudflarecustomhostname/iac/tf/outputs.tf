@@ -5,7 +5,7 @@ output "custom_hostname_id" {
 
 # No status output: hostname activation is asynchronous (pending ->
 # pending_validation -> active), and a point-in-time phase is never a stable
-# stack output -- it flips on the first refresh after the transition and
+# output -- it flips on the first refresh after the transition and
 # re-plans forever. Read activation status from the Cloudflare API instead.
 
 output "ownership_verification_name" {
@@ -36,7 +36,7 @@ output "ownership_verification_http_body" {
 # No verification_errors output: the server populates the list
 # asynchronously after apply ("zone is not active yet" measured appearing
 # seconds post-create) and clears it on activation -- a transient diagnostic
-# is never a stable stack output (output-only changes fail idempotent
+# is never a stable output (output-only changes fail idempotent
 # re-plans). Read it from the Cloudflare API instead.
 
 output "created_at" {

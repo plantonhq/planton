@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsOpenSearchServerlessCollection is a component for creating and managing
+// AwsOpenSearchServerlessCollection is a kind for creating and managing
 // Amazon OpenSearch Serverless collections - fully managed, auto-scaling
 // OpenSearch workspaces for search, time-series, and vector workloads -
 // together with the collection-scoped encryption, network, data-access, and
@@ -35,7 +35,7 @@ type AwsOpenSearchServerlessCollection struct {
 	// kind identifies this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata contains standard resource metadata including name, labels, and annotations.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec defines the desired state of the collection.
 	Spec *AwsOpenSearchServerlessCollectionSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the observed state and outputs from the deployment.
@@ -88,7 +88,7 @@ func (x *AwsOpenSearchServerlessCollection) GetKind() string {
 	return ""
 }
 
-func (x *AwsOpenSearchServerlessCollection) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsOpenSearchServerlessCollection) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,7 +114,7 @@ func (x *AwsOpenSearchServerlessCollection) GetStatus() *AwsOpenSearchServerless
 type AwsOpenSearchServerlessCollectionStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs contains the values exported from the IaC stack after deployment.
-	Outputs       *AwsOpenSearchServerlessCollectionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsOpenSearchServerlessCollectionOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AwsOpenSearchServerlessCollectionStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsOpenSearchServerlessCollectionStatus) GetOutputs() *AwsOpenSearchServerlessCollectionStackOutputs {
+func (x *AwsOpenSearchServerlessCollectionStatus) GetOutputs() *AwsOpenSearchServerlessCollectionOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_api_proto_rawD
 	"apiVersion\x12<\n" +
 	"\x04kind\x18\x02 \x01(\tB(\xbaH%r#\n" +
 	"!AwsOpenSearchServerlessCollectionR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12}\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12}\n" +
 	"\x04spec\x18\x04 \x01(\v2a.dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12{\n" +
-	"\x06status\x18\x05 \x01(\v2c.dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionStatusR\x06status\"\xaf\x01\n" +
-	"'AwsOpenSearchServerlessCollectionStatus\x12\x83\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2i.dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionStackOutputsR\aoutputsB\xd6\x03\n" +
+	"\x06status\x18\x05 \x01(\v2c.dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionStatusR\x06status\"\xa9\x01\n" +
+	"'AwsOpenSearchServerlessCollectionStatus\x12~\n" +
+	"\aoutputs\x18\x01 \x01(\v2d.dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionOutputsR\aoutputsB\xd6\x03\n" +
 	">com.dev.planton.aws.awsopensearchserverlesscollection.v1alpha1B\bApiProtoP\x01Z}github.com/plantonhq/planton/catalog/aws/awsopensearchserverlesscollection/v1alpha1;awsopensearchserverlesscollectionv1alpha1\xa2\x02\x04DPAA\xaa\x02:Dev.Planton.Aws.Awsopensearchserverlesscollection.V1alpha1\xca\x02:Dev\\Planton\\Aws\\Awsopensearchserverlesscollection\\V1alpha1\xe2\x02FDev\\Planton\\Aws\\Awsopensearchserverlesscollection\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Aws::Awsopensearchserverlesscollection::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_api_proto_rawDe
 
 var file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_api_proto_goTypes = []any{
-	(*AwsOpenSearchServerlessCollection)(nil),             // 0: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollection
-	(*AwsOpenSearchServerlessCollectionStatus)(nil),       // 1: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionStatus
-	(*shared.CloudResourceMetadata)(nil),                  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsOpenSearchServerlessCollectionSpec)(nil),         // 3: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionSpec
-	(*AwsOpenSearchServerlessCollectionStackOutputs)(nil), // 4: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionStackOutputs
+	(*AwsOpenSearchServerlessCollection)(nil),        // 0: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollection
+	(*AwsOpenSearchServerlessCollectionStatus)(nil),  // 1: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionStatus
+	(*shared.CatalogObjectMetadata)(nil),             // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsOpenSearchServerlessCollectionSpec)(nil),    // 3: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionSpec
+	(*AwsOpenSearchServerlessCollectionOutputs)(nil), // 4: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionOutputs
 }
 var file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollection.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollection.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollection.spec:type_name -> dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionSpec
 	1, // 2: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollection.status:type_name -> dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionStatus
-	4, // 3: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionStatus.outputs:type_name -> dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionStackOutputs
+	4, // 3: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionStatus.outputs:type_name -> dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

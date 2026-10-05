@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSagemakerModelRegistryStackInput is the input for the IaC modules
+// AwsSagemakerModelRegistryIacInput is the input for the IaC modules
 // that deploy the model package group.
-type AwsSagemakerModelRegistryStackInput struct {
+type AwsSagemakerModelRegistryIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsSagemakerModelRegistry resource to deploy.
 	Target *AwsSagemakerModelRegistry `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsSagemakerModelRegistryStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsSagemakerModelRegistryStackInput) Reset() {
-	*x = AwsSagemakerModelRegistryStackInput{}
+func (x *AwsSagemakerModelRegistryIacInput) Reset() {
+	*x = AwsSagemakerModelRegistryIacInput{}
 	mi := &file_catalog_aws_awssagemakermodelregistry_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSagemakerModelRegistryStackInput) String() string {
+func (x *AwsSagemakerModelRegistryIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSagemakerModelRegistryStackInput) ProtoMessage() {}
+func (*AwsSagemakerModelRegistryIacInput) ProtoMessage() {}
 
-func (x *AwsSagemakerModelRegistryStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsSagemakerModelRegistryIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssagemakermodelregistry_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsSagemakerModelRegistryStackInput) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSagemakerModelRegistryStackInput.ProtoReflect.Descriptor instead.
-func (*AwsSagemakerModelRegistryStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSagemakerModelRegistryIacInput.ProtoReflect.Descriptor instead.
+func (*AwsSagemakerModelRegistryIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakermodelregistry_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSagemakerModelRegistryStackInput) GetTarget() *AwsSagemakerModelRegistry {
+func (x *AwsSagemakerModelRegistryIacInput) GetTarget() *AwsSagemakerModelRegistry {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsSagemakerModelRegistryStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsSagemakerModelRegistryIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awssagemakermodelregistry_v1alpha1_input_proto protoreflect
 
 const file_catalog_aws_awssagemakermodelregistry_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	":catalog/aws/awssagemakermodelregistry/v1alpha1/input.proto\x122dev.planton.aws.awssagemakermodelregistry.v1alpha1\x1a8catalog/aws/awssagemakermodelregistry/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd9\x01\n" +
-	"#AwsSagemakerModelRegistryStackInput\x12e\n" +
+	":catalog/aws/awssagemakermodelregistry/v1alpha1/input.proto\x122dev.planton.aws.awssagemakermodelregistry.v1alpha1\x1a8catalog/aws/awssagemakermodelregistry/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd7\x01\n" +
+	"!AwsSagemakerModelRegistryIacInput\x12e\n" +
 	"\x06target\x18\x01 \x01(\v2M.dev.planton.aws.awssagemakermodelregistry.v1alpha1.AwsSagemakerModelRegistryR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xa0\x03\n" +
 	"6com.dev.planton.aws.awssagemakermodelregistry.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awssagemakermodelregistry_v1alpha1_input_proto_rawDescGZIP
 
 var file_catalog_aws_awssagemakermodelregistry_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssagemakermodelregistry_v1alpha1_input_proto_goTypes = []any{
-	(*AwsSagemakerModelRegistryStackInput)(nil), // 0: dev.planton.aws.awssagemakermodelregistry.v1alpha1.AwsSagemakerModelRegistryStackInput
-	(*AwsSagemakerModelRegistry)(nil),           // 1: dev.planton.aws.awssagemakermodelregistry.v1alpha1.AwsSagemakerModelRegistry
-	(*aws.AwsProviderConfig)(nil),               // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsSagemakerModelRegistryIacInput)(nil), // 0: dev.planton.aws.awssagemakermodelregistry.v1alpha1.AwsSagemakerModelRegistryIacInput
+	(*AwsSagemakerModelRegistry)(nil),         // 1: dev.planton.aws.awssagemakermodelregistry.v1alpha1.AwsSagemakerModelRegistry
+	(*aws.AwsProviderConfig)(nil),             // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awssagemakermodelregistry_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awssagemakermodelregistry.v1alpha1.AwsSagemakerModelRegistryStackInput.target:type_name -> dev.planton.aws.awssagemakermodelregistry.v1alpha1.AwsSagemakerModelRegistry
-	2, // 1: dev.planton.aws.awssagemakermodelregistry.v1alpha1.AwsSagemakerModelRegistryStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awssagemakermodelregistry.v1alpha1.AwsSagemakerModelRegistryIacInput.target:type_name -> dev.planton.aws.awssagemakermodelregistry.v1alpha1.AwsSagemakerModelRegistry
+	2, // 1: dev.planton.aws.awssagemakermodelregistry.v1alpha1.AwsSagemakerModelRegistryIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

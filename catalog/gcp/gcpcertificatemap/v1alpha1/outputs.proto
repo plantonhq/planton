@@ -4,7 +4,7 @@ package dev.planton.gcp.gcpcertificatemap.v1alpha1;
 
 // Outputs produced after provisioning a Certificate Manager certificate
 // map.
-message GcpCertificateMapStackOutputs {
+message GcpCertificateMapOutputs {
   // The full map resource name
   // (projects/{project}/locations/global/certificateMaps/{name}).
   string map_id = 1;

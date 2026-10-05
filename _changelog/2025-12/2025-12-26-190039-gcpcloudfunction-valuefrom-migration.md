@@ -6,22 +6,22 @@
 
 ## Summary
 
-Migrated the `project_id` field in GcpCloudFunction from a plain `string` type to `StringValueOrRef`, enabling cross-resource references where the GCP project ID can be dynamically resolved from another resource's outputs (e.g., a GcpProject resource). This is part of the broader GCP components ValueFrom migration initiative.
+Migrated the `project_id` field in GcpCloudFunction from a plain `string` type to `StringValueOrRef`, enabling cross-resource references where the GCP project ID can be dynamically resolved from another resource's outputs (e.g., a GcpProject resource). This is part of the broader GCP kinds ValueFrom migration initiative.
 
 ## Problem Statement / Motivation
 
-The GcpCloudFunction component previously used a plain `string` for `project_id`, requiring users to hardcode the GCP project ID in every manifest. This created several issues:
+The GcpCloudFunction kind previously used a plain `string` for `project_id`, requiring users to hardcode the GCP project ID in every manifest. This created several issues:
 
 ### Pain Points
 
 - **Tight coupling**: Users had to know and specify project IDs explicitly, even when deploying to projects managed by other Planton resources
 - **Error-prone**: Copy-pasting project IDs across manifests led to typos and configuration drift
 - **No dynamic dependencies**: Impossible to reference the output of a GcpProject resource, breaking the "infrastructure as code" dependency chain
-- **Inconsistent with other components**: GcpVpc, GcpGkeCluster, and other GCP components already supported `StringValueOrRef` for project references
+- **Inconsistent with other kinds**: GcpVpc, GcpGkeCluster, and other GCP kinds already supported `StringValueOrRef` for project references
 
 ## Solution / What's New
 
-Updated the GcpCloudFunction API to use `StringValueOrRef` for the `project_id` field, following the established pattern from compliant GCP components.
+Updated the GcpCloudFunction API to use `StringValueOrRef` for the `project_id` field, following the established pattern from compliant GCP kinds.
 
 ### Key Changes
 
@@ -165,12 +165,12 @@ spec:
 - Can leverage cross-resource references for better infrastructure composition
 
 ### Developers
-- Consistent pattern across GCP components
-- Clear migration path for remaining GCP components needing this change
+- Consistent pattern across GCP kinds
+- Clear migration path for remaining GCP kinds needing this change
 
 ## Related Work
 
-This change is part of the GCP ValueFrom Migration initiative documented in `apis/gcp-value-from-anaylasis.md`. Components already migrated:
+This change is part of the GCP ValueFrom Migration initiative documented in `apis/gcp-value-from-anaylasis.md`. Kinds already migrated:
 - GcpVpc ✅
 - GcpSubnetwork ✅
 - GcpGkeCluster ✅
@@ -179,7 +179,7 @@ This change is part of the GCP ValueFrom Migration initiative documented in `api
 - GcpGkeWorkloadIdentityBinding ✅
 - **GcpCloudFunction ✅** (this change)
 
-Components still pending:
+Kinds still pending:
 - GcpCloudRun (HIGH PRIORITY)
 - GcpCloudSql (HIGH PRIORITY)
 - GcpServiceAccount
@@ -192,7 +192,7 @@ Components still pending:
 ## Validation Results
 
 - ✅ Proto generation (`make protos`) - Completed successfully
-- ✅ Component tests - 12 of 12 specs passed
+- ✅ Kind tests - 12 of 12 specs passed
 - ✅ Build validation (`make build`) - Bazel build completed (2672 actions)
 - ✅ Full test suite - All GcpCloudFunction tests passed
 

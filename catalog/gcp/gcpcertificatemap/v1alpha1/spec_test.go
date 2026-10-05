@@ -36,7 +36,7 @@ var _ = ginkgo.Describe("GcpCertificateMapSpec", func() {
 		return &GcpCertificateMap{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCertificateMap",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-certificate-map",
 			},
 			Spec: &GcpCertificateMapSpec{},

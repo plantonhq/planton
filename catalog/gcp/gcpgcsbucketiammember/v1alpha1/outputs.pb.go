@@ -25,7 +25,7 @@ const (
 // has no server-generated identity beyond its inputs; the outputs echo the
 // resolved grant so audits see exactly what was applied without re-resolving
 // references.
-type GcpGcsBucketIamMemberStackOutputs struct {
+type GcpGcsBucketIamMemberOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The bucket whose IAM policy received the grant, after reference
 	// resolution.
@@ -42,20 +42,20 @@ type GcpGcsBucketIamMemberStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpGcsBucketIamMemberStackOutputs) Reset() {
-	*x = GcpGcsBucketIamMemberStackOutputs{}
+func (x *GcpGcsBucketIamMemberOutputs) Reset() {
+	*x = GcpGcsBucketIamMemberOutputs{}
 	mi := &file_catalog_gcp_gcpgcsbucketiammember_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpGcsBucketIamMemberStackOutputs) String() string {
+func (x *GcpGcsBucketIamMemberOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpGcsBucketIamMemberStackOutputs) ProtoMessage() {}
+func (*GcpGcsBucketIamMemberOutputs) ProtoMessage() {}
 
-func (x *GcpGcsBucketIamMemberStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpGcsBucketIamMemberOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpgcsbucketiammember_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *GcpGcsBucketIamMemberStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpGcsBucketIamMemberStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpGcsBucketIamMemberStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpGcsBucketIamMemberOutputs.ProtoReflect.Descriptor instead.
+func (*GcpGcsBucketIamMemberOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgcsbucketiammember_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpGcsBucketIamMemberStackOutputs) GetBucket() string {
+func (x *GcpGcsBucketIamMemberOutputs) GetBucket() string {
 	if x != nil {
 		return x.Bucket
 	}
 	return ""
 }
 
-func (x *GcpGcsBucketIamMemberStackOutputs) GetRole() string {
+func (x *GcpGcsBucketIamMemberOutputs) GetRole() string {
 	if x != nil {
 		return x.Role
 	}
 	return ""
 }
 
-func (x *GcpGcsBucketIamMemberStackOutputs) GetMember() string {
+func (x *GcpGcsBucketIamMemberOutputs) GetMember() string {
 	if x != nil {
 		return x.Member
 	}
 	return ""
 }
 
-func (x *GcpGcsBucketIamMemberStackOutputs) GetEtag() string {
+func (x *GcpGcsBucketIamMemberOutputs) GetEtag() string {
 	if x != nil {
 		return x.Etag
 	}
@@ -104,8 +104,8 @@ var File_catalog_gcp_gcpgcsbucketiammember_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_gcp_gcpgcsbucketiammember_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/gcp/gcpgcsbucketiammember/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpgcsbucketiammember.v1alpha1\"{\n" +
-	"!GcpGcsBucketIamMemberStackOutputs\x12\x16\n" +
+	"8catalog/gcp/gcpgcsbucketiammember/v1alpha1/outputs.proto\x12.dev.planton.gcp.gcpgcsbucketiammember.v1alpha1\"v\n" +
+	"\x1cGcpGcsBucketIamMemberOutputs\x12\x16\n" +
 	"\x06bucket\x18\x01 \x01(\tR\x06bucket\x12\x12\n" +
 	"\x04role\x18\x02 \x01(\tR\x04role\x12\x16\n" +
 	"\x06member\x18\x03 \x01(\tR\x06member\x12\x12\n" +
@@ -126,7 +126,7 @@ func file_catalog_gcp_gcpgcsbucketiammember_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_gcp_gcpgcsbucketiammember_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpgcsbucketiammember_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpGcsBucketIamMemberStackOutputs)(nil), // 0: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberStackOutputs
+	(*GcpGcsBucketIamMemberOutputs)(nil), // 0: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberOutputs
 }
 var file_catalog_gcp_gcpgcsbucketiammember_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

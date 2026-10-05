@@ -29,7 +29,7 @@ func validResource() *AzureFabricCapacity {
 	return &AzureFabricCapacity{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFabricCapacity",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-fabric",
 		},
 		Spec: &AzureFabricCapacitySpec{

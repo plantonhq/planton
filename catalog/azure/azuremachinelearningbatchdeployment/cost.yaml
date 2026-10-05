@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships a
+# catalog-data conformance gate. This kind deliberately ships a
 # zero-committed estimate: the deployment is a job RECIPE -- nothing runs
 # or bills at create time, and every dollar it shapes lands on the compute
-# pool its jobs run on. Schema: finops/componentcostprofile/v1.
+# pool its jobs run on. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azuremachinelearningbatchdeployment
 spec:

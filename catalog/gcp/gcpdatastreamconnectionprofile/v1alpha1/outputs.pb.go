@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpDatastreamConnectionProfileStackOutputs captures the profile's
+// GcpDatastreamConnectionProfileOutputs captures the profile's
 // identity -- what streams reference as their source or destination.
-type GcpDatastreamConnectionProfileStackOutputs struct {
+type GcpDatastreamConnectionProfileOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name --
 	// projects/{project}/locations/{location}/connectionProfiles/{connection_profile_id}.
@@ -36,20 +36,20 @@ type GcpDatastreamConnectionProfileStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *GcpDatastreamConnectionProfileStackOutputs) Reset() {
-	*x = GcpDatastreamConnectionProfileStackOutputs{}
+func (x *GcpDatastreamConnectionProfileOutputs) Reset() {
+	*x = GcpDatastreamConnectionProfileOutputs{}
 	mi := &file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDatastreamConnectionProfileStackOutputs) String() string {
+func (x *GcpDatastreamConnectionProfileOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDatastreamConnectionProfileStackOutputs) ProtoMessage() {}
+func (*GcpDatastreamConnectionProfileOutputs) ProtoMessage() {}
 
-func (x *GcpDatastreamConnectionProfileStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpDatastreamConnectionProfileOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *GcpDatastreamConnectionProfileStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDatastreamConnectionProfileStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpDatastreamConnectionProfileStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDatastreamConnectionProfileOutputs.ProtoReflect.Descriptor instead.
+func (*GcpDatastreamConnectionProfileOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDatastreamConnectionProfileStackOutputs) GetName() string {
+func (x *GcpDatastreamConnectionProfileOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpDatastreamConnectionProfileStackOutputs) GetConnectionProfileId() string {
+func (x *GcpDatastreamConnectionProfileOutputs) GetConnectionProfileId() string {
 	if x != nil {
 		return x.ConnectionProfileId
 	}
@@ -84,8 +84,8 @@ var File_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_outputs_proto proto
 
 const file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/gcp/gcpdatastreamconnectionprofile/v1alpha1/outputs.proto\x127dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1\"t\n" +
-	"*GcpDatastreamConnectionProfileStackOutputs\x12\x12\n" +
+	"Acatalog/gcp/gcpdatastreamconnectionprofile/v1alpha1/outputs.proto\x127dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1\"o\n" +
+	"%GcpDatastreamConnectionProfileOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x122\n" +
 	"\x15connection_profile_id\x18\x02 \x01(\tR\x13connectionProfileIdB\xc5\x03\n" +
 	";com.dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1B\fOutputsProtoP\x01Zwgithub.com/plantonhq/planton/catalog/gcp/gcpdatastreamconnectionprofile/v1alpha1;gcpdatastreamconnectionprofilev1alpha1\xa2\x02\x04DPGG\xaa\x027Dev.Planton.Gcp.Gcpdatastreamconnectionprofile.V1alpha1\xca\x027Dev\\Planton\\Gcp\\Gcpdatastreamconnectionprofile\\V1alpha1\xe2\x02CDev\\Planton\\Gcp\\Gcpdatastreamconnectionprofile\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Gcp::Gcpdatastreamconnectionprofile::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_outputs_proto_rawD
 
 var file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpDatastreamConnectionProfileStackOutputs)(nil), // 0: dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamConnectionProfileStackOutputs
+	(*GcpDatastreamConnectionProfileOutputs)(nil), // 0: dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamConnectionProfileOutputs
 }
 var file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

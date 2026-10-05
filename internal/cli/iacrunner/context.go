@@ -1,9 +1,9 @@
 package iacrunner
 
 import (
+	"github.com/plantonhq/planton/pkg/iac/iacinput/iacinputproviderconfig"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/providerdetect"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/providerdetect"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -15,11 +15,11 @@ type Context struct {
 	// ManifestObject is the loaded and validated manifest proto message
 	ManifestObject proto.Message
 
-	// StackInputFilePath is the original stack input file path (if provided via --stack-input)
-	StackInputFilePath string
+	// IacInputFilePath is the original IaC input file path (if provided via --iac-input)
+	IacInputFilePath string
 
 	// ProviderConfig contains the unified provider configuration
-	ProviderConfig *stackinputproviderconfig.ProviderConfig
+	ProviderConfig *iacinputproviderconfig.ProviderConfig
 
 	// DetectionResult contains the provider detection result from the manifest
 	DetectionResult *providerdetect.DetectionResult

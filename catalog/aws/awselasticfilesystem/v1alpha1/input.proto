@@ -5,9 +5,9 @@ package dev.planton.aws.awselasticfilesystem.v1alpha1;
 import "catalog/aws/awselasticfilesystem/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// aws-elastic-file-system stack-input
-message AwsElasticFileSystemStackInput {
-  // target cloud-resource
+// aws-elastic-file-system iac-input
+message AwsElasticFileSystemIacInput {
+  // the catalog object to deploy
   AwsElasticFileSystem target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

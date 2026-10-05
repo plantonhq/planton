@@ -22,13 +22,13 @@ const (
 )
 
 // *
-// **KubernetesOpenBaoStackOutputs** — the composition handles a
+// **KubernetesOpenBaoOutputs** — the composition handles a
 // deployed OpenBao exports. NOTE deliberately absent: root tokens and
 // unseal/recovery keys are produced by the RUNTIME
 // `bao operator init` call and are never known to (or owned by) the
 // deployment — capture them from the init output and store them
 // outside the cluster.
-type KubernetesOpenBaoStackOutputs struct {
+type KubernetesOpenBaoOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace the server runs in.
@@ -100,20 +100,20 @@ type KubernetesOpenBaoStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesOpenBaoStackOutputs) Reset() {
-	*x = KubernetesOpenBaoStackOutputs{}
+func (x *KubernetesOpenBaoOutputs) Reset() {
+	*x = KubernetesOpenBaoOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesOpenBaoStackOutputs) String() string {
+func (x *KubernetesOpenBaoOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesOpenBaoStackOutputs) ProtoMessage() {}
+func (*KubernetesOpenBaoOutputs) ProtoMessage() {}
 
-func (x *KubernetesOpenBaoStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesOpenBaoOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -125,103 +125,103 @@ func (x *KubernetesOpenBaoStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesOpenBaoStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesOpenBaoStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesOpenBaoOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenBaoOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesOpenBaoStackOutputs) GetNamespace() string {
+func (x *KubernetesOpenBaoOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesOpenBaoStackOutputs) GetService() string {
+func (x *KubernetesOpenBaoOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *KubernetesOpenBaoStackOutputs) GetInternalService() string {
+func (x *KubernetesOpenBaoOutputs) GetInternalService() string {
 	if x != nil {
 		return x.InternalService
 	}
 	return ""
 }
 
-func (x *KubernetesOpenBaoStackOutputs) GetActiveService() string {
+func (x *KubernetesOpenBaoOutputs) GetActiveService() string {
 	if x != nil {
 		return x.ActiveService
 	}
 	return ""
 }
 
-func (x *KubernetesOpenBaoStackOutputs) GetUiService() string {
+func (x *KubernetesOpenBaoOutputs) GetUiService() string {
 	if x != nil {
 		return x.UiService
 	}
 	return ""
 }
 
-func (x *KubernetesOpenBaoStackOutputs) GetApiEndpoint() string {
+func (x *KubernetesOpenBaoOutputs) GetApiEndpoint() string {
 	if x != nil {
 		return x.ApiEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesOpenBaoStackOutputs) GetPort() string {
+func (x *KubernetesOpenBaoOutputs) GetPort() string {
 	if x != nil {
 		return x.Port
 	}
 	return ""
 }
 
-func (x *KubernetesOpenBaoStackOutputs) GetServiceAccountName() string {
+func (x *KubernetesOpenBaoOutputs) GetServiceAccountName() string {
 	if x != nil {
 		return x.ServiceAccountName
 	}
 	return ""
 }
 
-func (x *KubernetesOpenBaoStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesOpenBaoOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
 	return ""
 }
 
-func (x *KubernetesOpenBaoStackOutputs) GetBackupServiceAccountName() string {
+func (x *KubernetesOpenBaoOutputs) GetBackupServiceAccountName() string {
 	if x != nil {
 		return x.BackupServiceAccountName
 	}
 	return ""
 }
 
-func (x *KubernetesOpenBaoStackOutputs) GetBackupPolicyName() string {
+func (x *KubernetesOpenBaoOutputs) GetBackupPolicyName() string {
 	if x != nil {
 		return x.BackupPolicyName
 	}
 	return ""
 }
 
-func (x *KubernetesOpenBaoStackOutputs) GetBackupAuthRole() string {
+func (x *KubernetesOpenBaoOutputs) GetBackupAuthRole() string {
 	if x != nil {
 		return x.BackupAuthRole
 	}
 	return ""
 }
 
-func (x *KubernetesOpenBaoStackOutputs) GetBackupCronJobName() string {
+func (x *KubernetesOpenBaoOutputs) GetBackupCronJobName() string {
 	if x != nil {
 		return x.BackupCronJobName
 	}
 	return ""
 }
 
-func (x *KubernetesOpenBaoStackOutputs) GetRestoreJobName() string {
+func (x *KubernetesOpenBaoOutputs) GetRestoreJobName() string {
 	if x != nil {
 		return x.RestoreJobName
 	}
@@ -232,8 +232,8 @@ var File_catalog_kubernetes_kubernetesopenbao_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_kubernetes_kubernetesopenbao_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesopenbao/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesopenbao.v1alpha1\"\xd5\x04\n" +
-	"\x1dKubernetesOpenBaoStackOutputs\x12\x1c\n" +
+	";catalog/kubernetes/kubernetesopenbao/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesopenbao.v1alpha1\"\xd0\x04\n" +
+	"\x18KubernetesOpenBaoOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x18\n" +
 	"\aservice\x18\x02 \x01(\tR\aservice\x12)\n" +
 	"\x10internal_service\x18\x03 \x01(\tR\x0finternalService\x12%\n" +
@@ -266,7 +266,7 @@ func file_catalog_kubernetes_kubernetesopenbao_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesopenbao_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesopenbao_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesOpenBaoStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStackOutputs
+	(*KubernetesOpenBaoOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoOutputs
 }
 var file_catalog_kubernetes_kubernetesopenbao_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

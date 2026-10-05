@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpDeployTargetStackOutputs carries the target's identity: the ID a
+// GcpDeployTargetOutputs carries the target's identity: the ID a
 // delivery pipeline's stages, a multi-target, a deploy policy, and an
 // automation name it by.
-type GcpDeployTargetStackOutputs struct {
+type GcpDeployTargetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/targets/{target_id}.
@@ -38,20 +38,20 @@ type GcpDeployTargetStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpDeployTargetStackOutputs) Reset() {
-	*x = GcpDeployTargetStackOutputs{}
+func (x *GcpDeployTargetOutputs) Reset() {
+	*x = GcpDeployTargetOutputs{}
 	mi := &file_catalog_gcp_gcpdeploytarget_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDeployTargetStackOutputs) String() string {
+func (x *GcpDeployTargetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDeployTargetStackOutputs) ProtoMessage() {}
+func (*GcpDeployTargetOutputs) ProtoMessage() {}
 
-func (x *GcpDeployTargetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpDeployTargetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdeploytarget_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *GcpDeployTargetStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDeployTargetStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpDeployTargetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDeployTargetOutputs.ProtoReflect.Descriptor instead.
+func (*GcpDeployTargetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdeploytarget_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDeployTargetStackOutputs) GetName() string {
+func (x *GcpDeployTargetOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpDeployTargetStackOutputs) GetTargetId() string {
+func (x *GcpDeployTargetOutputs) GetTargetId() string {
 	if x != nil {
 		return x.TargetId
 	}
 	return ""
 }
 
-func (x *GcpDeployTargetStackOutputs) GetUid() string {
+func (x *GcpDeployTargetOutputs) GetUid() string {
 	if x != nil {
 		return x.Uid
 	}
@@ -93,8 +93,8 @@ var File_catalog_gcp_gcpdeploytarget_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcpdeploytarget_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpdeploytarget/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpdeploytarget.v1alpha1\"`\n" +
-	"\x1bGcpDeployTargetStackOutputs\x12\x12\n" +
+	"2catalog/gcp/gcpdeploytarget/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpdeploytarget.v1alpha1\"[\n" +
+	"\x16GcpDeployTargetOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
 	"\ttarget_id\x18\x02 \x01(\tR\btargetId\x12\x10\n" +
 	"\x03uid\x18\x03 \x01(\tR\x03uidB\xdc\x02\n" +
@@ -114,7 +114,7 @@ func file_catalog_gcp_gcpdeploytarget_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_gcp_gcpdeploytarget_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdeploytarget_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpDeployTargetStackOutputs)(nil), // 0: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetStackOutputs
+	(*GcpDeployTargetOutputs)(nil), // 0: dev.planton.gcp.gcpdeploytarget.v1alpha1.GcpDeployTargetOutputs
 }
 var file_catalog_gcp_gcpdeploytarget_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

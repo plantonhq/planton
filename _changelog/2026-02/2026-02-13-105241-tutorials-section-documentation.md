@@ -48,7 +48,7 @@ Production-oriented PostgreSQL on Kubernetes with custom databases, named users,
 
 ### Tutorial 3: Multi-Environment Deployments
 
-Kustomize overlays deploying the same PostgreSQL component to dev, staging, and production with progressive resource scaling. Covers directory structure, strategic merge patches, and `--kustomize-dir` / `--overlay` flags.
+Kustomize overlays deploying the same PostgreSQL kind to dev, staging, and production with progressive resource scaling. Covers directory structure, strategic merge patches, and `--kustomize-dir` / `--overlay` flags.
 
 ### Tutorial 4: Deploy Across Providers
 
@@ -69,13 +69,13 @@ Tutorials link to existing docs for theory rather than duplicating content:
 
 - Credential setup links to `guides/aws-provider-setup`, `guides/gcp-provider-setup`
 - KRM model explanation links to `concepts/manifests`
-- Component anatomy links to `concepts/deployment-components`
+- Kind anatomy links to `concepts/catalog-kinds`
 - Full flag reference links to `cli/cli-reference`
 - Kustomize theory links to `guides/kustomize`
 
 ### Proto-Accurate Manifests
 
-Every YAML manifest was cross-referenced against the component's protobuf definition:
+Every YAML manifest was cross-referenced against the kind's protobuf definition:
 
 - Field names use camelCase (proto JSON serialization), matching existing examples in `planton/examples/`
 - Enum values use exact proto names (e.g., `ENCRYPTION_TYPE_SSE_S3`, `STORAGE_CLASS_STANDARD_IA`)

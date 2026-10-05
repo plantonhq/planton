@@ -40,7 +40,7 @@ type KubernetesResourceQuota struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Metadata for the ResourceQuota resource.
 	// Includes standard fields like name, organization, environment, etc.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Specification of the desired state for the namespace governance pair.
 	// Defines the aggregate caps, scopes, and per-object limit defaults.
 	Spec *KubernetesResourceQuotaSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -95,7 +95,7 @@ func (x *KubernetesResourceQuota) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesResourceQuota) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesResourceQuota) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -124,7 +124,7 @@ type KubernetesResourceQuotaStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Outputs from the ResourceQuota deployment.
 	// Contains the quota and companion LimitRange names.
-	Outputs       *KubernetesResourceQuotaStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *KubernetesResourceQuotaOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -159,7 +159,7 @@ func (*KubernetesResourceQuotaStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesresourcequota_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesResourceQuotaStatus) GetOutputs() *KubernetesResourceQuotaStackOutputs {
+func (x *KubernetesResourceQuotaStatus) GetOutputs() *KubernetesResourceQuotaOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -177,11 +177,11 @@ const file_catalog_kubernetes_kubernetesresourcequota_v1alpha1_api_proto_rawDesc
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17KubernetesResourceQuotaR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
 	"\x04spec\x18\x04 \x01(\v2T.dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12n\n" +
-	"\x06status\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaStatusR\x06status\"\x97\x01\n" +
-	"\x1dKubernetesResourceQuotaStatus\x12v\n" +
-	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaStackOutputsR\aoutputsB\xba\x03\n" +
+	"\x06status\x18\x05 \x01(\v2V.dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaStatusR\x06status\"\x92\x01\n" +
+	"\x1dKubernetesResourceQuotaStatus\x12q\n" +
+	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaOutputsR\aoutputsB\xba\x03\n" +
 	";com.dev.planton.kubernetes.kubernetesresourcequota.v1alpha1B\bApiProtoP\x01Zpgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesresourcequota/v1alpha1;kubernetesresourcequotav1alpha1\xa2\x02\x04DPKK\xaa\x027Dev.Planton.Kubernetes.Kubernetesresourcequota.V1alpha1\xca\x027Dev\\Planton\\Kubernetes\\Kubernetesresourcequota\\V1alpha1\xe2\x02CDev\\Planton\\Kubernetes\\Kubernetesresourcequota\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Kubernetes::Kubernetesresourcequota::V1alpha1b\x06proto3"
 
 var (
@@ -198,17 +198,17 @@ func file_catalog_kubernetes_kubernetesresourcequota_v1alpha1_api_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetesresourcequota_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesresourcequota_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesResourceQuota)(nil),             // 0: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuota
-	(*KubernetesResourceQuotaStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesResourceQuotaSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaSpec
-	(*KubernetesResourceQuotaStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaStackOutputs
+	(*KubernetesResourceQuota)(nil),        // 0: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuota
+	(*KubernetesResourceQuotaStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesResourceQuotaSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaSpec
+	(*KubernetesResourceQuotaOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaOutputs
 }
 var file_catalog_kubernetes_kubernetesresourcequota_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuota.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuota.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuota.spec:type_name -> dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaSpec
 	1, // 2: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuota.status:type_name -> dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaStatus
-	4, // 3: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesresourcequota.v1alpha1.KubernetesResourceQuotaOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

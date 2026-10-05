@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsorganization
 spec:
@@ -8,11 +8,11 @@ spec:
   # composes its two spec leaves from its own address-key segments
   # (the module keys entries "{account_id}//{service_principal}"); the
   # singleton resource policy imports by its cloud-generated "rp-..."
-  # ID via the stack output.
+  # ID via the output.
   values:
     - name: organization_id
       derivations:
-        - from_stack_output: organization_id
+        - from_output: organization_id
       where_to_find: >-
         Organizations console -> Settings (the organization ID), or
         `aws organizations describe-organization` (Organization.Id).
@@ -32,7 +32,7 @@ spec:
         --account-id <id>` shows ServicePrincipal).
     - name: resource_policy_id
       derivations:
-        - from_stack_output: resource_policy_id
+        - from_output: resource_policy_id
       where_to_find: >-
         `aws organizations describe-resource-policy`
         (ResourcePolicy.ResourcePolicySummary.Id, "rp-...") -- the

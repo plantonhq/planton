@@ -4,7 +4,7 @@ Deploys a Compute Engine target HTTPS proxy — the TLS-termination node of an A
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine Target HTTPS Proxy** -- global, or regional when `region` is set; bound to the configured URL map, certificate mechanism, SSL policy, and (global only) QUIC/early-data posture
 - **Compute Engine API enablement** -- `compute.googleapis.com` is enabled in the target project; tearing down the proxy never disables the API
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
@@ -51,7 +51,7 @@ spec:
 planton apply -f target-https-proxy.yaml
 ```
 
-This creates the standard serving frontend: TLS terminated with the attached certificate, requests routed by the URL map. A Stack Job tracks the provisioning in real time.
+This creates the standard serving frontend: TLS terminated with the attached certificate, requests routed by the URL map. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,7 +89,7 @@ These are the most important decisions when configuring a target HTTPS proxy. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -100,9 +100,9 @@ These are the most important decisions when configuring a target HTTPS proxy. Ex
 | **GcpCertManagerCert** | `certificateManagerCertificates[]` | `status.outputs.certificate_name` |
 | **GcpSslPolicy** | `sslPolicy` | `status.outputs.self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,9 +126,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the proxy is created
-- [**GCP URL Map**](/cloud-catalog/gcp-url-map) -- the routing table for decrypted requests
-- [**GCP Managed SSL Certificate**](/cloud-catalog/gcp-managed-ssl-certificate) -- the auto-renewing certificates this proxy presents
-- [**GCP SSL Certificate**](/cloud-catalog/gcp-ssl-certificate) -- the self-managed certificate alternative on the same list
-- [**GCP SSL Policy**](/cloud-catalog/gcp-ssl-policy) -- the TLS versions/ciphers floor
-- [**GCP Global Forwarding Rule**](/cloud-catalog/gcp-global-forwarding-rule) -- consumes this proxy's `self_link` as its target
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the proxy is created
+- [**GCP URL Map**](/infra-catalog/gcp-url-map) -- the routing table for decrypted requests
+- [**GCP Managed SSL Certificate**](/infra-catalog/gcp-managed-ssl-certificate) -- the auto-renewing certificates this proxy presents
+- [**GCP SSL Certificate**](/infra-catalog/gcp-ssl-certificate) -- the self-managed certificate alternative on the same list
+- [**GCP SSL Policy**](/infra-catalog/gcp-ssl-policy) -- the TLS versions/ciphers floor
+- [**GCP Global Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- consumes this proxy's `self_link` as its target

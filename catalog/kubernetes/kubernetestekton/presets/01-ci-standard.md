@@ -14,7 +14,7 @@ per cluster is allowed (an upstream contract).
 Know the dashboard's posture before exposing it: it has NO built-in
 authentication, and in its default writable mode anyone who reaches it
 can run and delete pipelines. Set `dashboard.readonly: true` (or keep
-it unexposed — the port-forward command lands in the stack outputs).
+it unexposed — the port-forward command lands in the outputs).
 
 Change first: `pipeline.cloud_events_sink_url` to stream every run's
 lifecycle events to your CI orchestration — it is ONE cluster-global

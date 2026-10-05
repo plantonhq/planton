@@ -2,11 +2,11 @@
 
 Installs the Apache Solr Operator — the Apache Solr project's own operator for running SolrCloud on Kubernetes — from the official `solr-operator` Helm chart. The operator reconciles `SolrCloud` custom resources (declared with **Apache Solr**) into running Solr clusters with managed rolling updates, scaling with replica movement, and backup repositories.
 
-This component installs and configures the **engine**. Solr clusters themselves are declared with **Apache Solr** resources — one per cluster — which this operator reconciles.
+This kind installs and configures the **engine**. Solr clusters themselves are declared with **Apache Solr** resources — one per cluster — which this operator reconciles.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm release (solr-operator)** — the operator Deployment (with leader election between replicas), its RBAC, and ServiceAccount
 - **The operator CRDs** — SolrCloud, SolrBackup, SolrPrometheusExporter, and ZookeeperCluster (for the bundled dependency), derived from the pinned chart and applied by the module itself outside the release, keyed by CRD name. Because the module owns the CRD lifecycle, a chart bump moves the CRDs with it, uninstalling the operator never cascade-deletes SolrCloud resources and their data (unless `crds.keepOnUninstall` is false), a reinstall re-adopts them, and a version below what the cluster's CRDs carry is refused before anything changes
@@ -50,7 +50,7 @@ spec:
 planton apply -f solr-operator.yaml
 ```
 
-The defaults are the point: chart 0.9.1, the bundled zookeeper-operator installed, and a cluster-wide watch — every **Apache Solr** resource in any namespace gets reconciled, including its provided ZooKeeper ensemble. A Stack Job tracks the provisioning in real time.
+The defaults are the point: chart 0.9.1, the bundled zookeeper-operator installed, and a cluster-wide watch — every **Apache Solr** resource in any namespace gets reconciled, including its provided ZooKeeper ensemble. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,7 +84,7 @@ These are the most important decisions when configuring an Apache Solr Operator 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -92,9 +92,9 @@ These are the most important decisions when configuring an Apache Solr Operator 
 | **KubernetesSecret** | `mtls.clientCertSecret` | `metadata.name` |
 | **KubernetesSecret** | `mtls.caCertSecret` | `metadata.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -114,6 +114,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Apache Solr**](/cloud-catalog/kubernetes-solr) — the SolrCloud clusters this operator reconciles; deploy the operator FIRST (it is the registered prerequisite).
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — reference a managed namespace to compose governance (quotas, pod-security labels) with the installation.
-- [**Kubernetes Secret**](/cloud-catalog/kubernetes-secret) — the mTLS client and CA certificate Secrets the operator presents when Solr clusters enforce clientAuth.
+- [**Apache Solr**](/infra-catalog/kubernetes-solr) — the SolrCloud clusters this operator reconciles; deploy the operator FIRST (it is the registered prerequisite).
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — reference a managed namespace to compose governance (quotas, pod-security labels) with the installation.
+- [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) — the mTLS client and CA certificate Secrets the operator presents when Solr clusters enforce clientAuth.

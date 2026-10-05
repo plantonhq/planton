@@ -11,5 +11,5 @@ planton tofu apply --manifest e2e/manifest.yaml --auto-approve
 planton tofu destroy --manifest e2e/manifest.yaml --auto-approve
 ```
 
-- Credentials are provided via the CLI stack input, not stored in the manifest `spec`.
+- Credentials are provided via the CLI IaC input, not stored in the manifest `spec`.
 - Example manifest: see `catalog/aws/awsapprunnerservice/e2e/manifest.yaml`.

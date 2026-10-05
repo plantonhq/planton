@@ -1,6 +1,6 @@
 # GcpBigQueryDataset -- Pulumi Module
 
-This directory contains the Pulumi Go implementation for the GcpBigQueryDataset component.
+This directory contains the Pulumi Go implementation for the GcpBigQueryDataset kind.
 
 ## Module Structure
 
@@ -11,7 +11,7 @@ module/
   dataset.go    -- Creates bigquery.Dataset with all field mappings
   outputs.go    -- Output key constants
 
-main.go         -- Pulumi program entrypoint (loads stack input, calls module)
+main.go         -- Pulumi program entrypoint (loads IaC input, calls module)
 Pulumi.yaml     -- Pulumi project configuration
 Makefile        -- Build, preview, up, destroy targets
 ```

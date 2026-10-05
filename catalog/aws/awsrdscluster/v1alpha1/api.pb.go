@@ -31,7 +31,7 @@ type AwsRdsCluster struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsRdsClusterSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsRdsCluster) GetKind() string {
 	return ""
 }
 
-func (x *AwsRdsCluster) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsRdsCluster) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsRdsCluster) GetStatus() *AwsRdsClusterStatus {
 // aws-rds-cluster status
 type AwsRdsClusterStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsRdsClusterStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsRdsClusterOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsRdsClusterStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsrdscluster_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsRdsClusterStatus) GetOutputs() *AwsRdsClusterStackOutputs {
+func (x *AwsRdsClusterStatus) GetOutputs() *AwsRdsClusterOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awsrdscluster_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12(\n" +
 	"\x04kind\x18\x02 \x01(\tB\x14\xbaH\x11r\x0f\n" +
 	"\rAwsRdsClusterR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
 	"\x04spec\x18\x04 \x01(\v29.dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12S\n" +
-	"\x06status\x18\x05 \x01(\v2;.dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterStatusR\x06status\"r\n" +
-	"\x13AwsRdsClusterStatus\x12[\n" +
-	"\aoutputs\x18\x01 \x01(\v2A.dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterStackOutputsR\aoutputsB\xca\x02\n" +
+	"\x06status\x18\x05 \x01(\v2;.dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterStatusR\x06status\"m\n" +
+	"\x13AwsRdsClusterStatus\x12V\n" +
+	"\aoutputs\x18\x01 \x01(\v2<.dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterOutputsR\aoutputsB\xca\x02\n" +
 	"*com.dev.planton.aws.awsrdscluster.v1alpha1B\bApiProtoP\x01ZUgithub.com/plantonhq/planton/catalog/aws/awsrdscluster/v1alpha1;awsrdsclusterv1alpha1\xa2\x02\x04DPAA\xaa\x02&Dev.Planton.Aws.Awsrdscluster.V1alpha1\xca\x02&Dev\\Planton\\Aws\\Awsrdscluster\\V1alpha1\xe2\x022Dev\\Planton\\Aws\\Awsrdscluster\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Aws::Awsrdscluster::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_aws_awsrdscluster_v1alpha1_api_proto_msgTypes = make([]protoimp
 var file_catalog_aws_awsrdscluster_v1alpha1_api_proto_goTypes = []any{
 	(*AwsRdsCluster)(nil),                // 0: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsCluster
 	(*AwsRdsClusterStatus)(nil),          // 1: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsRdsClusterSpec)(nil),            // 3: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec
-	(*AwsRdsClusterStackOutputs)(nil),    // 4: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterStackOutputs
+	(*AwsRdsClusterOutputs)(nil),         // 4: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterOutputs
 }
 var file_catalog_aws_awsrdscluster_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsCluster.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsCluster.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsCluster.spec:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec
 	1, // 2: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsCluster.status:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterStatus
-	4, // 3: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterStatus.outputs:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterStackOutputs
+	4, // 3: dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterStatus.outputs:type_name -> dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

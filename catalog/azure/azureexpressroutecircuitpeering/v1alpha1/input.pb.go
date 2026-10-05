@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureExpressRouteCircuitPeeringStackInput is the input to the IaC
+// AzureExpressRouteCircuitPeeringIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource definition
 // and Azure provider credentials.
-type AzureExpressRouteCircuitPeeringStackInput struct {
+type AzureExpressRouteCircuitPeeringIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ExpressRoute circuit peering resource to deploy.
 	Target *AzureExpressRouteCircuitPeering `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureExpressRouteCircuitPeeringStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureExpressRouteCircuitPeeringStackInput) Reset() {
-	*x = AzureExpressRouteCircuitPeeringStackInput{}
+func (x *AzureExpressRouteCircuitPeeringIacInput) Reset() {
+	*x = AzureExpressRouteCircuitPeeringIacInput{}
 	mi := &file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureExpressRouteCircuitPeeringStackInput) String() string {
+func (x *AzureExpressRouteCircuitPeeringIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureExpressRouteCircuitPeeringStackInput) ProtoMessage() {}
+func (*AzureExpressRouteCircuitPeeringIacInput) ProtoMessage() {}
 
-func (x *AzureExpressRouteCircuitPeeringStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureExpressRouteCircuitPeeringIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureExpressRouteCircuitPeeringStackInput) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureExpressRouteCircuitPeeringStackInput.ProtoReflect.Descriptor instead.
-func (*AzureExpressRouteCircuitPeeringStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureExpressRouteCircuitPeeringIacInput.ProtoReflect.Descriptor instead.
+func (*AzureExpressRouteCircuitPeeringIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureExpressRouteCircuitPeeringStackInput) GetTarget() *AzureExpressRouteCircuitPeering {
+func (x *AzureExpressRouteCircuitPeeringIacInput) GetTarget() *AzureExpressRouteCircuitPeering {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureExpressRouteCircuitPeeringStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureExpressRouteCircuitPeeringIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_input_proto prot
 
 const file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/azure/azureexpressroutecircuitpeering/v1alpha1/input.proto\x12:dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1\x1a@catalog/azure/azureexpressroutecircuitpeering/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xf1\x01\n" +
-	")AzureExpressRouteCircuitPeeringStackInput\x12s\n" +
+	"Bcatalog/azure/azureexpressroutecircuitpeering/v1alpha1/input.proto\x12:dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1\x1a@catalog/azure/azureexpressroutecircuitpeering/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xef\x01\n" +
+	"'AzureExpressRouteCircuitPeeringIacInput\x12s\n" +
 	"\x06target\x18\x01 \x01(\v2[.dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xd6\x03\n" +
 	">com.dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_input_proto_raw
 
 var file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_input_proto_goTypes = []any{
-	(*AzureExpressRouteCircuitPeeringStackInput)(nil), // 0: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStackInput
-	(*AzureExpressRouteCircuitPeering)(nil),           // 1: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeering
-	(*azure.AzureProviderConfig)(nil),                 // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureExpressRouteCircuitPeeringIacInput)(nil), // 0: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringIacInput
+	(*AzureExpressRouteCircuitPeering)(nil),         // 1: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeering
+	(*azure.AzureProviderConfig)(nil),               // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureexpressroutecircuitpeering_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStackInput.target:type_name -> dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeering
-	2, // 1: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringIacInput.target:type_name -> dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeering
+	2, // 1: dev.planton.azure.azureexpressroutecircuitpeering.v1alpha1.AzureExpressRouteCircuitPeeringIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

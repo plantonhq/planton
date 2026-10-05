@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureroutetablev1alpha1.AzureRouteTableStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureroutetablev1alpha1.AzureRouteTableIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -69,7 +69,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureroutetablev1alpha1.AzureRou
 		return errors.Wrapf(err, "failed to create route table %s", spec.Name)
 	}
 
-	// Export stack outputs from the created resource. route_table_id is the
+	// Export outputs from the created resource. route_table_id is the
 	// join key subnets use to attach the table's routing policy.
 	ctx.Export(OpRouteTableId, createdRouteTable.ID())
 	ctx.Export(OpRouteTableName, createdRouteTable.Name)

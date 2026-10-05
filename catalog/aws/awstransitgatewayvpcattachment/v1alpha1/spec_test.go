@@ -27,7 +27,7 @@ func validEnvelope(spec *AwsTransitGatewayVpcAttachmentSpec) *AwsTransitGatewayV
 	return &AwsTransitGatewayVpcAttachment{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsTransitGatewayVpcAttachment",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-attachment"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-attachment"},
 		Spec:       spec,
 	}
 }

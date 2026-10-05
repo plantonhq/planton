@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDataFactoryDataFlowStackOutputs** captures the outputs from
+// **AzureDataFactoryDataFlowOutputs** captures the outputs from
 // provisioning an Azure Data Factory data flow.
-type AzureDataFactoryDataFlowStackOutputs struct {
+type AzureDataFactoryDataFlowOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The data flow's Azure Resource Manager ID
 	// ({factory_id}/dataflows/{name}) -- the same ID shape for both the
@@ -36,20 +36,20 @@ type AzureDataFactoryDataFlowStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureDataFactoryDataFlowStackOutputs) Reset() {
-	*x = AzureDataFactoryDataFlowStackOutputs{}
+func (x *AzureDataFactoryDataFlowOutputs) Reset() {
+	*x = AzureDataFactoryDataFlowOutputs{}
 	mi := &file_catalog_azure_azuredatafactorydataflow_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataFactoryDataFlowStackOutputs) String() string {
+func (x *AzureDataFactoryDataFlowOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataFactoryDataFlowStackOutputs) ProtoMessage() {}
+func (*AzureDataFactoryDataFlowOutputs) ProtoMessage() {}
 
-func (x *AzureDataFactoryDataFlowStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDataFactoryDataFlowOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredatafactorydataflow_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AzureDataFactoryDataFlowStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataFactoryDataFlowStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDataFactoryDataFlowStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataFactoryDataFlowOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDataFactoryDataFlowOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredatafactorydataflow_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataFactoryDataFlowStackOutputs) GetDataFlowId() string {
+func (x *AzureDataFactoryDataFlowOutputs) GetDataFlowId() string {
 	if x != nil {
 		return x.DataFlowId
 	}
 	return ""
 }
 
-func (x *AzureDataFactoryDataFlowStackOutputs) GetDataFlowName() string {
+func (x *AzureDataFactoryDataFlowOutputs) GetDataFlowName() string {
 	if x != nil {
 		return x.DataFlowName
 	}
@@ -84,8 +84,8 @@ var File_catalog_azure_azuredatafactorydataflow_v1alpha1_outputs_proto protorefl
 
 const file_catalog_azure_azuredatafactorydataflow_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azuredatafactorydataflow/v1alpha1/outputs.proto\x123dev.planton.azure.azuredatafactorydataflow.v1alpha1\"n\n" +
-	"$AzureDataFactoryDataFlowStackOutputs\x12 \n" +
+	"=catalog/azure/azuredatafactorydataflow/v1alpha1/outputs.proto\x123dev.planton.azure.azuredatafactorydataflow.v1alpha1\"i\n" +
+	"\x1fAzureDataFactoryDataFlowOutputs\x12 \n" +
 	"\fdata_flow_id\x18\x01 \x01(\tR\n" +
 	"dataFlowId\x12$\n" +
 	"\x0edata_flow_name\x18\x02 \x01(\tR\fdataFlowNameB\xa7\x03\n" +
@@ -105,7 +105,7 @@ func file_catalog_azure_azuredatafactorydataflow_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_azure_azuredatafactorydataflow_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredatafactorydataflow_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDataFactoryDataFlowStackOutputs)(nil), // 0: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowStackOutputs
+	(*AzureDataFactoryDataFlowOutputs)(nil), // 0: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowOutputs
 }
 var file_catalog_azure_azuredatafactorydataflow_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

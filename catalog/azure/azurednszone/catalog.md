@@ -4,7 +4,7 @@ Deploys a public Azure DNS Zone: an internet-facing, authoritative DNS zone host
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Public DNS Zone** -- a global Azure DNS zone (no region) for the specified domain, with four Azure-assigned name servers
 - **SOA Record customization** (optional) -- when the spec carries an `soaRecord` block, the zone's Start of Authority record carries your contact email and timers instead of Azure's defaults; unlike a private zone's SOA, every field updates in place
@@ -16,12 +16,12 @@ Creating the zone does NOT make it authoritative on the internet: the domain res
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the DNS zone will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef. Zones are global resources, but ARM still homes them in a group -- the group governs who can manage the zone, not how it resolves.
+- **An Azure Resource Group** where the DNS zone will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef. Zones are global resources, but ARM still homes them in a group -- the group governs who can manage the zone, not how it resolves.
 - **Domain ownership at a registrar** -- Azure hosts whatever zone name you give it (the same name can exist in many subscriptions, each with a different name-server set), but only the copy delegated at the registrar answers the internet.
 
 ## Deploy
@@ -51,7 +51,7 @@ spec:
 planton apply -f dns-zone.yaml
 ```
 
-This creates an empty public zone for `example.com` with Azure's standard SOA record. A Stack Job tracks the provisioning in real time. Capture `status.outputs.nameservers` after the first deployment and configure those four servers at the registrar to make the zone live; then declare records as AzureDnsRecord resources.
+This creates an empty public zone for `example.com` with Azure's standard SOA record. An Infra Job tracks the provisioning in real time. Capture `status.outputs.nameservers` after the first deployment and configure those four servers at the registrar to make the zone live; then declare records as AzureDnsRecord resources.
 
 ### InfraChart
 
@@ -80,15 +80,15 @@ These are the most important decisions when configuring a DNS zone. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,5 +109,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the DNS zone is created
-- [**Azure DNS Record**](/cloud-catalog/azure-dns-record) -- declares each record set in the zone, one resource per record, referencing `zone_name` and `resource_group_name`
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the DNS zone is created
+- [**Azure DNS Record**](/infra-catalog/azure-dns-record) -- declares each record set in the zone, one resource per record, referencing `zone_name` and `resource_group_name`

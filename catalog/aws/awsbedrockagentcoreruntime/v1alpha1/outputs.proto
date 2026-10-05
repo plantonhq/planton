@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1;
 
-// AwsBedrockAgentCoreRuntimeStackOutputs captures observable identifiers
+// AwsBedrockAgentCoreRuntimeOutputs captures observable identifiers
 // from a provisioned AgentCore agent runtime. Downstream resources
 // (gateway targets pointing at this runtime, evaluation harnesses,
 // callers building invoke ARNs) wire dependencies via StringValueOrRef.
-message AwsBedrockAgentCoreRuntimeStackOutputs {
+message AwsBedrockAgentCoreRuntimeOutputs {
   // The unique runtime identifier (e.g. "my_agent-AbC1dEf2Gh").
   string agent_runtime_id = 1;
 

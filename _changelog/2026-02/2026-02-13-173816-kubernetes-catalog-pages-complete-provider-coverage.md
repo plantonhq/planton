@@ -6,18 +6,18 @@
 
 ## Summary
 
-Wrote hand-written, source-verified catalog pages for all 48 remaining Kubernetes deployment components, completing the provider at 51/51 (100%) coverage. This is the third provider to reach full catalog page coverage after AWS (25/25) and GCP (19/19), and by far the largest single-provider effort — 48 pages across 12 rounds of parallel authoring.
+Wrote hand-written, source-verified catalog pages for all 48 remaining Kubernetes catalog kinds, completing the provider at 51/51 (100%) coverage. This is the third provider to reach full catalog page coverage after AWS (25/25) and GCP (19/19), and by far the largest single-provider effort — 48 pages across 12 rounds of parallel authoring.
 
 ## Problem Statement / Motivation
 
-The Kubernetes provider is Planton's largest, with 51 deployment components spanning core workloads, databases, messaging, CI/CD, networking, observability, security, identity, container registries, and Kubernetes operators. Only 3 of these had hand-written catalog pages (KubernetesPostgres, KubernetesDeployment, KubernetesRedis). The remaining 48 served auto-generated `docs/README.md` content that consisted of research-style prose rather than developer-focused documentation.
+The Kubernetes provider is Planton's largest, with 51 catalog kinds spanning core workloads, databases, messaging, CI/CD, networking, observability, security, identity, container registries, and Kubernetes operators. Only 3 of these had hand-written catalog pages (KubernetesPostgres, KubernetesDeployment, KubernetesRedis). The remaining 48 served auto-generated `docs/README.md` content that consisted of research-style prose rather than developer-focused documentation.
 
 ### Pain Points
 
-- 48 components had no source-verified catalog documentation
+- 48 kinds had no source-verified catalog documentation
 - Auto-generated pages contained technology landscape essays, deployment maturity spectrums, and tool comparisons instead of actionable deployment guides
 - The `kubernetestektonoperator` page contained a Planton boundary violation ("Real-world usage at Planton")
-- No consistent structure across Kubernetes component documentation
+- No consistent structure across Kubernetes kind documentation
 
 ## Solution / What's New
 
@@ -29,14 +29,14 @@ The Kubernetes provider is Planton's largest, with 51 deployment components span
 4. Quick Start (minimal manifest + deploy command)
 5. Configuration Reference (Required + Optional field tables from spec.proto)
 6. Examples (3-5 progressive manifests, all proto-verified)
-7. Stack Outputs (from stack_outputs.proto)
-8. Related Components
+7. Outputs (from outputs.proto)
+8. Related Kinds
 
 ### Execution
 
 12 rounds of 4 parallel agents, organized by infrastructure layer:
 
-| Round | Category | Components |
+| Round | Category | Kinds |
 |-------|----------|-----------|
 | 1 | Core Primitives | namespace, secret, service, manifest |
 | 2 | Core Workloads | cronjob, job, statefulset, daemonset |
@@ -55,7 +55,7 @@ The Kubernetes provider is Planton's largest, with 51 deployment components span
 
 4 pages audited across complexity levels:
 
-| Component | Complexity | Critical | Warnings | Result |
+| Kind | Complexity | Critical | Warnings | Result |
 |-----------|-----------|----------|----------|--------|
 | KubernetesNamespace | Simple | 0 | 1 (marketing lang) | PASS after fix |
 | KubernetesKafka | Medium | 0 | 0 | PASS |
@@ -66,22 +66,22 @@ Audit fixes applied: removed "production-grade" marketing language from Namespac
 
 ## Implementation Details
 
-Each catalog page was created by reading 4-6 source files per component:
+Each catalog page was created by reading 4-6 source files per kind:
 
 1. `api.proto` — apiVersion and kind constants
 2. `spec.proto` — all configuration fields, types, validation annotations, defaults
-3. `stack_outputs.proto` — output field definitions
+3. `outputs.proto` — output field definitions
 4. `iac/pulumi/module/main.go` — deployment flow
 5. `iac/pulumi/module/*.go` — resource creation details and output exports
 
-The build script (`site/scripts/copy-component-docs.ts`) automatically prefers `catalog-page.md` over legacy `docs/README.md`, so all 48 new pages will be picked up on the next build without any script changes.
+The build script (`site/scripts/copy-kind-docs.ts`) automatically prefers `catalog-page.md` over legacy `docs/README.md`, so all 48 new pages will be picked up on the next build without any script changes.
 
 ## Benefits
 
-- **Kubernetes provider at 100% catalog page coverage** — 51/51 components have hand-written, source-verified documentation
+- **Kubernetes provider at 100% catalog page coverage** — 51/51 kinds have hand-written, source-verified documentation
 - **Consistent 9-section structure** across all 51 pages
 - **Planton boundary violation fixed** — `kubernetestektonoperator` no longer shows "Real-world usage at Planton"
-- **Total catalog coverage**: 114 of ~215 production components (53%), up from 66 (31%)
+- **Total catalog coverage**: 114 of ~215 production kinds (53%), up from 66 (31%)
   - AWS: 25/25 (100%)
   - GCP: 19/19 (100%)
   - Kubernetes: 51/51 (100%)
@@ -89,7 +89,7 @@ The build script (`site/scripts/copy-component-docs.ts`) automatically prefers `
 
 ## Impact
 
-- Developers evaluating Planton's Kubernetes support can now browse source-verified documentation for every one of the 51 components
+- Developers evaluating Planton's Kubernetes support can now browse source-verified documentation for every one of the 51 kinds
 - The catalog covers the full spectrum: from simple primitives (Namespace, Secret) to complex platforms (Harbor, Temporal, Kafka, GitLab)
 - Every manifest example follows the actual protobuf schema and would pass `planton validate`
 

@@ -5,10 +5,10 @@ package dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1;
 import "catalog/azure/azurebackupcontainerstorageaccount/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureBackupContainerStorageAccountStackInput is the input to the
+// AzureBackupContainerStorageAccountIacInput is the input to the
 // IaC modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-message AzureBackupContainerStorageAccountStackInput {
+message AzureBackupContainerStorageAccountIacInput {
   // The backup container registration resource to deploy.
   AzureBackupContainerStorageAccount target = 1;
 

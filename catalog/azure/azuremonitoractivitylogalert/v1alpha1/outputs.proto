@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremonitoractivitylogalert.v1alpha1;
 
-// **AzureMonitorActivityLogAlertStackOutputs** captures the outputs of
+// **AzureMonitorActivityLogAlertOutputs** captures the outputs of
 // provisioning an Azure Monitor Activity Log Alert.
-message AzureMonitorActivityLogAlertStackOutputs {
+message AzureMonitorActivityLogAlertOutputs {
   // The Azure Resource Manager ID of the activity log alert.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Insights/activityLogAlerts/{name}
   string activity_log_alert_id = 1;

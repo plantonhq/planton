@@ -6,7 +6,7 @@ import (
 
 	azurenetworkwatcherflowlogv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurenetworkwatcherflowlog/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -29,11 +29,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurenetworkwatcherflowlogv1alpha1.AzureNetworkWatcherFlowLogStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurenetworkwatcherflowlogv1alpha1.AzureNetworkWatcherFlowLogIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureNetworkWatcherFlowLog = stackInput.Target
-	target := stackInput.Target
+	locals.AzureNetworkWatcherFlowLog = iacInput.Target
+	target := iacInput.Target
 
 	locals.NetworkWatcherName = target.Spec.NetworkWatcherName
 	if locals.NetworkWatcherName == "" {
@@ -52,7 +52,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurenetworkwatcherflowlo
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureNetworkWatcherFlowLog.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureNetworkWatcherFlowLog.String()),
 	}
 
 	if target.Metadata.Id != "" {

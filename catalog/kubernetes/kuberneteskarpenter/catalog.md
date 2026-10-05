@@ -4,7 +4,7 @@ Installs the Karpenter node-provisioning controller from the official OCI-served
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CRD Helm Release** (`karpenter-crd`) -- the NodePool, NodeClaim, and EC2NodeClass definitions as their own release — upstream's supported path for keeping CRDs upgradable — annotated to survive uninstall by default, so removing the release does not cascade-delete every fleet declaration in the cluster
 - **Controller Helm Release** (`karpenter`) -- the controller Deployment (chart default 2 replicas: leader plus warm standby), RBAC, and the `karpenter` service account; the chart pins controller pods away from Karpenter-provisioned nodes so the controller never disrupts its own machine
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS / Cluster
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f karpenter.yaml
 ```
 
-This installs the CRD and controller releases into `kube-system`, wired to the `prod-eks` control plane with IRSA identity and interruption handling; declare the fleet next (an EC2NodeClass and at least one NodePool) and Karpenter starts launching nodes for pending pods. A Stack Job tracks the provisioning in real time.
+This installs the CRD and controller releases into `kube-system`, wired to the `prod-eks` control plane with IRSA identity and interruption handling; declare the fleet next (an EC2NodeClass and at least one NodePool) and Karpenter starts launching nodes for pending pods. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -97,16 +97,16 @@ These are the most important decisions when configuring Karpenter. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 | **AwsIamRole** | `aws.irsaRoleArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -127,8 +127,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Karpenter EC2 Node Class**](/cloud-catalog/kubernetes-karpenter-ec2-node-class) -- the machine template (AMI, networking, storage, IAM) the fleet launches from; declare it right after the controller
-- [**Karpenter Node Pool**](/cloud-catalog/kubernetes-karpenter-node-pool) -- the fleet constraints (instance families, capacity types, limits, disruption policy); one class typically serves several pools
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the controller's IRSA identity; wire `irsaRoleArn` from its `role_arn` output
-- [**Cluster Autoscaler**](/cloud-catalog/kubernetes-cluster-autoscaler) -- the alternative fleet controller for pre-defined node groups; never both on the same capacity
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- pending pods from any workload trigger provisioning; no per-workload wiring needed
+- [**Karpenter EC2 Node Class**](/infra-catalog/kubernetes-karpenter-ec2-node-class) -- the machine template (AMI, networking, storage, IAM) the fleet launches from; declare it right after the controller
+- [**Karpenter Node Pool**](/infra-catalog/kubernetes-karpenter-node-pool) -- the fleet constraints (instance families, capacity types, limits, disruption policy); one class typically serves several pools
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the controller's IRSA identity; wire `irsaRoleArn` from its `role_arn` output
+- [**Cluster Autoscaler**](/infra-catalog/kubernetes-cluster-autoscaler) -- the alternative fleet controller for pre-defined node groups; never both on the same capacity
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- pending pods from any workload trigger provisioning; no per-workload wiring needed

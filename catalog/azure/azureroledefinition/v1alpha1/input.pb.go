@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureRoleDefinitionStackInput is the input to the IaC module.
+// AzureRoleDefinitionIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type AzureRoleDefinitionStackInput struct {
+type AzureRoleDefinitionIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// the catalog object to deploy to be deployed
 	Target *AzureRoleDefinition `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Azure authentication
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AzureRoleDefinitionStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureRoleDefinitionStackInput) Reset() {
-	*x = AzureRoleDefinitionStackInput{}
+func (x *AzureRoleDefinitionIacInput) Reset() {
+	*x = AzureRoleDefinitionIacInput{}
 	mi := &file_catalog_azure_azureroledefinition_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureRoleDefinitionStackInput) String() string {
+func (x *AzureRoleDefinitionIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureRoleDefinitionStackInput) ProtoMessage() {}
+func (*AzureRoleDefinitionIacInput) ProtoMessage() {}
 
-func (x *AzureRoleDefinitionStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureRoleDefinitionIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureroledefinition_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureRoleDefinitionStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureRoleDefinitionStackInput.ProtoReflect.Descriptor instead.
-func (*AzureRoleDefinitionStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureRoleDefinitionIacInput.ProtoReflect.Descriptor instead.
+func (*AzureRoleDefinitionIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureroledefinition_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureRoleDefinitionStackInput) GetTarget() *AzureRoleDefinition {
+func (x *AzureRoleDefinitionIacInput) GetTarget() *AzureRoleDefinition {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureRoleDefinitionStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureRoleDefinitionIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azureroledefinition_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_azure_azureroledefinition_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/azure/azureroledefinition/v1alpha1/input.proto\x12.dev.planton.azure.azureroledefinition.v1alpha1\x1a4catalog/azure/azureroledefinition/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xcd\x01\n" +
-	"\x1dAzureRoleDefinitionStackInput\x12[\n" +
+	"6catalog/azure/azureroledefinition/v1alpha1/input.proto\x12.dev.planton.azure.azureroledefinition.v1alpha1\x1a4catalog/azure/azureroledefinition/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xcb\x01\n" +
+	"\x1bAzureRoleDefinitionIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x82\x03\n" +
 	"2com.dev.planton.azure.azureroledefinition.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_azure_azureroledefinition_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_azure_azureroledefinition_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureroledefinition_v1alpha1_input_proto_goTypes = []any{
-	(*AzureRoleDefinitionStackInput)(nil), // 0: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionStackInput
-	(*AzureRoleDefinition)(nil),           // 1: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinition
-	(*azure.AzureProviderConfig)(nil),     // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureRoleDefinitionIacInput)(nil), // 0: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionIacInput
+	(*AzureRoleDefinition)(nil),         // 1: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinition
+	(*azure.AzureProviderConfig)(nil),   // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureroledefinition_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionStackInput.target:type_name -> dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinition
-	2, // 1: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionIacInput.target:type_name -> dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinition
+	2, // 1: dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -5,7 +5,7 @@ package dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1;
 import "catalog/gcp/gcpworkloadidentitypoolprovider/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-message GcpWorkloadIdentityPoolProviderStackInput {
+message GcpWorkloadIdentityPoolProviderIacInput {
   GcpWorkloadIdentityPoolProvider target = 1;
   dev.planton.gcp.GcpProviderConfig provider_config = 2;
 }

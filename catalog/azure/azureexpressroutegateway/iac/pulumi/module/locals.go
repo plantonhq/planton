@@ -5,7 +5,7 @@ import (
 
 	azureexpressroutegatewayv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureexpressroutegateway/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -23,11 +23,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureexpressroutegatewayv1alpha1.AzureExpressRouteGatewayStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureexpressroutegatewayv1alpha1.AzureExpressRouteGatewayIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureExpressRouteGateway = stackInput.Target
-	target := stackInput.Target
+	locals.AzureExpressRouteGateway = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -38,7 +38,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureexpressroutegatewayv
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureExpressRouteGateway.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureExpressRouteGateway.String()),
 	}
 
 	if target.Metadata.Id != "" {

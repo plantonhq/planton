@@ -37,11 +37,11 @@ var versionUpgradeOptionWire = map[azurecognitivedeploymentv1alpha1.AzureCogniti
 	azurecognitivedeploymentv1alpha1.AzureCognitiveDeploymentVersionUpgradeOption_NO_AUTO_UPGRADE:                    "NoAutoUpgrade",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurecognitivedeploymentv1alpha1.AzureCognitiveDeploymentStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurecognitivedeploymentv1alpha1.AzureCognitiveDeploymentIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureCognitiveDeployment = stackInput.Target
-	locals.CognitiveAccountId = stackInput.Target.Spec.CognitiveAccountId.GetValue()
+	locals.AzureCognitiveDeployment = iacInput.Target
+	locals.CognitiveAccountId = iacInput.Target.Spec.CognitiveAccountId.GetValue()
 
 	return locals
 }

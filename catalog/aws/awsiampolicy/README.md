@@ -7,7 +7,7 @@ to many roles and users at once, or used as a permissions boundary.
 ## Why We Created This API Resource
 
 A managed policy is the reusable unit of AWS permissions. Modeling it as a
-first-class component -- instead of burying permission documents inside every
+first-class kind -- instead of burying permission documents inside every
 role -- lets one definition serve an entire architecture. It lets you:
 
 - **Define permissions once, attach everywhere**: roles and users reference the
@@ -46,7 +46,7 @@ role -- lets one definition serve an entire architecture. It lets you:
   permission sets practical across many principals.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `policy_arn`: ARN of the managed policy (what attachments and boundaries reference)
 - `policy_id`: stable unique ID AWS assigns to the policy

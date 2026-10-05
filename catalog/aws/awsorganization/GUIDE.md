@@ -1,6 +1,6 @@
-# AwsOrganization — Component Guide
+# AwsOrganization — Kind Guide
 
-Authored operational judgment for the organization component: the
+Authored operational judgment for the organization kind: the
 design decisions behind the spec's shape, and what to know before
 operating an organization in production.
 
@@ -9,7 +9,7 @@ operating an organization in production.
 - **This kind IS the management-account act.** Deploying it from an
   account performs CreateOrganization there — the account becomes the
   management account. There is exactly one organization per account;
-  the component models that singleton honestly (no name, no multiples).
+  the kind models that singleton honestly (no name, no multiples).
 - **Service access lives HERE, nowhere else.** The provider ships both
   an `aws_service_access_principals` argument and a standalone
   service-access resource, and its own docs warn that using both

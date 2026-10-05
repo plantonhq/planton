@@ -31,7 +31,7 @@ type GcpSubnetwork struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpSubnetworkSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpSubnetwork) GetKind() string {
 	return ""
 }
 
-func (x *GcpSubnetwork) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpSubnetwork) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *GcpSubnetwork) GetStatus() *GcpSubnetworkStatus {
 // gcp-subnetwork status
 type GcpSubnetworkStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	stack outputs
-	Outputs       *GcpSubnetworkStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	outputs
+	Outputs       *GcpSubnetworkOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*GcpSubnetworkStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsubnetwork_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpSubnetworkStatus) GetOutputs() *GcpSubnetworkStackOutputs {
+func (x *GcpSubnetworkStatus) GetOutputs() *GcpSubnetworkOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_gcp_gcpsubnetwork_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12(\n" +
 	"\x04kind\x18\x02 \x01(\tB\x14\xbaH\x11r\x0f\n" +
 	"\rGcpSubnetworkR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
 	"\x04spec\x18\x04 \x01(\v29.dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12S\n" +
-	"\x06status\x18\x05 \x01(\v2;.dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkStatusR\x06status\"r\n" +
-	"\x13GcpSubnetworkStatus\x12[\n" +
-	"\aoutputs\x18\x01 \x01(\v2A.dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkStackOutputsR\aoutputsB\xca\x02\n" +
+	"\x06status\x18\x05 \x01(\v2;.dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkStatusR\x06status\"m\n" +
+	"\x13GcpSubnetworkStatus\x12V\n" +
+	"\aoutputs\x18\x01 \x01(\v2<.dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkOutputsR\aoutputsB\xca\x02\n" +
 	"*com.dev.planton.gcp.gcpsubnetwork.v1alpha1B\bApiProtoP\x01ZUgithub.com/plantonhq/planton/catalog/gcp/gcpsubnetwork/v1alpha1;gcpsubnetworkv1alpha1\xa2\x02\x04DPGG\xaa\x02&Dev.Planton.Gcp.Gcpsubnetwork.V1alpha1\xca\x02&Dev\\Planton\\Gcp\\Gcpsubnetwork\\V1alpha1\xe2\x022Dev\\Planton\\Gcp\\Gcpsubnetwork\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Gcp::Gcpsubnetwork::V1alpha1b\x06proto3"
 
 var (
@@ -187,15 +187,15 @@ var file_catalog_gcp_gcpsubnetwork_v1alpha1_api_proto_msgTypes = make([]protoimp
 var file_catalog_gcp_gcpsubnetwork_v1alpha1_api_proto_goTypes = []any{
 	(*GcpSubnetwork)(nil),                // 0: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetwork
 	(*GcpSubnetworkStatus)(nil),          // 1: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpSubnetworkSpec)(nil),            // 3: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkSpec
-	(*GcpSubnetworkStackOutputs)(nil),    // 4: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkStackOutputs
+	(*GcpSubnetworkOutputs)(nil),         // 4: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkOutputs
 }
 var file_catalog_gcp_gcpsubnetwork_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetwork.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetwork.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetwork.spec:type_name -> dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkSpec
 	1, // 2: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetwork.status:type_name -> dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkStatus
-	4, // 3: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkStatus.outputs:type_name -> dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkStackOutputs
+	4, // 3: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkStatus.outputs:type_name -> dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

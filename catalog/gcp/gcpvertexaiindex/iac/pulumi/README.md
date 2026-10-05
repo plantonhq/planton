@@ -17,7 +17,7 @@ planton pulumi up --manifest ../../e2e/manifest.yaml --module-dir .
 planton pulumi destroy --manifest ../../e2e/manifest.yaml --module-dir .
 ```
 
-Credentials are provided via stack input (by the CLI), not in the manifest `spec`. Manifest file: `../../e2e/manifest.yaml`.
+Credentials are provided via IaC input (by the CLI), not in the manifest `spec`. Manifest file: `../../e2e/manifest.yaml`.
 
 ## Direct Pulumi Usage
 
@@ -31,7 +31,7 @@ Note: index creation is a long-running operation — minutes for an empty stream
 
 ## Module Layout
 
-- `main.go` — entrypoint; loads the stack input and calls the module
+- `main.go` — entrypoint; loads the IaC input and calls the module
 - `module/locals.go` — labels merge
 - `module/vector_index.go` — API enablement + metadata/config assembly + the index resource + outputs
 - `module/outputs.go` — output constant names

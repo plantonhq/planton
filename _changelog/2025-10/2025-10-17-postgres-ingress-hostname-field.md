@@ -172,7 +172,7 @@ type Locals struct {
     // ... other fields
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *postgreskubernetesv1.PostgresKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *postgreskubernetesv1.PostgresKubernetesIacInput) *Locals {
     // ... other initialization
 
     if target.Spec.Ingress == nil ||
@@ -206,7 +206,7 @@ type Locals struct {
     // ... other fields
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *postgreskubernetesv1.PostgresKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *postgreskubernetesv1.PostgresKubernetesIacInput) *Locals {
     // ... other initialization
 
     if target.Spec.Ingress == nil ||
@@ -321,9 +321,9 @@ All documentation files updated with correct ingress syntax:
 5. **`v1/api_test.go`**:
    - Updated test to use new `PostgresKubernetesIngress` message
 
-### Stack Outputs Proto
+### Outputs Proto
 
-**File**: `apis/project/planton/provider/kubernetes/workload/postgreskubernetes/v1/stack_outputs.proto`
+**File**: `apis/project/planton/provider/kubernetes/workload/postgreskubernetes/v1/outputs.proto`
 
 Added deprecation comment to `internal_hostname` field (line 30) for backward compatibility.
 
@@ -629,7 +629,7 @@ planton pulumi up --manifest postgres-invalid.yaml
 ✅ **Documentation**: All examples and READMEs updated  
 ✅ **Validation**: CEL validation ensures hostname required when enabled  
 ✅ **Outputs**: Internal hostname output removed/deprecated in both Terraform and Pulumi  
-✅ **Stack Outputs**: Deprecation comment added for backward compatibility
+✅ **Outputs**: Deprecation comment added for backward compatibility
 
 **Status**: Complete and ready for protobuf regeneration
 

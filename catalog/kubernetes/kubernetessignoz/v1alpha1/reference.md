@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesSignozSpec** deploys SigNoz — the all-in-one open-source
 observability platform (traces, metrics and logs in ONE UI, stored in
@@ -31,7 +31,7 @@ quotas, keeper topology) lives on the component that owns it. KNOW
 THIS (verified live): a chart-bundled database CANNOT uninstall
 cleanly — the operator and its installation die in the same release
 and the installation's finalizer deadlocks — which is why this
-component composes instead of bundling.
+kind composes instead of bundling.
 
 SIGNOZ OR THE COMPOSED STACK? SigNoz is the "one product instead of
 four" path: where KubernetesKubePrometheusStack + KubernetesGrafana +

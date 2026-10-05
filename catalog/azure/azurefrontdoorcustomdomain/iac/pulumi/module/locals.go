@@ -25,11 +25,11 @@ var cipherSuiteSetTypeStrings = map[azurefrontdoorcustomdomainv1alpha1.AzureFron
 	azurefrontdoorcustomdomainv1alpha1.AzureFrontDoorCustomDomainCipherSuiteSetType_CUSTOMIZED: "Customized",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefrontdoorcustomdomainv1alpha1.AzureFrontDoorCustomDomainStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefrontdoorcustomdomainv1alpha1.AzureFrontDoorCustomDomainIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFrontDoorCustomDomain = stackInput.Target
-	locals.ProfileId = stackInput.Target.Spec.ProfileId.GetValue()
+	locals.AzureFrontDoorCustomDomain = iacInput.Target
+	locals.ProfileId = iacInput.Target.Spec.ProfileId.GetValue()
 
 	// No Azure tags: ARM does not support tags on Front Door custom
 	// domains, so the platform's identity tags live on the profile.

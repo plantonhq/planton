@@ -31,7 +31,7 @@ type AwsEcsTaskDefinition struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsEcsTaskDefinitionSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsEcsTaskDefinition) GetKind() string {
 	return ""
 }
 
-func (x *AwsEcsTaskDefinition) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsEcsTaskDefinition) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsEcsTaskDefinition) GetStatus() *AwsEcsTaskDefinitionStatus {
 // aws-ecs-task-definition status
 type AwsEcsTaskDefinitionStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsEcsTaskDefinitionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsEcsTaskDefinitionOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsEcsTaskDefinitionStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsecstaskdefinition_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsEcsTaskDefinitionStatus) GetOutputs() *AwsEcsTaskDefinitionStackOutputs {
+func (x *AwsEcsTaskDefinitionStatus) GetOutputs() *AwsEcsTaskDefinitionOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awsecstaskdefinition_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14AwsEcsTaskDefinitionR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionStatusR\x06status\"\x87\x01\n" +
-	"\x1aAwsEcsTaskDefinitionStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionStackOutputsR\aoutputsB\xfb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionStatusR\x06status\"\x82\x01\n" +
+	"\x1aAwsEcsTaskDefinitionStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionOutputsR\aoutputsB\xfb\x02\n" +
 	"1com.dev.planton.aws.awsecstaskdefinition.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/aws/awsecstaskdefinition/v1alpha1;awsecstaskdefinitionv1alpha1\xa2\x02\x04DPAA\xaa\x02-Dev.Planton.Aws.Awsecstaskdefinition.V1alpha1\xca\x02-Dev\\Planton\\Aws\\Awsecstaskdefinition\\V1alpha1\xe2\x029Dev\\Planton\\Aws\\Awsecstaskdefinition\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Aws::Awsecstaskdefinition::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_aws_awsecstaskdefinition_v1alpha1_api_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awsecstaskdefinition_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsecstaskdefinition_v1alpha1_api_proto_goTypes = []any{
-	(*AwsEcsTaskDefinition)(nil),             // 0: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinition
-	(*AwsEcsTaskDefinitionStatus)(nil),       // 1: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsEcsTaskDefinitionSpec)(nil),         // 3: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionSpec
-	(*AwsEcsTaskDefinitionStackOutputs)(nil), // 4: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionStackOutputs
+	(*AwsEcsTaskDefinition)(nil),         // 0: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinition
+	(*AwsEcsTaskDefinitionStatus)(nil),   // 1: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsEcsTaskDefinitionSpec)(nil),     // 3: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionSpec
+	(*AwsEcsTaskDefinitionOutputs)(nil),  // 4: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionOutputs
 }
 var file_catalog_aws_awsecstaskdefinition_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinition.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinition.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinition.spec:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionSpec
 	1, // 2: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinition.status:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionStatus
-	4, // 3: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionStatus.outputs:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionStackOutputs
+	4, // 3: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionStatus.outputs:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

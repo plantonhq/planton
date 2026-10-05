@@ -6,7 +6,7 @@
 
 **apiVersion**: `digital-ocean.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 DigitalOceanLoadBalancerSpec models the full digitalocean_loadbalancer
 resource surface: regional and global balancer types, sizing (slug or
@@ -542,7 +542,7 @@ after creation.
 (Optional) Bring-your-own IP: an unassigned BYOIP address on the
 account, in the balancer's region, assigned at creation. Consumed only
 at create time; when unset DigitalOcean allocates the address. The
-assigned address is exported as the ip stack output either way.
+assigned address is exported as the ip output either way.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"ip":true}}
 

@@ -11,7 +11,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/e2e/framework/provider"
-	permissionsv1 "github.com/plantonhq/planton/iac/componentpermissions/v1"
+	permissionsv1 "github.com/plantonhq/planton/iac/catalogkindpermissions/v1"
 	"github.com/plantonhq/planton/pkg/iac/permissions"
 	"sigs.k8s.io/yaml"
 )
@@ -19,7 +19,7 @@ import (
 // The identities a Kubernetes scenario may declare with planton.dev/e2e-identity.
 //
 //	declared                                     a ServiceAccount bound to exactly the rules the
-//	                                             component's iac/permissions.yaml declares
+//	                                             kind's iac/permissions.yaml declares
 //	declared-minus:<apiGroup>/<resource>:<v>,<v> the same, with the named verbs withheld from the
 //	                                             named resource (the core API group is "")
 //
@@ -39,25 +39,25 @@ const (
 )
 
 // ProvisionIdentity implements provider.IdentityProvisioner: a ServiceAccount
-// bound to the component's declared rules (minus what the spec withholds), a
+// bound to the kind's declared rules (minus what the spec withholds), a
 // short-lived token, and a self_managed provider configuration that
 // authenticates as it against the harness's cluster. The configuration
-// reaches both engines through the stack-input path a real deploy uses.
-func (h *Harness) ProvisionIdentity(ctx context.Context, tc *provider.ComponentTestContext, spec string) (string, func(), error) {
+// reaches both engines through the iac-input path a real deploy uses.
+func (h *Harness) ProvisionIdentity(ctx context.Context, tc *provider.KindTestContext, spec string) (string, func(), error) {
 	withheld, err := parseIdentitySpec(spec)
 	if err != nil {
 		return "", nil, err
 	}
-	declared, err := permissions.Load(tc.RepoRoot, tc.Provider, tc.Component)
+	declared, err := permissions.Load(tc.RepoRoot, tc.Provider, tc.Kind)
 	if err != nil {
-		return "", nil, errors.Wrapf(err, "the %q identity is built from the component's permissions manifest", spec)
+		return "", nil, errors.Wrapf(err, "the %q identity is built from the kind's permissions manifest", spec)
 	}
 	rules, err := clusterRoleRules(declared.GetSpec().GetKubernetes().GetRules(), withheld)
 	if err != nil {
 		return "", nil, err
 	}
 	if len(rules) == 0 {
-		return "", nil, errors.Errorf("%s declares no Kubernetes rules, so there is nothing to bind the %q identity to", permissions.Path(tc.RepoRoot, tc.Provider, tc.Component), spec)
+		return "", nil, errors.Errorf("%s declares no Kubernetes rules, so there is nothing to bind the %q identity to", permissions.Path(tc.RepoRoot, tc.Provider, tc.Kind), spec)
 	}
 
 	name := identityName(tc)
@@ -149,7 +149,7 @@ type rbacRule struct {
 	Verbs     []string `json:"verbs"`
 }
 
-// clusterRoleRules turns the component's declared rules into PolicyRules,
+// clusterRoleRules turns the kind's declared rules into PolicyRules,
 // withholding the named verbs from the named resource. A declared rule that
 // names the resource beside others is split so only that resource loses the
 // verbs. A withhold that another declared rule would grant anyway (a
@@ -165,7 +165,7 @@ func clusterRoleRules(declared []*permissionsv1.KubernetesRule, withheld *withhe
 			if containsAny(rule.GetApiGroups(), withheld.apiGroup) && containsAny(rule.GetResources(), withheld.resource) {
 				for verb := range withheld.verbs {
 					if containsAny(rule.GetVerbs(), verb) {
-						return nil, errors.Errorf("cannot withhold %s on %s/%s: the component's permissions.yaml grants it through a wildcard rule (%v on %v), so the identity would hold it anyway; put this lane on a kind whose declared rules are exact",
+						return nil, errors.Errorf("cannot withhold %s on %s/%s: the kind's permissions.yaml grants it through a wildcard rule (%v on %v), so the identity would hold it anyway; put this lane on a kind whose declared rules are exact",
 							verb, withheld.apiGroup, withheld.resource, rule.GetApiGroups(), rule.GetResources())
 					}
 				}
@@ -214,10 +214,10 @@ func containsString(list []string, want string) bool {
 	return false
 }
 
-// identityName is unique per lane (component, engine, run) and valid as a
+// identityName is unique per lane (kind, engine, run) and valid as a
 // Kubernetes object name.
-func identityName(tc *provider.ComponentTestContext) string {
-	raw := strings.ToLower(fmt.Sprintf("lane-%s-%s-%s", tc.Component, tc.Engine, tc.RunID))
+func identityName(tc *provider.KindTestContext) string {
+	raw := strings.ToLower(fmt.Sprintf("lane-%s-%s-%s", tc.Kind, tc.Engine, tc.RunID))
 	var b strings.Builder
 	for _, r := range raw {
 		if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') || r == '-' {

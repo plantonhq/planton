@@ -2,9 +2,9 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_database_firewall` resource at the pinned provider version.
 
-## What this component models
+## What this kind models
 
-The inbound trusted-sources rule set of a DigitalOcean managed database cluster. DigitalOcean's API takes one polymorphic rule list of `{type, value}` rows; this component replaces it with one TYPED list per source kind, so a value can never be paired with the wrong type and platform resources are wired by reference:
+The inbound trusted-sources rule set of a DigitalOcean managed database cluster. DigitalOcean's API takes one polymorphic rule list of `{type, value}` rows; this kind replaces it with one TYPED list per source kind, so a value can never be paired with the wrong type and platform resources are wired by reference:
 
 - `cluster` -- the cluster whose inbound sources these rules define (by UUID or reference)
 - `ip_rules` -- IPv4 addresses or IPv4 CIDR blocks (IPv6 is refused at validation because DigitalOcean's database firewall rejects it at apply)

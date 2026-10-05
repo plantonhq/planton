@@ -4,7 +4,7 @@ Creates an Azure Backup policy for IaaS virtual machines -- the schedule and lay
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **VM backup policy** -- an ARM child of its vault (`.../vaults/{vault}/backupPolicies/{name}`) carrying the policy generation (V1 or V2), the schedule, the daily/weekly/monthly/yearly retention ladder, instant-restore settings, optional archive tiering, and the snapshot consistency class
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -54,7 +54,7 @@ spec:
 planton apply -f policy.yaml
 ```
 
-This creates a V2 policy that backs up its VMs nightly at 23:00 UTC and keeps each backup for 30 days -- ready for AzureBackupProtectedVm bindings to attach VMs to it. A Stack Job tracks the provisioning in real time.
+This creates a V2 policy that backs up its VMs nightly at 23:00 UTC and keeps each backup for 30 days -- ready for AzureBackupProtectedVm bindings to attach VMs to it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -105,16 +105,16 @@ These are the most important decisions when configuring a VM backup policy. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzureRecoveryServicesVault** | `recoveryVaultName` | `status.outputs.recovery_services_vault_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -134,7 +134,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the vault's resource group, where the policy lives
-- [**Azure Recovery Services Vault**](/cloud-catalog/azure-recovery-services-vault) -- the vault the policy is a child of
-- [**Azure Backup Protected VM**](/cloud-catalog/azure-backup-protected-vm) -- binds an individual VM to this policy via its `backup_policy_id` output
-- [**Azure Virtual Machine**](/cloud-catalog/azure-virtual-machine) -- the workloads the policy ultimately protects, through their protection bindings
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the vault's resource group, where the policy lives
+- [**Azure Recovery Services Vault**](/infra-catalog/azure-recovery-services-vault) -- the vault the policy is a child of
+- [**Azure Backup Protected VM**](/infra-catalog/azure-backup-protected-vm) -- binds an individual VM to this policy via its `backup_policy_id` output
+- [**Azure Virtual Machine**](/infra-catalog/azure-virtual-machine) -- the workloads the policy ultimately protects, through their protection bindings

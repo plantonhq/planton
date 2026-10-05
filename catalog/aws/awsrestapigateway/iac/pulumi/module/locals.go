@@ -9,13 +9,13 @@ import (
 
 	awsrestapigatewayv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsrestapigateway/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 type Locals struct {
 	Target *awsrestapigatewayv1alpha1.AwsRestApiGateway
 	Spec   *awsrestapigatewayv1alpha1.AwsRestApiGatewaySpec
@@ -38,7 +38,7 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, in *awsrestapigatewayv1alpha1.AwsRestApiGatewayStackInput) (*Locals, error) {
+func initializeLocals(_ *pulumi.Context, in *awsrestapigatewayv1alpha1.AwsRestApiGatewayIacInput) (*Locals, error) {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec
@@ -64,7 +64,7 @@ func initializeLocals(_ *pulumi.Context, in *awsrestapigatewayv1alpha1.AwsRestAp
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsRestApiGateway.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsRestApiGateway.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

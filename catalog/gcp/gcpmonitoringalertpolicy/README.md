@@ -4,7 +4,7 @@ Creates a Cloud Monitoring alerting policy — the rule that watches metrics or 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Alert Policy** -- a `monitoring.AlertPolicy` with the configured conditions, combiner, severity, notification channels, alert strategy, and runbook documentation
 - **Monitoring API enablement** -- `monitoring.googleapis.com` enabled in the target project (never disabled on destroy)
@@ -85,7 +85,7 @@ Condition arms: `conditionThreshold` (the workhorse — filter, comparison, thre
 - **Triggers** set `count` or `percent`, never both.
 - **Documentation** `mimeType` accepts only `text/markdown`; at most 3 links.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -111,7 +111,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpMonitoringNotificationChannel](/docs/catalog/gcp/gcpmonitoringnotificationchannel) — where incidents are delivered
 - [GcpMonitoringUptimeCheck](/docs/catalog/gcp/gcpmonitoringuptimecheck) — the availability probe policies typically watch

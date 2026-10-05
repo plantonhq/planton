@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpKmsAutokeyConfigSpec", func() {
 		return &GcpKmsAutokeyConfig{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpKmsAutokeyConfig",
-			Metadata:   &shared.CloudResourceMetadata{Name: "project-autokey"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "project-autokey"},
 			Spec:       &GcpKmsAutokeyConfigSpec{KeyProjectResolutionMode: "RESOURCE_PROJECT"},
 		}
 	}

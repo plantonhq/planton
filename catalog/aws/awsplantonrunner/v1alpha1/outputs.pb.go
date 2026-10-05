@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsPlantonRunnerStackOutputs captures the observable identifiers of a
+// AwsPlantonRunnerOutputs captures the observable identifiers of a
 // deployed runner appliance -- the handles for day-2 operations: tailing
 // the runner's logs, granting its runtime role permissions, and letting
 // private targets admit traffic from its security group.
-type AwsPlantonRunnerStackOutputs struct {
+type AwsPlantonRunnerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ARN of the compute service keeping the runner running (e.g.
 	// "arn:aws:ecs:us-west-2:123456789012:service/<name>/<name>"). The
@@ -70,20 +70,20 @@ type AwsPlantonRunnerStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsPlantonRunnerStackOutputs) Reset() {
-	*x = AwsPlantonRunnerStackOutputs{}
+func (x *AwsPlantonRunnerOutputs) Reset() {
+	*x = AwsPlantonRunnerOutputs{}
 	mi := &file_catalog_aws_awsplantonrunner_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsPlantonRunnerStackOutputs) String() string {
+func (x *AwsPlantonRunnerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsPlantonRunnerStackOutputs) ProtoMessage() {}
+func (*AwsPlantonRunnerOutputs) ProtoMessage() {}
 
-func (x *AwsPlantonRunnerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsPlantonRunnerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsplantonrunner_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -95,82 +95,82 @@ func (x *AwsPlantonRunnerStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsPlantonRunnerStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsPlantonRunnerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsPlantonRunnerOutputs.ProtoReflect.Descriptor instead.
+func (*AwsPlantonRunnerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsplantonrunner_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsPlantonRunnerStackOutputs) GetServiceArn() string {
+func (x *AwsPlantonRunnerOutputs) GetServiceArn() string {
 	if x != nil {
 		return x.ServiceArn
 	}
 	return ""
 }
 
-func (x *AwsPlantonRunnerStackOutputs) GetServiceName() string {
+func (x *AwsPlantonRunnerOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *AwsPlantonRunnerStackOutputs) GetClusterArn() string {
+func (x *AwsPlantonRunnerOutputs) GetClusterArn() string {
 	if x != nil {
 		return x.ClusterArn
 	}
 	return ""
 }
 
-func (x *AwsPlantonRunnerStackOutputs) GetTaskDefinitionArn() string {
+func (x *AwsPlantonRunnerOutputs) GetTaskDefinitionArn() string {
 	if x != nil {
 		return x.TaskDefinitionArn
 	}
 	return ""
 }
 
-func (x *AwsPlantonRunnerStackOutputs) GetLogGroupName() string {
+func (x *AwsPlantonRunnerOutputs) GetLogGroupName() string {
 	if x != nil {
 		return x.LogGroupName
 	}
 	return ""
 }
 
-func (x *AwsPlantonRunnerStackOutputs) GetSecurityGroupId() string {
+func (x *AwsPlantonRunnerOutputs) GetSecurityGroupId() string {
 	if x != nil {
 		return x.SecurityGroupId
 	}
 	return ""
 }
 
-func (x *AwsPlantonRunnerStackOutputs) GetExecutionRoleArn() string {
+func (x *AwsPlantonRunnerOutputs) GetExecutionRoleArn() string {
 	if x != nil {
 		return x.ExecutionRoleArn
 	}
 	return ""
 }
 
-func (x *AwsPlantonRunnerStackOutputs) GetTaskRoleArn() string {
+func (x *AwsPlantonRunnerOutputs) GetTaskRoleArn() string {
 	if x != nil {
 		return x.TaskRoleArn
 	}
 	return ""
 }
 
-func (x *AwsPlantonRunnerStackOutputs) GetTokenSecretArn() string {
+func (x *AwsPlantonRunnerOutputs) GetTokenSecretArn() string {
 	if x != nil {
 		return x.TokenSecretArn
 	}
 	return ""
 }
 
-func (x *AwsPlantonRunnerStackOutputs) GetRegion() string {
+func (x *AwsPlantonRunnerOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AwsPlantonRunnerStackOutputs) GetRunnerName() string {
+func (x *AwsPlantonRunnerOutputs) GetRunnerName() string {
 	if x != nil {
 		return x.RunnerName
 	}
@@ -181,8 +181,8 @@ var File_catalog_aws_awsplantonrunner_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_aws_awsplantonrunner_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awsplantonrunner/v1alpha1/outputs.proto\x12)dev.planton.aws.awsplantonrunner.v1alpha1\"\xba\x03\n" +
-	"\x1cAwsPlantonRunnerStackOutputs\x12\x1f\n" +
+	"3catalog/aws/awsplantonrunner/v1alpha1/outputs.proto\x12)dev.planton.aws.awsplantonrunner.v1alpha1\"\xb5\x03\n" +
+	"\x17AwsPlantonRunnerOutputs\x12\x1f\n" +
 	"\vservice_arn\x18\x01 \x01(\tR\n" +
 	"serviceArn\x12!\n" +
 	"\fservice_name\x18\x02 \x01(\tR\vserviceName\x12\x1f\n" +
@@ -214,7 +214,7 @@ func file_catalog_aws_awsplantonrunner_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awsplantonrunner_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsplantonrunner_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsPlantonRunnerStackOutputs)(nil), // 0: dev.planton.aws.awsplantonrunner.v1alpha1.AwsPlantonRunnerStackOutputs
+	(*AwsPlantonRunnerOutputs)(nil), // 0: dev.planton.aws.awsplantonrunner.v1alpha1.AwsPlantonRunnerOutputs
 }
 var file_catalog_aws_awsplantonrunner_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

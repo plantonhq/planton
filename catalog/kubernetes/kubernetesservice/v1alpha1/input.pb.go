@@ -23,10 +23,10 @@ const (
 )
 
 // *
-// **KubernetesServiceStackInput** defines the input structure for deploying a Kubernetes Service.
+// **KubernetesServiceIacInput** defines the input structure for deploying a Kubernetes Service.
 // This message contains the target service specification and the Kubernetes cluster configuration
 // required by the IaC modules (Pulumi and Terraform) to create and configure the service.
-type KubernetesServiceStackInput struct {
+type KubernetesServiceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The target Kubernetes Service resource to be created.
@@ -42,20 +42,20 @@ type KubernetesServiceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesServiceStackInput) Reset() {
-	*x = KubernetesServiceStackInput{}
+func (x *KubernetesServiceIacInput) Reset() {
+	*x = KubernetesServiceIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesservice_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesServiceStackInput) String() string {
+func (x *KubernetesServiceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesServiceStackInput) ProtoMessage() {}
+func (*KubernetesServiceIacInput) ProtoMessage() {}
 
-func (x *KubernetesServiceStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesServiceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesservice_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,19 +67,19 @@ func (x *KubernetesServiceStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesServiceStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesServiceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesServiceIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesServiceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesservice_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesServiceStackInput) GetTarget() *KubernetesService {
+func (x *KubernetesServiceIacInput) GetTarget() *KubernetesService {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesServiceStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesServiceIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -90,8 +90,8 @@ var File_catalog_kubernetes_kubernetesservice_v1alpha1_input_proto protoreflect.
 
 const file_catalog_kubernetes_kubernetesservice_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/kubernetes/kubernetesservice/v1alpha1/input.proto\x121dev.planton.kubernetes.kubernetesservice.v1alpha1\x1a7catalog/kubernetes/kubernetesservice/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd6\x01\n" +
-	"\x1bKubernetesServiceStackInput\x12\\\n" +
+	"9catalog/kubernetes/kubernetesservice/v1alpha1/input.proto\x121dev.planton.kubernetes.kubernetesservice.v1alpha1\x1a7catalog/kubernetes/kubernetesservice/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xd4\x01\n" +
+	"\x19KubernetesServiceIacInput\x12\\\n" +
 	"\x06target\x18\x01 \x01(\v2D.dev.planton.kubernetes.kubernetesservice.v1alpha1.KubernetesServiceR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"5com.dev.planton.kubernetes.kubernetesservice.v1alpha1B\n" +
@@ -111,13 +111,13 @@ func file_catalog_kubernetes_kubernetesservice_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetesservice_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesservice_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesServiceStackInput)(nil),         // 0: dev.planton.kubernetes.kubernetesservice.v1alpha1.KubernetesServiceStackInput
+	(*KubernetesServiceIacInput)(nil),           // 0: dev.planton.kubernetes.kubernetesservice.v1alpha1.KubernetesServiceIacInput
 	(*KubernetesService)(nil),                   // 1: dev.planton.kubernetes.kubernetesservice.v1alpha1.KubernetesService
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesservice_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesservice.v1alpha1.KubernetesServiceStackInput.target:type_name -> dev.planton.kubernetes.kubernetesservice.v1alpha1.KubernetesService
-	2, // 1: dev.planton.kubernetes.kubernetesservice.v1alpha1.KubernetesServiceStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesservice.v1alpha1.KubernetesServiceIacInput.target:type_name -> dev.planton.kubernetes.kubernetesservice.v1alpha1.KubernetesService
+	2, // 1: dev.planton.kubernetes.kubernetesservice.v1alpha1.KubernetesServiceIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

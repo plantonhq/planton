@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added `AwsOpenSearchDomain` (enum 251) as a new cloud resource kind in Planton, providing managed search, analytics, and observability capabilities via Amazon OpenSearch Service. The component supports cluster configuration with dedicated masters, zone awareness, UltraWarm/cold storage tiers, fine-grained access control (FGAC), VPC deployment, log publishing, and Auto-Tune optimization.
+Added `AwsOpenSearchDomain` (enum 251) as a new catalog kind in Planton, providing managed search, analytics, and observability capabilities via Amazon OpenSearch Service. The kind supports cluster configuration with dedicated masters, zone awareness, UltraWarm/cold storage tiers, fine-grained access control (FGAC), VPC deployment, log publishing, and Auto-Tune optimization.
 
 ## Problem Statement / Motivation
 
-Planton's AWS provider catalog lacked a managed search and analytics resource. Teams deploying OpenSearch domains had no declarative, validated way to manage them through the framework. OpenSearch is a critical infrastructure component for log analytics, application search, SIEM, and observability workloads.
+Planton's AWS provider catalog lacked a managed search and analytics resource. Teams deploying OpenSearch domains had no declarative, validated way to manage them through the framework. OpenSearch is a critical infrastructure kind for log analytics, application search, SIEM, and observability workloads.
 
 ### Pain Points
 
@@ -20,9 +20,9 @@ Planton's AWS provider catalog lacked a managed search and analytics resource. T
 
 ## Solution / What's New
 
-A complete `AwsOpenSearchDomain` deployment component covering the 80%+ of production OpenSearch use cases with a clean, validated protobuf API.
+A complete `AwsOpenSearchDomain` catalog kind covering the 80%+ of production OpenSearch use cases with a clean, validated protobuf API.
 
-### Component Overview
+### Kind Overview
 
 ```mermaid
 flowchart TB
@@ -46,7 +46,7 @@ flowchart TB
         AwsCertManagerCert
     end
 
-    subgraph outputs [Stack Outputs]
+    subgraph outputs [Outputs]
         DID[domain_id]
         DARN[domain_arn]
         EP[endpoint]
@@ -90,7 +90,7 @@ flowchart TB
 
 - `main.tf` -- Single `aws_opensearch_domain` resource with dynamic blocks
 - `locals.tf` -- Comprehensive value extraction with safe defaults
-- `outputs.tf` -- 5 outputs matching stack_outputs.proto
+- `outputs.tf` -- 5 outputs matching outputs.proto
 - `variables.tf` / `provider.tf` / `README.md`
 - Feature parity with Pulumi module
 
@@ -129,7 +129,7 @@ flowchart TB
 ## Impact
 
 - Adds the 10th new AWS resource kind in the expansion project (R08)
-- Enables future infra charts: data-pipeline, log-analytics, search-platform
+- Enables future Infra Charts: data-pipeline, log-analytics, search-platform
 - Domain outputs (endpoint, ARN) can be referenced by downstream resources
 
 ## Related Work

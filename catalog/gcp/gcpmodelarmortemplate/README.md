@@ -4,7 +4,7 @@ A Model Armor template -- the named set of safety filters an AI application scre
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `modelarmor.googleapis.com` on the project (never disabled on destroy)
 - **Template** -- a `model_armor_template` with the filter configuration, optional metadata, and labels
@@ -69,7 +69,7 @@ planton apply -f model-armor-template.yaml
 - `sdpSettings` takes `basicConfig` or `advancedConfig`, never both; advanced templates are full `projects/.../inspectTemplates/...` and `.../deidentifyTemplates/...` names.
 - `filterVersionSelector` takes exactly one of `alias` and `version` (`v1`, `v2`, ...).
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -98,7 +98,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpModelArmorFloorSetting** -- the minimum every template in a scope must meet, and enforcement on Vertex AI traffic
 - **GcpVertexAiSearchEngine** -- assistants screen prompts and responses through templates

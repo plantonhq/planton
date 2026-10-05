@@ -4,7 +4,7 @@ Deploys an RDS Proxy — the managed connection pool that multiplexes thousands 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DB Proxy** — the proxy itself: engine family, network placement, Secrets Manager sign-ins with per-secret IAM auth posture, TLS enforcement, idle timeout, and debug logging. The proxy name is wired from `metadata.name`
 - **Default Target Group** — the proxy's built-in pool, tuned by `connectionPool` (max connections percent, idle ceiling, borrow timeout, init query, pinning filters). It has no delete of its own; destroying the proxy takes it along
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with RDS, IAM, and Secrets Manager permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with RDS, IAM, and Secrets Manager permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -77,7 +77,7 @@ spec:
 planton apply -f aws-rds-proxy.yaml
 ```
 
-This creates a PostgreSQL proxy fronting the referenced instance, with IAM-token client auth over enforced TLS and a pool capped at 90% of the database's connections. A Stack Job tracks the provisioning in real time.
+This creates a PostgreSQL proxy fronting the referenced instance, with IAM-token client auth over enforced TLS and a pool capped at 90% of the database's connections. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -131,7 +131,7 @@ These are the most important decisions when configuring a proxy. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -142,9 +142,9 @@ These are the most important decisions when configuring a proxy. Explore the ful
 | **AwsRdsInstance** | `target.dbInstanceIdentifier` | `status.outputs.instance_identifier` |
 | **AwsRdsCluster** | `target.dbClusterIdentifier` | `status.outputs.cluster_identifier` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -166,10 +166,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS RDS Instance**](/cloud-catalog/aws-rds-instance) — the instance target, wired via `target.dbInstanceIdentifier`
-- [**AWS RDS Cluster**](/cloud-catalog/aws-rds-cluster) — the Aurora target whose writer/reader topology the proxy tracks
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the secrets-reading role the proxy assumes, wired via `roleArn`
-- [**AWS Secrets Manager Secret**](/cloud-catalog/aws-secrets-manager-secret) — the database credentials behind each `auth` entry
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) — the proxy's network placement (at least two, in different availability zones)
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) — must allow applications in and the database out
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — the archetypal client whose connection bursts the proxy absorbs
+- [**AWS RDS Instance**](/infra-catalog/aws-rds-instance) — the instance target, wired via `target.dbInstanceIdentifier`
+- [**AWS RDS Cluster**](/infra-catalog/aws-rds-cluster) — the Aurora target whose writer/reader topology the proxy tracks
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the secrets-reading role the proxy assumes, wired via `roleArn`
+- [**AWS Secrets Manager Secret**](/infra-catalog/aws-secrets-manager-secret) — the database credentials behind each `auth` entry
+- [**AWS Subnet**](/infra-catalog/aws-subnet) — the proxy's network placement (at least two, in different availability zones)
+- [**AWS Security Group**](/infra-catalog/aws-security-group) — must allow applications in and the database out
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — the archetypal client whose connection bursts the proxy absorbs

@@ -6,7 +6,7 @@
 
 **apiVersion**: `cloudflare.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 CloudflareZeroTrustGatewaySettingsSpec configures the account's Secure Web
 Gateway: the settings panel behind every Gateway policy (TLS inspection,
@@ -15,7 +15,7 @@ the activity-logging controls, and the account's proxy auto-config (PAC)
 files.
 
 The spec folds three Cloudflare surfaces with different lifecycles into
-one component:
+one kind:
   - settings: the account configuration SINGLETON. Create and update are
     the same PUT; destroy is a NO-OP that abandons the live configuration
     exactly as last applied. An UNSET sub-object is NOT MANAGED -- it is

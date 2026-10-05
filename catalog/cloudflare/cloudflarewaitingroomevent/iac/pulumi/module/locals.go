@@ -12,10 +12,10 @@ type Locals struct {
 	CloudflareWaitingRoomEvent *cloudflarewaitingroomeventv1alpha1.CloudflareWaitingRoomEvent
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarewaitingroomeventv1alpha1.CloudflareWaitingRoomEventStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarewaitingroomeventv1alpha1.CloudflareWaitingRoomEventIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareWaitingRoomEvent = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareWaitingRoomEvent = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

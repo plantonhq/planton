@@ -33,7 +33,7 @@ var _ = ginkgo.Describe("GcpBackendServiceSpec", func() {
 		return &GcpBackendService{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpBackendService",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-backend-service",
 			},
 			Spec: &GcpBackendServiceSpec{
@@ -731,7 +731,7 @@ var _ = ginkgo.Describe("GcpBackendServiceSpec", func() {
 			FailoverRatio:          f64(0.5),
 		}
 		target.Spec.ConnectionTrackingPolicy = &GcpBackendServiceConnectionTrackingPolicy{
-			TrackingMode:                            str("PER_SESSION"),
+			TrackingMode:                             str("PER_SESSION"),
 			ConnectionPersistenceOnUnhealthyBackends: str("NEVER_PERSIST"),
 		}
 		idle := int32(900)

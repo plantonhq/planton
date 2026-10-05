@@ -30,7 +30,7 @@ func minimalSpec() *AzureContainerAppEnvironment {
 	return &AzureContainerAppEnvironment{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureContainerAppEnvironment",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-env",
 		},
 		Spec: &AzureContainerAppEnvironmentSpec{

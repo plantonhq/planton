@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetespeerauthentication
 spec:
@@ -19,13 +19,13 @@ spec:
     - name: name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: peer_authentication_name
+        - from_output: peer_authentication_name
       where_to_find: >-
         The PeerAuthentication's metadata.name (equals the Planton resource name) —
         `kubectl get peerauthentications -A` (NAME column).
     - name: namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         The namespace the resource lives in — `kubectl get peerauthentications -A`

@@ -4,7 +4,7 @@ Deploys a Compute Engine backend service — the hub of GCP's load-balancing fam
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine API enablement** (`compute.googleapis.com`) on the target project (never disabled on destroy)
 - **Backend Service** -- global: for the classic external ALB (EXTERNAL), the envoy-based external ALB (EXTERNAL_MANAGED), the cross-region internal ALB (INTERNAL_MANAGED), or Traffic Director (INTERNAL_SELF_MANAGED); regional (when `region` is set): for the regional external ALB (EXTERNAL_MANAGED), the regional internal ALB (INTERNAL_MANAGED), or the internal and external passthrough Network Load Balancers (INTERNAL, EXTERNAL)
@@ -15,12 +15,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the service will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the service will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **A health check** (GcpHealthCheck) for instance-group backends — serverless and internet NEG backends manage their own health.
 - **The backends** (GcpRegionNetworkEndpointGroup or instance groups) — or create the service health-check-only first and attach backends as they come online.
 
@@ -57,7 +57,7 @@ spec:
 planton apply -f backend-service.yaml
 ```
 
-This creates the classic external web backend: default scheme and protocol, one NEG backend with a rate contract, and a health check. A Stack Job tracks the provisioning in real time.
+This creates the classic external web backend: default scheme and protocol, one NEG backend with a rate contract, and a health check. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,7 +100,7 @@ These are the most important decisions when configuring a backend service. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -110,9 +110,9 @@ These are the most important decisions when configuring a backend service. Explo
 | **GcpCloudArmorPolicy** | `securityPolicy` | `status.outputs.policy_self_link` |
 | **GcpCloudArmorPolicy** | `edgeSecurityPolicy` | `status.outputs.policy_self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -136,8 +136,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the service is created
-- [**GCP Health Check**](/cloud-catalog/gcp-health-check) -- the probe referenced by `healthCheck`
-- [**GCP Region Network Endpoint Group**](/cloud-catalog/gcp-region-network-endpoint-group) -- the serverless/PSC/internet backends referenced by `backends[].group`
-- [**GCP URL Map**](/cloud-catalog/gcp-url-map) -- consumes this service's `self_link` in its routes
-- [**GCP Backend Bucket**](/cloud-catalog/gcp-backend-bucket) -- the static-content sibling on the same URL map
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the service is created
+- [**GCP Health Check**](/infra-catalog/gcp-health-check) -- the probe referenced by `healthCheck`
+- [**GCP Region Network Endpoint Group**](/infra-catalog/gcp-region-network-endpoint-group) -- the serverless/PSC/internet backends referenced by `backends[].group`
+- [**GCP URL Map**](/infra-catalog/gcp-url-map) -- consumes this service's `self_link` in its routes
+- [**GCP Backend Bucket**](/infra-catalog/gcp-backend-bucket) -- the static-content sibling on the same URL map

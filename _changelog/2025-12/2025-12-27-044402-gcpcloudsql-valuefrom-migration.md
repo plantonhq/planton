@@ -6,22 +6,22 @@
 
 ## Summary
 
-Migrated the GcpCloudSql component to use `StringValueOrRef` type for `project_id` and `network.vpc_id` fields, enabling dynamic cross-resource references. This allows Cloud SQL instances to reference GcpProject and GcpVpc resources dynamically instead of requiring hardcoded values, improving infrastructure composability.
+Migrated the GcpCloudSql kind to use `StringValueOrRef` type for `project_id` and `network.vpc_id` fields, enabling dynamic cross-resource references. This allows Cloud SQL instances to reference GcpProject and GcpVpc resources dynamically instead of requiring hardcoded values, improving infrastructure composability.
 
 ## Problem Statement / Motivation
 
-The GcpCloudSql component previously used plain `string` types for resource identifiers like `project_id` and `vpc_id`. This created limitations:
+The GcpCloudSql kind previously used plain `string` types for resource identifiers like `project_id` and `vpc_id`. This created limitations:
 
 ### Pain Points
 
 - **Hard-coded dependencies**: Users had to manually copy project IDs and VPC network IDs into their manifests
 - **Maintenance burden**: When referenced resources changed, all dependent manifests needed manual updates
 - **No dynamic composition**: Couldn't create infrastructure stacks where Cloud SQL automatically gets its project from a GcpProject resource
-- **Inconsistency**: Other GCP components (GcpGkeCluster, GcpVpc, GcpSubnetwork) already supported `StringValueOrRef`, making GcpCloudSql an outlier
+- **Inconsistency**: Other GCP kinds (GcpGkeCluster, GcpVpc, GcpSubnetwork) already supported `StringValueOrRef`, making GcpCloudSql an outlier
 
 ## Solution / What's New
 
-Implemented the `StringValueOrRef` pattern for the GcpCloudSql component, allowing both literal values and dynamic references:
+Implemented the `StringValueOrRef` pattern for the GcpCloudSql kind, allowing both literal values and dynamic references:
 
 ### Before: Hard-coded Values Only
 
@@ -158,7 +158,7 @@ project_id = (
 - **Dynamic Infrastructure**: Cloud SQL can now automatically derive its project and VPC from other resources
 - **Reduced Maintenance**: Changes to parent resources (GcpProject, GcpVpc) automatically propagate
 - **Composable Stacks**: Build infrastructure stacks where resources reference each other
-- **Consistency**: Aligns with other GCP components that already use `StringValueOrRef`
+- **Consistency**: Aligns with other GCP kinds that already use `StringValueOrRef`
 - **Backward Compatible**: Literal values still work via the `{value: "..."}` syntax
 
 ## Impact
@@ -177,7 +177,7 @@ project_id = (
 
 ## Related Work
 
-This change is part of the GCP ValueFrom Migration initiative documented in `apis/gcp-value-from-anaylasis.md`. The following components were identified for similar migration:
+This change is part of the GCP ValueFrom Migration initiative documented in `apis/gcp-value-from-anaylasis.md`. The following kinds were identified for similar migration:
 
 - ✅ GcpCloudSql (this change)
 - ⏳ GcpCloudRun

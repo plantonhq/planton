@@ -10,7 +10,7 @@ import (
 
 // databaseClusterVerifier verifies a DigitalOceanDatabaseCluster via
 // GET /v2/databases/{id}. Beyond existence, it asserts the connection
-// details the module CLAIMS in its stack outputs (host, port,
+// details the module CLAIMS in its outputs (host, port,
 // database_name, and the VPC-only private_host) against the live cluster
 // -- outputs are contractually identical across both engines, so one
 // assertion protects both, and an absent output simply means "not claimed"
@@ -35,7 +35,7 @@ func (*databaseClusterVerifier) VerifyAbsent(ctx context.Context, client *godo.C
 		}
 		return pkgerrors.Wrapf(err, "digitaloceandatabasecluster verify-absent failed for %q", id)
 	}
-	return &StillExistsError{Component: "digitaloceandatabasecluster", ID: id}
+	return &StillExistsError{Kind: "digitaloceandatabasecluster", ID: id}
 }
 
 func (v *databaseClusterVerifier) VerifyExistsFromOutputs(ctx context.Context, client *godo.Client, outputs map[string]interface{}) error {
@@ -53,7 +53,7 @@ func (v *databaseClusterVerifier) VerifyExistsFromOutputs(ctx context.Context, c
 		return pkgerrors.Errorf("digitaloceandatabasecluster %q status is %q, want online", id, database.Status)
 	}
 
-	// Assert connection posture only when the stack outputs claim it.
+	// Assert connection posture only when the outputs claim it.
 	if database.Connection != nil {
 		if host := StringOutput(outputs, "host"); host != "" && database.Connection.Host != host {
 			return pkgerrors.Errorf("digitaloceandatabasecluster %q host mismatch: output %q, live %q",

@@ -9,18 +9,18 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	controlprofilev1 "github.com/plantonhq/planton/compliance/componentcontrolprofile/v1"
+	controlprofilev1 "github.com/plantonhq/planton/compliance/catalogkindcontrolprofile/v1"
 	controlcatalogv1 "github.com/plantonhq/planton/compliance/controlcatalog/v1"
 	frameworkcrosswalkv1 "github.com/plantonhq/planton/compliance/frameworkcrosswalk/v1"
-	derivationv1 "github.com/plantonhq/planton/finops/componentcostderivation/v1"
-	costestimatev1 "github.com/plantonhq/planton/finops/componentcostestimate/v1"
-	costprofilev1 "github.com/plantonhq/planton/finops/componentcostprofile/v1"
+	derivationv1 "github.com/plantonhq/planton/finops/catalogkindcostderivation/v1"
+	costestimatev1 "github.com/plantonhq/planton/finops/catalogkindcostestimate/v1"
+	costprofilev1 "github.com/plantonhq/planton/finops/catalogkindcostprofile/v1"
 	pricebookv1 "github.com/plantonhq/planton/finops/pricebook/v1"
-	permissionsv1 "github.com/plantonhq/planton/iac/componentpermissions/v1"
+	permissionsv1 "github.com/plantonhq/planton/iac/catalogkindpermissions/v1"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/conversion"
-	"github.com/plantonhq/planton/pkg/crkreflect"
 	"github.com/plantonhq/planton/pkg/protobufyaml"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // CheckConformance proves the bundle serves EXACTLY what the compiled-in
@@ -39,8 +39,8 @@ import (
 //     way out is a dead end this gate refuses to release.
 //  6. the fact-sheet cargo is internally coherent: every cargo document
 //     parses against its schema and is keyed by a user-facing kind,
-//     coverage is whole-or-not-at-all per component, the central documents
-//     ride with the component cargo, and every entry's projected summaries
+//     coverage is whole-or-not-at-all per kind, the central documents
+//     ride with the kind cargo, and every entry's projected summaries
 //     recompute exactly from the cargo aboard -- a price tag that disagrees
 //     with its own source document is unshippable.
 //
@@ -51,8 +51,8 @@ func CheckConformance(bundle *Bundle) error {
 	var problems []string
 	checked := 0
 
-	for _, kind := range crkreflect.KindsList() {
-		compiled := crkreflect.ToMessageMap[kind]
+	for _, kind := range catalogkindreflect.KindsList() {
+		compiled := catalogkindreflect.ToMessageMap[kind]
 		if compiled == nil {
 			continue
 		}
@@ -78,7 +78,7 @@ func CheckConformance(bundle *Bundle) error {
 		}
 
 		// The served version must agree between the two registries.
-		compiledVersion, err := crkreflect.KindVersion(kind)
+		compiledVersion, err := catalogkindreflect.KindVersion(kind)
 		if err != nil {
 			problems = append(problems, fmt.Sprintf("%s: %v", kind, err))
 			continue
@@ -111,7 +111,7 @@ func CheckConformance(bundle *Bundle) error {
 // entryProblems checks the bundle's catalog entries against the compiled
 // registry: every user-facing kind has its entry, every entry names a
 // registered kind, slugs are unique, and every entry carries at least one
-// official module directory (a component with no deployable module has no
+// official module directory (a kind with no deployable module has no
 // business in the catalog).
 func entryProblems(bundle *Bundle) []string {
 	var problems []string
@@ -129,11 +129,11 @@ func entryProblems(bundle *Bundle) []string {
 	}
 
 	userFacing := map[string]bool{}
-	for _, kind := range crkreflect.KindsList() {
-		if crkreflect.GetProvider(kind).String() == testProviderName {
+	for _, kind := range catalogkindreflect.KindsList() {
+		if catalogkindreflect.GetProvider(kind).String() == testProviderName {
 			continue
 		}
-		kindName := crkreflect.ExtractKindNameByKind(kind)
+		kindName := catalogkindreflect.ExtractKindNameByKind(kind)
 		userFacing[kindName] = true
 		entry, ok := entryByKind[kindName]
 		if !ok {
@@ -150,8 +150,8 @@ func entryProblems(bundle *Bundle) []string {
 		// different registry than this consumer's (stale bundle), the same
 		// class deprecationProblems guards.
 		wantServiceGroup := ""
-		if group, err := crkreflect.ServiceGroup(kind); err == nil &&
-			group != cloudresourcekind.CloudProviderServiceGroup_cloud_provider_service_group_unspecified {
+		if group, err := catalogkindreflect.ServiceGroup(kind); err == nil &&
+			group != catalogkind.CatalogProviderServiceGroup_catalog_provider_service_group_unspecified {
 			wantServiceGroup = group.String()
 		}
 		if entry.ServiceGroup != wantServiceGroup {
@@ -179,7 +179,7 @@ func entryProblems(bundle *Bundle) []string {
 // registry proving the bundle is not stale (a bundle built before a
 // deprecation was authored would otherwise pass every schema check and
 // silently announce nothing). The compile-time facts -- grammar, duplicates,
-// never the served version -- are gated by the crkreflect registry tests;
+// never the served version -- are gated by the catalogkindreflect registry tests;
 // this gate owns the facts only the built artifact can prove: the deprecated
 // version's schema is aboard, and an authored conversion path to the served
 // version exists among the bundle's own specs.
@@ -192,13 +192,13 @@ func deprecationProblems(bundle *Bundle) []string {
 	}
 	specFS := conversionSpecFS(bundle)
 
-	for _, kind := range crkreflect.KindsList() {
-		compiled := crkreflect.ToMessageMap[kind]
+	for _, kind := range catalogkindreflect.KindsList() {
+		compiled := catalogkindreflect.ToMessageMap[kind]
 		if compiled == nil {
 			continue
 		}
 
-		compiledDeps, err := crkreflect.KindDeprecations(kind)
+		compiledDeps, err := catalogkindreflect.KindDeprecations(kind)
 		if err != nil {
 			problems = append(problems, fmt.Sprintf("%s: %v", kind, err))
 			continue
@@ -219,7 +219,7 @@ func deprecationProblems(bundle *Bundle) []string {
 		if len(bundleDeps) == 0 {
 			continue
 		}
-		servedVersion, err := crkreflect.KindVersion(kind)
+		servedVersion, err := catalogkindreflect.KindVersion(kind)
 		if err != nil {
 			// Already reported by the served-version check in the main walk.
 			continue
@@ -251,8 +251,8 @@ func deprecationProblems(bundle *Bundle) []string {
 // coherence. Tree-to-bundle completeness is the BUILDER's duty (it fails
 // when a sidecar cannot be packed); this gate owns what only the finished
 // artifact can prove: every aboard document parses against its schema and
-// names a user-facing kind, coverage is whole-or-not-at-all per component,
-// the central documents ride with the component cargo, every control claim
+// names a user-facing kind, coverage is whole-or-not-at-all per kind,
+// the central documents ride with the kind cargo, every control claim
 // cites a control the aboard catalog defines, and every entry's projected
 // summaries recompute exactly from the aboard cargo.
 func cargoProblems(bundle *Bundle) []string {
@@ -262,21 +262,21 @@ func cargoProblems(bundle *Bundle) []string {
 	// the same <providerDir>/<kindDir> vocabulary as entry documents.
 	dirToKind := map[string]string{}
 	kindToDir := map[string]string{}
-	for _, kind := range crkreflect.KindsList() {
-		provider := crkreflect.GetProvider(kind)
+	for _, kind := range catalogkindreflect.KindsList() {
+		provider := catalogkindreflect.GetProvider(kind)
 		if provider.String() == testProviderName {
 			continue
 		}
-		kindName := crkreflect.ExtractKindNameByKind(kind)
+		kindName := catalogkindreflect.ExtractKindNameByKind(kind)
 		key := strings.ReplaceAll(provider.String(), "_", "") + "/" + strings.ToLower(kindName)
 		dirToKind[key] = kindName
 		kindToDir[kindName] = key
 	}
 
-	aboard := map[string]*componentCargo{}
-	cargoAt := func(key string) *componentCargo {
+	aboard := map[string]*kindCargo{}
+	cargoAt := func(key string) *kindCargo {
 		if aboard[key] == nil {
-			aboard[key] = &componentCargo{}
+			aboard[key] = &kindCargo{}
 		}
 		return aboard[key]
 	}
@@ -294,28 +294,28 @@ func cargoProblems(bundle *Bundle) []string {
 		}
 	}
 	parseTree(costsPrefix, func(key string) proto.Message {
-		cargoAt(key).cost = &costprofilev1.ComponentCostProfile{}
+		cargoAt(key).cost = &costprofilev1.CatalogKindCostProfile{}
 		return cargoAt(key).cost
 	})
 	parseTree(controlsPrefix, func(key string) proto.Message {
-		cargoAt(key).controls = &controlprofilev1.ComponentControlProfile{}
+		cargoAt(key).controls = &controlprofilev1.CatalogKindControlProfile{}
 		return cargoAt(key).controls
 	})
 	parseTree(permissionsPrefix, func(key string) proto.Message {
-		cargoAt(key).permissions = &permissionsv1.ComponentPermissions{}
+		cargoAt(key).permissions = &permissionsv1.CatalogKindPermissions{}
 		return cargoAt(key).permissions
 	})
 	parseTree(estimatesPrefix, func(key string) proto.Message {
-		cargoAt(key).estimate = &costestimatev1.ComponentCostEstimate{}
+		cargoAt(key).estimate = &costestimatev1.CatalogKindCostEstimate{}
 		return cargoAt(key).estimate
 	})
 	parseTree(derivationsPrefix, func(key string) proto.Message {
-		cargoAt(key).derivation = &derivationv1.ComponentCostDerivation{}
+		cargoAt(key).derivation = &derivationv1.CatalogKindCostDerivation{}
 		return cargoAt(key).derivation
 	})
 
-	// Whole-or-not-at-all per component, and estimates only for covered
-	// components.
+	// Whole-or-not-at-all per kind, and estimates only for covered
+	// kinds.
 	for key, c := range aboard {
 		var missing []string
 		for _, sidecar := range []struct {
@@ -384,18 +384,18 @@ func cargoProblems(bundle *Bundle) []string {
 }
 
 // centralCargoProblems checks the central documents that must ride with any
-// component cargo: the control catalog every control profile cites (with
+// kind cargo: the control catalog every control profile cites (with
 // every cited control id resolving in it), at least one framework
 // crosswalk, and at least one price book -- each parsing against its
 // schema.
-func centralCargoProblems(bundle *Bundle, aboard map[string]*componentCargo) []string {
+func centralCargoProblems(bundle *Bundle, aboard map[string]*kindCargo) []string {
 	var problems []string
 
 	compliance := bundle.Compliance()
 	catalogRaw, ok := compliance[controlsCatalogEntryName]
 	if !ok {
 		problems = append(problems, fmt.Sprintf(
-			"component fact-sheet cargo is aboard but %s is not -- control claims without their catalog are unreadable", controlsCatalogEntryName))
+			"kind fact-sheet cargo is aboard but %s is not -- control claims without their catalog are unreadable", controlsCatalogEntryName))
 	} else {
 		controlCatalog := &controlcatalogv1.ControlCatalog{}
 		if err := protobufyaml.LoadYamlBytes(catalogRaw, controlCatalog); err != nil {
@@ -427,7 +427,7 @@ func centralCargoProblems(bundle *Bundle, aboard map[string]*componentCargo) []s
 		}
 	}
 	if crosswalks == 0 {
-		problems = append(problems, "component fact-sheet cargo is aboard but no framework crosswalk is")
+		problems = append(problems, "kind fact-sheet cargo is aboard but no framework crosswalk is")
 	}
 
 	priceBooks := bundle.PriceBooks()
@@ -437,7 +437,7 @@ func centralCargoProblems(bundle *Bundle, aboard map[string]*componentCargo) []s
 		}
 	}
 	if len(priceBooks) == 0 {
-		problems = append(problems, "component fact-sheet cargo is aboard but no price book is")
+		problems = append(problems, "kind fact-sheet cargo is aboard but no price book is")
 	}
 
 	return problems
@@ -445,13 +445,13 @@ func centralCargoProblems(bundle *Bundle, aboard map[string]*componentCargo) []s
 
 // kindRegistryEnumName locates the kind registry inside a bundle's
 // descriptor set -- the same enum the compiled registry is generated from.
-const kindRegistryEnumName = "dev.planton.shared.cloudresourcekind.CloudResourceKind"
+const kindRegistryEnumName = "dev.planton.shared.catalogkind.CatalogKind"
 
 // bundleKindDeprecations reads each kind's declared deprecations off the
 // BUNDLE's kind registry enum options, keyed by kind name. The extension
 // type is compiled shared-registry infrastructure (never per-kind code), so
 // bundle bytes populate it directly.
-func bundleKindDeprecations(bundle *Bundle) (map[string][]*cloudresourcekind.CloudResourceKindVersionDeprecation, error) {
+func bundleKindDeprecations(bundle *Bundle) (map[string][]*catalogkind.CatalogKindVersionDeprecation, error) {
 	desc, err := bundle.Files.FindDescriptorByName(kindRegistryEnumName)
 	if err != nil {
 		return nil, fmt.Errorf("the bundle carries no kind registry enum: %w", err)
@@ -460,7 +460,7 @@ func bundleKindDeprecations(bundle *Bundle) (map[string][]*cloudresourcekind.Clo
 	if !ok {
 		return nil, fmt.Errorf("the bundle's kind registry is not an enum")
 	}
-	out := map[string][]*cloudresourcekind.CloudResourceKindVersionDeprecation{}
+	out := map[string][]*catalogkind.CatalogKindVersionDeprecation{}
 	values := enum.Values()
 	for i := 0; i < values.Len(); i++ {
 		value := values.Get(i)
@@ -468,7 +468,7 @@ func bundleKindDeprecations(bundle *Bundle) (map[string][]*cloudresourcekind.Clo
 		if opts == nil {
 			continue
 		}
-		meta, ok := proto.GetExtension(opts, cloudresourcekind.E_KindMeta).(*cloudresourcekind.CloudResourceKindMeta)
+		meta, ok := proto.GetExtension(opts, catalogkind.E_KindMeta).(*catalogkind.CatalogKindMeta)
 		if !ok || meta == nil || len(meta.GetDeprecations()) == 0 {
 			continue
 		}
@@ -497,7 +497,7 @@ func conversionSpecFS(bundle *Bundle) fstest.MapFS {
 
 // renderDeprecations canonicalizes a deprecation list for comparison and
 // display: sorted "version(note)" entries.
-func renderDeprecations(deps []*cloudresourcekind.CloudResourceKindVersionDeprecation) string {
+func renderDeprecations(deps []*catalogkind.CatalogKindVersionDeprecation) string {
 	rendered := make([]string, 0, len(deps))
 	for _, dep := range deps {
 		rendered = append(rendered, fmt.Sprintf("%s(%q)", dep.GetVersion(), dep.GetNote()))

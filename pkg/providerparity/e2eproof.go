@@ -1,7 +1,7 @@
 //go:build !codegen
 // +build !codegen
 
-// The E2E-proof join for the public report: read the provider's component
+// The E2E-proof join for the public report: read the provider's kind
 // E2E profiles and reduce them to the renderer's plain proof inputs. Lives
 // beside the renderer (not inside it) so RenderPublicReport stays pure and
 // the CLI and the drift gate share exactly one join -- two copies of this
@@ -14,11 +14,11 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/e2e/profile"
-	componentv1 "github.com/plantonhq/planton/qa/componente2eprofile/v1"
+	kindv1 "github.com/plantonhq/planton/qa/catalogkinde2eprofile/v1"
 	sharedpb "github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // E2EProof is one kind's live-proof status, reduced from its E2E profile.
@@ -73,12 +73,12 @@ func moduleFamilies(engines []string) map[string]bool {
 	return families
 }
 
-// BuildE2EProofs reads every component E2E profile of one provider and maps
+// BuildE2EProofs reads every catalog kind E2E profile of one provider and maps
 // kind name -> proof status. A provider without an E2E harness (no
 // aa_e2e/profile.yaml yet) yields nil proofs, not an error: the report then
 // simply shows nothing proven, which is the truth.
-func BuildE2EProofs(repoRoot string, provider cloudresourcekind.CloudResourceProvider) (map[string]E2EProof, error) {
-	providerName := crkreflect.ProviderDirName(provider)
+func BuildE2EProofs(repoRoot string, provider catalogkind.CatalogProvider) (map[string]E2EProof, error) {
+	providerName := catalogkindreflect.ProviderDirName(provider)
 	if _, err := os.Stat(profile.ProviderProfilePath(repoRoot, providerName)); os.IsNotExist(err) {
 		return nil, nil
 	}
@@ -87,13 +87,13 @@ func BuildE2EProofs(repoRoot string, provider cloudresourcekind.CloudResourcePro
 		return nil, err
 	}
 	proofs := map[string]E2EProof{}
-	for _, ce := range result.Components {
+	for _, ce := range result.Kinds {
 		spec := ce.Profile.Spec
 		if spec == nil {
 			continue
 		}
-		kind := crkreflect.KindFromString(ce.Name)
-		if kind == cloudresourcekind.CloudResourceKind_unspecified {
+		kind := catalogkindreflect.KindFromString(ce.Name)
+		if kind == catalogkind.CatalogKind_unspecified {
 			continue
 		}
 		engines := make([]string, 0, len(spec.ValidatedProvisioners))
@@ -101,7 +101,7 @@ func BuildE2EProofs(repoRoot string, provider cloudresourcekind.CloudResourcePro
 			engines = append(engines, strings.ToLower(sharedpb.IacProvisioner_name[int32(vp)]))
 		}
 		sort.Strings(engines)
-		declared, err := crkreflect.Provisioners(kind)
+		declared, err := catalogkindreflect.Provisioners(kind)
 		if err != nil {
 			return nil, err
 		}
@@ -111,7 +111,7 @@ func BuildE2EProofs(repoRoot string, provider cloudresourcekind.CloudResourcePro
 		}
 		sort.Strings(runsOn)
 		proofs[kind.String()] = E2EProof{
-			Green:   spec.Status == componentv1.ComponentE2EProfileSpec_green,
+			Green:   spec.Status == kindv1.CatalogKindE2EProfileSpec_green,
 			Engines: engines,
 			RunsOn:  runsOn,
 		}

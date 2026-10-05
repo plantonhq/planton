@@ -52,9 +52,9 @@ type Locals struct {
 
 // initializeLocals resolves the arm and the defaulted names. Discovery
 // Engine resources carry no labels, so there is no attribution label set.
-func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaisearchenginev1alpha1.GcpVertexAiSearchEngineStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpvertexaisearchenginev1alpha1.GcpVertexAiSearchEngineIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpVertexAiSearchEngine = stackInput.Target
+	locals.GcpVertexAiSearchEngine = iacInput.Target
 	spec := locals.GcpVertexAiSearchEngine.Spec
 
 	locals.EngineType = spec.EngineType
@@ -83,7 +83,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaisearchenginev1al
 		locals.CollectionId = defaultCollectionId
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }
 

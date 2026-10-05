@@ -30,7 +30,7 @@ var _ = ginkgo.Describe("GcpKmsKeyRingSpec", func() {
 		return &GcpKmsKeyRing{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpKmsKeyRing",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-key-ring",
 			},
 			Spec: &GcpKmsKeyRingSpec{

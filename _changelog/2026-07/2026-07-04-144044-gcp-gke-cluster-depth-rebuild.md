@@ -70,7 +70,7 @@ Dependency prerequisites always deploy via Pulumi — even for Terraform scenari
 ## Related Work
 
 - Builds on the VPC-network rename and the subnetwork depth rebuild (network FKs land on the final vocabulary).
-- Recorded skips (released-vs-main deltas, beta-only blocks, deliberate exclusions) live in the component's `docs/README.md`.
+- Recorded skips (released-vs-main deltas, beta-only blocks, deliberate exclusions) live in the kind's `docs/README.md`.
 - `GcpGkeNodePool` depth rebuild is the natural next step; its FK contract is already corrected.
 
 ---

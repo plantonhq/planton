@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpcloudsqlv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudsql/v1alpha1"
@@ -18,15 +18,15 @@ type Locals struct {
 	GcpLabels         map[string]string
 }
 
-// initializeLocals fills the Locals struct from the incoming stack input.
-func initializeLocals(stackInput *gcpcloudsqlv1alpha1.GcpCloudSqlStackInput) *Locals {
+// initializeLocals fills the Locals struct from the incoming IaC input.
+func initializeLocals(iacInput *gcpcloudsqlv1alpha1.GcpCloudSqlIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.GcpCloudSql = stackInput.Target
+	locals.GcpCloudSql = iacInput.Target
 
-	target := stackInput.Target
+	target := iacInput.Target
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 
 	// The instance name (not metadata.name) keys the resource-name label so
 	// the label matches what is visible in the GCP console — the Terraform
@@ -34,7 +34,7 @@ func initializeLocals(stackInput *gcpcloudsqlv1alpha1.GcpCloudSqlStackInput) *Lo
 	locals.GcpLabels = map[string]string{
 		gcplabelkeys.Resource:     strconv.FormatBool(true),
 		gcplabelkeys.ResourceName: target.Spec.InstanceName,
-		gcplabelkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_GcpCloudSql.String()),
+		gcplabelkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_GcpCloudSql.String()),
 	}
 
 	if target.Metadata.Id != "" {

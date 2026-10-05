@@ -4,7 +4,7 @@ Deploys a GKE control plane — Standard (you compose node pools) or Autopilot (
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **GKE Cluster** — a managed Kubernetes control plane in the specified project, at a regional location ("us-central1", replicas across three zones) or a zonal one ("us-central1-a"), on the provided VPC network and subnetwork
 - **VPC-native IP Allocation** — pods and services draw from secondary ranges on the subnetwork: ranges you name, CIDRs GKE carves, or fully GKE-managed ranges
@@ -21,12 +21,12 @@ On Standard clusters the default node pool is removed at create time — every n
 
 ### Planton Setup
 
-- **GCP Provider Connection** — an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** — an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A VPC network and subnetwork** — an explicit network is required (clusters on the auto-created `default` network do not compose into reviewable infrastructure). For production, plan two secondary ranges on the subnetwork — one for Pods, one for Services. Reference `GcpVpcNetwork` and `GcpSubnetwork` Cloud Resources via ValueFromRef.
+- **A VPC network and subnetwork** — an explicit network is required (clusters on the auto-created `default` network do not compose into reviewable infrastructure). For production, plan two secondary ranges on the subnetwork — one for Pods, one for Services. Reference `GcpVpcNetwork` and `GcpSubnetwork` Infra Components via ValueFromRef.
 - **Cloud NAT for private nodes** — private nodes cannot pull images from registries outside Google without it. Compose a `GcpRouterNat` on the same network.
 - **For peering-based private clusters only** — a `/28` CIDR block (`privateCluster.masterIpv4CidrBlock`) that does not overlap any VPC range. PSC-based clusters (the modern default) need none.
 
@@ -78,7 +78,7 @@ spec:
 planton apply -f gke-cluster.yaml
 ```
 
-This creates a regional private cluster on Dataplane V2 with named secondary ranges, an API allowlist, and the REGULAR release channel. Deletion protection is on by default — a destroy plan fails until `deletionProtection: false` is set explicitly. A Stack Job tracks the provisioning in real time.
+This creates a regional private cluster on Dataplane V2 with named secondary ranges, an API allowlist, and the REGULAR release channel. Deletion protection is on by default — a destroy plan fails until `deletionProtection: false` is set explicitly. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -143,7 +143,7 @@ These are the most important decisions when configuring a GKE cluster. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -157,9 +157,9 @@ These are the most important decisions when configuring a GKE cluster. Explore t
 | **GcpPubSubTopic** | `notificationPubsub.topic` | `status.outputs.topic_id` |
 | **GcpBigQueryDataset** | `resourceUsageExport.bigqueryDatasetId` | `status.outputs.dataset_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -185,9 +185,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) — provides the GCP project where the cluster is created
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) — provides the VPC network for cluster networking
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) — provides the subnetwork with secondary IP ranges for Pod and Service allocation
-- [**GCP GKE Node Pool**](/cloud-catalog/gcp-gke-node-pool) — the compute for Standard clusters, referencing this cluster's `name` and `location` outputs
-- [**GCP Router NAT**](/cloud-catalog/gcp-router-nat) — provides internet egress for private nodes via Cloud NAT
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) — provides the CMEK key for Kubernetes secrets encryption
+- [**GCP Project**](/infra-catalog/gcp-project) — provides the GCP project where the cluster is created
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) — provides the VPC network for cluster networking
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) — provides the subnetwork with secondary IP ranges for Pod and Service allocation
+- [**GCP GKE Node Pool**](/infra-catalog/gcp-gke-node-pool) — the compute for Standard clusters, referencing this cluster's `name` and `location` outputs
+- [**GCP Router NAT**](/infra-catalog/gcp-router-nat) — provides internet egress for private nodes via Cloud NAT
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) — provides the CMEK key for Kubernetes secrets encryption

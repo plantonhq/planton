@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -48,7 +48,7 @@ func ResolveRefs(msg proto.Message, consumerEnv string, lookup OutputsLookup) (i
 			}
 			continue
 		}
-		if target.Kind == cloudresourcekind.CloudResourceKind_unspecified || target.Name == "" {
+		if target.Kind == catalogkind.CatalogKind_unspecified || target.Name == "" {
 			continue
 		}
 

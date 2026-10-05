@@ -63,7 +63,7 @@ flowchart TB
 
 ### `loadKubernetesEnvVars` — emit both names
 
-`pkg/iac/stackinput/providerenvvars/kubernetes.go`:
+`pkg/iac/iacinput/providerenvvars/kubernetes.go`:
 
 ```go
 // Pulumi honors KUBECONFIG; Terraform/OpenTofu hashicorp/kubernetes (and helm) honors
@@ -83,10 +83,10 @@ kubeconfig is covered by this one change.
 
 ## Implementation Details
 
-- **`pkg/iac/stackinput/providerenvvars/kubernetes.go`** — return both `KUBECONFIG` and
+- **`pkg/iac/iacinput/providerenvvars/kubernetes.go`** — return both `KUBECONFIG` and
   `KUBE_CONFIG_PATH`, with a breadcrumb explaining the Pulumi/OpenTofu split and the
   in-cluster-fallback failure mode it prevents.
-- **`pkg/iac/stackinput/providerenvvars/kubernetes_test.go`** — the package's first test:
+- **`pkg/iac/iacinput/providerenvvars/kubernetes_test.go`** — the package's first test:
   asserts `loadKubernetesEnvVars` returns both keys pointing at the same on-disk kubeconfig.
 - **`e2e/framework/runner/terraform_input.go`** — clarified the comment so the kind-harness
   `KUBECONFIG`→`KUBE_CONFIG_PATH` bridge and the production loader stay coherent (kept on
@@ -118,7 +118,7 @@ follow-ups rather than blind-fixed:
 
 ## Related Work
 
-- The same failed stack job surfaced a separate, repo-external issue: a generic
+- The same failed Infra Job surfaced a separate, repo-external issue: a generic
   `protobuf error` masked the real cause in the operator-facing status. Those fixes live in
   the `planton` repo (runner engine-event consumer made schema-drift tolerant; the Temporal
   root-cause extractor fixed to stop at the application boundary) and are tracked there.

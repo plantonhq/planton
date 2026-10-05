@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsiamrole
 spec:
   billing_model: free
   free_tier: An IAM role is an assumable identity inside AWS IAM, and IAM is a feature of the AWS account offered at no additional charge -- no meter counts roles, trust policies, policy attachments, or permissions boundaries. The STS calls that use the role (sts:AssumeRole, sts:AssumeRoleWithWebIdentity) ride AWS STS, which is equally free, so a role costs nothing whether it is assumed once a year or a million times a day.
-  notes: "No field of this spec buys anything: the trust document, managed-policy attachments, inline policies, session-duration ceiling, and permissions boundary are all IAM control-plane configuration. The real spend lives entirely in what assumed sessions DO -- the AWS services those temporary credentials call bill on their own meters, and the workloads that assume the role (an EC2 instance through AwsIamInstanceProfile, a Lambda function, an EKS pod federated through AwsIamOidcProvider) bill as their own catalog kinds. Nothing about the role itself ever appears on an invoice."
+  notes: "No field of this spec buys anything: the trust document, managed-policy attachments, inline policies, session-duration ceiling, and permissions boundary are all IAM control-plane configuration. The real spend lives entirely in what assumed sessions DO -- the AWS services those temporary credentials call bill on their own meters, and the workloads that assume the role (an EC2 instance through AwsIamInstanceProfile, a Lambda function, an EKS pod federated through AwsIamOidcProvider) bill as their own components. Nothing about the role itself ever appears on an invoice."

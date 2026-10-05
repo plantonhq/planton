@@ -132,13 +132,13 @@ func PrintMissingProviderConfig(title string, guidance string) {
 	fmt.Println(yellow(guidance))
 }
 
-// PrintKindDetectionError prints an error when cloud resource kind cannot be detected.
+// PrintKindDetectionError prints an error when catalog kind cannot be detected.
 func PrintKindDetectionError(guidance string) {
 	red := color.New(color.FgRed, color.Bold).SprintFunc()
 	yellow := color.New(color.FgYellow).SprintFunc()
 
 	fmt.Println()
-	fmt.Printf("%s %s\n", RedTick, red("Could not detect cloud resource kind from manifest"))
+	fmt.Printf("%s %s\n", RedTick, red("Could not detect catalog kind from manifest"))
 	fmt.Println()
 	fmt.Println(yellow(guidance))
 }

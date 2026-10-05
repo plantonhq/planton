@@ -4,7 +4,7 @@ Deploys an Application Load Balancer — the Layer-7 entry point that terminates
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Application Load Balancer** -- with its scheme, subnets, security groups, address family, and the configured HTTP behavior attributes (timeouts, HTTP/2, header handling, desync mitigation, WAF fail mode, zonal shift)
 - **S3 log delivery configuration** -- set on the load balancer for whichever of the three streams (access, connection, health-check logs) has a bucket configured
@@ -18,7 +18,7 @@ Listeners, rules, and target groups are **not** created here — attach AwsLbLis
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Subnets** -- at least two AwsSubnet resources in different Availability Zones, referenced by their `subnet_id` outputs (public for internet-facing, private for internal).
 - **Security Groups** -- AwsSecurityGroup resources opening exactly the listener ports; without them AWS attaches the VPC's default group (fine for a first boot, wrong for production).
 - **S3 Bucket / Route53 Zone** -- optional AwsS3Bucket and AwsRoute53Zone resources for log delivery and alias DNS.
@@ -69,7 +69,7 @@ spec:
 planton apply -f alb.yaml
 ```
 
-This creates an internet-facing ALB across two zones with explicit security groups and deletion protection. Attach AwsLbListener resources to route traffic. A Stack Job tracks the provisioning in real time.
+This creates an internet-facing ALB across two zones with explicit security groups and deletion protection. Attach AwsLbListener resources to route traffic. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -120,7 +120,7 @@ These are the most important decisions when configuring an ALB. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -130,9 +130,9 @@ These are the most important decisions when configuring an ALB. Explore the full
 | **AwsRoute53Zone** | `dns.route53ZoneId` | `status.outputs.zone_id` |
 | **AwsWafWebAcl** | `webAclArn` | `status.outputs.web_acl_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -156,12 +156,12 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS LB Listener**](/cloud-catalog/aws-lb-listener) -- attaches to this ALB's `load_balancer_arn` output and owns ports, TLS certificates, and default actions.
-- [**AWS LB Listener Rule**](/cloud-catalog/aws-lb-listener-rule) -- attaches to listeners for path/host/header routing.
-- [**AWS LB Target Group**](/cloud-catalog/aws-lb-target-group) -- receives the routed traffic; an `alb`-type group also lets an NLB front this ALB.
-- [**AWS NLB**](/cloud-catalog/aws-nlb) -- fronts this ALB when static Layer-4 addresses are required, via an `alb`-type target group.
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- placement across at least two Availability Zones, referenced by `subnets`.
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- traffic filtering on the listener ports, referenced by `securityGroups`.
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- the log destinations, referenced per stream.
-- [**AWS Route 53 Zone**](/cloud-catalog/aws-route53-zone) -- the hosted zone for alias records, referenced by `dns.route53ZoneId`.
-- [**AWS WAF Web ACL**](/cloud-catalog/aws-waf-web-acl) -- a REGIONAL-scope web ACL inspecting requests in front of the listeners, referenced by `webAclArn`.
+- [**AWS LB Listener**](/infra-catalog/aws-lb-listener) -- attaches to this ALB's `load_balancer_arn` output and owns ports, TLS certificates, and default actions.
+- [**AWS LB Listener Rule**](/infra-catalog/aws-lb-listener-rule) -- attaches to listeners for path/host/header routing.
+- [**AWS LB Target Group**](/infra-catalog/aws-lb-target-group) -- receives the routed traffic; an `alb`-type group also lets an NLB front this ALB.
+- [**AWS NLB**](/infra-catalog/aws-nlb) -- fronts this ALB when static Layer-4 addresses are required, via an `alb`-type target group.
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- placement across at least two Availability Zones, referenced by `subnets`.
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- traffic filtering on the listener ports, referenced by `securityGroups`.
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- the log destinations, referenced per stream.
+- [**AWS Route 53 Zone**](/infra-catalog/aws-route53-zone) -- the hosted zone for alias records, referenced by `dns.route53ZoneId`.
+- [**AWS WAF Web ACL**](/infra-catalog/aws-waf-web-acl) -- a REGIONAL-scope web ACL inspecting requests in front of the listeners, referenced by `webAclArn`.

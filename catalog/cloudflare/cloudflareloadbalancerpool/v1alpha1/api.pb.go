@@ -31,7 +31,7 @@ type CloudflareLoadBalancerPool struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareLoadBalancerPoolSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *CloudflareLoadBalancerPool) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareLoadBalancerPool) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareLoadBalancerPool) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *CloudflareLoadBalancerPool) GetStatus() *CloudflareLoadBalancerPoolStat
 // cloudflare-load-balancer-pool status
 type CloudflareLoadBalancerPoolStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	cloudflare-load-balancer-pool stack-outputs
-	Outputs       *CloudflareLoadBalancerPoolStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	cloudflare-load-balancer-pool outputs
+	Outputs       *CloudflareLoadBalancerPoolOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareLoadBalancerPoolStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareLoadBalancerPoolStatus) GetOutputs() *CloudflareLoadBalancerPoolStackOutputs {
+func (x *CloudflareLoadBalancerPoolStatus) GetOutputs() *CloudflareLoadBalancerPoolOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_api_proto_rawD
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aCloudflareLoadBalancerPoolR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12v\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12v\n" +
 	"\x04spec\x18\x04 \x01(\v2Z.dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12t\n" +
-	"\x06status\x18\x05 \x01(\v2\\.dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolStatusR\x06status\"\xa0\x01\n" +
-	" CloudflareLoadBalancerPoolStatus\x12|\n" +
-	"\aoutputs\x18\x01 \x01(\v2b.dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolStackOutputsR\aoutputsB\xcf\x03\n" +
+	"\x06status\x18\x05 \x01(\v2\\.dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolStatusR\x06status\"\x9b\x01\n" +
+	" CloudflareLoadBalancerPoolStatus\x12w\n" +
+	"\aoutputs\x18\x01 \x01(\v2].dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolOutputsR\aoutputsB\xcf\x03\n" +
 	">com.dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1B\bApiProtoP\x01Zvgithub.com/plantonhq/planton/catalog/cloudflare/cloudflareloadbalancerpool/v1alpha1;cloudflareloadbalancerpoolv1alpha1\xa2\x02\x04DPCC\xaa\x02:Dev.Planton.Cloudflare.Cloudflareloadbalancerpool.V1alpha1\xca\x02:Dev\\Planton\\Cloudflare\\Cloudflareloadbalancerpool\\V1alpha1\xe2\x02FDev\\Planton\\Cloudflare\\Cloudflareloadbalancerpool\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Cloudflare::Cloudflareloadbalancerpool::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_api_proto_rawDe
 
 var file_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareLoadBalancerPool)(nil),             // 0: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPool
-	(*CloudflareLoadBalancerPoolStatus)(nil),       // 1: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareLoadBalancerPoolSpec)(nil),         // 3: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolSpec
-	(*CloudflareLoadBalancerPoolStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolStackOutputs
+	(*CloudflareLoadBalancerPool)(nil),        // 0: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPool
+	(*CloudflareLoadBalancerPoolStatus)(nil),  // 1: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareLoadBalancerPoolSpec)(nil),    // 3: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolSpec
+	(*CloudflareLoadBalancerPoolOutputs)(nil), // 4: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolOutputs
 }
 var file_catalog_cloudflare_cloudflareloadbalancerpool_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPool.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPool.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPool.spec:type_name -> dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolSpec
 	1, // 2: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPool.status:type_name -> dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolStatus
-	4, // 3: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolStatus.outputs:type_name -> dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolStatus.outputs:type_name -> dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1.CloudflareLoadBalancerPoolOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

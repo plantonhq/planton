@@ -15,8 +15,8 @@ type Locals struct {
 	PolicyName string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpiamdenypolicyv1alpha1.GcpIamDenyPolicyStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpiamdenypolicyv1alpha1.GcpIamDenyPolicyIacInput) *Locals {
+	target := iacInput.Target
 
 	policyName := target.Spec.PolicyName
 	if policyName == "" {

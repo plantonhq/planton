@@ -5,7 +5,7 @@ import (
 
 	azuresearchservicev1alpha1 "github.com/plantonhq/planton/catalog/azure/azuresearchservice/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -39,11 +39,11 @@ var hostingModeWire = map[azuresearchservicev1alpha1.AzureSearchServiceHostingMo
 	azuresearchservicev1alpha1.AzureSearchServiceHostingMode_HIGH_DENSITY: "highDensity",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuresearchservicev1alpha1.AzureSearchServiceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuresearchservicev1alpha1.AzureSearchServiceIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureSearchService = stackInput.Target
-	target := stackInput.Target
+	locals.AzureSearchService = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -54,7 +54,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azuresearchservicev1alpha
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureSearchService.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureSearchService.String()),
 	}
 
 	if target.Metadata.Id != "" {

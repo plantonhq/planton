@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 //
 // No identity-tag map here: the upstream logging-configuration
 // resource carries no tags argument (a settings singleton, not a
@@ -15,7 +15,7 @@ type Locals struct {
 	Spec   *awsbedrockinvocationloggingv1alpha1.AwsBedrockInvocationLoggingSpec
 }
 
-func initializeLocals(_ *pulumi.Context, in *awsbedrockinvocationloggingv1alpha1.AwsBedrockInvocationLoggingStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awsbedrockinvocationloggingv1alpha1.AwsBedrockInvocationLoggingIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec

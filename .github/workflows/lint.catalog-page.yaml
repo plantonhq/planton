@@ -1,7 +1,7 @@
 # =============================================================================
 # Catalog Page Guard
 # =============================================================================
-# Fails the PR when a component's catalog.md ships below the ONE catalog page
+# Fails the PR when a kind's catalog.md ships below the ONE catalog page
 # standard -- a malformed head (the console card title and description are
 # extracted from it), a nonstandard section skeleton, a broken InfraChart law,
 # or an embedded manifest that does not validate -- and the gap is not in the
@@ -9,7 +9,7 @@
 # list can only shrink truthfully.
 #
 # To fix a failure: bring the page to the standard (the violation detail says
-# how; the standard is _rules/docs/write-planton-component-catalog-md.mdc), or
+# how; the standard is _rules/docs/write-catalog-kind-catalog-md.mdc), or
 # -- for a page whose upgrade is deliberately routed to its provider's sweep
 # batch -- regenerate the baseline with PLANTON_REGEN_CATALOG_PAGE_BASELINE=1
 # and justify the growth in review. See pkg/catalogpage.

@@ -4,13 +4,13 @@ Deploys a Neo4j graph database — the standard engine for knowledge graphs, Gra
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** — created (with the standard Planton governance labels) only when `createNamespace` is `true`; otherwise the namespace must already exist
 - **Neo4j Helm Release** — the official chart at the pinned `chartVersion`, which creates:
   - a StatefulSet with a single Neo4j pod, your CPU/memory resources, and the memory split rendered into `neo4j.conf`
   - the always-created **default Service** (named after the resource) carrying bolt 7687, http 7474 and https 7473 — what in-cluster clients use, and what the exported endpoints point at
-  - the **exposure Service** `<name>-lb-neo4j`, ClusterIP by this component's deliberate default (the chart's own default is LoadBalancer)
+  - the **exposure Service** `<name>-lb-neo4j`, ClusterIP by this kind's deliberate default (the chart's own default is LoadBalancer)
   - a PersistentVolumeClaim for the data volume (10Gi on the cluster's default StorageClass unless configured)
 - **Auth Secret** — the module materializes the admin password (declared, or generated when `auth` is empty) as the `<name>-auth` Secret (key `NEO4J_AUTH`, the chart's contract, plus a bare `password` key); the password never lands in rendered Helm values
 - **ServiceMonitor** — only when `serviceMonitorEnabled` is `true` (requires the Prometheus Operator CRDs on the cluster)
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** — an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** — an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -70,11 +70,11 @@ spec:
 planton apply -f neo4j.yaml
 ```
 
-This creates one production-shaped Neo4j server: credentials referenced from a pre-existing Secret, an explicit heap/page-cache split sized to the 8Gi container, and a 100Gi data volume. Create the `neo4j-auth` Secret (key `NEO4J_AUTH`, value `neo4j/<password>`) before applying. A Stack Job tracks the provisioning in real time.
+This creates one production-shaped Neo4j server: credentials referenced from a pre-existing Secret, an explicit heap/page-cache split sized to the 8Gi container, and a 100Gi data volume. Create the `neo4j-auth` Secret (key `NEO4J_AUTH`, value `neo4j/<password>`) before applying. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the server to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the server to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -100,15 +100,15 @@ These are the most important decisions when configuring Neo4j. Explore the full 
 
 **Data volume** — `dataVolume.size` defaults to 10Gi on the cluster's default StorageClass; `dataVolume.storageClass` accepts a literal class name or a KubernetesStorageClass reference. Growing a PVC later depends on the class allowing expansion.
 
-**Exposure** — `service.type` defaults to ClusterIP, a deliberate override of the chart's LoadBalancer default: exposure composes from first-class kinds (KubernetesIngress, Gateway API) over the exported service handle. For a direct cloud load balancer, set `type: LoadBalancer` and ride the provider recipe on `service.annotations`. This block shapes only the exposure Service `<name>-lb-neo4j`; in-cluster clients use the default Service — the endpoints in the stack outputs.
+**Exposure** — `service.type` defaults to ClusterIP, a deliberate override of the chart's LoadBalancer default: exposure composes from first-class kinds (KubernetesIngress, Gateway API) over the exported service handle. For a direct cloud load balancer, set `type: LoadBalancer` and ride the provider recipe on `service.annotations`. This block shapes only the exposure Service `<name>-lb-neo4j`; in-cluster clients use the default Service — the endpoints in the outputs.
 
-**TLS** — `ssl.bolt` / `ssl.https` each reference an existing certificate Secret (a KubernetesCertificate reference resolves to its Secret name). Note the key-name bridge: the chart expects `private.key`/`public.crt` while cert-manager Secrets carry `tls.key`/`tls.crt` — see the component docs for the bridge.
+**TLS** — `ssl.bolt` / `ssl.https` each reference an existing certificate Secret (a KubernetesCertificate reference resolves to its Secret name). Note the key-name bridge: the chart expects `private.key`/`public.crt` while cert-manager Secrets carry `tls.key`/`tls.crt` — see the kind's docs for the bridge.
 
 **Escape hatch** — `helmValues` merges LAST over everything the typed fields render (Helm `-f` semantics, identical on both engines). It is for the chart surface beyond the typed fields — log4j XML, additional volumes/mounts, LDAP secrets, the operations sidecar, probes, PDB, per-service splits, the `NEO4J_PLUGINS` env key that activates APOC — never a substitute for them, and never a place for secrets.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -116,9 +116,9 @@ These are the most important decisions when configuring Neo4j. Explore the full 
 | **KubernetesStorageClass** | `dataVolume.storageClass` | `status.outputs.storage_class_name` |
 | **KubernetesCertificate** | `ssl.bolt.secret`, `ssl.https.secret` | `status.outputs.secret_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -143,7 +143,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — provides the namespace for the server
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) — fast storage for the data volume
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) — cert-manager-issued TLS Secrets for the bolt/https listeners (mind the key-name bridge)
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) — composes exposure over the exported service handle instead of a direct LoadBalancer
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — provides the namespace for the server
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) — fast storage for the data volume
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) — cert-manager-issued TLS Secrets for the bolt/https listeners (mind the key-name bridge)
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) — composes exposure over the exported service handle instead of a direct LoadBalancer

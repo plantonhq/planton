@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpMonitoringNotificationChannelSpec", func() {
 		return &GcpMonitoringNotificationChannel{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpMonitoringNotificationChannel",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-channel",
 			},
 			Spec: &GcpMonitoringNotificationChannelSpec{

@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -31,7 +31,7 @@ func minimalSpec() *AzureStorageDataLakeGen2Filesystem {
 	return &AzureStorageDataLakeGen2Filesystem{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureStorageDataLakeGen2Filesystem",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-filesystem",
 		},
 		Spec: &AzureStorageDataLakeGen2FilesystemSpec{
@@ -60,7 +60,7 @@ var _ = ginkgo.Describe("AzureStorageDataLakeGen2FilesystemSpec Validation Tests
 			input.Spec.StorageAccountId = &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind:      cloudresourcekind.CloudResourceKind_AzureStorageAccount,
+						Kind:      catalogkind.CatalogKind_AzureStorageAccount,
 						Name:      "lake-storage",
 						FieldPath: "status.outputs.storage_account_id",
 					},
@@ -74,7 +74,7 @@ var _ = ginkgo.Describe("AzureStorageDataLakeGen2FilesystemSpec Validation Tests
 			input.Spec.DefaultEncryptionScope = &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind:      cloudresourcekind.CloudResourceKind_AzureStorageEncryptionScope,
+						Kind:      catalogkind.CatalogKind_AzureStorageEncryptionScope,
 						Name:      "regulated-scope",
 						FieldPath: "status.outputs.encryption_scope_name",
 					},
@@ -95,7 +95,7 @@ var _ = ginkgo.Describe("AzureStorageDataLakeGen2FilesystemSpec Validation Tests
 			input.Spec.Owner = &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind:      cloudresourcekind.CloudResourceKind_AzureUserAssignedIdentity,
+						Kind:      catalogkind.CatalogKind_AzureUserAssignedIdentity,
 						Name:      "lake-engineering",
 						FieldPath: "status.outputs.principal_id",
 					},
@@ -124,7 +124,7 @@ var _ = ginkgo.Describe("AzureStorageDataLakeGen2FilesystemSpec Validation Tests
 					ObjectId: &foreignkeyv1.StringValueOrRef{
 						LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 							ValueFrom: &foreignkeyv1.ValueFromRef{
-								Kind:      cloudresourcekind.CloudResourceKind_AzureUserAssignedIdentity,
+								Kind:      catalogkind.CatalogKind_AzureUserAssignedIdentity,
 								Name:      "lake-engineering",
 								FieldPath: "status.outputs.principal_id",
 							},

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1;
 
-// DigitalOceanUptimeCheckStackOutputs captures the key outputs after
+// DigitalOceanUptimeCheckOutputs captures the key outputs after
 // provisioning a DigitalOcean uptime check.
-message DigitalOceanUptimeCheckStackOutputs {
+message DigitalOceanUptimeCheckOutputs {
   // UUID of the uptime check (the API identity, and the import id).
   string check_id = 1;
 

@@ -4,7 +4,7 @@ Creates one cert-manager ClusterIssuer — a cluster-scoped certificate authorit
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ClusterIssuer** -- the cert-manager custom resource, named after `metadata.name`, configured with the selected signing backend
 - **Credential Secrets** -- wherever the backend needs a credential (a Cloudflare token, AWS secret key, Vault token, TSIG key), the module materializes it as a Kubernetes Secret in cert-manager's cluster-resource namespace and wires the CR's secretRef to it — you declare the value once, it never appears in rendered manifests
@@ -56,7 +56,7 @@ spec:
 planton apply -f cluster-issuer.yaml
 ```
 
-This registers an ACME account with Let's Encrypt production and satisfies challenges by publishing DNS TXT records through Cloudflare — one catch-all solver serving every namespace in the cluster. A Stack Job tracks the provisioning in real time.
+This registers an ACME account with Let's Encrypt production and satisfies challenges by publishing DNS TXT records through Cloudflare — one catch-all solver serving every namespace in the cluster. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -99,7 +99,7 @@ These are the most important decisions when configuring a Cluster Issuer. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -108,9 +108,9 @@ These are the most important decisions when configuring a Cluster Issuer. Explor
 | **KubernetesServiceAccount** | `config.vault.kubernetesAuth.serviceAccountName` | `metadata.name` |
 | **KubernetesServiceAccount** | `config.acme.solvers[].dns01.route53.serviceAccount.serviceAccountName` | `metadata.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,9 +132,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) -- must be installed first; provides the controller, the CRDs, and the cluster-resource namespace this issuer's Secrets live in.
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) -- requests certificates from this issuer by name, from any namespace.
-- [**Ingress NGINX**](/cloud-catalog/kubernetes-ingress-nginx) -- serves HTTPS with the issued certificate Secrets; ingress-shim annotations can name this issuer directly.
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- terminates TLS with certificate Secrets issued by this issuer.
-- [**Kubernetes ServiceAccount**](/cloud-catalog/kubernetes-service-account) -- composes the per-issuer IRSA and Vault Kubernetes-auth identities.
-- [**Cert Manager Issuer**](/cloud-catalog/kubernetes-issuer) -- the namespace-scoped alternative for team-owned CAs and credential isolation.
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) -- must be installed first; provides the controller, the CRDs, and the cluster-resource namespace this issuer's Secrets live in.
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) -- requests certificates from this issuer by name, from any namespace.
+- [**Ingress NGINX**](/infra-catalog/kubernetes-ingress-nginx) -- serves HTTPS with the issued certificate Secrets; ingress-shim annotations can name this issuer directly.
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- terminates TLS with certificate Secrets issued by this issuer.
+- [**Kubernetes ServiceAccount**](/infra-catalog/kubernetes-service-account) -- composes the per-issuer IRSA and Vault Kubernetes-auth identities.
+- [**Cert Manager Issuer**](/infra-catalog/kubernetes-issuer) -- the namespace-scoped alternative for team-owned CAs and credential isolation.

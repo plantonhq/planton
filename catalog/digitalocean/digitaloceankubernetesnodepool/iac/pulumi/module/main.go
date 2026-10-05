@@ -10,13 +10,13 @@ import (
 // Resources is the module entry point—mimics digital_ocean_vpc.Resources().
 func Resources(
 	ctx *pulumi.Context,
-	stackInput *digitaloceankubernetesnodepoolv1alpha1.DigitalOceanKubernetesNodePoolStackInput,
+	iacInput *digitaloceankubernetesnodepoolv1alpha1.DigitalOceanKubernetesNodePoolIacInput,
 ) error {
 	// 1. Prepare locals.
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// 2. Create a DigitalOcean provider from the credential.
-	digitalOceanProvider, err := pulumidigitaloceanprovider.Get(ctx, stackInput.ProviderConfig)
+	digitalOceanProvider, err := pulumidigitaloceanprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup digitalocean provider")
 	}

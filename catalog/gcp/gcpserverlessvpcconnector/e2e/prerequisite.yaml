@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpserverlessvpcconnector
+    e2e-catalog-kind: gcpserverlessvpcconnector
   annotations:
     planton.dev/e2e: "true"
   tags:

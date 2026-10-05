@@ -4,12 +4,12 @@ package dev.planton.auth0.auth0customdomainverification.v1alpha1;
 
 import "shared/options/options.proto";
 
-// Auth0CustomDomainVerificationStackOutputs contains the custom domain once Auth0
+// Auth0CustomDomainVerificationOutputs contains the custom domain once Auth0
 // has verified it.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/custom_domain_verification#read-only
 // https://www.pulumi.com/registry/packages/auth0/api-docs/customdomainverification/#outputs
-message Auth0CustomDomainVerificationStackOutputs {
+message Auth0CustomDomainVerificationOutputs {
   // custom_domain_id is the verified custom domain's identifier in Auth0 (cd_...).
   string custom_domain_id = 1;
 

@@ -1,5 +1,5 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: azureeventhubnamespacecustomermanagedkey
 spec:
@@ -12,7 +12,7 @@ spec:
   # removed once applied, so verify-absent after destroy is meaningless
   # (the provider's delete is a deliberate no-op) and the encrypted
   # fixture namespace itself must be destroyed to clean up. The
-  # component stands on its green offline gate: 100% parity audit, full
+  # kind stands on its green offline gate: 100% parity audit, full
   # tofu plan rendering the key array + identity + infrastructure
   # encryption seams, spec tests covering every validation rule, and
   # the outputs conformance case.

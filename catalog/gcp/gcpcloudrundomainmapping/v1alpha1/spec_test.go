@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpCloudRunDomainMappingSpec", func() {
 		return &GcpCloudRunDomainMapping{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudRunDomainMapping",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-domain-mapping",
 			},
 			Spec: &GcpCloudRunDomainMappingSpec{

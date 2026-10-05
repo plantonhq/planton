@@ -5,10 +5,10 @@ package dev.planton.cloudflare.cloudflarezerotrustmcpportal.v1alpha1;
 import "catalog/cloudflare/cloudflarezerotrustmcpportal/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-// CloudflareZeroTrustMcpPortalStackInput is the input to the IaC module.
+// CloudflareZeroTrustMcpPortalIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-message CloudflareZeroTrustMcpPortalStackInput {
-  // target cloud-resource to be deployed
+message CloudflareZeroTrustMcpPortalIacInput {
+  // the catalog object to deploy to be deployed
   CloudflareZeroTrustMcpPortal target = 1;
   // provider-config for Cloudflare authentication
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

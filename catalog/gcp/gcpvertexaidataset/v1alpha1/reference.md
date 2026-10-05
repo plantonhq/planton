@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpVertexAiDatasetSpec defines a Vertex AI managed dataset
 (`google_vertex_ai_dataset`) -- the registered container Vertex AI
@@ -17,7 +17,7 @@ items inside it (images, text snippets, rows, annotations) are imported
 through the Vertex AI API, the console, or the SDK and are deliberately
 not part of this block.
 
-Google assigns the dataset a numeric id at creation; the stack outputs
+Google assigns the dataset a numeric id at creation; the outputs
 carry it and the full resource name for the training jobs and pipelines
 that consume the dataset.
 

@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a project's GKE fleet from
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `fleet` |
-| `module/locals.go` | Stack input holder |
+| `module/locals.go` | IaC input holder |
 | `module/fleet.go` | Project resolution, API enablement, the fleet, the outputs |
 | `module/outputs.go` | Output key constants (`project_id`, `name`, `uid`) |
 

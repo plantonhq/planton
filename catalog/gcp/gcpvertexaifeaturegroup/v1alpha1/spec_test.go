@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpVertexAiFeatureGroupSpec", func() {
 		return &GcpVertexAiFeatureGroup{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVertexAiFeatureGroup",
-			Metadata:   &shared.CloudResourceMetadata{Name: "customer-features"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "customer-features"},
 			Spec: &GcpVertexAiFeatureGroupSpec{
 				Location:       "us-central1",
 				FeatureGroupId: "customer_features",

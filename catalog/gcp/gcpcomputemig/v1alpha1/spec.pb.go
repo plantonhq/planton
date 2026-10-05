@@ -47,7 +47,7 @@ const (
 // PROACTIVE rolls the fleet automatically within the surge/unavailable
 // budget; OPPORTUNISTIC waits for manual or lifecycle-driven refreshes.
 //
-// The group's instance_group stack output is the load-balancer backend
+// The group's instance_group output is the load-balancer backend
 // handle: a GcpBackendService backend's group takes exactly that value.
 type GcpComputeMigSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`

@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/internal/manifest"
 	"github.com/plantonhq/planton/internal/manifest/manifestprotobuf"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/protobufyaml"
 	"github.com/plantonhq/planton/pkg/reflection/metadatareflect"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -62,7 +62,7 @@ func ApplyNodeOverride(docs []Doc, override NodeOverride) ([]Doc, error) {
 			// to make with full context; the override pass leaves it be.
 			continue
 		}
-		kind, _ := crkreflect.ExtractKindFromProto(msg)
+		kind, _ := catalogkindreflect.ExtractKindFromProto(msg)
 		docName := metadatareflect.ExtractMetadata(msg).GetName()
 		available = append(available, kind+"/"+docName)
 		if kind != override.Kind || docName != override.Name {

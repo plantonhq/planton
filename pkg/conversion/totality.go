@@ -16,7 +16,7 @@ import (
 // op. Fields present in both versions pass through untouched by design.
 //
 // Message names are fully qualified (e.g.
-// "dev.planton._test.testcloudresourcegeneric.v1alpha1.TestCloudResourceGenericSpec");
+// "dev.planton._test.testcatalogkindgeneric.v1alpha1.TestCatalogKindGenericSpec");
 // both packages must be linked into the calling binary.
 func CheckTotality(spec *Spec, fromMessage, toMessage string) error {
 	fromDesc, err := lookupMessage(fromMessage)

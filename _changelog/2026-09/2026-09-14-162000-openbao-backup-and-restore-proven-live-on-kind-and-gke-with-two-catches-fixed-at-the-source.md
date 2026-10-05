@@ -2,7 +2,7 @@
 
 **Date**: September 14, 2026
 **Type**: Fix
-**Components**: KubernetesOpenBao (Pulumi and Terraform modules, spec comments, guide, presets, E2E fixtures and seed script), Kubernetes E2E harness (gcp-gke batch), component update rule
+**Components**: KubernetesOpenBao (Pulumi and Terraform modules, spec comments, guide, presets, E2E fixtures and seed script), Kubernetes E2E harness (gcp-gke batch), catalog-kind update rule
 
 ## Summary
 
@@ -28,7 +28,7 @@ The `restore.latest` field, the guide's bad-day runbook, and the console's resto
 
 ### The update rule
 
-Two teachings join the component update rule: an IAM grant named anywhere is verified against the client's first call in its SDK source, never inferred from the role's name; and a module-owned satellite that reaches its own server waits, bounded, for the server to answer before it acts.
+Two teachings join the kind update rule: an IAM grant named anywhere is verified against the client's first call in its SDK source, never inferred from the role's name; and a module-owned satellite that reaches its own server waits, bounded, for the server to answer before it acts.
 
 ## Verification
 

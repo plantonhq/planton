@@ -5,14 +5,14 @@ package dev.planton.kubernetes.kubernetesdeployment.v1alpha1;
 import "catalog/kubernetes/kubernetesdeployment/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesDeploymentStackInput is the input to the IaC modules (Pulumi/Terraform)
+// KubernetesDeploymentIacInput is the input to the IaC modules (Pulumi/Terraform)
 // for deploying a KubernetesDeployment: the target resource and the provider
 // configuration. Everything the module materializes -- including the image-pull
 // Secret for a private registry -- is derived from the target's own spec
 // (`spec.pod.image_registries`), never from an input a caller fills on the
 // workload's behalf.
-message KubernetesDeploymentStackInput {
-  //target cloud-resource
+message KubernetesDeploymentIacInput {
+  // the catalog object to deploy
   KubernetesDeployment target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

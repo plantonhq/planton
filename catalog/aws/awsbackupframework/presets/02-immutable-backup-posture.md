@@ -15,12 +15,12 @@ vaults.
   across the account's recovery points
 - Evidence that pairs directly with the air-gapped vault and
   compliance-mode lock levers on
-  [AWS Backup Vault](/cloud-catalog/aws-backup-vault)
+  [AWS Backup Vault](/infra-catalog/aws-backup-vault)
 
 ## Customize
 
 - Add the coverage pair from the `backup_coverage_audit` preset for
   one consolidated framework
 - Wire the framework's ARN into an
-  [AWS Backup Report Plan](/cloud-catalog/aws-backup-report-plan)
+  [AWS Backup Report Plan](/infra-catalog/aws-backup-report-plan)
   compliance template for scheduled evidence in S3

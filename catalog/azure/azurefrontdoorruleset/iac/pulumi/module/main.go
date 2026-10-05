@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorrulesetv1alpha1.AzureFrontDoorRuleSetStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurefrontdoorrulesetv1alpha1.AzureFrontDoorRuleSetIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -46,7 +46,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorrulesetv1alpha1.Az
 		}
 
 		// Sent only when chosen: ARM defaults behavior-on-match to
-		// Continue (stack inputs never materialize proto defaults).
+		// Continue (IaC inputs never materialize proto defaults).
 		if rule.BehaviorOnMatch != azurefrontdoorrulesetv1alpha1.AzureFrontDoorRuleBehaviorOnMatch_azure_front_door_rule_behavior_on_match_unspecified {
 			ruleArgs.BehaviorOnMatch = pulumi.String(behaviorOnMatchStrings[rule.BehaviorOnMatch])
 		}
@@ -63,7 +63,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorrulesetv1alpha1.Az
 		}
 	}
 
-	// Export stack outputs. rule_set_id is what AzureFrontDoorRoute's
+	// Export outputs. rule_set_id is what AzureFrontDoorRoute's
 	// rule_set_ids references; the rules deliberately export no ids
 	// (nothing references an individual rule).
 	ctx.Export(OpRuleSetId, createdRuleSet.ID())
@@ -181,7 +181,7 @@ func buildRuleActions(actions *azurefrontdoorrulesetv1alpha1.AzureFrontDoorRuleA
 // buildRuleConditions converts the spec's conditions message into the
 // provider's conditions block. Operator enums translate through the
 // shared wire map; the address conditions materialize their documented
-// IPMatch default because stack inputs never carry proto defaults.
+// IPMatch default because IaC inputs never carry proto defaults.
 func buildRuleConditions(conditions *azurefrontdoorrulesetv1alpha1.AzureFrontDoorRuleConditions) *cdn.FrontdoorRuleConditionsArgs {
 	args := &cdn.FrontdoorRuleConditionsArgs{}
 
@@ -434,7 +434,7 @@ func buildRuleConditions(conditions *azurefrontdoorrulesetv1alpha1.AzureFrontDoo
 }
 
 // addressOperator maps an address-condition operator, materializing the
-// documented IPMatch default when unspecified (stack inputs never carry
+// documented IPMatch default when unspecified (IaC inputs never carry
 // proto defaults).
 func addressOperator(operator azurefrontdoorrulesetv1alpha1.AzureFrontDoorRuleOperator) string {
 	if operator == azurefrontdoorrulesetv1alpha1.AzureFrontDoorRuleOperator_azure_front_door_rule_operator_unspecified {

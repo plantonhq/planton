@@ -37,7 +37,7 @@ func validResource() *AzureApplicationSecurityGroup {
 	return &AzureApplicationSecurityGroup{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureApplicationSecurityGroup",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-asg",
 		},
 		Spec: &AzureApplicationSecurityGroupSpec{

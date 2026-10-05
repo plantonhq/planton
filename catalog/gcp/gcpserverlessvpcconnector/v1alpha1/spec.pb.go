@@ -44,7 +44,7 @@ const (
 // Exactly one of the two modes must be set.
 //
 // Consumers attach by full resource name (projects/*/locations/*/
-// connectors/*) — the `self_link` stack output. One connector serves many
+// connectors/*) — the `self_link` output. One connector serves many
 // functions/services in its region; it is shared infrastructure, not
 // per-workload.
 type GcpServerlessVpcConnectorSpec struct {

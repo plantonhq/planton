@@ -44,11 +44,11 @@ The service composes with three shared, versioned companion resources -- each it
 | `vpc_connector_arn` | `StringValueOrRef` | -- | ARN of an `AwsAppRunnerVpcConnector` for outbound VPC access. Omitted, egress reaches public endpoints only. |
 | `observability_configuration_arn` | `StringValueOrRef` | -- | ARN of an `AwsAppRunnerObservabilityConfiguration`. The reference itself enables tracing. One-way on a live service (upstream provider gap): removing the reference does NOT disable tracing -- disabling requires service replacement. |
 | `is_publicly_accessible` | `bool` | `true` | Whether the service endpoint is publicly reachable. When `false`, pair with `vpc_ingress_connections` -- otherwise nothing can reach the service. |
-| `vpc_ingress_connections` | `repeated AwsAppRunnerServiceVpcIngressConnection` | -- | Publish the service into VPCs through interface VPC endpoints (AWS PrivateLink), keyed by connection name. Per-connection private domain names surface in stack outputs. |
+| `vpc_ingress_connections` | `repeated AwsAppRunnerServiceVpcIngressConnection` | -- | Publish the service into VPCs through interface VPC endpoints (AWS PrivateLink), keyed by connection name. Per-connection private domain names surface in outputs. |
 | `ip_address_type` | `string` | `"IPV4"` | `"IPV4"` or `"DUAL_STACK"` (IPv4 + IPv6). |
 | `kms_key_arn` | `StringValueOrRef` | AWS-managed key | Customer-managed KMS key for encrypting stored source and logs. **ForceNew** -- changing this replaces the service. |
 | `auto_deployments_enabled` | `bool` | `false` | Automatically deploy when the tracked source changes (new image on the tag, new commit on the branch). Supported for private ECR and code repositories only -- **AWS rejects it for ECR_PUBLIC images** (validated at spec level). |
-| `custom_domains` | `repeated AwsAppRunnerServiceCustomDomain` | -- | Custom domains associated with the service, keyed by domain name. Per-domain certificate-validation records surface in stack outputs. |
+| `custom_domains` | `repeated AwsAppRunnerServiceCustomDomain` | -- | Custom domains associated with the service, keyed by domain name. Per-domain certificate-validation records surface in outputs. |
 | `web_acl_arn` | `StringValueOrRef` | -- | ARN of a REGIONAL `AwsWafWebAcl` to associate; all requests pass WAF inspection first. |
 
 ### `AwsAppRunnerServiceImageSource`
@@ -97,7 +97,7 @@ The service composes with three shared, versioned companion resources -- each it
 | `vpc_id` | `StringValueOrRef` | yes | The VPC to publish the service into. |
 | `vpc_endpoint_id` | `StringValueOrRef` | yes | The interface VPC endpoint (for `com.amazonaws.REGION.apprunner.requests`) in that VPC that carries the traffic. |
 
-## Stack outputs
+## Outputs
 
 | Output | Description |
 | --- | --- |
@@ -111,7 +111,7 @@ The service composes with three shared, versioned companion resources -- each it
 
 ## Prerequisites
 
-1. **AWS credentials** -- Provided via stack input, not in the spec.
+1. **AWS credentials** -- Provided via IaC input, not in the spec.
 2. **IAM access role** (private ECR only) -- assumable by `build.apprunner.amazonaws.com` with ECR read permissions. Pass its ARN as `image_source.access_role_arn`.
 3. **IAM instance role** (optional) -- If your application calls AWS APIs at runtime (S3, DynamoDB, Secrets Manager, X-Ray), create a role with the necessary policies and pass it as `instance_role_arn`.
 4. **App Runner connection** (code source only) -- Created via the AWS console (one-time OAuth handshake); shared across services.

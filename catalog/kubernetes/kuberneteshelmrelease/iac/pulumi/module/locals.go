@@ -5,11 +5,11 @@ import (
 
 	kuberneteshelmreleasev1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kuberneteshelmrelease/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds computed values derived from the stack input for use across
+// Locals holds computed values derived from the IaC input for use across
 // the module.
 type Locals struct {
 	Spec *kuberneteshelmreleasev1alpha1.KubernetesHelmReleaseSpec
@@ -37,8 +37,8 @@ type Locals struct {
 
 // initializeLocals extracts and transforms spec fields into module-local
 // values.
-func initializeLocals(_ *pulumi.Context, stackInput *kuberneteshelmreleasev1alpha1.KubernetesHelmReleaseStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *kuberneteshelmreleasev1alpha1.KubernetesHelmReleaseIacInput) *Locals {
+	target := iacInput.Target
 	spec := target.Spec
 
 	// Resource-identity labels: the kuberneteslabelkeys set, identical to
@@ -47,7 +47,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *kuberneteshelmreleasev1alph
 	labels := map[string]string{
 		kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
 		kuberneteslabelkeys.ResourceName: target.Metadata.Name,
-		kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesHelmRelease.String(),
+		kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesHelmRelease.String(),
 	}
 	if target.Metadata.Id != "" {
 		labels[kuberneteslabelkeys.ResourceId] = target.Metadata.Id

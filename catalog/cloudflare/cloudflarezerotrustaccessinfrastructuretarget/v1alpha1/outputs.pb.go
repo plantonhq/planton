@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustAccessInfrastructureTargetStackOutputs captures the
+// CloudflareZeroTrustAccessInfrastructureTargetOutputs captures the
 // observable outputs after registering the infrastructure target.
-type CloudflareZeroTrustAccessInfrastructureTargetStackOutputs struct {
+type CloudflareZeroTrustAccessInfrastructureTargetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned UUID of the target.
 	TargetId      string `protobuf:"bytes,1,opt,name=target_id,json=targetId,proto3" json:"target_id,omitempty"`
@@ -31,20 +31,20 @@ type CloudflareZeroTrustAccessInfrastructureTargetStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustAccessInfrastructureTargetStackOutputs) Reset() {
-	*x = CloudflareZeroTrustAccessInfrastructureTargetStackOutputs{}
+func (x *CloudflareZeroTrustAccessInfrastructureTargetOutputs) Reset() {
+	*x = CloudflareZeroTrustAccessInfrastructureTargetOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustAccessInfrastructureTargetStackOutputs) String() string {
+func (x *CloudflareZeroTrustAccessInfrastructureTargetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustAccessInfrastructureTargetStackOutputs) ProtoMessage() {}
+func (*CloudflareZeroTrustAccessInfrastructureTargetOutputs) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustAccessInfrastructureTargetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustAccessInfrastructureTargetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -56,12 +56,12 @@ func (x *CloudflareZeroTrustAccessInfrastructureTargetStackOutputs) ProtoReflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustAccessInfrastructureTargetStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustAccessInfrastructureTargetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustAccessInfrastructureTargetOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustAccessInfrastructureTargetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustAccessInfrastructureTargetStackOutputs) GetTargetId() string {
+func (x *CloudflareZeroTrustAccessInfrastructureTargetOutputs) GetTargetId() string {
 	if x != nil {
 		return x.TargetId
 	}
@@ -72,8 +72,8 @@ var File_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1alph
 
 const file_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Wcatalog/cloudflare/cloudflarezerotrustaccessinfrastructuretarget/v1alpha1/outputs.proto\x12Mdev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1\"X\n" +
-	"9CloudflareZeroTrustAccessInfrastructureTargetStackOutputs\x12\x1b\n" +
+	"Wcatalog/cloudflare/cloudflarezerotrustaccessinfrastructuretarget/v1alpha1/outputs.proto\x12Mdev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1\"S\n" +
+	"4CloudflareZeroTrustAccessInfrastructureTargetOutputs\x12\x1b\n" +
 	"\ttarget_id\x18\x01 \x01(\tR\btargetIdB\xd9\x04\n" +
 	"Qcom.dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1B\fOutputsProtoP\x01Z\x9c\x01github.com/plantonhq/planton/catalog/cloudflare/cloudflarezerotrustaccessinfrastructuretarget/v1alpha1;cloudflarezerotrustaccessinfrastructuretargetv1alpha1\xa2\x02\x04DPCC\xaa\x02MDev.Planton.Cloudflare.Cloudflarezerotrustaccessinfrastructuretarget.V1alpha1\xca\x02MDev\\Planton\\Cloudflare\\Cloudflarezerotrustaccessinfrastructuretarget\\V1alpha1\xe2\x02YDev\\Planton\\Cloudflare\\Cloudflarezerotrustaccessinfrastructuretarget\\V1alpha1\\GPBMetadata\xea\x02QDev::Planton::Cloudflare::Cloudflarezerotrustaccessinfrastructuretarget::V1alpha1b\x06proto3"
 
@@ -91,7 +91,7 @@ func file_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1alp
 
 var file_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareZeroTrustAccessInfrastructureTargetStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetStackOutputs
+	(*CloudflareZeroTrustAccessInfrastructureTargetOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

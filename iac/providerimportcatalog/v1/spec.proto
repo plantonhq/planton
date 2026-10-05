@@ -4,10 +4,10 @@ package dev.planton.iac.providerimportcatalog.v1;
 
 // ProviderImportCatalogSpec maps a cloud provider's IaC resource types to the
 // identifier format their state import requires. This is provider-level
-// knowledge (stable across components): what value string `tofu import` /
+// knowledge (stable across kinds): what value string `tofu import` /
 // `pulumi import` expects for each resource type. Which concrete value fills
-// each placeholder is component-level knowledge and lives in that component's
-// ComponentImportMap.
+// each placeholder is kind-level knowledge and lives in that kind's
+// CatalogKindImportMap.
 message ProviderImportCatalogSpec {
   repeated ResourceTypeImportId resource_types = 1;
 }
@@ -18,11 +18,11 @@ message ResourceTypeImportId {
   // Terraform/OpenTofu resource type (e.g. "aws_s3_bucket").
   string terraform_type = 1;
   // Pulumi type token for the same provider resource
-  // (e.g. "aws:s3/bucketV2:BucketV2"). Empty when the component's Pulumi
+  // (e.g. "aws:s3/bucketV2:BucketV2"). Empty when the kind's Pulumi
   // module does not declare this resource.
   string pulumi_type = 2;
   // Import-ID template. Placeholders in {braces} name the values a
-  // component's import map supplies (e.g. "{bucket}",
+  // kind's import map supplies (e.g. "{bucket}",
   // "{vpc_id}_{association_id}"). A trailing "?" inside the braces marks a
   // segment the provider documents as legitimately empty in some variants
   // (e.g. DynamoDB contributor insights on the table itself:
@@ -40,7 +40,7 @@ message ResourceTypeImportId {
   // (e.g. a trailing ",{expected_bucket_owner}"), gotchas, or where the
   // provider documents the ID shape.
   string notes = 4;
-  // Attributes that exist ONLY in IaC configuration, never on the cloud
+  // Attributes that exist ONLY in IaC configuration, never on the provider
   // resource (e.g. aws_s3_bucket.force_destroy). Import cannot read them
   // from the provider, so a plan after ANY import legitimately shows them
   // as in-place updates when the config sets a non-default value. The
@@ -91,7 +91,7 @@ message ResourceTypeImportId {
   // proves the ADOPTER'S contract for them: the plan over the re-imported
   // state proposes re-creating the resource, and the reconcile-apply
   // executes it -- so declare this only for types whose create path
-  // CONVERGES on an existing cloud resource (an upsert-style Put), which
+  // CONVERGES on an existing provider resource (an upsert-style Put), which
   // the round-trip lane verifies live. A type whose create would conflict
   // with its own survivor needs a different treatment, not this field.
   string not_importable_upstream_reason = 8;

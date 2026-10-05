@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-service-bus-disaster-recovery-config stack-input
-type AzureServiceBusDisasterRecoveryConfigStackInput struct {
+// azure-service-bus-disaster-recovery-config iac-input
+type AzureServiceBusDisasterRecoveryConfigIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AzureServiceBusDisasterRecoveryConfig `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureServiceBusDisasterRecoveryConfigStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureServiceBusDisasterRecoveryConfigStackInput) Reset() {
-	*x = AzureServiceBusDisasterRecoveryConfigStackInput{}
+func (x *AzureServiceBusDisasterRecoveryConfigIacInput) Reset() {
+	*x = AzureServiceBusDisasterRecoveryConfigIacInput{}
 	mi := &file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureServiceBusDisasterRecoveryConfigStackInput) String() string {
+func (x *AzureServiceBusDisasterRecoveryConfigIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureServiceBusDisasterRecoveryConfigStackInput) ProtoMessage() {}
+func (*AzureServiceBusDisasterRecoveryConfigIacInput) ProtoMessage() {}
 
-func (x *AzureServiceBusDisasterRecoveryConfigStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureServiceBusDisasterRecoveryConfigIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureServiceBusDisasterRecoveryConfigStackInput) ProtoReflect() protore
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureServiceBusDisasterRecoveryConfigStackInput.ProtoReflect.Descriptor instead.
-func (*AzureServiceBusDisasterRecoveryConfigStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureServiceBusDisasterRecoveryConfigIacInput.ProtoReflect.Descriptor instead.
+func (*AzureServiceBusDisasterRecoveryConfigIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureServiceBusDisasterRecoveryConfigStackInput) GetTarget() *AzureServiceBusDisasterRecoveryConfig {
+func (x *AzureServiceBusDisasterRecoveryConfigIacInput) GetTarget() *AzureServiceBusDisasterRecoveryConfig {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureServiceBusDisasterRecoveryConfigStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureServiceBusDisasterRecoveryConfigIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_input_prot
 
 const file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Hcatalog/azure/azureservicebusdisasterrecoveryconfig/v1alpha1/input.proto\x12@dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1\x1aFcatalog/azure/azureservicebusdisasterrecoveryconfig/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\x83\x02\n" +
-	"/AzureServiceBusDisasterRecoveryConfigStackInput\x12\x7f\n" +
+	"Hcatalog/azure/azureservicebusdisasterrecoveryconfig/v1alpha1/input.proto\x12@dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1\x1aFcatalog/azure/azureservicebusdisasterrecoveryconfig/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\x81\x02\n" +
+	"-AzureServiceBusDisasterRecoveryConfigIacInput\x12\x7f\n" +
 	"\x06target\x18\x01 \x01(\v2g.dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1.AzureServiceBusDisasterRecoveryConfigR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x81\x04\n" +
 	"Dcom.dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_input_pro
 
 var file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_input_proto_goTypes = []any{
-	(*AzureServiceBusDisasterRecoveryConfigStackInput)(nil), // 0: dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1.AzureServiceBusDisasterRecoveryConfigStackInput
-	(*AzureServiceBusDisasterRecoveryConfig)(nil),           // 1: dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1.AzureServiceBusDisasterRecoveryConfig
-	(*azure.AzureProviderConfig)(nil),                       // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureServiceBusDisasterRecoveryConfigIacInput)(nil), // 0: dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1.AzureServiceBusDisasterRecoveryConfigIacInput
+	(*AzureServiceBusDisasterRecoveryConfig)(nil),         // 1: dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1.AzureServiceBusDisasterRecoveryConfig
+	(*azure.AzureProviderConfig)(nil),                     // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureservicebusdisasterrecoveryconfig_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1.AzureServiceBusDisasterRecoveryConfigStackInput.target:type_name -> dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1.AzureServiceBusDisasterRecoveryConfig
-	2, // 1: dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1.AzureServiceBusDisasterRecoveryConfigStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1.AzureServiceBusDisasterRecoveryConfigIacInput.target:type_name -> dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1.AzureServiceBusDisasterRecoveryConfig
+	2, // 1: dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1.AzureServiceBusDisasterRecoveryConfigIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

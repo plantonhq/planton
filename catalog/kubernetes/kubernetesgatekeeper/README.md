@@ -6,7 +6,7 @@
 Agent's Kubernetes admission controller: constraint-based validation
 and mutation with Rego or CEL, plus a continuous audit loop.
 
-Not the right component when:
+Not the right kind when:
 
 - **You want the constraints themselves** — this kind installs the
   ENGINE. ConstraintTemplates and Constraints are applied separately:

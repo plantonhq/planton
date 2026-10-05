@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package dev.planton._test.testcatalogkindgeneric.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/_test/testcatalogkindgeneric/v1alpha1/outputs.proto";
+import "catalog/_test/testcatalogkindgeneric/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// TestCatalogKindGeneric is permanent test infrastructure for generic (non-provider-specific)
+// proto processing tests: defaults application, validation, serialization, reflection.
+// For Kubernetes-specific testing, use TestCatalogKindKubernetes.
+message TestCatalogKindGeneric {
+  string api_version = 1 [(buf.validate.field).string.const = '_test.planton.dev/v1alpha1'];
+  string kind = 2 [(buf.validate.field).string.const = 'TestCatalogKindGeneric'];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
+  TestCatalogKindGenericSpec spec = 4;
+  TestCatalogKindGenericStatus status = 5;
+}
+
+message TestCatalogKindGenericStatus {
+  TestCatalogKindGenericOutputs outputs = 1;
+}

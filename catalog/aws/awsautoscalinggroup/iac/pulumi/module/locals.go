@@ -5,7 +5,7 @@ import (
 
 	awsautoscalinggroupv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsautoscalinggroup/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -14,11 +14,11 @@ type Locals struct {
 	AwsTags             map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awsautoscalinggroupv1alpha1.AwsAutoScalingGroupStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awsautoscalinggroupv1alpha1.AwsAutoScalingGroupIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsAutoScalingGroup = stackInput.Target
+	locals.AwsAutoScalingGroup = iacInput.Target
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 	// Resource-identity tags match the Terraform module key-for-key. On an
 	// auto-scaling group these are emitted through the native tag blocks with
 	// propagate_at_launch enabled (see groupTags), so every launched instance
@@ -28,7 +28,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *awsautoscalinggroupv1alpha1
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsAutoScalingGroup.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsAutoScalingGroup.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

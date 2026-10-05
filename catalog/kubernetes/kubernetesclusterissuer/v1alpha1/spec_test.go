@@ -45,7 +45,7 @@ var _ = ginkgo.Describe("KubernetesClusterIssuer Validation Tests", func() {
 		input = &KubernetesClusterIssuer{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesClusterIssuer",
-			Metadata:   &shared.CloudResourceMetadata{Name: "test-cluster-issuer"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "test-cluster-issuer"},
 			Spec: &KubernetesClusterIssuerSpec{
 				CertManagerNamespace: literal("cert-manager"),
 				Config: &kubernetesprovider.CertManagerIssuerConfig{

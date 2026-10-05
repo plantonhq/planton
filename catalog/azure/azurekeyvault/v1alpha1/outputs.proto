@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.azure.azurekeyvault.v1alpha1;
 
-// **AzureKeyVaultStackOutputs** captures the outputs of provisioning an Azure
+// **AzureKeyVaultOutputs** captures the outputs of provisioning an Azure
 // Key Vault -- the values downstream resources reference to compose with the
 // vault.
-message AzureKeyVaultStackOutputs {
+message AzureKeyVaultOutputs {
   // The vault's ARM resource ID:
   // /subscriptions/{subscription}/resourceGroups/{rg}/providers/Microsoft.KeyVault/vaults/{name}
   // The reference every child object (AzureKeyVaultKey,

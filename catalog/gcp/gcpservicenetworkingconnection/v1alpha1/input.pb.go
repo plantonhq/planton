@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpServiceNetworkingConnectionStackInput struct {
+type GcpServiceNetworkingConnectionIacInput struct {
 	state          protoimpl.MessageState          `protogen:"open.v1"`
 	Target         *GcpServiceNetworkingConnection `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig          `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpServiceNetworkingConnectionStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpServiceNetworkingConnectionStackInput) Reset() {
-	*x = GcpServiceNetworkingConnectionStackInput{}
+func (x *GcpServiceNetworkingConnectionIacInput) Reset() {
+	*x = GcpServiceNetworkingConnectionIacInput{}
 	mi := &file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpServiceNetworkingConnectionStackInput) String() string {
+func (x *GcpServiceNetworkingConnectionIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpServiceNetworkingConnectionStackInput) ProtoMessage() {}
+func (*GcpServiceNetworkingConnectionIacInput) ProtoMessage() {}
 
-func (x *GcpServiceNetworkingConnectionStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpServiceNetworkingConnectionIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpServiceNetworkingConnectionStackInput) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpServiceNetworkingConnectionStackInput.ProtoReflect.Descriptor instead.
-func (*GcpServiceNetworkingConnectionStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpServiceNetworkingConnectionIacInput.ProtoReflect.Descriptor instead.
+func (*GcpServiceNetworkingConnectionIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpServiceNetworkingConnectionStackInput) GetTarget() *GcpServiceNetworkingConnection {
+func (x *GcpServiceNetworkingConnectionIacInput) GetTarget() *GcpServiceNetworkingConnection {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpServiceNetworkingConnectionStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpServiceNetworkingConnectionIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_input_proto protore
 
 const file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/gcp/gcpservicenetworkingconnection/v1alpha1/input.proto\x127dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1\x1a=catalog/gcp/gcpservicenetworkingconnection/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe8\x01\n" +
-	"(GcpServiceNetworkingConnectionStackInput\x12o\n" +
+	"?catalog/gcp/gcpservicenetworkingconnection/v1alpha1/input.proto\x127dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1\x1a=catalog/gcp/gcpservicenetworkingconnection/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe6\x01\n" +
+	"&GcpServiceNetworkingConnectionIacInput\x12o\n" +
 	"\x06target\x18\x01 \x01(\v2W.dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xc3\x03\n" +
 	";com.dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_input_proto_rawDes
 
 var file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_input_proto_goTypes = []any{
-	(*GcpServiceNetworkingConnectionStackInput)(nil), // 0: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionStackInput
-	(*GcpServiceNetworkingConnection)(nil),           // 1: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnection
-	(*gcp.GcpProviderConfig)(nil),                    // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpServiceNetworkingConnectionIacInput)(nil), // 0: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionIacInput
+	(*GcpServiceNetworkingConnection)(nil),         // 1: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnection
+	(*gcp.GcpProviderConfig)(nil),                  // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionStackInput.target:type_name -> dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnection
-	2, // 1: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionIacInput.target:type_name -> dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnection
+	2, // 1: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

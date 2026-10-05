@@ -22,8 +22,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ray-cluster-kubernetes stack outputs
-type KubernetesRayClusterStackOutputs struct {
+// ray-cluster-kubernetes outputs
+type KubernetesRayClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the cluster runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -52,20 +52,20 @@ type KubernetesRayClusterStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesRayClusterStackOutputs) Reset() {
-	*x = KubernetesRayClusterStackOutputs{}
+func (x *KubernetesRayClusterOutputs) Reset() {
+	*x = KubernetesRayClusterOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesraycluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesRayClusterStackOutputs) String() string {
+func (x *KubernetesRayClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesRayClusterStackOutputs) ProtoMessage() {}
+func (*KubernetesRayClusterOutputs) ProtoMessage() {}
 
-func (x *KubernetesRayClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesRayClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesraycluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -77,54 +77,54 @@ func (x *KubernetesRayClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesRayClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesRayClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesRayClusterOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesRayClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesraycluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesRayClusterStackOutputs) GetNamespace() string {
+func (x *KubernetesRayClusterOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesRayClusterStackOutputs) GetHeadService() string {
+func (x *KubernetesRayClusterOutputs) GetHeadService() string {
 	if x != nil {
 		return x.HeadService
 	}
 	return ""
 }
 
-func (x *KubernetesRayClusterStackOutputs) GetClientEndpoint() string {
+func (x *KubernetesRayClusterOutputs) GetClientEndpoint() string {
 	if x != nil {
 		return x.ClientEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesRayClusterStackOutputs) GetDashboardEndpoint() string {
+func (x *KubernetesRayClusterOutputs) GetDashboardEndpoint() string {
 	if x != nil {
 		return x.DashboardEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesRayClusterStackOutputs) GetGcsEndpoint() string {
+func (x *KubernetesRayClusterOutputs) GetGcsEndpoint() string {
 	if x != nil {
 		return x.GcsEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesRayClusterStackOutputs) GetAuthTokenSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesRayClusterOutputs) GetAuthTokenSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.AuthTokenSecret
 	}
 	return nil
 }
 
-func (x *KubernetesRayClusterStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesRayClusterOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -135,8 +135,8 @@ var File_catalog_kubernetes_kubernetesraycluster_v1alpha1_outputs_proto protoref
 
 const file_catalog_kubernetes_kubernetesraycluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesraycluster/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kubernetesraycluster.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xe9\x02\n" +
-	" KubernetesRayClusterStackOutputs\x12\x1c\n" +
+	">catalog/kubernetes/kubernetesraycluster/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kubernetesraycluster.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xe4\x02\n" +
+	"\x1bKubernetesRayClusterOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\fhead_service\x18\x02 \x01(\tR\vheadService\x12'\n" +
 	"\x0fclient_endpoint\x18\x03 \x01(\tR\x0eclientEndpoint\x12-\n" +
@@ -160,11 +160,11 @@ func file_catalog_kubernetes_kubernetesraycluster_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetesraycluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesraycluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesRayClusterStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStackOutputs
-	(*kubernetes.KubernetesSecretKey)(nil),   // 1: dev.planton.kubernetes.KubernetesSecretKey
+	(*KubernetesRayClusterOutputs)(nil),    // 0: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterOutputs
+	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetesraycluster_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStackOutputs.auth_token_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterOutputs.auth_token_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesOpenBaoSpec** installs OpenBao — the open-source,
 Linux Foundation-governed secrets manager (MPL-2.0 fork of Vault) —
@@ -18,7 +18,7 @@ OpenBao server starts UNINITIALIZED and SEALED. Initialization
 (`bao operator init` — generates the unseal key shares and the
 initial root token) and unsealing are RUNTIME operations performed
 against the API after deploy; no Kubernetes deployment tool can do
-them declaratively, and this component deliberately does not try.
+them declaratively, and this kind deliberately does not try.
 Until a server is initialized and unsealed, its pod reports
 NotReady BY DESIGN (the readiness probe is `bao status`, which
 exits non-zero for sealed servers) — the chart keeps sealed pods
@@ -1760,7 +1760,7 @@ key of the cluster that took it. With `auto_unseal` on both sides
 pointing at the same key, a restore is a single call and the
 restored cluster unseals itself. A Shamir cluster restores only by
 hand (the snapshot's key shares must be present) — that runbook is
-in the component guide, not here.
+in the kind's guide, not here.
 
 ONE STEP THE MODULE CANNOT TAKE: the Job authenticates with the
 TARGET's initial root token — run `bao operator init` on the fresh
@@ -1852,7 +1852,7 @@ The key within the Kubernetes Secret.
 - `spec.backup.not_on_postgresql`: Snapshots exist only for Raft storage; a vault stored in PostgreSQL is backed up by its database — remove backup, or store the vault on server.raft.
 - `spec.backup.requires_auth_delegator`: The backup job logs in through OpenBao's Kubernetes auth method, which verifies its token with a TokenReview — leave service_account.auth_delegator_enabled on (the default) when backup is declared.
 - `spec.restore.requires_backup`: A restore reads from the store declared on backup (bucket, prefix, credentials, identity) — declare backup with the same store the snapshot was written to.
-- `spec.restore.requires_auto_unseal`: A declared restore needs auto_unseal with the same seal key the snapshot was taken under — declare the same aws_kms, gcp_kms, azure_key_vault, or transit seal as the source. A Shamir cluster restores by hand; see the component guide.
+- `spec.restore.requires_auto_unseal`: A declared restore needs auto_unseal with the same seal key the snapshot was taken under — declare the same aws_kms, gcp_kms, azure_key_vault, or transit seal as the source. A Shamir cluster restores by hand; see the kind's guide.
 
 ## Outputs
 

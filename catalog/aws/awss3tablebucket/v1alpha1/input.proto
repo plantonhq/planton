@@ -5,9 +5,9 @@ package dev.planton.aws.awss3tablebucket.v1alpha1;
 import "catalog/aws/awss3tablebucket/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsS3TableBucketStackInput is the input for the IaC modules that
+// AwsS3TableBucketIacInput is the input for the IaC modules that
 // manage an S3 table bucket and its contents.
-message AwsS3TableBucketStackInput {
+message AwsS3TableBucketIacInput {
   // target is the AwsS3TableBucket resource to deploy.
   AwsS3TableBucket target = 1;
   // provider_config contains the AWS provider credentials and configuration.

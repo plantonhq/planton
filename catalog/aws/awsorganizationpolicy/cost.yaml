@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsorganizationpolicy
 spec:
   billing_model: free
   free_tier: "Organization policies ride the AWS Organizations pricing page's blanket statement: 'AWS Organizations is offered at no additional charge. You are charged only for AWS resources that users and roles in your member accounts use.' SCPs, RCPs, tag policies, and their ten sibling types are governance documents -- no meter counts policies, their size, their attachments, or the evaluations AWS performs on every request they govern."
-  notes: "This is the rare component whose usual financial effect is NEGATIVE spend: a deny-list SCP or a region guardrail restricts what principals in the attached subtree can launch, which caps cost rather than creating it. Nothing in the spec buys anything -- the document, description, type, and attachment entries are all control-plane configuration. Two indirect notes for completeness. Some policy TYPES steer paid services that bill elsewhere: a BACKUP_POLICY distributes backup plans whose vault storage bills on the member accounts' backup resources, a SECURITYHUB_POLICY or INSPECTOR_POLICY turns on those services org-wide and their meters bill per member account on those services' own objects -- the policy is the steering wheel, never the meter. And the type must already be enabled on the AwsOrganization (enabled_policy_types), which is equally free."
+  notes: "This is the rare kind whose usual financial effect is NEGATIVE spend: a deny-list SCP or a region guardrail restricts what principals in the attached subtree can launch, which caps cost rather than creating it. Nothing in the spec buys anything -- the document, description, type, and attachment entries are all control-plane configuration. Two indirect notes for completeness. Some policy TYPES steer paid services that bill elsewhere: a BACKUP_POLICY distributes backup plans whose vault storage bills on the member accounts' backup resources, a SECURITYHUB_POLICY or INSPECTOR_POLICY turns on those services org-wide and their meters bill per member account on those services' own objects -- the policy is the steering wheel, never the meter. And the type must already be enabled on the AwsOrganization (enabled_policy_types), which is equally free."

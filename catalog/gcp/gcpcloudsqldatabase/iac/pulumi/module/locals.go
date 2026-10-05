@@ -14,10 +14,10 @@ type Locals struct {
 	GcpCloudSqlDatabase *gcpcloudsqldatabasev1alpha1.GcpCloudSqlDatabase
 }
 
-// initializeLocals fills the Locals struct from the incoming stack input.
-func initializeLocals(stackInput *gcpcloudsqldatabasev1alpha1.GcpCloudSqlDatabaseStackInput) *Locals {
+// initializeLocals fills the Locals struct from the incoming IaC input.
+func initializeLocals(iacInput *gcpcloudsqldatabasev1alpha1.GcpCloudSqlDatabaseIacInput) *Locals {
 	return &Locals{
-		GcpCloudSqlDatabase: stackInput.Target,
-		GcpProviderConfig:   stackInput.ProviderConfig,
+		GcpCloudSqlDatabase: iacInput.Target,
+		GcpProviderConfig:   iacInput.ProviderConfig,
 	}
 }

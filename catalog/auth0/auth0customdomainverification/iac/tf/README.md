@@ -16,7 +16,7 @@ Terraform/OpenTofu module that verifies an Auth0 custom domain and waits until i
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `custom_domain_id` -- the custom domain to verify |
 
 ## Outputs

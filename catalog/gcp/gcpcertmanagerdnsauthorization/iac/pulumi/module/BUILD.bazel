@@ -15,7 +15,7 @@ go_library(
         "//catalog/gcp/gcpcertmanagerdnsauthorization/v1alpha1",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",
         "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/certificatemanager",

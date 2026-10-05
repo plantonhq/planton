@@ -31,7 +31,7 @@ type CloudflareOriginCaCertificate struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareOriginCaCertificateSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *CloudflareOriginCaCertificate) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareOriginCaCertificate) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareOriginCaCertificate) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *CloudflareOriginCaCertificate) GetStatus() *CloudflareOriginCaCertifica
 // cloudflare-origin-ca-certificate status
 type CloudflareOriginCaCertificateStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	cloudflare-origin-ca-certificate stack-outputs
-	Outputs       *CloudflareOriginCaCertificateStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	cloudflare-origin-ca-certificate outputs
+	Outputs       *CloudflareOriginCaCertificateOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareOriginCaCertificateStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareOriginCaCertificateStatus) GetOutputs() *CloudflareOriginCaCertificateStackOutputs {
+func (x *CloudflareOriginCaCertificateStatus) GetOutputs() *CloudflareOriginCaCertificateOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_api_proto_r
 	"apiVersion\x128\n" +
 	"\x04kind\x18\x02 \x01(\tB$\xbaH!r\x1f\n" +
 	"\x1dCloudflareOriginCaCertificateR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12|\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12|\n" +
 	"\x04spec\x18\x04 \x01(\v2`.dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12z\n" +
-	"\x06status\x18\x05 \x01(\v2b.dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateStatusR\x06status\"\xaa\x01\n" +
-	"#CloudflareOriginCaCertificateStatus\x12\x82\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2h.dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateStackOutputsR\aoutputsB\xe4\x03\n" +
+	"\x06status\x18\x05 \x01(\v2b.dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateStatusR\x06status\"\xa4\x01\n" +
+	"#CloudflareOriginCaCertificateStatus\x12}\n" +
+	"\aoutputs\x18\x01 \x01(\v2c.dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateOutputsR\aoutputsB\xe4\x03\n" +
 	"Acom.dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1B\bApiProtoP\x01Z|github.com/plantonhq/planton/catalog/cloudflare/cloudflareorigincacertificate/v1alpha1;cloudflareorigincacertificatev1alpha1\xa2\x02\x04DPCC\xaa\x02=Dev.Planton.Cloudflare.Cloudflareorigincacertificate.V1alpha1\xca\x02=Dev\\Planton\\Cloudflare\\Cloudflareorigincacertificate\\V1alpha1\xe2\x02IDev\\Planton\\Cloudflare\\Cloudflareorigincacertificate\\V1alpha1\\GPBMetadata\xea\x02ADev::Planton::Cloudflare::Cloudflareorigincacertificate::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_api_proto_ra
 
 var file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareOriginCaCertificate)(nil),             // 0: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificate
-	(*CloudflareOriginCaCertificateStatus)(nil),       // 1: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateStatus
-	(*shared.CloudResourceMetadata)(nil),              // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareOriginCaCertificateSpec)(nil),         // 3: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateSpec
-	(*CloudflareOriginCaCertificateStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateStackOutputs
+	(*CloudflareOriginCaCertificate)(nil),        // 0: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificate
+	(*CloudflareOriginCaCertificateStatus)(nil),  // 1: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateStatus
+	(*shared.CatalogObjectMetadata)(nil),         // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareOriginCaCertificateSpec)(nil),    // 3: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateSpec
+	(*CloudflareOriginCaCertificateOutputs)(nil), // 4: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateOutputs
 }
 var file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificate.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificate.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificate.spec:type_name -> dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateSpec
 	1, // 2: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificate.status:type_name -> dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateStatus
-	4, // 3: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateStatus.outputs:type_name -> dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateStatus.outputs:type_name -> dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

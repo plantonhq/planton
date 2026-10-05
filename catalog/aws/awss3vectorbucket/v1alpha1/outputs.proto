@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awss3vectorbucket.v1alpha1;
 
-// AwsS3VectorBucketStackOutputs captures the observable state of the
+// AwsS3VectorBucketOutputs captures the observable state of the
 // vector bucket and its indexes after apply.
-message AwsS3VectorBucketStackOutputs {
+message AwsS3VectorBucketOutputs {
   // The vector bucket's ARN - what policies and Bedrock knowledge
   // bases reference, and the provider's import ID.
   string vector_bucket_arn = 1;

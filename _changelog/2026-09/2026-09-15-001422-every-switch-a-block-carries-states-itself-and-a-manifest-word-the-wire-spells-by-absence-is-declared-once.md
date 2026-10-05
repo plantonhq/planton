@@ -90,7 +90,7 @@ Per kind: both engines build, the spec tests cover each new shape (on validates,
 
 ## Related Work
 
-The forge's spec rule (`_rules/component/forge/flow/001-spec-proto.mdc`) and Terraform rule (`012-terraform-module.mdc`) carry the doctrine. The public parity pages and every kind's reference page regenerate from the tree.
+The forge's spec rule (`_rules/catalog-kind/forge/flow/001-spec-proto.mdc`) and Terraform rule (`012-terraform-module.mdc`) carry the doctrine. The public parity pages and every kind's reference page regenerate from the tree.
 
 ---
 

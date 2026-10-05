@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcloudsqldatabase.v1alpha1;
 
-// GcpCloudSqlDatabaseStackOutputs captures values returned after provisioning
+// GcpCloudSqlDatabaseOutputs captures values returned after provisioning
 // a database inside a Cloud SQL instance.
-message GcpCloudSqlDatabaseStackOutputs {
+message GcpCloudSqlDatabaseOutputs {
   // Name of the database inside the instance.
   string database_name = 1;
 

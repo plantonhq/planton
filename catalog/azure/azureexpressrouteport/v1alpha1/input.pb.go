@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureExpressRoutePortStackInput is the input to the IaC modules
+// AzureExpressRoutePortIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureExpressRoutePortStackInput struct {
+type AzureExpressRoutePortIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ExpressRoute Port resource to deploy.
 	Target *AzureExpressRoutePort `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureExpressRoutePortStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureExpressRoutePortStackInput) Reset() {
-	*x = AzureExpressRoutePortStackInput{}
+func (x *AzureExpressRoutePortIacInput) Reset() {
+	*x = AzureExpressRoutePortIacInput{}
 	mi := &file_catalog_azure_azureexpressrouteport_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureExpressRoutePortStackInput) String() string {
+func (x *AzureExpressRoutePortIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureExpressRoutePortStackInput) ProtoMessage() {}
+func (*AzureExpressRoutePortIacInput) ProtoMessage() {}
 
-func (x *AzureExpressRoutePortStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureExpressRoutePortIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureexpressrouteport_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureExpressRoutePortStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureExpressRoutePortStackInput.ProtoReflect.Descriptor instead.
-func (*AzureExpressRoutePortStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureExpressRoutePortIacInput.ProtoReflect.Descriptor instead.
+func (*AzureExpressRoutePortIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureexpressrouteport_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureExpressRoutePortStackInput) GetTarget() *AzureExpressRoutePort {
+func (x *AzureExpressRoutePortIacInput) GetTarget() *AzureExpressRoutePort {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureExpressRoutePortStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureExpressRoutePortIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azureexpressrouteport_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_azure_azureexpressrouteport_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/azure/azureexpressrouteport/v1alpha1/input.proto\x120dev.planton.azure.azureexpressrouteport.v1alpha1\x1a6catalog/azure/azureexpressrouteport/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd3\x01\n" +
-	"\x1fAzureExpressRoutePortStackInput\x12_\n" +
+	"8catalog/azure/azureexpressrouteport/v1alpha1/input.proto\x120dev.planton.azure.azureexpressrouteport.v1alpha1\x1a6catalog/azure/azureexpressrouteport/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd1\x01\n" +
+	"\x1dAzureExpressRoutePortIacInput\x12_\n" +
 	"\x06target\x18\x01 \x01(\v2G.dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x90\x03\n" +
 	"4com.dev.planton.azure.azureexpressrouteport.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azureexpressrouteport_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_azure_azureexpressrouteport_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureexpressrouteport_v1alpha1_input_proto_goTypes = []any{
-	(*AzureExpressRoutePortStackInput)(nil), // 0: dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortStackInput
-	(*AzureExpressRoutePort)(nil),           // 1: dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePort
-	(*azure.AzureProviderConfig)(nil),       // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureExpressRoutePortIacInput)(nil), // 0: dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortIacInput
+	(*AzureExpressRoutePort)(nil),         // 1: dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePort
+	(*azure.AzureProviderConfig)(nil),     // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureexpressrouteport_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortStackInput.target:type_name -> dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePort
-	2, // 1: dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortIacInput.target:type_name -> dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePort
+	2, // 1: dev.planton.azure.azureexpressrouteport.v1alpha1.AzureExpressRoutePortIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1;
 
-// GcpHierarchicalFirewallPolicyStackOutputs captures the policy's identity
+// GcpHierarchicalFirewallPolicyOutputs captures the policy's identity
 // after provisioning.
-message GcpHierarchicalFirewallPolicyStackOutputs {
+message GcpHierarchicalFirewallPolicyOutputs {
   // The policy's server-assigned numeric ID -- Google's `name` for a
   // hierarchical policy, and what `gcloud compute firewall-policies
   // describe` and the firewall logs identify it by.

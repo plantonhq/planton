@@ -5,11 +5,11 @@ import (
 
 	awssagemakermlflowappv1alpha1 "github.com/plantonhq/planton/catalog/aws/awssagemakermlflowapp/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 type Locals struct {
 	Target *awssagemakermlflowappv1alpha1.AwsSagemakerMlflowApp
 	Spec   *awssagemakermlflowappv1alpha1.AwsSagemakerMlflowAppSpec
@@ -18,7 +18,7 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, in *awssagemakermlflowappv1alpha1.AwsSagemakerMlflowAppStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awssagemakermlflowappv1alpha1.AwsSagemakerMlflowAppIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec
@@ -35,7 +35,7 @@ func initializeLocals(_ *pulumi.Context, in *awssagemakermlflowappv1alpha1.AwsSa
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsSagemakerMlflowApp.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsSagemakerMlflowApp.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

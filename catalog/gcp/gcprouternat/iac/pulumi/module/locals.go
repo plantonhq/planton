@@ -13,11 +13,11 @@ type Locals struct {
 	GcpRouterNat      *gcprouternatv1alpha1.GcpRouterNat
 }
 
-// initializeLocals converts the stack-input into a struct that is easy to
+// initializeLocals converts the iac-input into a struct that is easy to
 // reference across the module.
-func initializeLocals(stackInput *gcprouternatv1alpha1.GcpRouterNatStackInput) *Locals {
+func initializeLocals(iacInput *gcprouternatv1alpha1.GcpRouterNatIacInput) *Locals {
 	return &Locals{
-		GcpProviderConfig: stackInput.ProviderConfig,
-		GcpRouterNat:      stackInput.Target,
+		GcpProviderConfig: iacInput.ProviderConfig,
+		GcpRouterNat:      iacInput.Target,
 	}
 }

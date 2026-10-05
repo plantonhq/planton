@@ -2,11 +2,11 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_database_user` resource at the pinned provider version.
 
-## What this component models
+## What this kind models
 
-An additional user on a DigitalOcean managed database cluster: the user's name, the MySQL authentication plugin choice, and the Kafka / OpenSearch access-control lists. DigitalOcean generates the password server-side (and, on Kafka clusters, a mutual-TLS certificate pair); they surface only as secret stack outputs.
+An additional user on a DigitalOcean managed database cluster: the user's name, the MySQL authentication plugin choice, and the Kafka / OpenSearch access-control lists. DigitalOcean generates the password server-side (and, on Kafka clusters, a mutual-TLS certificate pair); they surface only as secret outputs.
 
-The component covers the provider's full argument surface:
+The kind covers the provider's full argument surface:
 
 - `cluster` -- the owning cluster, by literal UUID or by reference to a `DigitalOceanDatabaseCluster` (create-only; a cluster change replaces the user, which mints a NEW password)
 - `user_name` -- the user's API identity within the cluster (create-only)

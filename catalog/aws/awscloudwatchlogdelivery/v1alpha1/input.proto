@@ -5,9 +5,9 @@ package dev.planton.aws.awscloudwatchlogdelivery.v1alpha1;
 import "catalog/aws/awscloudwatchlogdelivery/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsCloudwatchLogDeliveryStackInput is the input for the IaC modules
+// AwsCloudwatchLogDeliveryIacInput is the input for the IaC modules
 // that manage CloudWatch Logs deliveries.
-message AwsCloudwatchLogDeliveryStackInput {
+message AwsCloudwatchLogDeliveryIacInput {
   // target is the AwsCloudwatchLogDelivery resource to deploy.
   AwsCloudwatchLogDelivery target = 1;
   // provider_config contains the AWS provider credentials and configuration.

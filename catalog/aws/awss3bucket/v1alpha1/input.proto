@@ -5,9 +5,9 @@ package dev.planton.aws.awss3bucket.v1alpha1;
 import "catalog/aws/awss3bucket/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-s3-bucket stack-input
-message AwsS3BucketStackInput {
-  //target cloud-resource
+//aws-s3-bucket iac-input
+message AwsS3BucketIacInput {
+  // the catalog object to deploy
   AwsS3Bucket target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

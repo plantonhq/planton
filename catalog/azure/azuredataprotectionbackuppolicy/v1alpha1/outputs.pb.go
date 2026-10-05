@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDataProtectionBackupPolicyStackOutputs** captures the
+// **AzureDataProtectionBackupPolicyOutputs** captures the
 // outputs of provisioning a Data Protection backup policy.
-type AzureDataProtectionBackupPolicyStackOutputs struct {
+type AzureDataProtectionBackupPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the policy -- what backup
 	// instances bind their policy by.
@@ -35,20 +35,20 @@ type AzureDataProtectionBackupPolicyStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AzureDataProtectionBackupPolicyStackOutputs) Reset() {
-	*x = AzureDataProtectionBackupPolicyStackOutputs{}
+func (x *AzureDataProtectionBackupPolicyOutputs) Reset() {
+	*x = AzureDataProtectionBackupPolicyOutputs{}
 	mi := &file_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataProtectionBackupPolicyStackOutputs) String() string {
+func (x *AzureDataProtectionBackupPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataProtectionBackupPolicyStackOutputs) ProtoMessage() {}
+func (*AzureDataProtectionBackupPolicyOutputs) ProtoMessage() {}
 
-func (x *AzureDataProtectionBackupPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDataProtectionBackupPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureDataProtectionBackupPolicyStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataProtectionBackupPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDataProtectionBackupPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataProtectionBackupPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDataProtectionBackupPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataProtectionBackupPolicyStackOutputs) GetBackupPolicyId() string {
+func (x *AzureDataProtectionBackupPolicyOutputs) GetBackupPolicyId() string {
 	if x != nil {
 		return x.BackupPolicyId
 	}
 	return ""
 }
 
-func (x *AzureDataProtectionBackupPolicyStackOutputs) GetBackupPolicyName() string {
+func (x *AzureDataProtectionBackupPolicyOutputs) GetBackupPolicyName() string {
 	if x != nil {
 		return x.BackupPolicyName
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_outputs_proto pr
 
 const file_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/azure/azuredataprotectionbackuppolicy/v1alpha1/outputs.proto\x12:dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1\"\x85\x01\n" +
-	"+AzureDataProtectionBackupPolicyStackOutputs\x12(\n" +
+	"Dcatalog/azure/azuredataprotectionbackuppolicy/v1alpha1/outputs.proto\x12:dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1\"\x80\x01\n" +
+	"&AzureDataProtectionBackupPolicyOutputs\x12(\n" +
 	"\x10backup_policy_id\x18\x01 \x01(\tR\x0ebackupPolicyId\x12,\n" +
 	"\x12backup_policy_name\x18\x02 \x01(\tR\x10backupPolicyNameB\xd8\x03\n" +
 	">com.dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1B\fOutputsProtoP\x01Z{github.com/plantonhq/planton/catalog/azure/azuredataprotectionbackuppolicy/v1alpha1;azuredataprotectionbackuppolicyv1alpha1\xa2\x02\x04DPAA\xaa\x02:Dev.Planton.Azure.Azuredataprotectionbackuppolicy.V1alpha1\xca\x02:Dev\\Planton\\Azure\\Azuredataprotectionbackuppolicy\\V1alpha1\xe2\x02FDev\\Planton\\Azure\\Azuredataprotectionbackuppolicy\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Azure::Azuredataprotectionbackuppolicy::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_outputs_proto_r
 
 var file_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDataProtectionBackupPolicyStackOutputs)(nil), // 0: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyStackOutputs
+	(*AzureDataProtectionBackupPolicyOutputs)(nil), // 0: dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1.AzureDataProtectionBackupPolicyOutputs
 }
 var file_catalog_azure_azuredataprotectionbackuppolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

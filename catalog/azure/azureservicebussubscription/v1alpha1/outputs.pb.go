@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureServiceBusSubscriptionStackOutputs** captures the outputs of
+// **AzureServiceBusSubscriptionOutputs** captures the outputs of
 // provisioning a Service Bus subscription.
-type AzureServiceBusSubscriptionStackOutputs struct {
+type AzureServiceBusSubscriptionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the subscription.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ServiceBus/namespaces/{ns}/topics/{topic}/subscriptions/{name}
@@ -42,20 +42,20 @@ type AzureServiceBusSubscriptionStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureServiceBusSubscriptionStackOutputs) Reset() {
-	*x = AzureServiceBusSubscriptionStackOutputs{}
+func (x *AzureServiceBusSubscriptionOutputs) Reset() {
+	*x = AzureServiceBusSubscriptionOutputs{}
 	mi := &file_catalog_azure_azureservicebussubscription_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureServiceBusSubscriptionStackOutputs) String() string {
+func (x *AzureServiceBusSubscriptionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureServiceBusSubscriptionStackOutputs) ProtoMessage() {}
+func (*AzureServiceBusSubscriptionOutputs) ProtoMessage() {}
 
-func (x *AzureServiceBusSubscriptionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureServiceBusSubscriptionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureservicebussubscription_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *AzureServiceBusSubscriptionStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureServiceBusSubscriptionStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureServiceBusSubscriptionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureServiceBusSubscriptionOutputs.ProtoReflect.Descriptor instead.
+func (*AzureServiceBusSubscriptionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureservicebussubscription_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureServiceBusSubscriptionStackOutputs) GetSubscriptionId() string {
+func (x *AzureServiceBusSubscriptionOutputs) GetSubscriptionId() string {
 	if x != nil {
 		return x.SubscriptionId
 	}
 	return ""
 }
 
-func (x *AzureServiceBusSubscriptionStackOutputs) GetSubscriptionName() string {
+func (x *AzureServiceBusSubscriptionOutputs) GetSubscriptionName() string {
 	if x != nil {
 		return x.SubscriptionName
 	}
 	return ""
 }
 
-func (x *AzureServiceBusSubscriptionStackOutputs) GetTopicName() string {
+func (x *AzureServiceBusSubscriptionOutputs) GetTopicName() string {
 	if x != nil {
 		return x.TopicName
 	}
 	return ""
 }
 
-func (x *AzureServiceBusSubscriptionStackOutputs) GetNamespaceName() string {
+func (x *AzureServiceBusSubscriptionOutputs) GetNamespaceName() string {
 	if x != nil {
 		return x.NamespaceName
 	}
@@ -104,8 +104,8 @@ var File_catalog_azure_azureservicebussubscription_v1alpha1_outputs_proto protor
 
 const file_catalog_azure_azureservicebussubscription_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/azure/azureservicebussubscription/v1alpha1/outputs.proto\x126dev.planton.azure.azureservicebussubscription.v1alpha1\"\xc5\x01\n" +
-	"'AzureServiceBusSubscriptionStackOutputs\x12'\n" +
+	"@catalog/azure/azureservicebussubscription/v1alpha1/outputs.proto\x126dev.planton.azure.azureservicebussubscription.v1alpha1\"\xc0\x01\n" +
+	"\"AzureServiceBusSubscriptionOutputs\x12'\n" +
 	"\x0fsubscription_id\x18\x01 \x01(\tR\x0esubscriptionId\x12+\n" +
 	"\x11subscription_name\x18\x02 \x01(\tR\x10subscriptionName\x12\x1d\n" +
 	"\n" +
@@ -127,7 +127,7 @@ func file_catalog_azure_azureservicebussubscription_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_azure_azureservicebussubscription_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureservicebussubscription_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureServiceBusSubscriptionStackOutputs)(nil), // 0: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionStackOutputs
+	(*AzureServiceBusSubscriptionOutputs)(nil), // 0: dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionOutputs
 }
 var file_catalog_azure_azureservicebussubscription_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

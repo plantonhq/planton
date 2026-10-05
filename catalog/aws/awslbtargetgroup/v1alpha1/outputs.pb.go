@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsLbTargetGroupStackOutputs captures the observable outputs of a
+// AwsLbTargetGroupOutputs captures the observable outputs of a
 // provisioned target group, for listeners, listener rules, ECS services, and
 // auto-scaling groups to reference.
-type AwsLbTargetGroupStackOutputs struct {
+type AwsLbTargetGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ARN of the target group (e.g. "arn:aws:elasticloadbalancing:
 	// us-west-2:123456789012:targetgroup/api/50dc6c495c0c9188"). The primary
@@ -44,20 +44,20 @@ type AwsLbTargetGroupStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsLbTargetGroupStackOutputs) Reset() {
-	*x = AwsLbTargetGroupStackOutputs{}
+func (x *AwsLbTargetGroupOutputs) Reset() {
+	*x = AwsLbTargetGroupOutputs{}
 	mi := &file_catalog_aws_awslbtargetgroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsLbTargetGroupStackOutputs) String() string {
+func (x *AwsLbTargetGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsLbTargetGroupStackOutputs) ProtoMessage() {}
+func (*AwsLbTargetGroupOutputs) ProtoMessage() {}
 
-func (x *AwsLbTargetGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsLbTargetGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awslbtargetgroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,26 +69,26 @@ func (x *AwsLbTargetGroupStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsLbTargetGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsLbTargetGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsLbTargetGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AwsLbTargetGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awslbtargetgroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsLbTargetGroupStackOutputs) GetTargetGroupArn() string {
+func (x *AwsLbTargetGroupOutputs) GetTargetGroupArn() string {
 	if x != nil {
 		return x.TargetGroupArn
 	}
 	return ""
 }
 
-func (x *AwsLbTargetGroupStackOutputs) GetTargetGroupName() string {
+func (x *AwsLbTargetGroupOutputs) GetTargetGroupName() string {
 	if x != nil {
 		return x.TargetGroupName
 	}
 	return ""
 }
 
-func (x *AwsLbTargetGroupStackOutputs) GetArnSuffix() string {
+func (x *AwsLbTargetGroupOutputs) GetArnSuffix() string {
 	if x != nil {
 		return x.ArnSuffix
 	}
@@ -99,8 +99,8 @@ var File_catalog_aws_awslbtargetgroup_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_aws_awslbtargetgroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awslbtargetgroup/v1alpha1/outputs.proto\x12)dev.planton.aws.awslbtargetgroup.v1alpha1\"\x93\x01\n" +
-	"\x1cAwsLbTargetGroupStackOutputs\x12(\n" +
+	"3catalog/aws/awslbtargetgroup/v1alpha1/outputs.proto\x12)dev.planton.aws.awslbtargetgroup.v1alpha1\"\x8e\x01\n" +
+	"\x17AwsLbTargetGroupOutputs\x12(\n" +
 	"\x10target_group_arn\x18\x01 \x01(\tR\x0etargetGroupArn\x12*\n" +
 	"\x11target_group_name\x18\x02 \x01(\tR\x0ftargetGroupName\x12\x1d\n" +
 	"\n" +
@@ -121,7 +121,7 @@ func file_catalog_aws_awslbtargetgroup_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awslbtargetgroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awslbtargetgroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsLbTargetGroupStackOutputs)(nil), // 0: dev.planton.aws.awslbtargetgroup.v1alpha1.AwsLbTargetGroupStackOutputs
+	(*AwsLbTargetGroupOutputs)(nil), // 0: dev.planton.aws.awslbtargetgroup.v1alpha1.AwsLbTargetGroupOutputs
 }
 var file_catalog_aws_awslbtargetgroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

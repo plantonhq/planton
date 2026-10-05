@@ -8,7 +8,7 @@
 
 ## Summary
 
-Systematically renamed the `KubernetesMicroservice` cloud resource to `KubernetesDeployment` across the entire Planton codebase. This refactoring removes an unnecessary abstraction layer and accurately reflects that the resource creates a Kubernetes Deployment, not a generic "microservice." The rename applied 7 comprehensive naming pattern replacements across 45+ files, updated the cloud resource registry, fixed test references, and verified through the full build pipeline.
+Systematically renamed the `KubernetesMicroservice` catalog kind to `KubernetesDeployment` across the entire Planton codebase. This refactoring removes an unnecessary abstraction layer and accurately reflects that the resource creates a Kubernetes Deployment, not a generic "microservice." The rename applied 7 comprehensive naming pattern replacements across 45+ files, updated the catalog kind registry, fixed test references, and verified through the full build pipeline.
 
 ## Motivation
 
@@ -33,7 +33,7 @@ Renaming to `KubernetesDeployment`:
 
 ### Rename Strategy
 
-Used the automated rename script located at `_rules/deployment-component/rename/_scripts/rename_deployment_component.py` which applies 7 comprehensive naming patterns:
+Used the automated rename script located at `_rules/catalog-kind/rename/_scripts/rename_catalog_kind.py` which applies 7 comprehensive naming patterns:
 
 1. **PascalCase**: `KubernetesMicroservice` → `KubernetesDeployment`
 2. **camelCase**: `kubernetesMicroservice` → `kubernetesDeployment`
@@ -45,13 +45,13 @@ Used the automated rename script located at `_rules/deployment-component/rename/
 
 ### Changes Applied
 
-#### Component Directory
+#### Kind Directory
 - **Copied**: `apis/dev/planton/provider/kubernetes/workload/kubernetesmicroservice/` → `kubernetesdeployment/`
 - **Updated**: All proto files, Go files, documentation, examples, IaC modules (Pulumi, Terraform)
 - **Deleted**: Old `kubernetesmicroservice/` directory after successful verification
 
-#### Cloud Resource Registry
-Updated `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`:
+#### Catalog Kind Registry
+Updated `apis/dev/planton/shared/catalogkind/catalog_kind.proto`:
 
 ```proto
 // Before
@@ -91,12 +91,12 @@ KubernetesDeployment = 810 [(kind_meta) = {
 
 Fixed two test files that contained hard-coded references:
 
-1. **`pkg/crkreflect/kind_by_id_prefix_test.go`**:
+1. **`pkg/catalogkindreflect/kind_by_id_prefix_test.go`**:
    - Test name: `"Kubernetes Microservice"` → `"Kubernetes Deployment"`
    - ID prefix: `"k8sms"` → `"k8sdpl"`
-   - Expected enum: `CloudResourceKind_KubernetesMicroservice` → `CloudResourceKind_KubernetesDeployment`
+   - Expected enum: `CatalogKind_KubernetesMicroservice` → `CatalogKind_KubernetesDeployment`
 
-2. **`pkg/crkreflect/kind_from_string_test.go`**:
+2. **`pkg/catalogkindreflect/kind_from_string_test.go`**:
    - Updated 6 test cases for various string format conversions
    - Updated normalization test with all 9 string variants
    - All test inputs and expected outputs now use `KubernetesDeployment`
@@ -107,10 +107,10 @@ The initial rename script run succeeded partially but encountered a build failur
 
 **Error**:
 ```
-vet: pkg/crkreflect/kind_by_id_prefix_test.go:37:32: undefined: cloudresourcekind.CloudResourceKind_KubernetesMicroservice
+vet: pkg/catalogkindreflect/kind_by_id_prefix_test.go:37:32: undefined: catalogkind.CatalogKind_KubernetesMicroservice
 ```
 
-**Root Cause**: Test files contained hard-coded enum references that the automated replacement patterns didn't catch because they weren't in the component directory or documentation paths.
+**Root Cause**: Test files contained hard-coded enum references that the automated replacement patterns didn't catch because they weren't in the kind directory or documentation paths.
 
 **Resolution**: Manually updated both test files with correct enum references and test data.
 
@@ -192,28 +192,28 @@ Each can now be named accurately without conflicting abstractions.
 
 ## Files Modified
 
-### Component Directory (New)
+### Kind Directory (New)
 - `apis/dev/planton/provider/kubernetes/workload/kubernetesdeployment/v1/`
-  - `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto`
-  - `api.pb.go`, `spec.pb.go`, `stack_input.pb.go`, `stack_outputs.pb.go`
+  - `api.proto`, `spec.proto`, `iac_input.proto`, `outputs.proto`
+  - `api.pb.go`, `spec.pb.go`, `iac_input.pb.go`, `outputs.pb.go`
   - `README.md`, `examples.md`, `docs/README.md`
   - `iac/pulumi/main.go`, `iac/pulumi/module/*.go`
   - `iac/tf/*.tf`
   - `BUILD.bazel` files
 
 ### Registry
-- `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
+- `apis/dev/planton/shared/catalogkind/catalog_kind.proto`
 
 ### Tests
-- `pkg/crkreflect/kind_by_id_prefix_test.go`
-- `pkg/crkreflect/kind_from_string_test.go`
+- `pkg/catalogkindreflect/kind_by_id_prefix_test.go`
+- `pkg/catalogkindreflect/kind_from_string_test.go`
 
 ### Generated Files
-- `pkg/crkreflect/kind_map_gen.go` (auto-regenerated)
+- `pkg/catalogkindreflect/kind_map_gen.go` (auto-regenerated)
 
 ### Total Impact
 - **Files copied**: 45
-- **Replacements made**: 33 (in component directory and docs)
+- **Replacements made**: 33 (in kind directory and docs)
 - **Test files fixed**: 2 (manual updates)
 - **Old directory deleted**: 1
 
@@ -237,7 +237,7 @@ Only changed:
 ### Code Generation Flow
 
 1. **Protobuf compilation** (`make protos`):
-   - Reads updated `cloud_resource_kind.proto`
+   - Reads updated `catalog_kind.proto`
    - Generates Go stubs with new enum names
    - Creates type-safe constants
 
@@ -246,8 +246,8 @@ Only changed:
    - Maintains dependency graph
 
 3. **Kind map generation**:
-   - Regenerates `pkg/crkreflect/kind_map_gen.go`
-   - Maps ID prefix `k8sdpl` → `CloudResourceKind_KubernetesDeployment`
+   - Regenerates `pkg/catalogkindreflect/kind_map_gen.go`
+   - Maps ID prefix `k8sdpl` → `CatalogKind_KubernetesDeployment`
    - Maps string variants → enum value
 
 4. **Binary compilation**:
@@ -266,7 +266,7 @@ Only changed:
 
 ### What Needed Manual Intervention
 
-1. **Test files**: Hard-coded enum references in test files outside the component directory weren't caught by the script's path filters
+1. **Test files**: Hard-coded enum references in test files outside the kind directory weren't caught by the script's path filters
 2. **Documentation scope**: The script only updates `site/public/docs/`; changelog references in `_changelog/` are intentionally preserved as historical
 
 ### Recommendations for Future Renames

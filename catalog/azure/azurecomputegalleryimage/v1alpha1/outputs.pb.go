@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureComputeGalleryImageStackOutputs** captures the outputs from
+// **AzureComputeGalleryImageOutputs** captures the outputs from
 // provisioning a gallery image definition and its versions.
-type AzureComputeGalleryImageStackOutputs struct {
+type AzureComputeGalleryImageOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The image definition's Azure Resource Manager ID. VMs deploying
 	// from it get the image's latest (non-excluded) version.
@@ -38,20 +38,20 @@ type AzureComputeGalleryImageStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureComputeGalleryImageStackOutputs) Reset() {
-	*x = AzureComputeGalleryImageStackOutputs{}
+func (x *AzureComputeGalleryImageOutputs) Reset() {
+	*x = AzureComputeGalleryImageOutputs{}
 	mi := &file_catalog_azure_azurecomputegalleryimage_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureComputeGalleryImageStackOutputs) String() string {
+func (x *AzureComputeGalleryImageOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureComputeGalleryImageStackOutputs) ProtoMessage() {}
+func (*AzureComputeGalleryImageOutputs) ProtoMessage() {}
 
-func (x *AzureComputeGalleryImageStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureComputeGalleryImageOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecomputegalleryimage_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *AzureComputeGalleryImageStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureComputeGalleryImageStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureComputeGalleryImageStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureComputeGalleryImageOutputs.ProtoReflect.Descriptor instead.
+func (*AzureComputeGalleryImageOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecomputegalleryimage_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureComputeGalleryImageStackOutputs) GetImageId() string {
+func (x *AzureComputeGalleryImageOutputs) GetImageId() string {
 	if x != nil {
 		return x.ImageId
 	}
 	return ""
 }
 
-func (x *AzureComputeGalleryImageStackOutputs) GetImageName() string {
+func (x *AzureComputeGalleryImageOutputs) GetImageName() string {
 	if x != nil {
 		return x.ImageName
 	}
 	return ""
 }
 
-func (x *AzureComputeGalleryImageStackOutputs) GetVersionIds() map[string]string {
+func (x *AzureComputeGalleryImageOutputs) GetVersionIds() map[string]string {
 	if x != nil {
 		return x.VersionIds
 	}
@@ -93,12 +93,12 @@ var File_catalog_azure_azurecomputegalleryimage_v1alpha1_outputs_proto protorefl
 
 const file_catalog_azure_azurecomputegalleryimage_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azurecomputegalleryimage/v1alpha1/outputs.proto\x123dev.planton.azure.azurecomputegalleryimage.v1alpha1\"\xac\x02\n" +
-	"$AzureComputeGalleryImageStackOutputs\x12\x19\n" +
+	"=catalog/azure/azurecomputegalleryimage/v1alpha1/outputs.proto\x123dev.planton.azure.azurecomputegalleryimage.v1alpha1\"\xa2\x02\n" +
+	"\x1fAzureComputeGalleryImageOutputs\x12\x19\n" +
 	"\bimage_id\x18\x01 \x01(\tR\aimageId\x12\x1d\n" +
 	"\n" +
-	"image_name\x18\x02 \x01(\tR\timageName\x12\x8a\x01\n" +
-	"\vversion_ids\x18\x03 \x03(\v2i.dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStackOutputs.VersionIdsEntryR\n" +
+	"image_name\x18\x02 \x01(\tR\timageName\x12\x85\x01\n" +
+	"\vversion_ids\x18\x03 \x03(\v2d.dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageOutputs.VersionIdsEntryR\n" +
 	"versionIds\x1a=\n" +
 	"\x0fVersionIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -119,11 +119,11 @@ func file_catalog_azure_azurecomputegalleryimage_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_azure_azurecomputegalleryimage_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurecomputegalleryimage_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureComputeGalleryImageStackOutputs)(nil), // 0: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStackOutputs
-	nil, // 1: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStackOutputs.VersionIdsEntry
+	(*AzureComputeGalleryImageOutputs)(nil), // 0: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageOutputs
+	nil,                                     // 1: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageOutputs.VersionIdsEntry
 }
 var file_catalog_azure_azurecomputegalleryimage_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStackOutputs.version_ids:type_name -> dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageStackOutputs.VersionIdsEntry
+	1, // 0: dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageOutputs.version_ids:type_name -> dev.planton.azure.azurecomputegalleryimage.v1alpha1.AzureComputeGalleryImageOutputs.VersionIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

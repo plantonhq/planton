@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareAuthenticatedOriginPullsCertificateStackOutputs captures the
+// CloudflareAuthenticatedOriginPullsCertificateOutputs captures the
 // observable outputs after uploading an Authenticated Origin Pulls client
 // certificate.
-type CloudflareAuthenticatedOriginPullsCertificateStackOutputs struct {
+type CloudflareAuthenticatedOriginPullsCertificateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the uploaded certificate -- what per-hostname associations
 	// reference.
@@ -37,20 +37,20 @@ type CloudflareAuthenticatedOriginPullsCertificateStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareAuthenticatedOriginPullsCertificateStackOutputs) Reset() {
-	*x = CloudflareAuthenticatedOriginPullsCertificateStackOutputs{}
+func (x *CloudflareAuthenticatedOriginPullsCertificateOutputs) Reset() {
+	*x = CloudflareAuthenticatedOriginPullsCertificateOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareauthenticatedoriginpullscertificate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareAuthenticatedOriginPullsCertificateStackOutputs) String() string {
+func (x *CloudflareAuthenticatedOriginPullsCertificateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareAuthenticatedOriginPullsCertificateStackOutputs) ProtoMessage() {}
+func (*CloudflareAuthenticatedOriginPullsCertificateOutputs) ProtoMessage() {}
 
-func (x *CloudflareAuthenticatedOriginPullsCertificateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareAuthenticatedOriginPullsCertificateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareauthenticatedoriginpullscertificate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *CloudflareAuthenticatedOriginPullsCertificateStackOutputs) ProtoReflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareAuthenticatedOriginPullsCertificateStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareAuthenticatedOriginPullsCertificateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareAuthenticatedOriginPullsCertificateOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareAuthenticatedOriginPullsCertificateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareauthenticatedoriginpullscertificate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareAuthenticatedOriginPullsCertificateStackOutputs) GetCertificateId() string {
+func (x *CloudflareAuthenticatedOriginPullsCertificateOutputs) GetCertificateId() string {
 	if x != nil {
 		return x.CertificateId
 	}
 	return ""
 }
 
-func (x *CloudflareAuthenticatedOriginPullsCertificateStackOutputs) GetZoneId() string {
+func (x *CloudflareAuthenticatedOriginPullsCertificateOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *CloudflareAuthenticatedOriginPullsCertificateStackOutputs) GetExpiresOn() string {
+func (x *CloudflareAuthenticatedOriginPullsCertificateOutputs) GetExpiresOn() string {
 	if x != nil {
 		return x.ExpiresOn
 	}
@@ -92,8 +92,8 @@ var File_catalog_cloudflare_cloudflareauthenticatedoriginpullscertificate_v1alph
 
 const file_catalog_cloudflare_cloudflareauthenticatedoriginpullscertificate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Wcatalog/cloudflare/cloudflareauthenticatedoriginpullscertificate/v1alpha1/outputs.proto\x12Mdev.planton.cloudflare.cloudflareauthenticatedoriginpullscertificate.v1alpha1\"\xa8\x01\n" +
-	"9CloudflareAuthenticatedOriginPullsCertificateStackOutputs\x12%\n" +
+	"Wcatalog/cloudflare/cloudflareauthenticatedoriginpullscertificate/v1alpha1/outputs.proto\x12Mdev.planton.cloudflare.cloudflareauthenticatedoriginpullscertificate.v1alpha1\"\xa3\x01\n" +
+	"4CloudflareAuthenticatedOriginPullsCertificateOutputs\x12%\n" +
 	"\x0ecertificate_id\x18\x01 \x01(\tR\rcertificateId\x12\x17\n" +
 	"\azone_id\x18\x02 \x01(\tR\x06zoneId\x12\x1d\n" +
 	"\n" +
@@ -114,7 +114,7 @@ func file_catalog_cloudflare_cloudflareauthenticatedoriginpullscertificate_v1alp
 
 var file_catalog_cloudflare_cloudflareauthenticatedoriginpullscertificate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareauthenticatedoriginpullscertificate_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareAuthenticatedOriginPullsCertificateStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareauthenticatedoriginpullscertificate.v1alpha1.CloudflareAuthenticatedOriginPullsCertificateStackOutputs
+	(*CloudflareAuthenticatedOriginPullsCertificateOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareauthenticatedoriginpullscertificate.v1alpha1.CloudflareAuthenticatedOriginPullsCertificateOutputs
 }
 var file_catalog_cloudflare_cloudflareauthenticatedoriginpullscertificate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

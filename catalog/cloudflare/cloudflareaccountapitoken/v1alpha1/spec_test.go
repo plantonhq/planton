@@ -20,7 +20,7 @@ func validToken(spec *CloudflareAccountApiTokenSpec) *CloudflareAccountApiToken 
 	return &CloudflareAccountApiToken{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareAccountApiToken",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-account-api-token",
 		},
 		Spec: spec,

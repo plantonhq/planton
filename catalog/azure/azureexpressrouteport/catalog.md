@@ -4,7 +4,7 @@ Deploys an ExpressRoute Port -- your own pair of physical ports on a Microsoft e
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ExpressRoute Port** -- the ARM object owning the physical link pair, with its peering location, bandwidth, encapsulation, billing model, optional managed identity, and per-link admin/MACsec configuration
 - **Port Authorizations** -- one per `authorizations` entry: ARM-generated keys that let circuits in OTHER subscriptions be built on this port's capacity
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -58,7 +58,7 @@ spec:
 planton apply -f azure-express-route-port.yaml
 ```
 
-This creates a 10 Gbps Dot1Q port pair at Equinix Ashburn DC2 with both links admin-enabled; the physical cross-connects are ordered out-of-band with the facility using the per-link outputs (router, interface, patch panel, rack). A Stack Job tracks the provisioning in real time.
+This creates a 10 Gbps Dot1Q port pair at Equinix Ashburn DC2 with both links admin-enabled; the physical cross-connects are ordered out-of-band with the facility using the per-link outputs (router, interface, patch panel, rack). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,16 +89,16 @@ These are the most important decisions when configuring a port. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzureUserAssignedIdentity** | `identity.identityIds` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,6 +122,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the port is created in
-- [**Azure ExpressRoute Circuit**](/cloud-catalog/azure-express-route-circuit) -- Direct-mode circuits carved from this port's bandwidth
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the identity MACsec uses to read Key Vault secrets
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the port is created in
+- [**Azure ExpressRoute Circuit**](/infra-catalog/azure-express-route-circuit) -- Direct-mode circuits carved from this port's bandwidth
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the identity MACsec uses to read Key Vault secrets

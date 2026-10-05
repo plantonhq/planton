@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-model-armor-floor-setting stack-input
-type GcpModelArmorFloorSettingStackInput struct {
+// gcp-model-armor-floor-setting iac-input
+type GcpModelArmorFloorSettingIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpModelArmorFloorSetting `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpModelArmorFloorSettingStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpModelArmorFloorSettingStackInput) Reset() {
-	*x = GcpModelArmorFloorSettingStackInput{}
+func (x *GcpModelArmorFloorSettingIacInput) Reset() {
+	*x = GcpModelArmorFloorSettingIacInput{}
 	mi := &file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpModelArmorFloorSettingStackInput) String() string {
+func (x *GcpModelArmorFloorSettingIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpModelArmorFloorSettingStackInput) ProtoMessage() {}
+func (*GcpModelArmorFloorSettingIacInput) ProtoMessage() {}
 
-func (x *GcpModelArmorFloorSettingStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpModelArmorFloorSettingIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpModelArmorFloorSettingStackInput) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpModelArmorFloorSettingStackInput.ProtoReflect.Descriptor instead.
-func (*GcpModelArmorFloorSettingStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpModelArmorFloorSettingIacInput.ProtoReflect.Descriptor instead.
+func (*GcpModelArmorFloorSettingIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpModelArmorFloorSettingStackInput) GetTarget() *GcpModelArmorFloorSetting {
+func (x *GcpModelArmorFloorSettingIacInput) GetTarget() *GcpModelArmorFloorSetting {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpModelArmorFloorSettingStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpModelArmorFloorSettingIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_input_proto protoreflect
 
 const file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1/input.proto\x122dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1\x1a8catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd9\x01\n" +
-	"#GcpModelArmorFloorSettingStackInput\x12e\n" +
+	":catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1/input.proto\x122dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1\x1a8catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd7\x01\n" +
+	"!GcpModelArmorFloorSettingIacInput\x12e\n" +
 	"\x06target\x18\x01 \x01(\v2M.dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xa0\x03\n" +
 	"6com.dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_input_proto_rawDescGZIP
 
 var file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_input_proto_goTypes = []any{
-	(*GcpModelArmorFloorSettingStackInput)(nil), // 0: dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingStackInput
-	(*GcpModelArmorFloorSetting)(nil),           // 1: dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSetting
-	(*gcp.GcpProviderConfig)(nil),               // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpModelArmorFloorSettingIacInput)(nil), // 0: dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingIacInput
+	(*GcpModelArmorFloorSetting)(nil),         // 1: dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSetting
+	(*gcp.GcpProviderConfig)(nil),             // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpmodelarmorfloorsetting_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingStackInput.target:type_name -> dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSetting
-	2, // 1: dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingIacInput.target:type_name -> dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSetting
+	2, // 1: dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

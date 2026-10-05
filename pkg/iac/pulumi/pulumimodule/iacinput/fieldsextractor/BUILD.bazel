@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "fieldsextractor",
+    srcs = ["extract_apiresource_spec_field.go"],
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput/fieldsextractor",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_pkg_errors//:errors",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+    ],
+)
+
+go_test(
+    name = "fieldsextractor_test",
+    srcs = ["extract_apiresource_spec_field_test.go"],
+    embed = [":fieldsextractor"],
+    deps = [
+        "//catalog/aws/awslambda/v1alpha1",
+        "@com_github_stretchr_testify//assert",
+        "@org_golang_google_protobuf//proto",
+    ],
+)

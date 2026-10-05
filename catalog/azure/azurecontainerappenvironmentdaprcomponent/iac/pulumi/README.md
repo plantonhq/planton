@@ -1,7 +1,7 @@
 # AzureContainerAppEnvironmentDaprComponent - Pulumi Module
 
 Pulumi implementation for the AzureContainerAppEnvironmentDaprComponent
-component.
+kind.
 
 ## Architecture
 
@@ -15,7 +15,7 @@ containerapp.EnvironmentDaprComponent (one pluggable Dapr backend)
   literal value XOR a `secret_name` reference into the component's own
   secret list (CEL-enforced at the spec).
 - **`init_timeout` is materialized explicitly** (default `"5s"`) so
-  both engines send identical request bodies; stack inputs never carry
+  both engines send identical request bodies; IaC inputs never carry
   proto defaults.
 - **Empty scopes are omitted** -- ARM treats an absent scope list as
   "every Dapr app in the environment"; production components should
@@ -25,5 +25,5 @@ containerapp.EnvironmentDaprComponent (one pluggable Dapr backend)
 ## Provider
 
 Built via the shared `pulumiazureprovider.Get` builder -- static client
-secret, keyless web identity, or ambient chain, resolved from the stack
+secret, keyless web identity, or ambient chain, resolved from the IaC
 input. Never construct the provider inline.

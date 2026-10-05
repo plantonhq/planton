@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurebackupprotectedvm
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: backup_protected_vm_id
       derivations:
-        - from_stack_output: backup_protected_vm_id
+        - from_output: backup_protected_vm_id
       where_to_find: >-
         `az backup item show -g <rg> -v <vault> -c <container> -n <item>
         --query id`, or compose {vault-id}/backupFabrics/Azure/

@@ -28,7 +28,7 @@ func validResource() *AzureExpressRouteCircuitPeering {
 	return &AzureExpressRouteCircuitPeering{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureExpressRouteCircuitPeering",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ercp",
 		},
 		Spec: &AzureExpressRouteCircuitPeeringSpec{

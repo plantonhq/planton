@@ -1,6 +1,6 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate: an enabled encryption scope commits real spend (Microsoft
 # meters each named scope per month, with a 30-day minimum on every
 # enablement), but the per-scope RATE is keyed by the referenced storage
@@ -9,9 +9,9 @@
 # per region -- and this manifest only names a reference to the account,
 # never its tier or redundancy, so a dollar figure here would be a guess
 # wearing a dollar sign.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurestorageencryptionscope
 spec:
@@ -27,7 +27,7 @@ spec:
       pricing_unit: scope-months
       impact: The rate lever -- the referenced account's access tier (hot, cool, archive) and redundancy (LRS through RA-GZRS) select which "Named Encryption Scopes" rate this scope bills, and its region sets the price level. This manifest names the account, never those facts.
   estimate_exclusions:
-    - the per-scope monthly rate is keyed by the referenced storage account's access tier, redundancy, and region in Microsoft's own price list, and this manifest sees none of those facts -- which is why no estimate document exists for this component
+    - the per-scope monthly rate is keyed by the referenced storage account's access tier, redundancy, and region in Microsoft's own price list, and this manifest sees none of those facts -- which is why no estimate document exists for this kind
     - each enablement carries a 30-day minimum -- a scope enabled and disabled inside a month still bills the full month
     - the data encrypted under the scope bills as blob capacity and operations on the storage account's own meters, key-scoped but account-billed
     - a MICROSOFT_KEY_VAULT scope adds Key Vault key operations (wrap/unwrap on every access) that bill per transaction on the referenced key's vault

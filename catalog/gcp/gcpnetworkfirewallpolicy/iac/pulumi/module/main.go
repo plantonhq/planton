@@ -13,10 +13,10 @@ import (
 // as the Terraform module's count guards do. The families share every
 // argument but `region`, so the spec is one shape and this switch is the
 // only place the arm is decided.
-func Resources(ctx *pulumi.Context, stackInput *gcpnetworkfirewallpolicyv1alpha1.GcpNetworkFirewallPolicyStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcpnetworkfirewallpolicyv1alpha1.GcpNetworkFirewallPolicyIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

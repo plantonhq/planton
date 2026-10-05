@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpBigQueryCapacityCommitmentStackOutputs captures the commitment's
+// GcpBigQueryCapacityCommitmentOutputs captures the commitment's
 // identity and term.
-type GcpBigQueryCapacityCommitmentStackOutputs struct {
+type GcpBigQueryCapacityCommitmentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name --
 	// projects/{project}/locations/{location}/capacityCommitments/{id}.
@@ -39,20 +39,20 @@ type GcpBigQueryCapacityCommitmentStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *GcpBigQueryCapacityCommitmentStackOutputs) Reset() {
-	*x = GcpBigQueryCapacityCommitmentStackOutputs{}
+func (x *GcpBigQueryCapacityCommitmentOutputs) Reset() {
+	*x = GcpBigQueryCapacityCommitmentOutputs{}
 	mi := &file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpBigQueryCapacityCommitmentStackOutputs) String() string {
+func (x *GcpBigQueryCapacityCommitmentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpBigQueryCapacityCommitmentStackOutputs) ProtoMessage() {}
+func (*GcpBigQueryCapacityCommitmentOutputs) ProtoMessage() {}
 
-func (x *GcpBigQueryCapacityCommitmentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpBigQueryCapacityCommitmentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *GcpBigQueryCapacityCommitmentStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpBigQueryCapacityCommitmentStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpBigQueryCapacityCommitmentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpBigQueryCapacityCommitmentOutputs.ProtoReflect.Descriptor instead.
+func (*GcpBigQueryCapacityCommitmentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpBigQueryCapacityCommitmentStackOutputs) GetName() string {
+func (x *GcpBigQueryCapacityCommitmentOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpBigQueryCapacityCommitmentStackOutputs) GetState() string {
+func (x *GcpBigQueryCapacityCommitmentOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
 	return ""
 }
 
-func (x *GcpBigQueryCapacityCommitmentStackOutputs) GetCommitmentStartTime() string {
+func (x *GcpBigQueryCapacityCommitmentOutputs) GetCommitmentStartTime() string {
 	if x != nil {
 		return x.CommitmentStartTime
 	}
 	return ""
 }
 
-func (x *GcpBigQueryCapacityCommitmentStackOutputs) GetCommitmentEndTime() string {
+func (x *GcpBigQueryCapacityCommitmentOutputs) GetCommitmentEndTime() string {
 	if x != nil {
 		return x.CommitmentEndTime
 	}
@@ -101,8 +101,8 @@ var File_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_outputs_proto protor
 
 const file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/gcp/gcpbigquerycapacitycommitment/v1alpha1/outputs.proto\x126dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1\"\xb9\x01\n" +
-	")GcpBigQueryCapacityCommitmentStackOutputs\x12\x12\n" +
+	"@catalog/gcp/gcpbigquerycapacitycommitment/v1alpha1/outputs.proto\x126dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1\"\xb4\x01\n" +
+	"$GcpBigQueryCapacityCommitmentOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
 	"\x05state\x18\x02 \x01(\tR\x05state\x122\n" +
 	"\x15commitment_start_time\x18\x03 \x01(\tR\x13commitmentStartTime\x12.\n" +
@@ -123,7 +123,7 @@ func file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpBigQueryCapacityCommitmentStackOutputs)(nil), // 0: dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1.GcpBigQueryCapacityCommitmentStackOutputs
+	(*GcpBigQueryCapacityCommitmentOutputs)(nil), // 0: dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1.GcpBigQueryCapacityCommitmentOutputs
 }
 var file_catalog_gcp_gcpbigquerycapacitycommitment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

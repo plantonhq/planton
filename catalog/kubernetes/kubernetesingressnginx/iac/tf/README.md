@@ -1,6 +1,6 @@
 # KubernetesIngressNginx Terraform Module
 
-Terraform/OpenTofu module for the KubernetesIngressNginx component: installs
+Terraform/OpenTofu module for the KubernetesIngressNginx kind: installs
 the ingress-nginx controller from the official Helm chart (`ingress-nginx`
 at https://kubernetes.github.io/ingress-nginx) as the cluster's HTTP(S)
 entry point, with multi-instance coexistence built in.

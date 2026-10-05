@@ -4,7 +4,7 @@ Deploys an Amazon Bedrock AgentCore agent runtime — a serverless, session-isol
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Agent Runtime** — the runtime itself, named by `runtimeName`, executing the container image or code bundle with the chosen network mode, server protocol, environment variables, session lifecycle, filesystem mounts, and optional inbound JWT authorization
 - **Runtime Endpoint** — one per `endpoints` entry: a named serving endpoint that floats on the latest version (version omitted) or pins an explicit one. AWS also maintains an implicit DEFAULT endpoint on every runtime
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with AgentCore control-plane permissions (`bedrock-agentcore:CreateAgentRuntime` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with AgentCore control-plane permissions (`bedrock-agentcore:CreateAgentRuntime` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -72,7 +72,7 @@ spec:
 planton apply -f agentcore-runtime.yaml
 ```
 
-This creates a code-bundle runtime running `main.py` on the managed Python 3.13 base with AWS-managed outbound internet, plus a `live` endpoint floating on the latest version. A Stack Job tracks the provisioning in real time.
+This creates a code-bundle runtime running `main.py` on the managed Python 3.13 base with AWS-managed outbound internet, plus a `live` endpoint floating on the latest version. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -125,7 +125,7 @@ These are the most important decisions when configuring an agent runtime. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -137,9 +137,9 @@ These are the most important decisions when configuring an agent runtime. Explor
 
 The JWT authorizer's private endpoint additionally takes **AwsVpc**, **AwsSubnet**, and **AwsSecurityGroup** references when the OIDC provider is reached through your VPC.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -162,11 +162,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the execution role the service assumes to pull the artifact and run the agent
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — holds code bundles for the managed-runtime artifact arm
-- [**AWS Bedrock AgentCore Gateway**](/cloud-catalog/aws-bedrock-agent-core-gateway) — fronts this runtime as an MCP tool via `agentcoreRuntime` targets, and supplies tools the hosted agent calls
-- [**AWS Bedrock AgentCore Memory**](/cloud-catalog/aws-bedrock-agent-core-memory) — the memory hosted agents write events to and query records from
-- [**AWS Bedrock AgentCore Evaluation**](/cloud-catalog/aws-bedrock-agent-core-evaluation) — harnesses pin their runtime environment to this runtime for repeatable benches
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) — session network placement in VPC mode
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) — session network rules in VPC mode
-- [**AWS EFS Access Point**](/cloud-catalog/aws-efs-access-point) — durable cross-session filesystem mounts
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the execution role the service assumes to pull the artifact and run the agent
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — holds code bundles for the managed-runtime artifact arm
+- [**AWS Bedrock AgentCore Gateway**](/infra-catalog/aws-bedrock-agent-core-gateway) — fronts this runtime as an MCP tool via `agentcoreRuntime` targets, and supplies tools the hosted agent calls
+- [**AWS Bedrock AgentCore Memory**](/infra-catalog/aws-bedrock-agent-core-memory) — the memory hosted agents write events to and query records from
+- [**AWS Bedrock AgentCore Evaluation**](/infra-catalog/aws-bedrock-agent-core-evaluation) — harnesses pin their runtime environment to this runtime for repeatable benches
+- [**AWS Subnet**](/infra-catalog/aws-subnet) — session network placement in VPC mode
+- [**AWS Security Group**](/infra-catalog/aws-security-group) — session network rules in VPC mode
+- [**AWS EFS Access Point**](/infra-catalog/aws-efs-access-point) — durable cross-session filesystem mounts

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Transformed the Planton Web App from a multi-step manual installation process into a **one-command installable solution** managed entirely through the CLI. Users can now install via Homebrew and run `planton webapp init` to get a fully functional web interface for managing cloud resources. The solution consolidates MongoDB, backend API, and frontend into a single Docker container orchestrated by supervisord, eliminating the need for separate service management.
+Transformed the Planton Web App from a multi-step manual installation process into a **one-command installable solution** managed entirely through the CLI. Users can now install via Homebrew and run `planton webapp init` to get a fully functional web interface for managing Infra Components. The solution consolidates MongoDB, backend API, and frontend into a single Docker container orchestrated by supervisord, eliminating the need for separate service management.
 
 ## Problem Statement / Motivation
 
@@ -465,7 +465,7 @@ import (
 func init() {
     rootCmd.AddCommand(
         root.Apply,
-        root.CloudResourceApplyCmd,
+        root.InfraComponentApplyCmd,
         // ... existing commands ...
         webapp.WebAppCmd,  // New command group
     )
@@ -575,13 +575,13 @@ All data survives container restarts via Docker volumes:
 
 | Volume | Contents | Purpose |
 |--------|----------|---------|
-| `planton-mongodb-data` | MongoDB database | Cloud resources, credentials, stack-updates |
+| `planton-mongodb-data` | MongoDB database | Infra components, credentials, stack-updates |
 | `planton-pulumi-state` | Pulumi state files | Infrastructure state tracking |
 | `planton-go-cache` | Go build cache | Faster Pulumi deployments |
 
 **Test scenario**:
 ```bash
-# Create cloud resource
+# Create infra component
 planton webapp start
 # (use web interface to create resources)
 
@@ -643,8 +643,8 @@ This change removes the biggest barrier to web app adoption:
 
 This work builds on:
 - **T02-T08** (Dec 1-9, 2025): Core web app implementation
-  - Cloud resource CRUD interface
-  - Stack job tracking
+  - Infra component CRUD interface
+  - Infra Job tracking
   - Credential management
   - Theme system
   - Server-side pagination
@@ -847,7 +847,7 @@ Useful commands:
 # Morning routine
 planton webapp start
 
-# Create a cloud resource using web interface
+# Create an infra component using web interface
 open http://localhost:3000
 
 # Check deployment status

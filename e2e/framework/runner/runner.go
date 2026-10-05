@@ -9,7 +9,7 @@ import (
 	tt "github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/e2e/framework/provider"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 )
 
 // Phase represents a stage in the E2E test lifecycle.
@@ -44,29 +44,29 @@ type PhaseResult struct {
 	Error    error
 }
 
-// TestResult captures the full 6-phase lifecycle outcome for a component.
+// TestResult captures the full 6-phase lifecycle outcome for a kind.
 type TestResult struct {
-	Component string
-	Engine    string
-	Phases    []PhaseResult
-	Passed    bool
-	Duration  time.Duration
+	Kind     string
+	Engine   string
+	Phases   []PhaseResult
+	Passed   bool
+	Duration time.Duration
 }
 
-// RunComponentTest executes the E2E lifecycle for a single component.
-// If the component has dependencies (registry prerequisites), they are deployed
+// RunKindTest executes the E2E lifecycle for a single kind.
+// If the kind has dependencies (registry prerequisites), they are deployed
 // first and torn down last, wrapping the standard 6-phase lifecycle.
-func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, harness provider.Harness) *TestResult {
+func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness provider.Harness) *TestResult {
 	start := time.Now()
 	result := &TestResult{
-		Component: tc.Component,
-		Engine:    tc.Engine,
-		Passed:    true,
+		Kind:   tc.Kind,
+		Engine: tc.Engine,
+		Passed: true,
 	}
 
 	// A kind that declares the engines it runs on is never deployed on another, whatever the
 	// lane or PLANTON_E2E_TF_BINARY asks for -- the same refusal the CLI gives.
-	if err := requireLaneEngine(tc.Component, tc.Engine); err != nil {
+	if err := requireLaneEngine(tc.Kind, tc.Engine); err != nil {
 		result.Passed = false
 		result.Phases = append(result.Phases, PhaseResult{Phase: PhaseValidate, Passed: false, Error: err})
 		result.Duration = time.Since(start)
@@ -109,7 +109,7 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 		// The engine-scoped id is passed down so prerequisite manifests expand to
 		// the same values as the scenario under test (their tokens must line up),
 		// and so each engine's prerequisite deploys get distinct identifiers.
-		dependencyStates, err = DeployDependencies(ctx, tc.T, tc.RepoRoot, tc.Provider, tc.Component, tc.ManifestPath, tc.BackendURL, expandRunID, laneClock, harness)
+		dependencyStates, err = DeployDependencies(ctx, tc.T, tc.RepoRoot, tc.Provider, tc.Kind, tc.ManifestPath, tc.BackendURL, expandRunID, laneClock, harness)
 		pr := PhaseResult{
 			Phase:    PhaseDepsUp,
 			Duration: time.Since(depStart),
@@ -134,13 +134,13 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 			return result
 		}
 
-		// Resolve the component manifest's value_from refs against the deployed
+		// Resolve the kind manifest's value_from refs against the deployed
 		// prerequisites' outputs -- the orchestrator's resolution step, performed
 		// here so a composed topology (e.g. subnet -> vpc) can be tested standalone.
 		if len(dependencyStates) > 0 {
 			depOutputs = make(DependencyOutputs, len(dependencyStates))
 			for _, depState := range dependencyStates {
-				kind := crkreflect.KindFromString(depState.Dependency.KindSlug)
+				kind := catalogkindreflect.KindFromString(depState.Dependency.KindSlug)
 				if depOutputs[kind] == nil {
 					depOutputs[kind] = make(map[string]map[string]interface{})
 				}
@@ -438,7 +438,7 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 
 	// Phase 7: teardown dependencies in reverse order. A teardown failure
 	// FAILS the run even when every lifecycle phase passed: it means
-	// prerequisite cloud resources may still exist, and a green result would
+	// prerequisite provider resources may still exist, and a green result would
 	// hide that leak until someone audits the account.
 	if len(dependencyStates) > 0 {
 		depStart := time.Now()
@@ -463,7 +463,7 @@ func RunComponentTest(ctx context.Context, tc *provider.ComponentTestContext, ha
 	return result
 }
 
-func runValidate(tc *provider.ComponentTestContext) error {
+func runValidate(tc *provider.KindTestContext) error {
 	if tc.ManifestPath == "" {
 		return errors.New("manifest path is empty")
 	}
@@ -479,7 +479,7 @@ func runValidate(tc *provider.ComponentTestContext) error {
 		tc.TerraformCleanup = cleanup
 	}
 
-	// Binding the manifest (the provider-config fixture, the stack input or
+	// Binding the manifest (the provider-config fixture, the IaC input or
 	// the tfvars) is shared with the lifecycle lanes, which rebind a second
 	// manifest to the same stack the same way.
 	if err := bindManifest(tc, tc.ManifestPath); err != nil {
@@ -491,10 +491,10 @@ func runValidate(tc *provider.ComponentTestContext) error {
 	return nil
 }
 
-func runDeploy(tc *provider.ComponentTestContext) error {
+func runDeploy(tc *provider.KindTestContext) error {
 	switch tc.Engine {
 	case "pulumi":
-		_, err := PulumiDeploy(tc.ModuleDir, tc.StackName, tc.BackendURL, tc.StackInputFilePath)
+		_, err := PulumiDeploy(tc.ModuleDir, tc.StackName, tc.BackendURL, tc.IacInputFilePath)
 		return err
 	case "terraform":
 		opts, ok := tc.TerraformOpts.(*tt.Options)
@@ -509,12 +509,12 @@ func runDeploy(tc *provider.ComponentTestContext) error {
 }
 
 // runIdempotency re-plans the configuration runDeploy just applied and fails
-// on any pending change. See the phase-insertion comment in RunComponentTest
+// on any pending change. See the phase-insertion comment in RunKindTest
 // for why this gate exists and what a failure means.
-func runIdempotency(tc *provider.ComponentTestContext) error {
+func runIdempotency(tc *provider.KindTestContext) error {
 	switch tc.Engine {
 	case "pulumi":
-		_, err := PulumiPreviewExpectNoChanges(tc.ModuleDir, tc.StackName, tc.BackendURL, tc.StackInputFilePath)
+		_, err := PulumiPreviewExpectNoChanges(tc.ModuleDir, tc.StackName, tc.BackendURL, tc.IacInputFilePath)
 		return err
 	case "terraform":
 		opts, ok := tc.TerraformOpts.(*tt.Options)
@@ -528,10 +528,10 @@ func runIdempotency(tc *provider.ComponentTestContext) error {
 	}
 }
 
-func runVerifyOutputs(tc *provider.ComponentTestContext) error {
+func runVerifyOutputs(tc *provider.KindTestContext) error {
 	switch tc.Engine {
 	case "pulumi":
-		outputJSON, err := PulumiStackOutputs(tc.ModuleDir, tc.StackName, tc.BackendURL)
+		outputJSON, err := PulumiOutputs(tc.ModuleDir, tc.StackName, tc.BackendURL)
 		if err != nil {
 			return errors.Wrap(err, "failed to retrieve pulumi stack outputs")
 		}
@@ -557,11 +557,11 @@ func runVerifyOutputs(tc *provider.ComponentTestContext) error {
 	}
 
 	if len(tc.Outputs) == 0 {
-		fmt.Printf("  [outputs] %s: no outputs captured, skipping transformation validation\n", tc.Component)
+		fmt.Printf("  [outputs] %s: no outputs captured, skipping transformation validation\n", tc.Kind)
 		return nil
 	}
 
-	msg, flatOutputs, err := VerifyOutputTransformation(tc.Component, tc.Outputs, tc.ModuleDir)
+	msg, flatOutputs, err := VerifyOutputTransformation(tc.Kind, tc.Outputs, tc.ModuleDir)
 	if err != nil {
 		return err
 	}
@@ -570,8 +570,8 @@ func runVerifyOutputs(tc *provider.ComponentTestContext) error {
 	return nil
 }
 
-func runVerifyResources(ctx context.Context, tc *provider.ComponentTestContext, harness provider.Harness) error {
-	return harness.VerifyDeployed(ctx, tc.Component, tc.Outputs)
+func runVerifyResources(ctx context.Context, tc *provider.KindTestContext, harness provider.Harness) error {
+	return harness.VerifyDeployed(ctx, tc.Kind, tc.Outputs)
 }
 
 // DestroyRetryAnnotation opts ONE scenario into bounded destroy retries; its
@@ -599,7 +599,7 @@ const (
 // DestroyRetryAnnotation -- keeps re-running it on destroyRetryInterval until
 // it succeeds or destroyRetryBudget elapses. Every retry prints the declared
 // reason so the lane log records why the phase is waiting.
-func runDestroyMaybeRetry(tc *provider.ComponentTestContext) error {
+func runDestroyMaybeRetry(tc *provider.KindTestContext) error {
 	err := runDestroy(tc)
 	if err == nil {
 		return nil
@@ -620,10 +620,10 @@ func runDestroyMaybeRetry(tc *provider.ComponentTestContext) error {
 	return errors.Wrapf(err, "destroy still failing after the %s retry budget", destroyRetryBudget)
 }
 
-func runDestroy(tc *provider.ComponentTestContext) error {
+func runDestroy(tc *provider.KindTestContext) error {
 	switch tc.Engine {
 	case "pulumi":
-		_, err := PulumiDestroy(tc.ModuleDir, tc.StackName, tc.BackendURL, tc.StackInputFilePath)
+		_, err := PulumiDestroy(tc.ModuleDir, tc.StackName, tc.BackendURL, tc.IacInputFilePath)
 		if err != nil {
 			return err
 		}
@@ -640,8 +640,8 @@ func runDestroy(tc *provider.ComponentTestContext) error {
 	}
 }
 
-func runVerifyCleanup(ctx context.Context, tc *provider.ComponentTestContext, harness provider.Harness) error {
-	return harness.VerifyDestroyed(ctx, tc.Component)
+func runVerifyCleanup(ctx context.Context, tc *provider.KindTestContext, harness provider.Harness) error {
+	return harness.VerifyDestroyed(ctx, tc.Kind)
 }
 
 // parsePulumiOutputs converts the JSON string from `pulumi stack output --json`

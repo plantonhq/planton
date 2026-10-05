@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// digital-ocean-database-cluster stack-input
-type DigitalOceanDatabaseClusterStackInput struct {
+// digital-ocean-database-cluster iac-input
+type DigitalOceanDatabaseClusterIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *DigitalOceanDatabaseCluster `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type DigitalOceanDatabaseClusterStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDatabaseClusterStackInput) Reset() {
-	*x = DigitalOceanDatabaseClusterStackInput{}
+func (x *DigitalOceanDatabaseClusterIacInput) Reset() {
+	*x = DigitalOceanDatabaseClusterIacInput{}
 	mi := &file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDatabaseClusterStackInput) String() string {
+func (x *DigitalOceanDatabaseClusterIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDatabaseClusterStackInput) ProtoMessage() {}
+func (*DigitalOceanDatabaseClusterIacInput) ProtoMessage() {}
 
-func (x *DigitalOceanDatabaseClusterStackInput) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDatabaseClusterIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *DigitalOceanDatabaseClusterStackInput) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDatabaseClusterStackInput.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDatabaseClusterStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDatabaseClusterIacInput.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDatabaseClusterIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDatabaseClusterStackInput) GetTarget() *DigitalOceanDatabaseCluster {
+func (x *DigitalOceanDatabaseClusterIacInput) GetTarget() *DigitalOceanDatabaseCluster {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *DigitalOceanDatabaseClusterStackInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
+func (x *DigitalOceanDatabaseClusterIacInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_input_proto p
 
 const file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/digitalocean/digitaloceandatabasecluster/v1alpha1/input.proto\x12=dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1\x1aCcatalog/digitalocean/digitaloceandatabasecluster/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xfa\x01\n" +
-	"%DigitalOceanDatabaseClusterStackInput\x12r\n" +
+	"Ecatalog/digitalocean/digitaloceandatabasecluster/v1alpha1/input.proto\x12=dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1\x1aCcatalog/digitalocean/digitaloceandatabasecluster/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xf8\x01\n" +
+	"#DigitalOceanDatabaseClusterIacInput\x12r\n" +
 	"\x06target\x18\x01 \x01(\v2Z.dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterR\x06target\x12]\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v24.dev.planton.digitalocean.DigitalOceanProviderConfigR\x0eproviderConfigB\xe4\x03\n" +
 	"Acom.dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_input_proto_
 
 var file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_input_proto_goTypes = []any{
-	(*DigitalOceanDatabaseClusterStackInput)(nil),   // 0: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStackInput
+	(*DigitalOceanDatabaseClusterIacInput)(nil),     // 0: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterIacInput
 	(*DigitalOceanDatabaseCluster)(nil),             // 1: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseCluster
 	(*digitalocean.DigitalOceanProviderConfig)(nil), // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
 }
 var file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStackInput.target:type_name -> dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseCluster
-	2, // 1: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStackInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
+	1, // 0: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterIacInput.target:type_name -> dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseCluster
+	2, // 1: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterIacInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

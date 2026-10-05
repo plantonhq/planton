@@ -19,7 +19,7 @@ const serviceBusAPIVersion = "2024-01-01"
 // every kind's identity output IS a full ARM id under Microsoft.ServiceBus
 // -- only the output key and the component name differ.
 type serviceBusResourceVerifier struct {
-	component   string
+	kind        string
 	idOutputKey string
 }
 
@@ -30,10 +30,10 @@ func (v *serviceBusResourceVerifier) IDOutputKey() string {
 func (v *serviceBusResourceVerifier) VerifyExists(ctx context.Context, cred azcore.TokenCredential, subscriptionID, id string) error {
 	exists, err := armResourceExists(ctx, cred, subscriptionID, id, serviceBusAPIVersion)
 	if err != nil {
-		return pkgerrors.Wrapf(err, "%s verify-exists failed for %q", v.component, id)
+		return pkgerrors.Wrapf(err, "%s verify-exists failed for %q", v.kind, id)
 	}
 	if !exists {
-		return pkgerrors.Errorf("%s %q not found after deploy", v.component, id)
+		return pkgerrors.Errorf("%s %q not found after deploy", v.kind, id)
 	}
 	return nil
 }
@@ -41,10 +41,10 @@ func (v *serviceBusResourceVerifier) VerifyExists(ctx context.Context, cred azco
 func (v *serviceBusResourceVerifier) VerifyAbsent(ctx context.Context, cred azcore.TokenCredential, subscriptionID, id string) error {
 	exists, err := armResourceExists(ctx, cred, subscriptionID, id, serviceBusAPIVersion)
 	if err != nil {
-		return pkgerrors.Wrapf(err, "%s verify-absent failed for %q", v.component, id)
+		return pkgerrors.Wrapf(err, "%s verify-absent failed for %q", v.kind, id)
 	}
 	if exists {
-		return pkgerrors.Errorf("%s %q still exists after destroy", v.component, id)
+		return pkgerrors.Errorf("%s %q still exists after destroy", v.kind, id)
 	}
 	return nil
 }

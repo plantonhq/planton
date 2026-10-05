@@ -194,7 +194,7 @@ func TestReferenceEdges(t *testing.T) {
 func TestRenderMarkdownGuideLine(t *testing.T) {
 	// The `**Guide**:` prefix is stable grammar like the headings: agents
 	// grep it to discover which kinds carry authored wisdom, and the target
-	// is always the component root's file named exactly GUIDE.md, one level
+	// is always the kind root's file named exactly GUIDE.md, one level
 	// above the page (never renamed between source and artifact).
 	text := renderKindMarkdown(t, "kubernetes-namespace", MarkdownOptions{HasGuide: true})
 	if !strings.Contains(text, "**Guide**: [GUIDE.md](../GUIDE.md)") {

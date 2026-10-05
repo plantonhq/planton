@@ -1,17 +1,17 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceankubernetesnodepool
 spec:
   # The pool's identity is its plain UUID, which the module exports as the
-  # node_pool_id stack output -- zero user input when state is present. The
+  # node_pool_id output -- zero user input when state is present. The
   # provider's importer recovers the owning cluster by scanning the
   # account's clusters, and refuses to import a cluster's default pool
   # (import the owning cluster instead).
   values:
     - name: node_pool_id
       derivations:
-        - from_stack_output: node_pool_id
+        - from_output: node_pool_id
       where_to_find: >-
         DigitalOcean control panel -> Kubernetes -> the cluster -> Nodes ->
         the pool, or `doctl kubernetes cluster node-pool list <cluster-id>`

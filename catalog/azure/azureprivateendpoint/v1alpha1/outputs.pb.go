@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzurePrivateEndpointStackOutputs** captures the outputs of provisioning
+// **AzurePrivateEndpointOutputs** captures the outputs of provisioning
 // an Azure Private Endpoint.
-type AzurePrivateEndpointStackOutputs struct {
+type AzurePrivateEndpointOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the private endpoint.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/privateEndpoints/{name}
@@ -42,20 +42,20 @@ type AzurePrivateEndpointStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzurePrivateEndpointStackOutputs) Reset() {
-	*x = AzurePrivateEndpointStackOutputs{}
+func (x *AzurePrivateEndpointOutputs) Reset() {
+	*x = AzurePrivateEndpointOutputs{}
 	mi := &file_catalog_azure_azureprivateendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePrivateEndpointStackOutputs) String() string {
+func (x *AzurePrivateEndpointOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePrivateEndpointStackOutputs) ProtoMessage() {}
+func (*AzurePrivateEndpointOutputs) ProtoMessage() {}
 
-func (x *AzurePrivateEndpointStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzurePrivateEndpointOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureprivateendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *AzurePrivateEndpointStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePrivateEndpointStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzurePrivateEndpointStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePrivateEndpointOutputs.ProtoReflect.Descriptor instead.
+func (*AzurePrivateEndpointOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureprivateendpoint_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePrivateEndpointStackOutputs) GetPrivateEndpointId() string {
+func (x *AzurePrivateEndpointOutputs) GetPrivateEndpointId() string {
 	if x != nil {
 		return x.PrivateEndpointId
 	}
 	return ""
 }
 
-func (x *AzurePrivateEndpointStackOutputs) GetPrivateEndpointName() string {
+func (x *AzurePrivateEndpointOutputs) GetPrivateEndpointName() string {
 	if x != nil {
 		return x.PrivateEndpointName
 	}
 	return ""
 }
 
-func (x *AzurePrivateEndpointStackOutputs) GetPrivateIpAddress() string {
+func (x *AzurePrivateEndpointOutputs) GetPrivateIpAddress() string {
 	if x != nil {
 		return x.PrivateIpAddress
 	}
 	return ""
 }
 
-func (x *AzurePrivateEndpointStackOutputs) GetNetworkInterfaceId() string {
+func (x *AzurePrivateEndpointOutputs) GetNetworkInterfaceId() string {
 	if x != nil {
 		return x.NetworkInterfaceId
 	}
@@ -104,8 +104,8 @@ var File_catalog_azure_azureprivateendpoint_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_azure_azureprivateendpoint_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azureprivateendpoint/v1alpha1/outputs.proto\x12/dev.planton.azure.azureprivateendpoint.v1alpha1\"\xe6\x01\n" +
-	" AzurePrivateEndpointStackOutputs\x12.\n" +
+	"9catalog/azure/azureprivateendpoint/v1alpha1/outputs.proto\x12/dev.planton.azure.azureprivateendpoint.v1alpha1\"\xe1\x01\n" +
+	"\x1bAzurePrivateEndpointOutputs\x12.\n" +
 	"\x13private_endpoint_id\x18\x01 \x01(\tR\x11privateEndpointId\x122\n" +
 	"\x15private_endpoint_name\x18\x02 \x01(\tR\x13privateEndpointName\x12,\n" +
 	"\x12private_ip_address\x18\x03 \x01(\tR\x10privateIpAddress\x120\n" +
@@ -126,7 +126,7 @@ func file_catalog_azure_azureprivateendpoint_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_azure_azureprivateendpoint_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureprivateendpoint_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzurePrivateEndpointStackOutputs)(nil), // 0: dev.planton.azure.azureprivateendpoint.v1alpha1.AzurePrivateEndpointStackOutputs
+	(*AzurePrivateEndpointOutputs)(nil), // 0: dev.planton.azure.azureprivateendpoint.v1alpha1.AzurePrivateEndpointOutputs
 }
 var file_catalog_azure_azureprivateendpoint_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

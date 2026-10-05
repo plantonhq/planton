@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-pub-sub-schema stack-input
-type GcpPubSubSchemaStackInput struct {
+// gcp-pub-sub-schema iac-input
+type GcpPubSubSchemaIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpPubSubSchema `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpPubSubSchemaStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpPubSubSchemaStackInput) Reset() {
-	*x = GcpPubSubSchemaStackInput{}
+func (x *GcpPubSubSchemaIacInput) Reset() {
+	*x = GcpPubSubSchemaIacInput{}
 	mi := &file_catalog_gcp_gcppubsubschema_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpPubSubSchemaStackInput) String() string {
+func (x *GcpPubSubSchemaIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpPubSubSchemaStackInput) ProtoMessage() {}
+func (*GcpPubSubSchemaIacInput) ProtoMessage() {}
 
-func (x *GcpPubSubSchemaStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpPubSubSchemaIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcppubsubschema_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpPubSubSchemaStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpPubSubSchemaStackInput.ProtoReflect.Descriptor instead.
-func (*GcpPubSubSchemaStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpPubSubSchemaIacInput.ProtoReflect.Descriptor instead.
+func (*GcpPubSubSchemaIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcppubsubschema_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpPubSubSchemaStackInput) GetTarget() *GcpPubSubSchema {
+func (x *GcpPubSubSchemaIacInput) GetTarget() *GcpPubSubSchema {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpPubSubSchemaStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpPubSubSchemaIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcppubsubschema_v1alpha1_input_proto protoreflect.FileDescr
 
 const file_catalog_gcp_gcppubsubschema_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/gcp/gcppubsubschema/v1alpha1/input.proto\x12(dev.planton.gcp.gcppubsubschema.v1alpha1\x1a.catalog/gcp/gcppubsubschema/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xbb\x01\n" +
-	"\x19GcpPubSubSchemaStackInput\x12Q\n" +
+	"0catalog/gcp/gcppubsubschema/v1alpha1/input.proto\x12(dev.planton.gcp.gcppubsubschema.v1alpha1\x1a.catalog/gcp/gcppubsubschema/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xb9\x01\n" +
+	"\x17GcpPubSubSchemaIacInput\x12Q\n" +
 	"\x06target\x18\x01 \x01(\v29.dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchemaR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xda\x02\n" +
 	",com.dev.planton.gcp.gcppubsubschema.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcppubsubschema_v1alpha1_input_proto_rawDescGZIP() []byte 
 
 var file_catalog_gcp_gcppubsubschema_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcppubsubschema_v1alpha1_input_proto_goTypes = []any{
-	(*GcpPubSubSchemaStackInput)(nil), // 0: dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchemaStackInput
-	(*GcpPubSubSchema)(nil),           // 1: dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchema
-	(*gcp.GcpProviderConfig)(nil),     // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpPubSubSchemaIacInput)(nil), // 0: dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchemaIacInput
+	(*GcpPubSubSchema)(nil),         // 1: dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchema
+	(*gcp.GcpProviderConfig)(nil),   // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcppubsubschema_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchemaStackInput.target:type_name -> dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchema
-	2, // 1: dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchemaStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchemaIacInput.target:type_name -> dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchema
+	2, // 1: dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchemaIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureprivateendpoint.v1alpha1;
 
-// **AzurePrivateEndpointStackOutputs** captures the outputs of provisioning
+// **AzurePrivateEndpointOutputs** captures the outputs of provisioning
 // an Azure Private Endpoint.
-message AzurePrivateEndpointStackOutputs {
+message AzurePrivateEndpointOutputs {
   // The Azure Resource Manager ID of the private endpoint.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/privateEndpoints/{name}
   string private_endpoint_id = 1;

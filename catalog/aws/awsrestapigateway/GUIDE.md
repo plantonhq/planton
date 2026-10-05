@@ -1,6 +1,6 @@
-# AwsRestApiGateway — Component Guide
+# AwsRestApiGateway — Kind Guide
 
-Authored operational judgment for the REST API Gateway component: the
+Authored operational judgment for the REST API Gateway kind: the
 design decisions behind the spec's shape, and what to know before
 running REST APIs in production.
 
@@ -16,7 +16,7 @@ running REST APIs in production.
 - **Explicit deployment, hashed from the definition.** REST APIs do
   not auto-deploy. The modules create one deployment whose trigger is
   a hash of the full API definition, so every spec change redeploys —
-  the declarative behavior a Planton component owes its users.
+  the declarative behavior a catalog kind owes its users.
 - **One stage.** Planton resources are already environment-scoped.
   Canary traffic shifting needs two live deployments and is a deploy
   workflow, not a resource field.

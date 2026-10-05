@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,11 +6,11 @@
 # quantity a manifest can know is the account-level add-on's base fee (a
 # constant), and the facts that scale the bill -- origin counts -- live on
 # the referenced CloudflareLoadBalancerPool manifests outside this
-# component's spec contract, where no derivation condition or quantity
+# kind's spec contract, where no derivation condition or quantity
 # factor can reach them. Each preset's actual topology is therefore stated
-# here in prose. Schema: finops/componentcostestimatemodel/v1.
+# here in prose. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: cloudflareloadbalancer
 spec:

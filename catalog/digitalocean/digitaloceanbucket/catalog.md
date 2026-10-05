@@ -4,7 +4,7 @@ Deploys a DigitalOcean Spaces object-storage bucket with configurable region and
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Spaces Bucket** -- an S3-compatible object-storage bucket; placed in the specified Spaces-capable region, or the provider's default (`nyc3`) when omitted
 - **Versioning** -- created only when `versioningEnabled` is true; once enabled it can never be removed, only suspended
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token AND a Spaces key pair (`spacesAccessId` / `spacesSecretKey`). Spaces is a second credential plane the API token cannot reach. Map the connection as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token AND a Spaces key pair (`spacesAccessId` / `spacesSecretKey`). Spaces is a second credential plane the API token cannot reach. Map the connection as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline authentication.
 
 ### DigitalOcean Account
@@ -55,7 +55,7 @@ spec:
 planton apply -f do-bucket.yaml
 ```
 
-This creates a private, versioned Spaces bucket in NYC3. A Stack Job tracks the provisioning in real time.
+This creates a private, versioned Spaces bucket in NYC3. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -93,15 +93,15 @@ These are the most important decisions when configuring a Spaces bucket. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **DigitalOceanBucket** (optional) | `logging.targetBucket` | `status.outputs.bucket_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,6 +121,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Spaces Bucket**](/cloud-catalog/digital-ocean-bucket) -- another bucket as the access-log sink
-- [**DigitalOcean CDN**](/cloud-catalog/digital-ocean-cdn) -- fronts a public bucket at the edge, consuming the `bucket_domain_name` output as its origin
-- [**DigitalOcean Spaces Access Key**](/cloud-catalog/digital-ocean-spaces-key) -- mints per-bucket read or read-write credentials scoped to this bucket by name
+- [**DigitalOcean Spaces Bucket**](/infra-catalog/digital-ocean-bucket) -- another bucket as the access-log sink
+- [**DigitalOcean CDN**](/infra-catalog/digital-ocean-cdn) -- fronts a public bucket at the edge, consuming the `bucket_domain_name` output as its origin
+- [**DigitalOcean Spaces Access Key**](/infra-catalog/digital-ocean-spaces-key) -- mints per-bucket read or read-write credentials scoped to this bucket by name

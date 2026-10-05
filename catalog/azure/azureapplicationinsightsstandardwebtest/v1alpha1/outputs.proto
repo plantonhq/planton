@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1;
 
-// **AzureApplicationInsightsStandardWebTestStackOutputs** captures the
+// **AzureApplicationInsightsStandardWebTestOutputs** captures the
 // outputs of provisioning an Application Insights Standard Web Test.
-message AzureApplicationInsightsStandardWebTestStackOutputs {
+message AzureApplicationInsightsStandardWebTestOutputs {
   // The Azure Resource Manager ID of the web test. This is the seam an
   // AzureMonitorMetricAlert references (web_test_id) to alert on the test's
   // availability.

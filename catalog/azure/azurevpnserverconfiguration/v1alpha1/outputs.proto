@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurevpnserverconfiguration.v1alpha1;
 
-// **AzureVpnServerConfigurationStackOutputs** captures the outputs of
+// **AzureVpnServerConfigurationOutputs** captures the outputs of
 // provisioning a VPN server configuration.
-message AzureVpnServerConfigurationStackOutputs {
+message AzureVpnServerConfigurationOutputs {
   // The Azure Resource Manager ID of the VPN server configuration --
   // what a point-to-site VPN gateway references as its
   // vpn_server_configuration_id.

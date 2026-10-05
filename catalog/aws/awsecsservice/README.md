@@ -82,7 +82,7 @@ planton apply -f service.yaml
 ```
 
 Both a Pulumi module and a Terraform/OpenTofu module implement this
-component at full behavioral parity; the provisioner is an execution
+kind at full behavioral parity; the provisioner is an execution
 detail.
 
 ---

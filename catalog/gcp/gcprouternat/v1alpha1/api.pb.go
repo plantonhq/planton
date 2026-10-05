@@ -31,7 +31,7 @@ type GcpRouterNat struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpRouterNatSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpRouterNat) GetKind() string {
 	return ""
 }
 
-func (x *GcpRouterNat) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpRouterNat) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpRouterNat) GetStatus() *GcpRouterNatStatus {
 // gcp-router-nat status
 type GcpRouterNatStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpRouterNatStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpRouterNatOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpRouterNatStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcprouternat_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpRouterNatStatus) GetOutputs() *GcpRouterNatStackOutputs {
+func (x *GcpRouterNatStatus) GetOutputs() *GcpRouterNatOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcprouternat_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12'\n" +
 	"\x04kind\x18\x02 \x01(\tB\x13\xbaH\x10r\x0e\n" +
 	"\fGcpRouterNatR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12S\n" +
 	"\x04spec\x18\x04 \x01(\v27.dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Q\n" +
-	"\x06status\x18\x05 \x01(\v29.dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatStatusR\x06status\"o\n" +
-	"\x12GcpRouterNatStatus\x12Y\n" +
-	"\aoutputs\x18\x01 \x01(\v2?.dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatStackOutputsR\aoutputsB\xc3\x02\n" +
+	"\x06status\x18\x05 \x01(\v29.dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatStatusR\x06status\"j\n" +
+	"\x12GcpRouterNatStatus\x12T\n" +
+	"\aoutputs\x18\x01 \x01(\v2:.dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatOutputsR\aoutputsB\xc3\x02\n" +
 	")com.dev.planton.gcp.gcprouternat.v1alpha1B\bApiProtoP\x01ZSgithub.com/plantonhq/planton/catalog/gcp/gcprouternat/v1alpha1;gcprouternatv1alpha1\xa2\x02\x04DPGG\xaa\x02%Dev.Planton.Gcp.Gcprouternat.V1alpha1\xca\x02%Dev\\Planton\\Gcp\\Gcprouternat\\V1alpha1\xe2\x021Dev\\Planton\\Gcp\\Gcprouternat\\V1alpha1\\GPBMetadata\xea\x02)Dev::Planton::Gcp::Gcprouternat::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_gcp_gcprouternat_v1alpha1_api_proto_msgTypes = make([]protoimpl
 var file_catalog_gcp_gcprouternat_v1alpha1_api_proto_goTypes = []any{
 	(*GcpRouterNat)(nil),                 // 0: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNat
 	(*GcpRouterNatStatus)(nil),           // 1: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpRouterNatSpec)(nil),             // 3: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatSpec
-	(*GcpRouterNatStackOutputs)(nil),     // 4: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatStackOutputs
+	(*GcpRouterNatOutputs)(nil),          // 4: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatOutputs
 }
 var file_catalog_gcp_gcprouternat_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNat.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNat.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNat.spec:type_name -> dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatSpec
 	1, // 2: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNat.status:type_name -> dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatStatus
-	4, // 3: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatStatus.outputs:type_name -> dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatStackOutputs
+	4, // 3: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatStatus.outputs:type_name -> dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -26,7 +26,7 @@ Judgment earned from the flows, not the schema:
   `keepers` entry will silently live forever; a key with
   `keepers: {rotation: 2026-Q3}` is rotated by editing one value — the old
   key is destroyed in the same apply, so consumers reading `key_base64` from
-  stack outputs pick up the new key on their next resolution while anything
+  outputs pick up the new key on their next resolution while anything
   that copied the key out-of-band breaks. That breakage is the rotation
   working as designed.
 - `publicKeyData` (the upload flow) is the strongest posture when a key is

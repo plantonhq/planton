@@ -6,21 +6,21 @@
 
 ## Summary
 
-Replaced the non-functional Helm-based Kubernetes Ingress in the KubernetesOpenBao deployment component with Istio Gateway API ingress (Certificate, Gateway, HTTPRoutes). This brings OpenBAO to feature parity with the KubernetesOpenFga component's proven ingress pattern, enabling TLS-terminated external access with automatic HTTP-to-HTTPS redirect.
+Replaced the non-functional Helm-based Kubernetes Ingress in the KubernetesOpenBao catalog kind with Istio Gateway API ingress (Certificate, Gateway, HTTPRoutes). This brings OpenBAO to feature parity with the KubernetesOpenFga kind's proven ingress pattern, enabling TLS-terminated external access with automatic HTTP-to-HTTPS redirect.
 
 ## Problem Statement / Motivation
 
-The KubernetesOpenBao component configured ingress through the OpenBao Helm chart's `server.ingress.*` values, which creates a traditional Kubernetes Ingress resource. On Istio-based clusters (the standard platform infrastructure), this Ingress resource is non-functional because Istio does not watch for `networking.k8s.io/v1 Ingress` objects -- it requires Gateway API resources.
+The KubernetesOpenBao kind configured ingress through the OpenBao Helm chart's `server.ingress.*` values, which creates a traditional Kubernetes Ingress resource. On Istio-based clusters (the standard platform infrastructure), this Ingress resource is non-functional because Istio does not watch for `networking.k8s.io/v1 Ingress` objects -- it requires Gateway API resources.
 
 ### Pain Points
 
 - OpenBAO had no working external access despite `ingress.enabled: true` in the deployment spec
 - The proto schema carried 3 unused fields (`ingress_class_name`, `tls_enabled`, `tls_secret_name`) that were specific to the Helm Ingress approach
-- Inconsistency between OpenBAO and OpenFGA components -- same platform, different ingress strategies
+- Inconsistency between OpenBAO and OpenFGA kinds -- same platform, different ingress strategies
 
 ## Solution / What's New
 
-Adopted the identical Gateway API pattern already proven in the KubernetesOpenFga component:
+Adopted the identical Gateway API pattern already proven in the KubernetesOpenFga kind:
 
 1. **cert-manager Certificate** in the `istio-ingress` namespace for automatic TLS provisioning
 2. **Istio Gateway** with HTTPS (port 443, TLS terminate) and HTTP (port 80) listeners
@@ -97,14 +97,14 @@ No impact on existing deployments or presets -- all only used `enabled` + `hostn
 - **Automatic TLS**: cert-manager provisions and renews certificates automatically
 - **HTTP-to-HTTPS redirect**: All HTTP traffic is 301-redirected to HTTPS
 - **Clean API surface**: Only 2 fields (`enabled`, `hostname`) instead of 5
-- **Platform consistency**: Identical ingress pattern across OpenBAO and OpenFGA components
+- **Platform consistency**: Identical ingress pattern across OpenBAO and OpenFGA kinds
 - **Feature parity**: Both Pulumi and Terraform modules implement the same resources
 
 ## Impact
 
 - **Deployment operators**: Ingress now works on Istio-based clusters without manual workarounds
 - **API consumers**: Simplified ingress configuration -- just set `enabled: true` and a `hostname`
-- **Platform maintainers**: One ingress pattern to maintain across all Kubernetes deployment components
+- **Platform maintainers**: One ingress pattern to maintain across all Kubernetes catalog kinds
 
 ## Verification
 

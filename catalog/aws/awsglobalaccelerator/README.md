@@ -106,7 +106,7 @@ Each endpoint group represents a set of endpoints in a single AWS region.
 | `listenerPort` | `int32` | The listener port to remap (must be within one of the listener's port ranges). |
 | `endpointPort` | `int32` | The port that the endpoint actually serves on. |
 
-## Stack Outputs
+## Outputs
 
 After provisioning, the resource exposes the following outputs:
 

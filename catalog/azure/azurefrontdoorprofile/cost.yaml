@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurefrontdoorprofile
 spec:
@@ -21,4 +21,4 @@ spec:
     - client requests bill per 10,000 by the client's pricing zone and follow traffic -- PREMIUM's request rate is higher than STANDARD's
     - data transfer out from edge to client bills per GB by the client's pricing zone; edge-to-origin transfer bills a separate per-GB meter; inbound transfer is free on both tiers
     - custom domains beyond the first 100 bill per domain-month; the first 100 are free
-  notes: "Azure bills Front Door profile-plus-usage: one flat monthly base fee fixed by the tier, then per-request and per-GB meters that follow traffic and the CLIENT'S geography (eight pricing zones), not any Azure region -- the profile is global and has no region of its own. The composition model matters for cost attribution: endpoints, origin groups, origins, routes, custom domains, and security policies are separate kinds carrying no meters of their own, so every request and byte they serve lands on THIS profile's meters. WAF adds nothing on these tiers -- custom rules are free on both and the managed rule sets are free on PREMIUM (they are what the tenfold base-fee difference buys); the separately-metered per-policy/per-rule WAF charges belong to Front Door (classic), a different product this spec does not model."
+  notes: "Azure bills Front Door profile-plus-usage: one flat monthly base fee fixed by the tier, then per-request and per-GB meters that follow traffic and the CLIENT'S geography (eight pricing zones), not any Azure region -- the profile is global and has no region of its own. The composition model matters for cost attribution: endpoints, origin groups, origins, routes, custom domains, and security policies are separate components carrying no meters of their own, so every request and byte they serve lands on THIS profile's meters. WAF adds nothing on these tiers -- custom rules are free on both and the managed rule sets are free on PREMIUM (they are what the tenfold base-fee difference buys); the separately-metered per-policy/per-rule WAF charges belong to Front Door (classic), a different product this spec does not model."

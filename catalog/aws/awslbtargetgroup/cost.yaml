@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awslbtargetgroup
 spec:
   billing_model: free
   free_tier: A target group is the routing destination listeners forward to, and Elastic Load Balancing meters the load balancer, never the target group -- the bill is the load balancer's hourly rate plus its LCU (capacity unit) usage, and neither meter counts target groups, registered targets, or health checks. A detached target group (no listener forwarding to it) costs exactly nothing.
-  notes: "No field of this spec buys anything on its own: health checks, stickiness, deregistration delay, routing algorithm, and static registrations are configuration stored by the Elastic Load Balancing control plane. The real spend sits on either side of the group -- the load balancer forwarding to it bills hourly plus LCUs (the traffic and health-check probes flowing through this group feed the processed-bytes dimension), and the registered targets bill as their own kinds (EC2 instances, Lambda invocations, the inner ALB of an NLB-in-front-of-ALB pattern). One conditional nuance: setting target_control_port enables ALB Target Optimizer, and AWS's pricing notes that traffic to Target Optimizer groups incurs MORE LCU usage than regular groups -- still the load balancer's meter, but this field is the switch that raises it."
+  notes: "No field of this spec buys anything on its own: health checks, stickiness, deregistration delay, routing algorithm, and static registrations are configuration stored by the Elastic Load Balancing control plane. The real spend sits on either side of the group -- the load balancer forwarding to it bills hourly plus LCUs (the traffic and health-check probes flowing through this group feed the processed-bytes dimension), and the registered targets bill as their own components (EC2 instances, Lambda invocations, the inner ALB of an NLB-in-front-of-ALB pattern). One conditional nuance: setting target_control_port enables ALB Target Optimizer, and AWS's pricing notes that traffic to Target Optimizer groups incurs MORE LCU usage than regular groups -- still the load balancer's meter, but this field is the switch that raises it."

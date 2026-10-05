@@ -5,7 +5,7 @@ import (
 
 	azuremssqldatabasev1alpha1 "github.com/plantonhq/planton/catalog/azure/azuremssqldatabase/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -79,16 +79,16 @@ var threatDetectionStateStrings = map[azuremssqldatabasev1alpha1.AzureMssqlDatab
 	azuremssqldatabasev1alpha1.AzureMssqlDatabaseThreatDetectionState_DISABLED: "Disabled",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremssqldatabasev1alpha1.AzureMssqlDatabaseStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremssqldatabasev1alpha1.AzureMssqlDatabaseIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMssqlDatabase = stackInput.Target
-	target := stackInput.Target
+	locals.AzureMssqlDatabase = iacInput.Target
+	target := iacInput.Target
 
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureMssqlDatabase.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureMssqlDatabase.String()),
 	}
 
 	if target.Metadata.Id != "" {

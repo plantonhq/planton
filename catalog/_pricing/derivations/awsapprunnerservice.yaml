@@ -11,9 +11,9 @@
 # floor of 1 would be knowably wrong (the catalog preset wiring that
 # reference does so precisely for a 2+ warm-instance posture); its committed
 # floor is priced at composition time, when a surface sees both components.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsapprunnerservice
 spec:

@@ -3,12 +3,12 @@
 # Control Catalog. Covers the requirements TECHNICAL controls can serve;
 # administrative and physical safeguards are out of scope by nature. A
 # mapping says catalog controls SERVE a requirement -- it never declares a
-# component or deployment "HIPAA-compliant". Schema:
+# kind or deployment "HIPAA-compliant". Schema:
 # compliance/frameworkcrosswalk/v1.
 #
 # HIPAA is provider-neutral: it regulates the data, not the cloud it sits
 # on, so this crosswalk declares NO provider scope (spec.providers stays
-# absent) and applies to every provider's components.
+# absent) and applies to every provider's kinds.
 apiVersion: compliance.planton.dev/v1
 kind: FrameworkCrosswalk
 metadata:
@@ -40,7 +40,7 @@ spec:
     - requirement_id: 164.312(d)
       requirement_name: Person or entity authentication
       control_ids: [no-legacy-auth, workload-identity, strong-user-auth]
-      notes: Required standard. Verification that a person or entity seeking access is the one claimed -- for components that sign end users in, credential strength (password rules, brute-force protection, multi-factor) is the person-authentication posture itself.
+      notes: Required standard. Verification that a person or entity seeking access is the one claimed -- for kinds that sign end users in, credential strength (password rules, brute-force protection, multi-factor) is the person-authentication posture itself.
     - requirement_id: 164.312(e)(1)
       requirement_name: Transmission security
       control_ids: [enc-in-transit, restricted-ingress]

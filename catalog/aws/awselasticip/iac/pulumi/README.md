@@ -6,7 +6,7 @@ This directory contains the Pulumi Go module that provisions an AWS Elastic IP.
 
 ```
 pulumi/
-├── main.go          # Entrypoint — loads stack input, calls module
+├── main.go          # Entrypoint — loads IaC input, calls module
 ├── Pulumi.yaml      # Pulumi project descriptor
 ├── Makefile          # Build/preview/up/destroy shortcuts
 ├── debug.sh          # Local development helper
@@ -23,7 +23,7 @@ pulumi/
 # Build
 make build
 
-# Preview (requires AWS credentials and stack input)
+# Preview (requires AWS credentials and IaC input)
 make preview
 
 # Deploy
@@ -36,10 +36,10 @@ make destroy
 ## Module API
 
 ```go
-func Resources(ctx *pulumi.Context, stackInput *AwsElasticIpStackInput) error
+func Resources(ctx *pulumi.Context, iacInput *AwsElasticIpIacInput) error
 ```
 
-**Inputs:** `AwsElasticIpStackInput` (target resource + optional provider config)
+**Inputs:** `AwsElasticIpIacInput` (target resource + optional provider config)
 
 **Exports:**
 - `allocation_id` — EIP allocation ID

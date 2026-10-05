@@ -21,17 +21,17 @@ message AzureExpressRouteCircuitPeering {
   string kind = 2 [(buf.validate.field).string.const = 'AzureExpressRouteCircuitPeering'];
 
   // Standard Planton metadata (name, org, env, labels, tags).
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // ExpressRoute circuit peering specification.
   AzureExpressRouteCircuitPeeringSpec spec = 4 [(buf.validate.field).required = true];
 
-  // Deployment status containing stack outputs. Populated after deployment.
+  // Deployment status containing outputs. Populated after deployment.
   AzureExpressRouteCircuitPeeringStatus status = 5;
 }
 
 // AzureExpressRouteCircuitPeeringStatus holds the deployment outputs.
 message AzureExpressRouteCircuitPeeringStatus {
-  // Stack outputs from the IaC deployment.
-  AzureExpressRouteCircuitPeeringStackOutputs outputs = 1;
+  // Outputs from the IaC deployment.
+  AzureExpressRouteCircuitPeeringOutputs outputs = 1;
 }

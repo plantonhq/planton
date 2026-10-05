@@ -77,7 +77,7 @@ flowchart TB
 - Issue rules (2 files)
 - PR rules (3 files)
 - Git rules (3 files)
-- Deployment component rules (7 files)
+- Catalog kind rules (7 files)
 - CLI UX standards (1 file)
 
 **Other Files:**

@@ -25,7 +25,7 @@ const (
 // (the `istio/base` Custom Resource Definitions) on a target Kubernetes cluster,
 // WITHOUT installing istiod or any controller.
 //
-// This is the lightweight prerequisite for the typed Istio API components
+// This is the lightweight prerequisite for the typed Istio API kinds
 // (KubernetesDestinationRule, KubernetesServiceEntry, KubernetesPeerAuthentication,
 // KubernetesRequestAuthentication, KubernetesAuthorizationPolicy, KubernetesTelemetry,
 // KubernetesEnvoyFilter). It places the networking/security/telemetry CRDs on the

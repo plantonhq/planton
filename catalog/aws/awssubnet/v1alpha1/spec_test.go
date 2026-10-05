@@ -37,7 +37,7 @@ func minimalValidSubnet() *AwsSubnet {
 	return &AwsSubnet{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsSubnet",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-subnet",
 		},
 		Spec: &AwsSubnetSpec{
@@ -63,7 +63,7 @@ var _ = ginkgo.Describe("AwsSubnetSpec Validation Tests", func() {
 				input := &AwsSubnet{
 					ApiVersion: "aws.planton.dev/v1alpha1",
 					Kind:       "AwsSubnet",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "full-subnet",
 						Org:  "acme-corp",
 						Env:  "production",
@@ -272,7 +272,7 @@ var _ = ginkgo.Describe("AwsSubnetSpec Validation Tests", func() {
 				input := &AwsSubnet{
 					ApiVersion: "aws.planton.dev/v1alpha1",
 					Kind:       "AwsSubnet",
-					Metadata:   &shared.CloudResourceMetadata{Name: "test-subnet"},
+					Metadata:   &shared.CatalogObjectMetadata{Name: "test-subnet"},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())

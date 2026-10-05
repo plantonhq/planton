@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -20,7 +20,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: value}}
 }
 
-func reference(kind cloudresourcekind.CloudResourceKind, name string) *foreignkeyv1.StringValueOrRef {
+func reference(kind catalogkind.CatalogKind, name string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Kind: kind, Name: name}}}
 }
 
@@ -44,10 +44,10 @@ var _ = ginkgo.Describe("GcpCloudBuildTriggerSpec", func() {
 		return &GcpCloudBuildTrigger{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudBuildTrigger",
-			Metadata:   &shared.CloudResourceMetadata{Name: "on-release"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "on-release"},
 			Spec: &GcpCloudBuildTriggerSpec{
-				ServiceAccount: reference(cloudresourcekind.CloudResourceKind_GcpServiceAccount, "builder"),
-				PubsubConfig:   &GcpCloudBuildTriggerPubsubConfig{Topic: reference(cloudresourcekind.CloudResourceKind_GcpPubSubTopic, "releases")},
+				ServiceAccount: reference(catalogkind.CatalogKind_GcpServiceAccount, "builder"),
+				PubsubConfig:   &GcpCloudBuildTriggerPubsubConfig{Topic: reference(catalogkind.CatalogKind_GcpPubSubTopic, "releases")},
 				Build: &GcpCloudBuildTriggerBuild{
 					Steps:   []*GcpCloudBuildTriggerBuildStep{step()},
 					Options: &GcpCloudBuildTriggerBuildOptions{Logging: "CLOUD_LOGGING_ONLY"},
@@ -64,7 +64,7 @@ var _ = ginkgo.Describe("GcpCloudBuildTriggerSpec", func() {
 		msg.Spec.Location = "us-central1"
 		msg.Spec.Filename = "cloudbuild.yaml"
 		msg.Spec.RepositoryEventConfig = &GcpCloudBuildTriggerRepositoryEventConfig{
-			Repository: reference(cloudresourcekind.CloudResourceKind_GcpCloudBuildRepository, "orders"),
+			Repository: reference(catalogkind.CatalogKind_GcpCloudBuildRepository, "orders"),
 			Push:       &GcpCloudBuildTriggerPushFilter{Branch: "^main$"},
 		}
 		return msg
@@ -91,7 +91,7 @@ var _ = ginkgo.Describe("GcpCloudBuildTriggerSpec", func() {
 			},
 			Timeout:    "1200s",
 			Images:     []string{"img"},
-			LogsBucket: reference(cloudresourcekind.CloudResourceKind_GcpGcsBucket, "build-logs"),
+			LogsBucket: reference(catalogkind.CatalogKind_GcpGcsBucket, "build-logs"),
 			Artifacts: &GcpCloudBuildTriggerBuildArtifacts{
 				Objects:        &GcpCloudBuildTriggerBuildArtifactsObjects{Location: "gs://acme-artifacts/", Paths: []string{"dist/*"}},
 				MavenArtifacts: []*GcpCloudBuildTriggerBuildArtifactsMavenArtifact{{Repository: "https://us-central1-maven.pkg.dev/acme-ci/maven", Path: "app.jar"}},
@@ -99,12 +99,12 @@ var _ = ginkgo.Describe("GcpCloudBuildTriggerSpec", func() {
 			Options: &GcpCloudBuildTriggerBuildOptions{
 				MachineType:          "E2_HIGHCPU_8",
 				DiskSizeGb:           200,
-				WorkerPool:           reference(cloudresourcekind.CloudResourceKind_GcpCloudBuildWorkerPool, "private"),
+				WorkerPool:           reference(catalogkind.CatalogKind_GcpCloudBuildWorkerPool, "private"),
 				Logging:              "GCS_ONLY",
 				SourceProvenanceHash: []string{"SHA256"},
 			},
 			Source:           &GcpCloudBuildTriggerBuildSource{StorageSource: &GcpCloudBuildTriggerBuildSourceStorageSource{Bucket: "acme-src", Object: "src.tar.gz"}},
-			AvailableSecrets: &GcpCloudBuildTriggerBuildAvailableSecrets{SecretManager: []*GcpCloudBuildTriggerBuildSecretManagerSecret{{Env: "TOKEN", VersionName: reference(cloudresourcekind.CloudResourceKind_GcpSecretManagerSecret, "token")}}},
+			AvailableSecrets: &GcpCloudBuildTriggerBuildAvailableSecrets{SecretManager: []*GcpCloudBuildTriggerBuildSecretManagerSecret{{Env: "TOKEN", VersionName: reference(catalogkind.CatalogKind_GcpSecretManagerSecret, "token")}}},
 			Secrets:          []*GcpCloudBuildTriggerBuildSecret{{KmsKeyName: literal("projects/acme-ci/locations/global/keyRings/ci/cryptoKeys/builds"), SecretEnv: map[string]string{"OLD": "Y2lwaGVy"}}},
 		}
 		gomega.Expect(validator.Validate(full)).To(gomega.Succeed())
@@ -240,7 +240,7 @@ var _ = ginkgo.Describe("GcpCloudBuildTriggerSpec", func() {
 		msg.Spec.GitFileSource = &GcpCloudBuildTriggerGitFileSource{Path: "cloudbuild.yaml", RepoType: "GITHUB"}
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 		msg.Spec.GitFileSource.Uri = "https://github.com/acme/orders"
-		msg.Spec.GitFileSource.Repository = reference(cloudresourcekind.CloudResourceKind_GcpCloudBuildRepository, "orders")
+		msg.Spec.GitFileSource.Repository = reference(catalogkind.CatalogKind_GcpCloudBuildRepository, "orders")
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg.Spec.GitFileSource = &GcpCloudBuildTriggerGitFileSource{RepoType: "GITHUB"}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
@@ -287,7 +287,7 @@ var _ = ginkgo.Describe("GcpCloudBuildTriggerSpec", func() {
 	ginkgo.It("should hold the webhook secret, topic, and repository to their shapes", func() {
 		msg := pubsub()
 		msg.Spec.PubsubConfig = nil
-		msg.Spec.WebhookConfig = &GcpCloudBuildTriggerWebhookConfig{Secret: reference(cloudresourcekind.CloudResourceKind_GcpSecretManagerSecret, "hook")}
+		msg.Spec.WebhookConfig = &GcpCloudBuildTriggerWebhookConfig{Secret: reference(catalogkind.CatalogKind_GcpSecretManagerSecret, "hook")}
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 		msg.Spec.WebhookConfig.Secret = literal("projects/p/secrets/hook")
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())

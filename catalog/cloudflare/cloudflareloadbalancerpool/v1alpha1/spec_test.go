@@ -20,7 +20,7 @@ func validPool() *CloudflareLoadBalancerPool {
 	return &CloudflareLoadBalancerPool{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareLoadBalancerPool",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-pool"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-pool"},
 		Spec: &CloudflareLoadBalancerPoolSpec{
 			AccountId: validAccountID,
 			Name:      "web-pool",

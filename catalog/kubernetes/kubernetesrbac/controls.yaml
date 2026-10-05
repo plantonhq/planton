@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kubernetesrbac
 spec:
@@ -32,7 +32,7 @@ spec:
       evidence:
         type: spec_validation
         reference: This component's entire output IS role-based access control -- spec validation rules scope_required and role_required force every grant to declare exactly one scope (Role/RoleBinding or ClusterRole/ClusterRoleBinding) and one role source, every policy rule must carry at least one verb and name resources or non-resource URLs, and grants are purely additive against Kubernetes' deny-by-default authorizer (there are no deny rules to misorder).
-      notes: "Least privilege remains the author's responsibility: wildcard verbs and resources (\"*\") are expressible, and binding built-in roles like cluster-admin is a one-liner. The presets model restraint -- 01-namespace-app-reader grants get/list/watch on pods/services/configmaps to one ServiceAccount; 02-grant-builtin-view binds the read-only view role. Kubernetes' RBAC escalation check additionally constrains the deploying principal (see this component's permissions.yaml)."
+      notes: "Least privilege remains the author's responsibility: wildcard verbs and resources (\"*\") are expressible, and binding built-in roles like cluster-admin is a one-liner. The presets model restraint -- 01-namespace-app-reader grants get/list/watch on pods/services/configmaps to one ServiceAccount; 02-grant-builtin-view binds the read-only view role. Kubernetes' RBAC escalation check additionally constrains the deploying principal (see this kind's permissions.yaml)."
     - control_id: workload-identity
       status: not_applicable
       notes: The grant authenticates to no cloud API. Its ServiceAccount subjects are in-cluster identities; keyless CLOUD identity for workloads is configured on the workloads' own kinds.

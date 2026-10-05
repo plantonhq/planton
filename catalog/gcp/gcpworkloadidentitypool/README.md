@@ -67,7 +67,7 @@ This creates the pool, ready for a GcpWorkloadIdentityPoolProvider to attach the
 
 Every principal built from the pool embeds its resource name — `principal://iam.googleapis.com/<pool name>/subject/<subject>` — so the pool is the stable identity boundary that IAM bindings, providers, and provider configurations all reference. One pool typically serves many issuers (a GitHub org and an AWS account can federate into the same boundary), which is exactly why the pool and its providers are separate composable nodes.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -96,7 +96,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **Providers are separate resources**: issuer configuration (OIDC/AWS/SAML/X.509, attribute mappings, conditions) lives on GcpWorkloadIdentityPoolProvider, one per issuer.
 - **Managed workload identities**: `TRUST_DOMAIN` pools additionally support namespaces and managed identities (SPIFFE-style workload identity). Those are separate resources with their own lifecycles; the pool-side surface — `mode`, attestation rules, certificate issuance (own CA pools or the GCP shared CA), and trust config — is fully modeled so the pool spec stays honest.
 
-## Related Components
+## Related Kinds
 
 - [GcpWorkloadIdentityPoolProvider](/docs/catalog/gcp/gcpworkloadidentitypoolprovider) — attaches an external issuer to this pool (references this pool's `workload_identity_pool_id` output)
 - [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — the identity federated principals typically impersonate

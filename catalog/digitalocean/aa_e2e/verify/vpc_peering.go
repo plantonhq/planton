@@ -33,7 +33,7 @@ func (*vpcPeeringVerifier) VerifyAbsent(ctx context.Context, client *godo.Client
 		return pkgerrors.Wrapf(err, "digitaloceanvpcpeering verify-absent failed for %q", id)
 	}
 	if exists {
-		return &StillExistsError{Component: "digitaloceanvpcpeering", ID: id}
+		return &StillExistsError{Kind: "digitaloceanvpcpeering", ID: id}
 	}
 	return nil
 }

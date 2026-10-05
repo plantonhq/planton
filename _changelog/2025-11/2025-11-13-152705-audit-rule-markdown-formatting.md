@@ -9,7 +9,7 @@
 
 ## Summary
 
-Enhanced the `audit-planton-component` rule with comprehensive markdown formatting requirements to ensure all generated audit reports render beautifully with proper tables, code blocks, spacing, and visual hierarchy.
+Enhanced the `audit-catalog-kind` rule with comprehensive markdown formatting requirements to ensure all generated audit reports render beautifully with proper tables, code blocks, spacing, and visual hierarchy.
 
 ---
 
@@ -66,7 +66,7 @@ Updated the report template with proper formatting examples:
 ```markdown
 | Category | Weight | Score | Status |
 |----------|--------|-------|--------|
-| Cloud Resource Registry | 4.44% | 4.44% | ✅ |
+| Catalog Kind Registry | 4.44% | 4.44% | ✅ |
 | Protobuf API Definitions | 17.76% | 15.20% | ⚠️ |
 ```
 
@@ -94,7 +94,7 @@ go test -v
 
 **Blockquotes for Critical Notes:**
 ```markdown
-> **Critical:** Tests are failing. Component cannot be marked production-ready.
+> **Critical:** Tests are failing. Kind cannot be marked production-ready.
 ```
 
 ---
@@ -104,7 +104,7 @@ go test -v
 ### Files Modified
 
 **Audit Rule:**
-- `_rules/deployment-component/audit/audit-planton-component.mdc`
+- `_rules/catalog-kind/audit/audit-catalog-kind.mdc`
   - Added 80+ lines of formatting requirements (before report structure)
   - Added validation checklist
   - Enhanced report template with properly formatted examples
@@ -135,8 +135,8 @@ Enhanced template sections to demonstrate proper formatting:
 
 - `api.proto` exists (2.5 KB)
 - `spec.proto` exists (8.3 KB)
-- `stack_input.proto` exists (450 bytes)
-- `stack_outputs.proto` exists (1.2 KB)
+- `iac_input.proto` exists (450 bytes)
+- `outputs.proto` exists (1.2 KB)
 
 ❌ **Failed:**
 
@@ -230,7 +230,7 @@ Formatting requirements have been validated:
 ## Related
 
 This enhancement mirrors the same formatting requirements added to:
-- `planton/.cursor/rules/product/apis/infra-hub/cloud-resource/audit-planton-deployment-component.mdc`
+- `planton/.cursor/rules/product/apis/infra-hub/infra-component/audit-planton-catalog-kind.mdc`
 
 Both audit rules now follow the same markdown formatting standards for consistency across Planton and Planton audit reports.
 

@@ -7,7 +7,7 @@ import "catalog/auth0/auth0emailprovider/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0emailprovider/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0EmailProvider is a component that manages the service an Auth0 tenant
+// Auth0EmailProvider is a kind that manages the service an Auth0 tenant
 // sends its emails through: verification, password reset, invitations and
 // multi-factor codes leave from your own sending domain instead of Auth0's
 // built-in test provider, which is meant only for trying Auth0 out.
@@ -46,12 +46,12 @@ message Auth0EmailProvider {
   // Must be "Auth0EmailProvider" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'Auth0EmailProvider'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the resource within Planton
   // - org: Organization that owns it
   // - env: Environment it is deployed from
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the sender, the service, and its credentials.
   Auth0EmailProviderSpec spec = 4 [(buf.validate.field).required = true];
@@ -63,6 +63,6 @@ message Auth0EmailProvider {
 // Auth0EmailProviderStatus represents the current state of a Auth0EmailProvider resource.
 // Populated by the deployment system.
 message Auth0EmailProviderStatus {
-  // outputs contains the stack outputs: the provider as applied.
-  Auth0EmailProviderStackOutputs outputs = 1;
+  // outputs contains the outputs: the provider as applied.
+  Auth0EmailProviderOutputs outputs = 1;
 }

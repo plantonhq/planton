@@ -5,9 +5,9 @@ package dev.planton.azure.azurecosmosdbsqlroledefinition.v1alpha1;
 import "catalog/azure/azurecosmosdbsqlroledefinition/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-cosmosdb-sql-role-definition stack-input
-message AzureCosmosdbSqlRoleDefinitionStackInput {
-  //target cloud-resource
+//azure-cosmosdb-sql-role-definition iac-input
+message AzureCosmosdbSqlRoleDefinitionIacInput {
+  // the catalog object to deploy
   AzureCosmosdbSqlRoleDefinition target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsDynamodbStackOutputs captures the observable identifiers of a
+// AwsDynamodbOutputs captures the observable identifiers of a
 // DynamoDB table after provisioning.
-type AwsDynamodbStackOutputs struct {
+type AwsDynamodbOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The table name -- what SDK calls, IAM policy resources, and
 	// application configuration reference.
@@ -44,20 +44,20 @@ type AwsDynamodbStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsDynamodbStackOutputs) Reset() {
-	*x = AwsDynamodbStackOutputs{}
+func (x *AwsDynamodbOutputs) Reset() {
+	*x = AwsDynamodbOutputs{}
 	mi := &file_catalog_aws_awsdynamodb_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsDynamodbStackOutputs) String() string {
+func (x *AwsDynamodbOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsDynamodbStackOutputs) ProtoMessage() {}
+func (*AwsDynamodbOutputs) ProtoMessage() {}
 
-func (x *AwsDynamodbStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsDynamodbOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsdynamodb_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,40 +69,40 @@ func (x *AwsDynamodbStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsDynamodbStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsDynamodbStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsDynamodbOutputs.ProtoReflect.Descriptor instead.
+func (*AwsDynamodbOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsdynamodb_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsDynamodbStackOutputs) GetTableName() string {
+func (x *AwsDynamodbOutputs) GetTableName() string {
 	if x != nil {
 		return x.TableName
 	}
 	return ""
 }
 
-func (x *AwsDynamodbStackOutputs) GetTableArn() string {
+func (x *AwsDynamodbOutputs) GetTableArn() string {
 	if x != nil {
 		return x.TableArn
 	}
 	return ""
 }
 
-func (x *AwsDynamodbStackOutputs) GetTableId() string {
+func (x *AwsDynamodbOutputs) GetTableId() string {
 	if x != nil {
 		return x.TableId
 	}
 	return ""
 }
 
-func (x *AwsDynamodbStackOutputs) GetStreamArn() string {
+func (x *AwsDynamodbOutputs) GetStreamArn() string {
 	if x != nil {
 		return x.StreamArn
 	}
 	return ""
 }
 
-func (x *AwsDynamodbStackOutputs) GetStreamLabel() string {
+func (x *AwsDynamodbOutputs) GetStreamLabel() string {
 	if x != nil {
 		return x.StreamLabel
 	}
@@ -113,8 +113,8 @@ var File_catalog_aws_awsdynamodb_v1alpha1_outputs_proto protoreflect.FileDescrip
 
 const file_catalog_aws_awsdynamodb_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/aws/awsdynamodb/v1alpha1/outputs.proto\x12$dev.planton.aws.awsdynamodb.v1alpha1\"\xb2\x01\n" +
-	"\x17AwsDynamodbStackOutputs\x12\x1d\n" +
+	".catalog/aws/awsdynamodb/v1alpha1/outputs.proto\x12$dev.planton.aws.awsdynamodb.v1alpha1\"\xad\x01\n" +
+	"\x12AwsDynamodbOutputs\x12\x1d\n" +
 	"\n" +
 	"table_name\x18\x01 \x01(\tR\ttableName\x12\x1b\n" +
 	"\ttable_arn\x18\x02 \x01(\tR\btableArn\x12\x19\n" +
@@ -138,7 +138,7 @@ func file_catalog_aws_awsdynamodb_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsdynamodb_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsdynamodb_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsDynamodbStackOutputs)(nil), // 0: dev.planton.aws.awsdynamodb.v1alpha1.AwsDynamodbStackOutputs
+	(*AwsDynamodbOutputs)(nil), // 0: dev.planton.aws.awsdynamodb.v1alpha1.AwsDynamodbOutputs
 }
 var file_catalog_aws_awsdynamodb_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

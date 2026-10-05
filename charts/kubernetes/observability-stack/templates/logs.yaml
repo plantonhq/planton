@@ -14,7 +14,7 @@ metadata:
   relationships:
     # Loki's ServiceMonitor (below) is a Prometheus-operator custom resource
     # — the stack's CRDs must exist before this deploys. No spec field
-    # consumes a stack output, so the edge is declared explicitly.
+    # consumes an output, so the edge is declared explicitly.
     - kind: KubernetesKubePrometheusStack
       name: "{{ values.env }}-metrics"
       type: depends_on

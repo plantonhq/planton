@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsNeptuneClusterStackOutputs captures the observable identifiers and
+// AwsNeptuneClusterOutputs captures the observable identifiers and
 // connection endpoints of the Neptune cluster after deployment.
-type AwsNeptuneClusterStackOutputs struct {
+type AwsNeptuneClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The cluster identifier (e.g. "knowledge-graph").
 	ClusterIdentifier string `protobuf:"bytes,1,opt,name=cluster_identifier,json=clusterIdentifier,proto3" json:"cluster_identifier,omitempty"`
@@ -67,20 +67,20 @@ type AwsNeptuneClusterStackOutputs struct {
 	sizeCache                         protoimpl.SizeCache
 }
 
-func (x *AwsNeptuneClusterStackOutputs) Reset() {
-	*x = AwsNeptuneClusterStackOutputs{}
+func (x *AwsNeptuneClusterOutputs) Reset() {
+	*x = AwsNeptuneClusterOutputs{}
 	mi := &file_catalog_aws_awsneptunecluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsNeptuneClusterStackOutputs) String() string {
+func (x *AwsNeptuneClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsNeptuneClusterStackOutputs) ProtoMessage() {}
+func (*AwsNeptuneClusterOutputs) ProtoMessage() {}
 
-func (x *AwsNeptuneClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsNeptuneClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsneptunecluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -92,96 +92,96 @@ func (x *AwsNeptuneClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsNeptuneClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsNeptuneClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsNeptuneClusterOutputs.ProtoReflect.Descriptor instead.
+func (*AwsNeptuneClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsneptunecluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsNeptuneClusterStackOutputs) GetClusterIdentifier() string {
+func (x *AwsNeptuneClusterOutputs) GetClusterIdentifier() string {
 	if x != nil {
 		return x.ClusterIdentifier
 	}
 	return ""
 }
 
-func (x *AwsNeptuneClusterStackOutputs) GetArn() string {
+func (x *AwsNeptuneClusterOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsNeptuneClusterStackOutputs) GetClusterResourceId() string {
+func (x *AwsNeptuneClusterOutputs) GetClusterResourceId() string {
 	if x != nil {
 		return x.ClusterResourceId
 	}
 	return ""
 }
 
-func (x *AwsNeptuneClusterStackOutputs) GetEndpoint() string {
+func (x *AwsNeptuneClusterOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *AwsNeptuneClusterStackOutputs) GetReaderEndpoint() string {
+func (x *AwsNeptuneClusterOutputs) GetReaderEndpoint() string {
 	if x != nil {
 		return x.ReaderEndpoint
 	}
 	return ""
 }
 
-func (x *AwsNeptuneClusterStackOutputs) GetPort() int32 {
+func (x *AwsNeptuneClusterOutputs) GetPort() int32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-func (x *AwsNeptuneClusterStackOutputs) GetHostedZoneId() string {
+func (x *AwsNeptuneClusterOutputs) GetHostedZoneId() string {
 	if x != nil {
 		return x.HostedZoneId
 	}
 	return ""
 }
 
-func (x *AwsNeptuneClusterStackOutputs) GetEngineVersionActual() string {
+func (x *AwsNeptuneClusterOutputs) GetEngineVersionActual() string {
 	if x != nil {
 		return x.EngineVersionActual
 	}
 	return ""
 }
 
-func (x *AwsNeptuneClusterStackOutputs) GetNeptuneSubnetGroupName() string {
+func (x *AwsNeptuneClusterOutputs) GetNeptuneSubnetGroupName() string {
 	if x != nil {
 		return x.NeptuneSubnetGroupName
 	}
 	return ""
 }
 
-func (x *AwsNeptuneClusterStackOutputs) GetNeptuneClusterParameterGroupName() string {
+func (x *AwsNeptuneClusterOutputs) GetNeptuneClusterParameterGroupName() string {
 	if x != nil {
 		return x.NeptuneClusterParameterGroupName
 	}
 	return ""
 }
 
-func (x *AwsNeptuneClusterStackOutputs) GetInstanceEndpoints() []string {
+func (x *AwsNeptuneClusterOutputs) GetInstanceEndpoints() []string {
 	if x != nil {
 		return x.InstanceEndpoints
 	}
 	return nil
 }
 
-func (x *AwsNeptuneClusterStackOutputs) GetCustomEndpointAddresses() map[string]string {
+func (x *AwsNeptuneClusterOutputs) GetCustomEndpointAddresses() map[string]string {
 	if x != nil {
 		return x.CustomEndpointAddresses
 	}
 	return nil
 }
 
-func (x *AwsNeptuneClusterStackOutputs) GetNeptuneInstanceParameterGroupName() string {
+func (x *AwsNeptuneClusterOutputs) GetNeptuneInstanceParameterGroupName() string {
 	if x != nil {
 		return x.NeptuneInstanceParameterGroupName
 	}
@@ -192,8 +192,8 @@ var File_catalog_aws_awsneptunecluster_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awsneptunecluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awsneptunecluster/v1alpha1/outputs.proto\x12*dev.planton.aws.awsneptunecluster.v1alpha1\"\xc0\x06\n" +
-	"\x1dAwsNeptuneClusterStackOutputs\x12-\n" +
+	"4catalog/aws/awsneptunecluster/v1alpha1/outputs.proto\x12*dev.planton.aws.awsneptunecluster.v1alpha1\"\xb6\x06\n" +
+	"\x18AwsNeptuneClusterOutputs\x12-\n" +
 	"\x12cluster_identifier\x18\x01 \x01(\tR\x11clusterIdentifier\x12\x10\n" +
 	"\x03arn\x18\x02 \x01(\tR\x03arn\x12.\n" +
 	"\x13cluster_resource_id\x18\x03 \x01(\tR\x11clusterResourceId\x12\x1a\n" +
@@ -205,8 +205,8 @@ const file_catalog_aws_awsneptunecluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\x19neptune_subnet_group_name\x18\t \x01(\tR\x16neptuneSubnetGroupName\x12N\n" +
 	"$neptune_cluster_parameter_group_name\x18\n" +
 	" \x01(\tR neptuneClusterParameterGroupName\x12-\n" +
-	"\x12instance_endpoints\x18\v \x03(\tR\x11instanceEndpoints\x12\xa2\x01\n" +
-	"\x19custom_endpoint_addresses\x18\f \x03(\v2f.dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStackOutputs.CustomEndpointAddressesEntryR\x17customEndpointAddresses\x12P\n" +
+	"\x12instance_endpoints\x18\v \x03(\tR\x11instanceEndpoints\x12\x9d\x01\n" +
+	"\x19custom_endpoint_addresses\x18\f \x03(\v2a.dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterOutputs.CustomEndpointAddressesEntryR\x17customEndpointAddresses\x12P\n" +
 	"%neptune_instance_parameter_group_name\x18\r \x01(\tR!neptuneInstanceParameterGroupName\x1aJ\n" +
 	"\x1cCustomEndpointAddressesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -227,11 +227,11 @@ func file_catalog_aws_awsneptunecluster_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsneptunecluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsneptunecluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsNeptuneClusterStackOutputs)(nil), // 0: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStackOutputs
-	nil,                                   // 1: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStackOutputs.CustomEndpointAddressesEntry
+	(*AwsNeptuneClusterOutputs)(nil), // 0: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterOutputs
+	nil,                              // 1: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterOutputs.CustomEndpointAddressesEntry
 }
 var file_catalog_aws_awsneptunecluster_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStackOutputs.custom_endpoint_addresses:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterStackOutputs.CustomEndpointAddressesEntry
+	1, // 0: dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterOutputs.custom_endpoint_addresses:type_name -> dev.planton.aws.awsneptunecluster.v1alpha1.AwsNeptuneClusterOutputs.CustomEndpointAddressesEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

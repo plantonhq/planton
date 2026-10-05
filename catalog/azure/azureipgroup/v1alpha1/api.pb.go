@@ -36,10 +36,10 @@ type AzureIpGroup struct {
 	// Resource kind. Must be "AzureIpGroup".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// IP Group specification.
 	Spec *AzureIpGroupSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureIpGroupStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -89,7 +89,7 @@ func (x *AzureIpGroup) GetKind() string {
 	return ""
 }
 
-func (x *AzureIpGroup) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureIpGroup) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *AzureIpGroup) GetStatus() *AzureIpGroupStatus {
 // AzureIpGroupStatus holds the deployment outputs.
 type AzureIpGroupStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureIpGroupStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureIpGroupOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzureIpGroupStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureipgroup_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureIpGroupStatus) GetOutputs() *AzureIpGroupStackOutputs {
+func (x *AzureIpGroupStatus) GetOutputs() *AzureIpGroupOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azureipgroup_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12'\n" +
 	"\x04kind\x18\x02 \x01(\tB\x13\xbaH\x10r\x0e\n" +
 	"\fAzureIpGroupR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
 	"\x04spec\x18\x04 \x01(\v29.dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12S\n" +
-	"\x06status\x18\x05 \x01(\v2;.dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupStatusR\x06status\"q\n" +
-	"\x12AzureIpGroupStatus\x12[\n" +
-	"\aoutputs\x18\x01 \x01(\v2A.dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupStackOutputsR\aoutputsB\xcf\x02\n" +
+	"\x06status\x18\x05 \x01(\v2;.dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupStatusR\x06status\"l\n" +
+	"\x12AzureIpGroupStatus\x12V\n" +
+	"\aoutputs\x18\x01 \x01(\v2<.dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupOutputsR\aoutputsB\xcf\x02\n" +
 	"+com.dev.planton.azure.azureipgroup.v1alpha1B\bApiProtoP\x01ZUgithub.com/plantonhq/planton/catalog/azure/azureipgroup/v1alpha1;azureipgroupv1alpha1\xa2\x02\x04DPAA\xaa\x02'Dev.Planton.Azure.Azureipgroup.V1alpha1\xca\x02'Dev\\Planton\\Azure\\Azureipgroup\\V1alpha1\xe2\x023Dev\\Planton\\Azure\\Azureipgroup\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Azure::Azureipgroup::V1alpha1b\x06proto3"
 
 var (
@@ -190,15 +190,15 @@ var file_catalog_azure_azureipgroup_v1alpha1_api_proto_msgTypes = make([]protoim
 var file_catalog_azure_azureipgroup_v1alpha1_api_proto_goTypes = []any{
 	(*AzureIpGroup)(nil),                 // 0: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroup
 	(*AzureIpGroupStatus)(nil),           // 1: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AzureIpGroupSpec)(nil),             // 3: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupSpec
-	(*AzureIpGroupStackOutputs)(nil),     // 4: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupStackOutputs
+	(*AzureIpGroupOutputs)(nil),          // 4: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupOutputs
 }
 var file_catalog_azure_azureipgroup_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroup.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroup.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroup.spec:type_name -> dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupSpec
 	1, // 2: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroup.status:type_name -> dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupStatus
-	4, // 3: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupStatus.outputs:type_name -> dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupStackOutputs
+	4, // 3: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupStatus.outputs:type_name -> dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

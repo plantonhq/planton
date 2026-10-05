@@ -4,7 +4,7 @@ Deploys a Memorystore instance (Valkey/Redis-compatible) with configurable shard
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Memorystore Instance** -- a managed in-memory data store in the specified GCP project and region, configured with the chosen node type, shard count, engine version, and cluster mode
 - **Private Service Connect Endpoints** -- one or more PSC endpoints auto-created in the specified consumer VPC networks, providing private connectivity without VPC peering
@@ -20,13 +20,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the instance will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef. The module enables the Memorystore and Network Connectivity APIs itself.
-- **A VPC network** for PSC endpoint creation. Applications connect to the instance through PSC endpoints in the consumer VPC. Provide the network self-link directly or reference a GcpVpcNetwork Cloud Resource via ValueFromRef.
+- **A GCP project** where the instance will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef. The module enables the Memorystore and Network Connectivity APIs itself.
+- **A VPC network** for PSC endpoint creation. Applications connect to the instance through PSC endpoints in the consumer VPC. Provide the network self-link directly or reference a GcpVpcNetwork Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f memorystore-instance.yaml
 ```
 
-This creates a single-shard instance with GCP-selected defaults for node type and engine version, no persistence, no authentication, and a single PSC endpoint in the specified VPC. A Stack Job tracks the provisioning in real time.
+This creates a single-shard instance with GCP-selected defaults for node type and engine version, no persistence, no authentication, and a single PSC endpoint in the specified VPC. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -117,7 +117,7 @@ These are the most important decisions when configuring a Memorystore instance. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -132,9 +132,9 @@ The PSC network reference resolves the VPC's `network_id` output (the relative
 resource path `projects/{project}/global/networks/{network}`) — the Memorystore
 API rejects full `https://` self-link URLs.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -157,6 +157,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the instance is created and PSC endpoints are placed
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- provides the VPC network where PSC endpoints are created for application connectivity
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides the CMEK encryption key for data at rest
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the instance is created and PSC endpoints are placed
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC network where PSC endpoints are created for application connectivity
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides the CMEK encryption key for data at rest

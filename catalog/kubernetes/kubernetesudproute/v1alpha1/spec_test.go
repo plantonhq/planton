@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -53,7 +53,7 @@ var _ = ginkgo.Describe("KubernetesUdpRoute Validation Tests", func() {
 		input = &KubernetesUdpRoute{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesUdpRoute",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-udp-route",
 			},
 			Spec: &KubernetesUdpRouteSpec{
@@ -78,13 +78,13 @@ var _ = ginkgo.Describe("KubernetesUdpRoute Validation Tests", func() {
 		})
 
 		ginkgo.It("full surface should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "app-ns", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "app-ns", "spec.name")
 			input.Spec.ParentRefs = []*kubernetes.KubernetesGatewayApiParentReference{
 				{
 					Group:       stringPtr("gateway.networking.k8s.io"),
 					Kind:        stringPtr("Gateway"),
 					Namespace:   stringPtr("ingress"),
-					Name:        valueFrom(cloudresourcekind.CloudResourceKind_KubernetesGateway, "my-gateway", "status.outputs.gateway_name"),
+					Name:        valueFrom(catalogkind.CatalogKind_KubernetesGateway, "my-gateway", "status.outputs.gateway_name"),
 					SectionName: stringPtr("udp"),
 					Port:        int32Ptr(53),
 				},

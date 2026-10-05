@@ -18,7 +18,7 @@ When deploying services to Kubernetes via `KubernetesDeployment`, users previous
 - **No cross-resource references**: Could not reference outputs from other Planton resources (e.g., database host from a PostgresCluster)
 - **Manual coordination**: When deploying multiple interconnected resources, users had to manually copy outputs and update configurations
 - **Error-prone**: Typos or stale values could lead to runtime failures
-- **Poor DX**: The pattern didn't match the `valueFrom` pattern already used in AWS components
+- **Poor DX**: The pattern didn't match the `valueFrom` pattern already used in AWS kinds
 
 ## Solution / What's New
 
@@ -210,7 +210,7 @@ After making changes, run:
 # 1. Regenerate proto stubs
 make protos
 
-# 2. Run component-specific tests
+# 2. Run kind-specific tests
 go test ./apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/...
 
 # 3. Full build
@@ -224,7 +224,7 @@ make test
 
 - **Dynamic configuration**: Environment variables can reference outputs from other Planton resources
 - **Reduced manual coordination**: No need to copy-paste values between resource configurations
-- **Consistent pattern**: Matches the `StringValueOrRef` pattern already used in AWS components (AwsAlb, AwsEcsService, etc.)
+- **Consistent pattern**: Matches the `StringValueOrRef` pattern already used in AWS kinds (AwsAlb, AwsEcsService, etc.)
 - **Type-safe references**: Protobuf validation ensures `valueFrom` references have required fields
 - **Backward compatible structure**: Both Pulumi and Terraform modules handle both value types seamlessly
 
@@ -236,9 +236,9 @@ make test
 - Clear documentation with examples for both approaches
 
 ### Developers
-- Pattern established for using `StringValueOrRef` in Kubernetes provider components
+- Pattern established for using `StringValueOrRef` in Kubernetes provider kinds
 - All tests updated and passing
-- Consistent with AWS provider components that use the same pattern
+- Consistent with AWS provider kinds that use the same pattern
 
 ## Related Work
 
@@ -246,9 +246,9 @@ make test
 - **Shared type**: Uses `StringValueOrRef` from `apis/dev/planton/shared/foreignkey/v1/foreign_key.proto`
 - **Related change**: Secrets reference support (2025-12-23) uses a similar pattern with `KubernetesSensitiveValue`
 
-## Applying to Other Components
+## Applying to Other Kinds
 
-This change can be applied to other Kubernetes components that have the same `env.variables` pattern:
+This change can be applied to other Kubernetes kinds that have the same `env.variables` pattern:
 
 - `KubernetesDaemonset` - `apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/`
 - `KubernetesCronjob` - `apis/dev/planton/provider/kubernetes/kubernetescronjob/v1/`

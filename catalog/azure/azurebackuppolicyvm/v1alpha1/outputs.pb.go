@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureBackupPolicyVmStackOutputs** captures the outputs of
+// **AzureBackupPolicyVmOutputs** captures the outputs of
 // provisioning a VM backup policy.
-type AzureBackupPolicyVmStackOutputs struct {
+type AzureBackupPolicyVmOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the backup policy.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.RecoveryServices/vaults/{vault}/backupPolicies/{name}
@@ -34,20 +34,20 @@ type AzureBackupPolicyVmStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AzureBackupPolicyVmStackOutputs) Reset() {
-	*x = AzureBackupPolicyVmStackOutputs{}
+func (x *AzureBackupPolicyVmOutputs) Reset() {
+	*x = AzureBackupPolicyVmOutputs{}
 	mi := &file_catalog_azure_azurebackuppolicyvm_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureBackupPolicyVmStackOutputs) String() string {
+func (x *AzureBackupPolicyVmOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureBackupPolicyVmStackOutputs) ProtoMessage() {}
+func (*AzureBackupPolicyVmOutputs) ProtoMessage() {}
 
-func (x *AzureBackupPolicyVmStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureBackupPolicyVmOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurebackuppolicyvm_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureBackupPolicyVmStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureBackupPolicyVmStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureBackupPolicyVmStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureBackupPolicyVmOutputs.ProtoReflect.Descriptor instead.
+func (*AzureBackupPolicyVmOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurebackuppolicyvm_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureBackupPolicyVmStackOutputs) GetBackupPolicyId() string {
+func (x *AzureBackupPolicyVmOutputs) GetBackupPolicyId() string {
 	if x != nil {
 		return x.BackupPolicyId
 	}
 	return ""
 }
 
-func (x *AzureBackupPolicyVmStackOutputs) GetBackupPolicyName() string {
+func (x *AzureBackupPolicyVmOutputs) GetBackupPolicyName() string {
 	if x != nil {
 		return x.BackupPolicyName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azurebackuppolicyvm_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_azure_azurebackuppolicyvm_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/azure/azurebackuppolicyvm/v1alpha1/outputs.proto\x12.dev.planton.azure.azurebackuppolicyvm.v1alpha1\"y\n" +
-	"\x1fAzureBackupPolicyVmStackOutputs\x12(\n" +
+	"8catalog/azure/azurebackuppolicyvm/v1alpha1/outputs.proto\x12.dev.planton.azure.azurebackuppolicyvm.v1alpha1\"t\n" +
+	"\x1aAzureBackupPolicyVmOutputs\x12(\n" +
 	"\x10backup_policy_id\x18\x01 \x01(\tR\x0ebackupPolicyId\x12,\n" +
 	"\x12backup_policy_name\x18\x02 \x01(\tR\x10backupPolicyNameB\x84\x03\n" +
 	"2com.dev.planton.azure.azurebackuppolicyvm.v1alpha1B\fOutputsProtoP\x01Zcgithub.com/plantonhq/planton/catalog/azure/azurebackuppolicyvm/v1alpha1;azurebackuppolicyvmv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Azure.Azurebackuppolicyvm.V1alpha1\xca\x02.Dev\\Planton\\Azure\\Azurebackuppolicyvm\\V1alpha1\xe2\x02:Dev\\Planton\\Azure\\Azurebackuppolicyvm\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Azure::Azurebackuppolicyvm::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_azure_azurebackuppolicyvm_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_azure_azurebackuppolicyvm_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurebackuppolicyvm_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureBackupPolicyVmStackOutputs)(nil), // 0: dev.planton.azure.azurebackuppolicyvm.v1alpha1.AzureBackupPolicyVmStackOutputs
+	(*AzureBackupPolicyVmOutputs)(nil), // 0: dev.planton.azure.azurebackuppolicyvm.v1alpha1.AzureBackupPolicyVmOutputs
 }
 var file_catalog_azure_azurebackuppolicyvm_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -30,20 +30,20 @@ import (
 // crds.keep_on_uninstall injects the resource-policy annotation.
 // Destroying the engine cascade-deletes every policy on the cluster in
 // the default posture (the spec's CRD field comments carry the warning).
-func Resources(ctx *pulumi.Context, stackInput *kuberneteskyvernov1alpha1.KubernetesKyvernoStackInput) error {
-	locals, err := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kuberneteskyvernov1alpha1.KubernetesKyvernoIacInput) error {
+	locals, err := initializeLocals(ctx, iacInput)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize locals")
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

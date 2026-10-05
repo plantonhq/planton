@@ -4,7 +4,7 @@ Attaches an egress-only internet gateway to an AWS VPC -- the IPv6 counterpart o
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Egress-only internet gateway** -- an EC2 egress-only internet gateway, attached to the specified VPC at creation
 - **VPC attachment** -- the gateway is attached to the VPC referenced by `vpcId`; because AWS exposes no detach/re-attach API, changing `vpcId` on a later apply **replaces** the gateway (ForceNew)
@@ -16,8 +16,8 @@ Attaching a gateway does not route anything on its own. To give a subnet outboun
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **A dual-stack VPC** -- the gateway must attach to a VPC, and the VPC should have an IPv6 CIDR for the gateway to be useful. Deploy an [AWS VPC](/cloud-catalog/aws-vpc) with IPv6 first, or reference an existing one by id.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **A dual-stack VPC** -- the gateway must attach to a VPC, and the VPC should have an IPv6 CIDR for the gateway to be useful. Deploy an [AWS VPC](/infra-catalog/aws-vpc) with IPv6 first, or reference an existing one by id.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -55,7 +55,7 @@ spec:
 planton apply -f egress-only-internet-gateway.yaml
 ```
 
-This attaches an egress-only internet gateway to a Planton-managed VPC by reference. A Stack Job tracks the provisioning in real time.
+This attaches an egress-only internet gateway to a Planton-managed VPC by reference. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ An egress-only internet gateway has a deliberately small surface -- the value is
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsVpc** | `vpcId` | `status.outputs.vpc_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -117,7 +117,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 An egress-only internet gateway sits between a dual-stack VPC and the private subnets that need outbound IPv6:
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- the dual-stack network the gateway attaches to, referenced by `status.outputs.vpc_id`
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- routes an IPv6 default route (`::/0`) to this gateway's `egress_only_internet_gateway_id` for outbound IPv6
-- [**AWS NAT Gateway**](/cloud-catalog/aws-nat-gateway) -- the IPv4 equivalent: outbound-only access for private IPv4 subnets, with cost driven by hours and traffic volume
-- [**AWS Internet Gateway**](/cloud-catalog/aws-internet-gateway) -- full bidirectional internet access for a VPC, the counterpart when inbound reachability is wanted
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- the dual-stack network the gateway attaches to, referenced by `status.outputs.vpc_id`
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- routes an IPv6 default route (`::/0`) to this gateway's `egress_only_internet_gateway_id` for outbound IPv6
+- [**AWS NAT Gateway**](/infra-catalog/aws-nat-gateway) -- the IPv4 equivalent: outbound-only access for private IPv4 subnets, with cost driven by hours and traffic volume
+- [**AWS Internet Gateway**](/infra-catalog/aws-internet-gateway) -- full bidirectional internet access for a VPC, the counterpart when inbound reachability is wanted

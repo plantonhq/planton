@@ -24,7 +24,7 @@ Notes:
   "default" (it already exists in every account).
 - For partner event buses, set `event_source_name` to the partner source name.
   The bus name (`metadata.name`) must match the event source name.
-- Credentials, region, and deployment workflow live outside this spec in stack
+- Credentials, region, and deployment workflow live outside this spec in IaC
   inputs.
 
 ## Example

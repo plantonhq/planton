@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcppscserviceattachment
+    e2e-catalog-kind: gcppscserviceattachment
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "GcpVpcNetwork,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcpsubnetwork-private.yaml,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcpsubnetwork-psc-nat.yaml,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcphealthcheck-regional-tcp.yaml,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcpbackendservice-internal.yaml,catalog/gcp/gcppscserviceattachment/e2e/prerequisites/gcpglobalforwardingrule-internal.yaml"

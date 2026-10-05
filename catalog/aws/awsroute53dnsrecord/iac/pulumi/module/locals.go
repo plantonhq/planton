@@ -9,8 +9,8 @@ type Locals struct {
 	AwsRoute53DnsRecord *awsroute53dnsrecordv1alpha1.AwsRoute53DnsRecord
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *awsroute53dnsrecordv1alpha1.AwsRoute53DnsRecordStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awsroute53dnsrecordv1alpha1.AwsRoute53DnsRecordIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsRoute53DnsRecord = stackInput.Target
+	locals.AwsRoute53DnsRecord = iacInput.Target
 	return locals
 }

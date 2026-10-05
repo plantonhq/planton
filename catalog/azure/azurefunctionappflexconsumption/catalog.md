@@ -4,7 +4,7 @@ Deploys an Azure Function App on the Flex Consumption plan -- Azure's newest ser
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Flex Consumption Function App** -- the Microsoft.Web site with its runtime declaration, deployment-storage binding, scale configuration (instance memory, fan-out ceiling, HTTP concurrency, always-ready pools), site configuration, app settings, connection strings, managed identity, and Easy Auth v2
 - **Azure Tags** -- Planton-derived metadata tags merged with the manifest's `tags` (user values win on key conflicts)
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Azure Subscription
 
@@ -73,7 +73,7 @@ spec:
 planton apply -f flex-function-app.yaml
 ```
 
-This creates a Node 20 flex app with one always-ready HTTP instance (its only idle cost), a 100-instance fan-out ceiling, and connection-string deployment storage. A Stack Job tracks the provisioning in real time.
+This creates a Node 20 flex app with one always-ready HTTP instance (its only idle cost), a 100-instance fan-out ceiling, and connection-string deployment storage. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -131,7 +131,7 @@ These are the most important decisions when configuring a flex app. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -145,9 +145,9 @@ These are the most important decisions when configuring a flex app. Explore the 
 
 `storageContainerEndpoint` is a plain string composed from an AzureStorageAccount's blob endpoint plus an AzureStorageContainer's name (the container kind deliberately exports no URL).
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values consumed by users, DNS configuration, and RBAC wiring -- this is a leaf resource; no catalog component references it downstream:
+After provisioning, `status.outputs` contains values consumed by users, DNS configuration, and RBAC wiring -- this is a leaf resource; no catalog kind references it downstream:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -167,11 +167,11 @@ After provisioning, `status.outputs` contains values consumed by users, DNS conf
 
 ## Works With
 
-- [**Azure Service Plan**](/cloud-catalog/azure-service-plan) -- the FC1 plan that hosts the app
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the group the app lives in
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) / [**Azure Storage Container**](/cloud-catalog/azure-storage-container) -- the deployment-storage container and its account
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- pre-grantable identities for storage auth and service access
-- [**Azure Application Insights**](/cloud-catalog/azure-application-insights) -- APM telemetry via the connection-string reference
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- VNet integration for outbound traffic
-- [**Azure Front Door Profile**](/cloud-catalog/azure-front-door-profile) -- the edge whose ID locks down inbound access
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- the RBAC grants the app's identity needs on storage and other services
+- [**Azure Service Plan**](/infra-catalog/azure-service-plan) -- the FC1 plan that hosts the app
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the group the app lives in
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) / [**Azure Storage Container**](/infra-catalog/azure-storage-container) -- the deployment-storage container and its account
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- pre-grantable identities for storage auth and service access
+- [**Azure Application Insights**](/infra-catalog/azure-application-insights) -- APM telemetry via the connection-string reference
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- VNet integration for outbound traffic
+- [**Azure Front Door Profile**](/infra-catalog/azure-front-door-profile) -- the edge whose ID locks down inbound access
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- the RBAC grants the app's identity needs on storage and other services

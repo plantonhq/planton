@@ -49,7 +49,7 @@ spec:
 | `name` | The list name (used in rule expressions) |
 | `kind` | The list kind |
 
-## Related components
+## Related kinds
 
 - `CloudflareListItem` — an entry written into this list.
 - `CloudflareRuleset` — references lists from rule expressions and `from_list`.

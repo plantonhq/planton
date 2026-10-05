@@ -6,7 +6,7 @@ import (
 
 	gcpmonitoringnotificationchannelv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringnotificationchannel/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -27,8 +27,8 @@ type Locals struct {
 	GcpLabels map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpmonitoringnotificationchannelv1alpha1.GcpMonitoringNotificationChannelStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpmonitoringnotificationchannelv1alpha1.GcpMonitoringNotificationChannelIacInput) *Locals {
+	target := iacInput.Target
 
 	displayName := target.Spec.DisplayName
 	if displayName == "" {
@@ -41,7 +41,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpmonitoringnotificationch
 	}
 	gcpLabels[gcplabelkeys.Resource] = strconv.FormatBool(true)
 	gcpLabels[gcplabelkeys.ResourceName] = target.Metadata.Name
-	gcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpMonitoringNotificationChannel.String())
+	gcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpMonitoringNotificationChannel.String())
 
 	if target.Metadata.Org != "" {
 		gcpLabels[gcplabelkeys.Organization] = target.Metadata.Org

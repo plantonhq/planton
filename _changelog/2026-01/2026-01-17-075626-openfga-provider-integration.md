@@ -2,11 +2,11 @@
 
 **Date**: January 17, 2026
 **Type**: Feature
-**Components**: Provider Framework, CLI Flags, API Definitions, Stack Input Processing, Tofu Integration
+**Components**: Provider Framework, CLI Flags, API Definitions, IaC Input Processing, Tofu Integration
 
 ## Summary
 
-Added OpenFGA as a new cloud provider to Planton, enabling users to manage OpenFGA authorization resources through the CLI. This implementation spans proto definitions, CLI flags, stack input processing, and Tofu/Terraform environment variable configuration. Notably, OpenFGA is Terraform-only - there is no Pulumi provider available.
+Added OpenFGA as a new cloud provider to Planton, enabling users to manage OpenFGA authorization resources through the CLI. This implementation spans proto definitions, CLI flags, IaC input processing, and Tofu/Terraform environment variable configuration. Notably, OpenFGA is Terraform-only - there is no Pulumi provider available.
 
 ## Problem Statement / Motivation
 
@@ -18,7 +18,7 @@ Planton needed to expand its provider ecosystem to include OpenFGA, a popular op
 
 ### Pain Points
 
-- No OpenFGA provider in the `CloudResourceProvider` enum
+- No OpenFGA provider in the `CatalogProvider` enum
 - No credential storage or management for OpenFGA
 - No CLI flags to pass OpenFGA credentials during deployments
 - No Tofu/Terraform environment variable configuration for OpenFGA
@@ -32,7 +32,7 @@ Implemented comprehensive OpenFGA provider support across all system layers, fol
 ```mermaid
 flowchart TB
     subgraph Proto["Proto Layer"]
-        A[cloud_resource_provider.proto] --> B["open_fga = 22"]
+        A[catalog_provider.proto] --> B["open_fga = 22"]
         C[provider/openfga/provider.proto] --> D[OpenFgaProviderConfig]
         E[credential/v1/api.proto] --> F["OPEN_FGA enum + oneof"]
     end
@@ -42,7 +42,7 @@ flowchart TB
         I[provider_config_flags.go] --> J["--openfga-provider-config flag"]
     end
     
-    subgraph Stack["Stack Input Layer"]
+    subgraph Stack["IaC Input Layer"]
         K[options.go] --> L[OpenFgaProviderConfig field]
         M[openfga_provider.go] --> N[Add/Load functions]
         O[user_provider.go] --> P[createOpenFgaProviderConfigFileFromProto]
@@ -60,7 +60,7 @@ flowchart TB
 
 OpenFGA is unique among Planton providers - it only has a Terraform provider, with no Pulumi equivalent. This means:
 
-- All OpenFGA deployment components must use `tofu` as the provisioner
+- All OpenFGA catalog kinds must use `tofu` as the provisioner
 - Pulumi modules for OpenFGA resources will be empty placeholder modules
 - The provider proto includes documentation warning about this constraint
 
@@ -87,7 +87,7 @@ flowchart LR
 
 ### 1. Proto Definitions
 
-**CloudResourceProvider enum** (`cloud_resource_provider.proto`):
+**CatalogProvider enum** (`catalog_provider.proto`):
 
 ```protobuf
 open_fga = 22 [(provider_meta) = {
@@ -129,12 +129,12 @@ cmd.PersistentFlags().String(string(flag.OpenFgaProviderConfig), "",
     "path of the openfga-credential file")
 ```
 
-### 3. Stack Input Processing
+### 3. IaC Input Processing
 
-**StackInputProviderConfigOptions** now includes OpenFGA:
+**IacInputProviderConfigOptions** now includes OpenFGA:
 
 ```go
-type StackInputProviderConfigOptions struct {
+type IacInputProviderConfigOptions struct {
     // ... other providers
     OpenFgaProviderConfig string
     // ...
@@ -142,7 +142,7 @@ type StackInputProviderConfigOptions struct {
 ```
 
 **New openfga_provider.go**:
-- `AddOpenFgaProviderConfig()` - Reads and adds OpenFGA config to stack input
+- `AddOpenFgaProviderConfig()` - Reads and adds OpenFGA config to IaC input
 - `LoadOpenFgaProviderConfig()` - Loads OpenFGA config from input directory
 
 ### 4. Tofu Environment Variables
@@ -150,7 +150,7 @@ type StackInputProviderConfigOptions struct {
 **New openfga_provider.go** in tofumodule/providerconfig:
 
 ```go
-func AddOpenFgaProviderConfigEnvVars(stackInputContentMap map[string]interface{},
+func AddOpenFgaProviderConfigEnvVars(iacInputContentMap map[string]interface{},
     providerConfigEnvVars map[string]string) (map[string]string, error) {
     // Sets FGA_API_URL (required)
     // Sets FGA_API_TOKEN, FGA_CLIENT_ID, FGA_CLIENT_SECRET,
@@ -174,15 +174,15 @@ Environment variable mapping follows the terraform-provider-openfga conventions:
 
 | Layer | Files | Action |
 |-------|-------|--------|
-| Proto | `cloud_resource_provider.proto` | Add enum value |
+| Proto | `catalog_provider.proto` | Add enum value |
 | Proto | `provider/openfga/provider.proto` | **Create** |
 | Proto | `credential/v1/api.proto` | Add enum + oneof |
 | CLI | `flag.go` | Add flag constant |
 | CLI | `provider_config_flags.go` | Add flag registration |
-| Stack Input | `options.go` | Add struct + functions |
-| Stack Input | `openfga_provider.go` | **Create** |
-| Stack Input | `providers.go` | Add aggregation |
-| Stack Input | `user_provider.go` | Add user provider support |
+| IaC Input | `options.go` | Add struct + functions |
+| IaC Input | `openfga_provider.go` | **Create** |
+| IaC Input | `providers.go` | Add aggregation |
+| IaC Input | `user_provider.go` | Add user provider support |
 | Tofu | `openfga_provider.go` | **Create** |
 | Tofu | `providers.go` | Add env var call |
 
@@ -242,8 +242,8 @@ planton apply --manifest openfga-store.yaml \
 
 ### Future Work Enabled
 
-- OpenFgaStore deployment component
-- OpenFgaAuthorizationModel deployment component
+- OpenFgaStore catalog kind
+- OpenFgaAuthorizationModel catalog kind
 - OpenFga relationship tuple management
 - Integration with Planton credential management
 

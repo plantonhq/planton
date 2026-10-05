@@ -1,6 +1,6 @@
 # AzureIpGroup -- Terraform/OpenTofu Module
 
-Creates an Azure IP Group (`azurerm_ip_group`, azurerm ~> 5.0) in the referenced resource group, carrying the spec's address set and merged governance tags. Behaviorally identical to the Pulumi module for the same stack input.
+Creates an Azure IP Group (`azurerm_ip_group`, azurerm ~> 5.0) in the referenced resource group, carrying the spec's address set and merged governance tags. Behaviorally identical to the Pulumi module for the same IaC input.
 
 Credentials are injected by the runtime as `ARM_*` environment variables (the provider block is deliberately empty -- that is what enables keyless/OIDC auth).
 

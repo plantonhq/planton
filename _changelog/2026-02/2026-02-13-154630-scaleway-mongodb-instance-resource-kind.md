@@ -10,7 +10,7 @@ Implemented the eleventh Scaleway resource kind: `ScalewayMongodbInstance`. This
 
 ## Problem Statement / Motivation
 
-The Scaleway provider in Planton needed managed MongoDB support to complete the database tier. MongoDB is a widely-used document database that complements the existing relational (RDB) and in-memory (Redis) offerings. The `database-stack` infra chart needs all three database types to provide comprehensive data platform coverage.
+The Scaleway provider in Planton needed managed MongoDB support to complete the database tier. MongoDB is a widely-used document database that complements the existing relational (RDB) and in-memory (Redis) offerings. The `database-stack` Infra Chart needs all three database types to provide comprehensive data platform coverage.
 
 ### Pain Points
 
@@ -66,11 +66,11 @@ This results in a 2-type composite (vs RDB's 5 types).
 **Proto schemas** (4 files):
 - `api.proto` -- Standard Planton API wrapper
 - `spec.proto` -- ScalewayMongodbInstanceSpec with users, roles, and CEL validations
-- `stack_outputs.proto` -- 7 outputs (instance_id, public/private endpoints, TLS cert)
-- `stack_input.proto` -- Standard stack input
+- `outputs.proto` -- 7 outputs (instance_id, public/private endpoints, TLS cert)
+- `iac_input.proto` -- Standard IaC input
 
 **Pulumi Go module** (7 files):
-- Entry point (`iac/pulumi/main.go`) loading stack input
+- Entry point (`iac/pulumi/main.go`) loading IaC input
 - Module orchestrator (`module/main.go`) creating instance then users
 - Instance creation (`module/instance.go`) with endpoint output extraction
 - User creation (`module/users.go`) with role assembly
@@ -132,7 +132,7 @@ When no PN is set, Scaleway creates a public endpoint by default (no explicit bl
 - R09: ScalewayRdbInstance (primary reference for composite database pattern)
 - R10: ScalewayRedisCluster (CEL validation pattern reference)
 - DD02: Private Network as universal connector
-- IC03: scaleway/database-stack infra chart (will compose all three database kinds)
+- IC03: scaleway/database-stack Infra Chart (will compose all three database kinds)
 
 ---
 

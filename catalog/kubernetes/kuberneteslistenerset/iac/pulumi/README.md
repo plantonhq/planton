@@ -9,7 +9,7 @@ Gateway that has opted in via `allowed_listeners`.
 ## Prerequisites
 
 - The Gateway API CRDs (v1.5.0 or newer) must already be installed on the
-  cluster (see the `KubernetesGatewayApiCrds` component).
+  cluster (see the `KubernetesGatewayApiCrds` kind).
 - A parent `Gateway` whose `allowed_listeners` permits attachment from this
   ListenerSet's namespace (see `KubernetesGateway`).
 - The target namespace must exist (see `KubernetesNamespace`).
@@ -35,13 +35,13 @@ planton pulumi up --manifest ../../e2e/manifest.yaml
 
 ### Direct Pulumi usage
 
-The entrypoint loads the `KubernetesListenerSetStackInput` from the
-`STACK_INPUT_YAML_FILE` environment variable (path to a manifest) or
-`STACK_INPUT_YAML` (inline YAML content):
+The entrypoint loads the `KubernetesListenerSetIacInput` from the
+`IAC_INPUT_YAML_FILE` environment variable (path to the IaC input, with the manifest under `target`) or
+`IAC_INPUT_YAML` (inline YAML content). The CLI builds that input from a manifest
+and runs Pulumi:
 
 ```bash
-export STACK_INPUT_YAML_FILE=../../e2e/manifest.yaml
-pulumi up
+planton pulumi up --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack>
 ```
 
 ## Outputs
@@ -56,20 +56,20 @@ pulumi up
 
 ```
 pulumi/
-├── main.go              # Pulumi entrypoint (loads stack input)
+├── main.go              # Pulumi entrypoint (loads IaC input)
 ├── Pulumi.yaml          # Pulumi project configuration
 ├── Makefile             # Build automation
 ├── README.md            # This file
 └── module/
     ├── main.go          # Resource creation (typed NewListenerSet, v1) + parentRef mapping
     ├── locals.go        # Computed values + resolved foreign keys
-    ├── outputs.go       # Stack output constant names
+    ├── outputs.go       # Output constant names
     └── listeners.go     # Listener entry + TLS + allowedRoutes mapping (shared Gateway API shapes)
 ```
 
 The ListenerSet's `StringValueOrRef` foreign keys (`namespace`,
 `parentRef.name`, listener `certificateRefs[].name`) arrive resolved to literal
-strings in the stack input; the module reads their final values directly. No
+strings in the IaC input; the module reads their final values directly. No
 await/wait logic is attached: per-listener Accepted/Programmed conditions and
 the parent Gateway's AttachedListenerSets count belong to the Gateway
 controller's reconciliation, not to applying the resource.

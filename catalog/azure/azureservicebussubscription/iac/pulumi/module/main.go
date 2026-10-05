@@ -11,13 +11,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureservicebussubscriptionv1alpha1.AzureServiceBusSubscriptionStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureservicebussubscriptionv1alpha1.AzureServiceBusSubscriptionIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -25,7 +25,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureservicebussubscriptionv1alp
 	spec := locals.AzureServiceBusSubscription.Spec
 
 	// The topic and namespace names, parsed from the resolved topic ARM id
-	// for the stack outputs -- consumers receive by the
+	// for the outputs -- consumers receive by the
 	// namespace/topic/subscription triple.
 	namespaceName, topicName, err := parseTopicId(locals.TopicId)
 	if err != nil {
@@ -63,7 +63,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureservicebussubscriptionv1alp
 		subscriptionArgs.DeadLetteringOnMessageExpiration = pulumi.BoolPtr(spec.GetDeadLetteringOnMessageExpiration())
 	}
 
-	// Presence-guarded to Azure's default (true): stack inputs built from a
+	// Presence-guarded to Azure's default (true): IaC inputs built from a
 	// manifest materialize proto defaults, but direct paths do not.
 	subscriptionArgs.DeadLetteringOnFilterEvaluationError = pulumi.Bool(presenceGuardedBool(spec.DeadLetteringOnFilterEvaluationError, true))
 
@@ -182,7 +182,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureservicebussubscriptionv1alp
 		}
 	}
 
-	// Export stack outputs.
+	// Export outputs.
 	ctx.Export(OpSubscriptionId, createdSubscription.ID())
 	ctx.Export(OpSubscriptionName, createdSubscription.Name)
 	ctx.Export(OpTopicName, pulumi.String(locals.TopicName))

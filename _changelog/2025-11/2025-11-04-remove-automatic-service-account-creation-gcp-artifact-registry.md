@@ -341,7 +341,7 @@ planton pulumi up \
   --module-dir ${MODULE}
 
 # Verify outputs
-planton stack-outputs \
+planton outputs \
   --manifest gcp-artifact-registry-repo.yaml
 ```
 
@@ -369,16 +369,16 @@ The `ResourceKind` label value was using the raw protobuf enum string (e.g., `Gc
 
 Fixed all 12 affected GCP modules by:
 1. Adding `"strings"` import to each `locals.go` file
-2. Wrapping `cloudresourcekind.CloudResourceKind_*.String()` calls with `strings.ToLower()`
+2. Wrapping `catalogkind.CatalogKind_*.String()` calls with `strings.ToLower()`
 
 **Before**:
 ```go
-gcplabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_GcpArtifactRegistryRepo.String()
+gcplabelkeys.ResourceKind: catalogkind.CatalogKind_GcpArtifactRegistryRepo.String()
 ```
 
 **After**:
 ```go
-gcplabelkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_GcpArtifactRegistryRepo.String())
+gcplabelkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_GcpArtifactRegistryRepo.String())
 ```
 
 ### Affected Modules Fixed

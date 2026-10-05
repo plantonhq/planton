@@ -6,7 +6,7 @@
 
 ## Summary
 
-Extended the KubernetesNats deployment component to support NACK (NATS Controllers for Kubernetes) and declarative JetStream stream creation. Users can now opt-in to deploy the NACK controller alongside NATS and define streams directly in their YAML manifests, which are reconciled as Kubernetes custom resources.
+Extended the KubernetesNats catalog kind to support NACK (NATS Controllers for Kubernetes) and declarative JetStream stream creation. Users can now opt-in to deploy the NACK controller alongside NATS and define streams directly in their YAML manifests, which are reconciled as Kubernetes custom resources.
 
 **Both Pulumi and Terraform modules now have feature parity** for NACK controller and JetStream streams support.
 
@@ -375,11 +375,11 @@ flowchart TB
 
 ## Impact
 
-### Components Affected
+### Kinds Affected
 
 **Pulumi Module** (`iac/pulumi/module/`):
 
-| Component | Changes |
+| Kind | Changes |
 |-----------|---------|
 | `spec.proto` | +70 lines (NACK, Stream, Consumer messages, enums) |
 | `vars.go` | +10 lines (NACK constants, CRD URL template) |
@@ -393,7 +393,7 @@ flowchart TB
 
 **Terraform Module** (`iac/tf/`):
 
-| Component | Changes |
+| Kind | Changes |
 |-----------|---------|
 | `variables.tf` | +80 lines (nack_controller, streams, consumers config) |
 | `locals.tf` | +40 lines (NACK versions, CRD URL, consumer flattening) |
@@ -406,7 +406,7 @@ flowchart TB
 
 **Tests** (`v1/spec_test.go`):
 
-| Component | Changes |
+| Kind | Changes |
 |-----------|---------|
 | `spec_test.go` | +300 lines (24 test cases for NACK/streams validation) |
 

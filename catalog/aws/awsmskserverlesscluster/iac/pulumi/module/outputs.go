@@ -1,7 +1,7 @@
 package module
 
 // Output keys for the aws_msk_serverless_cluster module.
-// They reflect the fields in AwsMskServerlessClusterStackOutputs.
+// They reflect the fields in AwsMskServerlessClusterOutputs.
 const (
 	OpClusterArn              = "cluster_arn"
 	OpClusterName             = "cluster_name"

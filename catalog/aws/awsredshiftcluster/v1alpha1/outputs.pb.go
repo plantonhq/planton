@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRedshiftClusterStackOutputs captures the observable identifiers and
+// AwsRedshiftClusterOutputs captures the observable identifiers and
 // connection endpoints of the Redshift cluster after deployment.
-type AwsRedshiftClusterStackOutputs struct {
+type AwsRedshiftClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The cluster identifier (e.g. "analytics-warehouse").
 	ClusterIdentifier string `protobuf:"bytes,1,opt,name=cluster_identifier,json=clusterIdentifier,proto3" json:"cluster_identifier,omitempty"`
@@ -72,20 +72,20 @@ type AwsRedshiftClusterStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsRedshiftClusterStackOutputs) Reset() {
-	*x = AwsRedshiftClusterStackOutputs{}
+func (x *AwsRedshiftClusterOutputs) Reset() {
+	*x = AwsRedshiftClusterOutputs{}
 	mi := &file_catalog_aws_awsredshiftcluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRedshiftClusterStackOutputs) String() string {
+func (x *AwsRedshiftClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRedshiftClusterStackOutputs) ProtoMessage() {}
+func (*AwsRedshiftClusterOutputs) ProtoMessage() {}
 
-func (x *AwsRedshiftClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRedshiftClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsredshiftcluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -97,89 +97,89 @@ func (x *AwsRedshiftClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRedshiftClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRedshiftClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRedshiftClusterOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRedshiftClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsredshiftcluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRedshiftClusterStackOutputs) GetClusterIdentifier() string {
+func (x *AwsRedshiftClusterOutputs) GetClusterIdentifier() string {
 	if x != nil {
 		return x.ClusterIdentifier
 	}
 	return ""
 }
 
-func (x *AwsRedshiftClusterStackOutputs) GetClusterArn() string {
+func (x *AwsRedshiftClusterOutputs) GetClusterArn() string {
 	if x != nil {
 		return x.ClusterArn
 	}
 	return ""
 }
 
-func (x *AwsRedshiftClusterStackOutputs) GetClusterNamespaceArn() string {
+func (x *AwsRedshiftClusterOutputs) GetClusterNamespaceArn() string {
 	if x != nil {
 		return x.ClusterNamespaceArn
 	}
 	return ""
 }
 
-func (x *AwsRedshiftClusterStackOutputs) GetEndpoint() string {
+func (x *AwsRedshiftClusterOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *AwsRedshiftClusterStackOutputs) GetDnsName() string {
+func (x *AwsRedshiftClusterOutputs) GetDnsName() string {
 	if x != nil {
 		return x.DnsName
 	}
 	return ""
 }
 
-func (x *AwsRedshiftClusterStackOutputs) GetDatabaseName() string {
+func (x *AwsRedshiftClusterOutputs) GetDatabaseName() string {
 	if x != nil {
 		return x.DatabaseName
 	}
 	return ""
 }
 
-func (x *AwsRedshiftClusterStackOutputs) GetPort() int32 {
+func (x *AwsRedshiftClusterOutputs) GetPort() int32 {
 	if x != nil {
 		return x.Port
 	}
 	return 0
 }
 
-func (x *AwsRedshiftClusterStackOutputs) GetSubnetGroupName() string {
+func (x *AwsRedshiftClusterOutputs) GetSubnetGroupName() string {
 	if x != nil {
 		return x.SubnetGroupName
 	}
 	return ""
 }
 
-func (x *AwsRedshiftClusterStackOutputs) GetParameterGroupName() string {
+func (x *AwsRedshiftClusterOutputs) GetParameterGroupName() string {
 	if x != nil {
 		return x.ParameterGroupName
 	}
 	return ""
 }
 
-func (x *AwsRedshiftClusterStackOutputs) GetMasterPasswordSecretArn() string {
+func (x *AwsRedshiftClusterOutputs) GetMasterPasswordSecretArn() string {
 	if x != nil {
 		return x.MasterPasswordSecretArn
 	}
 	return ""
 }
 
-func (x *AwsRedshiftClusterStackOutputs) GetEndpointAccessAddresses() map[string]string {
+func (x *AwsRedshiftClusterOutputs) GetEndpointAccessAddresses() map[string]string {
 	if x != nil {
 		return x.EndpointAccessAddresses
 	}
 	return nil
 }
 
-func (x *AwsRedshiftClusterStackOutputs) GetUsageLimitIds() map[string]string {
+func (x *AwsRedshiftClusterOutputs) GetUsageLimitIds() map[string]string {
 	if x != nil {
 		return x.UsageLimitIds
 	}
@@ -190,8 +190,8 @@ var File_catalog_aws_awsredshiftcluster_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awsredshiftcluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awsredshiftcluster/v1alpha1/outputs.proto\x12+dev.planton.aws.awsredshiftcluster.v1alpha1\"\xed\x06\n" +
-	"\x1eAwsRedshiftClusterStackOutputs\x12-\n" +
+	"5catalog/aws/awsredshiftcluster/v1alpha1/outputs.proto\x12+dev.planton.aws.awsredshiftcluster.v1alpha1\"\xde\x06\n" +
+	"\x19AwsRedshiftClusterOutputs\x12-\n" +
 	"\x12cluster_identifier\x18\x01 \x01(\tR\x11clusterIdentifier\x12\x1f\n" +
 	"\vcluster_arn\x18\x02 \x01(\tR\n" +
 	"clusterArn\x122\n" +
@@ -203,9 +203,9 @@ const file_catalog_aws_awsredshiftcluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\x11subnet_group_name\x18\b \x01(\tR\x0fsubnetGroupName\x120\n" +
 	"\x14parameter_group_name\x18\t \x01(\tR\x12parameterGroupName\x12;\n" +
 	"\x1amaster_password_secret_arn\x18\n" +
-	" \x01(\tR\x17masterPasswordSecretArn\x12\xa4\x01\n" +
-	"\x19endpoint_access_addresses\x18\v \x03(\v2h.dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterStackOutputs.EndpointAccessAddressesEntryR\x17endpointAccessAddresses\x12\x86\x01\n" +
-	"\x0fusage_limit_ids\x18\f \x03(\v2^.dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterStackOutputs.UsageLimitIdsEntryR\rusageLimitIds\x1aJ\n" +
+	" \x01(\tR\x17masterPasswordSecretArn\x12\x9f\x01\n" +
+	"\x19endpoint_access_addresses\x18\v \x03(\v2c.dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterOutputs.EndpointAccessAddressesEntryR\x17endpointAccessAddresses\x12\x81\x01\n" +
+	"\x0fusage_limit_ids\x18\f \x03(\v2Y.dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterOutputs.UsageLimitIdsEntryR\rusageLimitIds\x1aJ\n" +
 	"\x1cEndpointAccessAddressesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a@\n" +
@@ -228,13 +228,13 @@ func file_catalog_aws_awsredshiftcluster_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awsredshiftcluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_aws_awsredshiftcluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRedshiftClusterStackOutputs)(nil), // 0: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterStackOutputs
-	nil,                                    // 1: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterStackOutputs.EndpointAccessAddressesEntry
-	nil,                                    // 2: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterStackOutputs.UsageLimitIdsEntry
+	(*AwsRedshiftClusterOutputs)(nil), // 0: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterOutputs
+	nil,                               // 1: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterOutputs.EndpointAccessAddressesEntry
+	nil,                               // 2: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterOutputs.UsageLimitIdsEntry
 }
 var file_catalog_aws_awsredshiftcluster_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterStackOutputs.endpoint_access_addresses:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterStackOutputs.EndpointAccessAddressesEntry
-	2, // 1: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterStackOutputs.usage_limit_ids:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterStackOutputs.UsageLimitIdsEntry
+	1, // 0: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterOutputs.endpoint_access_addresses:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterOutputs.EndpointAccessAddressesEntry
+	2, // 1: dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterOutputs.usage_limit_ids:type_name -> dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterOutputs.UsageLimitIdsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

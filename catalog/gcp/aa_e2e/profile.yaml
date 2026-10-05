@@ -16,5 +16,5 @@ spec:
   # Every lane re-plans after apply and fails on any pending change (the
   # IDEMPOTENCY phase): the GCP catalog wires Optional+Computed arguments
   # explicit-send precisely so re-applies are no-ops, and this gate holds
-  # that contract mechanically for the component under test.
+  # that contract mechanically for the kind under test.
   assert_apply_idempotency: true

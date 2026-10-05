@@ -25,5 +25,5 @@ Provisions an Amazon Bedrock guardrail using Terraform.
 ## Usage
 
 The module is executed by the Planton platform. `variables.tf` is
-GENERATED from the component spec (`planton tofu generate-variables
+GENERATED from the kind's spec (`planton tofu generate-variables
 AwsBedrockGuardrail`) — never edit it by hand.

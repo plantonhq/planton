@@ -6,18 +6,18 @@
 
 ## Summary
 
-Wrote 22 new hand-crafted catalog pages for all remaining Azure deployment components, bringing Azure to 24/24 (100%) catalog page coverage. Each page follows the established 9-section standard, is verified against protobuf definitions and Pulumi module source code, and replaces the legacy auto-generated research documents.
+Wrote 22 new hand-crafted catalog pages for all remaining Azure catalog kinds, bringing Azure to 24/24 (100%) catalog page coverage. Each page follows the established 9-section standard, is verified against protobuf definitions and Pulumi module source code, and replaces the legacy auto-generated research documents.
 
 ## Problem Statement / Motivation
 
-Azure had only 2 of 24 components with hand-written catalog pages (AzureAksCluster and AzureKeyVault). The remaining 22 components served legacy auto-generated `docs/README.md` files — lengthy research documents with deployment landscape essays, tool comparisons, and maturity spectrums that did not match the concise, source-verified standard established for the catalog.
+Azure had only 2 of 24 kinds with hand-written catalog pages (AzureAksCluster and AzureKeyVault). The remaining 22 kinds served legacy auto-generated `docs/README.md` files — lengthy research documents with deployment landscape essays, tool comparisons, and maturity spectrums that did not match the concise, source-verified standard established for the catalog.
 
 ### Pain Points
 
-- 22 Azure components lacked the 9-section catalog page standard (title, What Gets Created, Prerequisites, Quick Start, Config Reference, Examples, Stack Outputs, Related Components)
+- 22 Azure kinds lacked the 9-section catalog page standard (title, What Gets Created, Prerequisites, Quick Start, Config Reference, Examples, Outputs, Related Kinds)
 - Legacy pages contained filler content not useful for developers trying to deploy infrastructure
 - No progressive examples showing minimal through full-featured configurations
-- No foreign key reference examples demonstrating cross-component `valueFrom` patterns
+- No foreign key reference examples demonstrating cross-kind `valueFrom` patterns
 - Inconsistent documentation quality across the Azure provider compared to fully-covered AWS, GCP, and Kubernetes providers
 
 ## Solution / What's New
@@ -54,11 +54,11 @@ Each catalog page was written by reading source files in the established order:
 
 1. `api.proto` — apiVersion and kind values
 2. `spec.proto` — all configuration fields, types, validations, defaults, foreign keys
-3. `stack_outputs.proto` — all output fields
+3. `outputs.proto` — all output fields
 4. `iac/pulumi/module/main.go` — deployment flow and resource creation
-5. `iac/pulumi/module/*.go` — all cloud resources created, output constants
+5. `iac/pulumi/module/*.go` — all provider resources created, output constants
 
-The build pipeline at `site/scripts/copy-component-docs.ts` already prefers `catalog-page.md` over `docs/README.md` with automatic fallback — no pipeline changes were needed.
+The build pipeline at `site/scripts/copy-kind-docs.ts` already prefers `catalog-page.md` over `docs/README.md` with automatic fallback — no pipeline changes were needed.
 
 ### Spot Audit Results
 
@@ -78,14 +78,14 @@ The build pipeline at `site/scripts/copy-component-docs.ts` already prefers `cat
 ## Benefits
 
 - Azure joins AWS, GCP, and Kubernetes as the fourth provider at 100% catalog page coverage
-- Total project catalog coverage: 136 of ~215 components (~63%)
-- Every Azure component now has 3-5 progressive examples with correct proto field names
-- `valueFrom` foreign key patterns documented for all cross-component references
+- Total project catalog coverage: 136 of ~215 kinds (~63%)
+- Every Azure kind now has 3-5 progressive examples with correct proto field names
+- `valueFrom` foreign key patterns documented for all cross-kind references
 - Infrastructure patterns covered: resource groups, networking (VNet/subnet/NSG/NAT/LB/AppGW), databases (PostgreSQL/MySQL/MSSQL), storage, DNS (public/private), private endpoints, compute (VM), containers (AKS node pools, ACR), identity, and monitoring
 
 ## Impact
 
-- Developers evaluating Planton for Azure infrastructure now have consistent, source-verified documentation for all 24 components
+- Developers evaluating Planton for Azure infrastructure now have consistent, source-verified documentation for all 24 kinds
 - The Azure provider catalog is at feature parity with AWS (25/25), GCP (19/19), and Kubernetes (51/51)
 - Remaining providers for future coverage: DigitalOcean (13), Civo (10), Cloudflare (5), Auth0 (2), Atlas (1)
 

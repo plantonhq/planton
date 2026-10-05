@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ func stringValueOrRefLiteral(val string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func stringValueOrRefFrom(kind cloudresourcekind.CloudResourceKind, env, name string) *foreignkeyv1.StringValueOrRef {
+func stringValueOrRefFrom(kind catalogkind.CatalogKind, env, name string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -42,7 +42,7 @@ func validEnvelope(spec *AwsAppRunnerServiceSpec) *AwsAppRunnerService {
 	return &AwsAppRunnerService{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsAppRunnerService",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-app-runner-svc"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-app-runner-svc"},
 		Spec:       spec,
 	}
 }
@@ -296,23 +296,23 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 					ImageIdentifier:     "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest",
 					ImageRepositoryType: "ECR",
 					AccessRoleArn: stringValueOrRefFrom(
-						cloudresourcekind.CloudResourceKind_AwsIamRole,
+						catalogkind.CatalogKind_AwsIamRole,
 						"production",
 						"ecr-access-role",
 					),
 				},
 				InstanceRoleArn: stringValueOrRefFrom(
-					cloudresourcekind.CloudResourceKind_AwsIamRole,
+					catalogkind.CatalogKind_AwsIamRole,
 					"production",
 					"instance-role",
 				),
 				AutoScalingConfigurationArn: stringValueOrRefFrom(
-					cloudresourcekind.CloudResourceKind_AwsAppRunnerAutoScalingConfiguration,
+					catalogkind.CatalogKind_AwsAppRunnerAutoScalingConfiguration,
 					"production",
 					"prod-scaling",
 				),
 				VpcConnectorArn: stringValueOrRefFrom(
-					cloudresourcekind.CloudResourceKind_AwsAppRunnerVpcConnector,
+					catalogkind.CatalogKind_AwsAppRunnerVpcConnector,
 					"production",
 					"prod-connector",
 				),
@@ -622,8 +622,8 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 			spec.VpcIngressConnections = []*AwsAppRunnerServiceVpcIngressConnection{
 				{
 					Name:          "my-svc-private",
-					VpcId:         stringValueOrRefFrom(cloudresourcekind.CloudResourceKind_AwsVpc, "dev", "main-vpc"),
-					VpcEndpointId: stringValueOrRefFrom(cloudresourcekind.CloudResourceKind_AwsVpcEndpoint, "dev", "apprunner-endpoint"),
+					VpcId:         stringValueOrRefFrom(catalogkind.CatalogKind_AwsVpc, "dev", "main-vpc"),
+					VpcEndpointId: stringValueOrRefFrom(catalogkind.CatalogKind_AwsVpcEndpoint, "dev", "apprunner-endpoint"),
 				},
 			}
 			err := protovalidate.Validate(validEnvelope(spec))
@@ -739,7 +739,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 			input := &AwsAppRunnerService{
 				ApiVersion: "gcp.planton.dev/v1alpha1",
 				Kind:       "AwsAppRunnerService",
-				Metadata:   &shared.CloudResourceMetadata{Name: "test-svc"},
+				Metadata:   &shared.CatalogObjectMetadata{Name: "test-svc"},
 				Spec:       minimalImageSpec(),
 			}
 			err := protovalidate.Validate(input)
@@ -750,7 +750,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 			input := &AwsAppRunnerService{
 				ApiVersion: "aws.planton.dev/v1alpha1",
 				Kind:       "AwsLambda",
-				Metadata:   &shared.CloudResourceMetadata{Name: "test-svc"},
+				Metadata:   &shared.CatalogObjectMetadata{Name: "test-svc"},
 				Spec:       minimalImageSpec(),
 			}
 			err := protovalidate.Validate(input)
@@ -771,7 +771,7 @@ var _ = ginkgo.Describe("AwsAppRunnerService Validation Tests", func() {
 			input := &AwsAppRunnerService{
 				ApiVersion: "aws.planton.dev/v1alpha1",
 				Kind:       "AwsAppRunnerService",
-				Metadata:   &shared.CloudResourceMetadata{Name: "test-svc"},
+				Metadata:   &shared.CatalogObjectMetadata{Name: "test-svc"},
 			}
 			err := protovalidate.Validate(input)
 			gomega.Expect(err).ToNot(gomega.BeNil())

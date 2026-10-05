@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Cloud Build private work
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `workerPool` |
-| `module/locals.go` | Stack input |
+| `module/locals.go` | IaC input |
 | `module/worker_pool.go` | API enablement, the pool, the peered-network resolver, the outputs |
 | `module/outputs.go` | Output key constants (`name`, `worker_pool_id`, `state`, `uid`) |
 

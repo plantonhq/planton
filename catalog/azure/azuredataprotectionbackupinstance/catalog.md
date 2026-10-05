@@ -4,7 +4,7 @@ Creates a Data Protection backup instance -- the binding that puts one datasourc
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Backup instance** -- ONE of the six datasource-specific ARM bindings (`Microsoft.DataProtection/backupVaults/{vault}/backupInstances/{name}`), per the variant block set in the spec: blob storage, managed disk, Kubernetes cluster, MySQL flexible server, PostgreSQL flexible server, or Data Lake storage
 
@@ -70,7 +70,7 @@ spec:
 planton apply -f backup-instance.yaml
 ```
 
-This puts one managed disk in eastus under the referenced disk policy's protection, with incremental snapshots landing in the named snapshot resource group. A Stack Job tracks the provisioning in real time.
+This puts one managed disk in eastus under the referenced disk policy's protection, with incremental snapshots landing in the named snapshot resource group. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,7 +100,7 @@ These are the most important decisions when configuring a backup instance. Explo
 
 **The policy's variant must match the instance's** -- a disk instance binds a DISK policy, a blob instance a BLOB policy, both on the same vault; Azure rejects mismatches at create. `backupPolicyId` is the instance's ONLY in-place-updatable field -- everything else (vault, datasource, name, region, snapshot settings) replaces the instance when changed. When you replace a policy (policies are immutable), update the instance's binding in the same change.
 
-**The Kubernetes variant is a bigger commitment** -- the AKS cluster must carry the Backup extension and a trusted-access role binding to the vault before the instance can be created (cluster-side setup this component deliberately does not own), and the variant is immutable end to end: every change, including the policy binding, replaces the instance. Model AKS backup as part of cluster provisioning. Its `backupDatasourceParameters` decide namespace filters, cluster-scoped resources, and whether persistent-volume snapshots are taken (Azure's default is configuration only, no volume data).
+**The Kubernetes variant is a bigger commitment** -- the AKS cluster must carry the Backup extension and a trusted-access role binding to the vault before the instance can be created (cluster-side setup this kind deliberately does not own), and the variant is immutable end to end: every change, including the policy binding, replaces the instance. Model AKS backup as part of cluster provisioning. Its `backupDatasourceParameters` decide namespace filters, cluster-scoped resources, and whether persistent-volume snapshots are taken (Azure's default is configuration only, no volume data).
 
 **Blob containers are a one-way commitment** -- `storageAccountContainerNames` is required when the policy has a vault tier and must stay empty for an operational-only policy (which protects the whole account continuously). Once set, the list can change but never be cleared entirely -- clearing it replaces the instance.
 
@@ -110,7 +110,7 @@ These are the most important decisions when configuring a backup instance. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -123,9 +123,9 @@ These are the most important decisions when configuring a backup instance. Explo
 | **AzureMysqlFlexibleServer** (MySQL variant) | `mysqlFlexibleServer.serverId` | `status.outputs.server_id` |
 | **AzurePostgresqlFlexibleServer** (PostgreSQL variant) | `postgresqlFlexibleServer.serverId` | `status.outputs.server_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-The instance's `status.outputs` carries `backup_instance_id` (the ARM ID of the protection binding) and `backup_instance_name` -- identifiers for operational tooling and audit, not wiring edges: no other catalog component consumes a backup instance. The protection itself is the product; restore operations happen through the vault, not through these outputs.
+The instance's `status.outputs` carries `backup_instance_id` (the ARM ID of the protection binding) and `backup_instance_name` -- identifiers for operational tooling and audit, not wiring edges: no other catalog kind consumes a backup instance. The protection itself is the product; restore operations happen through the vault, not through these outputs.
 
 ## Common Patterns
 
@@ -141,11 +141,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Data Protection Backup Vault**](/cloud-catalog/azure-data-protection-backup-vault) -- the vault holding this instance's backups
-- [**Azure Data Protection Backup Policy**](/cloud-catalog/azure-data-protection-backup-policy) -- the schedule and retention governing this instance
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- the datasource grants the vault's identity needs before create
-- [**Azure Managed Disk**](/cloud-catalog/azure-managed-disk) -- the disk variant's datasource
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the blob and Data Lake variants' datasource
-- [**Azure AKS Cluster**](/cloud-catalog/azure-aks-cluster) -- the Kubernetes variant's datasource
-- [**Azure MySQL Flexible Server**](/cloud-catalog/azure-mysql-flexible-server) / [**Azure PostgreSQL Flexible Server**](/cloud-catalog/azure-postgresql-flexible-server) -- the database variants' datasources
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- where disk and AKS snapshots land
+- [**Azure Data Protection Backup Vault**](/infra-catalog/azure-data-protection-backup-vault) -- the vault holding this instance's backups
+- [**Azure Data Protection Backup Policy**](/infra-catalog/azure-data-protection-backup-policy) -- the schedule and retention governing this instance
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- the datasource grants the vault's identity needs before create
+- [**Azure Managed Disk**](/infra-catalog/azure-managed-disk) -- the disk variant's datasource
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the blob and Data Lake variants' datasource
+- [**Azure AKS Cluster**](/infra-catalog/azure-aks-cluster) -- the Kubernetes variant's datasource
+- [**Azure MySQL Flexible Server**](/infra-catalog/azure-mysql-flexible-server) / [**Azure PostgreSQL Flexible Server**](/infra-catalog/azure-postgresql-flexible-server) -- the database variants' datasources
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- where disk and AKS snapshots land

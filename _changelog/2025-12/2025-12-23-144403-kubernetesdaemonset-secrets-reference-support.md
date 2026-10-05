@@ -197,7 +197,7 @@ Added 5 new test cases:
 - DaemonSet-specific use cases like log collectors and monitoring agents can reference external secrets
 
 ### Developers
-- Pattern established for handling secrets across Kubernetes provider components
+- Pattern established for handling secrets across Kubernetes provider kinds
 - All tests passing (12/12)
 - Follows the same pattern as `KubernetesDeployment` for consistency
 

@@ -4,7 +4,7 @@ Deploys an authorization model into an existing OpenFGA store -- the schema of t
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Authorization Model** -- an `openfga_authorization_model` resource in the target store, containing the type definitions, relations, and conditions. Because models are immutable, each apply that changes the definition creates a new model version (new ID) rather than updating in place.
 - **DSL-to-JSON conversion** -- created only when `modelDsl` is set: an `openfga_authorization_model_document` data source converts the human-readable DSL into the JSON the OpenFGA API accepts.
@@ -13,13 +13,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **OpenFGA Provider Connection** -- an active connection in the Connect module with the OpenFGA API URL and authentication credentials (API token or client credentials). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **OpenFGA Provider Connection** -- an active connection in the Connect module with the OpenFGA API URL and authentication credentials (API token or client credentials). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline authentication.
 
 ### OpenFGA Server
 
 - **A running OpenFGA instance** -- self-hosted or cloud-hosted, reachable from the Planton Runner or provisioner environment.
-- **An existing OpenFGA store** -- provide the store ID directly in `storeId` or reference an OpenFgaStore Cloud Resource via ValueFromRef.
+- **An existing OpenFGA store** -- provide the store ID directly in `storeId` or reference an OpenFgaStore Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -58,7 +58,7 @@ spec:
 planton apply -f openfga-authz-model.yaml
 ```
 
-This creates an authorization model with a `user` type and a `document` type carrying viewer, editor, and owner relations, and surfaces the new model version's ID in `status.outputs`. OpenFGA ships only a Terraform provider, so this component provisions with Terraform/OpenTofu. A Stack Job tracks the provisioning in real time.
+This creates an authorization model with a `user` type and a `document` type carrying viewer, editor, and owner relations, and surfaces the new model version's ID in `status.outputs`. OpenFGA ships only a Terraform provider, so this kind provisions with Terraform/OpenTofu. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,15 +89,15 @@ These are the most important decisions when configuring an OpenFGA authorization
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **OpenFgaStore** | `storeId` | `status.outputs.id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -113,5 +113,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**OpenFGA Store**](/cloud-catalog/openfga-store) -- the store the model is created in, wired through `storeId`
-- [**OpenFGA Relationship Tuple**](/cloud-catalog/openfga-relationship-tuple) -- the authorization data evaluated against this model; tuples can pin to a specific model version via its `id` output
+- [**OpenFGA Store**](/infra-catalog/openfga-store) -- the store the model is created in, wired through `storeId`
+- [**OpenFGA Relationship Tuple**](/infra-catalog/openfga-relationship-tuple) -- the authorization data evaluated against this model; tuples can pin to a specific model version via its `id` output

@@ -5,9 +5,9 @@ package dev.planton.aws.awsrestapiusageplan.v1alpha1;
 import "catalog/aws/awsrestapiusageplan/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsRestApiUsagePlanStackInput is the input for the IaC modules that
+// AwsRestApiUsagePlanIacInput is the input for the IaC modules that
 // deploy the usage plan.
-message AwsRestApiUsagePlanStackInput {
+message AwsRestApiUsagePlanIacInput {
   // target is the AwsRestApiUsagePlan resource to deploy.
   AwsRestApiUsagePlan target = 1;
   // provider_config contains the AWS provider credentials and configuration.

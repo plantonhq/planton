@@ -462,7 +462,7 @@ The domain is the root of the SageMaker resource family. The following are delib
 
 ## How it works
 
-Planton provisions the SageMaker Domain via Pulumi or Terraform modules defined in this repository. The API contract is protobuf-based (`api.proto`, `spec.proto`, `outputs.proto`) and stack execution is orchestrated by the platform using the `AwsSagemakerDomainStackInput` (includes provider credentials and target resource).
+Planton provisions the SageMaker Domain via Pulumi or Terraform modules defined in this repository. The API contract is protobuf-based (`api.proto`, `spec.proto`, `outputs.proto`) and stack execution is orchestrated by the platform using the `AwsSagemakerDomainIacInput` (includes provider credentials and target resource).
 
 ## References
 

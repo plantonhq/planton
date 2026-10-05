@@ -59,7 +59,7 @@ const (
 //
 // SCHEMA: Loki requires a `schema_config` naming the index schema and
 // its start date — upstream makes every user hand-author it. This
-// component derives it (TSDB, schema v13, the object store matching
+// kind derives it (TSDB, schema v13, the object store matching
 // your storage backend) so a new install never writes one. The
 // `schema_from_date` override exists solely for IMPORTING clusters
 // whose existing schema started on a real date.
@@ -181,7 +181,7 @@ type KubernetesLokiSpec struct {
 	ServiceMonitorEnabled bool `protobuf:"varint,15,opt,name=service_monitor_enabled,json=serviceMonitorEnabled,proto3" json:"service_monitor_enabled,omitempty"`
 	// *
 	// Send anonymous usage statistics about this install to Grafana Labs.
-	// Default false — this component deliberately diverges from Loki's
+	// Default false — this kind deliberately diverges from Loki's
 	// report-by-default so no data leaves the cluster without an explicit
 	// opt-in.
 	UsageReporting *bool `protobuf:"varint,16,opt,name=usage_reporting,json=usageReporting,proto3,oneof" json:"usage_reporting,omitempty"`

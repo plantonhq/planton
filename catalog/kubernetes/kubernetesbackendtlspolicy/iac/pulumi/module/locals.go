@@ -3,14 +3,14 @@ package module
 import (
 	kubernetesbackendtlspolicyv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesbackendtlspolicy/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	"strconv"
 )
 
 // Locals holds the resolved inputs the module operates on: the full target
 // resource plus the scalar identifiers used for the resource name, namespace,
-// labels, and stack outputs.
+// labels, and outputs.
 type Locals struct {
 	KubernetesBackendTlsPolicy *kubernetesbackendtlspolicyv1alpha1.KubernetesBackendTlsPolicy
 	PolicyName                 string
@@ -18,8 +18,8 @@ type Locals struct {
 	Labels                     map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *kubernetesbackendtlspolicyv1alpha1.KubernetesBackendTlsPolicyStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *kubernetesbackendtlspolicyv1alpha1.KubernetesBackendTlsPolicyIacInput) *Locals {
+	target := iacInput.Target
 	metadata := target.Metadata
 	spec := target.Spec
 
@@ -31,7 +31,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *kubernetesbackendtlspolicyv
 	labels := map[string]string{
 		kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
 		kuberneteslabelkeys.ResourceName: metadata.Name,
-		kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesBackendTlsPolicy.String(),
+		kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesBackendTlsPolicy.String(),
 	}
 	if metadata.Id != "" {
 		labels[kuberneteslabelkeys.ResourceId] = metadata.Id

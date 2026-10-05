@@ -5,7 +5,7 @@ import (
 
 	awsmskclusterv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsmskcluster/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -17,7 +17,7 @@ type Locals struct {
 	Labels      map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, in *awsmskclusterv1alpha1.AwsMskClusterStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, in *awsmskclusterv1alpha1.AwsMskClusterIacInput) *Locals {
 	locals := &Locals{}
 
 	locals.AwsMskCluster = in.Target
@@ -29,7 +29,7 @@ func initializeLocals(ctx *pulumi.Context, in *awsmskclusterv1alpha1.AwsMskClust
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsMskCluster.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsMskCluster.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsMskCluster.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsMskCluster.String(),
 		awstagkeys.ResourceId:   locals.AwsMskCluster.Metadata.Id,
 	}
 

@@ -4,7 +4,7 @@ Deploys an Azure Event Grid domain -- one publishing endpoint and one pair of ac
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Event Grid domain** -- the shared publish endpoint with its domain-topic lifecycle flags, the input schema every incoming event must match (plus custom-schema envelope mappings when used), network posture (public-access dial and IP allowlist), key-auth dial, and optional managed identity
 - **Azure Tags** -- Planton-derived metadata tags merged with your `tags` map (user values win on key conflicts)
@@ -15,12 +15,12 @@ Azure derives the rest from the domain: the HTTPS publish endpoint at `{name}.{r
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the domain will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef (`resourceGroup`).
+- **An Azure Resource Group** where the domain will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef (`resourceGroup`).
 - **A region-wide-unique name** -- the domain's `name` becomes a public DNS hostname (`{name}.{region}.eventgrid.azure.net`), unique across ALL Azure customers in the region; a taken name fails the deploy with a conflict. Prefix it with your org, like a storage account name.
 - **A user-assigned identity (only for USER_ASSIGNED identity)** -- an AzureUserAssignedIdentity whose grants on delivery targets can be composed before the domain exists (`identity.identityIds`).
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f eventgrid-domain.yaml
 ```
 
-This creates a CloudEvents domain on Azure's auto-managed topic lifecycle: subscriptions materialize their topics, and every stream publishes through the single `acme-tenant-events` endpoint. A Stack Job tracks the provisioning in real time.
+This creates a CloudEvents domain on Azure's auto-managed topic lifecycle: subscriptions materialize their topics, and every stream publishes through the single `acme-tenant-events` endpoint. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -99,16 +99,16 @@ These are the most important decisions when configuring an Event Grid domain. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzureUserAssignedIdentity** (only for USER_ASSIGNED identity) | `identity.identityIds` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,8 +132,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the domain is created in
-- [**Azure Event Grid Domain Topic**](/cloud-catalog/azure-eventgrid-domain-topic) -- the declared per-tenant streams; each references this domain's `domain_id`
-- [**Azure Event Grid Event Subscription**](/cloud-catalog/azure-eventgrid-event-subscription) -- fans a domain topic's events out to queues, Functions, webhooks, and hubs
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the pre-grantable delivery identity for USER_ASSIGNED domains
-- [**Azure Event Grid Topic**](/cloud-catalog/azure-eventgrid-topic) -- the single-stream alternative when a handful of well-known streams beats thousands of tenant topics
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the domain is created in
+- [**Azure Event Grid Domain Topic**](/infra-catalog/azure-eventgrid-domain-topic) -- the declared per-tenant streams; each references this domain's `domain_id`
+- [**Azure Event Grid Event Subscription**](/infra-catalog/azure-eventgrid-event-subscription) -- fans a domain topic's events out to queues, Functions, webhooks, and hubs
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the pre-grantable delivery identity for USER_ASSIGNED domains
+- [**Azure Event Grid Topic**](/infra-catalog/azure-eventgrid-topic) -- the single-stream alternative when a handful of well-known streams beats thousands of tenant topics

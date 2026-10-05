@@ -4,7 +4,7 @@ Declares a Cloud Build trigger: the rule that starts a build when something happ
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `cloudbuild.googleapis.com` on the trigger's project (never disabled on destroy)
 - **Trigger** -- one `cloudbuild_trigger`
@@ -110,7 +110,7 @@ A `pullRequest` filter takes `branch`, `commentControl`, and `invertRegex`; a `p
 - A step with `script` sets neither `entrypoint` nor `args`.
 - `triggerName` is 1-64 letters, digits, or dashes; substitution keys match `^_[A-Z0-9_]+$`; literal secret versions, topics, repositories, service accounts, and KMS keys use their full resource names.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -141,7 +141,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpCloudBuildRepository** -- repositories the trigger builds from
 - **GcpCloudBuildWorkerPool** -- private pools builds run on

@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeProductStackOutputs identifies the product and the links that grant its features.
+// StripeProductOutputs identifies the product and the links that grant its features.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/product
-type StripeProductStackOutputs struct {
+type StripeProductOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the product's Stripe id (prod_...), the value a StripePrice's product references.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -41,20 +41,20 @@ type StripeProductStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *StripeProductStackOutputs) Reset() {
-	*x = StripeProductStackOutputs{}
+func (x *StripeProductOutputs) Reset() {
+	*x = StripeProductOutputs{}
 	mi := &file_catalog_stripe_stripeproduct_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeProductStackOutputs) String() string {
+func (x *StripeProductOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeProductStackOutputs) ProtoMessage() {}
+func (*StripeProductOutputs) ProtoMessage() {}
 
-func (x *StripeProductStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripeProductOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripeproduct_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,33 +66,33 @@ func (x *StripeProductStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeProductStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripeProductStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeProductOutputs.ProtoReflect.Descriptor instead.
+func (*StripeProductOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripeproduct_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeProductStackOutputs) GetId() string {
+func (x *StripeProductOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripeProductStackOutputs) GetActive() bool {
+func (x *StripeProductOutputs) GetActive() bool {
 	if x != nil {
 		return x.Active
 	}
 	return false
 }
 
-func (x *StripeProductStackOutputs) GetDefaultPrice() string {
+func (x *StripeProductOutputs) GetDefaultPrice() string {
 	if x != nil {
 		return x.DefaultPrice
 	}
 	return ""
 }
 
-func (x *StripeProductStackOutputs) GetProductFeatureIds() map[string]string {
+func (x *StripeProductOutputs) GetProductFeatureIds() map[string]string {
 	if x != nil {
 		return x.ProductFeatureIds
 	}
@@ -103,12 +103,12 @@ var File_catalog_stripe_stripeproduct_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_stripe_stripeproduct_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/stripe/stripeproduct/v1alpha1/outputs.proto\x12)dev.planton.stripe.stripeproduct.v1alpha1\"\xbc\x02\n" +
-	"\x19StripeProductStackOutputs\x12\x0e\n" +
+	"3catalog/stripe/stripeproduct/v1alpha1/outputs.proto\x12)dev.planton.stripe.stripeproduct.v1alpha1\"\xb2\x02\n" +
+	"\x14StripeProductOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06active\x18\x02 \x01(\bR\x06active\x12#\n" +
-	"\rdefault_price\x18\x03 \x01(\tR\fdefaultPrice\x12\x8b\x01\n" +
-	"\x13product_feature_ids\x18\x04 \x03(\v2[.dev.planton.stripe.stripeproduct.v1alpha1.StripeProductStackOutputs.ProductFeatureIdsEntryR\x11productFeatureIds\x1aD\n" +
+	"\rdefault_price\x18\x03 \x01(\tR\fdefaultPrice\x12\x86\x01\n" +
+	"\x13product_feature_ids\x18\x04 \x03(\v2V.dev.planton.stripe.stripeproduct.v1alpha1.StripeProductOutputs.ProductFeatureIdsEntryR\x11productFeatureIds\x1aD\n" +
 	"\x16ProductFeatureIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xe0\x02\n" +
@@ -128,11 +128,11 @@ func file_catalog_stripe_stripeproduct_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_stripe_stripeproduct_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_stripe_stripeproduct_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripeProductStackOutputs)(nil), // 0: dev.planton.stripe.stripeproduct.v1alpha1.StripeProductStackOutputs
-	nil,                               // 1: dev.planton.stripe.stripeproduct.v1alpha1.StripeProductStackOutputs.ProductFeatureIdsEntry
+	(*StripeProductOutputs)(nil), // 0: dev.planton.stripe.stripeproduct.v1alpha1.StripeProductOutputs
+	nil,                          // 1: dev.planton.stripe.stripeproduct.v1alpha1.StripeProductOutputs.ProductFeatureIdsEntry
 }
 var file_catalog_stripe_stripeproduct_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripeproduct.v1alpha1.StripeProductStackOutputs.product_feature_ids:type_name -> dev.planton.stripe.stripeproduct.v1alpha1.StripeProductStackOutputs.ProductFeatureIdsEntry
+	1, // 0: dev.planton.stripe.stripeproduct.v1alpha1.StripeProductOutputs.product_feature_ids:type_name -> dev.planton.stripe.stripeproduct.v1alpha1.StripeProductOutputs.ProductFeatureIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

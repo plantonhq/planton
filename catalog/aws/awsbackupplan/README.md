@@ -24,7 +24,7 @@ selections that assign resources to the plan.
   fine-grained conditions. AWS-generated selection IDs land in the
   `selection_ids` output map.
 
-The vault the plan targets is deliberately NOT part of this component
+The vault the plan targets is deliberately NOT part of this kind
 — see [AwsBackupVault](../awsbackupvault).
 
 See [v1alpha1/reference.md](v1alpha1/reference.md) for the full field

@@ -3,8 +3,8 @@
 // Credentials chain can reach the test project, and resource verification runs
 // through the Google Cloud REST APIs.
 //
-// Credentials are intentionally NOT plumbed through the stack input. The E2E
-// framework builds every stack input with a nil provider config, so the IaC
+// Credentials are intentionally NOT plumbed through the IaC input. The E2E
+// framework builds every IaC input with a nil provider config, so the IaC
 // modules resolve credentials from the ambient ADC chain (locally:
 // `gcloud auth application-default login`; in CI: workload identity
 // federation). No static secret is ever stored on disk or in CI.
@@ -422,60 +422,60 @@ func (h *Harness) Teardown(ctx context.Context) error {
 	return nil
 }
 
-// VerifyDeployed confirms the component's resource exists via its registered
+// VerifyDeployed confirms the kind's resource exists via its registered
 // verifier. GCP identifiers are frequently compound (an IAM grant is a
 // project+role+member tuple), so the whole string-ified output set is stored
 // and handed to the verifier rather than a single id.
-func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs map[string]interface{}) error {
-	v, err := verify.GetVerifier(component)
+func (h *Harness) VerifyDeployed(ctx context.Context, kindDir string, outputs map[string]interface{}) error {
+	v, err := verify.GetVerifier(kindDir)
 	if err != nil {
 		return err
 	}
 
 	strOutputs := stringOutputs(outputs)
 	if strOutputs[v.IDOutputKey()] == "" {
-		return errors.Errorf("no %q in outputs for %s -- cannot verify", v.IDOutputKey(), component)
+		return errors.Errorf("no %q in outputs for %s -- cannot verify", v.IDOutputKey(), kindDir)
 	}
 
 	h.mu.Lock()
-	h.deployed[componentKey(ctx, component)] = strOutputs
+	h.deployed[kindKey(ctx, kindDir)] = strOutputs
 	h.mu.Unlock()
 
 	return v.VerifyExists(ctx, h.services, strOutputs)
 }
 
 // VerifyDestroyed confirms the previously deployed resource no longer exists.
-func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
-	v, err := verify.GetVerifier(component)
+func (h *Harness) VerifyDestroyed(ctx context.Context, kindDir string) error {
+	v, err := verify.GetVerifier(kindDir)
 	if err != nil {
 		return err
 	}
 
 	h.mu.Lock()
-	outputs := h.deployed[componentKey(ctx, component)]
+	outputs := h.deployed[kindKey(ctx, kindDir)]
 	h.mu.Unlock()
 
 	if len(outputs) == 0 {
-		return errors.Errorf("no stored outputs for %s -- VerifyDeployed may not have run", component)
+		return errors.Errorf("no stored outputs for %s -- VerifyDeployed may not have run", kindDir)
 	}
 	return v.VerifyAbsent(ctx, h.services, outputs)
 }
 
 // VerifyExpectedDeployFailure implements the framework's optional
 // DeployFailureVerifier capability (expected-deploy-failure lanes, for
-// substrates that gate resource creation on workload health). Stack outputs
+// substrates that gate resource creation on workload health). Outputs
 // do not exist on a failed deploy, so identity comes from the scenario
 // manifest: the service name (metadata.name) and region (spec.region). The
 // kind's verifier must itself opt in via the local
 // verify.DeployFailureVerifier interface.
-func (h *Harness) VerifyExpectedDeployFailure(ctx context.Context, tc *provider.ComponentTestContext, expectation string, deployErr error) error {
-	v, err := verify.GetVerifier(tc.Component)
+func (h *Harness) VerifyExpectedDeployFailure(ctx context.Context, tc *provider.KindTestContext, expectation string, deployErr error) error {
+	v, err := verify.GetVerifier(tc.Kind)
 	if err != nil {
 		return err
 	}
 	dfv, ok := v.(verify.DeployFailureVerifier)
 	if !ok {
-		return errors.Errorf("component %q's verifier does not implement verify.DeployFailureVerifier -- the scenario expects a deploy failure (%s) it cannot attribute", tc.Component, expectation)
+		return errors.Errorf("kind %q's verifier does not implement verify.DeployFailureVerifier -- the scenario expects a deploy failure (%s) it cannot attribute", tc.Kind, expectation)
 	}
 
 	manifestPath, _ := ctx.Value(provider.ManifestPathKey{}).(string)
@@ -510,7 +510,7 @@ func (h *Harness) VerifyExpectedDeployFailure(ctx context.Context, tc *provider.
 	// still must prove the destroyed-after-failed-create resource is GONE,
 	// through the same absence probe every normal lane uses.
 	h.mu.Lock()
-	h.deployed[componentKey(ctx, tc.Component)] = map[string]string{
+	h.deployed[kindKey(ctx, tc.Kind)] = map[string]string{
 		"service_short_name": manifest.Metadata.Name,
 		"region":             manifest.Spec.Region,
 		"project_id":         h.services.Project,
@@ -519,7 +519,7 @@ func (h *Harness) VerifyExpectedDeployFailure(ctx context.Context, tc *provider.
 	return nil
 }
 
-// stringOutputs flattens stack outputs to strings, tolerating non-string scalars.
+// stringOutputs flattens outputs to strings, tolerating non-string scalars.
 func stringOutputs(outputs map[string]interface{}) map[string]string {
 	result := make(map[string]string, len(outputs))
 	for key, value := range outputs {
@@ -532,13 +532,13 @@ func stringOutputs(outputs map[string]interface{}) map[string]string {
 	return result
 }
 
-// componentKey combines the manifest path (from context) with the component name
-// so concurrent scenarios of the same component type do not collide in the map.
-func componentKey(ctx context.Context, component string) string {
+// kindKey combines the manifest path (from context) with the kind name
+// so concurrent scenarios of the same kind do not collide in the map.
+func kindKey(ctx context.Context, kindDir string) string {
 	if mp, ok := ctx.Value(provider.ManifestPathKey{}).(string); ok && mp != "" {
-		return mp + "::" + component
+		return mp + "::" + kindDir
 	}
-	return component
+	return kindDir
 }
 
 func firstNonEmpty(values ...string) string {

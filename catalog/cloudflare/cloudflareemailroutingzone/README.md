@@ -57,7 +57,7 @@ spec:
 > Enabling Email Routing rewrites the zone's MX/SPF/DKIM records. Only enable it
 > on a zone whose mail you intend Cloudflare to handle.
 
-## Related components
+## Related kinds
 
 - `CloudflareDnsZone` — the zone this enables Email Routing on.
 - `CloudflareEmailRoutingRule` — per-address routing rules.

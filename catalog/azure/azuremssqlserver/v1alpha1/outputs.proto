@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremssqlserver.v1alpha1;
 
-// **AzureMssqlServerStackOutputs** captures the outputs of provisioning an
+// **AzureMssqlServerOutputs** captures the outputs of provisioning an
 // Azure SQL Database logical server.
 //
 // `server_id` is the join key for everything that lives on or attaches to
@@ -11,7 +11,7 @@ package dev.planton.azure.azuremssqlserver.v1alpha1;
 // (subresource_names: ["sqlServer"]). `fqdn` + `administrator_login` are
 // what applications need to construct connection strings:
 //   Server={fqdn},1433;Database={db};User ID={admin};Password={password};Encrypt=True;
-message AzureMssqlServerStackOutputs {
+message AzureMssqlServerOutputs {
   // The Azure Resource Manager ID of the logical server.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Sql/servers/{name}
   // Referenced by AzureMssqlDatabase.server_id,

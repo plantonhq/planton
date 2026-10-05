@@ -7,7 +7,7 @@ Use this preset for production-grade workflows that require full observability, 
 ## Key Configuration Choices
 
 - **Type**: `STANDARD` — durable, exactly-once execution with full history
-- **Versioning**: `publish: true` — every configuration change publishes an immutable version; the version ARN lands in stack outputs so consumers can pin to a snapshot for safe rollbacks
+- **Versioning**: `publish: true` — every configuration change publishes an immutable version; the version ARN lands in outputs so consumers can pin to a snapshot for safe rollbacks
 - **Logging**: `ALL` with execution data — full visibility into every state transition
 - **Tracing**: Enabled — X-Ray traces for end-to-end request visualization
 - **Encryption**: Customer-managed KMS key — compliance-ready data encryption
@@ -17,7 +17,7 @@ Use this preset for production-grade workflows that require full observability, 
 ## What to Customize
 
 1. **`<workflow-name>`** — Production workflow name (e.g., `order-processor`)
-2. **`<iam-role-resource-name>`** — Name of the AwsIamRole resource in your infra chart
+2. **`<iam-role-resource-name>`** — Name of the AwsIamRole resource in your Infra Chart
 3. **`<lambda-function-arn>`** and **`<lambda-function-arn-2>`** — Lambda functions for each step
 4. **`<error-handler-lambda-arn>`** — Dedicated error handling function
 5. **`<log-group-resource-name>`** — Name of the AwsCloudwatchLogGroup resource

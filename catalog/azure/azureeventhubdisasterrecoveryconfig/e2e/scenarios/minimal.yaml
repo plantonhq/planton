@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureeventhubdisasterrecoveryconfig
+    e2e-catalog-kind: azureeventhubdisasterrecoveryconfig
   annotations:
     planton.dev/e2e: "true"
     # Deploy order: primary, then partner (both scenario-local -- the

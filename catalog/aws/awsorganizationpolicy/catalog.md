@@ -4,7 +4,7 @@ Creates an AWS Organizations policy -- a service control policy or any of its tw
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Policy** -- the policy itself (AWS `p-...` ID) with its name, type (SCP by default), structured document, and description; name, content, and description update in place, and the provider suppresses JSON-equivalent content diffs
 - **Policy Attachments** -- one per `attachments` entry, each binding the policy to one root, OU, or member account; both leaves are immutable, so changing a target detaches and re-attaches
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module whose credentials belong to the organization's MANAGEMENT account, with Organizations permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module whose credentials belong to the organization's MANAGEMENT account, with Organizations permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -61,7 +61,7 @@ spec:
 planton apply -f aws-organization-policy.yaml
 ```
 
-This creates an SCP denying `organizations:LeaveOrganization` and attaches it at the organization root, so no member account can walk out of governance (SCPs never bind the management account, which can still remove accounts deliberately). A Stack Job tracks the provisioning in real time.
+This creates an SCP denying `organizations:LeaveOrganization` and attaches it at the organization root, so no member account can walk out of governance (SCPs never bind the management account, which can still remove accounts deliberately). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -104,7 +104,7 @@ These are the most important decisions when configuring an organization policy. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -112,9 +112,9 @@ These are the most important decisions when configuring an organization policy. 
 | **AwsOrganization** | `attachments[].targetId` (root scope) | `status.outputs.root_id` |
 | **AwsOrganizationAccount** | `attachments[].targetId` (single-account scope) | `status.outputs.account_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-`status.outputs` carries the policy's identity -- `policy_id` (`p-...`) and `arn`. These are record values for audit and import rather than composition inputs: attachments fold into this resource itself, so no downstream Cloud Resource consumes a policy ID by reference.
+`status.outputs` carries the policy's identity -- `policy_id` (`p-...`) and `arn`. These are record values for audit and import rather than composition inputs: attachments fold into this resource itself, so no downstream Infra Component consumes a policy ID by reference.
 
 ## Common Patterns
 
@@ -128,6 +128,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Organization**](/cloud-catalog/aws-organization) -- enables this policy's type via `enabledPolicyTypes`; its `root_id` is the target for root-scoped attachments
-- [**AWS Organizational Unit**](/cloud-catalog/aws-organizational-unit) -- the usual attachment target; everything beneath the OU inherits the policy
-- [**AWS Organization Account**](/cloud-catalog/aws-organization-account) -- the target for single-account exceptions and sandbox soak tests
+- [**AWS Organization**](/infra-catalog/aws-organization) -- enables this policy's type via `enabledPolicyTypes`; its `root_id` is the target for root-scoped attachments
+- [**AWS Organizational Unit**](/infra-catalog/aws-organizational-unit) -- the usual attachment target; everything beneath the OU inherits the policy
+- [**AWS Organization Account**](/infra-catalog/aws-organization-account) -- the target for single-account exceptions and sandbox soak tests

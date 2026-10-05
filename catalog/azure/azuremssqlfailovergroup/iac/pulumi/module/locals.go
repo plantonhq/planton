@@ -5,7 +5,7 @@ import (
 
 	azuremssqlfailovergroupv1alpha1 "github.com/plantonhq/planton/catalog/azure/azuremssqlfailovergroup/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -25,11 +25,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremssqlfailovergroupv1alpha1.AzureMssqlFailoverGroupStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremssqlfailovergroupv1alpha1.AzureMssqlFailoverGroupIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMssqlFailoverGroup = stackInput.Target
-	target := stackInput.Target
+	locals.AzureMssqlFailoverGroup = iacInput.Target
+	target := iacInput.Target
 	spec := target.Spec
 
 	locals.ServerId = spec.ServerId.GetValue()
@@ -53,7 +53,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azuremssqlfailovergroupv1
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureMssqlFailoverGroup.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureMssqlFailoverGroup.String()),
 	}
 	if target.Metadata.Id != "" {
 		locals.AzureTags[azuretagkeys.ResourceId] = target.Metadata.Id

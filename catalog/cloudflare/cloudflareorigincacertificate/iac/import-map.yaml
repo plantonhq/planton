@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflareorigincacertificate
 spec:
@@ -11,7 +11,7 @@ spec:
   values:
     - name: certificate_id
       derivations:
-        - from_stack_output: certificate_id
+        - from_output: certificate_id
       where_to_find: >-
         Cloudflare dashboard -> SSL/TLS -> Origin Server (open the
         certificate; the id is in the URL), or `GET /certificates` on the
@@ -19,9 +19,9 @@ spec:
         match).
     - name: private_key_pem
       derivations:
-        - from_stack_output: private_key
+        - from_output: private_key
       where_to_find: >-
-        The prior deploy's `private_key` stack output (populated only when
+        The prior deploy's `private_key` output (populated only when
         the module generated the key). Recorded for reference only: the
         tls helpers ship NO importer upstream ("Resource Import Not
         Implemented", measured live 2026-08-28), so adoption re-creates

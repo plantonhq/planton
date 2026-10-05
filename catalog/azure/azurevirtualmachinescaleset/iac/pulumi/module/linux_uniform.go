@@ -22,7 +22,7 @@ func createUniformLinux(ctx *pulumi.Context, locals *Locals, azureProvider pulum
 		Tags:              pulumi.ToStringMap(locals.AzureTags),
 
 		// Azure-default-true gates: unset explicitly falls back to the
-		// proto default so stack-input paths that bypass the manifest
+		// proto default so iac-input paths that bypass the manifest
 		// loader deploy identically on both engines.
 		DisablePasswordAuthentication: pulumi.Bool(optionalBool(linux.DisablePasswordAuthentication, true)),
 		ProvisionVmAgent:              pulumi.Bool(optionalBool(spec.ProvisionVmAgent, true)),

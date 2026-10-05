@@ -2,7 +2,7 @@
 
 **Date**: September 15, 2026
 **Type**: Feature
-**Components**: `catalog/kubernetes/kubernetesopenbao` (the spec and its tests, both IaC engines and the Pulumi module's first tests, the permissions, cost, control, and capacity profiles, the presets and every E2E fixture, the guide and catalog page), `catalog/_patterns/stateful-kind-disaster-recovery.md`, `charts/kubernetes/identity-and-access-platform`, the component update rule, the regenerated reference pages, graph, and cost estimates
+**Components**: `catalog/kubernetes/kubernetesopenbao` (the spec and its tests, both IaC engines and the Pulumi module's first tests, the permissions, cost, control, and capacity profiles, the presets and every E2E fixture, the guide and catalog page), `catalog/_patterns/stateful-kind-disaster-recovery.md`, `charts/kubernetes/identity-and-access-platform`, the catalog-kind update rule, the regenerated reference pages, graph, and cost estimates
 
 ## Summary
 
@@ -32,7 +32,7 @@ The Pulumi module gains its first tests (`render_test.go`): the configuration st
 
 ### The teaching
 
-The component update rule gains the timeless lesson: a chart's mode switch is a chart fact; when it fuses facts the software keeps apart, model the facts, drive the mode from them, read upstream's own posture before calling a mode "production", prefer a shape that makes a rule unwritable to a CEL that refuses it, and key a CEL on a defaulted scalar's value, never its presence.
+The kind update rule gains the timeless lesson: a chart's mode switch is a chart fact; when it fuses facts the software keeps apart, model the facts, drive the mode from them, read upstream's own posture before calling a mode "production", prefer a shape that makes a rule unwritable to a CEL that refuses it, and key a CEL on a defaulted scalar's value, never its presence.
 
 ## What did not change here
 
@@ -40,4 +40,4 @@ The verifier's shape extractor and the `postgresql-storage` lane, the guide's en
 
 ## Verification
 
-`buf lint` / `buf format`; `go test ./catalog/kubernetes/kubernetesopenbao/v1alpha1/` (99/99); `go build` / `go vet` / `go test` of the Pulumi module (10/10, the leak gate included); `tofu fmt` / `tofu validate`; seven fixtures rendered on both engines, configuration strings and chart values byte-identical; `helm template` of the pinned chart 0.28.6 on every fixture's values (schema-validated) with per-engine assertions on the rendered StatefulSet, claims, mounts, environment, ConfigMap, Services, discovery Role, and budget; eight negative manifests refused through the CLI with their sentences (two by the loader's unknown-field refusal, the structural proof); `hack/guards/ensure_cross_engine_script_parity.sh`; `planton validate-refs --check`; `planton secret-coverage --check`; `go test` of `pkg/explain/refgen`, `pkg/protodocs`, `pkg/crkreflect`, `shared/cloudresourcekind`, `pkg/presetvalidity`, `pkg/catalogpage`, `pkg/specpath`, every `pkg/finops/*` package, `pkg/compliance/*`, `pkg/iac/permissions`, `pkg/iac/actioninventory`; `TestImportMapConformance/kubernetes/kubernetesopenbao`; `TestStackOutputsConformance`; `chart-validator --all charts/` (18/18); `planton validate-manifest` on all 20 fixtures; `make e2e-build`, `make e2e-vet`, `go test ./catalog/kubernetes/aa_e2e/verify/`; `gofmt`; the scaffolding grep.
+`buf lint` / `buf format`; `go test ./catalog/kubernetes/kubernetesopenbao/v1alpha1/` (99/99); `go build` / `go vet` / `go test` of the Pulumi module (10/10, the leak gate included); `tofu fmt` / `tofu validate`; seven fixtures rendered on both engines, configuration strings and chart values byte-identical; `helm template` of the pinned chart 0.28.6 on every fixture's values (schema-validated) with per-engine assertions on the rendered StatefulSet, claims, mounts, environment, ConfigMap, Services, discovery Role, and budget; eight negative manifests refused through the CLI with their sentences (two by the loader's unknown-field refusal, the structural proof); `hack/guards/ensure_cross_engine_script_parity.sh`; `planton validate-refs --check`; `planton secret-coverage --check`; `go test` of `pkg/explain/refgen`, `pkg/protodocs`, `pkg/catalogkindreflect`, `shared/catalogkind`, `pkg/presetvalidity`, `pkg/catalogpage`, `pkg/specpath`, every `pkg/finops/*` package, `pkg/compliance/*`, `pkg/iac/permissions`, `pkg/iac/actioninventory`; `TestImportMapConformance/kubernetes/kubernetesopenbao`; `TestOutputsConformance`; `chart-validator --all charts/` (18/18); `planton validate-manifest` on all 20 fixtures; `make e2e-build`, `make e2e-vet`, `go test ./catalog/kubernetes/aa_e2e/verify/`; `gofmt`; the scaffolding grep.

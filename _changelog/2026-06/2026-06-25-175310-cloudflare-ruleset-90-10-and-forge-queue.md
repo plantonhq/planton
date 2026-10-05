@@ -37,7 +37,7 @@ The `cloudflare_ruleset` surface is now complete:
   `increment`; and `serve_error` params.
 - **Validation**: fixed value sets (ttl modes, header/cache-control operations,
   sensitivity levels, content types, ssl/security-level/polish/body-buffering) are now
-  CEL-validated. Added `last_updated` to stack outputs.
+  CEL-validated. Added `last_updated` to outputs.
 
 ### `CloudflareQueue` (new kind, id 1815)
 
@@ -79,7 +79,7 @@ the ruleset Pulumi `README.md`.
 ratelimit/logging/exposed_credential_check, enum value sets) and queue (settings ranges,
 worker/http_pull CEL) · `pkg/outputs` conformance extended with `CloudflareQueue` ·
 `planton secret-coverage --check` green (`exposed_credential_check.password_expression`
-exempted as a wirefilter expression, not a secret) · `make generate-cloud-resource-kind-map`
+exempted as a wirefilter expression, not a secret) · `make generate-catalog-kind-map`
 · `make build-go` · `tofu validate` of the ruleset, queue, and r2 modules against the real
 v5 provider · **live `tofu apply`/`destroy`** of a queue (with settings) + worker consumer
 (+ dead-letter queue + settings) + R2 bucket event-notification chain on the full-permission

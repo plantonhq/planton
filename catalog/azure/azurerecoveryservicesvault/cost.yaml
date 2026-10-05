@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurerecoveryservicesvault
 spec:
   billing_model: free
   free_tier: The vault itself is free at rest -- an empty Recovery Services vault bills nothing, whatever its SKU ("Standard" and "RS0" price identically, at zero for the object). Azure Backup charges begin only when items are protected INTO it.
-  notes: "No field of this spec buys anything while the vault is empty, but two fields set the RATES its future contents pay: storage_mode_type prices backup storage (GeoRedundant costs roughly double LocallyRedundant per GB; ZoneRedundant sits between), and cross_region_restore_enabled requires the geo-redundant rate. The meters themselves -- per-protected-instance fees and backup-storage GB -- bill through the protection bindings (AzureBackupProtectedVm, AzureBackupProtectedFileShare), and Site Recovery replication bills per protected instance on its own kinds. Immutability, identity, CMK encryption, and the monitoring alert switches are free."
+  notes: "No field of this spec buys anything while the vault is empty, but two fields set the RATES its future contents pay: storage_mode_type prices backup storage (GeoRedundant costs roughly double LocallyRedundant per GB; ZoneRedundant sits between), and cross_region_restore_enabled requires the geo-redundant rate. The meters themselves -- per-protected-instance fees and backup-storage GB -- bill through the protection bindings (AzureBackupProtectedVm, AzureBackupProtectedFileShare), and Site Recovery replication bills per protected instance on its own components. Immutability, identity, CMK encryption, and the monitoring alert switches are free."

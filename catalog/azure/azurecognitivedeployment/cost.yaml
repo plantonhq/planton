@@ -1,12 +1,12 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component ships a zero-committed
+# catalog-data conformance gate. This kind ships a zero-committed
 # estimate for its committed presets (all pay-per-token SKUs), while the
 # spec ALSO admits the ProvisionedManaged SKU class whose conditional
 # charge is stated precisely below -- the honest boundary is data.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurecognitivedeployment
 spec:

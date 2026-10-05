@@ -22,9 +22,9 @@ const (
 )
 
 // *
-// **KubernetesSecretStackOutputs** captures observable outputs from a Kubernetes Secret deployment.
+// **KubernetesSecretOutputs** captures observable outputs from a Kubernetes Secret deployment.
 // These outputs provide essential information for referencing the secret in other resources.
-type KubernetesSecretStackOutputs struct {
+type KubernetesSecretOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The name of the created Kubernetes Secret.
@@ -42,20 +42,20 @@ type KubernetesSecretStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesSecretStackOutputs) Reset() {
-	*x = KubernetesSecretStackOutputs{}
+func (x *KubernetesSecretOutputs) Reset() {
+	*x = KubernetesSecretOutputs{}
 	mi := &file_catalog_kubernetes_kubernetessecret_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesSecretStackOutputs) String() string {
+func (x *KubernetesSecretOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesSecretStackOutputs) ProtoMessage() {}
+func (*KubernetesSecretOutputs) ProtoMessage() {}
 
-func (x *KubernetesSecretStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesSecretOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetessecret_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,26 +67,26 @@ func (x *KubernetesSecretStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesSecretStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesSecretStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesSecretOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesSecretOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetessecret_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesSecretStackOutputs) GetSecretName() string {
+func (x *KubernetesSecretOutputs) GetSecretName() string {
 	if x != nil {
 		return x.SecretName
 	}
 	return ""
 }
 
-func (x *KubernetesSecretStackOutputs) GetSecretNamespace() string {
+func (x *KubernetesSecretOutputs) GetSecretNamespace() string {
 	if x != nil {
 		return x.SecretNamespace
 	}
 	return ""
 }
 
-func (x *KubernetesSecretStackOutputs) GetSecretType() string {
+func (x *KubernetesSecretOutputs) GetSecretType() string {
 	if x != nil {
 		return x.SecretType
 	}
@@ -97,8 +97,8 @@ var File_catalog_kubernetes_kubernetessecret_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_kubernetes_kubernetessecret_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kubernetessecret/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetessecret.v1alpha1\"\x8b\x01\n" +
-	"\x1cKubernetesSecretStackOutputs\x12\x1f\n" +
+	":catalog/kubernetes/kubernetessecret/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetessecret.v1alpha1\"\x86\x01\n" +
+	"\x17KubernetesSecretOutputs\x12\x1f\n" +
 	"\vsecret_name\x18\x01 \x01(\tR\n" +
 	"secretName\x12)\n" +
 	"\x10secret_namespace\x18\x02 \x01(\tR\x0fsecretNamespace\x12\x1f\n" +
@@ -120,7 +120,7 @@ func file_catalog_kubernetes_kubernetessecret_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetessecret_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetessecret_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesSecretStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetessecret.v1alpha1.KubernetesSecretStackOutputs
+	(*KubernetesSecretOutputs)(nil), // 0: dev.planton.kubernetes.kubernetessecret.v1alpha1.KubernetesSecretOutputs
 }
 var file_catalog_kubernetes_kubernetessecret_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

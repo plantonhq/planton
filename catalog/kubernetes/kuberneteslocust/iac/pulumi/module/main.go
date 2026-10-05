@@ -24,17 +24,17 @@ import (
 // "oci://ghcr.io/deliveryhero/helm-charts/locust" string as the chart
 // reference with NO RepositoryOpts; the Terraform twin passes
 // repository + bare chart name. Same chart bytes, different wiring.
-func Resources(ctx *pulumi.Context, stackInput *kuberneteslocustv1alpha1.KubernetesLocustStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kuberneteslocustv1alpha1.KubernetesLocustIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

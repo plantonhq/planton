@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsconfigaggregator.v1alpha1;
 
-// AwsConfigAggregatorStackOutputs captures the observable state of
+// AwsConfigAggregatorOutputs captures the observable state of
 // the aggregation arms after apply.
-message AwsConfigAggregatorStackOutputs {
+message AwsConfigAggregatorOutputs {
   // The aggregator's name (also the provider's import ID). Set only
   // when spec.aggregation is configured.
   string aggregator_name = 1;

@@ -62,7 +62,7 @@ var _ = ginkgo.Describe("GcpDatastreamStreamSpec", func() {
 		return &GcpDatastreamStream{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpDatastreamStream",
-			Metadata:   &shared.CloudResourceMetadata{Name: "orders-cdc"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "orders-cdc"},
 			Spec: &GcpDatastreamStreamSpec{
 				Location: "us-central1",
 				SourceConfig: &GcpDatastreamStreamSourceConfig{
@@ -273,9 +273,9 @@ var _ = ginkgo.Describe("GcpDatastreamStreamSpec", func() {
 			"data freshness": func(s *GcpDatastreamStreamSpec) {
 				s.DestinationConfig.BigqueryDestinationConfig.DataFreshness = "15 minutes"
 			},
-			"desired state": func(s *GcpDatastreamStreamSpec) { s.DesiredState = "STOPPED" },
+			"desired state":   func(s *GcpDatastreamStreamSpec) { s.DesiredState = "STOPPED" },
 			"deletion policy": func(s *GcpDatastreamStreamSpec) { s.DeletionPolicy = "FORCE" },
-			"location": func(s *GcpDatastreamStreamSpec) { s.Location = "US" },
+			"location":        func(s *GcpDatastreamStreamSpec) { s.Location = "US" },
 		}
 		for name, mutate := range cases {
 			r := base()

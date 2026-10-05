@@ -14,13 +14,13 @@ import (
 // Subnets, security groups, KMS keys, and IAM roles compose by reference
 // -- this module never creates or mutates a resource that deserves to be
 // its own node.
-func Resources(ctx *pulumi.Context, stackInput *awsneptuneclusterv1alpha1.AwsNeptuneClusterStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsneptuneclusterv1alpha1.AwsNeptuneClusterIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder,
+	// Build the AWS provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static keys, keyless
 	// web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsNeptuneCluster.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsNeptuneCluster.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

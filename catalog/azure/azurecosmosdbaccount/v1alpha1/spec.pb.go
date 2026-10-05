@@ -970,7 +970,7 @@ type AzureCosmosdbAccountSpec struct {
 	// Whether key- and connection-string-based (local) authentication works
 	// at all. Disable to force every data-plane caller through Entra ID and
 	// Cosmos DB's data-plane RBAC -- the keyless posture. The account keys
-	// in the stack outputs stop authenticating when this is false.
+	// in the outputs stop authenticating when this is false.
 	LocalAuthenticationEnabled *bool `protobuf:"varint,24,opt,name=local_authentication_enabled,json=localAuthenticationEnabled,proto3,oneof" json:"local_authentication_enabled,omitempty"`
 	// The minimum TLS version the account's endpoints accept. Unset means
 	// TLS 1.2 -- Azure's own default for all accounts since April 2023 and

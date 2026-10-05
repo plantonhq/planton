@@ -11,7 +11,7 @@ go_library(
     deps = [
         "//pkg/explain",
         "//pkg/refannotations",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@in_gopkg_yaml_v3//:yaml_v3",
         "@org_golang_google_protobuf//reflect/protoreflect",
     ],

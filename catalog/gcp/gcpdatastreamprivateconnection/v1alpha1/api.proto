@@ -16,7 +16,7 @@ message GcpDatastreamPrivateConnection {
   string kind = 2 [(buf.validate.field).string.const = 'GcpDatastreamPrivateConnection'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   GcpDatastreamPrivateConnectionSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message GcpDatastreamPrivateConnection {
 
 //gcp-datastream-private-connection status
 message GcpDatastreamPrivateConnectionStatus {
-  //stack-outputs
-  GcpDatastreamPrivateConnectionStackOutputs outputs = 1;
+  //outputs
+  GcpDatastreamPrivateConnectionOutputs outputs = 1;
 }

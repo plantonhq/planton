@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesGatewayApiCrdsStackOutputs captures observable outputs from the
+// KubernetesGatewayApiCrdsOutputs captures observable outputs from the
 // Gateway API CRDs installation.
-type KubernetesGatewayApiCrdsStackOutputs struct {
+type KubernetesGatewayApiCrdsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Gateway API version that was installed (e.g., "v1.2.1", "v1.3.0").
 	InstalledVersion string `protobuf:"bytes,1,opt,name=installed_version,json=installedVersion,proto3" json:"installed_version,omitempty"`
@@ -38,20 +38,20 @@ type KubernetesGatewayApiCrdsStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *KubernetesGatewayApiCrdsStackOutputs) Reset() {
-	*x = KubernetesGatewayApiCrdsStackOutputs{}
+func (x *KubernetesGatewayApiCrdsOutputs) Reset() {
+	*x = KubernetesGatewayApiCrdsOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesGatewayApiCrdsStackOutputs) String() string {
+func (x *KubernetesGatewayApiCrdsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesGatewayApiCrdsStackOutputs) ProtoMessage() {}
+func (*KubernetesGatewayApiCrdsOutputs) ProtoMessage() {}
 
-func (x *KubernetesGatewayApiCrdsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesGatewayApiCrdsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *KubernetesGatewayApiCrdsStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesGatewayApiCrdsStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesGatewayApiCrdsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesGatewayApiCrdsOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesGatewayApiCrdsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesGatewayApiCrdsStackOutputs) GetInstalledVersion() string {
+func (x *KubernetesGatewayApiCrdsOutputs) GetInstalledVersion() string {
 	if x != nil {
 		return x.InstalledVersion
 	}
 	return ""
 }
 
-func (x *KubernetesGatewayApiCrdsStackOutputs) GetInstalledChannel() string {
+func (x *KubernetesGatewayApiCrdsOutputs) GetInstalledChannel() string {
 	if x != nil {
 		return x.InstalledChannel
 	}
 	return ""
 }
 
-func (x *KubernetesGatewayApiCrdsStackOutputs) GetInstalledManifestUrl() string {
+func (x *KubernetesGatewayApiCrdsOutputs) GetInstalledManifestUrl() string {
 	if x != nil {
 		return x.InstalledManifestUrl
 	}
@@ -93,8 +93,8 @@ var File_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_outputs_proto prot
 
 const file_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/kubernetes/kubernetesgatewayapicrds/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1\"\xb6\x01\n" +
-	"$KubernetesGatewayApiCrdsStackOutputs\x12+\n" +
+	"Bcatalog/kubernetes/kubernetesgatewayapicrds/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1\"\xb1\x01\n" +
+	"\x1fKubernetesGatewayApiCrdsOutputs\x12+\n" +
 	"\x11installed_version\x18\x01 \x01(\tR\x10installedVersion\x12+\n" +
 	"\x11installed_channel\x18\x02 \x01(\tR\x10installedChannel\x124\n" +
 	"\x16installed_manifest_url\x18\x03 \x01(\tR\x14installedManifestUrlB\xc5\x03\n" +
@@ -114,7 +114,7 @@ func file_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_outputs_proto_raw
 
 var file_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesGatewayApiCrdsStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsStackOutputs
+	(*KubernetesGatewayApiCrdsOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1.KubernetesGatewayApiCrdsOutputs
 }
 var file_catalog_kubernetes_kubernetesgatewayapicrds_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

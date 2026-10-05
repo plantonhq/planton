@@ -26,7 +26,7 @@ const (
 // Outputs a KubernetesMongodb cluster exports for composition —
 // everything a workload (or an exposure kind) needs to reach the
 // database.
-type KubernetesMongodbStackOutputs struct {
+type KubernetesMongodbOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace the cluster runs in.
@@ -73,20 +73,20 @@ type KubernetesMongodbStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesMongodbStackOutputs) Reset() {
-	*x = KubernetesMongodbStackOutputs{}
+func (x *KubernetesMongodbOutputs) Reset() {
+	*x = KubernetesMongodbOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesmongodb_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesMongodbStackOutputs) String() string {
+func (x *KubernetesMongodbOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesMongodbStackOutputs) ProtoMessage() {}
+func (*KubernetesMongodbOutputs) ProtoMessage() {}
 
-func (x *KubernetesMongodbStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesMongodbOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesmongodb_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -98,61 +98,61 @@ func (x *KubernetesMongodbStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesMongodbStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesMongodbStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesMongodbOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesMongodbOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesmongodb_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesMongodbStackOutputs) GetNamespace() string {
+func (x *KubernetesMongodbOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesMongodbStackOutputs) GetClusterName() string {
+func (x *KubernetesMongodbOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *KubernetesMongodbStackOutputs) GetService() string {
+func (x *KubernetesMongodbOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *KubernetesMongodbStackOutputs) GetKubeEndpoint() string {
+func (x *KubernetesMongodbOutputs) GetKubeEndpoint() string {
 	if x != nil {
 		return x.KubeEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesMongodbStackOutputs) GetReplicaSet() string {
+func (x *KubernetesMongodbOutputs) GetReplicaSet() string {
 	if x != nil {
 		return x.ReplicaSet
 	}
 	return ""
 }
 
-func (x *KubernetesMongodbStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesMongodbOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
 	return ""
 }
 
-func (x *KubernetesMongodbStackOutputs) GetAdminPasswordSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesMongodbOutputs) GetAdminPasswordSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.AdminPasswordSecret
 	}
 	return nil
 }
 
-func (x *KubernetesMongodbStackOutputs) GetRestoreName() string {
+func (x *KubernetesMongodbOutputs) GetRestoreName() string {
 	if x != nil {
 		return x.RestoreName
 	}
@@ -163,8 +163,8 @@ var File_catalog_kubernetes_kubernetesmongodb_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_kubernetes_kubernetesmongodb_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesmongodb/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesmongodb.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xf6\x02\n" +
-	"\x1dKubernetesMongodbStackOutputs\x12\x1c\n" +
+	";catalog/kubernetes/kubernetesmongodb/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesmongodb.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xf1\x02\n" +
+	"\x18KubernetesMongodbOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12\x18\n" +
 	"\aservice\x18\x03 \x01(\tR\aservice\x12#\n" +
@@ -190,11 +190,11 @@ func file_catalog_kubernetes_kubernetesmongodb_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesmongodb_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesmongodb_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesMongodbStackOutputs)(nil),  // 0: dev.planton.kubernetes.kubernetesmongodb.v1alpha1.KubernetesMongodbStackOutputs
+	(*KubernetesMongodbOutputs)(nil),       // 0: dev.planton.kubernetes.kubernetesmongodb.v1alpha1.KubernetesMongodbOutputs
 	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetesmongodb_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesmongodb.v1alpha1.KubernetesMongodbStackOutputs.admin_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kubernetesmongodb.v1alpha1.KubernetesMongodbOutputs.admin_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

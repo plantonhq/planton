@@ -1,15 +1,15 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awssnstopic
 spec:
   # SNS topics (and their data-protection policy, which shares the same id)
-  # import by the full topic ARN -- recorded as a stack output on deploy,
+  # import by the full topic ARN -- recorded as an output on deploy,
   # or pasted from the console for a never-deployed adoption.
   values:
     - name: topic_arn
       derivations:
-        - from_stack_output: topic_arn
+        - from_output: topic_arn
         - from_arn_part: arn
       where_to_find: >-
         SNS console -> Topics (the ARN column), or `aws sns list-topics`

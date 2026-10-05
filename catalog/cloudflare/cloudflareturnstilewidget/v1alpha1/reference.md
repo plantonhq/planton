@@ -6,12 +6,12 @@
 
 **apiVersion**: `cloudflare.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 CloudflareTurnstileWidgetSpec provisions a Cloudflare Turnstile widget: a
 privacy-preserving CAPTCHA alternative. A widget yields a public site key
 (embedded in the page's frontend) and a secret key (used server-side to call
-the /siteverify endpoint). The secret is exported as a sensitive stack output
+the /siteverify endpoint). The secret is exported as a sensitive output
 so a Worker or backend that validates tokens can reference it.
 
 Allowed-value sets (mode, clearance_level, region) are validated with CEL using

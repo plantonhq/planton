@@ -6,14 +6,14 @@
 
 **apiVersion**: `cloudflare.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 CloudflareCustomHostnameSpec attaches a customer's own domain to a Cloudflare
 for SaaS zone (the "SaaS zone"). It extends Cloudflare's edge — TLS termination,
 caching, WAF — onto a hostname your customer owns (e.g. "support.acme.com"),
 with a per-customer certificate that Cloudflare provisions and auto-renews. The
 customer points their hostname at the SaaS zone via CNAME and proves control via
-the ownership-verification records exported in the stack outputs.
+the ownership-verification records exported in the outputs.
 
 Traffic for the custom hostname is routed to the zone's default origin (the
 CloudflareCustomHostnameFallbackOrigin) unless `custom_origin_server` overrides

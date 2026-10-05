@@ -4,7 +4,7 @@ package dev.planton.gcp.gcpidentityplatformconfig.v1alpha1;
 
 // Outputs produced after provisioning a project's Identity Platform
 // configuration.
-message GcpIdentityPlatformConfigStackOutputs {
+message GcpIdentityPlatformConfigOutputs {
   // The configuration's resource name: projects/{project}/config.
   string config_name = 1;
 

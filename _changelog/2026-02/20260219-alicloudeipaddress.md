@@ -1,4 +1,4 @@
-# AliCloudEipAddress Component Added
+# AliCloudEipAddress Kind Added
 
 **Date**: 2026-02-19
 **Component**: AliCloudEipAddress
@@ -7,15 +7,15 @@
 
 ## Summary
 
-Added the AliCloudEipAddress deployment component -- a standalone Elastic IP Address that can be associated with NAT gateways, ALB/NLB load balancers, VPN gateways, and ECS instances.
+Added the AliCloudEipAddress catalog kind -- a standalone Elastic IP Address that can be associated with NAT gateways, ALB/NLB load balancers, VPN gateways, and ECS instances.
 
-This component allocates a static, public IPv4 address that persists independently of the resource lifecycle, allowing it to be released from one resource and re-associated with another without changing the address.
+This kind allocates a static, public IPv4 address that persists independently of the resource lifecycle, allowing it to be released from one resource and re-associated with another without changing the address.
 
 ## What Was Created
 
 ### API Definition
-- `apis/dev/planton/provider/alicloud/alicloudeipaddress/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AliCloudEipAddress = 3023` in `CloudResourceKind` enum under the Networking category
+- `apis/dev/planton/provider/alicloud/alicloudeipaddress/v1/` -- Full proto API (spec, api, iac_input, outputs)
+- Registered `AliCloudEipAddress = 3023` in `CatalogKind` enum under the Networking category
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and a single `ecs.EipAddress` resource with bandwidth int-to-string conversion and default resolution for optional fields
@@ -25,7 +25,7 @@ This component allocates a static, public IPv4 address that persists independent
 - Ginkgo/Gomega spec validation tests: 15 specs covering valid inputs (minimal, full config, PayByTraffic, China ISPs, L2/special ISPs, bandwidth boundaries), missing required fields (region), wrong api_version/kind, missing metadata, invalid internet_charge_type, invalid ISP, bandwidth out of range, and address_name max length
 
 ### Documentation
-- README.md with configuration reference, ISP values table, bandwidth/charging explanation, and related components
+- README.md with configuration reference, ISP values table, bandwidth/charging explanation, and related kinds
 - examples.md with 3 YAML examples (minimal, NAT gateway, high-bandwidth production)
 - catalog-page.md with full configuration reference and examples
 - Pulumi overview.md documenting module architecture, control flow, and implementation details
@@ -41,7 +41,7 @@ This component allocates a static, public IPv4 address that persists independent
 - **`bandwidth` as int32 (not string)**: The provider uses string, but bandwidth in Mbps is inherently numeric. Using int32 for better YAML UX with int-to-string conversion in IaC code.
 - **`bandwidth` optional, default 5**: The provider defaults to "5". Made optional to match, since 5 Mbps is a sensible default for most development use cases.
 - **All 10 ISP values included**: T02 spec listed 5, but the provider supports 10. Including all to avoid artificially limiting users in finance cloud or international regions.
-- **`description` and `tags` added**: Not in T02 spec but present in every other Alibaba Cloud component. Added for consistency.
+- **`description` and `tags` added**: Not in T02 spec but present in every other Alibaba Cloud kind. Added for consistency.
 - **Fields excluded for v1**: `payment_type`/`period`/`pricing_cycle` (Subscription EIPs cannot be deleted via API -- significant footgun), `deletion_protection` (cross-cutting decision), `high_definition_monitor_log_status`/`log_project`/`log_store` (niche), `mode` (set by association), `zone`/`ip_address`/`netmode`/`security_protection_types`/`activity_id`/`auto_pay`/`allocation_id`/`public_ip_address_pool_id` (niche or internal).
 
 ## Verification

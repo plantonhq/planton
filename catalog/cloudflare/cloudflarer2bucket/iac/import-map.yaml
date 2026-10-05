@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarer2bucket
 spec:
@@ -21,7 +21,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: bucket_name
       derivations:
-        - from_stack_output: bucket_name
+        - from_output: bucket_name
       where_to_find: >-
         Cloudflare dashboard -> R2 Object Storage (the bucket list), or
         `GET /accounts/<account_id>/r2/buckets` on the Cloudflare v4 API (the

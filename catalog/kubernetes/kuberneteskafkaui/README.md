@@ -8,7 +8,7 @@ only for cluster-internal evaluation. Enable the login form (or keep
 the Service internal) before any shared exposure, and set
 `read_only` on clusters the console should observe but never mutate.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You need multiple console accounts, OAuth2/OIDC, or LDAP** — the
   typed `auth` models exactly ONE login-form user, because the app's
@@ -114,7 +114,7 @@ coexist in one cluster.
   **`spec.image_registry`** (air-gapped mirrors; default ghcr.io),
   **`spec.chart_version`** (default 1.6.4), **`spec.helm_values`**
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

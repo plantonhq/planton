@@ -36,7 +36,7 @@ const (
 	// Discover every ServiceMonitor/PodMonitor/PrometheusRule/Probe/
 	// ScrapeConfig in the cluster, whoever created it — what makes other
 	// components' service_monitor toggles and user-authored monitors work
-	// with zero extra wiring. The component default.
+	// with zero extra wiring. The kind default.
 	KubernetesKubePrometheusStackMonitorDiscovery_all_monitors KubernetesKubePrometheusStackMonitorDiscovery = 1
 	// The chart's own fenced default: discover only objects carrying this
 	// release's label. For multi-tenant clusters running several
@@ -244,7 +244,7 @@ func (KubernetesKubePrometheusStackAlertMatchOperator) EnumDescriptor() ([]byte,
 // PodMonitor, PrometheusRule, Probe and ScrapeConfig in the cluster —
 // deliberately wider than the chart's own default (which only discovers
 // objects labeled by its release, upstream's most-tripped-over behavior).
-// Cluster-wide discovery is what makes every catalog component's
+// Cluster-wide discovery is what makes every catalog kind's
 // `service_monitor_enabled` toggle and any user-authored monitor light up
 // without extra wiring. Set `discovery` to `release_managed_only` to get
 // the chart's fenced default back.
@@ -2075,7 +2075,7 @@ type KubernetesKubePrometheusStackGrafana struct {
 	// chart generates a random admin password ONCE at first install
 	// (stable across upgrades) and keeps it in its own
 	// `<name>-grafana` Secret — keys `admin-user` / `admin-password`;
-	// the Secret name lands in the stack outputs.
+	// the Secret name lands in the outputs.
 	AdminSecret *KubernetesKubePrometheusStackGrafanaAdminSecret `protobuf:"bytes,2,opt,name=admin_secret,json=adminSecret,proto3" json:"admin_secret,omitempty"`
 	// *
 	// Provision the stack's curated dashboard set (Kubernetes cluster,

@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0CustomDomainVerificationSpec verifies an Auth0CustomDomain: Auth0 checks
 the domain's DNS record and, for an Auth0-managed domain, issues its
@@ -37,7 +37,7 @@ https://www.pulumi.com/registry/packages/auth0/api-docs/customdomainverification
 
 ```yaml
 # Auth0 Custom Domain Verification Test Manifest
-# This file is used for testing the Auth0CustomDomainVerification component.
+# This file is used for testing the Auth0CustomDomainVerification kind.
 #
 # Prerequisites:
 # 1. Set the following environment variables:

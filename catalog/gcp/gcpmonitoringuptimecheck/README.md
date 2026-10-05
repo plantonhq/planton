@@ -4,7 +4,7 @@ Creates a Cloud Monitoring uptime check — a probe Google runs against your tar
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Uptime Check Config** -- a `monitoring.UptimeCheckConfig` with the configured target, probe (HTTP/HTTPS or TCP), cadence, regions, and content assertions
 - **Monitoring API enablement** -- `monitoring.googleapis.com` enabled in the target project (never disabled on destroy)
@@ -80,7 +80,7 @@ Key nested surfaces: `httpCheck` (path, port, request method, TLS + certificate 
 - **JSON-path sub-matcher** is required with (and only with) the `MATCHES_JSON_PATH` / `NOT_MATCHES_JSON_PATH` matchers.
 - **Status-code entries** set a class or an exact value, never both.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -107,7 +107,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpMonitoringAlertPolicy](/docs/catalog/gcp/gcpmonitoringalertpolicy) — pages when this check fails
 - [GcpMonitoringNotificationChannel](/docs/catalog/gcp/gcpmonitoringnotificationchannel) — where those pages are delivered

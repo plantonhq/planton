@@ -5,9 +5,9 @@ package dev.planton.aws.awsiamoidcprovider.v1alpha1;
 import "catalog/aws/awsiamoidcprovider/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-iam-oidc-provider stack-input
-message AwsIamOidcProviderStackInput {
-  //target cloud-resource
+//aws-iam-oidc-provider iac-input
+message AwsIamOidcProviderIacInput {
+  // the catalog object to deploy
   AwsIamOidcProvider target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

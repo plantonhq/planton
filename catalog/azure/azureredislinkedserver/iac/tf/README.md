@@ -1,7 +1,7 @@
 # AzureRedisLinkedServer - Terraform Module
 
-Terraform implementation for the AzureRedisLinkedServer deployment
-component.
+Terraform implementation for the AzureRedisLinkedServer
+kind.
 
 ## Resources Created
 

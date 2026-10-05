@@ -6,7 +6,7 @@ import (
 
 	"github.com/hashicorp/hcl/v2/hclparse"
 
-	testkubernetesv1 "github.com/plantonhq/planton/catalog/_test/testcloudresourcekubernetes/v1alpha1"
+	testkubernetesv1 "github.com/plantonhq/planton/catalog/_test/testcatalogkindkubernetes/v1alpha1"
 	"github.com/plantonhq/planton/catalog/kubernetes"
 	kubernetesvalkeyv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesvalkey/v1alpha1"
 	"github.com/plantonhq/planton/shared"
@@ -16,10 +16,10 @@ import (
 func stringPtr(s string) *string { return &s }
 
 func TestProtoToTFVars_NamespaceFlattened(t *testing.T) {
-	msg := &testkubernetesv1.TestCloudResourceKubernetes{
+	msg := &testkubernetesv1.TestCatalogKindKubernetes{
 		ApiVersion: "_test.planton.dev/v1alpha1",
-		Kind:       "TestCloudResourceKubernetes",
-		Spec: &testkubernetesv1.TestCloudResourceKubernetesSpec{
+		Kind:       "TestCatalogKindKubernetes",
+		Spec: &testkubernetesv1.TestCatalogKindKubernetesSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 					Value: "e2e-test-ns",
@@ -51,10 +51,10 @@ func TestProtoToTFVars_NamespaceFlattened(t *testing.T) {
 }
 
 func TestProtoToTFVars_MapRefValuesFlattened(t *testing.T) {
-	msg := &testkubernetesv1.TestCloudResourceKubernetes{
+	msg := &testkubernetesv1.TestCatalogKindKubernetes{
 		ApiVersion: "_test.planton.dev/v1alpha1",
-		Kind:       "TestCloudResourceKubernetes",
-		Spec: &testkubernetesv1.TestCloudResourceKubernetesSpec{
+		Kind:       "TestCatalogKindKubernetes",
+		Spec: &testkubernetesv1.TestCatalogKindKubernetesSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 					Value: "ns",
@@ -84,10 +84,10 @@ func TestProtoToTFVars_MapRefValuesFlattened(t *testing.T) {
 }
 
 func TestProtoToTFVars_ApiVersionKindSkipped(t *testing.T) {
-	msg := &testkubernetesv1.TestCloudResourceKubernetes{
+	msg := &testkubernetesv1.TestCatalogKindKubernetes{
 		ApiVersion: "_test.planton.dev/v1alpha1",
-		Kind:       "TestCloudResourceKubernetes",
-		Spec: &testkubernetesv1.TestCloudResourceKubernetesSpec{
+		Kind:       "TestCatalogKindKubernetes",
+		Spec: &testkubernetesv1.TestCatalogKindKubernetesSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 					Value: "ns",
@@ -113,7 +113,7 @@ func TestProtoToTFVars_Valkey_ProviderAbstraction(t *testing.T) {
 	msg := &kubernetesvalkeyv1alpha1.KubernetesValkey{
 		ApiVersion: "kubernetes.planton.dev/v1alpha1",
 		Kind:       "KubernetesValkey",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "red-one",
 			Labels: map[string]string{
 				"env": "production",

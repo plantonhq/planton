@@ -1,5 +1,5 @@
 # AzureLocalNetworkGateway install profile used as a prerequisite by
-# composed components (declared via prerequisites: [AzureLocalNetworkGateway]
+# composed kinds (declared via prerequisites: [AzureLocalNetworkGateway]
 # in the kind registry -- the gateway connection's site-to-site far side).
 # The harness deploys this document (via the kind's Pulumi module) after
 # the fixture resource group and captures its outputs --
@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurelocalnetworkgateway
+    e2e-catalog-kind: azurelocalnetworkgateway
   annotations:
     planton.dev/e2e: "true"
   tags:

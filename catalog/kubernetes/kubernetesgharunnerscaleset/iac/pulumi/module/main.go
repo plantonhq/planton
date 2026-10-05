@@ -31,8 +31,8 @@ import (
 // Helm --wait would pass trivially (a CR is always "ready") while
 // --atomic would still roll back on nothing real; the E2E verifier owns
 // the listener-registered proof instead (the CR-kind precedent).
-func Resources(ctx *pulumi.Context, stackInput *kubernetesgharunnerscalesetv1alpha1.KubernetesGhaRunnerScaleSetStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesgharunnerscalesetv1alpha1.KubernetesGhaRunnerScaleSetIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// FAIL LOUDLY past the chart's own scale-set-name budget: the chart
 	// template fails installs at >45 characters (a GitHub registration
@@ -46,13 +46,13 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesgharunnerscalesetv1alp
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

@@ -94,7 +94,7 @@ Once connected, external clusters become deployment targets:
 
 - **Service Hub** — When creating a service deployment target, you can select a connected external cluster alongside clusters that Planton created through Infra Hub.
 - **Cloud Ops** — You can browse pods, stream logs, and exec into containers on connected clusters through the Cloud Ops interface, as long as a Runner with access to the cluster is configured.
-- **Infra Hub** — Cloud resources with Kubernetes deployment components (Helm charts, operators, custom resources) can target connected clusters.
+- **Infra Hub** — Infra Components with Kubernetes catalog kinds (Helm charts, operators, custom resources) can target connected clusters.
 
 ## How a Cluster Pulls Images
 

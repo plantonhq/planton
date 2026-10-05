@@ -12,7 +12,7 @@ import (
 	gcptargethttpsproxyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptargethttpsproxy/v1alpha1"
 	gcpurlmapv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpurlmap/v1alpha1"
 	"github.com/plantonhq/planton/internal/manifest"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 const subnetManifestWithRef = `apiVersion: aws.planton.dev/v1alpha1
@@ -41,14 +41,14 @@ func writeTempManifest(t *testing.T, body string) string {
 
 // singleInstance wraps one instance's outputs in the kind+name keyed shape,
 // for tests where only one prerequisite of the kind is deployed.
-func singleInstance(kind cloudresourcekind.CloudResourceKind, name string, outputs map[string]interface{}) DependencyOutputs {
+func singleInstance(kind catalogkind.CatalogKind, name string, outputs map[string]interface{}) DependencyOutputs {
 	return DependencyOutputs{kind: {name: outputs}}
 }
 
 func TestResolveManifestRefs_ResolvesVpcIdFromPrerequisite(t *testing.T) {
 	manifestPath := writeTempManifest(t, subnetManifestWithRef)
 
-	depOutputs := singleInstance(cloudresourcekind.CloudResourceKind_AwsVpc, "my-vpc", map[string]interface{}{
+	depOutputs := singleInstance(catalogkind.CatalogKind_AwsVpc, "my-vpc", map[string]interface{}{
 		"vpc_id":   "vpc-resolved123",
 		"vpc_cidr": "10.0.0.0/16",
 	})
@@ -88,7 +88,7 @@ func TestResolveManifestRefs_KeepsScenarioBasename(t *testing.T) {
 		t.Fatalf("failed to write temp manifest: %v", err)
 	}
 
-	depOutputs := singleInstance(cloudresourcekind.CloudResourceKind_AwsVpc, "my-vpc", map[string]interface{}{
+	depOutputs := singleInstance(catalogkind.CatalogKind_AwsVpc, "my-vpc", map[string]interface{}{
 		"vpc_id": "vpc-resolved123",
 	})
 
@@ -107,7 +107,7 @@ func TestResolveManifestRefs_KeepsScenarioBasename(t *testing.T) {
 func TestResolveManifestRefs_SoleInstanceResolvesDespiteNameMismatch(t *testing.T) {
 	manifestPath := writeTempManifest(t, subnetManifestWithRef)
 
-	depOutputs := singleInstance(cloudresourcekind.CloudResourceKind_AwsVpc, "some-other-name", map[string]interface{}{
+	depOutputs := singleInstance(catalogkind.CatalogKind_AwsVpc, "some-other-name", map[string]interface{}{
 		"vpc_id": "vpc-sole456",
 	})
 
@@ -152,7 +152,7 @@ func TestResolveManifestRefs_MultiInstanceResolvesByName(t *testing.T) {
 	manifestPath := writeTempManifest(t, nlbManifestWithTwoSubnetRefs)
 
 	depOutputs := DependencyOutputs{
-		cloudresourcekind.CloudResourceKind_AwsSubnet: {
+		catalogkind.CatalogKind_AwsSubnet: {
 			"subnet-az-a": {"subnet_id": "subnet-aaa"},
 			"subnet-az-b": {"subnet_id": "subnet-bbb"},
 		},
@@ -191,7 +191,7 @@ func TestResolveManifestRefs_AmbiguousNameErrors(t *testing.T) {
 	manifestPath := writeTempManifest(t, subnetManifestWithRef) // references AwsVpc name "my-vpc"
 
 	depOutputs := DependencyOutputs{
-		cloudresourcekind.CloudResourceKind_AwsVpc: {
+		catalogkind.CatalogKind_AwsVpc: {
 			"vpc-one": {"vpc_id": "vpc-111"},
 			"vpc-two": {"vpc_id": "vpc-222"},
 		},
@@ -229,7 +229,7 @@ spec:
 func TestResolveManifestRefs_ResolvesRepeatedRefsFromPrerequisite(t *testing.T) {
 	manifestPath := writeTempManifest(t, roleManifestWithRepeatedRefs)
 
-	depOutputs := singleInstance(cloudresourcekind.CloudResourceKind_AwsIamPolicy, "my-policy", map[string]interface{}{
+	depOutputs := singleInstance(catalogkind.CatalogKind_AwsIamPolicy, "my-policy", map[string]interface{}{
 		"policy_arn":  "arn:aws:iam::123456789012:policy/my-policy",
 		"policy_name": "my-policy",
 	})
@@ -270,7 +270,7 @@ func TestResolveManifestRefs_ResolvesRepeatedRefsFromPrerequisite(t *testing.T) 
 func TestResolveManifestRefs_RepeatedRefWithoutPrerequisiteLeftUntouched(t *testing.T) {
 	manifestPath := writeTempManifest(t, roleManifestWithRepeatedRefs)
 
-	depOutputs := singleInstance(cloudresourcekind.CloudResourceKind_AwsVpc, "unrelated-vpc", map[string]interface{}{
+	depOutputs := singleInstance(catalogkind.CatalogKind_AwsVpc, "unrelated-vpc", map[string]interface{}{
 		"vpc_id": "vpc-unrelated",
 	})
 
@@ -298,7 +298,7 @@ func TestResolveManifestRefs_NoDependenciesReturnsOriginal(t *testing.T) {
 func TestResolveManifestRefs_MissingOutputErrors(t *testing.T) {
 	manifestPath := writeTempManifest(t, subnetManifestWithRef)
 
-	depOutputs := singleInstance(cloudresourcekind.CloudResourceKind_AwsVpc, "my-vpc", map[string]interface{}{
+	depOutputs := singleInstance(catalogkind.CatalogKind_AwsVpc, "my-vpc", map[string]interface{}{
 		"vpc_cidr": "10.0.0.0/16", // vpc_id intentionally absent
 	})
 
@@ -340,7 +340,7 @@ func TestResolveManifestRefs_ResolvesNestedBackendGroupByExplicitKind(t *testing
 	manifestPath := writeTempManifest(t, backendServiceNegManifest)
 
 	depOutputs := DependencyOutputs{
-		cloudresourcekind.CloudResourceKind_GcpRegionNetworkEndpointGroup: {
+		catalogkind.CatalogKind_GcpRegionNetworkEndpointGroup: {
 			"my-neg": {
 				"self_link": "https://www.googleapis.com/compute/v1/projects/p/regions/r/networkEndpointGroups/n",
 			},
@@ -394,12 +394,12 @@ func TestResolveManifestRefs_ResolvesRepeatedRefElements(t *testing.T) {
 	manifestPath := writeTempManifest(t, httpsProxyRepeatedRefManifest)
 
 	depOutputs := DependencyOutputs{
-		cloudresourcekind.CloudResourceKind_GcpUrlMap: {
+		catalogkind.CatalogKind_GcpUrlMap: {
 			"my-url-map": {
 				"self_link": "https://www.googleapis.com/compute/v1/projects/p/global/urlMaps/um",
 			},
 		},
-		cloudresourcekind.CloudResourceKind_GcpManagedSslCertificate: {
+		catalogkind.CatalogKind_GcpManagedSslCertificate: {
 			"my-cert": {
 				"self_link": "https://www.googleapis.com/compute/v1/projects/p/global/sslCertificates/cert",
 			},
@@ -439,7 +439,7 @@ func TestResolveManifestRefs_ResolvesExplicitValueFromKindWithoutDefaultKind(t *
 	manifestPath := writeTempManifest(t, urlMapExplicitKindManifest)
 
 	depOutputs := DependencyOutputs{
-		cloudresourcekind.CloudResourceKind_GcpBackendService: {
+		catalogkind.CatalogKind_GcpBackendService: {
 			"my-backend": {
 				"self_link": "https://www.googleapis.com/compute/v1/projects/p/global/backendServices/bs",
 			},

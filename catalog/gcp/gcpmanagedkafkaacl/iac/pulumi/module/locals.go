@@ -22,13 +22,13 @@ type Locals struct {
 
 // initializeLocals derives the bare cluster id. ACLs carry no labels, so
 // there is no attribution label set.
-func initializeLocals(_ *pulumi.Context, stackInput *gcpmanagedkafkaaclv1alpha1.GcpManagedKafkaAclStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpmanagedkafkaaclv1alpha1.GcpManagedKafkaAclIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpManagedKafkaAcl = stackInput.Target
+	locals.GcpManagedKafkaAcl = iacInput.Target
 
 	cluster := locals.GcpManagedKafkaAcl.Spec.Cluster.GetValue()
 	locals.ClusterId = cluster[strings.LastIndex(cluster, "/")+1:]
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

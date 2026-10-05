@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurecognitiveaccount
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: cognitive_account_id
       derivations:
-        - from_stack_output: cognitive_account_id
+        - from_output: cognitive_account_id
       where_to_find: >-
         Portal -> Azure AI services (search the resource type) -> the
         account -> Properties -> Resource ID, or `az cognitiveservices

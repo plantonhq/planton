@@ -23,9 +23,9 @@ security triad — Keycloak for single sign-on, OpenFGA for fine-grained
 authorization, OpenBao for secrets — over one PostgreSQL bootstrapped
 with both databases under one least-privilege owner role.
 
-## Component fixes the compositions surfaced
+## Kind fixes the compositions surfaced
 
-Charts are the composition proof of the component catalog, and this trio
+Charts are the composition proof of the kind catalog, and this trio
 surfaced two seam gaps in `KubernetesArgoWorkflows`, both fixed at the
 root:
 
@@ -69,4 +69,4 @@ All three charts green on `planton chart validate` — defaults plus every
 bool flip, feature combinations beyond the flips, and a hyphenated
 environment probe; the full-catalog sweep passes 16/16; icon URLs verified
 live; offline Terraform plan and Pulumi preview proofs cover both new
-component reference arms.
+kind reference arms.

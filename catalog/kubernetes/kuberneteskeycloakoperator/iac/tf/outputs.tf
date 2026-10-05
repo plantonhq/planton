@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (KubernetesKeycloakOperatorStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (KubernetesKeycloakOperatorOutputs).
 
 output "namespace" {
   description = "Namespace the operator runs in (where namespaced-watch Keycloak declarations must also live)"

@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpDialogflowCxSecuritySettingsSpec", func() {
 		return &GcpDialogflowCxSecuritySettings{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpDialogflowCxSecuritySettings",
-			Metadata:   &shared.CloudResourceMetadata{Name: "pii-redaction"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "pii-redaction"},
 			Spec: &GcpDialogflowCxSecuritySettingsSpec{
 				Location: "global",
 			},

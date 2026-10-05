@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1;
 
-// AwsAppRunnerObservabilityConfigurationStackOutputs captures observable
+// AwsAppRunnerObservabilityConfigurationOutputs captures observable
 // identifiers from a provisioned App Runner observability configuration.
 // Services reference the configuration by its revision-carrying ARN.
-message AwsAppRunnerObservabilityConfigurationStackOutputs {
+message AwsAppRunnerObservabilityConfigurationOutputs {
   // The ARN of this configuration revision (e.g. "arn:aws:apprunner:
   // us-west-2:123456789012:observabilityconfiguration/my-oc/2/abc123").
   // The ARN carries the revision number, so registering a new revision

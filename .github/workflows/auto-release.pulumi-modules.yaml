@@ -1,11 +1,11 @@
 # =============================================================================
 # Pulumi Modules Auto-Release
 # =============================================================================
-# Builds pre-compiled binaries for Pulumi components, uploads them
+# Builds pre-compiled binaries for Pulumi modules, uploads them
 # to Cloudflare R2 (downloads.planton.dev), and creates a GitHub release with
 # download links.
 #
-# Tag Format: v{semver}-pulumi.{component}.{YYYYMMDD}.{N}
+# Tag Format: v{semver}-pulumi.{kind}.{YYYYMMDD}.{N}
 # Example: v0.3.5-pulumi.awsecsservice.20260108.0
 #
 # Multi-Platform Builds (parallel via matrix):
@@ -15,19 +15,19 @@
 #   - darwin_amd64   - Intel Macs
 #   - windows_amd64  - Windows
 #
-# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/modules/pulumi/{component}/{platform}.gz
+# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/modules/pulumi/{kind}/{platform}.gz
 #              (windows artifacts carry the executable suffix: {platform}.exe.gz)
-# Public URL:  https://downloads.planton.dev/releases/{tag}/modules/pulumi/{component}/{platform}.gz
+# Public URL:  https://downloads.planton.dev/releases/{tag}/modules/pulumi/{kind}/{platform}.gz
 #
-# The component's module SOURCE is also published alongside the binaries
+# The kind's module SOURCE is also published alongside the binaries
 # (source.zip, uploaded once from the linux_amd64 leg) — same layout the full
 # release workflow writes.
 #
-# Triggered by: auto-tag.yaml via workflow_dispatch (one call per component)
+# Triggered by: auto-tag.yaml via workflow_dispatch (one call per kind)
 # =============================================================================
 
 name: auto-release.pulumi-modules
-run-name: "Pulumi: ${{ inputs.component }} (${{ inputs.tag }})"
+run-name: "Pulumi: ${{ inputs.kind }} (${{ inputs.tag }})"
 
 on:
   workflow_dispatch:
@@ -36,8 +36,8 @@ on:
         description: 'Tag to release (e.g., v0.3.5-pulumi.awsecsservice.20260108.0)'
         required: true
         type: string
-      component:
-        description: 'Component name (e.g., awsecsservice)'
+      kind:
+        description: 'Kind name (e.g., awsecsservice)'
         required: true
         type: string
       provider:
@@ -70,11 +70,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ inputs.tag }}"
-          COMPONENT="${{ inputs.component }}"
+          KIND="${{ inputs.kind }}"
           PROVIDER="${{ inputs.provider }}"
-          # One live module set per component: artifacts carry no API version
+          # One live module set per kind: artifacts carry no API version
           # segment -- same layout the full release workflow writes.
-          BASE_URL="https://downloads.planton.dev/releases/${TAG}/modules/pulumi/${COMPONENT}"
+          BASE_URL="https://downloads.planton.dev/releases/${TAG}/modules/pulumi/${KIND}"
           
           if gh release view "${TAG}" >/dev/null 2>&1; then
             echo "Release ${TAG} already exists"
@@ -82,7 +82,7 @@ jobs:
             cat > release-notes.md << EOF
           ## Pulumi Module Auto-Release
 
-          This is an auto-release of the **${COMPONENT}** Pulumi component binaries.
+          This is an auto-release of the **${KIND}** Pulumi module binaries.
 
           ---
 
@@ -90,7 +90,7 @@ jobs:
 
           | Field | Value |
           |-------|-------|
-          | Component | ${COMPONENT} |
+          | Kind | ${KIND} |
           | Provider | ${PROVIDER} |
           | Tag | \`${TAG}\` |
           | Commit | ${{ github.sha }} |
@@ -136,7 +136,7 @@ jobs:
           \`${{ inputs.path }}\`
           EOF
             
-            # --latest=false: component point releases carry no infra-charts/version.txt
+            # --latest=false: kind point releases carry no infra-charts/version.txt
             # assets, so they must never move the /releases/latest pointer that chart
             # consumers (e.g. the desktop daemon's chart seeder) resolve. Only the
             # strict-semver orchestrated release marks latest.
@@ -176,10 +176,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
         run: |
-          COMPONENT="${{ inputs.component }}"
+          KIND="${{ inputs.kind }}"
           PROVIDER="${{ inputs.provider }}"
           TAG="${{ inputs.tag }}"
-          COMPONENT_PATH="${{ inputs.path }}"
+          KIND_PATH="${{ inputs.path }}"
           PLATFORM="${{ matrix.platform }}"
           
           # Parse platform
@@ -187,26 +187,26 @@ jobs:
           GOARCH="${PLATFORM##*_}"
           
           echo "========================================"
-          echo "BUILDING: ${COMPONENT}"
+          echo "BUILDING: ${KIND}"
           echo "Platform: ${PLATFORM}"
           echo "========================================"
           
           # Handle Windows .exe extension
           if [ "$GOOS" = "windows" ]; then
-            BINARY_NAME="${COMPONENT}.exe"
+            BINARY_NAME="${KIND}.exe"
             ARTIFACT_NAME="${PLATFORM}.exe.gz"
           else
-            BINARY_NAME="${COMPONENT}"
+            BINARY_NAME="${KIND}"
             ARTIFACT_NAME="${PLATFORM}.gz"
           fi
           
-          R2_KEY="releases/${TAG}/modules/pulumi/${COMPONENT}/${ARTIFACT_NAME}"
+          R2_KEY="releases/${TAG}/modules/pulumi/${KIND}/${ARTIFACT_NAME}"
           
           # Build
           CGO_ENABLED=0 GOOS="${GOOS}" GOARCH="${GOARCH}" go build \
             -ldflags="-s -w -X main.Version=${TAG}" \
             -o "${BINARY_NAME}" \
-            "./${COMPONENT_PATH}"
+            "./${KIND_PATH}"
           
           # Compress
           gzip -9 -c "${BINARY_NAME}" > "${ARTIFACT_NAME}"
@@ -224,10 +224,10 @@ jobs:
           # LICENSE and NOTICE accompany every redistribution, at the zip
           # root — mirroring the terraform module lane.
           if [ "${PLATFORM}" = "linux_amd64" ]; then
-            SOURCE_ARTIFACT="${COMPONENT}_source.zip"
-            SOURCE_R2_KEY="releases/${TAG}/modules/pulumi/${COMPONENT}/source.zip"
+            SOURCE_ARTIFACT="${KIND}_source.zip"
+            SOURCE_R2_KEY="releases/${TAG}/modules/pulumi/${KIND}/source.zip"
             
-            (cd "${COMPONENT_PATH}" && zip -q -r "${GITHUB_WORKSPACE}/${SOURCE_ARTIFACT}" .)
+            (cd "${KIND_PATH}" && zip -q -r "${GITHUB_WORKSPACE}/${SOURCE_ARTIFACT}" .)
             zip -q -j "${SOURCE_ARTIFACT}" LICENSE NOTICE
             
             aws s3 cp "${SOURCE_ARTIFACT}" "s3://${R2_BUCKET}/${SOURCE_R2_KEY}" \
@@ -245,15 +245,15 @@ jobs:
       - name: Generate summary
         run: |
           TAG="${{ inputs.tag }}"
-          COMPONENT="${{ inputs.component }}"
+          KIND="${{ inputs.kind }}"
           PROVIDER="${{ inputs.provider }}"
-          # One live module set per component: artifacts carry no API version
+          # One live module set per kind: artifacts carry no API version
           # segment -- same layout the full release workflow writes.
-          BASE_URL="https://downloads.planton.dev/releases/${TAG}/modules/pulumi/${COMPONENT}"
+          BASE_URL="https://downloads.planton.dev/releases/${TAG}/modules/pulumi/${KIND}"
           
           echo "## Pulumi Module Auto-Release Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Component:** ${COMPONENT}" >> $GITHUB_STEP_SUMMARY
+          echo "**Kind:** ${KIND}" >> $GITHUB_STEP_SUMMARY
           echo "**Provider:** ${PROVIDER}" >> $GITHUB_STEP_SUMMARY
           echo "**Tag:** \`${TAG}\`" >> $GITHUB_STEP_SUMMARY
           echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY

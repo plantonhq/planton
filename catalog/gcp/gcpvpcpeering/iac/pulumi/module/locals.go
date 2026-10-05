@@ -23,8 +23,8 @@ type Locals struct {
 	IsCreateForm bool
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpvpcpeeringv1alpha1.GcpVpcPeeringStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpvpcpeeringv1alpha1.GcpVpcPeeringIacInput) *Locals {
+	target := iacInput.Target
 
 	peeringName := target.Spec.PeeringName
 	if peeringName == "" {

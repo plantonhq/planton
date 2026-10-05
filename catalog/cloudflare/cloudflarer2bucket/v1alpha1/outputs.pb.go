@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareR2BucketStackOutputs captures the outputs after provisioning the R2 bucket.
-type CloudflareR2BucketStackOutputs struct {
+// CloudflareR2BucketOutputs captures the outputs after provisioning the R2 bucket.
+type CloudflareR2BucketOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the bucket (same as spec.bucket_name)
 	BucketName string `protobuf:"bytes,1,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`
@@ -57,20 +57,20 @@ type CloudflareR2BucketStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareR2BucketStackOutputs) Reset() {
-	*x = CloudflareR2BucketStackOutputs{}
+func (x *CloudflareR2BucketOutputs) Reset() {
+	*x = CloudflareR2BucketOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarer2bucket_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareR2BucketStackOutputs) String() string {
+func (x *CloudflareR2BucketOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareR2BucketStackOutputs) ProtoMessage() {}
+func (*CloudflareR2BucketOutputs) ProtoMessage() {}
 
-func (x *CloudflareR2BucketStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareR2BucketOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarer2bucket_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,54 +82,54 @@ func (x *CloudflareR2BucketStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareR2BucketStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareR2BucketStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareR2BucketOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareR2BucketOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarer2bucket_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareR2BucketStackOutputs) GetBucketName() string {
+func (x *CloudflareR2BucketOutputs) GetBucketName() string {
 	if x != nil {
 		return x.BucketName
 	}
 	return ""
 }
 
-func (x *CloudflareR2BucketStackOutputs) GetBucketUrl() string {
+func (x *CloudflareR2BucketOutputs) GetBucketUrl() string {
 	if x != nil {
 		return x.BucketUrl
 	}
 	return ""
 }
 
-func (x *CloudflareR2BucketStackOutputs) GetCustomDomainUrls() []string {
+func (x *CloudflareR2BucketOutputs) GetCustomDomainUrls() []string {
 	if x != nil {
 		return x.CustomDomainUrls
 	}
 	return nil
 }
 
-func (x *CloudflareR2BucketStackOutputs) GetPublicUrl() string {
+func (x *CloudflareR2BucketOutputs) GetPublicUrl() string {
 	if x != nil {
 		return x.PublicUrl
 	}
 	return ""
 }
 
-func (x *CloudflareR2BucketStackOutputs) GetAccountId() string {
+func (x *CloudflareR2BucketOutputs) GetAccountId() string {
 	if x != nil {
 		return x.AccountId
 	}
 	return ""
 }
 
-func (x *CloudflareR2BucketStackOutputs) GetJurisdiction() string {
+func (x *CloudflareR2BucketOutputs) GetJurisdiction() string {
 	if x != nil {
 		return x.Jurisdiction
 	}
 	return ""
 }
 
-func (x *CloudflareR2BucketStackOutputs) GetS3Endpoint() string {
+func (x *CloudflareR2BucketOutputs) GetS3Endpoint() string {
 	if x != nil {
 		return x.S3Endpoint
 	}
@@ -140,8 +140,8 @@ var File_catalog_cloudflare_cloudflarer2bucket_v1alpha1_outputs_proto protorefle
 
 const file_catalog_cloudflare_cloudflarer2bucket_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/cloudflare/cloudflarer2bucket/v1alpha1/outputs.proto\x122dev.planton.cloudflare.cloudflarer2bucket.v1alpha1\"\x91\x02\n" +
-	"\x1eCloudflareR2BucketStackOutputs\x12\x1f\n" +
+	"<catalog/cloudflare/cloudflarer2bucket/v1alpha1/outputs.proto\x122dev.planton.cloudflare.cloudflarer2bucket.v1alpha1\"\x8c\x02\n" +
+	"\x19CloudflareR2BucketOutputs\x12\x1f\n" +
 	"\vbucket_name\x18\x01 \x01(\tR\n" +
 	"bucketName\x12\x1d\n" +
 	"\n" +
@@ -170,7 +170,7 @@ func file_catalog_cloudflare_cloudflarer2bucket_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_cloudflare_cloudflarer2bucket_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarer2bucket_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareR2BucketStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketStackOutputs
+	(*CloudflareR2BucketOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarer2bucket.v1alpha1.CloudflareR2BucketOutputs
 }
 var file_catalog_cloudflare_cloudflarer2bucket_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

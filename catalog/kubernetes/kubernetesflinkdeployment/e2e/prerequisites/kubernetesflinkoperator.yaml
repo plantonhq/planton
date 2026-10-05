@@ -1,5 +1,5 @@
 # Consumer-scoped Flink operator fixture for the
-# KubernetesFlinkDeployment lanes. Cluster-wide watch (the component
+# KubernetesFlinkDeployment lanes. Cluster-wide watch (the kind
 # default) with the default-on webhook — cert-manager rides the
 # operator's own registry prerequisite. This fixture OWNS the shared
 # e2e-flink namespace; every scenario co-locates its FlinkDeployment

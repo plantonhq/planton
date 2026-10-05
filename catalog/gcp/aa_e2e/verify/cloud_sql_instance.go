@@ -9,7 +9,7 @@ import (
 
 // cloudSqlInstanceVerifier probes a Cloud SQL instance via the sqladmin API.
 // Posture assertions distinguish public-only vs private-IP instances from the
-// stack outputs the deploy produced.
+// outputs the deploy produced.
 type cloudSqlInstanceVerifier struct{}
 
 func (v *cloudSqlInstanceVerifier) IDOutputKey() string { return "instance_name" }
@@ -43,7 +43,7 @@ func (v *cloudSqlInstanceVerifier) VerifyExists(ctx context.Context, svc *Servic
 		}
 	}
 
-	// Assert connectivity posture only when stack outputs signal intent.
+	// Assert connectivity posture only when outputs signal intent.
 	// Proxy-only public instances (ipv4 on, no authorized networks) still
 	// carry a PRIMARY address; an empty public_ip output must not be treated
 	// as "private-only".

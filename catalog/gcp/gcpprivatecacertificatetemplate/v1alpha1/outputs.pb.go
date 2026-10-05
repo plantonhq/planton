@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpPrivateCaCertificateTemplateStackOutputs captures the template's identity -- what certificates
+// GcpPrivateCaCertificateTemplateOutputs captures the template's identity -- what certificates
 // reference.
-type GcpPrivateCaCertificateTemplateStackOutputs struct {
+type GcpPrivateCaCertificateTemplateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name --
 	// projects/{project}/locations/{location}/certificateTemplates/{template_id}.
@@ -34,20 +34,20 @@ type GcpPrivateCaCertificateTemplateStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpPrivateCaCertificateTemplateStackOutputs) Reset() {
-	*x = GcpPrivateCaCertificateTemplateStackOutputs{}
+func (x *GcpPrivateCaCertificateTemplateOutputs) Reset() {
+	*x = GcpPrivateCaCertificateTemplateOutputs{}
 	mi := &file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpPrivateCaCertificateTemplateStackOutputs) String() string {
+func (x *GcpPrivateCaCertificateTemplateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpPrivateCaCertificateTemplateStackOutputs) ProtoMessage() {}
+func (*GcpPrivateCaCertificateTemplateOutputs) ProtoMessage() {}
 
-func (x *GcpPrivateCaCertificateTemplateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpPrivateCaCertificateTemplateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *GcpPrivateCaCertificateTemplateStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpPrivateCaCertificateTemplateStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpPrivateCaCertificateTemplateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpPrivateCaCertificateTemplateOutputs.ProtoReflect.Descriptor instead.
+func (*GcpPrivateCaCertificateTemplateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpPrivateCaCertificateTemplateStackOutputs) GetName() string {
+func (x *GcpPrivateCaCertificateTemplateOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpPrivateCaCertificateTemplateStackOutputs) GetTemplateId() string {
+func (x *GcpPrivateCaCertificateTemplateOutputs) GetTemplateId() string {
 	if x != nil {
 		return x.TemplateId
 	}
@@ -82,8 +82,8 @@ var File_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_outputs_proto prot
 
 const file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/gcp/gcpprivatecacertificatetemplate/v1alpha1/outputs.proto\x128dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1\"b\n" +
-	"+GcpPrivateCaCertificateTemplateStackOutputs\x12\x12\n" +
+	"Bcatalog/gcp/gcpprivatecacertificatetemplate/v1alpha1/outputs.proto\x128dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1\"]\n" +
+	"&GcpPrivateCaCertificateTemplateOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1f\n" +
 	"\vtemplate_id\x18\x02 \x01(\tR\n" +
 	"templateIdB\xcc\x03\n" +
@@ -103,7 +103,7 @@ func file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_outputs_proto_raw
 
 var file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpPrivateCaCertificateTemplateStackOutputs)(nil), // 0: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateStackOutputs
+	(*GcpPrivateCaCertificateTemplateOutputs)(nil), // 0: dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1.GcpPrivateCaCertificateTemplateOutputs
 }
 var file_catalog_gcp_gcpprivatecacertificatetemplate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

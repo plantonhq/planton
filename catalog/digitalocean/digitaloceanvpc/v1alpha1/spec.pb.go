@@ -38,7 +38,7 @@ type DigitalOceanVpcSpec struct {
 	// Example: "10.10.0.0/16"
 	//
 	// When omitted, DigitalOcean auto-generates a non-conflicting range and reports it back
-	// through the `ip_range` stack output. The range is immutable: changing it after creation
+	// through the `ip_range` output. The range is immutable: changing it after creation
 	// REPLACES the VPC.
 	IpRangeCidr   string `protobuf:"bytes,3,opt,name=ip_range_cidr,json=ipRangeCidr,proto3" json:"ip_range_cidr,omitempty"`
 	unknownFields protoimpl.UnknownFields

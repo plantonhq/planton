@@ -30,7 +30,7 @@ var _ = ginkgo.Describe("GcpRedisInstanceSpec", func() {
 		return &GcpRedisInstance{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpRedisInstance",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-redis",
 			},
 			Spec: &GcpRedisInstanceSpec{

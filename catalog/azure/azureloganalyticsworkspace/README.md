@@ -33,7 +33,7 @@ Log Analytics Workspaces are the foundation of observability in Azure. They powe
 
 ## When to Use
 
-- As the monitoring foundation in any Azure infra chart -- typically one workspace
+- As the monitoring foundation in any Azure Infra Chart -- typically one workspace
   per environment or region that everything else feeds into
 - Before deploying `AzureApplicationInsights` (workspace-based APM is the only mode)
 - Before wiring `AzureMonitorDiagnosticSetting` or `AzureMonitorScheduledQueryAlert`

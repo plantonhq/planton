@@ -1,5 +1,5 @@
 # Estimate model: hand-computed capacity footprints for this
-# cluster-capacity component's presets. A derivation cannot state this
+# cluster-capacity kind's presets. A derivation cannot state this
 # kind honestly: Trivy's sizing (200m / 512Mi requests, 1 CPU / 1Gi
 # limits) is the CHART's own default, carried by no spec annotation the
 # capacity estimator could read -- a derived footprint would silently
@@ -12,12 +12,12 @@
 # plus every volume the manifest binds at its declared or defaulted
 # size. Anything only the chart sizes (the registryctl container in the
 # registry pods, the harbor-exporter) is excluded. Cluster-capacity
-# components carry no priced lines -- the dollar value of the
+# kinds carry no priced lines -- the dollar value of the
 # reservation is the target cluster's node and storage-class economics,
 # which this catalog cannot know.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: kubernetesharbor
 spec:

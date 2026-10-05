@@ -4,7 +4,7 @@ Creates a Cloud Logging sink — the routing rule that exports log entries match
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Logging Sink** -- exactly one of the four scope-specific sink resources, selected by `spec.scope`
 - **Logging API enablement** -- `logging.googleapis.com` enabled (project-scope sinks only)
@@ -49,7 +49,7 @@ spec:
 planton apply -f logging-sink.yaml
 ```
 
-This exports every ERROR-and-above entry in the project to hourly JSON batches in the bucket. The deploy's second half: grant the `writer_identity` output `roles/storage.objectCreator` on the bucket with a `GcpGcsBucketIamMember`. A Stack Job tracks the provisioning in real time.
+This exports every ERROR-and-above entry in the project to hourly JSON batches in the bucket. The deploy's second half: grant the `writer_identity` output `roles/storage.objectCreator` on the bucket with a `GcpGcsBucketIamMember`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,7 +82,7 @@ These are the most important decisions when configuring a logging sink. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -91,9 +91,9 @@ These are the most important decisions when configuring a logging sink. Explore 
 | **GcpPubSubTopic** (optional) | `destination.pubsubTopic` | `status.outputs.topic_id` |
 | **GcpProject** (optional) | `scope.projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,6 +112,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- the archival destination
-- [**GCP BigQuery Dataset**](/cloud-catalog/gcp-big-query-dataset) -- the queryable destination
-- [**GCP Pub/Sub Topic**](/cloud-catalog/gcp-pub-sub-topic) -- the streaming destination
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- the archival destination
+- [**GCP BigQuery Dataset**](/infra-catalog/gcp-big-query-dataset) -- the queryable destination
+- [**GCP Pub/Sub Topic**](/infra-catalog/gcp-pub-sub-topic) -- the streaming destination

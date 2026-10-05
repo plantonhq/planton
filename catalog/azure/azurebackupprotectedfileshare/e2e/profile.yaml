@@ -1,5 +1,5 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: azurebackupprotectedfileshare
 spec:
@@ -13,7 +13,7 @@ spec:
   # share while the registration's DoNotDelete lock still covered the
   # account -- fixed by reordering the kind's registry prerequisites
   # (share BEFORE registration; commented load-bearing in
-  # cloud_resource_kind.proto). The soft-delete watch item resolved
+  # catalog_kind.proto). The soft-delete watch item resolved
   # clean: a smoke item has zero recovery points, so the delete lands
   # outright and the unregister minutes later succeeded; the verifier
   # shares the VM sibling's bounded-poll absence bar for the measured

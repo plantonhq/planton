@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpdocumentaiprocessor.v1alpha1;
 
-// GcpDocumentAiProcessorStackOutputs carries what an application needs to
+// GcpDocumentAiProcessorOutputs carries what an application needs to
 // send documents to the processor.
-message GcpDocumentAiProcessorStackOutputs {
+message GcpDocumentAiProcessorOutputs {
   // Full resource name:
   // projects/{project}/locations/{location}/processors/{processor_id}.
   string name = 1;

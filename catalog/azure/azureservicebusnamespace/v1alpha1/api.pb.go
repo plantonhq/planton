@@ -37,7 +37,7 @@ type AzureServiceBusNamespace struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureServiceBusNamespaceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -90,7 +90,7 @@ func (x *AzureServiceBusNamespace) GetKind() string {
 	return ""
 }
 
-func (x *AzureServiceBusNamespace) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureServiceBusNamespace) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,8 +114,8 @@ func (x *AzureServiceBusNamespace) GetStatus() *AzureServiceBusNamespaceStatus {
 // AzureServiceBusNamespaceStatus holds the deployment status and outputs.
 type AzureServiceBusNamespaceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureServiceBusNamespaceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureServiceBusNamespaceOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureServiceBusNamespaceStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureservicebusnamespace_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureServiceBusNamespaceStatus) GetOutputs() *AzureServiceBusNamespaceStackOutputs {
+func (x *AzureServiceBusNamespaceStatus) GetOutputs() *AzureServiceBusNamespaceOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azureservicebusnamespace_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18AzureServiceBusNamespaceR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
 	"\x04spec\x18\x04 \x01(\v2Q.dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
-	"\x06status\x18\x05 \x01(\v2S.dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceStatusR\x06status\"\x95\x01\n" +
-	"\x1eAzureServiceBusNamespaceStatus\x12s\n" +
-	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceStackOutputsR\aoutputsB\xa3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2S.dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceStatusR\x06status\"\x90\x01\n" +
+	"\x1eAzureServiceBusNamespaceStatus\x12n\n" +
+	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceOutputsR\aoutputsB\xa3\x03\n" +
 	"7com.dev.planton.azure.azureservicebusnamespace.v1alpha1B\bApiProtoP\x01Zmgithub.com/plantonhq/planton/catalog/azure/azureservicebusnamespace/v1alpha1;azureservicebusnamespacev1alpha1\xa2\x02\x04DPAA\xaa\x023Dev.Planton.Azure.Azureservicebusnamespace.V1alpha1\xca\x023Dev\\Planton\\Azure\\Azureservicebusnamespace\\V1alpha1\xe2\x02?Dev\\Planton\\Azure\\Azureservicebusnamespace\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Azure::Azureservicebusnamespace::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azureservicebusnamespace_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_azure_azureservicebusnamespace_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureservicebusnamespace_v1alpha1_api_proto_goTypes = []any{
-	(*AzureServiceBusNamespace)(nil),             // 0: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespace
-	(*AzureServiceBusNamespaceStatus)(nil),       // 1: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureServiceBusNamespaceSpec)(nil),         // 3: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceSpec
-	(*AzureServiceBusNamespaceStackOutputs)(nil), // 4: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceStackOutputs
+	(*AzureServiceBusNamespace)(nil),        // 0: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespace
+	(*AzureServiceBusNamespaceStatus)(nil),  // 1: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureServiceBusNamespaceSpec)(nil),    // 3: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceSpec
+	(*AzureServiceBusNamespaceOutputs)(nil), // 4: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceOutputs
 }
 var file_catalog_azure_azureservicebusnamespace_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespace.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespace.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespace.spec:type_name -> dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceSpec
 	1, // 2: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespace.status:type_name -> dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceStatus
-	4, // 3: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceStatus.outputs:type_name -> dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceStackOutputs
+	4, // 3: dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceStatus.outputs:type_name -> dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

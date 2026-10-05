@@ -3,7 +3,7 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # Provenance note: the account-scoped "Account API Tokens Write/Read"
 # groups are absent from the docs-site permissions reference page but are
@@ -15,7 +15,7 @@
 # Super Administrator; the API-token grant vocabulary is what this manifest
 # declares.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflareaccountapitoken
 spec:

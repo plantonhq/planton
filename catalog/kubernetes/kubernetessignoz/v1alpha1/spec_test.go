@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -58,7 +58,7 @@ var _ = ginkgo.Describe("KubernetesSignoz Validation Tests", func() {
 		input = &KubernetesSignoz{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesSignoz",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "observe",
 			},
 			Spec: &KubernetesSignozSpec{
@@ -74,17 +74,17 @@ var _ = ginkgo.Describe("KubernetesSignoz Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "observability", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "observability", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
 		ginkgo.It("a clickhouse connection composed entirely from KubernetesClickHouse references should be valid", func() {
 			input.Spec.Clickhouse = &KubernetesSignozClickHouse{
-				Host:        valueFrom(cloudresourcekind.CloudResourceKind_KubernetesClickHouse, "analytics", "status.outputs.service_name"),
-				ClusterName: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesClickHouse, "analytics", "status.outputs.cluster_name"),
+				Host:        valueFrom(catalogkind.CatalogKind_KubernetesClickHouse, "analytics", "status.outputs.service_name"),
+				ClusterName: valueFrom(catalogkind.CatalogKind_KubernetesClickHouse, "analytics", "status.outputs.cluster_name"),
 				Username:    "signoz",
 				PasswordSecret: &KubernetesSignozClickHousePassword{
-					SecretName: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesClickHouse, "analytics", "status.outputs.auth_secret_name"),
+					SecretName: valueFrom(catalogkind.CatalogKind_KubernetesClickHouse, "analytics", "status.outputs.auth_secret_name"),
 					SecretKey:  "signoz",
 				},
 			}

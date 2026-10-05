@@ -64,7 +64,7 @@ const (
 //   - Storage capacity can grow in place (never shrink; growth on SCRATCH_1
 //     replaces the file system).
 //   - Credentials, region, and deployment workflow live outside this spec in
-//     stack inputs.
+//     IaC inputs.
 type AwsFsxLustreFileSystemSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the file system will be created.

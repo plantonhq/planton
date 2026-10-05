@@ -4,7 +4,7 @@ Creates a Google Cloud Resource Manager folder: a node in the resource hierarchy
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Folder** -- the `folder` under the organization or inside another folder, with its display name, its destroy guard (`deletionProtection`, on by default), and any create-time tags
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials that can create folders in the target organization. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials that can create folders in the target organization. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Organization
 
@@ -49,7 +49,7 @@ spec:
 planton apply -f folder.yaml
 ```
 
-This creates a top-level folder named `production` directly under the organization, protected against accidental destroy twice over (the guard and the `PREVENT` policy). A Stack Job tracks the provisioning in real time.
+This creates a top-level folder named `production` directly under the organization, protected against accidental destroy twice over (the guard and the `PREVENT` policy). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,15 +82,15 @@ These are the most important decisions when configuring a folder. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpFolder** (optional) | `parent.folderId` | `status.outputs.folder_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -111,6 +111,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- projects placed inside the folder by reference (`folderId`)
-- [**GCP Organization Policy**](/cloud-catalog/gcp-org-policy) -- guardrails scoped to the folder and inherited by everything beneath it
-- [**GCP Tag Binding**](/cloud-catalog/gcp-tag-binding) -- tags on the folder after creation
+- [**GCP Project**](/infra-catalog/gcp-project) -- projects placed inside the folder by reference (`folderId`)
+- [**GCP Organization Policy**](/infra-catalog/gcp-org-policy) -- guardrails scoped to the folder and inherited by everything beneath it
+- [**GCP Tag Binding**](/infra-catalog/gcp-tag-binding) -- tags on the folder after creation

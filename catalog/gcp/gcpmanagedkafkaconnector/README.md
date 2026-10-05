@@ -4,7 +4,7 @@ One connector on a Managed Service for Apache Kafka Connect cluster -- a single 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Connector** -- a `managed_kafka_connector` on the referenced Connect cluster
 
@@ -75,7 +75,7 @@ planton apply -f managed-kafka-connector.yaml
 
 - Backoffs are durations in seconds with an `s` suffix, up to nine fractional digits.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -102,7 +102,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpManagedKafkaConnectCluster** -- the workers that run the connector
 - **GcpManagedKafkaTopic** -- the topics it reads or writes

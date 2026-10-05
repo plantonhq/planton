@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflarePagesProjectSpec
 locals.tf     — build/source/deployment_configs transforms; domains_map for_each
 main.tf       — cloudflare_pages_project + cloudflare_pages_domain resources
-outputs.tf    — Stack outputs (project_name, subdomain, domains, created_on)
+outputs.tf    — outputs (project_name, subdomain, domains, created_on)
 ```
 
 ## Usage

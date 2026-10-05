@@ -3,16 +3,16 @@ package main
 import (
 	"github.com/plantonhq/planton/catalog/gcp/gcpmonitoringnotificationchannel/iac/pulumi/module"
 	gcpmonitoringnotificationchannelv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringnotificationchannel/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		stackInput := &gcpmonitoringnotificationchannelv1alpha1.GcpMonitoringNotificationChannelStackInput{}
-		if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
+		iacInput := &gcpmonitoringnotificationchannelv1alpha1.GcpMonitoringNotificationChannelIacInput{}
+		if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
 			return err
 		}
-		return module.Resources(ctx, stackInput)
+		return module.Resources(ctx, iacInput)
 	})
 }

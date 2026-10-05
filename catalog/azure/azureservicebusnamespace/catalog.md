@@ -1,10 +1,10 @@
 # Azure Service Bus Namespace
 
-Deploys an Azure Service Bus namespace -- the container and billing boundary for enterprise messaging. The namespace is where the pricing tier, network posture, encryption ownership, and authentication mode are set; the messaging entities themselves (queues, topics, subscriptions, scoped SAS rules, and the geo-DR pairing) are first-class Cloud Resource kinds that reference it, so application teams own their entities independently of the namespace's owner.
+Deploys an Azure Service Bus namespace -- the container and billing boundary for enterprise messaging. The namespace is where the pricing tier, network posture, encryption ownership, and authentication mode are set; the messaging entities themselves (queues, topics, subscriptions, scoped SAS rules, and the geo-DR pairing) are first-class catalog kinds that reference it, so application teams own their entities independently of the namespace's owner.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Service Bus Namespace** -- in the specified region and resource group, on the chosen tier (Basic, Standard, or Premium), with the public DNS identity `{namespace_name}.servicebus.windows.net`
 - **Premium capacity** -- on the Premium tier only: the dedicated messaging units (1, 2, 4, 8, or 16) and the namespace partition layout (1, 2, or 4 -- fixed at creation)
@@ -19,12 +19,12 @@ The namespace deliberately contains no messaging entities at creation: queues, t
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the namespace will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the namespace will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **A globally unique namespace name** -- 6-50 characters of letters, numbers, and hyphens, starting with a letter and ending with a letter or number. It becomes the endpoint `{name}.servicebus.windows.net`, and Azure reserves the suffixes `-sb` and `-mgmt`.
 - **For customer-managed keys (Premium)** -- an AzureKeyVault with purge protection, an AzureKeyVaultKey in it, and an AzureUserAssignedIdentity holding wrap/unwrap on the vault.
 
@@ -59,7 +59,7 @@ spec:
 planton apply -f servicebus-namespace.yaml
 ```
 
-This creates a Standard-tier namespace (leaving `sku` out entirely is also valid -- Azure deploys STANDARD when the spec records no tier); queues and topics arrive as their own kinds afterward, referencing this namespace. A Stack Job tracks the provisioning in real time.
+This creates a Standard-tier namespace (leaving `sku` out entirely is also valid -- Azure deploys STANDARD when the spec records no tier); queues and topics arrive as their own kinds afterward, referencing this namespace. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,7 +92,7 @@ These are the most important decisions when configuring a Service Bus namespace.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -102,9 +102,9 @@ These are the most important decisions when configuring a Service Bus namespace.
 | **AzureUserAssignedIdentity** | `customerManagedKey.userAssignedIdentityId` | `status.outputs.identity_id` |
 | **AzureSubnet** | `networkRuleSet.networkRules[].subnetId` | `status.outputs.subnet_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -129,13 +129,13 @@ Production workloads should mint least-privilege credentials with AzureServiceBu
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the namespace is created
-- [**Azure Service Bus Queue**](/cloud-catalog/azure-service-bus-queue) -- point-to-point messaging entities living in this namespace
-- [**Azure Service Bus Topic**](/cloud-catalog/azure-service-bus-topic) -- publish-subscribe distribution, with [**Azure Service Bus Subscription**](/cloud-catalog/azure-service-bus-subscription) under a topic
-- [**Azure Service Bus Authorization Rule**](/cloud-catalog/azure-service-bus-authorization-rule) -- least-privilege SAS credentials scoped to the namespace or a single entity
-- [**Azure Service Bus Disaster Recovery Config**](/cloud-catalog/azure-service-bus-disaster-recovery-config) -- the geo-DR alias pairing two Premium namespaces
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the customer-managed key Premium namespaces encrypt messaging data under
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- attached via the identity block; unwraps customer-managed keys
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- admitted to the Premium firewall via service endpoints
-- [**Azure Private Endpoint**](/cloud-catalog/azure-private-endpoint) -- takes the namespace off the public internet (subresource: `namespace`)
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- grants Entra identities data-plane roles for the keyless posture
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the namespace is created
+- [**Azure Service Bus Queue**](/infra-catalog/azure-service-bus-queue) -- point-to-point messaging entities living in this namespace
+- [**Azure Service Bus Topic**](/infra-catalog/azure-service-bus-topic) -- publish-subscribe distribution, with [**Azure Service Bus Subscription**](/infra-catalog/azure-service-bus-subscription) under a topic
+- [**Azure Service Bus Authorization Rule**](/infra-catalog/azure-service-bus-authorization-rule) -- least-privilege SAS credentials scoped to the namespace or a single entity
+- [**Azure Service Bus Disaster Recovery Config**](/infra-catalog/azure-service-bus-disaster-recovery-config) -- the geo-DR alias pairing two Premium namespaces
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the customer-managed key Premium namespaces encrypt messaging data under
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- attached via the identity block; unwraps customer-managed keys
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- admitted to the Premium firewall via service endpoints
+- [**Azure Private Endpoint**](/infra-catalog/azure-private-endpoint) -- takes the namespace off the public internet (subresource: `namespace`)
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- grants Entra identities data-plane roles for the keyless posture

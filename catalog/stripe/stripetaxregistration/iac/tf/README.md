@@ -15,7 +15,7 @@ OpenTofu module that declares one Stripe Tax registration. Stripe kinds run on O
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `country`, `type`, `active_from` (required); `expires_at`, `place_of_supply_scheme`, `province`, `state`, `jurisdiction`, `state_sales_tax_elections` |
 
 ## Outputs

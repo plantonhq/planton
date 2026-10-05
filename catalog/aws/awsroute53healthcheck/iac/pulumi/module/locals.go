@@ -5,7 +5,7 @@ import (
 
 	awsroute53healthcheckv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsroute53healthcheck/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -17,16 +17,16 @@ type Locals struct {
 	AwsTags               map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *awsroute53healthcheckv1alpha1.AwsRoute53HealthCheckStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awsroute53healthcheckv1alpha1.AwsRoute53HealthCheckIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsRoute53HealthCheck = stackInput.Target
+	locals.AwsRoute53HealthCheck = iacInput.Target
 
 	locals.AwsTags = map[string]string{
 		awstagkeys.Name:         locals.AwsRoute53HealthCheck.Metadata.Name,
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsRoute53HealthCheck.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsRoute53HealthCheck.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsRoute53HealthCheck.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsRoute53HealthCheck.String(),
 		awstagkeys.ResourceId:   locals.AwsRoute53HealthCheck.Metadata.Id,
 	}
 

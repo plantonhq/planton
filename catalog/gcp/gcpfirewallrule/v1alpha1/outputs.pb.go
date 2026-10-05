@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP firewall rule.
-type GcpFirewallRuleStackOutputs struct {
+type GcpFirewallRuleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full self-link URI of the created firewall rule.
 	// Example: "projects/my-project/global/firewalls/allow-http-ingress"
@@ -36,20 +36,20 @@ type GcpFirewallRuleStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *GcpFirewallRuleStackOutputs) Reset() {
-	*x = GcpFirewallRuleStackOutputs{}
+func (x *GcpFirewallRuleOutputs) Reset() {
+	*x = GcpFirewallRuleOutputs{}
 	mi := &file_catalog_gcp_gcpfirewallrule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpFirewallRuleStackOutputs) String() string {
+func (x *GcpFirewallRuleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpFirewallRuleStackOutputs) ProtoMessage() {}
+func (*GcpFirewallRuleOutputs) ProtoMessage() {}
 
-func (x *GcpFirewallRuleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpFirewallRuleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpfirewallrule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *GcpFirewallRuleStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpFirewallRuleStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpFirewallRuleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpFirewallRuleOutputs.ProtoReflect.Descriptor instead.
+func (*GcpFirewallRuleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfirewallrule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpFirewallRuleStackOutputs) GetFirewallSelfLink() string {
+func (x *GcpFirewallRuleOutputs) GetFirewallSelfLink() string {
 	if x != nil {
 		return x.FirewallSelfLink
 	}
 	return ""
 }
 
-func (x *GcpFirewallRuleStackOutputs) GetFirewallName() string {
+func (x *GcpFirewallRuleOutputs) GetFirewallName() string {
 	if x != nil {
 		return x.FirewallName
 	}
 	return ""
 }
 
-func (x *GcpFirewallRuleStackOutputs) GetCreationTimestamp() string {
+func (x *GcpFirewallRuleOutputs) GetCreationTimestamp() string {
 	if x != nil {
 		return x.CreationTimestamp
 	}
@@ -91,8 +91,8 @@ var File_catalog_gcp_gcpfirewallrule_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcpfirewallrule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpfirewallrule/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpfirewallrule.v1alpha1\"\x9f\x01\n" +
-	"\x1bGcpFirewallRuleStackOutputs\x12,\n" +
+	"2catalog/gcp/gcpfirewallrule/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpfirewallrule.v1alpha1\"\x9a\x01\n" +
+	"\x16GcpFirewallRuleOutputs\x12,\n" +
 	"\x12firewall_self_link\x18\x01 \x01(\tR\x10firewallSelfLink\x12#\n" +
 	"\rfirewall_name\x18\x02 \x01(\tR\ffirewallName\x12-\n" +
 	"\x12creation_timestamp\x18\x03 \x01(\tR\x11creationTimestampB\xdc\x02\n" +
@@ -112,7 +112,7 @@ func file_catalog_gcp_gcpfirewallrule_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_gcp_gcpfirewallrule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpfirewallrule_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpFirewallRuleStackOutputs)(nil), // 0: dev.planton.gcp.gcpfirewallrule.v1alpha1.GcpFirewallRuleStackOutputs
+	(*GcpFirewallRuleOutputs)(nil), // 0: dev.planton.gcp.gcpfirewallrule.v1alpha1.GcpFirewallRuleOutputs
 }
 var file_catalog_gcp_gcpfirewallrule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

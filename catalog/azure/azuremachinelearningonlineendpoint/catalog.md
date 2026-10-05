@@ -4,7 +4,7 @@ Creates a managed online endpoint on an Azure Machine Learning workspace -- the 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Online Endpoint** -- an ARM child of the workspace (`.../workspaces/{ws}/onlineEndpoints/{name}`) with its auth mode, managed identity, traffic maps, and network posture
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f azure-machine-learning-online-endpoint.yaml
 ```
 
-This creates a key-authenticated endpoint with a system identity, routing all traffic to a deployment named `blue`; deployments then attach to it by reference. A Stack Job tracks the provisioning in real time.
+This creates a key-authenticated endpoint with a system identity, routing all traffic to a deployment named `blue`; deployments then attach to it by reference. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,16 +85,16 @@ These are the most important decisions when configuring the endpoint. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureMachineLearningWorkspace** | `workspaceId` | `status.outputs.machine_learning_workspace_id` |
 | **AzureUserAssignedIdentity** | `identity.identityIds[]` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -114,6 +114,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Machine Learning Workspace**](/cloud-catalog/azure-machine-learning-workspace) -- the parent workspace
-- [**Azure Machine Learning Online Deployment**](/cloud-catalog/azure-machine-learning-online-deployment) -- the model deployments behind the endpoint
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- bring-your-own identity for registry and storage grants
+- [**Azure Machine Learning Workspace**](/infra-catalog/azure-machine-learning-workspace) -- the parent workspace
+- [**Azure Machine Learning Online Deployment**](/infra-catalog/azure-machine-learning-online-deployment) -- the model deployments behind the endpoint
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- bring-your-own identity for registry and storage grants

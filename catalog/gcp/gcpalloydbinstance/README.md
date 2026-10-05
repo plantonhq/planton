@@ -66,7 +66,7 @@ planton apply -f instance.yaml
 - `read_pool_config` applies to READ_POOL only.
 - `authorized_external_networks` requires `enable_public_ip`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
@@ -79,7 +79,7 @@ planton apply -f instance.yaml
 - Pulumi: [`iac/pulumi/README.md`](iac/pulumi/README.md)
 - Terraform: [`iac/tf/README.md`](iac/tf/README.md)
 
-## Related Components
+## Related Kinds
 
 - [GcpAlloydbCluster](/docs/catalog/gcp/gcpalloydbcluster) — the cluster this instance attaches to
 - [GcpAlloydbUser](/docs/catalog/gcp/gcpalloydbuser) — per-application credentials on the same cluster

@@ -2,7 +2,7 @@
 
 ## Overview
 
-**KubernetesCronJob** is a Planton component that runs work on a recurring schedule as a batch/v1 CronJob. At each scheduled time, the controller creates a Job from the template, and that Job runs pods to completion. This is the kind for scheduled work: nightly backups, report generation, periodic cleanup, data synchronization.
+**KubernetesCronJob** is a catalog kind that runs work on a recurring schedule as a batch/v1 CronJob. At each scheduled time, the controller creates a Job from the template, and that Job runs pods to completion. This is the kind for scheduled work: nightly backups, report generation, periodic cleanup, data synchronization.
 
 For one-shot work, use **KubernetesJob**. For always-on services, use **KubernetesDeployment**.
 
@@ -19,11 +19,11 @@ Set `time_zone` (an IANA name like `America/New_York`) whenever the wall-clock t
 
 `concurrency_policy` decides what happens when the next run comes due while the previous run is still going:
 
-- **`Forbid` (this component's default)** — skip the new run; the previous one keeps going
+- **`Forbid` (this kind's default)** — skip the new run; the previous one keeps going
 - **`Allow`** — run them concurrently
 - **`Replace`** — cancel the running Job and start the new one
 
-Upstream Kubernetes defaults to `Allow`. This component deliberately defaults to `Forbid`: overlapping cron runs are the classic scheduled-workload incident — two backups writing the same target, two migrations racing — so overlap is opt-in here rather than a surprise. Pair `Forbid` with `active_deadline_seconds` in the template, so a hung run cannot silently block every subsequent run.
+Upstream Kubernetes defaults to `Allow`. This kind deliberately defaults to `Forbid`: overlapping cron runs are the classic scheduled-workload incident — two backups writing the same target, two migrations racing — so overlap is opt-in here rather than a surprise. Pair `Forbid` with `active_deadline_seconds` in the template, so a hung run cannot silently block every subsequent run.
 
 ## Run-to-Completion Semantics
 
@@ -44,7 +44,7 @@ This kind deliberately creates **no Service and no ingress** — scheduled pods 
 
 KubernetesCronJob is a Service Hub deployment target for scheduled workloads built from user code. Deployment pipelines inject the freshly built artifact at **`spec.job_template.container.app.image`** (repository + tag). That path is part of the kind's public contract.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -54,7 +54,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace (literal value or resolved reference), creating it when `create_namespace` is true
 2. Materialize literal secret env values into a workload-scoped Kubernetes Secret and the registry logins declared on `spec.job_template.pod.image_registries` into an image-pull Secret

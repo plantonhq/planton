@@ -32,7 +32,7 @@ type AwsEventBridgeBus struct {
 	// resource-kind for this EventBridge bus resource, must be "AwsEventBridgeBus".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, env, id, labels, relationships).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration for the EventBridge bus.
 	Spec *AwsEventBridgeBusSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -85,7 +85,7 @@ func (x *AwsEventBridgeBus) GetKind() string {
 	return ""
 }
 
-func (x *AwsEventBridgeBus) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsEventBridgeBus) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *AwsEventBridgeBus) GetStatus() *AwsEventBridgeBusStatus {
 // observable outputs.
 type AwsEventBridgeBusStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsEventBridgeBusStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsEventBridgeBusOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AwsEventBridgeBusStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseventbridgebus_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsEventBridgeBusStatus) GetOutputs() *AwsEventBridgeBusStackOutputs {
+func (x *AwsEventBridgeBusStatus) GetOutputs() *AwsEventBridgeBusOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_aws_awseventbridgebus_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AwsEventBridgeBusR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusStatusR\x06status\"~\n" +
-	"\x17AwsEventBridgeBusStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusStackOutputsR\aoutputsB\xe6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusStatusR\x06status\"y\n" +
+	"\x17AwsEventBridgeBusStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusOutputsR\aoutputsB\xe6\x02\n" +
 	".com.dev.planton.aws.awseventbridgebus.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/aws/awseventbridgebus/v1alpha1;awseventbridgebusv1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Aws.Awseventbridgebus.V1alpha1\xca\x02*Dev\\Planton\\Aws\\Awseventbridgebus\\V1alpha1\xe2\x026Dev\\Planton\\Aws\\Awseventbridgebus\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Aws::Awseventbridgebus::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_aws_awseventbridgebus_v1alpha1_api_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awseventbridgebus_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awseventbridgebus_v1alpha1_api_proto_goTypes = []any{
-	(*AwsEventBridgeBus)(nil),             // 0: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBus
-	(*AwsEventBridgeBusStatus)(nil),       // 1: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsEventBridgeBusSpec)(nil),         // 3: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusSpec
-	(*AwsEventBridgeBusStackOutputs)(nil), // 4: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusStackOutputs
+	(*AwsEventBridgeBus)(nil),            // 0: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBus
+	(*AwsEventBridgeBusStatus)(nil),      // 1: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsEventBridgeBusSpec)(nil),        // 3: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusSpec
+	(*AwsEventBridgeBusOutputs)(nil),     // 4: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusOutputs
 }
 var file_catalog_aws_awseventbridgebus_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBus.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBus.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBus.spec:type_name -> dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusSpec
 	1, // 2: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBus.status:type_name -> dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusStatus
-	4, // 3: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusStatus.outputs:type_name -> dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusStackOutputs
+	4, // 3: dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusStatus.outputs:type_name -> dev.planton.aws.awseventbridgebus.v1alpha1.AwsEventBridgeBusOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

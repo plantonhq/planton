@@ -6,15 +6,15 @@
 
 ## Summary
 
-Added a new required `worker_name` field to the `CloudflareWorkerSpec` protobuf definition, moving the worker name from the nested `script.name` field to a top-level spec field. This change improves the API design by making the worker name more prominent and consistent with other deployment components. Updated all IaC modules (Pulumi and Terraform), tests, and documentation to use the new field.
+Added a new required `worker_name` field to the `CloudflareWorkerSpec` protobuf definition, moving the worker name from the nested `script.name` field to a top-level spec field. This change improves the API design by making the worker name more prominent and consistent with other catalog kinds. Updated all IaC modules (Pulumi and Terraform), tests, and documentation to use the new field.
 
 ## Problem Statement / Motivation
 
-The CloudflareWorker component had an inconsistent API design where the worker name was buried inside the `script` configuration object. This created several issues:
+The CloudflareWorker kind had an inconsistent API design where the worker name was buried inside the `script` configuration object. This created several issues:
 
 ### Pain Points
 
-- **Inconsistent API**: Unlike other deployment components in Planton, the worker name was not a top-level spec field
+- **Inconsistent API**: Unlike other catalog kinds in Planton, the worker name was not a top-level spec field
 - **Poor Discoverability**: Users had to navigate to `spec.script.name` to set the worker name, which was not intuitive
 - **Semantic Confusion**: The `script` object was meant to represent the worker script bundle configuration, not the worker's identity
 - **Redundancy**: The worker name was conflated with script configuration, even though they serve different purposes
@@ -186,7 +186,7 @@ Updated examples:
 
 ### For API Consistency
 - Worker name is now at the same level as `account_id`, making the API more intuitive
-- Aligns with naming patterns in other deployment components (e.g., `PostgresKubernetes`, `GcpGkeCluster`)
+- Aligns with naming patterns in other catalog kinds (e.g., `PostgresKubernetes`, `GcpGkeCluster`)
 
 ### For Developers
 - **Clearer Intent**: The worker name is immediately visible in the spec without navigating nested objects
@@ -235,7 +235,7 @@ All changes verified with:
 # Regenerate protocol buffer stubs
 make protos
 
-# Run component-specific tests
+# Run kind-specific tests
 go test ./apis/dev/planton/provider/cloudflare/cloudflareworker/v1/
 
 # Full project build
@@ -258,7 +258,7 @@ make test
 
 **Chosen Approach**: Top-level required field with explicit validation
 - Most intuitive for users
-- Consistent with other deployment components
+- Consistent with other catalog kinds
 - Clearly separates identity from configuration
 
 ### Field Number Renumbering
@@ -339,12 +339,12 @@ This ensures the `buf.validate` rules are correctly enforced.
 
 ## Related Work
 
-This change is part of ongoing API refinement efforts to improve consistency across deployment components in Planton. Similar patterns should be considered for other providers where critical fields are nested unnecessarily.
+This change is part of ongoing API refinement efforts to improve consistency across catalog kinds in Planton. Similar patterns should be considered for other providers where critical fields are nested unnecessarily.
 
 **Future Considerations**:
-- Audit other deployment components for similar API inconsistencies
+- Audit other catalog kinds for similar API inconsistencies
 - Document field-level validation best practices
-- Consider adding `worker_name` to stack outputs for easier reference
+- Consider adding `worker_name` to outputs for easier reference
 
 ---
 

@@ -1,5 +1,5 @@
 # AzureCognitiveAccount install profile used as a fixture by composed
-# components (declared via prerequisites: [AzureCognitiveAccount] in
+# kinds (declared via prerequisites: [AzureCognitiveAccount] in
 # the kind registry -- the model deployment and the AI Foundry
 # project). The harness deploys this document after the fixture
 # resource group and captures its outputs -- cognitive_account_id in
@@ -24,7 +24,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurecognitiveaccount
+    e2e-catalog-kind: azurecognitiveaccount
   annotations:
     planton.dev/e2e: "true"
   tags:

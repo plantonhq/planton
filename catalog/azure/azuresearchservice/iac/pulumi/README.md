@@ -4,7 +4,7 @@
 
 Creates an Azure AI Search service and its composed shared private
 links using the classic `pulumi-azure` (azurerm-bridged) SDK, from the
-kind's typed stack input.
+kind's typed IaC input.
 
 ## Design Decisions
 
@@ -29,7 +29,7 @@ kind's typed stack input.
 
 ## Inputs
 
-The module consumes `AzureSearchServiceStackInput`: the target
+The module consumes `AzureSearchServiceIacInput`: the target
 resource (metadata + spec) and the Azure provider configuration. All
 references arrive pre-resolved; `GetValue()` returns the literal
 value.

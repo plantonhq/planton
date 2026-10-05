@@ -16,7 +16,7 @@ message GcpVertexAiPersistentResource {
   string kind = 2 [(buf.validate.field).string.const = 'GcpVertexAiPersistentResource'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   GcpVertexAiPersistentResourceSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message GcpVertexAiPersistentResource {
 
 //gcp-vertex-ai-persistent-resource status
 message GcpVertexAiPersistentResourceStatus {
-  //stack-outputs
-  GcpVertexAiPersistentResourceStackOutputs outputs = 1;
+  //outputs
+  GcpVertexAiPersistentResourceOutputs outputs = 1;
 }

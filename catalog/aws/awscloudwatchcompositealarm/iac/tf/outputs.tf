@@ -1,5 +1,5 @@
-# Stack outputs — must stay in lockstep with
-# AwsCloudwatchCompositeAlarmStackOutputs.
+# Outputs — must stay in lockstep with
+# AwsCloudwatchCompositeAlarmOutputs.
 output "alarm_arn" {
   description = "ARN of the CloudWatch composite alarm."
   value       = aws_cloudwatch_composite_alarm.this.arn

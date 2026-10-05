@@ -7,7 +7,7 @@ Keycloak CR (`keycloaks.k8s.keycloak.org/v2beta1`) that the official
 Keycloak Operator reconciles into a StatefulSet, its Services, and
 the one-time admin credential Secret.
 
-Not the right component when:
+Not the right kind when:
 
 - **The operator is missing** — a `KubernetesKeycloakOperator`
   watching this namespace is the PREREQUISITE (under its default

@@ -19,7 +19,7 @@ message AwsBatchComputeEnvironment {
   string kind = 2 [(buf.validate.field).string.const = 'AwsBatchComputeEnvironment'];
 
   // metadata contains standard resource metadata including name, labels, and annotations.
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec defines the desired state of the Batch compute environment.
   AwsBatchComputeEnvironmentSpec spec = 4 [(buf.validate.field).required = true];
@@ -32,5 +32,5 @@ message AwsBatchComputeEnvironment {
 // Batch compute environment.
 message AwsBatchComputeEnvironmentStatus {
   // outputs contains the values exported from the IaC stack after deployment.
-  AwsBatchComputeEnvironmentStackOutputs outputs = 1;
+  AwsBatchComputeEnvironmentOutputs outputs = 1;
 }

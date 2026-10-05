@@ -28,7 +28,7 @@ Kubernetes is a dual provider: the cluster runs IN one environment while the sec
 
 The cross-cloud combinations are first-class: a GKE cluster syncing from AWS Secrets Manager simply creates a store with static AWS credentials (or an assumable role) — nothing on this component changes. The ambient arm is the simplest posture when ONE cloud identity may read everything the cluster syncs; multi-team clusters should prefer per-store identities and leave `workload_identity` unset.
 
-The controller ServiceAccount name is fixed to `external-secrets` and exported (`status.outputs.controller_service_account`) so the cloud-side half of an ambient binding (IAM trust policy, Workload Identity binding, federated credential) can be composed in the same infra chart.
+The controller ServiceAccount name is fixed to `external-secrets` and exported (`status.outputs.controller_service_account`) so the cloud-side half of an ambient binding (IAM trust policy, Workload Identity binding, federated credential) can be composed in the same Infra Chart.
 
 ## Essential Configuration Fields
 
@@ -47,7 +47,7 @@ The controller ServiceAccount name is fixed to `external-secrets` and exported (
 - **`spec.prometheus.service_monitor`**: opt-in ServiceMonitor (requires the Prometheus operator CRDs — the release fails without them)
 - **`spec.helm_values`**: escape hatch for chart values beyond the typed fields — never the primary interface
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|
@@ -57,7 +57,7 @@ The controller ServiceAccount name is fixed to `external-secrets` and exported (
 
 ## Composing in Infra Charts
 
-The standard chart wiring: this component first, then stores (KubernetesClusterSecretStore for cluster-wide backends, KubernetesSecretStore for namespace-scoped ones), then KubernetesExternalSecret resources referencing the stores. Cloud components (an IAM role for Secrets Manager, a GCP service account for Secret Manager) deploy in the same run and flow their handles into `workload_identity` — or into the stores' own auth blocks for per-team isolation.
+The standard chart wiring: this component first, then stores (KubernetesClusterSecretStore for cluster-wide backends, KubernetesSecretStore for namespace-scoped ones), then KubernetesExternalSecret resources referencing the stores. Cloud-side Infra Components (an IAM role for Secrets Manager, a GCP service account for Secret Manager) deploy in the same run and flow their handles into `workload_identity` — or into the stores' own auth blocks for per-team isolation.
 
 ```yaml
 apiVersion: kubernetes.planton.dev/v1alpha1

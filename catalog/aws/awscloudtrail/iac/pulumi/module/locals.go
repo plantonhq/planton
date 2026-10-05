@@ -5,11 +5,11 @@ import (
 
 	awscloudtrailv1alpha1 "github.com/plantonhq/planton/catalog/aws/awscloudtrail/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 type Locals struct {
 	Target *awscloudtrailv1alpha1.AwsCloudTrail
 	Spec   *awscloudtrailv1alpha1.AwsCloudTrailSpec
@@ -17,7 +17,7 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, in *awscloudtrailv1alpha1.AwsCloudTrailStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awscloudtrailv1alpha1.AwsCloudTrailIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec
@@ -30,7 +30,7 @@ func initializeLocals(_ *pulumi.Context, in *awscloudtrailv1alpha1.AwsCloudTrail
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsCloudTrail.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsCloudTrail.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

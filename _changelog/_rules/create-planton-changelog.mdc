@@ -258,7 +258,7 @@ sequenceDiagram
     CLI->>Pulumi: Initialize stack
     Pulumi->>Provider: Deploy resources
     Provider-->>Pulumi: Success
-    Pulumi-->>CLI: Stack outputs
+    Pulumi-->>CLI: Outputs
     CLI-->>User: Display results
 ```
 
@@ -453,8 +453,8 @@ planton pulumi preview --manifest postgres.yaml --module-dir ${MODULE}
 # Apply with auto-approval
 planton pulumi up --manifest postgres.yaml --yes
 
-# Generate stack outputs
-planton stack-outputs --manifest postgres.yaml
+# Generate outputs
+planton outputs --manifest postgres.yaml
 ```
 
 ### Component Categories

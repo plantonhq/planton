@@ -31,7 +31,7 @@ type GcpVertexAiDataset struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpVertexAiDatasetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpVertexAiDataset) GetKind() string {
 	return ""
 }
 
-func (x *GcpVertexAiDataset) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpVertexAiDataset) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpVertexAiDataset) GetStatus() *GcpVertexAiDatasetStatus {
 // gcp-vertex-ai-dataset status
 type GcpVertexAiDatasetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpVertexAiDatasetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpVertexAiDatasetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpVertexAiDatasetStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaidataset_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpVertexAiDatasetStatus) GetOutputs() *GcpVertexAiDatasetStackOutputs {
+func (x *GcpVertexAiDatasetStatus) GetOutputs() *GcpVertexAiDatasetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpvertexaidataset_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12GcpVertexAiDatasetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetStatusR\x06status\"\x81\x01\n" +
-	"\x18GcpVertexAiDatasetStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetStackOutputsR\aoutputsB\xed\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetStatusR\x06status\"|\n" +
+	"\x18GcpVertexAiDatasetStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetOutputsR\aoutputsB\xed\x02\n" +
 	"/com.dev.planton.gcp.gcpvertexaidataset.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/gcp/gcpvertexaidataset/v1alpha1;gcpvertexaidatasetv1alpha1\xa2\x02\x04DPGG\xaa\x02+Dev.Planton.Gcp.Gcpvertexaidataset.V1alpha1\xca\x02+Dev\\Planton\\Gcp\\Gcpvertexaidataset\\V1alpha1\xe2\x027Dev\\Planton\\Gcp\\Gcpvertexaidataset\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Gcp::Gcpvertexaidataset::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpvertexaidataset_v1alpha1_api_proto_rawDescGZIP() []byte
 
 var file_catalog_gcp_gcpvertexaidataset_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpvertexaidataset_v1alpha1_api_proto_goTypes = []any{
-	(*GcpVertexAiDataset)(nil),             // 0: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDataset
-	(*GcpVertexAiDatasetStatus)(nil),       // 1: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpVertexAiDatasetSpec)(nil),         // 3: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetSpec
-	(*GcpVertexAiDatasetStackOutputs)(nil), // 4: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetStackOutputs
+	(*GcpVertexAiDataset)(nil),           // 0: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDataset
+	(*GcpVertexAiDatasetStatus)(nil),     // 1: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpVertexAiDatasetSpec)(nil),       // 3: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetSpec
+	(*GcpVertexAiDatasetOutputs)(nil),    // 4: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetOutputs
 }
 var file_catalog_gcp_gcpvertexaidataset_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDataset.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDataset.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDataset.spec:type_name -> dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetSpec
 	1, // 2: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDataset.status:type_name -> dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetStatus
-	4, // 3: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetStatus.outputs:type_name -> dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetStackOutputs
+	4, // 3: dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetStatus.outputs:type_name -> dev.planton.gcp.gcpvertexaidataset.v1alpha1.GcpVertexAiDatasetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

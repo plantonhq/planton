@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpMonitoringUptimeCheckSpec defines a Cloud Monitoring uptime check —
 a probe that Google runs against a target (a public URL, a monitored
@@ -17,7 +17,7 @@ as metrics.
 An uptime check on its own only MEASURES. To be paged when the target
 goes down, pair it with a GcpMonitoringAlertPolicy whose threshold
 condition filters on the uptime_check_passed metric and the check's
-uptime_check_id — the composition edge the `uptime_check_id` stack
+uptime_check_id — the composition edge the `uptime_check_id`
 output exists for.
 
 Exactly one TARGET (monitored_resource | resource_group |

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Guard: every Pulumi component must have a buildable entrypoint at the
+# Guard: every Pulumi kind must have a buildable entrypoint at the
 # `iac/pulumi/` ROOT (a `package main` file directly in that directory), and must NOT
 # place the entrypoint in a `main/` or `entrypoint/` subdirectory.
 #
 # WHY THIS EXISTS
-# The release pipeline (.github/workflows/release.pulumi-modules.yaml) builds each component
+# The release pipeline (.github/workflows/release.pulumi-modules.yaml) builds each kind
 # NON-RECURSIVELY: `go build -o <bin> ./catalog/<p>/<c>/iac/pulumi`.
 # That command REQUIRES a `package main` at the directory root and fails with
 # `no Go files in .../iac/pulumi` when the entrypoint is missing or misplaced. A recursive
@@ -53,7 +53,7 @@ status=0
 
 if [[ ${#missing_root_main[@]} -gt 0 ]]; then
   status=1
-  echo "ERROR: ${#missing_root_main[@]} Pulumi component(s) have NO 'package main' at the iac/pulumi root." >&2
+  echo "ERROR: ${#missing_root_main[@]} Pulumi kind(s) have NO 'package main' at the iac/pulumi root." >&2
   echo "The release build (go build ./<...>/iac/pulumi) will fail with 'no Go files'." >&2
   echo "Create iac/pulumi/main.go (package main) per forge rule 010-pulumi-entrypoint:" >&2
   printf '  - %s\n' "${missing_root_main[@]}" >&2
@@ -62,7 +62,7 @@ fi
 
 if [[ ${#misplaced_subdir[@]} -gt 0 ]]; then
   status=1
-  echo "ERROR: ${#misplaced_subdir[@]} Pulumi component(s) place the entrypoint in a 'main/' or 'entrypoint/' subdir." >&2
+  echo "ERROR: ${#misplaced_subdir[@]} Pulumi kind(s) place the entrypoint in a 'main/' or 'entrypoint/' subdir." >&2
   echo "The release build is non-recursive and only consumes the iac/pulumi root package." >&2
   echo "Move the entrypoint files up to iac/pulumi/ and delete the subdir:" >&2
   printf '  - %s\n' "${misplaced_subdir[@]}" >&2
@@ -74,4 +74,4 @@ if [[ $status -ne 0 ]]; then
   exit 1
 fi
 
-echo "Pulumi entrypoint guard passed: every component has a root 'package main' and no misplaced entrypoint subdir."
+echo "Pulumi entrypoint guard passed: every kind has a root 'package main' and no misplaced entrypoint subdir."

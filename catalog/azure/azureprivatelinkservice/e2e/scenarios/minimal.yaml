@@ -15,7 +15,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureprivatelinkservice
+    e2e-catalog-kind: azureprivatelinkservice
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AzureLoadBalancer"

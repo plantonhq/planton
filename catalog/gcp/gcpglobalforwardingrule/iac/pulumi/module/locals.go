@@ -30,8 +30,8 @@ type Locals struct {
 	IsPrivateServiceConnect bool
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcpglobalforwardingrulev1alpha1.GcpGlobalForwardingRuleStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(ctx *pulumi.Context, iacInput *gcpglobalforwardingrulev1alpha1.GcpGlobalForwardingRuleIacInput) *Locals {
+	target := iacInput.Target
 
 	ruleName := target.Spec.ForwardingRuleName
 	if ruleName == "" {

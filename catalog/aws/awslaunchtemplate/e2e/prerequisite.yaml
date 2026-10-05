@@ -1,5 +1,5 @@
 # AwsLaunchTemplate install profile used as a prerequisite by composed
-# components (an auto-scaling group's launch_template reference). The
+# kinds (an auto-scaling group's launch_template reference). The
 # template is a leaf -- no VPC-dependent fields -- so the harness deploys it
 # directly and captures launch_template_id for the dependent's references.
 #
@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awslaunchtemplate
+    e2e-catalog-kind: awslaunchtemplate
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kubernetesjupyterhub
 spec:
@@ -38,7 +38,7 @@ spec:
     - the price of reserved CPU, memory, and volume storage is the target cluster's node and storage-class economics, which this catalog cannot know
     - "the dominant reservation is created AT RUNTIME, not at deploy time: one notebook pod (and by default a 10Gi home volume) per active user -- no manifest-time statement can count users, so per-user capacity is deliberately not estimated"
     - user home PVCs (claim-<username>) survive server stops and even destruction of this resource -- accumulated home storage is unbounded by this manifest
-    - the catalog presets declare no hub or proxy resource requests and no hub-database volume size, so no capacity derivation ships for this component -- the chart's own defaults (no core requests, a 1Gi hub sqlite PVC) apply undeclared
+    - the catalog presets declare no hub or proxy resource requests and no hub-database volume size, so no capacity derivation ships for this kind -- the chart's own defaults (no core requests, a 1Gi hub sqlite PVC) apply undeclared
     - the image-puller DaemonSets run one pod per node -- the node-count multiplication is the cluster's
     - the helm_values overlay merges last and can override any modeled value
   notes: "This component creates no cloud SKU of its own -- its cost is the share of the cluster it reserves, realized on the cluster's bill. The honest manifest-time statement is unusual here: the deploy-time footprint (hub + proxy + placeholders) is small, and the real reservation follows login behavior -- concurrent users x single_user guarantees, bounded by hub.active_server_limit and reclaimed by culling."

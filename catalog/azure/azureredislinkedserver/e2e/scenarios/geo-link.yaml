@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureredislinkedserver
+    e2e-catalog-kind: azureredislinkedserver
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/azure/azureredislinkedserver/e2e/primary-cache.yaml, catalog/azure/azureredislinkedserver/e2e/secondary-cache.yaml"

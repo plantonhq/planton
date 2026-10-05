@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustOrganizationStackOutputs captures the observable
+// CloudflareZeroTrustOrganizationOutputs captures the observable
 // outputs after applying the organization configuration.
-type CloudflareZeroTrustOrganizationStackOutputs struct {
+type CloudflareZeroTrustOrganizationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The team domain users sign in through, without the
 	// .cloudflareaccess.com suffix -- what Access applications and WARP
@@ -36,20 +36,20 @@ type CloudflareZeroTrustOrganizationStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustOrganizationStackOutputs) Reset() {
-	*x = CloudflareZeroTrustOrganizationStackOutputs{}
+func (x *CloudflareZeroTrustOrganizationOutputs) Reset() {
+	*x = CloudflareZeroTrustOrganizationOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustOrganizationStackOutputs) String() string {
+func (x *CloudflareZeroTrustOrganizationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustOrganizationStackOutputs) ProtoMessage() {}
+func (*CloudflareZeroTrustOrganizationOutputs) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustOrganizationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustOrganizationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *CloudflareZeroTrustOrganizationStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustOrganizationStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustOrganizationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustOrganizationOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustOrganizationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustOrganizationStackOutputs) GetAuthDomain() string {
+func (x *CloudflareZeroTrustOrganizationOutputs) GetAuthDomain() string {
 	if x != nil {
 		return x.AuthDomain
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustOrganizationStackOutputs) GetAccountId() string {
+func (x *CloudflareZeroTrustOrganizationOutputs) GetAccountId() string {
 	if x != nil {
 		return x.AccountId
 	}
@@ -84,8 +84,8 @@ var File_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_outputs_pro
 
 const file_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/cloudflare/cloudflarezerotrustorganization/v1alpha1/outputs.proto\x12?dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1\"m\n" +
-	"+CloudflareZeroTrustOrganizationStackOutputs\x12\x1f\n" +
+	"Icatalog/cloudflare/cloudflarezerotrustorganization/v1alpha1/outputs.proto\x12?dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1\"h\n" +
+	"&CloudflareZeroTrustOrganizationOutputs\x12\x1f\n" +
 	"\vauth_domain\x18\x01 \x01(\tR\n" +
 	"authDomain\x12\x1d\n" +
 	"\n" +
@@ -106,7 +106,7 @@ func file_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_outputs_pr
 
 var file_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareZeroTrustOrganizationStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationStackOutputs
+	(*CloudflareZeroTrustOrganizationOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustorganization.v1alpha1.CloudflareZeroTrustOrganizationOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustorganization_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

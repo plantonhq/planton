@@ -1,6 +1,6 @@
 # Catalog-research eval question bank.
 #
-# These questions measure how well an agent can research the component
+# These questions measure how well an agent can research the kind
 # catalog. Each entry records the question, the class of research it
 # probes, the ground-truth answer, and machine-checkable `checks` that pin
 # the answer to the generated reference pack. `eval_test.go` verifies every
@@ -31,7 +31,7 @@ questions:
   - id: q01
     class: kind-discovery
     question: >
-      A user wants managed PostgreSQL on Azure. Which catalog component
+      A user wants managed PostgreSQL on Azure. Which catalog kind
       provides it?
     answer: >
       AzurePostgresqlFlexibleServer -- Azure Database for PostgreSQL
@@ -48,7 +48,7 @@ questions:
     class: kind-discovery
     question: >
       A user asks for Memcached on AWS. Is there a first-class catalog
-      component, or does this need a substitute?
+      kind, or does this need a substitute?
     answer: >
       First-class: AwsMemcachedElasticache (ElastiCache cluster running
       the Memcached engine). No substitution needed.
@@ -63,7 +63,7 @@ questions:
     class: required-fields
     question: >
       Which top-level spec fields are required on GcpGkeCluster, and which
-      other components can the reference-typed ones read?
+      other kinds can the reference-typed ones read?
     answer: >
       spec.location (string), spec.network (references GcpVpcNetwork's
       status.outputs.network_self_link), and spec.subnetwork (references
@@ -126,7 +126,7 @@ questions:
   - id: q07
     class: reverse-references
     question: >
-      What can point at a GcpDnsZone -- which other components' fields can
+      What can point at a GcpDnsZone -- which other kinds' fields can
       consume its outputs, and what do they read?
     answer: >
       GcpDnsRecord.spec.managedZone reads status.outputs.zone_name, and
@@ -145,7 +145,7 @@ questions:
   - id: q08
     class: graph
     question: >
-      Across the whole catalog, which component fields can consume an
+      Across the whole catalog, which kind fields can consume an
       AwsVpc's outputs?
     answer: >
       Eleven inbound edges in the foreign-key graph, including
@@ -194,11 +194,11 @@ questions:
   - id: q11
     class: wisdom
     question: >
-      Three services will share one namespace. Which component should
+      Three services will share one namespace. Which kind should
       create the namespace, and why not set createNamespace on each
       service?
     answer: >
-      A dedicated KubernetesNamespace component owns it. With
+      A dedicated KubernetesNamespace kind owns it. With
       createNamespace on multiple co-tenants, the first deploy claims the
       namespace in its IaC state and teardown/ownership breaks for the
       rest -- the namespace-ownership pattern carries the judgment.
@@ -211,7 +211,7 @@ questions:
   - id: q12
     class: wisdom
     question: >
-      When a component requires an operator to be installed, does the
+      When a kind requires an operator to be installed, does the
       architecture diagram show an edge between them?
     answer: >
       No. The operator is a registry prerequisite enforced by metadata;
@@ -242,7 +242,7 @@ questions:
   - id: q14
     class: cross-provider
     question: >
-      Does DigitalOcean have a managed database component in the catalog,
+      Does DigitalOcean have a managed database kind in the catalog,
       and what is it called?
     answer: >
       Yes: DigitalOceanDatabaseCluster (managed database cluster on
@@ -255,7 +255,7 @@ questions:
     class: wisdom
     question: >
       A Gateway listener terminates TLS. Where does its certificate Secret
-      come from, and which component issues it?
+      come from, and which kind issues it?
     answer: >
       TLS listeners consume certificate Secrets that KubernetesCertificate
       (issued through cert-manager) writes -- the Gateway guide's chain
@@ -525,7 +525,7 @@ questions:
       then the platform works and its status says the break-glass is gone.
       Under the built-in seal the keys Secret is recreated from the kept copy
       BEFORE (or within minutes of) the declaration and the operator unseals
-      with it; forgotten, the vault component refuses with
+      with it; forgotten, the vault kind refuses with
       ConfigurationRefused naming the archive, the Secret, its keys, and the
       step, and the next pass unseals once it is back. A restore never
       brings back the keys that open the vault, and a declaration naming a
@@ -591,7 +591,7 @@ questions:
       value field instead?
     answer: >
       GcpCloudRun: the env entry's `secretValue: $secret/stripe-key` (the
-      component keeps it in a Secret Manager secret the service owns and
+      kind keeps it in a Secret Manager secret the service owns and
       pins the variable to that version). AwsEcsTaskDefinition: the
       container's `secretEnvironment: {STRIPE_KEY: $secret/stripe-key}`
       (a Secrets Manager secret readable only by the execution role). The

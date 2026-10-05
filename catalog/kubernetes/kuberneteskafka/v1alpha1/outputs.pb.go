@@ -22,12 +22,12 @@ const (
 )
 
 // *
-// **KubernetesKafkaStackOutputs** — the composition handles a deployed
+// **KubernetesKafkaOutputs** — the composition handles a deployed
 // Kafka cluster exports. Workloads compose against the bootstrap
 // endpoint; KubernetesKafkaTopic / KubernetesKafkaUser resources
 // compose against the cluster name; TLS clients fetch the cluster CA
 // from the exported Secret.
-type KubernetesKafkaStackOutputs struct {
+type KubernetesKafkaOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the cluster runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -51,20 +51,20 @@ type KubernetesKafkaStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *KubernetesKafkaStackOutputs) Reset() {
-	*x = KubernetesKafkaStackOutputs{}
+func (x *KubernetesKafkaOutputs) Reset() {
+	*x = KubernetesKafkaOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteskafka_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKafkaStackOutputs) String() string {
+func (x *KubernetesKafkaOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKafkaStackOutputs) ProtoMessage() {}
+func (*KubernetesKafkaOutputs) ProtoMessage() {}
 
-func (x *KubernetesKafkaStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKafkaOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskafka_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -76,40 +76,40 @@ func (x *KubernetesKafkaStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKafkaStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKafkaStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKafkaOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKafkaOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskafka_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKafkaStackOutputs) GetNamespace() string {
+func (x *KubernetesKafkaOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesKafkaStackOutputs) GetClusterName() string {
+func (x *KubernetesKafkaOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *KubernetesKafkaStackOutputs) GetBootstrapServiceName() string {
+func (x *KubernetesKafkaOutputs) GetBootstrapServiceName() string {
 	if x != nil {
 		return x.BootstrapServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesKafkaStackOutputs) GetInternalBootstrapEndpoint() string {
+func (x *KubernetesKafkaOutputs) GetInternalBootstrapEndpoint() string {
 	if x != nil {
 		return x.InternalBootstrapEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesKafkaStackOutputs) GetClusterCaCertSecretName() string {
+func (x *KubernetesKafkaOutputs) GetClusterCaCertSecretName() string {
 	if x != nil {
 		return x.ClusterCaCertSecretName
 	}
@@ -120,8 +120,8 @@ var File_catalog_kubernetes_kuberneteskafka_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_kubernetes_kuberneteskafka_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/kubernetes/kuberneteskafka/v1alpha1/outputs.proto\x12/dev.planton.kubernetes.kuberneteskafka.v1alpha1\"\x92\x02\n" +
-	"\x1bKubernetesKafkaStackOutputs\x12\x1c\n" +
+	"9catalog/kubernetes/kuberneteskafka/v1alpha1/outputs.proto\x12/dev.planton.kubernetes.kuberneteskafka.v1alpha1\"\x8d\x02\n" +
+	"\x16KubernetesKafkaOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x124\n" +
 	"\x16bootstrap_service_name\x18\x03 \x01(\tR\x14bootstrapServiceName\x12>\n" +
@@ -143,7 +143,7 @@ func file_catalog_kubernetes_kuberneteskafka_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kuberneteskafka_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskafka_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKafkaStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaStackOutputs
+	(*KubernetesKafkaOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaOutputs
 }
 var file_catalog_kubernetes_kuberneteskafka_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpSharedVpcHostStackOutputs captures the host project's identity after
+// GcpSharedVpcHostOutputs captures the host project's identity after
 // provisioning.
-type GcpSharedVpcHostStackOutputs struct {
+type GcpSharedVpcHostOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The project ID that is now the Shared VPC host -- the resolved value,
 	// so it is populated even when the spec left project_id empty and the
@@ -34,20 +34,20 @@ type GcpSharedVpcHostStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpSharedVpcHostStackOutputs) Reset() {
-	*x = GcpSharedVpcHostStackOutputs{}
+func (x *GcpSharedVpcHostOutputs) Reset() {
+	*x = GcpSharedVpcHostOutputs{}
 	mi := &file_catalog_gcp_gcpsharedvpchost_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSharedVpcHostStackOutputs) String() string {
+func (x *GcpSharedVpcHostOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSharedVpcHostStackOutputs) ProtoMessage() {}
+func (*GcpSharedVpcHostOutputs) ProtoMessage() {}
 
-func (x *GcpSharedVpcHostStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpSharedVpcHostOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpsharedvpchost_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,12 +59,12 @@ func (x *GcpSharedVpcHostStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSharedVpcHostStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpSharedVpcHostStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSharedVpcHostOutputs.ProtoReflect.Descriptor instead.
+func (*GcpSharedVpcHostOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsharedvpchost_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSharedVpcHostStackOutputs) GetHostProjectId() string {
+func (x *GcpSharedVpcHostOutputs) GetHostProjectId() string {
 	if x != nil {
 		return x.HostProjectId
 	}
@@ -75,8 +75,8 @@ var File_catalog_gcp_gcpsharedvpchost_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpsharedvpchost_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpsharedvpchost/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpsharedvpchost.v1alpha1\"F\n" +
-	"\x1cGcpSharedVpcHostStackOutputs\x12&\n" +
+	"3catalog/gcp/gcpsharedvpchost/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpsharedvpchost.v1alpha1\"A\n" +
+	"\x17GcpSharedVpcHostOutputs\x12&\n" +
 	"\x0fhost_project_id\x18\x01 \x01(\tR\rhostProjectIdB\xe3\x02\n" +
 	"-com.dev.planton.gcp.gcpsharedvpchost.v1alpha1B\fOutputsProtoP\x01Z[github.com/plantonhq/planton/catalog/gcp/gcpsharedvpchost/v1alpha1;gcpsharedvpchostv1alpha1\xa2\x02\x04DPGG\xaa\x02)Dev.Planton.Gcp.Gcpsharedvpchost.V1alpha1\xca\x02)Dev\\Planton\\Gcp\\Gcpsharedvpchost\\V1alpha1\xe2\x025Dev\\Planton\\Gcp\\Gcpsharedvpchost\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Gcp::Gcpsharedvpchost::V1alpha1b\x06proto3"
 
@@ -94,7 +94,7 @@ func file_catalog_gcp_gcpsharedvpchost_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpsharedvpchost_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpsharedvpchost_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpSharedVpcHostStackOutputs)(nil), // 0: dev.planton.gcp.gcpsharedvpchost.v1alpha1.GcpSharedVpcHostStackOutputs
+	(*GcpSharedVpcHostOutputs)(nil), // 0: dev.planton.gcp.gcpsharedvpchost.v1alpha1.GcpSharedVpcHostOutputs
 }
 var file_catalog_gcp_gcpsharedvpchost_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

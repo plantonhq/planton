@@ -4,7 +4,7 @@ Registers the features your models use -- a customer's age, a product's click ra
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project
 - **Feature group** -- a `vertex.AiFeatureGroup` over the BigQuery source
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Dependencies
@@ -58,7 +58,7 @@ spec:
 planton apply -f vertex-ai-feature-group.yaml
 ```
 
-This registers two customer features from a BigQuery table, keyed by `customer_id`. A Stack Job tracks the provisioning in real time.
+This registers two customer features from a BigQuery table, keyed by `customer_id`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -76,16 +76,16 @@ These are the most important decisions when configuring a feature group. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpBigQueryTable** | `bigQuery.inputUri` | `status.outputs.qualified_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -104,6 +104,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP BigQuery Table**](/cloud-catalog/gcp-big-query-table) -- the source table or view
-- [**GCP BigQuery Dataset**](/cloud-catalog/gcp-big-query-dataset) -- the dataset holding the source
-- [**GCP Vertex AI Feature Online Store**](/cloud-catalog/gcp-vertex-ai-feature-online-store) -- serves the features in production
+- [**GCP BigQuery Table**](/infra-catalog/gcp-big-query-table) -- the source table or view
+- [**GCP BigQuery Dataset**](/infra-catalog/gcp-big-query-dataset) -- the dataset holding the source
+- [**GCP Vertex AI Feature Online Store**](/infra-catalog/gcp-vertex-ai-feature-online-store) -- serves the features in production

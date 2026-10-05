@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpPrivateCaCertificateAuthorityStackOutputs captures the authority's identity and its CA
+// GcpPrivateCaCertificateAuthorityOutputs captures the authority's identity and its CA
 // certificate -- what subordinates and certificates reference, and what
 // relying parties install as a trust anchor.
-type GcpPrivateCaCertificateAuthorityStackOutputs struct {
+type GcpPrivateCaCertificateAuthorityOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name --
 	// projects/{project}/locations/{location}/caPools/{pool}/certificateAuthorities/{id}.
@@ -48,20 +48,20 @@ type GcpPrivateCaCertificateAuthorityStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpPrivateCaCertificateAuthorityStackOutputs) Reset() {
-	*x = GcpPrivateCaCertificateAuthorityStackOutputs{}
+func (x *GcpPrivateCaCertificateAuthorityOutputs) Reset() {
+	*x = GcpPrivateCaCertificateAuthorityOutputs{}
 	mi := &file_catalog_gcp_gcpprivatecacertificateauthority_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpPrivateCaCertificateAuthorityStackOutputs) String() string {
+func (x *GcpPrivateCaCertificateAuthorityOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpPrivateCaCertificateAuthorityStackOutputs) ProtoMessage() {}
+func (*GcpPrivateCaCertificateAuthorityOutputs) ProtoMessage() {}
 
-func (x *GcpPrivateCaCertificateAuthorityStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpPrivateCaCertificateAuthorityOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpprivatecacertificateauthority_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -73,54 +73,54 @@ func (x *GcpPrivateCaCertificateAuthorityStackOutputs) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpPrivateCaCertificateAuthorityStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpPrivateCaCertificateAuthorityStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpPrivateCaCertificateAuthorityOutputs.ProtoReflect.Descriptor instead.
+func (*GcpPrivateCaCertificateAuthorityOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpprivatecacertificateauthority_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpPrivateCaCertificateAuthorityStackOutputs) GetName() string {
+func (x *GcpPrivateCaCertificateAuthorityOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpPrivateCaCertificateAuthorityStackOutputs) GetCertificateAuthorityId() string {
+func (x *GcpPrivateCaCertificateAuthorityOutputs) GetCertificateAuthorityId() string {
 	if x != nil {
 		return x.CertificateAuthorityId
 	}
 	return ""
 }
 
-func (x *GcpPrivateCaCertificateAuthorityStackOutputs) GetState() string {
+func (x *GcpPrivateCaCertificateAuthorityOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
 	return ""
 }
 
-func (x *GcpPrivateCaCertificateAuthorityStackOutputs) GetPemCaCertificate() string {
+func (x *GcpPrivateCaCertificateAuthorityOutputs) GetPemCaCertificate() string {
 	if x != nil {
 		return x.PemCaCertificate
 	}
 	return ""
 }
 
-func (x *GcpPrivateCaCertificateAuthorityStackOutputs) GetPemCaCertificates() []string {
+func (x *GcpPrivateCaCertificateAuthorityOutputs) GetPemCaCertificates() []string {
 	if x != nil {
 		return x.PemCaCertificates
 	}
 	return nil
 }
 
-func (x *GcpPrivateCaCertificateAuthorityStackOutputs) GetCaCertificateAccessUrl() string {
+func (x *GcpPrivateCaCertificateAuthorityOutputs) GetCaCertificateAccessUrl() string {
 	if x != nil {
 		return x.CaCertificateAccessUrl
 	}
 	return ""
 }
 
-func (x *GcpPrivateCaCertificateAuthorityStackOutputs) GetCrlAccessUrls() []string {
+func (x *GcpPrivateCaCertificateAuthorityOutputs) GetCrlAccessUrls() []string {
 	if x != nil {
 		return x.CrlAccessUrls
 	}
@@ -131,8 +131,8 @@ var File_catalog_gcp_gcpprivatecacertificateauthority_v1alpha1_outputs_proto pro
 
 const file_catalog_gcp_gcpprivatecacertificateauthority_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/gcp/gcpprivatecacertificateauthority/v1alpha1/outputs.proto\x129dev.planton.gcp.gcpprivatecacertificateauthority.v1alpha1\"\xd3\x02\n" +
-	",GcpPrivateCaCertificateAuthorityStackOutputs\x12\x12\n" +
+	"Ccatalog/gcp/gcpprivatecacertificateauthority/v1alpha1/outputs.proto\x129dev.planton.gcp.gcpprivatecacertificateauthority.v1alpha1\"\xce\x02\n" +
+	"'GcpPrivateCaCertificateAuthorityOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x128\n" +
 	"\x18certificate_authority_id\x18\x02 \x01(\tR\x16certificateAuthorityId\x12\x14\n" +
 	"\x05state\x18\x03 \x01(\tR\x05state\x12,\n" +
@@ -156,7 +156,7 @@ func file_catalog_gcp_gcpprivatecacertificateauthority_v1alpha1_outputs_proto_ra
 
 var file_catalog_gcp_gcpprivatecacertificateauthority_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpprivatecacertificateauthority_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpPrivateCaCertificateAuthorityStackOutputs)(nil), // 0: dev.planton.gcp.gcpprivatecacertificateauthority.v1alpha1.GcpPrivateCaCertificateAuthorityStackOutputs
+	(*GcpPrivateCaCertificateAuthorityOutputs)(nil), // 0: dev.planton.gcp.gcpprivatecacertificateauthority.v1alpha1.GcpPrivateCaCertificateAuthorityOutputs
 }
 var file_catalog_gcp_gcpprivatecacertificateauthority_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

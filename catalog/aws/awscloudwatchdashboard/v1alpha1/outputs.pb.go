@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudwatchDashboardStackOutputs captures the observable state of
+// AwsCloudwatchDashboardOutputs captures the observable state of
 // the dashboard after apply.
-type AwsCloudwatchDashboardStackOutputs struct {
+type AwsCloudwatchDashboardOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The dashboard's name (the provider's import ID).
 	DashboardName string `protobuf:"bytes,1,opt,name=dashboard_name,json=dashboardName,proto3" json:"dashboard_name,omitempty"`
@@ -33,20 +33,20 @@ type AwsCloudwatchDashboardStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsCloudwatchDashboardStackOutputs) Reset() {
-	*x = AwsCloudwatchDashboardStackOutputs{}
+func (x *AwsCloudwatchDashboardOutputs) Reset() {
+	*x = AwsCloudwatchDashboardOutputs{}
 	mi := &file_catalog_aws_awscloudwatchdashboard_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudwatchDashboardStackOutputs) String() string {
+func (x *AwsCloudwatchDashboardOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudwatchDashboardStackOutputs) ProtoMessage() {}
+func (*AwsCloudwatchDashboardOutputs) ProtoMessage() {}
 
-func (x *AwsCloudwatchDashboardStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudwatchDashboardOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudwatchdashboard_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsCloudwatchDashboardStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudwatchDashboardStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCloudwatchDashboardStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudwatchDashboardOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCloudwatchDashboardOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchdashboard_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudwatchDashboardStackOutputs) GetDashboardName() string {
+func (x *AwsCloudwatchDashboardOutputs) GetDashboardName() string {
 	if x != nil {
 		return x.DashboardName
 	}
 	return ""
 }
 
-func (x *AwsCloudwatchDashboardStackOutputs) GetDashboardArn() string {
+func (x *AwsCloudwatchDashboardOutputs) GetDashboardArn() string {
 	if x != nil {
 		return x.DashboardArn
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awscloudwatchdashboard_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_aws_awscloudwatchdashboard_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/aws/awscloudwatchdashboard/v1alpha1/outputs.proto\x12/dev.planton.aws.awscloudwatchdashboard.v1alpha1\"p\n" +
-	"\"AwsCloudwatchDashboardStackOutputs\x12%\n" +
+	"9catalog/aws/awscloudwatchdashboard/v1alpha1/outputs.proto\x12/dev.planton.aws.awscloudwatchdashboard.v1alpha1\"k\n" +
+	"\x1dAwsCloudwatchDashboardOutputs\x12%\n" +
 	"\x0edashboard_name\x18\x01 \x01(\tR\rdashboardName\x12#\n" +
 	"\rdashboard_arn\x18\x02 \x01(\tR\fdashboardArnB\x8d\x03\n" +
 	"3com.dev.planton.aws.awscloudwatchdashboard.v1alpha1B\fOutputsProtoP\x01Zggithub.com/plantonhq/planton/catalog/aws/awscloudwatchdashboard/v1alpha1;awscloudwatchdashboardv1alpha1\xa2\x02\x04DPAA\xaa\x02/Dev.Planton.Aws.Awscloudwatchdashboard.V1alpha1\xca\x02/Dev\\Planton\\Aws\\Awscloudwatchdashboard\\V1alpha1\xe2\x02;Dev\\Planton\\Aws\\Awscloudwatchdashboard\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Aws::Awscloudwatchdashboard::V1alpha1b\x06proto3"
@@ -101,7 +101,7 @@ func file_catalog_aws_awscloudwatchdashboard_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_aws_awscloudwatchdashboard_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudwatchdashboard_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCloudwatchDashboardStackOutputs)(nil), // 0: dev.planton.aws.awscloudwatchdashboard.v1alpha1.AwsCloudwatchDashboardStackOutputs
+	(*AwsCloudwatchDashboardOutputs)(nil), // 0: dev.planton.aws.awscloudwatchdashboard.v1alpha1.AwsCloudwatchDashboardOutputs
 }
 var file_catalog_aws_awscloudwatchdashboard_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -7,12 +7,12 @@
 ## Summary
 
 Three AWS infra-charts forged from first principles against the rebuilt
-90/10 component surface: `serverless-rest-api`, `event-driven-backbone`,
+90/10 kind surface: `serverless-rest-api`, `event-driven-backbone`,
 and `transactional-email`. The AWS chart catalog now stands at 13. Every
 chart passed the full offline gate — structure guard, working-tree CLI
 `chart validate` across defaults plus every bool-toggle variant (14
 variants total across the three), provider-wide sweep (13/13), and live
-icon URL checks. The build also surfaced and fixed a component defect at
+icon URL checks. The build also surfaced and fixed a kind defect at
 the root — the Route 53 DNS record's name pattern rejected the
 underscore-prefixed service records (DMARC, DKIM, SRV) its own field
 comments promise to support — and published the missing kind logos
@@ -82,7 +82,7 @@ generated with the identity, so no template can publish them; the
 feedback (machine) and alerts (human) topics are deliberately separate
 so a bounce storm pages once. 15 params, 6 validation variants.
 
-## Component Fix: Route 53 DNS Record Name Pattern
+## Kind Fix: Route 53 DNS Record Name Pattern
 
 The transactional-email chart's `_dmarc.<domain>` TXT record — a
 composition the DNS record spec's own comments and the SES kind's docs
@@ -123,7 +123,7 @@ published, and a full sweep of the AWS kind-logo URLs found 20 returning
 The chart forge rule now carries the full icon-publishing pipeline
 (asset source of truth, sync/PUT paths, the tree-vs-CDN trap, the
 negative-cache purge) and a new guardrail: a chart validation failure
-can be the component's defect — fix the component at the root, never
+can be the kind's defect — fix the kind at the root, never
 bend the chart around it.
 
 ## Validation

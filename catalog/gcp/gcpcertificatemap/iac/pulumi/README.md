@@ -26,7 +26,7 @@ iac/pulumi/
     ├── main.go                # Module coordinator
     ├── certificate_map.go     # Map + entry fan-out
     ├── locals.go              # Resolved resource + derived values + label merges
-    └── outputs.go             # Stack output constants
+    └── outputs.go             # Output constants
 ```
 
 ## How the module maps the spec
@@ -47,7 +47,7 @@ Certificate maps are GLOBAL (no location argument by API design). The
 module also enables `certificatemanager.googleapis.com` on the target
 project (`disable_on_destroy` false).
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|
@@ -57,7 +57,7 @@ project (`disable_on_destroy` false).
 
 ## Local development
 
-`stack-input.yaml` carries a ready smoke manifest. Run the module directly:
+`iac-input.yaml` carries a ready smoke manifest. Run the module directly:
 
 ```bash
 planton apply --manifest ../../e2e/manifest.yaml --module-dir .

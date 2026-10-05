@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0PromptSpec manages how the login flow of the Auth0 tenant the provider
 connection's credential belongs to behaves.
@@ -26,7 +26,7 @@ https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/prompt
 
 ```yaml
 # Auth0 Prompt Test Manifest
-# This file is used for testing the Auth0Prompt component.
+# This file is used for testing the Auth0Prompt kind.
 #
 # Applying it CHANGES the login flow of the tenant the credential belongs to:
 # run it only against a test tenant nobody signs in to.

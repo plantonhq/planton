@@ -16,7 +16,7 @@ The Scaleway cloud provider expansion in Planton needs object storage support. S
 
 - No Scaleway object storage resource kind existed in Planton
 - Teams managing Scaleway infrastructure couldn't declaratively provision buckets
-- Missing piece for infra chart compositions that need storage (serverless-environment, database-stack backup targets)
+- Missing piece for Infra Chart compositions that need storage (serverless-environment, database-stack backup targets)
 
 ## Solution / What's New
 
@@ -66,8 +66,8 @@ flowchart TB
 **Proto schemas (4)**:
 - `apis/dev/planton/provider/scaleway/scalewayobjectbucket/v1/api.proto`
 - `apis/dev/planton/provider/scaleway/scalewayobjectbucket/v1/spec.proto`
-- `apis/dev/planton/provider/scaleway/scalewayobjectbucket/v1/stack_outputs.proto`
-- `apis/dev/planton/provider/scaleway/scalewayobjectbucket/v1/stack_input.proto`
+- `apis/dev/planton/provider/scaleway/scalewayobjectbucket/v1/outputs.proto`
+- `apis/dev/planton/provider/scaleway/scalewayobjectbucket/v1/iac_input.proto`
 
 **Pulumi Go module (6)**:
 - `iac/pulumi/Pulumi.yaml`
@@ -99,7 +99,7 @@ The spec includes 6 user-facing fields with CEL validation enforcing that Object
 - `cors_rules` -- Cross-origin resource sharing for web applications
 - `force_destroy` -- Allow deletion with objects inside
 
-### Stack Outputs
+### Outputs
 
 5 outputs enabling downstream composition:
 - `bucket_id` -- Unique identifier (region/name format)

@@ -9,9 +9,9 @@
 # volumes -- every workflow's state lives in the database you declare.
 # num_history_shards is DATA partitioning baked into the schema, never a
 # pod count -- deliberately not bound.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetestemporal
 spec:

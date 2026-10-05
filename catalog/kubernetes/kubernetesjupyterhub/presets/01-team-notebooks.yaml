@@ -6,7 +6,7 @@ spec:
   namespace:
     value: notebooks
   create_namespace: true
-  # Everything else is the component's defaults — and the defaults are
+  # Everything else is the kind's defaults — and the defaults are
   # deliberately SECURED: sign-in requires the module-generated shared
   # password (Secret `team-notebooks-auth`, key `password`), never the
   # chart's own open door (any username, NO password). Hub state lives

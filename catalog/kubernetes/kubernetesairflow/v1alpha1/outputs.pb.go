@@ -23,13 +23,13 @@ const (
 )
 
 // *
-// **KubernetesAirflowStackOutputs** — the composition handles a
+// **KubernetesAirflowOutputs** — the composition handles a
 // deployed Airflow exports. Humans and API clients reach the API
 // server (UI + REST API) through its service handle (compose
 // exposure kinds over it); the admin credential and the module-owned
 // connection Secrets are exported by NAME for downstream
 // composition.
-type KubernetesAirflowStackOutputs struct {
+type KubernetesAirflowOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace Airflow runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -67,20 +67,20 @@ type KubernetesAirflowStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesAirflowStackOutputs) Reset() {
-	*x = KubernetesAirflowStackOutputs{}
+func (x *KubernetesAirflowOutputs) Reset() {
+	*x = KubernetesAirflowOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesairflow_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesAirflowStackOutputs) String() string {
+func (x *KubernetesAirflowOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesAirflowStackOutputs) ProtoMessage() {}
+func (*KubernetesAirflowOutputs) ProtoMessage() {}
 
-func (x *KubernetesAirflowStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesAirflowOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesairflow_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -92,61 +92,61 @@ func (x *KubernetesAirflowStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesAirflowStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesAirflowStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesAirflowOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesAirflowOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesairflow_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesAirflowStackOutputs) GetNamespace() string {
+func (x *KubernetesAirflowOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesAirflowStackOutputs) GetApiServerService() string {
+func (x *KubernetesAirflowOutputs) GetApiServerService() string {
 	if x != nil {
 		return x.ApiServerService
 	}
 	return ""
 }
 
-func (x *KubernetesAirflowStackOutputs) GetApiServerEndpoint() string {
+func (x *KubernetesAirflowOutputs) GetApiServerEndpoint() string {
 	if x != nil {
 		return x.ApiServerEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesAirflowStackOutputs) GetAdminPasswordSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesAirflowOutputs) GetAdminPasswordSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.AdminPasswordSecret
 	}
 	return nil
 }
 
-func (x *KubernetesAirflowStackOutputs) GetMetadataConnectionSecretName() string {
+func (x *KubernetesAirflowOutputs) GetMetadataConnectionSecretName() string {
 	if x != nil {
 		return x.MetadataConnectionSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesAirflowStackOutputs) GetBrokerUrlSecretName() string {
+func (x *KubernetesAirflowOutputs) GetBrokerUrlSecretName() string {
 	if x != nil {
 		return x.BrokerUrlSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesAirflowStackOutputs) GetFernetKeySecretName() string {
+func (x *KubernetesAirflowOutputs) GetFernetKeySecretName() string {
 	if x != nil {
 		return x.FernetKeySecretName
 	}
 	return ""
 }
 
-func (x *KubernetesAirflowStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesAirflowOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -157,8 +157,8 @@ var File_catalog_kubernetes_kubernetesairflow_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_kubernetes_kubernetesairflow_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesairflow/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesairflow.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xdf\x03\n" +
-	"\x1dKubernetesAirflowStackOutputs\x12\x1c\n" +
+	";catalog/kubernetes/kubernetesairflow/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesairflow.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xda\x03\n" +
+	"\x18KubernetesAirflowOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12,\n" +
 	"\x12api_server_service\x18\x02 \x01(\tR\x10apiServerService\x12.\n" +
 	"\x13api_server_endpoint\x18\x03 \x01(\tR\x11apiServerEndpoint\x12_\n" +
@@ -183,11 +183,11 @@ func file_catalog_kubernetes_kubernetesairflow_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesairflow_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesairflow_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesAirflowStackOutputs)(nil),  // 0: dev.planton.kubernetes.kubernetesairflow.v1alpha1.KubernetesAirflowStackOutputs
+	(*KubernetesAirflowOutputs)(nil),       // 0: dev.planton.kubernetes.kubernetesairflow.v1alpha1.KubernetesAirflowOutputs
 	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetesairflow_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesairflow.v1alpha1.KubernetesAirflowStackOutputs.admin_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kubernetesairflow.v1alpha1.KubernetesAirflowOutputs.admin_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

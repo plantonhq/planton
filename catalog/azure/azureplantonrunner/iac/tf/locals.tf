@@ -15,7 +15,7 @@ locals {
   # The Container App secret holding the runner token — the app's own
   # secret store, referenced by the env's secret_name. A fixed name: the
   # app carries exactly one secret, and the name is part of the
-  # cross-engine contract (and a stack output).
+  # cross-engine contract (and an output).
   token_secret_name = "runner-token"
 
   # The runner's Consumption-plan sizing — the spec's documented defaults

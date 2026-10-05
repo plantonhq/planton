@@ -6,7 +6,7 @@
 
 ## Summary
 
-The Azure networking wave closes with six components in one coherent story: the
+The Azure networking wave closes with six kinds in one coherent story: the
 **subnet attach model**. `AzureSubnet` becomes the composition hub Azure itself
 designed it to be -- route tables, network security groups, and NAT gateways now
 attach *to the subnet* through first-class foreign keys realized as association

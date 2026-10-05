@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.azure.azureaksnodepool.v1alpha1;
 
-// **AzureAksNodePoolStackOutputs** captures the outputs of provisioning an
+// **AzureAksNodePoolOutputs** captures the outputs of provisioning an
 // AKS node pool.
 //
 // Nothing downstream deploys INTO a node pool (workloads target pools via
 // Kubernetes labels and taints, not ARM references), so the outputs are
 // the pool's own identifiers plus the node image actually rolled out.
-message AzureAksNodePoolStackOutputs {
+message AzureAksNodePoolOutputs {
   // The Azure Resource Manager ID of the agent pool.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ContainerService/managedClusters/{cluster}/agentPools/{name}
   string node_pool_id = 1;

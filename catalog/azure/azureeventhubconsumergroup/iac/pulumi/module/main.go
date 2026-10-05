@@ -8,13 +8,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureeventhubconsumergroupv1alpha1.AzureEventHubConsumerGroupStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureeventhubconsumergroupv1alpha1.AzureEventHubConsumerGroupIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -59,7 +59,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureeventhubconsumergroupv1alph
 		return errors.Wrapf(err, "failed to create Event Hub consumer group %s", spec.ConsumerGroupName)
 	}
 
-	// Export stack outputs: what consumer applications pass to their SDK
+	// Export outputs: what consumer applications pass to their SDK
 	// client alongside the hub name.
 	ctx.Export(OpConsumerGroupId, createdConsumerGroup.ID())
 	ctx.Export(OpConsumerGroupName, createdConsumerGroup.Name)

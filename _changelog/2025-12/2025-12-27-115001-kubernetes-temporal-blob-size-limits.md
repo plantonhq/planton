@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added blob/payload size limit configuration to the KubernetesTemporal component, enabling workflows to handle large payloads (markers, signals, activity I/O) up to 10MB+. This addresses `BadRecordMarkerAttributes.Details exceeds size limit` errors when Temporal workflows process large data like IaC diffs.
+Added blob/payload size limit configuration to the KubernetesTemporal kind, enabling workflows to handle large payloads (markers, signals, activity I/O) up to 10MB+. This addresses `BadRecordMarkerAttributes.Details exceeds size limit` errors when Temporal workflows process large data like IaC diffs.
 
 ## Problem Statement / Motivation
 

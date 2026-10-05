@@ -26,7 +26,7 @@ verifies metrics-server instead of skipping TLS verification.
   cert-manager arm keeps the `caBundle` wired
 - **Composition via `valueFrom`** — the issuer name flows from the
   KubernetesClusterIssuer resource's `status.outputs.cluster_issuer_name`,
-  so the whole chain deploys in one infra chart
+  so the whole chain deploys in one Infra Chart
 
 ## Prerequisites
 
@@ -38,7 +38,7 @@ verifies metrics-server instead of skipping TLS verification.
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<your-cluster-issuer>` | Name of the KubernetesClusterIssuer resource whose issuer signs the serving certificate | Your infra chart / `planton` resource listing |
+| `<your-cluster-issuer>` | Name of the KubernetesClusterIssuer resource whose issuer signs the serving certificate | Your Infra Chart / `planton` resource listing |
 
 ## Related Presets
 

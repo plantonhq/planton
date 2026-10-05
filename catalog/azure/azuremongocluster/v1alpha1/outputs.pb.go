@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMongoClusterStackOutputs** captures the outputs from
+// **AzureMongoClusterOutputs** captures the outputs from
 // provisioning an Azure Cosmos DB for MongoDB vCore cluster.
-type AzureMongoClusterStackOutputs struct {
+type AzureMongoClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The cluster's Azure Resource Manager ID -- the target an
 	// AzureMongoClusterUser's mongo_cluster_id (and a replica's
@@ -46,20 +46,20 @@ type AzureMongoClusterStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AzureMongoClusterStackOutputs) Reset() {
-	*x = AzureMongoClusterStackOutputs{}
+func (x *AzureMongoClusterOutputs) Reset() {
+	*x = AzureMongoClusterOutputs{}
 	mi := &file_catalog_azure_azuremongocluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMongoClusterStackOutputs) String() string {
+func (x *AzureMongoClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMongoClusterStackOutputs) ProtoMessage() {}
+func (*AzureMongoClusterOutputs) ProtoMessage() {}
 
-func (x *AzureMongoClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMongoClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremongocluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,33 +71,33 @@ func (x *AzureMongoClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMongoClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMongoClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMongoClusterOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMongoClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremongocluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMongoClusterStackOutputs) GetMongoClusterId() string {
+func (x *AzureMongoClusterOutputs) GetMongoClusterId() string {
 	if x != nil {
 		return x.MongoClusterId
 	}
 	return ""
 }
 
-func (x *AzureMongoClusterStackOutputs) GetMongoClusterName() string {
+func (x *AzureMongoClusterOutputs) GetMongoClusterName() string {
 	if x != nil {
 		return x.MongoClusterName
 	}
 	return ""
 }
 
-func (x *AzureMongoClusterStackOutputs) GetConnectionString() string {
+func (x *AzureMongoClusterOutputs) GetConnectionString() string {
 	if x != nil {
 		return x.ConnectionString
 	}
 	return ""
 }
 
-func (x *AzureMongoClusterStackOutputs) GetConnectionStrings() map[string]string {
+func (x *AzureMongoClusterOutputs) GetConnectionStrings() map[string]string {
 	if x != nil {
 		return x.ConnectionStrings
 	}
@@ -108,12 +108,12 @@ var File_catalog_azure_azuremongocluster_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_azure_azuremongocluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/azure/azuremongocluster/v1alpha1/outputs.proto\x12,dev.planton.azure.azuremongocluster.v1alpha1\x1a\x1cshared/options/options.proto\"\x8a\x03\n" +
-	"\x1dAzureMongoClusterStackOutputs\x12(\n" +
+	"6catalog/azure/azuremongocluster/v1alpha1/outputs.proto\x12,dev.planton.azure.azuremongocluster.v1alpha1\x1a\x1cshared/options/options.proto\"\x80\x03\n" +
+	"\x18AzureMongoClusterOutputs\x12(\n" +
 	"\x10mongo_cluster_id\x18\x01 \x01(\tR\x0emongoClusterId\x12,\n" +
 	"\x12mongo_cluster_name\x18\x02 \x01(\tR\x10mongoClusterName\x121\n" +
-	"\x11connection_string\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\x10connectionString\x12\x97\x01\n" +
-	"\x12connection_strings\x18\x04 \x03(\v2b.dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStackOutputs.ConnectionStringsEntryB\x04\xa0\xa6\x1d\x01R\x11connectionStrings\x1aD\n" +
+	"\x11connection_string\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\x10connectionString\x12\x92\x01\n" +
+	"\x12connection_strings\x18\x04 \x03(\v2].dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterOutputs.ConnectionStringsEntryB\x04\xa0\xa6\x1d\x01R\x11connectionStrings\x1aD\n" +
 	"\x16ConnectionStringsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xf6\x02\n" +
@@ -133,11 +133,11 @@ func file_catalog_azure_azuremongocluster_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_azure_azuremongocluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremongocluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMongoClusterStackOutputs)(nil), // 0: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStackOutputs
-	nil,                                   // 1: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStackOutputs.ConnectionStringsEntry
+	(*AzureMongoClusterOutputs)(nil), // 0: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterOutputs
+	nil,                              // 1: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterOutputs.ConnectionStringsEntry
 }
 var file_catalog_azure_azuremongocluster_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStackOutputs.connection_strings:type_name -> dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterStackOutputs.ConnectionStringsEntry
+	1, // 0: dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterOutputs.connection_strings:type_name -> dev.planton.azure.azuremongocluster.v1alpha1.AzureMongoClusterOutputs.ConnectionStringsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

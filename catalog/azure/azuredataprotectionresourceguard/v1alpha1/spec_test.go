@@ -29,7 +29,7 @@ func validResource() *AzureDataProtectionResourceGuard {
 	return &AzureDataProtectionResourceGuard{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureDataProtectionResourceGuard",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-resource-guard",
 		},
 		Spec: &AzureDataProtectionResourceGuardSpec{

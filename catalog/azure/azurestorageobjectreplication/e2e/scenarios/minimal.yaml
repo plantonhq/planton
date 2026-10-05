@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurestorageobjectreplication
+    e2e-catalog-kind: azurestorageobjectreplication
   annotations:
     planton.dev/e2e: "true"
     # Scenario-local accounts + containers (in deploy order) instead of

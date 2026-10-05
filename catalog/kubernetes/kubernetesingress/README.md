@@ -2,9 +2,9 @@
 
 ## Overview
 
-**KubernetesIngress** is a Planton component that creates and manages Kubernetes `networking/v1` Ingress objects as first-class, declaratively managed resources. An Ingress declares HTTP(S) exposure for in-cluster Services: host rules and path matches routing to Service backends, with optional TLS termination from certificate Secrets.
+**KubernetesIngress** is a catalog kind that creates and manages Kubernetes `networking/v1` Ingress objects as first-class, declaratively managed resources. An Ingress declares HTTP(S) exposure for in-cluster Services: host rules and path matches routing to Service backends, with optional TLS termination from certificate Secrets.
 
-The component covers the complete `networking/v1` IngressSpec surface — ingress class selection, a default backend, TLS blocks, and host/path rules with all three path types. The single deliberate omission is the `resource` backend variant (an ObjectRef to an arbitrary same-namespace object): it is controller-specific and rarely implemented, and Service backends cover the real exposure paths.
+The kind covers the complete `networking/v1` IngressSpec surface — ingress class selection, a default backend, TLS blocks, and host/path rules with all three path types. The single deliberate omission is the `resource` backend variant (an ObjectRef to an arbitrary same-namespace object): it is controller-specific and rarely implemented, and Service backends cover the real exposure paths.
 
 ## Purpose
 
@@ -22,13 +22,13 @@ Exposure in Planton is **composed, never embedded**. A workload kind (Kubernetes
 
 An Ingress object is **inert until an ingress controller** (ingress-nginx, AWS ALB, GCE, Traefik, ...) runs in the cluster and claims it — via `ingress_class_name` or the cluster's default IngressClass. Creating the Ingress before the controller exists is valid; its load-balancer status simply stays empty until a controller reconciles it.
 
-Both IaC modules deliberately create the object **without waiting for a controller** (Terraform sets `wait_for_load_balancer = false`; Pulumi sets the `pulumi.com/skipAwait` annotation — the exact same choice). Infra charts routinely deploy the workload and its exposure before the ingress controller wave, and blocking every deploy until a controller populates the status would couple this kind to cluster addon ordering. The consequence: the `load_balancer_ip` / `load_balancer_hostname` outputs export empty on clusters where no controller has reconciled the object yet, and fill in once one has.
+Both IaC modules deliberately create the object **without waiting for a controller** (Terraform sets `wait_for_load_balancer = false`; Pulumi sets the `pulumi.com/skipAwait` annotation — the exact same choice). Infra Charts routinely deploy the workload and its exposure before the ingress controller wave, and blocking every deploy until a controller populates the status would couple this kind to cluster addon ordering. The consequence: the `load_balancer_ip` / `load_balancer_hostname` outputs export empty on clusters where no controller has reconciled the object yet, and fill in once one has.
 
 IngressClass objects ship with their controllers (`kubectl get ingressclass` lists what the cluster offers), which is why `ingress_class_name` is a plain name rather than a reference to a Planton kind.
 
-## Relationship to Other Components
+## Relationship to Other Kinds
 
-- **Workload components** (KubernetesDeployment and friends): Export a `service` output that backends here route to — deploy the app, then expose it, composed in one chart
+- **Workload kinds** (KubernetesDeployment and friends): Export a `service` output that backends here route to — deploy the app, then expose it, composed in one chart
 - **KubernetesService**: The default reference kind for `service_name`; a backend can point at a managed Service directly
 - **KubernetesSecret**: The default reference kind for `tls[].secret_name` — a `kubernetes.io/tls` Secret holding the certificate and key
 - **cert-manager** (cluster addon): The alternative certificate path — add a `cert-manager.io/cluster-issuer` annotation and cert-manager creates the Secret named in the `tls` block
@@ -84,7 +84,7 @@ Controller-specific behavior goes through `annotations` — the upstream contrac
 - **`spec.tls`**: TLS termination blocks
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton governance labels
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -96,7 +96,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace and backend/Secret references (literal values or resolved references)
 2. Merge user labels and annotations with standard Planton tracking labels

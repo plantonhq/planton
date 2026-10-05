@@ -6,7 +6,7 @@ spec:
   namespace:
     value: dev-qdrant
   create_namespace: true
-  # Everything else is the component's defaults: replicas 1 (still a
+  # Everything else is the kind's defaults: replicas 1 (still a
   # one-member cluster — distributed mode is always on, so growing
   # later is only a replicas change), the pinned chart version, the
   # official image at the chart's appVersion.

@@ -1,4 +1,4 @@
-# AzureSubnet install profile used as a prerequisite by composed components
+# AzureSubnet install profile used as a prerequisite by composed kinds
 # (declared via prerequisites: [AzureSubnet] in the kind registry). The E2E
 # harness deploys this document (via the subnet's Pulumi module) after its
 # own prerequisite chain (fixture resource group -> fixture virtual
@@ -17,7 +17,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuresubnet
+    e2e-catalog-kind: azuresubnet
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -48,7 +48,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuresubnet
+    e2e-catalog-kind: azuresubnet
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -77,7 +77,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuresubnet
+    e2e-catalog-kind: azuresubnet
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -108,7 +108,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuresubnet
+    e2e-catalog-kind: azuresubnet
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -139,7 +139,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuresubnet
+    e2e-catalog-kind: azuresubnet
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -171,7 +171,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuresubnet
+    e2e-catalog-kind: azuresubnet
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -202,7 +202,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuresubnet
+    e2e-catalog-kind: azuresubnet
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -238,7 +238,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuresubnet
+    e2e-catalog-kind: azuresubnet
   annotations:
     planton.dev/e2e: "true"
   tags:

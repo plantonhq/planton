@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-auto-scaling-group stack-input
-type AwsAutoScalingGroupStackInput struct {
+// aws-auto-scaling-group iac-input
+type AwsAutoScalingGroupIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsAutoScalingGroup `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsAutoScalingGroupStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsAutoScalingGroupStackInput) Reset() {
-	*x = AwsAutoScalingGroupStackInput{}
+func (x *AwsAutoScalingGroupIacInput) Reset() {
+	*x = AwsAutoScalingGroupIacInput{}
 	mi := &file_catalog_aws_awsautoscalinggroup_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsAutoScalingGroupStackInput) String() string {
+func (x *AwsAutoScalingGroupIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsAutoScalingGroupStackInput) ProtoMessage() {}
+func (*AwsAutoScalingGroupIacInput) ProtoMessage() {}
 
-func (x *AwsAutoScalingGroupStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsAutoScalingGroupIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsautoscalinggroup_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsAutoScalingGroupStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsAutoScalingGroupStackInput.ProtoReflect.Descriptor instead.
-func (*AwsAutoScalingGroupStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsAutoScalingGroupIacInput.ProtoReflect.Descriptor instead.
+func (*AwsAutoScalingGroupIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsautoscalinggroup_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsAutoScalingGroupStackInput) GetTarget() *AwsAutoScalingGroup {
+func (x *AwsAutoScalingGroupIacInput) GetTarget() *AwsAutoScalingGroup {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsAutoScalingGroupStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsAutoScalingGroupIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awsautoscalinggroup_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_aws_awsautoscalinggroup_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awsautoscalinggroup/v1alpha1/input.proto\x12,dev.planton.aws.awsautoscalinggroup.v1alpha1\x1a2catalog/aws/awsautoscalinggroup/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc7\x01\n" +
-	"\x1dAwsAutoScalingGroupStackInput\x12Y\n" +
+	"4catalog/aws/awsautoscalinggroup/v1alpha1/input.proto\x12,dev.planton.aws.awsautoscalinggroup.v1alpha1\x1a2catalog/aws/awsautoscalinggroup/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc5\x01\n" +
+	"\x1bAwsAutoScalingGroupIacInput\x12Y\n" +
 	"\x06target\x18\x01 \x01(\v2A.dev.planton.aws.awsautoscalinggroup.v1alpha1.AwsAutoScalingGroupR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xf6\x02\n" +
 	"0com.dev.planton.aws.awsautoscalinggroup.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awsautoscalinggroup_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsautoscalinggroup_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsautoscalinggroup_v1alpha1_input_proto_goTypes = []any{
-	(*AwsAutoScalingGroupStackInput)(nil), // 0: dev.planton.aws.awsautoscalinggroup.v1alpha1.AwsAutoScalingGroupStackInput
-	(*AwsAutoScalingGroup)(nil),           // 1: dev.planton.aws.awsautoscalinggroup.v1alpha1.AwsAutoScalingGroup
-	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsAutoScalingGroupIacInput)(nil), // 0: dev.planton.aws.awsautoscalinggroup.v1alpha1.AwsAutoScalingGroupIacInput
+	(*AwsAutoScalingGroup)(nil),         // 1: dev.planton.aws.awsautoscalinggroup.v1alpha1.AwsAutoScalingGroup
+	(*aws.AwsProviderConfig)(nil),       // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsautoscalinggroup_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsautoscalinggroup.v1alpha1.AwsAutoScalingGroupStackInput.target:type_name -> dev.planton.aws.awsautoscalinggroup.v1alpha1.AwsAutoScalingGroup
-	2, // 1: dev.planton.aws.awsautoscalinggroup.v1alpha1.AwsAutoScalingGroupStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsautoscalinggroup.v1alpha1.AwsAutoScalingGroupIacInput.target:type_name -> dev.planton.aws.awsautoscalinggroup.v1alpha1.AwsAutoScalingGroup
+	2, // 1: dev.planton.aws.awsautoscalinggroup.v1alpha1.AwsAutoScalingGroupIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

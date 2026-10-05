@@ -35,10 +35,10 @@ type AzureVpnServerConfiguration struct {
 	// Resource kind. Must be "AzureVpnServerConfiguration".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// VPN server configuration specification.
 	Spec *AzureVpnServerConfigurationSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureVpnServerConfigurationStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -88,7 +88,7 @@ func (x *AzureVpnServerConfiguration) GetKind() string {
 	return ""
 }
 
-func (x *AzureVpnServerConfiguration) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureVpnServerConfiguration) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureVpnServerConfiguration) GetStatus() *AzureVpnServerConfigurationSt
 // AzureVpnServerConfigurationStatus holds the deployment outputs.
 type AzureVpnServerConfigurationStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureVpnServerConfigurationStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureVpnServerConfigurationOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureVpnServerConfigurationStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevpnserverconfiguration_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureVpnServerConfigurationStatus) GetOutputs() *AzureVpnServerConfigurationStackOutputs {
+func (x *AzureVpnServerConfigurationStatus) GetOutputs() *AzureVpnServerConfigurationOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azurevpnserverconfiguration_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bAzureVpnServerConfigurationR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
 	"\x04spec\x18\x04 \x01(\v2W.dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12q\n" +
-	"\x06status\x18\x05 \x01(\v2Y.dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStatusR\x06status\"\x9e\x01\n" +
-	"!AzureVpnServerConfigurationStatus\x12y\n" +
-	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStackOutputsR\aoutputsB\xb8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Y.dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStatusR\x06status\"\x99\x01\n" +
+	"!AzureVpnServerConfigurationStatus\x12t\n" +
+	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationOutputsR\aoutputsB\xb8\x03\n" +
 	":com.dev.planton.azure.azurevpnserverconfiguration.v1alpha1B\bApiProtoP\x01Zsgithub.com/plantonhq/planton/catalog/azure/azurevpnserverconfiguration/v1alpha1;azurevpnserverconfigurationv1alpha1\xa2\x02\x04DPAA\xaa\x026Dev.Planton.Azure.Azurevpnserverconfiguration.V1alpha1\xca\x026Dev\\Planton\\Azure\\Azurevpnserverconfiguration\\V1alpha1\xe2\x02BDev\\Planton\\Azure\\Azurevpnserverconfiguration\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Azure::Azurevpnserverconfiguration::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azurevpnserverconfiguration_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_azure_azurevpnserverconfiguration_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurevpnserverconfiguration_v1alpha1_api_proto_goTypes = []any{
-	(*AzureVpnServerConfiguration)(nil),             // 0: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfiguration
-	(*AzureVpnServerConfigurationStatus)(nil),       // 1: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureVpnServerConfigurationSpec)(nil),         // 3: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationSpec
-	(*AzureVpnServerConfigurationStackOutputs)(nil), // 4: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStackOutputs
+	(*AzureVpnServerConfiguration)(nil),        // 0: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfiguration
+	(*AzureVpnServerConfigurationStatus)(nil),  // 1: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureVpnServerConfigurationSpec)(nil),    // 3: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationSpec
+	(*AzureVpnServerConfigurationOutputs)(nil), // 4: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationOutputs
 }
 var file_catalog_azure_azurevpnserverconfiguration_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfiguration.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfiguration.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfiguration.spec:type_name -> dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationSpec
 	1, // 2: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfiguration.status:type_name -> dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStatus
-	4, // 3: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStatus.outputs:type_name -> dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStackOutputs
+	4, // 3: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStatus.outputs:type_name -> dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

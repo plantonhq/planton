@@ -10,7 +10,7 @@ re-attach; no replica is promoted. Durability through a primary restart
 comes from PERSISTENCE (the append-only file on a volume), not from
 promotion.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You need automated failover or horizontal sharding** — Sentinel HA
   and Cluster mode are deliberately absent because the upstream chart
@@ -26,7 +26,7 @@ Also not the right component when:
 - **You need Redis itself** — Valkey is the Linux Foundation's
   BSD-licensed fork of Redis 7.2 and a drop-in replacement for Redis
   clients; if you specifically need Redis-branded releases or modules
-  beyond that surface, this component does not provide them.
+  beyond that surface, this kind does not provide them.
 
 ## Overview
 
@@ -139,7 +139,7 @@ renders no headless Service).
 - **`spec.log_level`** / **`spec.image`** /
   **`spec.image_pull_secrets`** / **`spec.helm_values`**
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

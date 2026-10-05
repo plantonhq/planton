@@ -1,7 +1,7 @@
 # Automation Runbook Window
 
 This preset runs YOUR automation runbook — wired by reference to an
-[AWS SSM Document](/cloud-catalog/aws-ssm-document) component — once
+[AWS SSM Document](/infra-catalog/aws-ssm-document) component — once
 per nightly window, untargeted (the runbook manages its own scope).
 
 ## When to Use

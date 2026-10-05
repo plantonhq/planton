@@ -47,7 +47,7 @@ After applying, `kubectl -n <prometheus namespace> port-forward svc/<prometheus>
 
 ## Credentials are references
 
-Every Secret and ConfigMap an endpoint reads is a selector whose `name` defaults to a reference to a KubernetesSecret or KubernetesConfigMap. In an infra chart, reference the Secret resource rather than typing its name: the graph then shows the dependency and creates the Secret before the monitor. A monitor applied before its Secret exists is skipped by the operator until the next reconcile, which hides a misordering as a flaky scrape.
+Every Secret and ConfigMap an endpoint reads is a selector whose `name` defaults to a reference to a KubernetesSecret or KubernetesConfigMap. In an Infra Chart, reference the Secret resource rather than typing its name: the graph then shows the dependency and creates the Secret before the monitor. A monitor applied before its Secret exists is skipped by the operator until the next reconcile, which hides a misordering as a flaky scrape.
 
 Prefer `authorization` (a bearer token read from a Secret) or `oauth2` over `basic_auth`, and over the deprecated `bearer_token_secret` and `bearer_token_file`. The file forms (`bearer_token_file`, `tls_config`'s `ca_file`, `cert_file` and `key_file`) read paths inside the Prometheus container. They exist for scraping the Kubernetes API with the pod's own service-account token, and a Prometheus that sets `arbitraryFSAccessThroughSMs.deny` refuses every ServiceMonitor that names one.
 

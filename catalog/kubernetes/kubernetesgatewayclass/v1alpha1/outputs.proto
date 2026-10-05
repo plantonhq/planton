@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesgatewayclass.v1alpha1;
 
-// KubernetesGatewayClassStackOutputs captures observable outputs after the
+// KubernetesGatewayClassOutputs captures observable outputs after the
 // GatewayClass is created on the target cluster.
-message KubernetesGatewayClassStackOutputs {
+message KubernetesGatewayClassOutputs {
   // Name of the created GatewayClass (equals metadata.name). Use this value in
   // KubernetesGateway.spec.gateway_class_name to attach a Gateway to this
   // class; in InfraCharts it is the foreign-key target

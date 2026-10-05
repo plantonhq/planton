@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefederatedidentitycredential.v1alpha1;
 
-// **AzureFederatedIdentityCredentialStackOutputs** captures the outputs of
+// **AzureFederatedIdentityCredentialOutputs** captures the outputs of
 // provisioning a federated identity credential. The ARM resource ID is the
 // credential's identity for automation; the trust coordinates (issuer,
 // subject, audience) are exported as deployed so downstream tooling -- CI
 // configuration generators, cluster onboarding jobs -- can wire the external
 // side of the trust without re-reading the spec.
-message AzureFederatedIdentityCredentialStackOutputs {
+message AzureFederatedIdentityCredentialOutputs {
   // The full Azure Resource Manager ID of the federated identity credential.
   // Format: {identity-id}/federatedIdentityCredentials/{name}
   // where {identity-id} is the parent user-assigned identity's ARM ID.

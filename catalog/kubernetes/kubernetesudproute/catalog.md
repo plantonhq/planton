@@ -1,23 +1,23 @@
 # Kubernetes UDPRoute
 
-Creates a namespaced Kubernetes Gateway API `UDPRoute` -- a route that forwards **UDP datagrams** arriving on a Gateway listener to one or more backend Services. UDPRoute is a **layer-4, connectionless** route: it has no hostnames, no matches, and no filters -- there is no connection or request structure to match on. Datagrams on the parent listener's port are simply forwarded to the rule's backends. Typical backends are DNS servers, syslog collectors, game servers, and other datagram protocols. This component mirrors the upstream Gateway API `UDPRoute` (GA, `gateway.networking.k8s.io/v1`) spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
+Creates a namespaced Kubernetes Gateway API `UDPRoute` -- a route that forwards **UDP datagrams** arriving on a Gateway listener to one or more backend Services. UDPRoute is a **layer-4, connectionless** route: it has no hostnames, no matches, and no filters -- there is no connection or request structure to match on. Datagrams on the parent listener's port are simply forwarded to the rule's backends. Typical backends are DNS servers, syslog collectors, game servers, and other datagram protocols. This kind mirrors the upstream Gateway API `UDPRoute` (GA, `gateway.networking.k8s.io/v1`) spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
 
 > **Standard channel from v1.6.** `UDPRoute` graduated to GA and is served as `gateway.networking.k8s.io/v1` in the standard channel from Gateway API v1.6.0 (it was an experimental v1alpha2 resource in earlier releases). Deploy `KubernetesGatewayApiCrds` at v1.6.0+ first.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A namespaced UDPRoute** named after `metadata.name` in `spec.namespace`, attached to the Gateway listener(s) in `spec.parentRefs`, forwarding datagrams to the backends declared in its `spec.rules`.
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
 
-The Gateway controller reconciles the route asynchronously: it reports per-parent `Accepted` / `ResolvedRefs` conditions in the route's status, which you observe with `kubectl` (these controller-managed values are intentionally not stored as stack outputs).
+The Gateway controller reconciles the route asynchronously: it reports per-parent `Accepted` / `ResolvedRefs` conditions in the route's status, which you observe with `kubectl` (these controller-managed values are intentionally not stored as outputs).
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -62,7 +62,7 @@ spec:
 planton apply -f udp-route.yaml
 ```
 
-This creates a UDPRoute in `prod-apps` that attaches to the `udp-dns` listener of `prod-gateway` and forwards every datagram arriving on that listener to the `coredns` Service on port 53. A Stack Job tracks the provisioning in real time.
+This creates a UDPRoute in `prod-apps` that attaches to the `udp-dns` listener of `prod-gateway` and forwards every datagram arriving on that listener to the `coredns` Service on port 53. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -103,7 +103,7 @@ These are the most important decisions when configuring a UDPRoute. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
@@ -113,9 +113,9 @@ These are the most important decisions when configuring a UDPRoute. Explore the 
 
 Literal names (`value:`) cover targets created outside Planton; cross-namespace references additionally require a Reference Grant in the target namespace.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,8 +132,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Gateway API CRDs**](/cloud-catalog/kubernetes-gateway-api-crds) -- installs the Gateway API CRDs (v1.6.0+ standard channel carries UDPRoute); deploy first.
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- the Gateway whose UDP listener this route attaches to (`parentRefs`); install first.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the namespace (`spec.namespace`) the route runs in.
-- [**Kubernetes ReferenceGrant**](/cloud-catalog/kubernetes-reference-grant) -- authorizes cross-namespace parent or backend references from this route.
-- [**Kubernetes Service**](/cloud-catalog/kubernetes-service) -- the backend workloads (`backendRefs`) that receive forwarded datagrams.
+- [**Kubernetes Gateway API CRDs**](/infra-catalog/kubernetes-gateway-api-crds) -- installs the Gateway API CRDs (v1.6.0+ standard channel carries UDPRoute); deploy first.
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- the Gateway whose UDP listener this route attaches to (`parentRefs`); install first.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the namespace (`spec.namespace`) the route runs in.
+- [**Kubernetes ReferenceGrant**](/infra-catalog/kubernetes-reference-grant) -- authorizes cross-namespace parent or backend references from this route.
+- [**Kubernetes Service**](/infra-catalog/kubernetes-service) -- the backend workloads (`backendRefs`) that receive forwarded datagrams.

@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -21,7 +21,7 @@ func portal(spec *StripeBillingPortalConfigurationSpec) *StripeBillingPortalConf
 	return &StripeBillingPortalConfiguration{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripeBillingPortalConfiguration",
-		Metadata:   &shared.CloudResourceMetadata{Name: "customer-portal"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "customer-portal"},
 		Spec:       spec,
 	}
 }
@@ -81,7 +81,7 @@ func literal(v string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: v}}
 }
 
-func ref(kind cloudresourcekind.CloudResourceKind, name string) *foreignkeyv1.StringValueOrRef {
+func ref(kind catalogkind.CatalogKind, name string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 		ValueFrom: &foreignkeyv1.ValueFromRef{Kind: kind, Name: name},
 	}}
@@ -158,8 +158,8 @@ var _ = ginkgo.Describe("StripeBillingPortalConfiguration Validation Tests", fun
 			spec := selfServe()
 			spec.Features.SubscriptionUpdate = &StripeBillingPortalSubscriptionUpdate{
 				Products: []*StripeBillingPortalProduct{{
-					Product: ref(cloudresourcekind.CloudResourceKind_StripeProduct, "team-plan"),
-					Prices:  []*foreignkeyv1.StringValueOrRef{ref(cloudresourcekind.CloudResourceKind_StripePrice, "team-monthly")},
+					Product: ref(catalogkind.CatalogKind_StripeProduct, "team-plan"),
+					Prices:  []*foreignkeyv1.StringValueOrRef{ref(catalogkind.CatalogKind_StripePrice, "team-monthly")},
 				}},
 			}
 			err := protovalidate.Validate(portal(spec))

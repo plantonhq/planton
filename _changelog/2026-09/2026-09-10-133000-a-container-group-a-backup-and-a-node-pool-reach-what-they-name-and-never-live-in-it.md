@@ -3,7 +3,7 @@
 ## What changed
 
 - **Six references in the Azure container family are containment-exempt.** A Container Instance that mounts an Azure Files share names the storage account holding it twice (`AzureContainerInstanceVolumeAzureFile.storage_account_name` and `.storage_account_key`); a Data Protection backup instance that protects an AKS cluster names it (`AzureDataProtectionBackupInstanceKubernetesCluster.kubernetes_cluster_id`); an AKS node pool names the subnet its nodes attach to and, on traditional Azure CNI, the subnet its pods draw addresses from (`AzureAksNodePoolSpec.vnet_subnet_id`, `.pod_subnet_id`); an AKS cluster whose ingress add-on deploys an Application Gateway names the subnet that gateway goes into (`AzureAksClusterIngressApplicationGateway.subnet_id`). Each of those resources READS, MOUNTS, PROTECTS, or ATTACHES TO what it names and lives somewhere else -- the container group in its own resource group or subnet, the backup in its vault, the node pool in its cluster (an ARM child: `managedClusters/{cluster}/agentPools/{pool}`), the cluster in its own node subnet -- so on a diagram every one of these references is access, not placement. The Container App environment's storage registration already carried the exemption on the identical pair of storage-account fields; the container group now agrees with it.
-- The containment-decision registry (`shared/cloudresourcekind/testdata/containment_decisions.txt`) moves exactly six lines from `contained` to `exempt`. Nothing else moved.
+- The containment-decision registry (`shared/catalogkind/testdata/containment_decisions.txt`) moves exactly six lines from `contained` to `exempt`. Nothing else moved.
 
 ## Why
 
@@ -12,6 +12,6 @@
 ## How to check
 
 ```bash
-go test ./shared/cloudresourcekind/... -run TestContainmentDecisions   # green; the golden carries the six exemptions
+go test ./shared/catalogkind/... -run TestContainmentDecisions   # green; the golden carries the six exemptions
 grep -n containment_exempt catalog/azure/azurecontainerinstance/v1alpha1/spec.proto catalog/azure/azuredataprotectionbackupinstance/v1alpha1/spec.proto catalog/azure/azureaksnodepool/v1alpha1/spec.proto catalog/azure/azureakscluster/v1alpha1/spec.proto
 ```

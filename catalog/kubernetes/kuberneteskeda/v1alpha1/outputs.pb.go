@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesKedaStackOutputs captures observable outputs after KEDA is
+// KubernetesKedaOutputs captures observable outputs after KEDA is
 // installed on the target cluster.
-type KubernetesKedaStackOutputs struct {
+type KubernetesKedaOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace KEDA was installed into (the resolved spec.namespace).
 	// ScaledObjects live NEXT TO their workloads, not here — this is where
@@ -41,20 +41,20 @@ type KubernetesKedaStackOutputs struct {
 	sizeCache                  protoimpl.SizeCache
 }
 
-func (x *KubernetesKedaStackOutputs) Reset() {
-	*x = KubernetesKedaStackOutputs{}
+func (x *KubernetesKedaOutputs) Reset() {
+	*x = KubernetesKedaOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteskeda_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKedaStackOutputs) String() string {
+func (x *KubernetesKedaOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKedaStackOutputs) ProtoMessage() {}
+func (*KubernetesKedaOutputs) ProtoMessage() {}
 
-func (x *KubernetesKedaStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKedaOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskeda_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *KubernetesKedaStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKedaStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKedaStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKedaOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKedaOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskeda_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKedaStackOutputs) GetNamespace() string {
+func (x *KubernetesKedaOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesKedaStackOutputs) GetReleaseName() string {
+func (x *KubernetesKedaOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesKedaStackOutputs) GetOperatorServiceAccountName() string {
+func (x *KubernetesKedaOutputs) GetOperatorServiceAccountName() string {
 	if x != nil {
 		return x.OperatorServiceAccountName
 	}
@@ -96,8 +96,8 @@ var File_catalog_kubernetes_kuberneteskeda_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_kubernetes_kuberneteskeda_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kuberneteskeda/v1alpha1/outputs.proto\x12.dev.planton.kubernetes.kuberneteskeda.v1alpha1\"\xa0\x01\n" +
-	"\x1aKubernetesKedaStackOutputs\x12\x1c\n" +
+	"8catalog/kubernetes/kuberneteskeda/v1alpha1/outputs.proto\x12.dev.planton.kubernetes.kuberneteskeda.v1alpha1\"\x9b\x01\n" +
+	"\x15KubernetesKedaOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12A\n" +
 	"\x1doperator_service_account_name\x18\x03 \x01(\tR\x1aoperatorServiceAccountNameB\xff\x02\n" +
@@ -117,7 +117,7 @@ func file_catalog_kubernetes_kuberneteskeda_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_kubernetes_kuberneteskeda_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskeda_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKedaStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaStackOutputs
+	(*KubernetesKedaOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskeda.v1alpha1.KubernetesKedaOutputs
 }
 var file_catalog_kubernetes_kuberneteskeda_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

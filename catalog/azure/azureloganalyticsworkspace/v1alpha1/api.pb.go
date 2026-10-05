@@ -33,7 +33,7 @@ type AzureLogAnalyticsWorkspace struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureLogAnalyticsWorkspaceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *AzureLogAnalyticsWorkspace) GetKind() string {
 	return ""
 }
 
-func (x *AzureLogAnalyticsWorkspace) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureLogAnalyticsWorkspace) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *AzureLogAnalyticsWorkspace) GetStatus() *AzureLogAnalyticsWorkspaceStat
 // AzureLogAnalyticsWorkspaceStatus holds the deployment status and outputs.
 type AzureLogAnalyticsWorkspaceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureLogAnalyticsWorkspaceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureLogAnalyticsWorkspaceOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureLogAnalyticsWorkspaceStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureloganalyticsworkspace_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureLogAnalyticsWorkspaceStatus) GetOutputs() *AzureLogAnalyticsWorkspaceStackOutputs {
+func (x *AzureLogAnalyticsWorkspaceStatus) GetOutputs() *AzureLogAnalyticsWorkspaceOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azureloganalyticsworkspace_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aAzureLogAnalyticsWorkspaceR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
 	"\x04spec\x18\x04 \x01(\v2U.dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
-	"\x06status\x18\x05 \x01(\v2W.dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceStatusR\x06status\"\x9b\x01\n" +
-	" AzureLogAnalyticsWorkspaceStatus\x12w\n" +
-	"\aoutputs\x18\x01 \x01(\v2].dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceStackOutputsR\aoutputsB\xb1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2W.dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceStatusR\x06status\"\x96\x01\n" +
+	" AzureLogAnalyticsWorkspaceStatus\x12r\n" +
+	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceOutputsR\aoutputsB\xb1\x03\n" +
 	"9com.dev.planton.azure.azureloganalyticsworkspace.v1alpha1B\bApiProtoP\x01Zqgithub.com/plantonhq/planton/catalog/azure/azureloganalyticsworkspace/v1alpha1;azureloganalyticsworkspacev1alpha1\xa2\x02\x04DPAA\xaa\x025Dev.Planton.Azure.Azureloganalyticsworkspace.V1alpha1\xca\x025Dev\\Planton\\Azure\\Azureloganalyticsworkspace\\V1alpha1\xe2\x02ADev\\Planton\\Azure\\Azureloganalyticsworkspace\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Azure::Azureloganalyticsworkspace::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_azure_azureloganalyticsworkspace_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_azure_azureloganalyticsworkspace_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureloganalyticsworkspace_v1alpha1_api_proto_goTypes = []any{
-	(*AzureLogAnalyticsWorkspace)(nil),             // 0: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspace
-	(*AzureLogAnalyticsWorkspaceStatus)(nil),       // 1: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureLogAnalyticsWorkspaceSpec)(nil),         // 3: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceSpec
-	(*AzureLogAnalyticsWorkspaceStackOutputs)(nil), // 4: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceStackOutputs
+	(*AzureLogAnalyticsWorkspace)(nil),        // 0: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspace
+	(*AzureLogAnalyticsWorkspaceStatus)(nil),  // 1: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureLogAnalyticsWorkspaceSpec)(nil),    // 3: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceSpec
+	(*AzureLogAnalyticsWorkspaceOutputs)(nil), // 4: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceOutputs
 }
 var file_catalog_azure_azureloganalyticsworkspace_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspace.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspace.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspace.spec:type_name -> dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceSpec
 	1, // 2: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspace.status:type_name -> dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceStatus
-	4, // 3: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceStatus.outputs:type_name -> dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceStackOutputs
+	4, // 3: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceStatus.outputs:type_name -> dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -1,6 +1,6 @@
-# AwsBackupSettings — Component Guide
+# AwsBackupSettings — Kind Guide
 
-Authored operational judgment for the Backup settings component: the
+Authored operational judgment for the Backup settings kind: the
 design decisions behind the spec's shape, and what to know before
 operating the settings in production.
 

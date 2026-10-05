@@ -25,9 +25,9 @@ const (
 // Input for the KubernetesKarpenterNodePool IaC stack. The platform
 // resolves all StringValueOrRef references (the NodeClass name) to literal
 // strings before passing this to the IaC engine.
-type KubernetesKarpenterNodePoolStackInput struct {
+type KubernetesKarpenterNodePoolIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Target cloud-resource.
+	// the catalog object to deploy.
 	Target *KubernetesKarpenterNodePool `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// Kubernetes provider configuration (cluster credentials).
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesKarpenterNodePoolStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesKarpenterNodePoolStackInput) Reset() {
-	*x = KubernetesKarpenterNodePoolStackInput{}
+func (x *KubernetesKarpenterNodePoolIacInput) Reset() {
+	*x = KubernetesKarpenterNodePoolIacInput{}
 	mi := &file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKarpenterNodePoolStackInput) String() string {
+func (x *KubernetesKarpenterNodePoolIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKarpenterNodePoolStackInput) ProtoMessage() {}
+func (*KubernetesKarpenterNodePoolIacInput) ProtoMessage() {}
 
-func (x *KubernetesKarpenterNodePoolStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKarpenterNodePoolIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *KubernetesKarpenterNodePoolStackInput) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKarpenterNodePoolStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesKarpenterNodePoolStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKarpenterNodePoolIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesKarpenterNodePoolIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKarpenterNodePoolStackInput) GetTarget() *KubernetesKarpenterNodePool {
+func (x *KubernetesKarpenterNodePoolIacInput) GetTarget() *KubernetesKarpenterNodePool {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesKarpenterNodePoolStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesKarpenterNodePoolIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_input_proto pro
 
 const file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/kubernetes/kuberneteskarpenternodepool/v1alpha1/input.proto\x12;dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1\x1aAcatalog/kubernetes/kuberneteskarpenternodepool/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xf4\x01\n" +
-	"%KubernetesKarpenterNodePoolStackInput\x12p\n" +
+	"Ccatalog/kubernetes/kuberneteskarpenternodepool/v1alpha1/input.proto\x12;dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1\x1aAcatalog/kubernetes/kuberneteskarpenternodepool/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xf2\x01\n" +
+	"#KubernetesKarpenterNodePoolIacInput\x12p\n" +
 	"\x06target\x18\x01 \x01(\v2X.dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xd8\x03\n" +
 	"?com.dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_input_proto_ra
 
 var file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesKarpenterNodePoolStackInput)(nil), // 0: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolStackInput
-	(*KubernetesKarpenterNodePool)(nil),           // 1: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePool
-	(*kubernetes.KubernetesProviderConfig)(nil),   // 2: dev.planton.kubernetes.KubernetesProviderConfig
+	(*KubernetesKarpenterNodePoolIacInput)(nil), // 0: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolIacInput
+	(*KubernetesKarpenterNodePool)(nil),         // 1: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePool
+	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolStackInput.target:type_name -> dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePool
-	2, // 1: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolIacInput.target:type_name -> dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePool
+	2, // 1: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -1,4 +1,4 @@
-# The component defaults against the composed database: the PostgreSQL
+# The kind defaults against the composed database: the PostgreSQL
 # fixture (registry prerequisite chain: CloudNativePgOperator →
 # Postgres) wired through one valueFrom per field, running tasks on the
 # KubernetesExecutor (the spec default — no broker, every task its own

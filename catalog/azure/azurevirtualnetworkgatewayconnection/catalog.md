@@ -4,7 +4,7 @@ Deploys a gateway connection -- the tunnel object that joins an AzureVirtualNetw
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Gateway Connection** -- an IPsec, Vnet2Vnet, or ExpressRoute connection on the referenced gateway, with optional custom IPsec/IKE proposal, BGP, DPD timeout, NAT rule opt-ins, and traffic selectors
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) merged with your `tags`, applied to the connection
@@ -15,7 +15,7 @@ The gateway, the site description, and the circuit are NOT created here -- they 
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -59,7 +59,7 @@ spec:
 planton apply -f azure-gateway-connection.yaml
 ```
 
-This creates the site-to-site tunnel in seconds (the gateway already exists). A Stack Job tracks the provisioning in real time.
+This creates the site-to-site tunnel in seconds (the gateway already exists). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -98,7 +98,7 @@ These are the most important decisions when configuring a connection. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -107,9 +107,9 @@ These are the most important decisions when configuring a connection. Explore th
 | **AzureLocalNetworkGateway** (IPSEC) | `localNetworkGatewayId` | `status.outputs.local_network_gateway_id` |
 | **AzureVirtualNetworkGateway** (VNET_TO_VNET peer) | `peerVirtualNetworkGatewayId` | `status.outputs.virtual_network_gateway_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-The connection's `status.outputs` carry only `connection_id` and `connection_name` -- identity echoes of the resource itself. No downstream Cloud Resource consumes them: the connection is a leaf of the site-to-site graph, and the tunnel's live state (Connecting/Connected) is runtime telemetry read from Azure Monitor, not a provisioning output.
+The connection's `status.outputs` carry only `connection_id` and `connection_name` -- identity echoes of the resource itself. No downstream Infra Component consumes them: the connection is a leaf of the site-to-site graph, and the tunnel's live state (Connecting/Connected) is runtime telemetry read from Azure Monitor, not a provisioning output.
 
 ## Common Patterns
 
@@ -121,6 +121,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Virtual Network Gateway**](/cloud-catalog/azure-virtual-network-gateway) -- the gateway this tunnel terminates on
-- [**Azure Local Network Gateway**](/cloud-catalog/azure-local-network-gateway) -- describes the on-premises side of a site-to-site tunnel
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the connection is created in
+- [**Azure Virtual Network Gateway**](/infra-catalog/azure-virtual-network-gateway) -- the gateway this tunnel terminates on
+- [**Azure Local Network Gateway**](/infra-catalog/azure-local-network-gateway) -- describes the on-premises side of a site-to-site tunnel
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the connection is created in

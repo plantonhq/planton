@@ -5,10 +5,10 @@ package dev.planton.azure.azureipgroup.v1alpha1;
 import "catalog/azure/azureipgroup/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureIpGroupStackInput is the input to the IaC modules
+// AzureIpGroupIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and Azure
 // provider credentials.
-message AzureIpGroupStackInput {
+message AzureIpGroupIacInput {
   // The IP Group resource to deploy.
   AzureIpGroup target = 1;
 

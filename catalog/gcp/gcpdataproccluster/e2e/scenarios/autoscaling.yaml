@@ -15,7 +15,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpdataproccluster
+    e2e-catalog-kind: gcpdataproccluster
   annotations:
     planton.dev/e2e: "true"
   tags:

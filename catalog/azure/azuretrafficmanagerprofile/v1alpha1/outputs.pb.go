@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureTrafficManagerProfileStackOutputs** captures the outputs from
+// **AzureTrafficManagerProfileOutputs** captures the outputs from
 // provisioning a Traffic Manager profile.
-type AzureTrafficManagerProfileStackOutputs struct {
+type AzureTrafficManagerProfileOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The profile's ARM resource ID
 	// (.../providers/Microsoft.Network/trafficManagerProfiles/{name}) --
@@ -39,20 +39,20 @@ type AzureTrafficManagerProfileStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureTrafficManagerProfileStackOutputs) Reset() {
-	*x = AzureTrafficManagerProfileStackOutputs{}
+func (x *AzureTrafficManagerProfileOutputs) Reset() {
+	*x = AzureTrafficManagerProfileOutputs{}
 	mi := &file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureTrafficManagerProfileStackOutputs) String() string {
+func (x *AzureTrafficManagerProfileOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureTrafficManagerProfileStackOutputs) ProtoMessage() {}
+func (*AzureTrafficManagerProfileOutputs) ProtoMessage() {}
 
-func (x *AzureTrafficManagerProfileStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureTrafficManagerProfileOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *AzureTrafficManagerProfileStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureTrafficManagerProfileStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureTrafficManagerProfileStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureTrafficManagerProfileOutputs.ProtoReflect.Descriptor instead.
+func (*AzureTrafficManagerProfileOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureTrafficManagerProfileStackOutputs) GetTrafficManagerProfileId() string {
+func (x *AzureTrafficManagerProfileOutputs) GetTrafficManagerProfileId() string {
 	if x != nil {
 		return x.TrafficManagerProfileId
 	}
 	return ""
 }
 
-func (x *AzureTrafficManagerProfileStackOutputs) GetTrafficManagerProfileName() string {
+func (x *AzureTrafficManagerProfileOutputs) GetTrafficManagerProfileName() string {
 	if x != nil {
 		return x.TrafficManagerProfileName
 	}
 	return ""
 }
 
-func (x *AzureTrafficManagerProfileStackOutputs) GetFqdn() string {
+func (x *AzureTrafficManagerProfileOutputs) GetFqdn() string {
 	if x != nil {
 		return x.Fqdn
 	}
@@ -94,8 +94,8 @@ var File_catalog_azure_azuretrafficmanagerprofile_v1alpha1_outputs_proto protore
 
 const file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azuretrafficmanagerprofile/v1alpha1/outputs.proto\x125dev.planton.azure.azuretrafficmanagerprofile.v1alpha1\"\xba\x01\n" +
-	"&AzureTrafficManagerProfileStackOutputs\x12;\n" +
+	"?catalog/azure/azuretrafficmanagerprofile/v1alpha1/outputs.proto\x125dev.planton.azure.azuretrafficmanagerprofile.v1alpha1\"\xb5\x01\n" +
+	"!AzureTrafficManagerProfileOutputs\x12;\n" +
 	"\x1atraffic_manager_profile_id\x18\x01 \x01(\tR\x17trafficManagerProfileId\x12?\n" +
 	"\x1ctraffic_manager_profile_name\x18\x02 \x01(\tR\x19trafficManagerProfileName\x12\x12\n" +
 	"\x04fqdn\x18\x03 \x01(\tR\x04fqdnB\xb5\x03\n" +
@@ -115,7 +115,7 @@ func file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureTrafficManagerProfileStackOutputs)(nil), // 0: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileStackOutputs
+	(*AzureTrafficManagerProfileOutputs)(nil), // 0: dev.planton.azure.azuretrafficmanagerprofile.v1alpha1.AzureTrafficManagerProfileOutputs
 }
 var file_catalog_azure_azuretrafficmanagerprofile_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

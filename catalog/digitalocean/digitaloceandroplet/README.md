@@ -2,7 +2,7 @@
 
 A DigitalOcean virtual machine described once in a Planton manifest: base image and sizing, region and VPC placement, SSH key injection, automated backups with a policy window, IPv6 and public-network toggles, the monitoring and web-console agents, block volume attachments, cloud-init user data, tags, GPU partitioning, and the resize and shutdown behavior flags.
 
-## What this component models
+## What this kind models
 
 The spec maps one-to-one onto DigitalOcean's droplet:
 

@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -21,7 +21,7 @@ func product(spec *StripeProductSpec) *StripeProduct {
 	return &StripeProduct{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripeProduct",
-		Metadata:   &shared.CloudResourceMetadata{Name: "pro-plan"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "pro-plan"},
 		Spec:       spec,
 	}
 }
@@ -37,7 +37,7 @@ func literal(v string) *foreignkeyv1.StringValueOrRef {
 
 func ref(name string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
-		ValueFrom: &foreignkeyv1.ValueFromRef{Kind: cloudresourcekind.CloudResourceKind_StripeEntitlementFeature, Name: name},
+		ValueFrom: &foreignkeyv1.ValueFromRef{Kind: catalogkind.CatalogKind_StripeEntitlementFeature, Name: name},
 	}}
 }
 

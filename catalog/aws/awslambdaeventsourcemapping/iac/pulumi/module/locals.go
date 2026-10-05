@@ -5,7 +5,7 @@ import (
 
 	awslambdaeventsourcemappingv1alpha1 "github.com/plantonhq/planton/catalog/aws/awslambdaeventsourcemapping/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -19,11 +19,11 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awslambdaeventsourcemappingv1alpha1.AwsLambdaEventSourceMappingStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awslambdaeventsourcemappingv1alpha1.AwsLambdaEventSourceMappingIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsLambdaEventSourceMapping = stackInput.Target
+	locals.AwsLambdaEventSourceMapping = iacInput.Target
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 	locals.MappingName = metadata.Name
 
 	// Resource-identity tags match the Terraform module key-for-key.
@@ -32,7 +32,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *awslambdaeventsourcemapping
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsLambdaEventSourceMapping.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsLambdaEventSourceMapping.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

@@ -8,7 +8,7 @@ This Pulumi module creates and manages a Kubernetes ConfigMap. It supports the c
 
 ```
 iac/pulumi/
-├── main.go          # Entrypoint: loads stack input, calls module
+├── main.go          # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml      # Pulumi project configuration
 ├── Makefile         # Make targets for preview/up/down/refresh
 └── module/
@@ -20,7 +20,7 @@ iac/pulumi/
 
 ## How It Works
 
-1. **Stack Input Loading**: The entrypoint loads `KubernetesConfigMapStackInput` from Pulumi config
+1. **IaC Input Loading**: The entrypoint loads `KubernetesConfigMapIacInput` from Pulumi config
 2. **Locals Initialization**: `locals.go` computes:
    - Standard Planton labels merged with user labels
    - User annotations
@@ -28,7 +28,7 @@ iac/pulumi/
    - The `data` and `binary_data` maps (binary values are already base64-encoded and pass through unchanged)
 3. **Provider Creation**: Kubernetes provider is initialized from `provider_config`
 4. **ConfigMap Creation**: A single `kubernetes.core.v1.ConfigMap` is created with the data, binary data, labels, annotations, and immutability flag
-5. **Output Export**: ConfigMap name and namespace are exported as stack outputs
+5. **Output Export**: ConfigMap name and namespace are exported as outputs
 
 ## Data Handling
 

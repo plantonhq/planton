@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1;
 
-// KubernetesGrpcRouteStackOutputs captures observable outputs after the
+// KubernetesGrpcRouteOutputs captures observable outputs after the
 // GRPCRoute is created on the target cluster. Controller-managed status (the
 // per-parent Accepted/ResolvedRefs conditions) is reconciled asynchronously by
 // the Gateway implementation and read via kubectl, so it is intentionally not
 // stored here.
-message KubernetesGrpcRouteStackOutputs {
+message KubernetesGrpcRouteOutputs {
   // Name of the created GRPCRoute (equals metadata.name). In InfraCharts this
   // orders the route after the Gateway and backends it references.
   string route_name = 1;

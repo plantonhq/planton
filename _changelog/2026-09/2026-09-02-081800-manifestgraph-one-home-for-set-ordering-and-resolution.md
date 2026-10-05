@@ -3,7 +3,7 @@
 ## What changed
 
 - **A new package, `pkg/manifestgraph`, owns everything about treating a
-  SET of cloud-resource manifests as a dependency graph**: node identity
+  SET of catalog object manifests as a dependency graph**: node identity
   (`(kind, slug, env)` — explicit `metadata.slug` passes through, else the
   slug derives from the name by the platform's slug rules, ported and pinned
   by test), reference collection (one walker across singular, repeated,

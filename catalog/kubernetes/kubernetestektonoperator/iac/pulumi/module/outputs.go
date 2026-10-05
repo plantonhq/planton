@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output name constants — one per KubernetesTektonOperatorStackOutputs
+// Output name constants — one per KubernetesTektonOperatorOutputs
 // field.
 const (
 	OpNamespace              = "namespace"

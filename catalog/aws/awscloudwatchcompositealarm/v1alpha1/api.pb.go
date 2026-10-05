@@ -35,7 +35,7 @@ type AwsCloudwatchCompositeAlarm struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, environment,
 	// labels) and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration of the composite alarm.
 	Spec *AwsCloudwatchCompositeAlarmSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds post-deployment information.
@@ -88,7 +88,7 @@ func (x *AwsCloudwatchCompositeAlarm) GetKind() string {
 	return ""
 }
 
-func (x *AwsCloudwatchCompositeAlarm) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsCloudwatchCompositeAlarm) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -115,7 +115,7 @@ type AwsCloudwatchCompositeAlarmStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the observable values returned by Pulumi/Terraform
 	// after provisioning.
-	Outputs       *AwsCloudwatchCompositeAlarmStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsCloudwatchCompositeAlarmOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AwsCloudwatchCompositeAlarmStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchcompositealarm_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsCloudwatchCompositeAlarmStatus) GetOutputs() *AwsCloudwatchCompositeAlarmStackOutputs {
+func (x *AwsCloudwatchCompositeAlarmStatus) GetOutputs() *AwsCloudwatchCompositeAlarmOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_aws_awscloudwatchcompositealarm_v1alpha1_api_proto_rawDesc = 
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bAwsCloudwatchCompositeAlarmR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
 	"\x04spec\x18\x04 \x01(\v2U.dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
-	"\x06status\x18\x05 \x01(\v2W.dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmStatusR\x06status\"\x9c\x01\n" +
-	"!AwsCloudwatchCompositeAlarmStatus\x12w\n" +
-	"\aoutputs\x18\x01 \x01(\v2].dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmStackOutputsR\aoutputsB\xac\x03\n" +
+	"\x06status\x18\x05 \x01(\v2W.dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmStatusR\x06status\"\x97\x01\n" +
+	"!AwsCloudwatchCompositeAlarmStatus\x12r\n" +
+	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmOutputsR\aoutputsB\xac\x03\n" +
 	"8com.dev.planton.aws.awscloudwatchcompositealarm.v1alpha1B\bApiProtoP\x01Zqgithub.com/plantonhq/planton/catalog/aws/awscloudwatchcompositealarm/v1alpha1;awscloudwatchcompositealarmv1alpha1\xa2\x02\x04DPAA\xaa\x024Dev.Planton.Aws.Awscloudwatchcompositealarm.V1alpha1\xca\x024Dev\\Planton\\Aws\\Awscloudwatchcompositealarm\\V1alpha1\xe2\x02@Dev\\Planton\\Aws\\Awscloudwatchcompositealarm\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Aws::Awscloudwatchcompositealarm::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_aws_awscloudwatchcompositealarm_v1alpha1_api_proto_rawDescGZIP
 
 var file_catalog_aws_awscloudwatchcompositealarm_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awscloudwatchcompositealarm_v1alpha1_api_proto_goTypes = []any{
-	(*AwsCloudwatchCompositeAlarm)(nil),             // 0: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarm
-	(*AwsCloudwatchCompositeAlarmStatus)(nil),       // 1: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsCloudwatchCompositeAlarmSpec)(nil),         // 3: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmSpec
-	(*AwsCloudwatchCompositeAlarmStackOutputs)(nil), // 4: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmStackOutputs
+	(*AwsCloudwatchCompositeAlarm)(nil),        // 0: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarm
+	(*AwsCloudwatchCompositeAlarmStatus)(nil),  // 1: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsCloudwatchCompositeAlarmSpec)(nil),    // 3: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmSpec
+	(*AwsCloudwatchCompositeAlarmOutputs)(nil), // 4: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmOutputs
 }
 var file_catalog_aws_awscloudwatchcompositealarm_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarm.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarm.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarm.spec:type_name -> dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmSpec
 	1, // 2: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarm.status:type_name -> dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmStatus
-	4, // 3: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmStatus.outputs:type_name -> dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmStackOutputs
+	4, // 3: dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmStatus.outputs:type_name -> dev.planton.aws.awscloudwatchcompositealarm.v1alpha1.AwsCloudwatchCompositeAlarmOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

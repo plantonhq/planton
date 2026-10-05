@@ -31,7 +31,7 @@ type GcpGkeWorkloadIdentityBinding struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpGkeWorkloadIdentityBindingSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpGkeWorkloadIdentityBinding) GetKind() string {
 	return ""
 }
 
-func (x *GcpGkeWorkloadIdentityBinding) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpGkeWorkloadIdentityBinding) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *GcpGkeWorkloadIdentityBinding) GetStatus() *GcpGkeWorkloadIdentityBindi
 // gcp-gke-workload-identity-binding status
 type GcpGkeWorkloadIdentityBindingStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	stack outputs
-	Outputs       *GcpGkeWorkloadIdentityBindingStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	outputs
+	Outputs       *GcpGkeWorkloadIdentityBindingOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*GcpGkeWorkloadIdentityBindingStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpGkeWorkloadIdentityBindingStatus) GetOutputs() *GcpGkeWorkloadIdentityBindingStackOutputs {
+func (x *GcpGkeWorkloadIdentityBindingStatus) GetOutputs() *GcpGkeWorkloadIdentityBindingOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x128\n" +
 	"\x04kind\x18\x02 \x01(\tB$\xbaH!r\x1f\n" +
 	"\x1dGcpGkeWorkloadIdentityBindingR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12u\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12u\n" +
 	"\x04spec\x18\x04 \x01(\v2Y.dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12s\n" +
-	"\x06status\x18\x05 \x01(\v2[.dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingStatusR\x06status\"\xa2\x01\n" +
-	"#GcpGkeWorkloadIdentityBindingStatus\x12{\n" +
-	"\aoutputs\x18\x01 \x01(\v2a.dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingStackOutputsR\aoutputsB\xba\x03\n" +
+	"\x06status\x18\x05 \x01(\v2[.dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingStatusR\x06status\"\x9d\x01\n" +
+	"#GcpGkeWorkloadIdentityBindingStatus\x12v\n" +
+	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingOutputsR\aoutputsB\xba\x03\n" +
 	":com.dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1B\bApiProtoP\x01Zugithub.com/plantonhq/planton/catalog/gcp/gcpgkeworkloadidentitybinding/v1alpha1;gcpgkeworkloadidentitybindingv1alpha1\xa2\x02\x04DPGG\xaa\x026Dev.Planton.Gcp.Gcpgkeworkloadidentitybinding.V1alpha1\xca\x026Dev\\Planton\\Gcp\\Gcpgkeworkloadidentitybinding\\V1alpha1\xe2\x02BDev\\Planton\\Gcp\\Gcpgkeworkloadidentitybinding\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Gcp::Gcpgkeworkloadidentitybinding::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_api_proto_goTypes = []any{
-	(*GcpGkeWorkloadIdentityBinding)(nil),             // 0: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBinding
-	(*GcpGkeWorkloadIdentityBindingStatus)(nil),       // 1: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingStatus
-	(*shared.CloudResourceMetadata)(nil),              // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpGkeWorkloadIdentityBindingSpec)(nil),         // 3: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingSpec
-	(*GcpGkeWorkloadIdentityBindingStackOutputs)(nil), // 4: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingStackOutputs
+	(*GcpGkeWorkloadIdentityBinding)(nil),        // 0: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBinding
+	(*GcpGkeWorkloadIdentityBindingStatus)(nil),  // 1: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingStatus
+	(*shared.CatalogObjectMetadata)(nil),         // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpGkeWorkloadIdentityBindingSpec)(nil),    // 3: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingSpec
+	(*GcpGkeWorkloadIdentityBindingOutputs)(nil), // 4: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingOutputs
 }
 var file_catalog_gcp_gcpgkeworkloadidentitybinding_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBinding.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBinding.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBinding.spec:type_name -> dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingSpec
 	1, // 2: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBinding.status:type_name -> dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingStatus
-	4, // 3: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingStatus.outputs:type_name -> dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingStackOutputs
+	4, // 3: dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingStatus.outputs:type_name -> dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1.GcpGkeWorkloadIdentityBindingOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

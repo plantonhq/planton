@@ -98,7 +98,7 @@ func (v *dropletAutoscalePoolVerifier) VerifyAbsentFromOutputs(ctx context.Conte
 	}
 	_, _, err := client.DropletAutoscale.Get(ctx, id)
 	if err == nil {
-		return &StillExistsError{Component: "digitaloceandropletautoscalepool", ID: id}
+		return &StillExistsError{Kind: "digitaloceandropletautoscalepool", ID: id}
 	}
 	if !isNotFound(err) {
 		return pkgerrors.Wrapf(err, "digitaloceandropletautoscalepool verify-absent failed for %q", id)
@@ -112,9 +112,9 @@ func (v *dropletAutoscalePoolVerifier) VerifyAbsentFromOutputs(ctx context.Conte
 		_, _, err := client.Droplets.Get(ctx, dropletID)
 		if err == nil {
 			return &StillExistsError{
-				Component: "digitaloceandropletautoscalepool",
-				ID:        id,
-				Detail:    "is gone but its member droplet " + strconv.Itoa(dropletID) + " still exists after destroy",
+				Kind:   "digitaloceandropletautoscalepool",
+				ID:     id,
+				Detail: "is gone but its member droplet " + strconv.Itoa(dropletID) + " still exists after destroy",
 			}
 		}
 		if !isNotFound(err) {

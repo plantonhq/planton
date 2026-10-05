@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureeventhub
 spec:
   billing_model: free
   free_tier: The event hub itself -- its name, partitions, retention window, gate status, and capture configuration -- never bills. An event hub is capacity carved out of its Event Hubs NAMESPACE, and Azure meters everything at the namespace level; creating more hubs inside a namespace adds nothing to the bill.
-  notes: "The real spend lives on the parent AzureEventHubNamespace, a separate catalog kind: throughput units (STANDARD), processing units (PREMIUM), or capacity units (dedicated clusters), plus per-million-events ingress on the shared tiers. Two spec fields route additional spend to OTHER kinds' meters without billing here: capture_description activates the namespace's Capture meter on STANDARD (per throughput unit-hour; included at no extra charge on PREMIUM/dedicated) and continuously writes Avro archives into the referenced AzureStorageAccount, which bills for that storage and its transactions; partition_count and message_retention only consume capacity the namespace already pays for."
+  notes: "The real spend lives on the parent AzureEventHubNamespace, a separate component: throughput units (STANDARD), processing units (PREMIUM), or capacity units (dedicated clusters), plus per-million-events ingress on the shared tiers. Two spec fields route additional spend to OTHER components' meters without billing here: capture_description activates the namespace's Capture meter on STANDARD (per throughput unit-hour; included at no extra charge on PREMIUM/dedicated) and continuously writes Avro archives into the referenced AzureStorageAccount, which bills for that storage and its transactions; partition_count and message_retention only consume capacity the namespace already pays for."

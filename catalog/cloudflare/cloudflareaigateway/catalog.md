@@ -4,7 +4,7 @@ Deploys a Cloudflare AI Gateway: the control plane in front of AI model traffic,
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **AI Gateway** — one `cloudflare_ai_gateway` carrying the endpoint slug, the five required traffic scalars (caching, log collection, rate limiting), and the optional retry, log-management, guardrails, DLP, OTel, Stripe, and spend-limit configuration
 - **Dynamic Routes** — one `cloudflare_ai_gateway_dynamic_routing` per `dynamicRoutes` entry, created after the gateway and attached to it. A route's element graph is create-only at the provider: any graph edit replaces that route object (requests re-resolve by name on the next call), never the gateway itself
@@ -15,7 +15,7 @@ Destroy is a real delete of the gateway and every dynamic route — clients call
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module whose API token carries **Account → AI Gateway → Edit**. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module whose API token carries **Account → AI Gateway → Edit**. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
@@ -55,7 +55,7 @@ spec:
 planton apply -f ai-gateway.yaml
 ```
 
-This creates a gateway that caches model responses for five minutes, collects request logs, and allows 1000 requests per minute — the endpoint URL ends in the `prod-llm-gateway` slug. A Stack Job tracks the provisioning in real time.
+This creates a gateway that caches model responses for five minutes, collects request logs, and allows 1000 requests per minute — the endpoint URL ends in the `prod-llm-gateway` slug. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,15 +94,15 @@ These are the most important decisions when configuring an AI Gateway. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareSecretsStore** (optional) | `storeId` | `status.outputs.store_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,6 +121,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Secrets Store**](/cloud-catalog/cloudflare-secrets-store) — the vault behind `storeId` for Bring Your Own provider Keys
-- [**Cloudflare Secrets Store Secret**](/cloud-catalog/cloudflare-secrets-store-secret) — the provider API keys themselves, scoped for AI Gateway use
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) — Workers calling models through the gateway endpoint
+- [**Cloudflare Secrets Store**](/infra-catalog/cloudflare-secrets-store) — the vault behind `storeId` for Bring Your Own provider Keys
+- [**Cloudflare Secrets Store Secret**](/infra-catalog/cloudflare-secrets-store-secret) — the provider API keys themselves, scoped for AI Gateway use
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) — Workers calling models through the gateway endpoint

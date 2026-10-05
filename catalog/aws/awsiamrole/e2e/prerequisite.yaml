@@ -1,4 +1,4 @@
-# AwsIamRole install profile used as a prerequisite by composed components
+# AwsIamRole install profile used as a prerequisite by composed kinds
 # (declared via prerequisites: [AwsIamRole] in the kind registry). The E2E
 # harness deploys every document below (via the role's Pulumi module),
 # captures each instance's outputs under its manifest name, and resolves
@@ -19,7 +19,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -47,7 +47,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -76,7 +76,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -109,7 +109,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -139,7 +139,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -173,7 +173,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -208,7 +208,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -250,7 +250,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -293,7 +293,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -331,7 +331,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -360,7 +360,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -399,7 +399,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -454,7 +454,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -510,7 +510,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -561,7 +561,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -594,7 +594,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsiamrole
+    e2e-catalog-kind: awsiamrole
   annotations:
     planton.dev/e2e: "true"
   tags:

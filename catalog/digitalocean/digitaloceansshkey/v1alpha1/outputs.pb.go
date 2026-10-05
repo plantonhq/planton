@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanSshKeyStackOutputs captures the key outputs after
+// DigitalOceanSshKeyOutputs captures the key outputs after
 // provisioning a DigitalOcean SSH key.
-type DigitalOceanSshKeyStackOutputs struct {
+type DigitalOceanSshKeyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Numeric id of the SSH key, as a string (for example "263654"). This is
 	// the key's API identity and the ONLY id imports accept -- the
@@ -38,20 +38,20 @@ type DigitalOceanSshKeyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanSshKeyStackOutputs) Reset() {
-	*x = DigitalOceanSshKeyStackOutputs{}
+func (x *DigitalOceanSshKeyOutputs) Reset() {
+	*x = DigitalOceanSshKeyOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceansshkey_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanSshKeyStackOutputs) String() string {
+func (x *DigitalOceanSshKeyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanSshKeyStackOutputs) ProtoMessage() {}
+func (*DigitalOceanSshKeyOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanSshKeyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanSshKeyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceansshkey_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *DigitalOceanSshKeyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanSshKeyStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanSshKeyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanSshKeyOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanSshKeyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceansshkey_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanSshKeyStackOutputs) GetSshKeyId() string {
+func (x *DigitalOceanSshKeyOutputs) GetSshKeyId() string {
 	if x != nil {
 		return x.SshKeyId
 	}
 	return ""
 }
 
-func (x *DigitalOceanSshKeyStackOutputs) GetFingerprint() string {
+func (x *DigitalOceanSshKeyOutputs) GetFingerprint() string {
 	if x != nil {
 		return x.Fingerprint
 	}
@@ -86,8 +86,8 @@ var File_catalog_digitalocean_digitaloceansshkey_v1alpha1_outputs_proto protoref
 
 const file_catalog_digitalocean_digitaloceansshkey_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/digitalocean/digitaloceansshkey/v1alpha1/outputs.proto\x124dev.planton.digitalocean.digitaloceansshkey.v1alpha1\"`\n" +
-	"\x1eDigitalOceanSshKeyStackOutputs\x12\x1c\n" +
+	">catalog/digitalocean/digitaloceansshkey/v1alpha1/outputs.proto\x124dev.planton.digitalocean.digitaloceansshkey.v1alpha1\"[\n" +
+	"\x19DigitalOceanSshKeyOutputs\x12\x1c\n" +
 	"\n" +
 	"ssh_key_id\x18\x01 \x01(\tR\bsshKeyId\x12 \n" +
 	"\vfingerprint\x18\x02 \x01(\tR\vfingerprintB\xa7\x03\n" +
@@ -107,7 +107,7 @@ func file_catalog_digitalocean_digitaloceansshkey_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_digitalocean_digitaloceansshkey_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceansshkey_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanSshKeyStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceansshkey.v1alpha1.DigitalOceanSshKeyStackOutputs
+	(*DigitalOceanSshKeyOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceansshkey.v1alpha1.DigitalOceanSshKeyOutputs
 }
 var file_catalog_digitalocean_digitaloceansshkey_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

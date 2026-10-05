@@ -1,0 +1,23 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "iacinput",
+    srcs = [
+        "extract_manifest.go",
+        "extract_manifest_bytes.go",
+        "iac_input.go",
+        "providers.go",
+    ],
+    importpath = "github.com/plantonhq/planton/pkg/iac/iacinput",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//internal/cli/workspace",
+        "//pkg/iac/iacinput/iacinputproviderconfig",
+        "//pkg/protobufyaml",
+        "//pkg/ulidgen",
+        "@com_github_pkg_errors//:errors",
+        "@in_gopkg_yaml_v3//:yaml_v3",
+        "@org_golang_google_protobuf//encoding/protojson",
+        "@org_golang_google_protobuf//proto",
+    ],
+)

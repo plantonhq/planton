@@ -33,7 +33,7 @@ type AwsCognitoResourceServer struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, environment,
 	// labels) and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration of the resource server.
 	Spec *AwsCognitoResourceServerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds post-deployment information.
@@ -86,7 +86,7 @@ func (x *AwsCognitoResourceServer) GetKind() string {
 	return ""
 }
 
-func (x *AwsCognitoResourceServer) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsCognitoResourceServer) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,7 +113,7 @@ type AwsCognitoResourceServerStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the observable values returned by Pulumi/Terraform
 	// after provisioning.
-	Outputs       *AwsCognitoResourceServerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsCognitoResourceServerOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AwsCognitoResourceServerStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscognitoresourceserver_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsCognitoResourceServerStatus) GetOutputs() *AwsCognitoResourceServerStackOutputs {
+func (x *AwsCognitoResourceServerStatus) GetOutputs() *AwsCognitoResourceServerOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_aws_awscognitoresourceserver_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18AwsCognitoResourceServerR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
 	"\x04spec\x18\x04 \x01(\v2O.dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12i\n" +
-	"\x06status\x18\x05 \x01(\v2Q.dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerStatusR\x06status\"\x93\x01\n" +
-	"\x1eAwsCognitoResourceServerStatus\x12q\n" +
-	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerStackOutputsR\aoutputsB\x97\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Q.dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerStatusR\x06status\"\x8e\x01\n" +
+	"\x1eAwsCognitoResourceServerStatus\x12l\n" +
+	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerOutputsR\aoutputsB\x97\x03\n" +
 	"5com.dev.planton.aws.awscognitoresourceserver.v1alpha1B\bApiProtoP\x01Zkgithub.com/plantonhq/planton/catalog/aws/awscognitoresourceserver/v1alpha1;awscognitoresourceserverv1alpha1\xa2\x02\x04DPAA\xaa\x021Dev.Planton.Aws.Awscognitoresourceserver.V1alpha1\xca\x021Dev\\Planton\\Aws\\Awscognitoresourceserver\\V1alpha1\xe2\x02=Dev\\Planton\\Aws\\Awscognitoresourceserver\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Aws::Awscognitoresourceserver::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_aws_awscognitoresourceserver_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_aws_awscognitoresourceserver_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awscognitoresourceserver_v1alpha1_api_proto_goTypes = []any{
-	(*AwsCognitoResourceServer)(nil),             // 0: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServer
-	(*AwsCognitoResourceServerStatus)(nil),       // 1: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsCognitoResourceServerSpec)(nil),         // 3: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerSpec
-	(*AwsCognitoResourceServerStackOutputs)(nil), // 4: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerStackOutputs
+	(*AwsCognitoResourceServer)(nil),        // 0: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServer
+	(*AwsCognitoResourceServerStatus)(nil),  // 1: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsCognitoResourceServerSpec)(nil),    // 3: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerSpec
+	(*AwsCognitoResourceServerOutputs)(nil), // 4: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerOutputs
 }
 var file_catalog_aws_awscognitoresourceserver_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServer.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServer.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServer.spec:type_name -> dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerSpec
 	1, // 2: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServer.status:type_name -> dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerStatus
-	4, // 3: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerStatus.outputs:type_name -> dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerStackOutputs
+	4, // 3: dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerStatus.outputs:type_name -> dev.planton.aws.awscognitoresourceserver.v1alpha1.AwsCognitoResourceServerOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

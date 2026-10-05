@@ -4,7 +4,7 @@ Installs the Barman Cloud plugin for CloudNativePG from the official Helm chart 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm Release** (`plugin-barman-cloud`) -- the plugin Deployment, its ServiceAccount and RBAC, the fixed-name gRPC Service `barman-cloud` labeled `cnpg.io/pluginName` (how the operator finds it), and the config ConfigMap carrying the sidecar image the plugin injects into every PostgreSQL instance pod
 - **cert-manager Issuer and Certificates** -- a self-signed Issuer plus server and client Certificates for the operator↔plugin gRPC TLS, rendered by the chart unconditionally; cert-manager must be on the cluster
@@ -15,12 +15,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
-- **CloudNativePG on the cluster** -- a deployed [CloudNativePG Operator](/cloud-catalog/kubernetes-cloud-native-pg-operator) (reference it), or a resident operator installed by another hand (name its namespace). Plugin v0.13.0 needs CloudNativePG 1.26 or later; 1.27 or later is strongly recommended upstream.
-- **cert-manager on the cluster** -- a deployed [Cert Manager](/cloud-catalog/kubernetes-cert-manager); the chart's Certificates never issue without it and the install rolls back.
+- **CloudNativePG on the cluster** -- a deployed [CloudNativePG Operator](/infra-catalog/kubernetes-cloud-native-pg-operator) (reference it), or a resident operator installed by another hand (name its namespace). Plugin v0.13.0 needs CloudNativePG 1.26 or later; 1.27 or later is strongly recommended upstream.
+- **cert-manager on the cluster** -- a deployed [Cert Manager](/infra-catalog/kubernetes-cert-manager); the chart's Certificates never issue without it and the install rolls back.
 - **Not already installed by the operator's own installer** -- a self-hosted platform operator that offers a plugin toggle owns the plugin; enable it there instead of declaring this kind.
 
 ## Deploy
@@ -51,7 +51,7 @@ spec:
 planton apply -f cnpg-barman-plugin.yaml
 ```
 
-This installs the plugin into `cnpg-system` beside the CloudNativePG operator already running there, registers it with the operator, and establishes the ObjectStore CRD — from then on every KubernetesPostgres backup block on the cluster works. A Stack Job tracks the provisioning in real time.
+This installs the plugin into `cnpg-system` beside the CloudNativePG operator already running there, registers it with the operator, and establishes the ObjectStore CRD — from then on every KubernetesPostgres backup block on the cluster works. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,15 +90,15 @@ These are the most important decisions when configuring the plugin. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesCloudNativePgOperator** | `namespace` | `status.outputs.namespace` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -116,6 +116,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**CloudNativePG Operator**](/cloud-catalog/kubernetes-cloud-native-pg-operator) -- the engine the plugin registers with; reference it for the namespace.
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) -- the chart's TLS issuer; deploy it first.
-- [**PostgreSQL**](/cloud-catalog/kubernetes-postgres) -- whose backup blocks and object-store recoveries run through this plugin.
+- [**CloudNativePG Operator**](/infra-catalog/kubernetes-cloud-native-pg-operator) -- the engine the plugin registers with; reference it for the namespace.
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) -- the chart's TLS issuer; deploy it first.
+- [**PostgreSQL**](/infra-catalog/kubernetes-postgres) -- whose backup blocks and object-store recoveries run through this plugin.

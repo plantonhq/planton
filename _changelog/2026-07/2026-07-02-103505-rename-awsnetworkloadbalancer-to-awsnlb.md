@@ -8,7 +8,7 @@
 
 The AWS Network Load Balancer kind is renamed from `AwsNetworkLoadBalancer` to `AwsNlb`,
 matching the naming format of its sibling `AwsAlb` and AWS's own ALB/NLB vocabulary. The
-rename covers the enum value (number 280 unchanged), the component directory, the proto
+rename covers the enum value (number 280 unchanged), the kind directory, the proto
 package and all eleven messages, both IaC modules, manifests, presets, docs, and every
 cross-reference — with zero backward-compat residue. The update workflow rule gains a
 dedicated kind-rename scenario so future renames follow the same complete checklist.
@@ -34,10 +34,10 @@ A complete, residue-free rename across every surface the kind name touches:
 
 ```mermaid
 flowchart TB
-    Enum["cloud_resource_kind.proto\nAwsNlb = 280 (number kept)"] --> Stubs[make protos\nGo + Java stubs]
+    Enum["catalog_kind.proto\nAwsNlb = 280 (number kept)"] --> Stubs[make protos\nGo + Java stubs]
     Dir["git mv awsnetworkloadbalancer/v1\n-> awsnlb/v1"] --> Protos["proto package, imports,\n11 messages -> AwsNlb*"]
     Protos --> Modules["Pulumi + Terraform modules"]
-    Enum --> KindMap[make generate-cloud-resource-kind-map]
+    Enum --> KindMap[make generate-catalog-kind-map]
     Dir --> Gazelle[make reset-gazelle]
     Protos --> Docs["README, catalog page (# AWS NLB),\npresets, hack manifest"]
     Docs --> Site["site catalog rebuild\nslug: nlb"]
@@ -53,7 +53,7 @@ flowchart TB
   hardcodes the string in `locals.tf` and was updated in the same change, keeping both
   engines emitting the identical `AwsNlb` tag value.
 - **Cross-references updated**: the Elastic IP and Global Accelerator catalog pages,
-  presets, and a stack-outputs comment that named the old kind.
+  presets, and an outputs comment that named the old kind.
 - **Public catalog**: the page heading is now `# AWS NLB` (matching `# AWS ALB`), which
   yields the site slug `nlb`; the old `network-load-balancer` built output is gone.
 
@@ -62,22 +62,22 @@ flowchart TB
 - Tracked-file sweep: `git grep -i awsnetworkloadbalancer` returns zero hits outside
   dated `_changelog/` history records.
 - Regeneration pipeline: `make protos` (clean stub regen + Java compile gate) →
-  `make generate-cloud-resource-kind-map` → `make reset-gazelle` → site
+  `make generate-catalog-kind-map` → `make reset-gazelle` → site
   `yarn copy-docs && yarn generate-structure`.
 - The site rebuild also materialized catalog pages for the recently added
   `AwsIamPolicy` and `AwsIamInstanceProfile` kinds, bringing the committed built
-  output back in sync with the component sources.
+  output back in sync with the kind sources.
 - Repo hygiene: an accidentally committed `go build .` artifact (a Mach-O binary named
   `main` at the repo root) was removed and `.gitignore` now blocks it.
 
 ### Workflow rule uplift
 
-`_rules/deployment-component/update/update-planton-component.mdc` gains **Scenario 9:
+`_rules/catalog-kind/update/update-catalog-kind.mdc` gains **Scenario 9:
 Rename a Kind** (flag `rename-kind`): the complete rename surface — enum value (number
 kept), directory move in lockstep with the kind name (module-dir resolution derives from
 it), proto package/imports/messages, manifest `kind:` lines, both IaC modules with an
 explicit callout of the identity-tag asymmetry (Pulumi derives the tag from the enum;
-Terraform hardcodes it in `locals.tf`), docs and display headings, cross-component
+Terraform hardcodes it in `locals.tf`), docs and display headings, cross-kind
 references, the regeneration pipeline, and the validation gate.
 
 ## Validation

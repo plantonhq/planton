@@ -60,7 +60,7 @@ The AWS S3 Object Set Pulumi Module provides a standardized way to upload and ma
 ## Key Features
 
 - **Multi-Object Upload**: Upload multiple objects to a single bucket in one deployment. Each resource is named by its S3 key, so reordering manifest entries never churns unrelated objects.
-- **Foreign Key Bucket Reference**: Reference an AwsS3Bucket component or provide a literal bucket name.
+- **Foreign Key Bucket Reference**: Reference an AwsS3Bucket Infra Component or provide a literal bucket name.
 - **Content Flexibility**: Support for inline text (`content`) and base64-encoded binary (`content_base64`).
 - **Tag Inheritance**: Resource-identity labels, set-level tags, and object-level tags merge in increasing precedence.
 - **Full Per-Object Surface**: Presentation headers (content type/disposition/language, cache control, encoding), lowercase-keyed user metadata, website redirects, storage class, per-object encryption overrides (SSE-S3/SSE-KMS with an AwsKmsKey reference), upload checksums, Object Lock retention and legal holds with the governance-bypass force_destroy, and canned ACLs.
@@ -68,7 +68,7 @@ The AWS S3 Object Set Pulumi Module provides a standardized way to upload and ma
 
 ## Architecture
 
-The module iterates over the `objects` list in the spec and creates one `s3.BucketObjectv2` Pulumi resource per entry, named by the object's S3 key. Tags are merged hierarchically: labels, set-level tags, then object-level tags. ARNs, ETags, and version IDs are collected into maps and exported as stack outputs.
+The module iterates over the `objects` list in the spec and creates one `s3.BucketObjectv2` Pulumi resource per entry, named by the object's S3 key. Tags are merged hierarchically: labels, set-level tags, then object-level tags. ARNs, ETags, and version IDs are collected into maps and exported as outputs.
 
 ## Usage
 

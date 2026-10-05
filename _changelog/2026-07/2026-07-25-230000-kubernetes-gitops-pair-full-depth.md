@@ -77,7 +77,7 @@ GitOps delivery and pipeline execution are the heart of how teams
 operate Kubernetes; both kinds now hold the catalog bar: typed depth
 over the official charts' meaningful surface, secret-by-default
 credential paths, cross-engine parity by construction, and composition
-handles that let infra charts wire Argo Workflows' artifacts and
+handles that let Infra Charts wire Argo Workflows' artifacts and
 history to in-catalog object storage and Postgres by reference.
 
 ## Impact

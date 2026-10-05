@@ -50,11 +50,11 @@ All content verified against four layers of source truth:
 1. **Protobuf APIs**: `servicehub/service/v1/` (spec.proto, enum.proto, api.proto, command.proto), `servicehub/pipeline/v1/`, `servicehub/secretsgroup/v1/`, `servicehub/variablesgroup/v1/`, `servicehub/dnsdomain/v1/`, `servicehub/tektonpipeline/v1/`
 2. **CLI source**: `client-apps/cli/cmd/planton/root/domain/servicehub/` — verified every command name, flag, and argument
 3. **Web console**: `client-apps/web/console/src/app/resource/service-hub/service/_components/` — verified wizard steps, labels, and form fields from `labels.ts` constants
-4. **OpenMCF**: `org.openmcf.shared.cloudresourcekind` for service-deployable kinds, `org.openmcf.shared.foreignkey.v1` for `ValueFromRef`
+4. **OpenMCF**: `org.openmcf.shared.catalogkind` for service-deployable kinds, `org.openmcf.shared.foreignkey.v1` for `ValueFromRef`
 
 ### Key Discovery: Two Deployment Configuration Models
 
-The `DeploymentConfigSource` enum (`git` vs `inline`) is a fundamental architectural distinction that was undocumented. The git path uses kustomize overlays; the inline path uses the web console wizard. Both produce cloud resource manifests. The web console wizard labels these as "Git-Based (GitOps)" and "UI-Based (Configure Here)".
+The `DeploymentConfigSource` enum (`git` vs `inline`) is a fundamental architectural distinction that was undocumented. The git path uses kustomize overlays; the inline path uses the web console wizard. Both produce catalog object manifests. The web console wizard labels these as "Git-Based (GitOps)" and "UI-Based (Configure Here)".
 
 ### Files Changed
 

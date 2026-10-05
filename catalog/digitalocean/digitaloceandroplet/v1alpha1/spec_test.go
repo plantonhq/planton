@@ -36,7 +36,7 @@ func wrap(spec *DigitalOceanDropletSpec) *DigitalOceanDroplet {
 	return &DigitalOceanDroplet{
 		ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 		Kind:       "DigitalOceanDroplet",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-droplet",
 		},
 		Spec: spec,

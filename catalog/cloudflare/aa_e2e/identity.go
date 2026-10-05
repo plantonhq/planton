@@ -16,7 +16,7 @@ import (
 //	connection-with-r2   the credential a Cloudflare connection carrying R2 keys resolves to:
 //	                     the harness's API token plus the owner-arranged R2 key pair
 //
-// A scenario whose component reads R2 objects through the S3 API (a Worker built from an
+// A scenario whose kind reads R2 objects through the S3 API (a Worker built from an
 // r2_bundle) deploys as this identity, so both engines receive the R2 pair exactly the way
 // a console deploy delivers it -- Pulumi through provider_config.r2, OpenTofu through the
 // TF_VAR_r2_* variables the provider-environment loader derives from it -- instead of from
@@ -35,7 +35,7 @@ const (
 // ProvisionIdentity implements provider.IdentityProvisioner: it writes the lane's
 // connection-shaped provider configuration and returns its path. Nothing is created at
 // Cloudflare, so the cleanup only removes the file.
-func (h *Harness) ProvisionIdentity(_ context.Context, _ *provider.ComponentTestContext, spec string) (string, func(), error) {
+func (h *Harness) ProvisionIdentity(_ context.Context, _ *provider.KindTestContext, spec string) (string, func(), error) {
 	if spec != identityConnectionWithR2 {
 		return "", nil, errors.Errorf("unknown Cloudflare identity %q (supported: %q)", spec, identityConnectionWithR2)
 	}
@@ -47,7 +47,7 @@ func (h *Harness) ProvisionIdentity(_ context.Context, _ *provider.ComponentTest
 			EnvAPIToken, EnvR2AccessKeyID, EnvR2SecretAccessKey)
 	}
 
-	// JSON is YAML: the stack-input builder reads the file through its YAML path.
+	// JSON is YAML: the iac-input builder reads the file through its YAML path.
 	providerConfig, err := json.Marshal(map[string]interface{}{
 		"authScheme": "api_token",
 		"apiToken":   apiToken,

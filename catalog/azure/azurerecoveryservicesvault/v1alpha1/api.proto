@@ -18,17 +18,17 @@ message AzureRecoveryServicesVault {
   string kind = 2 [(buf.validate.field).string.const = 'AzureRecoveryServicesVault'];
 
   // Standard Planton metadata (name, org, env, labels, tags).
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // Recovery Services vault specification.
   AzureRecoveryServicesVaultSpec spec = 4 [(buf.validate.field).required = true];
 
-  // Deployment status containing stack outputs. Populated after deployment.
+  // Deployment status containing outputs. Populated after deployment.
   AzureRecoveryServicesVaultStatus status = 5;
 }
 
 // AzureRecoveryServicesVaultStatus holds the deployment outputs.
 message AzureRecoveryServicesVaultStatus {
-  // Stack outputs from the IaC deployment.
-  AzureRecoveryServicesVaultStackOutputs outputs = 1;
+  // Outputs from the IaC deployment.
+  AzureRecoveryServicesVaultOutputs outputs = 1;
 }

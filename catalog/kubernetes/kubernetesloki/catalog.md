@@ -6,7 +6,7 @@ The grain is deliberate: **Loki stores logs; something must ship them.** Deploy 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm release** (official `loki` chart, default pin `18.5.4` — pairs with Loki 3.7.4, named `metadata.name`) — a single-replica monolithic StatefulSet on a persistent volume by default, or the topology the spec declares; plus the nginx **gateway** (the single front door routing pushes and queries in every mode), the **chunks and query-results memcached caches**, and the **canary** DaemonSet that writes and reads test log lines through the full pipeline, turning silent log loss into a visible metric
 - **A derived index schema** — Loki normally requires a hand-authored `schema_config`; the modules derive it (TSDB, schema v13, the object store matching your storage backend) so a new install never writes one. The `schemaFromDate` override exists solely for importing clusters whose existing schema began on a real date
@@ -56,11 +56,11 @@ spec:
 planton apply -f loki.yaml
 ```
 
-This near-empty spec is a complete log store: a single-replica monolithic Loki on a 10Gi persistent volume, the gateway, both caches (sized down here for a small cluster — see below), the canary, and single-tenant access with no tenant header needed. A Stack Job tracks the provisioning in real time.
+This near-empty spec is a complete log store: a single-replica monolithic Loki on a 10Gi persistent volume, the gateway, both caches (sized down here for a small cluster — see below), the canary, and single-tenant access with no tenant header needed. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to compose Loki behind a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to compose Loki behind a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -86,7 +86,7 @@ These are the most important decisions when configuring a Loki log store. Explor
 
 **Retention is off by default — deliberately visible.** Empty `retentionPeriod` keeps everything forever (Loki's own default) and object-storage costs grow unbounded; production installs should set it (`744h` / `31d` — hours or days only). Deletion is asynchronous: the compactor marks and later sweeps, so any bucket lifecycle policy must expire LATER than the period, never earlier.
 
-**Single-tenant by default — one line of wiring.** This component diverges from the chart's multi-tenant-on default so pushes and queries need no `X-Scope-OrgID` header. Enable `multiTenancy` for isolation: every client then sends its tenant header, and the gateway enforces HTTP basic auth for the declared tenants (name + bcrypt htpasswd hash — one-way material, safe in a manifest; generate with `htpasswd -nbBC10`) or an existing htpasswd Secret. Basic auth AUTHENTICATES clients; each client still declares its own tenant header.
+**Single-tenant by default — one line of wiring.** This kind diverges from the chart's multi-tenant-on default so pushes and queries need no `X-Scope-OrgID` header. Enable `multiTenancy` for isolation: every client then sends its tenant header, and the gateway enforces HTTP basic auth for the declared tenants (name + bcrypt htpasswd hash — one-way material, safe in a manifest; generate with `htpasswd -nbBC10`) or an existing htpasswd Secret. Basic auth AUTHENTICATES clients; each client still declares its own tenant header.
 
 **The gateway is the one front door.** It routes pushes and queries to the right internal target in every mode, and the exported endpoints assume it — disable it only when clients address the internal services directly (single-tenant monolithic only). Expose it via KubernetesIngress or Gateway API kinds over the exported handles; Loki never opens its own doors.
 
@@ -96,7 +96,7 @@ These are the most important decisions when configuring a Loki log store. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -106,9 +106,9 @@ These are the most important decisions when configuring a Loki log store. Explor
 
 Object-store credentials (`storage.s3.credentials`, `storage.gcs.serviceAccountKeySecret`, `storage.azure.accountKeySecret`), the bring-your-own htpasswd Secret (`multiTenancy.existingHtpasswdSecret`), and `imagePullSecrets` are name+key references to EXISTING Secrets in the install namespace — not foreign keys; declare them only when ambient keyless identity (IRSA / GKE workload identity / AKS federated identity) is unavailable.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,11 +132,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**OpenTelemetry Collector**](/cloud-catalog/kubernetes-otel-collector) — ships logs in: daemonset mode with the cluster-logs pipeline pointed at the exported `gateway_endpoint` / `otlp_push_endpoint`
-- [**Grafana**](/cloud-catalog/kubernetes-grafana) — reads logs back: a datasource of type `loki` at the gateway endpoint
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) — scrapes Loki's ServiceMonitors and receives the ruler's log alerts by reference
-- [**SeaweedFS**](/cloud-catalog/kubernetes-seaweed-fs) — in-cluster S3-compatible object storage for the s3 arm (`endpoint` + `forcePathStyle`)
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) — explicit volume classes for the data/WAL volumes
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) — HTTP exposure over the exported gateway Service handle
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) — the Gateway API alternative for exposing the gateway Service
+- [**OpenTelemetry Collector**](/infra-catalog/kubernetes-otel-collector) — ships logs in: daemonset mode with the cluster-logs pipeline pointed at the exported `gateway_endpoint` / `otlp_push_endpoint`
+- [**Grafana**](/infra-catalog/kubernetes-grafana) — reads logs back: a datasource of type `loki` at the gateway endpoint
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) — scrapes Loki's ServiceMonitors and receives the ruler's log alerts by reference
+- [**SeaweedFS**](/infra-catalog/kubernetes-seaweed-fs) — in-cluster S3-compatible object storage for the s3 arm (`endpoint` + `forcePathStyle`)
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) — explicit volume classes for the data/WAL volumes
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) — HTTP exposure over the exported gateway Service handle
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) — the Gateway API alternative for exposing the gateway Service

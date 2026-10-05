@@ -8,7 +8,7 @@ import (
 )
 
 // computeDiskVerifier probes a Compute Engine persistent disk via the
-// compute API using the (project, zone, name) triple from the stack
+// compute API using the (project, zone, name) triple from the
 // outputs. Posture assertions confirm the platform attribution labels
 // landed (the cross-engine label-parity canary) and that the size and
 // normalized type outputs match the live disk.

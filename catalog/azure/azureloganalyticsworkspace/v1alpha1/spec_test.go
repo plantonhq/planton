@@ -22,7 +22,7 @@ func buildValidWorkspace() *AzureLogAnalyticsWorkspace {
 	return &AzureLogAnalyticsWorkspace{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureLogAnalyticsWorkspace",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-law",
 		},
 		Spec: &AzureLogAnalyticsWorkspaceSpec{

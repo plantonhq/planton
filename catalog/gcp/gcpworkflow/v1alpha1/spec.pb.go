@@ -33,7 +33,7 @@ const (
 //
 // Every deployment of new source mints a new REVISION; executions started
 // before a deploy finish on the revision they started with. The
-// revision_id stack output tracks the deployed revision.
+// revision_id output tracks the deployed revision.
 type GcpWorkflowSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project to create the workflow in. Can be a literal project ID

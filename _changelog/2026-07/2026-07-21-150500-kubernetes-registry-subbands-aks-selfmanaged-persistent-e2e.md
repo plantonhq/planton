@@ -1,7 +1,7 @@
 # Kubernetes registry family sub-bands, AKS + self-managed credential seam, persistent E2E cluster lanes
 
 **Date**: 2026-07-21
-**Scope**: `apis/dev/planton/shared/cloudresourcekind`, `apis/dev/planton/provider/kubernetes`, `pkg/kubernetes/{kubetoken,execcredential,kubeconfig}`, `e2e`, site catalog
+**Scope**: `apis/dev/planton/shared/catalogkind`, `apis/dev/planton/provider/kubernetes`, `pkg/kubernetes/{kubetoken,execcredential,kubeconfig}`, `e2e`, site catalog
 
 ## What changed
 
@@ -68,12 +68,12 @@ credential shape — mirroring the platform connection API.
   local run time; a warm rerun of a full scenario now completes in seconds.
 - `PLANTON_E2E_KUBECONFIG` adds an external-cluster lane for batch-provisioned
   real clusters (EKS/GKE/AKS): the harness adopts the kubeconfig and never
-  touches cluster lifecycle. Component verify semantics are identical in both
+  touches cluster lifecycle. Kind verify semantics are identical in both
   lanes.
 
 ## Validation
 
-- `make protos`, `make generate-cloud-resource-kind-map`, `make e2e-matrix`,
+- `make protos`, `make generate-catalog-kind-map`, `make e2e-matrix`,
   `make build-go` — all green.
 - `go build ./pkg/kubernetes/...`, `go test ./pkg/kubernetes/...` — green,
   including new AKS token/kubeconfig/dispatch unit tests.

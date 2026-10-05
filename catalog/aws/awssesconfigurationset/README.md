@@ -54,7 +54,7 @@ spec:
     - COMPLAINT
 ```
 
-## Related Components
+## Related Kinds
 
 - [AwsSesEmailIdentity](../awssesemailidentity/README.md) — References a configuration set as its default sending rules.
 

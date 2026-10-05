@@ -5,7 +5,7 @@ import (
 
 	awsdynamodbv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsdynamodb/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -19,11 +19,11 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awsdynamodbv1alpha1.AwsDynamodbStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awsdynamodbv1alpha1.AwsDynamodbIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsDynamodb = stackInput.Target
+	locals.AwsDynamodb = iacInput.Target
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 	locals.TableName = metadata.Name
 
 	// Resource-identity tags match the Terraform module key-for-key.
@@ -32,7 +32,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *awsdynamodbv1alpha1.AwsDyna
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsDynamodb.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsDynamodb.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

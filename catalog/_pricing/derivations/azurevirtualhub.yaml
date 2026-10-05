@@ -10,9 +10,9 @@
 # replays the catalog presets through these rules to emit
 # ../estimates/azurevirtualhub.yaml; a server-side estimator evaluates
 # the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azurevirtualhub
 spec:
@@ -49,7 +49,7 @@ spec:
           op: not_equals
           value: BASIC
       text: hub data processing bills per GB for VNet-to-VNet traffic transiting the router, and the router autoscales -- and bills -- routing infrastructure units above the included 2 when traffic demands it
-    - text: gateways created on the hub (site-to-site VPN, point-to-site VPN, ExpressRoute) are their own kinds billing scale units and connection units
+    - text: gateways created on the hub (site-to-site VPN, point-to-site VPN, ExpressRoute) are their own components billing scale units and connection units
     - applies_when:
         - field_path: routing_intent
           op: is_set

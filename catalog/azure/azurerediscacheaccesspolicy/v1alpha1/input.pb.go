@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-redis-cache-access-policy stack-input
-type AzureRedisCacheAccessPolicyStackInput struct {
+// azure-redis-cache-access-policy iac-input
+type AzureRedisCacheAccessPolicyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AzureRedisCacheAccessPolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureRedisCacheAccessPolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureRedisCacheAccessPolicyStackInput) Reset() {
-	*x = AzureRedisCacheAccessPolicyStackInput{}
+func (x *AzureRedisCacheAccessPolicyIacInput) Reset() {
+	*x = AzureRedisCacheAccessPolicyIacInput{}
 	mi := &file_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureRedisCacheAccessPolicyStackInput) String() string {
+func (x *AzureRedisCacheAccessPolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureRedisCacheAccessPolicyStackInput) ProtoMessage() {}
+func (*AzureRedisCacheAccessPolicyIacInput) ProtoMessage() {}
 
-func (x *AzureRedisCacheAccessPolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureRedisCacheAccessPolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureRedisCacheAccessPolicyStackInput) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureRedisCacheAccessPolicyStackInput.ProtoReflect.Descriptor instead.
-func (*AzureRedisCacheAccessPolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureRedisCacheAccessPolicyIacInput.ProtoReflect.Descriptor instead.
+func (*AzureRedisCacheAccessPolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureRedisCacheAccessPolicyStackInput) GetTarget() *AzureRedisCacheAccessPolicy {
+func (x *AzureRedisCacheAccessPolicyIacInput) GetTarget() *AzureRedisCacheAccessPolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureRedisCacheAccessPolicyStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureRedisCacheAccessPolicyIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_input_proto protoref
 
 const file_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	">catalog/azure/azurerediscacheaccesspolicy/v1alpha1/input.proto\x126dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1\x1a<catalog/azure/azurerediscacheaccesspolicy/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe5\x01\n" +
-	"%AzureRedisCacheAccessPolicyStackInput\x12k\n" +
+	">catalog/azure/azurerediscacheaccesspolicy/v1alpha1/input.proto\x126dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1\x1a<catalog/azure/azurerediscacheaccesspolicy/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe3\x01\n" +
+	"#AzureRedisCacheAccessPolicyIacInput\x12k\n" +
 	"\x06target\x18\x01 \x01(\v2S.dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xba\x03\n" +
 	":com.dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_input_proto_rawDesc
 
 var file_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_input_proto_goTypes = []any{
-	(*AzureRedisCacheAccessPolicyStackInput)(nil), // 0: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyStackInput
-	(*AzureRedisCacheAccessPolicy)(nil),           // 1: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicy
-	(*azure.AzureProviderConfig)(nil),             // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureRedisCacheAccessPolicyIacInput)(nil), // 0: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyIacInput
+	(*AzureRedisCacheAccessPolicy)(nil),         // 1: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicy
+	(*azure.AzureProviderConfig)(nil),           // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurerediscacheaccesspolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyStackInput.target:type_name -> dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicy
-	2, // 1: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyIacInput.target:type_name -> dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicy
+	2, // 1: dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1.AzureRedisCacheAccessPolicyIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

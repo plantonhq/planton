@@ -193,7 +193,7 @@ cluster without a word, and that list is where it shows (as the default).
 ## Back up the platform's own database, and bring it back
 
 Without `database.postgresql.backup`, everything a platform knows —
-organizations, environments, connections, projects, pipeline history,
+organizations, environments, connections, Infra Stacks, pipeline history,
 members, the identity realm with its users — lives on one volume in one
 namespace, and `kubectl get plantonplatform` says so: `BACKUP` reads
 `NotConfigured`. Declaring the backup turns on continuous WAL archiving

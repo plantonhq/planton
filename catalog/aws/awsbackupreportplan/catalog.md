@@ -4,7 +4,7 @@ Deploys a Backup Audit Manager report plan: a scheduled report of backup jobs, c
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Backup Report Plan** — the report plan carrying its template, framework references, account/OU/region coverage, and the S3 delivery channel (bucket, key prefix, formats)
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with AWS Backup permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with AWS Backup permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f backup-report-plan.yaml
 ```
 
-This creates a report plan named `daily_backup_jobs` that delivers daily backup-job outcome reports in both formats to the referenced bucket under the `backup-reports/` prefix. A Stack Job tracks the provisioning in real time.
+This creates a report plan named `daily_backup_jobs` that delivers daily backup-job outcome reports in both formats to the referenced bucket under the `backup-reports/` prefix. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,16 +102,16 @@ These are the most important decisions when configuring a report plan. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsS3Bucket** | `deliveryChannel.s3BucketName` | `status.outputs.bucket_id` |
 | **AwsBackupFramework** | `reportSetting.frameworkArns[]` | `status.outputs.framework_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-The single output, `report_plan_arn`, is an identity echo rather than a composition input — no catalog component consumes it via ValueFromRef. It serves IAM policies that scope report administration and AWS CLI/API addressing; the report files themselves land in the delivery bucket, which is where downstream consumers (auditors, pipelines) actually read.
+The single output, `report_plan_arn`, is an identity echo rather than a composition input — no catalog kind consumes it via ValueFromRef. It serves IAM policies that scope report administration and AWS CLI/API addressing; the report files themselves land in the delivery bucket, which is where downstream consumers (auditors, pipelines) actually read.
 
 ## Common Patterns
 
@@ -125,6 +125,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — the delivery destination; its policy must let the report service write
-- [**AWS Backup Framework**](/cloud-catalog/aws-backup-framework) — the frameworks the compliance templates report over
-- [**AWS Backup Plan**](/cloud-catalog/aws-backup-plan) — the source of the backup, copy, and restore jobs the job templates report on
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — the delivery destination; its policy must let the report service write
+- [**AWS Backup Framework**](/infra-catalog/aws-backup-framework) — the frameworks the compliance templates report over
+- [**AWS Backup Plan**](/infra-catalog/aws-backup-plan) — the source of the backup, copy, and restore jobs the job templates report on

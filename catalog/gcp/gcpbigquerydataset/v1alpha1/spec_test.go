@@ -30,7 +30,7 @@ var _ = ginkgo.Describe("GcpBigQueryDatasetSpec", func() {
 		return &GcpBigQueryDataset{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpBigQueryDataset",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-bq-dataset",
 			},
 			Spec: &GcpBigQueryDatasetSpec{

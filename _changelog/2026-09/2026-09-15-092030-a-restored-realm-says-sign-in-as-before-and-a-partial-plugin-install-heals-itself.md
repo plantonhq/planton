@@ -10,4 +10,4 @@ Two things the first live restore left on the list. The identity component repor
 
 ## Proof
 
-Component tests: the restored-realm sentence names the source and sign-in as before and never the first-visitor journey; the gate re-applies an unready controller once per pass under the switch and never a serving one; the whole component package green.
+Component tests: the restored-realm sentence names the source and sign-in as before and never the first-visitor journey; the gate re-applies an unready controller once per pass under the switch and never a serving one; the whole kind package green.

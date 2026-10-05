@@ -10,8 +10,8 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	costprofilev1 "github.com/plantonhq/planton/finops/componentcostprofile/v1"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	costprofilev1 "github.com/plantonhq/planton/finops/catalogkindcostprofile/v1"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/specpath"
 )
 
@@ -19,12 +19,12 @@ import (
 // contract, offline:
 //
 //  1. The profile parses strictly against its proto schema and names its
-//     component (metadata.name equals the component directory).
+//     kind (metadata.name equals the kind directory).
 //  2. The billing model is declared, and the profile's shape matches it:
 //     always-on and hybrid models declare their baseline charges; usage-
 //     driven models (usage_based, hybrid, cluster_capacity) state their
 //     estimate exclusions -- an estimate that hides what it cannot know is
-//     a lie with a dollar sign; free components declare no drivers.
+//     a lie with a dollar sign; free kinds declare no drivers.
 //  3. Every cost driver names the spec field that moves the bill, and that
 //     field path resolves against the served version's compiled descriptors
 //     -- a schema rename that orphans a driver fails CI loudly.
@@ -45,19 +45,19 @@ func TestCostProfileConformance(t *testing.T) {
 		t.Skip("no cost profiles authored yet")
 	}
 
-	for provider, components := range discovered {
-		for _, component := range components {
-			component := component
-			t.Run(provider+"/"+component, func(t *testing.T) {
-				profile, err := Load(root, provider, component)
+	for provider, kindDirs := range discovered {
+		for _, kindDir := range kindDirs {
+			kindDir := kindDir
+			t.Run(provider+"/"+kindDir, func(t *testing.T) {
+				profile, err := Load(root, provider, kindDir)
 				if err != nil {
 					t.Fatalf("cost profile: %v", err)
 				}
-				if profile.GetKind() != "ComponentCostProfile" {
-					t.Fatalf("kind is %q, want ComponentCostProfile", profile.GetKind())
+				if profile.GetKind() != "CatalogKindCostProfile" {
+					t.Fatalf("kind is %q, want CatalogKindCostProfile", profile.GetKind())
 				}
-				if profile.GetMetadata().GetName() != component {
-					t.Errorf("metadata.name is %q, want %q", profile.GetMetadata().GetName(), component)
+				if profile.GetMetadata().GetName() != kindDir {
+					t.Errorf("metadata.name is %q, want %q", profile.GetMetadata().GetName(), kindDir)
 				}
 
 				spec := profile.GetSpec()
@@ -96,7 +96,7 @@ func TestCostProfileConformance(t *testing.T) {
 					}
 				}
 
-				specDescriptor := kindSpecDescriptor(t, component)
+				specDescriptor := kindSpecDescriptor(t, kindDir)
 				for _, driver := range spec.GetCostDrivers() {
 					if err := specpath.Validate(specDescriptor, driver.GetFieldPath()); err != nil {
 						t.Errorf("cost driver field_path %q: %v", driver.GetFieldPath(), err)
@@ -113,14 +113,14 @@ func TestCostProfileConformance(t *testing.T) {
 	}
 }
 
-// kindSpecDescriptor resolves a component directory name to its kind's spec
+// kindSpecDescriptor resolves a kind directory name to its kind's spec
 // message descriptor via the kind registry.
-func kindSpecDescriptor(t *testing.T, component string) protoreflect.MessageDescriptor {
+func kindSpecDescriptor(t *testing.T, kindDir string) protoreflect.MessageDescriptor {
 	t.Helper()
-	kind := crkreflect.KindFromString(component)
-	apiMessage, err := crkreflect.NewInstance(kind)
+	kind := catalogkindreflect.KindFromString(kindDir)
+	apiMessage, err := catalogkindreflect.NewInstance(kind)
 	if err != nil {
-		t.Fatalf("NewInstance(%s): %v", component, err)
+		t.Fatalf("NewInstance(%s): %v", kindDir, err)
 	}
 	return specDescriptor(t, apiMessage)
 }

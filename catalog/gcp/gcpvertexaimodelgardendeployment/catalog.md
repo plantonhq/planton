@@ -4,7 +4,7 @@ Puts an open model to work in one step. Name a model from Vertex AI Model Garden
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project
 - **Model, endpoint, and deployment** -- a `vertex.AiEndpointWithModelGardenDeployment`: the uploaded model, the endpoint, and the deployed model serving on it
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with `roles/aiplatform.admin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with `roles/aiplatform.admin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Accelerator quota
@@ -48,7 +48,7 @@ spec:
 planton apply -f model-garden-deployment.yaml
 ```
 
-This deploys a small Hugging Face model on Model Garden's recommended shape. A Stack Job tracks the provisioning in real time; the model download is the long pole.
+This deploys a small Hugging Face model on Model Garden's recommended shape. An Infra Job tracks the provisioning in real time; the model download is the long pole.
 
 ### InfraChart
 
@@ -66,16 +66,16 @@ These are the most important decisions when configuring a deployment. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId`, `endpointConfig.privateServiceConnectConfig.projectAllowlist[]`, `pscAutomationConfig.projectId` | `status.outputs.project_id` |
 | **GcpVpcNetwork** | `endpointConfig.privateServiceConnectConfig.pscAutomationConfig.network` | `status.outputs.network_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -95,6 +95,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Vertex AI Endpoint**](/cloud-catalog/gcp-vertex-ai-endpoint) -- an endpoint managed on its own
-- [**GCP Vertex AI Agent Engine**](/cloud-catalog/gcp-vertex-ai-agent-engine) -- agents that call the deployed model
-- [**GCP Project**](/cloud-catalog/gcp-project) and [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- Private Service Connect consumers
+- [**GCP Vertex AI Endpoint**](/infra-catalog/gcp-vertex-ai-endpoint) -- an endpoint managed on its own
+- [**GCP Vertex AI Agent Engine**](/infra-catalog/gcp-vertex-ai-agent-engine) -- agents that call the deployed model
+- [**GCP Project**](/infra-catalog/gcp-project) and [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- Private Service Connect consumers

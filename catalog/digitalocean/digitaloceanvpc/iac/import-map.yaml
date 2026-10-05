@@ -1,14 +1,14 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceanvpc
 spec:
   # The VPC's identity is its API UUID, which the module exports as the
-  # vpc_id stack output -- zero user input when state is present.
+  # vpc_id output -- zero user input when state is present.
   values:
     - name: vpc_id
       derivations:
-        - from_stack_output: vpc_id
+        - from_output: vpc_id
       where_to_find: >-
         DigitalOcean control panel -> Networking -> VPC -> the UUID in the
         VPC's page URL, or `doctl vpcs list` (the ID column).

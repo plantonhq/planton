@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azureuserassignedidentity.v1alpha1;
 
-// AzureUserAssignedIdentityStackOutputs contains the outputs from a deployed
+// AzureUserAssignedIdentityOutputs contains the outputs from a deployed
 // User-Assigned Managed Identity resource.
 //
 // These outputs are consumed by downstream resources that need to reference
@@ -11,7 +11,7 @@ package dev.planton.azure.azureuserassignedidentity.v1alpha1;
 // - AzureFunctionApp (managed identity for accessing Azure services)
 // - AzureLinuxWebApp (managed identity for accessing Azure services)
 // - AzureContainerApp (managed identity for accessing Azure services)
-message AzureUserAssignedIdentityStackOutputs {
+message AzureUserAssignedIdentityOutputs {
   // The Azure Resource Manager ID of the User-Assigned Managed Identity.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{name}
   // Referenced by downstream resources that accept a user-assigned identity ID.

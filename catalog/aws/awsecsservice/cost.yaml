@@ -1,12 +1,12 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate model: its presets commit real spend (desired_count copies of a
 # task), but the per-copy rate lives on the referenced AwsEcsTaskDefinition's
 # cpu/memory -- invisible in this manifest, so a dollar figure here would be
-# a guess wearing a dollar sign. Schema: finops/componentcostprofile/v1.
+# a guess wearing a dollar sign. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsecsservice
 spec:
@@ -62,7 +62,7 @@ spec:
       pricing_unit: GB
       impact: The Service Connect proxy consumes part of each task's cpu/memory allocation, and its access logs ship to CloudWatch at ingestion rates.
   estimate_exclusions:
-    - the per-task rate is the referenced AwsEcsTaskDefinition's cpu/memory times Fargate's unit prices -- this manifest sets the count, never the size, which is why no estimate document exists for this component
+    - the per-task rate is the referenced AwsEcsTaskDefinition's cpu/memory times Fargate's unit prices -- this manifest sets the count, never the size, which is why no estimate document exists for this kind
     - the load balancer and target groups referenced by load_balancers bill on their own components
     - EC2 launch type bills through the cluster's capacity providers instead of per task
     - data transfer between zones and out of the region follows traffic

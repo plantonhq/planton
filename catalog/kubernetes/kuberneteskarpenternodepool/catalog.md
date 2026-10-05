@@ -4,7 +4,7 @@ Declares a Karpenter NodePool — the fleet shape Karpenter provisions machines 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **NodePool** (cluster-scoped, named after `metadata.name`) -- the `karpenter.sh/v1` custom resource carrying the NodeClaim template (requirements, taints, labels, lifetime), the disruption policy (consolidation and budgets), pool-wide limits, and weight
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -59,7 +59,7 @@ spec:
 planton apply -f node-pool.yaml
 ```
 
-Karpenter then launches nodes from this pool whenever pending pods fit its constraints, consolidates under-used nodes per the disruption policy, and recycles nodes at expiry. A Stack Job tracks the provisioning in real time.
+Karpenter then launches nodes from this pool whenever pending pods fit its constraints, consolidates under-used nodes per the disruption policy, and recycles nodes at expiry. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,15 +100,15 @@ These are the most important decisions when configuring a NodePool. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesKarpenterEc2NodeClass** | `template.nodeClassRef.name` | `status.outputs.node_class_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,6 +126,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Karpenter**](/cloud-catalog/kubernetes-karpenter) -- the controller that watches this pool; install it first
-- [**Karpenter EC2 Node Class**](/cloud-catalog/kubernetes-karpenter-ec2-node-class) -- the machine template this pool references; one class typically serves several pools
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- pending pods trigger provisioning against the pools whose requirements they fit (the same holds for StatefulSets and Jobs)
+- [**Karpenter**](/infra-catalog/kubernetes-karpenter) -- the controller that watches this pool; install it first
+- [**Karpenter EC2 Node Class**](/infra-catalog/kubernetes-karpenter-ec2-node-class) -- the machine template this pool references; one class typically serves several pools
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- pending pods trigger provisioning against the pools whose requirements they fit (the same holds for StatefulSets and Jobs)

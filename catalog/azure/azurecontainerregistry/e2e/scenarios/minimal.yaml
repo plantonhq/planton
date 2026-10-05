@@ -17,7 +17,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurecontainerregistry
+    e2e-catalog-kind: azurecontainerregistry
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -4,7 +4,7 @@ Manages a Cloudflare zone's behavior settings — the serving posture the dashbo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Zone Settings** — one zone-setting write per managed field, in Cloudflare's own vocabulary (63 settings: on/off toggles, enums, numerics, and object values like HSTS)
 - **Managed Transforms** — created only when `managedRequestHeaders` or `managedResponseHeaders` has entries; one zone-wide object toggling Cloudflare-defined header transforms (both lists always travel together — a transform missing from the list reads as disabled)
@@ -18,12 +18,12 @@ Zone settings and the crawler-bypass toggle have no delete at Cloudflare, so des
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Zone → Zone Settings → Edit on the target zone; managed transforms, URL normalization, and origin cloud regions ride the same zone-scoped token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Zone → Zone Settings → Edit on the target zone; managed transforms, URL normalization, and origin cloud regions ride the same zone-scoped token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
 
-- **A zone on the account** — `zoneId` names the zone; reference a CloudflareDnsZone Cloud Resource or pass the zone ID from the dashboard.
+- **A zone on the account** — `zoneId` names the zone; reference a CloudflareDnsZone Infra Component or pass the zone ID from the dashboard.
 - **The right plan for gated settings** (only for those fields) — `advancedDdos`, `orangeToOrange`, `prefetchPreload`, `responseBuffering`, `sortQueryStringForCache`, `trueClientIpHeader`, and `proxyReadTimeout` need Enterprise; `polish`, `mirage`, and `imageResizing` need Pro or above. The apply fails with the API's editable=false error on a plan that lacks a setting; nothing is billed or upgraded. `ciphers` is gated by product, not plan: writes need the zone's Advanced Certificate Manager subscription (API code 1023 without it) even though the settings list reports it editable.
 
 ## Deploy
@@ -54,7 +54,7 @@ spec:
 planton apply -f zone-settings.yaml
 ```
 
-This manages exactly two settings — every plain-http request redirects to HTTPS, and TLS below 1.2 is refused — while all other zone settings stay exactly as they were. A Stack Job tracks the provisioning in real time.
+This manages exactly two settings — every plain-http request redirects to HTTPS, and TLS below 1.2 is refused — while all other zone settings stay exactly as they were. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,15 +96,15 @@ These are the most important decisions when configuring zone settings. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no consumable outputs of its own: zone settings are a zone-scoped singleton with no resource ID, so `status.outputs` only echoes the input `zone_id` back for reference. Downstream resources that need the zone should reference the CloudflareDnsZone directly.
+This kind has no consumable outputs of its own: zone settings are a zone-scoped singleton with no resource ID, so `status.outputs` only echoes the input `zone_id` back for reference. Downstream resources that need the zone should reference the CloudflareDnsZone directly.
 
 ## Common Patterns
 
@@ -120,7 +120,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — creates the zone this resource configures and owns the resolver-side settings; its `zone_id` output is this resource's foreign key
-- [**Cloudflare Cache Settings**](/cloud-catalog/cloudflare-cache-settings) — cache rules, tiered caching, and cache reserve layered over this kind's zone-wide caching baseline
-- [**Cloudflare Zone TLS Settings**](/cloud-catalog/cloudflare-zone-tls-settings) — the advanced per-zone TLS surface beyond this spec's `ssl`/`minTlsVersion`/`ciphers`
-- [**Cloudflare Ruleset**](/cloud-catalog/cloudflare-ruleset) — per-request overrides of these zone-wide settings via the `http_config_settings` phase
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — creates the zone this resource configures and owns the resolver-side settings; its `zone_id` output is this resource's foreign key
+- [**Cloudflare Cache Settings**](/infra-catalog/cloudflare-cache-settings) — cache rules, tiered caching, and cache reserve layered over this kind's zone-wide caching baseline
+- [**Cloudflare Zone TLS Settings**](/infra-catalog/cloudflare-zone-tls-settings) — the advanced per-zone TLS surface beyond this spec's `ssl`/`minTlsVersion`/`ciphers`
+- [**Cloudflare Ruleset**](/infra-catalog/cloudflare-ruleset) — per-request overrides of these zone-wide settings via the `http_config_settings` phase

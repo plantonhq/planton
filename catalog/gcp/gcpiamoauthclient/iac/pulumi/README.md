@@ -26,7 +26,7 @@ iac/pulumi/
     ├── main.go            # Module coordinator
     ├── oauth_client.go    # Client + credential creation
     ├── locals.go          # Resolved resource + derived values
-    └── outputs.go         # Stack output constants
+    └── outputs.go         # Output constants
 ```
 
 ## Quick Start
@@ -36,7 +36,7 @@ cd iac/pulumi
 pulumi stack init dev
 ```
 
-Provide a `stack-input.yaml`:
+Provide a `iac-input.yaml`:
 
 ```yaml
 target:
@@ -61,7 +61,7 @@ pulumi up
 
 ## Inputs
 
-The module consumes `GcpIamOauthClientStackInput`:
+The module consumes `GcpIamOauthClientIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|
@@ -79,7 +79,7 @@ The module consumes `GcpIamOauthClientStackInput`:
 
 ## Behavior Notes
 
-- **Workforce clients only** (scope honesty): consent-screen OAuth clients have NO programmatic creation path anywhere since Google shut the IAP OAuth Admin API — see the component README.
+- **Workforce clients only** (scope honesty): consent-screen OAuth clients have NO programmatic creation path anywhere since Google shut the IAP OAuth Admin API — see the kind's README.
 - **`credential.disabled` is sent explicitly**: GCP requires a credential to be DISABLED before deletion, so the `false -> true` transition is exactly the pre-removal step and must reach the API. Removing an enabled credential fails at the API — disable in one apply, remove in the next.
 - **The credential secret is provider-computed** and arrives already secret-marked from the SDK; the export needs no extra wrapping.
 - **One deletion_policy** governs the client and every credential.

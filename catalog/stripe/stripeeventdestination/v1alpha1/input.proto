@@ -5,9 +5,9 @@ package dev.planton.stripe.stripeeventdestination.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/stripeeventdestination/v1alpha1/api.proto";
 
-// StripeEventDestinationStackInput is the input to the StripeEventDestination IaC module.
+// StripeEventDestinationIacInput is the input to the StripeEventDestination IaC module.
 // It contains the target resource and the Stripe provider configuration.
-message StripeEventDestinationStackInput {
+message StripeEventDestinationIacInput {
   // target is the StripeEventDestination resource to be deployed.
   StripeEventDestination target = 1;
 

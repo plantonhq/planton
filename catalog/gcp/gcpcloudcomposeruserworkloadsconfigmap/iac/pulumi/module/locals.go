@@ -11,13 +11,13 @@ type Locals struct {
 	GcpCloudComposerUserWorkloadsConfigMap *gcpcloudcomposeruserworkloadsconfigmapv1alpha1.GcpCloudComposerUserWorkloadsConfigMap
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudcomposeruserworkloadsconfigmapv1alpha1.GcpCloudComposerUserWorkloadsConfigMapStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpcloudcomposeruserworkloadsconfigmapv1alpha1.GcpCloudComposerUserWorkloadsConfigMapIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpCloudComposerUserWorkloadsConfigMap = stackInput.Target
+	locals.GcpCloudComposerUserWorkloadsConfigMap = iacInput.Target
 
 	// Kubernetes ConfigMaps carry no GCP labels surface — no platform
 	// attribution labels are stamped, identically on both engines.
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

@@ -11,9 +11,9 @@
 # "Empty = no requests/limits, the chart default"), so unsized
 # components contribute zero honestly. The workflow pods themselves are
 # ephemeral per-run workloads this footprint can never see -- the first
-# loud exclusion. Schema: finops/componentcapacityderivation/v1.
+# loud exclusion. Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesargoworkflows
 spec:

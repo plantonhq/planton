@@ -4,7 +4,7 @@ Defines a project-scoped IAM custom role — a named, reusable bundle of permiss
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Project IAM Custom Role** -- a `projects.IAMCustomRole` in the specified GCP project with the given role ID, title, description, permission list, and launch stage
 
@@ -12,12 +12,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** that will own the role. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef. The role can only be granted on resources within this project.
+- **A GCP project** that will own the role. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef. The role can only be granted on resources within this project.
 - **IAM API** (`iam.googleapis.com`) enabled in the target project.
 
 ## Deploy
@@ -52,7 +52,7 @@ spec:
 planton apply -f gcp-iam-custom-role.yaml
 ```
 
-This mints a two-permission role. Grant it by wiring a GcpProjectIamMember's `role` field to this resource's `name` output. A Stack Job tracks the provisioning in real time.
+This mints a two-permission role. Grant it by wiring a GcpProjectIamMember's `role` field to this resource's `name` output. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,15 +83,15 @@ These are the most important decisions when configuring a custom role. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -111,7 +111,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project that owns the role
-- [**GCP Project IAM Member**](/cloud-catalog/gcp-project-iam-member) -- grants this role at project scope by referencing the `name` output
-- [**GCP Service Account IAM Member**](/cloud-catalog/gcp-service-account-iam-member) -- grants this role ON a service account by referencing the `name` output
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- its inline `projectIamRoles` list also accepts this role's fully-qualified name
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project that owns the role
+- [**GCP Project IAM Member**](/infra-catalog/gcp-project-iam-member) -- grants this role at project scope by referencing the `name` output
+- [**GCP Service Account IAM Member**](/infra-catalog/gcp-service-account-iam-member) -- grants this role ON a service account by referencing the `name` output
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- its inline `projectIamRoles` list also accepts this role's fully-qualified name

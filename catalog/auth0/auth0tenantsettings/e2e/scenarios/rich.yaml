@@ -3,7 +3,7 @@
 # languages, session lifetimes and cookie, logout confirmation and discovery,
 # the resource parameter profile, a login route, logout URLs, an error page
 # and a set of flags. The verifier reads GET /api/v2/tenants/settings back and
-# compares each against the stack outputs and this spec. Destroy leaves them
+# compares each against the outputs and this spec. Destroy leaves them
 # in place (Auth0 has no delete for tenant settings); the next run rewrites
 # them.
 apiVersion: auth0.planton.dev/v1alpha1

@@ -1,4 +1,4 @@
-# AliCloudKmsKey Component Added
+# AliCloudKmsKey Kind Added
 
 **Date**: 2026-02-19
 **Component**: AliCloudKmsKey
@@ -7,13 +7,13 @@
 
 ## Summary
 
-Added the AliCloudKmsKey deployment component -- a standalone KMS customer-managed key (CMK) for data encryption and digital signing across Alibaba Cloud services. This key serves as the root of trust for envelope encryption used by RDS (TDE), OSS (SSE-KMS), ECS (disk encryption), and PolarDB.
+Added the AliCloudKmsKey catalog kind -- a standalone KMS customer-managed key (CMK) for data encryption and digital signing across Alibaba Cloud services. This key serves as the root of trust for envelope encryption used by RDS (TDE), OSS (SSE-KMS), ECS (disk encryption), and PolarDB.
 
 ## What Was Created
 
 ### API Definition
-- `apis/dev/planton/provider/alicloud/alicloudkmskey/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AliCloudKmsKey = 3060` in `CloudResourceKind` enum under a new Security category
+- `apis/dev/planton/provider/alicloud/alicloudkmskey/v1/` -- Full proto API (spec, api, iac_input, outputs)
+- Registered `AliCloudKmsKey = 3060` in `CatalogKind` enum under a new Security category
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and a single `kms.Key` resource with bool-to-string conversion for `automatic_rotation` and `deletion_protection`, default resolution for optional fields
@@ -23,7 +23,7 @@ Added the AliCloudKmsKey deployment component -- a standalone KMS customer-manag
 - Ginkgo/Gomega spec validation tests covering: valid inputs (minimal, full config, HSM protection, all 5 asymmetric key specs, all 4 symmetric key specs, pending_window boundaries, rotation disabled), invalid inputs (missing region, wrong api_version/kind, missing metadata, invalid key_spec, invalid key_usage, invalid protection_level, pending_window below minimum, pending_window above maximum)
 
 ### Documentation
-- README.md with configuration reference, key spec values table, immutability notes, deletion behavior, and related components
+- README.md with configuration reference, key spec values table, immutability notes, deletion behavior, and related kinds
 - examples.md with 3 YAML examples (minimal, production with rotation, asymmetric signing)
 - catalog-page.md with full configuration reference and examples
 - docs/README.md with comprehensive research documentation covering history, deployment methods, design decisions, and best practices
@@ -50,4 +50,4 @@ Added the AliCloudKmsKey deployment component -- a standalone KMS customer-manag
 - `go test ./...` -- PASS
 - `terraform init` -- PASS (alicloud provider v1.271.0)
 - `terraform validate` -- PASS
-- `go build ./pkg/crkreflect/...` -- PASS (kind map regenerated)
+- `go build ./pkg/catalogkindreflect/...` -- PASS (kind map regenerated)

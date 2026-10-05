@@ -5,9 +5,9 @@ package dev.planton.aws.awssagemakernotebookinstance.v1alpha1;
 import "catalog/aws/awssagemakernotebookinstance/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSagemakerNotebookInstanceStackInput is the input for the IaC
+// AwsSagemakerNotebookInstanceIacInput is the input for the IaC
 // modules that deploy the notebook instance.
-message AwsSagemakerNotebookInstanceStackInput {
+message AwsSagemakerNotebookInstanceIacInput {
   // target is the AwsSagemakerNotebookInstance resource to deploy.
   AwsSagemakerNotebookInstance target = 1;
   // provider_config contains the AWS provider credentials and configuration.

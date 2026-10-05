@@ -1,4 +1,4 @@
-# The component defaults on their own: a single-replica monolithic Tempo on
+# The kind defaults on their own: a single-replica monolithic Tempo on
 # a persistent volume (the component provisions a PVC by default — the
 # chart's own emptyDir default would lose traces on restart). The verifier
 # proves the pipeline live — push a span over OTLP, then retrieve the trace

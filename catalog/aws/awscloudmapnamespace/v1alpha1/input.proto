@@ -5,10 +5,10 @@ package dev.planton.aws.awscloudmapnamespace.v1alpha1;
 import "catalog/aws/awscloudmapnamespace/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsCloudMapNamespaceStackInput is the input for the IaC modules that
+// AwsCloudMapNamespaceIacInput is the input for the IaC modules that
 // manage a Cloud Map namespace with its services and statically
 // registered instances.
-message AwsCloudMapNamespaceStackInput {
+message AwsCloudMapNamespaceIacInput {
   // target is the AwsCloudMapNamespace resource to deploy.
   AwsCloudMapNamespace target = 1;
   // provider_config contains the AWS provider credentials and configuration.

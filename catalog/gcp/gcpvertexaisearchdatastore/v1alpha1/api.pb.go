@@ -31,7 +31,7 @@ type GcpVertexAiSearchDataStore struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpVertexAiSearchDataStoreSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpVertexAiSearchDataStore) GetKind() string {
 	return ""
 }
 
-func (x *GcpVertexAiSearchDataStore) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpVertexAiSearchDataStore) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpVertexAiSearchDataStore) GetStatus() *GcpVertexAiSearchDataStoreStat
 // gcp-vertex-ai-search-data-store status
 type GcpVertexAiSearchDataStoreStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpVertexAiSearchDataStoreStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpVertexAiSearchDataStoreOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpVertexAiSearchDataStoreStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpVertexAiSearchDataStoreStatus) GetOutputs() *GcpVertexAiSearchDataStoreStackOutputs {
+func (x *GcpVertexAiSearchDataStoreStatus) GetOutputs() *GcpVertexAiSearchDataStoreOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aGcpVertexAiSearchDataStoreR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
 	"\x04spec\x18\x04 \x01(\v2S.dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12m\n" +
-	"\x06status\x18\x05 \x01(\v2U.dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreStatusR\x06status\"\x99\x01\n" +
-	" GcpVertexAiSearchDataStoreStatus\x12u\n" +
-	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2U.dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreStatusR\x06status\"\x94\x01\n" +
+	" GcpVertexAiSearchDataStoreStatus\x12p\n" +
+	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreOutputsR\aoutputsB\xa5\x03\n" +
 	"7com.dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1B\bApiProtoP\x01Zogithub.com/plantonhq/planton/catalog/gcp/gcpvertexaisearchdatastore/v1alpha1;gcpvertexaisearchdatastorev1alpha1\xa2\x02\x04DPGG\xaa\x023Dev.Planton.Gcp.Gcpvertexaisearchdatastore.V1alpha1\xca\x023Dev\\Planton\\Gcp\\Gcpvertexaisearchdatastore\\V1alpha1\xe2\x02?Dev\\Planton\\Gcp\\Gcpvertexaisearchdatastore\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Gcp::Gcpvertexaisearchdatastore::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_api_proto_goTypes = []any{
-	(*GcpVertexAiSearchDataStore)(nil),             // 0: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStore
-	(*GcpVertexAiSearchDataStoreStatus)(nil),       // 1: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpVertexAiSearchDataStoreSpec)(nil),         // 3: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreSpec
-	(*GcpVertexAiSearchDataStoreStackOutputs)(nil), // 4: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreStackOutputs
+	(*GcpVertexAiSearchDataStore)(nil),        // 0: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStore
+	(*GcpVertexAiSearchDataStoreStatus)(nil),  // 1: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpVertexAiSearchDataStoreSpec)(nil),    // 3: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreSpec
+	(*GcpVertexAiSearchDataStoreOutputs)(nil), // 4: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreOutputs
 }
 var file_catalog_gcp_gcpvertexaisearchdatastore_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStore.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStore.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStore.spec:type_name -> dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreSpec
 	1, // 2: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStore.status:type_name -> dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreStatus
-	4, // 3: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreStatus.outputs:type_name -> dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreStackOutputs
+	4, // 3: dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreStatus.outputs:type_name -> dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

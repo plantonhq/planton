@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpdataprocautoscalingpolicy.v1alpha1;
 
 // Outputs produced after provisioning a Dataproc autoscaling policy.
-message GcpDataprocAutoscalingPolicyStackOutputs {
+message GcpDataprocAutoscalingPolicyOutputs {
   // Fully qualified policy resource name as computed by the provider —
   // projects/{project}/regions|locations/{location}/autoscalingPolicies/{policy_id}
   // (the Dataproc API treats the regions and locations path segments as

@@ -15,7 +15,7 @@ import "shared/options/options.proto";
 //
 // Every deployment of new source mints a new REVISION; executions started
 // before a deploy finish on the revision they started with. The
-// revision_id stack output tracks the deployed revision.
+// revision_id output tracks the deployed revision.
 message GcpWorkflowSpec {
   // The GCP project to create the workflow in. Can be a literal project ID
   // or a reference to a GcpProject resource. If omitted, the provider's

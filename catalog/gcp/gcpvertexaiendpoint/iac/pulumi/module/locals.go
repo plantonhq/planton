@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpvertexaiendpointv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiendpoint/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -18,10 +18,10 @@ type Locals struct {
 	EndpointName        string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaiendpointv1alpha1.GcpVertexAiEndpointStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpvertexaiendpointv1alpha1.GcpVertexAiEndpointIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpVertexAiEndpoint = stackInput.Target
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpVertexAiEndpoint = iacInput.Target
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 
 	locals.DisplayName = locals.GcpVertexAiEndpoint.Spec.DisplayName
 
@@ -47,7 +47,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaiendpointv1alpha1
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = strings.ToLower(locals.GcpVertexAiEndpoint.Metadata.Name)
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpVertexAiEndpoint.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpVertexAiEndpoint.String())
 
 	if locals.GcpVertexAiEndpoint.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = locals.GcpVertexAiEndpoint.Metadata.Org

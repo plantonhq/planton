@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kuberneteskubeprometheusstack
 spec:
@@ -16,7 +16,7 @@ spec:
       impact: The Prometheus container's requests are reserved per replica; memory scales with active series count, and undersized limits are the most common cause of a crash-looping Prometheus on busy clusters. Empty means no requests or limits (the chart default).
     - field_path: prometheus.disk_size
       sku_meter: cluster persistent volume storage
-      impact: The TSDB volume is provisioned PER replica (component default 50Gi -- this component overrides the chart's vanish-on-restart emptyDir with a PVC). Kubernetes cannot shrink PVCs; plan for growth.
+      impact: The TSDB volume is provisioned PER replica (kind default 50Gi -- this component overrides the chart's vanish-on-restart emptyDir with a PVC). Kubernetes cannot shrink PVCs; plan for growth.
     - field_path: prometheus.retention
       sku_meter: cluster persistent volume storage
       impact: Longer retention holds more samples on the TSDB volume (default 10d); retention_size caps the on-disk size -- size it BELOW disk_size or Prometheus crash-loops when the volume fills.

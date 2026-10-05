@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsroute53resolverfirewall.v1alpha1;
 
-// AwsRoute53ResolverFirewallStackOutputs captures the observable state
+// AwsRoute53ResolverFirewallOutputs captures the observable state
 // of the DNS Firewall rule group after apply.
-message AwsRoute53ResolverFirewallStackOutputs {
+message AwsRoute53ResolverFirewallOutputs {
   // The rule group's id (rslvr-frg-...) - the provider's import ID and
   // half of each rule's composite import ID.
   string rule_group_id = 1;

@@ -8,14 +8,14 @@ Judgment calls that matter when you run DigitalOcean load balancers.
 
 ## Certificates are names, not UUIDs
 
-DigitalOcean Let's Encrypt certificates rotate their UUID on every auto-renewal. The provider's `certificate_id` argument is deprecated for that reason; this component only models `certificateName`. A `DigitalOceanCertificate` reference resolves to `status.outputs.certificate_id`, which at the pinned provider is the certificate NAME — the stable handle. Never paste a certificate UUID into `certificateName`.
+DigitalOcean Let's Encrypt certificates rotate their UUID on every auto-renewal. The provider's `certificate_id` argument is deprecated for that reason; this kind only models `certificateName`. A `DigitalOceanCertificate` reference resolves to `status.outputs.certificate_id`, which at the pinned provider is the certificate NAME — the stable handle. Never paste a certificate UUID into `certificateName`.
 
 ## Type decides the rest of the spec
 
 - **REGIONAL** (the default when `type` is unset) and **REGIONAL_NETWORK** require a `region` and `forwardingRules`. They may take a `vpc`.
 - **GLOBAL** forbids a `region` and `forwardingRules`. It routes through `glbSettings` (required), plus `domains` and `targetLoadBalancerIds` pointing at regional balancers. A GLOBAL balancer has no VPC.
 
-The provider's own check allows region-without-type (it implies REGIONAL). This component mirrors that.
+The provider's own check allows region-without-type (it implies REGIONAL). This kind mirrors that.
 
 ## Droplet IDs versus a tag
 
@@ -41,7 +41,7 @@ A new balancer normally reaches `active` in one to two minutes; the provider wai
 
 ## BYOIP and subnet placement
 
-`ip` assigns an unassigned BYOIP address on the account at create time. When unset, DigitalOcean allocates one. The assigned address is always the `ip` stack output.
+`ip` assigns an unassigned BYOIP address on the account at create time. When unset, DigitalOcean allocates one. The assigned address is always the `ip` output.
 
 `subnetUuid` places the balancer in a DigitalOcean-managed VPC subnet and requires `vpc`. Both are create-only, and both deploy on either provisioner.
 

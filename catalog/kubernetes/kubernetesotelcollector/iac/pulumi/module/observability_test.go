@@ -17,9 +17,9 @@ import (
 
 func observabilityLocals(on bool) *Locals {
 	mode := kubernetesotelcollectorv1alpha1.KubernetesOtelCollectorMode_daemonset
-	return initializeLocals(nil, &kubernetesotelcollectorv1alpha1.KubernetesOtelCollectorStackInput{
+	return initializeLocals(nil, &kubernetesotelcollectorv1alpha1.KubernetesOtelCollectorIacInput{
 		Target: &kubernetesotelcollectorv1alpha1.KubernetesOtelCollector{
-			Metadata: &shared.CloudResourceMetadata{Name: "cluster-logs"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "cluster-logs"},
 			Spec: &kubernetesotelcollectorv1alpha1.KubernetesOtelCollectorSpec{
 				Namespace: &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "observability"},

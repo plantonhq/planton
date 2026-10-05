@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1;
 
 // Outputs produced after provisioning a Firestore backup schedule.
-message GcpFirestoreBackupScheduleStackOutputs {
+message GcpFirestoreBackupScheduleOutputs {
   // Server-assigned schedule ID (the last path segment of the schedule's
   // resource name) — what Admin API calls address the schedule by.
   string schedule_id = 1;

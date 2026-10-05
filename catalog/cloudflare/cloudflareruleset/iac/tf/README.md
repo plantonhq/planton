@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareRulesetSpec
 locals.tf     — Derived values (zone_id extraction, kind, phase)
 main.tf       — cloudflare_ruleset resource with dynamic rule blocks
-outputs.tf    — Stack outputs (ruleset_id, version, zone_id, phase)
+outputs.tf    — outputs (ruleset_id, version, zone_id, phase)
 ```
 
 ## Usage

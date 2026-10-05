@@ -84,7 +84,7 @@ planton apply -f backend-bucket.yaml
 | `cacheKeyPolicy` | URL only | Which query params (`queryStringWhitelist`) and headers (`includeHttpHeaders`) join the cache key |
 | `bypassCacheOnRequestHeaders` | `[]` | Skip the cache for requests carrying these headers (max 5) |
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -110,11 +110,11 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 - **Immutability**: `backendBucketName`, `projectId`, and `loadBalancingScheme` are ForceNew. Everything else — including the origin `bucketName` — updates in place.
 - **Public objects**: the load balancer does not authenticate to GCS. Objects must be publicly readable (`allUsers` → `roles/storage.objectViewer` on the bucket) unless served exclusively through signed URLs/cookies.
-- **Signed-URL keys are secrets**: anyone holding a `keyValue` can mint valid signed URLs. Keys are immutable in GCP — rotate by adding a new key, re-signing, then removing the old one (at most 3 keys exist so rotation always has room). Key values never appear in stack outputs.
+- **Signed-URL keys are secrets**: anyone holding a `keyValue` can mint valid signed URLs. Keys are immutable in GCP — rotate by adding a new key, re-signing, then removing the old one (at most 3 keys exist so rotation always has room). Key values never appear in outputs.
 - **Cache invalidation is operational**, not declarative: changing TTLs affects future fills, not existing cache entries. Use `gcloud compute url-maps invalidate-cdn-cache` for immediate eviction, or version asset paths (fingerprinting) to sidestep invalidation entirely.
 - **Edge vs backend security policies**: only `CLOUD_ARMOR_EDGE`-type policies attach here; standard Cloud Armor backend policies belong on backend services.
 
-## Related Components
+## Related Kinds
 
 - [GcpGcsBucket](/docs/catalog/gcp/gcpgcsbucket) — the origin bucket whose objects are served
 - [GcpCloudArmorPolicy](/docs/catalog/gcp/gcpcloudarmorpolicy) — the edge security policy filtering requests

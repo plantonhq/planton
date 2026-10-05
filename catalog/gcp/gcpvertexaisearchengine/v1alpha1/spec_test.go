@@ -44,7 +44,7 @@ var _ = ginkgo.Describe("GcpVertexAiSearchEngineSpec", func() {
 		return &GcpVertexAiSearchEngine{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVertexAiSearchEngine",
-			Metadata:   &shared.CloudResourceMetadata{Name: "product-search"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "product-search"},
 			Spec: &GcpVertexAiSearchEngineSpec{
 				Location:     "global",
 				DataStoreIds: []*foreignkeyv1.StringValueOrRef{nameRef("product-catalog")},

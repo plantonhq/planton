@@ -25,7 +25,7 @@ carries it, and deriving it means the two can never disagree.
 
 ## Inputs
 
-The module receives an `AzureFederatedIdentityCredentialStackInput` containing:
+The module receives an `AzureFederatedIdentityCredentialIacInput` containing:
 
 - `target.spec.name` -- the credential's name under the parent identity
 - `target.spec.user_assigned_identity` -- the parent identity's ARM ID (references resolved to a literal by the platform)

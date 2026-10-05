@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesqdrant.v1alpha1;
 
-//qdrant-kubernetes stack outputs
-message KubernetesQdrantStackOutputs {
+//qdrant-kubernetes outputs
+message KubernetesQdrantOutputs {
   //namespace the cluster runs in.
   string namespace = 1;
 

@@ -1,7 +1,7 @@
 # AzureDiskEncryptionSet - Pulumi Module
 
-Pulumi implementation for the AzureDiskEncryptionSet deployment
-component.
+Pulumi implementation for the AzureDiskEncryptionSet
+kind.
 
 ## Architecture
 
@@ -23,11 +23,11 @@ compute.DiskEncryptionSet (one CMK encryption anchor)
 - **Principal/tenant outputs resolve via `ApplyT` after create** and
   export empty for user-assigned-only identity sets.
 - **Identity tags match the Terraform module** key for key and value
-  for value: `resource_kind` is the lowercased CloudResourceKind enum
+  for value: `resource_kind` is the lowercased CatalogKind enum
   name, and `resource_id` is written only when `metadata.id` is set.
 
 ## Provider
 
 Built via the shared `pulumiazureprovider.Get` builder -- static client
-secret, keyless web identity, or ambient chain, resolved from the stack
+secret, keyless web identity, or ambient chain, resolved from the IaC
 input. Never construct the provider inline.

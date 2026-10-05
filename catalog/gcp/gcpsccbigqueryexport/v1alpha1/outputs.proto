@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpsccbigqueryexport.v1alpha1;
 
-// GcpSccBigQueryExportStackOutputs carries the export's identity and the
+// GcpSccBigQueryExportOutputs carries the export's identity and the
 // writer it needs on its dataset.
-message GcpSccBigQueryExportStackOutputs {
+message GcpSccBigQueryExportOutputs {
   // Full resource name:
   // {parent}/locations/{location}/bigQueryExports/{big_query_export_id}.
   string name = 1;

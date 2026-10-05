@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceancertificate.v1alpha1;
 import "catalog/digitalocean/digitaloceancertificate/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-certificate stack-input
-message DigitalOceanCertificateStackInput {
-  //target cloud-resource
+//digital-ocean-certificate iac-input
+message DigitalOceanCertificateIacInput {
+  // the catalog object to deploy
   DigitalOceanCertificate target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

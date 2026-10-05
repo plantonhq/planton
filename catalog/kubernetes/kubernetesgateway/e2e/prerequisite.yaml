@@ -1,4 +1,4 @@
-# Install manifest used when OTHER components declare KubernetesGateway as an
+# Install manifest used when OTHER kinds declare KubernetesGateway as an
 # E2E prerequisite (route and ListenerSet scenarios composing a real parent).
 # Chains the GatewayClass fixture through the e2e-prerequisites annotation and
 # resolves it through the foreign key -- the same wiring an infra chart uses.

@@ -25,7 +25,7 @@ const (
 // The grant itself has no server-generated identity beyond its inputs; the
 // outputs echo the fully-resolved grant tuple so downstream tooling and audits
 // can see exactly what was applied without re-resolving references.
-type GcpProjectIamMemberStackOutputs struct {
+type GcpProjectIamMemberOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The project ID whose IAM policy received the grant (after reference
 	// resolution and any provider-default fallback).
@@ -43,20 +43,20 @@ type GcpProjectIamMemberStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpProjectIamMemberStackOutputs) Reset() {
-	*x = GcpProjectIamMemberStackOutputs{}
+func (x *GcpProjectIamMemberOutputs) Reset() {
+	*x = GcpProjectIamMemberOutputs{}
 	mi := &file_catalog_gcp_gcpprojectiammember_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpProjectIamMemberStackOutputs) String() string {
+func (x *GcpProjectIamMemberOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpProjectIamMemberStackOutputs) ProtoMessage() {}
+func (*GcpProjectIamMemberOutputs) ProtoMessage() {}
 
-func (x *GcpProjectIamMemberStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpProjectIamMemberOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpprojectiammember_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,33 +68,33 @@ func (x *GcpProjectIamMemberStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpProjectIamMemberStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpProjectIamMemberStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpProjectIamMemberOutputs.ProtoReflect.Descriptor instead.
+func (*GcpProjectIamMemberOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpprojectiammember_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpProjectIamMemberStackOutputs) GetProjectId() string {
+func (x *GcpProjectIamMemberOutputs) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *GcpProjectIamMemberStackOutputs) GetRole() string {
+func (x *GcpProjectIamMemberOutputs) GetRole() string {
 	if x != nil {
 		return x.Role
 	}
 	return ""
 }
 
-func (x *GcpProjectIamMemberStackOutputs) GetMember() string {
+func (x *GcpProjectIamMemberOutputs) GetMember() string {
 	if x != nil {
 		return x.Member
 	}
 	return ""
 }
 
-func (x *GcpProjectIamMemberStackOutputs) GetEtag() string {
+func (x *GcpProjectIamMemberOutputs) GetEtag() string {
 	if x != nil {
 		return x.Etag
 	}
@@ -105,8 +105,8 @@ var File_catalog_gcp_gcpprojectiammember_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_gcp_gcpprojectiammember_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcpprojectiammember/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcpprojectiammember.v1alpha1\"\x80\x01\n" +
-	"\x1fGcpProjectIamMemberStackOutputs\x12\x1d\n" +
+	"6catalog/gcp/gcpprojectiammember/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcpprojectiammember.v1alpha1\"{\n" +
+	"\x1aGcpProjectIamMemberOutputs\x12\x1d\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\tR\tprojectId\x12\x12\n" +
 	"\x04role\x18\x02 \x01(\tR\x04role\x12\x16\n" +
@@ -128,7 +128,7 @@ func file_catalog_gcp_gcpprojectiammember_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcpprojectiammember_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpprojectiammember_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpProjectIamMemberStackOutputs)(nil), // 0: dev.planton.gcp.gcpprojectiammember.v1alpha1.GcpProjectIamMemberStackOutputs
+	(*GcpProjectIamMemberOutputs)(nil), // 0: dev.planton.gcp.gcpprojectiammember.v1alpha1.GcpProjectIamMemberOutputs
 }
 var file_catalog_gcp_gcpprojectiammember_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

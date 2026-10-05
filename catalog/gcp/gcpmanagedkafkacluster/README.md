@@ -4,7 +4,7 @@ A Managed Service for Apache Kafka cluster -- Google-operated Apache Kafka broke
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `managedkafka.googleapis.com` on the project (never disabled on destroy)
 - **Kafka cluster** -- a `managed_kafka_cluster` with its capacity, networks, optional CMEK, rebalancing, and mTLS configuration, carrying the platform attribution labels
@@ -82,7 +82,7 @@ planton apply -f managed-kafka-cluster.yaml
 - `brokerDiskSizeGib`, when set, is at least 100; `rebalanceMode` takes only Google's two modes.
 - `clusterId` follows RFC 1035.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -111,7 +111,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpManagedKafkaTopic** -- the topics on this cluster
 - **GcpManagedKafkaAcl** -- access rules for topics, consumer groups, and the cluster

@@ -18,14 +18,14 @@ type Locals struct {
 	Permissions []*auth0rolev1alpha1.Auth0RolePermission
 }
 
-// initializeLocals creates and populates the Locals struct from stack input.
-func initializeLocals(ctx *pulumi.Context, stackInput *auth0rolev1alpha1.Auth0RoleStackInput) *Locals {
+// initializeLocals creates and populates the Locals struct from IaC input.
+func initializeLocals(ctx *pulumi.Context, iacInput *auth0rolev1alpha1.Auth0RoleIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.Auth0Role = stackInput.Target
+	locals.Auth0Role = iacInput.Target
 
-	spec := stackInput.Target.Spec
-	metadata := stackInput.Target.Metadata
+	spec := iacInput.Target.Spec
+	metadata := iacInput.Target.Metadata
 
 	locals.ResourceName = metadata.Name
 

@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0EmailTemplateStackInput is the input to the Auth0EmailTemplate IaC module.
+// Auth0EmailTemplateIacInput is the input to the Auth0EmailTemplate IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-type Auth0EmailTemplateStackInput struct {
+type Auth0EmailTemplateIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the Auth0EmailTemplate resource to be deployed.
 	Target *Auth0EmailTemplate `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -36,20 +36,20 @@ type Auth0EmailTemplateStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *Auth0EmailTemplateStackInput) Reset() {
-	*x = Auth0EmailTemplateStackInput{}
+func (x *Auth0EmailTemplateIacInput) Reset() {
+	*x = Auth0EmailTemplateIacInput{}
 	mi := &file_catalog_auth0_auth0emailtemplate_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0EmailTemplateStackInput) String() string {
+func (x *Auth0EmailTemplateIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0EmailTemplateStackInput) ProtoMessage() {}
+func (*Auth0EmailTemplateIacInput) ProtoMessage() {}
 
-func (x *Auth0EmailTemplateStackInput) ProtoReflect() protoreflect.Message {
+func (x *Auth0EmailTemplateIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0emailtemplate_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *Auth0EmailTemplateStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0EmailTemplateStackInput.ProtoReflect.Descriptor instead.
-func (*Auth0EmailTemplateStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0EmailTemplateIacInput.ProtoReflect.Descriptor instead.
+func (*Auth0EmailTemplateIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0emailtemplate_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0EmailTemplateStackInput) GetTarget() *Auth0EmailTemplate {
+func (x *Auth0EmailTemplateIacInput) GetTarget() *Auth0EmailTemplate {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *Auth0EmailTemplateStackInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
+func (x *Auth0EmailTemplateIacInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -84,8 +84,8 @@ var File_catalog_auth0_auth0emailtemplate_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_auth0_auth0emailtemplate_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/auth0/auth0emailtemplate/v1alpha1/input.proto\x12-dev.planton.auth0.auth0emailtemplate.v1alpha1\x1a3catalog/auth0/auth0emailtemplate/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xca\x01\n" +
-	"\x1cAuth0EmailTemplateStackInput\x12Y\n" +
+	"5catalog/auth0/auth0emailtemplate/v1alpha1/input.proto\x12-dev.planton.auth0.auth0emailtemplate.v1alpha1\x1a3catalog/auth0/auth0emailtemplate/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xc8\x01\n" +
+	"\x1aAuth0EmailTemplateIacInput\x12Y\n" +
 	"\x06target\x18\x01 \x01(\v2A.dev.planton.auth0.auth0emailtemplate.v1alpha1.Auth0EmailTemplateR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.auth0.Auth0ProviderConfigR\x0eproviderConfigB\xfb\x02\n" +
 	"1com.dev.planton.auth0.auth0emailtemplate.v1alpha1B\n" +
@@ -105,13 +105,13 @@ func file_catalog_auth0_auth0emailtemplate_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_auth0_auth0emailtemplate_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0emailtemplate_v1alpha1_input_proto_goTypes = []any{
-	(*Auth0EmailTemplateStackInput)(nil), // 0: dev.planton.auth0.auth0emailtemplate.v1alpha1.Auth0EmailTemplateStackInput
-	(*Auth0EmailTemplate)(nil),           // 1: dev.planton.auth0.auth0emailtemplate.v1alpha1.Auth0EmailTemplate
-	(*auth0.Auth0ProviderConfig)(nil),    // 2: dev.planton.auth0.Auth0ProviderConfig
+	(*Auth0EmailTemplateIacInput)(nil), // 0: dev.planton.auth0.auth0emailtemplate.v1alpha1.Auth0EmailTemplateIacInput
+	(*Auth0EmailTemplate)(nil),         // 1: dev.planton.auth0.auth0emailtemplate.v1alpha1.Auth0EmailTemplate
+	(*auth0.Auth0ProviderConfig)(nil),  // 2: dev.planton.auth0.Auth0ProviderConfig
 }
 var file_catalog_auth0_auth0emailtemplate_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.auth0.auth0emailtemplate.v1alpha1.Auth0EmailTemplateStackInput.target:type_name -> dev.planton.auth0.auth0emailtemplate.v1alpha1.Auth0EmailTemplate
-	2, // 1: dev.planton.auth0.auth0emailtemplate.v1alpha1.Auth0EmailTemplateStackInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
+	1, // 0: dev.planton.auth0.auth0emailtemplate.v1alpha1.Auth0EmailTemplateIacInput.target:type_name -> dev.planton.auth0.auth0emailtemplate.v1alpha1.Auth0EmailTemplate
+	2, // 1: dev.planton.auth0.auth0emailtemplate.v1alpha1.Auth0EmailTemplateIacInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

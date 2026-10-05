@@ -1,6 +1,6 @@
 # GcpAlloydbCluster — Terraform Module
 
-Terraform implementation for the GcpAlloydbCluster Planton component. Provisions an AlloyDB cluster with a bundled primary instance.
+Terraform implementation for the GcpAlloydbCluster Planton catalog kind. Provisions an AlloyDB cluster with a bundled primary instance.
 
 ## Resources Created
 

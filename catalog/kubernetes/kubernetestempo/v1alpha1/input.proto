@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetestempo.v1alpha1;
 import "catalog/kubernetes/kubernetestempo/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//tempo-kubernetes stack-input
-message KubernetesTempoStackInput {
-  //target cloud-resource
+//tempo-kubernetes iac-input
+message KubernetesTempoIacInput {
+  // the catalog object to deploy
   KubernetesTempo target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

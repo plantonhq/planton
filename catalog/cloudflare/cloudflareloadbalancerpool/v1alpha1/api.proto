@@ -16,7 +16,7 @@ message CloudflareLoadBalancerPool {
   string kind = 2 [(buf.validate.field).string.const = 'CloudflareLoadBalancerPool'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   CloudflareLoadBalancerPoolSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,7 +27,7 @@ message CloudflareLoadBalancerPool {
 
 // cloudflare-load-balancer-pool status
 message CloudflareLoadBalancerPoolStatus {
-  //stack-outputs
-  //  cloudflare-load-balancer-pool stack-outputs
-  CloudflareLoadBalancerPoolStackOutputs outputs = 1;
+  //outputs
+  //  cloudflare-load-balancer-pool outputs
+  CloudflareLoadBalancerPoolOutputs outputs = 1;
 }

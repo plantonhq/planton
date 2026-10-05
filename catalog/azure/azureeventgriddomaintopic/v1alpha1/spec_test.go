@@ -30,7 +30,7 @@ func validResource() *AzureEventgridDomainTopic {
 	return &AzureEventgridDomainTopic{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureEventgridDomainTopic",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-egdt",
 		},
 		Spec: &AzureEventgridDomainTopicSpec{

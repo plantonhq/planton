@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureServiceBusQueueStackOutputs** captures the outputs of provisioning
+// **AzureServiceBusQueueOutputs** captures the outputs of provisioning
 // a Service Bus queue.
 //
 // No connection string here on purpose: credentials are minted by
 // AzureServiceBusAuthorizationRule (namespace- or queue-scoped) or granted
 // keyless via Entra data-plane roles on queue_id. SDKs address the queue
 // by the namespace endpoint plus queue_name.
-type AzureServiceBusQueueStackOutputs struct {
+type AzureServiceBusQueueOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the queue. The scope for queue-level
 	// data-plane role assignments (Azure Service Bus Data Receiver/Sender)
@@ -46,20 +46,20 @@ type AzureServiceBusQueueStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureServiceBusQueueStackOutputs) Reset() {
-	*x = AzureServiceBusQueueStackOutputs{}
+func (x *AzureServiceBusQueueOutputs) Reset() {
+	*x = AzureServiceBusQueueOutputs{}
 	mi := &file_catalog_azure_azureservicebusqueue_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureServiceBusQueueStackOutputs) String() string {
+func (x *AzureServiceBusQueueOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureServiceBusQueueStackOutputs) ProtoMessage() {}
+func (*AzureServiceBusQueueOutputs) ProtoMessage() {}
 
-func (x *AzureServiceBusQueueStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureServiceBusQueueOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureservicebusqueue_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,26 +71,26 @@ func (x *AzureServiceBusQueueStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureServiceBusQueueStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureServiceBusQueueStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureServiceBusQueueOutputs.ProtoReflect.Descriptor instead.
+func (*AzureServiceBusQueueOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureservicebusqueue_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureServiceBusQueueStackOutputs) GetQueueId() string {
+func (x *AzureServiceBusQueueOutputs) GetQueueId() string {
 	if x != nil {
 		return x.QueueId
 	}
 	return ""
 }
 
-func (x *AzureServiceBusQueueStackOutputs) GetQueueName() string {
+func (x *AzureServiceBusQueueOutputs) GetQueueName() string {
 	if x != nil {
 		return x.QueueName
 	}
 	return ""
 }
 
-func (x *AzureServiceBusQueueStackOutputs) GetNamespaceName() string {
+func (x *AzureServiceBusQueueOutputs) GetNamespaceName() string {
 	if x != nil {
 		return x.NamespaceName
 	}
@@ -101,8 +101,8 @@ var File_catalog_azure_azureservicebusqueue_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_azure_azureservicebusqueue_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azureservicebusqueue/v1alpha1/outputs.proto\x12/dev.planton.azure.azureservicebusqueue.v1alpha1\"\x83\x01\n" +
-	" AzureServiceBusQueueStackOutputs\x12\x19\n" +
+	"9catalog/azure/azureservicebusqueue/v1alpha1/outputs.proto\x12/dev.planton.azure.azureservicebusqueue.v1alpha1\"~\n" +
+	"\x1bAzureServiceBusQueueOutputs\x12\x19\n" +
 	"\bqueue_id\x18\x01 \x01(\tR\aqueueId\x12\x1d\n" +
 	"\n" +
 	"queue_name\x18\x02 \x01(\tR\tqueueName\x12%\n" +
@@ -123,7 +123,7 @@ func file_catalog_azure_azureservicebusqueue_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_azure_azureservicebusqueue_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureservicebusqueue_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureServiceBusQueueStackOutputs)(nil), // 0: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueStackOutputs
+	(*AzureServiceBusQueueOutputs)(nil), // 0: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueOutputs
 }
 var file_catalog_azure_azureservicebusqueue_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

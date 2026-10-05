@@ -22,14 +22,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0UserStackOutputs contains the outputs from an Auth0 User deployment.
+// Auth0UserOutputs contains the outputs from an Auth0 User deployment.
 // These outputs identify the user to every system that must recognize it: the
 // subject other declarations grant standing to, the profile fields as Auth0
 // stored them, and the module-minted password when no password was declared.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/user#read-only
 // https://www.pulumi.com/registry/packages/auth0/api-docs/user/#outputs
-type Auth0UserStackOutputs struct {
+type Auth0UserOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// user_id is the user's full identity-provider subject, connection prefix
 	// included (e.g. "auth0|66f1c2d3e4a5b6c7d8e9f0a1" for a database user,
@@ -64,20 +64,20 @@ type Auth0UserStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Auth0UserStackOutputs) Reset() {
-	*x = Auth0UserStackOutputs{}
+func (x *Auth0UserOutputs) Reset() {
+	*x = Auth0UserOutputs{}
 	mi := &file_catalog_auth0_auth0user_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0UserStackOutputs) String() string {
+func (x *Auth0UserOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0UserStackOutputs) ProtoMessage() {}
+func (*Auth0UserOutputs) ProtoMessage() {}
 
-func (x *Auth0UserStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0UserOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0user_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -89,61 +89,61 @@ func (x *Auth0UserStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0UserStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0UserStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0UserOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0UserOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0user_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0UserStackOutputs) GetUserId() string {
+func (x *Auth0UserOutputs) GetUserId() string {
 	if x != nil {
 		return x.UserId
 	}
 	return ""
 }
 
-func (x *Auth0UserStackOutputs) GetEmail() string {
+func (x *Auth0UserOutputs) GetEmail() string {
 	if x != nil {
 		return x.Email
 	}
 	return ""
 }
 
-func (x *Auth0UserStackOutputs) GetUsername() string {
+func (x *Auth0UserOutputs) GetUsername() string {
 	if x != nil {
 		return x.Username
 	}
 	return ""
 }
 
-func (x *Auth0UserStackOutputs) GetName() string {
+func (x *Auth0UserOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *Auth0UserStackOutputs) GetNickname() string {
+func (x *Auth0UserOutputs) GetNickname() string {
 	if x != nil {
 		return x.Nickname
 	}
 	return ""
 }
 
-func (x *Auth0UserStackOutputs) GetPicture() string {
+func (x *Auth0UserOutputs) GetPicture() string {
 	if x != nil {
 		return x.Picture
 	}
 	return ""
 }
 
-func (x *Auth0UserStackOutputs) GetConnectionName() string {
+func (x *Auth0UserOutputs) GetConnectionName() string {
 	if x != nil {
 		return x.ConnectionName
 	}
 	return ""
 }
 
-func (x *Auth0UserStackOutputs) GetPassword() string {
+func (x *Auth0UserOutputs) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
@@ -154,8 +154,8 @@ var File_catalog_auth0_auth0user_v1alpha1_outputs_proto protoreflect.FileDescrip
 
 const file_catalog_auth0_auth0user_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/auth0/auth0user/v1alpha1/outputs.proto\x12$dev.planton.auth0.auth0user.v1alpha1\x1a\x1cshared/options/options.proto\"\xf7\x01\n" +
-	"\x15Auth0UserStackOutputs\x12\x17\n" +
+	".catalog/auth0/auth0user/v1alpha1/outputs.proto\x12$dev.planton.auth0.auth0user.v1alpha1\x1a\x1cshared/options/options.proto\"\xf2\x01\n" +
+	"\x10Auth0UserOutputs\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
 	"\busername\x18\x03 \x01(\tR\busername\x12\x12\n" +
@@ -180,7 +180,7 @@ func file_catalog_auth0_auth0user_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_auth0_auth0user_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0user_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0UserStackOutputs)(nil), // 0: dev.planton.auth0.auth0user.v1alpha1.Auth0UserStackOutputs
+	(*Auth0UserOutputs)(nil), // 0: dev.planton.auth0.auth0user.v1alpha1.Auth0UserOutputs
 }
 var file_catalog_auth0_auth0user_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

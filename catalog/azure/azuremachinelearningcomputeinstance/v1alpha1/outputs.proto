@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1;
 
-// **AzureMachineLearningComputeInstanceStackOutputs** captures the
+// **AzureMachineLearningComputeInstanceOutputs** captures the
 // outputs of provisioning a Machine Learning compute instance.
-message AzureMachineLearningComputeInstanceStackOutputs {
+message AzureMachineLearningComputeInstanceOutputs {
   // The Azure Resource Manager ID of the compute instance.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.MachineLearningServices/workspaces/{ws}/computes/{name}
   string machine_learning_compute_instance_id = 1;

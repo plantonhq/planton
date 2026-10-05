@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added AwsMemcachedElasticache as a new AWS resource kind in Planton, providing declarative management of ElastiCache Memcached clusters. This is the eighth new AWS resource kind in the expansion project and the sibling component to AwsRedisElasticache (R07), created after deep research revealed that Memcached and Redis use fundamentally different AWS resources with ~15+ unique fields each.
+Added AwsMemcachedElasticache as a new AWS resource kind in Planton, providing declarative management of ElastiCache Memcached clusters. This is the eighth new AWS resource kind in the expansion project and the sibling kind to AwsRedisElasticache (R07), created after deep research revealed that Memcached and Redis use fundamentally different AWS resources with ~15+ unique fields each.
 
 ## Problem Statement / Motivation
 
-The original planning phase designed a single `AwsElasticacheCluster` component for both Redis and Memcached. During R07 implementation, deep research into the Terraform provider revealed that:
+The original planning phase designed a single `AwsElasticacheCluster` kind for both Redis and Memcached. During R07 implementation, deep research into the Terraform provider revealed that:
 
 - Memcached uses `aws_elasticache_cluster` while Redis uses `aws_elasticache_replication_group`
 - Memcached has no replication, no persistence, no authentication, no encryption at rest
@@ -19,15 +19,15 @@ The original planning phase designed a single `AwsElasticacheCluster` component 
 
 ### Pain Points
 
-- No Memcached caching support in Planton prior to this component
+- No Memcached caching support in Planton prior to this kind
 - Users needing simple, high-throughput distributed caches had no declarative option
 - Session caching, query result caching, and API response caching patterns were not covered
 
 ## Solution / What's New
 
-A focused, clean AwsMemcachedElasticache component that embraces Memcached's simplicity rather than trying to shoehorn it into Redis's model.
+A focused, clean AwsMemcachedElasticache kind that embraces Memcached's simplicity rather than trying to shoehorn it into Redis's model.
 
-### Component Architecture
+### Kind Architecture
 
 ```mermaid
 flowchart TB
@@ -36,7 +36,7 @@ flowchart TB
     Spec --> Cluster[ElastiCache Cluster]
     SubnetGroup -.->|conditional| Cluster
     ParamGroup -.->|conditional| Cluster
-    Cluster --> Outputs[Stack Outputs]
+    Cluster --> Outputs[Outputs]
     Outputs --> ClusterAddress[cluster_address]
     Outputs --> ConfigEndpoint[configuration_endpoint]
     Outputs --> ARN[arn]
@@ -47,9 +47,9 @@ flowchart TB
 ### Proto API (4 files)
 
 - **spec.proto**: 15 fields, 1 nested message (AwsMemcachedElasticacheParameter), 4 CEL validations
-- **stack_outputs.proto**: 7 outputs (cluster_id, cluster_address, configuration_endpoint, arn, port, subnet_group_name, parameter_group_name)
+- **outputs.proto**: 7 outputs (cluster_id, cluster_address, configuration_endpoint, arn, port, subnet_group_name, parameter_group_name)
 - **api.proto**: KRM wrapper with api_version, kind, metadata, spec, status
-- **stack_input.proto**: target + provider_config
+- **iac_input.proto**: target + provider_config
 
 ### Key Spec Fields
 
@@ -95,7 +95,7 @@ flowchart TB
 ### Documentation
 
 - README.md with Memcached vs Redis comparison table, configuration reference, operational notes
-- examples.md with 7 examples including infra chart reference pattern
+- examples.md with 7 examples including Infra Chart reference pattern
 - docs/README.md with architecture deep-dive (topology, auto-discovery, scaling behavior, security model)
 - Catalog page at site/public/docs/catalog/aws/memcached-elasticache.md
 
@@ -107,10 +107,10 @@ flowchart TB
 
 ## Benefits
 
-- **Clean separation** — Memcached and Redis are distinct components with focused specs, not a bloated combination
+- **Clean separation** — Memcached and Redis are distinct kinds with focused specs, not a bloated combination
 - **Simpler UX** — 15 fields vs Redis's 29; users see only what Memcached actually supports
 - **No false promises** — No encryption-at-rest, no auth, no persistence fields that would confuse users
-- **Infra chart ready** — StringValueOrRef on all cross-resource fields, rich outputs for downstream wiring
+- **Infra Chart ready** — StringValueOrRef on all cross-resource fields, rich outputs for downstream wiring
 
 ## Impact
 
@@ -120,8 +120,8 @@ flowchart TB
 
 ## Related Work
 
-- **AwsRedisElasticache (R07)** — sibling component for Redis/Valkey caching
-- **AwsServerlessElasticache (R07b)** — planned component for ElastiCache Serverless (next in queue)
+- **AwsRedisElasticache (R07)** — sibling kind for Redis/Valkey caching
+- **AwsServerlessElasticache (R07b)** — planned kind for ElastiCache Serverless (next in queue)
 
 ---
 

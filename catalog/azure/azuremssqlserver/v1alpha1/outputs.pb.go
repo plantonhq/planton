@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMssqlServerStackOutputs** captures the outputs of provisioning an
+// **AzureMssqlServerOutputs** captures the outputs of provisioning an
 // Azure SQL Database logical server.
 //
 // `server_id` is the join key for everything that lives on or attaches to
@@ -31,7 +31,7 @@ const (
 // what applications need to construct connection strings:
 //
 //	Server={fqdn},1433;Database={db};User ID={admin};Password={password};Encrypt=True;
-type AzureMssqlServerStackOutputs struct {
+type AzureMssqlServerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the logical server.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Sql/servers/{name}
@@ -58,20 +58,20 @@ type AzureMssqlServerStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureMssqlServerStackOutputs) Reset() {
-	*x = AzureMssqlServerStackOutputs{}
+func (x *AzureMssqlServerOutputs) Reset() {
+	*x = AzureMssqlServerOutputs{}
 	mi := &file_catalog_azure_azuremssqlserver_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMssqlServerStackOutputs) String() string {
+func (x *AzureMssqlServerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMssqlServerStackOutputs) ProtoMessage() {}
+func (*AzureMssqlServerOutputs) ProtoMessage() {}
 
-func (x *AzureMssqlServerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMssqlServerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremssqlserver_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -83,40 +83,40 @@ func (x *AzureMssqlServerStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMssqlServerStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMssqlServerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMssqlServerOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMssqlServerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremssqlserver_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMssqlServerStackOutputs) GetServerId() string {
+func (x *AzureMssqlServerOutputs) GetServerId() string {
 	if x != nil {
 		return x.ServerId
 	}
 	return ""
 }
 
-func (x *AzureMssqlServerStackOutputs) GetServerName() string {
+func (x *AzureMssqlServerOutputs) GetServerName() string {
 	if x != nil {
 		return x.ServerName
 	}
 	return ""
 }
 
-func (x *AzureMssqlServerStackOutputs) GetFqdn() string {
+func (x *AzureMssqlServerOutputs) GetFqdn() string {
 	if x != nil {
 		return x.Fqdn
 	}
 	return ""
 }
 
-func (x *AzureMssqlServerStackOutputs) GetAdministratorLogin() string {
+func (x *AzureMssqlServerOutputs) GetAdministratorLogin() string {
 	if x != nil {
 		return x.AdministratorLogin
 	}
 	return ""
 }
 
-func (x *AzureMssqlServerStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureMssqlServerOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -127,8 +127,8 @@ var File_catalog_azure_azuremssqlserver_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_azure_azuremssqlserver_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/azure/azuremssqlserver/v1alpha1/outputs.proto\x12+dev.planton.azure.azuremssqlserver.v1alpha1\"\xd5\x01\n" +
-	"\x1cAzureMssqlServerStackOutputs\x12\x1b\n" +
+	"5catalog/azure/azuremssqlserver/v1alpha1/outputs.proto\x12+dev.planton.azure.azuremssqlserver.v1alpha1\"\xd0\x01\n" +
+	"\x17AzureMssqlServerOutputs\x12\x1b\n" +
 	"\tserver_id\x18\x01 \x01(\tR\bserverId\x12\x1f\n" +
 	"\vserver_name\x18\x02 \x01(\tR\n" +
 	"serverName\x12\x12\n" +
@@ -151,7 +151,7 @@ func file_catalog_azure_azuremssqlserver_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_azure_azuremssqlserver_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremssqlserver_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMssqlServerStackOutputs)(nil), // 0: dev.planton.azure.azuremssqlserver.v1alpha1.AzureMssqlServerStackOutputs
+	(*AzureMssqlServerOutputs)(nil), // 0: dev.planton.azure.azuremssqlserver.v1alpha1.AzureMssqlServerOutputs
 }
 var file_catalog_azure_azuremssqlserver_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

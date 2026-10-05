@@ -23,8 +23,8 @@ Two skills ship together:
 
 | Skill | What it carries |
 |-------|-----------------|
-| `planton` | The working craft: Infra Charts and manifest sets, the compile loop, deployed projects, service registration, push-to-deploy, CI/CD, and the boundaries (no mutation without consent, never outside your repository). |
-| `multi-cloud-catalog` | The component reference pack, shipped inside the skill: one page per cloud component across every supported provider, the catalog-wide reference graph, and verified fact sheets for cost, security posture, and runner permissions. |
+| `planton` | The working craft: Infra Charts and manifest sets, the compile loop, deployed Infra Stacks, service registration, push-to-deploy, CI/CD, and the boundaries (no mutation without consent, never outside your repository). |
+| `multi-cloud-catalog` | The kind reference pack, shipped inside the skill: one page per catalog kind across every supported provider, the catalog-wide reference graph, and verified fact sheets for cost, security posture, and runner permissions. |
 
 ## Install the skills
 
@@ -74,7 +74,7 @@ Open a repository in your coding agent and ask for what you need in your own wor
 
 > I need a Postgres database for this service in dev.
 
-The agent creates an `infrastructure/` folder at the repository root, writes one manifest for the database grounded in the component's reference page, validates it with `planton validate`, and replies with what it built, what it costs per month, and the assumptions it made. It does not apply anything until you say so; when you do, it runs `planton apply -f infrastructure/` with one confirmation and narrates the preflight report and the deploy.
+The agent creates an `infrastructure/` folder at the repository root, writes one manifest for the database grounded in the kind's reference page, validates it with `planton validate`, and replies with what it built, what it costs per month, and the assumptions it made. It does not apply anything until you say so; when you do, it runs `planton apply -f infrastructure/` with one confirmation and narrates the preflight report and the deploy.
 
 Ask for more and the folder grows the same way: several wired resources are applied together as one dependency-ordered set, and a full application platform becomes an Infra Chart in its own subfolder. Everything lands under `infrastructure/`, ready to diff and commit; the agent never touches your application code or files outside the repository.
 

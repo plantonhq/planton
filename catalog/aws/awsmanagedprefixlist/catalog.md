@@ -4,7 +4,7 @@ Deploys a customer-managed prefix list — a named, versioned set of CIDR blocks
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Managed Prefix List** — the list with its address family (IPv4 or IPv6), its capacity (`maxEntries`), and its described CIDR entries managed in-line as the complete set: an entry removed from the manifest is removed at AWS, and this kind deliberately never uses the standalone entry resource that would fight the in-line form
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with EC2 VPC permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with EC2 VPC permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -52,7 +52,7 @@ spec:
 planton apply -f aws-managed-prefix-list.yaml
 ```
 
-This creates an IPv4 list holding three described office ranges with headroom for two more. A Stack Job tracks the provisioning in real time.
+This creates an IPv4 list holding three described office ranges with headroom for two more. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -70,13 +70,13 @@ These are the most important decisions when configuring a prefix list. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — it is a leaf: its entries are literal CIDR blocks, and other resources reference it rather than the other way around.
+This kind has no foreign key dependencies — it is a leaf: its entries are literal CIDR blocks, and other resources reference it rather than the other way around.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -97,5 +97,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) — rules take the `pl-` id in their `prefixListIds`, inheriting the list's current entries at enforcement time
-- [**AWS VPC**](/cloud-catalog/aws-vpc) — the network whose route tables and NACLs can target the same `pl-` id
+- [**AWS Security Group**](/infra-catalog/aws-security-group) — rules take the `pl-` id in their `prefixListIds`, inheriting the list's current entries at enforcement time
+- [**AWS VPC**](/infra-catalog/aws-vpc) — the network whose route tables and NACLs can target the same `pl-` id

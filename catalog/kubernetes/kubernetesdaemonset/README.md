@@ -2,7 +2,7 @@
 
 ## Overview
 
-**KubernetesDaemonSet** is a Planton component that deploys a node agent to a Kubernetes cluster as an apps/v1 DaemonSet: exactly one pod runs on every node that matches the pod's scheduling rules, and pods are added or garbage-collected as nodes join and leave. This is the kind for log shippers, node monitors, storage daemons, and CNI components.
+**KubernetesDaemonSet** is a catalog kind that deploys a node agent to a Kubernetes cluster as an apps/v1 DaemonSet: exactly one pod runs on every node that matches the pod's scheduling rules, and pods are added or garbage-collected as nodes join and leave. This is the kind for log shippers, node monitors, storage daemons, and CNI components.
 
 There is no replica count — node membership IS the replica count — and no Service or ingress: clients that must reach an agent do so on its node via per-container `hostPort` or `pod.hostNetwork`. For stateless services use **KubernetesDeployment**; for stateful members use **KubernetesStatefulSet**; for run-to-completion work use **KubernetesJob** / **KubernetesCronJob**.
 
@@ -28,7 +28,7 @@ Deliberately absent: Services, ingress, HPAs, and PDBs — none of them apply to
 - **`updateStrategy`** — `RollingUpdate` (node by node within `maxUnavailable`/`maxSurge` bounds) or `OnDelete` (per-node manual control). `maxSurge` gives gapless updates for agents that must never miss data, but requires old and new pods to coexist on a node — it cannot be combined with exclusive host ports.
 - **`minReadySeconds` / `revisionHistoryLimit`** — rollout flap detection and rollback depth.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following are available in `status.outputs`:
 

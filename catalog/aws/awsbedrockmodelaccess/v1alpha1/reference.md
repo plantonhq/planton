@@ -6,7 +6,7 @@
 
 **apiVersion**: `aws.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 AwsBedrockModelAccessSpec defines the desired configuration for Amazon
 Bedrock model access - accepting the marketplace agreement that entitles
@@ -28,7 +28,7 @@ EVERY spec field is create-time-immutable: changing the model (or the
 form) replaces the agreement.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

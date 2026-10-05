@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePromotionCode is a component that declares a code customers type to redeem a
+// StripePromotionCode is a kind that declares a code customers type to redeem a
 // StripeCoupon, with its own limits.
 //
 // Changing who may redeem the code replaces it. Destroy deactivates the code; Stripe keeps it,
@@ -59,12 +59,12 @@ type StripePromotionCode struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "StripePromotionCode" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the coupon, the code, and its limits.
 	Spec *StripePromotionCodeSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the code as created, populated after deployment.
@@ -117,7 +117,7 @@ func (x *StripePromotionCode) GetKind() string {
 	return ""
 }
 
-func (x *StripePromotionCode) GetMetadata() *shared.CloudResourceMetadata {
+func (x *StripePromotionCode) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -142,8 +142,8 @@ func (x *StripePromotionCode) GetStatus() *StripePromotionCodeStatus {
 // Populated by the deployment system.
 type StripePromotionCodeStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the code's id, the code itself, and whether it is active.
-	Outputs       *StripePromotionCodeStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the code's id, the code itself, and whether it is active.
+	Outputs       *StripePromotionCodeOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -178,7 +178,7 @@ func (*StripePromotionCodeStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripepromotioncode_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *StripePromotionCodeStatus) GetOutputs() *StripePromotionCodeStackOutputs {
+func (x *StripePromotionCodeStatus) GetOutputs() *StripePromotionCodeOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -196,11 +196,11 @@ const file_catalog_stripe_stripepromotioncode_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13StripePromotionCodeR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12d\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12d\n" +
 	"\x04spec\x18\x04 \x01(\v2H.dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12b\n" +
-	"\x06status\x18\x05 \x01(\v2J.dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeStatusR\x06status\"\x87\x01\n" +
-	"\x19StripePromotionCodeStatus\x12j\n" +
-	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeStackOutputsR\aoutputsB\x86\x03\n" +
+	"\x06status\x18\x05 \x01(\v2J.dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeStatusR\x06status\"\x82\x01\n" +
+	"\x19StripePromotionCodeStatus\x12e\n" +
+	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeOutputsR\aoutputsB\x86\x03\n" +
 	"3com.dev.planton.stripe.stripepromotioncode.v1alpha1B\bApiProtoP\x01Zdgithub.com/plantonhq/planton/catalog/stripe/stripepromotioncode/v1alpha1;stripepromotioncodev1alpha1\xa2\x02\x04DPSS\xaa\x02/Dev.Planton.Stripe.Stripepromotioncode.V1alpha1\xca\x02/Dev\\Planton\\Stripe\\Stripepromotioncode\\V1alpha1\xe2\x02;Dev\\Planton\\Stripe\\Stripepromotioncode\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Stripe::Stripepromotioncode::V1alpha1b\x06proto3"
 
 var (
@@ -217,17 +217,17 @@ func file_catalog_stripe_stripepromotioncode_v1alpha1_api_proto_rawDescGZIP() []
 
 var file_catalog_stripe_stripepromotioncode_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_stripe_stripepromotioncode_v1alpha1_api_proto_goTypes = []any{
-	(*StripePromotionCode)(nil),             // 0: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCode
-	(*StripePromotionCodeStatus)(nil),       // 1: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*StripePromotionCodeSpec)(nil),         // 3: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeSpec
-	(*StripePromotionCodeStackOutputs)(nil), // 4: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeStackOutputs
+	(*StripePromotionCode)(nil),          // 0: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCode
+	(*StripePromotionCodeStatus)(nil),    // 1: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*StripePromotionCodeSpec)(nil),      // 3: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeSpec
+	(*StripePromotionCodeOutputs)(nil),   // 4: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeOutputs
 }
 var file_catalog_stripe_stripepromotioncode_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCode.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCode.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCode.spec:type_name -> dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeSpec
 	1, // 2: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCode.status:type_name -> dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeStatus
-	4, // 3: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeStatus.outputs:type_name -> dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeStackOutputs
+	4, // 3: dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeStatus.outputs:type_name -> dev.planton.stripe.stripepromotioncode.v1alpha1.StripePromotionCodeOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

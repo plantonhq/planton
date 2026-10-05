@@ -4,7 +4,7 @@ Manages one side of a Google Cloud VPC Network Peering — the peering entry on 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions exactly one of:
+When you deploy this Infra Component, the IaC module provisions exactly one of:
 
 - **Network peering** (`peerNetwork` set) -- the `compute_network_peering` entry on your network with its route-exchange flags
 - **Peering routes config** (`peerNetwork` empty) -- the `compute_network_peering_routes_config` on an existing peering named `peeringName`
@@ -70,7 +70,7 @@ planton apply -f vpc-peering.yaml
 - **`peeringName`** matches `^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$`.
 - **`stackType`**, **`updateStrategy`**, **`deletionPolicy`** are rejected on the routes-config form (no `peerNetwork`).
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -100,7 +100,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — the networks on both sides
 - [GcpServiceNetworkingConnection](/docs/catalog/gcp/gcpservicenetworkingconnection) — the Google-managed peering the routes-config form tunes

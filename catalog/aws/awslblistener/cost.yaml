@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awslblistener
 spec:
   billing_model: free
   free_tier: A listener is the port/protocol entry point on a load balancer, and Elastic Load Balancing meters the load balancer, never the listener -- the bill is the load balancer's hourly rate plus its LCU (capacity unit) usage, and neither meter counts listeners. One listener or fifty on the same load balancer adds nothing; the TLS certificates a listener presents come from ACM, where public certificates are free.
-  notes: "No field of this spec buys anything on its own: port, protocol, certificates, SSL policy, mTLS mode, header handling, and the default-action chain are all configuration stored by the already-billed load balancer. The real spend lives on the parent load balancer (AwsAlb or AwsNlb) -- its hourly meter runs from creation, and its LCU meter charges the highest of new connections, active connections, processed bytes, and (on ALBs) rule evaluations each hour. The traffic this listener accepts is what feeds those LCU dimensions, so a busy listener raises the load balancer's bill without ever appearing as its own line item. Authenticate actions hand off to Cognito or an external IdP, which bill on their own terms; forwarded requests land on targets (EC2, Lambda) billed as their own kinds."
+  notes: "No field of this spec buys anything on its own: port, protocol, certificates, SSL policy, mTLS mode, header handling, and the default-action chain are all configuration stored by the already-billed load balancer. The real spend lives on the parent load balancer (AwsAlb or AwsNlb) -- its hourly meter runs from creation, and its LCU meter charges the highest of new connections, active connections, processed bytes, and (on ALBs) rule evaluations each hour. The traffic this listener accepts is what feeds those LCU dimensions, so a busy listener raises the load balancer's bill without ever appearing as its own line item. Authenticate actions hand off to Cognito or an external IdP, which bill on their own terms; forwarded requests land on targets (EC2, Lambda) billed as their own components."

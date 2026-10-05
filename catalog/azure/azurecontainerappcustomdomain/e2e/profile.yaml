@@ -1,5 +1,5 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: azurecontainerappcustomdomain
 spec:
@@ -9,7 +9,7 @@ spec:
   # registrar-delegated domain the test tenant does not own -- an Azure
   # DNS zone alone is not publicly resolvable, so the create operation
   # fails at the Azure layer regardless of certificate flow. The
-  # component closes on its offline gate (spec tests, full tofu plan
+  # kind closes on its offline gate (spec tests, full tofu plan
   # proving both count-gated variants, parity audit, outputs
   # conformance). Unblock path: delegate any real (sub)domain to an
   # Azure DNS zone in the test subscription, point the scenario's

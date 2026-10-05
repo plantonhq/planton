@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePaymentLinkStackInput is the input to the StripePaymentLink IaC module.
+// StripePaymentLinkIacInput is the input to the StripePaymentLink IaC module.
 // It contains the target resource and the Stripe provider configuration.
-type StripePaymentLinkStackInput struct {
+type StripePaymentLinkIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripePaymentLink resource to be deployed.
 	Target *StripePaymentLink `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripePaymentLinkStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripePaymentLinkStackInput) Reset() {
-	*x = StripePaymentLinkStackInput{}
+func (x *StripePaymentLinkIacInput) Reset() {
+	*x = StripePaymentLinkIacInput{}
 	mi := &file_catalog_stripe_stripepaymentlink_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripePaymentLinkStackInput) String() string {
+func (x *StripePaymentLinkIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripePaymentLinkStackInput) ProtoMessage() {}
+func (*StripePaymentLinkIacInput) ProtoMessage() {}
 
-func (x *StripePaymentLinkStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripePaymentLinkIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripepaymentlink_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripePaymentLinkStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripePaymentLinkStackInput.ProtoReflect.Descriptor instead.
-func (*StripePaymentLinkStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripePaymentLinkIacInput.ProtoReflect.Descriptor instead.
+func (*StripePaymentLinkIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripepaymentlink_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripePaymentLinkStackInput) GetTarget() *StripePaymentLink {
+func (x *StripePaymentLinkIacInput) GetTarget() *StripePaymentLink {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripePaymentLinkStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripePaymentLinkIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripepaymentlink_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_stripe_stripepaymentlink_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/stripe/stripepaymentlink/v1alpha1/input.proto\x12-dev.planton.stripe.stripepaymentlink.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a3catalog/stripe/stripepaymentlink/v1alpha1/api.proto\"\xca\x01\n" +
-	"\x1bStripePaymentLinkStackInput\x12X\n" +
+	"5catalog/stripe/stripepaymentlink/v1alpha1/input.proto\x12-dev.planton.stripe.stripepaymentlink.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a3catalog/stripe/stripepaymentlink/v1alpha1/api.proto\"\xc8\x01\n" +
+	"\x19StripePaymentLinkIacInput\x12X\n" +
 	"\x06target\x18\x01 \x01(\v2@.dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\xfa\x02\n" +
 	"1com.dev.planton.stripe.stripepaymentlink.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripepaymentlink_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_stripe_stripepaymentlink_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripepaymentlink_v1alpha1_input_proto_goTypes = []any{
-	(*StripePaymentLinkStackInput)(nil), // 0: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkStackInput
+	(*StripePaymentLinkIacInput)(nil),   // 0: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkIacInput
 	(*StripePaymentLink)(nil),           // 1: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLink
 	(*stripe.StripeProviderConfig)(nil), // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripepaymentlink_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkStackInput.target:type_name -> dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLink
-	2, // 1: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkIacInput.target:type_name -> dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLink
+	2, // 1: dev.planton.stripe.stripepaymentlink.v1alpha1.StripePaymentLinkIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

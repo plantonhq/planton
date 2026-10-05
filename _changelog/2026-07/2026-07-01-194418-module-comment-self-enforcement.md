@@ -2,7 +2,7 @@
 
 **Date**: July 1, 2026
 **Type**: Enhancement
-**Components**: Deployment-Component Doctrine, Forge Rules, Update Rule, Fix Rule, Audit Rule
+**Components**: Catalog-Kind Doctrine, Forge Rules, Update Rule, Fix Rule, Audit Rule
 
 ## Summary
 
@@ -21,7 +21,7 @@ requirement anywhere was the `PARITY-EXCEPTION:` marker. The doctrine's complete
 model and the audit's Category 4/5 scoring said nothing about authoring-comment
 quality. A mandate declared in the forge rule alone would have been toothless: the
 next audit-driven pass would still grade a comment-stripped module as complete, and
-quality would decay component by component.
+quality would decay kind by kind.
 
 ## Solution / What's New
 
@@ -31,12 +31,12 @@ A single **module-comment bar**, defined once and referenced everywhere:
 > quirks / non-obvious ordering — not line-by-line narration — to the same density
 > and intent as the `spec.proto` field-comment standard.
 
-- **Defined once** in `architecture/deployment-component.md` §4.1 (Pulumi Code
+- **Defined once** in `architecture/catalog-kind.md` §4.1 (Pulumi Code
   Quality), referenced by the Terraform Code Quality list, the Completeness /
   Incompleteness Indicators, the "IaC Implementation Quality" Quality Multiplier,
   and the "For Auditing" spec list.
 - **Planted at every authoring surface**: the forge orchestrator
-  (`forge-planton-component.mdc`), the two flow rules that actually write the code
+  (`forge-catalog-kind.mdc`), the two flow rules that actually write the code
   (`009-pulumi-module`, `013-terraform-module`), the update rule (Scenario 4 update
   IaC + Scenario 3 docs refresh), and the fix rule (Step 2 "Fix IaC Modules" +
   success criteria). The convenience `complete` rule inherits it through audit +
@@ -63,13 +63,13 @@ A single **module-comment bar**, defined once and referenced everywhere:
 While in these files, three drifted references were corrected:
 
 - The doctrine's registry location `apis/project/planton/...` → `apis/dev/planton/...`.
-- The doctrine's stack-input example referenced a non-existent `AwsCredential`
+- The doctrine's iac-input example referenced a non-existent `AwsCredential`
   credential type; corrected to the provider-config pattern
   (`<Provider>ProviderConfig` from `provider/<provider>/provider.proto`, e.g.
   `AwsProviderConfig`), consistent with the correct example directly above it.
 - The provider numeric-range list (present in the doctrine, the audit rule, and the
-  `016-cloud-resource-kind` forge rule) stopped at Cloudflare (1800-2099). All three
-  now carry the full authoritative range map derived from `cloud_resource_kind.proto`
+  `016-catalog-kind` forge rule) stopped at Cloudflare (1800-2099). All three
+  now carry the full authoritative range map derived from `catalog_kind.proto`
   (through Auth0, OpenFGA, OpenStack, Scaleway, Alibaba Cloud, OCI, and Hetzner Cloud
   3500-3699).
 

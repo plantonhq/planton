@@ -32,8 +32,8 @@ type Locals struct {
 	AssociationTargets []string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcphierarchicalfirewallpolicyv1alpha1.GcpHierarchicalFirewallPolicyStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcphierarchicalfirewallpolicyv1alpha1.GcpHierarchicalFirewallPolicyIacInput) *Locals {
+	target := iacInput.Target
 	spec := target.Spec
 
 	shortName := spec.ShortName

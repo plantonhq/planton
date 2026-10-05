@@ -18,7 +18,7 @@ func screenPartials(spec *Auth0PromptScreenPartialsSpec) *Auth0PromptScreenParti
 	return &Auth0PromptScreenPartials{
 		ApiVersion: "auth0.planton.dev/v1alpha1",
 		Kind:       "Auth0PromptScreenPartials",
-		Metadata:   &shared.CloudResourceMetadata{Name: "signup-partials"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "signup-partials"},
 		Spec:       spec,
 	}
 }

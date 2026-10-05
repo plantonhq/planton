@@ -1,5 +1,5 @@
 # StripeWebhookEndpoint Outputs
-# Maps to the StripeWebhookEndpointStackOutputs protobuf message: the endpoint's id and signing
+# Maps to the StripeWebhookEndpointOutputs protobuf message: the endpoint's id and signing
 # secret.
 
 output "id" {

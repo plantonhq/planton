@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanBucketStackOutputs captures the bucket's identity and
+// DigitalOceanBucketOutputs captures the bucket's identity and
 // addressing endpoints after provisioning.
-type DigitalOceanBucketStackOutputs struct {
+type DigitalOceanBucketOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The provider's resource id for the bucket, which IS the bucket name --
 	// Spaces buckets have no separate UUID. Import addressing pairs it with
@@ -45,20 +45,20 @@ type DigitalOceanBucketStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanBucketStackOutputs) Reset() {
-	*x = DigitalOceanBucketStackOutputs{}
+func (x *DigitalOceanBucketOutputs) Reset() {
+	*x = DigitalOceanBucketOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceanbucket_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanBucketStackOutputs) String() string {
+func (x *DigitalOceanBucketOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanBucketStackOutputs) ProtoMessage() {}
+func (*DigitalOceanBucketOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanBucketStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanBucketOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceanbucket_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,40 +70,40 @@ func (x *DigitalOceanBucketStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanBucketStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanBucketStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanBucketOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanBucketOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceanbucket_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanBucketStackOutputs) GetBucketId() string {
+func (x *DigitalOceanBucketOutputs) GetBucketId() string {
 	if x != nil {
 		return x.BucketId
 	}
 	return ""
 }
 
-func (x *DigitalOceanBucketStackOutputs) GetEndpoint() string {
+func (x *DigitalOceanBucketOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *DigitalOceanBucketStackOutputs) GetRegion() string {
+func (x *DigitalOceanBucketOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *DigitalOceanBucketStackOutputs) GetBucketDomainName() string {
+func (x *DigitalOceanBucketOutputs) GetBucketDomainName() string {
 	if x != nil {
 		return x.BucketDomainName
 	}
 	return ""
 }
 
-func (x *DigitalOceanBucketStackOutputs) GetUrn() string {
+func (x *DigitalOceanBucketOutputs) GetUrn() string {
 	if x != nil {
 		return x.Urn
 	}
@@ -114,8 +114,8 @@ var File_catalog_digitalocean_digitaloceanbucket_v1alpha1_outputs_proto protoref
 
 const file_catalog_digitalocean_digitaloceanbucket_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/digitalocean/digitaloceanbucket/v1alpha1/outputs.proto\x124dev.planton.digitalocean.digitaloceanbucket.v1alpha1\"\xb1\x01\n" +
-	"\x1eDigitalOceanBucketStackOutputs\x12\x1b\n" +
+	">catalog/digitalocean/digitaloceanbucket/v1alpha1/outputs.proto\x124dev.planton.digitalocean.digitaloceanbucket.v1alpha1\"\xac\x01\n" +
+	"\x19DigitalOceanBucketOutputs\x12\x1b\n" +
 	"\tbucket_id\x18\x01 \x01(\tR\bbucketId\x12\x1a\n" +
 	"\bendpoint\x18\x02 \x01(\tR\bendpoint\x12\x16\n" +
 	"\x06region\x18\x03 \x01(\tR\x06region\x12,\n" +
@@ -137,7 +137,7 @@ func file_catalog_digitalocean_digitaloceanbucket_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_digitalocean_digitaloceanbucket_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceanbucket_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanBucketStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanbucket.v1alpha1.DigitalOceanBucketStackOutputs
+	(*DigitalOceanBucketOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceanbucket.v1alpha1.DigitalOceanBucketOutputs
 }
 var file_catalog_digitalocean_digitaloceanbucket_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

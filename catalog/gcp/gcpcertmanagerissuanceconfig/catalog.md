@@ -4,7 +4,7 @@ Creates one Certificate Manager certificate issuance config — how Google-manag
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Certificate Manager API enablement** (`certificatemanager.googleapis.com`) on the target project (never disabled on destroy)
 - **Certificate Manager Certificate Issuance Config** -- a `google_certificate_manager_certificate_issuance_config` naming the CA pool, key algorithm, certificate lifetime, and rotation window
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **A Certificate Authority Service pool** with an enabled authority -- a [GcpPrivateCaPool](/cloud-catalog/gcp-private-ca-pool) and a GcpPrivateCaCertificateAuthority inside it.
+- **A Certificate Authority Service pool** with an enabled authority -- a [GcpPrivateCaPool](/infra-catalog/gcp-private-ca-pool) and a GcpPrivateCaCertificateAuthority inside it.
 - **The Certificate Manager service agent** (`service-<project_number>@gcp-sa-certificatemanager.iam.gserviceaccount.com`) holding `roles/privateca.certificateRequester` on the pool. The config creates without it, but no certificate issues until it is granted.
 
 ## Deploy
@@ -52,7 +52,7 @@ spec:
 planton apply -f issuance-config.yaml
 ```
 
-This creates a global issuance config whose `issuance_config_id` output a GcpCertManagerCert's `managed.issuance_config` takes. A Stack Job tracks the provisioning in real time.
+This creates a global issuance config whose `issuance_config_id` output a GcpCertManagerCert's `managed.issuance_config` takes. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,16 +88,16 @@ These are the most important decisions when configuring an issuance config. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpPrivateCaPool** | `caPool` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,6 +115,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cert Manager Cert**](/cloud-catalog/gcp-cert-manager-cert) -- names this config in `managed.issuance_config` and is issued from the pool
-- [**GCP Private CA Pool**](/cloud-catalog/gcp-private-ca-pool) -- its `name` output feeds `caPool`
-- [**GCP Private CA Certificate Authority**](/cloud-catalog/gcp-private-ca-certificate-authority) -- the enabled authority the pool needs before anything issues
+- [**GCP Cert Manager Cert**](/infra-catalog/gcp-cert-manager-cert) -- names this config in `managed.issuance_config` and is issued from the pool
+- [**GCP Private CA Pool**](/infra-catalog/gcp-private-ca-pool) -- its `name` output feeds `caPool`
+- [**GCP Private CA Certificate Authority**](/infra-catalog/gcp-private-ca-certificate-authority) -- the enabled authority the pool needs before anything issues

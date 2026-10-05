@@ -10,10 +10,10 @@ import (
 	climanifest "github.com/plantonhq/planton/internal/cli/manifest"
 	"github.com/plantonhq/planton/internal/cli/prompt"
 	"github.com/plantonhq/planton/internal/manifest"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/iacinputproviderconfig"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/providerdetect"
 	"github.com/plantonhq/planton/pkg/iac/localmodule"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/providerdetect"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/kubernetes/kubecontext"
 	"github.com/spf13/cobra"
 )
@@ -49,7 +49,7 @@ func ResolveContext(cmd *cobra.Command) (*Context, error) {
 		cliprint.PrintStep("Loading manifest...")
 	}
 
-	// Resolve manifest path with priority: --stack-input > --manifest > --input-dir > --kustomize-dir + --overlay
+	// Resolve manifest path with priority: --iac-input > --manifest > --input-dir > --kustomize-dir + --overlay
 	targetManifestPath, isTemp, err := climanifest.ResolveManifestPath(cmd)
 	if err != nil {
 		// Check for clipboard-specific errors and display beautifully
@@ -151,12 +151,12 @@ func ResolveContext(cmd *cobra.Command) (*Context, error) {
 		ctx.ModuleDir = derivedModuleDir
 	}
 
-	// Get stack input file path if provided
-	stackInputFilePath, _ := cmd.Flags().GetString(string(flag.StackInput))
-	if stackInputFilePath != "" {
-		cliprint.PrintInfo(fmt.Sprintf("Using stack input file: %s", stackInputFilePath))
+	// Get IaC input file path if provided
+	iacInputFilePath, _ := cmd.Flags().GetString(string(flag.IacInput))
+	if iacInputFilePath != "" {
+		cliprint.PrintInfo(fmt.Sprintf("Using IaC input file: %s", iacInputFilePath))
 	}
-	ctx.StackInputFilePath = stackInputFilePath
+	ctx.IacInputFilePath = iacInputFilePath
 
 	// Get other execution flags
 	ctx.ModuleVersion, _ = cmd.Flags().GetString(string(flag.ModuleVersion))
@@ -185,7 +185,7 @@ func ResolveContext(cmd *cobra.Command) (*Context, error) {
 
 	// Get provider config from flags
 	cliprint.PrintStep("Preparing execution...")
-	providerConfig, err := stackinputproviderconfig.GetFromFlags(cmd.Flags(), detectionResult)
+	providerConfig, err := iacinputproviderconfig.GetFromFlags(cmd.Flags(), detectionResult)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get provider config from flags")
 	}

@@ -1,4 +1,4 @@
-# The component defaults, sized for the shared single-node cluster:
+# The kind defaults, sized for the shared single-node cluster:
 # PASSWORD auth with the module-generated admin (upstream's open,
 # anyone-can-query posture never ships), the in-image tpch/tpcds
 # sample catalogs, one worker with percent-based heaps that follow the

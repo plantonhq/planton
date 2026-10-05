@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsdocumentdb.v1alpha1;
 
-// AwsDocumentDbStackOutputs captures the observable identifiers and
+// AwsDocumentDbOutputs captures the observable identifiers and
 // connection endpoints of the DocumentDB cluster after deployment.
-message AwsDocumentDbStackOutputs {
+message AwsDocumentDbOutputs {
   // The cluster identifier (e.g. "orders-docdb").
   string cluster_identifier = 1;
 

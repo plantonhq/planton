@@ -1,5 +1,5 @@
 # DigitalOceanSshKey install profile used as a prerequisite by composed
-# components (DigitalOceanDropletAutoscalePool, whose API mandates at least
+# kinds (DigitalOceanDropletAutoscalePool, whose API mandates at least
 # one SSH key on the template). The E2E harness deploys this key first,
 # captures its outputs, and resolves each dependent's ssh_keys reference
 # against them.
@@ -20,7 +20,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: digitaloceansshkey
+    e2e-catalog-kind: digitaloceansshkey
   annotations:
     planton.dev/e2e: "true"
   tags:

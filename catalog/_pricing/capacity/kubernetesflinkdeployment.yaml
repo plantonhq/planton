@@ -11,9 +11,9 @@
 # taskmanager.numberOfTaskSlots entry packs more slots per worker and
 # divides the actual count -- see the notes). Durable state lives on
 # object storage, never on per-instance volumes.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesflinkdeployment
 spec:

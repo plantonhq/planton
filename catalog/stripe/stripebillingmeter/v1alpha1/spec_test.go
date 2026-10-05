@@ -18,7 +18,7 @@ func meter(spec *StripeBillingMeterSpec) *StripeBillingMeter {
 	return &StripeBillingMeter{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripeBillingMeter",
-		Metadata:   &shared.CloudResourceMetadata{Name: "api-requests"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "api-requests"},
 		Spec:       spec,
 	}
 }

@@ -10,11 +10,11 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *kubernetesreferencegrantv1alpha1.KubernetesReferenceGrantStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesreferencegrantv1alpha1.KubernetesReferenceGrantIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubeProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
@@ -32,7 +32,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesreferencegrantv1alpha1
 // createReferenceGrant creates the namespaced Gateway API ReferenceGrant using
 // the typed crd2pulumi SDK (gatewayv1.NewReferenceGrant, served as
 // gateway.networking.k8s.io/v1), consistent with every other Planton ingress
-// component. The typed approach catches field-name and structure errors at
+// kind. The typed approach catches field-name and structure errors at
 // compile time rather than at deployment time. The ReferenceGrantSpec mapping
 // (the from/to lists) is built in references.go.
 func createReferenceGrant(

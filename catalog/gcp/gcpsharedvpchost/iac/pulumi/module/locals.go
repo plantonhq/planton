@@ -14,8 +14,8 @@ type Locals struct {
 	GcpSharedVpcHost *gcpsharedvpchostv1alpha1.GcpSharedVpcHost
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpsharedvpchostv1alpha1.GcpSharedVpcHostStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpsharedvpchostv1alpha1.GcpSharedVpcHostIacInput) *Locals {
 	return &Locals{
-		GcpSharedVpcHost: stackInput.Target,
+		GcpSharedVpcHost: iacInput.Target,
 	}
 }

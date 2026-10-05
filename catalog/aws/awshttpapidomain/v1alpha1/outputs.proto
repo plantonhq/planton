@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awshttpapidomain.v1alpha1;
 
-// AwsHttpApiDomainStackOutputs captures observable identifiers from a
+// AwsHttpApiDomainOutputs captures observable identifiers from a
 // provisioned API Gateway v2 custom domain name. The target_domain_name and
 // hosted_zone_id pair is the DNS composition surface: point an alias record
 // (AwsRoute53DnsRecord) at them to route the domain to API Gateway.
-message AwsHttpApiDomainStackOutputs {
+message AwsHttpApiDomainOutputs {
   // The custom domain name (e.g. "api.example.com"). Exported as an output
   // because it is the domain's join key -- downstream resources resolve
   // references against outputs.

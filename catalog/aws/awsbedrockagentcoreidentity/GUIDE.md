@@ -1,6 +1,6 @@
-# AwsBedrockAgentCoreIdentity — Component Guide
+# AwsBedrockAgentCoreIdentity — Kind Guide
 
-Authored operational judgment for the AgentCore identity component: the
+Authored operational judgment for the AgentCore identity kind: the
 design decisions behind the spec's shape, and what to know before
 running agent credentials in production.
 

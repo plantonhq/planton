@@ -21,7 +21,7 @@ set -euo pipefail
 # the terraform-modules lane: no Go toolchain, no network, seconds.
 #
 # WHAT IT CHECKS
-# For each `catalog/<provider>/<component>/iac/tf` module:
+# For each `catalog/<provider>/<kind>/iac/tf` module:
 #   - collect every resource block that sets the `provider` meta-argument to a
 #     secondary channel (a local name that is not the module's primary
 #     provider prefix: `google-beta` in a module of google_* resources),
@@ -113,12 +113,12 @@ while IFS= read -r tfdir; do
   done < <(find "$tfdir" -maxdepth 1 -type f -name '*.tf' 2>/dev/null)
   [[ ${#tffiles[@]} -eq 0 ]] && continue
 
-  # catalog/<provider>/<component>/iac/tf -> the kind is the component
+  # catalog/<provider>/<kind>/iac/tf -> the kind is the kind
   # directory in the registry's PascalCase; the admissions file names kinds
   # as the registry does, and directory names are the kind lower-cased, so
   # compare case-insensitively.
-  component="${tfdir#catalog/*/}"
-  component="${component%%/*}"
+  kind="${tfdir#catalog/*/}"
+  kind="${kind%%/*}"
 
   while IFS= read -r att; do
     [[ -z "$att" ]] && continue
@@ -126,7 +126,7 @@ while IFS= read -r tfdir; do
     channel="${att#*|}"
     for row in "${channels[@]}"; do
       [[ "${row%%|*}" == "$channel" ]] || continue
-      attached_pairs+=("${channel}|${rtype}|${component}")
+      attached_pairs+=("${channel}|${rtype}|${kind}")
     done
   done < <(extract_attachments "${tffiles[@]}")
 done < <(find "$catalog_root" -type d -path "*/iac/tf" 2>/dev/null | grep -E '^catalog/[^/]+/[^/]+/iac/tf$' | sort)
@@ -135,15 +135,15 @@ lower() { printf '%s' "$1" | tr '[:upper:]' '[:lower:]'; }
 
 unadmitted=()
 for att in "${attached_pairs[@]+"${attached_pairs[@]}"}"; do
-  channel="${att%%|*}"; rest="${att#*|}"; rtype="${rest%%|*}"; component="${rest#*|}"
+  channel="${att%%|*}"; rest="${att#*|}"; rtype="${rest%%|*}"; kind="${rest#*|}"
   found=0
   for adm in "${admitted_pairs[@]+"${admitted_pairs[@]}"}"; do
     achannel="${adm%%|*}"; arest="${adm#*|}"; artype="${arest%%|*}"; akind="${arest#*|}"
-    if [[ "$achannel" == "$channel" && "$artype" == "$rtype" && "$(lower "$akind")" == "$component" ]]; then
+    if [[ "$achannel" == "$channel" && "$artype" == "$rtype" && "$(lower "$akind")" == "$kind" ]]; then
       found=1; break
     fi
   done
-  [[ $found -eq 1 ]] || unadmitted+=("catalog/*/${component}/iac/tf -> ${rtype} attaches provider = ${channel} with no admission for kind ${component}")
+  [[ $found -eq 1 ]] || unadmitted+=("catalog/*/${kind}/iac/tf -> ${rtype} attaches provider = ${channel} with no admission for kind ${kind}")
 done
 
 unused=()
@@ -151,8 +151,8 @@ for adm in "${admitted_pairs[@]+"${admitted_pairs[@]}"}"; do
   channel="${adm%%|*}"; rest="${adm#*|}"; rtype="${rest%%|*}"; kind="${rest#*|}"
   found=0
   for att in "${attached_pairs[@]+"${attached_pairs[@]}"}"; do
-    achannel="${att%%|*}"; arest="${att#*|}"; artype="${arest%%|*}"; acomponent="${arest#*|}"
-    if [[ "$achannel" == "$channel" && "$artype" == "$rtype" && "$acomponent" == "$(lower "$kind")" ]]; then
+    achannel="${att%%|*}"; arest="${att#*|}"; artype="${arest%%|*}"; akind="${arest#*|}"
+    if [[ "$achannel" == "$channel" && "$artype" == "$rtype" && "$akind" == "$(lower "$kind")" ]]; then
       found=1; break
     fi
   done

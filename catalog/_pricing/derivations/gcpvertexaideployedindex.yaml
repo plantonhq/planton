@@ -9,9 +9,9 @@
 # unknowable from the manifest. The estimate generator replays the
 # catalog presets through these rules to emit
 # ../estimates/gcpvertexaideployedindex.yaml.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpvertexaideployedindex
 spec:

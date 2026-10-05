@@ -10,14 +10,14 @@ import (
 // Resources is the main entry point for the Pulumi module.
 // It orchestrates the creation of the namespace-governance pair: the
 // ResourceQuota, plus a companion LimitRange when limit defaults are set.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesresourcequotav1alpha1.KubernetesResourceQuotaStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetesresourcequotav1alpha1.KubernetesResourceQuotaIacInput) error {
 	// Initialize locals with derived values
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// Create Kubernetes provider from credentials
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 		"kubernetes",
 	)
 	if err != nil {

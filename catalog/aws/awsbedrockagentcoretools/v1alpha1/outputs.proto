@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockagentcoretools.v1alpha1;
 
-// AwsBedrockAgentCoreToolsStackOutputs captures observable identifiers
+// AwsBedrockAgentCoreToolsOutputs captures observable identifiers
 // from a provisioned AgentCore tools bundle. Downstream resources
 // (evaluation harnesses' browser/code-interpreter tools, agent code
 // starting tool sessions) wire dependencies via StringValueOrRef.
-message AwsBedrockAgentCoreToolsStackOutputs {
+message AwsBedrockAgentCoreToolsOutputs {
   // Browser IDs keyed by each `browsers` entry's name.
   map<string, string> browser_ids = 1;
 

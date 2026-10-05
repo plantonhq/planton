@@ -22,10 +22,10 @@ const (
 )
 
 // *
-// **KubernetesHelmReleaseStackOutputs** captures the observable handles of an
+// **KubernetesHelmReleaseOutputs** captures the observable handles of an
 // installed Helm release — what `helm list` and `helm status` would show,
 // exported identically by both engines.
-type KubernetesHelmReleaseStackOutputs struct {
+type KubernetesHelmReleaseOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The namespace the release is installed in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -46,20 +46,20 @@ type KubernetesHelmReleaseStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesHelmReleaseStackOutputs) Reset() {
-	*x = KubernetesHelmReleaseStackOutputs{}
+func (x *KubernetesHelmReleaseOutputs) Reset() {
+	*x = KubernetesHelmReleaseOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesHelmReleaseStackOutputs) String() string {
+func (x *KubernetesHelmReleaseOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesHelmReleaseStackOutputs) ProtoMessage() {}
+func (*KubernetesHelmReleaseOutputs) ProtoMessage() {}
 
-func (x *KubernetesHelmReleaseStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesHelmReleaseOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,47 +71,47 @@ func (x *KubernetesHelmReleaseStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesHelmReleaseStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesHelmReleaseStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesHelmReleaseOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesHelmReleaseOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesHelmReleaseStackOutputs) GetNamespace() string {
+func (x *KubernetesHelmReleaseOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesHelmReleaseStackOutputs) GetReleaseName() string {
+func (x *KubernetesHelmReleaseOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesHelmReleaseStackOutputs) GetVersion() string {
+func (x *KubernetesHelmReleaseOutputs) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
 	return ""
 }
 
-func (x *KubernetesHelmReleaseStackOutputs) GetAppVersion() string {
+func (x *KubernetesHelmReleaseOutputs) GetAppVersion() string {
 	if x != nil {
 		return x.AppVersion
 	}
 	return ""
 }
 
-func (x *KubernetesHelmReleaseStackOutputs) GetStatus() string {
+func (x *KubernetesHelmReleaseOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *KubernetesHelmReleaseStackOutputs) GetRevision() int32 {
+func (x *KubernetesHelmReleaseOutputs) GetRevision() int32 {
 	if x != nil {
 		return x.Revision
 	}
@@ -122,8 +122,8 @@ var File_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_outputs_proto protore
 
 const file_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/kubernetes/kuberneteshelmrelease/v1alpha1/outputs.proto\x125dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1\"\xd3\x01\n" +
-	"!KubernetesHelmReleaseStackOutputs\x12\x1c\n" +
+	"?catalog/kubernetes/kuberneteshelmrelease/v1alpha1/outputs.proto\x125dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1\"\xce\x01\n" +
+	"\x1cKubernetesHelmReleaseOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12\x18\n" +
 	"\aversion\x18\x03 \x01(\tR\aversion\x12\x1f\n" +
@@ -147,7 +147,7 @@ func file_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesHelmReleaseStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseStackOutputs
+	(*KubernetesHelmReleaseOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1.KubernetesHelmReleaseOutputs
 }
 var file_catalog_kubernetes_kuberneteshelmrelease_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

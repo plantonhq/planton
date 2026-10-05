@@ -11,12 +11,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurestoragelocaluserv1alpha1.AzureStorageLocalUserStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurestoragelocaluserv1alpha1.AzureStorageLocalUserIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -102,7 +102,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurestoragelocaluserv1alpha1.Az
 		return errors.Wrapf(err, "failed to create storage local user %s", spec.UserName)
 	}
 
-	// Export stack outputs. sid and password are secret-bearing (the
+	// Export outputs. sid and password are secret-bearing (the
 	// provider marks both sensitive); the password is only ever returned
 	// at the creation that enabled password auth -- hand it to the
 	// partner over a secure channel.

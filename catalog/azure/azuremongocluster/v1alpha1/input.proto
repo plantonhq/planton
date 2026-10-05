@@ -5,10 +5,10 @@ package dev.planton.azure.azuremongocluster.v1alpha1;
 import "catalog/azure/azuremongocluster/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureMongoClusterStackInput is the input to the IaC modules
+// AzureMongoClusterIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureMongoClusterStackInput {
+message AzureMongoClusterIacInput {
   // The Mongo cluster resource to deploy.
   AzureMongoCluster target = 1;
 

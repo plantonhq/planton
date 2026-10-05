@@ -21,7 +21,7 @@ mount it into `KubernetesPodOperator` tasks.
 ## Security notes
 
 - Values must be base64-encoded; the API rejects raw strings.
-- The decoded material never appears in stack outputs and is held as a
+- The decoded material never appears in outputs and is held as a
   secret in IaC state.
 
 ## Composes with

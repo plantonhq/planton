@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsOpenSearchServerlessCollectionStackOutputs captures observable
+// AwsOpenSearchServerlessCollectionOutputs captures observable
 // identifiers and endpoints from a provisioned OpenSearch Serverless
 // collection. These outputs are used by downstream resources to wire
 // dependencies via StringValueOrRef.
-type AwsOpenSearchServerlessCollectionStackOutputs struct {
+type AwsOpenSearchServerlessCollectionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique ID of the collection (the API's own identifier, also the
 	// leading label of the collection endpoints).
@@ -49,20 +49,20 @@ type AwsOpenSearchServerlessCollectionStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsOpenSearchServerlessCollectionStackOutputs) Reset() {
-	*x = AwsOpenSearchServerlessCollectionStackOutputs{}
+func (x *AwsOpenSearchServerlessCollectionOutputs) Reset() {
+	*x = AwsOpenSearchServerlessCollectionOutputs{}
 	mi := &file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsOpenSearchServerlessCollectionStackOutputs) String() string {
+func (x *AwsOpenSearchServerlessCollectionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsOpenSearchServerlessCollectionStackOutputs) ProtoMessage() {}
+func (*AwsOpenSearchServerlessCollectionOutputs) ProtoMessage() {}
 
-func (x *AwsOpenSearchServerlessCollectionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsOpenSearchServerlessCollectionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,47 +74,47 @@ func (x *AwsOpenSearchServerlessCollectionStackOutputs) ProtoReflect() protorefl
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsOpenSearchServerlessCollectionStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsOpenSearchServerlessCollectionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsOpenSearchServerlessCollectionOutputs.ProtoReflect.Descriptor instead.
+func (*AwsOpenSearchServerlessCollectionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsOpenSearchServerlessCollectionStackOutputs) GetCollectionId() string {
+func (x *AwsOpenSearchServerlessCollectionOutputs) GetCollectionId() string {
 	if x != nil {
 		return x.CollectionId
 	}
 	return ""
 }
 
-func (x *AwsOpenSearchServerlessCollectionStackOutputs) GetCollectionArn() string {
+func (x *AwsOpenSearchServerlessCollectionOutputs) GetCollectionArn() string {
 	if x != nil {
 		return x.CollectionArn
 	}
 	return ""
 }
 
-func (x *AwsOpenSearchServerlessCollectionStackOutputs) GetCollectionName() string {
+func (x *AwsOpenSearchServerlessCollectionOutputs) GetCollectionName() string {
 	if x != nil {
 		return x.CollectionName
 	}
 	return ""
 }
 
-func (x *AwsOpenSearchServerlessCollectionStackOutputs) GetCollectionEndpoint() string {
+func (x *AwsOpenSearchServerlessCollectionOutputs) GetCollectionEndpoint() string {
 	if x != nil {
 		return x.CollectionEndpoint
 	}
 	return ""
 }
 
-func (x *AwsOpenSearchServerlessCollectionStackOutputs) GetDashboardEndpoint() string {
+func (x *AwsOpenSearchServerlessCollectionOutputs) GetDashboardEndpoint() string {
 	if x != nil {
 		return x.DashboardEndpoint
 	}
 	return ""
 }
 
-func (x *AwsOpenSearchServerlessCollectionStackOutputs) GetKmsKeyArn() string {
+func (x *AwsOpenSearchServerlessCollectionOutputs) GetKmsKeyArn() string {
 	if x != nil {
 		return x.KmsKeyArn
 	}
@@ -125,8 +125,8 @@ var File_catalog_aws_awsopensearchserverlesscollection_v1alpha1_outputs_proto pr
 
 const file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/aws/awsopensearchserverlesscollection/v1alpha1/outputs.proto\x12:dev.planton.aws.awsopensearchserverlesscollection.v1alpha1\"\xa4\x02\n" +
-	"-AwsOpenSearchServerlessCollectionStackOutputs\x12#\n" +
+	"Dcatalog/aws/awsopensearchserverlesscollection/v1alpha1/outputs.proto\x12:dev.planton.aws.awsopensearchserverlesscollection.v1alpha1\"\x9f\x02\n" +
+	"(AwsOpenSearchServerlessCollectionOutputs\x12#\n" +
 	"\rcollection_id\x18\x01 \x01(\tR\fcollectionId\x12%\n" +
 	"\x0ecollection_arn\x18\x02 \x01(\tR\rcollectionArn\x12'\n" +
 	"\x0fcollection_name\x18\x03 \x01(\tR\x0ecollectionName\x12/\n" +
@@ -149,7 +149,7 @@ func file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_outputs_proto_r
 
 var file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsOpenSearchServerlessCollectionStackOutputs)(nil), // 0: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionStackOutputs
+	(*AwsOpenSearchServerlessCollectionOutputs)(nil), // 0: dev.planton.aws.awsopensearchserverlesscollection.v1alpha1.AwsOpenSearchServerlessCollectionOutputs
 }
 var file_catalog_aws_awsopensearchserverlesscollection_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

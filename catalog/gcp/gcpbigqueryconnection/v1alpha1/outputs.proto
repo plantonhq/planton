@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpbigqueryconnection.v1alpha1;
 
-// GcpBigQueryConnectionStackOutputs captures the connection's identity and
+// GcpBigQueryConnectionOutputs captures the connection's identity and
 // the Google-owned identities its arm created -- the principals you grant
 // access to the data the connection reads. Only the declared arm's values
 // are populated.
-message GcpBigQueryConnectionStackOutputs {
+message GcpBigQueryConnectionOutputs {
   // Full resource name --
   // projects/{project}/locations/{location}/connections/{connection_id}.
   string name = 1;

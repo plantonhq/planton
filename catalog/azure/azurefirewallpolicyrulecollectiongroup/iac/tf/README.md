@@ -1,6 +1,6 @@
 # AzureFirewallPolicyRuleCollectionGroup -- Terraform/OpenTofu Module
 
-Creates a firewall policy rule collection group (`azurerm_firewall_policy_rule_collection_group`, azurerm ~> 5.0) nested under the referenced policy, carrying the spec's application, network, and DNAT collections. Behaviorally identical to the Pulumi module for the same stack input.
+Creates a firewall policy rule collection group (`azurerm_firewall_policy_rule_collection_group`, azurerm ~> 5.0) nested under the referenced policy, carrying the spec's application, network, and DNAT collections. Behaviorally identical to the Pulumi module for the same IaC input.
 
 Credentials are injected by the runtime as `ARM_*` environment variables (the provider block is deliberately empty -- that is what enables keyless/OIDC auth).
 

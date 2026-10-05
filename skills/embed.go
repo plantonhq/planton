@@ -11,7 +11,7 @@
 // byte the files beside this one, so a check that passes here passes against
 // what agents load.
 //
-// Only authored text is embedded. The multi-cloud-catalog skill's component
+// Only authored text is embedded. The multi-cloud-catalog skill's kind
 // pack is assembled from catalog/ at release time (pkg/skills/defspack) and
 // is not part of this package.
 //

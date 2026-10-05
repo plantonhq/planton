@@ -1,6 +1,6 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate: with semantic search enabled -- and BOTH catalog presets
 # enable it -- the gateway commits real spend (Tool Indexing bills $0.02
 # per 100 tools indexed per month while the index exists, at zero
@@ -9,9 +9,9 @@
 # document in S3, the remote MCP server's live tool listing, or the API
 # Gateway stage's routes -- never in this manifest -- so a dollar figure
 # here would be a guess wearing a dollar sign.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsbedrockagentcoregateway
 spec:
@@ -48,7 +48,7 @@ spec:
       impact: A customer-managed key bills its per-request meter on the referenced AwsKmsKey for the gateway's encrypt/decrypt traffic; unset means the service-managed key at no charge.
   free_tier: "No permanent free allotment exists on any Gateway meter -- API invocations bill from the first call, Search API from the first query, and tool indexing from the first indexed tool-month. The up-to-$200 AWS Free Tier credit for new customers is a one-time trial credit, not a permanent tier. Customer-defined rate limiting carries no extra charge."
   estimate_exclusions:
-    - the committed tool-indexing quantity is not manifest-visible -- targets register tools from referenced OpenAPI/Smithy documents, Lambda tool schemas, API Gateway routes, or live MCP server listings, which is why no estimate document exists for this component
+    - the committed tool-indexing quantity is not manifest-visible -- targets register tools from referenced OpenAPI/Smithy documents, Lambda tool schemas, API Gateway routes, or live MCP server listings, which is why no estimate document exists for this kind
     - gateway API invocations bill $0.005 per 1,000 (ListTools, InvokeTool, Ping) and Search API calls $0.025 per 1,000 -- volume is entirely agent-driven
     - policy authorization bills $0.000025 per evaluated tool call when a Cedar engine is attached
     - interceptor Lambda invocations bill on the referenced AwsLambda; backend charges (Lambda invokes, API Gateway requests, agent-runtime sessions) bill on their own components

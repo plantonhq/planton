@@ -20,7 +20,7 @@ The page is the story in order. The headline is chapter 1's first sentence (the 
 
 ## Must not claim
 
-Any dollar-savings figure; "compliant" of any component; retention as "forever" or "immutable" without the record page backing it; an analogy for the whole product; a customer quote without written approval on record (four exist); real product captures where none exist (every record window says it is an illustration).
+Any dollar-savings figure; "compliant" of any kind; retention as "forever" or "immutable" without the record page backing it; an analogy for the whole product; a customer quote without written approval on record (four exist); real product captures where none exist (every record window says it is an illustration).
 
 ## Verification
 

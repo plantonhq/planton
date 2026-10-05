@@ -16,7 +16,7 @@ message CloudflareDnsZone {
   string kind = 2 [(buf.validate.field).string.const = 'CloudflareDnsZone'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   CloudflareDnsZoneSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,7 +27,7 @@ message CloudflareDnsZone {
 
 // cloudflare-dns-zone status
 message CloudflareDnsZoneStatus {
-  //stack-outputs
-  //  cloudflare-dns-zone stack-outputs
-  CloudflareDnsZoneStackOutputs outputs = 1;
+  //outputs
+  //  cloudflare-dns-zone outputs
+  CloudflareDnsZoneOutputs outputs = 1;
 }

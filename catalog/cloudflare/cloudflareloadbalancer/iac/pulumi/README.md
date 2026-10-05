@@ -8,18 +8,18 @@ account-scoped pools. Pools and monitors are separate modules
 
 ```
 iac/pulumi/
-├── main.go            # entrypoint (loads stack-input, calls module.Resources)
+├── main.go            # entrypoint (loads iac-input, calls module.Resources)
 ├── Pulumi.yaml
 └── module/
     ├── main.go            # Resources(): provider setup + load_balancer()
-    ├── locals.go          # stack-input references
+    ├── locals.go          # iac-input references
     ├── load_balancer.go   # the cloudflare.LoadBalancer + rules/geoPoolMap helpers
     └── outputs.go         # output constant names
 ```
 
 ## Inputs
 
-A `CloudflareLoadBalancerStackInput` (target + provider config). Required spec
+A `CloudflareLoadBalancerIacInput` (target + provider config). Required spec
 fields: `hostname`, `zoneId`, `defaultPools`, `fallbackPool`. Pool/zone references
 arrive resolved via `StringValueOrRef.GetValue()`.
 
@@ -42,7 +42,7 @@ real override. `terminates`/`disabled` are sent only when true (a
 
 - **Load Balancing add-on** must be enabled on the account (paid add-on); otherwise
   the Load Balancing API returns `403`.
-- The Cloudflare provider is configured from the stack-input provider config /
+- The Cloudflare provider is configured from the iac-input provider config /
   `CLOUDFLARE_API_TOKEN`. The token needs **Zone → Load Balancers → Edit** for the
   zone-scoped load balancer (distinct from the account-level "Load Balancers Account"
   permission), plus **Account → Load Balancing: Monitors and Pools → Edit** for the

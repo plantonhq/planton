@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awscloudwatchlogresourcepolicy.v1alpha1;
 
-// AwsCloudwatchLogResourcePolicyStackOutputs captures the observable
+// AwsCloudwatchLogResourcePolicyOutputs captures the observable
 // state of the resource policy after apply.
-message AwsCloudwatchLogResourcePolicyStackOutputs {
+message AwsCloudwatchLogResourcePolicyOutputs {
   // The policy's identity: the policy name (account scope) or the
   // target resource ARN (resource scope) - also the provider's import
   // ID (an ARN-shaped import ID selects the resource scope).

@@ -6,7 +6,7 @@
 
 **apiVersion**: `aws.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 AwsBedrockGuardrailSpec defines the desired configuration for an Amazon
 Bedrock guardrail - a set of content-safety policies evaluated on model
@@ -29,7 +29,7 @@ configured - a guardrail that evaluates nothing still intercepts nothing;
 AWS validates policy shapes server-side at CreateGuardrail.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

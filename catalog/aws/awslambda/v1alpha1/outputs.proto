@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package dev.planton.aws.awslambda.v1alpha1;
 
-// AwsLambdaStackOutputs captures the observable identifiers of a
+// AwsLambdaOutputs captures the observable identifiers of a
 // deployed Lambda function -- the join keys other resources and
 // clients use to compose with it:
 // - API integrations (HTTP API Gateway) take `invoke_arn`
 // - event-source mappings and trigger configs take `function_arn`
 // - SDK calls and IAM policies take `function_name` or `function_arn`
 // - alias-routed clients take the alias ARN from `alias_arns`
-message AwsLambdaStackOutputs {
+message AwsLambdaOutputs {
   // The function ARN -- the join key for event-source mappings,
   // trigger configurations (Cognito, Firehose), resource policies,
   // and IAM policy resources.

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpSccNotificationConfigStackOutputs carries the config's identity and
+// GcpSccNotificationConfigOutputs carries the config's identity and
 // the publisher it needs on its topic.
-type GcpSccNotificationConfigStackOutputs struct {
+type GcpSccNotificationConfigOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// {parent}/locations/{location}/notificationConfigs/{config_id}.
@@ -44,20 +44,20 @@ type GcpSccNotificationConfigStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *GcpSccNotificationConfigStackOutputs) Reset() {
-	*x = GcpSccNotificationConfigStackOutputs{}
+func (x *GcpSccNotificationConfigOutputs) Reset() {
+	*x = GcpSccNotificationConfigOutputs{}
 	mi := &file_catalog_gcp_gcpsccnotificationconfig_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSccNotificationConfigStackOutputs) String() string {
+func (x *GcpSccNotificationConfigOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSccNotificationConfigStackOutputs) ProtoMessage() {}
+func (*GcpSccNotificationConfigOutputs) ProtoMessage() {}
 
-func (x *GcpSccNotificationConfigStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpSccNotificationConfigOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpsccnotificationconfig_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,26 +69,26 @@ func (x *GcpSccNotificationConfigStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSccNotificationConfigStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpSccNotificationConfigStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSccNotificationConfigOutputs.ProtoReflect.Descriptor instead.
+func (*GcpSccNotificationConfigOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsccnotificationconfig_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSccNotificationConfigStackOutputs) GetName() string {
+func (x *GcpSccNotificationConfigOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpSccNotificationConfigStackOutputs) GetServiceAccount() string {
+func (x *GcpSccNotificationConfigOutputs) GetServiceAccount() string {
 	if x != nil {
 		return x.ServiceAccount
 	}
 	return ""
 }
 
-func (x *GcpSccNotificationConfigStackOutputs) GetServiceAccountMember() string {
+func (x *GcpSccNotificationConfigOutputs) GetServiceAccountMember() string {
 	if x != nil {
 		return x.ServiceAccountMember
 	}
@@ -99,8 +99,8 @@ var File_catalog_gcp_gcpsccnotificationconfig_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_gcp_gcpsccnotificationconfig_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpsccnotificationconfig/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpsccnotificationconfig.v1alpha1\"\x99\x01\n" +
-	"$GcpSccNotificationConfigStackOutputs\x12\x12\n" +
+	";catalog/gcp/gcpsccnotificationconfig/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpsccnotificationconfig.v1alpha1\"\x94\x01\n" +
+	"\x1fGcpSccNotificationConfigOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12'\n" +
 	"\x0fservice_account\x18\x02 \x01(\tR\x0eserviceAccount\x124\n" +
 	"\x16service_account_member\x18\x03 \x01(\tR\x14serviceAccountMemberB\x9b\x03\n" +
@@ -120,7 +120,7 @@ func file_catalog_gcp_gcpsccnotificationconfig_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_gcp_gcpsccnotificationconfig_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpsccnotificationconfig_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpSccNotificationConfigStackOutputs)(nil), // 0: dev.planton.gcp.gcpsccnotificationconfig.v1alpha1.GcpSccNotificationConfigStackOutputs
+	(*GcpSccNotificationConfigOutputs)(nil), // 0: dev.planton.gcp.gcpsccnotificationconfig.v1alpha1.GcpSccNotificationConfigOutputs
 }
 var file_catalog_gcp_gcpsccnotificationconfig_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

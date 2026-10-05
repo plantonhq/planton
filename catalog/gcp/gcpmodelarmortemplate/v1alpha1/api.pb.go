@@ -31,7 +31,7 @@ type GcpModelArmorTemplate struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpModelArmorTemplateSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpModelArmorTemplate) GetKind() string {
 	return ""
 }
 
-func (x *GcpModelArmorTemplate) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpModelArmorTemplate) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpModelArmorTemplate) GetStatus() *GcpModelArmorTemplateStatus {
 // gcp-model-armor-template status
 type GcpModelArmorTemplateStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpModelArmorTemplateStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpModelArmorTemplateOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpModelArmorTemplateStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpModelArmorTemplateStatus) GetOutputs() *GcpModelArmorTemplateStackOutputs {
+func (x *GcpModelArmorTemplateStatus) GetOutputs() *GcpModelArmorTemplateOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15GcpModelArmorTemplateR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
 	"\x04spec\x18\x04 \x01(\v2I.dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateStatusR\x06status\"\x8a\x01\n" +
-	"\x1bGcpModelArmorTemplateStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateStackOutputsR\aoutputsB\x82\x03\n" +
+	"\x06status\x18\x05 \x01(\v2K.dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateStatusR\x06status\"\x85\x01\n" +
+	"\x1bGcpModelArmorTemplateStatus\x12f\n" +
+	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateOutputsR\aoutputsB\x82\x03\n" +
 	"2com.dev.planton.gcp.gcpmodelarmortemplate.v1alpha1B\bApiProtoP\x01Zegithub.com/plantonhq/planton/catalog/gcp/gcpmodelarmortemplate/v1alpha1;gcpmodelarmortemplatev1alpha1\xa2\x02\x04DPGG\xaa\x02.Dev.Planton.Gcp.Gcpmodelarmortemplate.V1alpha1\xca\x02.Dev\\Planton\\Gcp\\Gcpmodelarmortemplate\\V1alpha1\xe2\x02:Dev\\Planton\\Gcp\\Gcpmodelarmortemplate\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Gcp::Gcpmodelarmortemplate::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_api_proto_goTypes = []any{
-	(*GcpModelArmorTemplate)(nil),             // 0: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplate
-	(*GcpModelArmorTemplateStatus)(nil),       // 1: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpModelArmorTemplateSpec)(nil),         // 3: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateSpec
-	(*GcpModelArmorTemplateStackOutputs)(nil), // 4: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateStackOutputs
+	(*GcpModelArmorTemplate)(nil),        // 0: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplate
+	(*GcpModelArmorTemplateStatus)(nil),  // 1: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpModelArmorTemplateSpec)(nil),    // 3: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateSpec
+	(*GcpModelArmorTemplateOutputs)(nil), // 4: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateOutputs
 }
 var file_catalog_gcp_gcpmodelarmortemplate_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplate.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplate.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplate.spec:type_name -> dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateSpec
 	1, // 2: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplate.status:type_name -> dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateStatus
-	4, // 3: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateStatus.outputs:type_name -> dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateStackOutputs
+	4, // 3: dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateStatus.outputs:type_name -> dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

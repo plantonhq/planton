@@ -1,5 +1,5 @@
 # Estimate model: the authored capacity footprints of this cluster-capacity
-# component's presets. A hand model instead of a capacity derivation because
+# kind's presets. A hand model instead of a capacity derivation because
 # the spec's HPA semantics switch the collector's instance multiplier: when
 # otel_collector.autoscaling is enabled the `replicas` field is IGNORED (the
 # spec contract says so and the module renders the chart HPA with its
@@ -12,11 +12,11 @@
 # pinned chart 0.133.0: server 100m CPU / 100Mi requests + 1Gi state volume,
 # collector 100m CPU / 200Mi requests). Telemetry data itself lives in the
 # composed KubernetesClickHouse, whose capacity rides that component's own
-# footprint. Cluster-capacity components carry no priced lines -- the dollar
+# footprint. Cluster-capacity kinds carry no priced lines -- the dollar
 # value of the reservation is the target cluster's node economics.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: kubernetessignoz
 spec:

@@ -6,8 +6,8 @@ package providerparity
 import (
 	"sort"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // Report is the machine-readable provider-parity measurement for one cloud
@@ -74,7 +74,7 @@ type ResourceUse struct {
 
 // BuildReport measures one cloud provider's catalog: the spec and module
 // censuses are run here; schemas are the committed artifacts (LoadSchemas).
-func BuildReport(repoRoot string, provider cloudresourcekind.CloudResourceProvider, schemas map[string]*Schema) (Report, error) {
+func BuildReport(repoRoot string, provider catalogkind.CatalogProvider, schemas map[string]*Schema) (Report, error) {
 	spec := SpecCensus(provider)
 	modules, err := ModuleCensusForProvider(repoRoot, provider)
 	if err != nil {
@@ -82,7 +82,7 @@ func BuildReport(repoRoot string, provider cloudresourcekind.CloudResourceProvid
 	}
 	internal := map[string]map[string]bool{}
 	for _, m := range modules {
-		manifest, err := LoadKindManifest(repoRoot, provider, crkreflect.KindFromString(m.Kind))
+		manifest, err := LoadKindManifest(repoRoot, provider, catalogkindreflect.KindFromString(m.Kind))
 		if err != nil {
 			return Report{}, err
 		}
@@ -98,7 +98,7 @@ func BuildReport(repoRoot string, provider cloudresourcekind.CloudResourceProvid
 			}
 		}
 	}
-	return buildReport(crkreflect.ProviderDirName(provider), spec, modules, schemas, internal), nil
+	return buildReport(catalogkindreflect.ProviderDirName(provider), spec, modules, schemas, internal), nil
 }
 
 // buildReport joins the censuses. internal maps a kind to the resources its

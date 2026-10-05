@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureresourcegroup
 spec:
   billing_model: free
   free_tier: A resource group is Azure's fundamental organizational container -- the lifecycle, RBAC, and tagging boundary every resource must live in. Azure Resource Manager's management constructs carry no meter; creating, holding, and tagging any number of resource groups never bills, and the group's region prices nothing (it only decides where the group's metadata is stored).
-  notes: "Neither field of this spec buys anything: name and region are pure identity and metadata placement. The real spend is everything deployed INTO the group -- each contained resource bills as its own catalog kind, and the group is precisely how that spend is organized: cost management reports slice by resource group, so the free container is the unit the paid ones are accounted against. The one cost-shaped consequence worth knowing: deleting a group deletes everything in it, which is the fastest way to end a bill and the fastest way to end the wrong one."
+  notes: "Neither field of this spec buys anything: name and region are pure identity and metadata placement. The real spend is everything deployed INTO the group -- each contained resource bills as its own component, and the group is precisely how that spend is organized: cost management reports slice by resource group, so the free container is the unit the paid ones are accounted against. The one cost-shaped consequence worth knowing: deleting a group deletes everything in it, which is the fastest way to end a bill and the fastest way to end the wrong one."

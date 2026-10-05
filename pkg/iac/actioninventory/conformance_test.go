@@ -53,11 +53,11 @@ func TestAwsActionsExist(t *testing.T) {
 	}
 
 	referenced := map[string]bool{}
-	for provider, components := range discovered {
-		for _, component := range components {
-			manifest, err := permissions.Load(root, provider, component)
+	for provider, kinds := range discovered {
+		for _, kind := range kinds {
+			manifest, err := permissions.Load(root, provider, kind)
 			if err != nil {
-				t.Fatalf("loading %s/%s: %v", provider, component, err)
+				t.Fatalf("loading %s/%s: %v", provider, kind, err)
 			}
 			for _, statement := range manifest.GetSpec().GetAws().GetStatements() {
 				// The scopability census for this statement: one
@@ -70,20 +70,20 @@ func TestAwsActionsExist(t *testing.T) {
 				for _, action := range statement.GetActions() {
 					prefix, name, found := strings.Cut(action, ":")
 					if !found {
-						t.Errorf("%s/%s: action %q has no service prefix", provider, component, action)
+						t.Errorf("%s/%s: action %q has no service prefix", provider, kind, action)
 						allResolved = false
 						continue
 					}
 					referenced[prefix] = true
 					svc := inv.Lookup(prefix)
 					if svc == nil {
-						t.Errorf("%s/%s: action %q names service %q which the inventory snapshot does not cover -- run `make generate-action-inventory`", provider, component, action, prefix)
+						t.Errorf("%s/%s: action %q names service %q which the inventory snapshot does not cover -- run `make generate-action-inventory`", provider, kind, action, prefix)
 						allResolved = false
 						continue
 					}
 					total := MatchAction(svc.Actions, name)
 					if total == 0 {
-						t.Errorf("%s/%s: action %q does not exist in AWS's service reference for %q -- the name is invented or misspelled", provider, component, action, prefix)
+						t.Errorf("%s/%s: action %q does not exist in AWS's service reference for %q -- the name is invented or misspelled", provider, kind, action, prefix)
 						allResolved = false
 						continue
 					}
@@ -109,10 +109,10 @@ func TestAwsActionsExist(t *testing.T) {
 				resources := statement.GetResources()
 				starOnly := len(resources) == 1 && resources[0] == "*"
 				if nonScopableAction != "" && !starOnly {
-					t.Errorf("%s/%s: statement %q grants %s, which AWS's reference lists NO resource types for -- IAM evaluates it against Resource \"*\" only, so this statement's resources %v never match and the grant denies at runtime; make the resources exactly [\"*\"] (moving scopable siblings to their own scoped statement)", provider, component, statement.GetSid(), nonScopableAction, resources)
+					t.Errorf("%s/%s: statement %q grants %s, which AWS's reference lists NO resource types for -- IAM evaluates it against Resource \"*\" only, so this statement's resources %v never match and the grant denies at runtime; make the resources exactly [\"*\"] (moving scopable siblings to their own scoped statement)", provider, kind, statement.GetSid(), nonScopableAction, resources)
 				}
 				if starOnly && allResolved && nonScopableAction == "" && scopableAction != "" {
-					t.Errorf("%s/%s: statement %q grants Resource \"*\" but every action in it (e.g. %s) supports resource-level scoping -- scope the statement to the resources the module manages, or defend the wildcard where truly unavoidable", provider, component, statement.GetSid(), scopableAction)
+					t.Errorf("%s/%s: statement %q grants Resource \"*\" but every action in it (e.g. %s) supports resource-level scoping -- scope the statement to the resources the module manages, or defend the wildcard where truly unavoidable", provider, kind, statement.GetSid(), scopableAction)
 				}
 			}
 		}
@@ -150,15 +150,15 @@ func TestAzureActionsExist(t *testing.T) {
 	}
 
 	referenced := map[string]bool{}
-	for provider, components := range discovered {
-		for _, component := range components {
-			manifest, err := permissions.Load(root, provider, component)
+	for provider, kinds := range discovered {
+		for _, kind := range kinds {
+			manifest, err := permissions.Load(root, provider, kind)
 			if err != nil {
-				t.Fatalf("loading %s/%s: %v", provider, component, err)
+				t.Fatalf("loading %s/%s: %v", provider, kind, err)
 			}
 			for _, group := range manifest.GetSpec().GetAzure().GetGroups() {
-				checkAzurePlane(t, inv, referenced, provider, component, "actions", group.GetActions(), false)
-				checkAzurePlane(t, inv, referenced, provider, component, "data_actions", group.GetDataActions(), true)
+				checkAzurePlane(t, inv, referenced, provider, kind, "actions", group.GetActions(), false)
+				checkAzurePlane(t, inv, referenced, provider, kind, "data_actions", group.GetDataActions(), true)
 			}
 		}
 	}
@@ -195,27 +195,27 @@ func TestGcpPermissionsExist(t *testing.T) {
 	}
 
 	referenced := map[string]bool{}
-	for provider, components := range discovered {
-		for _, component := range components {
-			manifest, err := permissions.Load(root, provider, component)
+	for provider, kinds := range discovered {
+		for _, kind := range kinds {
+			manifest, err := permissions.Load(root, provider, kind)
 			if err != nil {
-				t.Fatalf("loading %s/%s: %v", provider, component, err)
+				t.Fatalf("loading %s/%s: %v", provider, kind, err)
 			}
 			for _, group := range manifest.GetSpec().GetGcp().GetGroups() {
 				for _, permission := range group.GetPermissions() {
 					service, name, found := strings.Cut(permission, ".")
 					if !found {
-						t.Errorf("%s/%s: gcp permission %q has no service segment", provider, component, permission)
+						t.Errorf("%s/%s: gcp permission %q has no service segment", provider, kind, permission)
 						continue
 					}
 					referenced[service] = true
 					published := inv.ServiceActions(service)
 					if published == nil {
-						t.Errorf("%s/%s: permission %q names service %q which the inventory snapshot does not cover -- run `make generate-action-inventory`", provider, component, permission, service)
+						t.Errorf("%s/%s: permission %q names service %q which the inventory snapshot does not cover -- run `make generate-action-inventory`", provider, kind, permission, service)
 						continue
 					}
 					if MatchAction(published, name) == 0 {
-						t.Errorf("%s/%s: permission %q does not exist in GCP's IAM inventory for %q -- the name is invented or misspelled", provider, component, permission, service)
+						t.Errorf("%s/%s: permission %q does not exist in GCP's IAM inventory for %q -- the name is invented or misspelled", provider, kind, permission, service)
 					}
 				}
 			}
@@ -252,27 +252,27 @@ func TestDigitalOceanScopesExist(t *testing.T) {
 	}
 
 	referenced := map[string]bool{}
-	for provider, components := range discovered {
-		for _, component := range components {
-			manifest, err := permissions.Load(root, provider, component)
+	for provider, kinds := range discovered {
+		for _, kind := range kinds {
+			manifest, err := permissions.Load(root, provider, kind)
 			if err != nil {
-				t.Fatalf("loading %s/%s: %v", provider, component, err)
+				t.Fatalf("loading %s/%s: %v", provider, kind, err)
 			}
 			for _, group := range manifest.GetSpec().GetDigitalOcean().GetGroups() {
 				for _, scope := range group.GetScopes() {
 					prefix, action, found := strings.Cut(scope, ":")
 					if !found {
-						t.Errorf("%s/%s: scope %q has no resource prefix", provider, component, scope)
+						t.Errorf("%s/%s: scope %q has no resource prefix", provider, kind, scope)
 						continue
 					}
 					referenced[prefix] = true
 					published := inv.ServiceActions(prefix)
 					if published == nil {
-						t.Errorf("%s/%s: scope %q names resource %q which the inventory snapshot does not cover -- run `make generate-action-inventory`", provider, component, scope, prefix)
+						t.Errorf("%s/%s: scope %q names resource %q which the inventory snapshot does not cover -- run `make generate-action-inventory`", provider, kind, scope, prefix)
 						continue
 					}
 					if !containsExact(published, action) {
-						t.Errorf("%s/%s: scope %q does not exist in DigitalOcean's scope reference for %q -- the name is invented or misspelled", provider, component, scope, prefix)
+						t.Errorf("%s/%s: scope %q does not exist in DigitalOcean's scope reference for %q -- the name is invented or misspelled", provider, kind, scope, prefix)
 					}
 				}
 			}
@@ -313,27 +313,27 @@ func TestAuth0ScopesExist(t *testing.T) {
 	}
 
 	referenced := map[string]bool{}
-	for provider, components := range discovered {
-		for _, component := range components {
-			manifest, err := permissions.Load(root, provider, component)
+	for provider, kinds := range discovered {
+		for _, kind := range kinds {
+			manifest, err := permissions.Load(root, provider, kind)
 			if err != nil {
-				t.Fatalf("loading %s/%s: %v", provider, component, err)
+				t.Fatalf("loading %s/%s: %v", provider, kind, err)
 			}
 			for _, group := range manifest.GetSpec().GetAuth0().GetGroups() {
 				for _, scope := range group.GetScopes() {
 					verb, resource, found := strings.Cut(scope, ":")
 					if !found {
-						t.Errorf("%s/%s: scope %q has no resource segment", provider, component, scope)
+						t.Errorf("%s/%s: scope %q has no resource segment", provider, kind, scope)
 						continue
 					}
 					referenced[resource] = true
 					published := inv.ServiceActions(resource)
 					if published == nil {
-						t.Errorf("%s/%s: scope %q names resource %q, which the tenant's Management API definition does not list -- the resource is invented or misspelled (if Auth0 added it since the snapshot, %s)", provider, component, scope, resource, auth0RefreshHint)
+						t.Errorf("%s/%s: scope %q names resource %q, which the tenant's Management API definition does not list -- the resource is invented or misspelled (if Auth0 added it since the snapshot, %s)", provider, kind, scope, resource, auth0RefreshHint)
 						continue
 					}
 					if !containsExact(published, verb) {
-						t.Errorf("%s/%s: scope %q does not exist in the tenant's Management API definition (the verbs for %q are %s) -- the name is invented or misspelled", provider, component, scope, resource, strings.Join(published, ", "))
+						t.Errorf("%s/%s: scope %q does not exist in the tenant's Management API definition (the verbs for %q are %s) -- the name is invented or misspelled", provider, kind, scope, resource, strings.Join(published, ", "))
 					}
 				}
 			}
@@ -369,11 +369,11 @@ func TestCloudflareGroupsExist(t *testing.T) {
 	}
 
 	referenced := map[string]bool{}
-	for provider, components := range discovered {
-		for _, component := range components {
-			manifest, err := permissions.Load(root, provider, component)
+	for provider, kinds := range discovered {
+		for _, kind := range kinds {
+			manifest, err := permissions.Load(root, provider, kind)
 			if err != nil {
-				t.Fatalf("loading %s/%s: %v", provider, component, err)
+				t.Fatalf("loading %s/%s: %v", provider, kind, err)
 			}
 			for _, group := range manifest.GetSpec().GetCloudflare().GetGroups() {
 				name, scope := group.GetName(), group.GetScope()
@@ -382,10 +382,10 @@ func TestCloudflareGroupsExist(t *testing.T) {
 					continue
 				}
 				if published := inv.GroupScopes(name); len(published) > 0 {
-					t.Errorf("%s/%s: permission group %q exists but not at scope %q (Cloudflare defines it at %v) -- a token policy carrying it here would grant nothing at the intended level", provider, component, name, scope, published)
+					t.Errorf("%s/%s: permission group %q exists but not at scope %q (Cloudflare defines it at %v) -- a token policy carrying it here would grant nothing at the intended level", provider, kind, name, scope, published)
 					continue
 				}
-				t.Errorf("%s/%s: permission group %q does not exist in Cloudflare's inventory -- the name is invented, misspelled, or renamed by the provider (run `make generate-action-inventory`)", provider, component, name)
+				t.Errorf("%s/%s: permission group %q does not exist in Cloudflare's inventory -- the name is invented, misspelled, or renamed by the provider (run `make generate-action-inventory`)", provider, kind, name)
 			}
 		}
 	}
@@ -419,18 +419,18 @@ func containsExact(published []string, name string) bool {
 // checkAzurePlane holds one manifest field's operations to its plane of
 // the namespace inventory, naming a wrong-plane operation distinctly from
 // a nonexistent one.
-func checkAzurePlane(t *testing.T, inv *Inventory, referenced map[string]bool, provider, component, plane string, operations []string, dataPlane bool) {
+func checkAzurePlane(t *testing.T, inv *Inventory, referenced map[string]bool, provider, kind, plane string, operations []string, dataPlane bool) {
 	t.Helper()
 	for _, operation := range operations {
 		namespace, name, found := strings.Cut(operation, "/")
 		if !found {
-			t.Errorf("%s/%s: azure %s entry %q has no namespace segment", provider, component, plane, operation)
+			t.Errorf("%s/%s: azure %s entry %q has no namespace segment", provider, kind, plane, operation)
 			continue
 		}
 		referenced[namespace] = true
 		svc := inv.Lookup(namespace)
 		if svc == nil {
-			t.Errorf("%s/%s: %s entry %q names namespace %q which the inventory snapshot does not cover -- run `make generate-action-inventory`", provider, component, plane, operation, namespace)
+			t.Errorf("%s/%s: %s entry %q names namespace %q which the inventory snapshot does not cover -- run `make generate-action-inventory`", provider, kind, plane, operation, namespace)
 			continue
 		}
 		own, other := svc.Actions, svc.DataActions
@@ -441,10 +441,10 @@ func checkAzurePlane(t *testing.T, inv *Inventory, referenced map[string]bool, p
 			continue
 		}
 		if MatchAction(other, name) > 0 {
-			t.Errorf("%s/%s: %s entry %q exists on the OTHER plane -- a role definition carrying it here would grant nothing; move it to the right field", provider, component, plane, operation)
+			t.Errorf("%s/%s: %s entry %q exists on the OTHER plane -- a role definition carrying it here would grant nothing; move it to the right field", provider, kind, plane, operation)
 			continue
 		}
-		t.Errorf("%s/%s: %s entry %q does not exist in ARM's provider operations for %q -- the name is invented or misspelled", provider, component, plane, operation, namespace)
+		t.Errorf("%s/%s: %s entry %q does not exist in ARM's provider operations for %q -- the name is invented or misspelled", provider, kind, plane, operation, namespace)
 	}
 }
 

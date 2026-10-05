@@ -45,7 +45,7 @@ The operator could back up the platform's database and restore it (`spec.databas
 - Preset `06-backups-to-r2` (yaml + md): nightly, 30 days, everything by reference; pins the operator chart floor in a comment.
 - `e2e/manifest.yaml` (the full-surface offline-proof input and the reference page's example): the R2 arm with self-evident placeholder literals — an offline plan cannot resolve a reference — and `postgres_backup_plugin: auto`.
 - `cost.yaml`: an exclusion naming the object store's own bill.
-- `_rules/component/presets/validate-planton-presets.mdc`: the checklist line that said presets never use `valueFrom:` (contradicted by 739 presets and the preset gate) now says the opposite for anything the catalog can mint.
+- `_rules/catalog-kind/presets/validate-planton-presets.mdc`: the checklist line that said presets never use `valueFrom:` (contradicted by 739 presets and the preset gate) now says the opposite for anything the catalog can mint.
 
 ## How to check
 

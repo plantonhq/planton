@@ -5,9 +5,9 @@ package dev.planton.aws.awsiamgroup.v1alpha1;
 import "catalog/aws/awsiamgroup/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsIamGroupStackInput is the input for the IaC modules that manage
+// AwsIamGroupIacInput is the input for the IaC modules that manage
 // an IAM group, its declarative membership, and its policies.
-message AwsIamGroupStackInput {
+message AwsIamGroupIacInput {
   // target is the AwsIamGroup resource to deploy.
   AwsIamGroup target = 1;
   // provider_config contains the AWS provider credentials and configuration.

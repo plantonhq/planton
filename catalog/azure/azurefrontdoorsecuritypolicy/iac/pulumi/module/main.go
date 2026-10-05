@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorsecuritypolicyv1alpha1.AzureFrontDoorSecurityPolicyStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurefrontdoorsecuritypolicyv1alpha1.AzureFrontDoorSecurityPolicyIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -58,7 +58,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorsecuritypolicyv1al
 		return errors.Wrapf(err, "failed to create front door security policy %s", spec.SecurityPolicyName)
 	}
 
-	// Export stack outputs. Nothing composes on a security policy (it is
+	// Export outputs. Nothing composes on a security policy (it is
 	// itself the association); the id serves operational addressing.
 	ctx.Export(OpSecurityPolicyId, createdSecurityPolicy.ID())
 	ctx.Export(OpSecurityPolicyName, createdSecurityPolicy.Name)

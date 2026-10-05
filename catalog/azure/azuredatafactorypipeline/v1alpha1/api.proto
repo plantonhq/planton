@@ -18,7 +18,7 @@ message AzureDataFactoryPipeline {
   string kind = 2 [(buf.validate.field).string.const = 'AzureDataFactoryPipeline'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   AzureDataFactoryPipelineSpec spec = 4 [(buf.validate.field).required = true];
@@ -30,7 +30,7 @@ message AzureDataFactoryPipeline {
 // AzureDataFactoryPipelineStatus represents the status of an Azure
 // Data Factory pipeline deployment.
 message AzureDataFactoryPipelineStatus {
-  //stack-outputs
-  //  azure-data-factory-pipeline stack-outputs
-  AzureDataFactoryPipelineStackOutputs outputs = 1;
+  //outputs
+  //  azure-data-factory-pipeline outputs
+  AzureDataFactoryPipelineOutputs outputs = 1;
 }

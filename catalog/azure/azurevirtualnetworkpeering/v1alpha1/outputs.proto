@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurevirtualnetworkpeering.v1alpha1;
 
-// **AzureVirtualNetworkPeeringStackOutputs** captures the outputs of
+// **AzureVirtualNetworkPeeringOutputs** captures the outputs of
 // provisioning one direction of an Azure virtual network peering.
-message AzureVirtualNetworkPeeringStackOutputs {
+message AzureVirtualNetworkPeeringOutputs {
   // The Azure Resource Manager ID of the peering.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/virtualNetworkPeerings/{name}
   string peering_id = 1;

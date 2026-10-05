@@ -2,15 +2,15 @@
 
 **Date**: November 14, 2025  
 **Type**: Breaking Change / Refactoring  
-**Components**: API Definitions, Cloud Resource Registry, Package Structure, Provider Framework, Build System
+**Components**: API Definitions, Catalog Kind Registry, Package Structure, Provider Framework, Build System
 
 ## Summary
 
-Completed a comprehensive rename of all 23 Kubernetes workload deployment components, systematically changing the naming convention from `{Technology}Kubernetes` (suffix pattern) to `Kubernetes{Technology}` (prefix pattern). This massive refactoring spans directory structures, package namespaces, proto message types, API kind names, Go implementation code, test suites, and external references. The change aligns workload naming with the recently completed addon operator refactorings and establishes a unified, consistent naming pattern across all Kubernetes resources in Planton.
+Completed a comprehensive rename of all 23 Kubernetes workload catalog kinds, systematically changing the naming convention from `{Technology}Kubernetes` (suffix pattern) to `Kubernetes{Technology}` (prefix pattern). This massive refactoring spans directory structures, package namespaces, proto message types, API kind names, Go implementation code, test suites, and external references. The change aligns workload naming with the recently completed addon operator refactorings and establishes a unified, consistent naming pattern across all Kubernetes resources in Planton.
 
 ## Problem Statement / Motivation
 
-Planton's Kubernetes workload components were originally structured with "Kubernetes" appearing as a suffix in component names (e.g., `PostgresKubernetes`, `RedisKubernetes`, `KafkaKubernetes`). After successfully refactoring all Kubernetes addon operators to remove redundant suffixes (e.g., `CertManagerKubernetes` → `CertManager`, `ExternalDnsKubernetes` → `ExternalDns`), we recognized that workload components needed a different treatment: they still needed the "Kubernetes" designation to distinguish them from cloud provider managed services, but the suffix pattern was inconsistent with modern naming conventions.
+Planton's Kubernetes workload kinds were originally structured with "Kubernetes" appearing as a suffix in kind names (e.g., `PostgresKubernetes`, `RedisKubernetes`, `KafkaKubernetes`). After successfully refactoring all Kubernetes addon operators to remove redundant suffixes (e.g., `CertManagerKubernetes` → `CertManager`, `ExternalDnsKubernetes` → `ExternalDns`), we recognized that workload kinds needed a different treatment: they still needed the "Kubernetes" designation to distinguish them from cloud provider managed services, but the suffix pattern was inconsistent with modern naming conventions.
 
 ### Pain Points
 
@@ -65,11 +65,11 @@ The provider namespace (`dev.planton.provider.kubernetes.workload`) already indi
 
 ## Solution / What's New
 
-Performed a systematic, multi-phase refactoring across all 23 Kubernetes workload components:
+Performed a systematic, multi-phase refactoring across all 23 Kubernetes workload kinds:
 
 ### Scope of Changes
 
-**23 Workload Components Renamed**:
+**23 Workload Kinds Renamed**:
 
 | Old Name (Suffix Pattern)      | New Name (Prefix Pattern)       | Enum # |
 |--------------------------------|----------------------------------|--------|
@@ -120,9 +120,9 @@ kind: KubernetesPostgres
 
 ## Implementation Details
 
-### Phase 1: Cloud Resource Registry Update
+### Phase 1: Catalog Kind Registry Update
 
-**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/catalogkind/catalog_kind.proto`
 
 Updated all 23 enum entries in the registry:
 
@@ -158,7 +158,7 @@ KubernetesArgocd = 800 [(kind_meta) = {
 
 ### Phase 2: Directory Structure Rename
 
-Renamed all 23 component directories:
+Renamed all 23 kind directories:
 
 ```bash
 # Examples of directory renames
@@ -196,7 +196,7 @@ All subdirectories maintained their structure:
 
 ### Phase 3: Proto File Updates
 
-For each of the 23 components, updated 4 proto files:
+For each of the 23 kinds, updated 4 proto files:
 
 **File**: `api.proto` - Main resource definition
 
@@ -238,13 +238,13 @@ message KubernetesPostgresContainer { ... }
 message KubernetesPostgresIngress { ... }
 ```
 
-**File**: `stack_input.proto` - Stack input definition
+**File**: `iac_input.proto` - IaC input definition
 
 ```protobuf
 // Before
 package dev.planton.provider.kubernetes.workload.postgreskubernetes.v1;
 
-message PostgresKubernetesStackInput {
+message PostgresKubernetesIacInput {
   PostgresKubernetes target = 1;
   dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
@@ -252,31 +252,31 @@ message PostgresKubernetesStackInput {
 // After
 package dev.planton.provider.kubernetes.workload.kubernetespostgres.v1;
 
-message KubernetesPostgresStackInput {
+message KubernetesPostgresIacInput {
   KubernetesPostgres target = 1;
   dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
 ```
 
-**File**: `stack_outputs.proto` - Output definition
+**File**: `outputs.proto` - Output definition
 
 ```protobuf
 // Before
 package dev.planton.provider.kubernetes.workload.postgreskubernetes.v1;
 
-message PostgresKubernetesStackOutputs { ... }
+message PostgresKubernetesOutputs { ... }
 
 // After
 package dev.planton.provider.kubernetes.workload.kubernetespostgres.v1;
 
-message KubernetesPostgresStackOutputs { ... }
+message KubernetesPostgresOutputs { ... }
 ```
 
 ### Phase 4: Nested Message Type Updates
 
-Many components have complex nested types that required careful renaming:
+Many kinds have complex nested types that required careful renaming:
 
-**Example: Elasticsearch Component**
+**Example: Elasticsearch Kind**
 
 ```protobuf
 // Before
@@ -302,7 +302,7 @@ message KubernetesElasticsearchElasticsearchSpec {
 }
 ```
 
-**Example: Harbor Component** (highly complex with 15+ nested types)
+**Example: Harbor Kind** (highly complex with 15+ nested types)
 
 ```protobuf
 // Before
@@ -340,7 +340,7 @@ enum KubernetesHarborStorageType {
 }
 ```
 
-**Example: Temporal Component** (with enum types)
+**Example: Temporal Kind** (with enum types)
 
 ```protobuf
 // Before
@@ -383,7 +383,7 @@ import (
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		stackInput := &postgreskubernetesv1.PostgresKubernetesStackInput{}
+		iacInput := &postgreskubernetesv1.PostgresKubernetesIacInput{}
 		// ...
 	})
 }
@@ -398,7 +398,7 @@ import (
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		stackInput := &kubernetespostgresv1.KubernetesPostgresStackInput{}
+		iacInput := &kubernetespostgresv1.KubernetesPostgresIacInput{}
 		// ...
 	})
 }
@@ -408,8 +408,8 @@ func main() {
 
 ```go
 // Before
-func Resources(ctx *pulumi.Context, stackInput *postgreskubernetesv1.PostgresKubernetesStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *postgreskubernetesv1.PostgresKubernetesIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 	// ...
 }
 
@@ -419,8 +419,8 @@ type Locals struct {
 }
 
 // After
-func Resources(ctx *pulumi.Context, stackInput *kubernetespostgresv1.KubernetesPostgresStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetespostgresv1.KubernetesPostgresIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 	// ...
 }
 
@@ -430,14 +430,14 @@ type Locals struct {
 }
 ```
 
-**Updated Cloud Resource Kind References**:
+**Updated Catalog Kind References**:
 
 ```go
 // Before
-locals.Labels[kuberneteslabelkeys.ResourceKind] = cloudresourcekind.CloudResourceKind_PostgresKubernetes.String()
+locals.Labels[kuberneteslabelkeys.ResourceKind] = catalogkind.CatalogKind_PostgresKubernetes.String()
 
 // After
-locals.Labels[kuberneteslabelkeys.ResourceKind] = cloudresourcekind.CloudResourceKind_KubernetesPostgres.String()
+locals.Labels[kuberneteslabelkeys.ResourceKind] = catalogkind.CatalogKind_KubernetesPostgres.String()
 ```
 
 ### Phase 6: Test File Updates
@@ -554,39 +554,39 @@ msg := &kubernetesredisv1.KubernetesRedis{
 }
 ```
 
-**File**: `pkg/crkreflect/kind_from_string_test.go`
+**File**: `pkg/catalogkindreflect/kind_from_string_test.go`
 
 ```go
 // Before
 {
 	name:     "MicroserviceKubernetes - PascalCase",
 	input:    "MicroserviceKubernetes",
-	expected: cloudresourcekind.CloudResourceKind_MicroserviceKubernetes,
+	expected: catalogkind.CatalogKind_MicroserviceKubernetes,
 },
 
 // After
 {
 	name:     "KubernetesMicroservice - PascalCase",
 	input:    "KubernetesMicroservice",
-	expected: cloudresourcekind.CloudResourceKind_KubernetesMicroservice,
+	expected: catalogkind.CatalogKind_KubernetesMicroservice,
 },
 ```
 
-**File**: `pkg/crkreflect/kind_by_id_prefix_test.go`
+**File**: `pkg/catalogkindreflect/kind_by_id_prefix_test.go`
 
 ```go
 // Before
 {
 	name:     "Microservice Kubernetes",
 	idPrefix: "k8sms",
-	want:     cloudresourcekind.CloudResourceKind_MicroserviceKubernetes,
+	want:     catalogkind.CatalogKind_MicroserviceKubernetes,
 },
 
 // After
 {
 	name:     "Kubernetes Microservice",
 	idPrefix: "k8sms",
-	want:     cloudresourcekind.CloudResourceKind_KubernetesMicroservice,
+	want:     catalogkind.CatalogKind_KubernetesMicroservice,
 }
 ```
 
@@ -626,9 +626,9 @@ make protos
 
 **Kind Map Regeneration**:
 ```bash
-go run -tags codegen ./pkg/crkreflect/codegen
+go run -tags codegen ./pkg/catalogkindreflect/codegen
 ```
-- Regenerated `pkg/crkreflect/kind_map_gen.go` with new kind mappings
+- Regenerated `pkg/catalogkindreflect/kind_map_gen.go` with new kind mappings
 - Updated reflection code to use new directory paths
 
 **Go Module Resolution**:
@@ -679,14 +679,14 @@ enum KubernetesTemporalDatabaseBackend {
 }
 ```
 
-### Challenge 3: Stack Input Target References
+### Challenge 3: IaC Input Target References
 
-**Problem**: Many `stack_input.proto` files had target field references that weren't caught by initial pattern matching.
+**Problem**: Many `iac_input.proto` files had target field references that weren't caught by initial pattern matching.
 
-**Solution**: Applied comprehensive second pass specifically targeting `stack_input.proto` files:
+**Solution**: Applied comprehensive second pass specifically targeting `iac_input.proto` files:
 
 ```protobuf
-// All 23 components fixed
+// All 23 kinds fixed
 PostgresKubernetes target  → KubernetesPostgres target
 RedisKubernetes target     → KubernetesRedis target
 KafkaKubernetes target     → KubernetesKafka target
@@ -714,21 +714,21 @@ kubernetespostgresv1 "github.com/.../kubernetespostgres/v1"
 **Solution**: Systematically updated all external references:
 - `internal/manifest/manifestprotobuf/field_setter_test.go`
 - `pkg/iac/tofu/tfvars/tfvars_test.go`
-- `pkg/crkreflect/kind_from_string_test.go`
-- `pkg/crkreflect/kind_by_id_prefix_test.go`
+- `pkg/catalogkindreflect/kind_from_string_test.go`
+- `pkg/catalogkindreflect/kind_by_id_prefix_test.go`
 
 ### Challenge 6: Automated Script Development
 
-**Problem**: Manual file-by-file updates would be error-prone and time-consuming for 23 components.
+**Problem**: Manual file-by-file updates would be error-prone and time-consuming for 23 kinds.
 
 **Solution**: Created targeted shell scripts for systematic updates:
 
 1. **rename_workloads.sh**: Batch processed proto and Go files with sed replacements
 2. **fix_nested_types.sh**: Corrected double-prefixed and composite type names
-3. **fix_stack_input.sh**: Targeted stack_input.proto target field corrections
+3. **fix_iac_input.sh**: Targeted iac_input.proto target field corrections
 4. **fix_test_files.sh**: Updated test file package import aliases
 
-This approach ensured consistency while allowing for component-specific adjustments.
+This approach ensured consistency while allowing for kind-specific adjustments.
 
 ## Benefits
 
@@ -844,7 +844,7 @@ The `kubernetes*` prefix makes it immediately clear which imports are Kubernetes
 
 ### Breaking Changes
 
-This is a **major breaking change** affecting all users of Kubernetes workload components:
+This is a **major breaking change** affecting all users of Kubernetes workload kinds:
 
 #### 1. User Manifests
 
@@ -954,14 +954,14 @@ KubernetesPostgresSpec spec = 2;
 
 | Category | Count | Examples |
 |----------|-------|----------|
-| Proto Definitions | 92 files | api.proto, spec.proto, stack_input.proto, stack_outputs.proto × 23 |
+| Proto Definitions | 92 files | api.proto, spec.proto, iac_input.proto, outputs.proto × 23 |
 | Generated Proto Stubs | 92 files | *.pb.go files (auto-regenerated) |
 | Pulumi Main Files | 23 files | iac/pulumi/main.go |
 | Pulumi Module Files | 69+ files | iac/pulumi/module/*.go |
 | Test Files | 23 files | api_test.go, spec_test.go |
 | External Test Files | 4 files | internal/, pkg/ test files |
-| Cloud Resource Registry | 1 file | cloud_resource_kind.proto |
-| Code Generation | 1 file | pkg/crkreflect/kind_map_gen.go |
+| Catalog Kind Registry | 1 file | catalog_kind.proto |
+| Code Generation | 1 file | pkg/catalogkindreflect/kind_map_gen.go |
 | Build Files | 100+ files | BUILD.bazel (auto-updated via Gazelle) |
 
 **Total Impact**:
@@ -982,7 +982,7 @@ make protos
 **Iterations Required**: 4 iterations
 1. Initial proto generation identified nested type issues
 2. Fixed nested message type names
-3. Fixed stack_input.proto target references
+3. Fixed iac_input.proto target references
 4. Fixed enum type names
 5. ✅ Final proto generation successful
 
@@ -1093,7 +1093,7 @@ find . -name "*.go" -exec sed -i \
 PostgresKubernetes          → KubernetesPostgres
 PostgresKubernetesSpec      → KubernetesPostgresSpec
 PostgresKubernetesContainer → KubernetesPostgresContainer
-PostgresKubernetesStackInput → KubernetesPostgresStackInput
+PostgresKubernetesIacInput → KubernetesPostgresIacInput
 
 // Redis example:
 RedisKubernetes        → KubernetesRedis
@@ -1183,7 +1183,7 @@ This refactoring completes the Kubernetes naming consistency initiative started 
 
 ### This Change: Workload Prefix Pattern (November 14, 2025)
 
-All 23 workload components under `kubernetes/workload/` systematically renamed from suffix to prefix pattern.
+All 23 workload kinds under `kubernetes/workload/` systematically renamed from suffix to prefix pattern.
 
 ### Unified Naming Patterns Established
 
@@ -1344,7 +1344,7 @@ import (
 - Examples and tutorials more predictable
 - Training materials simplified
 
-## Component-Specific Notes
+## Kind-Specific Notes
 
 ### MicroserviceKubernetes → KubernetesMicroservice
 
@@ -1363,7 +1363,7 @@ KubernetesMicroservice = 810 [(kind_meta) = {
 }];
 ```
 
-The `is_service_kind` flag is preserved - this component continues to be recognized as a service deployment resource.
+The `is_service_kind` flag is preserved - this kind continues to be recognized as a service deployment resource.
 
 ### HelmRelease → KubernetesHelmRelease
 
@@ -1377,9 +1377,9 @@ kind: HelmRelease
 kind: KubernetesHelmRelease
 ```
 
-This change adds the `Kubernetes` prefix to make the deployment target explicit, aligning with all other workload components.
+This change adds the `Kubernetes` prefix to make the deployment target explicit, aligning with all other workload kinds.
 
-### Complex Components
+### Complex Kinds
 
 **Harbor** (15+ nested message types):
 - `KubernetesHarborDatabaseConfig`
@@ -1411,17 +1411,17 @@ Four targeted shell scripts were created for systematic updates:
    - Updated proto message type names
    - Updated Go import paths
    - Updated Go type references
-   - Processed all 23 components
+   - Processed all 23 kinds
 
 2. **fix_nested_types.sh**: Nested type correction
    - Fixed double-prefixed types (e.g., `ArgocdKubernetesArgocdContainer`)
    - Corrected composite types (e.g., `ElasticsearchKubernetesElasticsearchSpec`)
    - Fixed enum references
 
-3. **fix_stack_input.sh**: Stack input target field fixes
-   - Targeted `stack_input.proto` files specifically
+3. **fix_iac_input.sh**: IaC input target field fixes
+   - Targeted `iac_input.proto` files specifically
    - Corrected target field type references
-   - Ensured all 23 components updated
+   - Ensured all 23 kinds updated
 
 4. **fix_test_files.sh**: Test file import aliases
    - Updated `*_test.go` package import aliases
@@ -1438,7 +1438,7 @@ These scripts were **temporary** and deleted after use - they're not part of the
 - New type names: `KubernetesPostgres`, `KubernetesRedis`, etc.
 
 **Kind Map**:
-- Regenerated `pkg/crkreflect/kind_map_gen.go`
+- Regenerated `pkg/catalogkindreflect/kind_map_gen.go`
 - Updated mappings from enum to proto types
 - Corrected directory path resolution
 
@@ -1481,7 +1481,7 @@ Addons lose "Kubernetes" entirely; workloads keep it but reposition it as a pref
 ### Remaining Consistency Improvements
 
 **Documentation Updates**:
-- Update README files for all 23 components
+- Update README files for all 23 kinds
 - Refresh examples.md with new kind names
 - Update research docs (`docs/README.md`)
 - Update IaC module documentation
@@ -1492,7 +1492,7 @@ Addons lose "Kubernetes" entirely; workloads keep it but reposition it as a pref
 - Verify feature parity maintained
 
 **Changelog Creation**:
-- Consider creating component-specific changelogs
+- Consider creating kind-specific changelogs
 - Document migration experiences
 - Capture user feedback
 
@@ -1501,7 +1501,7 @@ Addons lose "Kubernetes" entirely; workloads keep it but reposition it as a pref
 **Establish Formal Guidelines**:
 - Document naming conventions in `architecture/` directory
 - Create decision matrix for choosing patterns
-- Provide examples for future components
+- Provide examples for future kinds
 
 **Convention Examples**:
 ```
@@ -1524,7 +1524,7 @@ Cloud Services:
 
 **Shell Scripts**:
 - ✅ Highly effective for systematic find-and-replace across 100+ files
-- ✅ Faster than manual updates (23 components × 10+ files each)
+- ✅ Faster than manual updates (23 kinds × 10+ files each)
 - ✅ Consistent application of patterns
 - ⚠️ Required multiple iterations to handle edge cases
 
@@ -1569,12 +1569,12 @@ Cloud Services:
 
 ### Current Status
 
-✅ **Cloud Resource Registry**: All 23 enum entries updated  
+✅ **Catalog Kind Registry**: All 23 enum entries updated  
 ✅ **Directory Structure**: All 23 directories renamed  
-✅ **Proto Definitions**: 92 proto files updated (4 per component × 23)  
+✅ **Proto Definitions**: 92 proto files updated (4 per kind × 23)  
 ✅ **Generated Stubs**: 92 `.pb.go` files regenerated  
 ✅ **Go Implementation**: 92+ Go files updated in `iac/pulumi/`  
-✅ **Test Files**: 23 component test files updated  
+✅ **Test Files**: 23 kind test files updated  
 ✅ **External References**: 4 files in `internal/` and `pkg/` updated  
 ✅ **Code Generation**: Kind map regenerated  
 ✅ **Build Verification**: `make build` successful  
@@ -1666,7 +1666,7 @@ Cloud Services:
 **Status**: ✅ Production Ready  
 **Breaking Change**: Yes - requires manifest and code updates  
 **Timeline**: Completed November 14, 2025  
-**Components Affected**: All 23 Kubernetes workload deployment components  
+**Kinds Affected**: All 23 Kubernetes workload catalog kinds  
 **Files Changed**: ~500 manual files + generated artifacts  
 **Build Status**: All builds successful, CLI binary compiled  
 **Pattern Established**: `Kubernetes{Technology}` prefix pattern for all workloads

@@ -52,7 +52,7 @@ levels of an `AzureApplicationGateway`, most specific wins:
   tuning), body-inspection dials, file-upload limits, JS-challenge cookie
   lifetime, and `log_scrubbing` to redact secrets from WAF logs.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

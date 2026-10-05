@@ -9,7 +9,7 @@ import (
 	"github.com/plantonhq/planton/internal/cli/iacflags"
 	"github.com/plantonhq/planton/internal/cli/workspace"
 	"github.com/plantonhq/planton/pkg/clipboard"
-	"github.com/plantonhq/planton/pkg/iac/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/iacinput"
 	"github.com/plantonhq/planton/pkg/ulidgen"
 	"github.com/spf13/cobra"
 )
@@ -19,7 +19,7 @@ import (
 //
 // Smart detection order:
 //  1. If clipboard content is a file path (and file exists), read from that file
-//  2. If clipboard content has a "target" field at root, treat as stack input
+//  2. If clipboard content has a "target" field at root, treat as IaC input
 //  3. Otherwise, treat as raw manifest YAML
 //
 // Returns structured errors (ClipboardEmptyError, ClipboardInvalidYAMLError, ClipboardFileNotFoundError)
@@ -62,11 +62,11 @@ func resolveFromClipboard(cmd *cobra.Command) (manifestPath string, isTemp bool,
 		}
 	}
 
-	// Case 3: Stack input (has "target" field)
-	if content.IsStackInput {
-		manifestPath, err = stackinput.ExtractManifestFromBytes(raw)
+	// Case 3: IaC input (has "target" field)
+	if content.IsIacInput {
+		manifestPath, err = iacinput.ExtractManifestFromBytes(raw)
 		if err != nil {
-			return "", false, errors.Wrap(err, "failed to extract manifest from stack input in clipboard")
+			return "", false, errors.Wrap(err, "failed to extract manifest from IaC input in clipboard")
 		}
 		return manifestPath, true, nil
 	}

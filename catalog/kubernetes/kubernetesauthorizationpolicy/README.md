@@ -214,7 +214,7 @@ When the target is a Service, a ServiceEntry, or any resource not managed as a P
 kind, pass the literal name with `value:`. `selector.match_labels` is a plain label
 match, not a foreign key -- istiod resolves it at runtime, so it creates no automatic
 DAG edge to the workloads it selects. To order this policy relative to those workloads
-in an infra chart, declare the dependency on `metadata.relationships`:
+in an Infra Chart, declare the dependency on `metadata.relationships`:
 
 ```yaml
 metadata:
@@ -242,14 +242,14 @@ spec:
 
 See `GUIDE.md` for the full composability rationale.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `authorization_policy_name` | Name of the created AuthorizationPolicy (equals metadata.name). |
 | `namespace` | Namespace the AuthorizationPolicy was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Request Authentication](../kubernetesrequestauthentication)
 - [Kubernetes Peer Authentication](../kubernetespeerauthentication)

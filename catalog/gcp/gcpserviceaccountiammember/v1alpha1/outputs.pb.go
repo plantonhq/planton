@@ -25,7 +25,7 @@ const (
 // The grant itself has no server-generated identity beyond its inputs; the
 // outputs echo the fully-resolved grant tuple so downstream tooling and audits
 // can see exactly what was applied without re-resolving references.
-type GcpServiceAccountIamMemberStackOutputs struct {
+type GcpServiceAccountIamMemberOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The fully-qualified resource name of the service account whose IAM
 	// policy received the grant (projects/<project>/serviceAccounts/<email>),
@@ -44,20 +44,20 @@ type GcpServiceAccountIamMemberStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpServiceAccountIamMemberStackOutputs) Reset() {
-	*x = GcpServiceAccountIamMemberStackOutputs{}
+func (x *GcpServiceAccountIamMemberOutputs) Reset() {
+	*x = GcpServiceAccountIamMemberOutputs{}
 	mi := &file_catalog_gcp_gcpserviceaccountiammember_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpServiceAccountIamMemberStackOutputs) String() string {
+func (x *GcpServiceAccountIamMemberOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpServiceAccountIamMemberStackOutputs) ProtoMessage() {}
+func (*GcpServiceAccountIamMemberOutputs) ProtoMessage() {}
 
-func (x *GcpServiceAccountIamMemberStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpServiceAccountIamMemberOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpserviceaccountiammember_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,33 +69,33 @@ func (x *GcpServiceAccountIamMemberStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpServiceAccountIamMemberStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpServiceAccountIamMemberStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpServiceAccountIamMemberOutputs.ProtoReflect.Descriptor instead.
+func (*GcpServiceAccountIamMemberOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpserviceaccountiammember_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpServiceAccountIamMemberStackOutputs) GetServiceAccountId() string {
+func (x *GcpServiceAccountIamMemberOutputs) GetServiceAccountId() string {
 	if x != nil {
 		return x.ServiceAccountId
 	}
 	return ""
 }
 
-func (x *GcpServiceAccountIamMemberStackOutputs) GetRole() string {
+func (x *GcpServiceAccountIamMemberOutputs) GetRole() string {
 	if x != nil {
 		return x.Role
 	}
 	return ""
 }
 
-func (x *GcpServiceAccountIamMemberStackOutputs) GetMember() string {
+func (x *GcpServiceAccountIamMemberOutputs) GetMember() string {
 	if x != nil {
 		return x.Member
 	}
 	return ""
 }
 
-func (x *GcpServiceAccountIamMemberStackOutputs) GetEtag() string {
+func (x *GcpServiceAccountIamMemberOutputs) GetEtag() string {
 	if x != nil {
 		return x.Etag
 	}
@@ -106,8 +106,8 @@ var File_catalog_gcp_gcpserviceaccountiammember_v1alpha1_outputs_proto protorefl
 
 const file_catalog_gcp_gcpserviceaccountiammember_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/gcp/gcpserviceaccountiammember/v1alpha1/outputs.proto\x123dev.planton.gcp.gcpserviceaccountiammember.v1alpha1\"\x96\x01\n" +
-	"&GcpServiceAccountIamMemberStackOutputs\x12,\n" +
+	"=catalog/gcp/gcpserviceaccountiammember/v1alpha1/outputs.proto\x123dev.planton.gcp.gcpserviceaccountiammember.v1alpha1\"\x91\x01\n" +
+	"!GcpServiceAccountIamMemberOutputs\x12,\n" +
 	"\x12service_account_id\x18\x01 \x01(\tR\x10serviceAccountId\x12\x12\n" +
 	"\x04role\x18\x02 \x01(\tR\x04role\x12\x16\n" +
 	"\x06member\x18\x03 \x01(\tR\x06member\x12\x12\n" +
@@ -128,7 +128,7 @@ func file_catalog_gcp_gcpserviceaccountiammember_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_gcp_gcpserviceaccountiammember_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpserviceaccountiammember_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpServiceAccountIamMemberStackOutputs)(nil), // 0: dev.planton.gcp.gcpserviceaccountiammember.v1alpha1.GcpServiceAccountIamMemberStackOutputs
+	(*GcpServiceAccountIamMemberOutputs)(nil), // 0: dev.planton.gcp.gcpserviceaccountiammember.v1alpha1.GcpServiceAccountIamMemberOutputs
 }
 var file_catalog_gcp_gcpserviceaccountiammember_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

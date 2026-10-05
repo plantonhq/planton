@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1;
 
-// CloudflareNotificationPolicyStackOutputs captures the observable outputs
+// CloudflareNotificationPolicyOutputs captures the observable outputs
 // after creating the notification policy.
-message CloudflareNotificationPolicyStackOutputs {
+message CloudflareNotificationPolicyOutputs {
   // The Cloudflare-assigned UUID of the policy.
   string policy_id = 1;
 }

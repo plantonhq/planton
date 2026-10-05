@@ -1,5 +1,5 @@
 order:
-    - TestCloudResourceGeneric/consumer@dev
+    - TestCatalogKindGeneric/consumer@dev
 findings:
-    - external-value-from TestCloudResourceGeneric/consumer@dev spec.annotated_ref
-    - ref-rule TestCloudResourceGeneric/consumer@dev spec.annotated_ref
+    - external-value-from TestCatalogKindGeneric/consumer@dev spec.annotated_ref
+    - ref-rule TestCatalogKindGeneric/consumer@dev spec.annotated_ref

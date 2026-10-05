@@ -3,7 +3,7 @@ package module
 import (
 	"strconv"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 
 	iamrolev1 "github.com/plantonhq/planton/catalog/aws/awsiamrole/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
@@ -15,9 +15,9 @@ type Locals struct {
 	AwsTags    map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *iamrolev1.AwsIamRoleStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *iamrolev1.AwsIamRoleIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsIamRole = stackInput.Target
+	locals.AwsIamRole = iacInput.Target
 
 	// Resource-identity tags match the Terraform module key-for-key
 	// (Name plus the planton.ai identity keys).
@@ -26,7 +26,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *iamrolev1.AwsIamRoleStack
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsIamRole.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsIamRole.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsIamRole.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsIamRole.String(),
 		awstagkeys.ResourceId:   locals.AwsIamRole.Metadata.Id,
 	}
 

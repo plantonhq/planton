@@ -1,10 +1,10 @@
 # Azure Managed Redis
 
-Deploys an Azure Managed Redis instance -- Azure's current-generation Redis service, built on Redis Enterprise. Azure is retiring classic Azure Cache for Redis; Managed Redis is the target for new Redis deployments and the home of the capabilities the classic service never had: Redis modules (search, JSON, probabilistic filters, time series), active multi-primary geo-replication, customer-managed-key encryption, and a keyless-by-default authentication posture. The component models the cluster and its default database in one spec: the SKU family/size ladder, high availability, engine behavior, modules, persistence, geo-group membership, managed identity, CMK, and network access.
+Deploys an Azure Managed Redis instance -- Azure's current-generation Redis service, built on Redis Enterprise. Azure is retiring classic Azure Cache for Redis; Managed Redis is the target for new Redis deployments and the home of the capabilities the classic service never had: Redis modules (search, JSON, probabilistic filters, time series), active multi-primary geo-replication, customer-managed-key encryption, and a keyless-by-default authentication posture. The kind models the cluster and its default database in one spec: the SKU family/size ladder, high availability, engine behavior, modules, persistence, geo-group membership, managed identity, CMK, and network access.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Managed Redis Cluster** -- a Microsoft.Cache/redisEnterprise instance in the specified region and resource group, sized by the chosen SKU (family + memory in one value), with high availability (a replica and the 99.999% zone-redundant SLA) unless explicitly disabled
 - **Default Database** -- the Redis process itself, mapped 1-to-1 with the cluster: authentication posture, clustering policy, eviction policy, client protocol, modules, optional persistence, and optional geo-replication-group membership
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the instance will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the instance will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **Region availability** -- Managed Redis is newer than classic Redis and not yet in every region; check Azure's product-availability table for the current footprint.
 - **For customer-managed keys** (optional): an AzureKeyVaultKey in a purge-protected vault and an AzureUserAssignedIdentity granted wrap/unwrap on the key before deployment.
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f managed-redis.yaml
 ```
 
-This creates a 1 GB Balanced instance with high availability (Azure's default), TLS-only access on port 10000, OSS clustering, volatile-lru eviction, and NO access keys -- the keyless posture where clients authenticate with Entra tokens under access-policy-assignment grants. A Stack Job tracks the provisioning in real time.
+This creates a 1 GB Balanced instance with high availability (Azure's default), TLS-only access on port 10000, OSS clustering, volatile-lru eviction, and NO access keys -- the keyless posture where clients authenticate with Entra tokens under access-policy-assignment grants. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,7 +102,7 @@ These are the most important decisions when configuring a Managed Redis instance
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -110,9 +110,9 @@ These are the most important decisions when configuring a Managed Redis instance
 | **AzureKeyVaultKey** (optional, CMK) | `customerManagedKey.keyVaultKeyId` | `status.outputs.key_id` |
 | **AzureUserAssignedIdentity** (optional) | `customerManagedKey.userAssignedIdentityId`, `identity.userAssignedIdentityIds` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -139,9 +139,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the instance is created
-- [**Azure Managed Redis Access Policy Assignment**](/cloud-catalog/azure-managed-redis-access-policy-assignment) -- grants an Entra identity data-plane access (how clients connect in the keyless default)
-- [**Azure Managed Redis Geo Replication**](/cloud-catalog/azure-managed-redis-geo-replication) -- links instances declaring the same group name into an active multi-primary group
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the customer-managed key that wraps the data-encryption key
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the wrap/unwrap identity for CMK, and the principal granted data-plane access
-- [**Azure Private Endpoint**](/cloud-catalog/azure-private-endpoint) -- private connectivity with the public endpoint disabled
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the instance is created
+- [**Azure Managed Redis Access Policy Assignment**](/infra-catalog/azure-managed-redis-access-policy-assignment) -- grants an Entra identity data-plane access (how clients connect in the keyless default)
+- [**Azure Managed Redis Geo Replication**](/infra-catalog/azure-managed-redis-geo-replication) -- links instances declaring the same group name into an active multi-primary group
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the customer-managed key that wraps the data-encryption key
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the wrap/unwrap identity for CMK, and the principal granted data-plane access
+- [**Azure Private Endpoint**](/infra-catalog/azure-private-endpoint) -- private connectivity with the public endpoint disabled

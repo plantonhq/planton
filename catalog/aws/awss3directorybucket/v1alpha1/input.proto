@@ -5,9 +5,9 @@ package dev.planton.aws.awss3directorybucket.v1alpha1;
 import "catalog/aws/awss3directorybucket/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsS3DirectoryBucketStackInput is the input for the IaC modules
+// AwsS3DirectoryBucketIacInput is the input for the IaC modules
 // that manage an S3 directory bucket.
-message AwsS3DirectoryBucketStackInput {
+message AwsS3DirectoryBucketIacInput {
   // target is the AwsS3DirectoryBucket resource to deploy.
   AwsS3DirectoryBucket target = 1;
   // provider_config contains the AWS provider credentials and configuration.

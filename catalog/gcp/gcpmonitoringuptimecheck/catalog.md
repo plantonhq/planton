@@ -4,7 +4,7 @@ Creates a Cloud Monitoring uptime check — a probe Google runs against your tar
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Uptime Check Config** -- a `monitoring.UptimeCheckConfig` with the configured target, probe (HTTP/HTTPS or TCP), cadence, regions, and content assertions
 - **Monitoring API enablement** -- `monitoring.googleapis.com` enabled in the target project (never disabled on destroy)
@@ -55,7 +55,7 @@ spec:
 planton apply -f uptime-check.yaml
 ```
 
-This probes `https://example.com/` from all regions every 5 minutes (the default period), failing on non-2xx responses and invalid certificates. A Stack Job tracks the provisioning in real time.
+This probes `https://example.com/` from all regions every 5 minutes (the default period), failing on non-2xx responses and invalid certificates. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,16 +87,16 @@ These are the most important decisions when configuring an uptime check. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 | **GcpCloudFunction** (optional) | `syntheticMonitor.cloudFunction` | `status.outputs.function_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,6 +115,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Monitoring Alert Policy**](/cloud-catalog/gcp-monitoring-alert-policy) -- pages when this check fails
-- [**GCP Monitoring Notification Channel**](/cloud-catalog/gcp-monitoring-notification-channel) -- where those pages are delivered
-- [**GCP Cloud Function**](/cloud-catalog/gcp-cloud-function) -- carries the probe logic for synthetic monitors
+- [**GCP Monitoring Alert Policy**](/infra-catalog/gcp-monitoring-alert-policy) -- pages when this check fails
+- [**GCP Monitoring Notification Channel**](/infra-catalog/gcp-monitoring-notification-channel) -- where those pages are delivered
+- [**GCP Cloud Function**](/infra-catalog/gcp-cloud-function) -- carries the probe logic for synthetic monitors

@@ -4,7 +4,7 @@ Deploys an AWS Batch job definition: the versioned container blueprint jobs are 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Batch Job Definition (a new revision)** -- registered under `metadata.name`. Revisions are immutable in AWS: every spec change registers a NEW revision rather than mutating the old one, and by default the previous revision is deregistered so exactly one stays ACTIVE
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
@@ -15,7 +15,7 @@ Because the `job_definition_arn` output carries the revision, an EventBridge rul
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -23,7 +23,7 @@ Because the `job_definition_arn` output carries the revision, an EventBridge rul
 - **A container image** the compute can pull: ECR images need pull permissions on the execution role (Fargate) or instance role (EC2); private non-ECR registries use a Secrets Manager credentials secret.
 - **An execution role** (Fargate only, required) -- lets the agent pull the image, resolve secrets, and write logs. Reference an AwsIamRole or provide the ARN.
 - **A job role** (recommended) -- the identity the workload's code runs as. Keep it minimal; it is the job's blast radius.
-- **EFS file systems / access points** (only when mounting volumes) -- reference AwsElasticFileSystem / AwsEfsAccessPoint Cloud Resources.
+- **EFS file systems / access points** (only when mounting volumes) -- reference AwsElasticFileSystem / AwsEfsAccessPoint Infra Components.
 
 ## Deploy
 
@@ -76,7 +76,7 @@ spec:
 planton apply -f batch-job-definition.yaml
 ```
 
-This registers a Fargate container job with a parameterized command, the recommended Spot-reclaim retry posture (retry infrastructure failures, exit on application failures), and a one-hour per-attempt limit. A Stack Job tracks the provisioning in real time.
+This registers a Fargate container job with a parameterized command, the recommended Spot-reclaim retry posture (retry infrastructure failures, exit on application failures), and a one-hour per-attempt limit. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -124,7 +124,7 @@ These are the most important decisions when configuring a job definition. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -133,9 +133,9 @@ These are the most important decisions when configuring a job definition. Explor
 | **AwsElasticFileSystem** (per EFS volume) | `container.volumes[].efs.fileSystemId` | `status.outputs.file_system_id` |
 | **AwsEfsAccessPoint** (optional per EFS volume) | `container.volumes[].efs.accessPointId` | `status.outputs.access_point_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -157,9 +157,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Batch Job Queue**](/cloud-catalog/aws-batch-job-queue) -- where jobs from this definition are submitted at runtime
-- [**AWS Batch Compute Environment**](/cloud-catalog/aws-batch-compute-environment) -- the capacity the jobs run on (its family must match the platform here)
-- [**AWS Batch Scheduling Policy**](/cloud-catalog/aws-batch-scheduling-policy) -- `schedulingPriority` orders this definition's jobs within their share on fair-share queues
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the job and execution identities
-- [**AWS Elastic File System**](/cloud-catalog/aws-elastic-file-system) -- durable shared volumes
-- [**AWS EFS Access Point**](/cloud-catalog/aws-efs-access-point) -- POSIX-pinned volume mounts
+- [**AWS Batch Job Queue**](/infra-catalog/aws-batch-job-queue) -- where jobs from this definition are submitted at runtime
+- [**AWS Batch Compute Environment**](/infra-catalog/aws-batch-compute-environment) -- the capacity the jobs run on (its family must match the platform here)
+- [**AWS Batch Scheduling Policy**](/infra-catalog/aws-batch-scheduling-policy) -- `schedulingPriority` orders this definition's jobs within their share on fair-share queues
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the job and execution identities
+- [**AWS Elastic File System**](/infra-catalog/aws-elastic-file-system) -- durable shared volumes
+- [**AWS EFS Access Point**](/infra-catalog/aws-efs-access-point) -- POSIX-pinned volume mounts

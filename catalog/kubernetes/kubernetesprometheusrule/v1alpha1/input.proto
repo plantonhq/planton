@@ -5,10 +5,10 @@ package dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1;
 import "catalog/kubernetes/kubernetesprometheusrule/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesPrometheusRuleStackInput provides the inputs for creating the
+// KubernetesPrometheusRuleIacInput provides the inputs for creating the
 // PrometheusRule on a Kubernetes cluster.
-message KubernetesPrometheusRuleStackInput {
-  // target cloud-resource
+message KubernetesPrometheusRuleIacInput {
+  // the catalog object to deploy
   KubernetesPrometheusRule target = 1;
   // provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

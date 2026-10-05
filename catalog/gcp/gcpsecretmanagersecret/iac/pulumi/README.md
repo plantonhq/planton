@@ -26,7 +26,7 @@ iac/pulumi/
     ├── main.go                # Module coordinator
     ├── secret.go              # Global/regional secret + version + IAM grants
     ├── locals.go              # Resolved resource + derived values
-    └── outputs.go             # Stack output constants
+    └── outputs.go             # Output constants
 ```
 
 ## Quick Start
@@ -36,7 +36,7 @@ cd iac/pulumi
 pulumi stack init dev
 ```
 
-Provide a `stack-input.yaml`:
+Provide a `iac-input.yaml`:
 
 ```yaml
 target:
@@ -61,7 +61,7 @@ pulumi up
 
 ## Inputs
 
-The module consumes `GcpSecretManagerSecretStackInput`:
+The module consumes `GcpSecretManagerSecretIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|

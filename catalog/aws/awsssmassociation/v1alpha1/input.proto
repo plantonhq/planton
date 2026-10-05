@@ -5,9 +5,9 @@ package dev.planton.aws.awsssmassociation.v1alpha1;
 import "catalog/aws/awsssmassociation/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSsmAssociationStackInput is the input for the IaC modules that
+// AwsSsmAssociationIacInput is the input for the IaC modules that
 // manage a State Manager association.
-message AwsSsmAssociationStackInput {
+message AwsSsmAssociationIacInput {
   // target is the AwsSsmAssociation resource to deploy.
   AwsSsmAssociation target = 1;
   // provider_config contains the AWS provider credentials and configuration.

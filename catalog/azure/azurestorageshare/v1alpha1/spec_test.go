@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -29,7 +29,7 @@ func minimalSpec() *AzureStorageShare {
 	return &AzureStorageShare{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureStorageShare",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-share",
 		},
 		Spec: &AzureStorageShareSpec{
@@ -115,7 +115,7 @@ var _ = ginkgo.Describe("AzureStorageShareSpec Validation Tests", func() {
 			input.Spec.StorageAccountId = &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind:      cloudresourcekind.CloudResourceKind_AzureStorageAccount,
+						Kind:      catalogkind.CatalogKind_AzureStorageAccount,
 						Name:      "app-storage",
 						FieldPath: "status.outputs.storage_account_id",
 					},

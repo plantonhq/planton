@@ -17,7 +17,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: digitaloceancertificate
+    e2e-catalog-kind: digitaloceancertificate
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-required-env: PLANTON_E2E_DIGITALOCEAN_DELEGATED_DOMAIN

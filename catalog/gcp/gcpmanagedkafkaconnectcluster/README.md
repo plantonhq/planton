@@ -4,7 +4,7 @@ A Managed Service for Apache Kafka Connect cluster -- Google-operated Kafka Conn
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `managedkafka.googleapis.com` on the project (never disabled on destroy)
 - **Connect cluster** -- a `managed_kafka_connect_cluster` with its capacity and worker networks, carrying the platform attribution labels
@@ -80,7 +80,7 @@ planton apply -f managed-kafka-connect-cluster.yaml
 - A literal `kafkaCluster` is the full path `projects/{p}/locations/{l}/clusters/{c}`.
 - 1-10 network configs.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -108,7 +108,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpManagedKafkaCluster** -- the Kafka cluster the workers attach to
 - **GcpManagedKafkaConnector** -- the pipelines that run here

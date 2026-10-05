@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1;
 
-// DigitalOceanDatabaseKafkaSchemaStackOutputs captures the key outputs
+// DigitalOceanDatabaseKafkaSchemaOutputs captures the key outputs
 // after registering a Kafka schema subject. The (cluster, subject name)
 // pair is the API identity; the registry's internal numeric schema id is
 // discarded by the provider and is deliberately not exported.
-message DigitalOceanDatabaseKafkaSchemaStackOutputs {
+message DigitalOceanDatabaseKafkaSchemaOutputs {
   // UUID of the Kafka database cluster whose registry holds the subject.
   string cluster_id = 1;
 

@@ -4,7 +4,7 @@ Deploys one data flow inside an Azure Data Factory -- a visually-designed transf
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions exactly one of:
+When you deploy this Infra Component, the IaC module provisions exactly one of:
 
 - **Mapping data flow** (`flowlet: false`, the default) -- the runnable transformation: the data flow script, named sources and sinks bound to datasets or linked services, and named intermediate transformations
 - **Flowlet** (`flowlet: true`) -- the reusable snippet other data flows embed at their source, sink, or transformation points
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions exactly one of:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -67,7 +67,7 @@ spec:
 planton apply -f data-factory-data-flow.yaml
 ```
 
-This creates a mapping data flow with one source and one sink bound to the factory's linked services, carrying a pass-through script to replace with your Studio-authored flow. A Stack Job tracks the provisioning in real time.
+This creates a mapping data flow with one source and one sink bound to the factory's linked services, carrying a pass-through script to replace with your Studio-authored flow. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -123,7 +123,7 @@ These are the most important decisions when configuring a data flow. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -132,9 +132,9 @@ These are the most important decisions when configuring a data flow. Explore the
 | **AzureDataFactoryLinkedService** (optional, per endpoint) | `sources[].linkedService.name`, `sinks[].linkedService.name` (and the schema/rejected variants) | `status.outputs.linked_service_name` |
 | **AzureDataFactoryDataFlow** (optional, embedded flowlets) | `sources[].flowlet.name`, `sinks[].flowlet.name`, `transformations[].flowlet.name` | `status.outputs.data_flow_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -152,7 +152,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Data Factory**](/cloud-catalog/azure-data-factory) -- the workspace the data flow lives in, referenced by its `data_factory_id` output
-- [**Azure Data Factory Dataset**](/cloud-catalog/azure-data-factory-dataset) -- named data views the flow's endpoints bind to
-- [**Azure Data Factory Linked Service**](/cloud-catalog/azure-data-factory-linked-service) -- store connections for dataset-less endpoints, schema drift, and rejected-row quarantine
-- [**Azure Data Factory Pipeline**](/cloud-catalog/azure-data-factory-pipeline) -- runs the flow through its Execute Data Flow activity; data flows never run standalone
+- [**Azure Data Factory**](/infra-catalog/azure-data-factory) -- the workspace the data flow lives in, referenced by its `data_factory_id` output
+- [**Azure Data Factory Dataset**](/infra-catalog/azure-data-factory-dataset) -- named data views the flow's endpoints bind to
+- [**Azure Data Factory Linked Service**](/infra-catalog/azure-data-factory-linked-service) -- store connections for dataset-less endpoints, schema drift, and rejected-row quarantine
+- [**Azure Data Factory Pipeline**](/infra-catalog/azure-data-factory-pipeline) -- runs the flow through its Execute Data Flow activity; data flows never run standalone

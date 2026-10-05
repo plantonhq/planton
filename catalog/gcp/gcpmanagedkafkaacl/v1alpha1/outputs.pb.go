@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpManagedKafkaAclStackOutputs captures the ACL's identity and the
+// GcpManagedKafkaAclOutputs captures the ACL's identity and the
 // resource pattern Google derived from its ID.
-type GcpManagedKafkaAclStackOutputs struct {
+type GcpManagedKafkaAclOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name --
 	// projects/{project}/locations/{location}/clusters/{cluster}/acls/{acl_id}.
@@ -40,20 +40,20 @@ type GcpManagedKafkaAclStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpManagedKafkaAclStackOutputs) Reset() {
-	*x = GcpManagedKafkaAclStackOutputs{}
+func (x *GcpManagedKafkaAclOutputs) Reset() {
+	*x = GcpManagedKafkaAclOutputs{}
 	mi := &file_catalog_gcp_gcpmanagedkafkaacl_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpManagedKafkaAclStackOutputs) String() string {
+func (x *GcpManagedKafkaAclOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpManagedKafkaAclStackOutputs) ProtoMessage() {}
+func (*GcpManagedKafkaAclOutputs) ProtoMessage() {}
 
-func (x *GcpManagedKafkaAclStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpManagedKafkaAclOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmanagedkafkaacl_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,33 +65,33 @@ func (x *GcpManagedKafkaAclStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpManagedKafkaAclStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpManagedKafkaAclStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpManagedKafkaAclOutputs.ProtoReflect.Descriptor instead.
+func (*GcpManagedKafkaAclOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmanagedkafkaacl_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpManagedKafkaAclStackOutputs) GetName() string {
+func (x *GcpManagedKafkaAclOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpManagedKafkaAclStackOutputs) GetResourceType() string {
+func (x *GcpManagedKafkaAclOutputs) GetResourceType() string {
 	if x != nil {
 		return x.ResourceType
 	}
 	return ""
 }
 
-func (x *GcpManagedKafkaAclStackOutputs) GetResourceName() string {
+func (x *GcpManagedKafkaAclOutputs) GetResourceName() string {
 	if x != nil {
 		return x.ResourceName
 	}
 	return ""
 }
 
-func (x *GcpManagedKafkaAclStackOutputs) GetPatternType() string {
+func (x *GcpManagedKafkaAclOutputs) GetPatternType() string {
 	if x != nil {
 		return x.PatternType
 	}
@@ -102,8 +102,8 @@ var File_catalog_gcp_gcpmanagedkafkaacl_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpmanagedkafkaacl_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpmanagedkafkaacl/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpmanagedkafkaacl.v1alpha1\"\xa1\x01\n" +
-	"\x1eGcpManagedKafkaAclStackOutputs\x12\x12\n" +
+	"5catalog/gcp/gcpmanagedkafkaacl/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpmanagedkafkaacl.v1alpha1\"\x9c\x01\n" +
+	"\x19GcpManagedKafkaAclOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12#\n" +
 	"\rresource_type\x18\x02 \x01(\tR\fresourceType\x12#\n" +
 	"\rresource_name\x18\x03 \x01(\tR\fresourceName\x12!\n" +
@@ -124,7 +124,7 @@ func file_catalog_gcp_gcpmanagedkafkaacl_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpmanagedkafkaacl_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmanagedkafkaacl_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpManagedKafkaAclStackOutputs)(nil), // 0: dev.planton.gcp.gcpmanagedkafkaacl.v1alpha1.GcpManagedKafkaAclStackOutputs
+	(*GcpManagedKafkaAclOutputs)(nil), // 0: dev.planton.gcp.gcpmanagedkafkaacl.v1alpha1.GcpManagedKafkaAclOutputs
 }
 var file_catalog_gcp_gcpmanagedkafkaacl_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -8,13 +8,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureservicebusqueuev1alpha1.AzureServiceBusQueueStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureservicebusqueuev1alpha1.AzureServiceBusQueueIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -22,7 +22,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureservicebusqueuev1alpha1.Azu
 	spec := locals.AzureServiceBusQueue.Spec
 
 	// The namespace name, parsed from the resolved namespace ARM id for the
-	// stack output -- consumers frequently need the namespace/queue name
+	// output -- consumers frequently need the namespace/queue name
 	// pair, and this saves them a second reference.
 	namespaceName, err := parseNamespaceName(locals.NamespaceId)
 	if err != nil {
@@ -85,7 +85,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureservicebusqueuev1alpha1.Azu
 		queueArgs.AutoDeleteOnIdle = pulumi.StringPtr(spec.GetAutoDeleteOnIdle())
 	}
 
-	// Presence-guarded to Azure's default (true): stack inputs built from a
+	// Presence-guarded to Azure's default (true): IaC inputs built from a
 	// manifest materialize proto defaults, but direct paths do not.
 	queueArgs.BatchedOperationsEnabled = pulumi.Bool(presenceGuardedBool(spec.BatchedOperationsEnabled, true))
 
@@ -113,7 +113,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureservicebusqueuev1alpha1.Azu
 		return errors.Wrapf(err, "failed to create Service Bus queue %s", spec.QueueName)
 	}
 
-	// Export stack outputs. No connection string on purpose: credentials
+	// Export outputs. No connection string on purpose: credentials
 	// are minted by AzureServiceBusAuthorizationRule or granted keyless via
 	// Entra data-plane roles on queue_id.
 	ctx.Export(OpQueueId, createdQueue.ID())

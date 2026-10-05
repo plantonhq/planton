@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceanvolume.v1alpha1;
 import "catalog/digitalocean/digitaloceanvolume/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-volume stack-input
-message DigitalOceanVolumeStackInput {
-  //target cloud-resource
+//digital-ocean-volume iac-input
+message DigitalOceanVolumeIacInput {
+  // the catalog object to deploy
   DigitalOceanVolume target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

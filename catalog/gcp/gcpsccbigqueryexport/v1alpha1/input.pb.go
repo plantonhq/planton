@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-scc-bigquery-export stack-input
-type GcpSccBigQueryExportStackInput struct {
+// gcp-scc-bigquery-export iac-input
+type GcpSccBigQueryExportIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpSccBigQueryExport `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpSccBigQueryExportStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpSccBigQueryExportStackInput) Reset() {
-	*x = GcpSccBigQueryExportStackInput{}
+func (x *GcpSccBigQueryExportIacInput) Reset() {
+	*x = GcpSccBigQueryExportIacInput{}
 	mi := &file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSccBigQueryExportStackInput) String() string {
+func (x *GcpSccBigQueryExportIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSccBigQueryExportStackInput) ProtoMessage() {}
+func (*GcpSccBigQueryExportIacInput) ProtoMessage() {}
 
-func (x *GcpSccBigQueryExportStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpSccBigQueryExportIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpSccBigQueryExportStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSccBigQueryExportStackInput.ProtoReflect.Descriptor instead.
-func (*GcpSccBigQueryExportStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSccBigQueryExportIacInput.ProtoReflect.Descriptor instead.
+func (*GcpSccBigQueryExportIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSccBigQueryExportStackInput) GetTarget() *GcpSccBigQueryExport {
+func (x *GcpSccBigQueryExportIacInput) GetTarget() *GcpSccBigQueryExport {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpSccBigQueryExportStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpSccBigQueryExportIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpsccbigqueryexport_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpsccbigqueryexport/v1alpha1/input.proto\x12-dev.planton.gcp.gcpsccbigqueryexport.v1alpha1\x1a3catalog/gcp/gcpsccbigqueryexport/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xca\x01\n" +
-	"\x1eGcpSccBigQueryExportStackInput\x12[\n" +
+	"5catalog/gcp/gcpsccbigqueryexport/v1alpha1/input.proto\x12-dev.planton.gcp.gcpsccbigqueryexport.v1alpha1\x1a3catalog/gcp/gcpsccbigqueryexport/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc8\x01\n" +
+	"\x1cGcpSccBigQueryExportIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xfd\x02\n" +
 	"1com.dev.planton.gcp.gcpsccbigqueryexport.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_input_proto_goTypes = []any{
-	(*GcpSccBigQueryExportStackInput)(nil), // 0: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportStackInput
-	(*GcpSccBigQueryExport)(nil),           // 1: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExport
-	(*gcp.GcpProviderConfig)(nil),          // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpSccBigQueryExportIacInput)(nil), // 0: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportIacInput
+	(*GcpSccBigQueryExport)(nil),         // 1: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExport
+	(*gcp.GcpProviderConfig)(nil),        // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportStackInput.target:type_name -> dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExport
-	2, // 1: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportIacInput.target:type_name -> dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExport
+	2, // 1: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

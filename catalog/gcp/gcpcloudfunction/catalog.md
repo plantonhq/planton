@@ -4,7 +4,7 @@ Deploys a Cloud Functions (Gen 2) function — source-based serverless compute b
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloud Functions (Gen 2) function** -- a `google_cloudfunctions2_function` in the specified project and region, with the chosen runtime, entry point, resources, scaling bounds, and timeout
 - **A Cloud Build build** -- containerizes the source archive (or Cloud Source Repositories revision) at deploy time, optionally as a custom identity, in a private worker pool, into a customer-managed Artifact Registry repository
@@ -18,16 +18,16 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the function is created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef. The Cloud Functions, Cloud Build, Cloud Run, Artifact Registry, and Eventarc APIs are enabled automatically.
-- **A source archive in GCS** -- a .zip of the code and dependency manifest, readable by the build identity. Reference a GcpGcsBucket Cloud Resource for the bucket.
-- **A Pub/Sub topic** (for messagePublished triggers) -- reference a GcpPubSubTopic Cloud Resource.
-- **A Serverless VPC Access connector** (to reach private resources) -- reference a GcpServerlessVpcConnector Cloud Resource; it must live in the function's region.
-- **A customer-managed Artifact Registry repository** (required for CMEK) -- reference a GcpArtifactRegistryRepo Cloud Resource.
+- **A GCP project** where the function is created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef. The Cloud Functions, Cloud Build, Cloud Run, Artifact Registry, and Eventarc APIs are enabled automatically.
+- **A source archive in GCS** -- a .zip of the code and dependency manifest, readable by the build identity. Reference a GcpGcsBucket Infra Component for the bucket.
+- **A Pub/Sub topic** (for messagePublished triggers) -- reference a GcpPubSubTopic Infra Component.
+- **A Serverless VPC Access connector** (to reach private resources) -- reference a GcpServerlessVpcConnector Infra Component; it must live in the function's region.
+- **A customer-managed Artifact Registry repository** (required for CMEK) -- reference a GcpArtifactRegistryRepo Infra Component.
 
 ## Deploy
 
@@ -66,7 +66,7 @@ spec:
 planton apply -f cloud-function.yaml
 ```
 
-This creates a public HTTP function on Node.js 22 with GCP's defaults — 256M memory, derived CPU, a 60-second timeout, and scale-to-zero. Shipping a new release is uploading a new archive and pointing `object` at it: a changed object name is what makes the deploy roll. A Stack Job tracks the provisioning in real time.
+This creates a public HTTP function on Node.js 22 with GCP's defaults — 256M memory, derived CPU, a 60-second timeout, and scale-to-zero. Shipping a new release is uploading a new archive and pointing `object` at it: a changed object name is what makes the deploy roll. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -114,7 +114,7 @@ These are the most important decisions when configuring a Cloud Function. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -130,9 +130,9 @@ These are the most important decisions when configuring a Cloud Function. Explor
 | **GcpPubSubTopic** | `trigger.eventTrigger.pubsubTopic` | `status.outputs.topic_id` |
 | **GcpServiceAccount** | `trigger.eventTrigger.serviceAccountEmail` | `status.outputs.email` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -158,11 +158,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the project the function is created in
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- holds the versioned source archives
-- [**GCP Pub/Sub Topic**](/cloud-catalog/gcp-pub-sub-topic) -- the event source for messagePublished triggers
-- [**GCP Serverless VPC Connector**](/cloud-catalog/gcp-serverless-vpc-connector) -- private VPC egress through a connector
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) / [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- direct VPC egress without a connector
-- [**GCP Artifact Registry Repo**](/cloud-catalog/gcp-artifact-registry-repo) -- customer-managed image storage (required for CMEK)
-- [**GCP Region Network Endpoint Group**](/cloud-catalog/gcp-region-network-endpoint-group) -- puts the function behind an external Application Load Balancer
-- [**GCP Cloud Run**](/cloud-catalog/gcp-cloud-run) / [**GCP Cloud Run Job**](/cloud-catalog/gcp-cloud-run-job) -- the container-image serving and batch siblings
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the project the function is created in
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- holds the versioned source archives
+- [**GCP Pub/Sub Topic**](/infra-catalog/gcp-pub-sub-topic) -- the event source for messagePublished triggers
+- [**GCP Serverless VPC Connector**](/infra-catalog/gcp-serverless-vpc-connector) -- private VPC egress through a connector
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) / [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- direct VPC egress without a connector
+- [**GCP Artifact Registry Repo**](/infra-catalog/gcp-artifact-registry-repo) -- customer-managed image storage (required for CMEK)
+- [**GCP Region Network Endpoint Group**](/infra-catalog/gcp-region-network-endpoint-group) -- puts the function behind an external Application Load Balancer
+- [**GCP Cloud Run**](/infra-catalog/gcp-cloud-run) / [**GCP Cloud Run Job**](/infra-catalog/gcp-cloud-run-job) -- the container-image serving and batch siblings

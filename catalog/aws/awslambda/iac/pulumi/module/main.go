@@ -16,13 +16,13 @@ import (
 // the CloudWatch log group all attach by reference -- this module never
 // creates or mutates a resource that deserves to be its own node, and
 // event sources attach through the separate event-source-mapping kind.
-func Resources(ctx *pulumi.Context, stackInput *awslambdav1alpha1.AwsLambdaStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awslambdav1alpha1.AwsLambdaIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared
+	// Build the AWS provider from the IaC input via the shared
 	// builder, which resolves the right credential mechanism (static
 	// keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsLambda.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsLambda.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

@@ -6,14 +6,14 @@ import (
 
 	"github.com/plantonhq/planton/pkg/refannotations"
 	"github.com/plantonhq/planton/pkg/refcheck"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // Target is a checked reference's resolved destination: which kind and name
 // it points at, the env it names (empty means "the consumer's own env"), and
 // the EFFECTIVE field path after annotation defaults applied.
 type Target struct {
-	Kind      cloudresourcekind.CloudResourceKind
+	Kind      catalogkind.CatalogKind
 	Name      string
 	Env       string
 	FieldPath string
@@ -35,7 +35,7 @@ func (t Target) Identity(consumerEnv string) Identity {
 // explicit kind wins, else the field's default_kind annotation, else
 // unspecified. This is the kind-half of CheckRef, exported separately because
 // resolution lookups need it without the full rule evaluation.
-func EffectiveKind(use RefUse) cloudresourcekind.CloudResourceKind {
+func EffectiveKind(use RefUse) catalogkind.CatalogKind {
 	return refannotations.Of(use.Field).EffectiveKind(use.Ref.GetKind())
 }
 
@@ -62,7 +62,7 @@ func EffectiveKind(use RefUse) cloudresourcekind.CloudResourceKind {
 //     (`status.outputs.backend_pool_ids.web`), data the annotation cannot
 //     name.
 //  4. The effective field path must resolve against the target kind's actual
-//     proto surface (stack outputs, spec, or metadata).
+//     proto surface (outputs, spec, or metadata).
 //
 // The platform's Java reader applies the same rules; the case table in
 // rules_test.go is the contract both copy.
@@ -71,7 +71,7 @@ func CheckRef(use RefUse) (Target, []string) {
 	annotations := refannotations.Of(use.Field)
 
 	targetKind := annotations.EffectiveKind(use.Ref.GetKind())
-	if targetKind == cloudresourcekind.CloudResourceKind_unspecified {
+	if targetKind == catalogkind.CatalogKind_unspecified {
 		problem := fmt.Sprintf("%s: valueFrom does not name a kind and the field declares no default kind — add an explicit `kind:`", use.FieldPath)
 		if kinds := annotations.Kinds(); len(kinds) > 0 {
 			problem += fmt.Sprintf(" (the field accepts %s)", joinKinds(kinds))
@@ -112,7 +112,7 @@ func CheckRef(use RefUse) (Target, []string) {
 }
 
 // joinKinds renders kinds for a sentence: "AwsS3Bucket, AwsCloudwatchLogGroup".
-func joinKinds(kinds []cloudresourcekind.CloudResourceKind) string {
+func joinKinds(kinds []catalogkind.CatalogKind) string {
 	names := make([]string, len(kinds))
 	for i, k := range kinds {
 		names[i] = k.String()

@@ -13,9 +13,9 @@
 # unconditional line. Spaces pricing carries no region dimension, so the
 # entry is pinned "global". The estimate generator replays the catalog
 # presets through these rules to emit ../estimates/digitaloceanbucket.yaml.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: digitaloceanbucket
 spec:

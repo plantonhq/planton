@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsAppRunnerObservabilityConfigurationStackOutputs captures observable
+// AwsAppRunnerObservabilityConfigurationOutputs captures observable
 // identifiers from a provisioned App Runner observability configuration.
 // Services reference the configuration by its revision-carrying ARN.
-type AwsAppRunnerObservabilityConfigurationStackOutputs struct {
+type AwsAppRunnerObservabilityConfigurationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ARN of this configuration revision (e.g. "arn:aws:apprunner:
 	// us-west-2:123456789012:observabilityconfiguration/my-oc/2/abc123").
@@ -43,20 +43,20 @@ type AwsAppRunnerObservabilityConfigurationStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsAppRunnerObservabilityConfigurationStackOutputs) Reset() {
-	*x = AwsAppRunnerObservabilityConfigurationStackOutputs{}
+func (x *AwsAppRunnerObservabilityConfigurationOutputs) Reset() {
+	*x = AwsAppRunnerObservabilityConfigurationOutputs{}
 	mi := &file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsAppRunnerObservabilityConfigurationStackOutputs) String() string {
+func (x *AwsAppRunnerObservabilityConfigurationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsAppRunnerObservabilityConfigurationStackOutputs) ProtoMessage() {}
+func (*AwsAppRunnerObservabilityConfigurationOutputs) ProtoMessage() {}
 
-func (x *AwsAppRunnerObservabilityConfigurationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsAppRunnerObservabilityConfigurationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,26 +68,26 @@ func (x *AwsAppRunnerObservabilityConfigurationStackOutputs) ProtoReflect() prot
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsAppRunnerObservabilityConfigurationStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsAppRunnerObservabilityConfigurationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsAppRunnerObservabilityConfigurationOutputs.ProtoReflect.Descriptor instead.
+func (*AwsAppRunnerObservabilityConfigurationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsAppRunnerObservabilityConfigurationStackOutputs) GetConfigurationArn() string {
+func (x *AwsAppRunnerObservabilityConfigurationOutputs) GetConfigurationArn() string {
 	if x != nil {
 		return x.ConfigurationArn
 	}
 	return ""
 }
 
-func (x *AwsAppRunnerObservabilityConfigurationStackOutputs) GetConfigurationRevision() int64 {
+func (x *AwsAppRunnerObservabilityConfigurationOutputs) GetConfigurationRevision() int64 {
 	if x != nil {
 		return x.ConfigurationRevision
 	}
 	return 0
 }
 
-func (x *AwsAppRunnerObservabilityConfigurationStackOutputs) GetLatest() bool {
+func (x *AwsAppRunnerObservabilityConfigurationOutputs) GetLatest() bool {
 	if x != nil {
 		return x.Latest
 	}
@@ -98,8 +98,8 @@ var File_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_outputs_pro
 
 const file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/aws/awsapprunnerobservabilityconfiguration/v1alpha1/outputs.proto\x12?dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1\"\xb0\x01\n" +
-	"2AwsAppRunnerObservabilityConfigurationStackOutputs\x12+\n" +
+	"Icatalog/aws/awsapprunnerobservabilityconfiguration/v1alpha1/outputs.proto\x12?dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1\"\xab\x01\n" +
+	"-AwsAppRunnerObservabilityConfigurationOutputs\x12+\n" +
 	"\x11configuration_arn\x18\x01 \x01(\tR\x10configurationArn\x125\n" +
 	"\x16configuration_revision\x18\x02 \x01(\x03R\x15configurationRevision\x12\x16\n" +
 	"\x06latest\x18\x03 \x01(\bR\x06latestB\xfe\x03\n" +
@@ -119,7 +119,7 @@ func file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_outputs_pr
 
 var file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsAppRunnerObservabilityConfigurationStackOutputs)(nil), // 0: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationStackOutputs
+	(*AwsAppRunnerObservabilityConfigurationOutputs)(nil), // 0: dev.planton.aws.awsapprunnerobservabilityconfiguration.v1alpha1.AwsAppRunnerObservabilityConfigurationOutputs
 }
 var file_catalog_aws_awsapprunnerobservabilityconfiguration_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -11,10 +11,10 @@ type Locals struct {
 	GcpVertexAiDeployedIndex *gcpvertexaideployedindexv1alpha1.GcpVertexAiDeployedIndex
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaideployedindexv1alpha1.GcpVertexAiDeployedIndexStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpvertexaideployedindexv1alpha1.GcpVertexAiDeployedIndexIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpVertexAiDeployedIndex = stackInput.Target
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpVertexAiDeployedIndex = iacInput.Target
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 
 	// This resource class carries NO labels and NO project field in the
 	// GCP API — the deployment lives inside the index endpoint resource

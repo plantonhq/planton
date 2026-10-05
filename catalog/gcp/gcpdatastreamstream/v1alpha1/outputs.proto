@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpdatastreamstream.v1alpha1;
 
-// GcpDatastreamStreamStackOutputs captures the stream's identity.
-message GcpDatastreamStreamStackOutputs {
+// GcpDatastreamStreamOutputs captures the stream's identity.
+message GcpDatastreamStreamOutputs {
   // Full resource name --
   // projects/{project}/locations/{location}/streams/{stream_id}.
   string name = 1;

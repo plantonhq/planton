@@ -21,8 +21,8 @@ type Locals struct {
 	Location string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpiamoauthclientv1alpha1.GcpIamOauthClientStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpiamoauthclientv1alpha1.GcpIamOauthClientIacInput) *Locals {
+	target := iacInput.Target
 
 	oauthClientId := target.Spec.OauthClientId
 	if oauthClientId == "" {

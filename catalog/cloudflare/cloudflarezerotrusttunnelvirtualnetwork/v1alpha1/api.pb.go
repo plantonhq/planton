@@ -31,7 +31,7 @@ type CloudflareZeroTrustTunnelVirtualNetwork struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareZeroTrustTunnelVirtualNetworkSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *CloudflareZeroTrustTunnelVirtualNetwork) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareZeroTrustTunnelVirtualNetwork) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareZeroTrustTunnelVirtualNetwork) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *CloudflareZeroTrustTunnelVirtualNetwork) GetStatus() *CloudflareZeroTru
 // cloudflare-zero-trust-tunnel-virtual-network status
 type CloudflareZeroTrustTunnelVirtualNetworkStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	cloudflare-zero-trust-tunnel-virtual-network stack-outputs
-	Outputs       *CloudflareZeroTrustTunnelVirtualNetworkStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	cloudflare-zero-trust-tunnel-virtual-network outputs
+	Outputs       *CloudflareZeroTrustTunnelVirtualNetworkOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareZeroTrustTunnelVirtualNetworkStatus) Descriptor() ([]byte, []in
 	return file_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareZeroTrustTunnelVirtualNetworkStatus) GetOutputs() *CloudflareZeroTrustTunnelVirtualNetworkStackOutputs {
+func (x *CloudflareZeroTrustTunnelVirtualNetworkStatus) GetOutputs() *CloudflareZeroTrustTunnelVirtualNetworkOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_a
 	"apiVersion\x12B\n" +
 	"\x04kind\x18\x02 \x01(\tB.\xbaH+r)\n" +
 	"'CloudflareZeroTrustTunnelVirtualNetworkR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x90\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x90\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2t.dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x8e\x01\n" +
-	"\x06status\x18\x05 \x01(\v2v.dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkStatusR\x06status\"\xc8\x01\n" +
-	"-CloudflareZeroTrustTunnelVirtualNetworkStatus\x12\x96\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2|.dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkStackOutputsR\aoutputsB\xab\x04\n" +
+	"\x06status\x18\x05 \x01(\v2v.dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkStatusR\x06status\"\xc3\x01\n" +
+	"-CloudflareZeroTrustTunnelVirtualNetworkStatus\x12\x91\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2w.dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkOutputsR\aoutputsB\xab\x04\n" +
 	"Kcom.dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1B\bApiProtoP\x01Z\x90\x01github.com/plantonhq/planton/catalog/cloudflare/cloudflarezerotrusttunnelvirtualnetwork/v1alpha1;cloudflarezerotrusttunnelvirtualnetworkv1alpha1\xa2\x02\x04DPCC\xaa\x02GDev.Planton.Cloudflare.Cloudflarezerotrusttunnelvirtualnetwork.V1alpha1\xca\x02GDev\\Planton\\Cloudflare\\Cloudflarezerotrusttunnelvirtualnetwork\\V1alpha1\xe2\x02SDev\\Planton\\Cloudflare\\Cloudflarezerotrusttunnelvirtualnetwork\\V1alpha1\\GPBMetadata\xea\x02KDev::Planton::Cloudflare::Cloudflarezerotrusttunnelvirtualnetwork::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_ap
 
 var file_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareZeroTrustTunnelVirtualNetwork)(nil),             // 0: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetwork
-	(*CloudflareZeroTrustTunnelVirtualNetworkStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkStatus
-	(*shared.CloudResourceMetadata)(nil),                        // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareZeroTrustTunnelVirtualNetworkSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkSpec
-	(*CloudflareZeroTrustTunnelVirtualNetworkStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkStackOutputs
+	(*CloudflareZeroTrustTunnelVirtualNetwork)(nil),        // 0: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetwork
+	(*CloudflareZeroTrustTunnelVirtualNetworkStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkStatus
+	(*shared.CatalogObjectMetadata)(nil),                   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareZeroTrustTunnelVirtualNetworkSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkSpec
+	(*CloudflareZeroTrustTunnelVirtualNetworkOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrusttunnelvirtualnetwork_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetwork.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetwork.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetwork.spec:type_name -> dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkSpec
 	1, // 2: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetwork.status:type_name -> dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkStatus
-	4, // 3: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezerotrusttunnelvirtualnetwork.v1alpha1.CloudflareZeroTrustTunnelVirtualNetworkOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1;
 
-// **AzureCosmosdbSqlContainerStackOutputs** captures the outputs of
+// **AzureCosmosdbSqlContainerOutputs** captures the outputs of
 // provisioning a Cosmos DB SQL (NoSQL) API container.
 //
 // No endpoint or credential outputs on purpose: connectivity and keys
 // live on the ACCOUNT (AzureCosmosdbAccount's endpoint and key outputs);
 // the container is addressed inside that connection by database and
 // container name.
-message AzureCosmosdbSqlContainerStackOutputs {
+message AzureCosmosdbSqlContainerOutputs {
   // The Azure Resource Manager ID of the container -- the management-
   // plane identity and the scope for container-level data-plane RBAC.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DocumentDB/databaseAccounts/{account}/sqlDatabases/{db}/containers/{name}

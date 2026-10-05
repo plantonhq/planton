@@ -19,13 +19,13 @@ provider's chart catalog.
 
 ## Platform context
 
-An InfraChart bundles multiple Cloud Resources into a parameterized,
+An InfraChart bundles multiple Infra Components into a parameterized,
 dependency-aware blueprint ("Helm chart for infrastructure"). The platform
 renders `templates/*.yaml` with a sandboxed Jinjava engine, validates each
 rendered document against the protobuf schema of its kind, parses every
 `valueFrom` reference into a DAG, and deploys the resources in topological
 order. Charts are configuration artifacts — deployment happens when a user
-creates an InfraProject from the chart.
+creates an InfraStack from the chart.
 
 Two validation surfaces exist:
 
@@ -58,7 +58,7 @@ Two validation surfaces exist:
      and its trade-offs, not just the parameter list.
 2. **Each chart stands on its provider's own merit.** Design the chart's
    composition, parameters, defaults, and documentation from the provider's own
-   component surface and that cloud's real architectures. NEVER use another
+   kind surface and that cloud's real architectures. NEVER use another
    provider's chart as a design reference, a naming reference, or an alignment
    target — every provider's catalog is designed on its own legs. (Structural
    anatomy — the four files, the params vocabulary, the validation gate — is the
@@ -67,14 +67,14 @@ Two validation surfaces exist:
    one identifiable user. Variants are parameters, not sibling charts — until
    the parameter surface stops being honest, and then you split.
 4. **Compose first-class nodes by reference.** Charts wire independently ownable
-   Cloud Resources together with `valueFrom` references — a chart is a starting
+   Infra Components together with `valueFrom` references — a chart is a starting
    point users extend and recombine, not a black box. Prefer referencing a
    first-class kind over inlining a lookalike configuration block, and prefer
    composing first-class nodes over inflating one resource — the chart layer is
    where honest decomposition pays off.
 5. **Real defaults, honest toggles, secure by default.** Defaults must be
    deployable and production-sane (cost-conscious where a knob is expensive).
-   Where the composed components offer a hardened path (private networking,
+   Where the composed kinds offer a hardened path (private networking,
    keyless/identity-based auth, RBAC-only data planes, customer-managed keys,
    TLS floors), the chart defaults to it and makes relaxation the explicit
    parameter — never the reverse. Bool params are feature toggles: each toggle
@@ -116,8 +116,8 @@ charts/<cloud>/kubernetes/<chart-name>/      # cluster charts: a managed
                                              # platforms and their kin)
 ├── Chart.yaml      # catalog identity: name, description, VERIFIED iconUrl, web links
 ├── values.yaml     # the public input surface: typed params with dense descriptions
-├── templates/      # richly-commented manifests rendering the Cloud Resources
-└── README.md       # component-docs-grade documentation
+├── templates/      # richly-commented manifests rendering the Infra Components
+└── README.md       # kind-docs-grade documentation
 ```
 
 The home rule: a chart lives under the provider that hosts its centerpiece;
@@ -172,7 +172,7 @@ placeholder. Therefore:
 - Pick the icon that best represents the chart's identity: usually the logo of
   the chart's centerpiece kind, or of the tool the chart serves (e.g. the
   Terraform logo for a Terraform state backend).
-- Cloud Resource kind logos live at
+- Catalog kind logos live at
   `https://downloads.planton.dev/catalog/logos/<provider>/<kind-dir>/logo.svg`
   (the `<kind-dir>` is the kind lowercased with no separators, matching its
   directory under `catalog/`).
@@ -230,7 +230,7 @@ the README. Conventions:
 - One file per architectural concern (e.g. `network.yaml`, `database.yaml`), not
   one file per resource; multiple documents separated by `---`.
 - **Template files may be grouped in subdirectories** — every loader (the
-  offline validator and the platform's project loader) walks `templates/`
+  offline validator and the platform's Infra Stack loader) walks `templates/`
   recursively and identifies each file by its path relative to `templates/`.
   Use folders when the chart's concerns form real architectural layers a
   reader navigates (`templates/exposure/ingress.yaml` beside
@@ -250,16 +250,16 @@ the README. Conventions:
 - Field names in manifests are the protojson camelCase of the kind's spec. The
   spec.proto is the single source of truth — read it before writing the template,
   never infer fields from another chart or an older manifest.
-- **A seam you cannot wire by reference is a component gap, not a chart
+- **A seam you cannot wire by reference is a kind gap, not a chart
   compromise.** If an in-chart resource's output belongs in another resource's
   field but that field is a plain string in the spec (so `valueFrom` cannot
   target it), do not hardcode a placeholder or bend the design around it —
   retrofit the field to `StringValueOrRef` (with the natural `default_kind`)
-  through the component-update workflow, prove the component's gates, then
+  through the kind-update workflow, prove the kind's gates, then
   wire the chart by reference. Charts are the composition proof of the
-  component catalog; they are expected to surface these gaps.
+  kind catalog; they are expected to surface these gaps.
 - **The seam-gap principle has a boundary: a value no resource outputs is an
-  honest literal parameter, not a component gap.** A subscription or account
+  honest literal parameter, not a kind gap.** A subscription or account
   id, a tenant id, an external email address or webhook URL: nothing in the
   deployed graph produces these, so a described, must-change parameter is the
   correct shape — do not invent a kind or contort the design to avoid the
@@ -284,7 +284,7 @@ the README. Conventions:
   entries BY USERNAME, one key per user. The mismatch renders cleanly,
   validates cleanly, deploys cleanly, and fails authentication at runtime —
   no gate catches it. Verify the key against the producing kind's
-  stack-output comments (its `*_secret` handles state their key) and set
+  output comments (its `*_secret` handles state their key) and set
   the consumer's key explicitly wherever the producer's shape differs from
   the consumer's default.
 - **Set `kind:` explicitly when referencing anything other than the field's
@@ -479,7 +479,7 @@ the control plane's engine:
 
 ### README.md
 
-To the same bar as a component's docs. Structure, in order:
+To the same bar as a kind's docs. Structure, in order:
 
 1. **What it deploys** — one paragraph selling the architecture (the
    desirability pitch, honestly stated), then a resource table (resource,
@@ -581,16 +581,16 @@ What it proves:
 Icon URLs are verified separately with the curl check above (they are outside
 the validator's scope).
 
-**A validation failure can be the COMPONENT's defect — fix it at the root,
-never bend the chart around it.** Charts exercise compositions the component's
+**A validation failure can be the KIND's defect — fix it at the root,
+never bend the chart around it.** Charts exercise compositions the kind's
 own tests may never have tried; when a rendered manifest that faithfully
 follows a spec's documented composition is rejected (e.g. a validation pattern
 that forbids names the spec's own field comments promise to support), the spec
-is wrong. Fix the component — spec rule + regression test case + regenerated
+is wrong. Fix the kind — spec rule + regression test case + regenerated
 stubs, in its own commit — rebuild the working-tree CLI, and re-validate.
-Working around a component defect inside a chart (a renamed record, a dropped
+Working around a kind defect inside a chart (a renamed record, a dropped
 resource, a placeholder) ships the defect to every other consumer and hides it
-from the component's owner.
+from the kind's owner.
 
 The server-side `planton chart build` / `chart publish` (Platform CLI) remains
 the engine-of-record gate for publishing — see `@publish-planton-infra-charts`.

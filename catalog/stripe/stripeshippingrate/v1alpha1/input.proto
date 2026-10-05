@@ -5,9 +5,9 @@ package dev.planton.stripe.stripeshippingrate.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/stripeshippingrate/v1alpha1/api.proto";
 
-// StripeShippingRateStackInput is the input to the StripeShippingRate IaC module.
+// StripeShippingRateIacInput is the input to the StripeShippingRate IaC module.
 // It contains the target resource and the Stripe provider configuration.
-message StripeShippingRateStackInput {
+message StripeShippingRateIacInput {
   // target is the StripeShippingRate resource to be deployed.
   StripeShippingRate target = 1;
 

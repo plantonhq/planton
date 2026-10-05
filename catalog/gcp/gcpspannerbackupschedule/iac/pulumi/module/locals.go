@@ -15,15 +15,15 @@ type Locals struct {
 	ScheduleName             string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpspannerbackupschedulev1alpha1.GcpSpannerBackupScheduleStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpspannerbackupschedulev1alpha1.GcpSpannerBackupScheduleIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpSpannerBackupSchedule = stackInput.Target
+	locals.GcpSpannerBackupSchedule = iacInput.Target
 
 	locals.ScheduleName = locals.GcpSpannerBackupSchedule.Spec.ScheduleName
 	if locals.ScheduleName == "" {
 		locals.ScheduleName = locals.GcpSpannerBackupSchedule.Metadata.Name
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

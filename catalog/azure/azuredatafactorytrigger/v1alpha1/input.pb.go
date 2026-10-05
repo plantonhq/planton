@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureDataFactoryTriggerStackInput is the input to the IaC modules
+// AzureDataFactoryTriggerIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureDataFactoryTriggerStackInput struct {
+type AzureDataFactoryTriggerIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Data Factory trigger resource to deploy.
 	Target *AzureDataFactoryTrigger `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureDataFactoryTriggerStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureDataFactoryTriggerStackInput) Reset() {
-	*x = AzureDataFactoryTriggerStackInput{}
+func (x *AzureDataFactoryTriggerIacInput) Reset() {
+	*x = AzureDataFactoryTriggerIacInput{}
 	mi := &file_catalog_azure_azuredatafactorytrigger_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataFactoryTriggerStackInput) String() string {
+func (x *AzureDataFactoryTriggerIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataFactoryTriggerStackInput) ProtoMessage() {}
+func (*AzureDataFactoryTriggerIacInput) ProtoMessage() {}
 
-func (x *AzureDataFactoryTriggerStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureDataFactoryTriggerIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredatafactorytrigger_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureDataFactoryTriggerStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataFactoryTriggerStackInput.ProtoReflect.Descriptor instead.
-func (*AzureDataFactoryTriggerStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataFactoryTriggerIacInput.ProtoReflect.Descriptor instead.
+func (*AzureDataFactoryTriggerIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredatafactorytrigger_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataFactoryTriggerStackInput) GetTarget() *AzureDataFactoryTrigger {
+func (x *AzureDataFactoryTriggerIacInput) GetTarget() *AzureDataFactoryTrigger {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureDataFactoryTriggerStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureDataFactoryTriggerIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuredatafactorytrigger_v1alpha1_input_proto protoreflect
 
 const file_catalog_azure_azuredatafactorytrigger_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	":catalog/azure/azuredatafactorytrigger/v1alpha1/input.proto\x122dev.planton.azure.azuredatafactorytrigger.v1alpha1\x1a8catalog/azure/azuredatafactorytrigger/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd9\x01\n" +
-	"!AzureDataFactoryTriggerStackInput\x12c\n" +
+	":catalog/azure/azuredatafactorytrigger/v1alpha1/input.proto\x122dev.planton.azure.azuredatafactorytrigger.v1alpha1\x1a8catalog/azure/azuredatafactorytrigger/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd7\x01\n" +
+	"\x1fAzureDataFactoryTriggerIacInput\x12c\n" +
 	"\x06target\x18\x01 \x01(\v2K.dev.planton.azure.azuredatafactorytrigger.v1alpha1.AzureDataFactoryTriggerR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x9e\x03\n" +
 	"6com.dev.planton.azure.azuredatafactorytrigger.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azuredatafactorytrigger_v1alpha1_input_proto_rawDescGZIP
 
 var file_catalog_azure_azuredatafactorytrigger_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredatafactorytrigger_v1alpha1_input_proto_goTypes = []any{
-	(*AzureDataFactoryTriggerStackInput)(nil), // 0: dev.planton.azure.azuredatafactorytrigger.v1alpha1.AzureDataFactoryTriggerStackInput
-	(*AzureDataFactoryTrigger)(nil),           // 1: dev.planton.azure.azuredatafactorytrigger.v1alpha1.AzureDataFactoryTrigger
-	(*azure.AzureProviderConfig)(nil),         // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureDataFactoryTriggerIacInput)(nil), // 0: dev.planton.azure.azuredatafactorytrigger.v1alpha1.AzureDataFactoryTriggerIacInput
+	(*AzureDataFactoryTrigger)(nil),         // 1: dev.planton.azure.azuredatafactorytrigger.v1alpha1.AzureDataFactoryTrigger
+	(*azure.AzureProviderConfig)(nil),       // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuredatafactorytrigger_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuredatafactorytrigger.v1alpha1.AzureDataFactoryTriggerStackInput.target:type_name -> dev.planton.azure.azuredatafactorytrigger.v1alpha1.AzureDataFactoryTrigger
-	2, // 1: dev.planton.azure.azuredatafactorytrigger.v1alpha1.AzureDataFactoryTriggerStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuredatafactorytrigger.v1alpha1.AzureDataFactoryTriggerIacInput.target:type_name -> dev.planton.azure.azuredatafactorytrigger.v1alpha1.AzureDataFactoryTrigger
+	2, // 1: dev.planton.azure.azuredatafactorytrigger.v1alpha1.AzureDataFactoryTriggerIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

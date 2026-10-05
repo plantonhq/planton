@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-cosmosdb-sql-container stack-input
-type AzureCosmosdbSqlContainerStackInput struct {
+// azure-cosmosdb-sql-container iac-input
+type AzureCosmosdbSqlContainerIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AzureCosmosdbSqlContainer `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureCosmosdbSqlContainerStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureCosmosdbSqlContainerStackInput) Reset() {
-	*x = AzureCosmosdbSqlContainerStackInput{}
+func (x *AzureCosmosdbSqlContainerIacInput) Reset() {
+	*x = AzureCosmosdbSqlContainerIacInput{}
 	mi := &file_catalog_azure_azurecosmosdbsqlcontainer_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureCosmosdbSqlContainerStackInput) String() string {
+func (x *AzureCosmosdbSqlContainerIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureCosmosdbSqlContainerStackInput) ProtoMessage() {}
+func (*AzureCosmosdbSqlContainerIacInput) ProtoMessage() {}
 
-func (x *AzureCosmosdbSqlContainerStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureCosmosdbSqlContainerIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecosmosdbsqlcontainer_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureCosmosdbSqlContainerStackInput) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureCosmosdbSqlContainerStackInput.ProtoReflect.Descriptor instead.
-func (*AzureCosmosdbSqlContainerStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureCosmosdbSqlContainerIacInput.ProtoReflect.Descriptor instead.
+func (*AzureCosmosdbSqlContainerIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecosmosdbsqlcontainer_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureCosmosdbSqlContainerStackInput) GetTarget() *AzureCosmosdbSqlContainer {
+func (x *AzureCosmosdbSqlContainerIacInput) GetTarget() *AzureCosmosdbSqlContainer {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureCosmosdbSqlContainerStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureCosmosdbSqlContainerIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azurecosmosdbsqlcontainer_v1alpha1_input_proto protorefle
 
 const file_catalog_azure_azurecosmosdbsqlcontainer_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/azure/azurecosmosdbsqlcontainer/v1alpha1/input.proto\x124dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1\x1a:catalog/azure/azurecosmosdbsqlcontainer/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xdf\x01\n" +
-	"#AzureCosmosdbSqlContainerStackInput\x12g\n" +
+	"<catalog/azure/azurecosmosdbsqlcontainer/v1alpha1/input.proto\x124dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1\x1a:catalog/azure/azurecosmosdbsqlcontainer/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xdd\x01\n" +
+	"!AzureCosmosdbSqlContainerIacInput\x12g\n" +
 	"\x06target\x18\x01 \x01(\v2O.dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1.AzureCosmosdbSqlContainerR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xac\x03\n" +
 	"8com.dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azurecosmosdbsqlcontainer_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_azure_azurecosmosdbsqlcontainer_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecosmosdbsqlcontainer_v1alpha1_input_proto_goTypes = []any{
-	(*AzureCosmosdbSqlContainerStackInput)(nil), // 0: dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1.AzureCosmosdbSqlContainerStackInput
-	(*AzureCosmosdbSqlContainer)(nil),           // 1: dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1.AzureCosmosdbSqlContainer
-	(*azure.AzureProviderConfig)(nil),           // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureCosmosdbSqlContainerIacInput)(nil), // 0: dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1.AzureCosmosdbSqlContainerIacInput
+	(*AzureCosmosdbSqlContainer)(nil),         // 1: dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1.AzureCosmosdbSqlContainer
+	(*azure.AzureProviderConfig)(nil),         // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurecosmosdbsqlcontainer_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1.AzureCosmosdbSqlContainerStackInput.target:type_name -> dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1.AzureCosmosdbSqlContainer
-	2, // 1: dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1.AzureCosmosdbSqlContainerStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1.AzureCosmosdbSqlContainerIacInput.target:type_name -> dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1.AzureCosmosdbSqlContainer
+	2, // 1: dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1.AzureCosmosdbSqlContainerIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

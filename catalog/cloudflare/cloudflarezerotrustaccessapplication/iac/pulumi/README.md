@@ -7,19 +7,19 @@ Access policies by reference, and exports its outputs (including the `aud` tag).
 
 ```
 iac/pulumi/
-├── main.go            # entrypoint (loads stack-input, calls module.Resources)
+├── main.go            # entrypoint (loads iac-input, calls module.Resources)
 ├── Pulumi.yaml
 ├── Makefile
 └── module/
     ├── main.go            # Resources(): provider setup + application()
-    ├── locals.go          # stack-input references
+    ├── locals.go          # iac-input references
     ├── application.go     # the cloudflare.ZeroTrustAccessApplication + saas/scim builders
     └── outputs.go         # output constant names
 ```
 
 ## Inputs
 
-A `CloudflareZeroTrustAccessApplicationStackInput` (target + provider config). Set
+A `CloudflareZeroTrustAccessApplicationIacInput` (target + provider config). Set
 exactly one of `account_id` or `zone_id`; `domain` is required for
 self_hosted/ssh/vnc/rdp types. `policies[].policy` references a
 `CloudflareZeroTrustAccessPolicy` by ID.

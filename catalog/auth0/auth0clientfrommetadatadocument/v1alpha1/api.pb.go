@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0ClientFromMetadataDocument is a component that registers an application
+// Auth0ClientFromMetadataDocument is a kind that registers an application
 // in an Auth0 tenant from its Client ID Metadata Document -- a JSON file the
 // application's owner hosts at an https URL. Auth0 fetches the document and
 // registers the application from it: the path an MCP client takes to onboard
@@ -62,12 +62,12 @@ type Auth0ClientFromMetadataDocument struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "Auth0ClientFromMetadataDocument" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the registration within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the document's URL and the settings the tenant sets over it.
 	Spec *Auth0ClientFromMetadataDocumentSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the application as Auth0 registered it, populated after
@@ -121,7 +121,7 @@ func (x *Auth0ClientFromMetadataDocument) GetKind() string {
 	return ""
 }
 
-func (x *Auth0ClientFromMetadataDocument) GetMetadata() *shared.CloudResourceMetadata {
+func (x *Auth0ClientFromMetadataDocument) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -146,9 +146,9 @@ func (x *Auth0ClientFromMetadataDocument) GetStatus() *Auth0ClientFromMetadataDo
 // Auth0ClientFromMetadataDocument resource. Populated by the deployment system.
 type Auth0ClientFromMetadataDocumentStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the registered application's id, what
+	// outputs contains the outputs: the registered application's id, what
 	// Auth0 took from the document, and the document's validation result.
-	Outputs       *Auth0ClientFromMetadataDocumentStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *Auth0ClientFromMetadataDocumentOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -183,7 +183,7 @@ func (*Auth0ClientFromMetadataDocumentStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Auth0ClientFromMetadataDocumentStatus) GetOutputs() *Auth0ClientFromMetadataDocumentStackOutputs {
+func (x *Auth0ClientFromMetadataDocumentStatus) GetOutputs() *Auth0ClientFromMetadataDocumentOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -201,11 +201,11 @@ const file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_api_proto_rawD
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
 	"\x1fAuth0ClientFromMetadataDocumentR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
 	"\x04spec\x18\x04 \x01(\v2_.dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12y\n" +
-	"\x06status\x18\x05 \x01(\v2a.dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentStatusR\x06status\"\xab\x01\n" +
-	"%Auth0ClientFromMetadataDocumentStatus\x12\x81\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2g.dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentStackOutputsR\aoutputsB\xd4\x03\n" +
+	"\x06status\x18\x05 \x01(\v2a.dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentStatusR\x06status\"\xa5\x01\n" +
+	"%Auth0ClientFromMetadataDocumentStatus\x12|\n" +
+	"\aoutputs\x18\x01 \x01(\v2b.dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentOutputsR\aoutputsB\xd4\x03\n" +
 	">com.dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1B\bApiProtoP\x01Z{github.com/plantonhq/planton/catalog/auth0/auth0clientfrommetadatadocument/v1alpha1;auth0clientfrommetadatadocumentv1alpha1\xa2\x02\x04DPAA\xaa\x02:Dev.Planton.Auth0.Auth0clientfrommetadatadocument.V1alpha1\xca\x02:Dev\\Planton\\Auth0\\Auth0clientfrommetadatadocument\\V1alpha1\xe2\x02FDev\\Planton\\Auth0\\Auth0clientfrommetadatadocument\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Auth0::Auth0clientfrommetadatadocument::V1alpha1b\x06proto3"
 
 var (
@@ -222,17 +222,17 @@ func file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_api_proto_rawDe
 
 var file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_api_proto_goTypes = []any{
-	(*Auth0ClientFromMetadataDocument)(nil),             // 0: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocument
-	(*Auth0ClientFromMetadataDocumentStatus)(nil),       // 1: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentStatus
-	(*shared.CloudResourceMetadata)(nil),                // 2: dev.planton.shared.CloudResourceMetadata
-	(*Auth0ClientFromMetadataDocumentSpec)(nil),         // 3: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentSpec
-	(*Auth0ClientFromMetadataDocumentStackOutputs)(nil), // 4: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentStackOutputs
+	(*Auth0ClientFromMetadataDocument)(nil),        // 0: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocument
+	(*Auth0ClientFromMetadataDocumentStatus)(nil),  // 1: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentStatus
+	(*shared.CatalogObjectMetadata)(nil),           // 2: dev.planton.shared.CatalogObjectMetadata
+	(*Auth0ClientFromMetadataDocumentSpec)(nil),    // 3: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentSpec
+	(*Auth0ClientFromMetadataDocumentOutputs)(nil), // 4: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentOutputs
 }
 var file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocument.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocument.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocument.spec:type_name -> dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentSpec
 	1, // 2: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocument.status:type_name -> dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentStatus
-	4, // 3: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentStatus.outputs:type_name -> dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentStackOutputs
+	4, // 3: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentStatus.outputs:type_name -> dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

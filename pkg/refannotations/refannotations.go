@@ -26,7 +26,7 @@ package refannotations
 import (
 	"strings"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -35,14 +35,14 @@ import (
 // Key is one composition key: a kind the reference can point at and the
 // output path on that kind the field composes from.
 type Key struct {
-	Kind      cloudresourcekind.CloudResourceKind
+	Kind      catalogkind.CatalogKind
 	FieldPath string
 }
 
 // Field is the foreign-key annotations authored on one field. The zero value
 // is a field with none.
 type Field struct {
-	DefaultKind          cloudresourcekind.CloudResourceKind
+	DefaultKind          catalogkind.CatalogKind
 	DefaultKindFieldPath string
 	Candidates           []Key
 	ContainmentExempt    bool
@@ -55,7 +55,7 @@ func Of(fd protoreflect.FieldDescriptor) Field {
 	}
 	opts := fd.Options()
 	var f Field
-	f.DefaultKind, _ = proto.GetExtension(opts, foreignkeyv1.E_DefaultKind).(cloudresourcekind.CloudResourceKind)
+	f.DefaultKind, _ = proto.GetExtension(opts, foreignkeyv1.E_DefaultKind).(catalogkind.CatalogKind)
 	f.DefaultKindFieldPath, _ = proto.GetExtension(opts, foreignkeyv1.E_DefaultKindFieldPath).(string)
 	f.ContainmentExempt, _ = proto.GetExtension(opts, foreignkeyv1.E_ContainmentExempt).(bool)
 	candidates, _ := proto.GetExtension(opts, foreignkeyv1.E_Candidate).([]*foreignkeyv1.ReferenceCandidate)
@@ -68,7 +68,7 @@ func Of(fd protoreflect.FieldDescriptor) Field {
 // IsReference reports whether the field carries any annotation that says
 // what it may point at (a default kind or a candidate).
 func (f Field) IsReference() bool {
-	return f.DefaultKind != cloudresourcekind.CloudResourceKind_unspecified || len(f.Candidates) > 0
+	return f.DefaultKind != catalogkind.CatalogKind_unspecified || len(f.Candidates) > 0
 }
 
 // Keys returns the field's composition keys: the default key first (when the
@@ -78,7 +78,7 @@ func (f Field) Keys() []Key {
 	var keys []Key
 	seen := map[Key]bool{}
 	add := func(k Key) {
-		if k.Kind == cloudresourcekind.CloudResourceKind_unspecified || k.FieldPath == "" || seen[k] {
+		if k.Kind == catalogkind.CatalogKind_unspecified || k.FieldPath == "" || seen[k] {
 			return
 		}
 		seen[k] = true
@@ -93,11 +93,11 @@ func (f Field) Keys() []Key {
 
 // Kinds returns the kinds the field names, the default kind first, each once.
 // A console's reference picker offers exactly these.
-func (f Field) Kinds() []cloudresourcekind.CloudResourceKind {
-	var kinds []cloudresourcekind.CloudResourceKind
-	seen := map[cloudresourcekind.CloudResourceKind]bool{}
-	add := func(k cloudresourcekind.CloudResourceKind) {
-		if k == cloudresourcekind.CloudResourceKind_unspecified || seen[k] {
+func (f Field) Kinds() []catalogkind.CatalogKind {
+	var kinds []catalogkind.CatalogKind
+	seen := map[catalogkind.CatalogKind]bool{}
+	add := func(k catalogkind.CatalogKind) {
+		if k == catalogkind.CatalogKind_unspecified || seen[k] {
 			return
 		}
 		seen[k] = true
@@ -112,7 +112,7 @@ func (f Field) Kinds() []cloudresourcekind.CloudResourceKind {
 
 // KeysFor returns the output paths the field composes from on one kind, in
 // Keys order; empty when the field names no key for it.
-func (f Field) KeysFor(kind cloudresourcekind.CloudResourceKind) []string {
+func (f Field) KeysFor(kind catalogkind.CatalogKind) []string {
 	var paths []string
 	for _, k := range f.Keys() {
 		if k.Kind == kind {
@@ -124,8 +124,8 @@ func (f Field) KeysFor(kind cloudresourcekind.CloudResourceKind) []string {
 
 // EffectiveKind is the kind a reference points at: its explicit kind, else
 // the field's default kind, else unspecified.
-func (f Field) EffectiveKind(explicit cloudresourcekind.CloudResourceKind) cloudresourcekind.CloudResourceKind {
-	if explicit != cloudresourcekind.CloudResourceKind_unspecified {
+func (f Field) EffectiveKind(explicit catalogkind.CatalogKind) catalogkind.CatalogKind {
+	if explicit != catalogkind.CatalogKind_unspecified {
 		return explicit
 	}
 	return f.DefaultKind
@@ -134,7 +134,7 @@ func (f Field) EffectiveKind(explicit cloudresourcekind.CloudResourceKind) cloud
 // DefaultPath returns the path a reference to kind takes when it names none:
 // the kind's key when it has exactly one. ok is false when the kind has no key
 // or more than one (the reference must then name its path).
-func (f Field) DefaultPath(kind cloudresourcekind.CloudResourceKind) (path string, ok bool) {
+func (f Field) DefaultPath(kind catalogkind.CatalogKind) (path string, ok bool) {
 	keys := f.KeysFor(kind)
 	if len(keys) != 1 {
 		return "", false
@@ -146,7 +146,7 @@ func (f Field) DefaultPath(kind cloudresourcekind.CloudResourceKind) (path strin
 // composes from: it equals one of the kind's keys or extends one past a '.'.
 // A kind with no key accepts any path (it is judged only by whether the path
 // resolves on the kind).
-func (f Field) AcceptsPath(kind cloudresourcekind.CloudResourceKind, path string) bool {
+func (f Field) AcceptsPath(kind catalogkind.CatalogKind, path string) bool {
 	keys := f.KeysFor(kind)
 	if len(keys) == 0 {
 		return true

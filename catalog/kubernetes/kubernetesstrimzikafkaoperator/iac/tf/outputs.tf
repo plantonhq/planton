@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesStrimziKafkaOperatorStackOutputs
+# Outputs — flattened onto KubernetesStrimziKafkaOperatorOutputs
 # by the platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

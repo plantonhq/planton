@@ -27,7 +27,7 @@ type AwsSsmAssociation struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsSsmAssociationSpec        `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsSsmAssociationStatus      `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsSsmAssociation) GetKind() string {
 	return ""
 }
 
-func (x *AwsSsmAssociation) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsSsmAssociation) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsSsmAssociation) GetStatus() *AwsSsmAssociationStatus {
 }
 
 type AwsSsmAssociationStatus struct {
-	state         protoimpl.MessageState         `protogen:"open.v1"`
-	Outputs       *AwsSsmAssociationStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState    `protogen:"open.v1"`
+	Outputs       *AwsSsmAssociationOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsSsmAssociationStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsssmassociation_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsSsmAssociationStatus) GetOutputs() *AwsSsmAssociationStackOutputs {
+func (x *AwsSsmAssociationStatus) GetOutputs() *AwsSsmAssociationOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsssmassociation_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12,\n" +
 	"\x04kind\x18\x02 \x01(\tB\x18\xbaH\x15r\x13\n" +
 	"\x11AwsSsmAssociationR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationStatusR\x06status\"~\n" +
-	"\x17AwsSsmAssociationStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationStackOutputsR\aoutputsB\xe6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationStatusR\x06status\"y\n" +
+	"\x17AwsSsmAssociationStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationOutputsR\aoutputsB\xe6\x02\n" +
 	".com.dev.planton.aws.awsssmassociation.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/aws/awsssmassociation/v1alpha1;awsssmassociationv1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Aws.Awsssmassociation.V1alpha1\xca\x02*Dev\\Planton\\Aws\\Awsssmassociation\\V1alpha1\xe2\x026Dev\\Planton\\Aws\\Awsssmassociation\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Aws::Awsssmassociation::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awsssmassociation_v1alpha1_api_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsssmassociation_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsssmassociation_v1alpha1_api_proto_goTypes = []any{
-	(*AwsSsmAssociation)(nil),             // 0: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociation
-	(*AwsSsmAssociationStatus)(nil),       // 1: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationStatus
-	(*shared.CloudResourceMetadata)(nil),  // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsSsmAssociationSpec)(nil),         // 3: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationSpec
-	(*AwsSsmAssociationStackOutputs)(nil), // 4: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationStackOutputs
+	(*AwsSsmAssociation)(nil),            // 0: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociation
+	(*AwsSsmAssociationStatus)(nil),      // 1: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsSsmAssociationSpec)(nil),        // 3: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationSpec
+	(*AwsSsmAssociationOutputs)(nil),     // 4: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationOutputs
 }
 var file_catalog_aws_awsssmassociation_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociation.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociation.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociation.spec:type_name -> dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationSpec
 	1, // 2: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociation.status:type_name -> dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationStatus
-	4, // 3: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationStatus.outputs:type_name -> dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationStackOutputs
+	4, // 3: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationStatus.outputs:type_name -> dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

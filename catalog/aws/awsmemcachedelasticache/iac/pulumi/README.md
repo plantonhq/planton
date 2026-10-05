@@ -6,7 +6,7 @@ This directory contains the Pulumi IaC module for provisioning AWS ElastiCache M
 
 ```
 .
-├── main.go              # Entrypoint: loads stack input, calls module.Resources
+├── main.go              # Entrypoint: loads IaC input, calls module.Resources
 ├── overview.md          # Architecture documentation
 ├── module/
 │   ├── main.go          # Orchestrator: provider setup, resource sequencing

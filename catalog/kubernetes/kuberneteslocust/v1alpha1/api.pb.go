@@ -31,7 +31,7 @@ type KubernetesLocust struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesLocustSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesLocust) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesLocust) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesLocust) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesLocust) GetStatus() *KubernetesLocustStatus {
 // locust-kubernetes status.
 type KubernetesLocustStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesLocustStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesLocustOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesLocustStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteslocust_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesLocustStatus) GetOutputs() *KubernetesLocustStackOutputs {
+func (x *KubernetesLocustStatus) GetOutputs() *KubernetesLocustOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kuberneteslocust_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10KubernetesLocustR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12b\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12b\n" +
 	"\x04spec\x18\x04 \x01(\v2F.dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12`\n" +
-	"\x06status\x18\x05 \x01(\v2H.dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustStatusR\x06status\"\x82\x01\n" +
-	"\x16KubernetesLocustStatus\x12h\n" +
-	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustStackOutputsR\aoutputsB\x89\x03\n" +
+	"\x06status\x18\x05 \x01(\v2H.dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustStatusR\x06status\"}\n" +
+	"\x16KubernetesLocustStatus\x12c\n" +
+	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustOutputsR\aoutputsB\x89\x03\n" +
 	"4com.dev.planton.kubernetes.kuberneteslocust.v1alpha1B\bApiProtoP\x01Zbgithub.com/plantonhq/planton/catalog/kubernetes/kuberneteslocust/v1alpha1;kuberneteslocustv1alpha1\xa2\x02\x04DPKK\xaa\x020Dev.Planton.Kubernetes.Kuberneteslocust.V1alpha1\xca\x020Dev\\Planton\\Kubernetes\\Kuberneteslocust\\V1alpha1\xe2\x02<Dev\\Planton\\Kubernetes\\Kuberneteslocust\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Kubernetes::Kuberneteslocust::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_kubernetes_kuberneteslocust_v1alpha1_api_proto_msgTypes = make(
 var file_catalog_kubernetes_kuberneteslocust_v1alpha1_api_proto_goTypes = []any{
 	(*KubernetesLocust)(nil),             // 0: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocust
 	(*KubernetesLocustStatus)(nil),       // 1: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*KubernetesLocustSpec)(nil),         // 3: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustSpec
-	(*KubernetesLocustStackOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustStackOutputs
+	(*KubernetesLocustOutputs)(nil),      // 4: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustOutputs
 }
 var file_catalog_kubernetes_kuberneteslocust_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocust.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocust.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocust.spec:type_name -> dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustSpec
 	1, // 2: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocust.status:type_name -> dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustStatus
-	4, // 3: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustStackOutputs
+	4, // 3: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

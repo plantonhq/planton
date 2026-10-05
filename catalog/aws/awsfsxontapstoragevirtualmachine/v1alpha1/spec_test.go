@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	shared "github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -148,7 +148,7 @@ var _ = ginkgo.Describe("AwsFsxOntapStorageVirtualMachineSpec validations", func
 		spec.FileSystemId = &foreignkeyv1.StringValueOrRef{
 			LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 				ValueFrom: &foreignkeyv1.ValueFromRef{
-					Kind:      cloudresourcekind.CloudResourceKind_AwsFsxOntapFileSystem,
+					Kind:      catalogkind.CatalogKind_AwsFsxOntapFileSystem,
 					Name:      "my-ontap-fs",
 					FieldPath: "status.outputs.file_system_id",
 				},
@@ -425,7 +425,7 @@ var _ = ginkgo.Describe("AwsFsxOntapStorageVirtualMachineSpec validations", func
 			resource := &AwsFsxOntapStorageVirtualMachine{
 				ApiVersion: "aws.planton.dev/v1alpha1",
 				Kind:       "AwsFsxOntapStorageVirtualMachine",
-				Metadata: &shared.CloudResourceMetadata{
+				Metadata: &shared.CatalogObjectMetadata{
 					Name: "my-ontap-svm",
 					Id:   "awsfxosvm-test-123",
 					Org:  "test-org",
@@ -441,7 +441,7 @@ var _ = ginkgo.Describe("AwsFsxOntapStorageVirtualMachineSpec validations", func
 			resource := &AwsFsxOntapStorageVirtualMachine{
 				ApiVersion: "wrong/v1",
 				Kind:       "AwsFsxOntapStorageVirtualMachine",
-				Metadata: &shared.CloudResourceMetadata{
+				Metadata: &shared.CatalogObjectMetadata{
 					Name: "my-ontap-svm",
 					Id:   "awsfxosvm-test-123",
 					Org:  "test-org",
@@ -457,7 +457,7 @@ var _ = ginkgo.Describe("AwsFsxOntapStorageVirtualMachineSpec validations", func
 			resource := &AwsFsxOntapStorageVirtualMachine{
 				ApiVersion: "aws.planton.dev/v1alpha1",
 				Kind:       "WrongKind",
-				Metadata: &shared.CloudResourceMetadata{
+				Metadata: &shared.CatalogObjectMetadata{
 					Name: "my-ontap-svm",
 					Id:   "awsfxosvm-test-123",
 					Org:  "test-org",

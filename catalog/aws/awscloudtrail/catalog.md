@@ -4,7 +4,7 @@ Deploys a CloudTrail trail — the account's API audit log — recording AWS API
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CloudTrail Trail** — the trail with its delivery bucket and prefix, multi-region and global-service capture, log-file validation, SSE-KMS encryption, SNS delivery notices, CloudWatch Logs mirroring, event selectors, and Insights engines
 - **Organization Delegated Admin Registration** — registers an account as the organization's delegated CloudTrail administrator, created only when `organizationDelegatedAdminAccountId` is set (an account-global act; deregistered on destroy)
@@ -15,7 +15,7 @@ Destroying the component deletes the trail — a real delete — but the deliver
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with CloudTrail permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with CloudTrail permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f cloudtrail.yaml
 ```
 
-This creates a multi-region trail recording all management events with hourly digest files for tamper detection, delivering to the referenced bucket under `audit/AWSLogs/<account-id>/`. A Stack Job tracks the provisioning in real time.
+This creates a multi-region trail recording all management events with hourly digest files for tamper detection, delivering to the referenced bucket under `audit/AWSLogs/<account-id>/`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,7 +100,7 @@ These are the most important decisions when configuring a trail. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -110,9 +110,9 @@ These are the most important decisions when configuring a trail. Explore the ful
 | **AwsCloudwatchLogGroup** | `cloudwatchLogs.logGroupArn` | `status.outputs.log_group_arn` |
 | **AwsIamRole** | `cloudwatchLogs.roleArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,9 +132,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — the delivery destination; its `spec.policy` carries the CloudTrail service-principal grant
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — SSE-KMS encryption of delivered log files
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) — per-file delivery notices for downstream processing
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) — the live mirror for Logs Insights queries and metric filters
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the role CloudTrail assumes to write into the log group
-- [**AWS CloudTrail Event Data Store**](/cloud-catalog/aws-cloud-trail-event-data-store) — CloudTrail Lake: SQL-queryable event storage that complements file delivery
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — the delivery destination; its `spec.policy` carries the CloudTrail service-principal grant
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — SSE-KMS encryption of delivered log files
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) — per-file delivery notices for downstream processing
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) — the live mirror for Logs Insights queries and metric filters
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the role CloudTrail assumes to write into the log group
+- [**AWS CloudTrail Event Data Store**](/infra-catalog/aws-cloud-trail-event-data-store) — CloudTrail Lake: SQL-queryable event storage that complements file delivery

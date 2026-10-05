@@ -4,7 +4,7 @@ Deploys a federated identity credential: a keyless trust rule on a user-assigned
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Federated Identity Credential** -- one trust rule written on the parent user-assigned managed identity, visible in the portal's "Federated credentials" tab
 
@@ -16,12 +16,12 @@ A credential conveys no permissions by itself -- it only authenticates the exter
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **A user-assigned managed identity** the credential is written on. Reference an AzureUserAssignedIdentity Cloud Resource via ValueFromRef, or pass the identity's full ARM resource ID as a literal.
+- **A user-assigned managed identity** the credential is written on. Reference an AzureUserAssignedIdentity Infra Component via ValueFromRef, or pass the identity's full ARM resource ID as a literal.
 
 ## Deploy
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f credential.yaml
 ```
 
-This lets workflows on the `main` branch of `acme/platform` deploy to Azure as the `ci-deployer` identity -- with no stored service-principal secret anywhere. The audience is omitted, so Azure applies `api://AzureADTokenExchange` (what every standard client requests). A Stack Job tracks the provisioning in real time.
+This lets workflows on the `main` branch of `acme/platform` deploy to Azure as the `ci-deployer` identity -- with no stored service-principal secret anywhere. The audience is omitted, so Azure applies `api://AzureADTokenExchange` (what every standard client requests). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,14 +92,14 @@ These are the most important decisions when configuring a federated identity cre
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureUserAssignedIdentity** | `userAssignedIdentity` | `status.outputs.identity_id` |
 | **AzureAksCluster** (workload identity) | `issuer` | `status.outputs.oidc_issuer_url` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains values that downstream tooling can consume:
 
@@ -124,6 +124,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the parent identity this trust rule is written on
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- grants the identity the permissions the trusted workload will exercise
-- [**Azure AKS Cluster**](/cloud-catalog/azure-aks-cluster) -- provides the OIDC issuer for the workload-identity composition
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the parent identity this trust rule is written on
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- grants the identity the permissions the trusted workload will exercise
+- [**Azure AKS Cluster**](/infra-catalog/azure-aks-cluster) -- provides the OIDC issuer for the workload-identity composition

@@ -10,9 +10,9 @@
 # nothing. A snapshot-restored volume with no explicit size refuses: its
 # committed GB-month quantity is the referenced snapshot's size -- real
 # committed spend of unknowable magnitude, and a refusal beats a silent
-# zero or an invented number. Schema: finops/componentcostderivation/v1.
+# zero or an invented number. Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsebsvolume
 spec:

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureEventgridEventSubscriptionStackOutputs** captures the outputs
+// **AzureEventgridEventSubscriptionOutputs** captures the outputs
 // from provisioning an Azure Event Grid event subscription.
-type AzureEventgridEventSubscriptionStackOutputs struct {
+type AzureEventgridEventSubscriptionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The subscription's Azure Resource Manager ID. The shape follows
 	// the addressing choice: scope-addressed subscriptions extend the
@@ -38,20 +38,20 @@ type AzureEventgridEventSubscriptionStackOutputs struct {
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *AzureEventgridEventSubscriptionStackOutputs) Reset() {
-	*x = AzureEventgridEventSubscriptionStackOutputs{}
+func (x *AzureEventgridEventSubscriptionOutputs) Reset() {
+	*x = AzureEventgridEventSubscriptionOutputs{}
 	mi := &file_catalog_azure_azureeventgrideventsubscription_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventgridEventSubscriptionStackOutputs) String() string {
+func (x *AzureEventgridEventSubscriptionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventgridEventSubscriptionStackOutputs) ProtoMessage() {}
+func (*AzureEventgridEventSubscriptionOutputs) ProtoMessage() {}
 
-func (x *AzureEventgridEventSubscriptionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureEventgridEventSubscriptionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventgrideventsubscription_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *AzureEventgridEventSubscriptionStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventgridEventSubscriptionStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureEventgridEventSubscriptionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventgridEventSubscriptionOutputs.ProtoReflect.Descriptor instead.
+func (*AzureEventgridEventSubscriptionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventgrideventsubscription_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventgridEventSubscriptionStackOutputs) GetEventSubscriptionId() string {
+func (x *AzureEventgridEventSubscriptionOutputs) GetEventSubscriptionId() string {
 	if x != nil {
 		return x.EventSubscriptionId
 	}
 	return ""
 }
 
-func (x *AzureEventgridEventSubscriptionStackOutputs) GetEventSubscriptionName() string {
+func (x *AzureEventgridEventSubscriptionOutputs) GetEventSubscriptionName() string {
 	if x != nil {
 		return x.EventSubscriptionName
 	}
@@ -86,8 +86,8 @@ var File_catalog_azure_azureeventgrideventsubscription_v1alpha1_outputs_proto pr
 
 const file_catalog_azure_azureeventgrideventsubscription_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/azure/azureeventgrideventsubscription/v1alpha1/outputs.proto\x12:dev.planton.azure.azureeventgrideventsubscription.v1alpha1\"\x99\x01\n" +
-	"+AzureEventgridEventSubscriptionStackOutputs\x122\n" +
+	"Dcatalog/azure/azureeventgrideventsubscription/v1alpha1/outputs.proto\x12:dev.planton.azure.azureeventgrideventsubscription.v1alpha1\"\x94\x01\n" +
+	"&AzureEventgridEventSubscriptionOutputs\x122\n" +
 	"\x15event_subscription_id\x18\x01 \x01(\tR\x13eventSubscriptionId\x126\n" +
 	"\x17event_subscription_name\x18\x02 \x01(\tR\x15eventSubscriptionNameB\xd8\x03\n" +
 	">com.dev.planton.azure.azureeventgrideventsubscription.v1alpha1B\fOutputsProtoP\x01Z{github.com/plantonhq/planton/catalog/azure/azureeventgrideventsubscription/v1alpha1;azureeventgrideventsubscriptionv1alpha1\xa2\x02\x04DPAA\xaa\x02:Dev.Planton.Azure.Azureeventgrideventsubscription.V1alpha1\xca\x02:Dev\\Planton\\Azure\\Azureeventgrideventsubscription\\V1alpha1\xe2\x02FDev\\Planton\\Azure\\Azureeventgrideventsubscription\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Azure::Azureeventgrideventsubscription::V1alpha1b\x06proto3"
@@ -106,7 +106,7 @@ func file_catalog_azure_azureeventgrideventsubscription_v1alpha1_outputs_proto_r
 
 var file_catalog_azure_azureeventgrideventsubscription_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventgrideventsubscription_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureEventgridEventSubscriptionStackOutputs)(nil), // 0: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStackOutputs
+	(*AzureEventgridEventSubscriptionOutputs)(nil), // 0: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionOutputs
 }
 var file_catalog_azure_azureeventgrideventsubscription_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

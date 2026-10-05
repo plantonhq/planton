@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureDiskEncryptionSetStackInput is the input to the IaC modules
+// AzureDiskEncryptionSetIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and Azure
 // provider credentials.
-type AzureDiskEncryptionSetStackInput struct {
+type AzureDiskEncryptionSetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The disk encryption set resource to deploy.
 	Target *AzureDiskEncryptionSet `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureDiskEncryptionSetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureDiskEncryptionSetStackInput) Reset() {
-	*x = AzureDiskEncryptionSetStackInput{}
+func (x *AzureDiskEncryptionSetIacInput) Reset() {
+	*x = AzureDiskEncryptionSetIacInput{}
 	mi := &file_catalog_azure_azurediskencryptionset_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDiskEncryptionSetStackInput) String() string {
+func (x *AzureDiskEncryptionSetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDiskEncryptionSetStackInput) ProtoMessage() {}
+func (*AzureDiskEncryptionSetIacInput) ProtoMessage() {}
 
-func (x *AzureDiskEncryptionSetStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureDiskEncryptionSetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurediskencryptionset_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureDiskEncryptionSetStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDiskEncryptionSetStackInput.ProtoReflect.Descriptor instead.
-func (*AzureDiskEncryptionSetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDiskEncryptionSetIacInput.ProtoReflect.Descriptor instead.
+func (*AzureDiskEncryptionSetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurediskencryptionset_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDiskEncryptionSetStackInput) GetTarget() *AzureDiskEncryptionSet {
+func (x *AzureDiskEncryptionSetIacInput) GetTarget() *AzureDiskEncryptionSet {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureDiskEncryptionSetStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureDiskEncryptionSetIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurediskencryptionset_v1alpha1_input_proto protoreflect.
 
 const file_catalog_azure_azurediskencryptionset_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azurediskencryptionset/v1alpha1/input.proto\x121dev.planton.azure.azurediskencryptionset.v1alpha1\x1a7catalog/azure/azurediskencryptionset/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd6\x01\n" +
-	" AzureDiskEncryptionSetStackInput\x12a\n" +
+	"9catalog/azure/azurediskencryptionset/v1alpha1/input.proto\x121dev.planton.azure.azurediskencryptionset.v1alpha1\x1a7catalog/azure/azurediskencryptionset/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd4\x01\n" +
+	"\x1eAzureDiskEncryptionSetIacInput\x12a\n" +
 	"\x06target\x18\x01 \x01(\v2I.dev.planton.azure.azurediskencryptionset.v1alpha1.AzureDiskEncryptionSetR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x97\x03\n" +
 	"5com.dev.planton.azure.azurediskencryptionset.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azurediskencryptionset_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_azure_azurediskencryptionset_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurediskencryptionset_v1alpha1_input_proto_goTypes = []any{
-	(*AzureDiskEncryptionSetStackInput)(nil), // 0: dev.planton.azure.azurediskencryptionset.v1alpha1.AzureDiskEncryptionSetStackInput
-	(*AzureDiskEncryptionSet)(nil),           // 1: dev.planton.azure.azurediskencryptionset.v1alpha1.AzureDiskEncryptionSet
-	(*azure.AzureProviderConfig)(nil),        // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureDiskEncryptionSetIacInput)(nil), // 0: dev.planton.azure.azurediskencryptionset.v1alpha1.AzureDiskEncryptionSetIacInput
+	(*AzureDiskEncryptionSet)(nil),         // 1: dev.planton.azure.azurediskencryptionset.v1alpha1.AzureDiskEncryptionSet
+	(*azure.AzureProviderConfig)(nil),      // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurediskencryptionset_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurediskencryptionset.v1alpha1.AzureDiskEncryptionSetStackInput.target:type_name -> dev.planton.azure.azurediskencryptionset.v1alpha1.AzureDiskEncryptionSet
-	2, // 1: dev.planton.azure.azurediskencryptionset.v1alpha1.AzureDiskEncryptionSetStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurediskencryptionset.v1alpha1.AzureDiskEncryptionSetIacInput.target:type_name -> dev.planton.azure.azurediskencryptionset.v1alpha1.AzureDiskEncryptionSet
+	2, // 1: dev.planton.azure.azurediskencryptionset.v1alpha1.AzureDiskEncryptionSetIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

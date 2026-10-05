@@ -65,7 +65,7 @@ flowchart TB
    - `Pulumi: awsecsservice (v0.3.5-pulumi.awsecsservice.20260108.0)`
    - `Terraform: postgres (v0.3.5-terraform.postgres.20260108.0)`
 
-4. **Simplified Pulumi/Terraform workflows**: Removed complex matrix expansion logic since each workflow now receives a single component
+4. **Simplified Pulumi/Terraform workflows**: Removed complex matrix expansion logic since each workflow now receives a single kind
 
 ## Implementation Details
 
@@ -104,7 +104,7 @@ run-name: 'CLI Release: ${{ inputs.tag }}'
 
 ### Pulumi/Terraform Input Changes
 
-These workflows now receive component details directly instead of parsing them from the tag:
+These workflows now receive kind details directly instead of parsing them from the tag:
 
 ```yaml
 on:
@@ -114,8 +114,8 @@ on:
         description: 'Tag to release'
         required: true
         type: string
-      component:
-        description: 'Component name'
+      kind:
+        description: 'Kind name'
         required: true
         type: string
       provider:
@@ -151,7 +151,7 @@ for (const mod of modules) {
     ref: 'main',
     inputs: {
       tag: mod.tag,
-      component: mod.component,
+      kind: mod.kind,
       provider: mod.provider,
       path: mod.path,
     },
@@ -167,8 +167,8 @@ for (const mod of modules) {
 | `.github/workflows/auto-release.cli.yaml`               | `workflow_call` → `workflow_dispatch`, added `run-name`   |
 | `.github/workflows/auto-release.app.yaml`               | `workflow_call` → `workflow_dispatch`, added `run-name`   |
 | `.github/workflows/auto-release.website.yaml`           | `workflow_call` → `workflow_dispatch`, added `run-name`   |
-| `.github/workflows/auto-release.pulumi-modules.yaml`    | Simplified to single-component dispatch, added `run-name` |
-| `.github/workflows/auto-release.terraform-modules.yaml` | Simplified to single-component dispatch, added `run-name` |
+| `.github/workflows/auto-release.pulumi-modules.yaml`    | Simplified to single-kind dispatch, added `run-name` |
+| `.github/workflows/auto-release.terraform-modules.yaml` | Simplified to single-kind dispatch, added `run-name` |
 | `.github/workflows/auto-tag.yaml`                       | Direct workflow dispatch, JSON outputs, added `run-name`  |
 | `.github/workflows/docs/auto-tags.md`                   | Updated documentation                                     |
 
@@ -214,7 +214,7 @@ gh workflow run auto-release.cli.yaml -f tag=v0.3.5-cli.20260108.0
 # Re-run Pulumi module release
 gh workflow run auto-release.pulumi-modules.yaml \
   -f tag=v0.3.5-pulumi.awsecsservice.20260108.0 \
-  -f component=awsecsservice \
+  -f kind=awsecsservice \
   -f provider=aws \
   -f path=apis/dev/planton/provider/aws/awsecsservice/v1/iac/pulumi
 ```

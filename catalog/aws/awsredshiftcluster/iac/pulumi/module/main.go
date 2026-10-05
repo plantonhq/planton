@@ -16,13 +16,13 @@ import (
 // cross-region snapshot copy are cluster settings keyed by the cluster
 // itself, so they are managed here rather than modeled as standalone
 // kinds.
-func Resources(ctx *pulumi.Context, stackInput *awsredshiftclusterv1alpha1.AwsRedshiftClusterStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsredshiftclusterv1alpha1.AwsRedshiftClusterIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder,
+	// Build the AWS provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static keys, keyless
 	// web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsRedshiftCluster.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsRedshiftCluster.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

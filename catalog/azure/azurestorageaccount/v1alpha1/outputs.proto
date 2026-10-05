@@ -4,7 +4,7 @@ package dev.planton.azure.azurestorageaccount.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureStorageAccountStackOutputs** captures the outputs of provisioning
+// **AzureStorageAccountOutputs** captures the outputs of provisioning
 // an Azure Storage Account: the ARM identity other resources reference, the
 // per-service endpoints applications connect to, and the account's access
 // keys.
@@ -12,7 +12,7 @@ import "shared/options/options.proto";
 // The secondary endpoints are populated only for the read-access
 // replication types (RA_GRS / RA_GZRS) -- they are the read-only mirror in
 // the paired region.
-message AzureStorageAccountStackOutputs {
+message AzureStorageAccountOutputs {
   // The Azure Resource Manager ID of the account. This is the primary
   // output: AzureStorageContainer's storage_account_id references it, and
   // role assignments (Storage Blob Data Reader/Contributor) scope to it.

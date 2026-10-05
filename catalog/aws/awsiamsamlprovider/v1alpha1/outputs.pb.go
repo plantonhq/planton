@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsIamSamlProviderStackOutputs captures the observable state of the
+// AwsIamSamlProviderOutputs captures the observable state of the
 // SAML provider after apply.
-type AwsIamSamlProviderStackOutputs struct {
+type AwsIamSamlProviderOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The provider's ARN (also the provider's import ID, and the value
 	// role trust policies reference via the SAML principal).
@@ -37,20 +37,20 @@ type AwsIamSamlProviderStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsIamSamlProviderStackOutputs) Reset() {
-	*x = AwsIamSamlProviderStackOutputs{}
+func (x *AwsIamSamlProviderOutputs) Reset() {
+	*x = AwsIamSamlProviderOutputs{}
 	mi := &file_catalog_aws_awsiamsamlprovider_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsIamSamlProviderStackOutputs) String() string {
+func (x *AwsIamSamlProviderOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsIamSamlProviderStackOutputs) ProtoMessage() {}
+func (*AwsIamSamlProviderOutputs) ProtoMessage() {}
 
-func (x *AwsIamSamlProviderStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsIamSamlProviderOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsiamsamlprovider_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *AwsIamSamlProviderStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsIamSamlProviderStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsIamSamlProviderStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsIamSamlProviderOutputs.ProtoReflect.Descriptor instead.
+func (*AwsIamSamlProviderOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiamsamlprovider_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsIamSamlProviderStackOutputs) GetProviderArn() string {
+func (x *AwsIamSamlProviderOutputs) GetProviderArn() string {
 	if x != nil {
 		return x.ProviderArn
 	}
 	return ""
 }
 
-func (x *AwsIamSamlProviderStackOutputs) GetSamlProviderUuid() string {
+func (x *AwsIamSamlProviderOutputs) GetSamlProviderUuid() string {
 	if x != nil {
 		return x.SamlProviderUuid
 	}
 	return ""
 }
 
-func (x *AwsIamSamlProviderStackOutputs) GetValidUntil() string {
+func (x *AwsIamSamlProviderOutputs) GetValidUntil() string {
 	if x != nil {
 		return x.ValidUntil
 	}
@@ -92,8 +92,8 @@ var File_catalog_aws_awsiamsamlprovider_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awsiamsamlprovider_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awsiamsamlprovider/v1alpha1/outputs.proto\x12+dev.planton.aws.awsiamsamlprovider.v1alpha1\"\x92\x01\n" +
-	"\x1eAwsIamSamlProviderStackOutputs\x12!\n" +
+	"5catalog/aws/awsiamsamlprovider/v1alpha1/outputs.proto\x12+dev.planton.aws.awsiamsamlprovider.v1alpha1\"\x8d\x01\n" +
+	"\x19AwsIamSamlProviderOutputs\x12!\n" +
 	"\fprovider_arn\x18\x01 \x01(\tR\vproviderArn\x12,\n" +
 	"\x12saml_provider_uuid\x18\x02 \x01(\tR\x10samlProviderUuid\x12\x1f\n" +
 	"\vvalid_until\x18\x03 \x01(\tR\n" +
@@ -114,7 +114,7 @@ func file_catalog_aws_awsiamsamlprovider_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awsiamsamlprovider_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsiamsamlprovider_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsIamSamlProviderStackOutputs)(nil), // 0: dev.planton.aws.awsiamsamlprovider.v1alpha1.AwsIamSamlProviderStackOutputs
+	(*AwsIamSamlProviderOutputs)(nil), // 0: dev.planton.aws.awsiamsamlprovider.v1alpha1.AwsIamSamlProviderOutputs
 }
 var file_catalog_aws_awsiamsamlprovider_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

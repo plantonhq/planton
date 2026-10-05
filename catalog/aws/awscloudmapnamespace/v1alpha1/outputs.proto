@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awscloudmapnamespace.v1alpha1;
 
-// AwsCloudMapNamespaceStackOutputs captures the observable state of
+// AwsCloudMapNamespaceOutputs captures the observable state of
 // the Cloud Map namespace after apply.
-message AwsCloudMapNamespaceStackOutputs {
+message AwsCloudMapNamespaceOutputs {
   // The namespace's id (ns-...) - the provider's import ID (a
   // PRIVATE_DNS namespace imports as "{namespace_id}:{vpc_id}").
   string namespace_id = 1;

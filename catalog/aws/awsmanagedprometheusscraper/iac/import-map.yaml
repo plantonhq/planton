@@ -1,15 +1,15 @@
-# Where each placeholder in this component's import-ID formats comes
+# Where each placeholder in this kind's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml). The
 # scraper and its logging configuration both import by the scraper ID.
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsmanagedprometheusscraper
 spec:
   values:
     - name: scraper_id
       derivations:
-        - from_stack_output: scraper_id
+        - from_output: scraper_id
       where_to_find: >-
         The scraper's AWS-generated ID ("s-...") -- `aws amp
         list-scrapers` (scraperId; match by alias or source cluster).

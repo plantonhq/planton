@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package dev.planton._test.testcatalogkindgeneric.v1alpha2;
+
+import "catalog/_test/testcatalogkindgeneric/v1alpha2/api.proto";
+
+// TestCatalogKindGenericIacInput at v1alpha2 -- provider-free on
+// purpose, exactly like v1alpha1 (see that version's input.proto).
+message TestCatalogKindGenericIacInput {
+  // The target test resource to "deploy".
+  TestCatalogKindGeneric target = 1;
+}

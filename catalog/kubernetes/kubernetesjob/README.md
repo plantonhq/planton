@@ -2,9 +2,9 @@
 
 ## Overview
 
-**KubernetesJob** is a Planton component that runs work to completion on a Kubernetes cluster as a batch/v1 Job. Pods are created, execute until they succeed (or exhaust their retry budget), and are never restarted once the Job finishes. This is the kind for one-shot work: database migrations, backfills, report generation, parallel batch processing.
+**KubernetesJob** is a catalog kind that runs work to completion on a Kubernetes cluster as a batch/v1 Job. Pods are created, execute until they succeed (or exhaust their retry budget), and are never restarted once the Job finishes. This is the kind for one-shot work: database migrations, backfills, report generation, parallel batch processing.
 
-The component covers the complete batch/v1 JobSpec surface that matters for declarative batch work — parallelism, completions, Indexed completion mode, global and per-index retry budgets, deadlines, TTL cleanup, suspension, pod failure policies, and success policies — on top of the same fully-modeled container and pod core shared by every Planton workload kind.
+The kind covers the complete batch/v1 JobSpec surface that matters for declarative batch work — parallelism, completions, Indexed completion mode, global and per-index retry budgets, deadlines, TTL cleanup, suspension, pod failure policies, and success policies — on top of the same fully-modeled container and pod core shared by every Planton workload kind.
 
 For work that runs on a schedule, use **KubernetesCronJob**. For always-on services, use **KubernetesDeployment**.
 
@@ -37,9 +37,9 @@ Identity is composed, never bundled:
 - **KubernetesServiceAccount** — reference it from `spec.pod.service_account` (literal name or resource reference); workload-identity annotations and pull-secret attachment live on the identity
 - **KubernetesRbac** — grants permissions to that identity; the Job itself never creates RBAC objects
 - **KubernetesSecret / KubernetesConfigMap** — consumed via `secret_ref` env entries, `env_from` imports, or volume mounts
-- **KubernetesNamespace** — `spec.namespace` accepts a reference, so an infra chart creates the namespace and the Job in one run
+- **KubernetesNamespace** — `spec.namespace` accepts a reference, so an Infra Chart creates the namespace and the Job in one run
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -49,7 +49,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace (literal value or resolved reference), creating it when `create_namespace` is true
 2. Materialize literal secret env values into a workload-scoped Kubernetes Secret and the registry logins declared on `spec.pod.image_registries` into an image-pull Secret

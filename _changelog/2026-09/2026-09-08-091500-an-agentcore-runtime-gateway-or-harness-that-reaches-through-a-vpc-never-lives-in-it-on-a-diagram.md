@@ -3,7 +3,7 @@
 ## What changed
 
 - **The three AgentCore managed VPC endpoint blocks are containment-exempt on both of their network references.** `AwsBedrockAgentCoreManagedVpcEndpoint.vpc_id` and `.subnet_ids` on the agent runtime, `AwsBedrockAgentCoreGatewayManagedVpcEndpoint.vpc_id` and `.subnet_ids` on the gateway, and `AwsBedrockAgentCoreManagedVpcEndpoint.vpc_id` and `.subnet_ids` on the evaluation harness. A managed endpoint is an AWS-managed private PATH through your VPC so the runtime, gateway, or harness can reach a private OIDC provider or a private backend; the resource itself is not deployed inside that VPC. Until now the references were placement by omission, so a gateway whose one target sat behind a private endpoint would have been drawn inside the VPC it merely reaches into.
-- The containment-decision registry (`shared/cloudresourcekind/testdata/containment_decisions.txt`) moves exactly those six lines from `contained` to `exempt`; nothing else in the registry moved.
+- The containment-decision registry (`shared/catalogkind/testdata/containment_decisions.txt`) moves exactly those six lines from `contained` to `exempt`; nothing else in the registry moved.
 
 ## Why
 
@@ -12,6 +12,6 @@
 ## How to check
 
 ```bash
-go test ./shared/cloudresourcekind/... -run TestContainmentDecisions   # green; the golden carries the six exempt lines
+go test ./shared/catalogkind/... -run TestContainmentDecisions   # green; the golden carries the six exempt lines
 grep -n containment_exempt catalog/aws/awsbedrockagentcoreruntime/v1alpha1/spec.proto catalog/aws/awsbedrockagentcoregateway/v1alpha1/spec.proto catalog/aws/awsbedrockagentcoreevaluation/v1alpha1/spec.proto
 ```

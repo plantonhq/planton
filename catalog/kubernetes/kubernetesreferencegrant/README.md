@@ -111,14 +111,14 @@ which (when Planton-managed) is wired via `metadata.relationships`. The grant
 itself is a low-dependency leaf -- the consuming Gateway/Route is what must order
 itself after the grant. See `GUIDE.md` for the full pattern.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `referenceGrantName` | Name of the created ReferenceGrant (equals metadata.name). |
 | `namespace` | Namespace the ReferenceGrant was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Gateway](../kubernetesgateway)
 - [Kubernetes HTTP Route](../kuberneteshttproute)

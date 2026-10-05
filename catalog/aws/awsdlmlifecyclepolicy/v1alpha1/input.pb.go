@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsDlmLifecyclePolicyStackInput is the input for the IaC modules
+// AwsDlmLifecyclePolicyIacInput is the input for the IaC modules
 // that manage a Data Lifecycle Manager policy.
-type AwsDlmLifecyclePolicyStackInput struct {
+type AwsDlmLifecyclePolicyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsDlmLifecyclePolicy resource to deploy.
 	Target *AwsDlmLifecyclePolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsDlmLifecyclePolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsDlmLifecyclePolicyStackInput) Reset() {
-	*x = AwsDlmLifecyclePolicyStackInput{}
+func (x *AwsDlmLifecyclePolicyIacInput) Reset() {
+	*x = AwsDlmLifecyclePolicyIacInput{}
 	mi := &file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsDlmLifecyclePolicyStackInput) String() string {
+func (x *AwsDlmLifecyclePolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsDlmLifecyclePolicyStackInput) ProtoMessage() {}
+func (*AwsDlmLifecyclePolicyIacInput) ProtoMessage() {}
 
-func (x *AwsDlmLifecyclePolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsDlmLifecyclePolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsDlmLifecyclePolicyStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsDlmLifecyclePolicyStackInput.ProtoReflect.Descriptor instead.
-func (*AwsDlmLifecyclePolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsDlmLifecyclePolicyIacInput.ProtoReflect.Descriptor instead.
+func (*AwsDlmLifecyclePolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsDlmLifecyclePolicyStackInput) GetTarget() *AwsDlmLifecyclePolicy {
+func (x *AwsDlmLifecyclePolicyIacInput) GetTarget() *AwsDlmLifecyclePolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsDlmLifecyclePolicyStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsDlmLifecyclePolicyIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awsdlmlifecyclepolicy/v1alpha1/input.proto\x12.dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1\x1a4catalog/aws/awsdlmlifecyclepolicy/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcd\x01\n" +
-	"\x1fAwsDlmLifecyclePolicyStackInput\x12]\n" +
+	"6catalog/aws/awsdlmlifecyclepolicy/v1alpha1/input.proto\x12.dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1\x1a4catalog/aws/awsdlmlifecyclepolicy/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcb\x01\n" +
+	"\x1dAwsDlmLifecyclePolicyIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1.AwsDlmLifecyclePolicyR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"2com.dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_input_proto_goTypes = []any{
-	(*AwsDlmLifecyclePolicyStackInput)(nil), // 0: dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1.AwsDlmLifecyclePolicyStackInput
-	(*AwsDlmLifecyclePolicy)(nil),           // 1: dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1.AwsDlmLifecyclePolicy
-	(*aws.AwsProviderConfig)(nil),           // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsDlmLifecyclePolicyIacInput)(nil), // 0: dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1.AwsDlmLifecyclePolicyIacInput
+	(*AwsDlmLifecyclePolicy)(nil),         // 1: dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1.AwsDlmLifecyclePolicy
+	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsdlmlifecyclepolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1.AwsDlmLifecyclePolicyStackInput.target:type_name -> dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1.AwsDlmLifecyclePolicy
-	2, // 1: dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1.AwsDlmLifecyclePolicyStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1.AwsDlmLifecyclePolicyIacInput.target:type_name -> dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1.AwsDlmLifecyclePolicy
+	2, // 1: dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1.AwsDlmLifecyclePolicyIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

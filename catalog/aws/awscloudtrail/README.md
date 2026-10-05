@@ -32,7 +32,7 @@ the account's first trail copy; data events and Insights bill per
 event.
 
 CloudTrail Lake (event data stores) is deliberately NOT part of this
-component — a data store deploys with zero trails and owns its own
+kind — a data store deploys with zero trails and owns its own
 billing, retention, and termination-protection lifecycle, so it ships
 as its own kind.
 

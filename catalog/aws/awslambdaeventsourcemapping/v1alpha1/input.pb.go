@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsLambdaEventSourceMappingStackInput is the input for the
+// AwsLambdaEventSourceMappingIacInput is the input for the
 // aws-lambda-event-source-mapping IaC modules.
-type AwsLambdaEventSourceMappingStackInput struct {
+type AwsLambdaEventSourceMappingIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsLambdaEventSourceMapping `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AwsLambdaEventSourceMappingStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsLambdaEventSourceMappingStackInput) Reset() {
-	*x = AwsLambdaEventSourceMappingStackInput{}
+func (x *AwsLambdaEventSourceMappingIacInput) Reset() {
+	*x = AwsLambdaEventSourceMappingIacInput{}
 	mi := &file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsLambdaEventSourceMappingStackInput) String() string {
+func (x *AwsLambdaEventSourceMappingIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsLambdaEventSourceMappingStackInput) ProtoMessage() {}
+func (*AwsLambdaEventSourceMappingIacInput) ProtoMessage() {}
 
-func (x *AwsLambdaEventSourceMappingStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsLambdaEventSourceMappingIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsLambdaEventSourceMappingStackInput) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsLambdaEventSourceMappingStackInput.ProtoReflect.Descriptor instead.
-func (*AwsLambdaEventSourceMappingStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsLambdaEventSourceMappingIacInput.ProtoReflect.Descriptor instead.
+func (*AwsLambdaEventSourceMappingIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsLambdaEventSourceMappingStackInput) GetTarget() *AwsLambdaEventSourceMapping {
+func (x *AwsLambdaEventSourceMappingIacInput) GetTarget() *AwsLambdaEventSourceMapping {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsLambdaEventSourceMappingStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsLambdaEventSourceMappingIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awslambdaeventsourcemapping_v1alpha1_input_proto protorefle
 
 const file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/aws/awslambdaeventsourcemapping/v1alpha1/input.proto\x124dev.planton.aws.awslambdaeventsourcemapping.v1alpha1\x1a:catalog/aws/awslambdaeventsourcemapping/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdf\x01\n" +
-	"%AwsLambdaEventSourceMappingStackInput\x12i\n" +
+	"<catalog/aws/awslambdaeventsourcemapping/v1alpha1/input.proto\x124dev.planton.aws.awslambdaeventsourcemapping.v1alpha1\x1a:catalog/aws/awslambdaeventsourcemapping/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdd\x01\n" +
+	"#AwsLambdaEventSourceMappingIacInput\x12i\n" +
 	"\x06target\x18\x01 \x01(\v2Q.dev.planton.aws.awslambdaeventsourcemapping.v1alpha1.AwsLambdaEventSourceMappingR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xae\x03\n" +
 	"8com.dev.planton.aws.awslambdaeventsourcemapping.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_input_proto_goTypes = []any{
-	(*AwsLambdaEventSourceMappingStackInput)(nil), // 0: dev.planton.aws.awslambdaeventsourcemapping.v1alpha1.AwsLambdaEventSourceMappingStackInput
-	(*AwsLambdaEventSourceMapping)(nil),           // 1: dev.planton.aws.awslambdaeventsourcemapping.v1alpha1.AwsLambdaEventSourceMapping
-	(*aws.AwsProviderConfig)(nil),                 // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsLambdaEventSourceMappingIacInput)(nil), // 0: dev.planton.aws.awslambdaeventsourcemapping.v1alpha1.AwsLambdaEventSourceMappingIacInput
+	(*AwsLambdaEventSourceMapping)(nil),         // 1: dev.planton.aws.awslambdaeventsourcemapping.v1alpha1.AwsLambdaEventSourceMapping
+	(*aws.AwsProviderConfig)(nil),               // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awslambdaeventsourcemapping.v1alpha1.AwsLambdaEventSourceMappingStackInput.target:type_name -> dev.planton.aws.awslambdaeventsourcemapping.v1alpha1.AwsLambdaEventSourceMapping
-	2, // 1: dev.planton.aws.awslambdaeventsourcemapping.v1alpha1.AwsLambdaEventSourceMappingStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awslambdaeventsourcemapping.v1alpha1.AwsLambdaEventSourceMappingIacInput.target:type_name -> dev.planton.aws.awslambdaeventsourcemapping.v1alpha1.AwsLambdaEventSourceMapping
+	2, // 1: dev.planton.aws.awslambdaeventsourcemapping.v1alpha1.AwsLambdaEventSourceMappingIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
 )
 
 // PulumiResult captures the outcome of a Pulumi CLI invocation.
@@ -23,7 +23,7 @@ type PulumiResult struct {
 }
 
 // PulumiDeploy runs `pulumi up` for the given module directory and stack.
-func PulumiDeploy(moduleDir, stackName, backendURL, stackInputFilePath string) (*PulumiResult, error) {
+func PulumiDeploy(moduleDir, stackName, backendURL, iacInputFilePath string) (*PulumiResult, error) {
 	if err := pulumiEnsureStack(moduleDir, stackName, backendURL); err != nil {
 		return nil, errors.Wrap(err, "failed to ensure pulumi stack exists")
 	}
@@ -32,18 +32,18 @@ func PulumiDeploy(moduleDir, stackName, backendURL, stackInputFilePath string) (
 	// Dependency stacks are keyed by run id, so every scenario in a run reuses
 	// the same stack name; if an earlier scenario's teardown half-completed,
 	// the stale state would otherwise make this up a silent no-op while the
-	// actual cloud resource is gone.
+	// actual provider resource is gone.
 	args := []string{"up", "--stack", stackName, "--yes", "--skip-preview", "--non-interactive", "--refresh"}
-	return runPulumi(moduleDir, backendURL, stackInputFilePath, "", args)
+	return runPulumi(moduleDir, backendURL, iacInputFilePath, "", args)
 }
 
 // PulumiPreviewExpectNoChanges re-plans the just-applied stack and fails if
 // any change is still pending — the Pulumi arm of the IDEMPOTENCY phase. No
 // --refresh here: the point is whether the program's desired state matches
 // what the apply recorded, not whether the cloud drifted in the seconds since.
-func PulumiPreviewExpectNoChanges(moduleDir, stackName, backendURL, stackInputFilePath string) (*PulumiResult, error) {
+func PulumiPreviewExpectNoChanges(moduleDir, stackName, backendURL, iacInputFilePath string) (*PulumiResult, error) {
 	args := []string{"preview", "--stack", stackName, "--expect-no-changes", "--non-interactive"}
-	result, err := runPulumi(moduleDir, backendURL, stackInputFilePath, "", args)
+	result, err := runPulumi(moduleDir, backendURL, iacInputFilePath, "", args)
 	if err != nil {
 		return result, errors.Wrap(err, "pulumi preview reported pending changes after apply (idempotency violation)")
 	}
@@ -55,9 +55,9 @@ func PulumiPreviewExpectNoChanges(moduleDir, stackName, backendURL, stackInputFi
 // resource hooks fire (e.g. Kyverno's webhook-GC sentinel). Without it,
 // delete hooks are silently skipped and destroy can leave cluster-scoped
 // residue the module intended to clean up.
-func PulumiDestroy(moduleDir, stackName, backendURL, stackInputFilePath string) (*PulumiResult, error) {
+func PulumiDestroy(moduleDir, stackName, backendURL, iacInputFilePath string) (*PulumiResult, error) {
 	args := []string{"destroy", "--stack", stackName, "--yes", "--non-interactive", "--run-program"}
-	return runPulumi(moduleDir, backendURL, stackInputFilePath, "", args)
+	return runPulumi(moduleDir, backendURL, iacInputFilePath, "", args)
 }
 
 // PulumiRemoveStack removes the stack entirely after destroy.
@@ -67,7 +67,7 @@ func PulumiRemoveStack(moduleDir, stackName, backendURL string) error {
 	return err
 }
 
-// PulumiStackOutputs retrieves stack outputs as a raw string.
+// PulumiOutputs retrieves outputs as a raw string.
 //
 // --show-secrets is load-bearing: without it Pulumi masks every secret
 // output as the literal string "[secret]", which corrupts a sensitive
@@ -81,7 +81,7 @@ func PulumiRemoveStack(moduleDir, stackName, backendURL string) error {
 // otherwise resolve to the sentinel and deploy silently wrong. No
 // caller prints raw output values (counts and names only), so the
 // unmasked values never reach logs.
-func PulumiStackOutputs(moduleDir, stackName, backendURL string) (string, error) {
+func PulumiOutputs(moduleDir, stackName, backendURL string) (string, error) {
 	args := []string{"stack", "output", "--stack", stackName, "--json", "--non-interactive", "--show-secrets"}
 	result, err := runPulumi(moduleDir, backendURL, "", "", args)
 	if err != nil {
@@ -107,7 +107,7 @@ func pulumiEnsureStack(moduleDir, stackName, backendURL string) error {
 	return nil
 }
 
-func runPulumi(moduleDir, backendURL, stackInputFilePath, kubeContext string, args []string) (*PulumiResult, error) {
+func runPulumi(moduleDir, backendURL, iacInputFilePath, kubeContext string, args []string) (*PulumiResult, error) {
 	cmd := exec.Command("pulumi", args...)
 	cmd.Dir = moduleDir
 
@@ -117,17 +117,17 @@ func runPulumi(moduleDir, backendURL, stackInputFilePath, kubeContext string, ar
 	}
 	// Empty passphrase for local file backend (no encryption needed for E2E)
 	env = append(env, "PULUMI_CONFIG_PASSPHRASE=")
-	if stackInputFilePath != "" {
-		env = append(env, "STACK_INPUT_YAML_FILE="+stackInputFilePath)
+	if iacInputFilePath != "" {
+		env = append(env, "IAC_INPUT_YAML_FILE="+iacInputFilePath)
 	}
 	if kubeContext != "" {
 		env = append(env, "KUBE_CTX="+kubeContext)
 	}
 	// The same operation signal the platform's runner gives module programs:
 	// a destroy re-runs the program for its delete hooks only, and steps that
-	// can fail for unrelated reasons stand aside (stackinput.OperationEnvVar).
+	// can fail for unrelated reasons stand aside (iacinput.OperationEnvVar).
 	if len(args) > 0 && args[0] == "destroy" {
-		env = append(env, stackinput.OperationEnvVar+"="+stackinput.OperationDestroy)
+		env = append(env, iacinput.OperationEnvVar+"="+iacinput.OperationDestroy)
 	}
 	cmd.Env = env
 

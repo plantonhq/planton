@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesNeo4jSpec** deploys a Neo4j graph database — the
 standard engine for knowledge graphs, GraphRAG and agent-memory
@@ -378,14 +378,14 @@ http 7474, https 7473). Empty = ClusterIP — NOTE this is a
 deliberate override of the chart's LoadBalancer default; exposure
 composes from first-class kinds instead. In-cluster clients use
 the always-created default Service (= the resource name — the
-endpoints in the stack outputs), so this block matters only when
+endpoints in the outputs), so this block matters only when
 exposing the server directly.
 
 ### spec.service.type
 
 `string` · optional (explicit presence)
 
-Service type: ClusterIP (the component default — NOT the chart's
+Service type: ClusterIP (the kind's default — NOT the chart's
 LoadBalancer default), NodePort, or LoadBalancer.
 
 - default: `ClusterIP`
@@ -419,7 +419,7 @@ TLS for the bolt (7687) listener.
 Existing TLS Secret (private.key + public.crt). Accepts a
 literal name or a KubernetesCertificate reference — the
 cert-manager seam (cert-manager Secrets carry tls.key/tls.crt;
-see the component docs for the key-name bridge).
+see the kind's docs for the key-name bridge).
 
 - references: KubernetesCertificate (`status.outputs.secret_name`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesCertificate, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse
@@ -437,7 +437,7 @@ TLS for the https (7473) listener.
 Existing TLS Secret (private.key + public.crt). Accepts a
 literal name or a KubernetesCertificate reference — the
 cert-manager seam (cert-manager Secrets carry tls.key/tls.crt;
-see the component docs for the key-name bridge).
+see the kind's docs for the key-name bridge).
 
 - references: KubernetesCertificate (`status.outputs.secret_name`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesCertificate, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse

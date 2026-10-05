@@ -2,11 +2,11 @@
 
 Installs the OpenSearch Kubernetes Operator — the opensearch-project's operator for running OpenSearch (the Apache-2.0 search and analytics engine) on Kubernetes — from the official `opensearch-operator` Helm chart. The operator reconciles `OpenSearchCluster` custom resources (declared with **OpenSearch**) into running search clusters with managed TLS, security bootstrap, safe rolling upgrades, and OpenSearch Dashboards.
 
-This component installs and configures the **engine**. Search clusters themselves are declared with OpenSearch resources — one per cluster — which this operator reconciles.
+This kind installs and configures the **engine**. Search clusters themselves are declared with OpenSearch resources — one per cluster — which this operator reconciles.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** — created only when `createNamespace` is `true`; otherwise installs into an existing namespace
 - **Helm release** — the operator controller-manager Deployment, its RBAC (cluster-wide by default, namespace-scoped with `useRoleBindings`), ServiceAccount, and metrics Service
@@ -51,7 +51,7 @@ spec:
 planton apply -f opensearch-operator.yaml
 ```
 
-This installs the stable operator with a cluster-wide watch, module-owned CRDs, and the metrics endpoint shielded by kube-rbac-proxy. A Stack Job tracks the provisioning in real time.
+This installs the stable operator with a cluster-wide watch, module-owned CRDs, and the metrics endpoint shielded by kube-rbac-proxy. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,15 +83,15 @@ These are the most important decisions when configuring an OpenSearch Operator i
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -111,6 +111,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**OpenSearch**](/cloud-catalog/kubernetes-open-search) — the search clusters this operator reconciles; deploy the operator FIRST (it is the registered prerequisite)
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — reference a managed namespace to compose governance (quotas, pod-security labels) with the installation
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) — scrape the shielded metrics endpoint with an RBAC-authorized ServiceMonitor
+- [**OpenSearch**](/infra-catalog/kubernetes-open-search) — the search clusters this operator reconciles; deploy the operator FIRST (it is the registered prerequisite)
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — reference a managed namespace to compose governance (quotas, pod-security labels) with the installation
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) — scrape the shielded metrics endpoint with an RBAC-authorized ServiceMonitor

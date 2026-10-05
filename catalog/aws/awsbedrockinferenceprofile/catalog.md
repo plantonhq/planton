@@ -4,7 +4,7 @@ Deploys an Amazon Bedrock application inference profile — a named handle over 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Application Inference Profile** — routing to the model source named by `sourceArn`: a foundation-model ARN for single-region use, or an AWS system-defined inference-profile ARN to inherit cross-region routing. The profile's tags carry the cost-allocation identity.
 
@@ -14,7 +14,7 @@ This kind creates APPLICATION profiles only — SYSTEM_DEFINED profiles are AWS-
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Bedrock inference-profile permissions (`bedrock:CreateInferenceProfile` and its read/delete siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Bedrock inference-profile permissions (`bedrock:CreateInferenceProfile` and its read/delete siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -47,7 +47,7 @@ spec:
 planton apply -f inference-profile.yaml
 ```
 
-This creates a profile for the checkout service over the US cross-region Nova Micro profile — its ARN is what the service invokes and what IAM scopes. A Stack Job tracks the provisioning in real time.
+This creates a profile for the checkout service over the US cross-region Nova Micro profile — its ARN is what the service invokes and what IAM scopes. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -65,13 +65,13 @@ These are the most important decisions when configuring an inference profile. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — `sourceArn` names an AWS foundation model or system-defined profile, which are AWS-owned resources referenced as ARN strings rather than platform-managed components.
+This kind has no foreign key dependencies — `sourceArn` names an AWS foundation model or system-defined profile, which are AWS-owned resources referenced as ARN strings rather than platform-managed components.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -90,7 +90,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Bedrock Agent**](/cloud-catalog/aws-bedrock-agent) — accepts this profile's ARN as its `foundationModel` for per-agent cost attribution
-- [**AWS Bedrock Prompt**](/cloud-catalog/aws-bedrock-prompt) — prompt variants can execute through a profile instead of a bare model ID
-- [**AWS Bedrock Flow**](/cloud-catalog/aws-bedrock-flow) — inline prompt nodes accept a profile ID/ARN as their model
-- [**AWS Bedrock Model Access**](/cloud-catalog/aws-bedrock-model-access) — the marketplace agreement the underlying model may require
+- [**AWS Bedrock Agent**](/infra-catalog/aws-bedrock-agent) — accepts this profile's ARN as its `foundationModel` for per-agent cost attribution
+- [**AWS Bedrock Prompt**](/infra-catalog/aws-bedrock-prompt) — prompt variants can execute through a profile instead of a bare model ID
+- [**AWS Bedrock Flow**](/infra-catalog/aws-bedrock-flow) — inline prompt nodes accept a profile ID/ARN as their model
+- [**AWS Bedrock Model Access**](/infra-catalog/aws-bedrock-model-access) — the marketplace agreement the underlying model may require

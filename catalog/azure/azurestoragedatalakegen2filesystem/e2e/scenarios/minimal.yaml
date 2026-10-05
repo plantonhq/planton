@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurestoragedatalakegen2filesystem
+    e2e-catalog-kind: azurestoragedatalakegen2filesystem
   annotations:
     planton.dev/e2e: "true"
     # Scenario-local account (minimal-account.yaml) instead of a registry

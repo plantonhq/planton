@@ -1,5 +1,5 @@
 # GcpIamCustomRole install profile used as a prerequisite by composed
-# components (e.g. GcpProjectIamMember). The E2E harness deploys this role
+# kinds (e.g. GcpProjectIamMember). The E2E harness deploys this role
 # first (via its Pulumi module), captures its outputs, and resolves the
 # dependent's role reference (status.outputs.name) against them. The role id
 # differs from the smoke scenario's so a prerequisite deploy never collides
@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpiamcustomrole
+    e2e-catalog-kind: gcpiamcustomrole
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockGuardrail is a component for creating and managing Amazon
+// AwsBedrockGuardrail is a kind for creating and managing Amazon
 // Bedrock guardrails - content-safety policy sets (content filters, denied
 // topics, word filters, sensitive-information handling, contextual
 // grounding) evaluated on model inputs and outputs, with immutable
@@ -35,7 +35,7 @@ type AwsBedrockGuardrail struct {
 	// kind identifies this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata contains standard resource metadata including name, labels, and annotations.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec defines the desired state of the guardrail.
 	Spec *AwsBedrockGuardrailSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the observed state and outputs from the deployment.
@@ -88,7 +88,7 @@ func (x *AwsBedrockGuardrail) GetKind() string {
 	return ""
 }
 
-func (x *AwsBedrockGuardrail) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsBedrockGuardrail) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,7 +114,7 @@ func (x *AwsBedrockGuardrail) GetStatus() *AwsBedrockGuardrailStatus {
 type AwsBedrockGuardrailStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs contains the values exported from the IaC stack after deployment.
-	Outputs       *AwsBedrockGuardrailStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsBedrockGuardrailOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AwsBedrockGuardrailStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockguardrail_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsBedrockGuardrailStatus) GetOutputs() *AwsBedrockGuardrailStackOutputs {
+func (x *AwsBedrockGuardrailStatus) GetOutputs() *AwsBedrockGuardrailOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_aws_awsbedrockguardrail_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13AwsBedrockGuardrailR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
 	"\x04spec\x18\x04 \x01(\v2E.dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStatusR\x06status\"\x84\x01\n" +
-	"\x19AwsBedrockGuardrailStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStackOutputsR\aoutputsB\xf4\x02\n" +
+	"\x06status\x18\x05 \x01(\v2G.dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStatusR\x06status\"\x7f\n" +
+	"\x19AwsBedrockGuardrailStatus\x12b\n" +
+	"\aoutputs\x18\x01 \x01(\v2H.dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailOutputsR\aoutputsB\xf4\x02\n" +
 	"0com.dev.planton.aws.awsbedrockguardrail.v1alpha1B\bApiProtoP\x01Zagithub.com/plantonhq/planton/catalog/aws/awsbedrockguardrail/v1alpha1;awsbedrockguardrailv1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Aws.Awsbedrockguardrail.V1alpha1\xca\x02,Dev\\Planton\\Aws\\Awsbedrockguardrail\\V1alpha1\xe2\x028Dev\\Planton\\Aws\\Awsbedrockguardrail\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Aws::Awsbedrockguardrail::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_aws_awsbedrockguardrail_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awsbedrockguardrail_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbedrockguardrail_v1alpha1_api_proto_goTypes = []any{
-	(*AwsBedrockGuardrail)(nil),             // 0: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrail
-	(*AwsBedrockGuardrailStatus)(nil),       // 1: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsBedrockGuardrailSpec)(nil),         // 3: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailSpec
-	(*AwsBedrockGuardrailStackOutputs)(nil), // 4: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStackOutputs
+	(*AwsBedrockGuardrail)(nil),          // 0: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrail
+	(*AwsBedrockGuardrailStatus)(nil),    // 1: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsBedrockGuardrailSpec)(nil),      // 3: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailSpec
+	(*AwsBedrockGuardrailOutputs)(nil),   // 4: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailOutputs
 }
 var file_catalog_aws_awsbedrockguardrail_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrail.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrail.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrail.spec:type_name -> dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailSpec
 	1, // 2: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrail.status:type_name -> dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStatus
-	4, // 3: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStatus.outputs:type_name -> dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStackOutputs
+	4, // 3: dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailStatus.outputs:type_name -> dev.planton.aws.awsbedrockguardrail.v1alpha1.AwsBedrockGuardrailOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

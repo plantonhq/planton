@@ -32,7 +32,7 @@ const facts = [
   {
     title: 'Compliance Posture',
     description:
-      'Per-component controls mapped to HIPAA, SOC 2, FedRAMP, and CIS requirements, with evidence for what is enforced. Stated plainly, never as a certification.',
+      'Per-kind controls mapped to HIPAA, SOC 2, FedRAMP, and CIS requirements, with evidence for what is enforced. Stated plainly, never as a certification.',
   },
 ];
 
@@ -58,7 +58,7 @@ export const VerifiedBeforeDeploy: FC = () => (
     </Grid>
 
     <Typography className="text-center text-xs text-[#555] mt-8">
-      Coverage grows with the catalog — components without verified data say
+      Coverage grows with the catalog — kinds without verified data say
       so, instead of guessing.
     </Typography>
   </Section>

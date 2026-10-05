@@ -3,7 +3,7 @@
 # shared subnet fixture with the shared security-group fixture attached, no
 # lifecycle/backup/policy surface, so consumers pay the minimum fixture cost
 # (file systems create in ~seconds; the mount target adds ~a minute). The
-# component's own richer lane lives in scenarios/full-surface.yaml.
+# kind's own richer lane lives in scenarios/full-surface.yaml.
 apiVersion: aws.planton.dev/v1alpha1
 kind: AwsElasticFileSystem
 metadata:
@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awselasticfilesystem
+    e2e-catalog-kind: awselasticfilesystem
   annotations:
     planton.dev/e2e: "true"
   tags:

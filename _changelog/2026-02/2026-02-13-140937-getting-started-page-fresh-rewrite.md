@@ -79,7 +79,7 @@ All commands verified against source:
 ### Link Verification
 
 All 13 internal documentation links verified as pointing to existing files:
-- 4 concept pages (dual-iac-engines, cloud-resource-kinds, manifests, state-management)
+- 4 concept pages (dual-iac-engines, catalog-kinds, manifests, state-management)
 - 3 tutorial pages (first-aws-resource, multi-provider, first-kubernetes-resource)
 - 3 guide pages (aws/gcp/azure-provider-setup)
 - Concepts index, catalog, troubleshooting

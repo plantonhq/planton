@@ -1,0 +1,106 @@
+---
+alwaysApply: false
+---
+RULE NUMBER
+018
+
+TITLE
+Forge: Generate Initial Presets for a Kind
+
+ROLE
+You are the Planton Code Partner working inside the developer's local workspace in Cursor. This rule generates 2-3 initial presets (YAML + companion markdown) for a newly forged kind. You have deep cloud infrastructure expertise and understand common real-world deployment patterns.
+
+SCOPE
+- Target directory: `catalog/<provider>/<kindfolder>/presets/` (the kind root)
+- Creates both `.yaml` and `.md` files for each preset
+- Does not modify any existing files
+- Follows conventions from `architecture/presets.md` and the reference kind presets at
+  `catalog/aws/awsalb/presets/` (e.g., `01-internet-facing.yaml` + `.md`)
+
+PREREQUISITES
+- `api.proto` exists (provides `apiVersion` and `kind` constants)
+- `spec.proto` exists (provides field definitions, types, validations, defaults)
+
+SEQUENTIAL STEPS
+
+1) **Read Kind Context**
+   - Read `api.proto`: extract exact `apiVersion` and `kind` constant values from `buf.validate` constraints
+   - Read `spec.proto`: catalog all fields, their types, validations, and default annotations (`recommended_default`, `default`)
+   - Read `architecture/presets.md` and the reference kind presets named in SCOPE: load the preset authoring conventions
+
+2) **Identify Preset Patterns**
+   
+   Analyze `spec.proto` fields to determine which common patterns apply:
+   
+   - **Standard production (rank 01)**: Always created. The "30-second decision" configuration with security-conscious defaults.
+   - **Development/minimal (rank 02)**: Created when the kind has fields that can be meaningfully simplified for dev environments (e.g., fewer replicas, smaller sizes, disabled features).
+   - **Use-case variant (rank 03)**: Created when the kind has boolean or enum fields that produce a meaningfully different deployment pattern (e.g., `internal: true` vs `false` for load balancers).
+   
+   If the kind is simple (3-5 fields, no meaningful variants), create only 1 preset.
+
+3) **Create Each Preset**
+   
+   For each identified pattern:
+   
+   a) **Create the YAML file** at `presets/{rank}-{name}.yaml`:
+      - `apiVersion` and `kind` match `api.proto` constants exactly
+      - `metadata.name` prefixed with `my-`
+      - All `StringValueOrRef` fields use `value:` wrapper with angle-bracket placeholders
+      - Reference-form `StringValueOrRef` examples use the exact `valueFrom` key set
+        `kind` / `name` / `fieldPath` — the sub-key is `fieldPath`, never `field`
+        (a `field:` key fails manifest load with "Unknown field", which only
+        `planton validate` catches; copying a preset with the wrong key propagates
+        the defect to every preset written from it)
+      - **Every preset must pass `planton validate`** — a placeholder must satisfy the
+        field's OWN validation rules. Angle-bracket tokens like `<gcp-region>` fail any
+        pattern/CEL-validated field (a version string, a CIDR, an ARN shape); for
+        those, use a realistic sample value with a `# replace with your ...` comment
+        (e.g. `region: us-central1  # replace`) and note it in the companion MD's
+        Placeholders table. Reserve angle-bracket placeholders for free-form strings
+        and `value:` wrappers.
+      - Fields with `recommended_default` or `default` annotations use the annotated value with a comment
+      - Boolean flags set explicitly based on the use case
+      - No unnecessary quotes -- EXCEPT string values that YAML 1.1 parses as
+        another type: bare `on`/`off`/`yes`/`no` become booleans and break
+        string-typed enum fields (e.g. a DNSSEC state of `on` MUST be `"on"`);
+        quote them and say why in a comment
+   
+   b) **Create the companion MD file** at `presets/{rank}-{name}.md`:
+      - Title (H1)
+      - Description (2-4 sentences)
+      - When to Use (bulleted list)
+      - Key Configuration Choices (bulleted list with field references)
+      - Placeholders to Replace (table: Placeholder, Description, Where to Find)
+      - Related Presets (if multiple presets created)
+
+4) **Self-Validate**
+   - Verify `apiVersion` and `kind` match `api.proto` constants
+   - Verify all required fields are present
+   - Verify all `StringValueOrRef` fields use `value:` wrapper
+   - Verify naming convention: `{NN}-{kebab-case}.yaml` + `.md`
+   - Verify no duplicate ranks
+   - **Run `planton validate-manifest` (CLI built from the working tree) on every
+     preset YAML and confirm each passes.** This is the authoritative check for the
+     placeholder rule above — a `<placeholder>` in a format-validated field, a missing
+     `value:` wrapper, or a wrong enum spelling is invisible to review and caught only
+     by executing the validator.
+
+OUTPUT
+- Confirm number of presets created
+- List each preset with its rank, name, and brief description of the pattern
+- Show the file paths created
+
+SUCCESS
+- At least 1 preset created (rank 01 at minimum)
+- All YAML files have companion MD files
+- All presets follow conventions from `architecture/presets.md`
+- `apiVersion` and `kind` match `api.proto` constants
+- All `StringValueOrRef` fields use `value:` wrapper
+
+NOTES
+- This rule is part of the forge sequence (Phase 7 in the orchestrator)
+- Presets created here are initial drafts -- they can be refined later with `@create-planton-preset`
+- For simple kinds (DNS records, IAM roles), a single preset is sufficient
+- Do NOT force patterns that don't naturally exist for the kind
+- Quality over quantity: 1 excellent preset > 3 mediocre ones
+- When uncertain about a configuration pattern, create fewer presets rather than guessing

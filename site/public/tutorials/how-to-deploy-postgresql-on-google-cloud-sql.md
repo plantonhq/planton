@@ -10,7 +10,7 @@ tags:
   - "postgresql"
   - "cloud-sql"
   - "database"
-  - "cloud-catalog"
+  - "infra-catalog"
 category: "gcp"
 excerpt: "Deploy a production-ready PostgreSQL database on Google Cloud SQL using a single YAML manifest and the Planton CLI."
 ---
@@ -20,13 +20,13 @@ excerpt: "Deploy a production-ready PostgreSQL database on Google Cloud SQL usin
 This tutorial walks you through deploying a fully managed PostgreSQL database on Google Cloud SQL through Planton. You will write a YAML manifest describing the database you want, deploy it with a single CLI command, and verify the outputs you need to connect your applications. By the end, you will have a running Cloud SQL instance with automated backups, high availability, and private networking -- or a lightweight development instance, depending on your needs.
 
 > **Note**: The Planton web console provides a guided creation wizard for Cloud SQL
-> and other Cloud Resources. This tutorial uses the CLI/YAML approach for stability
+> and other Infra Components. This tutorial uses the CLI/YAML approach for stability
 > and reproducibility. The console UI evolves frequently — always check it for the
 > latest experience.
 
 ## What You Will Learn
 
-- What Cloud Resources are and how they relate to the Cloud Catalog
+- What Infra Components are and how they relate to the Infra Catalog
 - How to write a `GcpCloudSql` manifest that deploys a PostgreSQL instance
 - How to deploy infrastructure with `planton apply` and monitor progress in real time
 - How to retrieve deployment outputs (connection name, IP addresses) for application use
@@ -40,9 +40,9 @@ This tutorial walks you through deploying a fully managed PostgreSQL database on
 
 If you plan to use private IP networking (recommended for production), your GCP VPC must have [Private Services Access](https://cloud.google.com/vpc/docs/configure-private-services-access) configured for `servicenetworking.googleapis.com`. Without this, private IP assignment will fail during deployment.
 
-## What Is a Cloud Resource?
+## What Is an Infra Component?
 
-A Cloud Resource is a Planton API resource that represents a piece of cloud infrastructure -- a database, a cluster, a storage bucket, or any of the 270+ resource types in the Cloud Catalog. You define it in a YAML manifest, apply it with `planton apply`, and Planton provisions it in your cloud account using your provider connection. For more on Cloud Resources and the Cloud Catalog, see the [infrastructure documentation](/docs/infrastructure/cloud-resources).
+An Infra Component is a Planton API resource that represents a piece of cloud infrastructure -- a database, a cluster, a storage bucket, or any of the 270+ resource types in the Infra Catalog. You define it in a YAML manifest, apply it with `planton apply`, and Planton provisions it in your cloud account using your provider connection. For more on Infra Components and the Infra Catalog, see the [infrastructure documentation](/docs/infrastructure/infra-components).
 
 ## Step 1: Write the Cloud SQL Manifest
 
@@ -95,7 +95,7 @@ The key fields in this manifest:
 - **`high_availability.enabled`**: Creates a standby instance in a different zone for automatic failover. Roughly doubles compute cost -- omit for development.
 - **`backup.enabled` / `start_time` / `retention_days`**: Automated daily backups with point-in-time recovery. `start_time` is UTC HH:MM format. Retention range: 1-365 days.
 
-The `project_id` and `vpc_id` fields use a nested `value` key because they also support a `variable` reference to a Planton variable or a `value_from` reference to another Cloud Resource's outputs.
+The `project_id` and `vpc_id` fields use a nested `value` key because they also support a `variable` reference to a Planton variable or a `value_from` reference to another Infra Component's outputs.
 
 ## Step 2: Deploy with `planton apply`
 
@@ -123,12 +123,12 @@ planton apply -f cloud-sql.yaml
 The CLI prints the deployment job ID immediately. You can check on it later with:
 
 ```bash
-planton follow <stack-job-id>
+planton follow <infra-job-id>
 ```
 
 ## Step 3: Verify the Deployment
 
-After the deployment completes, retrieve the Cloud Resource to see its status and outputs:
+After the deployment completes, retrieve the Infra Component to see its status and outputs:
 
 ```bash
 planton get GcpCloudSql app-database -o yaml
@@ -149,7 +149,7 @@ The `connectionName` is the most important output. It is the identifier you use 
 To list all deployment jobs for this resource:
 
 ```bash
-planton stack-job list <cloud-resource-id>
+planton infra job list <infra-component-id>
 ```
 
 ## Development Configuration
@@ -220,4 +220,4 @@ Your PostgreSQL database is now running on Google Cloud SQL. From here:
 
 - **Connect your application** using the `connectionName` output. For applications running on GCP, the [Cloud SQL Auth Proxy](https://cloud.google.com/sql/docs/postgres/sql-proxy) provides secure, IAM-authenticated connections without managing SSL certificates or authorized networks. For applications outside GCP, connect directly using the public or private IP with the appropriate credentials.
 - **Set the root password** for the `postgres` user. Cloud SQL creates the user without a password by default. Use `gcloud sql users set-password postgres --instance=app-database --password=your-secure-password` or set it through the GCP Console.
-- **Explore other GCP resources** in the Cloud Catalog. The same `planton apply` workflow you used here works for GKE clusters, GCS buckets, Cloud Run services, VPCs, and dozens of other GCP resource types.
+- **Explore other GCP resources** in the Infra Catalog. The same `planton apply` workflow you used here works for GKE clusters, GCS buckets, Cloud Run services, VPCs, and dozens of other GCP resource types.

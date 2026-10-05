@@ -4,8 +4,8 @@ package dev.planton.kubernetes.kubernetesraycluster.v1alpha1;
 
 import "catalog/kubernetes/kubernetes.proto";
 
-//ray-cluster-kubernetes stack outputs
-message KubernetesRayClusterStackOutputs {
+//ray-cluster-kubernetes outputs
+message KubernetesRayClusterOutputs {
   //namespace the cluster runs in.
   string namespace = 1;
 

@@ -11,7 +11,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpcloudbuildrepository
+    e2e-catalog-kind: gcpcloudbuildrepository
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_GITHUB_APP_INSTALLATION_ID,PLANTON_E2E_GCP_GITHUB_TOKEN_SECRET_VERSION,PLANTON_E2E_GCP_GITHUB_REPO_URI

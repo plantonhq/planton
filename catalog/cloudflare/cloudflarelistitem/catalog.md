@@ -4,7 +4,7 @@ Adds a single entry to a Cloudflare List. Items have independent lifecycles, so 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **List Item** -- one entry written into the referenced list, of the shape that matches the list's kind
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Account Filter Lists edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Account Filter Lists edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **A parent List** -- a CloudflareList to write into. Reference it (recommended) so Planton orders creation and renders the dependency, or supply a literal list ID for a list managed elsewhere. The parent must be an empty container: a list that declares inline items and List Item resources are competing writers that overwrite each other.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
@@ -52,7 +52,7 @@ spec:
 planton apply -f cloudflare-list-item.yaml
 ```
 
-This adds the `203.0.113.0/24` CIDR to the `office-ips` list, referencing the list's output so the dependency is wired automatically. A Stack Job tracks the provisioning in real time.
+This adds the `203.0.113.0/24` CIDR to the `office-ips` list, referencing the list's output so the dependency is wired automatically. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ These are the most important decisions when configuring a list item. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareList** | `listId` | `status.outputs.list_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -110,4 +110,4 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Cloudflare List**](/cloud-catalog/cloudflare-list) -- the parent container this entry is written into (via `listId`)
+- [**Cloudflare List**](/infra-catalog/cloudflare-list) -- the parent container this entry is written into (via `listId`)

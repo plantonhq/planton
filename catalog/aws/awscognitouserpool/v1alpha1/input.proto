@@ -5,9 +5,9 @@ package dev.planton.aws.awscognitouserpool.v1alpha1;
 import "catalog/aws/awscognitouserpool/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// aws-cognito-user-pool stack-input
-message AwsCognitoUserPoolStackInput {
-  // target cloud-resource
+// aws-cognito-user-pool iac-input
+message AwsCognitoUserPoolIacInput {
+  // the catalog object to deploy
   AwsCognitoUserPool target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

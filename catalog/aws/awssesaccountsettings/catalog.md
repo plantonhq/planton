@@ -4,7 +4,7 @@ Manages the account-level SES settings for one AWS region: the account suppressi
 
 ## What Gets Created
 
-This component creates nothing new at AWS — it adopts the region's existing SES account object and configures its account-wide attributes:
+This kind creates nothing new at AWS — it adopts the region's existing SES account object and configures its account-wide attributes:
 
 - **Suppression List Posture** — which events (hard bounces, spam complaints) automatically add recipient addresses to the account-level suppression list, skipping them on every future send from the account.
 - **VDM Posture** — whether the Virtual Deliverability Manager is enabled, with its engagement-metrics dashboard and Guardian delivery-optimization sub-toggles.
@@ -13,7 +13,7 @@ This component creates nothing new at AWS — it adopts the region's existing SE
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with SES account-level permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with SES account-level permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -48,7 +48,7 @@ spec:
 planton apply -f ses-account-settings.yaml
 ```
 
-This sets the region's account-wide suppression posture: hard-bounced and complaining addresses are automatically suppressed and skipped on every future send from the account. A Stack Job tracks the provisioning in real time.
+This sets the region's account-wide suppression posture: hard-bounced and complaining addresses are automatically suppressed and skipped on every future send from the account. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -68,11 +68,11 @@ These are the most important decisions when configuring SES account settings. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — it configures the region's own SES account object, which needs no reference to locate.
+This kind has no foreign key dependencies — it configures the region's own SES account object, which needs no reference to locate.
 
-### What This Component Provides
+### What This Kind Provides
 
 `status.outputs` contains a single value: `account_id`, the 12-digit AWS account ID the settings belong to (also the provider's import ID for the suppression singleton). It is an identity echo for auditing and imports, not a composition input — downstream components compose with identities and configuration sets, never with the account settings.
 
@@ -88,5 +88,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS SES Email Identity**](/cloud-catalog/aws-ses-email-identity) — the verified domains and addresses whose sends the account-wide suppression list protects
-- [**AWS SES Configuration Set**](/cloud-catalog/aws-ses-configuration-set) — per-stream sending configuration that can layer its own suppression overrides on top of the account posture
+- [**AWS SES Email Identity**](/infra-catalog/aws-ses-email-identity) — the verified domains and addresses whose sends the account-wide suppression list protects
+- [**AWS SES Configuration Set**](/infra-catalog/aws-ses-configuration-set) — per-stream sending configuration that can layer its own suppression overrides on top of the account posture

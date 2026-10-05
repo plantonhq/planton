@@ -5,10 +5,10 @@ package dev.planton.azure.azuredataprotectionresourceguard.v1alpha1;
 import "catalog/azure/azuredataprotectionresourceguard/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureDataProtectionResourceGuardStackInput is the input to the IaC
+// AzureDataProtectionResourceGuardIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-message AzureDataProtectionResourceGuardStackInput {
+message AzureDataProtectionResourceGuardIacInput {
   // The Data Protection Resource Guard resource to deploy.
   AzureDataProtectionResourceGuard target = 1;
 

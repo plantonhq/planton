@@ -5,8 +5,8 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output constants define the keys for stack outputs exported by this
-// module, mirroring KubernetesHelmReleaseStackOutputs. The Terraform module
+// Output constants define the keys for outputs exported by this
+// module, mirroring KubernetesHelmReleaseOutputs. The Terraform module
 // exports the identical set from the helm_release resource's metadata.
 const (
 	// OpNamespace is the namespace the release is installed in.

@@ -4,7 +4,7 @@ Deploys an AWS Backup vault — the encrypted container recovery points live in 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Backup Vault** — a standard vault encrypted with the AWS Backup service key, or the KMS key named in `kmsKeyArn` (created when the `standard` arm is set)
 - **Logically Air-Gapped Vault** — an immutably retained vault whose recovery points cannot be manually deleted; they age out by retention (created when the `airGapped` arm is set)
@@ -16,7 +16,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with AWS Backup permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with AWS Backup permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f backup-vault.yaml
 ```
 
-This creates a standard vault named `app-backups`, encrypted with the AWS Backup service key, with a governance-mode Vault Lock holding every recovery point between 30 and 365 days. A Stack Job tracks the provisioning in real time.
+This creates a standard vault named `app-backups`, encrypted with the AWS Backup service key, with a governance-mode Vault Lock holding every recovery point between 30 and 365 days. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,7 +88,7 @@ These are the most important decisions when configuring a backup vault. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -96,9 +96,9 @@ These are the most important decisions when configuring a backup vault. Explore 
 | **AwsKmsKey** | `airGapped.encryptionKeyArn` | `status.outputs.key_arn` |
 | **AwsSnsTopic** | `standard.notifications.snsTopicArn` | `status.outputs.topic_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -117,6 +117,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Backup Plan**](/cloud-catalog/aws-backup-plan) — rules target this vault by name; copy actions and air-gapped targeting use its ARN
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption for either vault arm, wired via `kmsKeyArn` or `encryptionKeyArn`
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) — the destination for vault event notifications on standard vaults
+- [**AWS Backup Plan**](/infra-catalog/aws-backup-plan) — rules target this vault by name; copy actions and air-gapped targeting use its ARN
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption for either vault arm, wired via `kmsKeyArn` or `encryptionKeyArn`
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) — the destination for vault event notifications on standard vaults

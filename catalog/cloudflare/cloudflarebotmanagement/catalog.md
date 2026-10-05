@@ -4,7 +4,7 @@ Manages a zone's Bot Management configuration: the singleton switchboard decidin
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Bot Management Configuration** — one `cloudflare_bot_management` on the zone. The surface is a zone singleton: Cloudflare's identity for it is the zone ID, create adopts whatever configuration the zone already carries, and only the fields you set produce an API write.
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module whose API token carries **Zone → Bot Management → Edit**. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module whose API token carries **Zone → Bot Management → Edit**. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
@@ -48,7 +48,7 @@ spec:
 planton apply -f bot-management.yaml
 ```
 
-This turns on Bot Fight Mode and touches nothing else — every other Bot Management field stays exactly as the zone had it. The `enableJs: true` pair is required when enabling Fight Mode on a zone whose JavaScript detections are off — Cloudflare rejects Fight Mode alone with "cannot enable Fight_Mode while EnableJS is disabled". A Stack Job tracks the provisioning in real time.
+This turns on Bot Fight Mode and touches nothing else — every other Bot Management field stays exactly as the zone had it. The `enableJs: true` pair is required when enabling Fight Mode on a zone whose JavaScript detections are off — Cloudflare rejects Fight Mode alone with "cannot enable Fight_Mode while EnableJS is disabled". An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,13 +87,13 @@ These are the most important decisions when configuring Bot Management. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 This component's `status.outputs` only echoes the managed zone's ID back (`zone_id`) — the Bot Management configuration is a zone singleton whose identity is the zone itself, so there is nothing new for downstream resources to consume.
 
@@ -109,6 +109,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — the zone this manages; its plan gates the SBFM and Enterprise fields
-- [**Cloudflare Ruleset**](/cloud-catalog/cloudflare-ruleset) — skip rules for verified-bot exceptions under `contentBotsProtection`
-- [**Cloudflare IP Access Rule**](/cloud-catalog/cloudflare-ip-access-rule) — a static IP/ASN/country decision when scored bot traffic is the wrong tool
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — the zone this manages; its plan gates the SBFM and Enterprise fields
+- [**Cloudflare Ruleset**](/infra-catalog/cloudflare-ruleset) — skip rules for verified-bot exceptions under `contentBotsProtection`
+- [**Cloudflare IP Access Rule**](/infra-catalog/cloudflare-ip-access-rule) — a static IP/ASN/country decision when scored bot traffic is the wrong tool

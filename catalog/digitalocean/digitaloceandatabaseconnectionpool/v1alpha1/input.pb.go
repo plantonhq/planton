@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// digital-ocean-database-connection-pool stack-input
-type DigitalOceanDatabaseConnectionPoolStackInput struct {
+// digital-ocean-database-connection-pool iac-input
+type DigitalOceanDatabaseConnectionPoolIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *DigitalOceanDatabaseConnectionPool `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type DigitalOceanDatabaseConnectionPoolStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDatabaseConnectionPoolStackInput) Reset() {
-	*x = DigitalOceanDatabaseConnectionPoolStackInput{}
+func (x *DigitalOceanDatabaseConnectionPoolIacInput) Reset() {
+	*x = DigitalOceanDatabaseConnectionPoolIacInput{}
 	mi := &file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDatabaseConnectionPoolStackInput) String() string {
+func (x *DigitalOceanDatabaseConnectionPoolIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDatabaseConnectionPoolStackInput) ProtoMessage() {}
+func (*DigitalOceanDatabaseConnectionPoolIacInput) ProtoMessage() {}
 
-func (x *DigitalOceanDatabaseConnectionPoolStackInput) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDatabaseConnectionPoolIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *DigitalOceanDatabaseConnectionPoolStackInput) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDatabaseConnectionPoolStackInput.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDatabaseConnectionPoolStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDatabaseConnectionPoolIacInput.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDatabaseConnectionPoolIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDatabaseConnectionPoolStackInput) GetTarget() *DigitalOceanDatabaseConnectionPool {
+func (x *DigitalOceanDatabaseConnectionPoolIacInput) GetTarget() *DigitalOceanDatabaseConnectionPool {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *DigitalOceanDatabaseConnectionPoolStackInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
+func (x *DigitalOceanDatabaseConnectionPoolIacInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_input_
 
 const file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Lcatalog/digitalocean/digitaloceandatabaseconnectionpool/v1alpha1/input.proto\x12Ddev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1\x1aJcatalog/digitalocean/digitaloceandatabaseconnectionpool/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\x90\x02\n" +
-	",DigitalOceanDatabaseConnectionPoolStackInput\x12\x80\x01\n" +
+	"Lcatalog/digitalocean/digitaloceandatabaseconnectionpool/v1alpha1/input.proto\x12Ddev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1\x1aJcatalog/digitalocean/digitaloceandatabaseconnectionpool/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\x8e\x02\n" +
+	"*DigitalOceanDatabaseConnectionPoolIacInput\x12\x80\x01\n" +
 	"\x06target\x18\x01 \x01(\v2h.dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1.DigitalOceanDatabaseConnectionPoolR\x06target\x12]\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v24.dev.planton.digitalocean.DigitalOceanProviderConfigR\x0eproviderConfigB\x96\x04\n" +
 	"Hcom.dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_input
 
 var file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_input_proto_goTypes = []any{
-	(*DigitalOceanDatabaseConnectionPoolStackInput)(nil), // 0: dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1.DigitalOceanDatabaseConnectionPoolStackInput
-	(*DigitalOceanDatabaseConnectionPool)(nil),           // 1: dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1.DigitalOceanDatabaseConnectionPool
-	(*digitalocean.DigitalOceanProviderConfig)(nil),      // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
+	(*DigitalOceanDatabaseConnectionPoolIacInput)(nil), // 0: dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1.DigitalOceanDatabaseConnectionPoolIacInput
+	(*DigitalOceanDatabaseConnectionPool)(nil),         // 1: dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1.DigitalOceanDatabaseConnectionPool
+	(*digitalocean.DigitalOceanProviderConfig)(nil),    // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
 }
 var file_catalog_digitalocean_digitaloceandatabaseconnectionpool_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1.DigitalOceanDatabaseConnectionPoolStackInput.target:type_name -> dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1.DigitalOceanDatabaseConnectionPool
-	2, // 1: dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1.DigitalOceanDatabaseConnectionPoolStackInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
+	1, // 0: dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1.DigitalOceanDatabaseConnectionPoolIacInput.target:type_name -> dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1.DigitalOceanDatabaseConnectionPool
+	2, // 1: dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1.DigitalOceanDatabaseConnectionPoolIacInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

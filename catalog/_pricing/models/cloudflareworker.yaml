@@ -1,15 +1,15 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. All four presets are genuinely zero-committed: a deployed
-# Worker with no traffic costs $0 per the component's own cost profile --
+# Worker with no traffic costs $0 per the kind's own cost profile --
 # requests and CPU meter on invocations, log events on logged invocations,
 # binding usage on the bound services -- and none of the presets schedules a
 # cron or pins plan spend. Stated in exclusions, never padded into
-# fabricated dollars. Schema: finops/componentcostestimatemodel/v1.
+# fabricated dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: cloudflareworker
 spec:

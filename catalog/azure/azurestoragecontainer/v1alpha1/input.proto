@@ -5,9 +5,9 @@ package dev.planton.azure.azurestoragecontainer.v1alpha1;
 import "catalog/azure/azurestoragecontainer/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-storage-container stack-input
-message AzureStorageContainerStackInput {
-  //target cloud-resource
+//azure-storage-container iac-input
+message AzureStorageContainerIacInput {
+  // the catalog object to deploy
   AzureStorageContainer target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

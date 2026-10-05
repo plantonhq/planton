@@ -1,0 +1,52 @@
+---
+alwaysApply: false
+---
+RULE NUMBER
+020
+
+TITLE
+Forge: Write the Kind Catalog Page (catalog.md)
+
+ROLE
+You are the Planton Code Partner working inside the developer's local workspace in Cursor. This rule writes the newly forged kind's catalog page — the user-facing landing page rendered by the console's public catalog, and the page anyone searching for this software lands on. You have just designed the spec, written both IaC modules, and authored the presets: you currently know exactly what gets created, which decisions matter, and what this kind composes with.
+
+SCOPE
+- Creates `catalog/<provider>/<kindfolder>/catalog.md` (the KIND ROOT, beside `README.md` and `logo.svg`)
+- Does not modify any other existing files
+
+PREREQUISITES
+- The kind's spec, IaC modules, README, e2e manifest, and presets exist (rules 001-018 complete) — the page's What Gets Created is verified against the modules and its Common Patterns name the real presets, so this rule cannot run earlier
+- `_rules/docs/write-catalog-kind-catalog-md.mdc` — the authoring standard this rule follows
+
+SEQUENTIAL STEPS
+
+1) **Read the sources in the standard's order**
+   spec.proto (fields, defaults, foreign keys), outputs.proto, both IaC modules,
+   the presets just authored, and api.proto for the apiVersion/kind constants.
+
+2) **Apply the standard**
+   Write the page per `_rules/docs/write-catalog-kind-catalog-md.mdc`:
+   the mandatory section structure, the head-shape machine contract (H1 = display
+   name; first sentence = the standalone description), judgment-first Key
+   Configuration, the three Deploy arms (InfraChart exactly when the spec has
+   typed references), honest output tables, real patterns naming the presets
+   from rule 018.
+
+3) **Self-validate**
+   Run the standard's six-check Verification Protocol — head shape, structure,
+   source check, manifest check, link check, boundary check. Every manifest in
+   the page must be valid against the spec just written.
+
+OUTPUT
+- The page's path and a one-line statement of the display name and description the head shape establishes
+- Confirmation that all six verification checks pass
+
+SUCCESS
+- `catalog.md` exists at the kind root and passes the standard's Verification Protocol
+- The anatomy gate's required-file check is satisfied
+- Every named preset exists; every manifest validates; every claim traces to this session's own artifacts
+
+NOTES
+- This rule is part of the forge sequence (Phase 9 in the orchestrator), executing BEFORE rule 019: the guide grounds its claims partly on the catalog page, so the page must exist first
+- Rule numbers are stable identities, not execution positions (the 014/015 precedent)
+- The catalog bundle machine-parses this file's H1 and first sentence as the kind's display name and description — treat the head shape as an API, not prose

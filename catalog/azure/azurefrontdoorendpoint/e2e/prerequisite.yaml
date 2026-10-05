@@ -1,5 +1,5 @@
 # AzureFrontDoorEndpoint install profile used as a prerequisite by
-# composed components (AzureFrontDoorRoute, declared via prerequisites in
+# composed kinds (AzureFrontDoorRoute, declared via prerequisites in
 # the kind registry). The harness deploys this endpoint after the fixture
 # profile (the endpoint's own registry prerequisite), then resolves the
 # route's endpoint_id reference against its endpoint_id output.
@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurefrontdoorendpoint
+    e2e-catalog-kind: azurefrontdoorendpoint
   annotations:
     planton.dev/e2e: "true"
   tags:

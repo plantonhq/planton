@@ -4,7 +4,7 @@ Deploys a Compute Engine virtual machine with configurable machine type, boot di
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine Instance** -- a virtual machine in the specified GCP project and zone, configured with the chosen machine type, boot source, and network interfaces
 - **Boot Disk** -- initialized from exactly one source: an OS image (fresh install), a snapshot (restore), or an existing bootable GcpComputeDisk; with configurable size, type (pd-standard, pd-balanced, pd-ssd, hyperdisk types), CMEK encryption, and auto-delete behavior
@@ -19,15 +19,15 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the Compute Engine instance will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the Compute Engine instance will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **Compute Engine API** enabled in the target project.
-- **VPC network and subnet** in the target project and region. Provide the network or subnet self-link directly or reference GcpVpcNetwork and GcpSubnetwork Cloud Resources via ValueFromRef.
-- **GCP service account** (recommended) -- a dedicated service account following least-privilege principles, referenced directly or via ValueFromRef to a GcpServiceAccount Cloud Resource.
+- **VPC network and subnet** in the target project and region. Provide the network or subnet self-link directly or reference GcpVpcNetwork and GcpSubnetwork Infra Components via ValueFromRef.
+- **GCP service account** (recommended) -- a dedicated service account following least-privilege principles, referenced directly or via ValueFromRef to a GcpServiceAccount Infra Component.
 - **For CMEK disks** -- the Compute Engine service agent must hold `roles/cloudkms.cryptoKeyEncrypterDecrypter` on the referenced GcpKmsKey.
 
 ## Deploy
@@ -66,7 +66,7 @@ spec:
 planton apply -f compute-instance.yaml
 ```
 
-This creates a Debian 12 VM with 2 vCPU, 8 GB RAM, 50 GB SSD boot disk, and no external IP; Spot VM scheduling, service account, and deletion protection are not configured. A Stack Job tracks the provisioning in real time.
+This creates a Debian 12 VM with 2 vCPU, 8 GB RAM, 50 GB SSD boot disk, and no external IP; Spot VM scheduling, service account, and deletion protection are not configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -111,11 +111,11 @@ These are the most important decisions when configuring a Compute Engine instanc
 
 **Security** -- `shieldedInstanceConfig` hardens the boot chain (secure boot is the deliberate opt-in), `confidentialInstanceConfig` enables hardware memory encryption (supported machine families only; requires `onHostMaintenance: TERMINATE`), CMEK keys apply at every level (per-disk `kmsKey`, encrypted image/snapshot sources, and instance-level `instanceEncryptionKey`), and `deletionProtection` guards the VM object -- the data levers remain the disks' own lifecycles, and `deletionPolicy: PREVENT`/`ABANDON` controls what a destroy may do.
 
-**Service account** -- Bind a dedicated `serviceAccount.email` with the single cloud-platform scope instead of the default Compute Engine service account. Reference a GcpServiceAccount Cloud Resource via ValueFromRef.
+**Service account** -- Bind a dedicated `serviceAccount.email` with the single cloud-platform scope instead of the default Compute Engine service account. Reference a GcpServiceAccount Infra Component via ValueFromRef.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -129,9 +129,9 @@ These are the most important decisions when configuring a Compute Engine instanc
 | **GcpAddress** (optional) | `networkInterfaces[].networkIp` (INTERNAL), `networkInterfaces[].accessConfigs[].natIp` (EXTERNAL) | `status.outputs.address` |
 | **GcpServiceAccount** (optional) | `serviceAccount.email` | `status.outputs.email` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -155,9 +155,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the instance is created
-- [**GCP Compute Disk**](/cloud-catalog/gcp-compute-disk) -- provides durable boot and data disks that survive the instance
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- provides the VPC network for instance networking
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- provides the subnet for instance placement
-- [**GCP Address**](/cloud-catalog/gcp-address) -- provides reserved static internal and external IPs
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- provides the runtime identity for the instance
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the instance is created
+- [**GCP Compute Disk**](/infra-catalog/gcp-compute-disk) -- provides durable boot and data disks that survive the instance
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC network for instance networking
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- provides the subnet for instance placement
+- [**GCP Address**](/infra-catalog/gcp-address) -- provides reserved static internal and external IPs
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- provides the runtime identity for the instance

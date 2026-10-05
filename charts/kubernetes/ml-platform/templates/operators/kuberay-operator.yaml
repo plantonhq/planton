@@ -2,7 +2,7 @@
 # The KubeRay operator — the controller that turns this chart's Ray
 # cluster declaration into running head and worker pods. It JOINS the
 # platform's namespace (it is part of this stack's compute story) and
-# watches EVERY namespace — the component's default and upstream's normal
+# watches EVERY namespace — the kind's default and upstream's normal
 # one-operator-per-cluster posture; fencing the watch would only invite
 # the silently-ignored-declaration trap on the next Ray cluster someone
 # declares elsewhere.

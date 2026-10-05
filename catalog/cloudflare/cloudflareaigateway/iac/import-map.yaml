@@ -1,12 +1,12 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflareaigateway
 spec:
   # The gateway imports as {account_id}/{gateway_id} (the id is the
   # user-chosen URL slug). Each managed dynamic route imports as
   # {account_id}/{gateway_id}/{route_id}, keyed by route name in the
-  # dynamic_route_ids stack output.
+  # dynamic_route_ids output.
   values:
     - name: account_id
       derivations:
@@ -17,14 +17,14 @@ spec:
         id field).
     - name: gateway_id
       derivations:
-        - from_stack_output: gateway_id
+        - from_output: gateway_id
       where_to_find: >-
         Cloudflare dashboard -> AI -> AI Gateway (the gateway's slug), or
         `GET /accounts/<account_id>/ai-gateway/gateways` on the Cloudflare
         v4 API (the id field).
     - name: route_id
       derivations:
-        - from_stack_output_keyed_by_address: dynamic_route_ids
+        - from_output_keyed_by_address: dynamic_route_ids
       where_to_find: >-
         `GET /accounts/<account_id>/ai-gateway/gateways/<gateway_id>/routes`
         on the Cloudflare v4 API (the id field of the route matching the

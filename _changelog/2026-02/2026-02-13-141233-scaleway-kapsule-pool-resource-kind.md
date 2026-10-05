@@ -53,8 +53,8 @@ Optional fields cover autoscaling, autohealing, container runtime, root volume, 
 **Proto schemas** (`apis/dev/planton/provider/scaleway/scalewaykapsulepool/v1/`):
 - `api.proto` -- Resource wrapper with api_version and kind constants
 - `spec.proto` -- Full spec with labels, taints, and comprehensive documentation
-- `stack_input.proto` -- StackInput (target + ScalewayProviderConfig)
-- `stack_outputs.proto` -- Outputs: pool_id, pool_version, current_size
+- `iac_input.proto` -- IacInput (target + ScalewayProviderConfig)
+- `outputs.proto` -- Outputs: pool_id, pool_version, current_size
 
 **Pulumi Go module** (`iac/pulumi/`):
 - `main.go` -- Entry point
@@ -72,8 +72,8 @@ Optional fields cover autoscaling, autohealing, container runtime, root volume, 
 - `provider.tf` -- Scaleway provider config
 
 **Documentation**:
-- `README.md` -- Overview, CCM tag explanation, dependencies, constraints, infra chart composition
-- `examples.md` -- 5 examples: basic, autoscaling, GPU with taints, multi-pool, infra chart composition
+- `README.md` -- Overview, CCM tag explanation, dependencies, constraints, Infra Chart composition
+- `examples.md` -- 5 examples: basic, autoscaling, GPU with taints, multi-pool, Infra Chart composition
 
 **Tests**:
 - `spec_test.go` -- Proto validation tests (valid/invalid inputs, taint field validation)
@@ -90,7 +90,7 @@ In Pulumi (Go), tags are built as `[]string` in `initializeLocals()`. In Terrafo
 
 ### Infra Chart Composability
 
-The pool satisfies the infra chart checklist:
+The pool satisfies the Infra Chart checklist:
 - **Input**: `cluster_id` as `StringValueOrRef` → `ScalewayKapsuleCluster.status.outputs.cluster_id`
 - **Outputs**: `pool_id`, `pool_version`, `current_size` -- all useful for monitoring and management
 - **Layer**: Layer 3 in kapsule-environment (below cluster, above K8s addons)
@@ -101,13 +101,13 @@ The pool satisfies the infra chart checklist:
 - **Provider consistency**: Same first-class label/taint experience as DigitalOcean and AWS node pools
 - **Production-ready**: Autoscaling, autohealing, zone placement, upgrade policies, and placement groups
 - **Power-user escape hatch**: `kubelet_args` field for advanced Kubernetes node configuration
-- **Infra chart ready**: StringValueOrRef wiring enables dependency-aware composition
+- **Infra Chart ready**: StringValueOrRef wiring enables dependency-aware composition
 
 ## Impact
 
 - **8 of 19** Scaleway resource kinds now implemented
 - Completes the Kubernetes layer: cluster (R07) + additional pools (R08)
-- Enables the `kapsule-environment` infra chart to template multi-pool architectures
+- Enables the `kapsule-environment` Infra Chart to template multi-pool architectures
 - Establishes the CCM tag abstraction pattern that could be reused if other Scaleway resources need similar tag-based features
 
 ## Related Work

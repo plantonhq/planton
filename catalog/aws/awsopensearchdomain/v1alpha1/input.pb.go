@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-opensearch-domain stack-input
-type AwsOpenSearchDomainStackInput struct {
+// aws-opensearch-domain iac-input
+type AwsOpenSearchDomainIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsOpenSearchDomain `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-credential
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsOpenSearchDomainStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsOpenSearchDomainStackInput) Reset() {
-	*x = AwsOpenSearchDomainStackInput{}
+func (x *AwsOpenSearchDomainIacInput) Reset() {
+	*x = AwsOpenSearchDomainIacInput{}
 	mi := &file_catalog_aws_awsopensearchdomain_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsOpenSearchDomainStackInput) String() string {
+func (x *AwsOpenSearchDomainIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsOpenSearchDomainStackInput) ProtoMessage() {}
+func (*AwsOpenSearchDomainIacInput) ProtoMessage() {}
 
-func (x *AwsOpenSearchDomainStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsOpenSearchDomainIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsopensearchdomain_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsOpenSearchDomainStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsOpenSearchDomainStackInput.ProtoReflect.Descriptor instead.
-func (*AwsOpenSearchDomainStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsOpenSearchDomainIacInput.ProtoReflect.Descriptor instead.
+func (*AwsOpenSearchDomainIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsopensearchdomain_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsOpenSearchDomainStackInput) GetTarget() *AwsOpenSearchDomain {
+func (x *AwsOpenSearchDomainIacInput) GetTarget() *AwsOpenSearchDomain {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsOpenSearchDomainStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsOpenSearchDomainIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awsopensearchdomain_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_aws_awsopensearchdomain_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awsopensearchdomain/v1alpha1/input.proto\x12,dev.planton.aws.awsopensearchdomain.v1alpha1\x1a2catalog/aws/awsopensearchdomain/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc7\x01\n" +
-	"\x1dAwsOpenSearchDomainStackInput\x12Y\n" +
+	"4catalog/aws/awsopensearchdomain/v1alpha1/input.proto\x12,dev.planton.aws.awsopensearchdomain.v1alpha1\x1a2catalog/aws/awsopensearchdomain/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc5\x01\n" +
+	"\x1bAwsOpenSearchDomainIacInput\x12Y\n" +
 	"\x06target\x18\x01 \x01(\v2A.dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomainR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xf6\x02\n" +
 	"0com.dev.planton.aws.awsopensearchdomain.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awsopensearchdomain_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsopensearchdomain_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsopensearchdomain_v1alpha1_input_proto_goTypes = []any{
-	(*AwsOpenSearchDomainStackInput)(nil), // 0: dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomainStackInput
-	(*AwsOpenSearchDomain)(nil),           // 1: dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomain
-	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsOpenSearchDomainIacInput)(nil), // 0: dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomainIacInput
+	(*AwsOpenSearchDomain)(nil),         // 1: dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomain
+	(*aws.AwsProviderConfig)(nil),       // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsopensearchdomain_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomainStackInput.target:type_name -> dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomain
-	2, // 1: dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomainStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomainIacInput.target:type_name -> dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomain
+	2, // 1: dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomainIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

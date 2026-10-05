@@ -34,8 +34,8 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // PublicReportFileName is the page's file name under each provider's
@@ -44,17 +44,17 @@ const PublicReportFileName = "terraform-parity.md"
 
 // PublicReportPath is the repo-root-relative committed location of one
 // provider's parity report page.
-func PublicReportPath(provider cloudresourcekind.CloudResourceProvider) string {
-	return filepath.Join(catalogRoot, crkreflect.ProviderDirName(provider), PublicReportFileName)
+func PublicReportPath(provider catalogkind.CatalogProvider) string {
+	return filepath.Join(catalogRoot, catalogkindreflect.ProviderDirName(provider), PublicReportFileName)
 }
 
 // providerFromName resolves a provider name (the catalog directory name the
 // pages embed, e.g. "gcp" or "digitalocean"; enum names are accepted too)
 // to its enum value -- the drift gate uses it to turn a page's embedded
 // parameters back into a generation input.
-func providerFromName(name string) (cloudresourcekind.CloudResourceProvider, error) {
-	provider := crkreflect.ProviderFromString(name)
-	if provider == cloudresourcekind.CloudResourceProvider_cloud_resource_provider_unspecified {
+func providerFromName(name string) (catalogkind.CatalogProvider, error) {
+	provider := catalogkindreflect.ProviderFromString(name)
+	if provider == catalogkind.CatalogProvider_catalog_provider_unspecified {
 		return 0, errors.Errorf("unknown cloud provider %q", name)
 	}
 	return provider, nil
@@ -66,8 +66,8 @@ func providerFromName(name string) (cloudresourcekind.CloudResourceProvider, err
 // falls back to upper-casing, the registry display names' own style for
 // initialisms (GCP, AWS).
 func providerDisplayName(name string) string {
-	provider := crkreflect.ProviderFromString(name)
-	if meta, err := crkreflect.ProviderMetaOf(provider); err == nil && meta.DisplayName != "" {
+	provider := catalogkindreflect.ProviderFromString(name)
+	if meta, err := catalogkindreflect.ProviderMetaOf(provider); err == nil && meta.DisplayName != "" {
 		return meta.DisplayName
 	}
 	return strings.ToUpper(name)
@@ -93,7 +93,7 @@ func ParseReportParams(page string) (providerName, gaSchema string, err error) {
 // markdown. This is the ONE composition the CLI's --write-report and the
 // drift gate both call, so the committed page and the check can never
 // disagree.
-func GeneratePublicReport(repoRoot string, provider cloudresourcekind.CloudResourceProvider, schemas map[string]*Schema, gaSchema, dispositionsPath, admissionsDir string) (string, error) {
+func GeneratePublicReport(repoRoot string, provider catalogkind.CatalogProvider, schemas map[string]*Schema, gaSchema, dispositionsPath, admissionsDir string) (string, error) {
 	rep, err := BuildReport(repoRoot, provider, schemas)
 	if err != nil {
 		return "", err

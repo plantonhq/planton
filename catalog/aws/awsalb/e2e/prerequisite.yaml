@@ -1,4 +1,4 @@
-# AwsAlb install profile used as a prerequisite by composed components (a
+# AwsAlb install profile used as a prerequisite by composed kinds (a
 # listener attaches to it by ARN). The harness deploys it after the AwsVpc
 # and two-AZ AwsSubnet prerequisites, resolving each subnets entry against
 # the specific subnet instance it names, and captures load_balancer_arn for
@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsalb
+    e2e-catalog-kind: awsalb
   annotations:
     planton.dev/e2e: "true"
   tags:

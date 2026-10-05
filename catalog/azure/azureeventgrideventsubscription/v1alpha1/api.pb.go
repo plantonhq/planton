@@ -36,7 +36,7 @@ type AzureEventgridEventSubscription struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureEventgridEventSubscriptionSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *AzureEventgridEventSubscription) GetKind() string {
 	return ""
 }
 
-func (x *AzureEventgridEventSubscription) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureEventgridEventSubscription) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,10 +114,10 @@ func (x *AzureEventgridEventSubscription) GetStatus() *AzureEventgridEventSubscr
 // Azure Event Grid event subscription deployment.
 type AzureEventgridEventSubscriptionStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-eventgrid-event-subscription stack-outputs
-	Outputs       *AzureEventgridEventSubscriptionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-eventgrid-event-subscription outputs
+	Outputs       *AzureEventgridEventSubscriptionOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -152,7 +152,7 @@ func (*AzureEventgridEventSubscriptionStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventgrideventsubscription_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureEventgridEventSubscriptionStatus) GetOutputs() *AzureEventgridEventSubscriptionStackOutputs {
+func (x *AzureEventgridEventSubscriptionStatus) GetOutputs() *AzureEventgridEventSubscriptionOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -170,11 +170,11 @@ const file_catalog_azure_azureeventgrideventsubscription_v1alpha1_api_proto_rawD
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
 	"\x1fAzureEventgridEventSubscriptionR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12{\n" +
 	"\x04spec\x18\x04 \x01(\v2_.dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12y\n" +
-	"\x06status\x18\x05 \x01(\v2a.dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStatusR\x06status\"\xab\x01\n" +
-	"%AzureEventgridEventSubscriptionStatus\x12\x81\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2g.dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStackOutputsR\aoutputsB\xd4\x03\n" +
+	"\x06status\x18\x05 \x01(\v2a.dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStatusR\x06status\"\xa5\x01\n" +
+	"%AzureEventgridEventSubscriptionStatus\x12|\n" +
+	"\aoutputs\x18\x01 \x01(\v2b.dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionOutputsR\aoutputsB\xd4\x03\n" +
 	">com.dev.planton.azure.azureeventgrideventsubscription.v1alpha1B\bApiProtoP\x01Z{github.com/plantonhq/planton/catalog/azure/azureeventgrideventsubscription/v1alpha1;azureeventgrideventsubscriptionv1alpha1\xa2\x02\x04DPAA\xaa\x02:Dev.Planton.Azure.Azureeventgrideventsubscription.V1alpha1\xca\x02:Dev\\Planton\\Azure\\Azureeventgrideventsubscription\\V1alpha1\xe2\x02FDev\\Planton\\Azure\\Azureeventgrideventsubscription\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Azure::Azureeventgrideventsubscription::V1alpha1b\x06proto3"
 
 var (
@@ -191,17 +191,17 @@ func file_catalog_azure_azureeventgrideventsubscription_v1alpha1_api_proto_rawDe
 
 var file_catalog_azure_azureeventgrideventsubscription_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureeventgrideventsubscription_v1alpha1_api_proto_goTypes = []any{
-	(*AzureEventgridEventSubscription)(nil),             // 0: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscription
-	(*AzureEventgridEventSubscriptionStatus)(nil),       // 1: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStatus
-	(*shared.CloudResourceMetadata)(nil),                // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureEventgridEventSubscriptionSpec)(nil),         // 3: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionSpec
-	(*AzureEventgridEventSubscriptionStackOutputs)(nil), // 4: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStackOutputs
+	(*AzureEventgridEventSubscription)(nil),        // 0: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscription
+	(*AzureEventgridEventSubscriptionStatus)(nil),  // 1: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStatus
+	(*shared.CatalogObjectMetadata)(nil),           // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureEventgridEventSubscriptionSpec)(nil),    // 3: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionSpec
+	(*AzureEventgridEventSubscriptionOutputs)(nil), // 4: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionOutputs
 }
 var file_catalog_azure_azureeventgrideventsubscription_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscription.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscription.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscription.spec:type_name -> dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionSpec
 	1, // 2: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscription.status:type_name -> dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStatus
-	4, // 3: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStatus.outputs:type_name -> dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStackOutputs
+	4, // 3: dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStatus.outputs:type_name -> dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

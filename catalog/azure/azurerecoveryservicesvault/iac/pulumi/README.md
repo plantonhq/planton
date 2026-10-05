@@ -9,7 +9,7 @@ Creates a Recovery Services vault -- the safe that classic Azure Backup data (VM
 - `recoveryservices.Vault` -- the vault
 - `recoveryservices.VaultResourceGuardAssociation` -- created only when `spec.resource_guard_id` is set (Multi-User Authorization; ARM pins the association's name to the literal `VaultProxy`)
 
-## Stack Outputs
+## Outputs
 
 - `recovery_services_vault_id` -- the vault's full ARM ID
 - `recovery_services_vault_name` -- what backup policies and protected items address their vault by

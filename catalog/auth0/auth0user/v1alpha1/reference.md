@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0UserSpec defines the configuration for an Auth0 User.
 In Auth0, a user is an identity that signs in through exactly one connection.
@@ -23,7 +23,7 @@ subject (the `auth0|...` user id, exactly the `sub` claim in every token
 issued for the user) is an output, so other declarations reference the
 identity by output instead of copying a value someone read from a dashboard.
 
-Roles and API permissions are folded into this component: the IaC modules
+Roles and API permissions are folded into this kind: the IaC modules
 create the user AND set its complete role list and permission list in one
 deployment, and both sets are authoritative -- a role or permission removed
 from the manifest is removed from the user on the next apply.
@@ -36,7 +36,7 @@ https://www.pulumi.com/registry/packages/auth0/api-docs/user/
 
 ```yaml
 # Auth0 User Test Manifest
-# This file is used for testing the Auth0User component
+# This file is used for testing the Auth0User kind
 #
 # Prerequisites:
 # 1. Set the following environment variables:

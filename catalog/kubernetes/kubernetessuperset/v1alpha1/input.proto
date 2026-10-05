@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetessuperset.v1alpha1;
 import "catalog/kubernetes/kubernetessuperset/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//superset-kubernetes stack-input
-message KubernetesSupersetStackInput {
-  //target cloud-resource
+//superset-kubernetes iac-input
+message KubernetesSupersetIacInput {
+  // the catalog object to deploy
   KubernetesSuperset target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

@@ -4,7 +4,7 @@ Defines an Istio PeerAuthentication: a namespaced policy that controls whether i
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A PeerAuthentication policy** -- a namespaced Istio policy that tells the mesh how to treat incoming connections to the workloads it selects: require mTLS (Strict), accept either plaintext or mTLS (Permissive), refuse mTLS (Disable), or inherit the surrounding default (Unset). With no workload selector it sets the default for every workload in its namespace (mesh-wide when created in the mesh root namespace); with a selector it applies only to matching pods, overriding any looser namespace default; individual workload ports can override the workload-level mode.
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -50,7 +50,7 @@ spec:
 planton apply -f peer-authentication.yaml
 ```
 
-This requires mutual TLS for every workload in the `prod-apps` namespace. A Stack Job tracks the provisioning in real time.
+This requires mutual TLS for every workload in the `prod-apps` namespace. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,13 +83,13 @@ These are the most important decisions when configuring a PeerAuthentication pol
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
 This component's `status.outputs` only echo the resource's identity back -- `peer_authentication_name` (equals `metadata.name`) and `namespace` (the resolved `spec.namespace`). PeerAuthentication has no controller-reconciled status worth consuming: istiod enforces the policy in the data plane, so there is nothing downstream to wire via ValueFromRef. Order dependent resources through `metadata.relationships` instead.
 
@@ -103,8 +103,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Istio Base CRDs**](/cloud-catalog/kubernetes-istio-base-crds) -- installs the CRDs this policy's API depends on
-- [**Istio**](/cloud-catalog/kubernetes-istio) -- the control plane (istiod) that enforces the policy in the mesh
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace the policy governs
-- [**Istio Authorization Policy**](/cloud-catalog/kubernetes-authorization-policy) -- the natural pairing: PeerAuthentication decides HOW traffic arrives (mTLS), AuthorizationPolicy decides WHO may call
-- [**Istio Request Authentication**](/cloud-catalog/kubernetes-request-authentication) -- end-user JWT validation layered on top of the mTLS transport
+- [**Istio Base CRDs**](/infra-catalog/kubernetes-istio-base-crds) -- installs the CRDs this policy's API depends on
+- [**Istio**](/infra-catalog/kubernetes-istio) -- the control plane (istiod) that enforces the policy in the mesh
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace the policy governs
+- [**Istio Authorization Policy**](/infra-catalog/kubernetes-authorization-policy) -- the natural pairing: PeerAuthentication decides HOW traffic arrives (mTLS), AuthorizationPolicy decides WHO may call
+- [**Istio Request Authentication**](/infra-catalog/kubernetes-request-authentication) -- end-user JWT validation layered on top of the mTLS transport

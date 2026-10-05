@@ -5,9 +5,9 @@
 # object; data bills capacity (at the same rates as blob storage, plus
 # hierarchical-namespace metadata) and every API call bills the Data Lake
 # operation meters, all on the parent storage account at the ACCOUNT's tier
-# and redundancy. Schema: finops/componentcostprofile/v1.
+# and redundancy. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurestoragedatalakegen2filesystem
 spec:

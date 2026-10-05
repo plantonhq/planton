@@ -3,13 +3,13 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesstrimzikafkaoperator.v1alpha1;
 
 /**
- * **KubernetesStrimziKafkaOperatorStackOutputs** — the composition
+ * **KubernetesStrimziKafkaOperatorOutputs** — the composition
  * handles a deployed Strimzi cluster operator exports. The operator
  * has no per-cluster surface of its own; KubernetesKafka resources
  * compose against the CRDs it installs, so the handles here identify
  * the installation rather than any workload.
  */
-message KubernetesStrimziKafkaOperatorStackOutputs {
+message KubernetesStrimziKafkaOperatorOutputs {
   // Namespace the operator runs in.
   string namespace = 1;
 

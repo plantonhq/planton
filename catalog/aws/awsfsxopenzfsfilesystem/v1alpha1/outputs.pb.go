@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsFsxOpenzfsFileSystemStackOutputs captures observable identifiers and
+// AwsFsxOpenzfsFileSystemOutputs captures observable identifiers and
 // endpoints from a provisioned FSx for OpenZFS file system. These outputs are
 // used by downstream resources to wire dependencies via StringValueOrRef.
 //
@@ -34,7 +34,7 @@ const (
 // - Multi-AZ routing: needs `endpoint_ip_address`
 //
 // Mount command: mount -t nfs <dns_name>:/fsx /mnt/fsx
-type AwsFsxOpenzfsFileSystemStackOutputs struct {
+type AwsFsxOpenzfsFileSystemOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the file system (e.g., "fs-0123456789abcdef0"). Primary
 	// identifier used by EKS PersistentVolumes, ECS task definitions, and
@@ -67,20 +67,20 @@ type AwsFsxOpenzfsFileSystemStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsFsxOpenzfsFileSystemStackOutputs) Reset() {
-	*x = AwsFsxOpenzfsFileSystemStackOutputs{}
+func (x *AwsFsxOpenzfsFileSystemOutputs) Reset() {
+	*x = AwsFsxOpenzfsFileSystemOutputs{}
 	mi := &file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsFsxOpenzfsFileSystemStackOutputs) String() string {
+func (x *AwsFsxOpenzfsFileSystemOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsFsxOpenzfsFileSystemStackOutputs) ProtoMessage() {}
+func (*AwsFsxOpenzfsFileSystemOutputs) ProtoMessage() {}
 
-func (x *AwsFsxOpenzfsFileSystemStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsFsxOpenzfsFileSystemOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -92,61 +92,61 @@ func (x *AwsFsxOpenzfsFileSystemStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsFsxOpenzfsFileSystemStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsFsxOpenzfsFileSystemStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsFsxOpenzfsFileSystemOutputs.ProtoReflect.Descriptor instead.
+func (*AwsFsxOpenzfsFileSystemOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsFsxOpenzfsFileSystemStackOutputs) GetFileSystemId() string {
+func (x *AwsFsxOpenzfsFileSystemOutputs) GetFileSystemId() string {
 	if x != nil {
 		return x.FileSystemId
 	}
 	return ""
 }
 
-func (x *AwsFsxOpenzfsFileSystemStackOutputs) GetFileSystemArn() string {
+func (x *AwsFsxOpenzfsFileSystemOutputs) GetFileSystemArn() string {
 	if x != nil {
 		return x.FileSystemArn
 	}
 	return ""
 }
 
-func (x *AwsFsxOpenzfsFileSystemStackOutputs) GetDnsName() string {
+func (x *AwsFsxOpenzfsFileSystemOutputs) GetDnsName() string {
 	if x != nil {
 		return x.DnsName
 	}
 	return ""
 }
 
-func (x *AwsFsxOpenzfsFileSystemStackOutputs) GetEndpointIpAddress() string {
+func (x *AwsFsxOpenzfsFileSystemOutputs) GetEndpointIpAddress() string {
 	if x != nil {
 		return x.EndpointIpAddress
 	}
 	return ""
 }
 
-func (x *AwsFsxOpenzfsFileSystemStackOutputs) GetRootVolumeId() string {
+func (x *AwsFsxOpenzfsFileSystemOutputs) GetRootVolumeId() string {
 	if x != nil {
 		return x.RootVolumeId
 	}
 	return ""
 }
 
-func (x *AwsFsxOpenzfsFileSystemStackOutputs) GetNetworkInterfaceIds() []string {
+func (x *AwsFsxOpenzfsFileSystemOutputs) GetNetworkInterfaceIds() []string {
 	if x != nil {
 		return x.NetworkInterfaceIds
 	}
 	return nil
 }
 
-func (x *AwsFsxOpenzfsFileSystemStackOutputs) GetVpcId() string {
+func (x *AwsFsxOpenzfsFileSystemOutputs) GetVpcId() string {
 	if x != nil {
 		return x.VpcId
 	}
 	return ""
 }
 
-func (x *AwsFsxOpenzfsFileSystemStackOutputs) GetOwnerId() string {
+func (x *AwsFsxOpenzfsFileSystemOutputs) GetOwnerId() string {
 	if x != nil {
 		return x.OwnerId
 	}
@@ -157,8 +157,8 @@ var File_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/aws/awsfsxopenzfsfilesystem/v1alpha1/outputs.proto\x120dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1\"\xca\x02\n" +
-	"#AwsFsxOpenzfsFileSystemStackOutputs\x12$\n" +
+	":catalog/aws/awsfsxopenzfsfilesystem/v1alpha1/outputs.proto\x120dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1\"\xc5\x02\n" +
+	"\x1eAwsFsxOpenzfsFileSystemOutputs\x12$\n" +
 	"\x0efile_system_id\x18\x01 \x01(\tR\ffileSystemId\x12&\n" +
 	"\x0ffile_system_arn\x18\x02 \x01(\tR\rfileSystemArn\x12\x19\n" +
 	"\bdns_name\x18\x03 \x01(\tR\adnsName\x12.\n" +
@@ -183,7 +183,7 @@ func file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsFsxOpenzfsFileSystemStackOutputs)(nil), // 0: dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1.AwsFsxOpenzfsFileSystemStackOutputs
+	(*AwsFsxOpenzfsFileSystemOutputs)(nil), // 0: dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1.AwsFsxOpenzfsFileSystemOutputs
 }
 var file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -4,11 +4,11 @@ Provisions a single-node read-only replica of a DigitalOcean managed database cl
 
 ## Layout
 
-- `main.go` -- entrypoint (`package main`), loads the stack input and calls the module
+- `main.go` -- entrypoint (`package main`), loads the IaC input and calls the module
 - `module/main.go` -- orchestration: locals, provider, resource
 - `module/database_replica.go` -- the `DatabaseReplica` resource and output exports
 - `module/locals.go` -- metadata handle + the standard Planton label map (rendered as tags, identical to Terraform)
-- `module/outputs.go` -- output key constants (the `DigitalOceanDatabaseReplicaStackOutputs` contract)
+- `module/outputs.go` -- output key constants (the `DigitalOceanDatabaseReplicaOutputs` contract)
 
 ## Behavior notes
 

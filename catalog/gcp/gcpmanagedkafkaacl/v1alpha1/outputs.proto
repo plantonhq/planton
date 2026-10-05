@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpmanagedkafkaacl.v1alpha1;
 
-// GcpManagedKafkaAclStackOutputs captures the ACL's identity and the
+// GcpManagedKafkaAclOutputs captures the ACL's identity and the
 // resource pattern Google derived from its ID.
-message GcpManagedKafkaAclStackOutputs {
+message GcpManagedKafkaAclOutputs {
   // Full resource name --
   // projects/{project}/locations/{location}/clusters/{cluster}/acls/{acl_id}.
   string name = 1;

@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Cloud Router and NAT.
-type GcpRouterNatStackOutputs struct {
+type GcpRouterNatOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the Cloud NAT gateway (as created in GCP).
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -39,20 +39,20 @@ type GcpRouterNatStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpRouterNatStackOutputs) Reset() {
-	*x = GcpRouterNatStackOutputs{}
+func (x *GcpRouterNatOutputs) Reset() {
+	*x = GcpRouterNatOutputs{}
 	mi := &file_catalog_gcp_gcprouternat_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpRouterNatStackOutputs) String() string {
+func (x *GcpRouterNatOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpRouterNatStackOutputs) ProtoMessage() {}
+func (*GcpRouterNatOutputs) ProtoMessage() {}
 
-func (x *GcpRouterNatStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpRouterNatOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcprouternat_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *GcpRouterNatStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpRouterNatStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpRouterNatStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpRouterNatOutputs.ProtoReflect.Descriptor instead.
+func (*GcpRouterNatOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcprouternat_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpRouterNatStackOutputs) GetName() string {
+func (x *GcpRouterNatOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpRouterNatStackOutputs) GetRouterSelfLink() string {
+func (x *GcpRouterNatOutputs) GetRouterSelfLink() string {
 	if x != nil {
 		return x.RouterSelfLink
 	}
 	return ""
 }
 
-func (x *GcpRouterNatStackOutputs) GetNatIps() []string {
+func (x *GcpRouterNatOutputs) GetNatIps() []string {
 	if x != nil {
 		return x.NatIps
 	}
@@ -94,8 +94,8 @@ var File_catalog_gcp_gcprouternat_v1alpha1_outputs_proto protoreflect.FileDescri
 
 const file_catalog_gcp_gcprouternat_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/gcp/gcprouternat/v1alpha1/outputs.proto\x12%dev.planton.gcp.gcprouternat.v1alpha1\"q\n" +
-	"\x18GcpRouterNatStackOutputs\x12\x12\n" +
+	"/catalog/gcp/gcprouternat/v1alpha1/outputs.proto\x12%dev.planton.gcp.gcprouternat.v1alpha1\"l\n" +
+	"\x13GcpRouterNatOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12(\n" +
 	"\x10router_self_link\x18\x02 \x01(\tR\x0erouterSelfLink\x12\x17\n" +
 	"\anat_ips\x18\x03 \x03(\tR\x06natIpsB\xc7\x02\n" +
@@ -115,7 +115,7 @@ func file_catalog_gcp_gcprouternat_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcprouternat_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcprouternat_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpRouterNatStackOutputs)(nil), // 0: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatStackOutputs
+	(*GcpRouterNatOutputs)(nil), // 0: dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatOutputs
 }
 var file_catalog_gcp_gcprouternat_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureEventHubNamespaceStackOutputs** captures the outputs of
+// **AzureEventHubNamespaceOutputs** captures the outputs of
 // provisioning an Azure Event Hubs namespace.
 //
 // `namespace_id` is the ARM identity every child kind references
@@ -38,7 +38,7 @@ const (
 // AzureEventHubAuthorizationRule, or go keyless
 // (local_authentication_enabled false + Entra data-plane roles), which
 // makes these keys unusable.
-type AzureEventHubNamespaceStackOutputs struct {
+type AzureEventHubNamespaceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the namespace.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{name}
@@ -81,20 +81,20 @@ type AzureEventHubNamespaceStackOutputs struct {
 	sizeCache                             protoimpl.SizeCache
 }
 
-func (x *AzureEventHubNamespaceStackOutputs) Reset() {
-	*x = AzureEventHubNamespaceStackOutputs{}
+func (x *AzureEventHubNamespaceOutputs) Reset() {
+	*x = AzureEventHubNamespaceOutputs{}
 	mi := &file_catalog_azure_azureeventhubnamespace_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventHubNamespaceStackOutputs) String() string {
+func (x *AzureEventHubNamespaceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventHubNamespaceStackOutputs) ProtoMessage() {}
+func (*AzureEventHubNamespaceOutputs) ProtoMessage() {}
 
-func (x *AzureEventHubNamespaceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureEventHubNamespaceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventhubnamespace_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -106,68 +106,68 @@ func (x *AzureEventHubNamespaceStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventHubNamespaceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureEventHubNamespaceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventHubNamespaceOutputs.ProtoReflect.Descriptor instead.
+func (*AzureEventHubNamespaceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventhubnamespace_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventHubNamespaceStackOutputs) GetNamespaceId() string {
+func (x *AzureEventHubNamespaceOutputs) GetNamespaceId() string {
 	if x != nil {
 		return x.NamespaceId
 	}
 	return ""
 }
 
-func (x *AzureEventHubNamespaceStackOutputs) GetNamespaceName() string {
+func (x *AzureEventHubNamespaceOutputs) GetNamespaceName() string {
 	if x != nil {
 		return x.NamespaceName
 	}
 	return ""
 }
 
-func (x *AzureEventHubNamespaceStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureEventHubNamespaceOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureEventHubNamespaceStackOutputs) GetDefaultPrimaryConnectionString() string {
+func (x *AzureEventHubNamespaceOutputs) GetDefaultPrimaryConnectionString() string {
 	if x != nil {
 		return x.DefaultPrimaryConnectionString
 	}
 	return ""
 }
 
-func (x *AzureEventHubNamespaceStackOutputs) GetDefaultSecondaryConnectionString() string {
+func (x *AzureEventHubNamespaceOutputs) GetDefaultSecondaryConnectionString() string {
 	if x != nil {
 		return x.DefaultSecondaryConnectionString
 	}
 	return ""
 }
 
-func (x *AzureEventHubNamespaceStackOutputs) GetDefaultPrimaryKey() string {
+func (x *AzureEventHubNamespaceOutputs) GetDefaultPrimaryKey() string {
 	if x != nil {
 		return x.DefaultPrimaryKey
 	}
 	return ""
 }
 
-func (x *AzureEventHubNamespaceStackOutputs) GetDefaultSecondaryKey() string {
+func (x *AzureEventHubNamespaceOutputs) GetDefaultSecondaryKey() string {
 	if x != nil {
 		return x.DefaultSecondaryKey
 	}
 	return ""
 }
 
-func (x *AzureEventHubNamespaceStackOutputs) GetDefaultPrimaryConnectionStringAlias() string {
+func (x *AzureEventHubNamespaceOutputs) GetDefaultPrimaryConnectionStringAlias() string {
 	if x != nil {
 		return x.DefaultPrimaryConnectionStringAlias
 	}
 	return ""
 }
 
-func (x *AzureEventHubNamespaceStackOutputs) GetDefaultSecondaryConnectionStringAlias() string {
+func (x *AzureEventHubNamespaceOutputs) GetDefaultSecondaryConnectionStringAlias() string {
 	if x != nil {
 		return x.DefaultSecondaryConnectionStringAlias
 	}
@@ -178,8 +178,8 @@ var File_catalog_azure_azureeventhubnamespace_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_azure_azureeventhubnamespace_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/azure/azureeventhubnamespace/v1alpha1/outputs.proto\x121dev.planton.azure.azureeventhubnamespace.v1alpha1\x1a\x1cshared/options/options.proto\"\xf4\x04\n" +
-	"\"AzureEventHubNamespaceStackOutputs\x12!\n" +
+	";catalog/azure/azureeventhubnamespace/v1alpha1/outputs.proto\x121dev.planton.azure.azureeventhubnamespace.v1alpha1\x1a\x1cshared/options/options.proto\"\xef\x04\n" +
+	"\x1dAzureEventHubNamespaceOutputs\x12!\n" +
 	"\fnamespace_id\x18\x01 \x01(\tR\vnamespaceId\x12%\n" +
 	"\x0enamespace_name\x18\x02 \x01(\tR\rnamespaceName\x122\n" +
 	"\x15identity_principal_id\x18\x03 \x01(\tR\x13identityPrincipalId\x12O\n" +
@@ -205,7 +205,7 @@ func file_catalog_azure_azureeventhubnamespace_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_azure_azureeventhubnamespace_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventhubnamespace_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureEventHubNamespaceStackOutputs)(nil), // 0: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceStackOutputs
+	(*AzureEventHubNamespaceOutputs)(nil), // 0: dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceOutputs
 }
 var file_catalog_azure_azureeventhubnamespace_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

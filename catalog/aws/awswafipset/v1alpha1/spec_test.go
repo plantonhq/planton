@@ -19,7 +19,7 @@ func minimalIpSet(spec *AwsWafIpSetSpec) *AwsWafIpSet {
 	return &AwsWafIpSet{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsWafIpSet",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-ip-set"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-ip-set"},
 		Spec:       spec,
 	}
 }

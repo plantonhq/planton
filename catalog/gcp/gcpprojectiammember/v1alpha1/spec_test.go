@@ -36,7 +36,7 @@ var _ = ginkgo.Describe("GcpProjectIamMemberSpec", func() {
 		return &GcpProjectIamMember{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpProjectIamMember",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-iam-member",
 			},
 			Spec: &GcpProjectIamMemberSpec{

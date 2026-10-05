@@ -1,5 +1,5 @@
 # AwsEksCluster install profile used as a prerequisite by composed
-# components (AwsEksNodeGroup, declared via prerequisites in the kind
+# kinds (AwsEksNodeGroup, declared via prerequisites in the kind
 # registry). The harness deploys this control plane (via the cluster's
 # Pulumi module) after the subnet/role prerequisites it references, then
 # resolves the dependent's cluster reference against its outputs. The
@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsekscluster
+    e2e-catalog-kind: awsekscluster
   annotations:
     planton.dev/e2e: "true"
   tags:

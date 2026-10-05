@@ -4,9 +4,9 @@ package dev.planton.gcp.gcpserviceaccount.v1alpha1;
 
 import "shared/options/options.proto";
 
-// GcpServiceAccountStackOutputs surfaces the identity handles of the created
+// GcpServiceAccountOutputs surfaces the identity handles of the created
 // service account — everything a downstream resource could need to reference it.
-message GcpServiceAccountStackOutputs {
+message GcpServiceAccountOutputs {
   // The service account email: <service_account_id>@<project>.iam.gserviceaccount.com.
   // The most common reference handle — workload configs (GKE, Cloud Run, Cloud
   // Functions, Compute) attach the identity by email.

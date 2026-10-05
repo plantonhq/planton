@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecomputegallery.v1alpha1;
 
-// **AzureComputeGalleryStackOutputs** captures the outputs from
+// **AzureComputeGalleryOutputs** captures the outputs from
 // provisioning an Azure Compute Gallery.
-message AzureComputeGalleryStackOutputs {
+message AzureComputeGalleryOutputs {
   // The gallery's Azure Resource Manager ID.
   string gallery_id = 1;
 

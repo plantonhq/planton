@@ -4,7 +4,7 @@ Declares a Cloud Deploy custom target type: how Cloud Deploy renders and deploys
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `clouddeploy.googleapis.com` on the type's project (never disabled on destroy)
 - **Custom target type** -- one `clouddeploy_custom_target_type`
@@ -77,7 +77,7 @@ planton apply -f custom-target-type.yaml
 - Each Skaffold module names exactly one source; a literal Cloud Build repository is a full repository name; a Cloud Storage source starts with `gs://`.
 - The type ID matches Google's ID rule.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -106,7 +106,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpDeployTarget** -- targets that deploy through the type
 - **GcpDeliveryPipeline** -- pipelines whose stages use those targets

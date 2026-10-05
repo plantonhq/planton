@@ -18,7 +18,7 @@ import (
 // the kind does not declare.
 func TestInit_RefusesAnEngineTheKindDoesNotRunOn_BeforeWritingAnything(t *testing.T) {
 	modulePath := t.TempDir()
-	manifest := &openfgastorev1.OpenFgaStore{Kind: "OpenFgaStore", Metadata: &shared.CloudResourceMetadata{Name: "store"}}
+	manifest := &openfgastorev1.OpenFgaStore{Kind: "OpenFgaStore", Metadata: &shared.CatalogObjectMetadata{Name: "store"}}
 
 	err := Init(context.Background(), "pulumi", modulePath, manifest, terraform.TerraformBackendType_local, nil, nil, false, false, nil)
 	if err == nil || !strings.Contains(err.Error(), "OpenFgaStore runs on OpenTofu or Terraform only, so Pulumi cannot deploy it") {

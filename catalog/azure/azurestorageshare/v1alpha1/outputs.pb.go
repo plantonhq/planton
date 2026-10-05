@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureStorageShareStackOutputs** captures the outputs of provisioning
+// **AzureStorageShareOutputs** captures the outputs of provisioning
 // an Azure Files share.
 //
 // No URL output on purpose: the share's data-plane URL is the ACCOUNT's
@@ -29,7 +29,7 @@ const (
 // endpoint (partitioned-DNS accounts use a different hostname than the
 // classic shared DNS). Compose mount paths from AzureStorageAccount's
 // primary_file_endpoint output + share_name.
-type AzureStorageShareStackOutputs struct {
+type AzureStorageShareOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the share -- the management-plane
 	// identity ARM reads and policy target.
@@ -53,20 +53,20 @@ type AzureStorageShareStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureStorageShareStackOutputs) Reset() {
-	*x = AzureStorageShareStackOutputs{}
+func (x *AzureStorageShareOutputs) Reset() {
+	*x = AzureStorageShareOutputs{}
 	mi := &file_catalog_azure_azurestorageshare_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureStorageShareStackOutputs) String() string {
+func (x *AzureStorageShareOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureStorageShareStackOutputs) ProtoMessage() {}
+func (*AzureStorageShareOutputs) ProtoMessage() {}
 
-func (x *AzureStorageShareStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureStorageShareOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurestorageshare_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -78,33 +78,33 @@ func (x *AzureStorageShareStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureStorageShareStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureStorageShareStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureStorageShareOutputs.ProtoReflect.Descriptor instead.
+func (*AzureStorageShareOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurestorageshare_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureStorageShareStackOutputs) GetShareId() string {
+func (x *AzureStorageShareOutputs) GetShareId() string {
 	if x != nil {
 		return x.ShareId
 	}
 	return ""
 }
 
-func (x *AzureStorageShareStackOutputs) GetRbacScopeId() string {
+func (x *AzureStorageShareOutputs) GetRbacScopeId() string {
 	if x != nil {
 		return x.RbacScopeId
 	}
 	return ""
 }
 
-func (x *AzureStorageShareStackOutputs) GetShareName() string {
+func (x *AzureStorageShareOutputs) GetShareName() string {
 	if x != nil {
 		return x.ShareName
 	}
 	return ""
 }
 
-func (x *AzureStorageShareStackOutputs) GetStorageAccountName() string {
+func (x *AzureStorageShareOutputs) GetStorageAccountName() string {
 	if x != nil {
 		return x.StorageAccountName
 	}
@@ -115,8 +115,8 @@ var File_catalog_azure_azurestorageshare_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_azure_azurestorageshare_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/azure/azurestorageshare/v1alpha1/outputs.proto\x12,dev.planton.azure.azurestorageshare.v1alpha1\"\xaf\x01\n" +
-	"\x1dAzureStorageShareStackOutputs\x12\x19\n" +
+	"6catalog/azure/azurestorageshare/v1alpha1/outputs.proto\x12,dev.planton.azure.azurestorageshare.v1alpha1\"\xaa\x01\n" +
+	"\x18AzureStorageShareOutputs\x12\x19\n" +
 	"\bshare_id\x18\x01 \x01(\tR\ashareId\x12\"\n" +
 	"\rrbac_scope_id\x18\x02 \x01(\tR\vrbacScopeId\x12\x1d\n" +
 	"\n" +
@@ -138,7 +138,7 @@ func file_catalog_azure_azurestorageshare_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_azure_azurestorageshare_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurestorageshare_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureStorageShareStackOutputs)(nil), // 0: dev.planton.azure.azurestorageshare.v1alpha1.AzureStorageShareStackOutputs
+	(*AzureStorageShareOutputs)(nil), // 0: dev.planton.azure.azurestorageshare.v1alpha1.AzureStorageShareOutputs
 }
 var file_catalog_azure_azurestorageshare_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

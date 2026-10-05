@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpvertexaimodelgardendeployment
+    e2e-catalog-kind: gcpvertexaimodelgardendeployment
   annotations:
     planton.dev/e2e: "true"
   tags:

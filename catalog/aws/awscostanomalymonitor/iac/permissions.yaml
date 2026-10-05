@@ -3,9 +3,9 @@
 # update, delete, tag) through the official modules. Resource patterns use
 # catalog placeholders; NON-SCOPABLE facts are verified against the AWS
 # service reference (servicereference.us-east-1.amazonaws.com/v1/ce/ce.json).
-# Schema: iac/componentpermissions/v1.
+# Schema: iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: awscostanomalymonitor
 spec:

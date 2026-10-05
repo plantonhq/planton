@@ -27,7 +27,7 @@ func minimalCustomerManagedKey() *AzureEventHubNamespaceCustomerManagedKey {
 	return &AzureEventHubNamespaceCustomerManagedKey{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureEventHubNamespaceCustomerManagedKey",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-eh-cmk",
 		},
 		Spec: &AzureEventHubNamespaceCustomerManagedKeySpec{

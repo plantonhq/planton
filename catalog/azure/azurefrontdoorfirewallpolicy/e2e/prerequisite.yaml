@@ -1,5 +1,5 @@
 # AzureFrontDoorFirewallPolicy install profile used as a prerequisite
-# by composed components (AzureFrontDoorSecurityPolicy, declared via
+# by composed kinds (AzureFrontDoorSecurityPolicy, declared via
 # prerequisites in the kind registry). The harness deploys this policy
 # after the fixture resource group, then resolves the security policy's
 # firewall_policy_id reference against its firewall_policy_id output.
@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurefrontdoorfirewallpolicy
+    e2e-catalog-kind: azurefrontdoorfirewallpolicy
   annotations:
     planton.dev/e2e: "true"
   tags:

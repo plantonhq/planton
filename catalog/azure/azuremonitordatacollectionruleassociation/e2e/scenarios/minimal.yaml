@@ -21,7 +21,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuremonitordatacollectionruleassociation
+    e2e-catalog-kind: azuremonitordatacollectionruleassociation
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -4,7 +4,7 @@ Deploys an AWS Private CA — the managed certificate authority behind internal 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Certificate Authority** — root or subordinate, with its key and signing algorithms (post-quantum ML-DSA included), X.500 subject, usage mode, HSM standard, and CRL/OCSP revocation configuration
 - **Activation Certificate** — for a root, the self-signed CA certificate issued and installed at apply (the CSR-issue-install dance the raw provider makes you wire); for a subordinate with `subordinateActivation`, a parent-signed CA certificate with the chosen path length. A subordinate without activation sits in PENDING_CERTIFICATE — created and billed, but unable to issue
@@ -16,7 +16,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with ACM PCA permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with ACM PCA permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -60,7 +60,7 @@ spec:
 planton apply -f aws-private-ca.yaml
 ```
 
-This creates a self-activated 10-year root CA, ACTIVE and issuing, with ACM pre-authorized to auto-renew the certificates it requests. A Stack Job tracks the provisioning in real time.
+This creates a self-activated 10-year root CA, ACTIVE and issuing, with ACM pre-authorized to auto-renew the certificates it requests. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -111,16 +111,16 @@ These are the most important decisions when configuring a private CA. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsPrivateCa** | `subordinateActivation.parentCaArn` | `status.outputs.certificate_authority_arn` |
 | **AwsS3Bucket** | `revocation.crl.s3BucketName` | `status.outputs.bucket_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -143,6 +143,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS ACM Certificate**](/cloud-catalog/aws-cert-manager-cert) — issues ACM certificates from this CA via `certificate_authority_arn`; pair with `acmRenewalPermission`
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — the CRL publishing destination, wired via `revocation.crl.s3BucketName`
-- [**AWS MSK Cluster**](/cloud-catalog/aws-msk-cluster) — consumes the CA ARN in its TLS client-authentication configuration
+- [**AWS ACM Certificate**](/infra-catalog/aws-cert-manager-cert) — issues ACM certificates from this CA via `certificate_authority_arn`; pair with `acmRenewalPermission`
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — the CRL publishing destination, wired via `revocation.crl.s3BucketName`
+- [**AWS MSK Cluster**](/infra-catalog/aws-msk-cluster) — consumes the CA ARN in its TLS client-authentication configuration

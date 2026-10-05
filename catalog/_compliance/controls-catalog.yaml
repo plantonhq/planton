@@ -1,5 +1,5 @@
 # The Planton Control Catalog: the single controlled vocabulary of technical
-# controls the catalog speaks about. Component control profiles
+# controls the catalog speaks about. Catalog kind control profiles
 # (catalog/<provider>/<kind>/controls.yaml) reference these ids; framework
 # crosswalks (frameworks/*.yaml) map external requirements onto them. Ids are
 # immutable once published -- the conformance gate enforces referential

@@ -4,7 +4,7 @@ Creates a Data Protection backup policy -- WHEN backups run (ISO-8601 repeating 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions exactly ONE of:
+When you deploy this Infra Component, the IaC module provisions exactly ONE of:
 
 - **Blob Storage Backup Policy** -- operational (continuous, in-account) and/or vault (scheduled) retention tiers -- the only dual-tier variant
 - **Disk Backup Policy** -- scheduled incremental snapshots on the operational tier
@@ -65,7 +65,7 @@ spec:
 planton apply -f backup-policy.yaml
 ```
 
-This creates a disk policy on the vault: daily incremental snapshots at 02:00 UTC, seven days of default retention, and the first backup of each week kept 90 days. A Stack Job tracks the provisioning in real time.
+This creates a disk policy on the vault: daily incremental snapshots at 02:00 UTC, seven days of default retention, and the first backup of each week kept 90 days. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,15 +100,15 @@ These are the most important decisions when configuring a backup policy. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureDataProtectionBackupVault** | `vaultId` | `status.outputs.backup_vault_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -129,7 +129,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Data Protection Backup Vault**](/cloud-catalog/azure-data-protection-backup-vault) -- the vault the policy lives on
-- [**Azure Data Protection Backup Instance**](/cloud-catalog/azure-data-protection-backup-instance) -- binds a datasource to this policy's schedule and retention
-- [**Azure Managed Disk**](/cloud-catalog/azure-managed-disk) / [**Azure Storage Account**](/cloud-catalog/azure-storage-account) / [**Azure AKS Cluster**](/cloud-catalog/azure-aks-cluster) -- the datasources instances put under this policy
-- [**Azure MySQL Flexible Server**](/cloud-catalog/azure-mysql-flexible-server) / [**Azure PostgreSQL Flexible Server**](/cloud-catalog/azure-postgresql-flexible-server) -- the database datasources
+- [**Azure Data Protection Backup Vault**](/infra-catalog/azure-data-protection-backup-vault) -- the vault the policy lives on
+- [**Azure Data Protection Backup Instance**](/infra-catalog/azure-data-protection-backup-instance) -- binds a datasource to this policy's schedule and retention
+- [**Azure Managed Disk**](/infra-catalog/azure-managed-disk) / [**Azure Storage Account**](/infra-catalog/azure-storage-account) / [**Azure AKS Cluster**](/infra-catalog/azure-aks-cluster) -- the datasources instances put under this policy
+- [**Azure MySQL Flexible Server**](/infra-catalog/azure-mysql-flexible-server) / [**Azure PostgreSQL Flexible Server**](/infra-catalog/azure-postgresql-flexible-server) -- the database datasources

@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: openfgarelationshiptuple
 spec:
   billing_model: free
   free_tier: "A relationship tuple is a single row of authorization data written into a store on a customer-run OpenFGA server, and OpenFGA is open-source software (Apache-2.0, a CNCF incubating project, verified at openfga.dev and github.com/openfga/openfga) -- no vendor meters tuple writes, and the software carries no license fee however many tuples a store holds."
-  notes: "No field of this spec buys anything: store_id and authorization_model_id address existing objects, and user, relation, object, and condition are the grant itself. The tuple persists as a row in the datastore BEHIND the customer-run OpenFGA server, so the real spend lives in the infrastructure hosting that server: its compute (a Kubernetes workload, VM, or container service billing as its own catalog kind) and its backing database (Postgres, MySQL, or SQLite; production deployments run a managed database that bills on its own meters -- at scale, tuple volume is what grows that database's storage). A commercial hosted service such as Okta FGA prices by its own subscription, outside this component's claim, which describes the open-source server the official modules target."
+  notes: "No field of this spec buys anything: store_id and authorization_model_id address existing objects, and user, relation, object, and condition are the grant itself. The tuple persists as a row in the datastore BEHIND the customer-run OpenFGA server, so the real spend lives in the infrastructure hosting that server: its compute (a Kubernetes workload, VM, or container service billing as its own component) and its backing database (Postgres, MySQL, or SQLite; production deployments run a managed database that bills on its own meters -- at scale, tuple volume is what grows that database's storage). A commercial hosted service such as Okta FGA prices by its own subscription, outside this kind's claim, which describes the open-source server the official modules target."

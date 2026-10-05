@@ -130,7 +130,7 @@ func callerAccountID(ctx context.Context, cfg aws.Config) (string, error) {
 	return aws.ToString(identity.Account), nil
 }
 
-// stringMapOutput coerces a map-typed stack output (decoded JSON) to
+// stringMapOutput coerces a map-typed output (decoded JSON) to
 // map[string]string, tolerating the empty/missing map.
 func stringMapOutput(raw interface{}) map[string]string {
 	out := map[string]string{}

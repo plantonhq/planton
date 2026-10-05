@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarepagesproject
 spec:
@@ -18,7 +18,7 @@ spec:
     - name: project_name
       derivations:
         - from_spec_field: name
-        - from_stack_output: project_name
+        - from_output: project_name
       where_to_find: >-
         Cloudflare dashboard -> Workers & Pages -> the project (the name
         in the list), or `GET /accounts/<account_id>/pages/projects` on the

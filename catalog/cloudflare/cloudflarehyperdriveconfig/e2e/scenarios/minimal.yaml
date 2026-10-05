@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: cloudflarehyperdriveconfig
+    e2e-catalog-kind: cloudflarehyperdriveconfig
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-required-env: PLANTON_E2E_HYPERDRIVE_ORIGIN_HOST,PLANTON_E2E_HYPERDRIVE_ORIGIN_USER,PLANTON_E2E_HYPERDRIVE_ORIGIN_PASSWORD,PLANTON_E2E_HYPERDRIVE_ORIGIN_DATABASE

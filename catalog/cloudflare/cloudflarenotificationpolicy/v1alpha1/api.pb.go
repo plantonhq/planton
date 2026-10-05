@@ -33,7 +33,7 @@ type CloudflareNotificationPolicy struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareNotificationPolicySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *CloudflareNotificationPolicy) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareNotificationPolicy) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareNotificationPolicy) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *CloudflareNotificationPolicy) GetStatus() *CloudflareNotificationPolicy
 // policy.
 type CloudflareNotificationPolicyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareNotificationPolicyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareNotificationPolicyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*CloudflareNotificationPolicyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareNotificationPolicyStatus) GetOutputs() *CloudflareNotificationPolicyStackOutputs {
+func (x *CloudflareNotificationPolicyStatus) GetOutputs() *CloudflareNotificationPolicyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_api_proto_ra
 	"apiVersion\x127\n" +
 	"\x04kind\x18\x02 \x01(\tB#\xbaH r\x1e\n" +
 	"\x1cCloudflareNotificationPolicyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12z\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12z\n" +
 	"\x04spec\x18\x04 \x01(\v2^.dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12x\n" +
-	"\x06status\x18\x05 \x01(\v2`.dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyStatusR\x06status\"\xa7\x01\n" +
-	"\"CloudflareNotificationPolicyStatus\x12\x80\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2f.dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyStackOutputsR\aoutputsB\xdd\x03\n" +
+	"\x06status\x18\x05 \x01(\v2`.dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyStatusR\x06status\"\xa1\x01\n" +
+	"\"CloudflareNotificationPolicyStatus\x12{\n" +
+	"\aoutputs\x18\x01 \x01(\v2a.dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyOutputsR\aoutputsB\xdd\x03\n" +
 	"@com.dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1B\bApiProtoP\x01Zzgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarenotificationpolicy/v1alpha1;cloudflarenotificationpolicyv1alpha1\xa2\x02\x04DPCC\xaa\x02<Dev.Planton.Cloudflare.Cloudflarenotificationpolicy.V1alpha1\xca\x02<Dev\\Planton\\Cloudflare\\Cloudflarenotificationpolicy\\V1alpha1\xe2\x02HDev\\Planton\\Cloudflare\\Cloudflarenotificationpolicy\\V1alpha1\\GPBMetadata\xea\x02@Dev::Planton::Cloudflare::Cloudflarenotificationpolicy::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_api_proto_raw
 
 var file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareNotificationPolicy)(nil),             // 0: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicy
-	(*CloudflareNotificationPolicyStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyStatus
-	(*shared.CloudResourceMetadata)(nil),             // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareNotificationPolicySpec)(nil),         // 3: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicySpec
-	(*CloudflareNotificationPolicyStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyStackOutputs
+	(*CloudflareNotificationPolicy)(nil),        // 0: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicy
+	(*CloudflareNotificationPolicyStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyStatus
+	(*shared.CatalogObjectMetadata)(nil),        // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareNotificationPolicySpec)(nil),    // 3: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicySpec
+	(*CloudflareNotificationPolicyOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyOutputs
 }
 var file_catalog_cloudflare_cloudflarenotificationpolicy_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicy.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicy.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicy.spec:type_name -> dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicySpec
 	1, // 2: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicy.status:type_name -> dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyStatus
-	4, // 3: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarenotificationpolicy.v1alpha1.CloudflareNotificationPolicyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

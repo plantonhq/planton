@@ -4,7 +4,7 @@ Declares the inbound trusted sources of a DigitalOcean managed database cluster:
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Trusted-Sources Rule Set** -- the cluster's complete inbound allowlist, fanned out from the five typed lists to DigitalOcean's `{type, value}` rule rows (`ip_addr`, `droplet`, `k8s`, `app`, `tag`)
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **A DigitalOceanDatabaseCluster** -- the cluster to protect, referenced by name (or an existing cluster's UUID as a literal).
 - **Referenced sources** -- any Droplets, DOKS clusters, or Apps you trust by reference must exist (or deploy in the same chart).
 
@@ -50,7 +50,7 @@ spec:
 planton apply -f database-firewall.yaml
 ```
 
-This locks the referenced cluster down to two source classes: the private `10.10.0.0/16` range and every Droplet carrying the `backend` tag -- nothing on the public internet can reach it. A Stack Job tracks the provisioning in real time.
+This locks the referenced cluster down to two source classes: the private `10.10.0.0/16` range and every Droplet carrying the `backend` tag -- nothing on the public internet can reach it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,7 +95,7 @@ These are the most important decisions when configuring a database firewall. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -106,9 +106,9 @@ These are the most important decisions when configuring a database firewall. Exp
 
 Every reference also accepts a literal id in its place -- a cluster UUID, numeric Droplet id, DOKS cluster UUID, or app UUID.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` carries a single value: `cluster_id`, an echo of the resolved cluster reference. DigitalOcean mints no stable standalone id for the rule set -- it is a property of its cluster, and the cluster UUID is the only durable identity -- so there is nothing here for downstream Cloud Resources to consume.
+After provisioning, `status.outputs` carries a single value: `cluster_id`, an echo of the resolved cluster reference. DigitalOcean mints no stable standalone id for the rule set -- it is a property of its cluster, and the cluster UUID is the only durable identity -- so there is nothing here for downstream Infra Components to consume.
 
 ## Common Patterns
 
@@ -120,7 +120,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Database Cluster**](/cloud-catalog/digital-ocean-database-cluster) -- the cluster whose inbound sources this rule set defines
-- [**DigitalOcean Droplet**](/cloud-catalog/digital-ocean-droplet) -- trusted individually via `dropletIds` or as a tagged fleet via `tags`
-- [**DigitalOcean Kubernetes Cluster**](/cloud-catalog/digital-ocean-kubernetes-cluster) -- trusted via `kubernetesClusterIds` so cluster workloads reach the database
-- [**DigitalOcean App Platform App**](/cloud-catalog/digital-ocean-app) -- trusted via `appIds` for App Platform services
+- [**DigitalOcean Database Cluster**](/infra-catalog/digital-ocean-database-cluster) -- the cluster whose inbound sources this rule set defines
+- [**DigitalOcean Droplet**](/infra-catalog/digital-ocean-droplet) -- trusted individually via `dropletIds` or as a tagged fleet via `tags`
+- [**DigitalOcean Kubernetes Cluster**](/infra-catalog/digital-ocean-kubernetes-cluster) -- trusted via `kubernetesClusterIds` so cluster workloads reach the database
+- [**DigitalOcean App Platform App**](/infra-catalog/digital-ocean-app) -- trusted via `appIds` for App Platform services

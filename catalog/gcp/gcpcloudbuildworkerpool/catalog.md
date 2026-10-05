@@ -4,7 +4,7 @@ Gives your builds their own machines. A private worker pool runs Cloud Build job
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- the Cloud Build API on the pool's project
 - **Worker pool** -- the private pool, optionally peered into a VPC network or attached through Private Service Connect
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Build worker pools in the target project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Build worker pools in the target project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Account
@@ -50,7 +50,7 @@ spec:
 planton apply -f cloud-build-worker-pool.yaml
 ```
 
-This creates a pool of e2-standard-4 build machines in us-central1. A Stack Job tracks the provisioning in real time.
+This creates a pool of e2-standard-4 build machines in us-central1. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -68,16 +68,16 @@ These are the most important decisions when configuring a worker pool. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpVpcNetwork** | `networkConfig.peeredNetwork` | `status.outputs.network_self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -96,7 +96,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cloud Build Trigger**](/cloud-catalog/gcp-cloud-build-trigger) -- builds that run on the pool
-- [**GCP Deploy Target**](/cloud-catalog/gcp-deploy-target) -- Cloud Deploy render and deploy jobs that run on the pool
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the network a peered pool joins
-- [**GCP Service Networking Connection**](/cloud-catalog/gcp-service-networking-connection) -- private services access the peering needs
+- [**GCP Cloud Build Trigger**](/infra-catalog/gcp-cloud-build-trigger) -- builds that run on the pool
+- [**GCP Deploy Target**](/infra-catalog/gcp-deploy-target) -- Cloud Deploy render and deploy jobs that run on the pool
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the network a peered pool joins
+- [**GCP Service Networking Connection**](/infra-catalog/gcp-service-networking-connection) -- private services access the peering needs

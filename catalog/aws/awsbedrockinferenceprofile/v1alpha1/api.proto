@@ -7,7 +7,7 @@ import "catalog/aws/awsbedrockinferenceprofile/v1alpha1/outputs.proto";
 import "catalog/aws/awsbedrockinferenceprofile/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// AwsBedrockInferenceProfile is a component for creating and managing
+// AwsBedrockInferenceProfile is a kind for creating and managing
 // Amazon Bedrock application inference profiles - named, taggable,
 // IAM-scopeable handles over foundation models (or AWS cross-region
 // profiles) for per-application usage tracking and cost allocation.
@@ -19,7 +19,7 @@ message AwsBedrockInferenceProfile {
   string kind = 2 [(buf.validate.field).string.const = 'AwsBedrockInferenceProfile'];
 
   // metadata contains standard resource metadata including name, labels, and annotations.
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec defines the desired state of the inference profile.
   AwsBedrockInferenceProfileSpec spec = 4 [(buf.validate.field).required = true];
@@ -32,5 +32,5 @@ message AwsBedrockInferenceProfile {
 // inference profile.
 message AwsBedrockInferenceProfileStatus {
   // outputs contains the values exported from the IaC stack after deployment.
-  AwsBedrockInferenceProfileStackOutputs outputs = 1;
+  AwsBedrockInferenceProfileOutputs outputs = 1;
 }

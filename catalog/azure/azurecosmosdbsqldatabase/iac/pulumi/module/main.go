@@ -10,12 +10,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurecosmosdbsqldatabasev1alpha1.AzureCosmosdbSqlDatabaseStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurecosmosdbsqldatabasev1alpha1.AzureCosmosdbSqlDatabaseIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -63,7 +63,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecosmosdbsqldatabasev1alpha1
 		return errors.Wrapf(err, "failed to create cosmosdb sql database %s", spec.DatabaseName)
 	}
 
-	// Export stack outputs. No endpoint or credential outputs on
+	// Export outputs. No endpoint or credential outputs on
 	// purpose: connectivity and keys live on the ACCOUNT; the database
 	// is addressed inside that connection by name.
 	ctx.Export(OpSqlDatabaseId, createdDatabase.ID())

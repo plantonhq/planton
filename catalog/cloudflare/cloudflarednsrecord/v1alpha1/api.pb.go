@@ -32,7 +32,7 @@ type CloudflareDnsRecord struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareDnsRecordSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -85,7 +85,7 @@ func (x *CloudflareDnsRecord) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareDnsRecord) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareDnsRecord) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -109,8 +109,8 @@ func (x *CloudflareDnsRecord) GetStatus() *CloudflareDnsRecordStatus {
 // CloudflareDnsRecordStatus represents the observed state of a Cloudflare DNS record.
 type CloudflareDnsRecordStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareDnsRecordStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareDnsRecordOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -145,7 +145,7 @@ func (*CloudflareDnsRecordStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareDnsRecordStatus) GetOutputs() *CloudflareDnsRecordStackOutputs {
+func (x *CloudflareDnsRecordStatus) GetOutputs() *CloudflareDnsRecordOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -163,11 +163,11 @@ const file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13CloudflareDnsRecordR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
 	"\x04spec\x18\x04 \x01(\v2L.dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12f\n" +
-	"\x06status\x18\x05 \x01(\v2N.dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordStatusR\x06status\"\x8b\x01\n" +
-	"\x19CloudflareDnsRecordStatus\x12n\n" +
-	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordStackOutputsR\aoutputsB\x9e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2N.dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordStatusR\x06status\"\x86\x01\n" +
+	"\x19CloudflareDnsRecordStatus\x12i\n" +
+	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordOutputsR\aoutputsB\x9e\x03\n" +
 	"7com.dev.planton.cloudflare.cloudflarednsrecord.v1alpha1B\bApiProtoP\x01Zhgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarednsrecord/v1alpha1;cloudflarednsrecordv1alpha1\xa2\x02\x04DPCC\xaa\x023Dev.Planton.Cloudflare.Cloudflarednsrecord.V1alpha1\xca\x023Dev\\Planton\\Cloudflare\\Cloudflarednsrecord\\V1alpha1\xe2\x02?Dev\\Planton\\Cloudflare\\Cloudflarednsrecord\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Cloudflare::Cloudflarednsrecord::V1alpha1b\x06proto3"
 
 var (
@@ -184,17 +184,17 @@ func file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareDnsRecord)(nil),             // 0: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecord
-	(*CloudflareDnsRecordStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareDnsRecordSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec
-	(*CloudflareDnsRecordStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordStackOutputs
+	(*CloudflareDnsRecord)(nil),          // 0: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecord
+	(*CloudflareDnsRecordStatus)(nil),    // 1: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareDnsRecordSpec)(nil),      // 3: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec
+	(*CloudflareDnsRecordOutputs)(nil),   // 4: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordOutputs
 }
 var file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecord.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecord.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecord.spec:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec
 	1, // 2: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecord.status:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordStatus
-	4, // 3: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

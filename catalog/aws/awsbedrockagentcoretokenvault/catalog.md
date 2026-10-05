@@ -4,7 +4,7 @@ Sets the encryption posture of a region's AgentCore token vault — the store Ag
 
 ## What Gets Created
 
-This component creates nothing at AWS. The vault already exists — AWS provisions one default token vault per account and region — and the IaC module adopts that existing account object and configures it:
+This kind creates nothing at AWS. The vault already exists — AWS provisions one default token vault per account and region — and the IaC module adopts that existing account object and configures it:
 
 - **Token Vault Key Setting** — the vault's key ownership: your symmetric, same-region KMS key under `CustomerManagedKey`, or AWS's owned-and-rotated key under `ServiceManagedKey`. When a customer-managed key is applied, AWS creates its own grants on the key and re-encrypts stored credentials under it
 
@@ -12,7 +12,7 @@ This component creates nothing at AWS. The vault already exists — AWS provisio
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with AgentCore and KMS permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with AgentCore and KMS permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -49,7 +49,7 @@ spec:
 planton apply -f agentcore-token-vault.yaml
 ```
 
-This points the region's default token vault at your KMS key — every credential AgentCore Identity stores in the region is encrypted under it from this apply onward. A Stack Job tracks the provisioning in real time.
+This points the region's default token vault at your KMS key — every credential AgentCore Identity stores in the region is encrypted under it from this apply onward. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,15 +88,15 @@ These are the most important decisions when configuring the token vault. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsKmsKey** | `kmsKeyArn` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -114,5 +114,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — the customer-managed key the vault encrypts under
-- [**AWS Bedrock AgentCore Identity**](/cloud-catalog/aws-bedrock-agent-core-identity) — the credential providers whose vaulted secrets this component's key setting protects
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — the customer-managed key the vault encrypts under
+- [**AWS Bedrock AgentCore Identity**](/infra-catalog/aws-bedrock-agent-core-identity) — the credential providers whose vaulted secrets this component's key setting protects

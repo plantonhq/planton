@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpdataproccluster.v1alpha1;
 
 // Outputs produced after provisioning a Dataproc cluster.
-message GcpDataprocClusterStackOutputs {
+message GcpDataprocClusterOutputs {
   // Fully qualified cluster resource name.
   // Format: projects/{project}/regions/{region}/clusters/{cluster}
   // The composition handle downstream resources reference — including

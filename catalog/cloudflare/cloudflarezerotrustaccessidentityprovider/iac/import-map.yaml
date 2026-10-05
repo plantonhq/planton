@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezerotrustaccessidentityprovider
 spec:
@@ -17,7 +17,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: identity_provider_id
       derivations:
-        - from_stack_output: identity_provider_id
+        - from_output: identity_provider_id
       where_to_find: >-
         Zero Trust dashboard -> Settings -> Authentication -> the identity
         provider, or `GET /accounts/<account_id>/access/identity_providers`

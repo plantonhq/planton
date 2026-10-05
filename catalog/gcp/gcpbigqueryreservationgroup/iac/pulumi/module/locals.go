@@ -18,15 +18,15 @@ type Locals struct {
 
 // initializeLocals derives the defaulted group name. Groups carry no
 // labels, so there is no attribution label set.
-func initializeLocals(_ *pulumi.Context, stackInput *gcpbigqueryreservationgroupv1alpha1.GcpBigQueryReservationGroupStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpbigqueryreservationgroupv1alpha1.GcpBigQueryReservationGroupIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpBigQueryReservationGroup = stackInput.Target
+	locals.GcpBigQueryReservationGroup = iacInput.Target
 
 	locals.ReservationGroupName = locals.GcpBigQueryReservationGroup.Spec.ReservationGroupName
 	if locals.ReservationGroupName == "" {
 		locals.ReservationGroupName = locals.GcpBigQueryReservationGroup.Metadata.Name
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

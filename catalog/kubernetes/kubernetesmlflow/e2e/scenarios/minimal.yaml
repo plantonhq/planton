@@ -1,4 +1,4 @@
-# The component defaults: sqlite backend on the data PVC, artifacts on
+# The kind defaults: sqlite backend on the data PVC, artifacts on
 # their own PVC served through the tracking server, basic auth ON with
 # the module-generated admin password (upstream's open server and its
 # admin/password1234 example never ship). Co-located with the lane

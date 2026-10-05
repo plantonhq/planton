@@ -21,7 +21,7 @@
 # Entry format: <repo-relative path>:<token>
 # Regenerate gaps with:  PLANTON_REGEN_PRICE_BASELINE=1 go test ./pkg/priceprovenance/
 allowed:
-  # AwsCostAnomalyMonitor is a dollar-typed component: the alert threshold IS
+  # AwsCostAnomalyMonitor is a dollar-typed kind: the alert threshold IS
   # a user-chosen dollar value (ANOMALY_TOTAL_IMPACT_ABSOLUTE), not a rate.
   - "catalog/aws/awscostanomalymonitor/GUIDE.md:$100"
   - "catalog/aws/awscostanomalymonitor/presets/01-service-monitor.md:$100"
@@ -37,6 +37,9 @@ allowed:
   - "catalog/kubernetes/kubernetesexternalsecret/catalog.md:$1"
   - "catalog/kubernetes/kubernetesexternalsecret/presets/02-extract-json-document.md:$1"
   - "catalog/kubernetes/kubernetesexternalsecret/v1alpha1/reference.md:$1"
+  # Prometheus relabeling replacement capture groups ("$1"), not prices.
+  - "catalog/kubernetes/kubernetespodmonitor/v1alpha1/reference.md:$1"
+  - "catalog/kubernetes/kubernetesservicemonitor/v1alpha1/reference.md:$1"
   # nginx rewrite-target annotation syntax ("/$2"), not a price.
   - "catalog/kubernetes/kubernetesingress/README.md:$2"
   - "catalog/kubernetes/kubernetesingress/v1alpha1/reference.md:$2"

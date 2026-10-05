@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesvelero.v1alpha1;
 
-// KubernetesVeleroStackOutputs captures observable outputs after Velero is
+// KubernetesVeleroOutputs captures observable outputs after Velero is
 // installed on the target cluster.
-message KubernetesVeleroStackOutputs {
+message KubernetesVeleroOutputs {
   // Namespace Velero was installed into (the resolved spec.namespace).
   string namespace = 1;
 

@@ -36,7 +36,7 @@ var _ = ginkgo.Describe("GcpPubSubSchemaSpec", func() {
 		return &GcpPubSubSchema{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpPubSubSchema",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-pubsub-schema",
 			},
 			Spec: &GcpPubSubSchemaSpec{

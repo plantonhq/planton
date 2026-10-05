@@ -37,7 +37,7 @@ import "shared/options/options.proto";
 // - Child volumes are independent lifecycle resources and are NOT managed by
 //   this component. Use the root_volume_id output to create child volumes.
 // - Credentials, region, and deployment workflow live outside this spec in
-//   stack inputs.
+//   IaC inputs.
 message AwsFsxOpenzfsFileSystemSpec {
   // The AWS region where the resource will be created.
   // Example: "us-west-2", "eu-west-1"

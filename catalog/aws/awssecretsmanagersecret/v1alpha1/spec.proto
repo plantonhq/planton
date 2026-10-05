@@ -41,7 +41,7 @@ import "shared/options/options.proto";
 // replicas, rotation - updates in place.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 message AwsSecretsManagerSecretSpec {
   // The AWS region where the secret will be created.
   // Example: "us-west-2", "eu-west-1"

@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpVertexAiDatasetSpec", func() {
 		return &GcpVertexAiDataset{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVertexAiDataset",
-			Metadata:   &shared.CloudResourceMetadata{Name: "product-images"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "product-images"},
 			Spec: &GcpVertexAiDatasetSpec{
 				Location:          "us-central1",
 				MetadataSchemaUri: "gs://google-cloud-aiplatform/schema/dataset/metadata/image_1.0.0.yaml",

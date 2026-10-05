@@ -4,7 +4,7 @@ Deploys the two ways logs leave CloudWatch: the modern vended-log pipeline (a de
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Delivery Source** — created only when `vended.source` is set: wraps one AWS resource (a CloudFront distribution, a Bedrock knowledge base, …) as a named source for one log type. AWS models sources per (resource, log type) — a second log type from the same resource is a second source.
 - **Delivery Destinations** — one per `vended.destinations` entry: a named wrapper around the receiving S3 bucket, log group, Firehose stream, or the account's X-Ray trace store. Each destination's cross-account `policy` is attached only when set.
@@ -16,7 +16,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, carrying CloudWatch Logs delivery permissions plus IAM pass-role for the cross-account arm. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, carrying CloudWatch Logs delivery permissions plus IAM pass-role for the cross-account arm. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -66,7 +66,7 @@ spec:
 planton apply -f log-delivery.yaml
 ```
 
-This creates a vended pipeline delivering the CloudFront distribution's access logs to an S3 archive as Parquet with Hive-compatible partitioning — Athena queries it with no ETL. A Stack Job tracks the provisioning in real time.
+This creates a vended pipeline delivering the CloudFront distribution's access logs to an S3 archive as Parquet with Hive-compatible partitioning — Athena queries it with no ETL. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -105,7 +105,7 @@ These are the most important decisions when configuring a log delivery. Explore 
 
 **One delivery per (source, destination-type)** — AWS accepts at most one delivery from a source to each destination type: S3 plus Firehose is fine, two S3 destinations from one source is a ConflictException. Fan out to multiple buckets via Firehose or replicate downstream.
 
-**Source identity is total** — the source's `name`, `logType`, and `resourceArn` all replace the source on change, and AWS models sources per (resource, log type). Shipping a second log type from the same resource means a second instance of this component.
+**Source identity is total** — the source's `name`, `logType`, and `resourceArn` all replace the source on change, and AWS models sources per (resource, log type). Shipping a second log type from the same resource means a second instance of this kind.
 
 **Own the shared destination once** — a destination shared by many pipelines lives in one owning instance; every other instance's deliveries reference it through `destinationArn` (fed by the owner's `destination_arns` output). The owner also carries the destination `policy` granting producer accounts `logs:CreateDelivery` — same-account pipelines never need that policy.
 
@@ -115,7 +115,7 @@ These are the most important decisions when configuring a log delivery. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -126,9 +126,9 @@ These are the most important decisions when configuring a log delivery. Explore 
 
 The source's `resourceArn` is also a reference field, but its kind is open by design — any vended-logs producer works (reference the producing kind's ARN output or pass a literal ARN). A delivery's `destinationArn` references another instance's owned destination through its `destination_arns` output.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -149,8 +149,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — the archive behind S3 destinations, referenced by bucket ARN
-- [**AWS CloudFront**](/cloud-catalog/aws-cloud-front) — a common vended source: its distribution ARN feeds `resourceArn` for ACCESS_LOGS
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) — the receiving group behind CWL destinations
-- [**AWS Kinesis Data Stream**](/cloud-catalog/aws-kinesis-stream) — the stream behind the legacy cross-account destination
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the role CloudWatch Logs assumes to write into the stream
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — the archive behind S3 destinations, referenced by bucket ARN
+- [**AWS CloudFront**](/infra-catalog/aws-cloud-front) — a common vended source: its distribution ARN feeds `resourceArn` for ACCESS_LOGS
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) — the receiving group behind CWL destinations
+- [**AWS Kinesis Data Stream**](/infra-catalog/aws-kinesis-stream) — the stream behind the legacy cross-account destination
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the role CloudWatch Logs assumes to write into the stream

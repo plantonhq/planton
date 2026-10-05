@@ -4,7 +4,7 @@ Declares a prometheus-operator PrometheusRule: a namespaced set of Prometheus al
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A PrometheusRule** -- one namespaced object carrying your rule groups, which the prometheus-operator renders into the rule files of every Prometheus whose rule selector matches it.
 - **Kubernetes Labels** -- your own labels on the object (the ones a Prometheus selects by), with resource metadata labels (resource name, kind, organization, environment) applied automatically on top.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -60,11 +60,11 @@ spec:
 planton apply -f prometheus-rule.yaml
 ```
 
-The stack's Prometheus loads the rule on its next reload and pages through Alertmanager's `severity: page` route when the API burns its budget. A Stack Job tracks the provisioning in real time.
+The stack's Prometheus loads the rule on its next reload and pages through Alertmanager's `severity: page` route when the API burns its budget. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the namespace to a resource managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, wire the namespace to a resource managed by another Infra Component:
 
 ```yaml
 spec:
@@ -94,15 +94,15 @@ These are the most important decisions when configuring a rule object. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
@@ -119,5 +119,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kube Prometheus Stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) -- installs the CRDs and the Prometheus and Alertmanager that evaluate and route the rules.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the placement target the rule object lives in.
+- [**Kube Prometheus Stack**](/infra-catalog/kubernetes-kube-prometheus-stack) -- installs the CRDs and the Prometheus and Alertmanager that evaluate and route the rules.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the placement target the rule object lives in.

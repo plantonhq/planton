@@ -5,7 +5,7 @@ import (
 
 	azurednsrecordv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurednsrecord/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -16,12 +16,12 @@ type Locals struct {
 	AzureTags         map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurednsrecordv1alpha1.AzureDnsRecordStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurednsrecordv1alpha1.AzureDnsRecordIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureDnsRecord = stackInput.Target
+	locals.AzureDnsRecord = iacInput.Target
 
-	target := stackInput.Target
+	target := iacInput.Target
 
 	// resource_group and zone_name are StringValueOrRef fields. The
 	// platform middleware resolves valueFrom references before IaC modules
@@ -36,7 +36,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurednsrecordv1alpha1.Az
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureDnsRecord.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureDnsRecord.String()),
 	}
 
 	if target.Metadata.Id != "" {

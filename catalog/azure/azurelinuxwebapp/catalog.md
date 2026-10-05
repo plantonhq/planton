@@ -4,7 +4,7 @@ Deploys a Linux Web App on Azure App Service with configurable application stack
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Azure Linux Web App** -- a managed web application hosted on the referenced App Service Plan, with the configured runtime stack, app settings, and site configuration
 - **Application Stack** -- the selected runtime (Node.js, Python, .NET, PHP, Java with Tomcat/JBoss, or a custom Docker container image) configured within the site
@@ -21,15 +21,15 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the Web App will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
-- **An Azure Service Plan** that provides compute resources. The plan's OS type must be Linux and its SKU tier determines available features (always-on requires Basic+, VNet integration requires Standard+). Provide the plan ID directly or reference an AzureServicePlan Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the Web App will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
+- **An Azure Service Plan** that provides compute resources. The plan's OS type must be Linux and its SKU tier determines available features (always-on requires Basic+, VNet integration requires Standard+). Provide the plan ID directly or reference an AzureServicePlan Infra Component via ValueFromRef.
 - **A VNet subnet** (optional) delegated to `Microsoft.Web/serverFarms` for VNet integration. Required for private resource access.
-- **Application Insights** (optional) for APM telemetry. Provide the connection string directly or reference an AzureApplicationInsights Cloud Resource via ValueFromRef.
+- **Application Insights** (optional) for APM telemetry. Provide the connection string directly or reference an AzureApplicationInsights Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -66,7 +66,7 @@ spec:
 planton apply -f linux-web-app.yaml
 ```
 
-This creates a Node.js 22 LTS web app with always-on and health check monitoring -- VNet integration, managed identity, IP restrictions, CORS, and logging are not configured. A Stack Job tracks the provisioning in real time.
+This creates a Node.js 22 LTS web app with always-on and health check monitoring -- VNet integration, managed identity, IP restrictions, CORS, and logging are not configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -119,7 +119,7 @@ These are the most important decisions when configuring a Linux Web App. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -129,9 +129,9 @@ These are the most important decisions when configuring a Linux Web App. Explore
 | **AzureSubnet** (optional) | `virtualNetworkSubnetId` | `status.outputs.subnet_id` |
 | **AzureUserAssignedIdentity** (optional) | `keyVaultReferenceIdentityId` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -157,8 +157,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the Web App is created
-- [**Azure Service Plan**](/cloud-catalog/azure-service-plan) -- provides the compute tier hosting the Web App
-- [**Azure Application Insights**](/cloud-catalog/azure-application-insights) -- provides the APM telemetry connection string
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- provides the VNet subnet for outbound traffic routing
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- provides the managed identity for Key Vault reference authentication
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the Web App is created
+- [**Azure Service Plan**](/infra-catalog/azure-service-plan) -- provides the compute tier hosting the Web App
+- [**Azure Application Insights**](/infra-catalog/azure-application-insights) -- provides the APM telemetry connection string
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- provides the VNet subnet for outbound traffic routing
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- provides the managed identity for Key Vault reference authentication

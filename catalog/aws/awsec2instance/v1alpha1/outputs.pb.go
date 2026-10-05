@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEc2InstanceStackOutputs captures the observable outputs of a
+// AwsEc2InstanceOutputs captures the observable outputs of a
 // provisioned EC2 instance -- the identifiers and addresses downstream
 // resources and operators reference.
-type AwsEc2InstanceStackOutputs struct {
+type AwsEc2InstanceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The instance ID (e.g. "i-0123456789abcdef0"). The primary handle:
 	// what load-balancer target groups register (an AwsLbTargetGroup
@@ -59,20 +59,20 @@ type AwsEc2InstanceStackOutputs struct {
 	sizeCache                 protoimpl.SizeCache
 }
 
-func (x *AwsEc2InstanceStackOutputs) Reset() {
-	*x = AwsEc2InstanceStackOutputs{}
+func (x *AwsEc2InstanceOutputs) Reset() {
+	*x = AwsEc2InstanceOutputs{}
 	mi := &file_catalog_aws_awsec2instance_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEc2InstanceStackOutputs) String() string {
+func (x *AwsEc2InstanceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEc2InstanceStackOutputs) ProtoMessage() {}
+func (*AwsEc2InstanceOutputs) ProtoMessage() {}
 
-func (x *AwsEc2InstanceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEc2InstanceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsec2instance_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -84,68 +84,68 @@ func (x *AwsEc2InstanceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEc2InstanceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEc2InstanceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEc2InstanceOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEc2InstanceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsec2instance_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEc2InstanceStackOutputs) GetInstanceId() string {
+func (x *AwsEc2InstanceOutputs) GetInstanceId() string {
 	if x != nil {
 		return x.InstanceId
 	}
 	return ""
 }
 
-func (x *AwsEc2InstanceStackOutputs) GetArn() string {
+func (x *AwsEc2InstanceOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsEc2InstanceStackOutputs) GetInstanceState() string {
+func (x *AwsEc2InstanceOutputs) GetInstanceState() string {
 	if x != nil {
 		return x.InstanceState
 	}
 	return ""
 }
 
-func (x *AwsEc2InstanceStackOutputs) GetAvailabilityZone() string {
+func (x *AwsEc2InstanceOutputs) GetAvailabilityZone() string {
 	if x != nil {
 		return x.AvailabilityZone
 	}
 	return ""
 }
 
-func (x *AwsEc2InstanceStackOutputs) GetPrivateIp() string {
+func (x *AwsEc2InstanceOutputs) GetPrivateIp() string {
 	if x != nil {
 		return x.PrivateIp
 	}
 	return ""
 }
 
-func (x *AwsEc2InstanceStackOutputs) GetPrivateDns() string {
+func (x *AwsEc2InstanceOutputs) GetPrivateDns() string {
 	if x != nil {
 		return x.PrivateDns
 	}
 	return ""
 }
 
-func (x *AwsEc2InstanceStackOutputs) GetPublicIp() string {
+func (x *AwsEc2InstanceOutputs) GetPublicIp() string {
 	if x != nil {
 		return x.PublicIp
 	}
 	return ""
 }
 
-func (x *AwsEc2InstanceStackOutputs) GetPublicDns() string {
+func (x *AwsEc2InstanceOutputs) GetPublicDns() string {
 	if x != nil {
 		return x.PublicDns
 	}
 	return ""
 }
 
-func (x *AwsEc2InstanceStackOutputs) GetPrimaryNetworkInterfaceId() string {
+func (x *AwsEc2InstanceOutputs) GetPrimaryNetworkInterfaceId() string {
 	if x != nil {
 		return x.PrimaryNetworkInterfaceId
 	}
@@ -156,8 +156,8 @@ var File_catalog_aws_awsec2instance_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_aws_awsec2instance_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awsec2instance/v1alpha1/outputs.proto\x12'dev.planton.aws.awsec2instance.v1alpha1\"\xe0\x02\n" +
-	"\x1aAwsEc2InstanceStackOutputs\x12\x1f\n" +
+	"1catalog/aws/awsec2instance/v1alpha1/outputs.proto\x12'dev.planton.aws.awsec2instance.v1alpha1\"\xdb\x02\n" +
+	"\x15AwsEc2InstanceOutputs\x12\x1f\n" +
 	"\vinstance_id\x18\x01 \x01(\tR\n" +
 	"instanceId\x12\x10\n" +
 	"\x03arn\x18\x02 \x01(\tR\x03arn\x12%\n" +
@@ -187,7 +187,7 @@ func file_catalog_aws_awsec2instance_v1alpha1_outputs_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsec2instance_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsec2instance_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEc2InstanceStackOutputs)(nil), // 0: dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceStackOutputs
+	(*AwsEc2InstanceOutputs)(nil), // 0: dev.planton.aws.awsec2instance.v1alpha1.AwsEc2InstanceOutputs
 }
 var file_catalog_aws_awsec2instance_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

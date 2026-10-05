@@ -4,18 +4,18 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/catalog/cloudflare/cloudflarelogpushjob/iac/pulumi/module"
 	cloudflarelogpushjobv1alpha1 "github.com/plantonhq/planton/catalog/cloudflare/cloudflarelogpushjob/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		stackInput := &cloudflarelogpushjobv1alpha1.CloudflareLogpushJobStackInput{}
+		iacInput := &cloudflarelogpushjobv1alpha1.CloudflareLogpushJobIacInput{}
 
-		if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
-			return errors.Wrap(err, "failed to load stack-input")
+		if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
+			return errors.Wrap(err, "failed to load iac-input")
 		}
 
-		return module.Resources(ctx, stackInput)
+		return module.Resources(ctx, iacInput)
 	})
 }

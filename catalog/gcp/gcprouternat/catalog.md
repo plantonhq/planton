@@ -4,7 +4,7 @@ Deploys a Cloud Router with a NAT gateway that provides outbound internet connec
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine API enablement** -- a `google_project_service` that activates `compute.googleapis.com` on the target project
 - **Cloud Router** -- a `google_compute_router` in the specified project, region, and VPC network that hosts the NAT configuration, optionally carrying full BGP configuration (ASN, advertisement mode/groups/ranges, keepalive, identifier range), a description, encrypted-Interconnect dedication, and resource-manager tags
@@ -16,13 +16,13 @@ Static NAT IPs are **referenced, never created**: each `natIps` entry points at 
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the Cloud Router and NAT will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
-- **A VPC network** with at least one subnet in the target region. Provide the network self-link directly or reference a GcpVpcNetwork Cloud Resource via ValueFromRef.
+- **A GCP project** where the Cloud Router and NAT will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
+- **A VPC network** with at least one subnet in the target region. Provide the network self-link directly or reference a GcpVpcNetwork Infra Component via ValueFromRef.
 - **GcpAddress reservations** (EXTERNAL, same region) when egress must come from stable, allowlistable IPs — omit `natIps` entirely for auto-allocation.
 
 ## Deploy
@@ -56,7 +56,7 @@ spec:
 planton apply -f gcp-router-nat.yaml
 ```
 
-This creates a Cloud Router and NAT covering all subnets in us-central1 with auto-allocated IPs and error-only logging. A Stack Job tracks the provisioning in real time.
+This creates a Cloud Router and NAT covering all subnets in us-central1 with auto-allocated IPs and error-only logging. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -98,7 +98,7 @@ These are the most important decisions when configuring a Cloud NAT. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -107,9 +107,9 @@ These are the most important decisions when configuring a Cloud NAT. Explore the
 | **GcpAddress** | `natIps[]`, `drainNatIps[]`, rule actions | `status.outputs.self_link` |
 | **GcpSubnetwork** | `subnetworks[].subnetwork`, `nat64Subnetworks[]`, rule ranges | `status.outputs.subnetwork_self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -129,7 +129,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the Cloud Router and NAT are created
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- provides the VPC network that the Cloud Router is attached to
-- [**GCP Address**](/cloud-catalog/gcp-address) -- EXTERNAL reservations referenced as stable NAT IPs
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- subnetworks scoped for NAT (and NAT64) coverage
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the Cloud Router and NAT are created
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC network that the Cloud Router is attached to
+- [**GCP Address**](/infra-catalog/gcp-address) -- EXTERNAL reservations referenced as stable NAT IPs
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- subnetworks scoped for NAT (and NAT64) coverage

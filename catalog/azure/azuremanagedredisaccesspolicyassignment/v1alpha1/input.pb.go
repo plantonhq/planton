@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureManagedRedisAccessPolicyAssignmentStackInput is the input to the
+// AzureManagedRedisAccessPolicyAssignmentIacInput is the input to the
 // IaC module. It contains the target resource and provider configuration.
-type AzureManagedRedisAccessPolicyAssignmentStackInput struct {
+type AzureManagedRedisAccessPolicyAssignmentIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// the catalog object to deploy to be deployed
 	Target *AzureManagedRedisAccessPolicyAssignment `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Azure authentication
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AzureManagedRedisAccessPolicyAssignmentStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureManagedRedisAccessPolicyAssignmentStackInput) Reset() {
-	*x = AzureManagedRedisAccessPolicyAssignmentStackInput{}
+func (x *AzureManagedRedisAccessPolicyAssignmentIacInput) Reset() {
+	*x = AzureManagedRedisAccessPolicyAssignmentIacInput{}
 	mi := &file_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureManagedRedisAccessPolicyAssignmentStackInput) String() string {
+func (x *AzureManagedRedisAccessPolicyAssignmentIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureManagedRedisAccessPolicyAssignmentStackInput) ProtoMessage() {}
+func (*AzureManagedRedisAccessPolicyAssignmentIacInput) ProtoMessage() {}
 
-func (x *AzureManagedRedisAccessPolicyAssignmentStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureManagedRedisAccessPolicyAssignmentIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureManagedRedisAccessPolicyAssignmentStackInput) ProtoReflect() proto
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureManagedRedisAccessPolicyAssignmentStackInput.ProtoReflect.Descriptor instead.
-func (*AzureManagedRedisAccessPolicyAssignmentStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureManagedRedisAccessPolicyAssignmentIacInput.ProtoReflect.Descriptor instead.
+func (*AzureManagedRedisAccessPolicyAssignmentIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureManagedRedisAccessPolicyAssignmentStackInput) GetTarget() *AzureManagedRedisAccessPolicyAssignment {
+func (x *AzureManagedRedisAccessPolicyAssignmentIacInput) GetTarget() *AzureManagedRedisAccessPolicyAssignment {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureManagedRedisAccessPolicyAssignmentStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureManagedRedisAccessPolicyAssignmentIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_input_pr
 
 const file_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Jcatalog/azure/azuremanagedredisaccesspolicyassignment/v1alpha1/input.proto\x12Bdev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1\x1aHcatalog/azure/azuremanagedredisaccesspolicyassignment/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\x8a\x02\n" +
-	"1AzureManagedRedisAccessPolicyAssignmentStackInput\x12\x83\x01\n" +
+	"Jcatalog/azure/azuremanagedredisaccesspolicyassignment/v1alpha1/input.proto\x12Bdev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1\x1aHcatalog/azure/azuremanagedredisaccesspolicyassignment/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\x88\x02\n" +
+	"/AzureManagedRedisAccessPolicyAssignmentIacInput\x12\x83\x01\n" +
 	"\x06target\x18\x01 \x01(\v2k.dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x8f\x04\n" +
 	"Fcom.dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_input_p
 
 var file_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_input_proto_goTypes = []any{
-	(*AzureManagedRedisAccessPolicyAssignmentStackInput)(nil), // 0: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentStackInput
-	(*AzureManagedRedisAccessPolicyAssignment)(nil),           // 1: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignment
-	(*azure.AzureProviderConfig)(nil),                         // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureManagedRedisAccessPolicyAssignmentIacInput)(nil), // 0: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentIacInput
+	(*AzureManagedRedisAccessPolicyAssignment)(nil),         // 1: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignment
+	(*azure.AzureProviderConfig)(nil),                       // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuremanagedredisaccesspolicyassignment_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentStackInput.target:type_name -> dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignment
-	2, // 1: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentIacInput.target:type_name -> dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignment
+	2, // 1: dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1.AzureManagedRedisAccessPolicyAssignmentIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

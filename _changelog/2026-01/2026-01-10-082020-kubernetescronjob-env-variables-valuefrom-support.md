@@ -2,7 +2,7 @@
 
 **Date:** 2026-01-10
 **Type:** Enhancement
-**Component:** KubernetesCronJob
+**Kind:** KubernetesCronJob
 **Tags:** kubernetes, cronjob, environment-variables, valueFrom, reference
 
 ---
@@ -196,7 +196,7 @@ Added test cases in `spec_test.go`:
 # Regenerate proto stubs
 make protos
 
-# Run component tests
+# Run kind tests
 go test ./apis/dev/planton/provider/kubernetes/kubernetescronjob/v1/... -v
 
 # Full build
@@ -213,7 +213,7 @@ make test
 1. **Dynamic Configuration**: Environment variables can now reference outputs from other resources
 2. **Reduced Configuration Drift**: Values stay in sync with source resources
 3. **Cleaner Manifests**: No need to hardcode values that come from other resources
-4. **Consistency**: Same pattern as other Planton components using `StringValueOrRef`
+4. **Consistency**: Same pattern as other Planton kinds using `StringValueOrRef`
 
 ---
 

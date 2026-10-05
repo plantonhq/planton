@@ -31,7 +31,7 @@ import "shared/options/options.proto";
 // - `access_string` and the authentication mode update in place — tightening
 //   permissions or rotating passwords never recreates the user.
 // - Credentials, region, and deployment workflow live outside this spec in
-//   stack inputs.
+//   IaC inputs.
 message AwsMemorydbUserSpec {
   // The AWS region where the user is created. MemoryDB users are regional
   // resources — an ACL can only contain users from its own region.

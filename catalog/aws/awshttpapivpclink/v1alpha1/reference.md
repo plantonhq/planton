@@ -27,7 +27,7 @@ Design notes:
   allow egress to the target ALB/NLB listener ports.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

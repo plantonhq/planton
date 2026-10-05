@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0ClientFromMetadataDocumentStackOutputs contains the application as Auth0
+// Auth0ClientFromMetadataDocumentOutputs contains the application as Auth0
 // registered it: its Management API id, what Auth0 took from the metadata
 // document, and the document's validation result as of the last read.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/client_cimd#read-only
 // https://www.pulumi.com/registry/packages/auth0/api-docs/clientcimd/#outputs
-type Auth0ClientFromMetadataDocumentStackOutputs struct {
+type Auth0ClientFromMetadataDocumentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// client_id is the application's id in the Management API ("tpc_...", the
 	// prefix of every third-party application). A client grant authorizing the
@@ -80,20 +80,20 @@ type Auth0ClientFromMetadataDocumentStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) Reset() {
-	*x = Auth0ClientFromMetadataDocumentStackOutputs{}
+func (x *Auth0ClientFromMetadataDocumentOutputs) Reset() {
+	*x = Auth0ClientFromMetadataDocumentOutputs{}
 	mi := &file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) String() string {
+func (x *Auth0ClientFromMetadataDocumentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0ClientFromMetadataDocumentStackOutputs) ProtoMessage() {}
+func (*Auth0ClientFromMetadataDocumentOutputs) ProtoMessage() {}
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0ClientFromMetadataDocumentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -105,96 +105,96 @@ func (x *Auth0ClientFromMetadataDocumentStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0ClientFromMetadataDocumentStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0ClientFromMetadataDocumentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0ClientFromMetadataDocumentOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0ClientFromMetadataDocumentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) GetClientId() string {
+func (x *Auth0ClientFromMetadataDocumentOutputs) GetClientId() string {
 	if x != nil {
 		return x.ClientId
 	}
 	return ""
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) GetExternalClientId() string {
+func (x *Auth0ClientFromMetadataDocumentOutputs) GetExternalClientId() string {
 	if x != nil {
 		return x.ExternalClientId
 	}
 	return ""
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) GetName() string {
+func (x *Auth0ClientFromMetadataDocumentOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) GetAppType() string {
+func (x *Auth0ClientFromMetadataDocumentOutputs) GetAppType() string {
 	if x != nil {
 		return x.AppType
 	}
 	return ""
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) GetGrantTypes() []string {
+func (x *Auth0ClientFromMetadataDocumentOutputs) GetGrantTypes() []string {
 	if x != nil {
 		return x.GrantTypes
 	}
 	return nil
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) GetCallbacks() []string {
+func (x *Auth0ClientFromMetadataDocumentOutputs) GetCallbacks() []string {
 	if x != nil {
 		return x.Callbacks
 	}
 	return nil
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) GetLogoUri() string {
+func (x *Auth0ClientFromMetadataDocumentOutputs) GetLogoUri() string {
 	if x != nil {
 		return x.LogoUri
 	}
 	return ""
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) GetJwksUri() string {
+func (x *Auth0ClientFromMetadataDocumentOutputs) GetJwksUri() string {
 	if x != nil {
 		return x.JwksUri
 	}
 	return ""
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) GetThirdPartySecurityMode() string {
+func (x *Auth0ClientFromMetadataDocumentOutputs) GetThirdPartySecurityMode() string {
 	if x != nil {
 		return x.ThirdPartySecurityMode
 	}
 	return ""
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) GetExternalMetadataCreatedBy() string {
+func (x *Auth0ClientFromMetadataDocumentOutputs) GetExternalMetadataCreatedBy() string {
 	if x != nil {
 		return x.ExternalMetadataCreatedBy
 	}
 	return ""
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) GetValidationValid() bool {
+func (x *Auth0ClientFromMetadataDocumentOutputs) GetValidationValid() bool {
 	if x != nil {
 		return x.ValidationValid
 	}
 	return false
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) GetValidationWarnings() []string {
+func (x *Auth0ClientFromMetadataDocumentOutputs) GetValidationWarnings() []string {
 	if x != nil {
 		return x.ValidationWarnings
 	}
 	return nil
 }
 
-func (x *Auth0ClientFromMetadataDocumentStackOutputs) GetValidationViolations() []string {
+func (x *Auth0ClientFromMetadataDocumentOutputs) GetValidationViolations() []string {
 	if x != nil {
 		return x.ValidationViolations
 	}
@@ -205,8 +205,8 @@ var File_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_outputs_proto pr
 
 const file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/auth0/auth0clientfrommetadatadocument/v1alpha1/outputs.proto\x12:dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1\"\xa9\x04\n" +
-	"+Auth0ClientFromMetadataDocumentStackOutputs\x12\x1b\n" +
+	"Dcatalog/auth0/auth0clientfrommetadatadocument/v1alpha1/outputs.proto\x12:dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1\"\xa4\x04\n" +
+	"&Auth0ClientFromMetadataDocumentOutputs\x12\x1b\n" +
 	"\tclient_id\x18\x01 \x01(\tR\bclientId\x12,\n" +
 	"\x12external_client_id\x18\x02 \x01(\tR\x10externalClientId\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x19\n" +
@@ -238,7 +238,7 @@ func file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_outputs_proto_r
 
 var file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0ClientFromMetadataDocumentStackOutputs)(nil), // 0: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentStackOutputs
+	(*Auth0ClientFromMetadataDocumentOutputs)(nil), // 0: dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1.Auth0ClientFromMetadataDocumentOutputs
 }
 var file_catalog_auth0_auth0clientfrommetadatadocument_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

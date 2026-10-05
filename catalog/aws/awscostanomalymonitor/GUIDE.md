@@ -1,6 +1,6 @@
-# AwsCostAnomalyMonitor — Component Guide
+# AwsCostAnomalyMonitor — Kind Guide
 
-Authored operational judgment for the anomaly-monitor component: the
+Authored operational judgment for the anomaly-monitor kind: the
 design decisions behind the spec's shape, and what to know before
 operating anomaly detection in production.
 

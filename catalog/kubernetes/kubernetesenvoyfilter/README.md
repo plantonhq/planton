@@ -207,14 +207,14 @@ declare the dependency on `metadata.relationships`
 
 See `GUIDE.md` for the full composability rationale and the escape-hatch posture.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `envoy_filter_name` | Name of the created EnvoyFilter (equals metadata.name). |
 | `namespace` | Namespace the EnvoyFilter was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Istio](../kubernetesistio)
 - [Kubernetes Istio Base CRDs](../kubernetesistiobasecrds)

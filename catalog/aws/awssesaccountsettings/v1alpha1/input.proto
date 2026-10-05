@@ -5,9 +5,9 @@ package dev.planton.aws.awssesaccountsettings.v1alpha1;
 import "catalog/aws/awssesaccountsettings/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSesAccountSettingsStackInput is the input for the IaC modules
+// AwsSesAccountSettingsIacInput is the input for the IaC modules
 // that manage the region's SES account settings.
-message AwsSesAccountSettingsStackInput {
+message AwsSesAccountSettingsIacInput {
   // target is the AwsSesAccountSettings resource to deploy.
   AwsSesAccountSettings target = 1;
   // provider_config contains the AWS provider credentials and configuration.

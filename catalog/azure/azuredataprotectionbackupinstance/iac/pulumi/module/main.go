@@ -25,12 +25,12 @@ import (
 // Nearly everything is ForceNew; only backup_policy_id updates in
 // place (and on the kubernetes_cluster variant even that replaces the
 // instance -- the provider ships no update path for it).
-func Resources(ctx *pulumi.Context, stackInput *azuredataprotectionbackupinstancev1alpha1.AzureDataProtectionBackupInstanceStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuredataprotectionbackupinstancev1alpha1.AzureDataProtectionBackupInstanceIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}

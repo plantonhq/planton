@@ -1,4 +1,4 @@
-# Install manifest used when OTHER components declare
+# Install manifest used when OTHER kinds declare
 # KubernetesPersistentVolumeClaim as an E2E prerequisite (e.g. the
 # KubernetesDeployment with-pvc-mount scenario, whose rollout completing is
 # the live proof that a claim binds through the real provisioner). Uses the

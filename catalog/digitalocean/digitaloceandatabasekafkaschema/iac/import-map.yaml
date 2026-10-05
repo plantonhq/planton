@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceandatabasekafkaschema
 spec:
@@ -18,13 +18,13 @@ spec:
   values:
     - name: cluster_id
       derivations:
-        - from_stack_output: cluster_id
+        - from_output: cluster_id
       where_to_find: >-
         The Kafka cluster's UUID: DigitalOcean control panel -> Databases ->
         the cluster's Overview, or `doctl databases list` (the ID column).
     - name: subject_name
       derivations:
-        - from_stack_output: subject_name
+        - from_output: subject_name
       where_to_find: >-
         The schema subject's name: the cluster's "Schema Registry" tab in
         the DigitalOcean control panel.

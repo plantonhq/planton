@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflarehyperdriveconfig.v1alpha1;
 import "catalog/cloudflare/cloudflarehyperdriveconfig/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-hyperdrive-config stack-input
-message CloudflareHyperdriveConfigStackInput {
-  //target cloud-resource
+//cloudflare-hyperdrive-config iac-input
+message CloudflareHyperdriveConfigIacInput {
+  // the catalog object to deploy
   CloudflareHyperdriveConfig target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

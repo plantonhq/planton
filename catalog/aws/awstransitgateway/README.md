@@ -2,7 +2,7 @@
 
 An AWS Transit Gateway is the regional networking hub that interconnects VPCs, VPN connections, and Direct Connect gateways through a single, centralized point. It replaces complex VPC peering meshes with a scalable hub-and-spoke topology.
 
-This component provisions the hub itself. What composes AROUND the hub is modeled as first-class resources:
+This kind provisions the hub itself. What composes AROUND the hub is modeled as first-class resources:
 
 - **`AwsTransitGatewayVpcAttachment`** connects one VPC (via subnets) to the gateway.
 - **`AwsTransitGatewayRouteTable`** defines an isolated routing domain -- its associations, propagations, and static routes.
@@ -56,7 +56,7 @@ With the default association and propagation dials enabled (the defaults), every
 |---|---|---|---|
 | `transitGatewayCidrBlocks` | string[] | [] | TGW CIDR blocks for TGW Connect/GRE (max 5; IPv4 /24 or larger, IPv6 /64 or larger, never 169.254.0.0/16) |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|

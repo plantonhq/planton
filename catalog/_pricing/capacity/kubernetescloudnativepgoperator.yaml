@@ -7,9 +7,9 @@
 # footprint is the operator replicas. The PostgreSQL clusters the operator
 # reconciles reserve their own capacity on their KubernetesPostgres
 # resources, and the Barman Cloud plugin on its own kind -- never here.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetescloudnativepgoperator
 spec:

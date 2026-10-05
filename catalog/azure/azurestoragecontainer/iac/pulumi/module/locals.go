@@ -19,11 +19,11 @@ var containerAccessTypeStrings = map[azurestoragecontainerv1alpha1.AzureStorageC
 	azurestoragecontainerv1alpha1.AzureStorageContainerAccessType_CONTAINER: "container",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurestoragecontainerv1alpha1.AzureStorageContainerStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurestoragecontainerv1alpha1.AzureStorageContainerIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureStorageContainer = stackInput.Target
-	locals.StorageAccountId = stackInput.Target.Spec.StorageAccountId.GetValue()
+	locals.AzureStorageContainer = iacInput.Target
+	locals.StorageAccountId = iacInput.Target.Spec.StorageAccountId.GetValue()
 
 	// No Azure tags: ARM does not support tags on blobServices/containers,
 	// so the platform's identity tags live on the parent account.

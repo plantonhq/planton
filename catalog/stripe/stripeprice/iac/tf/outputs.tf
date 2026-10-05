@@ -1,5 +1,5 @@
 # StripePrice Outputs
-# Maps to the StripePriceStackOutputs protobuf message.
+# Maps to the StripePriceOutputs protobuf message.
 
 output "id" {
   description = "The price's Stripe id (price_...); it changes when the price is replaced"

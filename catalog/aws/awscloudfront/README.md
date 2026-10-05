@@ -57,7 +57,7 @@ Stage a configuration change on real traffic before promoting it: deploy the can
 - **`enabled`** / **`waitForDeployment`** / **`retainOnDelete`** — operational knobs; deploys propagate to every edge location (typically 5-15 minutes).
 - **Origin depth** — per-origin `responseCompletionTimeoutSeconds` (cap the complete response transfer), `customOrigin.ipAddressType` (ipv4/ipv6/dualstack origin resolution), and cross-account VPC origins (`vpcOrigin.ownerAccountId`).
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

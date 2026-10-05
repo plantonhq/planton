@@ -37,7 +37,7 @@ var _ = ginkgo.Describe("GcpPubSubTopicSpec", func() {
 		return &GcpPubSubTopic{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpPubSubTopic",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-pubsub-topic",
 			},
 			Spec: &GcpPubSubTopicSpec{

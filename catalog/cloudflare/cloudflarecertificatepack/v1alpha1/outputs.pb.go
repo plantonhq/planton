@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareCertificatePackStackOutputs captures the outputs after ordering a
+// CloudflareCertificatePackOutputs captures the outputs after ordering a
 // certificate pack.
-type CloudflareCertificatePackStackOutputs struct {
+type CloudflareCertificatePackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The certificate pack identifier.
 	CertificatePackId string `protobuf:"bytes,1,opt,name=certificate_pack_id,json=certificatePackId,proto3" json:"certificate_pack_id,omitempty"`
@@ -36,20 +36,20 @@ type CloudflareCertificatePackStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareCertificatePackStackOutputs) Reset() {
-	*x = CloudflareCertificatePackStackOutputs{}
+func (x *CloudflareCertificatePackOutputs) Reset() {
+	*x = CloudflareCertificatePackOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareCertificatePackStackOutputs) String() string {
+func (x *CloudflareCertificatePackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareCertificatePackStackOutputs) ProtoMessage() {}
+func (*CloudflareCertificatePackOutputs) ProtoMessage() {}
 
-func (x *CloudflareCertificatePackStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareCertificatePackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *CloudflareCertificatePackStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareCertificatePackStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareCertificatePackStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareCertificatePackOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareCertificatePackOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareCertificatePackStackOutputs) GetCertificatePackId() string {
+func (x *CloudflareCertificatePackOutputs) GetCertificatePackId() string {
 	if x != nil {
 		return x.CertificatePackId
 	}
 	return ""
 }
 
-func (x *CloudflareCertificatePackStackOutputs) GetZoneId() string {
+func (x *CloudflareCertificatePackOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
@@ -84,8 +84,8 @@ var File_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_outputs_proto pro
 
 const file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/cloudflare/cloudflarecertificatepack/v1alpha1/outputs.proto\x129dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1\"\x99\x01\n" +
-	"%CloudflareCertificatePackStackOutputs\x12.\n" +
+	"Ccatalog/cloudflare/cloudflarecertificatepack/v1alpha1/outputs.proto\x129dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1\"\x94\x01\n" +
+	" CloudflareCertificatePackOutputs\x12.\n" +
 	"\x13certificate_pack_id\x18\x01 \x01(\tR\x11certificatePackId\x12\x17\n" +
 	"\azone_id\x18\x04 \x01(\tR\x06zoneIdJ\x04\b\x02\x10\x03J\x04\b\x03\x10\x04R\x06statusR\x13primary_certificateB\xcc\x03\n" +
 	"=com.dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1B\fOutputsProtoP\x01Ztgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarecertificatepack/v1alpha1;cloudflarecertificatepackv1alpha1\xa2\x02\x04DPCC\xaa\x029Dev.Planton.Cloudflare.Cloudflarecertificatepack.V1alpha1\xca\x029Dev\\Planton\\Cloudflare\\Cloudflarecertificatepack\\V1alpha1\xe2\x02EDev\\Planton\\Cloudflare\\Cloudflarecertificatepack\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Cloudflare::Cloudflarecertificatepack::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_outputs_proto_ra
 
 var file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareCertificatePackStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackStackOutputs
+	(*CloudflareCertificatePackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1.CloudflareCertificatePackOutputs
 }
 var file_catalog_cloudflare_cloudflarecertificatepack_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

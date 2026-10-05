@@ -11,7 +11,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurecosmosdbmongocollection
+    e2e-catalog-kind: azurecosmosdbmongocollection
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/azure/azurecosmosdbmongocollection/e2e/mongo-chain-account.yaml, catalog/azure/azurecosmosdbmongocollection/e2e/mongo-chain-database.yaml"

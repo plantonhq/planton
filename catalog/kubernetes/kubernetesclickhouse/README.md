@@ -11,14 +11,14 @@ error, no pods, nothing. Deploy the operator first with
 `watch_namespaces` covering this namespace (or `[".*"]`), clusters
 after.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want the operator itself** — installing and configuring the
   Altinity ClickHouse operator is KubernetesAltinityOperator; this
   component is one cluster it manages.
 - **You want a managed cloud service** — ClickHouse Cloud and the
   cloud providers' managed offerings run the database for you; this
-  component is for running ClickHouse ON the Kubernetes cluster
+  kind is for running ClickHouse ON the Kubernetes cluster
   itself.
 - **You need an OLTP database** — ClickHouse is a columnar OLAP
   engine: brilliant at scanning billions of rows, wrong for
@@ -164,7 +164,7 @@ every real client.
 
 ## Environment Injection
 
-This component calls no cloud APIs; managed-Kubernetes integration
+This kind calls no cloud APIs; managed-Kubernetes integration
 rides the Service annotations and ClickHouse's own storage
 configuration.
 
@@ -175,7 +175,7 @@ configuration.
 | S3, keyless (EKS) | `settings` / `files` only | `use_environment_credentials` with IRSA-bound identity on the nodes |
 | GCS, keyless (GKE) | `settings` / `files` only | Workload Identity on the nodes |
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

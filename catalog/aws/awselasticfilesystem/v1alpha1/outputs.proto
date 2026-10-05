@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.aws.awselasticfilesystem.v1alpha1;
 
-// AwsElasticFileSystemStackOutputs captures observable identifiers and endpoints
+// AwsElasticFileSystemOutputs captures observable identifiers and endpoints
 // from a provisioned Elastic File System. These outputs are used by downstream
 // resources to wire dependencies via StringValueOrRef.
 //
@@ -12,7 +12,7 @@ package dev.planton.aws.awselasticfilesystem.v1alpha1;
 // - AwsEfsAccessPoint: references `file_system_id` (Lambda and ECS then
 //   reference the access point's own outputs)
 // - EC2 (direct NFS mount): uses `dns_name` or mount target DNS names
-message AwsElasticFileSystemStackOutputs {
+message AwsElasticFileSystemOutputs {
   // The ID of the file system (e.g., "fs-0123456789abcdef0"). This is the
   // primary identifier used by EKS PersistentVolumes, ECS task definitions,
   // and AwsEfsAccessPoint references.

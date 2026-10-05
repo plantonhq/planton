@@ -1,20 +1,20 @@
 # DigitalOcean Kubernetes Cluster -- Pulumi Module
 
-Deploys a `digitalocean:index/kubernetesCluster:KubernetesCluster` from a `DigitalOceanKubernetesCluster` stack input: version/region/VPC placement, the inline default node pool (labels, taints, tags, autoscaling), HA control plane, surge and auto upgrades, maintenance policy, control-plane firewall, pod/service subnets, cluster-autoscaler tuning, registry integration, kubeconfig expiry, destroy-time cleanup, single sign-on, isolated workers and worker subnet placement, GPU partitioning on the default pool, and all nine managed addon toggles. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`.
+Deploys a `digitalocean:index/kubernetesCluster:KubernetesCluster` from a `DigitalOceanKubernetesCluster` IaC input: version/region/VPC placement, the inline default node pool (labels, taints, tags, autoscaling), HA control plane, surge and auto upgrades, maintenance policy, control-plane firewall, pod/service subnets, cluster-autoscaler tuning, registry integration, kubeconfig expiry, destroy-time cleanup, single sign-on, isolated workers and worker subnet placement, GPU partitioning on the default pool, and all nine managed addon toggles. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`.
 
 Additional node pools are separate `KubernetesNodePool` resources, not part of this module.
 
 ## Module structure
 
-- `main.go` -- Pulumi program entry point reading the stack input
+- `main.go` -- Pulumi program entry point reading the IaC input
 - `module/main.go` -- `Resources()`: locals, provider, cluster
-- `module/locals.go` -- stack-input references and the standard Planton label map
-- `module/cluster.go` -- the cluster resource and stack-output exports
+- `module/locals.go` -- iac-input references and the standard Planton label map
+- `module/cluster.go` -- the cluster resource and output exports
 - `module/outputs.go` -- output key constants (the kind's outputs.proto contract)
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Terraform module: `cluster_id`, `kubeconfig`, `api_server_endpoint`, `urn`, `ipv4_address`, `default_node_pool_id`, `cluster_subnet`, `service_subnet`. The kubeconfig is a Pulumi secret output.
+Exactly the kind's output contract, identical to the Terraform module: `cluster_id`, `kubeconfig`, `api_server_endpoint`, `urn`, `ipv4_address`, `default_node_pool_id`, `cluster_subnet`, `service_subnet`. The kubeconfig is a Pulumi secret output.
 
 ## Behavior notes
 

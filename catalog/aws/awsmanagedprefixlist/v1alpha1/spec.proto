@@ -50,7 +50,7 @@ message AwsManagedPrefixListSpec {
 
   // The CIDR entries, each optionally described. Managed as the
   // complete set - an entry removed here is removed at AWS. AWS
-  // versions the list on every entry change (the version stack
+  // versions the list on every entry change (the version
   // output).
   repeated AwsManagedPrefixListEntry entries = 4 [(buf.validate.field).cel = {
     id: "spec.entry_cidrs_unique"

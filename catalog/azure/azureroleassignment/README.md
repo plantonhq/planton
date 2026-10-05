@@ -42,7 +42,7 @@ Role assignments are real infrastructure with their own lifecycle:
   (AcrPull on a registry, Key Vault Secrets User on a vault)
 - Granting CI/CD deploy identities scoped rights on an environment's resource group
 - Assigning custom roles at subscription or management-group scope
-- Expressing an environment's full authorization graph in an infra chart
+- Expressing an environment's full authorization graph in an Infra Chart
 
 ## Spec Fields
 

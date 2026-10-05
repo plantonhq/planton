@@ -4,7 +4,7 @@ Deploys an RDS database cluster in any of its three shapes — Aurora (an instan
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Aurora DB Cluster** -- a managed database cluster in the specified AWS region running Aurora MySQL or Aurora PostgreSQL, placed in a DB subnet group spanning at least two Availability Zones
 - **DB Subnet Group** -- created from the provided `subnetIds`; skipped when an existing `dbSubnetGroupName` is specified instead
@@ -21,14 +21,14 @@ When `manageMasterUserPassword` is `true` (recommended), AWS itself creates and 
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **At least two subnets** in distinct Availability Zones within the target VPC. Private subnets are recommended for production. Provide subnet IDs directly or reference AwsSubnet Cloud Resources via ValueFromRef. Alternatively, provide an existing `dbSubnetGroupName`.
-- **A security group** (optional) to attach to the cluster for network access control. Provide security group IDs directly or reference an AwsSecurityGroup Cloud Resource — database ingress rules belong on the referenced security-group node.
-- **A KMS key** (optional) for encrypting cluster storage and the managed master password beyond the default AWS-managed key. Provide the ARN directly or reference an AwsKmsKey Cloud Resource.
+- **At least two subnets** in distinct Availability Zones within the target VPC. Private subnets are recommended for production. Provide subnet IDs directly or reference AwsSubnet Infra Components via ValueFromRef. Alternatively, provide an existing `dbSubnetGroupName`.
+- **A security group** (optional) to attach to the cluster for network access control. Provide security group IDs directly or reference an AwsSecurityGroup Infra Component — database ingress rules belong on the referenced security-group node.
+- **A KMS key** (optional) for encrypting cluster storage and the managed master password beyond the default AWS-managed key. Provide the ARN directly or reference an AwsKmsKey Infra Component.
 
 ## Deploy
 
@@ -74,7 +74,7 @@ spec:
 planton apply -f rds-cluster.yaml
 ```
 
-This creates an Aurora PostgreSQL cluster served by a writer and a reader, with the master password managed in Secrets Manager, encrypted storage, deletion protection, and 7-day continuous backups. A Stack Job tracks the provisioning in real time.
+This creates an Aurora PostgreSQL cluster served by a writer and a reader, with the master password managed in Secrets Manager, encrypted storage, deletion protection, and 7-day continuous backups. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -127,7 +127,7 @@ These are the most important decisions when configuring an Aurora cluster. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -137,9 +137,9 @@ These are the most important decisions when configuring an Aurora cluster. Explo
 | **AwsIamRole** (optional) | `iamRoles[].role`, `monitoringRoleArn`, `s3Import.ingestionRole`, per-instance `monitoringRoleArn` | `status.outputs.role_arn` |
 | **AwsKmsKey** (optional, audit) | `activityStream.kmsKeyId` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -171,8 +171,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides the subnets for the DB subnet group across multiple Availability Zones
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- provides network access control for the cluster endpoints
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides customer-managed keys for storage, the master secret, and Performance Insights
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- service-integration roles (S3 import/export, Lambda, ML) and the Enhanced Monitoring role
-- [**AWS RDS Instance**](/cloud-catalog/aws-rds-instance) -- the standalone-instance sibling for Oracle, SQL Server, and single-instance community engines
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides the subnets for the DB subnet group across multiple Availability Zones
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- provides network access control for the cluster endpoints
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides customer-managed keys for storage, the master secret, and Performance Insights
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- service-integration roles (S3 import/export, Lambda, ML) and the Enhanced Monitoring role
+- [**AWS RDS Instance**](/infra-catalog/aws-rds-instance) -- the standalone-instance sibling for Oracle, SQL Server, and single-instance community engines

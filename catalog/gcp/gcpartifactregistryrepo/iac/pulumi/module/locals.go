@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpartifactregistryrepov1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpartifactregistryrepo/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -17,9 +17,9 @@ type Locals struct {
 	RepositoryId            string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpartifactregistryrepov1alpha1.GcpArtifactRegistryRepoStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpartifactregistryrepov1alpha1.GcpArtifactRegistryRepoIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpArtifactRegistryRepo = stackInput.Target
+	locals.GcpArtifactRegistryRepo = iacInput.Target
 
 	// The repository ID falls back to metadata.name — one honest identity,
 	// never a format-derived suffix. Identical to the Terraform module.
@@ -36,7 +36,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpartifactregistryrepov1al
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.RepositoryId
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpArtifactRegistryRepo.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpArtifactRegistryRepo.String())
 
 	if locals.GcpArtifactRegistryRepo.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = locals.GcpArtifactRegistryRepo.Metadata.Org
@@ -48,6 +48,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpartifactregistryrepov1al
 		locals.GcpLabels[gcplabelkeys.ResourceId] = locals.GcpArtifactRegistryRepo.Metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

@@ -6,12 +6,12 @@ import "catalog/kubernetes/kubernetesingress/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 /**
- * **KubernetesIngressStackInput** defines the input structure for deploying a
+ * **KubernetesIngressIacInput** defines the input structure for deploying a
  * Kubernetes Ingress. It carries the target Ingress specification and the
  * Kubernetes cluster configuration the IaC modules (Pulumi and Terraform) need
  * to reach the cluster.
  */
-message KubernetesIngressStackInput {
+message KubernetesIngressIacInput {
   /**
    * The target Ingress resource to be created.
    * Contains the complete specification including metadata, host rules, and TLS.

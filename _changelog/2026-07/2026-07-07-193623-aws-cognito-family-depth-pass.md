@@ -39,7 +39,7 @@ The full `aws_cognito_user_pool_client` surface as a first-class node — many-p
 
 ### AwsCognitoIdentityProvider (rebuild)
 
-Legacy `type = any` contract → generator-owned on the v6 floor; proto enum `provider_type` → provider string with CEL (family convention); OIDC config gains `attributes_url_add_attributes`; `user_pool_id` added to outputs (consumers holding only the IdP get the pool join for free); full Pulumi entrypoint anatomy (`stack-input.yaml`); the SAML preset's missing required `region` fixed.
+Legacy `type = any` contract → generator-owned on the v6 floor; proto enum `provider_type` → provider string with CEL (family convention); OIDC config gains `attributes_url_add_attributes`; `user_pool_id` added to outputs (consumers holding only the IdP get the pool join for free); full Pulumi entrypoint anatomy (`iac-input.yaml`); the SAML preset's missing required `region` fixed.
 
 ### AwsCognitoResourceServer (forged, enum 359, `awscogrs`)
 
@@ -64,7 +64,7 @@ flowchart LR
 
 ## Validation
 
-- **Offline gate all green**: spec tests across all six touched kinds (the four Cognito kinds + listener/listener-rule/HTTP API), `make protos` no-op regen, `make generate-cloud-resource-kind-map` no-op, `tofu init && tofu validate` ×4, Pulumi module builds ×7 (four Cognito + three consumers), `TestVariablesTFDrift` (all four enrolled), `pkg/outputs` conformance, `pkg/crkreflect` tests, `planton validate-refs --check`, `planton secret-coverage --check`, manifest validation across every hack manifest / preset / E2E scenario, `make build-go`.
+- **Offline gate all green**: spec tests across all six touched kinds (the four Cognito kinds + listener/listener-rule/HTTP API), `make protos` no-op regen, `make generate-catalog-kind-map` no-op, `tofu init && tofu validate` ×4, Pulumi module builds ×7 (four Cognito + three consumers), `TestVariablesTFDrift` (all four enrolled), `pkg/outputs` conformance, `pkg/catalogkindreflect` tests, `planton validate-refs --check`, `planton secret-coverage --check`, manifest validation across every hack manifest / preset / E2E scenario, `make build-go`.
 - **Live dual-engine E2E 8/8 green** (`AWS_PROFILE=planton-aws-e2e`, `-timeout=30m`, short private `TMPDIR`): pool full-surface scenario (prefix domain + passwordless sign-in policy), client OAuth chain on the pool prerequisite (Terraform lane 1m12s; the client itself deploys in ~30s), Google IdP with placeholder credentials, resource-server scopes chain (Pulumi 50s / Terraform 1m38s). Zero-orphan sweep clean (`list-user-pools` → 0).
 - Live-lane exclusions recorded in the profiles with reasons: SES-dependent arms (DEVELOPER email, email MFA), SMS arms (SNS caller role), PLUS-tier threat protection, log delivery, custom domains (owned DNS + us-east-1 ACM), Pinpoint analytics.
 
@@ -77,7 +77,7 @@ flowchart LR
 ## Related Work
 
 - Builds directly on the serverless front-door family (HTTP API JWT authorizers are what these refs feed).
-- The forge rule's stack-outputs guidance now documents the managed-secret-ARN-first convention and the narrow provider-minted-credential exception (`client_secret`, IAM access keys) so future kinds handle secret-bearing outputs consistently.
+- The forge rule's outputs guidance now documents the managed-secret-ARN-first convention and the narrow provider-minted-credential exception (`client_secret`, IAM access keys) so future kinds handle secret-bearing outputs consistently.
 
 ---
 

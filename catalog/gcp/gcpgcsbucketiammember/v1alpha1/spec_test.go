@@ -43,7 +43,7 @@ var _ = ginkgo.Describe("GcpGcsBucketIamMemberSpec", func() {
 		return &GcpGcsBucketIamMember{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpGcsBucketIamMember",
-			Metadata:   &shared.CloudResourceMetadata{Name: "sink-writer"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "sink-writer"},
 			Spec: &GcpGcsBucketIamMemberSpec{
 				Bucket: valueOf("acme-audit-logs"),
 				Role:   valueOf("roles/storage.objectCreator"),

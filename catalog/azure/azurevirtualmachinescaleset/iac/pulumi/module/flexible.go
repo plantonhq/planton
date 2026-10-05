@@ -43,7 +43,7 @@ func createFlexible(ctx *pulumi.Context, locals *Locals, azureProvider pulumi.Pr
 		// blocks. Sizes deploy identically on both engines; a PRIORITIZED
 		// rank cannot be honored here, so it fails loudly rather than
 		// silently degrading. Output-neutral (sku_profile never feeds
-		// stack outputs); revisit when the SDK catches up.
+		// outputs); revisit when the SDK catches up.
 		vmSizes := pulumi.StringArray{}
 		for _, size := range profile.VmSizes {
 			if size.Rank != nil {

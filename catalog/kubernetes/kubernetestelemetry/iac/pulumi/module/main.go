@@ -11,11 +11,11 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *kubernetestelemetryv1alpha1.KubernetesTelemetryStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetestelemetryv1alpha1.KubernetesTelemetryIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubeProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
@@ -32,7 +32,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetestelemetryv1alpha1.Kube
 
 // createTelemetry creates the namespaced Istio Telemetry resource.
 //
-// Unlike every other typed Istio component, Telemetry is provisioned via the generic
+// Unlike every other typed Istio kind, Telemetry is provisioned via the generic
 // apiextensions.CustomResource rather than a crd2pulumi-generated typed resource. The
 // reason is a concrete crd2pulumi limitation: the Telemetry CRD's
 // `spec.tracing[].customTags` field is a map whose values are nested objects with a
@@ -169,7 +169,7 @@ func buildTracingList(list []*kubernetestelemetryv1alpha1.KubernetesTelemetryTra
 // buildCustomTags maps the custom-tag map to its CRD JSON shape. Each tag carries
 // exactly one source (literal/environment/header/formatter); only the set source is
 // emitted, so the resulting object satisfies the CRD's oneOf. This nested shape is the
-// precise reason this component uses an untyped CustomResource (see createTelemetry).
+// precise reason this kind uses an untyped CustomResource (see createTelemetry).
 func buildCustomTags(tags map[string]*kubernetestelemetryv1alpha1.KubernetesTelemetryCustomTag) map[string]interface{} {
 	out := make(map[string]interface{}, len(tags))
 	for name, tag := range tags {

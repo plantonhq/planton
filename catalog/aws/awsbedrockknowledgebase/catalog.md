@@ -4,7 +4,7 @@ Deploys an Amazon Bedrock knowledge base — the RAG store that ingests document
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Bedrock Knowledge Base** — of the type you declare, with the modules deriving AWS's type discriminator from which arm (`vector`, `managed`, `kendra`, `sql`) is set; the `vector` type additionally binds the `storage` backend you point it at
 - **Data Sources** — created only when `dataSources` entries exist: one connector per entry, keyed by your stable entry names, each carrying its chunking strategy, parsing configuration, and optional Lambda transformation
@@ -15,7 +15,7 @@ Deploying creates the knowledge base and its data sources; document ingestion (`
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Bedrock knowledge-base permissions (`bedrock:CreateKnowledgeBase`, `bedrock:CreateDataSource`, and their read/update/delete siblings, plus `iam:PassRole` on the role). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Bedrock knowledge-base permissions (`bedrock:CreateKnowledgeBase`, `bedrock:CreateDataSource`, and their read/update/delete siblings, plus `iam:PassRole` on the role). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -73,7 +73,7 @@ spec:
 planton apply -f knowledge-base.yaml
 ```
 
-This creates a vector knowledge base on S3 Vectors with Titan V2 embeddings at 256 dimensions and one S3 data source chunked into 300-token windows — ready for its first ingestion sync. A Stack Job tracks the provisioning in real time.
+This creates a vector knowledge base on S3 Vectors with Titan V2 embeddings at 256 dimensions and one S3 data source chunked into 300-token windows — ready for its first ingestion sync. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -126,7 +126,7 @@ These are the most important decisions when configuring a knowledge base. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -142,9 +142,9 @@ These are the most important decisions when configuring a knowledge base. Explor
 | **AwsKmsKey** | `managed.kmsKeyArn`, `dataSources[].kmsKeyArn` | `status.outputs.key_arn` |
 | **AwsLambda** | `dataSources[].vectorIngestion.customTransformation.lambdaArn` | `status.outputs.function_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -164,11 +164,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Bedrock Agent**](/cloud-catalog/aws-bedrock-agent) — queries this knowledge base through its `knowledgeBaseAssociations`
-- [**AWS Bedrock Flow**](/cloud-catalog/aws-bedrock-flow) — knowledge-base nodes retrieve (and optionally generate) from it
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the operating role, wired via `roleArn`
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — document sources for S3 data sources
-- [**AWS OpenSearch Serverless Collection**](/cloud-catalog/aws-open-search-serverless-collection) — the sub-second-recall vector store option
-- [**AWS RDS Cluster**](/cloud-catalog/aws-rds-cluster) — the Aurora pgvector store option
-- [**AWS Secrets Manager Secret**](/cloud-catalog/aws-secrets-manager-secret) — credentials for SaaS stores and connectors
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — custom chunk transformation between ingestion steps
+- [**AWS Bedrock Agent**](/infra-catalog/aws-bedrock-agent) — queries this knowledge base through its `knowledgeBaseAssociations`
+- [**AWS Bedrock Flow**](/infra-catalog/aws-bedrock-flow) — knowledge-base nodes retrieve (and optionally generate) from it
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the operating role, wired via `roleArn`
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — document sources for S3 data sources
+- [**AWS OpenSearch Serverless Collection**](/infra-catalog/aws-open-search-serverless-collection) — the sub-second-recall vector store option
+- [**AWS RDS Cluster**](/infra-catalog/aws-rds-cluster) — the Aurora pgvector store option
+- [**AWS Secrets Manager Secret**](/infra-catalog/aws-secrets-manager-secret) — credentials for SaaS stores and connectors
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — custom chunk transformation between ingestion steps

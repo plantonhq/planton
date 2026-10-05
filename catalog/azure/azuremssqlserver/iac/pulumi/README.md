@@ -1,6 +1,6 @@
 # AzureMssqlServer - Pulumi Module
 
-Pulumi implementation for the AzureMssqlServer component.
+Pulumi implementation for the AzureMssqlServer kind.
 
 ## Architecture
 
@@ -26,7 +26,7 @@ does not pin one.
   null.
 - **Presence guards on every optional-with-default field** (version, TLS
   floor, public network access, auditing retention/log-monitoring):
-  stack inputs built from a manifest do not materialize proto defaults,
+  IaC inputs built from a manifest do not materialize proto defaults,
   so unset falls back to the documented default explicitly.
 - **The Entra-only contract lives in spec validation** -- the module
   simply omits credentials when they are empty, so an Entra-only server
@@ -41,7 +41,7 @@ does not pin one.
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless (web identity), and ambient
 credential chains. Never construct the provider inline.
 

@@ -16,12 +16,12 @@ import (
 // EVERY policy variant is immutable after create (the provider ships
 // no update path -- near-total ForceNew): changing anything replaces
 // the policy.
-func Resources(ctx *pulumi.Context, stackInput *azuredataprotectionbackuppolicyv1alpha1.AzureDataProtectionBackupPolicyStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuredataprotectionbackuppolicyv1alpha1.AzureDataProtectionBackupPolicyIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}

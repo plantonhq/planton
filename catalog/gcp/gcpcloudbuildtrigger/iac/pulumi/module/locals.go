@@ -6,16 +6,16 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals carries the stack input. A trigger has tags but no
+// Locals carries the IaC input. A trigger has tags but no
 // labels, so there is no attribution label set to compute.
 type Locals struct {
 	GcpProviderConfig    *gcpprovider.GcpProviderConfig
 	GcpCloudBuildTrigger *gcpcloudbuildtriggerv1alpha1.GcpCloudBuildTrigger
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudbuildtriggerv1alpha1.GcpCloudBuildTriggerStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpcloudbuildtriggerv1alpha1.GcpCloudBuildTriggerIacInput) *Locals {
 	return &Locals{
-		GcpProviderConfig:    stackInput.ProviderConfig,
-		GcpCloudBuildTrigger: stackInput.Target,
+		GcpProviderConfig:    iacInput.ProviderConfig,
+		GcpCloudBuildTrigger: iacInput.Target,
 	}
 }

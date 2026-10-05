@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockAgentCoreRuntimeStackInput is the input for the IaC modules
+// AwsBedrockAgentCoreRuntimeIacInput is the input for the IaC modules
 // that deploy the AgentCore agent runtime.
-type AwsBedrockAgentCoreRuntimeStackInput struct {
+type AwsBedrockAgentCoreRuntimeIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsBedrockAgentCoreRuntime resource to deploy.
 	Target *AwsBedrockAgentCoreRuntime `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsBedrockAgentCoreRuntimeStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBedrockAgentCoreRuntimeStackInput) Reset() {
-	*x = AwsBedrockAgentCoreRuntimeStackInput{}
+func (x *AwsBedrockAgentCoreRuntimeIacInput) Reset() {
+	*x = AwsBedrockAgentCoreRuntimeIacInput{}
 	mi := &file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockAgentCoreRuntimeStackInput) String() string {
+func (x *AwsBedrockAgentCoreRuntimeIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockAgentCoreRuntimeStackInput) ProtoMessage() {}
+func (*AwsBedrockAgentCoreRuntimeIacInput) ProtoMessage() {}
 
-func (x *AwsBedrockAgentCoreRuntimeStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockAgentCoreRuntimeIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBedrockAgentCoreRuntimeStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockAgentCoreRuntimeStackInput.ProtoReflect.Descriptor instead.
-func (*AwsBedrockAgentCoreRuntimeStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockAgentCoreRuntimeIacInput.ProtoReflect.Descriptor instead.
+func (*AwsBedrockAgentCoreRuntimeIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockAgentCoreRuntimeStackInput) GetTarget() *AwsBedrockAgentCoreRuntime {
+func (x *AwsBedrockAgentCoreRuntimeIacInput) GetTarget() *AwsBedrockAgentCoreRuntime {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreRuntimeStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsBedrockAgentCoreRuntimeIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_input_proto protoreflec
 
 const file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awsbedrockagentcoreruntime/v1alpha1/input.proto\x123dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1\x1a9catalog/aws/awsbedrockagentcoreruntime/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdc\x01\n" +
-	"$AwsBedrockAgentCoreRuntimeStackInput\x12g\n" +
+	";catalog/aws/awsbedrockagentcoreruntime/v1alpha1/input.proto\x123dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1\x1a9catalog/aws/awsbedrockagentcoreruntime/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xda\x01\n" +
+	"\"AwsBedrockAgentCoreRuntimeIacInput\x12g\n" +
 	"\x06target\x18\x01 \x01(\v2O.dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xa7\x03\n" +
 	"7com.dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_input_proto_goTypes = []any{
-	(*AwsBedrockAgentCoreRuntimeStackInput)(nil), // 0: dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeStackInput
-	(*AwsBedrockAgentCoreRuntime)(nil),           // 1: dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntime
-	(*aws.AwsProviderConfig)(nil),                // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsBedrockAgentCoreRuntimeIacInput)(nil), // 0: dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeIacInput
+	(*AwsBedrockAgentCoreRuntime)(nil),         // 1: dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntime
+	(*aws.AwsProviderConfig)(nil),              // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsbedrockagentcoreruntime_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeStackInput.target:type_name -> dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntime
-	2, // 1: dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeIacInput.target:type_name -> dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntime
+	2, // 1: dev.planton.aws.awsbedrockagentcoreruntime.v1alpha1.AwsBedrockAgentCoreRuntimeIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

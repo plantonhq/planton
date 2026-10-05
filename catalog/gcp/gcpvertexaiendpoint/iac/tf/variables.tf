@@ -1,5 +1,5 @@
 variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name        = string
     id          = optional(string, "")
@@ -138,7 +138,7 @@ variable "spec" {
       #     dataset must exist and the table must not.
       #
       # A plain string (not a reference) because the bq:// URI scheme has no
-      # matching stack output on the BigQuery kinds; compose by writing the
+      # matching output on the BigQuery kinds; compose by writing the
       # dataset's project and ID into the URI.
       bigquery_destination_uri = optional(string, "")
     }))

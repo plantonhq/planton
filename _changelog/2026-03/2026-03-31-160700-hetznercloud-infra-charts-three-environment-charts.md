@@ -15,7 +15,7 @@ alongside AWS, GCP, Azure, OCI, Scaleway, and Civo.
 
 ## Problem Statement / Motivation
 
-Hetzner Cloud had 12 fully implemented Planton deployment components (SSH keys,
+Hetzner Cloud had 12 fully implemented Planton catalog kinds (SSH keys,
 networks, firewalls, servers, volumes, load balancers, certificates, DNS zones,
 placement groups, floating IPs, primary IPs, snapshots) plus a complete provider
 connection API, but zero InfraCharts. Without charts, users had to manually
@@ -131,10 +131,9 @@ patterns from developer sandbox to production HA cluster.
 # Preview a chart
 planton chart build hetznercloud/server-environment
 
-# Create a project from the chart
-planton project create --from-chart hetznercloud/load-balanced-app \
-  --name my-web-app \
-  --values ./my-values.yaml
+# Install the chart as an Infra Stack
+planton chart install my-web-app hetznercloud/load-balanced-app \
+  -f ./my-values.yaml
 ```
 
 Example `values.yaml` override for load-balanced-app:
@@ -161,9 +160,9 @@ params:
 
 ## Related Work
 
-- Hetzner Cloud Planton components: 12 resource kinds in planton-hetzner-cloud
-- Planton monorepo assets: deployment-component.yaml, iac-modules.yaml for all
-  12 components (v0.3.57)
+- Hetzner Cloud Planton kinds: 12 resource kinds in planton-hetzner-cloud
+- Planton monorepo assets: catalog-kind.yaml, iac-modules.yaml for all
+  12 kinds (v0.3.57)
 - HetznerCloudProviderConnection API: complete across all platform layers
 - Parent project: 20260219.03.sp.hetznercloud-resource-expansion
 

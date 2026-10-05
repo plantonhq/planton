@@ -69,7 +69,7 @@
 
 ## Why
 
-A component marked proven must be proven for the path a customer
+A kind marked proven must be proven for the path a customer
 actually walks: reinstalling an operator over its kept CRDs is the
 normal day-2 path, and a registry backed by object storage with an
 external cache is Harbor's production posture. Both are now evidence,

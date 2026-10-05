@@ -26,6 +26,6 @@ This preset creates a scale-to-zero Spot pool for fault-tolerant workloads: deep
 - **01-on-demand-autoscaling** — the guaranteed-capacity primary pool to pair with
 - **03-gpu-accelerated** — GPU nodes (also commonly run on Spot)
 
-## Related Components
+## Related Kinds
 
 - [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — the control plane this pool attaches to

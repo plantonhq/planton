@@ -24,17 +24,17 @@ import (
 // operator-created object is owner-referenced to this CR, so deletion
 // completes even when the operator itself is already gone. The delete
 // timeout is headroom, not an expected wait (see vars.go).
-func Resources(ctx *pulumi.Context, stackInput *kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

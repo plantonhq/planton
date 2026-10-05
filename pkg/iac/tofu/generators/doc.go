@@ -1,5 +1,5 @@
 // Package generators provides proto-aware Terraform artifact generation for
-// Planton cloud components.
+// Planton catalog kinds.
 //
 // The value side of every artifact comes from pkg/iac/specprojection, which
 // owns the TypeRule registry and the projection of a manifest into a plain
@@ -21,7 +21,7 @@
 //     the generated snake_case variables.tf that provider-abstraction
 //     modules consume.
 //     - camelCase (ProtoToManifestTFVars): keys kept as the CRD's camelCase
-//     JSON, for kinds whose CloudResourceKindMeta carries a
+//     JSON, for kinds whose CatalogKindMeta carries a
 //     kubernetes_manifest_projection -- their `spec` is fed verbatim to a
 //     kubernetes_manifest passthrough module (see manifestmodule.go).
 //
@@ -39,7 +39,7 @@
 //     Pulumi modules use.
 //
 // Note: despite the generic-sounding name, this package is planton-domain-aware
-// (it hardcodes planton type rules and reads kind metadata via crkreflect); it
+// (it hardcodes planton type rules and reads kind metadata via catalogkindreflect); it
 // is not a standalone proto->HCL library.
 //
 // # The optional() contract (renderer and module must agree)
@@ -60,7 +60,7 @@
 //   - Every other attribute is optional(<type>, <zero>): string -> "", number ->
 //     0, bool -> false, map -> {}, list -> []. Nested objects and `any` default
 //     to null (consumers null-guard with try()/!= null).
-//   - The shared resource envelope (CloudResourceMetadata) is emitted from one
+//   - The shared resource envelope (CatalogObjectMetadata) is emitted from one
 //     canonical block (name required; id/org/env/labels/annotations/tags
 //     optional), independent of the constraint-free envelope proto.
 //

@@ -41,7 +41,7 @@ import "shared/options/options.proto";
  * for anything real, bring a custom `security.config` (your own
  * internal_users.yml and admin credentials) or rotate the admin
  * password through the security API immediately after install.
- * Clients read credentials from the Secret named in the stack
+ * Clients read credentials from the Secret named in the
  * outputs — no credential ever appears in this spec unless you bring
  * your own security config.
  *
@@ -433,10 +433,10 @@ message KubernetesOpenSearchTlsTransport {
 
   /**
    * Issue one certificate per node (hostname-pinned) instead of a
-   * shared certificate. Component default: true (the stronger
+   * shared certificate. Kind default: true (the stronger
    * posture); the operator's OWN default is a single shared
    * certificate — the modules always render this field explicitly, so
-   * the component default governs.
+   * the kind's default governs.
    */
   optional bool per_node = 2 [(dev.planton.shared.options.default) = "true"];
 

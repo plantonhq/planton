@@ -13,7 +13,7 @@ body:
     attributes:
       label: What were you doing?
       description: The action you were taking when things went wrong.
-      placeholder: e.g. Deploying an S3 bucket from the cloud catalog to my AWS account
+      placeholder: e.g. Deploying an S3 bucket from the infra catalog to my AWS account
     validations:
       required: true
   - type: textarea
@@ -21,7 +21,7 @@ body:
     attributes:
       label: What happened?
       description: What you saw, and what you expected to see instead.
-      placeholder: e.g. The deploy screen showed "stack job failed" with no further detail; I expected the bucket to be created
+      placeholder: e.g. The deploy screen showed "infra job failed" with no further detail; I expected the bucket to be created
     validations:
       required: true
   - type: textarea

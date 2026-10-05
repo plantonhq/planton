@@ -31,7 +31,7 @@ type KubernetesKafkaConnect struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesKafkaConnectSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesKafkaConnect) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesKafkaConnect) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesKafkaConnect) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesKafkaConnect) GetStatus() *KubernetesKafkaConnectStatus {
 // kubernetes-kafka-connect status
 type KubernetesKafkaConnectStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesKafkaConnectStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesKafkaConnectOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesKafkaConnectStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskafkaconnect_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesKafkaConnectStatus) GetOutputs() *KubernetesKafkaConnectStackOutputs {
+func (x *KubernetesKafkaConnectStatus) GetOutputs() *KubernetesKafkaConnectOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kuberneteskafkaconnect_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16KubernetesKafkaConnectR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
 	"\x04spec\x18\x04 \x01(\v2R.dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12l\n" +
-	"\x06status\x18\x05 \x01(\v2T.dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectStatusR\x06status\"\x94\x01\n" +
-	"\x1cKubernetesKafkaConnectStatus\x12t\n" +
-	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectStackOutputsR\aoutputsB\xb3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2T.dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectStatusR\x06status\"\x8f\x01\n" +
+	"\x1cKubernetesKafkaConnectStatus\x12o\n" +
+	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectOutputsR\aoutputsB\xb3\x03\n" +
 	":com.dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1B\bApiProtoP\x01Zngithub.com/plantonhq/planton/catalog/kubernetes/kuberneteskafkaconnect/v1alpha1;kuberneteskafkaconnectv1alpha1\xa2\x02\x04DPKK\xaa\x026Dev.Planton.Kubernetes.Kuberneteskafkaconnect.V1alpha1\xca\x026Dev\\Planton\\Kubernetes\\Kuberneteskafkaconnect\\V1alpha1\xe2\x02BDev\\Planton\\Kubernetes\\Kuberneteskafkaconnect\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Kubernetes::Kuberneteskafkaconnect::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kuberneteskafkaconnect_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_kubernetes_kuberneteskafkaconnect_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kuberneteskafkaconnect_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesKafkaConnect)(nil),             // 0: dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnect
-	(*KubernetesKafkaConnectStatus)(nil),       // 1: dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesKafkaConnectSpec)(nil),         // 3: dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectSpec
-	(*KubernetesKafkaConnectStackOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectStackOutputs
+	(*KubernetesKafkaConnect)(nil),        // 0: dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnect
+	(*KubernetesKafkaConnectStatus)(nil),  // 1: dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesKafkaConnectSpec)(nil),    // 3: dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectSpec
+	(*KubernetesKafkaConnectOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectOutputs
 }
 var file_catalog_kubernetes_kuberneteskafkaconnect_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnect.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnect.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnect.spec:type_name -> dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectSpec
 	1, // 2: dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnect.status:type_name -> dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectStatus
-	4, // 3: dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectStackOutputs
+	4, // 3: dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1.KubernetesKafkaConnectOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -1,13 +1,13 @@
-# Complete KubernetesElasticOperator Component to 100%
+# Complete KubernetesElasticOperator Kind to 100%
 
 **Date:** 2025-11-16  
-**Component:** KubernetesElasticOperator  
+**Kind:** KubernetesElasticOperator  
 **Type:** Enhancement  
-**Impact:** Completes component from 60% to 100%
+**Impact:** Completes kind from 60% to 100%
 
 ## Summary
 
-Completed the KubernetesElasticOperator component by addressing all gaps identified in the audit report (2025-11-14-061533). The component was at 60% with critical missing items including unit tests, Terraform implementation, and all user-facing documentation. This work brings the component to 100% completion with full production readiness.
+Completed the KubernetesElasticOperator kind by addressing all gaps identified in the audit report (2025-11-14-061533). The kind was at 60% with critical missing items including unit tests, Terraform implementation, and all user-facing documentation. This work brings the kind to 100% completion with full production readiness.
 
 ## Changes Made
 
@@ -76,7 +76,7 @@ Comprehensive user-facing documentation covering:
 **Content Sections:**
 - Overview of ECK operator and capabilities
 - Key features (automated lifecycle, operator pattern, resource management)
-- Component structure and API definition
+- Kind structure and API definition
 - Configuration options with examples
 - Usage patterns (basic, HA, dev/test)
 - Post-installation examples (Elasticsearch, Kibana, APM)
@@ -159,7 +159,7 @@ Sample KubernetesElasticOperator resource for testing:
 
 #### iac/pulumi/examples.md (1,747 bytes)
 Pulumi-specific examples:
-- Basic deployment with stack-input.json
+- Basic deployment with iac-input.json
 - High-availability production configuration
 - Development environment minimal setup
 - Verification and cleanup commands
@@ -209,7 +209,7 @@ ok  	0.216s
 
 | Category                    | Before  | After   | Improvement | Status |
 | --------------------------- | ------- | ------- | ----------- | ------ |
-| Cloud Resource Registry     | 4.44%   | 4.44%   | -           | ✅     |
+| Catalog Kind Registry     | 4.44%   | 4.44%   | -           | ✅     |
 | Folder Structure            | 4.44%   | 4.44%   | -           | ✅     |
 | **Protobuf API Definitions**| **16.65%** | **22.20%** | **+5.55%**  | **✅** |
 | IaC Modules - Pulumi        | 13.32%  | 13.32%  | -           | ✅     |
@@ -381,7 +381,7 @@ apis/dev/planton/provider/kubernetes/kuberneteselasticoperator/v1/iac/tf/
 ## References
 
 - Audit Report: `docs/audit/2025-11-14-061533.md`
-- Component README: `README.md`
+- Kind README: `README.md`
 - Research Documentation: `docs/README.md` (18.9 KB - exceptional)
 - Pulumi Module: `iac/pulumi/`
 - Terraform Module: `iac/tf/`
@@ -433,21 +433,21 @@ apis/dev/planton/provider/kubernetes/kuberneteselasticoperator/v1/iac/tf/
 - ✅ Production ready
 - ✅ No further work required
 
-The component is now **fully complete** and ready for production use!
+The kind is now **fully complete** and ready for production use!
 
 ## Lessons Learned
 
 ### Template Reuse Issues
 
-The variables.tf file had incorrect references to "GitLab" and "ingress" - likely copied from another component. This highlights the importance of:
-- Careful template review when creating new components
-- Component-specific verification of all files
+The variables.tf file had incorrect references to "GitLab" and "ingress" - likely copied from another kind. This highlights the importance of:
+- Careful template review when creating new kinds
+- Kind-specific verification of all files
 - Automated checks for template artifacts
 
 ### Documentation Value
 
-Creating comprehensive documentation (50 KB total) significantly improved component usability:
-- Users can understand the component without reading code
+Creating comprehensive documentation (50 KB total) significantly improved kind usability:
+- Users can understand the kind without reading code
 - Examples provide quick-start paths
 - Troubleshooting guides reduce support burden
 - Multiple IaC tool support broadens adoption
@@ -458,7 +458,7 @@ Writing 7 unit tests uncovered the exact structure needed for target_cluster con
 
 ## Summary
 
-The **KubernetesElasticOperator** component has been completed from **60% to 100%**, achieving full production readiness. All critical gaps have been addressed, comprehensive documentation has been created, and both Pulumi and Terraform implementations are complete and tested.
+The **KubernetesElasticOperator** kind has been completed from **60% to 100%**, achieving full production readiness. All critical gaps have been addressed, comprehensive documentation has been created, and both Pulumi and Terraform implementations are complete and tested.
 
 **Key Achievements:**
 - ✅ 7 passing unit tests (+5.55%)

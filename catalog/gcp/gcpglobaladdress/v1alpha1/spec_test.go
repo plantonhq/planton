@@ -37,7 +37,7 @@ var _ = ginkgo.Describe("GcpGlobalAddressSpec", func() {
 		return &GcpGlobalAddress{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpGlobalAddress",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-global-address",
 			},
 			Spec: &GcpGlobalAddressSpec{
@@ -55,7 +55,7 @@ var _ = ginkgo.Describe("GcpGlobalAddressSpec", func() {
 		return &GcpGlobalAddress{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpGlobalAddress",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-peering-range",
 			},
 			Spec: &GcpGlobalAddressSpec{

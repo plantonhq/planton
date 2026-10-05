@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// digital-ocean-droplet-autoscale-pool stack-input
-type DigitalOceanDropletAutoscalePoolStackInput struct {
+// digital-ocean-droplet-autoscale-pool iac-input
+type DigitalOceanDropletAutoscalePoolIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *DigitalOceanDropletAutoscalePool `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type DigitalOceanDropletAutoscalePoolStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDropletAutoscalePoolStackInput) Reset() {
-	*x = DigitalOceanDropletAutoscalePoolStackInput{}
+func (x *DigitalOceanDropletAutoscalePoolIacInput) Reset() {
+	*x = DigitalOceanDropletAutoscalePoolIacInput{}
 	mi := &file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDropletAutoscalePoolStackInput) String() string {
+func (x *DigitalOceanDropletAutoscalePoolIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDropletAutoscalePoolStackInput) ProtoMessage() {}
+func (*DigitalOceanDropletAutoscalePoolIacInput) ProtoMessage() {}
 
-func (x *DigitalOceanDropletAutoscalePoolStackInput) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDropletAutoscalePoolIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *DigitalOceanDropletAutoscalePoolStackInput) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDropletAutoscalePoolStackInput.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDropletAutoscalePoolStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDropletAutoscalePoolIacInput.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDropletAutoscalePoolIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDropletAutoscalePoolStackInput) GetTarget() *DigitalOceanDropletAutoscalePool {
+func (x *DigitalOceanDropletAutoscalePoolIacInput) GetTarget() *DigitalOceanDropletAutoscalePool {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *DigitalOceanDropletAutoscalePoolStackInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
+func (x *DigitalOceanDropletAutoscalePoolIacInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_input_pr
 
 const file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Jcatalog/digitalocean/digitaloceandropletautoscalepool/v1alpha1/input.proto\x12Bdev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1\x1aHcatalog/digitalocean/digitaloceandropletautoscalepool/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\x89\x02\n" +
-	"*DigitalOceanDropletAutoscalePoolStackInput\x12|\n" +
+	"Jcatalog/digitalocean/digitaloceandropletautoscalepool/v1alpha1/input.proto\x12Bdev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1\x1aHcatalog/digitalocean/digitaloceandropletautoscalepool/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\x87\x02\n" +
+	"(DigitalOceanDropletAutoscalePoolIacInput\x12|\n" +
 	"\x06target\x18\x01 \x01(\v2d.dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1.DigitalOceanDropletAutoscalePoolR\x06target\x12]\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v24.dev.planton.digitalocean.DigitalOceanProviderConfigR\x0eproviderConfigB\x88\x04\n" +
 	"Fcom.dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_input_p
 
 var file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_input_proto_goTypes = []any{
-	(*DigitalOceanDropletAutoscalePoolStackInput)(nil), // 0: dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1.DigitalOceanDropletAutoscalePoolStackInput
-	(*DigitalOceanDropletAutoscalePool)(nil),           // 1: dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1.DigitalOceanDropletAutoscalePool
-	(*digitalocean.DigitalOceanProviderConfig)(nil),    // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
+	(*DigitalOceanDropletAutoscalePoolIacInput)(nil), // 0: dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1.DigitalOceanDropletAutoscalePoolIacInput
+	(*DigitalOceanDropletAutoscalePool)(nil),         // 1: dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1.DigitalOceanDropletAutoscalePool
+	(*digitalocean.DigitalOceanProviderConfig)(nil),  // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
 }
 var file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1.DigitalOceanDropletAutoscalePoolStackInput.target:type_name -> dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1.DigitalOceanDropletAutoscalePool
-	2, // 1: dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1.DigitalOceanDropletAutoscalePoolStackInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
+	1, // 0: dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1.DigitalOceanDropletAutoscalePoolIacInput.target:type_name -> dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1.DigitalOceanDropletAutoscalePool
+	2, // 1: dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1.DigitalOceanDropletAutoscalePoolIacInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

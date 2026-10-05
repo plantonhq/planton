@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpMemorystoreInstanceSpec defines the configuration for a Google Cloud
 Memorystore instance.
@@ -42,7 +42,7 @@ Important behavioral notes:
 
   - Node memory is determined by the node_type, not by an explicit
     memory_size_gb field. The actual memory per node is reported in
-    stack outputs.
+    outputs.
 
   - Instance creation is a long-running operation — the provider's
     default create timeout is 60 minutes, and multi-shard instances

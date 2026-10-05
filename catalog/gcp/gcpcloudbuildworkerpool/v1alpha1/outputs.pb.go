@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpCloudBuildWorkerPoolStackOutputs carries the pool's identity: what a
+// GcpCloudBuildWorkerPoolOutputs carries the pool's identity: what a
 // trigger's build options, a cloudbuild.yaml's options.pool.name, and a
 // Cloud Deploy target's execution environment name.
-type GcpCloudBuildWorkerPoolStackOutputs struct {
+type GcpCloudBuildWorkerPoolOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/workerPools/{worker_pool_id}.
@@ -39,20 +39,20 @@ type GcpCloudBuildWorkerPoolStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCloudBuildWorkerPoolStackOutputs) Reset() {
-	*x = GcpCloudBuildWorkerPoolStackOutputs{}
+func (x *GcpCloudBuildWorkerPoolOutputs) Reset() {
+	*x = GcpCloudBuildWorkerPoolOutputs{}
 	mi := &file_catalog_gcp_gcpcloudbuildworkerpool_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudBuildWorkerPoolStackOutputs) String() string {
+func (x *GcpCloudBuildWorkerPoolOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudBuildWorkerPoolStackOutputs) ProtoMessage() {}
+func (*GcpCloudBuildWorkerPoolOutputs) ProtoMessage() {}
 
-func (x *GcpCloudBuildWorkerPoolStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudBuildWorkerPoolOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudbuildworkerpool_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *GcpCloudBuildWorkerPoolStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudBuildWorkerPoolStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudBuildWorkerPoolStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudBuildWorkerPoolOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudBuildWorkerPoolOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudbuildworkerpool_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudBuildWorkerPoolStackOutputs) GetName() string {
+func (x *GcpCloudBuildWorkerPoolOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpCloudBuildWorkerPoolStackOutputs) GetWorkerPoolId() string {
+func (x *GcpCloudBuildWorkerPoolOutputs) GetWorkerPoolId() string {
 	if x != nil {
 		return x.WorkerPoolId
 	}
 	return ""
 }
 
-func (x *GcpCloudBuildWorkerPoolStackOutputs) GetState() string {
+func (x *GcpCloudBuildWorkerPoolOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
 	return ""
 }
 
-func (x *GcpCloudBuildWorkerPoolStackOutputs) GetUid() string {
+func (x *GcpCloudBuildWorkerPoolOutputs) GetUid() string {
 	if x != nil {
 		return x.Uid
 	}
@@ -101,8 +101,8 @@ var File_catalog_gcp_gcpcloudbuildworkerpool_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_gcp_gcpcloudbuildworkerpool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpcloudbuildworkerpool/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpcloudbuildworkerpool.v1alpha1\"\x87\x01\n" +
-	"#GcpCloudBuildWorkerPoolStackOutputs\x12\x12\n" +
+	":catalog/gcp/gcpcloudbuildworkerpool/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpcloudbuildworkerpool.v1alpha1\"\x82\x01\n" +
+	"\x1eGcpCloudBuildWorkerPoolOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12$\n" +
 	"\x0eworker_pool_id\x18\x02 \x01(\tR\fworkerPoolId\x12\x14\n" +
 	"\x05state\x18\x03 \x01(\tR\x05state\x12\x10\n" +
@@ -123,7 +123,7 @@ func file_catalog_gcp_gcpcloudbuildworkerpool_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_gcp_gcpcloudbuildworkerpool_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudbuildworkerpool_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudBuildWorkerPoolStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudbuildworkerpool.v1alpha1.GcpCloudBuildWorkerPoolStackOutputs
+	(*GcpCloudBuildWorkerPoolOutputs)(nil), // 0: dev.planton.gcp.gcpcloudbuildworkerpool.v1alpha1.GcpCloudBuildWorkerPoolOutputs
 }
 var file_catalog_gcp_gcpcloudbuildworkerpool_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

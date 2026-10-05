@@ -38,9 +38,9 @@ const (
 	hubRoleName    = "hub-ci-deployer"
 )
 
-// identityEgressComponents mirrors the suite's member components
+// identityEgressKinds mirrors the suite's member kinds
 // (deduplicated) for ScoreOptionsFromCatalog.
-var identityEgressComponents = []string{
+var identityEgressKinds = []string{
 	"awsvpc", "awssubnet", "awsnatgateway", "awsiamrole",
 }
 
@@ -216,7 +216,7 @@ func TestScorerComparesRepeatedRefLiterals(t *testing.T) {
 	if err != nil {
 		t.Fatalf("mutated proposal violates the contract: %v", err)
 	}
-	opts, err := mappingeval.ScoreOptionsFromCatalog(root, "aws", identityEgressComponents)
+	opts, err := mappingeval.ScoreOptionsFromCatalog(root, "aws", identityEgressKinds)
 	if err != nil {
 		t.Fatalf("score options: %v", err)
 	}
@@ -277,11 +277,11 @@ func buildIdentityEgressGroundTruth(t *testing.T, root string) *mappingeval.Grou
 			t.Fatalf("suite member %q has no fixture claims -- update the test fixture alongside the suite", member.Name)
 		}
 		gt.Instances = append(gt.Instances, mappingeval.GroundTruthInstance{
-			Component: member.Component,
-			Kind:      member.Kind,
-			Name:      member.Name,
-			Manifest:  member.Manifest,
-			Claims:    claims,
+			KindDir:  member.KindDir,
+			Kind:     member.Kind,
+			Name:     member.Name,
+			Manifest: member.Manifest,
+			Claims:   claims,
 		})
 	}
 	return gt
@@ -299,7 +299,7 @@ func scoreIdentityEgressBaseline(t *testing.T, root string, gt *mappingeval.Grou
 	if err != nil {
 		t.Fatalf("baseline proposal violates the contract: %v", err)
 	}
-	opts, err := mappingeval.ScoreOptionsFromCatalog(root, "aws", identityEgressComponents)
+	opts, err := mappingeval.ScoreOptionsFromCatalog(root, "aws", identityEgressKinds)
 	if err != nil {
 		t.Fatalf("score options: %v", err)
 	}

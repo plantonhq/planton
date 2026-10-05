@@ -5,9 +5,9 @@ package dev.planton.azure.azurednsrecord.v1alpha1;
 import "catalog/azure/azurednsrecord/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureDnsRecordStackInput provides all inputs required to deploy an Azure DNS Record.
-message AzureDnsRecordStackInput {
-  //target cloud-resource
+// AzureDnsRecordIacInput provides all inputs required to deploy an Azure DNS Record.
+message AzureDnsRecordIacInput {
+  // the catalog object to deploy
   AzureDnsRecord target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

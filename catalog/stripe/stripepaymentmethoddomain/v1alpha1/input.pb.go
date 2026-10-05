@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePaymentMethodDomainStackInput is the input to the StripePaymentMethodDomain IaC module.
+// StripePaymentMethodDomainIacInput is the input to the StripePaymentMethodDomain IaC module.
 // It contains the target resource and the Stripe provider configuration.
-type StripePaymentMethodDomainStackInput struct {
+type StripePaymentMethodDomainIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripePaymentMethodDomain resource to be deployed.
 	Target *StripePaymentMethodDomain `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripePaymentMethodDomainStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripePaymentMethodDomainStackInput) Reset() {
-	*x = StripePaymentMethodDomainStackInput{}
+func (x *StripePaymentMethodDomainIacInput) Reset() {
+	*x = StripePaymentMethodDomainIacInput{}
 	mi := &file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripePaymentMethodDomainStackInput) String() string {
+func (x *StripePaymentMethodDomainIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripePaymentMethodDomainStackInput) ProtoMessage() {}
+func (*StripePaymentMethodDomainIacInput) ProtoMessage() {}
 
-func (x *StripePaymentMethodDomainStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripePaymentMethodDomainIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripePaymentMethodDomainStackInput) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripePaymentMethodDomainStackInput.ProtoReflect.Descriptor instead.
-func (*StripePaymentMethodDomainStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripePaymentMethodDomainIacInput.ProtoReflect.Descriptor instead.
+func (*StripePaymentMethodDomainIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripePaymentMethodDomainStackInput) GetTarget() *StripePaymentMethodDomain {
+func (x *StripePaymentMethodDomainIacInput) GetTarget() *StripePaymentMethodDomain {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripePaymentMethodDomainStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripePaymentMethodDomainIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripepaymentmethoddomain_v1alpha1_input_proto protorefl
 
 const file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/stripe/stripepaymentmethoddomain/v1alpha1/input.proto\x125dev.planton.stripe.stripepaymentmethoddomain.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a;catalog/stripe/stripepaymentmethoddomain/v1alpha1/api.proto\"\xe2\x01\n" +
-	"#StripePaymentMethodDomainStackInput\x12h\n" +
+	"=catalog/stripe/stripepaymentmethoddomain/v1alpha1/input.proto\x125dev.planton.stripe.stripepaymentmethoddomain.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a;catalog/stripe/stripepaymentmethoddomain/v1alpha1/api.proto\"\xe0\x01\n" +
+	"!StripePaymentMethodDomainIacInput\x12h\n" +
 	"\x06target\x18\x01 \x01(\v2P.dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\xb2\x03\n" +
 	"9com.dev.planton.stripe.stripepaymentmethoddomain.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_input_proto_rawDescG
 
 var file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_input_proto_goTypes = []any{
-	(*StripePaymentMethodDomainStackInput)(nil), // 0: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainStackInput
-	(*StripePaymentMethodDomain)(nil),           // 1: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomain
-	(*stripe.StripeProviderConfig)(nil),         // 2: dev.planton.stripe.StripeProviderConfig
+	(*StripePaymentMethodDomainIacInput)(nil), // 0: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainIacInput
+	(*StripePaymentMethodDomain)(nil),         // 1: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomain
+	(*stripe.StripeProviderConfig)(nil),       // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripepaymentmethoddomain_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainStackInput.target:type_name -> dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomain
-	2, // 1: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainIacInput.target:type_name -> dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomain
+	2, // 1: dev.planton.stripe.stripepaymentmethoddomain.v1alpha1.StripePaymentMethodDomainIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

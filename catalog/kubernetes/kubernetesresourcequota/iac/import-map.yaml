@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesresourcequota
 spec:
@@ -9,27 +9,27 @@ spec:
   values:
     - name: resource_quota_name
       derivations:
-        - from_stack_output: resource_quota_name
+        - from_output: resource_quota_name
         - from_spec_field: name
       where_to_find: >-
         `kubectl get resourcequotas -A` (NAME column).
     - name: resource_quota_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `kubectl get resourcequotas -A` (NAMESPACE column); "default" when
         the spec omits the namespace.
     - name: limit_range_name
       derivations:
-        - from_stack_output: limit_range_name
+        - from_output: limit_range_name
         - from_spec_field: name
       where_to_find: >-
         `kubectl get limitranges -A` (NAME column) -- same name as the
         quota; the LimitRange exists only when the spec sets limit_defaults.
     - name: limit_range_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `kubectl get limitranges -A` (NAMESPACE column); "default" when the

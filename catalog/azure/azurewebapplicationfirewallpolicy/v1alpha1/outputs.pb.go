@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureWebApplicationFirewallPolicyStackOutputs** captures the outputs of
+// **AzureWebApplicationFirewallPolicyOutputs** captures the outputs of
 // provisioning a regional Web Application Firewall policy.
 //
 // `policy_id` is the join key everything attaches through: an Application
 // Gateway's `firewall_policy_id`, a listener's per-listener policy
 // override, and a URL path rule's per-route policy override all reference
 // it.
-type AzureWebApplicationFirewallPolicyStackOutputs struct {
+type AzureWebApplicationFirewallPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the WAF policy.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies/{name}
@@ -41,20 +41,20 @@ type AzureWebApplicationFirewallPolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureWebApplicationFirewallPolicyStackOutputs) Reset() {
-	*x = AzureWebApplicationFirewallPolicyStackOutputs{}
+func (x *AzureWebApplicationFirewallPolicyOutputs) Reset() {
+	*x = AzureWebApplicationFirewallPolicyOutputs{}
 	mi := &file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureWebApplicationFirewallPolicyStackOutputs) String() string {
+func (x *AzureWebApplicationFirewallPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureWebApplicationFirewallPolicyStackOutputs) ProtoMessage() {}
+func (*AzureWebApplicationFirewallPolicyOutputs) ProtoMessage() {}
 
-func (x *AzureWebApplicationFirewallPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureWebApplicationFirewallPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,19 +66,19 @@ func (x *AzureWebApplicationFirewallPolicyStackOutputs) ProtoReflect() protorefl
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureWebApplicationFirewallPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureWebApplicationFirewallPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureWebApplicationFirewallPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*AzureWebApplicationFirewallPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureWebApplicationFirewallPolicyStackOutputs) GetPolicyId() string {
+func (x *AzureWebApplicationFirewallPolicyOutputs) GetPolicyId() string {
 	if x != nil {
 		return x.PolicyId
 	}
 	return ""
 }
 
-func (x *AzureWebApplicationFirewallPolicyStackOutputs) GetPolicyName() string {
+func (x *AzureWebApplicationFirewallPolicyOutputs) GetPolicyName() string {
 	if x != nil {
 		return x.PolicyName
 	}
@@ -89,8 +89,8 @@ var File_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_outputs_proto 
 
 const file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/azure/azurewebapplicationfirewallpolicy/v1alpha1/outputs.proto\x12<dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1\"m\n" +
-	"-AzureWebApplicationFirewallPolicyStackOutputs\x12\x1b\n" +
+	"Fcatalog/azure/azurewebapplicationfirewallpolicy/v1alpha1/outputs.proto\x12<dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1\"h\n" +
+	"(AzureWebApplicationFirewallPolicyOutputs\x12\x1b\n" +
 	"\tpolicy_id\x18\x01 \x01(\tR\bpolicyId\x12\x1f\n" +
 	"\vpolicy_name\x18\x02 \x01(\tR\n" +
 	"policyNameB\xe6\x03\n" +
@@ -110,7 +110,7 @@ func file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_outputs_proto
 
 var file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureWebApplicationFirewallPolicyStackOutputs)(nil), // 0: dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1.AzureWebApplicationFirewallPolicyStackOutputs
+	(*AzureWebApplicationFirewallPolicyOutputs)(nil), // 0: dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1.AzureWebApplicationFirewallPolicyOutputs
 }
 var file_catalog_azure_azurewebapplicationfirewallpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -31,7 +31,7 @@ const (
 // The document reference accepts ANY document name - an AWS-managed
 // document (AWS-RunShellScript, AmazonCloudWatch-ManageAgent, ...) as
 // a literal value, or a customer-owned AwsSsmDocument by reference -
-// which is why the association is its own component rather than a
+// which is why the association is its own kind rather than a
 // document satellite. Changing the document forces replacement; every
 // other change creates a new association version in place.
 //

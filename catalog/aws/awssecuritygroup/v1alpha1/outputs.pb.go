@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-security-group stack outputs
-type AwsSecurityGroupStackOutputs struct {
+// aws-security-group outputs
+type AwsSecurityGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// the unique ID of the security group (sg-...). The join key other
 	// resources reference to attach this group.
@@ -42,20 +42,20 @@ type AwsSecurityGroupStackOutputs struct {
 	sizeCache                   protoimpl.SizeCache
 }
 
-func (x *AwsSecurityGroupStackOutputs) Reset() {
-	*x = AwsSecurityGroupStackOutputs{}
+func (x *AwsSecurityGroupOutputs) Reset() {
+	*x = AwsSecurityGroupOutputs{}
 	mi := &file_catalog_aws_awssecuritygroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSecurityGroupStackOutputs) String() string {
+func (x *AwsSecurityGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSecurityGroupStackOutputs) ProtoMessage() {}
+func (*AwsSecurityGroupOutputs) ProtoMessage() {}
 
-func (x *AwsSecurityGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSecurityGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssecuritygroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *AwsSecurityGroupStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSecurityGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSecurityGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSecurityGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSecurityGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssecuritygroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSecurityGroupStackOutputs) GetSecurityGroupId() string {
+func (x *AwsSecurityGroupOutputs) GetSecurityGroupId() string {
 	if x != nil {
 		return x.SecurityGroupId
 	}
 	return ""
 }
 
-func (x *AwsSecurityGroupStackOutputs) GetSecurityGroupArn() string {
+func (x *AwsSecurityGroupOutputs) GetSecurityGroupArn() string {
 	if x != nil {
 		return x.SecurityGroupArn
 	}
 	return ""
 }
 
-func (x *AwsSecurityGroupStackOutputs) GetOwnerId() string {
+func (x *AwsSecurityGroupOutputs) GetOwnerId() string {
 	if x != nil {
 		return x.OwnerId
 	}
 	return ""
 }
 
-func (x *AwsSecurityGroupStackOutputs) GetAdditionalVpcAssociationIds() map[string]string {
+func (x *AwsSecurityGroupOutputs) GetAdditionalVpcAssociationIds() map[string]string {
 	if x != nil {
 		return x.AdditionalVpcAssociationIds
 	}
@@ -104,12 +104,12 @@ var File_catalog_aws_awssecuritygroup_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_aws_awssecuritygroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awssecuritygroup/v1alpha1/outputs.proto\x12)dev.planton.aws.awssecuritygroup.v1alpha1\"\x93\x03\n" +
-	"\x1cAwsSecurityGroupStackOutputs\x12*\n" +
+	"3catalog/aws/awssecuritygroup/v1alpha1/outputs.proto\x12)dev.planton.aws.awssecuritygroup.v1alpha1\"\x89\x03\n" +
+	"\x17AwsSecurityGroupOutputs\x12*\n" +
 	"\x11security_group_id\x18\x01 \x01(\tR\x0fsecurityGroupId\x12,\n" +
 	"\x12security_group_arn\x18\x02 \x01(\tR\x10securityGroupArn\x12\x19\n" +
-	"\bowner_id\x18\x03 \x01(\tR\aownerId\x12\xad\x01\n" +
-	"\x1eadditional_vpc_association_ids\x18\x04 \x03(\v2h.dev.planton.aws.awssecuritygroup.v1alpha1.AwsSecurityGroupStackOutputs.AdditionalVpcAssociationIdsEntryR\x1badditionalVpcAssociationIds\x1aN\n" +
+	"\bowner_id\x18\x03 \x01(\tR\aownerId\x12\xa8\x01\n" +
+	"\x1eadditional_vpc_association_ids\x18\x04 \x03(\v2c.dev.planton.aws.awssecuritygroup.v1alpha1.AwsSecurityGroupOutputs.AdditionalVpcAssociationIdsEntryR\x1badditionalVpcAssociationIds\x1aN\n" +
 	" AdditionalVpcAssociationIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xe3\x02\n" +
@@ -129,11 +129,11 @@ func file_catalog_aws_awssecuritygroup_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awssecuritygroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awssecuritygroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSecurityGroupStackOutputs)(nil), // 0: dev.planton.aws.awssecuritygroup.v1alpha1.AwsSecurityGroupStackOutputs
-	nil,                                  // 1: dev.planton.aws.awssecuritygroup.v1alpha1.AwsSecurityGroupStackOutputs.AdditionalVpcAssociationIdsEntry
+	(*AwsSecurityGroupOutputs)(nil), // 0: dev.planton.aws.awssecuritygroup.v1alpha1.AwsSecurityGroupOutputs
+	nil,                             // 1: dev.planton.aws.awssecuritygroup.v1alpha1.AwsSecurityGroupOutputs.AdditionalVpcAssociationIdsEntry
 }
 var file_catalog_aws_awssecuritygroup_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awssecuritygroup.v1alpha1.AwsSecurityGroupStackOutputs.additional_vpc_association_ids:type_name -> dev.planton.aws.awssecuritygroup.v1alpha1.AwsSecurityGroupStackOutputs.AdditionalVpcAssociationIdsEntry
+	1, // 0: dev.planton.aws.awssecuritygroup.v1alpha1.AwsSecurityGroupOutputs.additional_vpc_association_ids:type_name -> dev.planton.aws.awssecuritygroup.v1alpha1.AwsSecurityGroupOutputs.AdditionalVpcAssociationIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

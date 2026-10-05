@@ -1,6 +1,6 @@
 # AzureManagedRedis - Pulumi Module
 
-Pulumi implementation for the AzureManagedRedis component.
+Pulumi implementation for the AzureManagedRedis kind.
 
 ## Architecture
 
@@ -18,7 +18,7 @@ managedredis.ManagedRedis (single resource: cluster + default database)
   deploying a wrong SKU.
 - **Database enum defaults are materialized explicitly**
   (Encrypted/OSSCluster/VolatileLRU -- Azure's own defaults) so both
-  engines send identical request bodies; stack inputs never carry proto
+  engines send identical request bodies; IaC inputs never carry proto
   defaults, so every optional-with-default field is presence-guarded.
 - **Database-derived outputs ride the default_database block** (id,
   port, both access keys) through nil-guarded appliers -- the keys stay
@@ -30,5 +30,5 @@ managedredis.ManagedRedis (single resource: cluster + default database)
 ## Provider
 
 Built via the shared `pulumiazureprovider.Get` builder -- static client
-secret, keyless web identity, or ambient chain, resolved from the stack
+secret, keyless web identity, or ambient chain, resolved from the IaC
 input. Never construct the provider inline.

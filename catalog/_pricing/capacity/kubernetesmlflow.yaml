@@ -7,9 +7,9 @@
 # the one scalable pod class; the sqlite backend and local artifact
 # volumes are singleton PVCs (the spec contract caps replicas at 1
 # whenever either exists), so they bind as constant-1 workloads.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesmlflow
 spec:

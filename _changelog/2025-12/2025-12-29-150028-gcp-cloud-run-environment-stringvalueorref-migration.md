@@ -11,7 +11,7 @@ Updated all templates in the GCP Cloud Run Environment chart to use the `StringV
 
 ## Problem Statement / Motivation
 
-The planton APIs recently migrated several GCP component fields from plain `string` types to `StringValueOrRef` types. This enables cross-resource references where values can be dynamically resolved from other resources' outputs.
+The planton APIs recently migrated several GCP kind fields from plain `string` types to `StringValueOrRef` types. This enables cross-resource references where values can be dynamically resolved from other resources' outputs.
 
 ### Pain Points
 

@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpmemorystoreinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmemorystoreinstance/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -16,9 +16,9 @@ type Locals struct {
 	GcpLabels              map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpmemorystoreinstancev1alpha1.GcpMemorystoreInstanceStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpmemorystoreinstancev1alpha1.GcpMemorystoreInstanceIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpMemorystoreInstance = stackInput.Target
+	locals.GcpMemorystoreInstance = iacInput.Target
 
 	// User labels first so platform attribution labels win on key
 	// conflicts — identical merge order to the Terraform module.
@@ -28,7 +28,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpmemorystoreinstancev1alp
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.GcpMemorystoreInstance.Spec.InstanceName
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpMemorystoreInstance.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpMemorystoreInstance.String())
 
 	if locals.GcpMemorystoreInstance.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = locals.GcpMemorystoreInstance.Metadata.Org
@@ -40,6 +40,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpmemorystoreinstancev1alp
 		locals.GcpLabels[gcplabelkeys.ResourceId] = locals.GcpMemorystoreInstance.Metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

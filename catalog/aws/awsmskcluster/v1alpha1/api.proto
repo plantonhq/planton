@@ -16,7 +16,7 @@ message AwsMskCluster {
   string kind = 2 [(buf.validate.field).string.const = 'AwsMskCluster'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   AwsMskClusterSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message AwsMskCluster {
 
 // aws-msk-cluster status
 message AwsMskClusterStatus {
-  //stack-outputs
-  AwsMskClusterStackOutputs outputs = 1;
+  //outputs
+  AwsMskClusterOutputs outputs = 1;
 }

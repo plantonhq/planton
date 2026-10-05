@@ -4,7 +4,7 @@ Deploys an ELBv2 target group — the routing destination that listeners and lis
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Target Group** -- with its target type, port/protocol, health check, stickiness, and family-specific traffic attributes
 - **Static target registrations** -- only for rows listed in `targets`; dynamic registrars (ECS, auto-scaling, Kubernetes controllers) manage their own membership
@@ -16,7 +16,7 @@ The load balancer and listeners are **not** created here — an AwsLbListener fo
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **VPC** -- the AwsVpc the targets live in, referenced by its `vpc_id` output (required for every target type except lambda).
 - **Targets** -- optional AwsEc2Instance resources for static registrations, referenced by their `instance_id` outputs.
 
@@ -61,7 +61,7 @@ spec:
 planton apply -f target-group.yaml
 ```
 
-This creates an HTTP target group for IP targets (the shape ECS awsvpc services register into) with a real readiness probe. A Stack Job tracks the provisioning in real time.
+This creates an HTTP target group for IP targets (the shape ECS awsvpc services register into) with a real readiness probe. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -103,16 +103,16 @@ These are the most important decisions when configuring a target group. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsVpc** | `vpcId` | `status.outputs.vpc_id` |
 | **AwsEc2Instance** | `targets[].targetId` | `status.outputs.instance_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -134,9 +134,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS LB Listener**](/cloud-catalog/aws-lb-listener) -- forwards traffic here via its default actions, referencing `target_group_arn`.
-- [**AWS LB Listener Rule**](/cloud-catalog/aws-lb-listener-rule) -- forwards matched requests here via rule actions.
-- [**AWS ALB**](/cloud-catalog/aws-alb) -- the Layer-7 load balancer whose listeners deliver HTTP/HTTPS traffic.
-- [**AWS NLB**](/cloud-catalog/aws-nlb) -- the Layer-4 load balancer whose listeners deliver TCP/UDP/TLS/QUIC traffic.
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- the network the targets live in, referenced by `vpcId`.
-- [**AWS EC2 Instance**](/cloud-catalog/aws-ec2-instance) -- statically registered instance targets, referenced per row.
+- [**AWS LB Listener**](/infra-catalog/aws-lb-listener) -- forwards traffic here via its default actions, referencing `target_group_arn`.
+- [**AWS LB Listener Rule**](/infra-catalog/aws-lb-listener-rule) -- forwards matched requests here via rule actions.
+- [**AWS ALB**](/infra-catalog/aws-alb) -- the Layer-7 load balancer whose listeners deliver HTTP/HTTPS traffic.
+- [**AWS NLB**](/infra-catalog/aws-nlb) -- the Layer-4 load balancer whose listeners deliver TCP/UDP/TLS/QUIC traffic.
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- the network the targets live in, referenced by `vpcId`.
+- [**AWS EC2 Instance**](/infra-catalog/aws-ec2-instance) -- statically registered instance targets, referenced per row.

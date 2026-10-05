@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesOpenSearchSpec** declares an OpenSearch cluster — the
 Apache-2.0 search and analytics engine (drop-in replacement for the
@@ -40,7 +40,7 @@ admin credentials. Fine inside a private cluster for development;
 for anything real, bring a custom `security.config` (your own
 internal_users.yml and admin credentials) or rotate the admin
 password through the security API immediately after install.
-Clients read credentials from the Secret named in the stack
+Clients read credentials from the Secret named in the
 outputs — no credential ever appears in this spec unless you bring
 your own security config.
 
@@ -749,10 +749,10 @@ Default: true. Set false only when providing certificates via
 `bool` · optional (explicit presence)
 
 Issue one certificate per node (hostname-pinned) instead of a
-shared certificate. Component default: true (the stronger
+shared certificate. Kind default: true (the stronger
 posture); the operator's OWN default is a single shared
 certificate — the modules always render this field explicitly, so
-the component default governs.
+the kind's default governs.
 
 - default: `true`
 

@@ -24,4 +24,4 @@ This preset creates a DigitalOcean Container Registry (DOCR) with the profession
 
 ## Related Presets
 
-- None for this component; consider `DigitalOceanKubernetesCluster` with `registryIntegration: true` for seamless image pull
+- None for this kind; consider `DigitalOceanKubernetesCluster` with `registryIntegration: true` for seamless image pull

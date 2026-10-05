@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremssqldatabase.v1alpha1;
 
-// **AzureMssqlDatabaseStackOutputs** captures the outputs of provisioning
+// **AzureMssqlDatabaseOutputs** captures the outputs of provisioning
 // an Azure SQL Database.
 //
 // `database_id` is the join key for everything that references the
@@ -10,7 +10,7 @@ package dev.planton.azure.azuremssqldatabase.v1alpha1;
 // composing copies/secondaries/restores, and failover-group membership.
 // Applications connect to the SERVER's fqdn with this database's name:
 //   Server={server fqdn},1433;Database={database_name};...
-message AzureMssqlDatabaseStackOutputs {
+message AzureMssqlDatabaseOutputs {
   // The Azure Resource Manager ID of the database.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Sql/servers/{server}/databases/{name}
   // Referenced by copy/secondary/restore databases

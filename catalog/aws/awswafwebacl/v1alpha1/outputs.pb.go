@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsWafWebAclStackOutputs captures observable identifiers from a provisioned
+// AwsWafWebAclOutputs captures observable identifiers from a provisioned
 // WAFv2 Web ACL.
 //
 // The primary output is `web_acl_arn`, which downstream resources use to
 // associate the Web ACL with protected resources via StringValueOrRef. For
 // example, an AwsAlb (spec.web_acl_arn) or AwsCloudFront (spec.web_acl_arn)
 // references the Web ACL ARN to enable WAF protection.
-type AwsWafWebAclStackOutputs struct {
+type AwsWafWebAclOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the Web ACL. This is the primary
 	// output used to associate the Web ACL with ALB, API Gateway, CloudFront,
@@ -50,20 +50,20 @@ type AwsWafWebAclStackOutputs struct {
 	sizeCache                 protoimpl.SizeCache
 }
 
-func (x *AwsWafWebAclStackOutputs) Reset() {
-	*x = AwsWafWebAclStackOutputs{}
+func (x *AwsWafWebAclOutputs) Reset() {
+	*x = AwsWafWebAclOutputs{}
 	mi := &file_catalog_aws_awswafwebacl_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsWafWebAclStackOutputs) String() string {
+func (x *AwsWafWebAclOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsWafWebAclStackOutputs) ProtoMessage() {}
+func (*AwsWafWebAclOutputs) ProtoMessage() {}
 
-func (x *AwsWafWebAclStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsWafWebAclOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awswafwebacl_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,40 +75,40 @@ func (x *AwsWafWebAclStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsWafWebAclStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsWafWebAclStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsWafWebAclOutputs.ProtoReflect.Descriptor instead.
+func (*AwsWafWebAclOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awswafwebacl_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsWafWebAclStackOutputs) GetWebAclArn() string {
+func (x *AwsWafWebAclOutputs) GetWebAclArn() string {
 	if x != nil {
 		return x.WebAclArn
 	}
 	return ""
 }
 
-func (x *AwsWafWebAclStackOutputs) GetWebAclId() string {
+func (x *AwsWafWebAclOutputs) GetWebAclId() string {
 	if x != nil {
 		return x.WebAclId
 	}
 	return ""
 }
 
-func (x *AwsWafWebAclStackOutputs) GetWebAclName() string {
+func (x *AwsWafWebAclOutputs) GetWebAclName() string {
 	if x != nil {
 		return x.WebAclName
 	}
 	return ""
 }
 
-func (x *AwsWafWebAclStackOutputs) GetCapacity() int32 {
+func (x *AwsWafWebAclOutputs) GetCapacity() int32 {
 	if x != nil {
 		return x.Capacity
 	}
 	return 0
 }
 
-func (x *AwsWafWebAclStackOutputs) GetApplicationIntegrationUrl() string {
+func (x *AwsWafWebAclOutputs) GetApplicationIntegrationUrl() string {
 	if x != nil {
 		return x.ApplicationIntegrationUrl
 	}
@@ -119,8 +119,8 @@ var File_catalog_aws_awswafwebacl_v1alpha1_outputs_proto protoreflect.FileDescri
 
 const file_catalog_aws_awswafwebacl_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/aws/awswafwebacl/v1alpha1/outputs.proto\x12%dev.planton.aws.awswafwebacl.v1alpha1\"\xd6\x01\n" +
-	"\x18AwsWafWebAclStackOutputs\x12\x1e\n" +
+	"/catalog/aws/awswafwebacl/v1alpha1/outputs.proto\x12%dev.planton.aws.awswafwebacl.v1alpha1\"\xd1\x01\n" +
+	"\x13AwsWafWebAclOutputs\x12\x1e\n" +
 	"\vweb_acl_arn\x18\x01 \x01(\tR\twebAclArn\x12\x1c\n" +
 	"\n" +
 	"web_acl_id\x18\x02 \x01(\tR\bwebAclId\x12 \n" +
@@ -144,7 +144,7 @@ func file_catalog_aws_awswafwebacl_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awswafwebacl_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awswafwebacl_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsWafWebAclStackOutputs)(nil), // 0: dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclStackOutputs
+	(*AwsWafWebAclOutputs)(nil), // 0: dev.planton.aws.awswafwebacl.v1alpha1.AwsWafWebAclOutputs
 }
 var file_catalog_aws_awswafwebacl_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

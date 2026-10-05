@@ -37,7 +37,7 @@ type KubernetesNamespace struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Metadata for the Kubernetes namespace resource.
 	// Includes standard fields like name, organization, environment, etc.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Specification of the desired state for the Kubernetes namespace.
 	// Defines configuration for resource quotas, network policies, service mesh, and security standards.
 	Spec *KubernetesNamespaceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -92,7 +92,7 @@ func (x *KubernetesNamespace) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesNamespace) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesNamespace) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -120,7 +120,7 @@ type KubernetesNamespaceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Outputs from the namespace deployment.
 	// Contains observable identifiers and configuration status.
-	Outputs       *KubernetesNamespaceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *KubernetesNamespaceOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -155,7 +155,7 @@ func (*KubernetesNamespaceStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesnamespace_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesNamespaceStatus) GetOutputs() *KubernetesNamespaceStackOutputs {
+func (x *KubernetesNamespaceStatus) GetOutputs() *KubernetesNamespaceOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -173,11 +173,11 @@ const file_catalog_kubernetes_kubernetesnamespace_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13KubernetesNamespaceR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
 	"\x04spec\x18\x04 \x01(\v2L.dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12f\n" +
-	"\x06status\x18\x05 \x01(\v2N.dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceStatusR\x06status\"\x8b\x01\n" +
-	"\x19KubernetesNamespaceStatus\x12n\n" +
-	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceStackOutputsR\aoutputsB\x9e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2N.dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceStatusR\x06status\"\x86\x01\n" +
+	"\x19KubernetesNamespaceStatus\x12i\n" +
+	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceOutputsR\aoutputsB\x9e\x03\n" +
 	"7com.dev.planton.kubernetes.kubernetesnamespace.v1alpha1B\bApiProtoP\x01Zhgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesnamespace/v1alpha1;kubernetesnamespacev1alpha1\xa2\x02\x04DPKK\xaa\x023Dev.Planton.Kubernetes.Kubernetesnamespace.V1alpha1\xca\x023Dev\\Planton\\Kubernetes\\Kubernetesnamespace\\V1alpha1\xe2\x02?Dev\\Planton\\Kubernetes\\Kubernetesnamespace\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Kubernetes::Kubernetesnamespace::V1alpha1b\x06proto3"
 
 var (
@@ -194,17 +194,17 @@ func file_catalog_kubernetes_kubernetesnamespace_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetesnamespace_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesnamespace_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesNamespace)(nil),             // 0: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespace
-	(*KubernetesNamespaceStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesNamespaceSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceSpec
-	(*KubernetesNamespaceStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceStackOutputs
+	(*KubernetesNamespace)(nil),          // 0: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespace
+	(*KubernetesNamespaceStatus)(nil),    // 1: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesNamespaceSpec)(nil),      // 3: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceSpec
+	(*KubernetesNamespaceOutputs)(nil),   // 4: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceOutputs
 }
 var file_catalog_kubernetes_kubernetesnamespace_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespace.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespace.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespace.spec:type_name -> dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceSpec
 	1, // 2: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespace.status:type_name -> dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceStatus
-	4, // 3: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

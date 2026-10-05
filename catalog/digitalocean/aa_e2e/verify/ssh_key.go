@@ -10,7 +10,7 @@ import (
 
 // sshKeyVerifier verifies a DigitalOceanSshKey via
 // GET /v2/account/keys/{ssh_key_id}. The id is the key's numeric id (the
-// stack output is string-typed by contract); the API also accepts
+// output is string-typed by contract); the API also accepts
 // fingerprints on this endpoint, but the output always carries the numeric
 // id -- the same identity imports require. The fingerprint output is
 // asserted against the live key too: DigitalOcean computes it from the
@@ -64,7 +64,7 @@ func (v *sshKeyVerifier) VerifyAbsentFromOutputs(ctx context.Context, client *go
 		}
 		return pkgerrors.Wrap(err, "digitaloceansshkey verify-absent failed")
 	}
-	return &StillExistsError{Component: "digitaloceansshkey", ID: id}
+	return &StillExistsError{Kind: "digitaloceansshkey", ID: id}
 }
 
 // numericKeyID guards the identity the output claims: a fingerprint

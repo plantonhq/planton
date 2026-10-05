@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpvertexaifeatureonlinestorev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaifeatureonlinestore/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -16,9 +16,9 @@ type Locals struct {
 	GcpLabels                     map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaifeatureonlinestorev1alpha1.GcpVertexAiFeatureOnlineStoreStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpvertexaifeatureonlinestorev1alpha1.GcpVertexAiFeatureOnlineStoreIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpVertexAiFeatureOnlineStore = stackInput.Target
+	locals.GcpVertexAiFeatureOnlineStore = iacInput.Target
 	metadata := locals.GcpVertexAiFeatureOnlineStore.Metadata
 
 	// User labels first so platform attribution labels win on key
@@ -30,7 +30,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaifeatureonlinesto
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.GcpVertexAiFeatureOnlineStore.Spec.FeatureOnlineStoreId
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpVertexAiFeatureOnlineStore.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpVertexAiFeatureOnlineStore.String())
 
 	if metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = metadata.Org
@@ -42,6 +42,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaifeatureonlinesto
 		locals.GcpLabels[gcplabelkeys.ResourceId] = metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

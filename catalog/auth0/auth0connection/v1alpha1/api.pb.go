@@ -23,11 +23,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0Connection is a component that configures an identity connection in Auth0.
+// Auth0Connection is a kind that configures an identity connection in Auth0.
 // Connections are the bridge between Auth0 and identity sources, enabling users to authenticate
 // using various methods including databases, social providers, and enterprise identity providers.
 //
-// This component supports:
+// This kind supports:
 // - Database connections (Auth0's hosted user database)
 // - Social connections (Google, Facebook, GitHub, LinkedIn, etc.)
 // - Enterprise connections (SAML, OIDC, Azure AD/Entra ID)
@@ -65,12 +65,12 @@ type Auth0Connection struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "Auth0Connection" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the connection within Planton
 	// - org: Organization that owns this connection
 	// - env: Environment (development, staging, production)
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the desired configuration for the Auth0 connection.
 	// This includes the connection strategy, authentication options, and provider-specific settings.
 	Spec *Auth0ConnectionSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -126,7 +126,7 @@ func (x *Auth0Connection) GetKind() string {
 	return ""
 }
 
-func (x *Auth0Connection) GetMetadata() *shared.CloudResourceMetadata {
+func (x *Auth0Connection) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -151,10 +151,10 @@ func (x *Auth0Connection) GetStatus() *Auth0ConnectionStatus {
 // This is populated by the deployment system and contains read-only outputs.
 type Auth0ConnectionStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs from the Auth0 connection deployment.
+	// outputs contains the outputs from the Auth0 connection deployment.
 	// These values are populated after successful deployment and include
 	// resource identifiers, callback URLs, and other important reference information.
-	Outputs       *Auth0ConnectionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *Auth0ConnectionOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -189,7 +189,7 @@ func (*Auth0ConnectionStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0connection_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Auth0ConnectionStatus) GetOutputs() *Auth0ConnectionStackOutputs {
+func (x *Auth0ConnectionStatus) GetOutputs() *Auth0ConnectionOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -207,11 +207,11 @@ const file_catalog_auth0_auth0connection_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fAuth0ConnectionR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
 	"\x04spec\x18\x04 \x01(\v2?.dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Y\n" +
-	"\x06status\x18\x05 \x01(\v2A.dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionStatusR\x06status\"z\n" +
-	"\x15Auth0ConnectionStatus\x12a\n" +
-	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionStackOutputsR\aoutputsB\xe4\x02\n" +
+	"\x06status\x18\x05 \x01(\v2A.dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionStatusR\x06status\"u\n" +
+	"\x15Auth0ConnectionStatus\x12\\\n" +
+	"\aoutputs\x18\x01 \x01(\v2B.dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionOutputsR\aoutputsB\xe4\x02\n" +
 	".com.dev.planton.auth0.auth0connection.v1alpha1B\bApiProtoP\x01Z[github.com/plantonhq/planton/catalog/auth0/auth0connection/v1alpha1;auth0connectionv1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Auth0.Auth0connection.V1alpha1\xca\x02*Dev\\Planton\\Auth0\\Auth0connection\\V1alpha1\xe2\x026Dev\\Planton\\Auth0\\Auth0connection\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Auth0::Auth0connection::V1alpha1b\x06proto3"
 
 var (
@@ -230,15 +230,15 @@ var file_catalog_auth0_auth0connection_v1alpha1_api_proto_msgTypes = make([]prot
 var file_catalog_auth0_auth0connection_v1alpha1_api_proto_goTypes = []any{
 	(*Auth0Connection)(nil),              // 0: dev.planton.auth0.auth0connection.v1alpha1.Auth0Connection
 	(*Auth0ConnectionStatus)(nil),        // 1: dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*Auth0ConnectionSpec)(nil),          // 3: dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionSpec
-	(*Auth0ConnectionStackOutputs)(nil),  // 4: dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionStackOutputs
+	(*Auth0ConnectionOutputs)(nil),       // 4: dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionOutputs
 }
 var file_catalog_auth0_auth0connection_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.auth0.auth0connection.v1alpha1.Auth0Connection.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.auth0.auth0connection.v1alpha1.Auth0Connection.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.auth0.auth0connection.v1alpha1.Auth0Connection.spec:type_name -> dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionSpec
 	1, // 2: dev.planton.auth0.auth0connection.v1alpha1.Auth0Connection.status:type_name -> dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionStatus
-	4, // 3: dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionStatus.outputs:type_name -> dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionStackOutputs
+	4, // 3: dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionStatus.outputs:type_name -> dev.planton.auth0.auth0connection.v1alpha1.Auth0ConnectionOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

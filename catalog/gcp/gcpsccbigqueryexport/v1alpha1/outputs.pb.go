@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpSccBigQueryExportStackOutputs carries the export's identity and the
+// GcpSccBigQueryExportOutputs carries the export's identity and the
 // writer it needs on its dataset.
-type GcpSccBigQueryExportStackOutputs struct {
+type GcpSccBigQueryExportOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// {parent}/locations/{location}/bigQueryExports/{big_query_export_id}.
@@ -36,20 +36,20 @@ type GcpSccBigQueryExportStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpSccBigQueryExportStackOutputs) Reset() {
-	*x = GcpSccBigQueryExportStackOutputs{}
+func (x *GcpSccBigQueryExportOutputs) Reset() {
+	*x = GcpSccBigQueryExportOutputs{}
 	mi := &file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSccBigQueryExportStackOutputs) String() string {
+func (x *GcpSccBigQueryExportOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSccBigQueryExportStackOutputs) ProtoMessage() {}
+func (*GcpSccBigQueryExportOutputs) ProtoMessage() {}
 
-func (x *GcpSccBigQueryExportStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpSccBigQueryExportOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *GcpSccBigQueryExportStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSccBigQueryExportStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpSccBigQueryExportStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSccBigQueryExportOutputs.ProtoReflect.Descriptor instead.
+func (*GcpSccBigQueryExportOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSccBigQueryExportStackOutputs) GetName() string {
+func (x *GcpSccBigQueryExportOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpSccBigQueryExportStackOutputs) GetPrincipal() string {
+func (x *GcpSccBigQueryExportOutputs) GetPrincipal() string {
 	if x != nil {
 		return x.Principal
 	}
@@ -84,8 +84,8 @@ var File_catalog_gcp_gcpsccbigqueryexport_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpsccbigqueryexport/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcpsccbigqueryexport.v1alpha1\"T\n" +
-	" GcpSccBigQueryExportStackOutputs\x12\x12\n" +
+	"7catalog/gcp/gcpsccbigqueryexport/v1alpha1/outputs.proto\x12-dev.planton.gcp.gcpsccbigqueryexport.v1alpha1\"O\n" +
+	"\x1bGcpSccBigQueryExportOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tprincipal\x18\x02 \x01(\tR\tprincipalB\xff\x02\n" +
 	"1com.dev.planton.gcp.gcpsccbigqueryexport.v1alpha1B\fOutputsProtoP\x01Zcgithub.com/plantonhq/planton/catalog/gcp/gcpsccbigqueryexport/v1alpha1;gcpsccbigqueryexportv1alpha1\xa2\x02\x04DPGG\xaa\x02-Dev.Planton.Gcp.Gcpsccbigqueryexport.V1alpha1\xca\x02-Dev\\Planton\\Gcp\\Gcpsccbigqueryexport\\V1alpha1\xe2\x029Dev\\Planton\\Gcp\\Gcpsccbigqueryexport\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Gcp::Gcpsccbigqueryexport::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpSccBigQueryExportStackOutputs)(nil), // 0: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportStackOutputs
+	(*GcpSccBigQueryExportOutputs)(nil), // 0: dev.planton.gcp.gcpsccbigqueryexport.v1alpha1.GcpSccBigQueryExportOutputs
 }
 var file_catalog_gcp_gcpsccbigqueryexport_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

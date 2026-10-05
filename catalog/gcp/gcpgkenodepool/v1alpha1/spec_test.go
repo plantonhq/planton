@@ -43,7 +43,7 @@ func newNodePool(spec *GcpGkeNodePoolSpec) *GcpGkeNodePool {
 	return &GcpGkeNodePool{
 		ApiVersion: "gcp.planton.dev/v1alpha1",
 		Kind:       "GcpGkeNodePool",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-node-pool",
 		},
 		Spec: spec,

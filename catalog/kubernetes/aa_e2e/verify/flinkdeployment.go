@@ -68,7 +68,7 @@ func (v *FlinkDeploymentVerifier) VerifyExists(ctx context.Context, kubeconfig s
 		return err
 	}
 
-	// The naming contract the stack outputs publish.
+	// The naming contract the outputs publish.
 	restSvc := v.Name + "-rest"
 	if err := KubectlResourceExists(ctx, kubeconfig, "service", restSvc, v.Namespace); err != nil {
 		return errors.Wrap(err, "the REST service not found")

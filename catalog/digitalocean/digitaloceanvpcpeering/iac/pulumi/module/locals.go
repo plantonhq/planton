@@ -11,9 +11,9 @@ type Locals struct {
 	DigitalOceanVpcPeering *digitaloceanvpcpeeringv1alpha1.DigitalOceanVpcPeering
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *digitaloceanvpcpeeringv1alpha1.DigitalOceanVpcPeeringStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *digitaloceanvpcpeeringv1alpha1.DigitalOceanVpcPeeringIacInput) *Locals {
 	return &Locals{
-		DigitalOceanVpcPeering: stackInput.Target,
+		DigitalOceanVpcPeering: iacInput.Target,
 	}
 }

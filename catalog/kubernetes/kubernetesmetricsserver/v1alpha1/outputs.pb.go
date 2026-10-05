@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesMetricsServerStackOutputs captures observable outputs after the
+// KubernetesMetricsServerOutputs captures observable outputs after the
 // metrics-server installation.
-type KubernetesMetricsServerStackOutputs struct {
+type KubernetesMetricsServerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Kubernetes namespace metrics-server was installed into.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -40,20 +40,20 @@ type KubernetesMetricsServerStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesMetricsServerStackOutputs) Reset() {
-	*x = KubernetesMetricsServerStackOutputs{}
+func (x *KubernetesMetricsServerOutputs) Reset() {
+	*x = KubernetesMetricsServerOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesMetricsServerStackOutputs) String() string {
+func (x *KubernetesMetricsServerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesMetricsServerStackOutputs) ProtoMessage() {}
+func (*KubernetesMetricsServerOutputs) ProtoMessage() {}
 
-func (x *KubernetesMetricsServerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesMetricsServerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,33 +65,33 @@ func (x *KubernetesMetricsServerStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesMetricsServerStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesMetricsServerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesMetricsServerOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesMetricsServerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesMetricsServerStackOutputs) GetNamespace() string {
+func (x *KubernetesMetricsServerOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesMetricsServerStackOutputs) GetReleaseName() string {
+func (x *KubernetesMetricsServerOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesMetricsServerStackOutputs) GetServiceName() string {
+func (x *KubernetesMetricsServerOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesMetricsServerStackOutputs) GetApiServiceName() string {
+func (x *KubernetesMetricsServerOutputs) GetApiServiceName() string {
 	if x != nil {
 		return x.ApiServiceName
 	}
@@ -102,8 +102,8 @@ var File_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_outputs_proto proto
 
 const file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/kubernetes/kubernetesmetricsserver/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1\"\xb3\x01\n" +
-	"#KubernetesMetricsServerStackOutputs\x12\x1c\n" +
+	"Acatalog/kubernetes/kubernetesmetricsserver/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1\"\xae\x01\n" +
+	"\x1eKubernetesMetricsServerOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12!\n" +
 	"\fservice_name\x18\x03 \x01(\tR\vserviceName\x12(\n" +
@@ -124,7 +124,7 @@ func file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_outputs_proto_rawD
 
 var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesMetricsServerStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerStackOutputs
+	(*KubernetesMetricsServerOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesmetricsserver.v1alpha1.KubernetesMetricsServerOutputs
 }
 var file_catalog_kubernetes_kubernetesmetricsserver_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

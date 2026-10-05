@@ -4,7 +4,7 @@ A Dialogflow CX conversational agent -- a virtual agent for chat, voice, and tel
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `dialogflow.googleapis.com` on the project (never disabled on destroy)
 - **Agent** -- a `dialogflow_cx_agent` with its languages, time zone, speech, logging, and integration settings; Google creates its default start flow and default playbook
@@ -98,7 +98,7 @@ planton apply -f dialogflow-cx-agent.yaml
 - `deleteChatEngineOnDestroy` is refused when the engine is a kind reference -- that block owns the engine.
 - Secret Manager version names, Service Directory services, and the audio export URI must be well formed; credentials carry no format rule.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -137,7 +137,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpDialogflowCxSecuritySettings** -- redaction, retention, and exports for the agent's conversations
 - **GcpVertexAiSearchDataStore** -- the stores data store tools answer from

@@ -4,7 +4,7 @@ Authorizes Google's service connectivity automation to place Private Service Con
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Service Connection Policy** — a `google_network_connectivity_service_connection_policy` binding one service class to one network in one region, carrying the PSC subnet address space, the optional connection limit, and the optional producer hierarchy allowlist
 - **Network Connectivity API enablement** — `networkconnectivity.googleapis.com` enabled in the target project (the control plane that owns these policies; never disabled on destroy)
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** — an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** — an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
@@ -54,7 +54,7 @@ spec:
 planton apply -f service-connection-policy.yaml
 ```
 
-This authorizes Memorystore for Valkey to place PSC endpoints in `prod-subnet` — after which creating a Memorystore instance on this network in `us-central1` just works. A Stack Job tracks the provisioning in real time.
+This authorizes Memorystore for Valkey to place PSC endpoints in `prod-subnet` — after which creating a Memorystore instance on this network in `us-central1` just works. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -97,7 +97,7 @@ These are the most important decisions when configuring a service connection pol
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -105,9 +105,9 @@ These are the most important decisions when configuring a service connection pol
 | **GcpVpcNetwork** | `network` | `status.outputs.network_id` |
 | **GcpSubnetwork** (per entry) | `pscConfig.subnetworks` | `status.outputs.subnetwork_self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -129,7 +129,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) — the consumer network the policy authorizes connections into
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) — the address space PSC endpoint IPs are drawn from
-- [**GCP Memorystore Instance**](/cloud-catalog/gcp-memorystore-instance) — the PSC-first producer that requires this policy before it can deploy
-- [**GCP Project**](/cloud-catalog/gcp-project) — provides the project that owns the network and the policy
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) — the consumer network the policy authorizes connections into
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) — the address space PSC endpoint IPs are drawn from
+- [**GCP Memorystore Instance**](/infra-catalog/gcp-memorystore-instance) — the PSC-first producer that requires this policy before it can deploy
+- [**GCP Project**](/infra-catalog/gcp-project) — provides the project that owns the network and the policy

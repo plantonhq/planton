@@ -4,7 +4,7 @@
 # designed composition path). The verifier asserts the planton-ai_resource
 # label (label parity live) and an ENABLED primary version.
 #
-# Deliberately the component's ONLY live scenario: the ring prerequisite
+# Deliberately the kind's ONLY live scenario: the ring prerequisite
 # is an undeletable resource, so a second scenario in the same engine run
 # would re-create the just-"destroyed" (state-only) ring and 409. Keys are
 # PERMANENT too — destroy destroys versions only — so key_name carries
@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpkmskey
+    e2e-catalog-kind: gcpkmskey
   annotations:
     planton.dev/e2e: "true"
   tags:

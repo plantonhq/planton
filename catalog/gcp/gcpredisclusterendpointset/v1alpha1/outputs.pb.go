@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpRedisClusterEndpointSetStackOutputs captures what the registration of
+// GcpRedisClusterEndpointSetOutputs captures what the registration of
 // user-created connections on a Memorystore for Redis Cluster produced.
-type GcpRedisClusterEndpointSetStackOutputs struct {
+type GcpRedisClusterEndpointSetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Bare name of the cluster the connections were registered on -- the
 	// segment Google's resource is keyed by.
@@ -40,20 +40,20 @@ type GcpRedisClusterEndpointSetStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpRedisClusterEndpointSetStackOutputs) Reset() {
-	*x = GcpRedisClusterEndpointSetStackOutputs{}
+func (x *GcpRedisClusterEndpointSetOutputs) Reset() {
+	*x = GcpRedisClusterEndpointSetOutputs{}
 	mi := &file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpRedisClusterEndpointSetStackOutputs) String() string {
+func (x *GcpRedisClusterEndpointSetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpRedisClusterEndpointSetStackOutputs) ProtoMessage() {}
+func (*GcpRedisClusterEndpointSetOutputs) ProtoMessage() {}
 
-func (x *GcpRedisClusterEndpointSetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpRedisClusterEndpointSetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,33 +65,33 @@ func (x *GcpRedisClusterEndpointSetStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpRedisClusterEndpointSetStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpRedisClusterEndpointSetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpRedisClusterEndpointSetOutputs.ProtoReflect.Descriptor instead.
+func (*GcpRedisClusterEndpointSetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpRedisClusterEndpointSetStackOutputs) GetClusterName() string {
+func (x *GcpRedisClusterEndpointSetOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *GcpRedisClusterEndpointSetStackOutputs) GetEndpointCount() int32 {
+func (x *GcpRedisClusterEndpointSetOutputs) GetEndpointCount() int32 {
 	if x != nil {
 		return x.EndpointCount
 	}
 	return 0
 }
 
-func (x *GcpRedisClusterEndpointSetStackOutputs) GetConnectionCount() int32 {
+func (x *GcpRedisClusterEndpointSetOutputs) GetConnectionCount() int32 {
 	if x != nil {
 		return x.ConnectionCount
 	}
 	return 0
 }
 
-func (x *GcpRedisClusterEndpointSetStackOutputs) GetRegion() string {
+func (x *GcpRedisClusterEndpointSetOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -102,8 +102,8 @@ var File_catalog_gcp_gcpredisclusterendpointset_v1alpha1_outputs_proto protorefl
 
 const file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/gcp/gcpredisclusterendpointset/v1alpha1/outputs.proto\x123dev.planton.gcp.gcpredisclusterendpointset.v1alpha1\"\xb5\x01\n" +
-	"&GcpRedisClusterEndpointSetStackOutputs\x12!\n" +
+	"=catalog/gcp/gcpredisclusterendpointset/v1alpha1/outputs.proto\x123dev.planton.gcp.gcpredisclusterendpointset.v1alpha1\"\xb0\x01\n" +
+	"!GcpRedisClusterEndpointSetOutputs\x12!\n" +
 	"\fcluster_name\x18\x01 \x01(\tR\vclusterName\x12%\n" +
 	"\x0eendpoint_count\x18\x02 \x01(\x05R\rendpointCount\x12)\n" +
 	"\x10connection_count\x18\x03 \x01(\x05R\x0fconnectionCount\x12\x16\n" +
@@ -124,7 +124,7 @@ func file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpRedisClusterEndpointSetStackOutputs)(nil), // 0: dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSetStackOutputs
+	(*GcpRedisClusterEndpointSetOutputs)(nil), // 0: dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSetOutputs
 }
 var file_catalog_gcp_gcpredisclusterendpointset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

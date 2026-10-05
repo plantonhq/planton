@@ -4,7 +4,7 @@ Deploys an Azure NAT Gateway -- the managed source-network-address-translation (
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **NAT Gateway** -- a Standard or StandardV2 SKU gateway in the specified region and resource group, with configurable idle timeout and (for Standard) optional availability-zone pinning
 - **Public IP Associations** -- links to the referenced `publicIpIds`, each adding 64,512 SNAT ports
@@ -17,13 +17,13 @@ Subnet attachments are NOT created here -- each AzureSubnet declares its own `na
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the NAT Gateway will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
-- **Public addresses** -- a gateway with no addresses deploys but cannot translate anything. Reference AzurePublicIp / AzurePublicIpPrefix Cloud Resources (a StandardV2 gateway needs StandardV2 addresses).
+- **An Azure Resource Group** where the NAT Gateway will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
+- **Public addresses** -- a gateway with no addresses deploys but cannot translate anything. Reference AzurePublicIp / AzurePublicIpPrefix Infra Components (a StandardV2 gateway needs StandardV2 addresses).
 - **Region alignment** -- the gateway only serves subnets in its own region.
 
 ## Deploy
@@ -62,7 +62,7 @@ spec:
 planton apply -f azure-nat-gateway.yaml
 ```
 
-This creates a zonal Standard gateway SNATing through one public IP with a 10-minute idle timeout. A Stack Job tracks the provisioning in real time.
+This creates a zonal Standard gateway SNATing through one public IP with a 10-minute idle timeout. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -107,7 +107,7 @@ These are the most important decisions when configuring a NAT gateway. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -115,9 +115,9 @@ These are the most important decisions when configuring a NAT gateway. Explore t
 | **AzurePublicIp** (repeated) | `publicIpIds` | `status.outputs.public_ip_id` |
 | **AzurePublicIpPrefix** (repeated) | `publicIpPrefixIds` | `status.outputs.public_ip_prefix_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -138,7 +138,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the gateway is created in
-- [**Azure Public IP**](/cloud-catalog/azure-public-ip) -- the addresses the gateway SNATs through
-- [**Azure Public IP Prefix**](/cloud-catalog/azure-public-ip-prefix) -- contiguous reserved ranges for scalable egress
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- attaches the gateway via its `natGatewayId` to route the subnet's egress
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the gateway is created in
+- [**Azure Public IP**](/infra-catalog/azure-public-ip) -- the addresses the gateway SNATs through
+- [**Azure Public IP Prefix**](/infra-catalog/azure-public-ip-prefix) -- contiguous reserved ranges for scalable egress
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- attaches the gateway via its `natGatewayId` to route the subnet's egress

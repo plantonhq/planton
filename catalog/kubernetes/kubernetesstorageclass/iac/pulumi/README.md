@@ -8,7 +8,7 @@ This Pulumi module creates and manages a Kubernetes `storage.k8s.io/v1` StorageC
 
 ```
 iac/pulumi/
-├── main.go              # Entrypoint: loads stack input, calls module
+├── main.go              # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml          # Pulumi project configuration
 ├── Makefile             # Make targets for preview/up/down/refresh
 └── module/
@@ -20,14 +20,14 @@ iac/pulumi/
 
 ## How It Works
 
-1. **Stack Input Loading**: The entrypoint loads `KubernetesStorageClassStackInput` from Pulumi config
+1. **IaC Input Loading**: The entrypoint loads `KubernetesStorageClassIacInput` from Pulumi config
 2. **Locals Initialization**: `locals.go` computes:
    - Standard Planton labels merged with user labels (identity keys cannot be overridden)
    - User annotations, plus the `storageclass.kubernetes.io/is-default-class: "true"` annotation when `is_default_class` is set
    - The resolved reclaim policy and volume binding mode: the Kubernetes API strings, with the API server's own defaults (`Delete`, `Immediate`) applied when the spec omits the optional fields
 3. **Provider Creation**: Kubernetes provider is initialized from `provider_config`
 4. **StorageClass Creation**: A single `storage.k8s.io/v1` StorageClass is created with the provisioner, parameters, policies, expansion flag, mount options, and topology terms
-5. **Output Export**: Class name, provisioner, and the default-class flag are exported as stack outputs
+5. **Output Export**: Class name, provisioner, and the default-class flag are exported as outputs
 
 ## Semantics Preserved by the Module
 

@@ -7,7 +7,7 @@ import "catalog/auth0/auth0promptscreenpartials/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0promptscreenpartials/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0PromptScreenPartials is a component that manages the HTML fragments one
+// Auth0PromptScreenPartials is a kind that manages the HTML fragments one
 // Universal Login prompt inserts at its named insertion points: extra form
 // fields, consent checkboxes, a note above the buttons, on each of the
 // prompt's screens.
@@ -44,12 +44,12 @@ message Auth0PromptScreenPartials {
   // Must be "Auth0PromptScreenPartials" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'Auth0PromptScreenPartials'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the resource within Planton
   // - org: Organization that owns it
   // - env: Environment it is deployed from
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the prompt and the partials of its screens.
   Auth0PromptScreenPartialsSpec spec = 4 [(buf.validate.field).required = true];
@@ -61,6 +61,6 @@ message Auth0PromptScreenPartials {
 // Auth0PromptScreenPartialsStatus represents the current state of a Auth0PromptScreenPartials resource.
 // Populated by the deployment system.
 message Auth0PromptScreenPartialsStatus {
-  // outputs contains the stack outputs: the prompt managed.
-  Auth0PromptScreenPartialsStackOutputs outputs = 1;
+  // outputs contains the outputs: the prompt managed.
+  Auth0PromptScreenPartialsOutputs outputs = 1;
 }

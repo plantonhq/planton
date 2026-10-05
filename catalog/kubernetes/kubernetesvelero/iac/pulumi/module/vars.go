@@ -15,7 +15,7 @@ var vars = struct {
 	// ServerServiceAccountName is the chart-derived name of the Velero
 	// server's ServiceAccount — the subject cloud-side keyless bindings
 	// (IRSA trust policies, GCP WI bindings, Azure federated credentials)
-	// are written against, so it is surfaced as a stack output.
+	// are written against, so it is surfaced as an output.
 	//
 	// Derivation (chart templates/_helpers.tpl "velero.serverServiceAccount"):
 	// serviceAccount.server.create defaults true and the module never sets

@@ -4,7 +4,7 @@ Turns on a fleet-wide capability for every cluster in a GKE fleet: Config Sync t
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- the Fleet API and the feature's own API
 - **Feature** -- the fleet feature with its fleet-wide settings
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with fleet admin permissions on the fleet host project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with fleet admin permissions on the fleet host project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -56,7 +56,7 @@ spec:
 planton apply -f gke-fleet-feature.yaml
 ```
 
-This installs Policy Controller with the Pod Security Standards baseline on every cluster in the fleet. A Stack Job tracks the provisioning in real time.
+This installs Policy Controller with the Pod Security Standards baseline on every cluster in the fleet. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -74,7 +74,7 @@ These are the most important decisions when configuring a fleet feature. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -84,9 +84,9 @@ These are the most important decisions when configuring a fleet feature. Explore
 | **GcpServiceAccount** | Config Sync service-account emails | `status.outputs.email` |
 | **GcpWorkloadIdentityPool** | `workloadidentity.scopeTenancyPool` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -104,6 +104,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP GKE Fleet**](/cloud-catalog/gcp-gke-fleet) -- the fleet the feature configures
-- [**GCP GKE Fleet Scope**](/cloud-catalog/gcp-gke-fleet-scope) -- team scopes that use allowlisted custom roles
-- [**GCP GKE Cluster**](/cloud-catalog/gcp-gke-cluster) -- clusters the features reach
+- [**GCP GKE Fleet**](/infra-catalog/gcp-gke-fleet) -- the fleet the feature configures
+- [**GCP GKE Fleet Scope**](/infra-catalog/gcp-gke-fleet-scope) -- team scopes that use allowlisted custom roles
+- [**GCP GKE Cluster**](/infra-catalog/gcp-gke-cluster) -- clusters the features reach

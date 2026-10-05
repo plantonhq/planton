@@ -8,7 +8,7 @@ Creates a Network Watcher flow log -- the recorder that writes network traffic m
 
 - `network.NetworkWatcherFlowLog` -- the flow log (a child of the region's Network Watcher, which Azure auto-creates -- this module never creates a watcher)
 
-## Stack Outputs
+## Outputs
 
 - `flow_log_id` -- the flow log's ARM resource ID
 - `flow_log_name` -- the flow log's name
@@ -25,4 +25,4 @@ Creates a Network Watcher flow log -- the recorder that writes network traffic m
 
 ## Required Permissions
 
-The deploying principal's least-privilege action set lives in the component's permissions manifest, `../permissions.yaml`.
+The deploying principal's least-privilege action set lives in the kind's permissions manifest, `../permissions.yaml`.

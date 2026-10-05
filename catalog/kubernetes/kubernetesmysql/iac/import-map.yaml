@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesmysql
 spec:
@@ -23,14 +23,14 @@ spec:
       tofu_resource_name: mysql
       derivations:
         - from_metadata_name: true
-        - from_stack_output: cluster_name
+        - from_output: cluster_name
       where_to_find: >-
         The CR's metadata.name (equals the Planton resource name) —
         `kubectl get pxc -A` (NAME column).
     # ── shared namespace segment for every namespaced object ───────────
     - name: namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         The cluster's namespace — `kubectl get pxc -A` (NAMESPACE column).
@@ -46,7 +46,7 @@ spec:
         `kubectl get secrets -n <namespace>`.
     - name: secret_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the cluster — every satellite the module renders
@@ -54,7 +54,7 @@ spec:
     # ── the optional anchor namespace ───────────────────────────────────
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the cluster's

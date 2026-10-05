@@ -18,7 +18,7 @@ message AwsCognitoUserPoolClient {
 
   // metadata captures identifying information (name, org, environment,
   // labels) and must pass standard validations for resource naming.
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec holds the desired configuration of the app client.
   AwsCognitoUserPoolClientSpec spec = 4 [(buf.validate.field).required = true];
@@ -32,5 +32,5 @@ message AwsCognitoUserPoolClient {
 message AwsCognitoUserPoolClientStatus {
   // outputs captures the observable values returned by Pulumi/Terraform
   // after provisioning.
-  AwsCognitoUserPoolClientStackOutputs outputs = 1;
+  AwsCognitoUserPoolClientOutputs outputs = 1;
 }

@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureContainerAppEnvironmentManagedCertificateStackOutputs** captures
+// **AzureContainerAppEnvironmentManagedCertificateOutputs** captures
 // the outputs of provisioning an Azure-managed certificate on a Container
 // App Environment.
-type AzureContainerAppEnvironmentManagedCertificateStackOutputs struct {
+type AzureContainerAppEnvironmentManagedCertificateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the managed certificate.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/managedEnvironments/{env}/managedCertificates/{name}
@@ -37,20 +37,20 @@ type AzureContainerAppEnvironmentManagedCertificateStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AzureContainerAppEnvironmentManagedCertificateStackOutputs) Reset() {
-	*x = AzureContainerAppEnvironmentManagedCertificateStackOutputs{}
+func (x *AzureContainerAppEnvironmentManagedCertificateOutputs) Reset() {
+	*x = AzureContainerAppEnvironmentManagedCertificateOutputs{}
 	mi := &file_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureContainerAppEnvironmentManagedCertificateStackOutputs) String() string {
+func (x *AzureContainerAppEnvironmentManagedCertificateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureContainerAppEnvironmentManagedCertificateStackOutputs) ProtoMessage() {}
+func (*AzureContainerAppEnvironmentManagedCertificateOutputs) ProtoMessage() {}
 
-func (x *AzureContainerAppEnvironmentManagedCertificateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureContainerAppEnvironmentManagedCertificateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *AzureContainerAppEnvironmentManagedCertificateStackOutputs) ProtoReflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureContainerAppEnvironmentManagedCertificateStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureContainerAppEnvironmentManagedCertificateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureContainerAppEnvironmentManagedCertificateOutputs.ProtoReflect.Descriptor instead.
+func (*AzureContainerAppEnvironmentManagedCertificateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureContainerAppEnvironmentManagedCertificateStackOutputs) GetCertificateId() string {
+func (x *AzureContainerAppEnvironmentManagedCertificateOutputs) GetCertificateId() string {
 	if x != nil {
 		return x.CertificateId
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentManagedCertificateStackOutputs) GetValidationToken() string {
+func (x *AzureContainerAppEnvironmentManagedCertificateOutputs) GetValidationToken() string {
 	if x != nil {
 		return x.ValidationToken
 	}
@@ -85,8 +85,8 @@ var File_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1_o
 
 const file_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Scatalog/azure/azurecontainerappenvironmentmanagedcertificate/v1alpha1/outputs.proto\x12Idev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1\"\x8e\x01\n" +
-	":AzureContainerAppEnvironmentManagedCertificateStackOutputs\x12%\n" +
+	"Scatalog/azure/azurecontainerappenvironmentmanagedcertificate/v1alpha1/outputs.proto\x12Idev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1\"\x89\x01\n" +
+	"5AzureContainerAppEnvironmentManagedCertificateOutputs\x12%\n" +
 	"\x0ecertificate_id\x18\x01 \x01(\tR\rcertificateId\x12)\n" +
 	"\x10validation_token\x18\x02 \x01(\tR\x0fvalidationTokenB\xc2\x04\n" +
 	"Mcom.dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1B\fOutputsProtoP\x01Z\x99\x01github.com/plantonhq/planton/catalog/azure/azurecontainerappenvironmentmanagedcertificate/v1alpha1;azurecontainerappenvironmentmanagedcertificatev1alpha1\xa2\x02\x04DPAA\xaa\x02IDev.Planton.Azure.Azurecontainerappenvironmentmanagedcertificate.V1alpha1\xca\x02IDev\\Planton\\Azure\\Azurecontainerappenvironmentmanagedcertificate\\V1alpha1\xe2\x02UDev\\Planton\\Azure\\Azurecontainerappenvironmentmanagedcertificate\\V1alpha1\\GPBMetadata\xea\x02MDev::Planton::Azure::Azurecontainerappenvironmentmanagedcertificate::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1_
 
 var file_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureContainerAppEnvironmentManagedCertificateStackOutputs)(nil), // 0: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateStackOutputs
+	(*AzureContainerAppEnvironmentManagedCertificateOutputs)(nil), // 0: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateOutputs
 }
 var file_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

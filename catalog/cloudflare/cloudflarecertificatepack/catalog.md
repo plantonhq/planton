@@ -4,7 +4,7 @@ Orders an advanced edge certificate for a zone: a publicly-trusted (browser-trus
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Certificate Pack** -- an advanced, auto-renewed edge certificate ordered against the zone. The pack sits in `pending_validation` until domain control validation completes, then serves as `active` at Cloudflare's edge for every host it covers.
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has SSL and Certificates edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has SSL and Certificates edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -54,7 +54,7 @@ spec:
 planton apply -f cloudflare-certificate-pack.yaml
 ```
 
-This orders a 90-day advanced certificate from Google Trust Services covering the apex and its subdomains, validated automatically over TXT. A Stack Job tracks the provisioning in real time.
+This orders a 90-day advanced certificate from Google Trust Services covering the apex and its subdomains, validated automatically over TXT. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,15 +95,15 @@ These are the most important decisions when configuring a certificate pack. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,5 +122,5 @@ Issuance status and the primary-certificate id are deliberately not outputs — 
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- the zone the certificate is ordered for; `zoneId` references its output
-- [**Cloudflare Zone TLS Settings**](/cloud-catalog/cloudflare-zone-tls-settings) -- controls the TLS posture (minimum version, ciphers) the certificate is served with
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- the zone the certificate is ordered for; `zoneId` references its output
+- [**Cloudflare Zone TLS Settings**](/infra-catalog/cloudflare-zone-tls-settings) -- controls the TLS posture (minimum version, ciphers) the certificate is served with

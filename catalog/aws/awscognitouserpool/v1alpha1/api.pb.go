@@ -31,7 +31,7 @@ type AwsCognitoUserPool struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsCognitoUserPoolSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsCognitoUserPool) GetKind() string {
 	return ""
 }
 
-func (x *AwsCognitoUserPool) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsCognitoUserPool) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsCognitoUserPool) GetStatus() *AwsCognitoUserPoolStatus {
 // aws-cognito-user-pool status
 type AwsCognitoUserPoolStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsCognitoUserPoolStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsCognitoUserPoolOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsCognitoUserPoolStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscognitouserpool_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsCognitoUserPoolStatus) GetOutputs() *AwsCognitoUserPoolStackOutputs {
+func (x *AwsCognitoUserPoolStatus) GetOutputs() *AwsCognitoUserPoolOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awscognitouserpool_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12AwsCognitoUserPoolR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolStatusR\x06status\"\x81\x01\n" +
-	"\x18AwsCognitoUserPoolStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolStackOutputsR\aoutputsB\xed\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolStatusR\x06status\"|\n" +
+	"\x18AwsCognitoUserPoolStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolOutputsR\aoutputsB\xed\x02\n" +
 	"/com.dev.planton.aws.awscognitouserpool.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awscognitouserpool/v1alpha1;awscognitouserpoolv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awscognitouserpool.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awscognitouserpool\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awscognitouserpool\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awscognitouserpool::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_aws_awscognitouserpool_v1alpha1_api_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awscognitouserpool_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awscognitouserpool_v1alpha1_api_proto_goTypes = []any{
-	(*AwsCognitoUserPool)(nil),             // 0: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPool
-	(*AwsCognitoUserPoolStatus)(nil),       // 1: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsCognitoUserPoolSpec)(nil),         // 3: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolSpec
-	(*AwsCognitoUserPoolStackOutputs)(nil), // 4: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolStackOutputs
+	(*AwsCognitoUserPool)(nil),           // 0: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPool
+	(*AwsCognitoUserPoolStatus)(nil),     // 1: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsCognitoUserPoolSpec)(nil),       // 3: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolSpec
+	(*AwsCognitoUserPoolOutputs)(nil),    // 4: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolOutputs
 }
 var file_catalog_aws_awscognitouserpool_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPool.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPool.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPool.spec:type_name -> dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolSpec
 	1, // 2: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPool.status:type_name -> dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolStatus
-	4, // 3: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolStatus.outputs:type_name -> dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolStackOutputs
+	4, // 3: dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolStatus.outputs:type_name -> dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

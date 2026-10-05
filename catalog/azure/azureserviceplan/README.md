@@ -4,7 +4,7 @@ An Azure App Service Plan defines the compute resources (region, VM size, instan
 
 ## Overview
 
-The `AzureServicePlan` component provisions an `azurerm_service_plan` resource, providing the compute tier that one or more Azure app workloads run on. It is the **foundation resource** for the `function-app-environment` and `web-app-environment` infra charts.
+The `AzureServicePlan` component provisions an `azurerm_service_plan` resource, providing the compute tier that one or more Azure app workloads run on. It is the **foundation resource** for the `function-app-environment` and `web-app-environment` Infra Charts.
 
 An App Service Plan determines:
 - **Region**: Where the compute resources are located
@@ -31,7 +31,7 @@ An App Service Plan determines:
 - **Web applications**: Use with `AzureLinuxWebApp` for hosting web apps, APIs, or backends
 - **Serverless functions**: Use with `AzureFunctionApp` for event-driven workloads
 - **Shared compute**: Run multiple apps on the same plan to optimize costs
-- **Infra charts**: Foundation resource in `function-app-environment` and `web-app-environment`
+- **Infra Charts**: Foundation resource in `function-app-environment` and `web-app-environment`
 
 ## SKU Selection Guide
 

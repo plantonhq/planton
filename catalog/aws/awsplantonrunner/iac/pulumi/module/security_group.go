@@ -15,7 +15,7 @@ import (
 // pulls), so the group carries the permissive egress rule and NO inbound
 // rules at all -- running the appliance adds zero inbound surface to the
 // VPC. Private targets that admit traffic by source security group
-// reference this group's id (published as a stack output) to trust the
+// reference this group's id (published as an output) to trust the
 // runner.
 //
 // The VPC is derived from the first referenced subnet rather than asked

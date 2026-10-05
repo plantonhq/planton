@@ -4,7 +4,7 @@ Creates a Cloud Monitoring notification channel — the delivery endpoint (email
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Notification Channel** -- a `monitoring.NotificationChannel` resource of the configured `type`, carrying its type-specific configuration and (for authenticated types) its credentials
 - **Monitoring API enablement** -- `monitoring.googleapis.com` enabled in the target project (never disabled on destroy)
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **A GCP project** where the channel is created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the channel is created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **IAM**: see [`iac/permissions.yaml`](iac/permissions.yaml) for the least-privilege permission set the deploying identity needs.
 
 ### External Service (authenticated types)
@@ -73,7 +73,7 @@ planton apply -f channel.yaml
 
 - **Credentials never in channelLabels**: `auth_token`, `password`, and `service_key` are refused in the plain config map — they belong in `sensitiveLabels`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -100,7 +100,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpMonitoringAlertPolicy](/docs/catalog/gcp/gcpmonitoringalertpolicy) — the policy that notifies this channel when incidents open
 - [GcpMonitoringUptimeCheck](/docs/catalog/gcp/gcpmonitoringuptimecheck) — the probe whose failures typically drive those policies

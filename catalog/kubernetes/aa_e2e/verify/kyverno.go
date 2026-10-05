@@ -31,7 +31,7 @@ import (
 // AND the runtime-registered webhook configurations gone — the chart's
 // pre-delete cleanup hook is the designed uninstall path; a stranded
 // fail-closed webhook configuration would block matched admissions
-// cluster-wide (the class this component's spec teaches).
+// cluster-wide (the class this kind's spec teaches).
 type KyvernoVerifier struct {
 	Namespace string
 	Name      string

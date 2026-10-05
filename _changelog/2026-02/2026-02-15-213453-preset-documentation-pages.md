@@ -6,28 +6,28 @@
 
 ## Summary
 
-Added preset pages to the Planton documentation site. Every component's presets (488 across 253 components) are now accessible as rendered pages with accordion-style browsing, dedicated detail pages, raw YAML/Markdown file access, and a right-sidebar discovery link on each catalog page. The sidebar and reading-order navigation remain unchanged — presets are a secondary content layer accessed through the right-sidebar TOC.
+Added preset pages to the Planton documentation site. Every kind's presets (488 across 253 kinds) are now accessible as rendered pages with accordion-style browsing, dedicated detail pages, raw YAML/Markdown file access, and a right-sidebar discovery link on each catalog page. The sidebar and reading-order navigation remain unchanged — presets are a secondary content layer accessed through the right-sidebar TOC.
 
 ## Problem Statement / Motivation
 
-The presets project (T01–T08b) created 375+ production-quality, ranked, deployable YAML manifests across all deployment components. These presets live in the source tree at `apis/.../v1/presets/` but were invisible on the documentation site. Developers browsing the catalog pages had no way to discover or access presets without cloning the repository.
+The presets project (T01–T08b) created 375+ production-quality, ranked, deployable YAML manifests across all catalog kinds. These presets live in the source tree at `apis/.../v1/presets/` but were invisible on the documentation site. Developers browsing the catalog pages had no way to discover or access presets without cloning the repository.
 
 ### Pain Points
 
 - Presets existed only as source files — no web access, no shareability
 - No way to link to a specific preset in Slack, documentation, or CI scripts
 - No ability to `curl` a preset manifest from a URL for automation
-- Catalog pages had no indication that presets existed for a component
+- Catalog pages had no indication that presets existed for a kind
 
 ## Solution / What's New
 
 ### Preset List Page (accordion)
 
-Each component gets a presets index at `/docs/catalog/{provider}/{component}/presets` with an accordion-style expand/collapse interface. Click a preset to see the full YAML manifest (with copy button) and the rendered description inline. Only one entry expanded at a time.
+Each kind gets a presets index at `/docs/catalog/{provider}/{kind}/presets` with an accordion-style expand/collapse interface. Click a preset to see the full YAML manifest (with copy button) and the rendered description inline. Only one entry expanded at a time.
 
 ### Preset Detail Page (permalink)
 
-Each individual preset has a shareable URL at `/docs/catalog/{provider}/{component}/presets/{name}`. Shows back navigation, rank badge, YAML viewer with copy-to-clipboard, rendered markdown description, and "Raw YAML" / "Raw Markdown" action buttons.
+Each individual preset has a shareable URL at `/docs/catalog/{provider}/{kind}/presets/{name}`. Shows back navigation, rank badge, YAML viewer with copy-to-clipboard, rendered markdown description, and "Raw YAML" / "Raw Markdown" action buttons.
 
 ### Raw File Access
 
@@ -41,27 +41,27 @@ Catalog pages show a "Presets" section in the right sidebar (below the TOC) with
 
 ### Sidebar Isolation
 
-Presets are deliberately hidden from the left sidebar and the "Next article" reading order. The sidebar looks exactly as before — components are simple leaf links. Presets are accessed exclusively through the right-sidebar TOC link.
+Presets are deliberately hidden from the left sidebar and the "Next article" reading order. The sidebar looks exactly as before — kinds are simple leaf links. Presets are accessed exclusively through the right-sidebar TOC link.
 
 ## Implementation Details
 
 ### Build Script Enhancement
 
-`copy-component-docs.ts` was extended to:
-- Convert all components from flat file output (`slug.md`) to directory layout (`slug/index.md`)
-- Scan each component's `v1/presets/` directory for YAML/MD pairs
+`copy-kind-docs.ts` was extended to:
+- Convert all kinds from flat file output (`slug.md`) to directory layout (`slug/index.md`)
+- Scan each kind's `v1/presets/` directory for YAML/MD pairs
 - Copy YAML files as-is (raw access)
-- Generate preset detail `.md` files with frontmatter (title, type, rank, component metadata)
+- Generate preset detail `.md` files with frontmatter (title, type, rank, kind metadata)
 - Generate preset index `.md` with frontmatter listing all presets and their metadata
 
 ### Structure Generator Separation
 
-The sidebar structure (`docs-structure.json`) and page-generation structure (`fileSystem.ts`) serve different purposes. The sidebar generator skips `presets` directories inside catalog components so they don't appear in the left sidebar. The page-generation structure keeps them for `generateStaticParams`.
+The sidebar structure (`docs-structure.json`) and page-generation structure (`fileSystem.ts`) serve different purposes. The sidebar generator skips `presets` directories inside catalog kinds so they don't appear in the left sidebar. The page-generation structure keeps them for `generateStaticParams`.
 
 ```mermaid
 flowchart LR
     subgraph build [Build Pipeline]
-        A["copy-component-docs.ts"] --> B["public/docs/catalog/"]
+        A["copy-kind-docs.ts"] --> B["public/docs/catalog/"]
         B --> C["generate-docs-structure.ts"]
         C --> D["docs-structure.json"]
         B --> E["fileSystem.ts buildStructure"]
@@ -102,10 +102,10 @@ flowchart LR
 
 ### Files Modified
 
-- `site/scripts/copy-component-docs.ts` — directory-based output, preset scanning/copying, index generation
+- `site/scripts/copy-kind-docs.ts` — directory-based output, preset scanning/copying, index generation
 - `site/scripts/generate-docs-structure.ts` — hasIndex fix, presets sidebar filter
 - `site/src/app/docs/utils/fileSystem.ts` — hasIndex fix, next-article presets skip
-- `site/src/app/docs/[[...slug]]/page.tsx` — preset page detection, YAML loading, component count fix, presetsLink
+- `site/src/app/docs/[[...slug]]/page.tsx` — preset page detection, YAML loading, kind count fix, presetsLink
 - `site/src/app/docs/components/RightSidebar.tsx` — presetsLink prop and Presets section
 
 ## Benefits
@@ -121,7 +121,7 @@ flowchart LR
 - **New pages**: ~1000 additional static pages (488 preset detail pages + 253 preset index pages + raw files)
 - **Build time**: ~24 seconds (up from ~15 seconds pre-presets)
 - **Pagefind**: 1048 indexed pages (presets are searchable)
-- **Sidebar**: Unchanged — components remain simple leaf links
+- **Sidebar**: Unchanged — kinds remain simple leaf links
 - **Next article**: Unchanged — presets are excluded from reading order
 
 ## Related Work

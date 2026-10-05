@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpManagedSslCertificateSpec", func() {
 		return &GcpManagedSslCertificate{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpManagedSslCertificate",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-cert",
 			},
 			Spec: &GcpManagedSslCertificateSpec{

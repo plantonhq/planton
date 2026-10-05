@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: auth0clientfrommetadatadocument
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: client_id
       derivations:
-        - from_stack_output: client_id
+        - from_output: client_id
       where_to_find: >-
         Auth0 dashboard -> Applications -> Applications (the application's
         Client ID on its Settings tab, tpc_...), or

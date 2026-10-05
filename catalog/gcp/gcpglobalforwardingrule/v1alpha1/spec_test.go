@@ -43,7 +43,7 @@ var _ = ginkgo.Describe("GcpGlobalForwardingRuleSpec", func() {
 		return &GcpGlobalForwardingRule{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpGlobalForwardingRule",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-forwarding-rule",
 			},
 			Spec: &GcpGlobalForwardingRuleSpec{

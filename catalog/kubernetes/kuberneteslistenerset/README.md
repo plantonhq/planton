@@ -4,7 +4,7 @@
 
 ## Overview
 
-`KubernetesListenerSet` is a first-class Planton component that provisions an
+`KubernetesListenerSet` is a first-class catalog kind that provisions an
 upstream Gateway API `ListenerSet` resource at 100% fidelity with the standard
 channel of Gateway API v1.6.1 (ListenerSet is standard-channel since v1.5). It
 is the per-team delegation model for shared gateways: a platform team runs one
@@ -17,7 +17,7 @@ configuration; Gateways allow **no** ListenerSet attachment by default. Routes
 can then attach to the ListenerSet directly (parentRef `kind: ListenerSet`,
 optionally with `sectionName` targeting one listener).
 
-Unlike a raw `KubernetesManifest`, this component gives you proto validation,
+Unlike a raw `KubernetesManifest`, this kind gives you proto validation,
 foreign-key wiring (to `KubernetesNamespace`, `KubernetesGateway`, and the
 `KubernetesSecret` objects its TLS references point at), typed Pulumi and
 Terraform modules, and InfraChart composability.
@@ -143,7 +143,7 @@ spec:
 When the Gateway or Secret is not Planton-managed, pass the literal name with
 `value:` instead.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
@@ -151,7 +151,7 @@ When the Gateway or Secret is not Planton-managed, pass the literal name with
 | `namespace` | Namespace the ListenerSet was created in. |
 | `gateway_name` | Name of the parent Gateway the listeners attach to. |
 
-## Related Components
+## Related Kinds
 
 - [`KubernetesGateway`](../kubernetesgateway/) -- the parent Gateway; must opt in via `allowed_listeners`.
 - [`KubernetesGatewayApiCrds`](../kubernetesgatewayapicrds/) -- installs the Gateway API CRDs (prerequisite).

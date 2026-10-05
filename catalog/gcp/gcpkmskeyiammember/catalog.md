@@ -4,7 +4,7 @@ Grants one role, to one identity, on ONE Cloud KMS crypto key — the least-priv
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Crypto Key IAM Member Binding** -- a `kms.CryptoKeyIAMMember` merging the (role, member) pair into the target key's IAM policy, with an optional IAM Condition attached
 
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **A KMS crypto key** whose IAM policy receives the grant. Provide the fully qualified key path directly or reference a GcpKmsKey Cloud Resource via ValueFromRef.
+- **A KMS crypto key** whose IAM policy receives the grant. Provide the fully qualified key path directly or reference a GcpKmsKey Infra Component via ValueFromRef.
 - **The identity** receiving the grant must already exist (deleted principals are not grantable).
 
 ## Deploy
@@ -50,7 +50,7 @@ spec:
 planton apply -f gcp-kms-key-iam-member.yaml
 ```
 
-This merges one binding into the key's policy. A Stack Job tracks the provisioning in real time.
+This merges one binding into the key's policy. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,7 +88,7 @@ These are the most important decisions when configuring a grant. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -96,9 +96,9 @@ These are the most important decisions when configuring a grant. Explore the ful
 | **GcpIamCustomRole** (optional) | `role` | `status.outputs.name` |
 | **GcpServiceAccount** (optional) | `member` | `status.outputs.member` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no outputs a downstream Cloud Resource would consume: `status.outputs` records the grant's post-resolution facts — the (`crypto_key_id`, `role`, `member`) triple after any references were resolved, plus the key IAM policy `etag` at the moment this grant merged. They exist for audit and drift review, not for ValueFromRef wiring.
+This kind has no outputs a downstream Infra Component would consume: `status.outputs` records the grant's post-resolution facts — the (`crypto_key_id`, `role`, `member`) triple after any references were resolved, plus the key IAM policy `etag` at the moment this grant merged. They exist for audit and drift review, not for ValueFromRef wiring.
 
 ## Common Patterns
 
@@ -112,7 +112,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- its `key_id` output feeds the crypto key field; the key this grant controls access to
-- [**GCP KMS Key Ring**](/cloud-catalog/gcp-kms-key-ring) -- the key's container; IAM granted at the ring flows down to every key (this kind exists to avoid that blast radius)
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- its `member` output feeds the member field for workload key access
-- [**GCP IAM Custom Role**](/cloud-catalog/gcp-iam-custom-role) -- its `name` output feeds the role field for curated permission bundles
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- its `key_id` output feeds the crypto key field; the key this grant controls access to
+- [**GCP KMS Key Ring**](/infra-catalog/gcp-kms-key-ring) -- the key's container; IAM granted at the ring flows down to every key (this kind exists to avoid that blast radius)
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- its `member` output feeds the member field for workload key access
+- [**GCP IAM Custom Role**](/infra-catalog/gcp-iam-custom-role) -- its `name` output feeds the role field for curated permission bundles

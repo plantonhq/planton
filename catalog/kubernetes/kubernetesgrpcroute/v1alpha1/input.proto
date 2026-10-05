@@ -8,8 +8,8 @@ import "catalog/kubernetes/provider.proto";
 // Input for the KubernetesGrpcRoute IaC stack. The platform resolves all
 // StringValueOrRef references (namespace) to literal strings before passing this
 // to the IaC engine.
-message KubernetesGrpcRouteStackInput {
-  // Target cloud-resource.
+message KubernetesGrpcRouteIacInput {
+  // the catalog object to deploy.
   KubernetesGrpcRoute target = 1;
   // Kubernetes provider configuration (cluster credentials).
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

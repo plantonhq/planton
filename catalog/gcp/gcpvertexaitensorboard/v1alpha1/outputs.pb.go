@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpVertexAiTensorboardStackOutputs captures the identity Google assigned
+// GcpVertexAiTensorboardOutputs captures the identity Google assigned
 // the TensorBoard and the names of what was declared in it.
-type GcpVertexAiTensorboardStackOutputs struct {
+type GcpVertexAiTensorboardOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name -- what a training job's `tensorboard` field takes:
 	// projects/{project_number}/locations/{location}/tensorboards/{tensorboard_id}.
@@ -44,20 +44,20 @@ type GcpVertexAiTensorboardStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiTensorboardStackOutputs) Reset() {
-	*x = GcpVertexAiTensorboardStackOutputs{}
+func (x *GcpVertexAiTensorboardOutputs) Reset() {
+	*x = GcpVertexAiTensorboardOutputs{}
 	mi := &file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiTensorboardStackOutputs) String() string {
+func (x *GcpVertexAiTensorboardOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiTensorboardStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiTensorboardOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiTensorboardStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiTensorboardOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,47 +69,47 @@ func (x *GcpVertexAiTensorboardStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiTensorboardStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiTensorboardStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiTensorboardOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiTensorboardOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiTensorboardStackOutputs) GetName() string {
+func (x *GcpVertexAiTensorboardOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpVertexAiTensorboardStackOutputs) GetTensorboardId() string {
+func (x *GcpVertexAiTensorboardOutputs) GetTensorboardId() string {
 	if x != nil {
 		return x.TensorboardId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiTensorboardStackOutputs) GetLocation() string {
+func (x *GcpVertexAiTensorboardOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpVertexAiTensorboardStackOutputs) GetBlobStoragePathPrefix() string {
+func (x *GcpVertexAiTensorboardOutputs) GetBlobStoragePathPrefix() string {
 	if x != nil {
 		return x.BlobStoragePathPrefix
 	}
 	return ""
 }
 
-func (x *GcpVertexAiTensorboardStackOutputs) GetExperimentNames() []string {
+func (x *GcpVertexAiTensorboardOutputs) GetExperimentNames() []string {
 	if x != nil {
 		return x.ExperimentNames
 	}
 	return nil
 }
 
-func (x *GcpVertexAiTensorboardStackOutputs) GetRunNames() []string {
+func (x *GcpVertexAiTensorboardOutputs) GetRunNames() []string {
 	if x != nil {
 		return x.RunNames
 	}
@@ -120,8 +120,8 @@ var File_catalog_gcp_gcpvertexaitensorboard_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/gcp/gcpvertexaitensorboard/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpvertexaitensorboard.v1alpha1\"\xfc\x01\n" +
-	"\"GcpVertexAiTensorboardStackOutputs\x12\x12\n" +
+	"9catalog/gcp/gcpvertexaitensorboard/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpvertexaitensorboard.v1alpha1\"\xf7\x01\n" +
+	"\x1dGcpVertexAiTensorboardOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12%\n" +
 	"\x0etensorboard_id\x18\x02 \x01(\tR\rtensorboardId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x127\n" +
@@ -144,7 +144,7 @@ func file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiTensorboardStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardStackOutputs
+	(*GcpVertexAiTensorboardOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaitensorboard.v1alpha1.GcpVertexAiTensorboardOutputs
 }
 var file_catalog_gcp_gcpvertexaitensorboard_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

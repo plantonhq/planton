@@ -34,7 +34,7 @@ Beyond fixing the specific crashes, we made a structural improvement to how the 
 
 ## Catalog Page Fixes
 
-The deployment component catalog had two visual issues:
+The Infra Catalog had two visual issues:
 
 - **Provider icons** on catalog detail pages were broken across multiple providers because they pointed to outdated asset URLs. A new fallback system tries three sources in order — built-in icons, known CDN URLs, and stored URLs — so icons display correctly for all 14 providers.
-- **DigitalOcean and OpenFGA components** (18 total) were showing empty pages because a path resolution issue prevented their content from loading. This is fixed, and all 283 catalog components now display their full content including schemas, IaC modules, and presets.
+- **DigitalOcean and OpenFGA kinds** (18 total) were showing empty pages because a path resolution issue prevented their content from loading. This is fixed, and all 283 catalog kinds now display their full content including schemas, IaC modules, and presets.

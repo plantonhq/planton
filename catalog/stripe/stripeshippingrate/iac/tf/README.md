@@ -15,7 +15,7 @@ OpenTofu module that declares one Stripe shipping rate. Stripe kinds run on Open
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `display_name` and `fixed_amount` (required); `delivery_estimate`, `tax_behavior`, `tax_code`, `active`, `metadata` |
 
 ## Outputs

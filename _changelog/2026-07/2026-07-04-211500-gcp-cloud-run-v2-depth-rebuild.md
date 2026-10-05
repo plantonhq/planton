@@ -6,7 +6,7 @@
 
 ## Summary
 
-Deep-rebuilt the `GcpCloudRun` component from a flat 38-field single-container
+Deep-rebuilt the `GcpCloudRun` kind from a flat 38-field single-container
 abstraction to the released google-provider v2 floor: provider-authentic
 multi-container shape with sidecars, startup ordering, startup and liveness probes,
 secret/GCS/NFS/in-memory/Cloud SQL volumes, revision traffic splitting,
@@ -53,7 +53,7 @@ public-service scenario, zero orphans.
   hardcoded `6.19.0`), `run.googleapis.com` API enablement with
   `disable_on_destroy=false`, ambient-project fallback, canonical
   `iac/hack/manifest.yaml` (wrong-kind stray manifests deleted).
-- Stack outputs extended (+`uri`, `urls`, `latest_ready_revision`, `location`,
+- Outputs extended (+`uri`, `urls`, `latest_ready_revision`, `location`,
   `uid`); `pkg/outputs` conformance case added.
 - Secret coverage: Secret Manager secret name fields annotated with
   `sensitive_exempt_reason` — gap removed from baseline.
@@ -81,7 +81,7 @@ public-service scenario, zero orphans.
 
 - `e2e/README.md`: hours-scale async-release exclusions for cloud-side holds
   that outlive ephemeral teardown (serverless-ipv4-* subnetwork reservations).
-- `_rules/deployment-component/forge/flow/013-terraform-module.mdc`: offline
+- `_rules/catalog-kind/forge/flow/013-terraform-module.mdc`: offline
   `planton tofu plan` must use absolute paths for both manifest and `--module-dir`
   (relative paths silently fall back to a stale staging clone).
 

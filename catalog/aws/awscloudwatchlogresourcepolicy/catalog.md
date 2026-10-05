@@ -4,7 +4,7 @@ Deploys a CloudWatch Logs resource policy — the IAM document AWS services need
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CloudWatch Logs Resource Policy** — the policy document granting service principals (`route53.amazonaws.com`, `events.amazonaws.com`, …) `logs:CreateLogStream` and `logs:PutLogEvents` on the target log groups, at the account scope (named by `policyName`) or the resource scope (pinned by `resourceArn`).
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, carrying `logs:PutResourcePolicy`, `logs:DescribeResourcePolicies`, and `logs:DeleteResourcePolicy`. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, carrying `logs:PutResourcePolicy`, `logs:DescribeResourcePolicies`, and `logs:DeleteResourcePolicy`. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f log-resource-policy.yaml
 ```
 
-This creates the account-scope grant letting Route53 write query logs into any group under `/aws/route53/` — one policy covers every zone that logs there (Route53 query logs land only in us-east-1, so this policy deploys there). A Stack Job tracks the provisioning in real time.
+This creates the account-scope grant letting Route53 write query logs into any group under `/aws/route53/` — one policy covers every zone that logs there (Route53 query logs land only in us-east-1, so this policy deploys there). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -99,13 +99,13 @@ These are the most important decisions when configuring a resource policy. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsCloudwatchLogGroup** (resource scope only) | `resourceArn` | `status.outputs.log_group_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` records the policy's operational identity: `policy_id` (the name or the target ARN — also the provider's import ID), `policy_scope` (ACCOUNT or RESOURCE as AWS recorded it), and `revision_id` (the optimistic-concurrency token guarding the next update). These are audit and import records — nothing downstream composes on a resource policy via ValueFromRef.
 
@@ -121,5 +121,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) — the groups the granted services write into; resource-scoped policies pin to one group's ARN
-- [**AWS Route 53 Zone**](/cloud-catalog/aws-route53-zone) — zone query logging is the classic consumer of this grant
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) — the groups the granted services write into; resource-scoped policies pin to one group's ARN
+- [**AWS Route 53 Zone**](/infra-catalog/aws-route53-zone) — zone query logging is the classic consumer of this grant

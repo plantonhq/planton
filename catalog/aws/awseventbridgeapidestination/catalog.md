@@ -4,7 +4,7 @@ Deploys an EventBridge connection and API destination — the authenticated HTTP
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EventBridge Connection** — created only when the `connection` arm is configured. Carries the auth mode (exactly one of `apiKey`, `basic`, `oauth`), optional static parameters (headers, query string, body fields) added to every invocation, optional private endpoints through VPC Lattice, and optional customer-managed KMS encryption of its secret material
 - **EventBridge API Destination** — created only when the `destination` arm is configured. The HTTPS endpoint (with `*` path wildcards), the HTTP method, and the invocations-per-second cap, bound to this instance's connection or to an external one by ARN
@@ -16,7 +16,7 @@ Neither resource is taggable at AWS — the usual tag conventions deliberately d
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with EventBridge and Secrets Manager permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with EventBridge and Secrets Manager permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Org secrets for every credential value** — the api key, basic password, OAuth client secret, and every connection HTTP parameter value are sensitive fields: the backend accepts only `$secret/<slug>` references there, never plaintext. Create the org secrets before applying the manifest.
 
 ### AWS Account
@@ -62,7 +62,7 @@ spec:
 planton apply -f eventbridge-api-destination.yaml
 ```
 
-This creates an api-key connection (the key lands in the AWS-owned secret, never in state) and a POST destination capped at 50 invocations per second, ready to be targeted by a rule, pipe, or schedule. A Stack Job tracks the provisioning in real time.
+This creates an api-key connection (the key lands in the AWS-owned secret, never in state) and a POST destination capped at 50 invocations per second, ready to be targeted by a rule, pipe, or schedule. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -104,16 +104,16 @@ These are the most important decisions when configuring an API destination. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsEventBridgeApiDestination** | `destination.connectionArn` | `status.outputs.connection_arn` |
 | **AwsKmsKey** | `connection.kmsKeyIdentifier` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -134,8 +134,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS EventBridge Rule**](/cloud-catalog/aws-event-bridge-rule) — routes matched bus events to the destination's `api_destination_arn`
-- [**AWS EventBridge Pipe**](/cloud-catalog/aws-event-bridge-pipe) — streams source events (SQS, Kinesis, DynamoDB) into the destination point-to-point
-- [**AWS EventBridge Scheduler**](/cloud-catalog/aws-event-bridge-scheduler) — invokes the destination on a cron or rate schedule via its universal-target arm
-- [**AWS EventBridge Bus**](/cloud-catalog/aws-event-bridge-bus) — the custom bus whose rules commonly front the destination
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption for the connection's secret material via `kmsKeyIdentifier`
+- [**AWS EventBridge Rule**](/infra-catalog/aws-event-bridge-rule) — routes matched bus events to the destination's `api_destination_arn`
+- [**AWS EventBridge Pipe**](/infra-catalog/aws-event-bridge-pipe) — streams source events (SQS, Kinesis, DynamoDB) into the destination point-to-point
+- [**AWS EventBridge Scheduler**](/infra-catalog/aws-event-bridge-scheduler) — invokes the destination on a cron or rate schedule via its universal-target arm
+- [**AWS EventBridge Bus**](/infra-catalog/aws-event-bridge-bus) — the custom bus whose rules commonly front the destination
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption for the connection's secret material via `kmsKeyIdentifier`

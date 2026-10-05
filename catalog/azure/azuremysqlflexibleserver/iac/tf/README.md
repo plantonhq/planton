@@ -1,7 +1,7 @@
 # AzureMysqlFlexibleServer - Terraform Module
 
-Terraform implementation for the AzureMysqlFlexibleServer deployment
-component.
+Terraform implementation for the AzureMysqlFlexibleServer
+kind.
 
 ## Resources Created
 

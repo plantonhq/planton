@@ -6,7 +6,7 @@ import (
 
 	awsroute53zonev1alpha1 "github.com/plantonhq/planton/catalog/aws/awsroute53zone/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -26,9 +26,9 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *awsroute53zonev1alpha1.AwsRoute53ZoneStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awsroute53zonev1alpha1.AwsRoute53ZoneIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsRoute53Zone = stackInput.Target
+	locals.AwsRoute53Zone = iacInput.Target
 
 	locals.ZoneName = locals.AwsRoute53Zone.Metadata.Name
 	locals.ResourceName = strings.ReplaceAll(locals.ZoneName, ".", "-")
@@ -38,7 +38,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *awsroute53zonev1alpha1.Aw
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsRoute53Zone.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsRoute53Zone.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsRoute53Zone.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsRoute53Zone.String(),
 		awstagkeys.ResourceId:   locals.AwsRoute53Zone.Metadata.Id,
 	}
 

@@ -4,7 +4,7 @@ Registers an SSH public key on the DigitalOcean account, ready to be injected in
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SSH Key** -- the named public key on the account, with a DigitalOcean-computed fingerprint (never derived locally)
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
@@ -45,7 +45,7 @@ spec:
 planton apply -f do-ssh-key.yaml
 ```
 
-This registers the named public key on the account (paste your real key as one exact line), and DigitalOcean computes its numeric id and fingerprint. A Stack Job tracks the provisioning in real time.
+This registers the named public key on the account (paste your real key as one exact line), and DigitalOcean computes its numeric id and fingerprint. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -67,13 +67,13 @@ These are the most important decisions when configuring an SSH key. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies -- both spec fields are literal values.
+This kind has no foreign key dependencies -- both spec fields are literal values.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -90,5 +90,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Droplet**](/cloud-catalog/digital-ocean-droplet) -- droplets reference this key's `ssh_key_id` in their `sshKeys` lists at create time
-- [**DigitalOcean Droplet Autoscale Pool**](/cloud-catalog/digital-ocean-droplet-autoscale-pool) -- pool templates require at least one key; every member is born with it installed
+- [**DigitalOcean Droplet**](/infra-catalog/digital-ocean-droplet) -- droplets reference this key's `ssh_key_id` in their `sshKeys` lists at create time
+- [**DigitalOcean Droplet Autoscale Pool**](/infra-catalog/digital-ocean-droplet-autoscale-pool) -- pool templates require at least one key; every member is born with it installed

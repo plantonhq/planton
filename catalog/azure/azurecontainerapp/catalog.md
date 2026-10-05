@@ -4,7 +4,7 @@ Deploys a serverless container workload inside an Azure Container Apps Managed E
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Container App** -- a containerized workload running inside the specified Container App Environment, with configurable revision mode (Single or Multiple), container definitions, and scaling rules
 - **Container Template** -- one or more main containers with CPU/memory allocation, environment variables (literal or secret-backed), health probes (liveness, readiness, startup), and volume mounts
@@ -19,14 +19,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **A Container App Environment** where the app will run. The environment provides the shared networking boundary, logging, and compute capacity. Provide the environment ID directly or reference an AzureContainerAppEnvironment Cloud Resource via ValueFromRef.
-- **An Azure Resource Group** where the Container App will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
-- **A User Assigned Identity** (optional) for credential-free access to Key Vault secrets and ACR registries. Provide the identity resource ID directly or reference an AzureUserAssignedIdentity Cloud Resource.
+- **A Container App Environment** where the app will run. The environment provides the shared networking boundary, logging, and compute capacity. Provide the environment ID directly or reference an AzureContainerAppEnvironment Infra Component via ValueFromRef.
+- **An Azure Resource Group** where the Container App will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
+- **A User Assigned Identity** (optional) for credential-free access to Key Vault secrets and ACR registries. Provide the identity resource ID directly or reference an AzureUserAssignedIdentity Infra Component.
 
 ## Deploy
 
@@ -63,7 +63,7 @@ spec:
 planton apply -f container-app.yaml
 ```
 
-This creates a Container App in Single revision mode with one container, scale-to-zero enabled, and no ingress -- add an `ingress` block to expose the app externally. A Stack Job tracks the provisioning in real time.
+This creates a Container App in Single revision mode with one container, scale-to-zero enabled, and no ingress -- add an `ingress` block to expose the app externally. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -101,7 +101,7 @@ These are the most important decisions when configuring a Container App. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -111,9 +111,9 @@ These are the most important decisions when configuring a Container App. Explore
 | **AzureContainerAppEnvironmentStorage** (optional) | `volumes[].storageName` | `status.outputs.storage_name` |
 | **AzureContainerRegistry** (optional) | `registries[].server` | `status.outputs.login_server` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -138,6 +138,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the Container App is created
-- [**Azure Container App Environment**](/cloud-catalog/azure-container-app-environment) -- provides the hosting environment with networking, logging, and compute capacity
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- provides credential-free access to Key Vault, ACR, and other Azure services
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the Container App is created
+- [**Azure Container App Environment**](/infra-catalog/azure-container-app-environment) -- provides the hosting environment with networking, logging, and compute capacity
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- provides credential-free access to Key Vault, ACR, and other Azure services

@@ -32,7 +32,7 @@ type KubernetesTelemetry struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesTelemetrySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -85,7 +85,7 @@ func (x *KubernetesTelemetry) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesTelemetry) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesTelemetry) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -109,8 +109,8 @@ func (x *KubernetesTelemetry) GetStatus() *KubernetesTelemetryStatus {
 // KubernetesTelemetryStatus holds the deployment status and outputs.
 type KubernetesTelemetryStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesTelemetryStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesTelemetryOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -145,7 +145,7 @@ func (*KubernetesTelemetryStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetestelemetry_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesTelemetryStatus) GetOutputs() *KubernetesTelemetryStackOutputs {
+func (x *KubernetesTelemetryStatus) GetOutputs() *KubernetesTelemetryOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -163,11 +163,11 @@ const file_catalog_kubernetes_kubernetestelemetry_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13KubernetesTelemetryR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
 	"\x04spec\x18\x04 \x01(\v2L.dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetrySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12f\n" +
-	"\x06status\x18\x05 \x01(\v2N.dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryStatusR\x06status\"\x8b\x01\n" +
-	"\x19KubernetesTelemetryStatus\x12n\n" +
-	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryStackOutputsR\aoutputsB\x9e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2N.dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryStatusR\x06status\"\x86\x01\n" +
+	"\x19KubernetesTelemetryStatus\x12i\n" +
+	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryOutputsR\aoutputsB\x9e\x03\n" +
 	"7com.dev.planton.kubernetes.kubernetestelemetry.v1alpha1B\bApiProtoP\x01Zhgithub.com/plantonhq/planton/catalog/kubernetes/kubernetestelemetry/v1alpha1;kubernetestelemetryv1alpha1\xa2\x02\x04DPKK\xaa\x023Dev.Planton.Kubernetes.Kubernetestelemetry.V1alpha1\xca\x023Dev\\Planton\\Kubernetes\\Kubernetestelemetry\\V1alpha1\xe2\x02?Dev\\Planton\\Kubernetes\\Kubernetestelemetry\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Kubernetes::Kubernetestelemetry::V1alpha1b\x06proto3"
 
 var (
@@ -184,17 +184,17 @@ func file_catalog_kubernetes_kubernetestelemetry_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetestelemetry_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetestelemetry_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesTelemetry)(nil),             // 0: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetry
-	(*KubernetesTelemetryStatus)(nil),       // 1: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesTelemetrySpec)(nil),         // 3: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetrySpec
-	(*KubernetesTelemetryStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryStackOutputs
+	(*KubernetesTelemetry)(nil),          // 0: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetry
+	(*KubernetesTelemetryStatus)(nil),    // 1: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesTelemetrySpec)(nil),      // 3: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetrySpec
+	(*KubernetesTelemetryOutputs)(nil),   // 4: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryOutputs
 }
 var file_catalog_kubernetes_kubernetestelemetry_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetry.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetry.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetry.spec:type_name -> dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetrySpec
 	1, // 2: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetry.status:type_name -> dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryStatus
-	4, // 3: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryStatus.outputs:type_name -> dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryStatus.outputs:type_name -> dev.planton.kubernetes.kubernetestelemetry.v1alpha1.KubernetesTelemetryOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

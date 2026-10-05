@@ -30,7 +30,7 @@ func validResource() *AzureContainerAppEnvironmentManagedCertificate {
 	return &AzureContainerAppEnvironmentManagedCertificate{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureContainerAppEnvironmentManagedCertificate",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "app-managed-cert",
 		},
 		Spec: &AzureContainerAppEnvironmentManagedCertificateSpec{

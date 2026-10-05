@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanProjectStackOutputs contract,
+# Outputs — exactly the DigitalOceanProjectOutputs contract,
 # identical across both provisioners.
 
 output "project_id" {

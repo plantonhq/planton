@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Vertex AI Endpoint.
-type GcpVertexAiEndpointStackOutputs struct {
+type GcpVertexAiEndpointOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified endpoint resource path.
 	// Format: projects/{project}/locations/{location}/endpoints/{name}
@@ -45,20 +45,20 @@ type GcpVertexAiEndpointStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiEndpointStackOutputs) Reset() {
-	*x = GcpVertexAiEndpointStackOutputs{}
+func (x *GcpVertexAiEndpointOutputs) Reset() {
+	*x = GcpVertexAiEndpointOutputs{}
 	mi := &file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiEndpointStackOutputs) String() string {
+func (x *GcpVertexAiEndpointOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiEndpointStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiEndpointOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiEndpointStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiEndpointOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,40 +70,40 @@ func (x *GcpVertexAiEndpointStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiEndpointStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiEndpointStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiEndpointOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiEndpointOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiEndpointStackOutputs) GetEndpointId() string {
+func (x *GcpVertexAiEndpointOutputs) GetEndpointId() string {
 	if x != nil {
 		return x.EndpointId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiEndpointStackOutputs) GetDisplayName() string {
+func (x *GcpVertexAiEndpointOutputs) GetDisplayName() string {
 	if x != nil {
 		return x.DisplayName
 	}
 	return ""
 }
 
-func (x *GcpVertexAiEndpointStackOutputs) GetDedicatedEndpointDns() string {
+func (x *GcpVertexAiEndpointOutputs) GetDedicatedEndpointDns() string {
 	if x != nil {
 		return x.DedicatedEndpointDns
 	}
 	return ""
 }
 
-func (x *GcpVertexAiEndpointStackOutputs) GetCreateTime() string {
+func (x *GcpVertexAiEndpointOutputs) GetCreateTime() string {
 	if x != nil {
 		return x.CreateTime
 	}
 	return ""
 }
 
-func (x *GcpVertexAiEndpointStackOutputs) GetEndpointName() string {
+func (x *GcpVertexAiEndpointOutputs) GetEndpointName() string {
 	if x != nil {
 		return x.EndpointName
 	}
@@ -114,8 +114,8 @@ var File_catalog_gcp_gcpvertexaiendpoint_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcpvertexaiendpoint/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcpvertexaiendpoint.v1alpha1\"\xe1\x01\n" +
-	"\x1fGcpVertexAiEndpointStackOutputs\x12\x1f\n" +
+	"6catalog/gcp/gcpvertexaiendpoint/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcpvertexaiendpoint.v1alpha1\"\xdc\x01\n" +
+	"\x1aGcpVertexAiEndpointOutputs\x12\x1f\n" +
 	"\vendpoint_id\x18\x01 \x01(\tR\n" +
 	"endpointId\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x124\n" +
@@ -139,7 +139,7 @@ func file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiEndpointStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpointStackOutputs
+	(*GcpVertexAiEndpointOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpointOutputs
 }
 var file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurediskencryptionset.v1alpha1;
 
-// **AzureDiskEncryptionSetStackOutputs** captures the outputs of
+// **AzureDiskEncryptionSetOutputs** captures the outputs of
 // provisioning an Azure Disk Encryption Set.
-message AzureDiskEncryptionSetStackOutputs {
+message AzureDiskEncryptionSetOutputs {
   // The Azure Resource Manager ID of the set. This is the composition seam:
   // AzureManagedDisk, AzureVirtualMachine, and AzureVirtualMachineScaleSet
   // reference it (disk_encryption_set_id) to encrypt their disks with the

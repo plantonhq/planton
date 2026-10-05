@@ -15,7 +15,7 @@ Terraform/OpenTofu module that creates a custom domain for an Auth0 tenant.
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `domain` and `type` (required); `custom_client_ip_header`, `tls_policy`, `domain_metadata`, `relying_party_identifier` (optional) |
 
 ## Outputs

@@ -1,4 +1,4 @@
-# Semantic stack outputs, matching AzureAksNodePoolStackOutputs field for
+# Semantic outputs, matching AzureAksNodePoolOutputs field for
 # field. Nothing downstream deploys INTO a pool (workloads target pools
 # via Kubernetes labels/taints), so the outputs are the pool's own
 # identifiers plus the node image actually rolled out.

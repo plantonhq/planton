@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1;
 import "catalog/gcp/gcpgkeworkloadidentitybinding/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-gke-workload-identity-binding stack-input
-message GcpGkeWorkloadIdentityBindingStackInput {
-  //target cloud-resource
+//gcp-gke-workload-identity-binding iac-input
+message GcpGkeWorkloadIdentityBindingIacInput {
+  // the catalog object to deploy
   GcpGkeWorkloadIdentityBinding target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

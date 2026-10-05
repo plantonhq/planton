@@ -12,14 +12,14 @@ import (
 // security groups that guard it, the IAM instance profile that gives it an
 // identity, the launch template it may inherit its shape from, and the KMS
 // keys that encrypt its volumes all attach by reference -- this module
-// creates exactly one cloud object, the instance itself.
-func Resources(ctx *pulumi.Context, stackInput *awsec2instancev1alpha1.AwsEc2InstanceStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+// creates exactly one AWS resource, the instance itself.
+func Resources(ctx *pulumi.Context, iacInput *awsec2instancev1alpha1.AwsEc2InstanceIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder,
+	// Build the AWS provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static keys, keyless
 	// web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsEc2Instance.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsEc2Instance.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

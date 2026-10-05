@@ -60,7 +60,7 @@ YYYY-MM-DD-HHMMSS.{area}.{type}.{slug}.md
 - Ensures chronological sorting when multiple issues created on same day
 
 **Area** (simple identifier):
-- `component` - Component changes
+- `kind` - Kind changes
 - `cli` - CLI changes
 - `pkg` - Package/library changes
 - `apis` - API/protobuf changes
@@ -68,7 +68,7 @@ YYYY-MM-DD-HHMMSS.{area}.{type}.{slug}.md
 - `repo` - Repository-wide changes
 - `ops` - Operations/infrastructure
 - `tooling` - Build tools, scripts
-- `forge` - Component forge system
+- `forge` - Kind forge system
 
 **Type** (issue category):
 - `feat` - New feature or capability
@@ -88,11 +88,11 @@ YYYY-MM-DD-HHMMSS.{area}.{type}.{slug}.md
 ### Examples
 
 ```
-2025-12-26-143022.component.bug.postgres-spec-validation.md
+2025-12-26-143022.kind.bug.postgres-spec-validation.md
 2025-12-26-150815.cli.feat.manifest-validation-command.md
 2025-12-26-162430.forge.bug.pulumi-code-generation.md
 2025-12-26-091205.pkg.refactor.kubernetes-client-helpers.md
-2025-12-26-134512.apis.feat.new-cloud-resource-api.md
+2025-12-26-134512.apis.feat.new-catalog-kind-api.md
 ```
 
 ## Area Detection Heuristics
@@ -103,7 +103,7 @@ Determine the area from conversation context using these guidelines:
 
 When file paths are mentioned in the conversation, map them to simple areas:
 
-- **`catalog/**`** → `component`
+- **`catalog/**`** → `kind`
 - **`cmd/planton/**`** → `cli`
 - **`pkg/**`** → `pkg`
 - **`internal/**`** → `cli`
@@ -112,17 +112,17 @@ When file paths are mentioned in the conversation, map them to simple areas:
 - **`.cursor/**`, `Makefile`, `MODULE.bazel`** → `repo`
 - **`docker/**`, `docker-compose.yml`** → `ops`
 - **`tools/**`, `hack/**`, `build/**`** → `tooling`
-- **`_rules/component/forge/**`** → `forge`
+- **`_rules/catalog-kind/forge/**`** → `forge`
 
 ### Keyword Detection
 
 Look for these keywords in the conversation:
 
-- "component", "IaC", "Pulumi", "Terraform", "cloud resource" → `component`
+- "kind", "IaC", "Pulumi", "Terraform", "catalog kind" → `kind`
 - "CLI", "command line", "terminal", "planton" (the binary) → `cli`
 - "package", "library", "pkg/", "helper", "utility" → `pkg`
 - "protobuf", "proto", "API definition", "stubs", "buf" → `apis`
-- "forge", "code generation", "component generation" → `forge`
+- "forge", "code generation", "kind generation" → `forge`
 - "build", "bazel", "compilation", "tooling" → `tooling`
 
 ### Multi-Area Issues
@@ -135,8 +135,8 @@ When the issue spans multiple areas:
 ### Example Detection
 
 ```
-Conversation: "The Postgres component spec validation is broken..."
-→ Area: component
+Conversation: "The Postgres kind spec validation is broken..."
+→ Area: kind
 
 Conversation: "The CLI manifest validation command needs improvement..."
 → Area: cli
@@ -154,7 +154,7 @@ Choose the appropriate type based on the issue category:
 
 **`feat`** - New Feature or Capability
 - Adds new functionality that users can opt into
-- New command, component, or configuration option
+- New command, kind, or configuration option
 - Enhancement that provides new value
 
 **`bug`** - Bug Fix or Correction
@@ -199,7 +199,7 @@ For straightforward issues, write naturally:
 **Example:**
 
 ```markdown
-The Postgres component's spec validation currently doesn't check for 
+The Postgres kind's spec validation currently doesn't check for 
 conflicting port configurations. When users specify both default and custom ports, 
 the validation passes but Pulumi deployment fails with a cryptic error.
 
@@ -303,7 +303,7 @@ Create new filenames following this pattern:
 **Examples:**
 
 Original: `screenshot-1.png`
-→ Renamed: `2025-12-26-143022.component.bug.postgres-spec-validation.error-output.png`
+→ Renamed: `2025-12-26-143022.kind.bug.postgres-spec-validation.error-output.png`
 
 Original: `error.jpg`
 → Renamed: `2025-12-26-143022.cli.bug.manifest-validation.missing-field-log.jpg`
@@ -317,7 +317,7 @@ Original: `before.png`, `after.png`
 Add markdown image references in the issue content pointing to the `images/` directory:
 
 ```markdown
-![Error output](images/2025-12-26-143022.component.bug.postgres-spec-validation.error-output.png)
+![Error output](images/2025-12-26-143022.kind.bug.postgres-spec-validation.error-output.png)
 ```
 
 **Guidelines:**
@@ -334,11 +334,11 @@ Add markdown image references in the issue content pointing to the `images/` dir
 The validation passes with conflicting port configurations, but Pulumi 
 deployment fails:
 
-![Pulumi error output](images/2025-12-26-143022.component.bug.postgres-spec-validation.error-output.png)
+![Pulumi error output](images/2025-12-26-143022.kind.bug.postgres-spec-validation.error-output.png)
 
 Additionally, the CLI doesn't provide a helpful error message:
 
-![CLI error message](images/2025-12-26-143022.component.bug.postgres-spec-validation.cli-error.png)
+![CLI error message](images/2025-12-26-143022.kind.bug.postgres-spec-validation.cli-error.png)
 ```
 
 ### Step 6: Copy Images to Images Directory
@@ -475,9 +475,9 @@ Write the file to `_issues/{filename}.md` with the generated content.
 Provide feedback to user:
 
 ```
-✅ Issue file created: _issues/2025-12-26-143022.component.bug.postgres-spec-validation.md
+✅ Issue file created: _issues/2025-12-26-143022.kind.bug.postgres-spec-validation.md
 
-Area: component
+Area: kind
 Type: bug
 Summary: [Brief one-line summary]
 
@@ -490,17 +490,17 @@ Images: X images processed and referenced
 ### Simple Bug Discovery
 
 ```
-User: "I noticed the Postgres component validation is broken. @create-planton-issue"
+User: "I noticed the Postgres kind validation is broken. @create-planton-issue"
 
 Agent: 
 - Gets timestamp: 2025-12-26-143022
-- Detects area: component (Postgres component)
+- Detects area: kind (Postgres kind)
 - Determines type: bug
 - Creates slug: postgres-spec-validation
 - Asks about images: "Do you have images in workspace?"
 - User: "Yes"
 - Analyzes images, renames, copies, references
-- Creates: _issues/2025-12-26-143022.component.bug.postgres-spec-validation.md
+- Creates: _issues/2025-12-26-143022.kind.bug.postgres-spec-validation.md
 ```
 
 ### Feature Request
@@ -548,7 +548,7 @@ Agent:
 ### Example 1: Simple Bug (Freeform)
 
 ```markdown
-The Postgres component's spec validation currently doesn't check for 
+The Postgres kind's spec validation currently doesn't check for 
 conflicting port configurations. When users specify both default and custom ports, 
 the validation passes but Pulumi deployment fails with a cryptic error message.
 
@@ -611,7 +611,7 @@ Similar validation commands:
 ## Problem
 
 The forge system's Pulumi code generation produces incorrect import paths for 
-components that use nested proto packages. This causes compilation 
+kinds that use nested proto packages. This causes compilation 
 errors in the generated code.
 
 ## Current Behavior
@@ -633,8 +633,8 @@ import (
 
 ## Impact
 
-- **Users**: Anyone creating new components
-- **Severity**: High - blocks component development
+- **Users**: Anyone creating new kinds
+- **Severity**: High - blocks kind development
 - **Workaround**: Manual import path fixes after generation
 
 ## Additional Context
@@ -642,8 +642,8 @@ import (
 The issue appears to be in the import path template used by the forge system.
 
 Affected files:
-- `_rules/component/forge/_scripts/pulumi_entrypoint_write.py`
-- `_rules/component/forge/flow/010-pulumi-entrypoint.mdc`
+- `_rules/catalog-kind/_scripts/pulumi_entrypoint_write.py`
+- `_rules/catalog-kind/forge/flow/010-pulumi-entrypoint.mdc`
 ```
 
 ## Writing Guidelines Summary

@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureContainerAppJobStackInput is the input to the IaC module.
+// AzureContainerAppJobIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type AzureContainerAppJobStackInput struct {
+type AzureContainerAppJobIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// the catalog object to deploy to be deployed
 	Target *AzureContainerAppJob `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Azure authentication
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AzureContainerAppJobStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureContainerAppJobStackInput) Reset() {
-	*x = AzureContainerAppJobStackInput{}
+func (x *AzureContainerAppJobIacInput) Reset() {
+	*x = AzureContainerAppJobIacInput{}
 	mi := &file_catalog_azure_azurecontainerappjob_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureContainerAppJobStackInput) String() string {
+func (x *AzureContainerAppJobIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureContainerAppJobStackInput) ProtoMessage() {}
+func (*AzureContainerAppJobIacInput) ProtoMessage() {}
 
-func (x *AzureContainerAppJobStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureContainerAppJobIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecontainerappjob_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureContainerAppJobStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureContainerAppJobStackInput.ProtoReflect.Descriptor instead.
-func (*AzureContainerAppJobStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureContainerAppJobIacInput.ProtoReflect.Descriptor instead.
+func (*AzureContainerAppJobIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerappjob_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureContainerAppJobStackInput) GetTarget() *AzureContainerAppJob {
+func (x *AzureContainerAppJobIacInput) GetTarget() *AzureContainerAppJob {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureContainerAppJobStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureContainerAppJobIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azurecontainerappjob_v1alpha1_input_proto protoreflect.Fi
 
 const file_catalog_azure_azurecontainerappjob_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/azure/azurecontainerappjob/v1alpha1/input.proto\x12/dev.planton.azure.azurecontainerappjob.v1alpha1\x1a5catalog/azure/azurecontainerappjob/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd0\x01\n" +
-	"\x1eAzureContainerAppJobStackInput\x12]\n" +
+	"7catalog/azure/azurecontainerappjob/v1alpha1/input.proto\x12/dev.planton.azure.azurecontainerappjob.v1alpha1\x1a5catalog/azure/azurecontainerappjob/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xce\x01\n" +
+	"\x1cAzureContainerAppJobIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x89\x03\n" +
 	"3com.dev.planton.azure.azurecontainerappjob.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_azure_azurecontainerappjob_v1alpha1_input_proto_rawDescGZIP() 
 
 var file_catalog_azure_azurecontainerappjob_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecontainerappjob_v1alpha1_input_proto_goTypes = []any{
-	(*AzureContainerAppJobStackInput)(nil), // 0: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobStackInput
-	(*AzureContainerAppJob)(nil),           // 1: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJob
-	(*azure.AzureProviderConfig)(nil),      // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureContainerAppJobIacInput)(nil), // 0: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobIacInput
+	(*AzureContainerAppJob)(nil),         // 1: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJob
+	(*azure.AzureProviderConfig)(nil),    // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurecontainerappjob_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobStackInput.target:type_name -> dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJob
-	2, // 1: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobIacInput.target:type_name -> dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJob
+	2, // 1: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

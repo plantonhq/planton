@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesKarpenterNodePoolStackOutputs captures observable outputs after
+// KubernetesKarpenterNodePoolOutputs captures observable outputs after
 // the NodePool is applied to the target cluster.
-type KubernetesKarpenterNodePoolStackOutputs struct {
+type KubernetesKarpenterNodePoolOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the NodePool object (cluster-scoped; equals metadata.name).
 	// The value of the karpenter.sh/nodepool label on every node the pool
@@ -33,20 +33,20 @@ type KubernetesKarpenterNodePoolStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesKarpenterNodePoolStackOutputs) Reset() {
-	*x = KubernetesKarpenterNodePoolStackOutputs{}
+func (x *KubernetesKarpenterNodePoolOutputs) Reset() {
+	*x = KubernetesKarpenterNodePoolOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKarpenterNodePoolStackOutputs) String() string {
+func (x *KubernetesKarpenterNodePoolOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKarpenterNodePoolStackOutputs) ProtoMessage() {}
+func (*KubernetesKarpenterNodePoolOutputs) ProtoMessage() {}
 
-func (x *KubernetesKarpenterNodePoolStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKarpenterNodePoolOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,12 +58,12 @@ func (x *KubernetesKarpenterNodePoolStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKarpenterNodePoolStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKarpenterNodePoolStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKarpenterNodePoolOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKarpenterNodePoolOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKarpenterNodePoolStackOutputs) GetNodePoolName() string {
+func (x *KubernetesKarpenterNodePoolOutputs) GetNodePoolName() string {
 	if x != nil {
 		return x.NodePoolName
 	}
@@ -74,8 +74,8 @@ var File_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_outputs_proto p
 
 const file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/kubernetes/kuberneteskarpenternodepool/v1alpha1/outputs.proto\x12;dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1\"O\n" +
-	"'KubernetesKarpenterNodePoolStackOutputs\x12$\n" +
+	"Ecatalog/kubernetes/kuberneteskarpenternodepool/v1alpha1/outputs.proto\x12;dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1\"J\n" +
+	"\"KubernetesKarpenterNodePoolOutputs\x12$\n" +
 	"\x0enode_pool_name\x18\x01 \x01(\tR\fnodePoolNameB\xda\x03\n" +
 	"?com.dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1B\fOutputsProtoP\x01Zxgithub.com/plantonhq/planton/catalog/kubernetes/kuberneteskarpenternodepool/v1alpha1;kuberneteskarpenternodepoolv1alpha1\xa2\x02\x04DPKK\xaa\x02;Dev.Planton.Kubernetes.Kuberneteskarpenternodepool.V1alpha1\xca\x02;Dev\\Planton\\Kubernetes\\Kuberneteskarpenternodepool\\V1alpha1\xe2\x02GDev\\Planton\\Kubernetes\\Kuberneteskarpenternodepool\\V1alpha1\\GPBMetadata\xea\x02?Dev::Planton::Kubernetes::Kuberneteskarpenternodepool::V1alpha1b\x06proto3"
 
@@ -93,7 +93,7 @@ func file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_outputs_proto_
 
 var file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKarpenterNodePoolStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolStackOutputs
+	(*KubernetesKarpenterNodePoolOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskarpenternodepool.v1alpha1.KubernetesKarpenterNodePoolOutputs
 }
 var file_catalog_kubernetes_kuberneteskarpenternodepool_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

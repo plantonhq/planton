@@ -16,7 +16,7 @@ OpenTofu module that declares one Stripe billing meter and its usage alerts. Str
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `display_name`, `event_name`, `default_aggregation` (required); `customer_mapping`, `value_settings`, `event_time_window`, `alerts` |
 
 ## Outputs

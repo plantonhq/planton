@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurepointtositevpngateway.v1alpha1;
 
-// **AzurePointToSiteVpnGatewayStackOutputs** captures the outputs of
+// **AzurePointToSiteVpnGatewayOutputs** captures the outputs of
 // provisioning a point-to-site VPN gateway.
-message AzurePointToSiteVpnGatewayStackOutputs {
+message AzurePointToSiteVpnGatewayOutputs {
   // The Azure Resource Manager ID of the point-to-site VPN gateway.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/p2sVpnGateways/{name}
   string point_to_site_vpn_gateway_id = 1;

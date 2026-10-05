@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockagentcorememory.v1alpha1;
 
-// AwsBedrockAgentCoreMemoryStackOutputs captures observable identifiers
+// AwsBedrockAgentCoreMemoryOutputs captures observable identifiers
 // from a provisioned AgentCore memory. Downstream resources (evaluation
 // harnesses reading memory, agent code writing events) wire dependencies
 // via StringValueOrRef.
-message AwsBedrockAgentCoreMemoryStackOutputs {
+message AwsBedrockAgentCoreMemoryOutputs {
   // The unique memory identifier (e.g. "my_memory-AbC1dEf2Gh").
   string memory_id = 1;
 

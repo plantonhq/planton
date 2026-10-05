@@ -36,7 +36,7 @@ func validInput(spec *AzureNetworkInterfaceSpec) *AzureNetworkInterface {
 	return &AzureNetworkInterface{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureNetworkInterface",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-network-interface",
 		},
 		Spec: spec,

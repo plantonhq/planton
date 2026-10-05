@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1;
 
-// DigitalOceanVpcPeeringStackOutputs captures the key outputs after
+// DigitalOceanVpcPeeringOutputs captures the key outputs after
 // provisioning a VPC peering connection.
 //
 // The peering's lifecycle status is deliberately NOT an output: both
@@ -11,7 +11,7 @@ package dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1;
 // DigitalOcean moved the peering to DELETING or removed it. Live status is
 // read from the API by whoever needs it (GET /v2/vpcs/peerings/{id}); the
 // E2E verifier asserts existence that way.
-message DigitalOceanVpcPeeringStackOutputs {
+message DigitalOceanVpcPeeringOutputs {
   // Retired: `status` (an apply-time lifecycle snapshot). Never reuse the
   // number or the name.
   reserved 2;

@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azuredataprotectionresourceguard
 spec:
   billing_model: free
   free_tier: The Resource Guard is pure governance configuration -- an approval gate for Multi-User Authorization -- and never bills, however many vaults reference it or how many critical operations it gates.
-  notes: "No field of this spec buys anything: the exclusion list, region, and tags are all free configuration, and Azure meters no per-approval or per-guarded-vault charge. The vaults that reference the guard and the backup data they hold bill as their own catalog kinds (AzureRecoveryServicesVault, AzureDataProtectionBackupVault, and their protection bindings)."
+  notes: "No field of this spec buys anything: the exclusion list, region, and tags are all free configuration, and Azure meters no per-approval or per-guarded-vault charge. The vaults that reference the guard and the backup data they hold bill as their own components (AzureRecoveryServicesVault, AzureDataProtectionBackupVault, and their protection bindings)."

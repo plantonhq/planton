@@ -1,6 +1,6 @@
-# AwsBedrockAgentCoreRuntime — Component Guide
+# AwsBedrockAgentCoreRuntime — Kind Guide
 
-Authored operational judgment for the AgentCore runtime component: the
+Authored operational judgment for the AgentCore runtime kind: the
 design decisions behind the spec's shape, and what to know before
 hosting agents in production.
 
@@ -25,7 +25,7 @@ hosting agents in production.
   and the import composite (`{agent_runtime_id},{name}`) both key on it.
 - **The evaluations family deliberately lives elsewhere.** Evaluators,
   harnesses, and online evaluation configs are standalone AWS resources
-  with no structural runtime edge — they are their own component, not
+  with no structural runtime edge — they are their own kind, not
   runtime arms.
 
 ## Running agent runtimes in production

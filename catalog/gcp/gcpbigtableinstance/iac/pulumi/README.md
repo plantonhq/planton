@@ -19,11 +19,11 @@ The instance resource includes all cluster definitions inline (Bigtable's API bu
 
 ```
 iac/pulumi/
-├── main.go              # Entry point: loads stack input, calls module.Resources
+├── main.go              # Entry point: loads IaC input, calls module.Resources
 ├── Pulumi.yaml          # Project definition
 └── module/
     ├── main.go              # Resources(): orchestrates provider and bigtableInstance
-    ├── locals.go            # Label construction, context extraction from stack input
+    ├── locals.go            # Label construction, context extraction from IaC input
     ├── bigtable_instance.go # bigtable.NewInstance with clusters, scaling, CMEK, labels
     └── outputs.go           # Export constants (instance_id, instance_name)
 ```

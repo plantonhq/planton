@@ -8,7 +8,7 @@ Registers a storage account with a Recovery Services vault as a backup container
 
 - `backup.ContainerStorageAccount` -- the registration (`.../vaults/{vault}/backupFabrics/Azure/protectionContainers/StorageContainer;storage;{sa-rg};{sa-name}`)
 
-## Stack Outputs
+## Outputs
 
 - `backup_container_id` -- the registration's full ARM ID
 - `storage_account_id` -- the registered account's ARM ID, echoed so protected file shares reference the REGISTRATION for their `source_storage_account_id` (the reference carries both the value and the deploy-order edge -- the provider docs' own wiring pattern)

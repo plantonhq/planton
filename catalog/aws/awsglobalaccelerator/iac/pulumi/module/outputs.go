@@ -1,7 +1,7 @@
 package module
 
 // Output keys for the AwsGlobalAccelerator module. These constants match
-// the field names in AwsGlobalAcceleratorStackOutputs.
+// the field names in AwsGlobalAcceleratorOutputs.
 const (
 	OpAcceleratorArn          = "accelerator_arn"
 	OpAcceleratorDnsName      = "accelerator_dns_name"

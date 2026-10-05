@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureDataProtectionResourceGuardStackInput is the input to the IaC
+// AzureDataProtectionResourceGuardIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-type AzureDataProtectionResourceGuardStackInput struct {
+type AzureDataProtectionResourceGuardIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Data Protection Resource Guard resource to deploy.
 	Target *AzureDataProtectionResourceGuard `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureDataProtectionResourceGuardStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureDataProtectionResourceGuardStackInput) Reset() {
-	*x = AzureDataProtectionResourceGuardStackInput{}
+func (x *AzureDataProtectionResourceGuardIacInput) Reset() {
+	*x = AzureDataProtectionResourceGuardIacInput{}
 	mi := &file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataProtectionResourceGuardStackInput) String() string {
+func (x *AzureDataProtectionResourceGuardIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataProtectionResourceGuardStackInput) ProtoMessage() {}
+func (*AzureDataProtectionResourceGuardIacInput) ProtoMessage() {}
 
-func (x *AzureDataProtectionResourceGuardStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureDataProtectionResourceGuardIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureDataProtectionResourceGuardStackInput) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataProtectionResourceGuardStackInput.ProtoReflect.Descriptor instead.
-func (*AzureDataProtectionResourceGuardStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataProtectionResourceGuardIacInput.ProtoReflect.Descriptor instead.
+func (*AzureDataProtectionResourceGuardIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataProtectionResourceGuardStackInput) GetTarget() *AzureDataProtectionResourceGuard {
+func (x *AzureDataProtectionResourceGuardIacInput) GetTarget() *AzureDataProtectionResourceGuard {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureDataProtectionResourceGuardStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureDataProtectionResourceGuardIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuredataprotectionresourceguard_v1alpha1_input_proto pro
 
 const file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/azure/azuredataprotectionresourceguard/v1alpha1/input.proto\x12;dev.planton.azure.azuredataprotectionresourceguard.v1alpha1\x1aAcatalog/azure/azuredataprotectionresourceguard/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xf4\x01\n" +
-	"*AzureDataProtectionResourceGuardStackInput\x12u\n" +
+	"Ccatalog/azure/azuredataprotectionresourceguard/v1alpha1/input.proto\x12;dev.planton.azure.azuredataprotectionresourceguard.v1alpha1\x1aAcatalog/azure/azuredataprotectionresourceguard/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xf2\x01\n" +
+	"(AzureDataProtectionResourceGuardIacInput\x12u\n" +
 	"\x06target\x18\x01 \x01(\v2].dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xdd\x03\n" +
 	"?com.dev.planton.azure.azuredataprotectionresourceguard.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_input_proto_ra
 
 var file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_input_proto_goTypes = []any{
-	(*AzureDataProtectionResourceGuardStackInput)(nil), // 0: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardStackInput
-	(*AzureDataProtectionResourceGuard)(nil),           // 1: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuard
-	(*azure.AzureProviderConfig)(nil),                  // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureDataProtectionResourceGuardIacInput)(nil), // 0: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardIacInput
+	(*AzureDataProtectionResourceGuard)(nil),         // 1: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuard
+	(*azure.AzureProviderConfig)(nil),                // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuredataprotectionresourceguard_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardStackInput.target:type_name -> dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuard
-	2, // 1: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardIacInput.target:type_name -> dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuard
+	2, // 1: dev.planton.azure.azuredataprotectionresourceguard.v1alpha1.AzureDataProtectionResourceGuardIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -4,7 +4,7 @@ Installs the Planton operator — the lifecycle manager that reconciles `Planton
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** — created only when `createNamespace` is `true` (`planton-operator` is the convention); otherwise installs into an existing namespace
 - **Helm Release** (`planton-operator`) — the operator's manager Deployment, its ServiceAccount, the cluster-wide reconciliation ClusterRole/ClusterRoleBinding, and the namespaced leader-election Role/RoleBinding
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** — an active connection in the Connect module with credentials for the target cluster (installing an operator is a cluster-admin act — the chart grants the manager its cluster-wide reconciliation RBAC). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** — an active connection in the Connect module with credentials for the target cluster (installing an operator is a cluster-admin act — the chart grants the manager its cluster-wide reconciliation RBAC). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -48,7 +48,7 @@ spec:
 planton apply -f planton-operator.yaml
 ```
 
-This installs the manager with chart defaults (one replica, leader election on) and the two definitions the chart owns — no platform is deployed until one is declared. A Stack Job tracks the provisioning in real time.
+This installs the manager with chart defaults (one replica, leader election on) and the two definitions the chart owns — no platform is deployed until one is declared. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,13 +84,13 @@ These are the most important decisions when configuring a Planton Operator insta
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
 This component's `status.outputs` only identify the installation — `namespace` (where the manager runs) and `release_name` (fixed to `planton-operator` by the singleton design). The operator has no per-platform surface to wire: KubernetesPlantonPlatform resources compose against the CRD it installs, and the deploy-order edge is declared through `metadata.relationships`, never through ValueFromRef.
 
@@ -104,5 +104,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Planton Platform**](/cloud-catalog/kubernetes-planton-platform) — the platforms this operator reconciles, one declaration per platform; the operator is the hard prerequisite
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — provides the manager's home namespace when composed in an InfraChart
+- [**Planton Platform**](/infra-catalog/kubernetes-planton-platform) — the platforms this operator reconciles, one declaration per platform; the operator is the hard prerequisite
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — provides the manager's home namespace when composed in an InfraChart

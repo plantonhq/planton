@@ -31,8 +31,8 @@ surprise threshold.
 The costliest operational surprises are the ones that look like failures:
 a slow managed-service create reads as a hung deploy, and the natural
 reaction — aborting or re-running — is worse than waiting. The catalog's
-contract is that the spec and its docs are enough to operate a component
-correctly, so duration expectations belong on the component surfaces, not
+contract is that the spec and its docs are enough to operate a kind
+correctly, so duration expectations belong on the kind surfaces, not
 in tribal memory.
 
 ## Validation

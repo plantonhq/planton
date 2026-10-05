@@ -21,7 +21,7 @@ func validRule(spec *CloudflareZeroTrustDevicePostureRuleSpec) *CloudflareZeroTr
 	return &CloudflareZeroTrustDevicePostureRule{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustDevicePostureRule",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-posture-rule",
 		},
 		Spec: spec,

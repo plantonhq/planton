@@ -1,10 +1,10 @@
 # AWS Step Functions
 
-Deploys a Step Functions state machine that orchestrates distributed workflows using Amazon States Language (ASL) definitions expressed as native YAML. The component supports both STANDARD (long-running, exactly-once) and EXPRESS (high-volume, short-duration) state machine types, with configurable CloudWatch Logs logging, X-Ray tracing, and customer-managed KMS encryption. The execution role, log group, and KMS key all accept ValueFromRef wiring, so a state machine composes with AwsIamRole, AwsCloudwatchLogGroup, and AwsKmsKey resources in the same InfraChart. The state machine type is a one-way door — it cannot be changed after creation.
+Deploys a Step Functions state machine that orchestrates distributed workflows using Amazon States Language (ASL) definitions expressed as native YAML. The kind supports both STANDARD (long-running, exactly-once) and EXPRESS (high-volume, short-duration) state machine types, with configurable CloudWatch Logs logging, X-Ray tracing, and customer-managed KMS encryption. The execution role, log group, and KMS key all accept ValueFromRef wiring, so a state machine composes with AwsIamRole, AwsCloudwatchLogGroup, and AwsKmsKey resources in the same InfraChart. The state machine type is a one-way door — it cannot be changed after creation.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Step Functions State Machine** -- a state machine configured with the specified type, ASL definition (serialized from YAML to JSON), and IAM execution role
 - **Logging Configuration** -- configured only when `logging` is provided with a level other than OFF; sends execution history events to the specified CloudWatch Logs log group
@@ -16,14 +16,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An IAM execution role** with a trust policy for `states.amazonaws.com` and policies granting access to all services invoked by the workflow (Lambda:InvokeFunction, SQS:SendMessage, SNS:Publish, etc.). Provide the ARN directly or reference an AwsIamRole Cloud Resource via ValueFromRef.
-- **A CloudWatch log group** (optional) -- required when enabling execution logging. Provide the ARN directly or reference an AwsCloudwatchLogGroup Cloud Resource via ValueFromRef.
-- **A KMS key** (optional) -- required when using customer-managed encryption. The key must be a symmetric encryption key in the same region. Provide the ARN directly or reference an AwsKmsKey Cloud Resource via ValueFromRef.
+- **An IAM execution role** with a trust policy for `states.amazonaws.com` and policies granting access to all services invoked by the workflow (Lambda:InvokeFunction, SQS:SendMessage, SNS:Publish, etc.). Provide the ARN directly or reference an AwsIamRole Infra Component via ValueFromRef.
+- **A CloudWatch log group** (optional) -- required when enabling execution logging. Provide the ARN directly or reference an AwsCloudwatchLogGroup Infra Component via ValueFromRef.
+- **A KMS key** (optional) -- required when using customer-managed encryption. The key must be a symmetric encryption key in the same region. Provide the ARN directly or reference an AwsKmsKey Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -59,7 +59,7 @@ spec:
 planton apply -f step-function.yaml
 ```
 
-This creates a STANDARD state machine with a single Lambda task. No logging, tracing, or encryption is configured. A Stack Job tracks the provisioning in real time.
+This creates a STANDARD state machine with a single Lambda task. No logging, tracing, or encryption is configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -108,7 +108,7 @@ These are the most important decisions when configuring Step Functions. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -116,9 +116,9 @@ These are the most important decisions when configuring Step Functions. Explore 
 | **AwsCloudwatchLogGroup** (optional) | `logging.logDestination` | `status.outputs.log_group_arn` |
 | **AwsKmsKey** (optional) | `encryption.kmsKeyId` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -142,6 +142,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides the execution role for the state machine to invoke AWS services
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) -- provides the logging destination for execution history events
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for encrypting state machine data and execution history
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides the execution role for the state machine to invoke AWS services
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) -- provides the logging destination for execution history events
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for encrypting state machine data and execution history

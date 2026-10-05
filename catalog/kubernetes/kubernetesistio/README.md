@@ -54,7 +54,7 @@ A per-Gateway override of the service type also exists via the Gateway's `infras
 - **`spec.images`**: hub/variant/pull-secrets for every Istio image — the air-gapped and hardening knobs
 - **`spec.helm_values`**: per-release escape hatch — never the substitute for the typed fields
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

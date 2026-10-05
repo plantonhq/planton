@@ -4,7 +4,7 @@ Deploys an Azure Event Grid namespace -- the capacity-scaled hub of the newer Ev
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Event Grid namespace** -- the hub itself: throughput capacity (Standard SKU, the only value Azure defines, sent by the platform), network posture (public access plus Allow-only inbound IP rules), optional managed identity, and the optional MQTT broker ("topic spaces") configuration
 - **Azure Tags** -- Planton-derived metadata tags merged with the manifest's `tags` (user values win on key conflicts)
@@ -13,11 +13,11 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Azure Subscription
 
-- **A resource group** -- reference an AzureResourceGroup Cloud Resource or pass an existing group's name; changing it later replaces the namespace and every topic inside it.
+- **A resource group** -- reference an AzureResourceGroup Infra Component or pass an existing group's name; changing it later replaces the namespace and every topic inside it.
 - **A same-region CloudEvents custom topic** (only for MQTT routing) -- `topicSpacesConfiguration.routeTopicId` forwards MQTT messages into an AzureEventgridTopic, which must live in the same region and use the CloudEvents schema.
 - **Client certificates** (only for MQTT) -- the broker authenticates MQTT clients against certificates; have the fleet's certificate convention decided before onboarding devices.
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f eventgrid-namespace.yaml
 ```
 
-This creates a pure-CloudEvents namespace at the 1-TU floor with public access on and no MQTT broker. A Stack Job tracks the provisioning in real time.
+This creates a pure-CloudEvents namespace at the 1-TU floor with public access on and no MQTT broker. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,7 +102,7 @@ These are the most important decisions when configuring a namespace. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -110,9 +110,9 @@ These are the most important decisions when configuring a namespace. Explore the
 | **AzureEventgridTopic** (MQTT routing) | `topicSpacesConfiguration.routeTopicId` | `status.outputs.topic_id` |
 | **AzureUserAssignedIdentity** (optional, per identity) | `identity.identityIds` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -131,7 +131,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the group the namespace lives in
-- [**Azure Event Grid Namespace Topic**](/cloud-catalog/azure-eventgrid-namespace-topic) -- the CloudEvents streams created inside the namespace
-- [**Azure Event Grid Topic**](/cloud-catalog/azure-eventgrid-topic) -- the classic custom topic MQTT messages route into
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- identities attached for identity-based delivery access
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the group the namespace lives in
+- [**Azure Event Grid Namespace Topic**](/infra-catalog/azure-eventgrid-namespace-topic) -- the CloudEvents streams created inside the namespace
+- [**Azure Event Grid Topic**](/infra-catalog/azure-eventgrid-topic) -- the classic custom topic MQTT messages route into
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- identities attached for identity-based delivery access

@@ -1,5 +1,5 @@
 # AzureMachineLearningWorkspace install profile used as a fixture by
-# composed components (declared via prerequisites:
+# composed kinds (declared via prerequisites:
 # [AzureMachineLearningWorkspace] in the kind registry -- the
 # datastore lane today, the compute lanes next). The harness deploys
 # this document after the fixture companion chain (storage account +
@@ -23,7 +23,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuremachinelearningworkspace
+    e2e-catalog-kind: azuremachinelearningworkspace
   annotations:
     planton.dev/e2e: "true"
   tags:

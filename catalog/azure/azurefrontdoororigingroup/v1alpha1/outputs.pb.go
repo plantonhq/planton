@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFrontDoorOriginGroupStackOutputs** captures the outputs of
+// **AzureFrontDoorOriginGroupOutputs** captures the outputs of
 // provisioning an Azure Front Door origin group.
-type AzureFrontDoorOriginGroupStackOutputs struct {
+type AzureFrontDoorOriginGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the origin group -- what
 	// AzureFrontDoorOrigin's origin_group_id (parent) and
@@ -36,20 +36,20 @@ type AzureFrontDoorOriginGroupStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AzureFrontDoorOriginGroupStackOutputs) Reset() {
-	*x = AzureFrontDoorOriginGroupStackOutputs{}
+func (x *AzureFrontDoorOriginGroupOutputs) Reset() {
+	*x = AzureFrontDoorOriginGroupOutputs{}
 	mi := &file_catalog_azure_azurefrontdoororigingroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFrontDoorOriginGroupStackOutputs) String() string {
+func (x *AzureFrontDoorOriginGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFrontDoorOriginGroupStackOutputs) ProtoMessage() {}
+func (*AzureFrontDoorOriginGroupOutputs) ProtoMessage() {}
 
-func (x *AzureFrontDoorOriginGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFrontDoorOriginGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefrontdoororigingroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AzureFrontDoorOriginGroupStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFrontDoorOriginGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFrontDoorOriginGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFrontDoorOriginGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFrontDoorOriginGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoororigingroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFrontDoorOriginGroupStackOutputs) GetOriginGroupId() string {
+func (x *AzureFrontDoorOriginGroupOutputs) GetOriginGroupId() string {
 	if x != nil {
 		return x.OriginGroupId
 	}
 	return ""
 }
 
-func (x *AzureFrontDoorOriginGroupStackOutputs) GetOriginGroupName() string {
+func (x *AzureFrontDoorOriginGroupOutputs) GetOriginGroupName() string {
 	if x != nil {
 		return x.OriginGroupName
 	}
@@ -84,8 +84,8 @@ var File_catalog_azure_azurefrontdoororigingroup_v1alpha1_outputs_proto protoref
 
 const file_catalog_azure_azurefrontdoororigingroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/azure/azurefrontdoororigingroup/v1alpha1/outputs.proto\x124dev.planton.azure.azurefrontdoororigingroup.v1alpha1\"{\n" +
-	"%AzureFrontDoorOriginGroupStackOutputs\x12&\n" +
+	">catalog/azure/azurefrontdoororigingroup/v1alpha1/outputs.proto\x124dev.planton.azure.azurefrontdoororigingroup.v1alpha1\"v\n" +
+	" AzureFrontDoorOriginGroupOutputs\x12&\n" +
 	"\x0forigin_group_id\x18\x01 \x01(\tR\roriginGroupId\x12*\n" +
 	"\x11origin_group_name\x18\x02 \x01(\tR\x0foriginGroupNameB\xae\x03\n" +
 	"8com.dev.planton.azure.azurefrontdoororigingroup.v1alpha1B\fOutputsProtoP\x01Zogithub.com/plantonhq/planton/catalog/azure/azurefrontdoororigingroup/v1alpha1;azurefrontdoororigingroupv1alpha1\xa2\x02\x04DPAA\xaa\x024Dev.Planton.Azure.Azurefrontdoororigingroup.V1alpha1\xca\x024Dev\\Planton\\Azure\\Azurefrontdoororigingroup\\V1alpha1\xe2\x02@Dev\\Planton\\Azure\\Azurefrontdoororigingroup\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Azure::Azurefrontdoororigingroup::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_azure_azurefrontdoororigingroup_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_azure_azurefrontdoororigingroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefrontdoororigingroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFrontDoorOriginGroupStackOutputs)(nil), // 0: dev.planton.azure.azurefrontdoororigingroup.v1alpha1.AzureFrontDoorOriginGroupStackOutputs
+	(*AzureFrontDoorOriginGroupOutputs)(nil), // 0: dev.planton.azure.azurefrontdoororigingroup.v1alpha1.AzureFrontDoorOriginGroupOutputs
 }
 var file_catalog_azure_azurefrontdoororigingroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

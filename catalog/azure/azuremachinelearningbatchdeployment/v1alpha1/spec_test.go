@@ -40,7 +40,7 @@ func validResource() *AzureMachineLearningBatchDeployment {
 	return &AzureMachineLearningBatchDeployment{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMachineLearningBatchDeployment",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ml-batch-deployment",
 		},
 		Spec: &AzureMachineLearningBatchDeploymentSpec{

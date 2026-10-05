@@ -28,7 +28,7 @@ type GcpGcsBucketIamMember struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpGcsBucketIamMemberSpec    `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpGcsBucketIamMemberStatus  `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpGcsBucketIamMember) GetKind() string {
 	return ""
 }
 
-func (x *GcpGcsBucketIamMember) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpGcsBucketIamMember) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpGcsBucketIamMember) GetStatus() *GcpGcsBucketIamMemberStatus {
 }
 
 type GcpGcsBucketIamMemberStatus struct {
-	state         protoimpl.MessageState             `protogen:"open.v1"`
-	Outputs       *GcpGcsBucketIamMemberStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState        `protogen:"open.v1"`
+	Outputs       *GcpGcsBucketIamMemberOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpGcsBucketIamMemberStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgcsbucketiammember_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpGcsBucketIamMemberStatus) GetOutputs() *GcpGcsBucketIamMemberStackOutputs {
+func (x *GcpGcsBucketIamMemberStatus) GetOutputs() *GcpGcsBucketIamMemberOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpgcsbucketiammember_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15GcpGcsBucketIamMemberR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
 	"\x04spec\x18\x04 \x01(\v2I.dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberStatusR\x06status\"\x8a\x01\n" +
-	"\x1bGcpGcsBucketIamMemberStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberStackOutputsR\aoutputsB\x82\x03\n" +
+	"\x06status\x18\x05 \x01(\v2K.dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberStatusR\x06status\"\x85\x01\n" +
+	"\x1bGcpGcsBucketIamMemberStatus\x12f\n" +
+	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberOutputsR\aoutputsB\x82\x03\n" +
 	"2com.dev.planton.gcp.gcpgcsbucketiammember.v1alpha1B\bApiProtoP\x01Zegithub.com/plantonhq/planton/catalog/gcp/gcpgcsbucketiammember/v1alpha1;gcpgcsbucketiammemberv1alpha1\xa2\x02\x04DPGG\xaa\x02.Dev.Planton.Gcp.Gcpgcsbucketiammember.V1alpha1\xca\x02.Dev\\Planton\\Gcp\\Gcpgcsbucketiammember\\V1alpha1\xe2\x02:Dev\\Planton\\Gcp\\Gcpgcsbucketiammember\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Gcp::Gcpgcsbucketiammember::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpgcsbucketiammember_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_gcp_gcpgcsbucketiammember_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpgcsbucketiammember_v1alpha1_api_proto_goTypes = []any{
-	(*GcpGcsBucketIamMember)(nil),             // 0: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMember
-	(*GcpGcsBucketIamMemberStatus)(nil),       // 1: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpGcsBucketIamMemberSpec)(nil),         // 3: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberSpec
-	(*GcpGcsBucketIamMemberStackOutputs)(nil), // 4: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberStackOutputs
+	(*GcpGcsBucketIamMember)(nil),        // 0: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMember
+	(*GcpGcsBucketIamMemberStatus)(nil),  // 1: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpGcsBucketIamMemberSpec)(nil),    // 3: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberSpec
+	(*GcpGcsBucketIamMemberOutputs)(nil), // 4: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberOutputs
 }
 var file_catalog_gcp_gcpgcsbucketiammember_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMember.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMember.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMember.spec:type_name -> dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberSpec
 	1, // 2: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMember.status:type_name -> dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberStatus
-	4, // 3: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberStatus.outputs:type_name -> dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberStackOutputs
+	4, // 3: dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberStatus.outputs:type_name -> dev.planton.gcp.gcpgcsbucketiammember.v1alpha1.GcpGcsBucketIamMemberOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

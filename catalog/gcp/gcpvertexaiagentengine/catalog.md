@@ -4,7 +4,7 @@ Runs your AI agent as a managed service. Hand Agent Engine the agent's source (i
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project
 - **Agent Engine instance** -- a `vertex.AiReasoningEngine` with its code source, identity, deployment shape, and optional Memory Bank
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with `roles/aiplatform.admin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with `roles/aiplatform.admin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -59,7 +59,7 @@ spec:
 planton apply -f agent-engine.yaml
 ```
 
-This builds the agent from its source and runs it between one and five instances. A Stack Job tracks the provisioning in real time; the build is a Cloud Build in the project.
+This builds the agent from its source and runs it between one and five instances. An Infra Job tracks the provisioning in real time; the build is a Cloud Build in the project.
 
 ### InfraChart
 
@@ -77,7 +77,7 @@ These are the most important decisions when configuring an agent. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -88,9 +88,9 @@ These are the most important decisions when configuring an agent. Explore the fu
 | **GcpCloudBuildWorkerPool** | `agent.buildSpec.workerPool` | `status.outputs.name` |
 | **GcpVpcNetwork** | `agent.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `status.outputs.network_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,8 +109,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the agent's identity
-- [**GCP Secret Manager Secret**](/cloud-catalog/gcp-secret-manager-secret) -- secrets as environment variables
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption
-- [**GCP Vertex AI Model Garden Deployment**](/cloud-catalog/gcp-vertex-ai-model-garden-deployment) -- a model the agent calls
-- [**GCP Vector Search Collection**](/cloud-catalog/gcp-vector-search-collection) -- a vector store the agent searches
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the agent's identity
+- [**GCP Secret Manager Secret**](/infra-catalog/gcp-secret-manager-secret) -- secrets as environment variables
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed encryption
+- [**GCP Vertex AI Model Garden Deployment**](/infra-catalog/gcp-vertex-ai-model-garden-deployment) -- a model the agent calls
+- [**GCP Vector Search Collection**](/infra-catalog/gcp-vector-search-collection) -- a vector store the agent searches

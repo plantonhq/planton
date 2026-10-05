@@ -4,7 +4,7 @@ Sends Security Command Center findings to Pub/Sub the moment they appear or chan
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `securitycenter.googleapis.com` on a project config's project
 - **Notification config** -- the scope's `securitycenter.V2*NotificationConfig`
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Security Command Center notification-config admin permissions at the scope. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Security Command Center notification-config admin permissions at the scope. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -44,7 +44,7 @@ spec:
 planton apply -f scc-notification-config.yaml
 ```
 
-This streams every active high-severity finding in the project to the topic. A Stack Job tracks the provisioning in real time.
+This streams every active high-severity finding in the project to the topic. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -62,7 +62,7 @@ These are the most important decisions when configuring notifications. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -70,9 +70,9 @@ These are the most important decisions when configuring notifications. Explore t
 | **GcpFolder** | `scope.folderId` | `status.outputs.folder_id` |
 | **GcpPubSubTopic** | `pubsubTopic` | `status.outputs.topic_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -90,6 +90,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Pub/Sub Topic**](/cloud-catalog/gcp-pub-sub-topic) -- the destination
-- [**GCP SCC Mute Config**](/cloud-catalog/gcp-scc-mute-config) -- silence accepted findings first
-- [**GCP SCC BigQuery Export**](/cloud-catalog/gcp-scc-bigquery-export) -- the findings history
+- [**GCP Pub/Sub Topic**](/infra-catalog/gcp-pub-sub-topic) -- the destination
+- [**GCP SCC Mute Config**](/infra-catalog/gcp-scc-mute-config) -- silence accepted findings first
+- [**GCP SCC BigQuery Export**](/infra-catalog/gcp-scc-bigquery-export) -- the findings history

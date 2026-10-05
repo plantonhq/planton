@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcptagbinding.v1alpha1;
 
-// GcpTagBindingStackOutputs captures the binding's identity after
+// GcpTagBindingOutputs captures the binding's identity after
 // provisioning.
-message GcpTagBindingStackOutputs {
+message GcpTagBindingOutputs {
   // The binding's resource name,
   // `tagBindings/{url-encoded full resource name}/{tagValues/id}` -- the
   // handle Google's Tag Bindings API deletes and lists the binding by.

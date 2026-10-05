@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureCognitiveAccountStackOutputs** captures the outputs of
+// **AzureCognitiveAccountOutputs** captures the outputs of
 // provisioning an Azure AI services account.
-type AzureCognitiveAccountStackOutputs struct {
+type AzureCognitiveAccountOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the account -- what model
 	// deployments and projects reference as their cognitive_account_id.
@@ -62,20 +62,20 @@ type AzureCognitiveAccountStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureCognitiveAccountStackOutputs) Reset() {
-	*x = AzureCognitiveAccountStackOutputs{}
+func (x *AzureCognitiveAccountOutputs) Reset() {
+	*x = AzureCognitiveAccountOutputs{}
 	mi := &file_catalog_azure_azurecognitiveaccount_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureCognitiveAccountStackOutputs) String() string {
+func (x *AzureCognitiveAccountOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureCognitiveAccountStackOutputs) ProtoMessage() {}
+func (*AzureCognitiveAccountOutputs) ProtoMessage() {}
 
-func (x *AzureCognitiveAccountStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureCognitiveAccountOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecognitiveaccount_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -87,61 +87,61 @@ func (x *AzureCognitiveAccountStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureCognitiveAccountStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureCognitiveAccountStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureCognitiveAccountOutputs.ProtoReflect.Descriptor instead.
+func (*AzureCognitiveAccountOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecognitiveaccount_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureCognitiveAccountStackOutputs) GetCognitiveAccountId() string {
+func (x *AzureCognitiveAccountOutputs) GetCognitiveAccountId() string {
 	if x != nil {
 		return x.CognitiveAccountId
 	}
 	return ""
 }
 
-func (x *AzureCognitiveAccountStackOutputs) GetCognitiveAccountName() string {
+func (x *AzureCognitiveAccountOutputs) GetCognitiveAccountName() string {
 	if x != nil {
 		return x.CognitiveAccountName
 	}
 	return ""
 }
 
-func (x *AzureCognitiveAccountStackOutputs) GetEndpoint() string {
+func (x *AzureCognitiveAccountOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *AzureCognitiveAccountStackOutputs) GetPrimaryAccessKey() string {
+func (x *AzureCognitiveAccountOutputs) GetPrimaryAccessKey() string {
 	if x != nil {
 		return x.PrimaryAccessKey
 	}
 	return ""
 }
 
-func (x *AzureCognitiveAccountStackOutputs) GetSecondaryAccessKey() string {
+func (x *AzureCognitiveAccountOutputs) GetSecondaryAccessKey() string {
 	if x != nil {
 		return x.SecondaryAccessKey
 	}
 	return ""
 }
 
-func (x *AzureCognitiveAccountStackOutputs) GetSystemAssignedIdentityPrincipalId() string {
+func (x *AzureCognitiveAccountOutputs) GetSystemAssignedIdentityPrincipalId() string {
 	if x != nil {
 		return x.SystemAssignedIdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureCognitiveAccountStackOutputs) GetRaiBlocklistIds() map[string]string {
+func (x *AzureCognitiveAccountOutputs) GetRaiBlocklistIds() map[string]string {
 	if x != nil {
 		return x.RaiBlocklistIds
 	}
 	return nil
 }
 
-func (x *AzureCognitiveAccountStackOutputs) GetRaiPolicyIds() map[string]string {
+func (x *AzureCognitiveAccountOutputs) GetRaiPolicyIds() map[string]string {
 	if x != nil {
 		return x.RaiPolicyIds
 	}
@@ -152,16 +152,16 @@ var File_catalog_azure_azurecognitiveaccount_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_azure_azurecognitiveaccount_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/azure/azurecognitiveaccount/v1alpha1/outputs.proto\x120dev.planton.azure.azurecognitiveaccount.v1alpha1\x1a\x1cshared/options/options.proto\"\x8f\x06\n" +
-	"!AzureCognitiveAccountStackOutputs\x120\n" +
+	":catalog/azure/azurecognitiveaccount/v1alpha1/outputs.proto\x120dev.planton.azure.azurecognitiveaccount.v1alpha1\x1a\x1cshared/options/options.proto\"\x80\x06\n" +
+	"\x1cAzureCognitiveAccountOutputs\x120\n" +
 	"\x14cognitive_account_id\x18\x01 \x01(\tR\x12cognitiveAccountId\x124\n" +
 	"\x16cognitive_account_name\x18\x02 \x01(\tR\x14cognitiveAccountName\x12\x1a\n" +
 	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x122\n" +
 	"\x12primary_access_key\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\x10primaryAccessKey\x126\n" +
 	"\x14secondary_access_key\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\x12secondaryAccessKey\x12P\n" +
-	"%system_assigned_identity_principal_id\x18\x06 \x01(\tR!systemAssignedIdentityPrincipalId\x12\x94\x01\n" +
-	"\x11rai_blocklist_ids\x18\a \x03(\v2h.dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStackOutputs.RaiBlocklistIdsEntryR\x0fraiBlocklistIds\x12\x8b\x01\n" +
-	"\x0erai_policy_ids\x18\b \x03(\v2e.dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStackOutputs.RaiPolicyIdsEntryR\fraiPolicyIds\x1aB\n" +
+	"%system_assigned_identity_principal_id\x18\x06 \x01(\tR!systemAssignedIdentityPrincipalId\x12\x8f\x01\n" +
+	"\x11rai_blocklist_ids\x18\a \x03(\v2c.dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountOutputs.RaiBlocklistIdsEntryR\x0fraiBlocklistIds\x12\x86\x01\n" +
+	"\x0erai_policy_ids\x18\b \x03(\v2`.dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountOutputs.RaiPolicyIdsEntryR\fraiPolicyIds\x1aB\n" +
 	"\x14RaiBlocklistIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a?\n" +
@@ -184,13 +184,13 @@ func file_catalog_azure_azurecognitiveaccount_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_azure_azurecognitiveaccount_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_azure_azurecognitiveaccount_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureCognitiveAccountStackOutputs)(nil), // 0: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStackOutputs
-	nil, // 1: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStackOutputs.RaiBlocklistIdsEntry
-	nil, // 2: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStackOutputs.RaiPolicyIdsEntry
+	(*AzureCognitiveAccountOutputs)(nil), // 0: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountOutputs
+	nil,                                  // 1: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountOutputs.RaiBlocklistIdsEntry
+	nil,                                  // 2: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountOutputs.RaiPolicyIdsEntry
 }
 var file_catalog_azure_azurecognitiveaccount_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStackOutputs.rai_blocklist_ids:type_name -> dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStackOutputs.RaiBlocklistIdsEntry
-	2, // 1: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStackOutputs.rai_policy_ids:type_name -> dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStackOutputs.RaiPolicyIdsEntry
+	1, // 0: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountOutputs.rai_blocklist_ids:type_name -> dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountOutputs.RaiBlocklistIdsEntry
+	2, // 1: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountOutputs.rai_policy_ids:type_name -> dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountOutputs.RaiPolicyIdsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

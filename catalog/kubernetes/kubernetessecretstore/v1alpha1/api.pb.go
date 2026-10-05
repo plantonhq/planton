@@ -31,7 +31,7 @@ type KubernetesSecretStore struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesSecretStoreSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesSecretStore) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesSecretStore) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesSecretStore) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesSecretStore) GetStatus() *KubernetesSecretStoreStatus {
 // kubernetes-secret-store status.
 type KubernetesSecretStoreStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesSecretStoreStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesSecretStoreOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesSecretStoreStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetessecretstore_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesSecretStoreStatus) GetOutputs() *KubernetesSecretStoreStackOutputs {
+func (x *KubernetesSecretStoreStatus) GetOutputs() *KubernetesSecretStoreOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetessecretstore_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15KubernetesSecretStoreR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
 	"\x04spec\x18\x04 \x01(\v2P.dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12j\n" +
-	"\x06status\x18\x05 \x01(\v2R.dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreStatusR\x06status\"\x91\x01\n" +
-	"\x1bKubernetesSecretStoreStatus\x12r\n" +
-	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreStackOutputsR\aoutputsB\xac\x03\n" +
+	"\x06status\x18\x05 \x01(\v2R.dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreStatusR\x06status\"\x8c\x01\n" +
+	"\x1bKubernetesSecretStoreStatus\x12m\n" +
+	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreOutputsR\aoutputsB\xac\x03\n" +
 	"9com.dev.planton.kubernetes.kubernetessecretstore.v1alpha1B\bApiProtoP\x01Zlgithub.com/plantonhq/planton/catalog/kubernetes/kubernetessecretstore/v1alpha1;kubernetessecretstorev1alpha1\xa2\x02\x04DPKK\xaa\x025Dev.Planton.Kubernetes.Kubernetessecretstore.V1alpha1\xca\x025Dev\\Planton\\Kubernetes\\Kubernetessecretstore\\V1alpha1\xe2\x02ADev\\Planton\\Kubernetes\\Kubernetessecretstore\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Kubernetes::Kubernetessecretstore::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetessecretstore_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetessecretstore_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetessecretstore_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesSecretStore)(nil),             // 0: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStore
-	(*KubernetesSecretStoreStatus)(nil),       // 1: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesSecretStoreSpec)(nil),         // 3: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreSpec
-	(*KubernetesSecretStoreStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreStackOutputs
+	(*KubernetesSecretStore)(nil),        // 0: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStore
+	(*KubernetesSecretStoreStatus)(nil),  // 1: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesSecretStoreSpec)(nil),    // 3: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreSpec
+	(*KubernetesSecretStoreOutputs)(nil), // 4: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreOutputs
 }
 var file_catalog_kubernetes_kubernetessecretstore_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStore.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStore.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStore.spec:type_name -> dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreSpec
 	1, // 2: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStore.status:type_name -> dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreStatus
-	4, // 3: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreStatus.outputs:type_name -> dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreStatus.outputs:type_name -> dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

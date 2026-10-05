@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurecosmosdbsqlroledefinition
 spec:
   billing_model: free
   free_tier: A Cosmos DB SQL role definition is a named bundle of data-plane permission patterns stored as authorization metadata inside a Cosmos DB account. Creating, holding, and evaluating role definitions consumes no request units and carries no meter -- Cosmos bills for the account's throughput and storage, never for its RBAC vocabulary.
-  notes: "No field of this spec buys anything: the parent account reference, role name, type, assignable scopes, permission blocks, and the pinned GUID are all grant metadata. The definition grants nothing by itself -- an AzureCosmosdbSqlRoleAssignment (also free) binds it to a principal -- and the real spend lives entirely in the AzureCosmosdbAccount the definition governs, which bills RU/s throughput and storage as its own catalog kind."
+  notes: "No field of this spec buys anything: the parent account reference, role name, type, assignable scopes, permission blocks, and the pinned GUID are all grant metadata. The definition grants nothing by itself -- an AzureCosmosdbSqlRoleAssignment (also free) binds it to a principal -- and the real spend lives entirely in the AzureCosmosdbAccount the definition governs, which bills RU/s throughput and storage as its own component."

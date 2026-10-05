@@ -56,12 +56,12 @@ iac/pulumi/
 
 ## Deployment
 
-### Step 1: Create Stack Input
+### Step 1: Create IaC Input
 
 Create a YAML file defining your R2 bucket configuration:
 
 ```yaml
-# cloudflare-r2-stack-input.yaml
+# cloudflare-r2-iac-input.yaml
 target:
   metadata:
     name: media-bucket
@@ -120,7 +120,7 @@ Duration: 3s
 ### Step 4: Verify Deployment
 
 ```bash
-# View stack outputs
+# View outputs
 pulumi stack output
 
 # Test bucket access
@@ -135,7 +135,7 @@ aws s3 ls --endpoint-url https://<account-id>.r2.cloudflarestorage.com
 | `CLOUDFLARE_ACCOUNT_ID` | Yes | Cloudflare account ID (32 hex characters) |
 | `PULUMI_ACCESS_TOKEN` | Optional | Required for Pulumi Cloud backend |
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available:
 
@@ -159,7 +159,7 @@ pulumi stack output bucket_name
 
 ## Updating the Bucket
 
-Modify your stack input YAML and re-run:
+Modify your IaC input YAML and re-run:
 
 ```bash
 pulumi up --stack dev
@@ -228,7 +228,7 @@ pulumi up --stack dev --logtostderr -v=9
 
 **Issue**: `Error: account_id is required`
 
-**Solution**: Ensure `account_id` is set in stack input or via environment variable
+**Solution**: Ensure `account_id` is set in IaC input or via environment variable
 
 ---
 
@@ -366,13 +366,13 @@ The managed r2.dev public URL has its own lifecycle and is configured outside th
 
 ### Versioning
 
-R2 does not support object versioning, so it is not modeled by this component.
+R2 does not support object versioning, so it is not modeled by this kind.
 
 ## Additional Resources
 
 - [Pulumi Cloudflare Provider Docs](https://www.pulumi.com/registry/packages/cloudflare/)
 - [Cloudflare R2 API Docs](https://developers.cloudflare.com/api/operations/r2-create-bucket)
-- [Component README](../../README.md) - User-facing component documentation
+- [Kind README](../../README.md) - User-facing kind's documentation
 
 ## Support
 

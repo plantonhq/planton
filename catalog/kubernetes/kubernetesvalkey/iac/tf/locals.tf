@@ -160,7 +160,7 @@ locals {
       # every chart object then carries a deterministic, manifest-derived
       # name — the write Service renders as `<name>`, pod discovery as
       # `<name>-headless`, and the replication read Service as
-      # `<name>-read`, which is exactly what the stack outputs promise.
+      # `<name>-read`, which is exactly what the outputs promise.
       fullnameOverride = local.release_name
 
       # Every pod names its organization and environment (the labels local).

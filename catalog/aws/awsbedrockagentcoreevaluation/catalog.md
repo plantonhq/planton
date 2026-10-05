@@ -4,7 +4,7 @@ Deploys a bundle of Amazon Bedrock AgentCore Evaluations resources — evaluator
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions, per named entry:
+When you deploy this Infra Component, the IaC module provisions, per named entry:
 
 - **Evaluator** — one scoring definition per `evaluators` entry: an LLM-as-a-judge with a categorical or numerical rating scale, or a code-based evaluator backed by your Lambda function
 - **Harness** — one agent test bench per `harnesses` entry: the model under test (Bedrock, Gemini, or OpenAI), system prompts, tools, and an optional memory and runtime environment. When `memory` or `runtimeEnvironment` is omitted, AWS auto-provisions managed ones — the harness still has both, they are just AWS-owned
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions, per named entry:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Bedrock AgentCore control-plane permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Bedrock AgentCore control-plane permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -59,7 +59,7 @@ spec:
 planton apply -f agentcore-evaluation.yaml
 ```
 
-This creates one TRACE-level code-based evaluator that scores runs with the referenced Lambda function — create does not invoke the function, so the first deploy is independent of Bedrock model access. A Stack Job tracks the provisioning in real time.
+This creates one TRACE-level code-based evaluator that scores runs with the referenced Lambda function — create does not invoke the function, so the first deploy is independent of Bedrock model access. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -101,7 +101,7 @@ These are the most important decisions when configuring an evaluation bundle. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -116,9 +116,9 @@ These are the most important decisions when configuring an evaluation bundle. Ex
 
 Harness runtime-environment networking and private endpoints also take references — **AwsVpc**, **AwsSubnet**, **AwsSecurityGroup**, and **AwsEfsAccessPoint** — through the VPC config, managed-endpoint, and filesystem fields.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -140,12 +140,12 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — the scoring function behind code-based evaluators, wired via `lambdaArn`
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the execution role harnesses and online configs assume; must trust `bedrock-agentcore.amazonaws.com`
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) — the session-trace source online configs sample from
-- [**AWS Secrets Manager Secret**](/cloud-catalog/aws-secrets-manager-secret) — holds the API key for Gemini and OpenAI harness models
-- [**AWS Bedrock AgentCore Gateway**](/cloud-catalog/aws-bedrock-agent-core-gateway) — a tool front door harness agents call through `agentcoreGateway` tools
-- [**AWS Bedrock AgentCore Memory**](/cloud-catalog/aws-bedrock-agent-core-memory) — explicit memory a harness reads and writes during runs
-- [**AWS Bedrock AgentCore Runtime**](/cloud-catalog/aws-bedrock-agent-core-runtime) — pins a harness to an explicit runtime environment instead of the AWS-managed default
-- [**AWS Bedrock AgentCore Tools**](/cloud-catalog/aws-bedrock-agent-core-tools) — browsers and code interpreters harness tools reference by ARN
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption for evaluator data at rest
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — the scoring function behind code-based evaluators, wired via `lambdaArn`
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the execution role harnesses and online configs assume; must trust `bedrock-agentcore.amazonaws.com`
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) — the session-trace source online configs sample from
+- [**AWS Secrets Manager Secret**](/infra-catalog/aws-secrets-manager-secret) — holds the API key for Gemini and OpenAI harness models
+- [**AWS Bedrock AgentCore Gateway**](/infra-catalog/aws-bedrock-agent-core-gateway) — a tool front door harness agents call through `agentcoreGateway` tools
+- [**AWS Bedrock AgentCore Memory**](/infra-catalog/aws-bedrock-agent-core-memory) — explicit memory a harness reads and writes during runs
+- [**AWS Bedrock AgentCore Runtime**](/infra-catalog/aws-bedrock-agent-core-runtime) — pins a harness to an explicit runtime environment instead of the AWS-managed default
+- [**AWS Bedrock AgentCore Tools**](/infra-catalog/aws-bedrock-agent-core-tools) — browsers and code interpreters harness tools reference by ARN
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption for evaluator data at rest

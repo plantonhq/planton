@@ -21,7 +21,7 @@ import "shared/options/options.proto";
  * (`bao operator init` — generates the unseal key shares and the
  * initial root token) and unsealing are RUNTIME operations performed
  * against the API after deploy; no Kubernetes deployment tool can do
- * them declaratively, and this component deliberately does not try.
+ * them declaratively, and this kind deliberately does not try.
  * Until a server is initialized and unsealed, its pod reports
  * NotReady BY DESIGN (the readiness probe is `bao status`, which
  * exits non-zero for sealed servers) — the chart keeps sealed pods
@@ -217,7 +217,7 @@ message KubernetesOpenBaoSpec {
    * pointing at the same key, a restore is a single call and the
    * restored cluster unseals itself. A Shamir cluster restores only by
    * hand (the snapshot's key shares must be present) — that runbook is
-   * in the component guide, not here.
+   * in the kind's guide, not here.
    *
    * ONE STEP THE MODULE CANNOT TAKE: the Job authenticates with the
    * TARGET's initial root token — run `bao operator init` on the fresh
@@ -274,7 +274,7 @@ message KubernetesOpenBaoSpec {
   };
   option (buf.validate.message).cel = {
     id: "spec.restore.requires_auto_unseal"
-    message: "A declared restore needs auto_unseal with the same seal key the snapshot was taken under — declare the same aws_kms, gcp_kms, azure_key_vault, or transit seal as the source. A Shamir cluster restores by hand; see the component guide."
+    message: "A declared restore needs auto_unseal with the same seal key the snapshot was taken under — declare the same aws_kms, gcp_kms, azure_key_vault, or transit seal as the source. A Shamir cluster restores by hand; see the kind's guide."
     expression: "!has(this.restore) || has(this.auto_unseal)"
   };
 }

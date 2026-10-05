@@ -4,7 +4,7 @@ Deploys one side of a VPC peering connection — private networking between two 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions exactly one of two arms:
+When you deploy this Infra Component, the IaC module provisions exactly one of two arms:
 
 - **VPC Peering Connection** (request arm) — the peering from the requester VPC toward the peer VPC, with the owner account and region for cross-boundary peers, optional same-account auto-acceptance, and the DNS-resolution options managed in-line
 - **Peering Connection Accepter** (accept arm) — adopts a pending connection by `vpcPeeringConnectionId` and accepts it, with the accepter side's DNS-resolution option. Its destroy is a no-op at AWS: it abandons management without deleting the peering — only the requester side deletes
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions exactly one of tw
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with EC2 VPC permissions. Cross-account topologies need one connection per side — the accept arm deploys with the peer account's credentials. Map connections as environment defaults, or specify them explicitly when creating the Cloud Resources.
+- **AWS Provider Connection** — an active connection in the Connect module with EC2 VPC permissions. Cross-account topologies need one connection per side — the accept arm deploys with the peer account's credentials. Map connections as environment defaults, or specify them explicitly when creating the Infra Components.
 
 ### AWS Account
 
@@ -59,7 +59,7 @@ spec:
 planton apply -f vpc-peering.yaml
 ```
 
-This creates a same-account, same-region peering between the app and data VPCs, auto-accepted to ACTIVE in one deploy, with private DNS resolvable both ways. A Stack Job tracks the provisioning in real time.
+This creates a same-account, same-region peering between the app and data VPCs, auto-accepted to ACTIVE in one deploy, with private DNS resolvable both ways. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,7 +102,7 @@ These are the most important decisions when configuring a VPC peering. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -112,9 +112,9 @@ These are the most important decisions when configuring a VPC peering. Explore t
 
 Cross-account peers pass the literal peer `vpc-...` id (with `peerOwnerId`) instead of a reference, and cross-account accepters paste the `pcx-...` id shared by the requesting account.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -131,6 +131,6 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) — the two VPCs being peered, wired via `request.vpcId` and `request.peerVpcId`
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) — must allow the peer CIDR's traffic before anything connects across the peering
-- [**AWS Transit Gateway**](/cloud-catalog/aws-transit-gateway) — the hub-and-spoke alternative once the peering mesh outgrows a handful of VPCs
+- [**AWS VPC**](/infra-catalog/aws-vpc) — the two VPCs being peered, wired via `request.vpcId` and `request.peerVpcId`
+- [**AWS Security Group**](/infra-catalog/aws-security-group) — must allow the peer CIDR's traffic before anything connects across the peering
+- [**AWS Transit Gateway**](/infra-catalog/aws-transit-gateway) — the hub-and-spoke alternative once the peering mesh outgrows a handful of VPCs

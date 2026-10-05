@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockAgentCoreEvaluationStackOutputs captures observable
+// AwsBedrockAgentCoreEvaluationOutputs captures observable
 // identifiers from a provisioned AgentCore Evaluations bundle.
 // Downstream resources (online configs in other bundles referencing
 // custom evaluators, dashboards reading the output log groups) wire
 // dependencies via StringValueOrRef.
-type AwsBedrockAgentCoreEvaluationStackOutputs struct {
+type AwsBedrockAgentCoreEvaluationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Evaluator IDs keyed by each `evaluators` entry's name.
 	EvaluatorIds map[string]string `protobuf:"bytes,1,rep,name=evaluator_ids,json=evaluatorIds,proto3" json:"evaluator_ids,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
@@ -49,20 +49,20 @@ type AwsBedrockAgentCoreEvaluationStackOutputs struct {
 	sizeCache                       protoimpl.SizeCache
 }
 
-func (x *AwsBedrockAgentCoreEvaluationStackOutputs) Reset() {
-	*x = AwsBedrockAgentCoreEvaluationStackOutputs{}
+func (x *AwsBedrockAgentCoreEvaluationOutputs) Reset() {
+	*x = AwsBedrockAgentCoreEvaluationOutputs{}
 	mi := &file_catalog_aws_awsbedrockagentcoreevaluation_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockAgentCoreEvaluationStackOutputs) String() string {
+func (x *AwsBedrockAgentCoreEvaluationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockAgentCoreEvaluationStackOutputs) ProtoMessage() {}
+func (*AwsBedrockAgentCoreEvaluationOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockAgentCoreEvaluationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockAgentCoreEvaluationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockagentcoreevaluation_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,54 +74,54 @@ func (x *AwsBedrockAgentCoreEvaluationStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockAgentCoreEvaluationStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockAgentCoreEvaluationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockAgentCoreEvaluationOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockAgentCoreEvaluationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockagentcoreevaluation_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockAgentCoreEvaluationStackOutputs) GetEvaluatorIds() map[string]string {
+func (x *AwsBedrockAgentCoreEvaluationOutputs) GetEvaluatorIds() map[string]string {
 	if x != nil {
 		return x.EvaluatorIds
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreEvaluationStackOutputs) GetEvaluatorArns() map[string]string {
+func (x *AwsBedrockAgentCoreEvaluationOutputs) GetEvaluatorArns() map[string]string {
 	if x != nil {
 		return x.EvaluatorArns
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreEvaluationStackOutputs) GetHarnessIds() map[string]string {
+func (x *AwsBedrockAgentCoreEvaluationOutputs) GetHarnessIds() map[string]string {
 	if x != nil {
 		return x.HarnessIds
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreEvaluationStackOutputs) GetHarnessArns() map[string]string {
+func (x *AwsBedrockAgentCoreEvaluationOutputs) GetHarnessArns() map[string]string {
 	if x != nil {
 		return x.HarnessArns
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreEvaluationStackOutputs) GetOnlineEvaluationConfigIds() map[string]string {
+func (x *AwsBedrockAgentCoreEvaluationOutputs) GetOnlineEvaluationConfigIds() map[string]string {
 	if x != nil {
 		return x.OnlineEvaluationConfigIds
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreEvaluationStackOutputs) GetOnlineEvaluationConfigArns() map[string]string {
+func (x *AwsBedrockAgentCoreEvaluationOutputs) GetOnlineEvaluationConfigArns() map[string]string {
 	if x != nil {
 		return x.OnlineEvaluationConfigArns
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreEvaluationStackOutputs) GetOnlineEvaluationOutputLogGroups() map[string]string {
+func (x *AwsBedrockAgentCoreEvaluationOutputs) GetOnlineEvaluationOutputLogGroups() map[string]string {
 	if x != nil {
 		return x.OnlineEvaluationOutputLogGroups
 	}
@@ -132,16 +132,16 @@ var File_catalog_aws_awsbedrockagentcoreevaluation_v1alpha1_outputs_proto protor
 
 const file_catalog_aws_awsbedrockagentcoreevaluation_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/aws/awsbedrockagentcoreevaluation/v1alpha1/outputs.proto\x126dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1\"\xe9\r\n" +
-	")AwsBedrockAgentCoreEvaluationStackOutputs\x12\x98\x01\n" +
-	"\revaluator_ids\x18\x01 \x03(\v2s.dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.EvaluatorIdsEntryR\fevaluatorIds\x12\x9b\x01\n" +
-	"\x0eevaluator_arns\x18\x02 \x03(\v2t.dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.EvaluatorArnsEntryR\revaluatorArns\x12\x92\x01\n" +
-	"\vharness_ids\x18\x03 \x03(\v2q.dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.HarnessIdsEntryR\n" +
-	"harnessIds\x12\x95\x01\n" +
-	"\fharness_arns\x18\x04 \x03(\v2r.dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.HarnessArnsEntryR\vharnessArns\x12\xc2\x01\n" +
-	"\x1conline_evaluation_config_ids\x18\x05 \x03(\v2\x80\x01.dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.OnlineEvaluationConfigIdsEntryR\x19onlineEvaluationConfigIds\x12\xc5\x01\n" +
-	"\x1donline_evaluation_config_arns\x18\x06 \x03(\v2\x81\x01.dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.OnlineEvaluationConfigArnsEntryR\x1aonlineEvaluationConfigArns\x12\xd5\x01\n" +
-	"#online_evaluation_output_log_groups\x18\a \x03(\v2\x86\x01.dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.OnlineEvaluationOutputLogGroupsEntryR\x1fonlineEvaluationOutputLogGroups\x1a?\n" +
+	"@catalog/aws/awsbedrockagentcoreevaluation/v1alpha1/outputs.proto\x126dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1\"\xbf\r\n" +
+	"$AwsBedrockAgentCoreEvaluationOutputs\x12\x93\x01\n" +
+	"\revaluator_ids\x18\x01 \x03(\v2n.dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.EvaluatorIdsEntryR\fevaluatorIds\x12\x96\x01\n" +
+	"\x0eevaluator_arns\x18\x02 \x03(\v2o.dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.EvaluatorArnsEntryR\revaluatorArns\x12\x8d\x01\n" +
+	"\vharness_ids\x18\x03 \x03(\v2l.dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.HarnessIdsEntryR\n" +
+	"harnessIds\x12\x90\x01\n" +
+	"\fharness_arns\x18\x04 \x03(\v2m.dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.HarnessArnsEntryR\vharnessArns\x12\xbc\x01\n" +
+	"\x1conline_evaluation_config_ids\x18\x05 \x03(\v2{.dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.OnlineEvaluationConfigIdsEntryR\x19onlineEvaluationConfigIds\x12\xbf\x01\n" +
+	"\x1donline_evaluation_config_arns\x18\x06 \x03(\v2|.dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.OnlineEvaluationConfigArnsEntryR\x1aonlineEvaluationConfigArns\x12\xd0\x01\n" +
+	"#online_evaluation_output_log_groups\x18\a \x03(\v2\x81\x01.dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.OnlineEvaluationOutputLogGroupsEntryR\x1fonlineEvaluationOutputLogGroups\x1a?\n" +
 	"\x11EvaluatorIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a@\n" +
@@ -179,23 +179,23 @@ func file_catalog_aws_awsbedrockagentcoreevaluation_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_aws_awsbedrockagentcoreevaluation_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_catalog_aws_awsbedrockagentcoreevaluation_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockAgentCoreEvaluationStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs
-	nil, // 1: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.EvaluatorIdsEntry
-	nil, // 2: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.EvaluatorArnsEntry
-	nil, // 3: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.HarnessIdsEntry
-	nil, // 4: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.HarnessArnsEntry
-	nil, // 5: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.OnlineEvaluationConfigIdsEntry
-	nil, // 6: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.OnlineEvaluationConfigArnsEntry
-	nil, // 7: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.OnlineEvaluationOutputLogGroupsEntry
+	(*AwsBedrockAgentCoreEvaluationOutputs)(nil), // 0: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs
+	nil, // 1: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.EvaluatorIdsEntry
+	nil, // 2: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.EvaluatorArnsEntry
+	nil, // 3: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.HarnessIdsEntry
+	nil, // 4: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.HarnessArnsEntry
+	nil, // 5: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.OnlineEvaluationConfigIdsEntry
+	nil, // 6: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.OnlineEvaluationConfigArnsEntry
+	nil, // 7: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.OnlineEvaluationOutputLogGroupsEntry
 }
 var file_catalog_aws_awsbedrockagentcoreevaluation_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.evaluator_ids:type_name -> dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.EvaluatorIdsEntry
-	2, // 1: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.evaluator_arns:type_name -> dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.EvaluatorArnsEntry
-	3, // 2: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.harness_ids:type_name -> dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.HarnessIdsEntry
-	4, // 3: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.harness_arns:type_name -> dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.HarnessArnsEntry
-	5, // 4: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.online_evaluation_config_ids:type_name -> dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.OnlineEvaluationConfigIdsEntry
-	6, // 5: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.online_evaluation_config_arns:type_name -> dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.OnlineEvaluationConfigArnsEntry
-	7, // 6: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.online_evaluation_output_log_groups:type_name -> dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationStackOutputs.OnlineEvaluationOutputLogGroupsEntry
+	1, // 0: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.evaluator_ids:type_name -> dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.EvaluatorIdsEntry
+	2, // 1: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.evaluator_arns:type_name -> dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.EvaluatorArnsEntry
+	3, // 2: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.harness_ids:type_name -> dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.HarnessIdsEntry
+	4, // 3: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.harness_arns:type_name -> dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.HarnessArnsEntry
+	5, // 4: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.online_evaluation_config_ids:type_name -> dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.OnlineEvaluationConfigIdsEntry
+	6, // 5: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.online_evaluation_config_arns:type_name -> dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.OnlineEvaluationConfigArnsEntry
+	7, // 6: dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.online_evaluation_output_log_groups:type_name -> dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1.AwsBedrockAgentCoreEvaluationOutputs.OnlineEvaluationOutputLogGroupsEntry
 	7, // [7:7] is the sub-list for method output_type
 	7, // [7:7] is the sub-list for method input_type
 	7, // [7:7] is the sub-list for extension type_name

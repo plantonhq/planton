@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureMachineLearningBatchEndpointStackInput is the input to the IaC
+// AzureMachineLearningBatchEndpointIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-type AzureMachineLearningBatchEndpointStackInput struct {
+type AzureMachineLearningBatchEndpointIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The batch endpoint resource to deploy.
 	Target *AzureMachineLearningBatchEndpoint `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureMachineLearningBatchEndpointStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureMachineLearningBatchEndpointStackInput) Reset() {
-	*x = AzureMachineLearningBatchEndpointStackInput{}
+func (x *AzureMachineLearningBatchEndpointIacInput) Reset() {
+	*x = AzureMachineLearningBatchEndpointIacInput{}
 	mi := &file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMachineLearningBatchEndpointStackInput) String() string {
+func (x *AzureMachineLearningBatchEndpointIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMachineLearningBatchEndpointStackInput) ProtoMessage() {}
+func (*AzureMachineLearningBatchEndpointIacInput) ProtoMessage() {}
 
-func (x *AzureMachineLearningBatchEndpointStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureMachineLearningBatchEndpointIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureMachineLearningBatchEndpointStackInput) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMachineLearningBatchEndpointStackInput.ProtoReflect.Descriptor instead.
-func (*AzureMachineLearningBatchEndpointStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMachineLearningBatchEndpointIacInput.ProtoReflect.Descriptor instead.
+func (*AzureMachineLearningBatchEndpointIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMachineLearningBatchEndpointStackInput) GetTarget() *AzureMachineLearningBatchEndpoint {
+func (x *AzureMachineLearningBatchEndpointIacInput) GetTarget() *AzureMachineLearningBatchEndpoint {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureMachineLearningBatchEndpointStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureMachineLearningBatchEndpointIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_input_proto pr
 
 const file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/azure/azuremachinelearningbatchendpoint/v1alpha1/input.proto\x12<dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1\x1aBcatalog/azure/azuremachinelearningbatchendpoint/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xf7\x01\n" +
-	"+AzureMachineLearningBatchEndpointStackInput\x12w\n" +
+	"Dcatalog/azure/azuremachinelearningbatchendpoint/v1alpha1/input.proto\x12<dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1\x1aBcatalog/azure/azuremachinelearningbatchendpoint/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xf5\x01\n" +
+	")AzureMachineLearningBatchEndpointIacInput\x12w\n" +
 	"\x06target\x18\x01 \x01(\v2_.dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1.AzureMachineLearningBatchEndpointR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xe4\x03\n" +
 	"@com.dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_input_proto_r
 
 var file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_input_proto_goTypes = []any{
-	(*AzureMachineLearningBatchEndpointStackInput)(nil), // 0: dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1.AzureMachineLearningBatchEndpointStackInput
-	(*AzureMachineLearningBatchEndpoint)(nil),           // 1: dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1.AzureMachineLearningBatchEndpoint
-	(*azure.AzureProviderConfig)(nil),                   // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureMachineLearningBatchEndpointIacInput)(nil), // 0: dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1.AzureMachineLearningBatchEndpointIacInput
+	(*AzureMachineLearningBatchEndpoint)(nil),         // 1: dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1.AzureMachineLearningBatchEndpoint
+	(*azure.AzureProviderConfig)(nil),                 // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuremachinelearningbatchendpoint_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1.AzureMachineLearningBatchEndpointStackInput.target:type_name -> dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1.AzureMachineLearningBatchEndpoint
-	2, // 1: dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1.AzureMachineLearningBatchEndpointStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1.AzureMachineLearningBatchEndpointIacInput.target:type_name -> dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1.AzureMachineLearningBatchEndpoint
+	2, // 1: dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1.AzureMachineLearningBatchEndpointIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

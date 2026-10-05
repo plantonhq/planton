@@ -7,14 +7,14 @@ import "catalog/openfga/openfgastore/v1alpha1/outputs.proto";
 import "catalog/openfga/openfgastore/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// OpenFgaStore is a component that creates a store in OpenFGA.
+// OpenFgaStore is a kind that creates a store in OpenFGA.
 //
 // A store is the top-level container for authorization data in OpenFGA. Each store
 // contains authorization models (which define the relationships and permissions)
 // and relationship tuples (which represent the actual authorization data).
 //
 // IMPORTANT: OpenFGA only has a Terraform provider - there is no Pulumi provider available.
-// This component runs on OpenTofu or Terraform (kind_meta.provisioners), and Planton refuses
+// This kind runs on OpenTofu or Terraform (kind_meta.provisioners), and Planton refuses
 // Pulumi for it before anything runs.
 //
 // Use cases:
@@ -42,12 +42,12 @@ message OpenFgaStore {
   // Must be "OpenFgaStore" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'OpenFgaStore'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the store within Planton
   // - org: Organization that owns this store
   // - env: Environment (development, staging, production)
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the desired configuration for the OpenFGA store.
   // Currently only the store name is configurable.
@@ -62,8 +62,8 @@ message OpenFgaStore {
 // OpenFgaStoreStatus represents the current state of an OpenFGA Store resource.
 // This is populated by the deployment system and contains read-only outputs.
 message OpenFgaStoreStatus {
-  // outputs contains the stack outputs from the OpenFGA store deployment.
+  // outputs contains the outputs from the OpenFGA store deployment.
   // These values are populated after successful deployment and include
   // the store identifier.
-  OpenFgaStoreStackOutputs outputs = 1;
+  OpenFgaStoreOutputs outputs = 1;
 }

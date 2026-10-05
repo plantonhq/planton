@@ -27,7 +27,7 @@ type AwsBackupRestoreTestingPlan struct {
 	state         protoimpl.MessageState             `protogen:"open.v1"`
 	ApiVersion    string                             `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                             `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata      `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata      `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsBackupRestoreTestingPlanSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsBackupRestoreTestingPlanStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsBackupRestoreTestingPlan) GetKind() string {
 	return ""
 }
 
-func (x *AwsBackupRestoreTestingPlan) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsBackupRestoreTestingPlan) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsBackupRestoreTestingPlan) GetStatus() *AwsBackupRestoreTestingPlanSt
 }
 
 type AwsBackupRestoreTestingPlanStatus struct {
-	state         protoimpl.MessageState                   `protogen:"open.v1"`
-	Outputs       *AwsBackupRestoreTestingPlanStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState              `protogen:"open.v1"`
+	Outputs       *AwsBackupRestoreTestingPlanOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsBackupRestoreTestingPlanStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsBackupRestoreTestingPlanStatus) GetOutputs() *AwsBackupRestoreTestingPlanStackOutputs {
+func (x *AwsBackupRestoreTestingPlanStatus) GetOutputs() *AwsBackupRestoreTestingPlanOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_api_proto_rawDesc = 
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bAwsBackupRestoreTestingPlanR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
 	"\x04spec\x18\x04 \x01(\v2U.dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
-	"\x06status\x18\x05 \x01(\v2W.dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanStatusR\x06status\"\x9c\x01\n" +
-	"!AwsBackupRestoreTestingPlanStatus\x12w\n" +
-	"\aoutputs\x18\x01 \x01(\v2].dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanStackOutputsR\aoutputsB\xac\x03\n" +
+	"\x06status\x18\x05 \x01(\v2W.dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanStatusR\x06status\"\x97\x01\n" +
+	"!AwsBackupRestoreTestingPlanStatus\x12r\n" +
+	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanOutputsR\aoutputsB\xac\x03\n" +
 	"8com.dev.planton.aws.awsbackuprestoretestingplan.v1alpha1B\bApiProtoP\x01Zqgithub.com/plantonhq/planton/catalog/aws/awsbackuprestoretestingplan/v1alpha1;awsbackuprestoretestingplanv1alpha1\xa2\x02\x04DPAA\xaa\x024Dev.Planton.Aws.Awsbackuprestoretestingplan.V1alpha1\xca\x024Dev\\Planton\\Aws\\Awsbackuprestoretestingplan\\V1alpha1\xe2\x02@Dev\\Planton\\Aws\\Awsbackuprestoretestingplan\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Aws::Awsbackuprestoretestingplan::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_api_proto_rawDescGZIP
 
 var file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_api_proto_goTypes = []any{
-	(*AwsBackupRestoreTestingPlan)(nil),             // 0: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlan
-	(*AwsBackupRestoreTestingPlanStatus)(nil),       // 1: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsBackupRestoreTestingPlanSpec)(nil),         // 3: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanSpec
-	(*AwsBackupRestoreTestingPlanStackOutputs)(nil), // 4: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanStackOutputs
+	(*AwsBackupRestoreTestingPlan)(nil),        // 0: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlan
+	(*AwsBackupRestoreTestingPlanStatus)(nil),  // 1: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsBackupRestoreTestingPlanSpec)(nil),    // 3: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanSpec
+	(*AwsBackupRestoreTestingPlanOutputs)(nil), // 4: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanOutputs
 }
 var file_catalog_aws_awsbackuprestoretestingplan_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlan.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlan.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlan.spec:type_name -> dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanSpec
 	1, // 2: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlan.status:type_name -> dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanStatus
-	4, // 3: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanStatus.outputs:type_name -> dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanStackOutputs
+	4, // 3: dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanStatus.outputs:type_name -> dev.planton.aws.awsbackuprestoretestingplan.v1alpha1.AwsBackupRestoreTestingPlanOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

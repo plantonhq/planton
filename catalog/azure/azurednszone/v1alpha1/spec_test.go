@@ -38,7 +38,7 @@ func validResource() *AzureDnsZone {
 	return &AzureDnsZone{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureDnsZone",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "public-dns",
 		},
 		Spec: &AzureDnsZoneSpec{

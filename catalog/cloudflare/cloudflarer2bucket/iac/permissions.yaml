@@ -3,7 +3,7 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # HONEST UNKNOWNS: (1) custom-domain attachment operates through the R2 API
 # but connects a hostname in a Cloudflare zone on the same account -- whether
@@ -12,11 +12,11 @@
 # reference page; the live capture lane should settle it. (2) Event
 # notifications target a queue by ID; whether the R2 group alone authorizes
 # the subscription or a Queues-scoped permission is also checked is likewise
-# unstated. Both entries stay derived until proven. The component catalog.md
+# unstated. Both entries stay derived until proven. The kind's catalog.md
 # says only that the token needs "R2 permissions" -- no more specific prose
 # existed to migrate.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflarer2bucket
 spec:

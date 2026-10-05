@@ -2,21 +2,21 @@
 
 ## When NOT to Use This
 
-Before anything else: **a first-class catalog component always wins.** Typed components validate configuration before deploy, export composable outputs other resources can reference, and document their trade-offs field by field — raw YAML does none of that. If the catalog has a component for what you're deploying (a Deployment, a Helm chart, a StorageClass, ...), use it.
+Before anything else: **a first-class catalog kind always wins.** Typed kinds validate configuration before deploy, export composable outputs other resources can reference, and document their trade-offs field by field — raw YAML does none of that. If the catalog has a kind for what you're deploying (a Deployment, a Helm chart, a StorageClass, ...), use it.
 
-**KubernetesManifest** is the catalog's bring-your-own-manifest escape hatch, for the YAML no component covers:
+**KubernetesManifest** is the catalog's bring-your-own-manifest escape hatch, for the YAML no kind covers:
 
 - A vendor's install manifest, published as one raw file for `kubectl apply -f`
 - A CRD bundle — CRDs plus the custom resources that configure an operator
-- An exotic custom resource with no typed component
+- An exotic custom resource with no typed kind
 
 ## Overview
 
-Hand the component any valid Kubernetes manifest — a single document or many separated by `---`, core kinds or custom resources, even a CRD and its custom resources together — and both IaC engines apply it to the cluster **exactly as written**: no injected labels, no rewritten fields, no interpretation. Around that, the component provides what `kubectl apply` cannot: full lifecycle (create, update, destroy with nothing orphaned), one-pass CRD ordering, readiness awaits, and stack outputs.
+Hand the component any valid Kubernetes manifest — a single document or many separated by `---`, core kinds or custom resources, even a CRD and its custom resources together — and both IaC engines apply it to the cluster **exactly as written**: no injected labels, no rewritten fields, no interpretation. Around that, the component provides what `kubectl apply` cannot: full lifecycle (create, update, destroy with nothing orphaned), one-pass CRD ordering, readiness awaits, and outputs.
 
 ## Namespace Semantics
 
-The one piece of defaulting the component performs, identical on both engines:
+The one piece of defaulting the kind performs, identical on both engines:
 
 - Documents that declare their own `metadata.namespace` **keep it**
 - Namespaced documents that declare none **land in `spec.namespace`** (the anchor)
@@ -36,7 +36,7 @@ The one piece of defaulting the component performs, identical on both engines:
 - **`spec.create_namespace`** (default `false`): Whether this resource creates and owns the anchor namespace
 - **`spec.skip_await`** (default `false`): When `true`, the deploy returns as soon as the API server accepts every document. When `false`, both engines block until readiness: Deployments/DaemonSets/StatefulSets complete their rollout, and other kinds pass their engine's readiness checks. Skip the await for manifests whose readiness depends on something deployed later (e.g. a webhook configuration waiting on its service) or that intentionally stay not-ready at install time — vendor install bundles are the usual case
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -83,7 +83,7 @@ Neither document declares a namespace, so both land in `my-app`, which the compo
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that uphold one parity contract:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that uphold one parity contract:
 
 1. **Anchoring**: Pulumi constructs its Kubernetes provider with `spec.namespace` as the default namespace (scope-aware — cluster-scoped kinds are skipped); Terraform sets `override_namespace` per document, only on documents that declare no namespace. Same outcome
 2. **Apply**: both engines apply server-side. Pulumi feeds the whole manifest to a `yaml/v2` ConfigGroup; Terraform creates one `kubectl_manifest` per document, keyed by the document's identity (`apiVersion/Kind/namespace/name`) so reordering documents never churns state
@@ -95,14 +95,14 @@ This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules tha
 
 Use **KubernetesManifest** when:
 
-- The catalog has no component for the resource you need to apply
+- The catalog has no kind for the resource you need to apply
 - A vendor publishes raw install YAML and you want it lifecycle-managed, byte-for-byte as published
 - You are installing CRDs together with the custom resources that use them
 - A small bundle of plain objects (ConfigMaps, RBAC, quotas) should apply, update, and delete together
 
 **Do NOT use** when:
 
-- A first-class component covers the resource — it always wins on validation, outputs, and documentation
+- A first-class kind covers the resource — it always wins on validation, outputs, and documentation
 - The vendor ships a Helm chart — use KubernetesHelmRelease and keep the chart's upgrade path
 - You need templating or per-environment value substitution — this component applies YAML exactly as written; parameterize upstream of it
 
@@ -114,7 +114,7 @@ Use **KubernetesManifest** when:
 
 ## Best Practices
 
-1. **Exhaust the catalog first** — treat every KubernetesManifest resource as a pointer at a missing typed component
+1. **Exhaust the catalog first** — treat every KubernetesManifest resource as a pointer at a missing typed kind
 2. **Leave your own documents unanchored**: omit `metadata.namespace` and anchor through `spec.namespace`, so retargeting the bundle is a one-field change
 3. **Paste vendor manifests verbatim**: the pattern's value is byte-for-byte fidelity; upgrades are a paste of the next release's file
 4. **Skip the await on install bundles**: manifests with internal ordering (webhooks waiting on services) can deadlock a readiness await; `skip_await: true` is the safe setting for vendor installs

@@ -28,7 +28,7 @@ type GcpComputeMig struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpComputeMigSpec            `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpComputeMigStatus          `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpComputeMig) GetKind() string {
 	return ""
 }
 
-func (x *GcpComputeMig) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpComputeMig) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpComputeMig) GetStatus() *GcpComputeMigStatus {
 }
 
 type GcpComputeMigStatus struct {
-	state         protoimpl.MessageState     `protogen:"open.v1"`
-	Outputs       *GcpComputeMigStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Outputs       *GcpComputeMigOutputs  `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpComputeMigStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcomputemig_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpComputeMigStatus) GetOutputs() *GcpComputeMigStackOutputs {
+func (x *GcpComputeMigStatus) GetOutputs() *GcpComputeMigOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpcomputemig_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12(\n" +
 	"\x04kind\x18\x02 \x01(\tB\x14\xbaH\x11r\x0f\n" +
 	"\rGcpComputeMigR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
 	"\x04spec\x18\x04 \x01(\v29.dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12S\n" +
-	"\x06status\x18\x05 \x01(\v2;.dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatusR\x06status\"r\n" +
-	"\x13GcpComputeMigStatus\x12[\n" +
-	"\aoutputs\x18\x01 \x01(\v2A.dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStackOutputsR\aoutputsB\xca\x02\n" +
+	"\x06status\x18\x05 \x01(\v2;.dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatusR\x06status\"m\n" +
+	"\x13GcpComputeMigStatus\x12V\n" +
+	"\aoutputs\x18\x01 \x01(\v2<.dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigOutputsR\aoutputsB\xca\x02\n" +
 	"*com.dev.planton.gcp.gcpcomputemig.v1alpha1B\bApiProtoP\x01ZUgithub.com/plantonhq/planton/catalog/gcp/gcpcomputemig/v1alpha1;gcpcomputemigv1alpha1\xa2\x02\x04DPGG\xaa\x02&Dev.Planton.Gcp.Gcpcomputemig.V1alpha1\xca\x02&Dev\\Planton\\Gcp\\Gcpcomputemig\\V1alpha1\xe2\x022Dev\\Planton\\Gcp\\Gcpcomputemig\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Gcp::Gcpcomputemig::V1alpha1b\x06proto3"
 
 var (
@@ -178,15 +178,15 @@ var file_catalog_gcp_gcpcomputemig_v1alpha1_api_proto_msgTypes = make([]protoimp
 var file_catalog_gcp_gcpcomputemig_v1alpha1_api_proto_goTypes = []any{
 	(*GcpComputeMig)(nil),                // 0: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMig
 	(*GcpComputeMigStatus)(nil),          // 1: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpComputeMigSpec)(nil),            // 3: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec
-	(*GcpComputeMigStackOutputs)(nil),    // 4: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStackOutputs
+	(*GcpComputeMigOutputs)(nil),         // 4: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigOutputs
 }
 var file_catalog_gcp_gcpcomputemig_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMig.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMig.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMig.spec:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec
 	1, // 2: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMig.status:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatus
-	4, // 3: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatus.outputs:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStackOutputs
+	4, // 3: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatus.outputs:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

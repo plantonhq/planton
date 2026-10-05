@@ -60,7 +60,7 @@ This creates a symmetric encryption key with 90-day automatic rotation — the m
 
 Cross-field rules enforced before deploy: rotation only on ENCRYPT_DECRYPT keys; `importOnly` requires `skipInitialVersionCreation`; `cryptoKeyBackend` requires `EXTERNAL_VPC` protection.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
@@ -76,7 +76,7 @@ Cross-field rules enforced before deploy: rotation only on ENCRYPT_DECRYPT keys;
 - **Rotation is forward-only**: it limits blast radius for new data; existing data stays under its original version until rewritten.
 - **Destroy has teeth**: destroying this resource schedules every version for destruction. Once the recovery window (`destroyScheduledDuration`, default 30 days) elapses, data encrypted under those versions is permanently unrecoverable.
 
-## Related Components
+## Related Kinds
 
 - [GcpKmsKeyRing](../gcpkmskeyring/) — the parent container (required)
 - [GcpBigQueryDataset](../gcpbigquerydataset/), [GcpSpannerDatabase](../gcpspannerdatabase/), [GcpCloudSql](../gcpcloudsql/), [GcpGkeCluster](../gcpgkecluster/), [GcpPubSubTopic](../gcppubsubtopic/) — CMEK consumers referencing `key_id`

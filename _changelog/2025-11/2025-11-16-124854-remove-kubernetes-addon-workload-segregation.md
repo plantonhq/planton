@@ -6,14 +6,14 @@
 
 ## Summary
 
-Eliminated the addon/workload categorization for Kubernetes deployment components, moving all 36 Kubernetes components to a flat directory structure matching AWS, GCP, and other providers. This architectural simplification removes unnecessary complexity while preserving the `namespace_prefix` metadata for former workload components. The refactoring touched 463 files across proto schemas, code generation, import paths, and documentation, creating a more consistent and maintainable provider structure.
+Eliminated the addon/workload categorization for Kubernetes catalog kinds, moving all 36 Kubernetes kinds to a flat directory structure matching AWS, GCP, and other providers. This architectural simplification removes unnecessary complexity while preserving the `namespace_prefix` metadata for former workload kinds. The refactoring touched 463 files across proto schemas, code generation, import paths, and documentation, creating a more consistent and maintainable provider structure.
 
 ## Problem Statement / Motivation
 
-When Planton was first designed, Kubernetes components were segregated into two categories:
+When Planton was first designed, Kubernetes kinds were segregated into two categories:
 
-- **addon/** - Cluster-level operators and add-ons (13 components: CertManager, ExternalDNS, Istio, various operators)
-- **workload/** - Application workloads (23 components: PostgresKubernetes, RedisKubernetes, KafkaKubernetes, etc.)
+- **addon/** - Cluster-level operators and add-ons (13 kinds: CertManager, ExternalDNS, Istio, various operators)
+- **workload/** - Application workloads (23 kinds: PostgresKubernetes, RedisKubernetes, KafkaKubernetes, etc.)
 
 This categorization seemed logical initially—separating infrastructure add-ons from application workloads. However, over time, we realized this distinction was:
 
@@ -25,10 +25,10 @@ This categorization seemed logical initially—separating infrastructure add-ons
 ### Pain Points
 
 **For Developers:**
-- **Confusing mental model**: "Is this component an addon or workload?" became a recurring question
+- **Confusing mental model**: "Is this kind an addon or workload?" became a recurring question
 - **Inconsistent patterns**: Kubernetes had special-case code paths that other providers didn't
-- **Extra navigation**: Finding components required knowing which category they belonged to
-- **Category confusion**: Some components could arguably fit in either category
+- **Extra navigation**: Finding kinds required knowing which category they belonged to
+- **Category confusion**: Some kinds could arguably fit in either category
 
 **For Code:**
 - **Special-case logic**: Code generation treated Kubernetes differently from other providers
@@ -38,12 +38,12 @@ This categorization seemed logical initially—separating infrastructure add-ons
 
 **For Architecture:**
 - **Inconsistent provider structure**: All providers were flat except Kubernetes
-- **Fragile assumptions**: Adding a new Kubernetes component required category decisions
+- **Fragile assumptions**: Adding a new Kubernetes kind required category decisions
 - **Documentation complexity**: Explaining why Kubernetes was different added confusion
 
 ## Solution / What's New
 
-Unified all Kubernetes components under a flat directory structure, treating Kubernetes exactly like every other provider in Planton.
+Unified all Kubernetes kinds under a flat directory structure, treating Kubernetes exactly like every other provider in Planton.
 
 ### Architectural Change
 
@@ -136,13 +136,13 @@ apis/dev/planton/provider/kubernetes/
 
 **1. Remove Category Enum Entirely**
 
-Decision: Delete the `KubernetesCloudResourceCategory` enum and `category` field from proto metadata.
+Decision: Delete the `KubernetesCatalogKindCategory` enum and `category` field from proto metadata.
 
-Rationale: The category served no functional purpose. It was metadata without behavior—no code logic actually depended on whether a component was an addon or workload beyond determining directory paths.
+Rationale: The category served no functional purpose. It was metadata without behavior—no code logic actually depended on whether a kind was an addon or workload beyond determining directory paths.
 
 **2. Preserve namespace_prefix for Former Workloads**
 
-Decision: Keep `namespace_prefix` field in `kubernetes_meta` for the 23 components that previously had it (former workloads), but don't add it to former addons.
+Decision: Keep `namespace_prefix` field in `kubernetes_meta` for the 23 kinds that previously had it (former workloads), but don't add it to former addons.
 
 Rationale: 
 - `namespace_prefix` has functional value (used for Kubernetes namespace naming)
@@ -150,7 +150,7 @@ Rationale:
 - Former workloads need their prefixes preserved for backward compatibility
 - This maintains functionality while removing categorization
 
-**Before (workload component):**
+**Before (workload kind):**
 ```protobuf
 KubernetesPostgres = 814 [(kind_meta) = {
   provider: kubernetes
@@ -197,9 +197,9 @@ CertManager = 821 [(kind_meta) = {
 
 **3. Treat Kubernetes Like Any Other Provider**
 
-Decision: Kubernetes components follow the same directory pattern as AWS, GCP, etc.
+Decision: Kubernetes kinds follow the same directory pattern as AWS, GCP, etc.
 
-Pattern: `apis/dev/planton/provider/{provider}/{component}/v1/`
+Pattern: `apis/dev/planton/provider/{provider}/{kind}/v1/`
 
 This means:
 - `kubernetes/kubernetespostgres/v1/` (same as `aws/awsrdsinstance/v1/`)
@@ -209,46 +209,46 @@ This means:
 
 ### 1. Proto Schema Changes
 
-**File**: `apis/dev/planton/shared/cloudresourcekind/kubernetes.proto`
+**File**: `apis/dev/planton/shared/catalogkind/kubernetes.proto`
 
 Removed the category enum entirely:
 
 ```protobuf
 // DELETED:
-enum KubernetesCloudResourceCategory {
-  kubernetes_cloud_resource_category_unspecified = 0;
+enum KubernetesCatalogKindCategory {
+  kubernetes_catalog_kind_category_unspecified = 0;
   addon = 1;
   workload = 2;
 }
 ```
 
-**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/catalogkind/catalog_kind.proto`
 
-Updated `KubernetesCloudResourceKindMeta` message:
+Updated `KubernetesCatalogKindMeta` message:
 
 ```protobuf
 // Before:
-message KubernetesCloudResourceKindMeta {
+message KubernetesCatalogKindMeta {
   string namespace_prefix = 1;
-  KubernetesCloudResourceCategory category = 2; // ← Removed
+  KubernetesCatalogKindCategory category = 2; // ← Removed
 }
 
 // After:
-message KubernetesCloudResourceKindMeta {
+message KubernetesCatalogKindMeta {
   string namespace_prefix = 1;
   // category field deleted
 }
 ```
 
-Updated all 36 Kubernetes component metadata entries:
-- Removed `category: workload` from 23 components (kept their `namespace_prefix`)
-- Removed entire `kubernetes_meta` block from 13 components (former addons with no namespace)
+Updated all 36 Kubernetes kind metadata entries:
+- Removed `category: workload` from 23 kinds (kept their `namespace_prefix`)
+- Removed entire `kubernetes_meta` block from 13 kinds (former addons with no namespace)
 
-Also removed unused `kubernetes.proto` import from `cloud_resource_kind.proto`.
+Also removed unused `kubernetes.proto` import from `catalog_kind.proto`.
 
 ### 2. Directory Structure Reorganization
 
-Moved all 36 components using git's rename tracking:
+Moved all 36 kinds using git's rename tracking:
 
 ```bash
 # Addon components (13)
@@ -256,19 +256,19 @@ git mv kubernetes/addon/altinityoperator → kubernetes/altinityoperator
 git mv kubernetes/addon/certmanager → kubernetes/certmanager
 # ... 11 more addon components
 
-# Workload components (23)
+# Workload kinds (23)
 git mv kubernetes/workload/kubernetesargocd → kubernetes/kubernetesargocd
 git mv kubernetes/workload/kubernetespostgres → kubernetes/kubernetespostgres
-# ... 21 more workload components
+# ... 21 more workload kinds
 ```
 
 **Result**: 758 files renamed, directories properly tracked by git.
 
-After moving all components, removed the now-empty `addon/` and `workload/` directories.
+After moving all kinds, removed the now-empty `addon/` and `workload/` directories.
 
 ### 3. Code Generation Updates
 
-**File**: `pkg/crkreflect/codegen/main.go`
+**File**: `pkg/catalogkindreflect/codegen/main.go`
 
 Removed special-case Kubernetes handling to treat it like all other providers:
 
@@ -278,12 +278,12 @@ func run() error {
     provEntries := map[string][]entry{}
     k8sAddon, k8sWorkload := []entry{}, []entry{} // ← Separate tracking
     
-    for _, cloudResourceKind := range crkreflect.KindsList() {
+    for _, catalogKind := range catalogkindreflect.KindsList() {
         // ...
         
         // Special case for kubernetes
         if provRaw == "kubernetes" {
-            kubernetesResourceType := crkreflect.GetKubernetesResourceCategory(kind)
+            kubernetesResourceType := catalogkindreflect.GetKubernetesResourceCategory(kind)
             
             importPath = fmt.Sprintf(
                 "github.com/.../provider/%s/%s/%s/v1",
@@ -307,7 +307,7 @@ func run() error {
 func run() error {
     provEntries := map[string][]entry{} // ← All providers treated equally
     
-    for _, cloudResourceKind := range crkreflect.KindsList() {
+    for _, catalogKind := range catalogkindreflect.KindsList() {
         // ...
         
         // All providers use flat structure (no special case)
@@ -343,11 +343,11 @@ var ToMessageMap = merge(
 
 **After:**
 ```go
-var ProviderKubernetesMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
-    cloudresourcekind.CloudResourceKind_AltinityOperator: &altinityoperatorv1.AltinityOperator{},
-    cloudresourcekind.CloudResourceKind_CertManager: &certmanagerv1.CertManager{},
-    cloudresourcekind.CloudResourceKind_KubernetesArgocd: &kubernetesargocdv1.KubernetesArgocd{},
-    // ... all 36 components in one map
+var ProviderKubernetesMap = map[catalogkind.CatalogKind]proto.Message{
+    catalogkind.CatalogKind_AltinityOperator: &altinityoperatorv1.AltinityOperator{},
+    catalogkind.CatalogKind_CertManager: &certmanagerv1.CertManager{},
+    catalogkind.CatalogKind_KubernetesArgocd: &kubernetesargocdv1.KubernetesArgocd{},
+    // ... all 36 kinds in one map
 }
 
 var ToMessageMap = merge(
@@ -358,7 +358,7 @@ var ToMessageMap = merge(
 )
 ```
 
-**Deleted File**: `pkg/crkreflect/get_kubernetes_resource_category.go`
+**Deleted File**: `pkg/catalogkindreflect/get_kubernetes_resource_category.go`
 
 This file contained the `GetKubernetesResourceCategory()` function that retrieved the category from metadata. No longer needed since category concept is removed.
 
@@ -375,8 +375,8 @@ kindDirPath := filepath.Join(
     "apis/project/planton/provider",
     strings.ReplaceAll(kindProvider.String(), "_", ""))
 
-if kindProvider == cloudresourcekind.CloudResourceProvider_kubernetes {
-    kindDirPath = filepath.Join(kindDirPath, crkreflect.GetKubernetesResourceCategory(kind).String())
+if kindProvider == catalogkind.CatalogProvider_kubernetes {
+    kindDirPath = filepath.Join(kindDirPath, catalogkindreflect.GetKubernetesResourceCategory(kind).String())
 }
 
 pulumiModulePath := filepath.Join(kindDirPath, strings.ToLower(kindName), "v1/iac/pulumi")
@@ -403,8 +403,8 @@ Updated all import paths across the codebase to remove category subdirectories:
 
 **Files affected**:
 - ~185 BUILD.bazel files
-- All proto files in kubernetes components
-- All Go files (*.go, go.mod) in kubernetes components
+- All proto files in kubernetes kinds
+- All Go files (*.go, go.mod) in kubernetes kinds
 - Module helpers in pkg/ and internal/
 - Test files
 
@@ -428,24 +428,24 @@ import kubernetespostgresv1 "github.com/plantonhq/planton/apis/dev/planton/provi
 
 ### 6. Documentation Updates
 
-**File**: `architecture/deployment-component.md`
+**File**: `architecture/catalog-kind.md`
 
 Updated folder structure requirements:
 
 **Before:**
 ```markdown
-- [ ] **Kubernetes Category Segregation (if applicable)** - For Kubernetes provider, component is under correct category:
-  - `apis/dev/planton/provider/kubernetes/addon/<component>/v1/` - For cluster add-ons
-  - `apis/dev/planton/provider/kubernetes/workload/<component>/v1/` - For workload resources
-  - `apis/dev/planton/provider/kubernetes/config/<component>/v1/` - For configuration resources
+- [ ] **Kubernetes Category Segregation (if applicable)** - For Kubernetes provider, kind is under correct category:
+  - `apis/dev/planton/provider/kubernetes/addon/<kind>/v1/` - For cluster add-ons
+  - `apis/dev/planton/provider/kubernetes/workload/<kind>/v1/` - For workload resources
+  - `apis/dev/planton/provider/kubernetes/config/<kind>/v1/` - For configuration resources
 ```
 
 **After:**
 ```markdown
-- [ ] **Correct Provider Hierarchy** - Component folder is under the correct provider:
-  - `apis/dev/planton/provider/aws/<component>/v1/`
-  - `apis/dev/planton/provider/gcp/<component>/v1/`
-  - `apis/dev/planton/provider/kubernetes/<component>/v1/`
+- [ ] **Correct Provider Hierarchy** - Kind folder is under the correct provider:
+  - `apis/dev/planton/provider/aws/<kind>/v1/`
+  - `apis/dev/planton/provider/gcp/<kind>/v1/`
+  - `apis/dev/planton/provider/kubernetes/<kind>/v1/`
   - etc.
 ```
 
@@ -461,13 +461,13 @@ Updated example module registry paths:
 "PostgresKubernetes": "github.com/.../provider/kubernetes/postgreskubernetes/v1/iac"
 ```
 
-**File**: `site/scripts/copy-component-docs.ts`
+**File**: `site/scripts/copy-kind-docs.ts`
 
 Updated comments to reflect flat structure:
 
 ```typescript
 /**
- * Scan a provider directory for components with docs
+ * Scan a provider directory for kinds with docs
  * Handles both flat structures (e.g., aws/awsalb/) and any potential nested subdirectories
  */
 ```
@@ -478,7 +478,7 @@ Updated documentation examples to show flat structure:
 
 ```markdown
 **Flat Provider Structures**
-All providers organize components in a flat structure:
+All providers organize kinds in a flat structure:
 
 kubernetes/
 ├── certmanager/v1/docs/README.md
@@ -492,11 +492,11 @@ After all changes, regenerated code with:
 
 ```bash
 make protos  # Regenerate proto stubs
-make generate-cloud-resource-kind-map  # Regenerate kind_map_gen.go
+make generate-catalog-kind-map  # Regenerate kind_map_gen.go
 ```
 
-**Generated output**: `pkg/crkreflect/kind_map_gen.go` (313 lines)
-- Single `ProviderKubernetesMap` with all 36 components
+**Generated output**: `pkg/catalogkindreflect/kind_map_gen.go` (313 lines)
+- Single `ProviderKubernetesMap` with all 36 kinds
 - Import paths use flat structure
 - No references to addon/workload
 
@@ -506,11 +506,11 @@ make generate-cloud-resource-kind-map  # Regenerate kind_map_gen.go
 
 ✅ **Simpler Mental Model**
 - No more "is this an addon or workload?" decisions
-- Find components alphabetically without category knowledge
+- Find kinds alphabetically without category knowledge
 - Same navigation pattern across all providers
 
 ✅ **Consistent Patterns**
-- Kubernetes components structured exactly like AWS/GCP components
+- Kubernetes kinds structured exactly like AWS/GCP kinds
 - No special-case logic in code or tooling
 - Easier to understand and maintain
 
@@ -534,18 +534,18 @@ make generate-cloud-resource-kind-map  # Regenerate kind_map_gen.go
 
 ✅ **Better Architecture**
 - Consistent provider structure across the board
-- Easier to add new Kubernetes components (just create in flat structure)
+- Easier to add new Kubernetes kinds (just create in flat structure)
 - No arbitrary categorization decisions
 
 ### For Users
 
 ✅ **Clearer Documentation**
 - Architecture docs no longer need to explain addon vs workload
-- Component catalog has flat, alphabetical organization
-- Simpler mental model for browsing deployment components
+- Kind catalog has flat, alphabetical organization
+- Simpler mental model for browsing catalog kinds
 
 ✅ **No Breaking Changes**
-- Component names unchanged (CertManager is still CertManager)
+- Kind names unchanged (CertManager is still CertManager)
 - YAML manifests unchanged (same `kind` values)
 - Functionality preserved (namespace_prefix still works)
 - Import paths updated but backward-compatible through build system
@@ -555,7 +555,7 @@ make generate-cloud-resource-kind-map  # Regenerate kind_map_gen.go
 ### Immediate Impact
 
 **Files Changed**: 463 files
-- 758 files renamed (all component files moved)
+- 758 files renamed (all kind files moved)
 - ~20 proto schema files modified
 - ~10 code generation and utility files modified
 - 4 documentation files updated
@@ -565,15 +565,15 @@ make generate-cloud-resource-kind-map  # Regenerate kind_map_gen.go
 - Removed category enum and field definitions
 - Simplified code generation template
 - Deleted helper function
-- More concise component metadata
+- More concise kind metadata
 
-**Components Affected**: All 36 Kubernetes components
-- 13 former addons: Now at `kubernetes/{component}/v1/`
-- 23 former workloads: Now at `kubernetes/{component}/v1/` (kept namespace_prefix)
+**Kinds Affected**: All 36 Kubernetes kinds
+- 13 former addons: Now at `kubernetes/{kind}/v1/`
+- 23 former workloads: Now at `kubernetes/{kind}/v1/` (kept namespace_prefix)
 
 ### Developer Experience
 
-**Adding New Kubernetes Component**:
+**Adding New Kubernetes Kind**:
 
 Before:
 ```bash
@@ -581,7 +581,7 @@ Before:
 # 2. Create in correct category directory
 mkdir -p kubernetes/workload/kubernetesnewapp/v1/
 
-# 3. Update cloud_resource_kind.proto with category
+# 3. Update catalog_kind.proto with category
 kubernetes_meta: {
   category: workload
   namespace_prefix: "newapp"
@@ -593,13 +593,13 @@ After:
 # 1. Create in flat structure (no category decision needed)
 mkdir -p kubernetes/kubernetesnewapp/v1/
 
-# 2. Update cloud_resource_kind.proto (simpler metadata)
+# 2. Update catalog_kind.proto (simpler metadata)
 kubernetes_meta: {
   namespace_prefix: "newapp"
 }
 ```
 
-**Finding a Component**:
+**Finding a Kind**:
 
 Before:
 - Is CertManager an addon or workload? (Need to know to locate it)
@@ -616,13 +616,13 @@ All providers now follow identical structure:
 
 ```
 provider/
-├── aws/{component}/v1/
-├── gcp/{component}/v1/
-├── azure/{component}/v1/
-├── kubernetes/{component}/v1/  ← Now consistent
-├── digitalocean/{component}/v1/
-├── civo/{component}/v1/
-└── cloudflare/{component}/v1/
+├── aws/{kind}/v1/
+├── gcp/{kind}/v1/
+├── azure/{kind}/v1/
+├── kubernetes/{kind}/v1/  ← Now consistent
+├── digitalocean/{kind}/v1/
+├── civo/{kind}/v1/
+└── cloudflare/{kind}/v1/
 ```
 
 **Cognitive Load Reduced**:
@@ -644,22 +644,22 @@ make protos
 ### Code Generation
 
 ```bash
-make generate-cloud-resource-kind-map
+make generate-catalog-kind-map
 # ✅ kind_map_gen.go created (313 lines)
-# ✅ Single ProviderKubernetesMap with 36 components
+# ✅ Single ProviderKubernetesMap with 36 kinds
 # ✅ All import paths use flat structure
 ```
 
-### Component Tests
+### Kind Tests
 
 ```bash
 go test ./apis/dev/planton/provider/kubernetes/kubernetesredis/v1
-# PASS (former workload component)
+# PASS (former workload kind)
 
 go test ./apis/dev/planton/provider/kubernetes/certmanager/v1
 # PASS (former addon component)
 
-go test ./pkg/crkreflect
+go test ./pkg/catalogkindreflect
 # PASS (generated kind_map works correctly)
 ```
 
@@ -671,7 +671,7 @@ grep -r "kubernetes/(addon|workload)/" . --include="*.go"
 # ✅ No matches (all updated)
 
 # Verify generated map is correct
-grep "ProviderKubernetesMap" pkg/crkreflect/kind_map_gen.go | wc -l
+grep "ProviderKubernetesMap" pkg/catalogkindreflect/kind_map_gen.go | wc -l
 # ✅ 2 matches (definition and usage, not separate addon/workload maps)
 ```
 
@@ -690,11 +690,11 @@ git status --short | grep "^D "
 ### Backward Compatibility
 
 **✅ No Breaking Changes for Users**:
-- Component names unchanged (KubernetesPostgres, CertManager, etc.)
+- Kind names unchanged (KubernetesPostgres, CertManager, etc.)
 - YAML manifest `kind` values unchanged
 - CLI commands unchanged
-- Component functionality unchanged
-- Namespace prefixes preserved for components that had them
+- Kind functionality unchanged
+- Namespace prefixes preserved for kinds that had them
 
 **✅ Build System Handles Transition**:
 - Module path resolution automatically uses new flat structure
@@ -703,15 +703,15 @@ git status --short | grep "^D "
 
 ### For Planton Maintainers
 
-**Adding new Kubernetes components**:
-- Use flat structure: `kubernetes/{component}/v1/`
+**Adding new Kubernetes kinds**:
+- Use flat structure: `kubernetes/{kind}/v1/`
 - No category decision needed
-- Add namespace_prefix only if component is namespace-scoped
+- Add namespace_prefix only if kind is namespace-scoped
 
-**Updating existing components**:
+**Updating existing kinds**:
 - Import paths already updated
 - No special handling needed
-- Works exactly like AWS/GCP components
+- Works exactly like AWS/GCP kinds
 
 ### For Planton Integration
 
@@ -743,7 +743,7 @@ The planton monorepo imports Planton APIs via Buf Schema Registry. Once Planton 
 
 ### Why Keep namespace_prefix?
 
-**Decision**: Preserve namespace_prefix for former workload components, don't add to former addons.
+**Decision**: Preserve namespace_prefix for former workload kinds, don't add to former addons.
 
 **Rationale**:
 - Namespace prefix has **functional purpose** (Kubernetes namespace naming)
@@ -766,7 +766,7 @@ The planton monorepo imports Planton APIs via Buf Schema Registry. Once Planton 
 **Decision**: Leave former addons without kubernetes_meta entirely.
 
 **Rationale**:
-- Cluster-scoped components don't use namespaces
+- Cluster-scoped kinds don't use namespaces
 - Adding empty/unused metadata would clutter proto
 - Cleaner to omit than include empty values
 - Optional protobuf field can be absent
@@ -775,7 +775,7 @@ The planton monorepo imports Planton APIs via Buf Schema Registry. Once Planton 
 
 **Proto Schema**:
 - Deleted: 7 lines (category enum)
-- Modified: 36 component metadata entries
+- Modified: 36 kind metadata entries
 - Removed: 1 unused import
 - Net change: -68 lines
 
@@ -786,19 +786,19 @@ The planton monorepo imports Planton APIs via Buf Schema Registry. Once Planton 
 - Generated output: 313 lines (vs 350+ with separate maps)
 
 **Directory Structure**:
-- Moved: 36 component directories
+- Moved: 36 kind directories
 - Renamed: 758 files (git tracked)
 - Deleted: 2 empty directories (addon/, workload/)
 
 **Import Paths**:
 - Updated: ~185 BUILD.bazel files
-- Updated: All kubernetes component proto/Go files
+- Updated: All kubernetes kind proto/Go files
 - Updated: Module path resolution helpers
 
 **Documentation**:
 - Updated: 2 architecture docs
 - Updated: 2 build script docs
-- No functional changes to component READMEs
+- No functional changes to kind READMEs
 
 ## Related Work
 
@@ -838,7 +838,7 @@ kubernetes/
 
 ### Prior Architectural Decisions
 
-This refactoring reverses an earlier design decision to categorize Kubernetes components. The original rationale was to distinguish cluster infrastructure (addons) from application workloads, but in practice this distinction:
+This refactoring reverses an earlier design decision to categorize Kubernetes kinds. The original rationale was to distinguish cluster infrastructure (addons) from application workloads, but in practice this distinction:
 
 - Wasn't clear-cut (ArgoCD could be either)
 - Didn't affect functionality (both categories deployed the same way)
@@ -847,17 +847,17 @@ This refactoring reverses an earlier design decision to categorize Kubernetes co
 
 ### Related Changelogs
 
-**Previous Kubernetes Component Work**:
-- 2025-11-15: Deployment component rename automation
+**Previous Kubernetes Kind Work**:
+- 2025-11-15: Catalog kind rename automation
 - 2025-11-14: Multiple operator completions (Altinity, Percona, Zalando, etc.)
-- 2025-11-13: Kubernetes component naming consistency improvements
+- 2025-11-13: Kubernetes kind naming consistency improvements
 - 2025-11-11: Kubernetes documentation catalog integration
 
 **Documentation System Work**:
-- 2025-11-09: Automated component docs build system
+- 2025-11-09: Automated kind docs build system
 - 2025-11-11: Pagefind search integration
 
-These changelogs show the evolution of the Kubernetes components and documentation system. The addon/workload structure predated all of these improvements.
+These changelogs show the evolution of the Kubernetes kinds and documentation system. The addon/workload structure predated all of these improvements.
 
 ## Future Enhancements
 
@@ -875,11 +875,11 @@ Next iteration will:
 2. Regenerate all proto stubs in monorepo
 3. Update any monorepo-specific code referencing categories
 4. Update web console UI components
-5. Verify Stack Jobs work with new paths
+5. Verify Infra Jobs work with new paths
 
 **2. Update InfraCharts** (If Applicable)
 
-If the infra-charts repository references Kubernetes component paths, update those templates to use new flat structure.
+If the infra-charts repository references Kubernetes kind paths, update those templates to use new flat structure.
 
 ### Long-term Improvements
 
@@ -888,21 +888,21 @@ If the infra-charts repository references Kubernetes component paths, update tho
 - Search indexes will update automatically on next build
 - No manual updates needed to catalog or provider pages
 
-**Component Organization**:
-- Consider adding optional tags/labels for component discovery
+**Kind Organization**:
+- Consider adding optional tags/labels for kind discovery
 - Tags could indicate: cluster-scoped, namespace-scoped, operator, helm-based, etc.
 - Unlike categories, tags would be metadata for filtering, not directory organization
 
 **API Versioning Preparation**:
 - Flat structure makes v2 easier (no category migration needed)
-- Future: `kubernetes/{component}/v2/` alongside `v1/`
+- Future: `kubernetes/{kind}/v2/` alongside `v1/`
 
 ## Design Philosophy Reinforced
 
 This refactoring reinforces Planton's core design principles:
 
 **Consistency Without Abstraction**:
-- Kubernetes components are provider-specific (not abstracted)
+- Kubernetes kinds are provider-specific (not abstracted)
 - But the experience is consistent (same structure as AWS/GCP)
 - Removed artificial categorization that didn't align with this philosophy
 
@@ -920,7 +920,7 @@ This refactoring reinforces Planton's core design principles:
 
 ### Before and After (No Changes Needed!)
 
-**Deploying a component** (unchanged):
+**Deploying a kind** (unchanged):
 ```bash
 # Redis (former workload)
 planton pulumi up --manifest redis.yaml --stack dev
@@ -931,7 +931,7 @@ planton pulumi up --manifest certmanager.yaml --stack dev
 
 **Manifest structure** (unchanged):
 ```yaml
-# Former workload component
+# Former workload kind
 apiVersion: kubernetes.planton.dev/v1
 kind: KubernetesPostgres
 metadata:
@@ -974,7 +974,7 @@ Having one provider with different structure seemed minor initially, but:
 
 ### 3. Flat Structures Scale Better
 
-As the number of Kubernetes components grew (13 → 23 → 36), the categories became less useful:
+As the number of Kubernetes kinds grew (13 → 23 → 36), the categories became less useful:
 - Categories didn't help discovery (still needed to scan both)
 - Alphabetical sorting across categories was awkward
 - Moving between categories felt arbitrary
@@ -983,7 +983,7 @@ As the number of Kubernetes components grew (13 → 23 → 36), the categories b
 
 ### 4. Git Makes Refactoring Safe
 
-Using `git mv` for all 36 components:
+Using `git mv` for all 36 kinds:
 - Preserved file history
 - Enabled git blame across renames
 - Tracked relationships clearly
@@ -1008,14 +1008,14 @@ These only affect planton monorepo, which will be addressed in the next iteratio
 
 | Category | Count | Details |
 |----------|-------|---------|
-| **Files Renamed** | 758 | All files in 36 Kubernetes components |
+| **Files Renamed** | 758 | All files in 36 Kubernetes kinds |
 | **Proto Modified** | ~20 | Schema files and generated stubs |
 | **Code Modified** | ~10 | Code generation and helpers |
 | **Docs Updated** | 4 | Architecture and script documentation |
 | **Files Deleted** | 1 | get_kubernetes_resource_category.go |
 | **Total Changed** | 463 | Net impact across codebase |
 
-### Component Distribution
+### Kind Distribution
 
 | Type | Count | namespace_prefix |
 |------|-------|------------------|
@@ -1037,16 +1037,16 @@ These only affect planton monorepo, which will be addressed in the next iteratio
 
 All criteria met ✅:
 
-- [x] All 36 Kubernetes components moved to flat structure
+- [x] All 36 Kubernetes kinds moved to flat structure
 - [x] Category enum completely removed from proto
 - [x] All import paths updated (no references to addon/workload)
 - [x] Code generation treats Kubernetes like other providers
 - [x] Documentation updated to reflect new structure
-- [x] Tests pass for representative components
+- [x] Tests pass for representative kinds
 - [x] Generated kind_map_gen.go correct
 - [x] Git properly tracks renames
-- [x] No functional changes to component behavior
-- [x] Build scripts updated (copy-component-docs.ts)
+- [x] No functional changes to kind behavior
+- [x] Build scripts updated (copy-kind-docs.ts)
 
 ## Next Steps
 
@@ -1067,7 +1067,7 @@ The monorepo will need updates:
 2. **Regenerate stubs**: Run proto generation to get new import paths
 3. **Update code**: Fix any references to addon/workload categories
 4. **Update UI**: Web console components that may display categories
-5. **Test Stack Jobs**: Verify infrastructure deployment works with new paths
+5. **Test Infra Jobs**: Verify infrastructure deployment works with new paths
 
 Estimated effort: 2-4 hours (mostly verification and testing)
 
@@ -1076,7 +1076,7 @@ Estimated effort: 2-4 hours (mostly verification and testing)
 **Status**: ✅ Complete (planton repository)  
 **Next Phase**: planton monorepo updates  
 **Timeline**: Single session (November 16, 2025)  
-**Impact**: Architectural simplification affecting all Kubernetes components  
+**Impact**: Architectural simplification affecting all Kubernetes kinds  
 
 The Kubernetes provider is now structurally consistent with all other providers in Planton, eliminating unnecessary categorization and creating a simpler, more maintainable foundation for future development.
 

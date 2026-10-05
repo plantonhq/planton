@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustAccessIdentityProviderStackOutputs captures the observable
+// CloudflareZeroTrustAccessIdentityProviderOutputs captures the observable
 // outputs after creating an Access identity provider.
-type CloudflareZeroTrustAccessIdentityProviderStackOutputs struct {
+type CloudflareZeroTrustAccessIdentityProviderOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The UUID of the identity provider -- what Access policy rules (azure_ad,
 	// github_organization, gsuite, okta, saml, oidc, login_method, auth_context)
@@ -44,20 +44,20 @@ type CloudflareZeroTrustAccessIdentityProviderStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustAccessIdentityProviderStackOutputs) Reset() {
-	*x = CloudflareZeroTrustAccessIdentityProviderStackOutputs{}
+func (x *CloudflareZeroTrustAccessIdentityProviderOutputs) Reset() {
+	*x = CloudflareZeroTrustAccessIdentityProviderOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustaccessidentityprovider_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustAccessIdentityProviderStackOutputs) String() string {
+func (x *CloudflareZeroTrustAccessIdentityProviderOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustAccessIdentityProviderStackOutputs) ProtoMessage() {}
+func (*CloudflareZeroTrustAccessIdentityProviderOutputs) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustAccessIdentityProviderStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustAccessIdentityProviderOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustaccessidentityprovider_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,26 +69,26 @@ func (x *CloudflareZeroTrustAccessIdentityProviderStackOutputs) ProtoReflect() p
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustAccessIdentityProviderStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustAccessIdentityProviderStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustAccessIdentityProviderOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustAccessIdentityProviderOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustaccessidentityprovider_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustAccessIdentityProviderStackOutputs) GetIdentityProviderId() string {
+func (x *CloudflareZeroTrustAccessIdentityProviderOutputs) GetIdentityProviderId() string {
 	if x != nil {
 		return x.IdentityProviderId
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessIdentityProviderStackOutputs) GetScimBaseUrl() string {
+func (x *CloudflareZeroTrustAccessIdentityProviderOutputs) GetScimBaseUrl() string {
 	if x != nil {
 		return x.ScimBaseUrl
 	}
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessIdentityProviderStackOutputs) GetScimSecret() string {
+func (x *CloudflareZeroTrustAccessIdentityProviderOutputs) GetScimSecret() string {
 	if x != nil {
 		return x.ScimSecret
 	}
@@ -99,8 +99,8 @@ var File_catalog_cloudflare_cloudflarezerotrustaccessidentityprovider_v1alpha1_o
 
 const file_catalog_cloudflare_cloudflarezerotrustaccessidentityprovider_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Scatalog/cloudflare/cloudflarezerotrustaccessidentityprovider/v1alpha1/outputs.proto\x12Idev.planton.cloudflare.cloudflarezerotrustaccessidentityprovider.v1alpha1\x1a\x1cshared/options/options.proto\"\xb4\x01\n" +
-	"5CloudflareZeroTrustAccessIdentityProviderStackOutputs\x120\n" +
+	"Scatalog/cloudflare/cloudflarezerotrustaccessidentityprovider/v1alpha1/outputs.proto\x12Idev.planton.cloudflare.cloudflarezerotrustaccessidentityprovider.v1alpha1\x1a\x1cshared/options/options.proto\"\xaf\x01\n" +
+	"0CloudflareZeroTrustAccessIdentityProviderOutputs\x120\n" +
 	"\x14identity_provider_id\x18\x01 \x01(\tR\x12identityProviderId\x12\"\n" +
 	"\rscim_base_url\x18\x02 \x01(\tR\vscimBaseUrl\x12%\n" +
 	"\vscim_secret\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
@@ -121,7 +121,7 @@ func file_catalog_cloudflare_cloudflarezerotrustaccessidentityprovider_v1alpha1_
 
 var file_catalog_cloudflare_cloudflarezerotrustaccessidentityprovider_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustaccessidentityprovider_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareZeroTrustAccessIdentityProviderStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustaccessidentityprovider.v1alpha1.CloudflareZeroTrustAccessIdentityProviderStackOutputs
+	(*CloudflareZeroTrustAccessIdentityProviderOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustaccessidentityprovider.v1alpha1.CloudflareZeroTrustAccessIdentityProviderOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustaccessidentityprovider_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

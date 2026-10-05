@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: cloudflarecachesettings
 spec:
@@ -17,7 +17,7 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - the Argo Smart Routing add-on ($5.00/mo entry-tier base fee plus $0.10/GB routed traffic -- the component's conditional baseline) never starts -- this preset leaves argo_smart_routing unmanaged, and the component's cost profile warns the add-on keeps billing until explicitly turned off once started
+        - the Argo Smart Routing add-on ($5.00/mo entry-tier base fee plus $0.10/GB routed traffic -- the kind's conditional baseline) never starts -- this preset leaves argo_smart_routing unmanaged, and the kind's cost profile warns the add-on keeps billing until explicitly turned off once started
         - the Cache Reserve storage and operations meter (GB-months plus read/write operations) never starts -- this preset leaves cache_reserve unmanaged
       notes: Zero committed cost -- smart tiered cache and regional tiered cache are free features on every Cloudflare plan; this preset manages routing topology, not a paid meter.
     - preset: 02-image-variants
@@ -26,6 +26,6 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - the Argo Smart Routing add-on ($5.00/mo entry-tier base fee plus $0.10/GB routed traffic -- the component's conditional baseline) never starts -- this preset leaves argo_smart_routing unmanaged
+        - the Argo Smart Routing add-on ($5.00/mo entry-tier base fee plus $0.10/GB routed traffic -- the kind's conditional baseline) never starts -- this preset leaves argo_smart_routing unmanaged
         - the Cache Reserve storage and operations meter (GB-months plus read/write operations) never starts -- this preset leaves cache_reserve unmanaged
       notes: Zero committed cost -- smart tiered cache and per-extension cache variants are free features on every Cloudflare plan; caching alternate image formats changes what the edge stores, not what Cloudflare bills.

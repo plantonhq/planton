@@ -33,11 +33,11 @@ type Locals struct {
 	SharingScope string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuresubnetv1alpha1.AzureSubnetStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuresubnetv1alpha1.AzureSubnetIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureSubnet = stackInput.Target
-	target := stackInput.Target
+	locals.AzureSubnet = iacInput.Target
+	target := iacInput.Target
 
 	locals.VirtualNetworkId = target.Spec.VirtualNetworkId.GetValue()
 	locals.RouteTableId = target.Spec.RouteTableId.GetValue()

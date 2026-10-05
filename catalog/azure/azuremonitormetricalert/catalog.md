@@ -4,7 +4,7 @@ Deploys an Azure Monitor metric alert rule -- the watchdog on platform metrics. 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Metric Alert Rule** -- a `Microsoft.Insights/metricAlerts` resource (GLOBAL -- no region) carrying the scopes, exactly one condition family, the evaluation cadence, severity, and the action-group wiring
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically, merged with any user tags (user values win on key conflicts)
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the alert RULE will be created (independent of where the watched resources live). Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the alert RULE will be created (independent of where the watched resources live). Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **Something to watch** -- the scoped resources must exist and emit the metric; for the web-test family, the Application Insights standard web test and its component.
 - **An action group** to notify (optional but recommended) -- a rule with no actions records state but notifies nobody.
 
@@ -65,7 +65,7 @@ spec:
 planton apply -f metric-alert.yaml
 ```
 
-This creates a rule on the platform defaults: evaluated every minute over the last five minutes, stateful (one firing per incident, self-resolving). A Stack Job tracks the provisioning in real time.
+This creates a rule on the platform defaults: evaluated every minute over the last five minutes, stateful (one firing per incident, self-resolving). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -108,7 +108,7 @@ These are the most important decisions when configuring a metric alert. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -118,9 +118,9 @@ These are the most important decisions when configuring a metric alert. Explore 
 | **AzureApplicationInsights** | `webTestAvailabilityCriteria.componentId` | `status.outputs.application_insights_id` |
 | **AzureMonitorActionGroup** | `actions[].actionGroupId` | `status.outputs.action_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-The rule is a leaf in the dependency graph: `status.outputs` carries only its own identifiers (`metric_alert_id`, `metric_alert_name`) for filtering alert history and CLI reference -- no downstream Cloud Resource consumes them.
+The rule is a leaf in the dependency graph: `status.outputs` carries only its own identifiers (`metric_alert_id`, `metric_alert_name`) for filtering alert history and CLI reference -- no downstream Infra Component consumes them.
 
 ## Common Patterns
 
@@ -134,7 +134,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Monitor Action Group**](/cloud-catalog/azure-monitor-action-group) -- the notification hub the rule fires into
-- [**Azure Application Insights Standard Web Test**](/cloud-catalog/azure-application-insights-standard-web-test) -- the availability probe the web-test family watches
-- [**Azure Application Insights**](/cloud-catalog/azure-application-insights) -- the component behind the web test
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the rule is created
+- [**Azure Monitor Action Group**](/infra-catalog/azure-monitor-action-group) -- the notification hub the rule fires into
+- [**Azure Application Insights Standard Web Test**](/infra-catalog/azure-application-insights-standard-web-test) -- the availability probe the web-test family watches
+- [**Azure Application Insights**](/infra-catalog/azure-application-insights) -- the component behind the web test
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the rule is created

@@ -6,9 +6,9 @@
 # availability_type is REGIONAL (the default) because a high-availability
 # primary runs an active node plus an in-region standby. Cluster storage
 # and backup storage bill by what is actually stored -- named in the
-# exclusions, never guessed. Schema: finops/componentcostderivation/v1.
+# exclusions, never guessed. Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpalloydbcluster
 spec:

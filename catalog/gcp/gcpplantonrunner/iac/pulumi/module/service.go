@@ -19,7 +19,7 @@ const (
 )
 
 // runnerService provisions the Cloud Run v2 service that keeps exactly one
-// runner running, and exports the component's stack outputs.
+// runner running, and exports the component's outputs.
 func runnerService(
 	ctx *pulumi.Context,
 	locals *Locals,

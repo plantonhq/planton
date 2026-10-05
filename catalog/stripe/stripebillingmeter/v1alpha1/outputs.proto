@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.stripe.stripebillingmeter.v1alpha1;
 
-// StripeBillingMeterStackOutputs identifies the meter and its alerts.
+// StripeBillingMeterOutputs identifies the meter and its alerts.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/billing_meter
-message StripeBillingMeterStackOutputs {
+message StripeBillingMeterOutputs {
   // id is the meter's Stripe id (mtr_...), the value a metered StripePrice's recurring.meter
   // references. It changes when the meter is replaced.
   string id = 1;

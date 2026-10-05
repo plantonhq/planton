@@ -31,7 +31,7 @@ type AwsMskServerlessCluster struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsMskServerlessClusterSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsMskServerlessCluster) GetKind() string {
 	return ""
 }
 
-func (x *AwsMskServerlessCluster) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsMskServerlessCluster) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsMskServerlessCluster) GetStatus() *AwsMskServerlessClusterStatus {
 // aws-msk-serverless-cluster status
 type AwsMskServerlessClusterStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsMskServerlessClusterStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsMskServerlessClusterOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsMskServerlessClusterStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmskserverlesscluster_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsMskServerlessClusterStatus) GetOutputs() *AwsMskServerlessClusterStackOutputs {
+func (x *AwsMskServerlessClusterStatus) GetOutputs() *AwsMskServerlessClusterOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awsmskserverlesscluster_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17AwsMskServerlessClusterR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12i\n" +
 	"\x04spec\x18\x04 \x01(\v2M.dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12g\n" +
-	"\x06status\x18\x05 \x01(\v2O.dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterStatusR\x06status\"\x90\x01\n" +
-	"\x1dAwsMskServerlessClusterStatus\x12o\n" +
-	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterStackOutputsR\aoutputsB\x90\x03\n" +
+	"\x06status\x18\x05 \x01(\v2O.dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterStatusR\x06status\"\x8b\x01\n" +
+	"\x1dAwsMskServerlessClusterStatus\x12j\n" +
+	"\aoutputs\x18\x01 \x01(\v2P.dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterOutputsR\aoutputsB\x90\x03\n" +
 	"4com.dev.planton.aws.awsmskserverlesscluster.v1alpha1B\bApiProtoP\x01Zigithub.com/plantonhq/planton/catalog/aws/awsmskserverlesscluster/v1alpha1;awsmskserverlessclusterv1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Aws.Awsmskserverlesscluster.V1alpha1\xca\x020Dev\\Planton\\Aws\\Awsmskserverlesscluster\\V1alpha1\xe2\x02<Dev\\Planton\\Aws\\Awsmskserverlesscluster\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Aws::Awsmskserverlesscluster::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_aws_awsmskserverlesscluster_v1alpha1_api_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsmskserverlesscluster_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsmskserverlesscluster_v1alpha1_api_proto_goTypes = []any{
-	(*AwsMskServerlessCluster)(nil),             // 0: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessCluster
-	(*AwsMskServerlessClusterStatus)(nil),       // 1: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsMskServerlessClusterSpec)(nil),         // 3: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterSpec
-	(*AwsMskServerlessClusterStackOutputs)(nil), // 4: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterStackOutputs
+	(*AwsMskServerlessCluster)(nil),        // 0: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessCluster
+	(*AwsMskServerlessClusterStatus)(nil),  // 1: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsMskServerlessClusterSpec)(nil),    // 3: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterSpec
+	(*AwsMskServerlessClusterOutputs)(nil), // 4: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterOutputs
 }
 var file_catalog_aws_awsmskserverlesscluster_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessCluster.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessCluster.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessCluster.spec:type_name -> dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterSpec
 	1, // 2: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessCluster.status:type_name -> dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterStatus
-	4, // 3: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterStatus.outputs:type_name -> dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterStackOutputs
+	4, // 3: dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterStatus.outputs:type_name -> dev.planton.aws.awsmskserverlesscluster.v1alpha1.AwsMskServerlessClusterOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -37,7 +37,7 @@ resource "aws_iam_user_policy" "inline" {
 }
 
 # One active access key by default -- programmatic access is the usual reason
-# an IAM user exists. The secret lands in state and in the (sensitive) stack
+# an IAM user exists. The secret lands in state and in the (sensitive)
 # outputs; no PGP key is used because the platform delivers outputs through
 # its own secret-handling channel.
 resource "aws_iam_access_key" "this" {

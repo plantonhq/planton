@@ -39,7 +39,7 @@ only answers when no Ingress TLS matches.
 
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
-| `<wildcard-certificate-name>` | Name of the KubernetesCertificate resource (e.g. a `*.example.com` wildcard) | Your infra chart / certificate manifests |
+| `<wildcard-certificate-name>` | Name of the KubernetesCertificate resource (e.g. a `*.example.com` wildcard) | Your Infra Chart / certificate manifests |
 | `<certificate-secret-namespace>` | Namespace the certificate's Secret is issued into | The KubernetesCertificate's spec |
 
 ## Related Presets

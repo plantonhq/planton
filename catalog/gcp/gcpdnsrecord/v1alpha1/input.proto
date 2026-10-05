@@ -5,10 +5,10 @@ package dev.planton.gcp.gcpdnsrecord.v1alpha1;
 import "catalog/gcp/gcpdnsrecord/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-// GcpDnsRecordStackInput defines the input for the GcpDnsRecord IaC modules.
+// GcpDnsRecordIacInput defines the input for the GcpDnsRecord IaC modules.
 // It includes the target resource configuration and provider credentials.
-message GcpDnsRecordStackInput {
-  // target cloud-resource
+message GcpDnsRecordIacInput {
+  // the catalog object to deploy
   GcpDnsRecord target = 1;
   // provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

@@ -8,7 +8,7 @@ import (
 	kubernetescronjobv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetescronjob/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadpod"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -28,11 +28,11 @@ type Locals struct {
 	ImagePullSecretData map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *kubernetescronjobv1alpha1.KubernetesCronJobStackInput) (*Locals, error) {
+func initializeLocals(ctx *pulumi.Context, iacInput *kubernetescronjobv1alpha1.KubernetesCronJobIacInput) (*Locals, error) {
 	locals := &Locals{}
 
-	locals.KubernetesCronJob = stackInput.Target
-	target := stackInput.Target
+	locals.KubernetesCronJob = iacInput.Target
+	target := iacInput.Target
 
 	if target.Spec.JobTemplate == nil || target.Spec.JobTemplate.Container == nil ||
 		target.Spec.JobTemplate.Container.App == nil || target.Spec.JobTemplate.Container.App.Image == nil {
@@ -43,7 +43,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kubernetescronjobv1alpha1
 		"app":                            target.Metadata.Name,
 		kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
 		kuberneteslabelkeys.ResourceName: target.Metadata.Name,
-		kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesCronJob.String(),
+		kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesCronJob.String(),
 	}
 
 	if target.Metadata.Id != "" {

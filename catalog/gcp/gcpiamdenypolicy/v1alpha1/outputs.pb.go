@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning an IAM deny policy.
-type GcpIamDenyPolicyStackOutputs struct {
+type GcpIamDenyPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The policy's identifier as {url-encoded-parent}/{policy_name} —
 	// the handle gcloud and the v2 policies API reference the policy by.
@@ -34,20 +34,20 @@ type GcpIamDenyPolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpIamDenyPolicyStackOutputs) Reset() {
-	*x = GcpIamDenyPolicyStackOutputs{}
+func (x *GcpIamDenyPolicyOutputs) Reset() {
+	*x = GcpIamDenyPolicyOutputs{}
 	mi := &file_catalog_gcp_gcpiamdenypolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpIamDenyPolicyStackOutputs) String() string {
+func (x *GcpIamDenyPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpIamDenyPolicyStackOutputs) ProtoMessage() {}
+func (*GcpIamDenyPolicyOutputs) ProtoMessage() {}
 
-func (x *GcpIamDenyPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpIamDenyPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpiamdenypolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *GcpIamDenyPolicyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpIamDenyPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpIamDenyPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpIamDenyPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*GcpIamDenyPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpiamdenypolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpIamDenyPolicyStackOutputs) GetPolicyName() string {
+func (x *GcpIamDenyPolicyOutputs) GetPolicyName() string {
 	if x != nil {
 		return x.PolicyName
 	}
 	return ""
 }
 
-func (x *GcpIamDenyPolicyStackOutputs) GetEtag() string {
+func (x *GcpIamDenyPolicyOutputs) GetEtag() string {
 	if x != nil {
 		return x.Etag
 	}
@@ -82,8 +82,8 @@ var File_catalog_gcp_gcpiamdenypolicy_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpiamdenypolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpiamdenypolicy/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpiamdenypolicy.v1alpha1\"S\n" +
-	"\x1cGcpIamDenyPolicyStackOutputs\x12\x1f\n" +
+	"3catalog/gcp/gcpiamdenypolicy/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpiamdenypolicy.v1alpha1\"N\n" +
+	"\x17GcpIamDenyPolicyOutputs\x12\x1f\n" +
 	"\vpolicy_name\x18\x01 \x01(\tR\n" +
 	"policyName\x12\x12\n" +
 	"\x04etag\x18\x02 \x01(\tR\x04etagB\xe3\x02\n" +
@@ -103,7 +103,7 @@ func file_catalog_gcp_gcpiamdenypolicy_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpiamdenypolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpiamdenypolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpIamDenyPolicyStackOutputs)(nil), // 0: dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyStackOutputs
+	(*GcpIamDenyPolicyOutputs)(nil), // 0: dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyOutputs
 }
 var file_catalog_gcp_gcpiamdenypolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

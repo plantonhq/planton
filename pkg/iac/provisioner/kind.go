@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -64,11 +64,11 @@ var everyEngine = []ProvisionerType{ProvisionerTypePulumi, ProvisionerTypeTofu, 
 
 // Allowed returns the engines a kind runs on, in declared order; every engine when the kind
 // declares none (or is not a registered kind -- only a declaration narrows).
-func Allowed(kind cloudresourcekind.CloudResourceKind) ([]ProvisionerType, error) {
-	if kind == cloudresourcekind.CloudResourceKind_unspecified {
+func Allowed(kind catalogkind.CatalogKind) ([]ProvisionerType, error) {
+	if kind == catalogkind.CatalogKind_unspecified {
 		return everyEngine, nil
 	}
-	declared, err := crkreflect.Provisioners(kind)
+	declared, err := catalogkindreflect.Provisioners(kind)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func Allowed(kind cloudresourcekind.CloudResourceKind) ([]ProvisionerType, error
 
 // Require refuses an engine the kind does not run on, before anything runs. A kind that declares
 // nothing accepts every engine.
-func Require(kind cloudresourcekind.CloudResourceKind, p ProvisionerType) error {
+func Require(kind catalogkind.CatalogKind, p ProvisionerType) error {
 	allowed, err := Allowed(kind)
 	if err != nil {
 		return err
@@ -105,9 +105,9 @@ func Require(kind cloudresourcekind.CloudResourceKind, p ProvisionerType) error 
 }
 
 // RequireForKindName is Require for callers that hold the kind's name (a manifest's kind field,
-// a component folder name); a name that resolves to no registered kind is not narrowed.
+// a kind folder name); a name that resolves to no registered kind is not narrowed.
 func RequireForKindName(kindName string, p ProvisionerType) error {
-	return Require(crkreflect.KindFromString(kindName), p)
+	return Require(catalogkindreflect.KindFromString(kindName), p)
 }
 
 // RequireForManifest is Require for callers that hold the manifest.
@@ -154,13 +154,13 @@ func SoleEngineNote(manifest proto.Message, resolved ProvisionerType) string {
 	return fmt.Sprintf("%s runs on %s only", kindOf(manifest), resolved.DisplayName())
 }
 
-func kindOf(manifest proto.Message) cloudresourcekind.CloudResourceKind {
+func kindOf(manifest proto.Message) catalogkind.CatalogKind {
 	if manifest == nil {
-		return cloudresourcekind.CloudResourceKind_unspecified
+		return catalogkind.CatalogKind_unspecified
 	}
-	name, err := crkreflect.ExtractKindFromProto(manifest)
+	name, err := catalogkindreflect.ExtractKindFromProto(manifest)
 	if err != nil {
-		return cloudresourcekind.CloudResourceKind_unspecified
+		return catalogkind.CatalogKind_unspecified
 	}
-	return crkreflect.KindFromString(name)
+	return catalogkindreflect.KindFromString(name)
 }

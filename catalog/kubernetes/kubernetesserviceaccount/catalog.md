@@ -4,7 +4,7 @@ Deploys a Kubernetes ServiceAccount -- the identity pods run as -- with inherite
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes ServiceAccount** -- a single ServiceAccount in the specified namespace, with `imagePullSecrets` attached and `automountServiceAccountToken` applied only when a position was taken
 - **Cloud identity annotation** -- written automatically when a workload-identity arm is configured: `iam.gke.io/gcp-service-account` (GKE), `eks.amazonaws.com/role-arn` (EKS), or `azure.workload.identity/client-id` (+ optional tenant) for AKS
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
 
-- The target namespace must already exist (the module does not create it). Use the Kubernetes Namespace component to manage namespaces declaratively.
+- The target namespace must already exist (the module does not create it). Use the Kubernetes Namespace kind to manage namespaces declaratively.
 - For workload identity, the CLOUD side must trust this exact namespace/ServiceAccount pair: a `workloadIdentityUser` IAM binding (GKE), an OIDC trust policy on the role (EKS), or a federated credential on the managed identity (AKS).
 
 ## Deploy
@@ -50,7 +50,7 @@ spec:
 planton apply -f service-account.yaml
 ```
 
-This creates a hardened per-app identity in the `backend-services` namespace: pods running as it get no automatic API server token. A Stack Job tracks the provisioning in real time.
+This creates a hardened per-app identity in the `backend-services` namespace: pods running as it get no automatic API server token. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,7 +89,7 @@ These are the most important decisions when configuring a Kubernetes ServiceAcco
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -99,9 +99,9 @@ These are the most important decisions when configuring a Kubernetes ServiceAcco
 | **AwsIamRole** | `workloadIdentity.eks.roleArn` | `status.outputs.role_arn` |
 | **AzureUserAssignedIdentity** | `workloadIdentity.aks.clientId` | `status.outputs.client_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,7 +122,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this identity in dependency order.
-- [**Kubernetes Secret**](/cloud-catalog/kubernetes-secret) -- docker-registry Secrets attach via `imagePullSecrets`; the Secret kind's `serviceAccountToken` variant mints long-lived tokens FOR this identity.
-- [**Kubernetes RBAC**](/cloud-catalog/kubernetes-rbac) -- grants bind Kubernetes permissions to this identity as a ServiceAccount subject.
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) and the other workload kinds -- run as this identity via `serviceAccountName`.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so Infra Charts create it and this identity in dependency order.
+- [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) -- docker-registry Secrets attach via `imagePullSecrets`; the Secret kind's `serviceAccountToken` variant mints long-lived tokens FOR this identity.
+- [**Kubernetes RBAC**](/infra-catalog/kubernetes-rbac) -- grants bind Kubernetes permissions to this identity as a ServiceAccount subject.
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) and the other workload kinds -- run as this identity via `serviceAccountName`.

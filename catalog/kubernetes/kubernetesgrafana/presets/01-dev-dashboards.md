@@ -5,7 +5,7 @@ admin credentials, and a single provisioned Prometheus datasource —
 a real dashboard endpoint for a dev loop without any production
 ceremony. Sign in with the credentials from the chart-owned
 `dev-grafana` Secret (name and a port-forward command land in the
-stack outputs); the datasource is present from first boot because it
+outputs); the datasource is present from first boot because it
 is provisioned as code, not clicked together.
 
 Know what ephemeral means here: Grafana keeps hand-made dashboards,

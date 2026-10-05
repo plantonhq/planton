@@ -4,7 +4,7 @@ Registers the Private Service Connect connections you built by hand on a Memorys
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **User-created connections** -- a `redis.ClusterUserCreatedConnections` registration on the cluster, replacing the cluster's whole user-created endpoint list with the manifest's
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with `roles/redis.admin` on the cluster's project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with `roles/redis.admin` on the cluster's project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### The Chain
@@ -62,7 +62,7 @@ spec:
 planton apply -f redis-cluster-endpoint-set.yaml
 ```
 
-This registers one consumer network's connection to the cluster's discovery endpoint (a real deployment lists one connection per attachment the cluster publishes). A Stack Job tracks the provisioning in real time.
+This registers one consumer network's connection to the cluster's discovery endpoint (a real deployment lists one connection per attachment the cluster publishes). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -80,7 +80,7 @@ These are the most important decisions when configuring an endpoint set. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -92,9 +92,9 @@ These are the most important decisions when configuring an endpoint set. Explore
 | **GcpAddress** | `endpoints[].connections[].address` | `status.outputs.address` |
 | **GcpVpcNetwork** | `endpoints[].connections[].network` | `status.outputs.network_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -111,7 +111,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Redis Cluster**](/cloud-catalog/gcp-redis-cluster) -- the cluster whose attachments the connections target
-- [**GCP Global Forwarding Rule**](/cloud-catalog/gcp-global-forwarding-rule) -- the consumer endpoints (regional arm, empty scheme)
-- [**GCP Address**](/cloud-catalog/gcp-address) -- the reserved internal addresses
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the consumer networks
+- [**GCP Redis Cluster**](/infra-catalog/gcp-redis-cluster) -- the cluster whose attachments the connections target
+- [**GCP Global Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- the consumer endpoints (regional arm, empty scheme)
+- [**GCP Address**](/infra-catalog/gcp-address) -- the reserved internal addresses
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the consumer networks

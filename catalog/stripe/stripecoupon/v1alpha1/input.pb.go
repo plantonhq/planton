@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeCouponStackInput is the input to the StripeCoupon IaC module.
+// StripeCouponIacInput is the input to the StripeCoupon IaC module.
 // It contains the target resource and the Stripe provider configuration.
-type StripeCouponStackInput struct {
+type StripeCouponIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripeCoupon resource to be deployed.
 	Target *StripeCoupon `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripeCouponStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripeCouponStackInput) Reset() {
-	*x = StripeCouponStackInput{}
+func (x *StripeCouponIacInput) Reset() {
+	*x = StripeCouponIacInput{}
 	mi := &file_catalog_stripe_stripecoupon_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeCouponStackInput) String() string {
+func (x *StripeCouponIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeCouponStackInput) ProtoMessage() {}
+func (*StripeCouponIacInput) ProtoMessage() {}
 
-func (x *StripeCouponStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripeCouponIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripecoupon_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripeCouponStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeCouponStackInput.ProtoReflect.Descriptor instead.
-func (*StripeCouponStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeCouponIacInput.ProtoReflect.Descriptor instead.
+func (*StripeCouponIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripecoupon_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeCouponStackInput) GetTarget() *StripeCoupon {
+func (x *StripeCouponIacInput) GetTarget() *StripeCoupon {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripeCouponStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripeCouponIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripecoupon_v1alpha1_input_proto protoreflect.FileDescr
 
 const file_catalog_stripe_stripecoupon_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/stripe/stripecoupon/v1alpha1/input.proto\x12(dev.planton.stripe.stripecoupon.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a.catalog/stripe/stripecoupon/v1alpha1/api.proto\"\xbb\x01\n" +
-	"\x16StripeCouponStackInput\x12N\n" +
+	"0catalog/stripe/stripecoupon/v1alpha1/input.proto\x12(dev.planton.stripe.stripecoupon.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a.catalog/stripe/stripecoupon/v1alpha1/api.proto\"\xb9\x01\n" +
+	"\x14StripeCouponIacInput\x12N\n" +
 	"\x06target\x18\x01 \x01(\v26.dev.planton.stripe.stripecoupon.v1alpha1.StripeCouponR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\xd7\x02\n" +
 	",com.dev.planton.stripe.stripecoupon.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripecoupon_v1alpha1_input_proto_rawDescGZIP() []byte 
 
 var file_catalog_stripe_stripecoupon_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripecoupon_v1alpha1_input_proto_goTypes = []any{
-	(*StripeCouponStackInput)(nil),      // 0: dev.planton.stripe.stripecoupon.v1alpha1.StripeCouponStackInput
+	(*StripeCouponIacInput)(nil),        // 0: dev.planton.stripe.stripecoupon.v1alpha1.StripeCouponIacInput
 	(*StripeCoupon)(nil),                // 1: dev.planton.stripe.stripecoupon.v1alpha1.StripeCoupon
 	(*stripe.StripeProviderConfig)(nil), // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripecoupon_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripecoupon.v1alpha1.StripeCouponStackInput.target:type_name -> dev.planton.stripe.stripecoupon.v1alpha1.StripeCoupon
-	2, // 1: dev.planton.stripe.stripecoupon.v1alpha1.StripeCouponStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripecoupon.v1alpha1.StripeCouponIacInput.target:type_name -> dev.planton.stripe.stripecoupon.v1alpha1.StripeCoupon
+	2, // 1: dev.planton.stripe.stripecoupon.v1alpha1.StripeCouponIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

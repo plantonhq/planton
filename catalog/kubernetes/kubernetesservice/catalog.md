@@ -4,7 +4,7 @@ Deploys a standalone Kubernetes Service — the stable network identity in front
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Service** — one core/v1 Service in the specified namespace, with the declared type (ClusterIP, NodePort, LoadBalancer, or ExternalName), selector, ports, traffic policies, and annotations. The spec covers the complete core/v1 ServiceSpec surface with one deliberate omission: the deprecated `loadBalancerIP` field (upstream deprecated it as under-specified; every cloud pins an address through its own annotation instead).
 
@@ -14,7 +14,7 @@ For LoadBalancer services, the cloud's controller then provisions the external l
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** — an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** — an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -56,7 +56,7 @@ spec:
 planton apply -f service.yaml
 ```
 
-This creates a ClusterIP Service in `backend-services` routing port 80 to port 8080 on every pod labeled `app: orders-api`, reachable in-cluster at `orders-api.backend-services.svc.cluster.local`. A Stack Job tracks the provisioning in real time.
+This creates a ClusterIP Service in `backend-services` routing port 80 to port 8080 on every pod labeled `app: orders-api`, reachable in-cluster at `orders-api.backend-services.svc.cluster.local`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -101,7 +101,7 @@ These are the most important decisions when configuring a Service. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -109,9 +109,9 @@ These are the most important decisions when configuring a Service. Explore the f
 
 The selector targets pods by label, not by resource reference — workloads and the Services selecting them carry no deploy-ordering edge.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -136,10 +136,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — placement (optional — omitted means the `default` namespace).
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) and [**Kubernetes StatefulSet**](/cloud-catalog/kubernetes-stateful-set) — the workloads whose pods it selects.
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) — routes HTTP traffic to this Service.
-- [**Kubernetes HTTPRoute**](/cloud-catalog/kubernetes-http-route) and [**Kubernetes GRPCRoute**](/cloud-catalog/kubernetes-grpc-route) — Gateway API backends pointing here.
-- [**Kubernetes BackendTLSPolicy**](/cloud-catalog/kubernetes-backend-tls-policy) — secures the gateway-to-Service hop.
-- [**Istio Destination Rule**](/cloud-catalog/kubernetes-destination-rule) — applies mesh traffic policy to this host.
-- [**Kubernetes NetworkPolicy**](/cloud-catalog/kubernetes-network-policy) — governs which pods may reach the selected pods.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — placement (optional — omitted means the `default` namespace).
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) and [**Kubernetes StatefulSet**](/infra-catalog/kubernetes-stateful-set) — the workloads whose pods it selects.
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) — routes HTTP traffic to this Service.
+- [**Kubernetes HTTPRoute**](/infra-catalog/kubernetes-http-route) and [**Kubernetes GRPCRoute**](/infra-catalog/kubernetes-grpc-route) — Gateway API backends pointing here.
+- [**Kubernetes BackendTLSPolicy**](/infra-catalog/kubernetes-backend-tls-policy) — secures the gateway-to-Service hop.
+- [**Istio Destination Rule**](/infra-catalog/kubernetes-destination-rule) — applies mesh traffic policy to this host.
+- [**Kubernetes NetworkPolicy**](/infra-catalog/kubernetes-network-policy) — governs which pods may reach the selected pods.

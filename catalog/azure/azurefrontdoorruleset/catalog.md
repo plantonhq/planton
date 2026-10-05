@@ -4,7 +4,7 @@ Deploys a rule set inside an Azure Front Door (Standard/Premium) profile -- the 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Front Door Rule Set** -- a named child of the profile; the set itself carries no properties, only its rules
 - **Delivery rules** -- one ARM child resource per rule, keyed by the rule's name, each with conditions (path, headers, cookies, device type, scheme, geo/IP, TLS protocol, and more), actions (request/response header changes, redirect XOR rewrite, route-configuration override), an evaluation order, and CONTINUE/STOP behavior
@@ -63,7 +63,7 @@ spec:
 planton apply -f front-door-rule-set.yaml
 ```
 
-This creates a rule set with one condition-less rule -- a rule with no conditions matches every request its routes serve, the deliberate shape for policy-for-everything rules like security headers -- ready to attach to routes via the `rule_set_id` output. A Stack Job tracks the provisioning in real time.
+This creates a rule set with one condition-less rule -- a rule with no conditions matches every request its routes serve, the deliberate shape for policy-for-everything rules like security headers -- ready to attach to routes via the `rule_set_id` output. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -118,16 +118,16 @@ These are the most important decisions when configuring a rule set. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureFrontDoorProfile** | `profileId` | `status.outputs.profile_id` |
 | **AzureFrontDoorOriginGroup** (route overrides) | `rules[].actions.routeConfigurationOverride.originGroupId` | `status.outputs.origin_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -148,6 +148,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Front Door Profile**](/cloud-catalog/azure-front-door-profile) -- the parent container the set nests under
-- [**Azure Front Door Route**](/cloud-catalog/azure-front-door-route) -- attaches this set to traffic via `ruleSetIds`; the route side owns the attachment
-- [**Azure Front Door Origin Group**](/cloud-catalog/azure-front-door-origin-group) -- the target of a route-configuration override, the canary steering gesture
+- [**Azure Front Door Profile**](/infra-catalog/azure-front-door-profile) -- the parent container the set nests under
+- [**Azure Front Door Route**](/infra-catalog/azure-front-door-route) -- attaches this set to traffic via `ruleSetIds`; the route side owns the attachment
+- [**Azure Front Door Origin Group**](/infra-catalog/azure-front-door-origin-group) -- the target of a route-configuration override, the canary steering gesture

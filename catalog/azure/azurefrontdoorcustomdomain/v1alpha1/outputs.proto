@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefrontdoorcustomdomain.v1alpha1;
 
-// **AzureFrontDoorCustomDomainStackOutputs** captures the outputs of
+// **AzureFrontDoorCustomDomainOutputs** captures the outputs of
 // provisioning an Azure Front Door custom domain.
-message AzureFrontDoorCustomDomainStackOutputs {
+message AzureFrontDoorCustomDomainOutputs {
   // The Azure Resource Manager ID of the custom domain -- what
   // AzureFrontDoorRoute's custom_domain_ids references to serve this
   // hostname, and what a Front Door security policy scopes a WAF to.

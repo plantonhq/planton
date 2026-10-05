@@ -85,7 +85,7 @@ behind it.
   everything else keeps its AWS default instead of a module opinion.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `load_balancer_arn`: ARN of the ALB (what `AwsLbListener` resources attach through)
 - `load_balancer_name`: final name assigned to the ALB (metadata.name, truncated to AWS's 32-character limit when necessary)

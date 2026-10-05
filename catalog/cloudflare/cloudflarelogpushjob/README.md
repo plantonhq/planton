@@ -50,7 +50,7 @@
 | `ownership_challenge` | string reference | The token proving destination ownership. Sensitive, write-only. |
 | `generate_ownership_challenge` | bool | Also perform the challenge-issuing step (one-shot; see GUIDE.md). |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|
@@ -101,7 +101,7 @@ spec:
 
 Real delete. Deleting the job stops log delivery immediately and silently -- already-shipped objects stay in the destination. The folded ownership challenge is never deleted at Cloudflare (see GUIDE.md).
 
-## Related Components
+## Related Kinds
 
 - [Cloudflare DNS Zone](/docs/catalog/cloudflare/cloudflarednszone) -- the scope for zone datasets
 - [Cloudflare R2 Bucket](/docs/catalog/cloudflare/cloudflarer2bucket) -- the usual same-account destination

@@ -33,6 +33,6 @@ This preset creates a scale-to-zero GPU pool for ML workloads: NVIDIA L4 nodes w
 - **01-on-demand-autoscaling** — the general-purpose primary pool
 - **02-spot-cost-optimized** — Spot GPU pools combine both discounts for interruptible training
 
-## Related Components
+## Related Kinds
 
 - [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — the control plane this pool attaches to

@@ -31,7 +31,7 @@ var _ = ginkgo.Describe("GcpFilestoreInstanceSpec", func() {
 		return &GcpFilestoreInstance{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpFilestoreInstance",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-filestore",
 			},
 			Spec: &GcpFilestoreInstanceSpec{

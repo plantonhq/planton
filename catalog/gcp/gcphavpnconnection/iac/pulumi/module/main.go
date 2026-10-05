@@ -11,10 +11,10 @@ import (
 // the keys it mints when the spec declares none, the external VPN gateway
 // (when the peer is an external device), then one tunnel, one Cloud Router
 // interface, and one BGP peer per tunnels[] entry.
-func Resources(ctx *pulumi.Context, stackInput *gcphavpnconnectionv1alpha1.GcpHaVpnConnectionStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcphavpnconnectionv1alpha1.GcpHaVpnConnectionIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

@@ -16,7 +16,7 @@ OpenTofu module that declares one Stripe coupon. Stripe kinds run on OpenTofu on
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `percent_off`, or `amount_off` with `currency` (exactly one); `name`, `duration`, `duration_in_months`, `max_redemptions`, `redeem_by`, `applies_to_products` (resolved product ids), `currency_options`, `metadata` |
 
 ## Outputs

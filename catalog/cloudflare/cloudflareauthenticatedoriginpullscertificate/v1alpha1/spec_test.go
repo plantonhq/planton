@@ -34,7 +34,7 @@ func validCertificate(spec *CloudflareAuthenticatedOriginPullsCertificateSpec) *
 	return &CloudflareAuthenticatedOriginPullsCertificate{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareAuthenticatedOriginPullsCertificate",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-aop-certificate",
 		},
 		Spec: spec,

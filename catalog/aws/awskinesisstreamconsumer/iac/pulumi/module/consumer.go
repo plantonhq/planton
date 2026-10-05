@@ -40,7 +40,7 @@ func consumer(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error
 		}
 	}
 
-	// Export outputs matching AwsKinesisStreamConsumerStackOutputs.
+	// Export outputs matching AwsKinesisStreamConsumerOutputs.
 	ctx.Export(OpConsumerArn, c.Arn)
 	ctx.Export(OpConsumerName, c.Name)
 	ctx.Export(OpStreamArn, c.StreamArn)

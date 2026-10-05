@@ -1,25 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Guard: every component README (catalog/<provider>/<component>/README.md),
+# Guard: every kind README (catalog/<provider>/<kind>/README.md),
 # every infra chart README (the README.md beside a chart's Chart.yaml, at any
 # nesting depth), and every helm chart README (helm/<chart>/README.md) must end
 # with the canonical license footer.
 #
 # WHY THIS EXISTS
-# The realistic unit of copying for this catalog is one component directory,
+# The realistic unit of copying for this catalog is one kind directory,
 # not the whole repository. The repo-root LICENSE does not travel with a copied
-# directory -- the component's README does. The footer is the attribution that
+# directory -- the kind's README does. The footer is the attribution that
 # travels: it states the license and links to it with an absolute URL so the
-# pointer survives copies, zips, and forks. Components are forged continuously;
+# pointer survives copies, zips, and forks. Kinds are forged continuously;
 # this guard makes it impossible for a new one to ship without its attribution.
 #
 # SCOPE
 # A last-line PRESENCE check (mirroring the sibling grep-based guards, no
 # toolchain beyond find + awk): README files that are the DIRECT child of a
-# component root, plus infra chart READMEs. Deeper READMEs (iac/**) are inner
+# kind root, plus infra chart READMEs. Deeper READMEs (iac/**) are inner
 # documentation whose shipped artifacts carry LICENSE and NOTICE files instead
-# of footers; provider-infrastructure dirs (aa_*) are not components.
+# of footers; provider-infrastructure dirs (aa_*) are not kinds.
 
 repo_root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root_dir"
@@ -36,11 +36,11 @@ while IFS= read -r readme; do
     missing+=("$readme")
   fi
 done < <(
-  # Component READMEs: the direct child of a component root -- exactly
-  # catalog/<provider>/<component>/README.md, depth-anchored so it can never
+  # Kind READMEs: the direct child of a kind root -- exactly
+  # catalog/<provider>/<kind>/README.md, depth-anchored so it can never
   # match iac/**/README.md or deeper docs. Provider-infrastructure dirs
   # (aa_e2e/, aa_eval/, aa_import/) are excluded by name: they sit at the
-  # same depth but are not components.
+  # same depth but are not kinds.
   find catalog -mindepth 3 -maxdepth 3 -name 'README.md' 2>/dev/null | grep -Ev '^catalog/[^/]+/aa_[^/]+/'
   # Helm chart READMEs: helm/<chart>/README.md — published distribution surfaces.
   find helm -mindepth 2 -maxdepth 2 -name README.md 2>/dev/null
@@ -79,4 +79,4 @@ if (( ${#missing[@]} > 0 )); then
   exit 1
 fi
 
-echo "License-footer guard passed: every component and chart README carries the canonical footer."
+echo "License-footer guard passed: every kind and chart README carries the canonical footer."

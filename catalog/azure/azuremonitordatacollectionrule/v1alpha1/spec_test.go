@@ -66,7 +66,7 @@ func validResource() *AzureMonitorDataCollectionRule {
 	return &AzureMonitorDataCollectionRule{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMonitorDataCollectionRule",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-dcr",
 		},
 		Spec: &AzureMonitorDataCollectionRuleSpec{

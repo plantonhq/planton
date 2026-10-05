@@ -11,11 +11,11 @@ surface is identical in depth.
 
 ```
 iac/pulumi/
-├── main.go            # entrypoint (loads stack-input, calls module.Resources)
+├── main.go            # entrypoint (loads iac-input, calls module.Resources)
 ├── Pulumi.yaml
 └── module/
     ├── main.go            # Resources(): provider setup + zone()
-    ├── locals.go          # stack-input references
+    ├── locals.go          # iac-input references
     ├── zone.go            # cloudflare.Zone + satellite orchestration + outputs
     ├── records.go         # inline records + the typed-data builder
     ├── dns_settings.go    # cloudflare.ZoneDnsSettings
@@ -27,7 +27,7 @@ iac/pulumi/
 
 ## Inputs
 
-A `CloudflareDnsZoneStackInput` (target + provider config). Required spec
+A `CloudflareDnsZoneIacInput` (target + provider config). Required spec
 fields: `zoneName`, `accountId`.
 
 `spec.records[]` entries are either simple records (`content`) or structured
@@ -53,7 +53,7 @@ live-measured). HTTPS/SVCB carry priority only inside their data.
 
 ## Requirements
 
-- The Cloudflare provider is configured from the stack-input provider config /
+- The Cloudflare provider is configured from the iac-input provider config /
   `CLOUDFLARE_API_TOKEN`. The token needs **Zone → Zone → Edit** and
   **Zone → DNS → Edit**; add **Zone → Zone Settings → Edit** for the hold, and
   **Billing → Edit** (Billing Write) when `spec.subscription` is set.

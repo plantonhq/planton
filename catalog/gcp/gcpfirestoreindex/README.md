@@ -77,7 +77,7 @@ planton apply -f index.yaml
 | `skipWait` | `bool` | `false` | Return once creation is requested instead of waiting for the background build. |
 | `deletionPolicy` | `string` | `DELETE` | `PREVENT` fails destroys; `ABANDON` unmanages the index without deleting it. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -91,7 +91,7 @@ planton apply -f index.yaml
 - **Firestore appends `__name__` automatically** when needed.
 - **No labels surface**: Firestore indexes do not support GCP labels — both engines skip labels identically.
 
-## Related Components
+## Related Kinds
 
 - [GcpFirestoreDatabase](/docs/catalog/gcp/gcpfirestoredatabase) — the database this index belongs to
 - [GcpProject](/docs/catalog/gcp/gcpproject) — the project the database lives in

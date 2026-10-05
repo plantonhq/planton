@@ -4,7 +4,7 @@ Deploys an Amazon OpenSearch Serverless collection -- a fully managed, auto-scal
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Encryption Security Policy** -- always created, scoped to exactly this collection (AWS rejects CreateCollection without a matching encryption policy): AWS-owned key by default, or the referenced customer-managed KMS key
 - **Collection** -- SEARCH, TIMESERIES (default), or VECTORSEARCH, with standby replicas (default ENABLED; DISABLED halves the OCU floor for dev/test) and optional collection-group membership
@@ -17,12 +17,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
-- **IAM principals for data access** -- the roles or users your applications run as; grant them through `dataAccess` rules. Reference AwsIamRole Cloud Resources via ValueFromRef or provide ARNs directly.
-- **A KMS key** (optional) for customer-managed encryption -- the key choice is fixed at create time. Provide the ARN or reference an AwsKmsKey Cloud Resource.
+- **IAM principals for data access** -- the roles or users your applications run as; grant them through `dataAccess` rules. Reference AwsIamRole Infra Components via ValueFromRef or provide ARNs directly.
+- **A KMS key** (optional) for customer-managed encryption -- the key choice is fixed at create time. Provide the ARN or reference an AwsKmsKey Infra Component.
 - **OpenSearch Serverless VPC endpoints** (optional) for private network access -- these are the service's OWN endpoint objects (created through the OpenSearch Serverless API, not ordinary Interface Endpoints); create them outside this component and list their IDs in `network.vpcEndpointIds`.
 
 ## Deploy
@@ -58,7 +58,7 @@ spec:
 planton apply -f collection.yaml
 ```
 
-This creates a single-AZ SEARCH collection at the halved OCU floor, publicly reachable with SigV4 auth, with one data-access rule letting the application role read and write documents in every index. A Stack Job tracks the provisioning in real time.
+This creates a single-AZ SEARCH collection at the halved OCU floor, publicly reachable with SigV4 auth, with one data-access rule letting the application role read and write documents in every index. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -107,16 +107,16 @@ These are the most important decisions when configuring a collection. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsKmsKey** | `encryption.kmsKeyArn` | `status.outputs.key_arn` |
 | **AwsIamRole** | `dataAccess[].principals[]` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -137,6 +137,6 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- customer-managed encryption, fixed at create time via `encryption.kmsKeyArn`
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the application and service principals granted data-plane access through `dataAccess` rules
-- [**AWS Bedrock Knowledge Base**](/cloud-catalog/aws-bedrock-knowledge-base) -- consumes a VECTORSEARCH collection as its vector store via `collection_arn`
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- customer-managed encryption, fixed at create time via `encryption.kmsKeyArn`
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the application and service principals granted data-plane access through `dataAccess` rules
+- [**AWS Bedrock Knowledge Base**](/infra-catalog/aws-bedrock-knowledge-base) -- consumes a VECTORSEARCH collection as its vector store via `collection_arn`

@@ -18,7 +18,7 @@ func domain(spec *StripePaymentMethodDomainSpec) *StripePaymentMethodDomain {
 	return &StripePaymentMethodDomain{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripePaymentMethodDomain",
-		Metadata:   &shared.CloudResourceMetadata{Name: "checkout-domain"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "checkout-domain"},
 		Spec:       spec,
 	}
 }

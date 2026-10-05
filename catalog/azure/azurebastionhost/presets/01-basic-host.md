@@ -21,4 +21,4 @@ This preset deploys the default Bastion shape: dedicated infrastructure at fixed
 | `<your-bastion-subnet>` | The AzureSubnet whose ARM name is `AzureBastionSubnet` | The subnet component's name |
 | `<your-bastion-pip>` | The AzurePublicIp the host binds exclusively | The address component's name |
 
-Basic bills hourly from provisioning (~10-minute create), sessions or not — the verified figure lives in the component's generated estimate at `catalog/_pricing/estimates/azurebastionhost.yaml`. Upgrades to Standard/Premium are in-place; downgrades replace the host.
+Basic bills hourly from provisioning (~10-minute create), sessions or not — the verified figure lives in the kind's generated estimate at `catalog/_pricing/estimates/azurebastionhost.yaml`. Upgrades to Standard/Premium are in-place; downgrades replace the host.

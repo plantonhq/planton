@@ -22,7 +22,7 @@ together with the collection-scoped policies that make it usable.
 
 ## How It Works
 
-The module receives an `AwsOpenSearchServerlessCollectionStackInput` (the
+The module receives an `AwsOpenSearchServerlessCollectionIacInput` (the
 manifest plus provider credentials), builds the AWS provider through the
 shared builder, and renders the collection plus its policies from the
 spec. The policy JSON documents are built from the same typed spec fields

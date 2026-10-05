@@ -31,7 +31,7 @@ type AzureManagedDisk struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureManagedDiskSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AzureManagedDisk) GetKind() string {
 	return ""
 }
 
-func (x *AzureManagedDisk) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureManagedDisk) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *AzureManagedDisk) GetStatus() *AzureManagedDiskStatus {
 // azure-managed-disk status
 type AzureManagedDiskStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-managed-disk stack-outputs
-	Outputs       *AzureManagedDiskStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-managed-disk outputs
+	Outputs       *AzureManagedDiskOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureManagedDiskStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremanageddisk_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureManagedDiskStatus) GetOutputs() *AzureManagedDiskStackOutputs {
+func (x *AzureManagedDiskStatus) GetOutputs() *AzureManagedDiskOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azuremanageddisk_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10AzureManagedDiskR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12]\n" +
 	"\x04spec\x18\x04 \x01(\v2A.dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12[\n" +
-	"\x06status\x18\x05 \x01(\v2C.dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskStatusR\x06status\"}\n" +
-	"\x16AzureManagedDiskStatus\x12c\n" +
-	"\aoutputs\x18\x01 \x01(\v2I.dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskStackOutputsR\aoutputsB\xeb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2C.dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskStatusR\x06status\"x\n" +
+	"\x16AzureManagedDiskStatus\x12^\n" +
+	"\aoutputs\x18\x01 \x01(\v2D.dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskOutputsR\aoutputsB\xeb\x02\n" +
 	"/com.dev.planton.azure.azuremanageddisk.v1alpha1B\bApiProtoP\x01Z]github.com/plantonhq/planton/catalog/azure/azuremanageddisk/v1alpha1;azuremanageddiskv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Azure.Azuremanageddisk.V1alpha1\xca\x02+Dev\\Planton\\Azure\\Azuremanageddisk\\V1alpha1\xe2\x027Dev\\Planton\\Azure\\Azuremanageddisk\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Azure::Azuremanageddisk::V1alpha1b\x06proto3"
 
 var (
@@ -187,15 +187,15 @@ var file_catalog_azure_azuremanageddisk_v1alpha1_api_proto_msgTypes = make([]pro
 var file_catalog_azure_azuremanageddisk_v1alpha1_api_proto_goTypes = []any{
 	(*AzureManagedDisk)(nil),             // 0: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDisk
 	(*AzureManagedDiskStatus)(nil),       // 1: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AzureManagedDiskSpec)(nil),         // 3: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskSpec
-	(*AzureManagedDiskStackOutputs)(nil), // 4: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskStackOutputs
+	(*AzureManagedDiskOutputs)(nil),      // 4: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskOutputs
 }
 var file_catalog_azure_azuremanageddisk_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDisk.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDisk.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDisk.spec:type_name -> dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskSpec
 	1, // 2: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDisk.status:type_name -> dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskStatus
-	4, // 3: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskStatus.outputs:type_name -> dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskStackOutputs
+	4, // 3: dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskStatus.outputs:type_name -> dev.planton.azure.azuremanageddisk.v1alpha1.AzureManagedDiskOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

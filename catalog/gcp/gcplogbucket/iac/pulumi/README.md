@@ -26,7 +26,7 @@ iac/pulumi/
     ├── main.go                # Module coordinator
     ├── log_bucket.go          # Scope-gated bucket + views + linked dataset + settings
     ├── locals.go              # Resolved resource + scope/default derivation
-    └── outputs.go             # Stack output constants
+    └── outputs.go             # Output constants
 ```
 
 ## How the module maps the spec
@@ -44,7 +44,7 @@ iac/pulumi/
 | `scope_settings` | `logging.FolderSettings` / `OrganizationSettings` | Folder/org scopes only; adopted singleton, destroy is a state-only no-op |
 | `deletion_policy` | `deletion_policy` | Fans out to the bucket, every log view, and the linked dataset |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|
@@ -53,7 +53,7 @@ iac/pulumi/
 
 ## Local development
 
-`stack-input.yaml` carries a ready smoke manifest. Run the module directly:
+`iac-input.yaml` carries a ready smoke manifest. Run the module directly:
 
 ```bash
 planton apply --manifest ../../e2e/manifest.yaml --module-dir .

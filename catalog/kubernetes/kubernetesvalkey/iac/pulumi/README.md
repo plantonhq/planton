@@ -1,6 +1,6 @@
 # KubernetesValkey Pulumi Module
 
-Pulumi (Go) module for the KubernetesValkey component: installs Valkey —
+Pulumi (Go) module for the KubernetesValkey kind: installs Valkey —
 the Redis-compatible in-memory store — from the official Helm chart as a
 real Helm release (`helm/v3.Release`), one release named after
 `metadata.name` so several instances coexist in one cluster.

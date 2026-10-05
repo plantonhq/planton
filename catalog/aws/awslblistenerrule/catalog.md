@@ -4,7 +4,7 @@ Deploys an ALB listener rule — a condition-action pair that routes matching re
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Listener Rule** -- on the referenced listener, with its priority, condition blocks, action chain, and optional host/URL transforms
 
@@ -14,7 +14,7 @@ The listener, target groups, and any Cognito user pools are separate components 
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Listener** -- an AwsLbListener referenced by its `listener_arn` output.
 - **Target Groups** -- AwsLbTargetGroup resources for the forward actions, referenced by their `target_group_arn` outputs.
 
@@ -68,7 +68,7 @@ spec:
 planton apply -f rule.yaml
 ```
 
-This routes every /api/* request on the shared HTTPS listener to the api-servers group at priority 100. A Stack Job tracks the provisioning in real time.
+This routes every /api/* request on the shared HTTPS listener to the api-servers group at priority 100. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -118,7 +118,7 @@ These are the most important decisions when configuring a rule. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -127,9 +127,9 @@ These are the most important decisions when configuring a rule. Explore the full
 | **AwsCognitoUserPool** | `actions[].authenticateCognito.userPoolArn` / `.userPoolDomain` | `status.outputs.user_pool_arn` / `status.outputs.user_pool_domain` |
 | **AwsCognitoUserPoolClient** | `actions[].authenticateCognito.userPoolClientId` | `status.outputs.client_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -148,7 +148,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS LB Listener**](/cloud-catalog/aws-lb-listener) -- the listener this rule attaches to, referenced by `listenerArn`.
-- [**AWS LB Target Group**](/cloud-catalog/aws-lb-target-group) -- the forward destinations, referenced per action.
-- [**AWS ALB**](/cloud-catalog/aws-alb) -- the load balancer at the top of the chain (rules are an ALB concept).
-- [**AWS Cognito User Pool**](/cloud-catalog/aws-cognito-user-pool) -- the user pool behind authenticate-cognito actions.
+- [**AWS LB Listener**](/infra-catalog/aws-lb-listener) -- the listener this rule attaches to, referenced by `listenerArn`.
+- [**AWS LB Target Group**](/infra-catalog/aws-lb-target-group) -- the forward destinations, referenced per action.
+- [**AWS ALB**](/infra-catalog/aws-alb) -- the load balancer at the top of the chain (rules are an ALB concept).
+- [**AWS Cognito User Pool**](/infra-catalog/aws-cognito-user-pool) -- the user pool behind authenticate-cognito actions.

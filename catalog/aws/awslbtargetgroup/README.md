@@ -11,7 +11,7 @@ The target group is the composition point of AWS load balancing. It has its
 own lifecycle (it exists independently of any load balancer), its own ARN, and
 it is referenced from many places at once: listener default actions, listener
 rule forward actions, ECS services, and auto-scaling groups. Modeling it as a
-first-class component -- instead of burying it inside a load balancer
+first-class kind -- instead of burying it inside a load balancer
 definition -- lets you:
 
 - **Deploy services without touching the load balancer**: an ECS service or a
@@ -75,7 +75,7 @@ definition -- lets you:
   shifting predictable.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `target_group_arn`: ARN of the target group (what listeners, rules, ECS services, and ASGs reference)
 - `target_group_name`: friendly name of the group (metadata.name, truncated to AWS's 32-character limit when necessary)

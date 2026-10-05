@@ -6,17 +6,17 @@
 
 ## Summary
 
-Two connected changes. First, the component-completeness doctrine moves from **80/20** to
+Two connected changes. First, the kind-completeness doctrine moves from **80/20** to
 **90/10**: the provider's own schema is now the *floor* we benchmark coverage against, never the
 ceiling we trim below. Second, `CloudflareR2Bucket` becomes the first reference implementation of
-that bar — enriched from a thin five-field spec into a complete object-storage component that
+that bar — enriched from a thin five-field spec into a complete object-storage kind that
 covers jurisdiction, storage class, multiple custom domains, real managed public access, CORS,
 object lifecycle, and object lock, with full Terraform↔Pulumi parity and a live-validated deploy.
 
 ## Problem Statement / Motivation
 
-The doctrine codified in `architecture/` and `_rules/deployment-component/` defined a "complete"
-component as the 20% of fields 80% of users need, and explicitly framed the provider API as
+The doctrine codified in `architecture/` and `_rules/catalog-kind/` defined a "complete"
+kind as the 20% of fields 80% of users need, and explicitly framed the provider API as
 something to *under-cover* ("we don't expose every knob", "not a wholesale copy of the provider's
 API"). That framing caps ambition: an advanced organization cannot reach the long tail of what a
 provider actually offers.
@@ -31,17 +31,17 @@ lifecycle transitions/expiration, and write-once object lock.
 
 ### The doctrine: 90/10, schema-as-floor
 
-Updated the canonical completeness doctrine across `architecture/deployment-component.md`,
+Updated the canonical completeness doctrine across `architecture/catalog-kind.md`,
 `architecture/specification-guidelies.md`, `architecture/presets.md`, `architecture/README.md`,
-the `_rules/deployment-component/{forge,audit,update,fix}` rules, and the public
-`site/.../contributing/adding-components.md`. Completeness is now "broad majority-user coverage
+the `_rules/catalog-kind/{forge,audit,update,fix}` rules, and the public
+`site/.../contributing/adding-kinds.md`. Completeness is now "broad majority-user coverage
 benchmarked against the provider schema as the floor", with sensible defaults so breadth never
 costs usability, and genuinely beta/niche surfaces skipped *with a recorded reason*. Quality
 (tested, parity-verified, deploy-validated) remains the constant; coverage is raised on top of it.
 
 ### R2 as the reference implementation
 
-`CloudflareR2Bucket` is enriched as a single rich component — its sub-resources are folded as
+`CloudflareR2Bucket` is enriched as a single rich kind — its sub-resources are folded as
 nested config (the shape `AwsS3Bucket` already uses for lifecycle/cors/logging), since each is
 1:1 with the bucket and meaningless in isolation:
 
@@ -81,7 +81,7 @@ flowchart TB
 
 ## Validation
 
-`make protos` (all five stub languages), `go test` for the component + `pkg/outputs` +
+`make protos` (all five stub languages), `go test` for the kind + `pkg/outputs` +
 `pkg/secretcoverage`, `go build ./apis/...`, the Pulumi entrypoint build + `ensure_pulumi_entrypoints`
 guard, `tofu validate`, and a **live `tofu apply` + `destroy`** against a real Cloudflare account:
 a throwaway bucket exercising managed public access, CORS, lifecycle, and lock deployed cleanly,
@@ -89,7 +89,7 @@ populated `public_url` from the live r2.dev domain, and tore down with no leftov
 
 ## Impact
 
-- Every provider's components are now graded against the 90/10 bar; existing components are not
+- Every provider's kinds are now graded against the 90/10 bar; existing kinds are not
   retroactively changed and are revisited on their own cadence.
 - `CloudflareR2Bucket` is a drop-in superset of its previous self — all prior specs remain valid
   except the `custom_domain` → `custom_domains` rename (no external consumer used the singular form).

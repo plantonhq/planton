@@ -1,5 +1,5 @@
 // Package verify checks that GCP resources created by an E2E scenario exist
-// after DEPLOY and are gone after DESTROY. Each component has its own verifier
+// after DEPLOY and are gone after DESTROY. Each kind has its own verifier
 // because GCP verification is service-specific (iam serviceAccounts.get for a
 // service account, cloudresourcemanager getIamPolicy for a grant, ...). All
 // verifiers run against the same ambient ADC chain the deploy used, so a
@@ -7,7 +7,7 @@
 //
 // Unlike providers whose resources carry one opaque id, GCP identifiers are
 // frequently compound (an IAM grant is a project+role+member tuple), so
-// verifiers receive the component's full string-ified stack outputs.
+// verifiers receive the component's full string-ified outputs.
 package verify
 
 import (
@@ -141,7 +141,7 @@ type Services struct {
 
 // Verifier checks a single component's GCP resource for existence/absence.
 type Verifier interface {
-	// IDOutputKey is the stack-output key carrying the primary identifier —
+	// IDOutputKey is the output key carrying the primary identifier —
 	// used to confirm the deploy produced a verifiable handle.
 	IDOutputKey() string
 	// VerifyExists returns an error unless the resource exists.
@@ -154,7 +154,7 @@ type Verifier interface {
 // its kind's scenario EXPECTS the deploy to fail (the framework's
 // expected-deploy-failure lane, for substrates that gate resource creation on
 // workload health — Cloud Run gates service creation on first-revision
-// readiness). Stack outputs do not exist when this runs: identity arrives as
+// readiness). Outputs do not exist when this runs: identity arrives as
 // the manifest-derived service name and region. Implementations must classify
 // the engine's error, assert the partially-created resource's state with the
 // provider's own APIs, and pin the workload's failure cause from its logs —
@@ -163,7 +163,7 @@ type DeployFailureVerifier interface {
 	VerifyExpectedDeployFailure(ctx context.Context, svc *Services, serviceName, region, expectation string, deployErr error) error
 }
 
-// verifiers maps a component name to its verifier. New GCP components register
+// verifiers maps a kind name to its verifier. New GCP kinds register
 // here as they are forged.
 var verifiers = map[string]Verifier{
 	"gcpserviceaccount":                      &serviceAccountVerifier{},
@@ -354,11 +354,11 @@ var verifiers = map[string]Verifier{
 	"gcpcomputeimage":                        &computeImageVerifier{},
 }
 
-// GetVerifier returns the verifier for a component, or an error if none is registered.
-func GetVerifier(component string) (Verifier, error) {
-	v, ok := verifiers[component]
+// GetVerifier returns the verifier for a kind, or an error if none is registered.
+func GetVerifier(kind string) (Verifier, error) {
+	v, ok := verifiers[kind]
 	if !ok {
-		return nil, errors.Errorf("no GCP verifier registered for component %q", component)
+		return nil, errors.Errorf("no GCP verifier registered for kind %q", kind)
 	}
 	return v, nil
 }

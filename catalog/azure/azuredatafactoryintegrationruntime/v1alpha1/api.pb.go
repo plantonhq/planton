@@ -36,7 +36,7 @@ type AzureDataFactoryIntegrationRuntime struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureDataFactoryIntegrationRuntimeSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *AzureDataFactoryIntegrationRuntime) GetKind() string {
 	return ""
 }
 
-func (x *AzureDataFactoryIntegrationRuntime) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureDataFactoryIntegrationRuntime) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,10 +114,10 @@ func (x *AzureDataFactoryIntegrationRuntime) GetStatus() *AzureDataFactoryIntegr
 // an Azure Data Factory integration runtime deployment.
 type AzureDataFactoryIntegrationRuntimeStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-data-factory-integration-runtime stack-outputs
-	Outputs       *AzureDataFactoryIntegrationRuntimeStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-data-factory-integration-runtime outputs
+	Outputs       *AzureDataFactoryIntegrationRuntimeOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -152,7 +152,7 @@ func (*AzureDataFactoryIntegrationRuntimeStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureDataFactoryIntegrationRuntimeStatus) GetOutputs() *AzureDataFactoryIntegrationRuntimeStackOutputs {
+func (x *AzureDataFactoryIntegrationRuntimeStatus) GetOutputs() *AzureDataFactoryIntegrationRuntimeOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -170,11 +170,11 @@ const file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_api_proto_r
 	"apiVersion\x12=\n" +
 	"\x04kind\x18\x02 \x01(\tB)\xbaH&r$\n" +
 	"\"AzureDataFactoryIntegrationRuntimeR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x81\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x81\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2e.dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x7f\n" +
-	"\x06status\x18\x05 \x01(\v2g.dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeStatusR\x06status\"\xb4\x01\n" +
-	"(AzureDataFactoryIntegrationRuntimeStatus\x12\x87\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2m.dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeStackOutputsR\aoutputsB\xea\x03\n" +
+	"\x06status\x18\x05 \x01(\v2g.dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeStatusR\x06status\"\xaf\x01\n" +
+	"(AzureDataFactoryIntegrationRuntimeStatus\x12\x82\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2h.dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeOutputsR\aoutputsB\xea\x03\n" +
 	"Acom.dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1B\bApiProtoP\x01Z\x81\x01github.com/plantonhq/planton/catalog/azure/azuredatafactoryintegrationruntime/v1alpha1;azuredatafactoryintegrationruntimev1alpha1\xa2\x02\x04DPAA\xaa\x02=Dev.Planton.Azure.Azuredatafactoryintegrationruntime.V1alpha1\xca\x02=Dev\\Planton\\Azure\\Azuredatafactoryintegrationruntime\\V1alpha1\xe2\x02IDev\\Planton\\Azure\\Azuredatafactoryintegrationruntime\\V1alpha1\\GPBMetadata\xea\x02ADev::Planton::Azure::Azuredatafactoryintegrationruntime::V1alpha1b\x06proto3"
 
 var (
@@ -191,17 +191,17 @@ func file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_api_proto_ra
 
 var file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_api_proto_goTypes = []any{
-	(*AzureDataFactoryIntegrationRuntime)(nil),             // 0: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntime
-	(*AzureDataFactoryIntegrationRuntimeStatus)(nil),       // 1: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeStatus
-	(*shared.CloudResourceMetadata)(nil),                   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureDataFactoryIntegrationRuntimeSpec)(nil),         // 3: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeSpec
-	(*AzureDataFactoryIntegrationRuntimeStackOutputs)(nil), // 4: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeStackOutputs
+	(*AzureDataFactoryIntegrationRuntime)(nil),        // 0: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntime
+	(*AzureDataFactoryIntegrationRuntimeStatus)(nil),  // 1: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeStatus
+	(*shared.CatalogObjectMetadata)(nil),              // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureDataFactoryIntegrationRuntimeSpec)(nil),    // 3: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeSpec
+	(*AzureDataFactoryIntegrationRuntimeOutputs)(nil), // 4: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeOutputs
 }
 var file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntime.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntime.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntime.spec:type_name -> dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeSpec
 	1, // 2: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntime.status:type_name -> dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeStatus
-	4, // 3: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeStatus.outputs:type_name -> dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeStackOutputs
+	4, // 3: dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeStatus.outputs:type_name -> dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -1,8 +1,8 @@
 # DigitalOcean Container Registry
 
-A DigitalOcean Container Registry (DOCR) described once in a Planton manifest: the account's private Docker registry with its subscription tier and region, plus optionally minted Docker credentials (read-only or write, with a controlled lifetime) exported as a stack output. A DigitalOcean account holds exactly ONE registry, and registry names are globally unique across all DigitalOcean accounts.
+A DigitalOcean Container Registry (DOCR) described once in a Planton manifest: the account's private Docker registry with its subscription tier and region, plus optionally minted Docker credentials (read-only or write, with a controlled lifetime) exported as an output. A DigitalOcean account holds exactly ONE registry, and registry names are globally unique across all DigitalOcean accounts.
 
-## What this component models
+## What this kind models
 
 The spec maps onto DigitalOcean's `digitalocean_container_registry` plus the optional `digitalocean_container_registry_docker_credentials`:
 

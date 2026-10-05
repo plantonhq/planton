@@ -64,7 +64,7 @@ type KubernetesAuthorizationPolicySpec struct {
 	//	      name: "{{ values.app }}"
 	//	      type: depends_on
 	//
-	// See the component's "Composing in Infra Charts" docs for the full pattern.
+	// See the kind's "Composing in Infra Charts" docs for the full pattern.
 	Selector *kubernetes.KubernetesIstioApiWorkloadSelector `protobuf:"bytes,3,opt,name=selector,proto3" json:"selector,omitempty"`
 	// Attaches the policy to specific resources (Gateway, Service, ServiceEntry)
 	// instead of selecting workloads by label. At most one of `selector` and
@@ -77,7 +77,7 @@ type KubernetesAuthorizationPolicySpec struct {
 	// covers a Service, a ServiceEntry, or anything created outside Planton; istiod
 	// resolves group/kind/name at runtime, so order this policy after such a target
 	// with metadata.relationships (`uses` -> KubernetesService / KubernetesServiceEntry).
-	// See the component's "Composing in Infra Charts" docs.
+	// See the kind's "Composing in Infra Charts" docs.
 	TargetRefs []*kubernetes.KubernetesIstioApiPolicyTargetReference `protobuf:"bytes,4,rep,name=target_refs,json=targetRefs,proto3" json:"target_refs,omitempty"`
 	// The list of rules evaluated against each request. A request matches the policy
 	// when at least one rule matches it. When empty, the match never occurs: with the

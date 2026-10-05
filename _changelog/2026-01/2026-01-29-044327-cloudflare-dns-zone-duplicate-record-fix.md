@@ -6,7 +6,7 @@
 
 ## Summary
 
-Fixed a critical bug in the Cloudflare DNS Zone component where multiple DNS records with the same name and type (e.g., multiple A records for `@`) caused duplicate resource URN errors during Pulumi deployments. The fix adds an index to resource names to ensure uniqueness.
+Fixed a critical bug in the Cloudflare DNS Zone kind where multiple DNS records with the same name and type (e.g., multiple A records for `@`) caused duplicate resource URN errors during Pulumi deployments. The fix adds an index to resource names to ensure uniqueness.
 
 ## Problem Statement / Motivation
 

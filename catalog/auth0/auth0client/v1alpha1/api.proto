@@ -7,11 +7,11 @@ import "catalog/auth0/auth0client/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0client/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0Client is a component that configures an Application in Auth0.
+// Auth0Client is a kind that configures an Application in Auth0.
 // In the Auth0 dashboard, these are shown as "Applications" - they represent clients
 // that can authenticate users and request access to APIs.
 //
-// This component supports all Auth0 application types:
+// This kind supports all Auth0 application types:
 // - Native applications (mobile, desktop, CLI)
 // - Single Page Applications (SPAs)
 // - Regular web applications (server-side rendered)
@@ -64,12 +64,12 @@ message Auth0Client {
   // Must be "Auth0Client" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'Auth0Client'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the application within Planton (becomes client name)
   // - org: Organization that owns this application
   // - env: Environment (development, staging, production)
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the desired configuration for the Auth0 application.
   // This includes application type, OAuth settings, and security configuration.
@@ -84,8 +84,8 @@ message Auth0Client {
 // Auth0ClientStatus represents the current state of an Auth0 Client resource.
 // This is populated by the deployment system and contains read-only outputs.
 message Auth0ClientStatus {
-  // outputs contains the stack outputs from the Auth0 client deployment.
+  // outputs contains the outputs from the Auth0 client deployment.
   // These values are populated after successful deployment and include
   // client credentials, identifiers, and configuration URLs.
-  Auth0ClientStackOutputs outputs = 1;
+  Auth0ClientOutputs outputs = 1;
 }

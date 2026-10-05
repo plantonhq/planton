@@ -4,25 +4,25 @@
 
 This Pulumi module creates and manages a standalone Kubernetes Service. It supports the complete core/v1 ServiceSpec surface: all four service types (ClusterIP, NodePort, LoadBalancer, ExternalName), headless services, traffic policies, topology-aware `trafficDistribution`, session affinity, LoadBalancer tuning knobs, and dual-stack addressing.
 
-This is the reference engine for the component: it applies the full spec, including `traffic_distribution`, which the Terraform module cannot (the Terraform kubernetes provider does not expose the field — the Terraform module fails its plan loudly when it is set).
+This is the reference engine for the kind: it applies the full spec, including `traffic_distribution`, which the Terraform module cannot (the Terraform kubernetes provider does not expose the field — the Terraform module fails its plan loudly when it is set).
 
 ## Architecture
 
 ```
 iac/pulumi/
-├── main.go          # Entrypoint: loads stack input, calls module
+├── main.go          # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml      # Pulumi project configuration
 ├── Makefile         # Make targets for preview/up/down/refresh
 └── module/
     ├── main.go      # Orchestrator: provider init, resource creation, output export
     ├── locals.go    # Derived values: labels, namespace default, enum → API string translation
     ├── service.go   # Creates kubernetes.core.v1.Service resource
-    └── outputs.go   # Exports the eight stack outputs
+    └── outputs.go   # Exports the eight outputs
 ```
 
 ## How It Works
 
-1. **Stack Input Loading**: The entrypoint loads `KubernetesServiceStackInput` from Pulumi config
+1. **IaC Input Loading**: The entrypoint loads `KubernetesServiceIacInput` from Pulumi config
 2. **Locals Initialization**: `locals.go` computes:
    - Standard Planton labels merged with user labels (identity keys win on conflict)
    - The target namespace (foreign-key references are pre-resolved; falls back to `default` when omitted)

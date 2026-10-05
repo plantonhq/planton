@@ -4,7 +4,7 @@ Provisions a TLS certificate Azure issues and renews end to end for one custom d
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Managed Certificate** -- on the referenced Container App Environment, issued for the subject hostname after Azure proves domain control (HTTP token or CNAME check)
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -50,7 +50,7 @@ spec:
 planton apply -f managed-certificate.yaml
 ```
 
-This issues a free, CNAME-validated certificate for `app.example.com` on the environment, provided the asuid TXT and CNAME records already resolve. A Stack Job tracks the provisioning in real time.
+This issues a free, CNAME-validated certificate for `app.example.com` on the environment, provided the asuid TXT and CNAME records already resolve. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,15 +82,15 @@ These are the most important decisions when configuring a managed certificate. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureContainerAppEnvironment** | `containerAppEnvironmentId` | `status.outputs.environment_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,8 +109,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Container App Environment**](/cloud-catalog/azure-container-app-environment) -- where the certificate is provisioned
-- [**Azure Container App Custom Domain**](/cloud-catalog/azure-container-app-custom-domain) -- the binding Azure attaches the issued certificate to
-- [**Azure Container App**](/cloud-catalog/azure-container-app) -- carries the `custom_domain_verification_id` and `ingress_fqdn` outputs the DNS records need
-- [**Azure DNS Record**](/cloud-catalog/azure-dns-record) -- publishes the validation TXT and routing records when the zone is on Azure DNS
-- [**Azure Container App Environment Certificate**](/cloud-catalog/azure-container-app-environment-certificate) -- the bring-your-own alternative for wildcards, SANs, and mandated CAs
+- [**Azure Container App Environment**](/infra-catalog/azure-container-app-environment) -- where the certificate is provisioned
+- [**Azure Container App Custom Domain**](/infra-catalog/azure-container-app-custom-domain) -- the binding Azure attaches the issued certificate to
+- [**Azure Container App**](/infra-catalog/azure-container-app) -- carries the `custom_domain_verification_id` and `ingress_fqdn` outputs the DNS records need
+- [**Azure DNS Record**](/infra-catalog/azure-dns-record) -- publishes the validation TXT and routing records when the zone is on Azure DNS
+- [**Azure Container App Environment Certificate**](/infra-catalog/azure-container-app-environment-certificate) -- the bring-your-own alternative for wildcards, SANs, and mandated CAs

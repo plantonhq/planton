@@ -47,7 +47,7 @@ The compute plane: the capacity contract — a fixed RPU `base_capacity` XOR an 
 
 ### Composition mechanics
 
-- The namespace exports `namespace_name` as a stack output because it is the join key: references resolve against stack outputs, never metadata.
+- The namespace exports `namespace_name` as an output because it is the join key: references resolve against outputs, never metadata.
 - The workgroup's registry entry declares `prerequisites: [AwsRedshiftServerlessNamespace, AwsSubnet]`, driving its composed E2E chain.
 - The shared AwsSubnet E2E fixture grew a third availability-zone document — Redshift Serverless requires a workgroup's subnets to span three AZs; existing consumers select fixture instances by name, so the addition is transparent to them.
 

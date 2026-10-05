@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsrdsproxy.v1alpha1;
 
-// AwsRdsProxyStackOutputs captures the observable state of the proxy
+// AwsRdsProxyOutputs captures the observable state of the proxy
 // after apply.
-message AwsRdsProxyStackOutputs {
+message AwsRdsProxyOutputs {
   // The proxy's name (wired from metadata.name) - the provider's
   // import ID and the join key for AWS CLI/API lookups.
   string proxy_name = 1;

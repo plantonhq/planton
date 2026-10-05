@@ -83,7 +83,7 @@ export const niravSlides: SlideConfig[] = [
     component: S06Solution,
     presenterNotes: [
       '"This is the architecture we arrived at."',
-      '"We modeled 370+ cloud resource kinds using Protocol Buffers — structured data that AI excels at working with."',
+      '"We modeled 370+ catalog kinds using Protocol Buffers — structured data that AI excels at working with."',
       '"The AI teammate understands what the team wants, selects from this catalog, and kicks off Terraform or Helm."',
       '"The tooling is deterministic — what you write is what you get."',
       'Keep it conceptual, not deep-tech. Save details for Q&A.',
@@ -163,7 +163,7 @@ export const niravSlides: SlideConfig[] = [
       '"3 customers actively on the platform — one Pro, one Plus, one Free. First paying customer came on about 8 months ago. Zero churn."',
       '"But here\'s what I\'m most proud of: both Planton and Stigmer run entirely on Planton for all DevOps and infrastructure. 100% dogfooding."',
       '"$500K+ self-funded — this is our conviction, our skin in the game."',
-      '"370+ cloud resource kinds across 14 providers. Complete platform — web, desktop, mobile, CLI."',
+      '"370+ catalog kinds across 14 providers. Complete platform — web, desktop, mobile, CLI."',
     ],
   },
   {

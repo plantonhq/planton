@@ -15,7 +15,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: digitaloceanvpcpeering
+    e2e-catalog-kind: digitaloceanvpcpeering
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/digitalocean/digitaloceanvpcpeering/e2e/fixtures/second-vpc.yaml"

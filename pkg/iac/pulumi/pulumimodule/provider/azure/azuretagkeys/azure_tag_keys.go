@@ -5,7 +5,7 @@
 // use plain snake_case keys. The OpenTofu modules spell these same keys as
 // literals in iac/tf/locals.tf, and
 // hack/guards/ensure_cross_engine_azure_tag_values.sh holds both engines to
-// the same keys and values: resource_kind is the kind's CloudResourceKind
+// the same keys and values: resource_kind is the kind's CatalogKind
 // enum name lowercased, and resource_id is written only when the resource
 // has an id.
 package azuretagkeys

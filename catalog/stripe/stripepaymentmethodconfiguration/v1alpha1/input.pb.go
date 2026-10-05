@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripePaymentMethodConfigurationStackInput is the input to the StripePaymentMethodConfiguration
+// StripePaymentMethodConfigurationIacInput is the input to the StripePaymentMethodConfiguration
 // IaC module. It contains the target resource and the Stripe provider configuration.
-type StripePaymentMethodConfigurationStackInput struct {
+type StripePaymentMethodConfigurationIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripePaymentMethodConfiguration resource to be deployed.
 	Target *StripePaymentMethodConfiguration `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripePaymentMethodConfigurationStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripePaymentMethodConfigurationStackInput) Reset() {
-	*x = StripePaymentMethodConfigurationStackInput{}
+func (x *StripePaymentMethodConfigurationIacInput) Reset() {
+	*x = StripePaymentMethodConfigurationIacInput{}
 	mi := &file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripePaymentMethodConfigurationStackInput) String() string {
+func (x *StripePaymentMethodConfigurationIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripePaymentMethodConfigurationStackInput) ProtoMessage() {}
+func (*StripePaymentMethodConfigurationIacInput) ProtoMessage() {}
 
-func (x *StripePaymentMethodConfigurationStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripePaymentMethodConfigurationIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripePaymentMethodConfigurationStackInput) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripePaymentMethodConfigurationStackInput.ProtoReflect.Descriptor instead.
-func (*StripePaymentMethodConfigurationStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripePaymentMethodConfigurationIacInput.ProtoReflect.Descriptor instead.
+func (*StripePaymentMethodConfigurationIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripePaymentMethodConfigurationStackInput) GetTarget() *StripePaymentMethodConfiguration {
+func (x *StripePaymentMethodConfigurationIacInput) GetTarget() *StripePaymentMethodConfiguration {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripePaymentMethodConfigurationStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripePaymentMethodConfigurationIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_input_proto pr
 
 const file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/stripe/stripepaymentmethodconfiguration/v1alpha1/input.proto\x12<dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1aBcatalog/stripe/stripepaymentmethodconfiguration/v1alpha1/api.proto\"\xf7\x01\n" +
-	"*StripePaymentMethodConfigurationStackInput\x12v\n" +
+	"Dcatalog/stripe/stripepaymentmethodconfiguration/v1alpha1/input.proto\x12<dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1aBcatalog/stripe/stripepaymentmethodconfiguration/v1alpha1/api.proto\"\xf5\x01\n" +
+	"(StripePaymentMethodConfigurationIacInput\x12v\n" +
 	"\x06target\x18\x01 \x01(\v2^.dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\xe3\x03\n" +
 	"@com.dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_input_proto_r
 
 var file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_input_proto_goTypes = []any{
-	(*StripePaymentMethodConfigurationStackInput)(nil), // 0: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationStackInput
-	(*StripePaymentMethodConfiguration)(nil),           // 1: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfiguration
-	(*stripe.StripeProviderConfig)(nil),                // 2: dev.planton.stripe.StripeProviderConfig
+	(*StripePaymentMethodConfigurationIacInput)(nil), // 0: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationIacInput
+	(*StripePaymentMethodConfiguration)(nil),         // 1: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfiguration
+	(*stripe.StripeProviderConfig)(nil),              // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripepaymentmethodconfiguration_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationStackInput.target:type_name -> dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfiguration
-	2, // 1: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationIacInput.target:type_name -> dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfiguration
+	2, // 1: dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1.StripePaymentMethodConfigurationIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpprivatecacertificateauthority.v1alpha1;
 
-// GcpPrivateCaCertificateAuthorityStackOutputs captures the authority's identity and its CA
+// GcpPrivateCaCertificateAuthorityOutputs captures the authority's identity and its CA
 // certificate -- what subordinates and certificates reference, and what
 // relying parties install as a trust anchor.
-message GcpPrivateCaCertificateAuthorityStackOutputs {
+message GcpPrivateCaCertificateAuthorityOutputs {
   // Full resource name --
   // projects/{project}/locations/{location}/caPools/{pool}/certificateAuthorities/{id}.
   string name = 1;

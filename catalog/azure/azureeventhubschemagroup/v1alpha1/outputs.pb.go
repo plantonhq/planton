@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureEventHubSchemaGroupStackOutputs** captures the outputs of
+// **AzureEventHubSchemaGroupOutputs** captures the outputs of
 // provisioning a schema group.
-type AzureEventHubSchemaGroupStackOutputs struct {
+type AzureEventHubSchemaGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the schema group.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{ns}/schemagroups/{name}
@@ -34,20 +34,20 @@ type AzureEventHubSchemaGroupStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AzureEventHubSchemaGroupStackOutputs) Reset() {
-	*x = AzureEventHubSchemaGroupStackOutputs{}
+func (x *AzureEventHubSchemaGroupOutputs) Reset() {
+	*x = AzureEventHubSchemaGroupOutputs{}
 	mi := &file_catalog_azure_azureeventhubschemagroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureEventHubSchemaGroupStackOutputs) String() string {
+func (x *AzureEventHubSchemaGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureEventHubSchemaGroupStackOutputs) ProtoMessage() {}
+func (*AzureEventHubSchemaGroupOutputs) ProtoMessage() {}
 
-func (x *AzureEventHubSchemaGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureEventHubSchemaGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureeventhubschemagroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureEventHubSchemaGroupStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureEventHubSchemaGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureEventHubSchemaGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureEventHubSchemaGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AzureEventHubSchemaGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureeventhubschemagroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureEventHubSchemaGroupStackOutputs) GetSchemaGroupId() string {
+func (x *AzureEventHubSchemaGroupOutputs) GetSchemaGroupId() string {
 	if x != nil {
 		return x.SchemaGroupId
 	}
 	return ""
 }
 
-func (x *AzureEventHubSchemaGroupStackOutputs) GetSchemaGroupName() string {
+func (x *AzureEventHubSchemaGroupOutputs) GetSchemaGroupName() string {
 	if x != nil {
 		return x.SchemaGroupName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azureeventhubschemagroup_v1alpha1_outputs_proto protorefl
 
 const file_catalog_azure_azureeventhubschemagroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azureeventhubschemagroup/v1alpha1/outputs.proto\x123dev.planton.azure.azureeventhubschemagroup.v1alpha1\"z\n" +
-	"$AzureEventHubSchemaGroupStackOutputs\x12&\n" +
+	"=catalog/azure/azureeventhubschemagroup/v1alpha1/outputs.proto\x123dev.planton.azure.azureeventhubschemagroup.v1alpha1\"u\n" +
+	"\x1fAzureEventHubSchemaGroupOutputs\x12&\n" +
 	"\x0fschema_group_id\x18\x01 \x01(\tR\rschemaGroupId\x12*\n" +
 	"\x11schema_group_name\x18\x02 \x01(\tR\x0fschemaGroupNameB\xa7\x03\n" +
 	"7com.dev.planton.azure.azureeventhubschemagroup.v1alpha1B\fOutputsProtoP\x01Zmgithub.com/plantonhq/planton/catalog/azure/azureeventhubschemagroup/v1alpha1;azureeventhubschemagroupv1alpha1\xa2\x02\x04DPAA\xaa\x023Dev.Planton.Azure.Azureeventhubschemagroup.V1alpha1\xca\x023Dev\\Planton\\Azure\\Azureeventhubschemagroup\\V1alpha1\xe2\x02?Dev\\Planton\\Azure\\Azureeventhubschemagroup\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Azure::Azureeventhubschemagroup::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_azure_azureeventhubschemagroup_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_azure_azureeventhubschemagroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureeventhubschemagroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureEventHubSchemaGroupStackOutputs)(nil), // 0: dev.planton.azure.azureeventhubschemagroup.v1alpha1.AzureEventHubSchemaGroupStackOutputs
+	(*AzureEventHubSchemaGroupOutputs)(nil), // 0: dev.planton.azure.azureeventhubschemagroup.v1alpha1.AzureEventHubSchemaGroupOutputs
 }
 var file_catalog_azure_azureeventhubschemagroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

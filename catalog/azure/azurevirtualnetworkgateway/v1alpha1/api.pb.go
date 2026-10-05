@@ -37,10 +37,10 @@ type AzureVirtualNetworkGateway struct {
 	// Resource kind. Must be "AzureVirtualNetworkGateway".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Virtual network gateway specification.
 	Spec *AzureVirtualNetworkGatewaySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureVirtualNetworkGatewayStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -90,7 +90,7 @@ func (x *AzureVirtualNetworkGateway) GetKind() string {
 	return ""
 }
 
-func (x *AzureVirtualNetworkGateway) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureVirtualNetworkGateway) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,8 +114,8 @@ func (x *AzureVirtualNetworkGateway) GetStatus() *AzureVirtualNetworkGatewayStat
 // AzureVirtualNetworkGatewayStatus holds the deployment outputs.
 type AzureVirtualNetworkGatewayStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureVirtualNetworkGatewayStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureVirtualNetworkGatewayOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureVirtualNetworkGatewayStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualnetworkgateway_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureVirtualNetworkGatewayStatus) GetOutputs() *AzureVirtualNetworkGatewayStackOutputs {
+func (x *AzureVirtualNetworkGatewayStatus) GetOutputs() *AzureVirtualNetworkGatewayOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azurevirtualnetworkgateway_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aAzureVirtualNetworkGatewayR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
 	"\x04spec\x18\x04 \x01(\v2U.dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewaySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
-	"\x06status\x18\x05 \x01(\v2W.dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStatusR\x06status\"\x9b\x01\n" +
-	" AzureVirtualNetworkGatewayStatus\x12w\n" +
-	"\aoutputs\x18\x01 \x01(\v2].dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStackOutputsR\aoutputsB\xb1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2W.dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStatusR\x06status\"\x96\x01\n" +
+	" AzureVirtualNetworkGatewayStatus\x12r\n" +
+	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayOutputsR\aoutputsB\xb1\x03\n" +
 	"9com.dev.planton.azure.azurevirtualnetworkgateway.v1alpha1B\bApiProtoP\x01Zqgithub.com/plantonhq/planton/catalog/azure/azurevirtualnetworkgateway/v1alpha1;azurevirtualnetworkgatewayv1alpha1\xa2\x02\x04DPAA\xaa\x025Dev.Planton.Azure.Azurevirtualnetworkgateway.V1alpha1\xca\x025Dev\\Planton\\Azure\\Azurevirtualnetworkgateway\\V1alpha1\xe2\x02ADev\\Planton\\Azure\\Azurevirtualnetworkgateway\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Azure::Azurevirtualnetworkgateway::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azurevirtualnetworkgateway_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_azure_azurevirtualnetworkgateway_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurevirtualnetworkgateway_v1alpha1_api_proto_goTypes = []any{
-	(*AzureVirtualNetworkGateway)(nil),             // 0: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGateway
-	(*AzureVirtualNetworkGatewayStatus)(nil),       // 1: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureVirtualNetworkGatewaySpec)(nil),         // 3: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewaySpec
-	(*AzureVirtualNetworkGatewayStackOutputs)(nil), // 4: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStackOutputs
+	(*AzureVirtualNetworkGateway)(nil),        // 0: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGateway
+	(*AzureVirtualNetworkGatewayStatus)(nil),  // 1: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureVirtualNetworkGatewaySpec)(nil),    // 3: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewaySpec
+	(*AzureVirtualNetworkGatewayOutputs)(nil), // 4: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayOutputs
 }
 var file_catalog_azure_azurevirtualnetworkgateway_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGateway.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGateway.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGateway.spec:type_name -> dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewaySpec
 	1, // 2: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGateway.status:type_name -> dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStatus
-	4, // 3: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStatus.outputs:type_name -> dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStackOutputs
+	4, // 3: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStatus.outputs:type_name -> dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -5,11 +5,11 @@ import (
 
 	kuberneteskeycloakoperatorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kuberneteskeycloakoperator/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds computed values derived from the stack input for use across
+// Locals holds computed values derived from the IaC input for use across
 // the module. Every resolution here has an exact twin in the Terraform
 // module's locals.tf — keep them in lockstep.
 type Locals struct {
@@ -32,13 +32,13 @@ type Locals struct {
 	Labels map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *kuberneteskeycloakoperatorv1alpha1.KubernetesKeycloakOperatorStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *kuberneteskeycloakoperatorv1alpha1.KubernetesKeycloakOperatorIacInput) *Locals {
+	target := iacInput.Target
 
 	labels := map[string]string{
 		kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
 		kuberneteslabelkeys.ResourceName: target.Metadata.Name,
-		kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesKeycloakOperator.String(),
+		kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesKeycloakOperator.String(),
 	}
 	if target.Metadata.Id != "" {
 		labels[kuberneteslabelkeys.ResourceId] = target.Metadata.Id

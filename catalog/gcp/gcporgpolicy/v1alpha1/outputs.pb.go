@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpOrgPolicyStackOutputs captures the policy's identity after
+// GcpOrgPolicyOutputs captures the policy's identity after
 // provisioning.
-type GcpOrgPolicyStackOutputs struct {
+type GcpOrgPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The policy's full resource name, `{scope}/policies/{constraint}` --
 	// e.g. `projects/123456789012/policies/compute.disableSerialPortAccess`.
@@ -37,20 +37,20 @@ type GcpOrgPolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpOrgPolicyStackOutputs) Reset() {
-	*x = GcpOrgPolicyStackOutputs{}
+func (x *GcpOrgPolicyOutputs) Reset() {
+	*x = GcpOrgPolicyOutputs{}
 	mi := &file_catalog_gcp_gcporgpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpOrgPolicyStackOutputs) String() string {
+func (x *GcpOrgPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpOrgPolicyStackOutputs) ProtoMessage() {}
+func (*GcpOrgPolicyOutputs) ProtoMessage() {}
 
-func (x *GcpOrgPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpOrgPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcporgpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *GcpOrgPolicyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpOrgPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpOrgPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpOrgPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*GcpOrgPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcporgpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpOrgPolicyStackOutputs) GetName() string {
+func (x *GcpOrgPolicyOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpOrgPolicyStackOutputs) GetEtag() string {
+func (x *GcpOrgPolicyOutputs) GetEtag() string {
 	if x != nil {
 		return x.Etag
 	}
@@ -85,8 +85,8 @@ var File_catalog_gcp_gcporgpolicy_v1alpha1_outputs_proto protoreflect.FileDescri
 
 const file_catalog_gcp_gcporgpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/gcp/gcporgpolicy/v1alpha1/outputs.proto\x12%dev.planton.gcp.gcporgpolicy.v1alpha1\"B\n" +
-	"\x18GcpOrgPolicyStackOutputs\x12\x12\n" +
+	"/catalog/gcp/gcporgpolicy/v1alpha1/outputs.proto\x12%dev.planton.gcp.gcporgpolicy.v1alpha1\"=\n" +
+	"\x13GcpOrgPolicyOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
 	"\x04etag\x18\x02 \x01(\tR\x04etagB\xc7\x02\n" +
 	")com.dev.planton.gcp.gcporgpolicy.v1alpha1B\fOutputsProtoP\x01ZSgithub.com/plantonhq/planton/catalog/gcp/gcporgpolicy/v1alpha1;gcporgpolicyv1alpha1\xa2\x02\x04DPGG\xaa\x02%Dev.Planton.Gcp.Gcporgpolicy.V1alpha1\xca\x02%Dev\\Planton\\Gcp\\Gcporgpolicy\\V1alpha1\xe2\x021Dev\\Planton\\Gcp\\Gcporgpolicy\\V1alpha1\\GPBMetadata\xea\x02)Dev::Planton::Gcp::Gcporgpolicy::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_gcp_gcporgpolicy_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcporgpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcporgpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpOrgPolicyStackOutputs)(nil), // 0: dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyStackOutputs
+	(*GcpOrgPolicyOutputs)(nil), // 0: dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyOutputs
 }
 var file_catalog_gcp_gcporgpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

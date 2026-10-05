@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareWaitingRoomEventStackInput is the input to the IaC module.
+// CloudflareWaitingRoomEventIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type CloudflareWaitingRoomEventStackInput struct {
+type CloudflareWaitingRoomEventIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// the catalog object to deploy to be deployed
 	Target *CloudflareWaitingRoomEvent `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Cloudflare authentication
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type CloudflareWaitingRoomEventStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareWaitingRoomEventStackInput) Reset() {
-	*x = CloudflareWaitingRoomEventStackInput{}
+func (x *CloudflareWaitingRoomEventIacInput) Reset() {
+	*x = CloudflareWaitingRoomEventIacInput{}
 	mi := &file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareWaitingRoomEventStackInput) String() string {
+func (x *CloudflareWaitingRoomEventIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareWaitingRoomEventStackInput) ProtoMessage() {}
+func (*CloudflareWaitingRoomEventIacInput) ProtoMessage() {}
 
-func (x *CloudflareWaitingRoomEventStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareWaitingRoomEventIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareWaitingRoomEventStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareWaitingRoomEventStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareWaitingRoomEventStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareWaitingRoomEventIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareWaitingRoomEventIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareWaitingRoomEventStackInput) GetTarget() *CloudflareWaitingRoomEvent {
+func (x *CloudflareWaitingRoomEventIacInput) GetTarget() *CloudflareWaitingRoomEvent {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareWaitingRoomEventStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareWaitingRoomEventIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_input_proto prot
 
 const file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/cloudflare/cloudflarewaitingroomevent/v1alpha1/input.proto\x12:dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1\x1a@catalog/cloudflare/cloudflarewaitingroomevent/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xf1\x01\n" +
-	"$CloudflareWaitingRoomEventStackInput\x12n\n" +
+	"Bcatalog/cloudflare/cloudflarewaitingroomevent/v1alpha1/input.proto\x12:dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1\x1a@catalog/cloudflare/cloudflarewaitingroomevent/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xef\x01\n" +
+	"\"CloudflareWaitingRoomEventIacInput\x12n\n" +
 	"\x06target\x18\x01 \x01(\v2V.dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1.CloudflareWaitingRoomEventR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xd1\x03\n" +
 	">com.dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_input_proto_raw
 
 var file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareWaitingRoomEventStackInput)(nil), // 0: dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1.CloudflareWaitingRoomEventStackInput
-	(*CloudflareWaitingRoomEvent)(nil),           // 1: dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1.CloudflareWaitingRoomEvent
-	(*cloudflare.CloudflareProviderConfig)(nil),  // 2: dev.planton.cloudflare.CloudflareProviderConfig
+	(*CloudflareWaitingRoomEventIacInput)(nil),  // 0: dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1.CloudflareWaitingRoomEventIacInput
+	(*CloudflareWaitingRoomEvent)(nil),          // 1: dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1.CloudflareWaitingRoomEvent
+	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflarewaitingroomevent_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1.CloudflareWaitingRoomEventStackInput.target:type_name -> dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1.CloudflareWaitingRoomEvent
-	2, // 1: dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1.CloudflareWaitingRoomEventStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1.CloudflareWaitingRoomEventIacInput.target:type_name -> dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1.CloudflareWaitingRoomEvent
+	2, // 1: dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1.CloudflareWaitingRoomEventIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

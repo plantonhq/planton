@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurevirtualnetworkpeering
+    e2e-catalog-kind: azurevirtualnetworkpeering
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/azure/azurevirtualnetworkpeering/e2e/fixtures/remote-network.yaml"

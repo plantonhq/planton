@@ -65,7 +65,7 @@ const (
 //   - Endpoints are computed outputs: management (ONTAP CLI/API) and intercluster
 //     (SnapMirror replication between file systems). Data access endpoints (NFS/
 //     SMB/iSCSI DNS names) live on the SVM, not the file system.
-//   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+//   - Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 type AwsFsxOntapFileSystemSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

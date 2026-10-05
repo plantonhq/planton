@@ -1,10 +1,10 @@
 # AWS Config Aggregator
 
-Creates the cross-account, cross-region rollup of AWS Config data -- one queryable view of resource configurations and rule compliance across an explicit account list or the whole AWS Organization. Aggregation has two sides and this component models both as arms: the aggregator itself (deployed in the account that collects) and the reciprocal authorization grants (deployed in each source account). The aggregator references no Config recorder -- it works in an account with zero recorders, because the data comes from the source accounts' recorders.
+Creates the cross-account, cross-region rollup of AWS Config data -- one queryable view of resource configurations and rule compliance across an explicit account list or the whole AWS Organization. Aggregation has two sides and this kind models both as arms: the aggregator itself (deployed in the account that collects) and the reciprocal authorization grants (deployed in each source account). The aggregator references no Config recorder -- it works in an account with zero recorders, because the data comes from the source accounts' recorders.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions whichever arms the spec carries (at least one is required):
+When you deploy this Infra Component, the IaC module provisions whichever arms the spec carries (at least one is required):
 
 - **Configuration Aggregator** -- created only when `aggregation` is set; the collector, sourced from an explicit account list or the whole organization, across listed regions or all of them
 - **Aggregator Authorizations** -- one per `authorizations` entry; the reciprocal grant a SOURCE account issues, naming the aggregator account and region allowed to collect from it. Grants are keyed by their `{account_id}:{authorized_aws_region}` identity, so reordering the list never churns resources
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions whichever arms th
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with AWS Config permissions; for an organization source, its credentials must belong to the management account or the Config delegated administrator. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with AWS Config permissions; for an organization source, its credentials must belong to the management account or the Config delegated administrator. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f aws-config-aggregator.yaml
 ```
 
-This creates an organization-sourced aggregator collecting every member account across every region into one queryable rollup, with membership self-discovering as accounts join the organization. A Stack Job tracks the provisioning in real time.
+This creates an organization-sourced aggregator collecting every member account across every region into one queryable rollup, with membership self-discovering as accounts join the organization. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -93,15 +93,15 @@ These are the most important decisions when configuring Config aggregation. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsIamRole** | `aggregation.organizationSource.roleArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-`status.outputs` echoes the identities of whatever the instance manages: `aggregator_name` and `aggregator_arn` (set only when the aggregation arm is configured), and `authorization_arns`, a map keyed `{account_id}:{authorized_aws_region}` with one entry per grant. These are audit and import values rather than composition inputs -- the aggregated view is queried through the Config console and APIs, not referenced by other Cloud Resources.
+`status.outputs` echoes the identities of whatever the instance manages: `aggregator_name` and `aggregator_arn` (set only when the aggregation arm is configured), and `authorization_arns`, a map keyed `{account_id}:{authorized_aws_region}` with one entry per grant. These are audit and import values rather than composition inputs -- the aggregated view is queried through the Config console and APIs, not referenced by other Infra Components.
 
 ## Common Patterns
 
@@ -115,7 +115,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the organization-reader role an organization-sourced aggregator assumes, wired via `roleArn`
-- [**AWS Config Recorder**](/cloud-catalog/aws-config-recorder) -- the source of everything aggregated; accounts and regions without one contribute nothing
-- [**AWS Config Rule**](/cloud-catalog/aws-config-rule) -- the compliance results the rollup makes queryable across accounts
-- [**AWS Organization**](/cloud-catalog/aws-organization) -- the membership authority behind an organization source, with `config.amazonaws.com` in its trusted-access list
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the organization-reader role an organization-sourced aggregator assumes, wired via `roleArn`
+- [**AWS Config Recorder**](/infra-catalog/aws-config-recorder) -- the source of everything aggregated; accounts and regions without one contribute nothing
+- [**AWS Config Rule**](/infra-catalog/aws-config-rule) -- the compliance results the rollup makes queryable across accounts
+- [**AWS Organization**](/infra-catalog/aws-organization) -- the membership authority behind an organization source, with `config.amazonaws.com` in its trusted-access list

@@ -9,12 +9,12 @@ KubernetesOpenSearch — one resource per cluster. Install the operator
 once per Kubernetes cluster (or once per watched namespace), then
 declare search clusters against it.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want an OpenSearch cluster** — that is KubernetesOpenSearch;
-  this component is the controller that reconciles it.
+  this kind is the controller that reconciles it.
 - **You want a managed cloud search service** — use the host cloud
-  provider's managed search kinds; this component is for running
+  provider's managed search kinds; this kind is for running
   OpenSearch ON the Kubernetes cluster itself.
 - **You need the 3.x operator line today** — the served charts past
   2.8.0 (2.8.3, 2.8.4, 3.0.x) default their manager image to a
@@ -133,7 +133,7 @@ Every refusal on the CRD path says three things, in this order and in stable wor
 
 Two things the messages say on purpose. A kept CRD the module re-adopts on reinstall shows as `create` in a Terraform plan, because the state has no record of it; the apply adopts it in place and the Pulumi log says so. And a chart with no CRDs is never refused for a CRD right it does not need: the ownership read and the permission probe run only over what the render produced.
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezerotrustgatewaypolicy
 spec:
@@ -15,7 +15,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: policy_id
       derivations:
-        - from_stack_output: policy_id
+        - from_output: policy_id
       where_to_find: >-
         Zero Trust dashboard -> Gateway -> Firewall policies -> the policy,
         or `GET /accounts/<account_id>/gateway/rules` on the Cloudflare v4

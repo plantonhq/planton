@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesKarpenterStackOutputs by the
+# Outputs — flattened onto KubernetesKarpenterOutputs by the
 # platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

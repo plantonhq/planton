@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsS3DirectoryBucketStackInput is the input for the IaC modules
+// AwsS3DirectoryBucketIacInput is the input for the IaC modules
 // that manage an S3 directory bucket.
-type AwsS3DirectoryBucketStackInput struct {
+type AwsS3DirectoryBucketIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsS3DirectoryBucket resource to deploy.
 	Target *AwsS3DirectoryBucket `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsS3DirectoryBucketStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsS3DirectoryBucketStackInput) Reset() {
-	*x = AwsS3DirectoryBucketStackInput{}
+func (x *AwsS3DirectoryBucketIacInput) Reset() {
+	*x = AwsS3DirectoryBucketIacInput{}
 	mi := &file_catalog_aws_awss3directorybucket_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsS3DirectoryBucketStackInput) String() string {
+func (x *AwsS3DirectoryBucketIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsS3DirectoryBucketStackInput) ProtoMessage() {}
+func (*AwsS3DirectoryBucketIacInput) ProtoMessage() {}
 
-func (x *AwsS3DirectoryBucketStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsS3DirectoryBucketIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awss3directorybucket_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsS3DirectoryBucketStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsS3DirectoryBucketStackInput.ProtoReflect.Descriptor instead.
-func (*AwsS3DirectoryBucketStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsS3DirectoryBucketIacInput.ProtoReflect.Descriptor instead.
+func (*AwsS3DirectoryBucketIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awss3directorybucket_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsS3DirectoryBucketStackInput) GetTarget() *AwsS3DirectoryBucket {
+func (x *AwsS3DirectoryBucketIacInput) GetTarget() *AwsS3DirectoryBucket {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsS3DirectoryBucketStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsS3DirectoryBucketIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awss3directorybucket_v1alpha1_input_proto protoreflect.File
 
 const file_catalog_aws_awss3directorybucket_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awss3directorybucket/v1alpha1/input.proto\x12-dev.planton.aws.awss3directorybucket.v1alpha1\x1a3catalog/aws/awss3directorybucket/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xca\x01\n" +
-	"\x1eAwsS3DirectoryBucketStackInput\x12[\n" +
+	"5catalog/aws/awss3directorybucket/v1alpha1/input.proto\x12-dev.planton.aws.awss3directorybucket.v1alpha1\x1a3catalog/aws/awss3directorybucket/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc8\x01\n" +
+	"\x1cAwsS3DirectoryBucketIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.aws.awss3directorybucket.v1alpha1.AwsS3DirectoryBucketR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xfd\x02\n" +
 	"1com.dev.planton.aws.awss3directorybucket.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awss3directorybucket_v1alpha1_input_proto_rawDescGZIP() []
 
 var file_catalog_aws_awss3directorybucket_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awss3directorybucket_v1alpha1_input_proto_goTypes = []any{
-	(*AwsS3DirectoryBucketStackInput)(nil), // 0: dev.planton.aws.awss3directorybucket.v1alpha1.AwsS3DirectoryBucketStackInput
-	(*AwsS3DirectoryBucket)(nil),           // 1: dev.planton.aws.awss3directorybucket.v1alpha1.AwsS3DirectoryBucket
-	(*aws.AwsProviderConfig)(nil),          // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsS3DirectoryBucketIacInput)(nil), // 0: dev.planton.aws.awss3directorybucket.v1alpha1.AwsS3DirectoryBucketIacInput
+	(*AwsS3DirectoryBucket)(nil),         // 1: dev.planton.aws.awss3directorybucket.v1alpha1.AwsS3DirectoryBucket
+	(*aws.AwsProviderConfig)(nil),        // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awss3directorybucket_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awss3directorybucket.v1alpha1.AwsS3DirectoryBucketStackInput.target:type_name -> dev.planton.aws.awss3directorybucket.v1alpha1.AwsS3DirectoryBucket
-	2, // 1: dev.planton.aws.awss3directorybucket.v1alpha1.AwsS3DirectoryBucketStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awss3directorybucket.v1alpha1.AwsS3DirectoryBucketIacInput.target:type_name -> dev.planton.aws.awss3directorybucket.v1alpha1.AwsS3DirectoryBucket
+	2, // 1: dev.planton.aws.awss3directorybucket.v1alpha1.AwsS3DirectoryBucketIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

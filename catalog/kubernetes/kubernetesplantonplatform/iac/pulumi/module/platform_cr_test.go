@@ -23,16 +23,16 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-// localsFor builds the module's locals the way Resources does, from a stack
+// localsFor builds the module's locals the way Resources does, from an IaC
 // input carrying the given spec. References arrive at the module already
 // resolved to values, so the fixtures use literals throughout.
 func localsFor(spec *kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec) *Locals {
 	spec.Namespace = literal("planton")
 	spec.CreateNamespace = true
 	spec.Version = "v0.0.62"
-	return initializeLocals(nil, &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformStackInput{
+	return initializeLocals(nil, &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformIacInput{
 		Target: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatform{
-			Metadata: &shared.CloudResourceMetadata{Name: "acme"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "acme"},
 			Spec:     spec,
 		},
 	})

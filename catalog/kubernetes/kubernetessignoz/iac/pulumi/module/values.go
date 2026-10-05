@@ -47,7 +47,7 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	}
 
 	// ---- the clickhouse connection (composed, never bundled) ---------------
-	// `clickhouse.enabled: false` is a CONSTANT of this component's
+	// `clickhouse.enabled: false` is a CONSTANT of this kind's
 	// design: nothing ClickHouse-related ever installs — the telemetry
 	// store is the composed KubernetesClickHouse the connection points at.
 	values["clickhouse"] = map[string]interface{}{"enabled": false}

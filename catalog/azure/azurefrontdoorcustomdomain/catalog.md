@@ -4,7 +4,7 @@ Deploys a custom domain inside an Azure Front Door (Standard/Premium) profile --
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Front Door Custom Domain** -- a named child of the profile, created in a pending-validation state (deployment does not block on DNS proof) and exporting a `validation_token` for the DNS challenge
 - **TLS configuration** -- an Azure-managed DV certificate (free, auto-rotated) or a customer certificate served from a Front Door secret, optionally with a pinned cipher-suite policy
@@ -62,7 +62,7 @@ spec:
 planton apply -f front-door-custom-domain.yaml
 ```
 
-The empty `tls` block deploys Azure's managed certificate, creating the domain in a pending-validation state ready for the TXT-record challenge at `_dnsauth.www.example.com`. A Stack Job tracks the provisioning in real time.
+The empty `tls` block deploys Azure's managed certificate, creating the domain in a pending-validation state ready for the TXT-record challenge at `_dnsauth.www.example.com`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -104,7 +104,7 @@ These are the most important decisions when configuring a Front Door custom doma
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -112,9 +112,9 @@ These are the most important decisions when configuring a Front Door custom doma
 | **AzureDnsZone** (optional) | `dnsZoneId` | `status.outputs.zone_id` |
 | **AzureFrontDoorSecret** (customer certificate) | `tls.secretId` | `status.outputs.secret_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -135,9 +135,9 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Front Door Profile**](/cloud-catalog/azure-front-door-profile) -- the parent container the domain nests under via `profileId`
-- [**Azure Front Door Secret**](/cloud-catalog/azure-front-door-secret) -- wraps the bring-your-own certificate referenced by `tls.secretId` with CUSTOMER_CERTIFICATE
-- [**Azure DNS Zone**](/cloud-catalog/azure-dns-zone) -- the zone Front Door watches for validation when `dnsZoneId` is set
-- [**Azure DNS Record**](/cloud-catalog/azure-dns-record) -- hosts the validation TXT record and the traffic CNAME in Azure DNS
-- [**Azure Front Door Route**](/cloud-catalog/azure-front-door-route) -- attaches this domain to serving paths through its `customDomainIds`
-- [**Azure Front Door Security Policy**](/cloud-catalog/azure-front-door-security-policy) -- scopes a WAF to this domain through the same `custom_domain_id`
+- [**Azure Front Door Profile**](/infra-catalog/azure-front-door-profile) -- the parent container the domain nests under via `profileId`
+- [**Azure Front Door Secret**](/infra-catalog/azure-front-door-secret) -- wraps the bring-your-own certificate referenced by `tls.secretId` with CUSTOMER_CERTIFICATE
+- [**Azure DNS Zone**](/infra-catalog/azure-dns-zone) -- the zone Front Door watches for validation when `dnsZoneId` is set
+- [**Azure DNS Record**](/infra-catalog/azure-dns-record) -- hosts the validation TXT record and the traffic CNAME in Azure DNS
+- [**Azure Front Door Route**](/infra-catalog/azure-front-door-route) -- attaches this domain to serving paths through its `customDomainIds`
+- [**Azure Front Door Security Policy**](/infra-catalog/azure-front-door-security-policy) -- scopes a WAF to this domain through the same `custom_domain_id`

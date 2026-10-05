@@ -1,6 +1,6 @@
 # GcpCloudSchedulerJob
 
-A component for provisioning [Google Cloud Scheduler](https://cloud.google.com/scheduler) jobs through Planton.
+A kind for provisioning [Google Cloud Scheduler](https://cloud.google.com/scheduler) jobs through Planton.
 
 ## Overview
 
@@ -51,7 +51,7 @@ Use GcpCloudSchedulerJob when you need:
 | `pubsub-publisher` | Publishes a Pub/Sub message on a schedule |
 | `secure-cloud-run-trigger` | OIDC-authenticated HTTP POST to Cloud Run |
 
-## Related Components
+## Related Kinds
 
 - [GcpPubSubTopic](/docs/catalog/gcp/pubsub-topic) -- Target for Pub/Sub scheduled publishing
 - [GcpCloudTasksQueue](/docs/catalog/gcp/cloud-tasks-queue) -- Asynchronous task dispatch (not cron-based)

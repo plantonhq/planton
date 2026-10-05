@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1;
 
-// AwsFsxDataRepositoryAssociationStackOutputs captures observable identifiers
+// AwsFsxDataRepositoryAssociationOutputs captures observable identifiers
 // from a provisioned FSx data repository association.
-message AwsFsxDataRepositoryAssociationStackOutputs {
+message AwsFsxDataRepositoryAssociationOutputs {
   // The AWS-assigned association ID (dra-...). The identifier FSx data
   // repository task APIs and the console use to address this link.
   string association_id = 1;

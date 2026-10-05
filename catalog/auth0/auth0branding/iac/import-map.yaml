@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: auth0branding
 spec:
@@ -17,7 +17,7 @@ spec:
     # which a prior deploy reports as its theme_id output.
     - name: theme_id
       derivations:
-        - from_stack_output: theme_id
+        - from_output: theme_id
       where_to_find: >-
         `GET /api/v2/branding/themes/default` on the Management API (the
         themeId field of the response).

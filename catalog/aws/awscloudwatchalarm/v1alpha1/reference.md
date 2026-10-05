@@ -35,7 +35,7 @@ Actions are specified as repeated StringValueOrRef fields for alarm, OK, and
 insufficient-data state transitions. The most common action target is an SNS
 topic, so `default_kind = AwsSnsTopic` is set for convenience.
 
-Credentials, region, and deployment workflow live outside this spec in stack
+Credentials, region, and deployment workflow live outside this spec in IaC
 inputs.
 
 ## Example

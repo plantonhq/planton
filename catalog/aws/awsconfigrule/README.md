@@ -35,7 +35,7 @@ The region needs a running recorder
 ([AwsConfigRecorder](../awsconfigrecorder)) or every evaluation
 reports nothing — AWS rejects rule creation without one. Conformance
 packs (template bundles that create their own rules) are deliberately
-NOT part of this component; they own their own lifecycle and ship as
+NOT part of this kind; they own their own lifecycle and ship as
 their own kind.
 
 Destroying this component deletes the rule and its remediation

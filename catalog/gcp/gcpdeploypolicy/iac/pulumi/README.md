@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Cloud Deploy deploy poli
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `deployPolicy` |
-| `module/locals.go` | Stack input, attribution labels, the label merge |
+| `module/locals.go` | IaC input, attribution labels, the label merge |
 | `module/deploy_policy.go` | API enablement, the policy, one builder per nested block, the send-only-when-set helpers, the outputs |
 | `module/outputs.go` | Output key constants (`name`, `deploy_policy_id`, `uid`) |
 

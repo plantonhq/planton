@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeShippingRateStackOutputs identifies the shipping rate.
+// StripeShippingRateOutputs identifies the shipping rate.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/shipping_rate
-type StripeShippingRateStackOutputs struct {
+type StripeShippingRateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the shipping rate's Stripe id (shr_...), the value a StripePaymentLink's shipping
 	// options and a Checkout session reference. It changes when the rate is replaced.
@@ -36,20 +36,20 @@ type StripeShippingRateStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *StripeShippingRateStackOutputs) Reset() {
-	*x = StripeShippingRateStackOutputs{}
+func (x *StripeShippingRateOutputs) Reset() {
+	*x = StripeShippingRateOutputs{}
 	mi := &file_catalog_stripe_stripeshippingrate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeShippingRateStackOutputs) String() string {
+func (x *StripeShippingRateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeShippingRateStackOutputs) ProtoMessage() {}
+func (*StripeShippingRateOutputs) ProtoMessage() {}
 
-func (x *StripeShippingRateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *StripeShippingRateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripeshippingrate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *StripeShippingRateStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeShippingRateStackOutputs.ProtoReflect.Descriptor instead.
-func (*StripeShippingRateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeShippingRateOutputs.ProtoReflect.Descriptor instead.
+func (*StripeShippingRateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripeshippingrate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeShippingRateStackOutputs) GetId() string {
+func (x *StripeShippingRateOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *StripeShippingRateStackOutputs) GetActive() bool {
+func (x *StripeShippingRateOutputs) GetActive() bool {
 	if x != nil {
 		return x.Active
 	}
@@ -84,8 +84,8 @@ var File_catalog_stripe_stripeshippingrate_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_stripe_stripeshippingrate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/stripe/stripeshippingrate/v1alpha1/outputs.proto\x12.dev.planton.stripe.stripeshippingrate.v1alpha1\"H\n" +
-	"\x1eStripeShippingRateStackOutputs\x12\x0e\n" +
+	"8catalog/stripe/stripeshippingrate/v1alpha1/outputs.proto\x12.dev.planton.stripe.stripeshippingrate.v1alpha1\"C\n" +
+	"\x19StripeShippingRateOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06active\x18\x02 \x01(\bR\x06activeB\x83\x03\n" +
 	"2com.dev.planton.stripe.stripeshippingrate.v1alpha1B\fOutputsProtoP\x01Zbgithub.com/plantonhq/planton/catalog/stripe/stripeshippingrate/v1alpha1;stripeshippingratev1alpha1\xa2\x02\x04DPSS\xaa\x02.Dev.Planton.Stripe.Stripeshippingrate.V1alpha1\xca\x02.Dev\\Planton\\Stripe\\Stripeshippingrate\\V1alpha1\xe2\x02:Dev\\Planton\\Stripe\\Stripeshippingrate\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Stripe::Stripeshippingrate::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_stripe_stripeshippingrate_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_stripe_stripeshippingrate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripeshippingrate_v1alpha1_outputs_proto_goTypes = []any{
-	(*StripeShippingRateStackOutputs)(nil), // 0: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateStackOutputs
+	(*StripeShippingRateOutputs)(nil), // 0: dev.planton.stripe.stripeshippingrate.v1alpha1.StripeShippingRateOutputs
 }
 var file_catalog_stripe_stripeshippingrate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

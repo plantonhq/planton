@@ -5,7 +5,7 @@ import (
 
 	awstgwattachv1 "github.com/plantonhq/planton/catalog/aws/awstransitgatewayvpcattachment/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -16,11 +16,11 @@ type Locals struct {
 	AwsTags       map[string]string
 }
 
-// initializeLocals reads the stack input and builds the Locals instance.
-func initializeLocals(ctx *pulumi.Context, stackInput *awstgwattachv1.AwsTransitGatewayVpcAttachmentStackInput) *Locals {
+// initializeLocals reads the IaC input and builds the Locals instance.
+func initializeLocals(ctx *pulumi.Context, iacInput *awstgwattachv1.AwsTransitGatewayVpcAttachmentIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.VpcAttachment = stackInput.Target
+	locals.VpcAttachment = iacInput.Target
 
 	// Identity tags match the Terraform module key-for-key. The Name tag IS
 	// the attachment's console identity -- attachments have no name
@@ -30,7 +30,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *awstgwattachv1.AwsTransit
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.VpcAttachment.Metadata.Org,
 		awstagkeys.Environment:  locals.VpcAttachment.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsTransitGatewayVpcAttachment.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsTransitGatewayVpcAttachment.String(),
 		awstagkeys.ResourceId:   locals.VpcAttachment.Metadata.Id,
 	}
 

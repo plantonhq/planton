@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCertManagerCertStackOutputs captures the observable identifiers
+// AwsCertManagerCertOutputs captures the observable identifiers
 // of a deployed ACM certificate -- the join keys TLS-fronting
 // resources reference, plus the validation records external DNS needs
 // when the module does not manage them.
-type AwsCertManagerCertStackOutputs struct {
+type AwsCertManagerCertOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The certificate ARN -- the join key every TLS consumer references
 	// (load-balancer listeners, CloudFront, Cognito custom domains,
@@ -57,20 +57,20 @@ type AwsCertManagerCertStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AwsCertManagerCertStackOutputs) Reset() {
-	*x = AwsCertManagerCertStackOutputs{}
+func (x *AwsCertManagerCertOutputs) Reset() {
+	*x = AwsCertManagerCertOutputs{}
 	mi := &file_catalog_aws_awscertmanagercert_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCertManagerCertStackOutputs) String() string {
+func (x *AwsCertManagerCertOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCertManagerCertStackOutputs) ProtoMessage() {}
+func (*AwsCertManagerCertOutputs) ProtoMessage() {}
 
-func (x *AwsCertManagerCertStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCertManagerCertOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscertmanagercert_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,47 +82,47 @@ func (x *AwsCertManagerCertStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCertManagerCertStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCertManagerCertStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCertManagerCertOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCertManagerCertOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscertmanagercert_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCertManagerCertStackOutputs) GetCertArn() string {
+func (x *AwsCertManagerCertOutputs) GetCertArn() string {
 	if x != nil {
 		return x.CertArn
 	}
 	return ""
 }
 
-func (x *AwsCertManagerCertStackOutputs) GetStatus() string {
+func (x *AwsCertManagerCertOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *AwsCertManagerCertStackOutputs) GetDomainValidationRecords() []*AwsCertManagerCertDomainValidationRecord {
+func (x *AwsCertManagerCertOutputs) GetDomainValidationRecords() []*AwsCertManagerCertDomainValidationRecord {
 	if x != nil {
 		return x.DomainValidationRecords
 	}
 	return nil
 }
 
-func (x *AwsCertManagerCertStackOutputs) GetNotBefore() string {
+func (x *AwsCertManagerCertOutputs) GetNotBefore() string {
 	if x != nil {
 		return x.NotBefore
 	}
 	return ""
 }
 
-func (x *AwsCertManagerCertStackOutputs) GetNotAfter() string {
+func (x *AwsCertManagerCertOutputs) GetNotAfter() string {
 	if x != nil {
 		return x.NotAfter
 	}
 	return ""
 }
 
-func (x *AwsCertManagerCertStackOutputs) GetCertificateType() string {
+func (x *AwsCertManagerCertOutputs) GetCertificateType() string {
 	if x != nil {
 		return x.CertificateType
 	}
@@ -208,8 +208,8 @@ var File_catalog_aws_awscertmanagercert_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awscertmanagercert_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awscertmanagercert/v1alpha1/outputs.proto\x12+dev.planton.aws.awscertmanagercert.v1alpha1\"\xce\x02\n" +
-	"\x1eAwsCertManagerCertStackOutputs\x12\x19\n" +
+	"5catalog/aws/awscertmanagercert/v1alpha1/outputs.proto\x12+dev.planton.aws.awscertmanagercert.v1alpha1\"\xc9\x02\n" +
+	"\x19AwsCertManagerCertOutputs\x12\x19\n" +
 	"\bcert_arn\x18\x01 \x01(\tR\acertArn\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x91\x01\n" +
 	"\x19domain_validation_records\x18\x03 \x03(\v2U.dev.planton.aws.awscertmanagercert.v1alpha1.AwsCertManagerCertDomainValidationRecordR\x17domainValidationRecords\x12\x1d\n" +
@@ -241,11 +241,11 @@ func file_catalog_aws_awscertmanagercert_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awscertmanagercert_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awscertmanagercert_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCertManagerCertStackOutputs)(nil),           // 0: dev.planton.aws.awscertmanagercert.v1alpha1.AwsCertManagerCertStackOutputs
+	(*AwsCertManagerCertOutputs)(nil),                // 0: dev.planton.aws.awscertmanagercert.v1alpha1.AwsCertManagerCertOutputs
 	(*AwsCertManagerCertDomainValidationRecord)(nil), // 1: dev.planton.aws.awscertmanagercert.v1alpha1.AwsCertManagerCertDomainValidationRecord
 }
 var file_catalog_aws_awscertmanagercert_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscertmanagercert.v1alpha1.AwsCertManagerCertStackOutputs.domain_validation_records:type_name -> dev.planton.aws.awscertmanagercert.v1alpha1.AwsCertManagerCertDomainValidationRecord
+	1, // 0: dev.planton.aws.awscertmanagercert.v1alpha1.AwsCertManagerCertOutputs.domain_validation_records:type_name -> dev.planton.aws.awscertmanagercert.v1alpha1.AwsCertManagerCertDomainValidationRecord
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

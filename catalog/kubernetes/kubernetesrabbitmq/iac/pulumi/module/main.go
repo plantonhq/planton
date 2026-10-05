@@ -17,16 +17,16 @@ import (
 //     it. No ingress resources — exposure composes from the client
 //     Service's type/annotations or first-class kinds referencing the
 //     exported handles.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesrabbitmqv1alpha1.KubernetesRabbitMqStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesrabbitmqv1alpha1.KubernetesRabbitMqIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
 
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

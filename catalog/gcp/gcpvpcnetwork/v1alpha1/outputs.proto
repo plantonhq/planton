@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpvpcnetwork.v1alpha1;
 
 // Outputs produced after provisioning a GCP VPC.
-message GcpVpcNetworkStackOutputs {
+message GcpVpcNetworkOutputs {
   // Full self-link URL of the created network (useful for connecting subnets or other resources to this VPC).
   string network_self_link = 1;
 

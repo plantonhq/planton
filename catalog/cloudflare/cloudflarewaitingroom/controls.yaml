@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: cloudflarewaitingroom
 spec:
@@ -54,7 +54,7 @@ spec:
       notes: Cloudflare records waiting-room changes in the account audit log unconditionally -- not a property this component configures.
     - control_id: monitoring-integration
       status: not_applicable
-      notes: Queue metrics live in the Cloudflare dashboard; this component has no monitoring toggle.
+      notes: Queue metrics live in the Cloudflare dashboard; this kind has no monitoring toggle.
     - control_id: backup-recovery
       status: not_applicable
       notes: Declarative configuration, fully re-creatable from the manifest. Destroy deletes the room and empties its bypass-rule table.

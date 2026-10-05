@@ -22,11 +22,11 @@ const (
 )
 
 // *
-// **KubernetesNatsStackOutputs** — the composition handles a deployed
+// **KubernetesNatsOutputs** — the composition handles a deployed
 // NATS system exports. Applications connect through the client
 // Service; credentials (when auth is declared) live in the exported
 // auth Secret.
-type KubernetesNatsStackOutputs struct {
+type KubernetesNatsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the servers run in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -55,20 +55,20 @@ type KubernetesNatsStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesNatsStackOutputs) Reset() {
-	*x = KubernetesNatsStackOutputs{}
+func (x *KubernetesNatsOutputs) Reset() {
+	*x = KubernetesNatsOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesnats_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesNatsStackOutputs) String() string {
+func (x *KubernetesNatsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesNatsStackOutputs) ProtoMessage() {}
+func (*KubernetesNatsOutputs) ProtoMessage() {}
 
-func (x *KubernetesNatsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesNatsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesnats_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -80,54 +80,54 @@ func (x *KubernetesNatsStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesNatsStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesNatsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesNatsOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesNatsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesnats_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesNatsStackOutputs) GetNamespace() string {
+func (x *KubernetesNatsOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesNatsStackOutputs) GetServiceName() string {
+func (x *KubernetesNatsOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesNatsStackOutputs) GetHeadlessServiceName() string {
+func (x *KubernetesNatsOutputs) GetHeadlessServiceName() string {
 	if x != nil {
 		return x.HeadlessServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesNatsStackOutputs) GetClientEndpoint() string {
+func (x *KubernetesNatsOutputs) GetClientEndpoint() string {
 	if x != nil {
 		return x.ClientEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesNatsStackOutputs) GetWebsocketEndpoint() string {
+func (x *KubernetesNatsOutputs) GetWebsocketEndpoint() string {
 	if x != nil {
 		return x.WebsocketEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesNatsStackOutputs) GetAuthSecretName() string {
+func (x *KubernetesNatsOutputs) GetAuthSecretName() string {
 	if x != nil {
 		return x.AuthSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesNatsStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesNatsOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -138,8 +138,8 @@ var File_catalog_kubernetes_kubernetesnats_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetesnats_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetesnats/v1alpha1/outputs.proto\x12.dev.planton.kubernetes.kubernetesnats.v1alpha1\"\xc5\x02\n" +
-	"\x1aKubernetesNatsStackOutputs\x12\x1c\n" +
+	"8catalog/kubernetes/kubernetesnats/v1alpha1/outputs.proto\x12.dev.planton.kubernetes.kubernetesnats.v1alpha1\"\xc0\x02\n" +
+	"\x15KubernetesNatsOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\fservice_name\x18\x02 \x01(\tR\vserviceName\x122\n" +
 	"\x15headless_service_name\x18\x03 \x01(\tR\x13headlessServiceName\x12'\n" +
@@ -163,7 +163,7 @@ func file_catalog_kubernetes_kubernetesnats_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_kubernetes_kubernetesnats_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesnats_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesNatsStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsStackOutputs
+	(*KubernetesNatsOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesnats.v1alpha1.KubernetesNatsOutputs
 }
 var file_catalog_kubernetes_kubernetesnats_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

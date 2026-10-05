@@ -34,5 +34,5 @@ exact semantic twin of the Pulumi module's
 
 `alekc/kubectl` because `kubectl_manifest` needs no cluster connection at
 plan time — the CRD installed by the prerequisite
-KubernetesPlantonOperator may not exist yet when a composed infra chart
+KubernetesPlantonOperator may not exist yet when a composed Infra Chart
 plans this resource.

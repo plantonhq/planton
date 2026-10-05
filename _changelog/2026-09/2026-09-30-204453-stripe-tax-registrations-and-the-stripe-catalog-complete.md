@@ -2,7 +2,7 @@
 
 **Date**: September 30, 2026
 **Type**: Feature
-**Components**: StripeTaxRegistration; StripePromotionCode's E2E assets; `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `pkg/providerparity`, `pkg/crkreflect`, `pkg/explain/refgen`; the component forge rule and flow rule 014
+**Components**: StripeTaxRegistration; StripePromotionCode's E2E assets; `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `pkg/providerparity`, `pkg/catalogkindreflect`, `pkg/explain/refgen`; the catalog-kind forge rule and flow rule 014
 
 ## Summary
 
@@ -24,7 +24,7 @@
 - **StripeTaxRate:** its guide points accounts that use Stripe Tax to StripeTaxRegistration.
 - **Teaching:**
   - flow 014: when two Stripe objects share initials, each takes Stripe's own id prefix with its vowels dropped (`stptxr` from `txr_`, `stptxrg` from `taxreg_`);
-  - the component forge rule: the base E2E manifest round-trips into its typed message, so no run token can stand in a number field, and a date a vendor requires in the future is a literal far enough ahead;
+  - the kind forge rule: the base E2E manifest round-trips into its typed message, so no run token can stand in a number field, and a date a vendor requires in the future is a literal far enough ahead;
   - one question joins the skill's eval bank: changing and ending a tax registration.
 
 ## Verification
@@ -35,5 +35,5 @@
   - `tofu fmt`, `init` and `validate`, and offline plans for all five country shapes (an EU OSS registration, a standard registration with a place-of-supply scheme, a simplified registration, a Canadian province, and US state and local registrations with elections);
   - offline plans against a seeded state: an unchanged manifest plans nothing; a changed type plans a replacement; a set expiry and a moved start plan in-place updates; an expiry removed from the manifest plans nothing;
   - `module verify --provisioner tofu`; `secret-coverage --check`, `validate-refs --check`, `provider-parity --kind` and `--check`;
-  - `go test` for the harness and its verifiers, the runner, crkreflect, providerparity, anatomy, cataloglogo, catalogpage, presetvalidity, refcheck, secretcoverage, importmap, permissions, e2e/profile, outputs, cost and control profiles, protodocs, explain, refgen, skills and the tofu generators; the E2E package compiles and vets under the `e2e` tag; `defspack`; the catalog bundle and schemas build and verify.
+  - `go test` for the harness and its verifiers, the runner, catalogkindreflect, providerparity, anatomy, cataloglogo, catalogpage, presetvalidity, refcheck, secretcoverage, importmap, permissions, e2e/profile, outputs, cost and control profiles, protodocs, explain, refgen, skills and the tofu generators; the E2E package compiles and vets under the `e2e` tag; `defspack`; the catalog bundle and schemas build and verify.
 - **Not run live:** no Stripe lane has run; the profiles stay `pending_proof`. The first live run confirms whether the sandbox needs Stripe Tax turned on, whether Stripe accepts a second scheduled registration for one place, the restricted-key label, and whether Stripe accepts dates in 2100 for promotion-code expiries and registration starts.

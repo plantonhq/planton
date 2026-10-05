@@ -1,11 +1,11 @@
 # Overview
 
-The **AzureDataProtectionBackupInstance** component creates a Data Protection backup instance -- the binding that puts ONE datasource under a backup policy's protection. The vault holds the backups and the policy says when and how long; the instance is what makes a specific resource actually protected. One component covers all six modern-backup datasource types as selectable variants: blob storage, managed disks, Kubernetes (AKS) clusters, MySQL flexible servers, PostgreSQL flexible servers, and Data Lake storage. The instance itself is a free binding object -- cost follows the backup storage the protected data consumes.
+The **AzureDataProtectionBackupInstance** component creates a Data Protection backup instance -- the binding that puts ONE datasource under a backup policy's protection. The vault holds the backups and the policy says when and how long; the instance is what makes a specific resource actually protected. One kind covers all six modern-backup datasource types as selectable variants: blob storage, managed disks, Kubernetes (AKS) clusters, MySQL flexible servers, PostgreSQL flexible servers, and Data Lake storage. The instance itself is a free binding object -- cost follows the backup storage the protected data consumes.
 
 ## Purpose
 
 - **Completes the modern-backup story**: with the vault (AzureDataProtectionBackupVault) and the policy (AzureDataProtectionBackupPolicy), this is the third piece that turns "we have backup rules" into "this disk / account / cluster / database is protected".
-- **One kind, six datasources**: the variant block IS the datasource type -- charts compose disk protection and blob protection from the same LEGO block.
+- **One kind, six datasources**: the variant block IS the datasource type -- charts compose disk protection and blob protection from the same catalog kind.
 - **Declarative protection**: which resources are backed up is reviewed and versioned like everything else, instead of living in portal clicks.
 
 ## Key Features

@@ -10,7 +10,7 @@ Set exactly one of `account_id` or `zone_id`. Account-scoped providers (the comm
 
 - **Fifteen provider types**, using Cloudflare's own spellings (`azureAD`, `google-apps`, `onetimepin`)
 - **Per-type config gating** -- Azure AD, Okta, OIDC, SAML, Centrify, OneLogin, and PingOne fields are rejected on the wrong type
-- **SCIM provisioning** -- enabling SCIM mints a bearer secret returned once in the `scim_secret` stack output (not available for `onetimepin`)
+- **SCIM provisioning** -- enabling SCIM mints a bearer secret returned once in the `scim_secret` output (not available for `onetimepin`)
 - **Create-only SCIM secret** -- capture it at deploy; it is redacted on later reads and does not survive import
 - **Read-only latch** -- `read_only` tells Cloudflare to refuse API updates and deletes until an explicit apply clears it
 
@@ -48,7 +48,7 @@ Set exactly one of `account_id` or `zone_id`. Account-scoped providers (the comm
 | `scim_config` | message | `enabled`, `identity_update_behavior` (`automatic` / `reauth` / `no_action`), `seat_deprovision`, `user_deprovision`. Forbidden when `type` is `onetimepin`. |
 | `read_only` | bool | Cloudflare refuses updates and deletes while set. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

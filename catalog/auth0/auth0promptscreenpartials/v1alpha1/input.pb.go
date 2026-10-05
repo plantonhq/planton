@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0PromptScreenPartialsStackInput is the input to the Auth0PromptScreenPartials IaC module.
+// Auth0PromptScreenPartialsIacInput is the input to the Auth0PromptScreenPartials IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-type Auth0PromptScreenPartialsStackInput struct {
+type Auth0PromptScreenPartialsIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the Auth0PromptScreenPartials resource to be deployed.
 	Target *Auth0PromptScreenPartials `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -36,20 +36,20 @@ type Auth0PromptScreenPartialsStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *Auth0PromptScreenPartialsStackInput) Reset() {
-	*x = Auth0PromptScreenPartialsStackInput{}
+func (x *Auth0PromptScreenPartialsIacInput) Reset() {
+	*x = Auth0PromptScreenPartialsIacInput{}
 	mi := &file_catalog_auth0_auth0promptscreenpartials_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0PromptScreenPartialsStackInput) String() string {
+func (x *Auth0PromptScreenPartialsIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0PromptScreenPartialsStackInput) ProtoMessage() {}
+func (*Auth0PromptScreenPartialsIacInput) ProtoMessage() {}
 
-func (x *Auth0PromptScreenPartialsStackInput) ProtoReflect() protoreflect.Message {
+func (x *Auth0PromptScreenPartialsIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0promptscreenpartials_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *Auth0PromptScreenPartialsStackInput) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0PromptScreenPartialsStackInput.ProtoReflect.Descriptor instead.
-func (*Auth0PromptScreenPartialsStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0PromptScreenPartialsIacInput.ProtoReflect.Descriptor instead.
+func (*Auth0PromptScreenPartialsIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0promptscreenpartials_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0PromptScreenPartialsStackInput) GetTarget() *Auth0PromptScreenPartials {
+func (x *Auth0PromptScreenPartialsIacInput) GetTarget() *Auth0PromptScreenPartials {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *Auth0PromptScreenPartialsStackInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
+func (x *Auth0PromptScreenPartialsIacInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -84,8 +84,8 @@ var File_catalog_auth0_auth0promptscreenpartials_v1alpha1_input_proto protorefle
 
 const file_catalog_auth0_auth0promptscreenpartials_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/auth0/auth0promptscreenpartials/v1alpha1/input.proto\x124dev.planton.auth0.auth0promptscreenpartials.v1alpha1\x1a:catalog/auth0/auth0promptscreenpartials/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xdf\x01\n" +
-	"#Auth0PromptScreenPartialsStackInput\x12g\n" +
+	"<catalog/auth0/auth0promptscreenpartials/v1alpha1/input.proto\x124dev.planton.auth0.auth0promptscreenpartials.v1alpha1\x1a:catalog/auth0/auth0promptscreenpartials/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xdd\x01\n" +
+	"!Auth0PromptScreenPartialsIacInput\x12g\n" +
 	"\x06target\x18\x01 \x01(\v2O.dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.auth0.Auth0ProviderConfigR\x0eproviderConfigB\xac\x03\n" +
 	"8com.dev.planton.auth0.auth0promptscreenpartials.v1alpha1B\n" +
@@ -105,13 +105,13 @@ func file_catalog_auth0_auth0promptscreenpartials_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_auth0_auth0promptscreenpartials_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0promptscreenpartials_v1alpha1_input_proto_goTypes = []any{
-	(*Auth0PromptScreenPartialsStackInput)(nil), // 0: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsStackInput
-	(*Auth0PromptScreenPartials)(nil),           // 1: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartials
-	(*auth0.Auth0ProviderConfig)(nil),           // 2: dev.planton.auth0.Auth0ProviderConfig
+	(*Auth0PromptScreenPartialsIacInput)(nil), // 0: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsIacInput
+	(*Auth0PromptScreenPartials)(nil),         // 1: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartials
+	(*auth0.Auth0ProviderConfig)(nil),         // 2: dev.planton.auth0.Auth0ProviderConfig
 }
 var file_catalog_auth0_auth0promptscreenpartials_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsStackInput.target:type_name -> dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartials
-	2, // 1: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsStackInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
+	1, // 0: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsIacInput.target:type_name -> dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartials
+	2, // 1: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsIacInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -1,6 +1,6 @@
 # DigitalOcean Project -- Operational Guide
 
-What experience with this component teaches that the field reference cannot.
+What experience with this kind teaches that the field reference cannot.
 
 ## Destroy relocates -- plan for where things land
 

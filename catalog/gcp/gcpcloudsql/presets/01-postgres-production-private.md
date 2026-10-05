@@ -37,7 +37,7 @@ Private IP requires **private services access** on the VPC before the instance c
 - **02-mysql-high-availability** — the MySQL equivalent (binary logs instead of PITR)
 - **03-postgres-read-replica** — scale reads by attaching a replica to this primary
 
-## Related Components
+## Related Kinds
 
 - [GcpServiceNetworkingConnection](/docs/catalog/gcp/gcpservicenetworkingconnection) — the private services access peering this preset depends on
 - [GcpCloudSqlDatabase](/docs/catalog/gcp/gcpcloudsqldatabase) — create application databases on this instance

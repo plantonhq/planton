@@ -31,7 +31,7 @@ Clusters are always VPC-native (alias IP): pods and services draw from secondary
 - **Fleet registration**: `fleet_project` (a `GcpGkeFleet` or `GcpProject` reference, or a project ID) + membership type for multi-cluster features; Google creates the membership and the cluster exports its name as `fleet_membership`, which team scopes and per-cluster fleet feature settings reference
 - **Lifecycle & scale**: engine-side `deletion_policy` (DELETE/PREVENT/ABANDON) under `deletion_protection`, alpha clusters and beta API groups for evaluation, and read-side performance switches for very large clusters (`ignore_node_count_changes`, `skip_node_pool_refresh`)
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|
@@ -60,7 +60,7 @@ matched, mapped, or excluded with the reason recorded in
 | `tpu_config`, `pod_security_policy_config`, `cluster_telemetry`, `protect_config` and other beta-only blocks | Exist only in the `google-beta` provider; GA is the parity baseline, and beta surface enters only through the catalog's admission list (`pkg/providerparity/admissions/google-beta.yaml`), which admits resources, not fields -- none of these blocks is admitted for this kind. |
 | `enterprise_config` | Deprecated on the provider at the pinned version. |
 
-## Related Components
+## Related Kinds
 
 - **GcpVpcNetwork** — the network the cluster lives in
 - **GcpSubnetwork** — carries the primary node range and pod/service secondary ranges

@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsrestapigateway.v1alpha1;
 
-// AwsRestApiGatewayStackOutputs captures observable identifiers from a
+// AwsRestApiGatewayOutputs captures observable identifiers from a
 // provisioned REST API. Downstream resources (custom domains' base-path
 // mappings, usage plans' api_stages) wire dependencies via
 // StringValueOrRef.
-message AwsRestApiGatewayStackOutputs {
+message AwsRestApiGatewayOutputs {
   // The REST API ID (the {restapi-id} in invoke URLs and import IDs).
   string rest_api_id = 1;
 

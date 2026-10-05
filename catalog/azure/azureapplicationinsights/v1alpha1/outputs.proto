@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.azure.azureapplicationinsights.v1alpha1;
 
-// **AzureApplicationInsightsStackOutputs** captures the outputs of provisioning
+// **AzureApplicationInsightsOutputs** captures the outputs of provisioning
 // an Azure Application Insights resource.
 //
 // The `connection_string` output is the composition seam: AzureFunctionApp,
 // AzureLinuxWebApp, and AzureContainerAppEnvironment (Dapr instrumentation)
 // reference it to wire applications to this APM resource.
-message AzureApplicationInsightsStackOutputs {
+message AzureApplicationInsightsOutputs {
   // The Azure Resource Manager ID of the Application Insights resource.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Insights/components/{name}
   // Referenced by metric alerts (web-test availability criteria) and

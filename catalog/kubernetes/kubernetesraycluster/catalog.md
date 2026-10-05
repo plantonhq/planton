@@ -4,7 +4,7 @@ Deploys a Ray cluster on Kubernetes -- one resource declares one `RayCluster` cu
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **RayCluster CR** -- the declaration the KubeRay operator reconciles into:
@@ -20,7 +20,7 @@ The apply is deliberately NON-blocking: cluster readiness depends on the operato
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -68,7 +68,7 @@ spec:
 planton apply -f ray-cluster.yaml
 ```
 
-This deploys a single-node lab cluster: the head is the only capacity and tasks schedule onto it (the deliberate lab arm -- production keeps work off the head). Token authentication rides by absence. A Stack Job tracks the provisioning in real time.
+This deploys a single-node lab cluster: the head is the only capacity and tasks schedule onto it (the deliberate lab arm -- production keeps work off the head). Token authentication rides by absence. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -116,7 +116,7 @@ These are the most important decisions when configuring a Ray Cluster. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -124,9 +124,9 @@ These are the most important decisions when configuring a Ray Cluster. Explore t
 | **KubernetesValkey** | `gcsFaultTolerance.redisAddress` | `status.outputs.kube_endpoint` |
 | **KubernetesValkey** | `gcsFaultTolerance.redisPasswordSecret.name` | `status.outputs.password_secret.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -148,6 +148,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**KubeRay Operator**](/cloud-catalog/kubernetes-kube-ray-operator) -- the PREREQUISITE: the controller that reconciles this declaration; its watch scope must cover this namespace
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the cluster
-- [**Valkey**](/cloud-catalog/kubernetes-valkey) -- the external state store for GCS fault tolerance (deploy it in the SAME namespace -- the credential secretKeyRef cannot cross namespaces)
+- [**KubeRay Operator**](/infra-catalog/kubernetes-kube-ray-operator) -- the PREREQUISITE: the controller that reconciles this declaration; its watch scope must cover this namespace
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the cluster
+- [**Valkey**](/infra-catalog/kubernetes-valkey) -- the external state store for GCS fault tolerance (deploy it in the SAME namespace -- the credential secretKeyRef cannot cross namespaces)

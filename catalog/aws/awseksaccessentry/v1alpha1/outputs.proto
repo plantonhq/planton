@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awseksaccessentry.v1alpha1;
 
-// AwsEksAccessEntryStackOutputs describes the values returned after
+// AwsEksAccessEntryOutputs describes the values returned after
 // provisioning an EKS access entry.
-message AwsEksAccessEntryStackOutputs {
+message AwsEksAccessEntryOutputs {
   // access_entry_arn is the Amazon Resource Name of the entry --
   // arn:aws:eks:<region>:<account>:access-entry/<cluster>/<principal
   // type>/<account>/<principal name>/<uuid>.

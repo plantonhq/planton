@@ -4,7 +4,7 @@ Creates a Google Cloud Resource Manager folder — a node in the resource hierar
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Folder** -- the `folder` under the organization or inside another folder, with its display name, its destroy guard (`deletionProtection`, on by default), and any create-time tags
 
@@ -70,7 +70,7 @@ planton apply -f folder.yaml
 - **`tags`**: keys match `^tagKeys/[0-9]+$`, values match `^tagValues/[0-9]+$`.
 - **`deletionPolicy`**: `DELETE`, `PREVENT`, or `ABANDON`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -99,7 +99,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpProject](/docs/catalog/gcp/gcpproject) — projects placed inside the folder by reference
 - [GcpOrgPolicy](/docs/catalog/gcp/gcporgpolicy) — guardrails scoped to the folder

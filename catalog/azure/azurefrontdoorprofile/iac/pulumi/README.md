@@ -1,7 +1,7 @@
 # AzureFrontDoorProfile - Pulumi Module
 
-Pulumi implementation for the AzureFrontDoorProfile deployment
-component.
+Pulumi implementation for the AzureFrontDoorProfile
+kind.
 
 ## Architecture
 
@@ -15,7 +15,7 @@ cdn.FrontdoorProfile (single resource)
   origins, and routes are their own components referencing this
   profile's `profile_id` output, mirroring Azure's ARM child-resource
   model. The module creates exactly one resource.
-- **The sku default is materialized in the module** -- stack inputs
+- **The sku default is materialized in the module** -- IaC inputs
   never carry proto defaults, so an unspecified sku deploys
   `Standard_AzureFrontDoor` exactly as the spec documents. The sku is
   ForceNew and Azure refuses a Premium -> Standard downgrade.
@@ -31,6 +31,6 @@ cdn.FrontdoorProfile (single resource)
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless web-identity (OIDC), and
 ambient credential chains. Never construct a provider inline.

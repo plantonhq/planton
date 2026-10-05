@@ -44,7 +44,7 @@ const (
 // AWS validates policy shapes server-side at CreateGuardrail.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsBedrockGuardrailSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the guardrail will be created.

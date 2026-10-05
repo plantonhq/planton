@@ -56,7 +56,7 @@ Compound conditions and string comparison:
 ```
 
 (Older fleet charts use camelCase param names; the platform accepts both, but
-new charts follow the snake_case convention from `chart-format.md`.)
+new charts follow the snake_case convention from `infra.chart-format.md`.)
 
 A conditional can also gate a single field or list item, not just whole
 documents -- but whole-document toggles are the common, legible case.
@@ -81,7 +81,7 @@ unless the count itself is a parameter.
 
 ## Config references compose with templating
 
-`$var`/`$secret` reference strings (`config-references.md`) are plain field
+`$var`/`$secret` reference strings (`infra.config-references.md`) are plain field
 values, and slugs can never contain `@` — so the env-scope sigil composes
 cleanly with substitution. The canonical per-environment secret:
 

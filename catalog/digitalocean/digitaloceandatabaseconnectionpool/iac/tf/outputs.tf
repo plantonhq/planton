@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanDatabaseConnectionPoolStackOutputs
+# Outputs — exactly the DigitalOceanDatabaseConnectionPoolOutputs
 # contract, identical across both provisioners. The (cluster, name) pair is
 # the pool's API identity. The connection URIs are assembled by the
 # provider from live connection details and embed credentials -- verifiers

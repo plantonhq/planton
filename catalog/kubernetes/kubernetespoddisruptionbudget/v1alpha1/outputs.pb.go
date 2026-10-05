@@ -22,10 +22,10 @@ const (
 )
 
 // *
-// **KubernetesPodDisruptionBudgetStackOutputs** captures the observable
+// **KubernetesPodDisruptionBudgetOutputs** captures the observable
 // handles of a deployed PodDisruptionBudget. A budget has no runtime handles
 // of its own beyond identity; the eviction API enforces it by selector.
-type KubernetesPodDisruptionBudgetStackOutputs struct {
+type KubernetesPodDisruptionBudgetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the PodDisruptionBudget object as created in the cluster.
 	PodDisruptionBudgetName string `protobuf:"bytes,1,opt,name=pod_disruption_budget_name,json=podDisruptionBudgetName,proto3" json:"pod_disruption_budget_name,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesPodDisruptionBudgetStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesPodDisruptionBudgetStackOutputs) Reset() {
-	*x = KubernetesPodDisruptionBudgetStackOutputs{}
+func (x *KubernetesPodDisruptionBudgetOutputs) Reset() {
+	*x = KubernetesPodDisruptionBudgetOutputs{}
 	mi := &file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPodDisruptionBudgetStackOutputs) String() string {
+func (x *KubernetesPodDisruptionBudgetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPodDisruptionBudgetStackOutputs) ProtoMessage() {}
+func (*KubernetesPodDisruptionBudgetOutputs) ProtoMessage() {}
 
-func (x *KubernetesPodDisruptionBudgetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPodDisruptionBudgetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *KubernetesPodDisruptionBudgetStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPodDisruptionBudgetStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesPodDisruptionBudgetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPodDisruptionBudgetOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesPodDisruptionBudgetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPodDisruptionBudgetStackOutputs) GetPodDisruptionBudgetName() string {
+func (x *KubernetesPodDisruptionBudgetOutputs) GetPodDisruptionBudgetName() string {
 	if x != nil {
 		return x.PodDisruptionBudgetName
 	}
 	return ""
 }
 
-func (x *KubernetesPodDisruptionBudgetStackOutputs) GetNamespace() string {
+func (x *KubernetesPodDisruptionBudgetOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -83,8 +83,8 @@ var File_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_outputs_proto
 
 const file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/kubernetes/kubernetespoddisruptionbudget/v1alpha1/outputs.proto\x12=dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1\"\x86\x01\n" +
-	")KubernetesPodDisruptionBudgetStackOutputs\x12;\n" +
+	"Gcatalog/kubernetes/kubernetespoddisruptionbudget/v1alpha1/outputs.proto\x12=dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1\"\x81\x01\n" +
+	"$KubernetesPodDisruptionBudgetOutputs\x12;\n" +
 	"\x1apod_disruption_budget_name\x18\x01 \x01(\tR\x17podDisruptionBudgetName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\xe8\x03\n" +
 	"Acom.dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1B\fOutputsProtoP\x01Z|github.com/plantonhq/planton/catalog/kubernetes/kubernetespoddisruptionbudget/v1alpha1;kubernetespoddisruptionbudgetv1alpha1\xa2\x02\x04DPKK\xaa\x02=Dev.Planton.Kubernetes.Kubernetespoddisruptionbudget.V1alpha1\xca\x02=Dev\\Planton\\Kubernetes\\Kubernetespoddisruptionbudget\\V1alpha1\xe2\x02IDev\\Planton\\Kubernetes\\Kubernetespoddisruptionbudget\\V1alpha1\\GPBMetadata\xea\x02ADev::Planton::Kubernetes::Kubernetespoddisruptionbudget::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_outputs_prot
 
 var file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesPodDisruptionBudgetStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetStackOutputs
+	(*KubernetesPodDisruptionBudgetOutputs)(nil), // 0: dev.planton.kubernetes.kubernetespoddisruptionbudget.v1alpha1.KubernetesPodDisruptionBudgetOutputs
 }
 var file_catalog_kubernetes_kubernetespoddisruptionbudget_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

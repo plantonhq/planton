@@ -5,7 +5,7 @@ Pulumi (Go) IaC module for notification policies.
 ## Architecture
 
 ```
-main.go                        — stack-input loading + module entry
+main.go                        — iac-input loading + module entry
 module/main.go                 — provider setup + resource orchestration
 module/locals.go               — metadata/credential references
 module/notification_policy.go  — NotificationPolicy (mechanisms + filters mapping)

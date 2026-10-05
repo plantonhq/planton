@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: digitaloceandnsrecord
 spec:
   billing_model: free
   free_tier: "DigitalOcean DNS hosting is free without qualification -- the provider's own pricing page says exactly 'DNS management is free' (https://docs.digitalocean.com/products/networking/dns/details/pricing/, fetched 2026-08-22). No meter counts records, record types, TTL choices, or the queries DigitalOcean's authoritative nameservers answer for them."
-  notes: "No field of this spec buys anything: the record type, name, value, TTL, and the type-conditional fields (priority, weight, port, flags, tag) are all zone data in DigitalOcean's free DNS control plane. The real spend lives at the record's TARGET -- the droplet an A record points to, the load balancer behind a CNAME, or the mail service an MX record names each bill as their own catalog kinds (or outside DigitalOcean entirely). The zone the record lives in is equally free as its own kind; the only money anywhere near DigitalOcean DNS is the domain's registrar fee, which is paid outside DigitalOcean and untouched by this resource."
+  notes: "No field of this spec buys anything: the record type, name, value, TTL, and the type-conditional fields (priority, weight, port, flags, tag) are all zone data in DigitalOcean's free DNS control plane. The real spend lives at the record's TARGET -- the droplet an A record points to, the load balancer behind a CNAME, or the mail service an MX record names each bill as their own components (or outside DigitalOcean entirely). The zone the record lives in is equally free as its own kind; the only money anywhere near DigitalOcean DNS is the domain's registrar fee, which is paid outside DigitalOcean and untouched by this resource."

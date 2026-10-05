@@ -7,8 +7,8 @@ import { Layers, GitBranch, Cloud, Terminal } from 'lucide-react';
 const features = [
   {
     icon: Layers,
-    title: 'Deployment Components',
-    description: 'Pre-built, validated cloud resource definitions',
+    title: 'Catalog Kinds',
+    description: 'Pre-built, validated catalog kind definitions',
   },
   {
     icon: Cloud,
@@ -69,7 +69,7 @@ export default function SlideProduct() {
             <div className="text-4xl font-bold text-white mb-2">2</div>
             <h3 className="text-lg font-bold text-white mb-2">Configure</h3>
             <p className="text-white/60 text-sm">
-              Pick components from the catalog or use templates
+              Pick catalog kinds or use templates
             </p>
           </motion.div>
 

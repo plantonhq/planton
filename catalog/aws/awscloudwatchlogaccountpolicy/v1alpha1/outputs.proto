@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1;
 
-// AwsCloudwatchLogAccountPolicyStackOutputs captures the observable
+// AwsCloudwatchLogAccountPolicyOutputs captures the observable
 // state of the account policy after apply.
-message AwsCloudwatchLogAccountPolicyStackOutputs {
+message AwsCloudwatchLogAccountPolicyOutputs {
   // The policy's name.
   string policy_name = 1;
 

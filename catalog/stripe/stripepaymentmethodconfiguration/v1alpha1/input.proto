@@ -5,9 +5,9 @@ package dev.planton.stripe.stripepaymentmethodconfiguration.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/stripepaymentmethodconfiguration/v1alpha1/api.proto";
 
-// StripePaymentMethodConfigurationStackInput is the input to the StripePaymentMethodConfiguration
+// StripePaymentMethodConfigurationIacInput is the input to the StripePaymentMethodConfiguration
 // IaC module. It contains the target resource and the Stripe provider configuration.
-message StripePaymentMethodConfigurationStackInput {
+message StripePaymentMethodConfigurationIacInput {
   // target is the StripePaymentMethodConfiguration resource to be deployed.
   StripePaymentMethodConfiguration target = 1;
 

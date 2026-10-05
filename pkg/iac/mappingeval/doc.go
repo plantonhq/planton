@@ -1,10 +1,10 @@
 // Package mappingeval is the machine-scoring harness for import mapping:
-// given a known ground truth (component manifests deployed into a real
+// given a known ground truth (kind manifests deployed into a real
 // account) and a proposer's ImportMappingProposal (produced blind, from a
 // read-only scan of that account), it grades the proposal on the three axes
 // that define mapping quality:
 //
-//   - grouping: did each discovered cloud resource land in the right
+//   - grouping: did each discovered provider resource land in the right
 //     proposed component instance?
 //   - spec: did the proposed manifests reconstruct the settings the
 //     ground-truth manifests declare?
@@ -16,7 +16,7 @@
 // subpackage today, an AI mapping agent later -- takes the same exam and
 // gets the same impartial grade. The grader itself is deliberately free of
 // judgment: every comparison is structural, driven by the kinds' own proto
-// schemas and the shared value_from encoding, so it works for any component
+// schemas and the shared value_from encoding, so it works for any kind
 // on any provider with zero per-kind grading code.
 //
 // Honesty rules the scorer enforces (they keep scores trustworthy on a

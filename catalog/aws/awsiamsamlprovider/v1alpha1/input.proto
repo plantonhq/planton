@@ -5,9 +5,9 @@ package dev.planton.aws.awsiamsamlprovider.v1alpha1;
 import "catalog/aws/awsiamsamlprovider/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsIamSamlProviderStackInput is the input for the IaC modules that
+// AwsIamSamlProviderIacInput is the input for the IaC modules that
 // manage an IAM SAML identity provider.
-message AwsIamSamlProviderStackInput {
+message AwsIamSamlProviderIacInput {
   // target is the AwsIamSamlProvider resource to deploy.
   AwsIamSamlProvider target = 1;
   // provider_config contains the AWS provider credentials and configuration.

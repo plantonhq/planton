@@ -57,9 +57,9 @@ This works with any OCI registry (Scaleway, Docker Hub, GHCR) -- Scaleway regist
 ### Proto Schemas (4 files)
 
 - `spec.proto` -- 23 spec fields + 3 enums + 7 nested messages (Image, Env, EnvVar, CronTrigger, HealthCheck, ScalingOption)
-- `stack_outputs.proto` -- 3 outputs (container_id, namespace_id, domain_name)
+- `outputs.proto` -- 3 outputs (container_id, namespace_id, domain_name)
 - `api.proto` -- KRM wrapper with api_version `scaleway.planton.dev/v1`
-- `stack_input.proto` -- target + provider config
+- `iac_input.proto` -- target + provider config
 
 ### Pulumi Go Module (6 files)
 
@@ -109,21 +109,21 @@ Image URL composed in locals: `"${var.spec.image.registry_endpoint}/${var.spec.i
 - `image.registry_endpoint` creates DAG edge: ContainerRegistry -> ServerlessContainer
 - `private_network_id` creates DAG edge: PrivateNetwork -> ServerlessContainer
 - `domain_name` output enables downstream ScalewayDnsRecord CNAME records
-- Ready for the `scaleway/serverless-environment` infra chart (IC02)
+- Ready for the `scaleway/serverless-environment` Infra Chart (IC02)
 
 ### Developers
 - Structured image message is extensible (future: digest pinning, pull policy)
-- Component-local messages avoid cross-component coupling with R17
+- Kind-local messages avoid cross-kind coupling with R17
 
 ## Related Work
 
 - **R17: ScalewayServerlessFunction** -- Sibling resource in the serverless tier (code-based vs image-based)
 - **R14: ScalewayContainerRegistry** -- Upstream dependency for the `image.registry_endpoint` StringValueOrRef
 - **R16: ScalewayDnsRecord** -- Downstream consumer of `domain_name` output
-- **IC02: scaleway/serverless-environment** -- Future infra chart that will compose R17 and R18
+- **IC02: scaleway/serverless-environment** -- Future Infra Chart that will compose R17 and R18
 
 ---
 
 **Status**: Production Ready
 **Files Created**: 25 new files (4 proto, 6 Pulumi Go, 5 Terraform HCL, 2 docs, plus generated stubs and BUILD.bazel)
-**Files Modified**: `pkg/crkreflect/kind_map_gen.go` (auto-generated kind map registration)
+**Files Modified**: `pkg/catalogkindreflect/kind_map_gen.go` (auto-generated kind map registration)

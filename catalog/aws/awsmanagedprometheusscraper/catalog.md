@@ -4,7 +4,7 @@ Deploys an Amazon Managed Prometheus (AMP) scraper — AWS's agentless Prometheu
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Prometheus Scraper** — the AWS-managed collector, placed into your subnets, with its source (an EKS cluster via `sourceEks`, or a bare VPC placement via `sourceVpc`), its destination (`ampWorkspaceArn` or `cloudwatchDatasetArn`), the Prometheus scrape configuration, and the optional cross-account role pair. Creates run long — AWS provisions collector infrastructure for up to 30 minutes, and deletes drain for up to 20
 - **Scraper Logging Configuration** — created only when `logging` is set; sends the scraper's component logs (SERVICE_DISCOVERY, COLLECTOR, EXPORTER) to a CloudWatch log group
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with AMP scraper permissions, plus EKS describe and access-entry permissions for EKS sources. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with AMP scraper permissions, plus EKS describe and access-entry permissions for EKS sources. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f aws-managed-prometheus-scraper.yaml
 ```
 
-This provisions collectors into the two subnets, resolves AWS's published default scrape configuration for EKS (kubelet, cAdvisor, pod service discovery — `scrapeConfiguration` was left unset), and remote-writes the cluster's metrics into the referenced workspace. A Stack Job tracks the provisioning in real time.
+This provisions collectors into the two subnets, resolves AWS's published default scrape configuration for EKS (kubelet, cAdvisor, pod service discovery — `scrapeConfiguration` was left unset), and remote-writes the cluster's metrics into the referenced workspace. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -107,7 +107,7 @@ These are the most important decisions when configuring a scraper. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -118,9 +118,9 @@ These are the most important decisions when configuring a scraper. Explore the f
 | **AwsIamRole** | `roleConfiguration.sourceRoleArn` / `roleConfiguration.targetRoleArn` | `status.outputs.role_arn` |
 | **AwsCloudwatchLogGroup** | `logging.logGroupArn` | `status.outputs.log_group_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -140,9 +140,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Managed Prometheus**](/cloud-catalog/aws-managed-prometheus) — the usual destination, wired via `ampWorkspaceArn` from the workspace's `workspace_arn`
-- [**AWS EKS Cluster**](/cloud-catalog/aws-eks-cluster) — the scraped source for the EKS arm, wired via `clusterArn`
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) — where the collectors place their network interfaces (at least two)
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) — controls the collectors' reach to scrape targets; required for VPC sources
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the source and target halves of cross-account scraping
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) — where the scraper's component logs land
+- [**AWS Managed Prometheus**](/infra-catalog/aws-managed-prometheus) — the usual destination, wired via `ampWorkspaceArn` from the workspace's `workspace_arn`
+- [**AWS EKS Cluster**](/infra-catalog/aws-eks-cluster) — the scraped source for the EKS arm, wired via `clusterArn`
+- [**AWS Subnet**](/infra-catalog/aws-subnet) — where the collectors place their network interfaces (at least two)
+- [**AWS Security Group**](/infra-catalog/aws-security-group) — controls the collectors' reach to scrape targets; required for VPC sources
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the source and target halves of cross-account scraping
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) — where the scraper's component logs land

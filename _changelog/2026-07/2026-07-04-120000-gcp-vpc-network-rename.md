@@ -10,7 +10,7 @@ Renamed `GcpVpc` (610) to `GcpVpcNetwork` with folder/E2E slug `gcpvpcnetwork`; 
 
 ## Problem Statement / Motivation
 
-The kind name `GcpVpc` was an internal abbreviation that diverged from GCP's native "VPC network" vocabulary and from the catalog grain used by sibling kinds. With ~20 sibling `default_kind` consumers, six infra charts, and every E2E PSA chain referencing the root network kind, deferring the rename widened fan-in cost every session.
+The kind name `GcpVpc` was an internal abbreviation that diverged from GCP's native "VPC network" vocabulary and from the catalog grain used by sibling kinds. With ~20 sibling `default_kind` consumers, six Infra Charts, and every E2E PSA chain referencing the root network kind, deferring the rename widened fan-in cost every session.
 
 ## Solution
 
@@ -20,7 +20,7 @@ The kind name `GcpVpc` was an internal abbreviation that diverged from GCP's nat
 - id_prefix `gcpvpc` unchanged (kept deliberately — short, unique, matches the registry's abbreviation convention)
 - Prerequisites on `GcpSubnetwork`, `GcpRouterNat`, `GcpServiceNetworkingConnection`, `GcpAddress` updated
 
-### Component tree
+### Kind tree
 
 - Folder `gcpvpc/` → `gcpvpcnetwork/`; nested types (`GcpVpcNetworkSpec`, routing enums, etc.)
 - Both IaC modules unchanged in behavior; TF `planton-ai_kind` label uses slug `gcpvpcnetwork`
@@ -34,7 +34,7 @@ The kind name `GcpVpc` was an internal abbreviation that diverged from GCP's nat
 
 ### Workflow uplift
 
-Extended `_rules/deployment-component/rename/rename-planton-component.mdc` with high-fan-in checklist, four-way naming table, safe replace order, script scope honesty, and live E2E minimum (leaf + one FK consumer).
+Extended `_rules/catalog-kind/rename/rename-catalog-kind.mdc` with high-fan-in checklist, four-way naming table, safe replace order, script scope honesty, and live E2E minimum (leaf + one FK consumer).
 
 ## Validation
 

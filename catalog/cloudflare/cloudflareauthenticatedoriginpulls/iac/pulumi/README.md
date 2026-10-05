@@ -5,17 +5,17 @@ Pulumi (Go) IaC module for a zone's Authenticated Origin Pulls enablement: the z
 ## Architecture
 
 ```
-main.go                                 — Entrypoint loading the stack input
+main.go                                 — Entrypoint loading the IaC input
 module/main.go                          — Resources(): provider setup, resources, outputs
 module/locals.go                        — Locals initialization
 module/authenticated_origin_pulls.go    — cloudflare.AuthenticatedOriginPullsSettings
                                           + cloudflare.AuthenticatedOriginPulls per row
-module/outputs.go                       — Stack output keys
+module/outputs.go                       — output keys
 ```
 
 ## Behavior
 
-Mirrors the Terraform module's contract exactly: the toggle managed only when `zone_enabled` is present, one association resource per hostname row (single-element config -- the provider hard-fails otherwise), omitted row `enabled` sent as true, and the `zone_id` stack output. Destroy deletes nothing: the toggle is abandoned and associations revert by a null write.
+Mirrors the Terraform module's contract exactly: the toggle managed only when `zone_enabled` is present, one association resource per hostname row (single-element config -- the provider hard-fails otherwise), omitted row `enabled` sent as true, and the `zone_id` output. Destroy deletes nothing: the toggle is abandoned and associations revert by a null write.
 
 ## Outputs
 

@@ -1,5 +1,5 @@
 # AwsRedshiftServerlessNamespace install profile used as a prerequisite
-# by composed components (the workgroup attaches to a namespace by name
+# by composed kinds (the workgroup attaches to a namespace by name
 # at create time). Managed admin password so no credential material
 # exists in the fixture. Full metadata is supplied for tagging/orphan
 # cleanup.
@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsredshiftserverlessnamespace
+    e2e-catalog-kind: awsredshiftserverlessnamespace
   annotations:
     planton.dev/e2e: "true"
   tags:

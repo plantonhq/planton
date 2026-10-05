@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanDatabaseKafkaTopicStackOutputs
+# Outputs — exactly the DigitalOceanDatabaseKafkaTopicOutputs
 # contract, identical across both provisioners. The (cluster, topic name)
 # pair is the topic's API identity; DigitalOcean mints no standalone id.
 #

@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Cloud Armor security policy.
-type GcpCloudArmorPolicyStackOutputs struct {
+type GcpCloudArmorPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified resource ID of the security policy.
 	// Format: projects/{project}/global/securityPolicies/{name} for a global
@@ -52,20 +52,20 @@ type GcpCloudArmorPolicyStackOutputs struct {
 	sizeCache                          protoimpl.SizeCache
 }
 
-func (x *GcpCloudArmorPolicyStackOutputs) Reset() {
-	*x = GcpCloudArmorPolicyStackOutputs{}
+func (x *GcpCloudArmorPolicyOutputs) Reset() {
+	*x = GcpCloudArmorPolicyOutputs{}
 	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudArmorPolicyStackOutputs) String() string {
+func (x *GcpCloudArmorPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudArmorPolicyStackOutputs) ProtoMessage() {}
+func (*GcpCloudArmorPolicyOutputs) ProtoMessage() {}
 
-func (x *GcpCloudArmorPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudArmorPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -77,47 +77,47 @@ func (x *GcpCloudArmorPolicyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudArmorPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudArmorPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudArmorPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudArmorPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudArmorPolicyStackOutputs) GetPolicyId() string {
+func (x *GcpCloudArmorPolicyOutputs) GetPolicyId() string {
 	if x != nil {
 		return x.PolicyId
 	}
 	return ""
 }
 
-func (x *GcpCloudArmorPolicyStackOutputs) GetPolicyName() string {
+func (x *GcpCloudArmorPolicyOutputs) GetPolicyName() string {
 	if x != nil {
 		return x.PolicyName
 	}
 	return ""
 }
 
-func (x *GcpCloudArmorPolicyStackOutputs) GetPolicySelfLink() string {
+func (x *GcpCloudArmorPolicyOutputs) GetPolicySelfLink() string {
 	if x != nil {
 		return x.PolicySelfLink
 	}
 	return ""
 }
 
-func (x *GcpCloudArmorPolicyStackOutputs) GetFingerprint() string {
+func (x *GcpCloudArmorPolicyOutputs) GetFingerprint() string {
 	if x != nil {
 		return x.Fingerprint
 	}
 	return ""
 }
 
-func (x *GcpCloudArmorPolicyStackOutputs) GetRegion() string {
+func (x *GcpCloudArmorPolicyOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *GcpCloudArmorPolicyStackOutputs) GetNetworkEdgeSecurityServiceSelfLink() string {
+func (x *GcpCloudArmorPolicyOutputs) GetNetworkEdgeSecurityServiceSelfLink() string {
 	if x != nil {
 		return x.NetworkEdgeSecurityServiceSelfLink
 	}
@@ -128,8 +128,8 @@ var File_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcpcloudarmorpolicy/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1\"\x98\x02\n" +
-	"\x1fGcpCloudArmorPolicyStackOutputs\x12\x1b\n" +
+	"6catalog/gcp/gcpcloudarmorpolicy/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1\"\x93\x02\n" +
+	"\x1aGcpCloudArmorPolicyOutputs\x12\x1b\n" +
 	"\tpolicy_id\x18\x01 \x01(\tR\bpolicyId\x12\x1f\n" +
 	"\vpolicy_name\x18\x02 \x01(\tR\n" +
 	"policyName\x12(\n" +
@@ -153,7 +153,7 @@ func file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudArmorPolicyStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyStackOutputs
+	(*GcpCloudArmorPolicyOutputs)(nil), // 0: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicyOutputs
 }
 var file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

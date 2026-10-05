@@ -5,9 +5,9 @@ package dev.planton.aws.awsssmmaintenancewindow.v1alpha1;
 import "catalog/aws/awsssmmaintenancewindow/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSsmMaintenanceWindowStackInput is the input for the IaC modules
+// AwsSsmMaintenanceWindowIacInput is the input for the IaC modules
 // that manage a maintenance window with its folded targets and tasks.
-message AwsSsmMaintenanceWindowStackInput {
+message AwsSsmMaintenanceWindowIacInput {
   // target is the AwsSsmMaintenanceWindow resource to deploy.
   AwsSsmMaintenanceWindow target = 1;
   // provider_config contains the AWS provider credentials and configuration.

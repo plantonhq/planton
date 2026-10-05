@@ -5,7 +5,7 @@ import (
 
 	azurediskencryptionsetv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurediskencryptionset/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -31,11 +31,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurediskencryptionsetv1alpha1.AzureDiskEncryptionSetStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurediskencryptionsetv1alpha1.AzureDiskEncryptionSetIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureDiskEncryptionSet = stackInput.Target
-	target := stackInput.Target
+	locals.AzureDiskEncryptionSet = iacInput.Target
+	target := iacInput.Target
 	spec := target.Spec
 
 	locals.ResourceGroupName = spec.ResourceGroup.GetValue()
@@ -67,7 +67,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurediskencryptionsetv1a
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureDiskEncryptionSet.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureDiskEncryptionSet.String()),
 	}
 	if target.Metadata.Id != "" {
 		locals.AzureTags[azuretagkeys.ResourceId] = target.Metadata.Id

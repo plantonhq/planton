@@ -26,17 +26,17 @@ import (
 // release and they are REMOVED with it — destroying the controller
 // cascade-deletes every runner scale set on the cluster (the spec's CRD
 // note carries the warning).
-func Resources(ctx *pulumi.Context, stackInput *kubernetesgharunnerscalesetcontrollerv1alpha1.KubernetesGhaRunnerScaleSetControllerStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesgharunnerscalesetcontrollerv1alpha1.KubernetesGhaRunnerScaleSetControllerIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

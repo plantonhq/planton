@@ -6,9 +6,9 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/internal/cli/workspace"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/iacinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumistack"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/iac/tofu/tofumodule"
 	"github.com/plantonhq/planton/pkg/outputs"
 	"github.com/plantonhq/planton/shared/iac/pulumi"
@@ -88,7 +88,7 @@ func (d *EngineDeployer) deployHcl(node NodePlan, manifestPath string) (*outputs
 		d.Flags.ModuleVersion,
 		true, // the workspace is deliberately persistent — never cleaned up
 		node.KubeContext,
-		&stackinputproviderconfig.ProviderConfig{Path: "", Provider: node.Provider},
+		&iacinputproviderconfig.ProviderConfig{Path: "", Provider: node.Provider},
 		node.TofuBackend,
 		tofumodule.WithOutputCapture(captured),
 	)
@@ -118,8 +118,8 @@ func (d *EngineDeployer) deployPulumi(node NodePlan, manifestPath string) (*outp
 		d.Flags.ModuleVersion,
 		false,
 		node.KubeContext,
-		"", // no stack-input file: the manifest is the input
-		&stackinputproviderconfig.ProviderConfig{Path: "", Provider: node.Provider},
+		"", // no iac-input file: the manifest is the input
+		&iacinputproviderconfig.ProviderConfig{Path: "", Provider: node.Provider},
 		pulumistack.WithBackendURL(node.PulumiBackendURL),
 		pulumistack.WithOutputCapture(captured),
 	)

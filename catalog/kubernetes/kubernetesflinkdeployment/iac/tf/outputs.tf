@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (KubernetesFlinkDeploymentStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (KubernetesFlinkDeploymentOutputs).
 
 output "namespace" {
   description = "Namespace the Flink cluster runs in"

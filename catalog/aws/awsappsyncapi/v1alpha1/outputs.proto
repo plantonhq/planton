@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsappsyncapi.v1alpha1;
 
-// AwsAppSyncApiStackOutputs captures the observable state of the API
+// AwsAppSyncApiOutputs captures the observable state of the API
 // after apply.
-message AwsAppSyncApiStackOutputs {
+message AwsAppSyncApiOutputs {
   // The API's id - the provider's import ID for the pivot, the
   // prefix of every satellite's composite import ID, and the join
   // key MERGED APIs use to reference their sources.

@@ -41,7 +41,7 @@ func baseRecord() *GcpDnsRecord {
 	return &GcpDnsRecord{
 		ApiVersion: "gcp.planton.dev/v1alpha1",
 		Kind:       "GcpDnsRecord",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-dns-record",
 		},
 		Spec: &GcpDnsRecordSpec{

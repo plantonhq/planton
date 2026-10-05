@@ -10,7 +10,7 @@ Added standardized screenshot placeholders to 51 of 53 documentation pages, comp
 
 ## Problem Statement / Motivation
 
-Documentation pages frequently describe UI workflows — creating connections, browsing the Deployment Component catalog, monitoring pipeline progress, managing team members — but contain no visual aids. When a developer reads "Navigate to Connections and click the AWS card," they have no reference image to confirm they are in the right place. Screenshots at key points in these workflows reduce cognitive load and build confidence.
+Documentation pages frequently describe UI workflows — creating connections, browsing the Infra Catalog, monitoring pipeline progress, managing team members — but contain no visual aids. When a developer reads "Navigate to Connections and click the AWS card," they have no reference image to confirm they are in the right place. Screenshots at key points in these workflows reduce cognitive load and build confidence.
 
 ### Pain Points
 

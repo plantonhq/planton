@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpGkeFleetFeatureStackOutputs carries the feature's identity.
-type GcpGkeFleetFeatureStackOutputs struct {
+// GcpGkeFleetFeatureOutputs carries the feature's identity.
+type GcpGkeFleetFeatureOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/features/{feature}.
@@ -31,20 +31,20 @@ type GcpGkeFleetFeatureStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpGkeFleetFeatureStackOutputs) Reset() {
-	*x = GcpGkeFleetFeatureStackOutputs{}
+func (x *GcpGkeFleetFeatureOutputs) Reset() {
+	*x = GcpGkeFleetFeatureOutputs{}
 	mi := &file_catalog_gcp_gcpgkefleetfeature_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpGkeFleetFeatureStackOutputs) String() string {
+func (x *GcpGkeFleetFeatureOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpGkeFleetFeatureStackOutputs) ProtoMessage() {}
+func (*GcpGkeFleetFeatureOutputs) ProtoMessage() {}
 
-func (x *GcpGkeFleetFeatureStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpGkeFleetFeatureOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpgkefleetfeature_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -56,12 +56,12 @@ func (x *GcpGkeFleetFeatureStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpGkeFleetFeatureStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpGkeFleetFeatureStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpGkeFleetFeatureOutputs.ProtoReflect.Descriptor instead.
+func (*GcpGkeFleetFeatureOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgkefleetfeature_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpGkeFleetFeatureStackOutputs) GetName() string {
+func (x *GcpGkeFleetFeatureOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
@@ -72,8 +72,8 @@ var File_catalog_gcp_gcpgkefleetfeature_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpgkefleetfeature_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpgkefleetfeature/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpgkefleetfeature.v1alpha1\"4\n" +
-	"\x1eGcpGkeFleetFeatureStackOutputs\x12\x12\n" +
+	"5catalog/gcp/gcpgkefleetfeature/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpgkefleetfeature.v1alpha1\"/\n" +
+	"\x19GcpGkeFleetFeatureOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04nameB\xf1\x02\n" +
 	"/com.dev.planton.gcp.gcpgkefleetfeature.v1alpha1B\fOutputsProtoP\x01Z_github.com/plantonhq/planton/catalog/gcp/gcpgkefleetfeature/v1alpha1;gcpgkefleetfeaturev1alpha1\xa2\x02\x04DPGG\xaa\x02+Dev.Planton.Gcp.Gcpgkefleetfeature.V1alpha1\xca\x02+Dev\\Planton\\Gcp\\Gcpgkefleetfeature\\V1alpha1\xe2\x027Dev\\Planton\\Gcp\\Gcpgkefleetfeature\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Gcp::Gcpgkefleetfeature::V1alpha1b\x06proto3"
 
@@ -91,7 +91,7 @@ func file_catalog_gcp_gcpgkefleetfeature_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpgkefleetfeature_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpgkefleetfeature_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpGkeFleetFeatureStackOutputs)(nil), // 0: dev.planton.gcp.gcpgkefleetfeature.v1alpha1.GcpGkeFleetFeatureStackOutputs
+	(*GcpGkeFleetFeatureOutputs)(nil), // 0: dev.planton.gcp.gcpgkefleetfeature.v1alpha1.GcpGkeFleetFeatureOutputs
 }
 var file_catalog_gcp_gcpgkefleetfeature_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

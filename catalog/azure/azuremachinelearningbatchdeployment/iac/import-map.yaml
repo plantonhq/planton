@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuremachinelearningbatchdeployment
 spec:
@@ -11,7 +11,7 @@ spec:
   values:
     - name: arm_resource_id
       derivations:
-        - from_stack_output: batch_deployment_id
+        - from_output: batch_deployment_id
       where_to_find: >-
         Compose {endpoint-id}/deployments/{deployment-name}, or
         `az ml batch-deployment show -g <rg> --workspace-name <ws>

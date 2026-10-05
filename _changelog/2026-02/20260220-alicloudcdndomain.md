@@ -1,4 +1,4 @@
-# AliCloudCdnDomain Component Added
+# AliCloudCdnDomain Kind Added
 
 **Date**: 2026-02-20
 **Component**: AliCloudCdnDomain
@@ -7,13 +7,13 @@
 
 ## Summary
 
-Added the AliCloudCdnDomain deployment component -- manages CDN accelerated domains in the Alibaba Cloud CDN service. A CDN domain maps a user-facing domain name to one or more origin servers; edge nodes worldwide cache and serve content, reducing latency for end users. After deployment, create a CNAME record at your DNS provider pointing to the `cname` stack output.
+Added the AliCloudCdnDomain catalog kind -- manages CDN accelerated domains in the Alibaba Cloud CDN service. A CDN domain maps a user-facing domain name to one or more origin servers; edge nodes worldwide cache and serve content, reducing latency for end users. After deployment, create a CNAME record at your DNS provider pointing to the `cname` output.
 
 ## What Was Created
 
 ### API Definition
-- `apis/dev/planton/provider/alicloud/alicloudcdndomain/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AliCloudCdnDomain = 3100` in `CloudResourceKind` enum under a new CDN category
+- `apis/dev/planton/provider/alicloud/alicloudcdndomain/v1/` -- Full proto API (spec, api, iac_input, outputs)
+- Registered `AliCloudCdnDomain = 3100` in `CatalogKind` enum under a new CDN category
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and a single `cdn.DomainNew` resource with all spec fields mapped, including sources array and optional certificate config
@@ -23,7 +23,7 @@ Added the AliCloudCdnDomain deployment component -- manages CDN accelerated doma
 - Ginkgo/Gomega spec validation tests: 23 specs covering valid inputs (minimal, full config, all cdn_types, all scopes, all source types, upload cert, CAS cert, cert status off), invalid inputs (missing required fields, invalid cdn_type, invalid scope, invalid source type, empty source content, invalid cert_type, invalid cert_status, wrong api_version/kind, missing metadata, missing spec, domain_name max length)
 
 ### Documentation
-- README.md with configuration reference tables for all fields (spec, source, certificate), output reference, and related components
+- README.md with configuration reference tables for all fields (spec, source, certificate), output reference, and related kinds
 - examples.md with 4 YAML examples (minimal web CDN, multiple origins with failover, HTTPS with CAS cert, OSS bucket origin)
 - catalog-page.md with full catalog documentation including quick start, prerequisites, and 3 deployment examples
 

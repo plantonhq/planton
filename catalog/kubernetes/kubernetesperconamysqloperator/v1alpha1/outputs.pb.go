@@ -22,12 +22,12 @@ const (
 )
 
 // *
-// **KubernetesPerconaMysqlOperatorStackOutputs** — the composition
+// **KubernetesPerconaMysqlOperatorOutputs** — the composition
 // handles a deployed Percona Operator for MySQL exports. The operator
 // has no per-database surface of its own; KubernetesMysql resources
 // compose against the CRDs it installs, so the handles here identify
 // the installation rather than any workload.
-type KubernetesPerconaMysqlOperatorStackOutputs struct {
+type KubernetesPerconaMysqlOperatorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the operator runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -37,20 +37,20 @@ type KubernetesPerconaMysqlOperatorStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesPerconaMysqlOperatorStackOutputs) Reset() {
-	*x = KubernetesPerconaMysqlOperatorStackOutputs{}
+func (x *KubernetesPerconaMysqlOperatorOutputs) Reset() {
+	*x = KubernetesPerconaMysqlOperatorOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPerconaMysqlOperatorStackOutputs) String() string {
+func (x *KubernetesPerconaMysqlOperatorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPerconaMysqlOperatorStackOutputs) ProtoMessage() {}
+func (*KubernetesPerconaMysqlOperatorOutputs) ProtoMessage() {}
 
-func (x *KubernetesPerconaMysqlOperatorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPerconaMysqlOperatorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *KubernetesPerconaMysqlOperatorStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPerconaMysqlOperatorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesPerconaMysqlOperatorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPerconaMysqlOperatorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesPerconaMysqlOperatorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPerconaMysqlOperatorStackOutputs) GetNamespace() string {
+func (x *KubernetesPerconaMysqlOperatorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesPerconaMysqlOperatorStackOutputs) GetReleaseName() string {
+func (x *KubernetesPerconaMysqlOperatorOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
@@ -85,8 +85,8 @@ var File_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_outputs_prot
 
 const file_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Hcatalog/kubernetes/kubernetesperconamysqloperator/v1alpha1/outputs.proto\x12>dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1\"m\n" +
-	"*KubernetesPerconaMysqlOperatorStackOutputs\x12\x1c\n" +
+	"Hcatalog/kubernetes/kubernetesperconamysqloperator/v1alpha1/outputs.proto\x12>dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1\"h\n" +
+	"%KubernetesPerconaMysqlOperatorOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseNameB\xef\x03\n" +
 	"Bcom.dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1B\fOutputsProtoP\x01Z~github.com/plantonhq/planton/catalog/kubernetes/kubernetesperconamysqloperator/v1alpha1;kubernetesperconamysqloperatorv1alpha1\xa2\x02\x04DPKK\xaa\x02>Dev.Planton.Kubernetes.Kubernetesperconamysqloperator.V1alpha1\xca\x02>Dev\\Planton\\Kubernetes\\Kubernetesperconamysqloperator\\V1alpha1\xe2\x02JDev\\Planton\\Kubernetes\\Kubernetesperconamysqloperator\\V1alpha1\\GPBMetadata\xea\x02BDev::Planton::Kubernetes::Kubernetesperconamysqloperator::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_outputs_pro
 
 var file_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesPerconaMysqlOperatorStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorStackOutputs
+	(*KubernetesPerconaMysqlOperatorOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1.KubernetesPerconaMysqlOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetesperconamysqloperator_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -5,7 +5,7 @@ import (
 
 	awsredshiftserverlessworkgroupv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsredshiftserverlessworkgroup/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -20,11 +20,11 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awsredshiftserverlessworkgroupv1alpha1.AwsRedshiftServerlessWorkgroupStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awsredshiftserverlessworkgroupv1alpha1.AwsRedshiftServerlessWorkgroupIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsRedshiftServerlessWorkgroup = stackInput.Target
+	locals.AwsRedshiftServerlessWorkgroup = iacInput.Target
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 	locals.WorkgroupName = metadata.Name
 
 	// Resource-identity tags match the Terraform module key-for-key.
@@ -33,7 +33,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *awsredshiftserverlessworkgr
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsRedshiftServerlessWorkgroup.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsRedshiftServerlessWorkgroup.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

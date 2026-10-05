@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-binary-authorization-policy stack-input
-type GcpBinaryAuthorizationPolicyStackInput struct {
+// gcp-binary-authorization-policy iac-input
+type GcpBinaryAuthorizationPolicyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpBinaryAuthorizationPolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpBinaryAuthorizationPolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpBinaryAuthorizationPolicyStackInput) Reset() {
-	*x = GcpBinaryAuthorizationPolicyStackInput{}
+func (x *GcpBinaryAuthorizationPolicyIacInput) Reset() {
+	*x = GcpBinaryAuthorizationPolicyIacInput{}
 	mi := &file_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpBinaryAuthorizationPolicyStackInput) String() string {
+func (x *GcpBinaryAuthorizationPolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpBinaryAuthorizationPolicyStackInput) ProtoMessage() {}
+func (*GcpBinaryAuthorizationPolicyIacInput) ProtoMessage() {}
 
-func (x *GcpBinaryAuthorizationPolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpBinaryAuthorizationPolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpBinaryAuthorizationPolicyStackInput) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpBinaryAuthorizationPolicyStackInput.ProtoReflect.Descriptor instead.
-func (*GcpBinaryAuthorizationPolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpBinaryAuthorizationPolicyIacInput.ProtoReflect.Descriptor instead.
+func (*GcpBinaryAuthorizationPolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpBinaryAuthorizationPolicyStackInput) GetTarget() *GcpBinaryAuthorizationPolicy {
+func (x *GcpBinaryAuthorizationPolicyIacInput) GetTarget() *GcpBinaryAuthorizationPolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpBinaryAuthorizationPolicyStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpBinaryAuthorizationPolicyIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_input_proto protorefl
 
 const file_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/gcp/gcpbinaryauthorizationpolicy/v1alpha1/input.proto\x125dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1\x1a;catalog/gcp/gcpbinaryauthorizationpolicy/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe2\x01\n" +
-	"&GcpBinaryAuthorizationPolicyStackInput\x12k\n" +
+	"=catalog/gcp/gcpbinaryauthorizationpolicy/v1alpha1/input.proto\x125dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1\x1a;catalog/gcp/gcpbinaryauthorizationpolicy/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe0\x01\n" +
+	"$GcpBinaryAuthorizationPolicyIacInput\x12k\n" +
 	"\x06target\x18\x01 \x01(\v2S.dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xb5\x03\n" +
 	"9com.dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_input_proto_rawDescG
 
 var file_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_input_proto_goTypes = []any{
-	(*GcpBinaryAuthorizationPolicyStackInput)(nil), // 0: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyStackInput
-	(*GcpBinaryAuthorizationPolicy)(nil),           // 1: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicy
-	(*gcp.GcpProviderConfig)(nil),                  // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpBinaryAuthorizationPolicyIacInput)(nil), // 0: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyIacInput
+	(*GcpBinaryAuthorizationPolicy)(nil),         // 1: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicy
+	(*gcp.GcpProviderConfig)(nil),                // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpbinaryauthorizationpolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyStackInput.target:type_name -> dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicy
-	2, // 1: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyIacInput.target:type_name -> dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicy
+	2, // 1: dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1.GcpBinaryAuthorizationPolicyIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

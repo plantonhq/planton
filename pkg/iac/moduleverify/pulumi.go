@@ -11,7 +11,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"gopkg.in/yaml.v3"
 )
 
@@ -25,7 +25,7 @@ const (
 // the schema declares being read, the outputs contract (export names, and
 // exactly the secret outputs exported through pulumi.ToSecret), and — when
 // the toolchain is available — a real compile.
-func verifyPulumi(kind cloudresourcekind.CloudResourceKind, kindName, moduleDir string, in Input, result *Result) {
+func verifyPulumi(kind catalogkind.CatalogKind, kindName, moduleDir string, in Input, result *Result) {
 	checkPulumiProjectFile(moduleDir, result)
 	checkPulumiEntrypoint(kindName, moduleDir, result)
 	checkEnclosingGoMod(moduleDir, result)
@@ -97,7 +97,7 @@ func parsePulumiRuntime(content []byte) (string, error) {
 }
 
 // checkPulumiEntrypoint enforces the entrypoint contract: a `package main`
-// at the module root that loads the kind's typed stack input. The typed
+// at the module root that loads the kind's typed IaC input. The typed
 // input is how every deployment feeds the module; the loader is how the
 // input reaches it.
 func checkPulumiEntrypoint(kindName, moduleDir string, result *Result) {
@@ -118,29 +118,29 @@ func checkPulumiEntrypoint(kindName, moduleDir string, result *Result) {
 			"the module root declares package %q — it must be package main, the Pulumi program deployments build and run", parsed.Name.Name))
 	}
 
-	stackInputTypeName := kindName + "StackInput"
-	usesStackInput, usesLoader := false, false
+	iacInputTypeName := kindName + "IacInput"
+	usesIacInput, usesLoader := false, false
 	ast.Inspect(parsed, func(node ast.Node) bool {
 		ident, ok := node.(*ast.Ident)
 		if !ok {
 			return true
 		}
 		switch ident.Name {
-		case stackInputTypeName:
-			usesStackInput = true
-		case "LoadStackInput":
+		case iacInputTypeName:
+			usesIacInput = true
+		case "LoadIacInput":
 			usesLoader = true
 		}
 		return true
 	})
 
-	if !usesStackInput {
+	if !usesIacInput {
 		result.addError(pulumiEntrypointName, fmt.Sprintf(
-			"the entrypoint never references %s — deployments feed the module through that typed stack input; load it and pass it to your resources", stackInputTypeName))
+			"the entrypoint never references %s — deployments feed the module through that typed IaC input; load it and pass it to your resources", iacInputTypeName))
 	}
 	if !usesLoader {
 		result.addWarning(pulumiEntrypointName, fmt.Sprintf(
-			"the entrypoint does not call LoadStackInput — the stack-input loader is how deployments deliver the %s value; loading it another way is on you to keep compatible", stackInputTypeName))
+			"the entrypoint does not call LoadIacInput — the iac-input loader is how deployments deliver the %s value; loading it another way is on you to keep compatible", iacInputTypeName))
 	}
 }
 

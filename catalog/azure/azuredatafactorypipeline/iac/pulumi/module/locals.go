@@ -11,10 +11,10 @@ type Locals struct {
 
 // A pipeline carries no tags (ARM sub-resources of a factory expose
 // none), so there is no tag map to derive.
-func initializeLocals(ctx *pulumi.Context, stackInput *azuredatafactorypipelinev1alpha1.AzureDataFactoryPipelineStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuredatafactorypipelinev1alpha1.AzureDataFactoryPipelineIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureDataFactoryPipeline = stackInput.Target
+	locals.AzureDataFactoryPipeline = iacInput.Target
 
 	return locals
 }

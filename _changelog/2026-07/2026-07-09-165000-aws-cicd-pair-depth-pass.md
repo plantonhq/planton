@@ -37,7 +37,7 @@ The AWS CI/CD pair reaches the full provider surface. **`AwsCodeBuildProject`** 
 - Generator-owned `variables.tf` contracts (the legacy hand-written `{value=string}` FK-wrapper shapes retired), enrolled in the drift guard; `outputs.tf` created for both (outputs previously lived inline in main.tf).
 - Terraform floors lifted from `~> 5.0` to `>= 6.16.0` (CodeBuild — `auto_retry_limit` lands there; docker_server 6.2.0, pull_request_build_policy 6.13.0 beneath it) and `>= 6.0.0` (CodePipeline — the full V2 surface predates 6.0).
 - Naming basis converged to `metadata.name` in both engines (was `metadata.id`); identity tags converged from the non-standard `planton.org/*` prefix to the shared `planton.ai/*` set.
-- `iac/pulumi/stack-input.yaml` created for both; hack manifests rebuilt to exercise the FULL surface — including every arm excluded from live lanes — so the offline plan proofs cover the whole contract.
+- `iac/pulumi/iac-input.yaml` created for both; hack manifests rebuilt to exercise the FULL surface — including every arm excluded from live lanes — so the offline plan proofs cover the whole contract.
 - Outputs enriched: CodeBuild adds `badge_url`, `public_project_alias`, and `webhook_secret` (sensitive — a provider-minted credential, required for manual webhook creation; marked `sensitive` in the Terraform output and bridged as a secret by Pulumi).
 - Richly-commented modules in both engines; zero PARITY-EXCEPTIONs.
 

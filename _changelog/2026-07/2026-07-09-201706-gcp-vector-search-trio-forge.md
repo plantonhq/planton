@@ -6,7 +6,7 @@
 
 ## Summary
 
-Component #30 forges the Vertex AI vector-search trio — `GcpVertexAiIndex` (672), `GcpVertexAiIndexEndpoint` (673), and `GcpVertexAiDeployedIndex` (674) — to the released `google ~> 6.50.0` floor with full dual-engine parity, REST-probe E2E, and audits. This completes the AI family and freezes the Phase-1 component catalog for the chart wave (RoE §17).
+Kind #30 forges the Vertex AI vector-search trio — `GcpVertexAiIndex` (672), `GcpVertexAiIndexEndpoint` (673), and `GcpVertexAiDeployedIndex` (674) — to the released `google ~> 6.50.0` floor with full dual-engine parity, REST-probe E2E, and audits. This completes the AI family and freezes the Phase-1 kind catalog for the chart wave (RoE §17).
 
 ## Problem Statement / Motivation
 
@@ -17,7 +17,7 @@ Vector Search (Matching Engine) is a three-resource GCP surface — storage (ind
 ### GcpVertexAiIndex (672, `gcpvaidx`)
 - Full index geometry at the 6.50.0 floor: BATCH_UPDATE vs STREAM_UPDATE regimes, `contents_delta_uri` + overwrite semantics, immutable `config` (dimensions, algorithm arms tree-AH XOR brute-force, shard size, distance measure, feature norm).
 - CEL enforces what the provider's empty `ExactlyOneOf` does not: algorithm XOR and tree-AH requires `approximate_neighbors_count`.
-- 43-case spec test; 5 stack outputs including `index_id` (the deployed index's composition key).
+- 43-case spec test; 5 outputs including `index_id` (the deployed index's composition key).
 
 ### GcpVertexAiIndexEndpoint (673, `gcpvaiep`)
 - Three mutually exclusive connectivity arms (public / VPC-peered / PSC) with pairwise CEL exclusion.
@@ -61,4 +61,4 @@ Live-found class: GCP holds a failed/undeploying `deployed_index_id` project-wid
 ## Workflow Uplift
 
 - `e2e/README.md`: underscore-token contract + sub-resource-ID hold class.
-- `forge-planton-component.mdc`: same learnings for future forges.
+- `forge-catalog-kind.mdc`: same learnings for future forges.

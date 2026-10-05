@@ -1,6 +1,6 @@
 package module
 
-// Stack-output keys, matching AzureAksClusterStackOutputs field for field.
+// Output keys, matching AzureAksClusterOutputs field for field.
 const (
 	OpClusterId                  = "cluster_id"
 	OpClusterName                = "cluster_name"

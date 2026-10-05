@@ -36,7 +36,7 @@ type AzureFrontDoorFirewallPolicy struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureFrontDoorFirewallPolicySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -89,7 +89,7 @@ func (x *AzureFrontDoorFirewallPolicy) GetKind() string {
 	return ""
 }
 
-func (x *AzureFrontDoorFirewallPolicy) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureFrontDoorFirewallPolicy) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *AzureFrontDoorFirewallPolicy) GetStatus() *AzureFrontDoorFirewallPolicy
 // AzureFrontDoorFirewallPolicyStatus holds the deployment status and outputs.
 type AzureFrontDoorFirewallPolicyStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureFrontDoorFirewallPolicyStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureFrontDoorFirewallPolicyOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzureFrontDoorFirewallPolicyStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureFrontDoorFirewallPolicyStatus) GetOutputs() *AzureFrontDoorFirewallPolicyStackOutputs {
+func (x *AzureFrontDoorFirewallPolicyStatus) GetOutputs() *AzureFrontDoorFirewallPolicyOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_api_proto_rawDesc
 	"apiVersion\x127\n" +
 	"\x04kind\x18\x02 \x01(\tB#\xbaH r\x1e\n" +
 	"\x1cAzureFrontDoorFirewallPolicyR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12u\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12u\n" +
 	"\x04spec\x18\x04 \x01(\v2Y.dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12s\n" +
-	"\x06status\x18\x05 \x01(\v2[.dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyStatusR\x06status\"\xa1\x01\n" +
-	"\"AzureFrontDoorFirewallPolicyStatus\x12{\n" +
-	"\aoutputs\x18\x01 \x01(\v2a.dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyStackOutputsR\aoutputsB\xbf\x03\n" +
+	"\x06status\x18\x05 \x01(\v2[.dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyStatusR\x06status\"\x9c\x01\n" +
+	"\"AzureFrontDoorFirewallPolicyStatus\x12v\n" +
+	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyOutputsR\aoutputsB\xbf\x03\n" +
 	";com.dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1B\bApiProtoP\x01Zugithub.com/plantonhq/planton/catalog/azure/azurefrontdoorfirewallpolicy/v1alpha1;azurefrontdoorfirewallpolicyv1alpha1\xa2\x02\x04DPAA\xaa\x027Dev.Planton.Azure.Azurefrontdoorfirewallpolicy.V1alpha1\xca\x027Dev\\Planton\\Azure\\Azurefrontdoorfirewallpolicy\\V1alpha1\xe2\x02CDev\\Planton\\Azure\\Azurefrontdoorfirewallpolicy\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Azure::Azurefrontdoorfirewallpolicy::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_api_proto_rawDescG
 
 var file_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_api_proto_goTypes = []any{
-	(*AzureFrontDoorFirewallPolicy)(nil),             // 0: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicy
-	(*AzureFrontDoorFirewallPolicyStatus)(nil),       // 1: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyStatus
-	(*shared.CloudResourceMetadata)(nil),             // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureFrontDoorFirewallPolicySpec)(nil),         // 3: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicySpec
-	(*AzureFrontDoorFirewallPolicyStackOutputs)(nil), // 4: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyStackOutputs
+	(*AzureFrontDoorFirewallPolicy)(nil),        // 0: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicy
+	(*AzureFrontDoorFirewallPolicyStatus)(nil),  // 1: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyStatus
+	(*shared.CatalogObjectMetadata)(nil),        // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureFrontDoorFirewallPolicySpec)(nil),    // 3: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicySpec
+	(*AzureFrontDoorFirewallPolicyOutputs)(nil), // 4: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyOutputs
 }
 var file_catalog_azure_azurefrontdoorfirewallpolicy_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicy.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicy.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicy.spec:type_name -> dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicySpec
 	1, // 2: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicy.status:type_name -> dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyStatus
-	4, // 3: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyStatus.outputs:type_name -> dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyStackOutputs
+	4, // 3: dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyStatus.outputs:type_name -> dev.planton.azure.azurefrontdoorfirewallpolicy.v1alpha1.AzureFrontDoorFirewallPolicyOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

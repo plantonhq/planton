@@ -23,8 +23,8 @@ type Locals struct {
 	Destination string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcploggingsinkv1alpha1.GcpLoggingSinkStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcploggingsinkv1alpha1.GcpLoggingSinkIacInput) *Locals {
+	target := iacInput.Target
 
 	sinkName := target.Spec.SinkName
 	if sinkName == "" {

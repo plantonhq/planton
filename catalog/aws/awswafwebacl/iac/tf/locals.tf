@@ -18,7 +18,7 @@
 # Go recursion and therefore has no depth ceiling. For any tree within three
 # nesting levels (every structured configuration the AWS provider itself can
 # express) the two engines emit identical JSON; a deeper tree fails Terraform
-# at plan time with a clear message while Pulumi deploys it. Stack outputs
+# at plan time with a clear message while Pulumi deploys it. Outputs
 # are unaffected.
 #
 # Two HCL disciplines used throughout, both forced by the `rules` attribute

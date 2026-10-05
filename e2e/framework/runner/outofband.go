@@ -108,7 +108,7 @@ func requireOutOfBandEngine(engine string) error {
 // runOutOfBandDelete hands the deletion to the harness, which must own the
 // capability: a scenario that declares the act on a harness without it fails
 // loudly instead of passing without deleting anything.
-func runOutOfBandDelete(ctx context.Context, tc *provider.ComponentTestContext, harness provider.Harness) error {
+func runOutOfBandDelete(ctx context.Context, tc *provider.KindTestContext, harness provider.Harness) error {
 	deleter, ok := harness.(provider.OutOfBandDeleter)
 	if !ok {
 		return errors.Errorf("scenario declares %s but the %s harness does not implement provider.OutOfBandDeleter",
@@ -119,7 +119,7 @@ func runOutOfBandDelete(ctx context.Context, tc *provider.ComponentTestContext, 
 
 // runDriftPlan plans against the state that still records the deleted object
 // and judges the outcome against the declared recovery.
-func runDriftPlan(tc *provider.ComponentTestContext, recovery *outOfBandRecovery) error {
+func runDriftPlan(tc *provider.KindTestContext, recovery *outOfBandRecovery) error {
 	opts, ok := tc.TerraformOpts.(*tt.Options)
 	if !ok || opts == nil {
 		return errors.New("terraform options not initialized (runValidate must run first)")
@@ -163,7 +163,7 @@ func judgeDriftPlan(recovery *outOfBandRecovery, exitCode int, runErr error) err
 
 // runRecover performs the GUIDE's recovery: forget the declared addresses,
 // then apply the unchanged manifest.
-func runRecover(tc *provider.ComponentTestContext, recovery *outOfBandRecovery) error {
+func runRecover(tc *provider.KindTestContext, recovery *outOfBandRecovery) error {
 	opts, ok := tc.TerraformOpts.(*tt.Options)
 	if !ok || opts == nil {
 		return errors.New("terraform options not initialized (runValidate must run first)")

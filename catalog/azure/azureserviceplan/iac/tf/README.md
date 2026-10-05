@@ -1,6 +1,6 @@
 # AzureServicePlan Terraform Module
 
-This directory contains the Terraform IaC implementation for the `AzureServicePlan` component.
+This directory contains the Terraform IaC implementation for the `AzureServicePlan` kind.
 
 ## Structure
 

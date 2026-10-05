@@ -1654,7 +1654,7 @@ ACR, etc.) without managing credentials.
 
 When identity is configured with SYSTEM_ASSIGNED, the web app gets
 a system-assigned identity whose principal_id and tenant_id are exported
-as stack outputs.
+as outputs.
 
 - rule: identity_ids is required when type includes USER_ASSIGNED, and must be empty for SYSTEM_ASSIGNED
 

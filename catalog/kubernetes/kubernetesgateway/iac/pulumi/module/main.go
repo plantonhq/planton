@@ -10,11 +10,11 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *kubernetesgatewayv1alpha1.KubernetesGatewayStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesgatewayv1alpha1.KubernetesGatewayIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubeProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
@@ -32,7 +32,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesgatewayv1alpha1.Kubern
 
 // createGateway creates the namespaced Gateway API Gateway using the typed
 // crd2pulumi SDK (gatewayv1.NewGateway), consistent with every other Planton
-// ingress component. The typed approach catches field-name and structure errors
+// ingress kind. The typed approach catches field-name and structure errors
 // at compile time rather than at deployment time. The upstream GatewaySpec is
 // large, so its mapping is split across listeners.go, tls.go, addresses.go,
 // infrastructure.go, and selectors.go.

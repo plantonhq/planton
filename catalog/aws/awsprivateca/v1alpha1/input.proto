@@ -5,10 +5,10 @@ package dev.planton.aws.awsprivateca.v1alpha1;
 import "catalog/aws/awsprivateca/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsPrivateCaStackInput is the input for the IaC modules that manage
+// AwsPrivateCaIacInput is the input for the IaC modules that manage
 // a private certificate authority with its activation, issued
 // certificates, permission, and policy.
-message AwsPrivateCaStackInput {
+message AwsPrivateCaIacInput {
   // target is the AwsPrivateCa resource to deploy.
   AwsPrivateCa target = 1;
   // provider_config contains the AWS provider credentials and configuration.

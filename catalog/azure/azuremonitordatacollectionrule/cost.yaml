@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azuremonitordatacollectionrule
 spec:
   billing_model: free
   free_tier: A data collection rule is the routing table of Azure Monitor -- pure configuration declaring what to collect, where it lands, and how the two wire together. The rule object carries no meter; holding it, and having any number of agents download it, bills nothing.
-  notes: "The rule is free; the telemetry it routes is the bill. Ingestion bills at the destinations -- Log Analytics per GB into the workspace's table plans, Event Hubs by throughput, storage by capacity -- each as its own catalog kind. Azure Monitor's log-processing meter can follow the rule's own routing in two distinct ways: data destined for Auxiliary-plan tables bills processing on EVERY GB entering the pipeline, transform or no transform -- choosing an Auxiliary destination is itself the charge -- while on Basic and Analytics tables an ingestion-time KQL transformation (data_flows[].transform_kql) bills only the filtered volume beyond 50% of what came in (Sentinel-enabled workspaces are exempt on Analytics). Filtering upstream at the data_sources selection is free; filtering aggressively in the transform is where a 'cost-saving' rule can quietly buy a processing meter."
+  notes: "The rule is free; the telemetry it routes is the bill. Ingestion bills at the destinations -- Log Analytics per GB into the workspace's table plans, Event Hubs by throughput, storage by capacity -- each as its own component. Azure Monitor's log-processing meter can follow the rule's own routing in two distinct ways: data destined for Auxiliary-plan tables bills processing on EVERY GB entering the pipeline, transform or no transform -- choosing an Auxiliary destination is itself the charge -- while on Basic and Analytics tables an ingestion-time KQL transformation (data_flows[].transform_kql) bills only the filtered volume beyond 50% of what came in (Sentinel-enabled workspaces are exempt on Analytics). Filtering upstream at the data_sources selection is free; filtering aggressively in the transform is where a 'cost-saving' rule can quietly buy a processing meter."

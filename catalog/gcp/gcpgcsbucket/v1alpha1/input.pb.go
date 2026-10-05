@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-gcs-bucket stack-input
-type GcpGcsBucketStackInput struct {
+// gcp-gcs-bucket iac-input
+type GcpGcsBucketIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpGcsBucket `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpGcsBucketStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpGcsBucketStackInput) Reset() {
-	*x = GcpGcsBucketStackInput{}
+func (x *GcpGcsBucketIacInput) Reset() {
+	*x = GcpGcsBucketIacInput{}
 	mi := &file_catalog_gcp_gcpgcsbucket_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpGcsBucketStackInput) String() string {
+func (x *GcpGcsBucketIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpGcsBucketStackInput) ProtoMessage() {}
+func (*GcpGcsBucketIacInput) ProtoMessage() {}
 
-func (x *GcpGcsBucketStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpGcsBucketIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpgcsbucket_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpGcsBucketStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpGcsBucketStackInput.ProtoReflect.Descriptor instead.
-func (*GcpGcsBucketStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpGcsBucketIacInput.ProtoReflect.Descriptor instead.
+func (*GcpGcsBucketIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpgcsbucket_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpGcsBucketStackInput) GetTarget() *GcpGcsBucket {
+func (x *GcpGcsBucketIacInput) GetTarget() *GcpGcsBucket {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpGcsBucketStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpGcsBucketIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpgcsbucket_v1alpha1_input_proto protoreflect.FileDescript
 
 const file_catalog_gcp_gcpgcsbucket_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/gcp/gcpgcsbucket/v1alpha1/input.proto\x12%dev.planton.gcp.gcpgcsbucket.v1alpha1\x1a+catalog/gcp/gcpgcsbucket/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xb2\x01\n" +
-	"\x16GcpGcsBucketStackInput\x12K\n" +
+	"-catalog/gcp/gcpgcsbucket/v1alpha1/input.proto\x12%dev.planton.gcp.gcpgcsbucket.v1alpha1\x1a+catalog/gcp/gcpgcsbucket/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xb0\x01\n" +
+	"\x14GcpGcsBucketIacInput\x12K\n" +
 	"\x06target\x18\x01 \x01(\v23.dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xc5\x02\n" +
 	")com.dev.planton.gcp.gcpgcsbucket.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpgcsbucket_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpgcsbucket_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpgcsbucket_v1alpha1_input_proto_goTypes = []any{
-	(*GcpGcsBucketStackInput)(nil), // 0: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketStackInput
-	(*GcpGcsBucket)(nil),           // 1: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucket
-	(*gcp.GcpProviderConfig)(nil),  // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpGcsBucketIacInput)(nil),  // 0: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketIacInput
+	(*GcpGcsBucket)(nil),          // 1: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucket
+	(*gcp.GcpProviderConfig)(nil), // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpgcsbucket_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketStackInput.target:type_name -> dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucket
-	2, // 1: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketIacInput.target:type_name -> dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucket
+	2, // 1: dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

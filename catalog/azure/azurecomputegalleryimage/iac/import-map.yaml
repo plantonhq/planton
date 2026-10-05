@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurecomputegalleryimage
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: image_id
       derivations:
-        - from_stack_output: image_id
+        - from_output: image_id
       where_to_find: >-
         Portal -> the Compute Gallery -> Definitions -> the image ->
         Properties -> Resource ID, or `az sig image-definition show

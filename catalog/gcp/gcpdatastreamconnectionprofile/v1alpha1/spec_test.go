@@ -36,7 +36,7 @@ var _ = ginkgo.Describe("GcpDatastreamConnectionProfileSpec", func() {
 		return &GcpDatastreamConnectionProfile{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpDatastreamConnectionProfile",
-			Metadata:   &shared.CloudResourceMetadata{Name: "orders"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "orders"},
 			Spec:       &GcpDatastreamConnectionProfileSpec{Location: "us-central1"},
 		}
 	}
@@ -50,8 +50,8 @@ var _ = ginkgo.Describe("GcpDatastreamConnectionProfileSpec", func() {
 	}
 	mongo := func() *GcpDatastreamConnectionProfileMongodbProfile {
 		return &GcpDatastreamConnectionProfileMongodbProfile{
-			HostAddresses: []*GcpDatastreamConnectionProfileMongodbHostAddress{{Hostname: "cluster0.example.mongodb.net"}},
-			Username:      "datastream",
+			HostAddresses:               []*GcpDatastreamConnectionProfileMongodbHostAddress{{Hostname: "cluster0.example.mongodb.net"}},
+			Username:                    "datastream",
 			SecretManagerStoredPassword: litRef(secretVersion),
 			SrvConnectionFormat:         true,
 		}

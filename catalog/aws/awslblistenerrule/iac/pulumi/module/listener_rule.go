@@ -49,7 +49,7 @@ func listenerRule(ctx *pulumi.Context, locals *Locals, provider pulumi.ProviderR
 
 	ctx.Export(OpRuleArn, createdRule.Arn)
 	// Exported as a string so both engines emit the identical output shape
-	// (the stack-output proto field is a string).
+	// (the output proto field is a string).
 	ctx.Export(OpPriority, createdRule.Priority.ApplyT(func(priority int) string {
 		return strconv.Itoa(priority)
 	}).(pulumi.StringOutput))

@@ -13,9 +13,9 @@ Use `GcpVertexAiIndexEndpoint` when you need:
 - Private querying inside a peered VPC or through Private Service Connect
 - Infrastructure-as-code management of the vector-search serving lifecycle
 
-## What This Component Creates
+## What This Kind Creates
 
-This component provisions a single Vector Search index endpoint. Placing an index onto it is modeled by `GcpVertexAiDeployedIndex` -- the endpoint alone serves nothing.
+This kind provisions a single Vector Search index endpoint. Placing an index onto it is modeled by `GcpVertexAiDeployedIndex` -- the endpoint alone serves nothing.
 
 ## Key Configuration Options
 

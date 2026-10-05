@@ -31,7 +31,7 @@ type KubernetesTempo struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesTempoSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesTempo) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesTempo) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesTempo) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesTempo) GetStatus() *KubernetesTempoStatus {
 // tempo-kubernetes status.
 type KubernetesTempoStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesTempoStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesTempoOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesTempoStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetestempo_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesTempoStatus) GetOutputs() *KubernetesTempoStackOutputs {
+func (x *KubernetesTempoStatus) GetOutputs() *KubernetesTempoOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetestempo_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fKubernetesTempoR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12`\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12`\n" +
 	"\x04spec\x18\x04 \x01(\v2D.dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12^\n" +
-	"\x06status\x18\x05 \x01(\v2F.dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStatusR\x06status\"\x7f\n" +
-	"\x15KubernetesTempoStatus\x12f\n" +
-	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStackOutputsR\aoutputsB\x82\x03\n" +
+	"\x06status\x18\x05 \x01(\v2F.dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStatusR\x06status\"z\n" +
+	"\x15KubernetesTempoStatus\x12a\n" +
+	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoOutputsR\aoutputsB\x82\x03\n" +
 	"3com.dev.planton.kubernetes.kubernetestempo.v1alpha1B\bApiProtoP\x01Z`github.com/plantonhq/planton/catalog/kubernetes/kubernetestempo/v1alpha1;kubernetestempov1alpha1\xa2\x02\x04DPKK\xaa\x02/Dev.Planton.Kubernetes.Kubernetestempo.V1alpha1\xca\x02/Dev\\Planton\\Kubernetes\\Kubernetestempo\\V1alpha1\xe2\x02;Dev\\Planton\\Kubernetes\\Kubernetestempo\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Kubernetes::Kubernetestempo::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_kubernetes_kubernetestempo_v1alpha1_api_proto_msgTypes = make([
 var file_catalog_kubernetes_kubernetestempo_v1alpha1_api_proto_goTypes = []any{
 	(*KubernetesTempo)(nil),              // 0: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempo
 	(*KubernetesTempoStatus)(nil),        // 1: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*KubernetesTempoSpec)(nil),          // 3: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpec
-	(*KubernetesTempoStackOutputs)(nil),  // 4: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStackOutputs
+	(*KubernetesTempoOutputs)(nil),       // 4: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoOutputs
 }
 var file_catalog_kubernetes_kubernetestempo_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempo.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempo.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempo.spec:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoSpec
 	1, // 2: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempo.status:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStatus
-	4, // 3: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStatus.outputs:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoStatus.outputs:type_name -> dev.planton.kubernetes.kubernetestempo.v1alpha1.KubernetesTempoOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

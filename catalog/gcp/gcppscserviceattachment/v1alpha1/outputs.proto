@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcppscserviceattachment.v1alpha1;
 
-// GcpPscServiceAttachmentStackOutputs captures the published service after
+// GcpPscServiceAttachmentOutputs captures the published service after
 // provisioning -- above all the self_link a consumer's PSC endpoint (a
 // regional GcpGlobalForwardingRule with an empty scheme) targets.
-message GcpPscServiceAttachmentStackOutputs {
+message GcpPscServiceAttachmentOutputs {
   // Self-link URI of the service attachment: the value a consumer
   // forwarding rule names as its target.
   // Format: https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}/serviceAttachments/{name}

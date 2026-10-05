@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awssagemakermlflowserver
 spec:
@@ -7,7 +7,7 @@ spec:
   values:
     - name: tracking_server_name
       derivations:
-        - from_stack_output: tracking_server_name
+        - from_output: tracking_server_name
       where_to_find: >-
         SageMaker console -> MLflow (the server name), or
         `aws sagemaker list-mlflow-tracking-servers`

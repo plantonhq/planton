@@ -9,13 +9,13 @@ namespaces — but an operator fenced with `watch_namespace` silently
 ignores clusters anywhere else. Deploy the operator first, clusters
 after.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want the operator itself** — installing and configuring the
   OpenSearch Kubernetes Operator is KubernetesOpenSearchOperator; this
   component is one cluster it manages.
 - **You want a managed cloud search service** — use the host cloud
-  provider's managed search kinds; this component is for running
+  provider's managed search kinds; this kind is for running
   OpenSearch ON the Kubernetes cluster itself.
 - **You expect production credentials out of the box** — without a
   custom `security.config`, the bootstrapped admin credentials are the
@@ -65,14 +65,14 @@ throwaway data.
   internal_users.yml and admin credentials — all three secrets are
   typically required), or rotate the admin password through the
   security API immediately after install. Clients read credentials
-  from the Secret named in the stack outputs; no credential ever
+  from the Secret named in the outputs; no credential ever
   appears in this spec unless you bring your own security config.
 
 **Key design points:**
 
 - **Declare `security` with generated TLS** (the recommended default):
   the operator issues a CA and per-layer certificates — per-node
-  transport certificates by component default (the stronger posture;
+  transport certificates by kind default (the stronger posture;
   the operator's own default is a shared certificate). Provided
   certificates ride the cert-manager seam (`secret` referencing a
   KubernetesCertificate) with `nodes_dn`/`admin_dn` required.
@@ -149,7 +149,7 @@ throwaway data.
 
 ## Environment Injection
 
-This component calls no cloud APIs; managed-Kubernetes integration
+This kind calls no cloud APIs; managed-Kubernetes integration
 rides the Service annotations and the keystore.
 
 | Cloud / posture | Where | Mechanism |
@@ -160,7 +160,7 @@ rides the Service annotations and the keystore.
 | GCS snapshots, declared key | `keystore` + `snapshot_repositories` | `repository-gcs` plugin; the service-account key loaded via the keystore |
 | GCS snapshots, keyless (GKE) | `snapshot_repositories` only | Workload Identity on the nodes |
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

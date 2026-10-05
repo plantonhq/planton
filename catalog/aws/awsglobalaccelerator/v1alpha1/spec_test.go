@@ -6,7 +6,7 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -344,7 +344,7 @@ var _ = ginkgo.Describe("AwsGlobalAcceleratorSpec validations", func() {
 											EndpointId: &foreignkeyv1.StringValueOrRef{
 												LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 													ValueFrom: &foreignkeyv1.ValueFromRef{
-														Kind:      cloudresourcekind.CloudResourceKind_AwsAlb,
+														Kind:      catalogkind.CatalogKind_AwsAlb,
 														Name:      "my-alb",
 														FieldPath: "status.outputs.load_balancer_arn",
 													},

@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesRequestAuthenticationStackOutputs captures observable outputs after the
+// KubernetesRequestAuthenticationOutputs captures observable outputs after the
 // RequestAuthentication is created on the target cluster. RequestAuthentication has
 // no controller-reconciled status subresource that is useful to surface here (istiod
 // enforces the policy in the data plane), so only the resource identity is exported.
-type KubernetesRequestAuthenticationStackOutputs struct {
+type KubernetesRequestAuthenticationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created RequestAuthentication (equals metadata.name).
 	RequestAuthenticationName string `protobuf:"bytes,1,opt,name=request_authentication_name,json=requestAuthenticationName,proto3" json:"request_authentication_name,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesRequestAuthenticationStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesRequestAuthenticationStackOutputs) Reset() {
-	*x = KubernetesRequestAuthenticationStackOutputs{}
+func (x *KubernetesRequestAuthenticationOutputs) Reset() {
+	*x = KubernetesRequestAuthenticationOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesRequestAuthenticationStackOutputs) String() string {
+func (x *KubernetesRequestAuthenticationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesRequestAuthenticationStackOutputs) ProtoMessage() {}
+func (*KubernetesRequestAuthenticationOutputs) ProtoMessage() {}
 
-func (x *KubernetesRequestAuthenticationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesRequestAuthenticationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *KubernetesRequestAuthenticationStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesRequestAuthenticationStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesRequestAuthenticationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesRequestAuthenticationOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesRequestAuthenticationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesRequestAuthenticationStackOutputs) GetRequestAuthenticationName() string {
+func (x *KubernetesRequestAuthenticationOutputs) GetRequestAuthenticationName() string {
 	if x != nil {
 		return x.RequestAuthenticationName
 	}
 	return ""
 }
 
-func (x *KubernetesRequestAuthenticationStackOutputs) GetNamespace() string {
+func (x *KubernetesRequestAuthenticationOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -83,8 +83,8 @@ var File_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_outputs_pro
 
 const file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/kubernetes/kubernetesrequestauthentication/v1alpha1/outputs.proto\x12?dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1\"\x8b\x01\n" +
-	"+KubernetesRequestAuthenticationStackOutputs\x12>\n" +
+	"Icatalog/kubernetes/kubernetesrequestauthentication/v1alpha1/outputs.proto\x12?dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1\"\x86\x01\n" +
+	"&KubernetesRequestAuthenticationOutputs\x12>\n" +
 	"\x1brequest_authentication_name\x18\x01 \x01(\tR\x19requestAuthenticationName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\xf7\x03\n" +
 	"Ccom.dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1B\fOutputsProtoP\x01Z\x80\x01github.com/plantonhq/planton/catalog/kubernetes/kubernetesrequestauthentication/v1alpha1;kubernetesrequestauthenticationv1alpha1\xa2\x02\x04DPKK\xaa\x02?Dev.Planton.Kubernetes.Kubernetesrequestauthentication.V1alpha1\xca\x02?Dev\\Planton\\Kubernetes\\Kubernetesrequestauthentication\\V1alpha1\xe2\x02KDev\\Planton\\Kubernetes\\Kubernetesrequestauthentication\\V1alpha1\\GPBMetadata\xea\x02CDev::Planton::Kubernetes::Kubernetesrequestauthentication::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_outputs_pr
 
 var file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesRequestAuthenticationStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1.KubernetesRequestAuthenticationStackOutputs
+	(*KubernetesRequestAuthenticationOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1.KubernetesRequestAuthenticationOutputs
 }
 var file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

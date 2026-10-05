@@ -1,29 +1,29 @@
-# Where each placeholder in this component's import-ID formats comes
+# Where each placeholder in this kind's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml). The
 # workspace and its singleton satellites import by the workspace ID,
 # rule namespaces by ARN, and anomaly detectors by
 # "{anomaly_detector_id},{workspace_id}".
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsmanagedprometheus
 spec:
   values:
     - name: workspace_id
       derivations:
-        - from_stack_output: workspace_id
+        - from_output: workspace_id
       where_to_find: >-
         The workspace's ID ("ws-...") -- `aws amp list-workspaces`
         (workspaceId), or the AMP console's workspace list.
     - name: namespace_arn
       derivations:
-        - from_stack_output_keyed_by_address: rule_group_namespace_arns
+        - from_output_keyed_by_address: rule_group_namespace_arns
       where_to_find: >-
         The rule-groups namespace's ARN -- `aws amp
         list-rule-groups-namespaces --workspace-id <id>` (arn).
     - name: anomaly_detector_id
       derivations:
-        - from_stack_output_keyed_by_address: anomaly_detector_ids
+        - from_output_keyed_by_address: anomaly_detector_ids
       where_to_find: >-
         The detector's AWS-generated ID -- `aws amp
         list-anomaly-detectors --workspace-id <id>`

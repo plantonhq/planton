@@ -6,11 +6,11 @@
 
 ## Summary
 
-Migrated the `zone_id` field from plain `string` to `StringValueOrRef` in two Cloudflare components -- CloudflareWorker (`dns.zone_id`) and CloudflareZeroTrustAccessApplication (`zone_id`). This brings all five Cloudflare components that reference a zone ID to a consistent type, enabling users to either provide a literal zone ID or reference an existing CloudflareDnsZone resource.
+Migrated the `zone_id` field from plain `string` to `StringValueOrRef` in two Cloudflare kinds -- CloudflareWorker (`dns.zone_id`) and CloudflareZeroTrustAccessApplication (`zone_id`). This brings all five Cloudflare kinds that reference a zone ID to a consistent type, enabling users to either provide a literal zone ID or reference an existing CloudflareDnsZone resource.
 
 ## Problem Statement / Motivation
 
-Cloudflare's `zone_id` is a 32-character hexadecimal identifier that scopes most Cloudflare operations. Five Planton components use it, but they were inconsistent in how they modeled it.
+Cloudflare's `zone_id` is a 32-character hexadecimal identifier that scopes most Cloudflare operations. Five Planton kinds use it, but they were inconsistent in how they modeled it.
 
 ### Pain Points
 
@@ -20,7 +20,7 @@ Cloudflare's `zone_id` is a 32-character hexadecimal identifier that scopes most
 
 ## Solution / What's New
 
-Changed the `zone_id` field type from `string` to `dev.planton.shared.foreignkey.v1.StringValueOrRef` in both components, propagated the change through all six layers (proto, Pulumi IaC, Terraform IaC, tests, presets, documentation), and validated with full build and test suite.
+Changed the `zone_id` field type from `string` to `dev.planton.shared.foreignkey.v1.StringValueOrRef` in both kinds, propagated the change through all six layers (proto, Pulumi IaC, Terraform IaC, tests, presets, documentation), and validated with full build and test suite.
 
 ### Consistency Achieved
 
@@ -44,7 +44,7 @@ flowchart LR
 
 ### Usage Modes
 
-Users can now provide `zone_id` in two ways across all Cloudflare components:
+Users can now provide `zone_id` in two ways across all Cloudflare kinds:
 
 ```yaml
 # Literal value
@@ -134,23 +134,23 @@ Both `spec_test.go` files updated to construct `StringValueOrRef` structs instea
 
 ## Benefits
 
-- **Schema consistency**: All 5 Cloudflare components now use `StringValueOrRef` for `zone_id`
+- **Schema consistency**: All 5 Cloudflare kinds now use `StringValueOrRef` for `zone_id`
 - **Cross-resource referencing**: Users can reference an existing `CloudflareDnsZone` resource instead of manually copying zone IDs
 - **Wizard integration unblocked**: Planton's `CloudflareZoneSelector` (CloudOps-powered dropdown) can now be wired to Worker and ZeroTrust wizard steps
 - **Reduced copy-paste errors**: Zone IDs are 32-character hex strings prone to transcription errors
 
 ## Impact
 
-- **2 components updated**: CloudflareWorker, CloudflareZeroTrustAccessApplication
-- **Breaking change for YAML manifests**: Existing manifests using `zoneId: "..."` must be updated to `zoneId: { value: "..." }` for both components
+- **2 kinds updated**: CloudflareWorker, CloudflareZeroTrustAccessApplication
+- **Breaking change for YAML manifests**: Existing manifests using `zoneId: "..."` must be updated to `zoneId: { value: "..." }` for both kinds
 - **No IaC behavioral changes**: The resolved zone ID value is identical; only the schema wrapper changes
 - **Downstream**: Planton wizard can now upgrade Worker `dns.zoneId` and ZeroTrust `zone_id` from `WizardTextField` to `CloudflareZoneSelector`
 
 ## Related Work
 
 - Cloudflare CloudOps integration (Account, Zone, KvNamespace, R2Bucket operations)
-- Cloud Resource Creation Wizard project (`20260217.01`)
-- StringValueOrRef pattern established by CloudflareDnsRecord and CloudflareR2Bucket components
+- Infra Component Creation Wizard project (`20260217.01`)
+- StringValueOrRef pattern established by CloudflareDnsRecord and CloudflareR2Bucket kinds
 
 ---
 

@@ -6,7 +6,7 @@ Amazon FSx for Windows File Server — a fully managed, enterprise-grade Windows
 
 FSx for Windows File Server provides shared file storage for Windows-based workloads. It delivers up to 12 GB/s throughput and millions of IOPS on SSD storage, with full support for SMB 2.0–3.1.1, NTFS, Windows ACLs, and DFS namespaces. Every file system joins an Active Directory domain, enabling seamless identity-based access for Windows and Linux SMB clients.
 
-This component provisions the FSx for Windows file system, its network interfaces (ENIs) in the specified subnets, Active Directory domain join, optional audit logging, backup configuration, DNS aliases, and disk IOPS tuning.
+This kind provisions the FSx for Windows file system, its network interfaces (ENIs) in the specified subnets, Active Directory domain join, optional audit logging, backup configuration, DNS aliases, and disk IOPS tuning.
 
 ## When to Use It
 

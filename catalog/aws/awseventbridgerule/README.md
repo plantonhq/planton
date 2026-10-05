@@ -44,7 +44,7 @@ The **AwsEventBridgeRule** resource provides a standardized way to provision and
 - **targets[].sagemaker_pipeline_target**: SageMaker pipeline execution parameters (`pipeline_parameter_list`, up to 200 name/value pairs) — the target `arn` is the PIPELINE. The target's `role_arn` is required.
 - **targets[].appsync_target**: the GraphQL operation (query or mutation, with its selection set) each event invokes — the target `arn` is the AppSync API's endpoint ARN. The target's `role_arn` is required.
 
-## Stack Outputs
+## Outputs
 
 After provisioning, the AwsEventBridgeRule resource provides:
 

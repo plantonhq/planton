@@ -46,7 +46,7 @@ spec:
       httpPort: 80
 ```
 
-## Stack outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

@@ -9,9 +9,9 @@
 # offer publishes at location "Any". The account's first-3-free
 # allowance is account-level and invisible to a single manifest, so the
 # estimate prices the full rate and the note states the allowance.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awscloudwatchdashboard
 spec:

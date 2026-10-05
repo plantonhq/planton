@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureLogAnalyticsWorkspaceStackInput is the input to the IaC module.
+// AzureLogAnalyticsWorkspaceIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type AzureLogAnalyticsWorkspaceStackInput struct {
+type AzureLogAnalyticsWorkspaceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// the catalog object to deploy to be deployed
 	Target *AzureLogAnalyticsWorkspace `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Azure authentication
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AzureLogAnalyticsWorkspaceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureLogAnalyticsWorkspaceStackInput) Reset() {
-	*x = AzureLogAnalyticsWorkspaceStackInput{}
+func (x *AzureLogAnalyticsWorkspaceIacInput) Reset() {
+	*x = AzureLogAnalyticsWorkspaceIacInput{}
 	mi := &file_catalog_azure_azureloganalyticsworkspace_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureLogAnalyticsWorkspaceStackInput) String() string {
+func (x *AzureLogAnalyticsWorkspaceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureLogAnalyticsWorkspaceStackInput) ProtoMessage() {}
+func (*AzureLogAnalyticsWorkspaceIacInput) ProtoMessage() {}
 
-func (x *AzureLogAnalyticsWorkspaceStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureLogAnalyticsWorkspaceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureloganalyticsworkspace_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureLogAnalyticsWorkspaceStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureLogAnalyticsWorkspaceStackInput.ProtoReflect.Descriptor instead.
-func (*AzureLogAnalyticsWorkspaceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureLogAnalyticsWorkspaceIacInput.ProtoReflect.Descriptor instead.
+func (*AzureLogAnalyticsWorkspaceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureloganalyticsworkspace_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureLogAnalyticsWorkspaceStackInput) GetTarget() *AzureLogAnalyticsWorkspace {
+func (x *AzureLogAnalyticsWorkspaceIacInput) GetTarget() *AzureLogAnalyticsWorkspace {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureLogAnalyticsWorkspaceStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureLogAnalyticsWorkspaceIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azureloganalyticsworkspace_v1alpha1_input_proto protorefl
 
 const file_catalog_azure_azureloganalyticsworkspace_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azureloganalyticsworkspace/v1alpha1/input.proto\x125dev.planton.azure.azureloganalyticsworkspace.v1alpha1\x1a;catalog/azure/azureloganalyticsworkspace/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe2\x01\n" +
-	"$AzureLogAnalyticsWorkspaceStackInput\x12i\n" +
+	"=catalog/azure/azureloganalyticsworkspace/v1alpha1/input.proto\x125dev.planton.azure.azureloganalyticsworkspace.v1alpha1\x1a;catalog/azure/azureloganalyticsworkspace/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe0\x01\n" +
+	"\"AzureLogAnalyticsWorkspaceIacInput\x12i\n" +
 	"\x06target\x18\x01 \x01(\v2Q.dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xb3\x03\n" +
 	"9com.dev.planton.azure.azureloganalyticsworkspace.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_azure_azureloganalyticsworkspace_v1alpha1_input_proto_rawDescG
 
 var file_catalog_azure_azureloganalyticsworkspace_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureloganalyticsworkspace_v1alpha1_input_proto_goTypes = []any{
-	(*AzureLogAnalyticsWorkspaceStackInput)(nil), // 0: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceStackInput
-	(*AzureLogAnalyticsWorkspace)(nil),           // 1: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspace
-	(*azure.AzureProviderConfig)(nil),            // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureLogAnalyticsWorkspaceIacInput)(nil), // 0: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceIacInput
+	(*AzureLogAnalyticsWorkspace)(nil),         // 1: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspace
+	(*azure.AzureProviderConfig)(nil),          // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureloganalyticsworkspace_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceStackInput.target:type_name -> dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspace
-	2, // 1: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceIacInput.target:type_name -> dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspace
+	2, // 1: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

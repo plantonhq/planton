@@ -7,7 +7,7 @@
 
 ## Summary
 
-Completed the AwsEcrRepo component implementation to match the 80/20 principle identified in the research documentation. Added critical production-essential fields for security (image scanning) and cost control (lifecycle policies) that were missing from the initial implementation.
+Completed the AwsEcrRepo kind implementation to match the 80/20 principle identified in the research documentation. Added critical production-essential fields for security (image scanning) and cost control (lifecycle policies) that were missing from the initial implementation.
 
 ## Problem Statement
 
@@ -136,7 +136,7 @@ Secure and production-ready defaults:
 
 ### Production Readiness
 
-The component now implements all production essentials identified in the research:
+The kind now implements all production essentials identified in the research:
 
 1. ✅ Repository provisioning (name, immutability)
 2. ✅ **Image scanning** (shift-left security)
@@ -184,7 +184,7 @@ With lifecycle policies configured to keep 50 images and expire untagged after 7
 All validation steps passed:
 
 1. ✅ **Protobuf compilation**: `make protos` succeeded
-2. ✅ **Component tests**: 13/13 tests passing (added 6 new lifecycle policy tests)
+2. ✅ **Kind tests**: 13/13 tests passing (added 6 new lifecycle policy tests)
 3. ✅ **Build validation**: `make build` succeeded, all platforms compiled
 4. ✅ **Code formatting**: `go fmt` applied
 5. ✅ **Linting**: No linter errors
@@ -227,7 +227,7 @@ spec:
 
 - Research Document: `docs/README.md` - 80/20 principle section
 - Audit Report: `docs/audit/2025-11-13-182625.md`
-- Architecture Guide: `architecture/deployment-component.md`
+- Architecture Guide: `architecture/catalog-kind.md`
 
 ## Recommendations for Users
 
@@ -263,12 +263,12 @@ lifecycle_policy:
 
 ## Next Steps
 
-1. ✅ Component is production-ready
+1. ✅ Kind is production-ready
 2. ✅ All tests passing
 3. ✅ Documentation complete
 4. Ready for commit and deployment
 
 ## Conclusion
 
-The AwsEcrRepo component now implements the complete 80/20 principle identified in the research documentation, providing production-essential features for security (image scanning) and cost control (lifecycle policies). The component is ready for production use with secure defaults and comprehensive documentation.
+The AwsEcrRepo kind now implements the complete 80/20 principle identified in the research documentation, providing production-essential features for security (image scanning) and cost control (lifecycle policies). The kind is ready for production use with secure defaults and comprehensive documentation.
 

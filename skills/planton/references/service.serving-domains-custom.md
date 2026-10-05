@@ -1,11 +1,11 @@
 ---
 title: Custom Domains — Apex, Arbitrary FQDNs, Multi-Host, and CDN as Composed Infrastructure
-description: The first-class recipe for everything outside the {label}.{env-domain} convention — serving at an apex domain, an arbitrary FQDN, multiple hostnames, or behind a CDN — built as real cloud-catalog resources the user owns, composed beside the service with valueFrom references onto its deployed outputs, never as switches on the service record. Read when someone wants their service at acmecorp.com or www, more than one hostname, a name that doesn't follow the convention, or a CDN in front.
+description: The first-class recipe for everything outside the {label}.{env-domain} convention — serving at an apex domain, an arbitrary FQDN, multiple hostnames, or behind a CDN — built as real infra-catalog resources the user owns, composed beside the service with valueFrom references onto its deployed outputs, never as switches on the service record. Read when someone wants their service at acmecorp.com or www, more than one hostname, a name that doesn't follow the convention, or a CDN in front.
 ---
 
 # Custom Domains — Apex, Arbitrary FQDNs, Multi-Host, and CDN as Composed Infrastructure
 
-The serving-domain convention answers one name per service per environment: `{label}.{env-domain}`. Everything past it — apex serving, arbitrary FQDNs, several hostnames, CDN fronting — is deliberately NOT a field on the service: it is edge infrastructure, and edge infrastructure here is composed from the cloud catalog as real resources the user declares and owns. The assistant's job is assembling the right recipe, not looking for a hidden toggle.
+The serving-domain convention answers one name per service per environment: `{label}.{env-domain}`. Everything past it — apex serving, arbitrary FQDNs, several hostnames, CDN fronting — is deliberately NOT a field on the service: it is edge infrastructure, and edge infrastructure here is composed from the infra catalog as real resources the user declares and owns. The assistant's job is assembling the right recipe, not looking for a hidden toggle.
 
 ## The recipe's shape
 
@@ -23,4 +23,4 @@ Authored carriers stay authored: injection only fills BLANK slots, so a carrier 
 
 ## What to hold the line on
 
-Never simulate any of this by editing the service record's hostname label into something it is not (the label is one DNS label, not an FQDN valve), and never suggest the platform "just add a field" — the domain authority stays on the environment, and custom edge stays composed, visible, and owned. When a custom arrangement's DNS or certificate is the gap, the `domain_serving` walking ladder in `serving-domains-targets.md` applies to authored carriers exactly as to injected ones.
+Never simulate any of this by editing the service record's hostname label into something it is not (the label is one DNS label, not an FQDN valve), and never suggest the platform "just add a field" — the domain authority stays on the environment, and custom edge stays composed, visible, and owned. When a custom arrangement's DNS or certificate is the gap, the `domain_serving` walking ladder in `service.serving-domains-targets.md` applies to authored carriers exactly as to injected ones.

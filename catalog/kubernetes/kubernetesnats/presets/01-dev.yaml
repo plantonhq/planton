@@ -6,7 +6,7 @@ spec:
   namespace:
     value: nats
   create_namespace: true
-  # Everything else is the component's defaults: ONE server with
+  # Everything else is the kind's defaults: ONE server with
   # JetStream on (a 10Gi file-store volume — published messages survive
   # pod restarts), the nats-box utility pod for the `nats` CLI, and NO
   # authentication — any client that can reach the ClusterIP Service

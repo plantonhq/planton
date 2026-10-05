@@ -41,7 +41,7 @@ var _ = ginkgo.Describe("GcpCloudIdentityGroupSpec", func() {
 		return &GcpCloudIdentityGroup{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudIdentityGroup",
-			Metadata:   &shared.CloudResourceMetadata{Name: "platform-admins"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "platform-admins"},
 			Spec: &GcpCloudIdentityGroupSpec{
 				GroupEmail: "platform-admins@example.com",
 				CustomerId: "customers/C01abc2de",

@@ -4,7 +4,7 @@ Links two PREMIUM Azure Cache for Redis instances into a geo-replication pair: t
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Linked Server** -- the geo-replication link, created as a child of the primary cache and named after the secondary
 
@@ -63,7 +63,7 @@ spec:
 planton apply -f geo-link.yaml
 ```
 
-This links the two referenced Premium caches into a geo-replication pair, with `dr-cache` as the read-only secondary continuously receiving the primary's writes. A Stack Job tracks the provisioning in real time.
+This links the two referenced Premium caches into a geo-replication pair, with `dr-cache` as the read-only secondary continuously receiving the primary's writes. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -105,7 +105,7 @@ These are the most important decisions when configuring a linked server. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -113,9 +113,9 @@ These are the most important decisions when configuring a linked server. Explore
 | **AzureRedisCache** (secondary) | `linkedRedisCacheId` | `status.outputs.redis_cache_id` |
 | **AzureRedisCache** (secondary) | `linkedRedisCacheLocation` | `status.outputs.region` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -135,5 +135,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Redis Cache**](/cloud-catalog/azure-redis-cache) -- both ends of the pair (Premium tier)
-- [**Azure Managed Redis Geo Replication**](/cloud-catalog/azure-managed-redis-geo-replication) -- the successor's native geo-replication; prefer it for new deployments as classic Premium cache creation retires
+- [**Azure Redis Cache**](/infra-catalog/azure-redis-cache) -- both ends of the pair (Premium tier)
+- [**Azure Managed Redis Geo Replication**](/infra-catalog/azure-managed-redis-geo-replication) -- the successor's native geo-replication; prefer it for new deployments as classic Premium cache creation retires

@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpIamDenyPolicySpec", func() {
 		return &GcpIamDenyPolicy{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpIamDenyPolicy",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-deny-policy",
 			},
 			Spec: &GcpIamDenyPolicySpec{

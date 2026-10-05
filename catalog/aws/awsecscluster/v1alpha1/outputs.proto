@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsecscluster.v1alpha1;
 
-// AwsEcsClusterStackOutputs captures the observable outputs of a
+// AwsEcsClusterOutputs captures the observable outputs of a
 // provisioned ECS cluster -- the identifiers services and operators
 // reference.
-message AwsEcsClusterStackOutputs {
+message AwsEcsClusterOutputs {
   // The cluster name (mirrors metadata.name). What the AWS CLI and the
   // ECS agent's ECS_CLUSTER setting address.
   string cluster_name = 1;

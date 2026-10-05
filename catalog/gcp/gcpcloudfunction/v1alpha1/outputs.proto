@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcloudfunction.v1alpha1;
 
-// GcpCloudFunctionStackOutputs contains the output values from a deployed Cloud Function.
+// GcpCloudFunctionOutputs contains the output values from a deployed Cloud Function.
 // These outputs provide essential information about the deployed function, including
 // its URL, identity, and status.
-message GcpCloudFunctionStackOutputs {
+message GcpCloudFunctionOutputs {
   // The fully qualified resource name of the deployed function.
   // Format: projects/{project}/locations/{region}/functions/{function-name}
   // Example: "projects/my-project/locations/us-central1/functions/my-function"

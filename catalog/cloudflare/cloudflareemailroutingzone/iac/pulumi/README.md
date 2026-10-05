@@ -9,16 +9,16 @@ main.go (entrypoint)
   └── module/
         ├── main.go               — Resources() orchestrator
         ├── locals.go             — Locals struct and initialization
-        ├── outputs.go            — Stack output key constants
+        ├── outputs.go            — output key constants
         └── email_routing_zone.go — settings + catch-all + dns creation
 ```
 
 ## How It Works
 
-1. `main.go` loads the `CloudflareEmailRoutingZoneStackInput` from the `STACK_INPUT` environment variable (base64-encoded YAML).
+1. `main.go` loads the `CloudflareEmailRoutingZoneIacInput` (the manifest as `target`, plus the Cloudflare `provider_config`) from the Pulumi config key `planton:iac-input`, the `IAC_INPUT_YAML` environment variable (YAML content), or `IAC_INPUT_YAML_FILE` (a path to that YAML).
 2. `module.Resources()` initializes locals, creates a Cloudflare provider, and provisions the zone's routing.
 3. `email_routing_zone.go` creates `EmailRoutingSettings` (the enable/disable toggle), then conditionally the catch-all (mapping each typed action — forward/worker/drop — onto the provider's generic `{type, values[]}`) and the managed-DNS resource (`lock_dns_records`, with `dns_name` for subdomain routing).
-4. Stack outputs are exported matching `CloudflareEmailRoutingZoneStackOutputs`.
+4. Outputs are exported matching `CloudflareEmailRoutingZoneOutputs`.
 
 ## Resource semantics worth knowing
 
@@ -26,19 +26,24 @@ The catch-all resource's provider Delete is a genuine no-op — destroying it dr
 
 ## Local Development
 
+Run the module from this directory with the planton CLI. It builds the IaC input from the manifest and the provider config file, and hands it to the module through `IAC_INPUT_YAML_FILE`:
+
 ```bash
-# Build the binary
-make build
+# Create the stack once
+planton pulumi init --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack>
 
-# Preview with test manifest
-make test
+# Preview with the test manifest
+planton pulumi preview --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack> -p cloudflare-provider-config.yaml
 
-# Or use debug.sh for a specific manifest
-./debug.sh ../../e2e/manifest.yaml
+# Deploy, then tear down
+planton pulumi update --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack> -p cloudflare-provider-config.yaml
+planton pulumi destroy --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack> -p cloudflare-provider-config.yaml
 ```
+
+Without `-p`, the Cloudflare provider reads `CLOUDFLARE_API_TOKEN` from the environment.
 
 ## Dependencies
 
 - `github.com/pulumi/pulumi-cloudflare/sdk/v6` — Cloudflare Pulumi provider
 - `github.com/pulumi/pulumi/sdk/v3` — Pulumi SDK
-- `github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule` — Shared stack input loading and provider wiring
+- `github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule` — Shared IaC input loading and provider wiring

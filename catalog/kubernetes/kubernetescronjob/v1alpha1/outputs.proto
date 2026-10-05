@@ -3,11 +3,11 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetescronjob.v1alpha1;
 
 /**
- * **KubernetesCronJobStackOutputs** captures the observable handles of a
+ * **KubernetesCronJobOutputs** captures the observable handles of a
  * deployed CronJob. CronJobs front no Service; the useful handles are the
  * object's identity and its effective schedule.
  */
-message KubernetesCronJobStackOutputs {
+message KubernetesCronJobOutputs {
   // The namespace the CronJob was created in.
   string namespace = 1;
 

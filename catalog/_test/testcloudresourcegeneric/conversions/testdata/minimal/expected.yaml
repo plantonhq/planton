@@ -1,9 +1,0 @@
-# Minimal at v1alpha2: only the schema-defaulted addition appears.
-apiVersion: _test.planton.dev/v1alpha2
-kind: TestCloudResourceGeneric
-metadata:
-  name: torture-minimal
-spec:
-  requiredRef:
-    value: only-the-required-field
-  replicas: 1

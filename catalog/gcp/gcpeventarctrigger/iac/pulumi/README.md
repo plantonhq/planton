@@ -26,7 +26,7 @@ iac/pulumi/
     ├── main.go                # Module coordinator
     ├── trigger.go             # Trigger + channel + google-channel-config wiring
     ├── locals.go              # Resolved resource + derived values + label merge
-    └── outputs.go             # Stack output constants
+    └── outputs.go             # Output constants
 ```
 
 ## How the module maps the spec
@@ -56,7 +56,7 @@ The module also enables `eventarc.googleapis.com` on the target project
 Eventarc's service agent — the first delivery can lag a few minutes
 behind the apply.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|
@@ -66,7 +66,7 @@ behind the apply.
 
 ## Local development
 
-`stack-input.yaml` carries a ready smoke manifest. Run the module directly:
+`iac-input.yaml` carries a ready smoke manifest. Run the module directly:
 
 ```bash
 planton apply --manifest ../../e2e/manifest.yaml --module-dir .

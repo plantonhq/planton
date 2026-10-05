@@ -1,10 +1,10 @@
 # Azure Key Vault
 
-Deploys an Azure Key Vault -- the tenant-scoped container where an organization's encryption keys, TLS certificates, and application secrets live behind one security boundary. The vault is where governance is set: authorization mode (Azure RBAC vs legacy access policies), network isolation, deletion safety (soft delete and purge protection), and the pricing tier that gates HSM-backed keys. What lives inside is composed, never bundled -- keys and certificates are first-class Cloud Resource kinds referencing this vault, and secret VALUES are deliberately out of scope for infrastructure-as-code, so plaintext never enters deployment manifests or state.
+Deploys an Azure Key Vault -- the tenant-scoped container where an organization's encryption keys, TLS certificates, and application secrets live behind one security boundary. The vault is where governance is set: authorization mode (Azure RBAC vs legacy access policies), network isolation, deletion safety (soft delete and purge protection), and the pricing tier that gates HSM-backed keys. What lives inside is composed, never bundled -- keys and certificates are first-class catalog kinds referencing this vault, and secret VALUES are deliberately out of scope for infrastructure-as-code, so plaintext never enters deployment manifests or state.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Key Vault** -- in the specified region and resource group, on the chosen tier (Standard or Premium), with the globally-unique DNS identity `https://{vault_name}.vault.azure.net/`
 - **Authorization mode** -- Azure RBAC (the recommended posture, applied when unspecified) or the legacy access-policy mode with its per-principal grants
@@ -18,12 +18,12 @@ The vault deliberately contains no objects at creation: encryption keys (AzureKe
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the vault will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef. Security foundations usually live in a dedicated group.
+- **An Azure Resource Group** where the vault will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef. Security foundations usually live in a dedicated group.
 - **A globally unique vault name** -- 3-24 characters of letters, digits, and hyphens, starting with a letter, ending with a letter or digit, no consecutive hyphens. It becomes the endpoint `{name}.vault.azure.net`, and a deleted vault's name stays reserved for the soft-delete retention window.
 - **For the legacy access-policy mode** -- the object IDs of the Azure AD principals being granted access (for an AzureUserAssignedIdentity, its `principal_id` output -- the directory object, not the client ID).
 
@@ -58,7 +58,7 @@ spec:
 planton apply -f key-vault.yaml
 ```
 
-This creates a Standard-tier vault in RBAC mode with purge protection on (leaving `sku` and `rbacAuthorizationEnabled` out ships no opinion and applies Standard + RBAC); keys and certificates arrive as their own kinds afterward, referencing this vault. A Stack Job tracks the provisioning in real time.
+This creates a Standard-tier vault in RBAC mode with purge protection on (leaving `sku` and `rbacAuthorizationEnabled` out ships no opinion and applies Standard + RBAC); keys and certificates arrive as their own kinds afterward, referencing this vault. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,7 +91,7 @@ These are the most important decisions when configuring a Key Vault. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -99,9 +99,9 @@ These are the most important decisions when configuring a Key Vault. Explore the
 | **AzureUserAssignedIdentity** | `accessPolicies[].objectId` | `status.outputs.principal_id` |
 | **AzureSubnet** | `networkAcls.virtualNetworkSubnetIds[]` | `status.outputs.subnet_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -123,10 +123,10 @@ The vault outputs no secrets -- it stores them. Consuming services reference the
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the vault is created
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- encryption keys living in this vault; the CMK source for the rest of the catalog
-- [**Azure Key Vault Certificate**](/cloud-catalog/azure-key-vault-certificate) -- TLS certificates living in this vault
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- data-plane grants scoped to the vault ARM ID in RBAC mode
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- admitted to the network rules via service endpoints
-- [**Azure Private Endpoint**](/cloud-catalog/azure-private-endpoint) -- takes the vault off the public internet (subresource: `vault`)
-- [**Azure Disk Encryption Set**](/cloud-catalog/azure-disk-encryption-set) -- bridges a vault key to server-side disk encryption
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the vault is created
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- encryption keys living in this vault; the CMK source for the rest of the catalog
+- [**Azure Key Vault Certificate**](/infra-catalog/azure-key-vault-certificate) -- TLS certificates living in this vault
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- data-plane grants scoped to the vault ARM ID in RBAC mode
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- admitted to the network rules via service endpoints
+- [**Azure Private Endpoint**](/infra-catalog/azure-private-endpoint) -- takes the vault off the public internet (subresource: `vault`)
+- [**Azure Disk Encryption Set**](/infra-catalog/azure-disk-encryption-set) -- bridges a vault key to server-side disk encryption

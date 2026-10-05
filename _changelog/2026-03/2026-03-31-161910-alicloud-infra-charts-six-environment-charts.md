@@ -7,11 +7,11 @@
 
 ## Summary
 
-Added six new infrastructure charts for the Alibaba Cloud provider, completing the T03 milestone of the AliCloud resource expansion project. These charts cover the core deployment patterns for Alibaba Cloud workloads — from standalone networking foundations and database stacks to full Kubernetes and serverless environments. Together they package 30 AliCloud Planton deployment components into reusable, dependency-aware templates that deploy production-ready environments in 5–25 minutes.
+Added six new infrastructure charts for the Alibaba Cloud provider, completing the T03 milestone of the AliCloud resource expansion project. These charts cover the core deployment patterns for Alibaba Cloud workloads — from standalone networking foundations and database stacks to full Kubernetes and serverless environments. Together they package 30 AliCloud Planton catalog kinds into reusable, dependency-aware templates that deploy production-ready environments in 5–25 minutes.
 
 ## Problem Statement / Motivation
 
-Alibaba Cloud had zero InfraChart coverage despite having 30 fully forged Planton deployment components (`alicloud.planton.dev/v1`). Users who wanted to deploy complete AliCloud environments had to create each resource individually — VPCs, VSwitches, NAT gateways, ACK clusters, databases — manually managing dependency ordering and cross-resource wiring. For a production ACK environment with 10+ resources and a specific deployment order, this manual process is error-prone and takes hours.
+Alibaba Cloud had zero InfraChart coverage despite having 30 fully forged Planton catalog kinds (`alicloud.planton.dev/v1`). Users who wanted to deploy complete AliCloud environments had to create each resource individually — VPCs, VSwitches, NAT gateways, ACK clusters, databases — manually managing dependency ordering and cross-resource wiring. For a production ACK environment with 10+ resources and a specific deployment order, this manual process is error-prone and takes hours.
 
 ### Pain Points
 
@@ -142,10 +142,9 @@ Template files are split by domain (network, compute, database, etc.) for readab
 # Build and preview the ACK environment chart
 planton chart build alicloud/ack-environment
 
-# Create an infra project from the chart
-planton project create --from-chart alicloud/ack-environment \
-  --name prod-ack \
-  --values ./my-values.yaml
+# Install the chart as an Infra Stack
+planton chart install prod-ack alicloud/ack-environment \
+  -f ./my-values.yaml
 ```
 
 Example `values.yaml` for ack-environment:
@@ -170,8 +169,8 @@ params:
 
 ## Related Work
 
-- **Planton AliCloud components**: 30 deployment components forged in `planton-alibaba-cloud` (completed 2026-02-21)
-- **Planton monorepo assets**: 120 asset files (deployment-component.yaml, iac-modules.yaml, quick-actions.yaml, logo.svg) created 2026-03-31
+- **Planton AliCloud kinds**: 30 catalog kinds forged in `planton-alibaba-cloud` (completed 2026-02-21)
+- **Planton monorepo assets**: 120 asset files (catalog-kind.yaml, iac-modules.yaml, quick-actions.yaml, logo.svg) created 2026-03-31
 - **AliCloud Provider Connection API**: Implemented across all 5 platform layers 2026-03-31
 - **Parent project**: 20260219.02.sp.alicloud-resource-expansion (T03 milestone)
 

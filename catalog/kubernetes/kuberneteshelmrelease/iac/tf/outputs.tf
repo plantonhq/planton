@@ -1,4 +1,4 @@
-# Stack outputs — must flatten onto KubernetesHelmReleaseStackOutputs
+# Outputs — must flatten onto KubernetesHelmReleaseOutputs
 # (outputs.proto) identically to the Pulumi module's exports. Values
 # come from the helm_release resource's recorded metadata, so they reflect
 # what Helm actually installed.

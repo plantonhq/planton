@@ -4,7 +4,7 @@ Deploys a stateful application on any Kubernetes cluster as an apps/v1 StatefulS
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **Headless Governing Service** -- provides stable DNS names for each pod (e.g., `{pod-name}.{service}.{namespace}.svc.cluster.local`); always created as required by the StatefulSet controller
@@ -20,7 +20,7 @@ External exposure is composed, never embedded: this kind exports its governing S
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -67,11 +67,11 @@ spec:
 planton apply -f statefulset.yaml
 ```
 
-This creates a 3-replica StatefulSet with a headless service for stable pod DNS and a ClusterIP service on port 6379. No persistent volumes or pod disruption budget are configured — members keep only in-memory state. A Stack Job tracks the provisioning in real time.
+This creates a 3-replica StatefulSet with a headless service for stable pod DNS and a ClusterIP service on port 6379. No persistent volumes or pod disruption budget are configured — members keep only in-memory state. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the StatefulSet to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the StatefulSet to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -99,11 +99,11 @@ These are the most important decisions when configuring a Kubernetes StatefulSet
 
 **Pod disruption budget** -- Enable `availability.podDisruptionBudget` with `minAvailable` or `maxUnavailable` to protect availability during node drains and cluster upgrades. For a 3-member quorum system, `minAvailable: "2"` ensures a drain can never break quorum.
 
-**Environment variables and secrets** -- Use `container.app.env.variables` for configuration and `container.app.env.secrets` for sensitive values. Variables support every Kubernetes source: literals, ValueFromRef to other Cloud Resources, ConfigMap keys, pod fields (a member can learn its own identity from `metadata.name`), and container resources.
+**Environment variables and secrets** -- Use `container.app.env.variables` for configuration and `container.app.env.secrets` for sensitive values. Variables support every Kubernetes source: literals, ValueFromRef to other Infra Components, ConfigMap keys, pod fields (a member can learn its own identity from `metadata.name`), and container resources.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -111,9 +111,9 @@ These are the most important decisions when configuring a Kubernetes StatefulSet
 | Kubernetes ServiceAccount | `spec.pod.serviceAccount` | `status.outputs.service_account_name` |
 | Kubernetes Secret | `spec.pod.imagePullSecrets` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -137,7 +137,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the target namespace for the StatefulSet
-- [**Kubernetes ServiceAccount**](/cloud-catalog/kubernetes-service-account) -- the identity members run as; cloud access federates through its workload-identity configuration
-- [**Kubernetes Secret**](/cloud-catalog/kubernetes-secret) -- image pull secrets and referenced credential material
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) -- composes external exposure by referencing the exported Service (never embedded in the workload)
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the target namespace for the StatefulSet
+- [**Kubernetes ServiceAccount**](/infra-catalog/kubernetes-service-account) -- the identity members run as; cloud access federates through its workload-identity configuration
+- [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) -- image pull secrets and referenced credential material
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) -- composes external exposure by referencing the exported Service (never embedded in the workload)

@@ -28,7 +28,7 @@ func namespaceScopedRule() *AzureEventHubAuthorizationRule {
 	return &AzureEventHubAuthorizationRule{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureEventHubAuthorizationRule",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-rule",
 		},
 		Spec: &AzureEventHubAuthorizationRuleSpec{

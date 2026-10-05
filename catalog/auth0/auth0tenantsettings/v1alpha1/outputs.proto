@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.auth0.auth0tenantsettings.v1alpha1;
 
-// Auth0TenantSettingsStackOutputs contains the tenant settings as applied: the
+// Auth0TenantSettingsOutputs contains the tenant settings as applied: the
 // values the tenant carries after the deployment, managed or not.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/tenant#attributes-reference
 // https://www.pulumi.com/registry/packages/auth0/api-docs/tenant/#outputs
-message Auth0TenantSettingsStackOutputs {
+message Auth0TenantSettingsOutputs {
   // friendly_name is the tenant's name as people see it.
   string friendly_name = 1;
 

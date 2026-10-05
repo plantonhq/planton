@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output key constants aligned with KubernetesIngressStackOutputs field names.
+// Output key constants aligned with KubernetesIngressOutputs field names.
 const (
 	OutputIngressName          = "ingress_name"
 	OutputNamespace            = "namespace"
@@ -14,7 +14,7 @@ const (
 	OutputFirstHost            = "first_host"
 )
 
-// exportOutputs exports the stack outputs from the created Ingress.
+// exportOutputs exports the outputs from the created Ingress.
 //
 // The load-balancer handles read the object's status WITHOUT waiting for a
 // controller (creation is skipAwait — see ingress.go): on a cluster where a

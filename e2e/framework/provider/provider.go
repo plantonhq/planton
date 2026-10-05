@@ -25,17 +25,17 @@ type Harness interface {
 	// For Kubernetes, this deletes the kind cluster.
 	Teardown(ctx context.Context) error
 
-	// VerifyDeployed checks that resources created by a component are present and healthy.
-	VerifyDeployed(ctx context.Context, component string, outputs map[string]interface{}) error
+	// VerifyDeployed checks that resources created by a kind are present and healthy.
+	VerifyDeployed(ctx context.Context, kindDir string, outputs map[string]interface{}) error
 
 	// VerifyDestroyed confirms that resources have been removed after destroy.
-	VerifyDestroyed(ctx context.Context, component string) error
+	VerifyDestroyed(ctx context.Context, kindDir string) error
 }
 
-// ComponentTestContext holds runtime information passed between test phases.
-type ComponentTestContext struct {
-	// Component is the lowercase component name (e.g., "kubernetesnamespace").
-	Component string
+// KindTestContext holds runtime information passed between test phases.
+type KindTestContext struct {
+	// Kind is the lowercase kind name (e.g., "kubernetesnamespace").
+	Kind string
 
 	// Provider is the provider name (e.g., "kubernetes", "aws").
 	Provider string
@@ -43,10 +43,10 @@ type ComponentTestContext struct {
 	// Engine is the IaC engine ("pulumi" or "terraform").
 	Engine string
 
-	// ModuleDir is the absolute path to the component's IaC module directory.
+	// ModuleDir is the absolute path to the kind's IaC module directory.
 	ModuleDir string
 
-	// ManifestPath is the absolute path to the component's hack/manifest.yaml.
+	// ManifestPath is the absolute path to the kind's hack/manifest.yaml.
 	ManifestPath string
 
 	// StackName is the unique Pulumi stack name for this test run.
@@ -55,17 +55,17 @@ type ComponentTestContext struct {
 	// BackendURL is the Pulumi backend URL (file-based for E2E).
 	BackendURL string
 
-	// StackInputFilePath is the path to the generated stack-input YAML.
-	StackInputFilePath string
+	// IacInputFilePath is the path to the generated iac-input YAML.
+	IacInputFilePath string
 
-	// Outputs holds raw stack outputs after deployment (map[string]interface{}).
+	// Outputs holds raw outputs after deployment (map[string]interface{}).
 	Outputs map[string]interface{}
 
 	// FlatOutputs holds the flattened string-keyed outputs after outputs.Flatten().
 	// Populated during the VERIFY-OUT phase.
 	FlatOutputs map[string]string
 
-	// TransformedOutputs holds the typed StackOutputs proto after outputs.Transform().
+	// TransformedOutputs holds the typed Outputs proto after outputs.Transform().
 	// Stored as interface{} to avoid importing proto in this package.
 	// The runner package type-asserts to proto.Message when needed.
 	TransformedOutputs interface{}
@@ -88,7 +88,7 @@ type ComponentTestContext struct {
 	TerraformOpts interface{}
 
 	// IdentityProviderConfig, when set, is the provider configuration file the
-	// lane deploys with in place of the component's fixture: the identity an
+	// lane deploys with in place of the kind's fixture: the identity an
 	// IdentityProvisioner created for a scenario that declares
 	// planton.dev/e2e-identity. Bound by the runner on every manifest binding
 	// (the first deploy and the lifecycle lanes' second acts alike).
@@ -105,6 +105,6 @@ type ComponentTestContext struct {
 	// re-plans the just-applied configuration and fails on any pending
 	// change. Populated by the provider test entrypoint from the provider
 	// E2E profile's assert_apply_idempotency field; applies only to the
-	// component under test, never to prerequisite fixtures.
+	// kind under test, never to prerequisite fixtures.
 	AssertApplyIdempotency bool
 }

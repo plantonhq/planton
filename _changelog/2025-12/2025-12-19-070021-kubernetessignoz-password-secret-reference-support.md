@@ -168,7 +168,7 @@ Password: &kubernetes.KubernetesSensitiveValue{
 - **GitOps friendly**: Manifests can be safely committed to version control without exposing credentials
 - **Easier rotation**: Password changes only require updating the Kubernetes Secret, not the manifest
 - **Follows proto patterns**: Uses `oneof` pattern consistent with existing `StringValueOrRef` in the codebase
-- **Reusable type**: `KubernetesSensitiveValue` can be used by other components needing similar functionality
+- **Reusable type**: `KubernetesSensitiveValue` can be used by other kinds needing similar functionality
 - **Backward compatible API**: Both Pulumi and Terraform modules handle both value types seamlessly
 
 ## Impact
@@ -195,13 +195,13 @@ Password: &kubernetes.KubernetesSensitiveValue{
 | `spec_test.go` | Updated test cases |
 | `iac/pulumi/examples.md` | Added secret ref examples |
 | `iac/tf/examples.md` | Added Terraform secret ref examples |
-| `examples.md` | Updated component examples |
+| `examples.md` | Updated kind examples |
 
 ## Related Work
 
 - Follows the pattern established by `StringValueOrRef` in `apis/dev/planton/shared/foreignkey/v1/foreign_key.proto`
 - Uses SigNoz Helm chart's built-in `existingSecret` and `existingSecretPasswordKey` support
-- Can be extended to other components needing sensitive value handling (e.g., database passwords, API keys)
+- Can be extended to other kinds needing sensitive value handling (e.g., database passwords, API keys)
 
 ---
 

@@ -170,7 +170,7 @@ type Locals struct {
     // ... other fields
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *openfgakubernetesv1.OpenFgaKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *openfgakubernetesv1.OpenFgaKubernetesIacInput) *Locals {
     // ... other initialization
 
     if target.Spec.Ingress == nil ||
@@ -206,7 +206,7 @@ type Locals struct {
     // ... other fields
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *openfgakubernetesv1.OpenFgaKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *openfgakubernetesv1.OpenFgaKubernetesIacInput) *Locals {
     // ... other initialization
 
     if target.Spec.Ingress == nil ||

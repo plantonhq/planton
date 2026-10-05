@@ -29,7 +29,7 @@ iac/pulumi/
     ├── main.go                     # Module coordinator
     ├── workload_identity_pool.go   # Pool resource creation
     ├── locals.go                   # Resolved resource holder
-    └── outputs.go                  # Stack output constants
+    └── outputs.go                  # Output constants
 ```
 
 ## Quick Start
@@ -43,7 +43,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the pool specification:
+Provide a `iac-input.yaml` with the pool specification:
 
 ```yaml
 target:
@@ -76,7 +76,7 @@ pulumi stack output workload_identity_pool_id
 
 ## Inputs
 
-The module consumes `GcpWorkloadIdentityPoolStackInput`:
+The module consumes `GcpWorkloadIdentityPoolIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|

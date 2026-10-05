@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0PromptCustomTextSpec manages the words one Universal Login prompt shows in
 one language, on the tenant the provider connection's credential belongs to.
@@ -34,7 +34,7 @@ https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/prompt
 
 ```yaml
 # Auth0 Prompt Custom Text Test Manifest
-# This file is used for testing the Auth0PromptCustomText component.
+# This file is used for testing the Auth0PromptCustomText kind.
 #
 # Applying it REPLACES the English words of the tenant's login prompt: run it
 # only against a test tenant nobody signs in to.

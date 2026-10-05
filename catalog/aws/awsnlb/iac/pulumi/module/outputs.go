@@ -1,7 +1,7 @@
 package module
 
 // Output keys for the AwsNlb module. These constants match
-// the field names in AwsNlbStackOutputs.
+// the field names in AwsNlbOutputs.
 const (
 	OpLoadBalancerArn          = "load_balancer_arn"
 	OpLoadBalancerName         = "load_balancer_name"

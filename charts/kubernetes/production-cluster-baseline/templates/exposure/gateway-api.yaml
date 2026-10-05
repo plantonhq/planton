@@ -21,7 +21,7 @@ spec:
   # Standard channel: the GA/beta resources (GatewayClass, Gateway, HTTPRoute,
   # GRPCRoute, ReferenceGrant, ...). The experimental channel exists for
   # pre-GA resources; a production baseline stays on standard. The CRD bundle
-  # version rides the component's own default — the release the catalog's
+  # version rides the kind's own default — the release the catalog's
   # Gateway API projections target.
   installChannel:
     channel: standard

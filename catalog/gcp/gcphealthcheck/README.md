@@ -84,7 +84,7 @@ Each HTTP-family block accepts `host`, `port`, `portName`, `portSpecification`, 
 
 Failure detection time ≈ `checkIntervalSec` × `unhealthyThreshold` (default ≈ 10 s). Tightening either speeds up failover at the cost of more probe traffic and more sensitivity to blips; `healthyThreshold` guards the other direction, keeping flapping backends out of rotation until they prove stable. Point HTTP probes at a cheap, dependency-free endpoint — a `/healthz` that touches your database turns database latency into load-balancer failovers.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -115,7 +115,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **`sourceRegions` disables auto-healing use**: a check probing from named regions cannot be attached to managed-instance-group auto-healing.
 - **gRPC-with-TLS**: the `grpcTls` probe is a preview-stage surface on the current provider line; the modules select the beta provider so it is available without a retrofit.
 
-## Related Components
+## Related Kinds
 
 - [GcpCloudArmorPolicy](/docs/catalog/gcp/gcpcloudarmorpolicy) — protects the backends this check keeps in rotation
 - [GcpFirewallRule](/docs/catalog/gcp/gcpfirewallrule) — admits Google's prober ranges to instance-group backends

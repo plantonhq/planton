@@ -20,8 +20,8 @@ type Locals struct {
 	AttachmentName string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcppscserviceattachmentv1alpha1.GcpPscServiceAttachmentStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcppscserviceattachmentv1alpha1.GcpPscServiceAttachmentIacInput) *Locals {
+	target := iacInput.Target
 
 	attachmentName := target.Spec.AttachmentName
 	if attachmentName == "" {

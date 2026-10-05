@@ -17,13 +17,13 @@ type Locals struct {
 	BackupPolicyId string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuredataprotectionbackupinstancev1alpha1.AzureDataProtectionBackupInstanceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuredataprotectionbackupinstancev1alpha1.AzureDataProtectionBackupInstanceIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureDataProtectionBackupInstance = stackInput.Target
+	locals.AzureDataProtectionBackupInstance = iacInput.Target
 
-	locals.VaultId = stackInput.Target.Spec.VaultId.GetValue()
-	locals.BackupPolicyId = stackInput.Target.Spec.BackupPolicyId.GetValue()
+	locals.VaultId = iacInput.Target.Spec.VaultId.GetValue()
+	locals.BackupPolicyId = iacInput.Target.Spec.BackupPolicyId.GetValue()
 
 	// Note: backup instances carry NO tags argument (the provider has
 	// none on any of the six variant resources) -- there is no tag map

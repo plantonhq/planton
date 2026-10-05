@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package dev.planton.finops.catalogkindcostestimatemodel.v1;
+
+import "finops/catalogkindcostestimate/v1/spec.proto";
+
+// CatalogKindCostEstimateModelSpec holds one quantity model per catalog
+// preset. Authoring contract: quantities are decimal STRINGS (never YAML
+// floats), every quantity line defends its derivation in quantity_basis
+// prose, every sku_meter must be declared by the kind's cost.yaml,
+// and every price reference must resolve to a PriceBook entry in the
+// kind's provider book -- the estimate generator enforces all of it.
+message CatalogKindCostEstimateModelSpec {
+  // One quantity model per preset shipped by the kind, keyed by the
+  // preset file stem. A preset without a model simply gets no estimate.
+  repeated PresetEstimateModel presets = 1;
+}
+
+// PresetEstimateModel states what one preset consumes per month -- the
+// assumptions half of its estimate. The generator supplies the prices and
+// the arithmetic.
+message PresetEstimateModel {
+  // The preset's file stem under the kind's presets/ directory, e.g.
+  // "02-production-ha" for presets/02-production-ha.yaml.
+  string preset = 1;
+
+  // The region whose list prices this estimate uses, e.g. "us-east-1".
+  // Every referenced price-book entry must be priced for this region or
+  // priced globally. Empty only for cluster-capacity kinds, which
+  // price nothing regional.
+  string region_assumption = 2;
+
+  // ISO 4217 currency of the estimate ("USD"). Every referenced
+  // price-book entry must be priced in this currency.
+  string currency = 3;
+
+  // The hours-in-a-month convention behind the quantities below. 730
+  // (365.25 days / 12 months x 24 hours) is the industry convention
+  // shared by the major providers' own calculators. Declared explicitly
+  // so every quantity is reproducible.
+  int32 hours_per_month = 4;
+
+  // The metered consumptions, one per priced functionality. Empty for
+  // cluster-capacity kinds (which state a capacity_footprint
+  // instead) and for presets with no committed always-on spend (their
+  // generated estimate totals to zero). Author in any order; the
+  // generated estimate orders lines largest cost first.
+  repeated QuantityLine quantity_lines = 5;
+
+  // For cluster-capacity kinds only: the cluster resources the
+  // preset reserves, stated as capacity rather than dollars. Copied
+  // verbatim into the generated estimate.
+  dev.planton.finops.catalogkindcostestimate.v1.CapacityFootprint capacity_footprint = 6;
+
+  // What the estimate deliberately excludes because no manifest can know
+  // it (traffic, request volume, storage growth). Copied verbatim into
+  // the generated estimate, which must never render a number without
+  // them.
+  repeated string exclusions = 7;
+
+  // Free-form notes on the estimate's assumptions that fit no structured
+  // field (free-tier effects, floor-vs-ceiling autoscaling notes). Copied
+  // verbatim into the generated estimate.
+  string notes = 8;
+}
+
+// QuantityLine states one metered consumption: which declared meter, which
+// pinned price, how much, and why that much. The generator turns it into a
+// priced estimate line (quantity x the referenced entry's unit price).
+message QuantityLine {
+  // The functionality being metered (FOCUS SkuMeter). Must match a
+  // baseline charge or cost driver sku_meter in the kind's
+  // cost.yaml -- a model cannot price a meter the cost profile does not
+  // declare.
+  string sku_meter = 1;
+
+  // The slug name of the PriceBook entry that prices this line, resolved
+  // in the kind's provider book (e.g. "alb-hours-us-east-1"). The
+  // entry supplies service_name, pricing_unit, the unit price, its
+  // source, and its retrieval date -- this model never restates them.
+  string price = 2;
+
+  // Monthly quantity of the entry's pricing_unit consumed, as a decimal
+  // string (FOCUS PricingQuantity), e.g. "730" hours, "1460" IP-hours.
+  string pricing_quantity = 3;
+
+  // How the quantity derives from the preset's manifest values, in one
+  // plain sentence (e.g. "3 nodes at the autoscaling floor x 730 hours").
+  // This is the estimate's audit trail back to the preset.
+  string quantity_basis = 4;
+}

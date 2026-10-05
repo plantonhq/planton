@@ -4,7 +4,7 @@ Provisions a Cloudflare Pages project: a managed site host that builds and serve
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Pages Project** -- the managed site project and its `*.pages.dev` subdomain
 - **Build configuration** -- how Cloudflare builds the site (for git-connected and wrangler builds)
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Pages edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Pages edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -69,7 +69,7 @@ spec:
 planton apply -f cloudflare-pages-project.yaml
 ```
 
-This creates a git-connected project that builds on every push to `main`, binds a KV namespace to production Functions, and serves on a custom domain. A Stack Job tracks the provisioning in real time.
+This creates a git-connected project that builds on every push to `main`, binds a KV namespace to production Functions, and serves on a custom domain. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -113,7 +113,7 @@ These are the most important decisions when configuring a Pages project. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -126,9 +126,9 @@ These are the most important decisions when configuring a Pages project. Explore
 
 Secret values in `deploymentConfigs.*.secrets` reference managed secrets resolved just-in-time at deploy.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -146,9 +146,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare KV Namespace**](/cloud-catalog/cloudflare-kv-namespace) -- bound to Functions for edge key-value storage
-- [**Cloudflare D1 Database**](/cloud-catalog/cloudflare-d1-database) -- bound to Functions for serverless SQL
-- [**Cloudflare R2 Bucket**](/cloud-catalog/cloudflare-r2-bucket) -- bound to Functions for object storage
-- [**Cloudflare Queue**](/cloud-catalog/cloudflare-queue) -- bound to Functions as a producer
-- [**Cloudflare Hyperdrive Config**](/cloud-catalog/cloudflare-hyperdrive-config) -- bound to Functions for pooled SQL access
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) -- bound to Functions for service-to-service calls
+- [**Cloudflare KV Namespace**](/infra-catalog/cloudflare-kv-namespace) -- bound to Functions for edge key-value storage
+- [**Cloudflare D1 Database**](/infra-catalog/cloudflare-d1-database) -- bound to Functions for serverless SQL
+- [**Cloudflare R2 Bucket**](/infra-catalog/cloudflare-r2-bucket) -- bound to Functions for object storage
+- [**Cloudflare Queue**](/infra-catalog/cloudflare-queue) -- bound to Functions as a producer
+- [**Cloudflare Hyperdrive Config**](/infra-catalog/cloudflare-hyperdrive-config) -- bound to Functions for pooled SQL access
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) -- bound to Functions for service-to-service calls

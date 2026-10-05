@@ -4,7 +4,7 @@ Deploys a customer-managed IAM policy — the reusable unit of AWS permissions: 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Managed Policy** -- the named permission document under its IAM path. The policy name comes from `metadata.name`; name, path, and description are create-only in AWS (changing any of them replaces the policy)
 - **Policy Versions** -- each document update becomes a new version and is promoted to default. AWS keeps at most 5 versions, and the module prunes the oldest non-default version before saving a new one, so updates keep working indefinitely without manual version cleanup
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -58,7 +58,7 @@ spec:
 planton apply -f iam-policy.yaml
 ```
 
-This publishes the shared read-only grant; every role that attaches it inherits exactly these permissions, and widening the grant later is a one-place edit. A Stack Job tracks the provisioning in real time.
+This publishes the shared read-only grant; every role that attaches it inherits exactly these permissions, and widening the grant later is a one-place edit. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -74,13 +74,13 @@ These are the most important decisions when configuring an IAM policy. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. The policy is a leaf — it references no other Cloud Resources; the ARNs its statements govern travel as plain strings inside the policy document.
+This kind has no foreign key dependencies. The policy is a leaf — it references no other Infra Components; the ARNs its statements govern travel as plain strings inside the policy document.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -98,7 +98,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- attaches this policy through `managedPolicyArns` and can carry it as a `permissionsBoundary`
-- [**AWS IAM Instance Profile**](/cloud-catalog/aws-iam-instance-profile) -- delivers a role (and the policies attached to it) to EC2 instances
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- the most common Resource target of shared read/write grants
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) -- its execution role attaches managed policies for the function's data access
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- attaches this policy through `managedPolicyArns` and can carry it as a `permissionsBoundary`
+- [**AWS IAM Instance Profile**](/infra-catalog/aws-iam-instance-profile) -- delivers a role (and the policies attached to it) to EC2 instances
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- the most common Resource target of shared read/write grants
+- [**AWS Lambda**](/infra-catalog/aws-lambda) -- its execution role attaches managed policies for the function's data access

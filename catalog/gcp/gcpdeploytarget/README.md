@@ -4,7 +4,7 @@ Declares a Cloud Deploy target: one place a delivery pipeline's stage deploys a 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `clouddeploy.googleapis.com` on the target's project (never disabled on destroy)
 - **Target** -- one `clouddeploy_target`
@@ -97,7 +97,7 @@ planton apply -f deploy-target.yaml
 - Entity IDs are unique and follow Google's ID rule.
 - Each usage (`RENDER`, `DEPLOY`, `VERIFY`, `PREDEPLOY`, `POSTDEPLOY`) appears in at most one execution configuration, and declared configurations cover `RENDER` and `DEPLOY`; at most one of `defaultPool` or `privatePool` per configuration.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -126,7 +126,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpDeliveryPipeline** -- the pipeline whose stages deploy to the target
 - **GcpDeployCustomTargetType** -- the type behind a custom target

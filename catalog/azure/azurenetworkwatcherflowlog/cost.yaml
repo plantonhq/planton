@@ -5,9 +5,9 @@
 # logs written, Traffic Analytics bills per GB processed (its price
 # absorbs the Log Analytics workspace cost -- Microsoft's own pricing
 # footnote), and the raw files rest in the storage account on ITS
-# meters. Schema: finops/componentcostprofile/v1.
+# meters. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurenetworkwatcherflowlog
 spec:

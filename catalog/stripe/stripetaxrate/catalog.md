@@ -1,10 +1,10 @@
 # Stripe Tax Rate
 
-Declares a manual tax rate -- German VAT at 19%, New York sales tax -- that invoices, subscriptions, Checkout sessions and payment links apply. One Cloud Resource per rate.
+Declares a manual tax rate -- German VAT at 19%, New York sales tax -- that invoices, subscriptions, Checkout sessions and payment links apply. One Infra Component per rate.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module creates one tax rate in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module creates one tax rate in the Stripe account your Stripe connection's key belongs to:
 
 - **The rate** -- a percentage, included in the amount or added on top
 - **Where it applies** -- a country, a state, a jurisdiction
@@ -50,7 +50,7 @@ spec:
 planton apply -f stripe-tax-rate.yaml
 ```
 
-A Stack Job tracks the change in real time.
+An Infra Job tracks the change in real time.
 
 ## Key Configuration
 
@@ -64,11 +64,11 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -87,5 +87,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Stripe Price**](/cloud-catalog/stripe-price) -- the prices the rate is applied to.
-- [**Stripe Shipping Rate**](/cloud-catalog/stripe-shipping-rate) -- shipping that may be taxed too.
+- [**Stripe Price**](/infra-catalog/stripe-price) -- the prices the rate is applied to.
+- [**Stripe Shipping Rate**](/infra-catalog/stripe-shipping-rate) -- shipping that may be taxed too.

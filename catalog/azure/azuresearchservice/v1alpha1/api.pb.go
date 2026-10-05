@@ -33,10 +33,10 @@ type AzureSearchService struct {
 	// Resource kind. Must be "AzureSearchService".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Search service specification.
 	Spec *AzureSearchServiceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureSearchServiceStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -86,7 +86,7 @@ func (x *AzureSearchService) GetKind() string {
 	return ""
 }
 
-func (x *AzureSearchService) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureSearchService) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *AzureSearchService) GetStatus() *AzureSearchServiceStatus {
 // AzureSearchServiceStatus holds the deployment outputs.
 type AzureSearchServiceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureSearchServiceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureSearchServiceOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureSearchServiceStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuresearchservice_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureSearchServiceStatus) GetOutputs() *AzureSearchServiceStackOutputs {
+func (x *AzureSearchServiceStatus) GetOutputs() *AzureSearchServiceOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azuresearchservice_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12AzureSearchServiceR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
 	"\x04spec\x18\x04 \x01(\v2E.dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStatusR\x06status\"\x83\x01\n" +
-	"\x18AzureSearchServiceStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStackOutputsR\aoutputsB\xf9\x02\n" +
+	"\x06status\x18\x05 \x01(\v2G.dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStatusR\x06status\"~\n" +
+	"\x18AzureSearchServiceStatus\x12b\n" +
+	"\aoutputs\x18\x01 \x01(\v2H.dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceOutputsR\aoutputsB\xf9\x02\n" +
 	"1com.dev.planton.azure.azuresearchservice.v1alpha1B\bApiProtoP\x01Zagithub.com/plantonhq/planton/catalog/azure/azuresearchservice/v1alpha1;azuresearchservicev1alpha1\xa2\x02\x04DPAA\xaa\x02-Dev.Planton.Azure.Azuresearchservice.V1alpha1\xca\x02-Dev\\Planton\\Azure\\Azuresearchservice\\V1alpha1\xe2\x029Dev\\Planton\\Azure\\Azuresearchservice\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Azure::Azuresearchservice::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_azure_azuresearchservice_v1alpha1_api_proto_rawDescGZIP() []by
 
 var file_catalog_azure_azuresearchservice_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuresearchservice_v1alpha1_api_proto_goTypes = []any{
-	(*AzureSearchService)(nil),             // 0: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchService
-	(*AzureSearchServiceStatus)(nil),       // 1: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureSearchServiceSpec)(nil),         // 3: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceSpec
-	(*AzureSearchServiceStackOutputs)(nil), // 4: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStackOutputs
+	(*AzureSearchService)(nil),           // 0: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchService
+	(*AzureSearchServiceStatus)(nil),     // 1: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureSearchServiceSpec)(nil),       // 3: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceSpec
+	(*AzureSearchServiceOutputs)(nil),    // 4: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceOutputs
 }
 var file_catalog_azure_azuresearchservice_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchService.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchService.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchService.spec:type_name -> dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceSpec
 	1, // 2: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchService.status:type_name -> dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStatus
-	4, // 3: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStatus.outputs:type_name -> dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStackOutputs
+	4, // 3: dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceStatus.outputs:type_name -> dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

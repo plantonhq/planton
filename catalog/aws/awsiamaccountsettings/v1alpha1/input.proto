@@ -5,9 +5,9 @@ package dev.planton.aws.awsiamaccountsettings.v1alpha1;
 import "catalog/aws/awsiamaccountsettings/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsIamAccountSettingsStackInput is the input for the IaC modules
+// AwsIamAccountSettingsIacInput is the input for the IaC modules
 // that manage IAM's account-level settings.
-message AwsIamAccountSettingsStackInput {
+message AwsIamAccountSettingsIacInput {
   // target is the AwsIamAccountSettings resource to deploy.
   AwsIamAccountSettings target = 1;
   // provider_config contains the AWS provider credentials and configuration.

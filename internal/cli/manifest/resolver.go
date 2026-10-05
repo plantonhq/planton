@@ -10,7 +10,7 @@ import (
 // ResolveManifestPath determines the target manifest path based on flag priority.
 // Priority order:
 //  1. --clipboard flag (if provided, read manifest from system clipboard)
-//  2. --stack-input flag (if provided, extract manifest from target field)
+//  2. --iac-input flag (if provided, extract manifest from target field)
 //  3. --manifest flag (if provided, use it directly)
 //  4. --input-dir flag (if provided, use inputDir/target.yaml)
 //  5. --kustomize-dir + --overlay flags (if both provided, build kustomize manifest)
@@ -30,13 +30,13 @@ func ResolveManifestPath(cmd *cobra.Command) (string, bool, error) {
 		return clipboardManifest, isTemp, nil
 	}
 
-	// Priority 2: Check for --stack-input flag (extracts manifest from target field)
-	stackInputManifest, isTemp, err := resolveFromStackInput(cmd)
+	// Priority 2: Check for --iac-input flag (extracts manifest from target field)
+	iacInputManifest, isTemp, err := resolveFromIacInput(cmd)
 	if err != nil {
 		return "", false, err
 	}
-	if stackInputManifest != "" {
-		return stackInputManifest, isTemp, nil
+	if iacInputManifest != "" {
+		return iacInputManifest, isTemp, nil
 	}
 
 	// Priority 3: Check for --manifest flag
@@ -83,5 +83,5 @@ func ResolveManifestPath(cmd *cobra.Command) (string, bool, error) {
 	}
 
 	// No valid manifest source provided
-	return "", false, errors.New("must provide one of: --clipboard, --stack-input, --manifest, --input-dir, or (--kustomize-dir + --overlay)")
+	return "", false, errors.New("must provide one of: --clipboard, --iac-input, --manifest, --input-dir, or (--kustomize-dir + --overlay)")
 }

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesclustersecretstore.v1alpha1;
 
-// KubernetesClusterSecretStoreStackOutputs captures observable outputs after
+// KubernetesClusterSecretStoreOutputs captures observable outputs after
 // the ClusterSecretStore is created.
-message KubernetesClusterSecretStoreStackOutputs {
+message KubernetesClusterSecretStoreOutputs {
   // Name of the created ClusterSecretStore (equals metadata.name). Use it in
   // an ExternalSecret's secretStoreRef.name with kind ClusterSecretStore.
   string store_name = 1;

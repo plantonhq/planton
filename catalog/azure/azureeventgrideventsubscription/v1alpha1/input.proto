@@ -5,10 +5,10 @@ package dev.planton.azure.azureeventgrideventsubscription.v1alpha1;
 import "catalog/azure/azureeventgrideventsubscription/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureEventgridEventSubscriptionStackInput is the input to the IaC
+// AzureEventgridEventSubscriptionIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-message AzureEventgridEventSubscriptionStackInput {
+message AzureEventgridEventSubscriptionIacInput {
   // The Event Grid event subscription resource to deploy.
   AzureEventgridEventSubscription target = 1;
 

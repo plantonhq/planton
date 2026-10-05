@@ -1,4 +1,4 @@
-# The component defaults on their own — with kind-honest cache SIZING (the
+# The kind defaults on their own — with kind-honest cache SIZING (the
 # disk_size class): the chart's default chunks cache allocates 8192MB and
 # requests memory at 1.2× (9830Mi — more than a small node's entire
 # allocatable), so an unsized manifest can never schedule it and the atomic

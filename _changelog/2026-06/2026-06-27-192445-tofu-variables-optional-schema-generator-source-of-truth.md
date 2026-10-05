@@ -51,7 +51,7 @@ guard it against drift.
 
 ```mermaid
 flowchart LR
-  spec["CloudResource spec (proto)"] --> renderer["ProtoToTFVars (protojson, null-pruned)"]
+  spec["InfraComponent spec (proto)"] --> renderer["ProtoToTFVars (protojson, null-pruned)"]
   renderer --> tfvars["terraform.tfvars (unset fields absent)"]
   gen["ProtoToVariablesTF (optional() + zero defaults)"] --> vars["variables.tf"]
   vars --> plan["tofu plan / plan --destroy"]
@@ -75,7 +75,7 @@ module reconstructs the same zero rather than receiving a surprising value.
 
 ### Canonical metadata envelope
 
-`CloudResourceMetadata` carries no field constraints and is uniform across kinds, so it is emitted from
+`CatalogObjectMetadata` carries no field constraints and is uniform across kinds, so it is emitted from
 one fixed canonical block (`name` required; `id`/`org`/`env`/`labels`/`annotations`/`tags` optional)
 instead of being derived per kind — which also stops orchestrator-only envelope fields
 (`slug`/`group`/`relationships`) from leaking into the module.

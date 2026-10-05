@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0EventStreamStackInput is the input to the Auth0EventStream IaC module.
+// Auth0EventStreamIacInput is the input to the Auth0EventStream IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-type Auth0EventStreamStackInput struct {
+type Auth0EventStreamIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the Auth0EventStream resource to be deployed.
 	Target *Auth0EventStream `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type Auth0EventStreamStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *Auth0EventStreamStackInput) Reset() {
-	*x = Auth0EventStreamStackInput{}
+func (x *Auth0EventStreamIacInput) Reset() {
+	*x = Auth0EventStreamIacInput{}
 	mi := &file_catalog_auth0_auth0eventstream_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0EventStreamStackInput) String() string {
+func (x *Auth0EventStreamIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0EventStreamStackInput) ProtoMessage() {}
+func (*Auth0EventStreamIacInput) ProtoMessage() {}
 
-func (x *Auth0EventStreamStackInput) ProtoReflect() protoreflect.Message {
+func (x *Auth0EventStreamIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0eventstream_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *Auth0EventStreamStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0EventStreamStackInput.ProtoReflect.Descriptor instead.
-func (*Auth0EventStreamStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0EventStreamIacInput.ProtoReflect.Descriptor instead.
+func (*Auth0EventStreamIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0eventstream_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0EventStreamStackInput) GetTarget() *Auth0EventStream {
+func (x *Auth0EventStreamIacInput) GetTarget() *Auth0EventStream {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *Auth0EventStreamStackInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
+func (x *Auth0EventStreamIacInput) GetProviderConfig() *auth0.Auth0ProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_auth0_auth0eventstream_v1alpha1_input_proto protoreflect.FileDe
 
 const file_catalog_auth0_auth0eventstream_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/auth0/auth0eventstream/v1alpha1/input.proto\x12+dev.planton.auth0.auth0eventstream.v1alpha1\x1a1catalog/auth0/auth0eventstream/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xc4\x01\n" +
-	"\x1aAuth0EventStreamStackInput\x12U\n" +
+	"3catalog/auth0/auth0eventstream/v1alpha1/input.proto\x12+dev.planton.auth0.auth0eventstream.v1alpha1\x1a1catalog/auth0/auth0eventstream/v1alpha1/api.proto\x1a\x1ccatalog/auth0/provider.proto\"\xc2\x01\n" +
+	"\x18Auth0EventStreamIacInput\x12U\n" +
 	"\x06target\x18\x01 \x01(\v2=.dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.auth0.Auth0ProviderConfigR\x0eproviderConfigB\xed\x02\n" +
 	"/com.dev.planton.auth0.auth0eventstream.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_auth0_auth0eventstream_v1alpha1_input_proto_rawDescGZIP() []by
 
 var file_catalog_auth0_auth0eventstream_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0eventstream_v1alpha1_input_proto_goTypes = []any{
-	(*Auth0EventStreamStackInput)(nil), // 0: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamStackInput
-	(*Auth0EventStream)(nil),           // 1: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStream
-	(*auth0.Auth0ProviderConfig)(nil),  // 2: dev.planton.auth0.Auth0ProviderConfig
+	(*Auth0EventStreamIacInput)(nil),  // 0: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamIacInput
+	(*Auth0EventStream)(nil),          // 1: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStream
+	(*auth0.Auth0ProviderConfig)(nil), // 2: dev.planton.auth0.Auth0ProviderConfig
 }
 var file_catalog_auth0_auth0eventstream_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamStackInput.target:type_name -> dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStream
-	2, // 1: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamStackInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
+	1, // 0: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamIacInput.target:type_name -> dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStream
+	2, // 1: dev.planton.auth0.auth0eventstream.v1alpha1.Auth0EventStreamIacInput.provider_config:type_name -> dev.planton.auth0.Auth0ProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

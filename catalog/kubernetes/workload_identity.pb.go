@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Shared workload-identity types used by every Kubernetes component that binds a
+// Shared workload-identity types used by every Kubernetes kind that binds a
 // Kubernetes ServiceAccount to a cloud identity for keyless (credential-free)
 // authentication to cloud APIs. Kubernetes is a dual provider: a component runs IN a
 // host environment (EKS, GKE, AKS, ...) and often talks TO a cloud API (DNS, secret
@@ -31,7 +31,7 @@ const (
 // second half keyless — the cluster's OIDC issuer vouches for the ServiceAccount and
 // the cloud exchanges that token for cloud credentials.
 //
-// One shape, every component: any kind whose pods need cloud access embeds
+// One shape, every kind: any kind whose pods need cloud access embeds
 // `KubernetesWorkloadIdentity` instead of redefining a per-cloud message. The IaC
 // modules translate the selected arm into the ServiceAccount annotations each cloud's
 // webhook/agent expects:
@@ -259,7 +259,7 @@ func (x *KubernetesWorkloadIdentityEksIrsa) GetRoleArn() *v1.StringValueOrRef {
 // "system:serviceaccount:<namespace>:<ksa-name>" against the cluster's OIDC issuer.
 // Note: pods that use the identity must ALSO carry the
 // `azure.workload.identity/use: "true"` pod label — that half lives on the workload,
-// not the ServiceAccount, and is documented per component.
+// not the ServiceAccount, and is documented per kind.
 type KubernetesWorkloadIdentityAks struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Client ID (GUID) of the user-assigned managed identity or Entra application.

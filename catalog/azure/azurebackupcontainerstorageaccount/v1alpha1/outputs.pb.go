@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureBackupContainerStorageAccountStackOutputs** captures the
+// **AzureBackupContainerStorageAccountOutputs** captures the
 // outputs of registering a storage account as a backup container.
-type AzureBackupContainerStorageAccountStackOutputs struct {
+type AzureBackupContainerStorageAccountOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the backup container
 	// registration.
@@ -39,20 +39,20 @@ type AzureBackupContainerStorageAccountStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AzureBackupContainerStorageAccountStackOutputs) Reset() {
-	*x = AzureBackupContainerStorageAccountStackOutputs{}
+func (x *AzureBackupContainerStorageAccountOutputs) Reset() {
+	*x = AzureBackupContainerStorageAccountOutputs{}
 	mi := &file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureBackupContainerStorageAccountStackOutputs) String() string {
+func (x *AzureBackupContainerStorageAccountOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureBackupContainerStorageAccountStackOutputs) ProtoMessage() {}
+func (*AzureBackupContainerStorageAccountOutputs) ProtoMessage() {}
 
-func (x *AzureBackupContainerStorageAccountStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureBackupContainerStorageAccountOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,19 +64,19 @@ func (x *AzureBackupContainerStorageAccountStackOutputs) ProtoReflect() protoref
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureBackupContainerStorageAccountStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureBackupContainerStorageAccountStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureBackupContainerStorageAccountOutputs.ProtoReflect.Descriptor instead.
+func (*AzureBackupContainerStorageAccountOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureBackupContainerStorageAccountStackOutputs) GetBackupContainerId() string {
+func (x *AzureBackupContainerStorageAccountOutputs) GetBackupContainerId() string {
 	if x != nil {
 		return x.BackupContainerId
 	}
 	return ""
 }
 
-func (x *AzureBackupContainerStorageAccountStackOutputs) GetStorageAccountId() string {
+func (x *AzureBackupContainerStorageAccountOutputs) GetStorageAccountId() string {
 	if x != nil {
 		return x.StorageAccountId
 	}
@@ -87,8 +87,8 @@ var File_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_outputs_proto
 
 const file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/azure/azurebackupcontainerstorageaccount/v1alpha1/outputs.proto\x12=dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1\"\x8e\x01\n" +
-	".AzureBackupContainerStorageAccountStackOutputs\x12.\n" +
+	"Gcatalog/azure/azurebackupcontainerstorageaccount/v1alpha1/outputs.proto\x12=dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1\"\x89\x01\n" +
+	")AzureBackupContainerStorageAccountOutputs\x12.\n" +
 	"\x13backup_container_id\x18\x01 \x01(\tR\x11backupContainerId\x12,\n" +
 	"\x12storage_account_id\x18\x02 \x01(\tR\x10storageAccountIdB\xee\x03\n" +
 	"Acom.dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1B\fOutputsProtoP\x01Z\x81\x01github.com/plantonhq/planton/catalog/azure/azurebackupcontainerstorageaccount/v1alpha1;azurebackupcontainerstorageaccountv1alpha1\xa2\x02\x04DPAA\xaa\x02=Dev.Planton.Azure.Azurebackupcontainerstorageaccount.V1alpha1\xca\x02=Dev\\Planton\\Azure\\Azurebackupcontainerstorageaccount\\V1alpha1\xe2\x02IDev\\Planton\\Azure\\Azurebackupcontainerstorageaccount\\V1alpha1\\GPBMetadata\xea\x02ADev::Planton::Azure::Azurebackupcontainerstorageaccount::V1alpha1b\x06proto3"
@@ -107,7 +107,7 @@ func file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_outputs_prot
 
 var file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureBackupContainerStorageAccountStackOutputs)(nil), // 0: dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1.AzureBackupContainerStorageAccountStackOutputs
+	(*AzureBackupContainerStorageAccountOutputs)(nil), // 0: dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1.AzureBackupContainerStorageAccountOutputs
 }
 var file_catalog_azure_azurebackupcontainerstorageaccount_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

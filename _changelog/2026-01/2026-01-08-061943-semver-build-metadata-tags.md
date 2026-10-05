@@ -86,10 +86,10 @@ CLI_PREFIX="${LATEST_SEMVER}+cli.${TODAY}"
 **Pulumi** (in `auto-release.yaml` and `auto-release.pulumi-modules.yaml`):
 ```bash
 # Before
-TAG_PREFIX="${LATEST_SEMVER}-pulumi-${COMPONENT}-${TODAY}"
+TAG_PREFIX="${LATEST_SEMVER}-pulumi-${KIND}-${TODAY}"
 
 # After
-TAG_PREFIX="${LATEST_SEMVER}+pulumi.${COMPONENT}.${TODAY}"
+TAG_PREFIX="${LATEST_SEMVER}+pulumi.${KIND}.${TODAY}"
 ```
 
 ## Benefits

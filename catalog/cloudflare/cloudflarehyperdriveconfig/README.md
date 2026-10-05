@@ -73,7 +73,7 @@ them as managed-secret references. They are resolved just-in-time at deploy and
 never stored in plaintext. The Cloudflare API treats both as write-only and never
 returns them.
 
-## Related components
+## Related kinds
 
 - `CloudflareWorker` — binds this config via `hyperdrive_configs`.
 - `CloudflareD1Database` — Cloudflare-native serverless SQL (no Hyperdrive needed).

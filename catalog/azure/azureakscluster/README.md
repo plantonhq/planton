@@ -31,7 +31,7 @@ composable `AzureAksNodePool` resource referencing this cluster's
 |------|-----|
 | `AzureResourceGroup` | The cluster is created inside a referenced resource group |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

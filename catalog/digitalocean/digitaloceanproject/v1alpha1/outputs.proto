@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceanproject.v1alpha1;
 
-// DigitalOceanProjectStackOutputs captures the key outputs after
+// DigitalOceanProjectOutputs captures the key outputs after
 // provisioning a DigitalOcean project.
-message DigitalOceanProjectStackOutputs {
+message DigitalOceanProjectOutputs {
   // UUID of the project (the API identity, and the import id).
   string project_id = 1;
 

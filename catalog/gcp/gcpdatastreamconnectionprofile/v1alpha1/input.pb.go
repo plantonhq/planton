@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-datastream-connection-profile stack-input
-type GcpDatastreamConnectionProfileStackInput struct {
+// gcp-datastream-connection-profile iac-input
+type GcpDatastreamConnectionProfileIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpDatastreamConnectionProfile `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpDatastreamConnectionProfileStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpDatastreamConnectionProfileStackInput) Reset() {
-	*x = GcpDatastreamConnectionProfileStackInput{}
+func (x *GcpDatastreamConnectionProfileIacInput) Reset() {
+	*x = GcpDatastreamConnectionProfileIacInput{}
 	mi := &file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDatastreamConnectionProfileStackInput) String() string {
+func (x *GcpDatastreamConnectionProfileIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDatastreamConnectionProfileStackInput) ProtoMessage() {}
+func (*GcpDatastreamConnectionProfileIacInput) ProtoMessage() {}
 
-func (x *GcpDatastreamConnectionProfileStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpDatastreamConnectionProfileIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpDatastreamConnectionProfileStackInput) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDatastreamConnectionProfileStackInput.ProtoReflect.Descriptor instead.
-func (*GcpDatastreamConnectionProfileStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDatastreamConnectionProfileIacInput.ProtoReflect.Descriptor instead.
+func (*GcpDatastreamConnectionProfileIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDatastreamConnectionProfileStackInput) GetTarget() *GcpDatastreamConnectionProfile {
+func (x *GcpDatastreamConnectionProfileIacInput) GetTarget() *GcpDatastreamConnectionProfile {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpDatastreamConnectionProfileStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpDatastreamConnectionProfileIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_input_proto protore
 
 const file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/gcp/gcpdatastreamconnectionprofile/v1alpha1/input.proto\x127dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1\x1a=catalog/gcp/gcpdatastreamconnectionprofile/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe8\x01\n" +
-	"(GcpDatastreamConnectionProfileStackInput\x12o\n" +
+	"?catalog/gcp/gcpdatastreamconnectionprofile/v1alpha1/input.proto\x127dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1\x1a=catalog/gcp/gcpdatastreamconnectionprofile/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xe6\x01\n" +
+	"&GcpDatastreamConnectionProfileIacInput\x12o\n" +
 	"\x06target\x18\x01 \x01(\v2W.dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamConnectionProfileR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xc3\x03\n" +
 	";com.dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_input_proto_rawDes
 
 var file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_input_proto_goTypes = []any{
-	(*GcpDatastreamConnectionProfileStackInput)(nil), // 0: dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamConnectionProfileStackInput
-	(*GcpDatastreamConnectionProfile)(nil),           // 1: dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamConnectionProfile
-	(*gcp.GcpProviderConfig)(nil),                    // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpDatastreamConnectionProfileIacInput)(nil), // 0: dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamConnectionProfileIacInput
+	(*GcpDatastreamConnectionProfile)(nil),         // 1: dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamConnectionProfile
+	(*gcp.GcpProviderConfig)(nil),                  // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpdatastreamconnectionprofile_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamConnectionProfileStackInput.target:type_name -> dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamConnectionProfile
-	2, // 1: dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamConnectionProfileStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamConnectionProfileIacInput.target:type_name -> dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamConnectionProfile
+	2, // 1: dev.planton.gcp.gcpdatastreamconnectionprofile.v1alpha1.GcpDatastreamConnectionProfileIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

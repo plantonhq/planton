@@ -3,7 +3,7 @@
 ## What changed
 
 - **`AwsSagemakerDomainSpaceCustomFileSystem.file_system_id` is containment-exempt.** A SageMaker Studio space that mounts an existing EFS file system names it so the space's apps can read and write it. That reference is a mount, not a home: the domain is deployed in its VPC, and the file system is a room of its own that access points are created into. Until now the reference was placement by omission, so a domain whose space mounted an EFS would have been drawn inside the file system's room instead of in its network.
-- The containment-decision registry (`shared/cloudresourcekind/testdata/containment_decisions.txt`) moves exactly that one line from `contained` to `exempt`; nothing else in the registry moved.
+- The containment-decision registry (`shared/catalogkind/testdata/containment_decisions.txt`) moves exactly that one line from `contained` to `exempt`; nothing else in the registry moved.
 
 ## Why
 
@@ -12,6 +12,6 @@
 ## How to check
 
 ```bash
-go test ./shared/cloudresourcekind/... -run TestContainmentDecisions   # green; the golden carries the exempt line
+go test ./shared/catalogkind/... -run TestContainmentDecisions   # green; the golden carries the exempt line
 grep -n containment_exempt catalog/aws/awssagemakerdomain/v1alpha1/spec.proto
 ```

@@ -24,7 +24,7 @@ Use separate stores for:
 
 ## Important: Terraform Only
 
-> ⚠️ **OpenFGA only has a Terraform provider**, so this component runs on OpenTofu or Terraform.
+> ⚠️ **OpenFGA only has a Terraform provider**, so this kind runs on OpenTofu or Terraform.
 > 
 > Set `planton.dev/provisioner: tofu` (or `terraform`) on the manifest, or leave it unset and the CLI asks between the two; Pulumi is refused before anything runs.
 
@@ -125,7 +125,7 @@ After creating a store, you typically need to:
 2. **Write relationship tuples**: Add the actual authorization data
 3. **Check permissions**: Query the system to check if a user has access
 
-These will be available as separate components:
+These will be available as separate kinds:
 - `OpenFgaAuthorizationModel` (coming soon)
 - `OpenFgaTuple` (coming soon)
 

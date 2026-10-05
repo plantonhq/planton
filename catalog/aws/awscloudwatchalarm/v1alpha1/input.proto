@@ -5,10 +5,10 @@ package dev.planton.aws.awscloudwatchalarm.v1alpha1;
 import "catalog/aws/awscloudwatchalarm/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsCloudwatchAlarmStackInput provides the inputs required by Pulumi/Terraform
+// AwsCloudwatchAlarmIacInput provides the inputs required by Pulumi/Terraform
 // modules to provision a CloudWatch metric alarm.
-message AwsCloudwatchAlarmStackInput {
-  // target cloud-resource
+message AwsCloudwatchAlarmIacInput {
+  // the catalog object to deploy
   AwsCloudwatchAlarm target = 1;
   // provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

@@ -23,11 +23,11 @@ type Locals struct {
 // No tags: the provider carries no tags argument on domain topics
 // (they are addressing entries under the domain).
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureeventgriddomaintopicv1alpha1.AzureEventgridDomainTopicStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureeventgriddomaintopicv1alpha1.AzureEventgridDomainTopicIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureEventgridDomainTopic = stackInput.Target
-	target := stackInput.Target
+	locals.AzureEventgridDomainTopic = iacInput.Target
+	target := iacInput.Target
 
 	// The domain id's shape is /subscriptions/{sub}/resourceGroups/{rg}
 	// /providers/Microsoft.EventGrid/domains/{domain}. Segment names are

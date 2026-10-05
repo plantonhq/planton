@@ -4,9 +4,9 @@
 # substrate; the official modules provision it on ECS Fargate -- one
 # always-on task (the modules fix the count at one runner per
 # registration) plus a Secrets Manager secret holding the runner
-# token. Schema: finops/componentcostprofile/v1.
+# token. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsplantonrunner
 spec:

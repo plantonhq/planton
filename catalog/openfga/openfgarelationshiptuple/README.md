@@ -15,7 +15,7 @@ Each tuple consists of:
 
 ## Important Notes
 
-**OpenTofu or Terraform**: OpenFGA only has a Terraform provider, so this component runs on OpenTofu or Terraform. Set `planton.dev/provisioner: tofu` (or `terraform`) on the manifest, or leave it unset and the CLI asks between the two; Pulumi is refused before anything runs.
+**OpenTofu or Terraform**: OpenFGA only has a Terraform provider, so this kind runs on OpenTofu or Terraform. Set `planton.dev/provisioner: tofu` (or `terraform`) on the manifest, or leave it unset and the CLI asks between the two; Pulumi is refused before anything runs.
 
 **Immutable Tuples**: Relationship tuples are immutable. Changing any field (user, relation, object, or condition) results in the old tuple being deleted and a new one being created.
 
@@ -100,7 +100,7 @@ planton apply --manifest relationship-tuple.yaml \
 | `name` | string | Yes | Name of the condition (must be defined in the model) |
 | `contextJson` | string | No | Partial context in JSON format |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

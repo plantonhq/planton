@@ -17,7 +17,7 @@ Built the `/book-demo` page — a two-phase lead capture and scheduling experien
 - External forms break immersion — users leave the site
 - No structured lead data capture or immediate team notification
 - No scheduling integration — users must wait for follow-up
-- Google Form and Typeform URLs scattered across 50+ components with no centralization
+- Google Form and Typeform URLs scattered across 50+ UI components with no centralization
 
 ## Solution / What's New
 

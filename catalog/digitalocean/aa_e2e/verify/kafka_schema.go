@@ -11,7 +11,7 @@ import (
 // GET /v2/databases/{cluster_id}/schema-registry/{subject_name}. The
 // (cluster, subject name) pair is the identity -- the registry's internal
 // numeric schema id is discarded by the provider -- so the verifier reads
-// both from the stack outputs. This live lookup matters doubly for this
+// both from the outputs. This live lookup matters doubly for this
 // kind: the provider's own importer and destroy check are broken at the
 // pin (both address an empty subject name), so the harness's verification
 // is the only trustworthy existence signal.
@@ -46,7 +46,7 @@ func (v *kafkaSchemaVerifier) VerifyAbsentFromOutputs(ctx context.Context, clien
 		return pkgerrors.Wrap(err, "digitaloceandatabasekafkaschema verify-absent failed")
 	}
 	if exists {
-		return &StillExistsError{Component: "digitaloceandatabasekafkaschema", ID: StringOutput(outputs, "subject_name")}
+		return &StillExistsError{Kind: "digitaloceandatabasekafkaschema", ID: StringOutput(outputs, "subject_name")}
 	}
 	return nil
 }

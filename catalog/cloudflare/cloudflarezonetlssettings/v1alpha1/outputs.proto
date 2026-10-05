@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1;
 
-// CloudflareZoneTlsSettingsStackOutputs captures the observable outputs after
+// CloudflareZoneTlsSettingsOutputs captures the observable outputs after
 // applying a zone's TLS settings. TLS settings are a zone-scoped singleton with no
 // resource id of their own -- the zone is the identity.
-message CloudflareZoneTlsSettingsStackOutputs {
+message CloudflareZoneTlsSettingsOutputs {
   // The zone ID the TLS settings belong to (the singleton's identity, and the
   // pass-through for downstream resource references).
   string zone_id = 1;

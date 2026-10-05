@@ -5,8 +5,8 @@ metadata:
 spec:
   # Import-ID formats per Kubernetes resource type, as documented by the
   # upstream terraform-provider-kubernetes / pulumi-kubernetes providers. The
-  # FORMAT lives here (provider knowledge, shared by every component); which
-  # concrete value fills each {placeholder} lives in the owning component's
+  # FORMAT lives here (provider knowledge, shared by every kind); which
+  # concrete value fills each {placeholder} lives in the owning kind's
   # import-map.yaml. Correctness is machine-proven by the E2E import
   # round-trip (deploy a fixture, set state aside, re-import blind, plan must
   # show zero diff) -- never by review alone.
@@ -158,7 +158,7 @@ spec:
     # which is why the namespace rides in an optional [bracketed] segment group
     # that disappears wholesale when the CR is cluster-scoped. apiVersion and
     # kind are constants of each module (a typed-CR module renders exactly one
-    # GVK), declared per component via the literal derivation.
+    # GVK), declared per kind via the literal derivation.
     - terraform_type: kubectl_manifest
       pulumi_type: ""
       id_format: "{api_version}//{kind}//{name}[//{namespace}]"

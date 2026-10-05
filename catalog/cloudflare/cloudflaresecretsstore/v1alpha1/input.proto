@@ -5,10 +5,10 @@ package dev.planton.cloudflare.cloudflaresecretsstore.v1alpha1;
 import "catalog/cloudflare/cloudflaresecretsstore/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-// CloudflareSecretsStoreStackInput is the input to the IaC module.
+// CloudflareSecretsStoreIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-message CloudflareSecretsStoreStackInput {
-  // target cloud-resource to be deployed
+message CloudflareSecretsStoreIacInput {
+  // the catalog object to deploy to be deployed
   CloudflareSecretsStore target = 1;
   // provider-config for Cloudflare authentication
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

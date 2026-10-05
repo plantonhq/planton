@@ -6,7 +6,7 @@
 
 ## Summary
 
-Enhanced OpenFGA deployment components with cross-reference support, DSL format for authorization models, and structured user/object fields for relationship tuples. These changes make it easier to work with OpenFGA resources by enabling name-based references and more intuitive field structures.
+Enhanced OpenFGA catalog kinds with cross-reference support, DSL format for authorization models, and structured user/object fields for relationship tuples. These changes make it easier to work with OpenFGA resources by enabling name-based references and more intuitive field structures.
 
 ## Problem Statement / Motivation
 
@@ -157,9 +157,9 @@ message OpenFgaRelationshipTupleObject {
 |----------|-------|
 | Proto API | `openfgaauthorizationmodel/v1/spec.proto`, `openfgarelationshiptuple/v1/spec.proto` |
 | Generated | `*.pb.go`, TypeScript types |
-| Terraform | `variables.tf`, `locals.tf`, `main.tf` for both components |
-| Pulumi | `locals.go` for both components (updated to handle new types) |
-| Documentation | `examples.md` for both components |
+| Terraform | `variables.tf`, `locals.tf`, `main.tf` for both kinds |
+| Pulumi | `locals.go` for both kinds (updated to handle new types) |
+| Documentation | `examples.md` for both kinds |
 
 Note: The Pulumi modules are pass-through placeholders (OpenFGA has no Pulumi provider), but their `locals.go` files needed updating to compile with the new proto types.
 
@@ -290,9 +290,9 @@ spec:
 
 ## Related Work
 
-- OpenFgaStore: `2026-01-17-085733-openfgastore-deployment-component.md`
-- OpenFgaAuthorizationModel: `2026-01-17-090928-openfgaauthorizationmodel-deployment-component.md`
-- OpenFgaRelationshipTuple: `2026-01-17-095002-openfgarelationshiptuple-deployment-component.md`
+- OpenFgaStore: `2026-01-17-085733-openfgastore-catalog-kind.md`
+- OpenFgaAuthorizationModel: `2026-01-17-090928-openfgaauthorizationmodel-catalog-kind.md`
+- OpenFgaRelationshipTuple: `2026-01-17-095002-openfgarelationshiptuple-catalog-kind.md`
 - Auth0Client Cross-References: `2026-01-10-185920-auth0-client-cross-references.md`
 
 ---

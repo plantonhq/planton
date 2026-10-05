@@ -5,10 +5,10 @@ package dev.planton.azure.azureprivatelinkservice.v1alpha1;
 import "catalog/azure/azureprivatelinkservice/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzurePrivateLinkServiceStackInput is the input to the IaC modules
+// AzurePrivateLinkServiceIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzurePrivateLinkServiceStackInput {
+message AzurePrivateLinkServiceIacInput {
   // The Private Link Service resource to deploy.
   AzurePrivateLinkService target = 1;
 

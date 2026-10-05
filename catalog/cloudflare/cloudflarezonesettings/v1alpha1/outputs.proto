@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarezonesettings.v1alpha1;
 
-// CloudflareZoneSettingsStackOutputs captures the observable outputs after applying
+// CloudflareZoneSettingsOutputs captures the observable outputs after applying
 // a zone's settings. Zone settings are a zone-scoped singleton with no resource id
 // of their own -- the zone is the identity.
-message CloudflareZoneSettingsStackOutputs {
+message CloudflareZoneSettingsOutputs {
   // The zone ID the settings belong to (the singleton's identity, and the
   // pass-through for downstream resource references).
   string zone_id = 1;

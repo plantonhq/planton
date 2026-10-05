@@ -8,7 +8,7 @@ This Pulumi module creates and manages a Kubernetes `autoscaling/v2` HorizontalP
 
 ```
 iac/pulumi/
-├── main.go                      # Entrypoint: loads stack input, calls module
+├── main.go                      # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml                  # Pulumi project configuration
 ├── Makefile                     # Make targets for preview/up/down/refresh
 └── module/
@@ -20,7 +20,7 @@ iac/pulumi/
 
 ## How It Works
 
-1. **Stack Input Loading**: The entrypoint loads `KubernetesHorizontalPodAutoscalerStackInput` from Pulumi config
+1. **IaC Input Loading**: The entrypoint loads `KubernetesHorizontalPodAutoscalerIacInput` from Pulumi config
 2. **Locals Initialization**: `locals.go` computes:
    - Standard Planton labels merged with user labels (identity keys cannot be overridden)
    - User annotations
@@ -29,7 +29,7 @@ iac/pulumi/
    - The resolved replica floor with the Kubernetes default (1) applied
 3. **Provider Creation**: Kubernetes provider is initialized from `provider_config`
 4. **HorizontalPodAutoscaler Creation**: A single `autoscaling/v2` HPA is created with the scale target, replica bounds, metrics, and behavior
-5. **Output Export**: Autoscaler name, namespace, scale target (`Kind/name`), and replica bounds are exported as stack outputs
+5. **Output Export**: Autoscaler name, namespace, scale target (`Kind/name`), and replica bounds are exported as outputs
 
 ## Semantics Preserved by the Module
 

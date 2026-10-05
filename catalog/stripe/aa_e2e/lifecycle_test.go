@@ -157,7 +157,7 @@ func TestHarness_DeletesOutOfBand(t *testing.T) {
 	defer stop()
 	f.put("/v1/webhook_endpoints/we_1", `{"id":"we_1"}`)
 	ctx := context.WithValue(context.Background(), provider.ManifestPathKey{}, "/scenarios/deleted-outside-planton.yaml")
-	tc := &provider.ComponentTestContext{Component: "stripewebhookendpoint", Provider: "stripe"}
+	tc := &provider.KindTestContext{Kind: "stripewebhookendpoint", Provider: "stripe"}
 
 	if err := h.VerifyDeployed(ctx, "stripewebhookendpoint", map[string]interface{}{"id": "we_1", "secret": "whsec_one"}); err != nil {
 		t.Fatal(err)
@@ -181,7 +181,7 @@ func TestHarness_DeletesOutOfBand(t *testing.T) {
 	if err := h.VerifyDeployed(ctx, "stripeprice", map[string]interface{}{"id": "price_1"}); err != nil {
 		t.Fatal(err)
 	}
-	if err := h.DeleteOutOfBand(ctx, &provider.ComponentTestContext{Component: "stripeprice"}); err == nil || !strings.Contains(err.Error(), "does not apply") {
+	if err := h.DeleteOutOfBand(ctx, &provider.KindTestContext{Kind: "stripeprice"}); err == nil || !strings.Contains(err.Error(), "does not apply") {
 		t.Errorf("a kind Stripe only deactivates must be refused, got %v", err)
 	}
 }

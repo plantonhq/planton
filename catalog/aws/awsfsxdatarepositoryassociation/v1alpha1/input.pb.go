@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsFsxDataRepositoryAssociationStackInput is the input for the
+// AwsFsxDataRepositoryAssociationIacInput is the input for the
 // aws-fsx-data-repository-association IaC modules.
-type AwsFsxDataRepositoryAssociationStackInput struct {
+type AwsFsxDataRepositoryAssociationIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsFsxDataRepositoryAssociation `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type AwsFsxDataRepositoryAssociationStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsFsxDataRepositoryAssociationStackInput) Reset() {
-	*x = AwsFsxDataRepositoryAssociationStackInput{}
+func (x *AwsFsxDataRepositoryAssociationIacInput) Reset() {
+	*x = AwsFsxDataRepositoryAssociationIacInput{}
 	mi := &file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsFsxDataRepositoryAssociationStackInput) String() string {
+func (x *AwsFsxDataRepositoryAssociationIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsFsxDataRepositoryAssociationStackInput) ProtoMessage() {}
+func (*AwsFsxDataRepositoryAssociationIacInput) ProtoMessage() {}
 
-func (x *AwsFsxDataRepositoryAssociationStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsFsxDataRepositoryAssociationIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsFsxDataRepositoryAssociationStackInput) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsFsxDataRepositoryAssociationStackInput.ProtoReflect.Descriptor instead.
-func (*AwsFsxDataRepositoryAssociationStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsFsxDataRepositoryAssociationIacInput.ProtoReflect.Descriptor instead.
+func (*AwsFsxDataRepositoryAssociationIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsFsxDataRepositoryAssociationStackInput) GetTarget() *AwsFsxDataRepositoryAssociation {
+func (x *AwsFsxDataRepositoryAssociationIacInput) GetTarget() *AwsFsxDataRepositoryAssociation {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsFsxDataRepositoryAssociationStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsFsxDataRepositoryAssociationIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_input_proto protor
 
 const file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/aws/awsfsxdatarepositoryassociation/v1alpha1/input.proto\x128dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1\x1a>catalog/aws/awsfsxdatarepositoryassociation/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xeb\x01\n" +
-	")AwsFsxDataRepositoryAssociationStackInput\x12q\n" +
+	"@catalog/aws/awsfsxdatarepositoryassociation/v1alpha1/input.proto\x128dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1\x1a>catalog/aws/awsfsxdatarepositoryassociation/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xe9\x01\n" +
+	"'AwsFsxDataRepositoryAssociationIacInput\x12q\n" +
 	"\x06target\x18\x01 \x01(\v2Y.dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xca\x03\n" +
 	"<com.dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_input_proto_rawDe
 
 var file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_input_proto_goTypes = []any{
-	(*AwsFsxDataRepositoryAssociationStackInput)(nil), // 0: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationStackInput
-	(*AwsFsxDataRepositoryAssociation)(nil),           // 1: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociation
-	(*aws.AwsProviderConfig)(nil),                     // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsFsxDataRepositoryAssociationIacInput)(nil), // 0: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationIacInput
+	(*AwsFsxDataRepositoryAssociation)(nil),         // 1: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociation
+	(*aws.AwsProviderConfig)(nil),                   // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationStackInput.target:type_name -> dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociation
-	2, // 1: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationIacInput.target:type_name -> dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociation
+	2, // 1: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -4,7 +4,7 @@ Deploys an Azure Cosmos DB account — the globally distributed, multi-model dat
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cosmos DB Account** -- a globally distributed database account in the specified Azure region and resource group, with a globally-unique DNS endpoint (`https://{accountName}.documents.azure.com`), the chosen API kind (SQL/NoSQL or MongoDB), consistency policy, geo-locations, capabilities, backup policy, and network access controls
 - **Managed Identity** -- created when `identity` is set; the account's own Entra identity (system-assigned, user-assigned, or both) — what unwraps a customer-managed encryption key
@@ -15,12 +15,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the Cosmos DB account will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the Cosmos DB account will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **A globally unique account name** -- `accountName` becomes the endpoint hostname (`https://{accountName}.documents.azure.com`). Must be 3-50 characters, lowercase letters, numbers, and hyphens only.
 - **Subnets with service endpoints** (optional) -- required when using virtual network filtering. Each subnet must have the `Microsoft.AzureCosmosDB` service endpoint enabled.
 - **A Key Vault key** (optional) -- when using customer-managed encryption, reference an AzureKeyVaultKey's `versionless_id` output. The vault must have purge protection enabled.
@@ -58,7 +58,7 @@ spec:
 planton apply -f cosmosdb-account.yaml
 ```
 
-This creates a Cosmos DB account with the SQL API (default), Session consistency, a single geo-location, and Azure's defaults everywhere else. Databases attach afterwards as AzureCosmosdbSqlDatabase resources referencing this account. A Stack Job tracks the provisioning in real time.
+This creates a Cosmos DB account with the SQL API (default), Session consistency, a single geo-location, and Azure's defaults everywhere else. Databases attach afterwards as AzureCosmosdbSqlDatabase resources referencing this account. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,7 +95,7 @@ These are the most important decisions when configuring a Cosmos DB account. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -104,9 +104,9 @@ These are the most important decisions when configuring a Cosmos DB account. Exp
 | AzureKeyVaultKey | `keyVaultKeyId` | `status.outputs.versionless_id` |
 | AzureUserAssignedIdentity | `identity.identityIds[]`, `defaultIdentity.userAssignedIdentityId` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -134,11 +134,11 @@ When `localAuthenticationEnabled` is false, the keys and connection strings stop
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) — the resource group the account is created in
-- [**Azure Cosmos DB SQL Database**](/cloud-catalog/azure-cosmosdb-sql-database) / [**Azure Cosmos DB SQL Container**](/cloud-catalog/azure-cosmosdb-sql-container) — the SQL-API data plane, referencing `cosmosdb_account_id`
-- [**Azure Cosmos DB Mongo Database**](/cloud-catalog/azure-cosmosdb-mongo-database) / [**Azure Cosmos DB Mongo Collection**](/cloud-catalog/azure-cosmosdb-mongo-collection) — the MongoDB-API data plane on MONGO_DB accounts
-- [**Azure Cosmos DB SQL Role Definition**](/cloud-catalog/azure-cosmosdb-sql-role-definition) / [**Azure Cosmos DB SQL Role Assignment**](/cloud-catalog/azure-cosmosdb-sql-role-assignment) — data-plane RBAC for the keyless posture
-- [**Azure Private Endpoint**](/cloud-catalog/azure-private-endpoint) — private connectivity when public network access is disabled (subresource `Sql` or `MongoDB`)
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) — subnets admitted through the virtual-network filter
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) — the customer-managed encryption key, referenced by versionless ID
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) — the identity that unwraps the customer-managed key
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) — the resource group the account is created in
+- [**Azure Cosmos DB SQL Database**](/infra-catalog/azure-cosmosdb-sql-database) / [**Azure Cosmos DB SQL Container**](/infra-catalog/azure-cosmosdb-sql-container) — the SQL-API data plane, referencing `cosmosdb_account_id`
+- [**Azure Cosmos DB Mongo Database**](/infra-catalog/azure-cosmosdb-mongo-database) / [**Azure Cosmos DB Mongo Collection**](/infra-catalog/azure-cosmosdb-mongo-collection) — the MongoDB-API data plane on MONGO_DB accounts
+- [**Azure Cosmos DB SQL Role Definition**](/infra-catalog/azure-cosmosdb-sql-role-definition) / [**Azure Cosmos DB SQL Role Assignment**](/infra-catalog/azure-cosmosdb-sql-role-assignment) — data-plane RBAC for the keyless posture
+- [**Azure Private Endpoint**](/infra-catalog/azure-private-endpoint) — private connectivity when public network access is disabled (subresource `Sql` or `MongoDB`)
+- [**Azure Subnet**](/infra-catalog/azure-subnet) — subnets admitted through the virtual-network filter
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) — the customer-managed encryption key, referenced by versionless ID
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) — the identity that unwraps the customer-managed key

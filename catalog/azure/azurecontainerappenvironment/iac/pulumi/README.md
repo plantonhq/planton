@@ -1,12 +1,12 @@
 # AzureContainerAppEnvironment Pulumi Module
 
-The Pulumi (Go) implementation of the `AzureContainerAppEnvironment` component.
+The Pulumi (Go) implementation of the `AzureContainerAppEnvironment` kind.
 
 ## Structure
 
 ```
 pulumi/
-├── main.go          # Entrypoint (loads stack input, calls module)
+├── main.go          # Entrypoint (loads IaC input, calls module)
 ├── Pulumi.yaml      # Pulumi project configuration
 ├── Makefile         # Build/test targets
 └── module/
@@ -24,7 +24,7 @@ pulumi/
 
 ## Behavior Notes
 
-- The Azure provider comes from the shared `pulumiazureprovider.Get` builder, which resolves static client-secret, keyless web-identity, or ambient credentials from the stack input.
+- The Azure provider comes from the shared `pulumiazureprovider.Get` builder, which resolves static client-secret, keyless web-identity, or ambient credentials from the IaC input.
 - Enum wire maps are spelled out row by row in `locals.go` so a vocabulary drift fails at preview time.
 - The system-assigned identity's principal id is exported empty when no system identity exists, keeping the output shape constant.
 

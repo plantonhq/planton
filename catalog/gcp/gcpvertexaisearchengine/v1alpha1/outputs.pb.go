@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpVertexAiSearchEngineStackOutputs captures what the engine and its
+// GcpVertexAiSearchEngineOutputs captures what the engine and its
 // folded controls, serving config, widget config, and assistants resolved
 // to.
-type GcpVertexAiSearchEngineStackOutputs struct {
+type GcpVertexAiSearchEngineOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name of the engine:
 	// projects/{project}/locations/{location}/collections/{collection_id}/engines/{engine_id}.
@@ -58,20 +58,20 @@ type GcpVertexAiSearchEngineStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiSearchEngineStackOutputs) Reset() {
-	*x = GcpVertexAiSearchEngineStackOutputs{}
+func (x *GcpVertexAiSearchEngineOutputs) Reset() {
+	*x = GcpVertexAiSearchEngineOutputs{}
 	mi := &file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiSearchEngineStackOutputs) String() string {
+func (x *GcpVertexAiSearchEngineOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiSearchEngineStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiSearchEngineOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiSearchEngineStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiSearchEngineOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -83,75 +83,75 @@ func (x *GcpVertexAiSearchEngineStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiSearchEngineStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiSearchEngineStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiSearchEngineOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiSearchEngineOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiSearchEngineStackOutputs) GetName() string {
+func (x *GcpVertexAiSearchEngineOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchEngineStackOutputs) GetEngineId() string {
+func (x *GcpVertexAiSearchEngineOutputs) GetEngineId() string {
 	if x != nil {
 		return x.EngineId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchEngineStackOutputs) GetLocation() string {
+func (x *GcpVertexAiSearchEngineOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchEngineStackOutputs) GetCollectionId() string {
+func (x *GcpVertexAiSearchEngineOutputs) GetCollectionId() string {
 	if x != nil {
 		return x.CollectionId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchEngineStackOutputs) GetEngineType() string {
+func (x *GcpVertexAiSearchEngineOutputs) GetEngineType() string {
 	if x != nil {
 		return x.EngineType
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchEngineStackOutputs) GetServingConfigName() string {
+func (x *GcpVertexAiSearchEngineOutputs) GetServingConfigName() string {
 	if x != nil {
 		return x.ServingConfigName
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchEngineStackOutputs) GetWidgetConfigName() string {
+func (x *GcpVertexAiSearchEngineOutputs) GetWidgetConfigName() string {
 	if x != nil {
 		return x.WidgetConfigName
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchEngineStackOutputs) GetDialogflowAgent() string {
+func (x *GcpVertexAiSearchEngineOutputs) GetDialogflowAgent() string {
 	if x != nil {
 		return x.DialogflowAgent
 	}
 	return ""
 }
 
-func (x *GcpVertexAiSearchEngineStackOutputs) GetControlNames() []string {
+func (x *GcpVertexAiSearchEngineOutputs) GetControlNames() []string {
 	if x != nil {
 		return x.ControlNames
 	}
 	return nil
 }
 
-func (x *GcpVertexAiSearchEngineStackOutputs) GetAssistantNames() []string {
+func (x *GcpVertexAiSearchEngineOutputs) GetAssistantNames() []string {
 	if x != nil {
 		return x.AssistantNames
 	}
@@ -162,8 +162,8 @@ var File_catalog_gcp_gcpvertexaisearchengine_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpvertexaisearchengine/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpvertexaisearchengine.v1alpha1\"\x8f\x03\n" +
-	"#GcpVertexAiSearchEngineStackOutputs\x12\x12\n" +
+	":catalog/gcp/gcpvertexaisearchengine/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpvertexaisearchengine.v1alpha1\"\x8a\x03\n" +
+	"\x1eGcpVertexAiSearchEngineOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
 	"\tengine_id\x18\x02 \x01(\tR\bengineId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x12#\n" +
@@ -192,7 +192,7 @@ func file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiSearchEngineStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineStackOutputs
+	(*GcpVertexAiSearchEngineOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineOutputs
 }
 var file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -1,6 +1,6 @@
 # Auth0Client Terraform Module
 
-This directory contains the Terraform implementation for the Auth0Client component.
+This directory contains the Terraform implementation for the Auth0Client kind.
 
 ## Overview
 

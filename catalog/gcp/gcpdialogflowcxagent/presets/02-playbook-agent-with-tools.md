@@ -25,4 +25,4 @@ A generative agent: conversations begin in the default playbook, whose natural-l
 | `tools[].dataStoreSpec` | one policy store | Add stores; set `documentProcessingMode: CHUNKS` for long unstructured documents. |
 | `generativeSettings` | English persona and safety | Declare one entry per language the agent serves. |
 
-Every playbook turn bills at the Playbooks rate -- see the component's cost profile.
+Every playbook turn bills at the Playbooks rate -- see the kind's cost profile.

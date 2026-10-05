@@ -7,7 +7,7 @@
 ## Summary
 
 The six Azure infra-charts were removed to make way for a redesigned Azure
-chart catalog built from first principles on the reworked Azure component
+chart catalog built from first principles on the reworked Azure kind
 surface (79 kinds). Alongside the reset, chart authoring gained the
 infrastructure it was missing: an offline chart validation harness that
 renders every chart with default values and proves the rendered manifests
@@ -17,19 +17,19 @@ standard, and upgraded catalog design principles in `charts/README.md`.
 
 ## Problem Statement / Motivation
 
-The Azure component catalog was rebuilt end to end — kinds renamed, bundled
+The Azure kind catalog was rebuilt end to end — kinds renamed, bundled
 sub-resources dissolved into first-class composable kinds, specs deepened to
 the full provider surface, and entire new families added (firewall, Front
 Door, messaging, observability, data-plane RBAC). The existing Azure charts
 predated all of it: they composed kinds that no longer exist in that shape
 (`AzureVpc`), set fields that were renamed or removed (`secret_names`,
 bundled node pools), and — more fundamentally — modeled thin slices rather
-than the complete environments the enriched components now make possible.
+than the complete environments the enriched kinds now make possible.
 
 Repairing them template-by-template would have preserved yesterday's design
-on top of today's components. The honest move was a reset: design the catalog
+on top of today's kinds. The honest move was a reset: design the catalog
 again from the architectures Azure teams actually build, with the full
-component surface as the palette.
+kind surface as the palette.
 
 ### Pain Points
 
@@ -66,7 +66,7 @@ flowchart LR
     A[values.yaml defaults + injected env] --> B[Render templates - Jinja2 with Jinjava-compat filters]
     B --> C[Per-document planton validate-manifest - protovalidate]
     B --> D[valueFrom kind+name resolves within the chart]
-    B --> E[fieldPath exists in target kind's stack_outputs.proto]
+    B --> E[fieldPath exists in target kind's outputs.proto]
 ```
 
 - **Render** — every template renders with default values under
@@ -80,7 +80,7 @@ flowchart LR
   defined by the same chart; charts are self-contained.
 - **Output-field existence** — every `fieldPath` of the
   `status.outputs.<field>` form must name a real field in the referenced
-  kind's `stack_outputs.proto`, catching renamed/nonexistent outputs offline
+  kind's `outputs.proto`, catching renamed/nonexistent outputs offline
   instead of mid-deploy.
 
 All four failure classes were exercised deliberately (undeclared parameter,
@@ -128,7 +128,7 @@ the existing composability and no-hardcoded-provisioner rules.
 
 ## Related Work
 
-- The Azure component rebuild changelogs (2026-07) — the enriched surface the
+- The Azure kind rebuild changelogs (2026-07) — the enriched surface the
   new catalog composes.
 - `hack/guards/ensure_chart_structure.sh` — the CI structure guard the
   offline validator complements.

@@ -34,10 +34,10 @@ type AzureBackupPolicyFileShare struct {
 	// Resource kind. Must be "AzureBackupPolicyFileShare".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Backup policy specification.
 	Spec *AzureBackupPolicyFileShareSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureBackupPolicyFileShareStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -87,7 +87,7 @@ func (x *AzureBackupPolicyFileShare) GetKind() string {
 	return ""
 }
 
-func (x *AzureBackupPolicyFileShare) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureBackupPolicyFileShare) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureBackupPolicyFileShare) GetStatus() *AzureBackupPolicyFileShareStat
 // AzureBackupPolicyFileShareStatus holds the deployment outputs.
 type AzureBackupPolicyFileShareStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureBackupPolicyFileShareStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureBackupPolicyFileShareOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureBackupPolicyFileShareStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurebackuppolicyfileshare_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureBackupPolicyFileShareStatus) GetOutputs() *AzureBackupPolicyFileShareStackOutputs {
+func (x *AzureBackupPolicyFileShareStatus) GetOutputs() *AzureBackupPolicyFileShareOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azurebackuppolicyfileshare_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aAzureBackupPolicyFileShareR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
 	"\x04spec\x18\x04 \x01(\v2U.dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
-	"\x06status\x18\x05 \x01(\v2W.dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareStatusR\x06status\"\x9b\x01\n" +
-	" AzureBackupPolicyFileShareStatus\x12w\n" +
-	"\aoutputs\x18\x01 \x01(\v2].dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareStackOutputsR\aoutputsB\xb1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2W.dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareStatusR\x06status\"\x96\x01\n" +
+	" AzureBackupPolicyFileShareStatus\x12r\n" +
+	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareOutputsR\aoutputsB\xb1\x03\n" +
 	"9com.dev.planton.azure.azurebackuppolicyfileshare.v1alpha1B\bApiProtoP\x01Zqgithub.com/plantonhq/planton/catalog/azure/azurebackuppolicyfileshare/v1alpha1;azurebackuppolicyfilesharev1alpha1\xa2\x02\x04DPAA\xaa\x025Dev.Planton.Azure.Azurebackuppolicyfileshare.V1alpha1\xca\x025Dev\\Planton\\Azure\\Azurebackuppolicyfileshare\\V1alpha1\xe2\x02ADev\\Planton\\Azure\\Azurebackuppolicyfileshare\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Azure::Azurebackuppolicyfileshare::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azurebackuppolicyfileshare_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_azure_azurebackuppolicyfileshare_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurebackuppolicyfileshare_v1alpha1_api_proto_goTypes = []any{
-	(*AzureBackupPolicyFileShare)(nil),             // 0: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShare
-	(*AzureBackupPolicyFileShareStatus)(nil),       // 1: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureBackupPolicyFileShareSpec)(nil),         // 3: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareSpec
-	(*AzureBackupPolicyFileShareStackOutputs)(nil), // 4: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareStackOutputs
+	(*AzureBackupPolicyFileShare)(nil),        // 0: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShare
+	(*AzureBackupPolicyFileShareStatus)(nil),  // 1: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureBackupPolicyFileShareSpec)(nil),    // 3: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareSpec
+	(*AzureBackupPolicyFileShareOutputs)(nil), // 4: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareOutputs
 }
 var file_catalog_azure_azurebackuppolicyfileshare_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShare.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShare.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShare.spec:type_name -> dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareSpec
 	1, // 2: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShare.status:type_name -> dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareStatus
-	4, // 3: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareStatus.outputs:type_name -> dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareStackOutputs
+	4, // 3: dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareStatus.outputs:type_name -> dev.planton.azure.azurebackuppolicyfileshare.v1alpha1.AzureBackupPolicyFileShareOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

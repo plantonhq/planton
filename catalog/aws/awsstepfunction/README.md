@@ -120,7 +120,7 @@ spec:
 | `type` | string | No | `STANDARD` or `EXPRESS`. Defaults to `STANDARD`. Cannot be changed after creation. |
 | `definition` | Struct | Yes | ASL workflow definition as native YAML. Serialized to JSON by the IaC module. |
 | `roleArn` | StringValueOrRef | Yes | IAM execution role ARN. Must trust `states.amazonaws.com`. |
-| `publish` | bool | No | Publish an immutable version on create and on every configuration change. The latest version ARN is exported in stack outputs. Default: false. |
+| `publish` | bool | No | Publish an immutable version on create and on every configuration change. The latest version ARN is exported in outputs. Default: false. |
 | `aliases` | AwsStepFunctionAlias[] | No | Named aliases routing 100% of traffic to the version this deployment published (requires `publish: true`). Alias ARNs are exported keyed by name. |
 | `tracingEnabled` | optional bool | No | Enable AWS X-Ray tracing. Tri-state: unset keeps the AWS default (off); an explicit `false` is what turns tracing OFF on a machine that had it on. |
 | `logging` | AwsStepFunctionLoggingConfig | No | Execution history logging configuration. Keep the block with `level: OFF` to explicitly turn logging off on a machine that had it on -- removing the block reverts nothing. |
@@ -148,7 +148,7 @@ spec:
 | `kmsKeyId` | StringValueOrRef | Yes (when block present) | Customer-managed KMS key ARN. |
 | `kmsDataKeyReusePeriodSeconds` | int32 | No | Data key reuse period. Range: 60-900. Default: 300 (AWS default). |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
@@ -161,7 +161,7 @@ spec:
 
 ## Infra Chart Role
 
-Step Functions serves as the orchestration layer in event-driven and serverless API infra charts. It coordinates Lambda functions, SQS queues, SNS topics, and other AWS services into reliable, visual workflows with built-in error handling and retry logic.
+Step Functions serves as the orchestration layer in event-driven and serverless API Infra Charts. It coordinates Lambda functions, SQS queues, SNS topics, and other AWS services into reliable, visual workflows with built-in error handling and retry logic.
 
 ## Deliberately Omitted
 

@@ -15,7 +15,7 @@ planton tofu apply --manifest ../../e2e/manifest.yaml --auto-approve
 planton tofu destroy --manifest ../../e2e/manifest.yaml --auto-approve
 ```
 
-Credentials are passed via the stack input through the CLI, not in `spec`.
+Credentials are passed via the IaC input through the CLI, not in `spec`.
 
 ## Files
 
@@ -30,7 +30,7 @@ Credentials are passed via the stack input through the CLI, not in `spec`.
 - `satellite_settle.tf` — the destroy-side `time_sleep` between the
   usage-limit deletes and the endpoint delete (AWS serializes workgroup
   operations; the full live-probed contract is documented there)
-- `outputs.tf` — outputs matching `AwsRedshiftServerlessWorkgroupStackOutputs`
+- `outputs.tf` — outputs matching `AwsRedshiftServerlessWorkgroupOutputs`
 
 ## Outputs
 

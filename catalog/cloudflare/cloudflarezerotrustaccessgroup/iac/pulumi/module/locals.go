@@ -12,9 +12,9 @@ type Locals struct {
 	CloudflareZeroTrustAccessGroup *cloudflarezerotrustaccessgroupv1alpha1.CloudflareZeroTrustAccessGroup
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarezerotrustaccessgroupv1alpha1.CloudflareZeroTrustAccessGroupStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarezerotrustaccessgroupv1alpha1.CloudflareZeroTrustAccessGroupIacInput) *Locals {
 	return &Locals{
-		CloudflareProviderConfig:       stackInput.ProviderConfig,
-		CloudflareZeroTrustAccessGroup: stackInput.Target,
+		CloudflareProviderConfig:       iacInput.ProviderConfig,
+		CloudflareZeroTrustAccessGroup: iacInput.Target,
 	}
 }

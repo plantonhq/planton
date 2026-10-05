@@ -69,7 +69,7 @@ type AwsIamUserSpec struct {
 	// an AwsIamPolicy's policy_arn output or pass a literal policy ARN.
 	PermissionsBoundary *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=permissions_boundary,json=permissionsBoundary,proto3" json:"permissions_boundary,omitempty"`
 	// If true, no access key is created for this user. By default one active
-	// access key is created and its id/secret are exported as (sensitive) stack
+	// access key is created and its id/secret are exported as (sensitive)
 	// outputs -- the usual reason a user exists. Disable for console-only or
 	// externally-keyed users.
 	DisableAccessKeys bool `protobuf:"varint,7,opt,name=disable_access_keys,json=disableAccessKeys,proto3" json:"disable_access_keys,omitempty"`

@@ -4,7 +4,7 @@ Declares one repository linked into Cloud Build through an existing connection. 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Repository link** -- one `cloudbuildv2_repository` under the parent connection
 
@@ -61,7 +61,7 @@ planton apply -f cloud-build-repository.yaml
 
 - A literal `parentConnection` is a full connection name; `remoteUri` starts with `https://`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -89,7 +89,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpCloudBuildConnection** -- the connection the repository is linked through
 - **GcpCloudBuildTrigger** -- builds started by the repository's events

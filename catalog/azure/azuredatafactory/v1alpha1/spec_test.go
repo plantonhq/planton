@@ -39,7 +39,7 @@ func validResource() *AzureDataFactory {
 	return &AzureDataFactory{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureDataFactory",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-adf",
 		},
 		Spec: &AzureDataFactorySpec{

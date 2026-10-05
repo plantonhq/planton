@@ -4,7 +4,7 @@ Deploys a Kafka Connect cluster on Kubernetes as a Strimzi `KafkaConnect` custom
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Strimzi `KafkaConnect` resource** — the cluster declaration (Kafka connection, plugin delivery, group identity, worker config, sizing), reconciled by the watching Strimzi operator into the worker Deployment and the Connect REST API Service (`<name>-connect-api`, port 8083).
 - **Kubernetes Namespace** — created only when `createNamespace` is `true`; otherwise deploys into an existing namespace. A Strimzi operator must watch that namespace or the resource is accepted by the API server and silently never reconciled.
@@ -59,7 +59,7 @@ spec:
 planton apply -f cdc-connect.yaml
 ```
 
-This creates a two-worker Connect cluster running the Debezium Connect image against the `event-bus` cluster's internal bootstrap endpoint; pipes are then declared as Kafka Connector resources against this cluster. A Stack Job tracks the provisioning in real time.
+This creates a two-worker Connect cluster running the Debezium Connect image against the `event-bus` cluster's internal bootstrap endpoint; pipes are then declared as Kafka Connector resources against this cluster. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -105,7 +105,7 @@ These are the most important decisions when configuring a Kafka Connect cluster.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -114,9 +114,9 @@ These are the most important decisions when configuring a Kafka Connect cluster.
 | **KubernetesKafka** | `tls.trustedCertificates[].secretName` | `status.outputs.cluster_ca_cert_secret_name` |
 | **KubernetesKafkaUser** | `authentication.certificateAndKey.secretName` / `authentication.passwordSecret.secretName` | `status.outputs.secret_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -135,10 +135,10 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Apache Kafka**](/cloud-catalog/kubernetes-kafka) — the cluster the workers read from and write to; its outputs resolve bootstrap and CA trust
-- [**Kafka Connector**](/cloud-catalog/kubernetes-kafka-connector) — the individual pipes, declared one per integration against this cluster's `connect_name`
-- [**Kafka User**](/cloud-catalog/kubernetes-kafka-user) — the authenticated principal whose credential Secret the workers present
-- [**Strimzi Kafka Operator**](/cloud-catalog/kubernetes-strimzi-kafka-operator) — the declared prerequisite: it must watch this cluster's namespace
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — provides the namespace shared with the Kafka cluster and its connectors
-- [**Kafka MirrorMaker 2**](/cloud-catalog/kubernetes-kafka-mirror-maker2) — purpose-built mirroring on the same Connect protocol; its group identity must not collide with this cluster's
-- [**Kafka UI**](/cloud-catalog/kubernetes-kafka-ui) — observe Connect cluster and connector status alongside topics
+- [**Apache Kafka**](/infra-catalog/kubernetes-kafka) — the cluster the workers read from and write to; its outputs resolve bootstrap and CA trust
+- [**Kafka Connector**](/infra-catalog/kubernetes-kafka-connector) — the individual pipes, declared one per integration against this cluster's `connect_name`
+- [**Kafka User**](/infra-catalog/kubernetes-kafka-user) — the authenticated principal whose credential Secret the workers present
+- [**Strimzi Kafka Operator**](/infra-catalog/kubernetes-strimzi-kafka-operator) — the declared prerequisite: it must watch this cluster's namespace
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — provides the namespace shared with the Kafka cluster and its connectors
+- [**Kafka MirrorMaker 2**](/infra-catalog/kubernetes-kafka-mirror-maker2) — purpose-built mirroring on the same Connect protocol; its group identity must not collide with this cluster's
+- [**Kafka UI**](/infra-catalog/kubernetes-kafka-ui) — observe Connect cluster and connector status alongside topics

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpmodelarmortemplate.v1alpha1;
 
-// GcpModelArmorTemplateStackOutputs carries the identity an application or
+// GcpModelArmorTemplateOutputs carries the identity an application or
 // a Vertex AI Search engine names the template by.
-message GcpModelArmorTemplateStackOutputs {
+message GcpModelArmorTemplateOutputs {
   // Full resource name:
   // projects/{project}/locations/{location}/templates/{template_id} -- what
   // sanitize calls and GcpVertexAiSearchEngine's model_armor_config take.

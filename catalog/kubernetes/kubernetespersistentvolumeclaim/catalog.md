@@ -4,7 +4,7 @@ Deploys a Kubernetes PersistentVolumeClaim — the durable-disk primitive. A cla
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes PersistentVolumeClaim** -- a core/v1 claim in the specified namespace carrying capacity, access modes, storage-class selection, optional static binding, and an optional clone/snapshot data source
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -49,7 +49,7 @@ spec:
 planton apply -f pvc.yaml
 ```
 
-This requests a 10Gi ReadWriteOnce volume through the cluster's default StorageClass, ready for workloads to mount by name. A Stack Job tracks the provisioning in real time.
+This requests a 10Gi ReadWriteOnce volume through the cluster's default StorageClass, ready for workloads to mount by name. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,16 +89,16 @@ These are the most important decisions when configuring a Kubernetes PersistentV
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** (optional) | `namespace` | `spec.name` |
 | **KubernetesStorageClass** (optional) | `storageClassName` | `status.outputs.storage_class_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,6 +120,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this claim in dependency order
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) -- reference a class created on this platform to pin the performance tier declaratively
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- mounts the claim by name via its volume mounts, from the same namespace only; per-replica StatefulSet storage uses the workload's own volume claim templates instead
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so Infra Charts create it and this claim in dependency order
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) -- reference a class created on this platform to pin the performance tier declaratively
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- mounts the claim by name via its volume mounts, from the same namespace only; per-replica StatefulSet storage uses the workload's own volume claim templates instead

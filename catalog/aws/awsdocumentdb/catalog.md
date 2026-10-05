@@ -4,7 +4,7 @@ Deploys an Amazon DocumentDB cluster (MongoDB-compatible) — the shared-storage
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DocumentDB Cluster** -- the shared-storage cluster in the specified AWS region, created fresh, restored from a snapshot, or restored from another cluster's continuous backup (point-in-time, optionally as a copy-on-write fast clone)
 - **DocumentDB Instances** -- one instance per `instances` entry; the lowest promotion tier that is available becomes the writer. Each entry is managed as its own provider resource keyed by name, so scaling readers never touches the cluster. Per-instance knobs cover the maintenance window, CA bundle, the CA-rotation restart deferral (`certificateRotationRestart`), snapshot tag copy, Performance Insights, and `applyImmediately`
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -70,7 +70,7 @@ spec:
 planton apply -f documentdb.yaml
 ```
 
-This creates an encrypted two-instance cluster (writer + reader) with the master password managed in Secrets Manager, 7-day point-in-time recovery, deletion protection, and a named final snapshot. A Stack Job tracks the provisioning in real time.
+This creates an encrypted two-instance cluster (writer + reader) with the master password managed in Secrets Manager, 7-day point-in-time recovery, deletion protection, and a named final snapshot. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -117,7 +117,7 @@ These are the most important decisions when configuring a DocumentDB cluster. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -126,9 +126,9 @@ These are the most important decisions when configuring a DocumentDB cluster. Ex
 | **AwsKmsKey** (optional) | `kmsKeyId` | `status.outputs.key_arn` |
 | **AwsKmsKey** (optional) | `instances[].performanceInsightsKmsKeyId` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -154,6 +154,6 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides the subnets for the DB subnet group across multiple Availability Zones
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- provides network access control for the cluster endpoint
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides customer-managed keys for storage and Performance Insights encryption
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides the subnets for the DB subnet group across multiple Availability Zones
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- provides network access control for the cluster endpoint
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides customer-managed keys for storage and Performance Insights encryption

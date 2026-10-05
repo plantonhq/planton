@@ -81,7 +81,7 @@ flowchart LR
   Identity, and the README ships the full four-step keyless recipe.
 - **Registry**: an Artifact Registry Docker repository with a
   repository-scoped `artifactregistry.reader` grant for the node account.
-- **Addons are taught, not bundled**: Kubernetes-level components target the
+- **Addons are taught, not bundled**: Kubernetes-level kinds target the
   cluster by name selector from their own resources; the README teaches the
   pattern and points at GKE-native answers (Gateway API, Secret Manager CSI,
   managed Prometheus) the cluster spec already models first-class.
@@ -161,9 +161,9 @@ Two timeless composition teachings added to the `valueFrom` discipline:
 - Icon URLs verified resolving (200 × 2); scaffolding-leakage grep clean;
   site stats regenerated.
 - Not validated (structural): server-side `planton chart build` and live
-  InfraProject deploys — the control plane's protos stay pre-rebuild until
+  InfraStack deploys — the control plane's protos stay pre-rebuild until
   the release. Every composed kind is already live dual-engine E2E-proven by
-  its component work.
+  its kind work.
 
 ## Impact
 

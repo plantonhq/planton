@@ -1,10 +1,10 @@
 # AWS Redshift Serverless Workgroup
 
-Deploys an Amazon Redshift Serverless workgroup — the compute plane of the serverless warehouse: Redshift Processing Unit (RPU) capacity, VPC placement, network reachability, and query-level configuration. A workgroup computes; the data it serves lives on the [AwsRedshiftServerlessNamespace](/cloud-catalog/aws-redshift-serverless-namespace) it attaches to by name. Billing follows the compute — RPU-hours accrue only while queries execute, so an idle workgroup costs nothing. Many workgroups can serve one namespace (a capped dev endpoint and an autoscaling production endpoint over the same data), and each is created and destroyed without touching what is stored.
+Deploys an Amazon Redshift Serverless workgroup — the compute plane of the serverless warehouse: Redshift Processing Unit (RPU) capacity, VPC placement, network reachability, and query-level configuration. A workgroup computes; the data it serves lives on the [AwsRedshiftServerlessNamespace](/infra-catalog/aws-redshift-serverless-namespace) it attaches to by name. Billing follows the compute — RPU-hours accrue only while queries execute, so an idle workgroup costs nothing. Many workgroups can serve one namespace (a capped dev endpoint and an autoscaling production endpoint over the same data), and each is created and destroyed without touching what is stored.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Redshift Serverless Workgroup** -- the compute plane whose name is the resource name (create-time immutable); SQL clients connect to its endpoint. The workgroup carries the capacity posture (a fixed RPU baseline or the price-performance dial, plus the optional hard spend ceiling), VPC placement (subnets across three AZs minimum, guarded by the referenced security groups), reachability (enhanced VPC routing, private-by-default exposure, the connection port), and query configuration (session parameters and monitoring guardrails -- serverless has no parameter groups)
 - **Custom Domain Association** -- created only when `customDomain` is configured; fronts the endpoint with a branded DNS name and an ACM certificate
@@ -16,13 +16,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **The namespace first** -- deploy the [AwsRedshiftServerlessNamespace](/cloud-catalog/aws-redshift-serverless-namespace) this workgroup serves; the workgroup references its `namespace_name` output.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **The namespace first** -- deploy the [AwsRedshiftServerlessNamespace](/infra-catalog/aws-redshift-serverless-namespace) this workgroup serves; the workgroup references its `namespace_name` output.
 
 ### AWS Account
 
 - **Three subnets, three AZs** -- Redshift Serverless refuses a workgroup with fewer than three subnets spanning three distinct Availability Zones (leave the list empty only to use the account's default VPC). Each subnet needs free IPs in proportion to base capacity.
-- **Ingress on the security groups** -- warehouse ingress rules (e.g. port 5439 from BI tooling) belong on the referenced [AwsSecurityGroup](/cloud-catalog/aws-security-group) nodes, never inside the workgroup.
+- **Ingress on the security groups** -- warehouse ingress rules (e.g. port 5439 from BI tooling) belong on the referenced [AwsSecurityGroup](/infra-catalog/aws-security-group) nodes, never inside the workgroup.
 
 ## Deploy
 
@@ -60,7 +60,7 @@ spec:
 planton apply -f redshift-serverless-workgroup.yaml
 ```
 
-This creates a cost-bounded dev workgroup over the referenced namespace. A Stack Job tracks the provisioning in real time.
+This creates a cost-bounded dev workgroup over the referenced namespace. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -116,7 +116,7 @@ These are the most important decisions when configuring a serverless workgroup. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -125,9 +125,9 @@ These are the most important decisions when configuring a serverless workgroup. 
 | **AwsSecurityGroup** (optional) | `securityGroupIds`, `endpointAccesses[].vpcSecurityGroupIds` | `status.outputs.security_group_id` |
 | **AwsCertManagerCert** (optional) | `customDomain.certificateArn` | `status.outputs.cert_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -152,8 +152,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Redshift Serverless Namespace**](/cloud-catalog/aws-redshift-serverless-namespace) -- the data plane this workgroup computes for (references `namespace_name`)
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- placement for the compute and its managed VPC endpoint
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- carries the warehouse's ingress rules
-- [**AWS ACM Certificate**](/cloud-catalog/aws-cert-manager-cert) -- provides the TLS certificate for the custom domain
-- [**AWS Redshift Cluster**](/cloud-catalog/aws-redshift-cluster) -- the provisioned alternative when steady, predictable load makes reserved capacity cheaper
+- [**AWS Redshift Serverless Namespace**](/infra-catalog/aws-redshift-serverless-namespace) -- the data plane this workgroup computes for (references `namespace_name`)
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- placement for the compute and its managed VPC endpoint
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- carries the warehouse's ingress rules
+- [**AWS ACM Certificate**](/infra-catalog/aws-cert-manager-cert) -- provides the TLS certificate for the custom domain
+- [**AWS Redshift Cluster**](/infra-catalog/aws-redshift-cluster) -- the provisioned alternative when steady, predictable load makes reserved capacity cheaper

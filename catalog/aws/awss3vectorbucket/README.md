@@ -4,7 +4,7 @@ One S3 vector bucket with its vector indexes — purpose-built storage for AI em
 
 ## Highlights
 
-- **The Bedrock KB LEGO block**: AwsBedrockKnowledgeBase's `s3_vectors` arm points at an index defined here — bucket + index + knowledge base is a three-resource chart.
+- **The Bedrock KB catalog kind**: AwsBedrockKnowledgeBase's `s3_vectors` arm points at an index defined here — bucket + index + knowledge base is a three-resource chart.
 - **Everything on an index is fixed for life**: dimension, distance metric, non-filterable keys — an index is replaced, not edited, so the spec teaches sizing dimension to the embedding model (Titan v2: 1024) BEFORE the first vector lands.
 - **The metadata budget made visible**: bulky payload fields (source text, URIs) belong in `non_filterable_metadata_keys` — filterable metadata has a hard per-vector size budget, taught on the field.
 - **Secure and honest by default**: `data_type` is module-pinned to float32 (the provider's single-value enum, recorded exclusion); `force_destroy` is config-only and declared so in the import catalog.

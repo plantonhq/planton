@@ -26,9 +26,9 @@ type Locals struct {
 
 // initializeLocals derives the bare cluster id and the defaulted topic
 // name. Topics carry no labels, so there is no attribution label set.
-func initializeLocals(_ *pulumi.Context, stackInput *gcpmanagedkafkatopicv1alpha1.GcpManagedKafkaTopicStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpmanagedkafkatopicv1alpha1.GcpManagedKafkaTopicIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpManagedKafkaTopic = stackInput.Target
+	locals.GcpManagedKafkaTopic = iacInput.Target
 	spec := locals.GcpManagedKafkaTopic.Spec
 
 	cluster := spec.Cluster.GetValue()
@@ -39,6 +39,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpmanagedkafkatopicv1alpha
 		locals.TopicId = locals.GcpManagedKafkaTopic.Metadata.Name
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

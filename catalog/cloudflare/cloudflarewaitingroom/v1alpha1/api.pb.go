@@ -33,7 +33,7 @@ type CloudflareWaitingRoom struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareWaitingRoomSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *CloudflareWaitingRoom) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareWaitingRoom) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareWaitingRoom) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *CloudflareWaitingRoom) GetStatus() *CloudflareWaitingRoomStatus {
 // CloudflareWaitingRoomStatus represents the observed state of a waiting room.
 type CloudflareWaitingRoomStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareWaitingRoomStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareWaitingRoomOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareWaitingRoomStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarewaitingroom_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareWaitingRoomStatus) GetOutputs() *CloudflareWaitingRoomStackOutputs {
+func (x *CloudflareWaitingRoomStatus) GetOutputs() *CloudflareWaitingRoomOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflarewaitingroom_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15CloudflareWaitingRoomR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12l\n" +
 	"\x04spec\x18\x04 \x01(\v2P.dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12j\n" +
-	"\x06status\x18\x05 \x01(\v2R.dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomStatusR\x06status\"\x91\x01\n" +
-	"\x1bCloudflareWaitingRoomStatus\x12r\n" +
-	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomStackOutputsR\aoutputsB\xac\x03\n" +
+	"\x06status\x18\x05 \x01(\v2R.dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomStatusR\x06status\"\x8c\x01\n" +
+	"\x1bCloudflareWaitingRoomStatus\x12m\n" +
+	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomOutputsR\aoutputsB\xac\x03\n" +
 	"9com.dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1B\bApiProtoP\x01Zlgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarewaitingroom/v1alpha1;cloudflarewaitingroomv1alpha1\xa2\x02\x04DPCC\xaa\x025Dev.Planton.Cloudflare.Cloudflarewaitingroom.V1alpha1\xca\x025Dev\\Planton\\Cloudflare\\Cloudflarewaitingroom\\V1alpha1\xe2\x02ADev\\Planton\\Cloudflare\\Cloudflarewaitingroom\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Cloudflare::Cloudflarewaitingroom::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflarewaitingroom_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_cloudflare_cloudflarewaitingroom_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarewaitingroom_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareWaitingRoom)(nil),             // 0: dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoom
-	(*CloudflareWaitingRoomStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareWaitingRoomSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomSpec
-	(*CloudflareWaitingRoomStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomStackOutputs
+	(*CloudflareWaitingRoom)(nil),        // 0: dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoom
+	(*CloudflareWaitingRoomStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareWaitingRoomSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomSpec
+	(*CloudflareWaitingRoomOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomOutputs
 }
 var file_catalog_cloudflare_cloudflarewaitingroom_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoom.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoom.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoom.spec:type_name -> dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomSpec
 	1, // 2: dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoom.status:type_name -> dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomStatus
-	4, // 3: dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarewaitingroom.v1alpha1.CloudflareWaitingRoomOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

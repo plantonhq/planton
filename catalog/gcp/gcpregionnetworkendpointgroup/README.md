@@ -73,7 +73,7 @@ For a SERVERLESS NEG set exactly one of `cloudRun` / `cloudFunction` / `appEngin
 | `subnetwork` | `StringValueOrRef` | — | Subnet for PSC/PORTMAP NEGs. Can reference a GcpSubnetwork. Immutable. |
 | `pscTargetService` | `string` | — | Target service URL for PSC/INTERNET NEGs (required for PSC). Immutable. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -99,7 +99,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 - **Region must match**: a serverless NEG must be in the same region as the workload it fronts; a backend service can combine serverless NEGs from multiple regions.
 - **No health checks for serverless backends**: a backend service whose backends are all serverless NEGs needs no health check — the serverless platform manages health.
 
-## Related Components
+## Related Kinds
 
 - [GcpBackendService](/docs/catalog/gcp/gcpbackendservice) — references this NEG in `backends[].group`
 - [GcpCloudRun](/docs/catalog/gcp/gcpcloudrun) — the serverless workload a SERVERLESS NEG fronts

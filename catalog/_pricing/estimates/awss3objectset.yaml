@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awss3objectset
 spec:
@@ -50,4 +50,4 @@ spec:
         - each promotion bills one COPY (priced like a PUT) plus a GET against the source bucket per object -- the bytes move inside S3 and never transit the deploy host, so same-region promotion has zero transfer cost
         - a cross-region source would add inter-region data transfer out of the source's region per GB
         - the promoted artifacts' storage bills on the destination bucket per GB-month; the ETag precondition fails the deploy rather than promoting a changed source
-      notes: Zero committed cost -- server-side copy is the promote pattern this component exists for, and its per-deploy request spend is a handful of COPY/GET operations regardless of artifact size.
+      notes: Zero committed cost -- server-side copy is the promote pattern this kind exists for, and its per-deploy request spend is a handful of COPY/GET operations regardless of artifact size.

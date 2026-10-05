@@ -31,7 +31,7 @@ import (
 
 	"github.com/plantonhq/planton/pkg/explain"
 	"github.com/plantonhq/planton/pkg/refannotations"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"gopkg.in/yaml.v3"
 )
@@ -327,7 +327,7 @@ func refTarget(fd protoreflect.FieldDescriptor) (refKind, refFieldPath string) {
 	if keys := annotations.Keys(); len(keys) > 0 {
 		return keys[0].Kind.String(), keys[0].FieldPath
 	}
-	if annotations.DefaultKind != cloudresourcekind.CloudResourceKind_unspecified {
+	if annotations.DefaultKind != catalogkind.CatalogKind_unspecified {
 		return annotations.DefaultKind.String(), ""
 	}
 	return "", ""

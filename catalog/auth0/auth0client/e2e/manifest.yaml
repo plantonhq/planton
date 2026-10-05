@@ -10,7 +10,7 @@ metadata:
   env: development
   labels:
     purpose: testing
-    component: auth0client
+    catalog-kind: auth0client
 spec:
   application_type: spa
   description: Test SPA Application for Development

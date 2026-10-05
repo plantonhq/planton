@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kubernetesexternaldns
 spec:
@@ -22,4 +22,4 @@ spec:
     - the price of reserved CPU and memory is the target cluster's node economics, which this catalog cannot know
     - the DNS zones and records this controller manages bill on the DNS provider's account (hosted-zone and query pricing), never on the cluster
     - the helm_values overlay merges LAST over the typed rendering and can override modeled values, including resources -- this profile describes the spec's declaration
-  notes: "This component creates no cloud SKU of its own -- its footprint is one controller pod (plus the webhook sidecar on the webhook arm). The zones it writes into are the DNS provider's resources with their own billing; clusters publishing to several providers run multiple instances of this component, each its own pod."
+  notes: "This component creates no cloud SKU of its own -- its footprint is one controller pod (plus the webhook sidecar on the webhook arm). The zones it writes into are the DNS provider's resources with their own billing; clusters publishing to several providers run multiple instances of this kind, each its own pod."

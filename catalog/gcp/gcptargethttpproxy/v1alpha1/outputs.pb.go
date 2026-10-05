@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP target HTTP proxy.
-type GcpTargetHttpProxyStackOutputs struct {
+type GcpTargetHttpProxyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Self-link URI of the target HTTP proxy. This is the value a
 	// forwarding rule references as its target — the composition handle that
@@ -45,20 +45,20 @@ type GcpTargetHttpProxyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpTargetHttpProxyStackOutputs) Reset() {
-	*x = GcpTargetHttpProxyStackOutputs{}
+func (x *GcpTargetHttpProxyOutputs) Reset() {
+	*x = GcpTargetHttpProxyOutputs{}
 	mi := &file_catalog_gcp_gcptargethttpproxy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpTargetHttpProxyStackOutputs) String() string {
+func (x *GcpTargetHttpProxyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpTargetHttpProxyStackOutputs) ProtoMessage() {}
+func (*GcpTargetHttpProxyOutputs) ProtoMessage() {}
 
-func (x *GcpTargetHttpProxyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpTargetHttpProxyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcptargethttpproxy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,40 +70,40 @@ func (x *GcpTargetHttpProxyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpTargetHttpProxyStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpTargetHttpProxyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpTargetHttpProxyOutputs.ProtoReflect.Descriptor instead.
+func (*GcpTargetHttpProxyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcptargethttpproxy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpTargetHttpProxyStackOutputs) GetSelfLink() string {
+func (x *GcpTargetHttpProxyOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpTargetHttpProxyStackOutputs) GetProxyName() string {
+func (x *GcpTargetHttpProxyOutputs) GetProxyName() string {
 	if x != nil {
 		return x.ProxyName
 	}
 	return ""
 }
 
-func (x *GcpTargetHttpProxyStackOutputs) GetProxyId() string {
+func (x *GcpTargetHttpProxyOutputs) GetProxyId() string {
 	if x != nil {
 		return x.ProxyId
 	}
 	return ""
 }
 
-func (x *GcpTargetHttpProxyStackOutputs) GetFingerprint() string {
+func (x *GcpTargetHttpProxyOutputs) GetFingerprint() string {
 	if x != nil {
 		return x.Fingerprint
 	}
 	return ""
 }
 
-func (x *GcpTargetHttpProxyStackOutputs) GetRegion() string {
+func (x *GcpTargetHttpProxyOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -114,8 +114,8 @@ var File_catalog_gcp_gcptargethttpproxy_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcptargethttpproxy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcptargethttpproxy/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcptargethttpproxy.v1alpha1\"\xb1\x01\n" +
-	"\x1eGcpTargetHttpProxyStackOutputs\x12\x1b\n" +
+	"5catalog/gcp/gcptargethttpproxy/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcptargethttpproxy.v1alpha1\"\xac\x01\n" +
+	"\x19GcpTargetHttpProxyOutputs\x12\x1b\n" +
 	"\tself_link\x18\x01 \x01(\tR\bselfLink\x12\x1d\n" +
 	"\n" +
 	"proxy_name\x18\x02 \x01(\tR\tproxyName\x12\x19\n" +
@@ -138,7 +138,7 @@ func file_catalog_gcp_gcptargethttpproxy_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcptargethttpproxy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcptargethttpproxy_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpTargetHttpProxyStackOutputs)(nil), // 0: dev.planton.gcp.gcptargethttpproxy.v1alpha1.GcpTargetHttpProxyStackOutputs
+	(*GcpTargetHttpProxyOutputs)(nil), // 0: dev.planton.gcp.gcptargethttpproxy.v1alpha1.GcpTargetHttpProxyOutputs
 }
 var file_catalog_gcp_gcptargethttpproxy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

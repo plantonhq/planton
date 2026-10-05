@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// spark-operator-kubernetes stack outputs
-type KubernetesSparkOperatorStackOutputs struct {
+// spark-operator-kubernetes outputs
+type KubernetesSparkOperatorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the operator runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -39,20 +39,20 @@ type KubernetesSparkOperatorStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *KubernetesSparkOperatorStackOutputs) Reset() {
-	*x = KubernetesSparkOperatorStackOutputs{}
+func (x *KubernetesSparkOperatorOutputs) Reset() {
+	*x = KubernetesSparkOperatorOutputs{}
 	mi := &file_catalog_kubernetes_kubernetessparkoperator_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesSparkOperatorStackOutputs) String() string {
+func (x *KubernetesSparkOperatorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesSparkOperatorStackOutputs) ProtoMessage() {}
+func (*KubernetesSparkOperatorOutputs) ProtoMessage() {}
 
-func (x *KubernetesSparkOperatorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesSparkOperatorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetessparkoperator_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *KubernetesSparkOperatorStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesSparkOperatorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesSparkOperatorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesSparkOperatorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesSparkOperatorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetessparkoperator_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesSparkOperatorStackOutputs) GetNamespace() string {
+func (x *KubernetesSparkOperatorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesSparkOperatorStackOutputs) GetReleaseName() string {
+func (x *KubernetesSparkOperatorOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesSparkOperatorStackOutputs) GetWorkloadServiceAccount() string {
+func (x *KubernetesSparkOperatorOutputs) GetWorkloadServiceAccount() string {
 	if x != nil {
 		return x.WorkloadServiceAccount
 	}
 	return ""
 }
 
-func (x *KubernetesSparkOperatorStackOutputs) GetWatchedNamespaces() []string {
+func (x *KubernetesSparkOperatorOutputs) GetWatchedNamespaces() []string {
 	if x != nil {
 		return x.WatchedNamespaces
 	}
@@ -101,8 +101,8 @@ var File_catalog_kubernetes_kubernetessparkoperator_v1alpha1_outputs_proto proto
 
 const file_catalog_kubernetes_kubernetessparkoperator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/kubernetes/kubernetessparkoperator/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetessparkoperator.v1alpha1\"\xcf\x01\n" +
-	"#KubernetesSparkOperatorStackOutputs\x12\x1c\n" +
+	"Acatalog/kubernetes/kubernetessparkoperator/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetessparkoperator.v1alpha1\"\xca\x01\n" +
+	"\x1eKubernetesSparkOperatorOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x128\n" +
 	"\x18workload_service_account\x18\x03 \x01(\tR\x16workloadServiceAccount\x12-\n" +
@@ -123,7 +123,7 @@ func file_catalog_kubernetes_kubernetessparkoperator_v1alpha1_outputs_proto_rawD
 
 var file_catalog_kubernetes_kubernetessparkoperator_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetessparkoperator_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesSparkOperatorStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorStackOutputs
+	(*KubernetesSparkOperatorOutputs)(nil), // 0: dev.planton.kubernetes.kubernetessparkoperator.v1alpha1.KubernetesSparkOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetessparkoperator_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

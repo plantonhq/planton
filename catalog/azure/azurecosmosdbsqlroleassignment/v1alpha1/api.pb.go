@@ -35,7 +35,7 @@ type AzureCosmosdbSqlRoleAssignment struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureCosmosdbSqlRoleAssignmentSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -88,7 +88,7 @@ func (x *AzureCosmosdbSqlRoleAssignment) GetKind() string {
 	return ""
 }
 
-func (x *AzureCosmosdbSqlRoleAssignment) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureCosmosdbSqlRoleAssignment) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureCosmosdbSqlRoleAssignment) GetStatus() *AzureCosmosdbSqlRoleAssign
 // AzureCosmosdbSqlRoleAssignmentStatus holds the deployment status and outputs.
 type AzureCosmosdbSqlRoleAssignmentStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureCosmosdbSqlRoleAssignmentStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureCosmosdbSqlRoleAssignmentOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureCosmosdbSqlRoleAssignmentStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureCosmosdbSqlRoleAssignmentStatus) GetOutputs() *AzureCosmosdbSqlRoleAssignmentStackOutputs {
+func (x *AzureCosmosdbSqlRoleAssignmentStatus) GetOutputs() *AzureCosmosdbSqlRoleAssignmentOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_api_proto_rawDe
 	"apiVersion\x129\n" +
 	"\x04kind\x18\x02 \x01(\tB%\xbaH\"r \n" +
 	"\x1eAzureCosmosdbSqlRoleAssignmentR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
 	"\x04spec\x18\x04 \x01(\v2].dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12w\n" +
-	"\x06status\x18\x05 \x01(\v2_.dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentStatusR\x06status\"\xa7\x01\n" +
-	"$AzureCosmosdbSqlRoleAssignmentStatus\x12\x7f\n" +
-	"\aoutputs\x18\x01 \x01(\v2e.dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentStackOutputsR\aoutputsB\xcd\x03\n" +
+	"\x06status\x18\x05 \x01(\v2_.dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentStatusR\x06status\"\xa2\x01\n" +
+	"$AzureCosmosdbSqlRoleAssignmentStatus\x12z\n" +
+	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentOutputsR\aoutputsB\xcd\x03\n" +
 	"=com.dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1B\bApiProtoP\x01Zygithub.com/plantonhq/planton/catalog/azure/azurecosmosdbsqlroleassignment/v1alpha1;azurecosmosdbsqlroleassignmentv1alpha1\xa2\x02\x04DPAA\xaa\x029Dev.Planton.Azure.Azurecosmosdbsqlroleassignment.V1alpha1\xca\x029Dev\\Planton\\Azure\\Azurecosmosdbsqlroleassignment\\V1alpha1\xe2\x02EDev\\Planton\\Azure\\Azurecosmosdbsqlroleassignment\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Azure::Azurecosmosdbsqlroleassignment::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_api_proto_rawDes
 
 var file_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_api_proto_goTypes = []any{
-	(*AzureCosmosdbSqlRoleAssignment)(nil),             // 0: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignment
-	(*AzureCosmosdbSqlRoleAssignmentStatus)(nil),       // 1: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentStatus
-	(*shared.CloudResourceMetadata)(nil),               // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureCosmosdbSqlRoleAssignmentSpec)(nil),         // 3: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentSpec
-	(*AzureCosmosdbSqlRoleAssignmentStackOutputs)(nil), // 4: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentStackOutputs
+	(*AzureCosmosdbSqlRoleAssignment)(nil),        // 0: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignment
+	(*AzureCosmosdbSqlRoleAssignmentStatus)(nil),  // 1: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentStatus
+	(*shared.CatalogObjectMetadata)(nil),          // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureCosmosdbSqlRoleAssignmentSpec)(nil),    // 3: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentSpec
+	(*AzureCosmosdbSqlRoleAssignmentOutputs)(nil), // 4: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentOutputs
 }
 var file_catalog_azure_azurecosmosdbsqlroleassignment_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignment.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignment.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignment.spec:type_name -> dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentSpec
 	1, // 2: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignment.status:type_name -> dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentStatus
-	4, // 3: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentStatus.outputs:type_name -> dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentStackOutputs
+	4, // 3: dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentStatus.outputs:type_name -> dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1.AzureCosmosdbSqlRoleAssignmentOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

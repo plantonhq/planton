@@ -20,7 +20,7 @@ func validRoute() *CloudflareZeroTrustTunnelRoute {
 	return &CloudflareZeroTrustTunnelRoute{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustTunnelRoute",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-route"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-route"},
 		Spec: &CloudflareZeroTrustTunnelRouteSpec{
 			AccountId: validAccountID,
 			Network:   "10.0.0.0/24",

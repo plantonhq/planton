@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1;
 import "catalog/kubernetes/kubernetesperconamongooperator/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//percona-operator-kubernetes stack-input
-message KubernetesPerconaMongoOperatorStackInput {
-  //target cloud-resource
+//percona-operator-kubernetes iac-input
+message KubernetesPerconaMongoOperatorIacInput {
+  // the catalog object to deploy
   KubernetesPerconaMongoOperator target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

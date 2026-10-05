@@ -19,8 +19,8 @@ import (
 //
 // PREREQUISITE: a KubernetesKubeRayOperator whose watch scope covers
 // this namespace (cluster-wide with the operator's defaults).
-func Resources(ctx *pulumi.Context, stackInput *kubernetesrayclusterv1alpha1.KubernetesRayClusterStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesrayclusterv1alpha1.KubernetesRayClusterIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// FAIL LOUDLY on names past the operator's naming budget: the
 	// operator derives `<name>-head-svc` (9-character suffix) and
@@ -37,12 +37,12 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesrayclusterv1alpha1.Kub
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
 
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

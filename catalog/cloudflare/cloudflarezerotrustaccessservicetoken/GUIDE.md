@@ -28,7 +28,7 @@ The provider's own rotation acceptance tests unset `CLOUDFLARE_API_TOKEN` -- "th
 
 ## Adopting an existing token (import)
 
-Import (`accounts/{account_id}/{service_token_id}`) restores the token's identity, name, and duration -- but never `client_secret`: Cloudflare returns it only at create and rotation, so an adopted token's secret is unrecoverable by design. If you need a usable credential after adoption, rotate (increment `client_secret_version` with a `previous_client_secret_expires_at`) and capture the fresh secret from the stack output. The first post-import apply re-asserts `client_secret_version` (and the expiry, if set) from configuration -- a no-op write, since rotation only triggers when the version increases past the token's real one (measured live 2026-08-26).
+Import (`accounts/{account_id}/{service_token_id}`) restores the token's identity, name, and duration -- but never `client_secret`: Cloudflare returns it only at create and rotation, so an adopted token's secret is unrecoverable by design. If you need a usable credential after adoption, rotate (increment `client_secret_version` with a `previous_client_secret_expires_at`) and capture the fresh secret from the output. The first post-import apply re-asserts `client_secret_version` (and the expiry, if set) from configuration -- a no-op write, since rotation only triggers when the version increases past the token's real one (measured live 2026-08-26).
 
 ## Pairs well with
 

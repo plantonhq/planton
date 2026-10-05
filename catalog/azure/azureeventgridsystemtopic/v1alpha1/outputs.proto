@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureeventgridsystemtopic.v1alpha1;
 
-// **AzureEventgridSystemTopicStackOutputs** captures the outputs from
+// **AzureEventgridSystemTopicOutputs** captures the outputs from
 // provisioning an Azure Event Grid system topic.
-message AzureEventgridSystemTopicStackOutputs {
+message AzureEventgridSystemTopicOutputs {
   // The system topic's Azure Resource Manager ID -- the target an
   // AzureEventgridEventSubscription's system_topic_id references.
   string system_topic_id = 1;

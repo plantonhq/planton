@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudwatchSyntheticsStackOutputs captures the observable state of
+// AwsCloudwatchSyntheticsOutputs captures the observable state of
 // the canary and owned groups after apply.
-type AwsCloudwatchSyntheticsStackOutputs struct {
+type AwsCloudwatchSyntheticsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The canary's name (the provider's import ID for the canary).
 	// Empty on groups-only instances.
@@ -45,20 +45,20 @@ type AwsCloudwatchSyntheticsStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsCloudwatchSyntheticsStackOutputs) Reset() {
-	*x = AwsCloudwatchSyntheticsStackOutputs{}
+func (x *AwsCloudwatchSyntheticsOutputs) Reset() {
+	*x = AwsCloudwatchSyntheticsOutputs{}
 	mi := &file_catalog_aws_awscloudwatchsynthetics_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudwatchSyntheticsStackOutputs) String() string {
+func (x *AwsCloudwatchSyntheticsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudwatchSyntheticsStackOutputs) ProtoMessage() {}
+func (*AwsCloudwatchSyntheticsOutputs) ProtoMessage() {}
 
-func (x *AwsCloudwatchSyntheticsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudwatchSyntheticsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudwatchsynthetics_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,54 +70,54 @@ func (x *AwsCloudwatchSyntheticsStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudwatchSyntheticsStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCloudwatchSyntheticsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudwatchSyntheticsOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCloudwatchSyntheticsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchsynthetics_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudwatchSyntheticsStackOutputs) GetCanaryName() string {
+func (x *AwsCloudwatchSyntheticsOutputs) GetCanaryName() string {
 	if x != nil {
 		return x.CanaryName
 	}
 	return ""
 }
 
-func (x *AwsCloudwatchSyntheticsStackOutputs) GetCanaryArn() string {
+func (x *AwsCloudwatchSyntheticsOutputs) GetCanaryArn() string {
 	if x != nil {
 		return x.CanaryArn
 	}
 	return ""
 }
 
-func (x *AwsCloudwatchSyntheticsStackOutputs) GetEngineArn() string {
+func (x *AwsCloudwatchSyntheticsOutputs) GetEngineArn() string {
 	if x != nil {
 		return x.EngineArn
 	}
 	return ""
 }
 
-func (x *AwsCloudwatchSyntheticsStackOutputs) GetSourceLocationArn() string {
+func (x *AwsCloudwatchSyntheticsOutputs) GetSourceLocationArn() string {
 	if x != nil {
 		return x.SourceLocationArn
 	}
 	return ""
 }
 
-func (x *AwsCloudwatchSyntheticsStackOutputs) GetCanaryStatus() string {
+func (x *AwsCloudwatchSyntheticsOutputs) GetCanaryStatus() string {
 	if x != nil {
 		return x.CanaryStatus
 	}
 	return ""
 }
 
-func (x *AwsCloudwatchSyntheticsStackOutputs) GetGroupArns() map[string]string {
+func (x *AwsCloudwatchSyntheticsOutputs) GetGroupArns() map[string]string {
 	if x != nil {
 		return x.GroupArns
 	}
 	return nil
 }
 
-func (x *AwsCloudwatchSyntheticsStackOutputs) GetGroupIds() map[string]string {
+func (x *AwsCloudwatchSyntheticsOutputs) GetGroupIds() map[string]string {
 	if x != nil {
 		return x.GroupIds
 	}
@@ -128,8 +128,8 @@ var File_catalog_aws_awscloudwatchsynthetics_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_aws_awscloudwatchsynthetics_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/aws/awscloudwatchsynthetics/v1alpha1/outputs.proto\x120dev.planton.aws.awscloudwatchsynthetics.v1alpha1\"\xdd\x04\n" +
-	"#AwsCloudwatchSyntheticsStackOutputs\x12\x1f\n" +
+	":catalog/aws/awscloudwatchsynthetics/v1alpha1/outputs.proto\x120dev.planton.aws.awscloudwatchsynthetics.v1alpha1\"\xcc\x04\n" +
+	"\x1eAwsCloudwatchSyntheticsOutputs\x12\x1f\n" +
 	"\vcanary_name\x18\x01 \x01(\tR\n" +
 	"canaryName\x12\x1d\n" +
 	"\n" +
@@ -137,10 +137,10 @@ const file_catalog_aws_awscloudwatchsynthetics_v1alpha1_outputs_proto_rawDesc = 
 	"\n" +
 	"engine_arn\x18\x03 \x01(\tR\tengineArn\x12.\n" +
 	"\x13source_location_arn\x18\x04 \x01(\tR\x11sourceLocationArn\x12#\n" +
-	"\rcanary_status\x18\x05 \x01(\tR\fcanaryStatus\x12\x83\x01\n" +
+	"\rcanary_status\x18\x05 \x01(\tR\fcanaryStatus\x12~\n" +
 	"\n" +
-	"group_arns\x18\x06 \x03(\v2d.dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackOutputs.GroupArnsEntryR\tgroupArns\x12\x80\x01\n" +
-	"\tgroup_ids\x18\a \x03(\v2c.dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackOutputs.GroupIdsEntryR\bgroupIds\x1a<\n" +
+	"group_arns\x18\x06 \x03(\v2_.dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsOutputs.GroupArnsEntryR\tgroupArns\x12{\n" +
+	"\tgroup_ids\x18\a \x03(\v2^.dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsOutputs.GroupIdsEntryR\bgroupIds\x1a<\n" +
 	"\x0eGroupArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a;\n" +
@@ -163,13 +163,13 @@ func file_catalog_aws_awscloudwatchsynthetics_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_aws_awscloudwatchsynthetics_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_aws_awscloudwatchsynthetics_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCloudwatchSyntheticsStackOutputs)(nil), // 0: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackOutputs
-	nil, // 1: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackOutputs.GroupArnsEntry
-	nil, // 2: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackOutputs.GroupIdsEntry
+	(*AwsCloudwatchSyntheticsOutputs)(nil), // 0: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsOutputs
+	nil,                                    // 1: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsOutputs.GroupArnsEntry
+	nil,                                    // 2: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsOutputs.GroupIdsEntry
 }
 var file_catalog_aws_awscloudwatchsynthetics_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackOutputs.group_arns:type_name -> dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackOutputs.GroupArnsEntry
-	2, // 1: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackOutputs.group_ids:type_name -> dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsStackOutputs.GroupIdsEntry
+	1, // 0: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsOutputs.group_arns:type_name -> dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsOutputs.GroupArnsEntry
+	2, // 1: dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsOutputs.group_ids:type_name -> dev.planton.aws.awscloudwatchsynthetics.v1alpha1.AwsCloudwatchSyntheticsOutputs.GroupIdsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

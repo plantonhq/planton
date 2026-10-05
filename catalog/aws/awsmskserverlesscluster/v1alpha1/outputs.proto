@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsmskserverlesscluster.v1alpha1;
 
-// AwsMskServerlessClusterStackOutputs captures observable identifiers and the
+// AwsMskServerlessClusterOutputs captures observable identifiers and the
 // connection endpoint from a deployed MSK Serverless cluster. These outputs
 // enable downstream resources (Lambda event source mappings, ECS/EKS consumer
 // services) to connect to the cluster and integrate with IAM policies.
-message AwsMskServerlessClusterStackOutputs {
+message AwsMskServerlessClusterOutputs {
   // cluster_arn is the Amazon Resource Name of the MSK Serverless cluster --
   // also the resource identifier AWS uses for it. Referenced in IAM policies
   // (kafka-cluster:* actions) and Lambda event source mappings.

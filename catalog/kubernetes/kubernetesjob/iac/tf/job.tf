@@ -63,13 +63,13 @@ resource "kubernetes_job_v1" "this" {
     # spec with suspend=true deploys identically through Pulumi; on Terraform
     # the Job starts immediately — suspend it out-of-band with
     # `kubectl patch job <name> -p '{"spec":{"suspend":true}}'` if needed.
-    # Stack outputs are unaffected.
+    # Outputs are unaffected.
 
     # PARITY-EXCEPTION: the Terraform kubernetes provider's job spec has no
     # `success_policy` block (the Pulumi module renders spec.success_policy).
     # A spec with success_policy deploys identically through Pulumi; on
     # Terraform the Job falls back to the default success criterion (all
-    # `completions` pods must succeed). Stack outputs are unaffected.
+    # `completions` pods must succeed). Outputs are unaffected.
 
     dynamic "pod_failure_policy" {
       for_each = try(var.spec.pod_failure_policy, null) != null ? [var.spec.pod_failure_policy] : []
@@ -684,7 +684,7 @@ resource "kubernetes_job_v1" "this" {
             # sleep action the Pulumi module renders. A spec using the sleep hook
             # deploys identically through Pulumi; on Terraform express the same
             # drain with exec ["/bin/sleep", "N"] (requires a sleep binary in the
-            # image). Stack outputs are unaffected.
+            # image). Outputs are unaffected.
             dynamic "lifecycle" {
               for_each = try(container.value.lifecycle, null) != null ? [container.value.lifecycle] : []
               content {

@@ -11,10 +11,10 @@ type Locals struct {
 	GcpSccMuteConfig  *gcpsccmuteconfigv1alpha1.GcpSccMuteConfig
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpsccmuteconfigv1alpha1.GcpSccMuteConfigStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpsccmuteconfigv1alpha1.GcpSccMuteConfigIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpSccMuteConfig = stackInput.Target
+	locals.GcpSccMuteConfig = iacInput.Target
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

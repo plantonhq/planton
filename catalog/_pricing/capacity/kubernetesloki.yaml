@@ -13,9 +13,9 @@
 # messages are mode arms, and a default would phantom-count a mode the
 # manifest never selected (the valkey precedent). The nginx gateway
 # binds its own resources and replica count (on by default, one
-# replica). Schema: finops/componentcapacityderivation/v1.
+# replica). Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesloki
 spec:

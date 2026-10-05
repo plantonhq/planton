@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsopensearchserverlesscollection.v1alpha1;
 
-// AwsOpenSearchServerlessCollectionStackOutputs captures observable
+// AwsOpenSearchServerlessCollectionOutputs captures observable
 // identifiers and endpoints from a provisioned OpenSearch Serverless
 // collection. These outputs are used by downstream resources to wire
 // dependencies via StringValueOrRef.
-message AwsOpenSearchServerlessCollectionStackOutputs {
+message AwsOpenSearchServerlessCollectionOutputs {
   // The unique ID of the collection (the API's own identifier, also the
   // leading label of the collection endpoints).
   string collection_id = 1;

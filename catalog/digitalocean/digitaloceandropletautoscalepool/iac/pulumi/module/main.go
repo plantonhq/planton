@@ -10,15 +10,15 @@ import (
 // Resources is the module entry point.
 func Resources(
 	ctx *pulumi.Context,
-	stackInput *digitaloceandropletautoscalepoolv1alpha1.DigitalOceanDropletAutoscalePoolStackInput,
+	iacInput *digitaloceandropletautoscalepoolv1alpha1.DigitalOceanDropletAutoscalePoolIacInput,
 ) error {
 	// 1. Prepare locals (target handle and Planton labels).
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// 2. Create a DigitalOcean provider from the supplied credential.
 	digitalOceanProvider, err := pulumidigitaloceanprovider.Get(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup digitalocean provider")

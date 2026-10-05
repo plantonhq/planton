@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: auth0resourceserver
 spec:
   billing_model: free
   free_tier: "Auth0 publishes no per-object price for resource servers (APIs), their scopes, access policies or default grants: defining them is free on every plan, the Free plan included (auth0.com/pricing)."
-  notes: "The real spend lives in the tenant subscription that hosts this object: Auth0 bills by plan tier plus monthly active users (auth0.com/pricing). The adjacent metered quantity is the machine-to-machine tokens issued against this API, counted against the tenant's monthly machine-to-machine token allotment. Some settings need a plan or an add-on rather than a charge per API: token_encryption, proof_of_possession with mechanism mtls and consent_policy transactional-authorization-with-mfa need the Enterprise plan with the Highly Regulated Identity add-on; token_lifetime_for_anonymous_access_tokens, access_token and subject_type_authorization.anonymous_user belong to anonymous sessions, an Enterprise Early Access feature. The API workload this object REPRESENTS runs and bills wherever the customer deploys it, as its own catalog kind."
+  notes: "The real spend lives in the tenant subscription that hosts this object: Auth0 bills by plan tier plus monthly active users (auth0.com/pricing). The adjacent metered quantity is the machine-to-machine tokens issued against this API, counted against the tenant's monthly machine-to-machine token allotment. Some settings need a plan or an add-on rather than a charge per API: token_encryption, proof_of_possession with mechanism mtls and consent_policy transactional-authorization-with-mfa need the Enterprise plan with the Highly Regulated Identity add-on; token_lifetime_for_anonymous_access_tokens, access_token and subject_type_authorization.anonymous_user belong to anonymous sessions, an Enterprise Early Access feature. The API workload this object REPRESENTS runs and bills wherever the customer deploys it, as its own component."

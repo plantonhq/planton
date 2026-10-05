@@ -4,7 +4,7 @@ Deploys a managed Amazon OpenSearch Service domain with configurable cluster top
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **OpenSearch Domain** -- a managed search and analytics domain running the specified engine version (OpenSearch or Elasticsearch), with configurable data node count, instance type, and EBS storage
 - **Dedicated Master Nodes** -- created only when `clusterConfig.dedicatedMasterEnabled` is `true`; separate nodes that handle cluster management without competing with data workloads
@@ -26,15 +26,15 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **Subnets** (optional, for VPC mode) in 2 or 3 Availability Zones matching the cluster's `availabilityZoneCount`. Private subnets are recommended. Provide subnet IDs directly or reference AwsSubnet Cloud Resources via ValueFromRef.
-- **Security groups** (optional, for VPC mode) allowing HTTPS (port 443) inbound from clients that need to access the domain. Provide security group IDs directly or reference an AwsSecurityGroup Cloud Resource.
-- **A KMS key** (optional) for at-rest encryption beyond the default AWS-managed `aws/es` key. The KMS key choice is ForceNew and cannot be changed after domain creation. Provide the ARN directly or reference an AwsKmsKey Cloud Resource.
-- **CloudWatch log groups** (optional) for publishing domain logs. Each log type requires a dedicated log group. Provide log group ARNs directly or reference AwsCloudwatchLogGroup Cloud Resources.
+- **Subnets** (optional, for VPC mode) in 2 or 3 Availability Zones matching the cluster's `availabilityZoneCount`. Private subnets are recommended. Provide subnet IDs directly or reference AwsSubnet Infra Components via ValueFromRef.
+- **Security groups** (optional, for VPC mode) allowing HTTPS (port 443) inbound from clients that need to access the domain. Provide security group IDs directly or reference an AwsSecurityGroup Infra Component.
+- **A KMS key** (optional) for at-rest encryption beyond the default AWS-managed `aws/es` key. The KMS key choice is ForceNew and cannot be changed after domain creation. Provide the ARN directly or reference an AwsKmsKey Infra Component.
+- **CloudWatch log groups** (optional) for publishing domain logs. Each log type requires a dedicated log group. Provide log group ARNs directly or reference AwsCloudwatchLogGroup Infra Components.
 
 ## Deploy
 
@@ -71,7 +71,7 @@ spec:
 planton apply -f opensearch-domain.yaml
 ```
 
-This creates a two-node OpenSearch domain with gp3 EBS volumes, encryption at rest and in transit using default AWS-managed keys, and no VPC placement (publicly accessible). A Stack Job tracks the provisioning in real time.
+This creates a two-node OpenSearch domain with gp3 EBS volumes, encryption at rest and in transit using default AWS-managed keys, and no VPC placement (publicly accessible). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -121,7 +121,7 @@ These are the most important decisions when configuring an OpenSearch domain. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -134,9 +134,9 @@ These are the most important decisions when configuring an OpenSearch domain. Ex
 | **AwsCloudwatchLogGroup** (optional) | `logPublishingOptions[*].cloudwatchLogGroupArn` | `status.outputs.log_group_arn` |
 | **AwsCertManagerCert** (optional) | `domainEndpointOptions.customEndpointCertificateArn` | `status.outputs.cert_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -161,10 +161,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides subnets for VPC-mode domain placement
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- provides network access control for VPC-mode domains
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for at-rest encryption
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides the FGAC master user and the Cognito service role
-- [**AWS Cognito User Pool**](/cloud-catalog/aws-cognito-user-pool) -- provides the sign-in directory for Dashboards
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) -- provides log destinations for domain log publishing
-- [**AWS ACM Certificate**](/cloud-catalog/aws-cert-manager-cert) -- provides a TLS certificate for custom domain endpoints
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides subnets for VPC-mode domain placement
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- provides network access control for VPC-mode domains
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for at-rest encryption
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides the FGAC master user and the Cognito service role
+- [**AWS Cognito User Pool**](/infra-catalog/aws-cognito-user-pool) -- provides the sign-in directory for Dashboards
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) -- provides log destinations for domain log publishing
+- [**AWS ACM Certificate**](/infra-catalog/aws-cert-manager-cert) -- provides a TLS certificate for custom domain endpoints

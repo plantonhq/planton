@@ -41,7 +41,7 @@ unrepresentable.
 - `region` must match the parent server's region (ARM rejects a
   mismatch)
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

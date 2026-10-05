@@ -19,12 +19,12 @@ import (
 // serves the resource under the network package (the trafficmanager
 // package's Profile is the deprecated legacy token for the same ARM
 // object).
-func Resources(ctx *pulumi.Context, stackInput *azuretrafficmanagerprofilev1alpha1.AzureTrafficManagerProfileStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuretrafficmanagerprofilev1alpha1.AzureTrafficManagerProfileIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}

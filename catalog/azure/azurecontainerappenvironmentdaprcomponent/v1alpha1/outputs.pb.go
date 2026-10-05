@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureContainerAppEnvironmentDaprComponentStackOutputs** captures the
+// **AzureContainerAppEnvironmentDaprComponentOutputs** captures the
 // outputs of registering a Dapr component on a Container App Environment.
 //
 // Apps consume the component through Dapr's runtime by its name (scoped
 // via their dapr.app_id), so the name output is the practical handle.
-type AzureContainerAppEnvironmentDaprComponentStackOutputs struct {
+type AzureContainerAppEnvironmentDaprComponentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Dapr component.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/managedEnvironments/{env}/daprComponents/{name}
@@ -38,20 +38,20 @@ type AzureContainerAppEnvironmentDaprComponentStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureContainerAppEnvironmentDaprComponentStackOutputs) Reset() {
-	*x = AzureContainerAppEnvironmentDaprComponentStackOutputs{}
+func (x *AzureContainerAppEnvironmentDaprComponentOutputs) Reset() {
+	*x = AzureContainerAppEnvironmentDaprComponentOutputs{}
 	mi := &file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureContainerAppEnvironmentDaprComponentStackOutputs) String() string {
+func (x *AzureContainerAppEnvironmentDaprComponentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureContainerAppEnvironmentDaprComponentStackOutputs) ProtoMessage() {}
+func (*AzureContainerAppEnvironmentDaprComponentOutputs) ProtoMessage() {}
 
-func (x *AzureContainerAppEnvironmentDaprComponentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureContainerAppEnvironmentDaprComponentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *AzureContainerAppEnvironmentDaprComponentStackOutputs) ProtoReflect() p
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureContainerAppEnvironmentDaprComponentStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureContainerAppEnvironmentDaprComponentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureContainerAppEnvironmentDaprComponentOutputs.ProtoReflect.Descriptor instead.
+func (*AzureContainerAppEnvironmentDaprComponentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureContainerAppEnvironmentDaprComponentStackOutputs) GetDaprComponentId() string {
+func (x *AzureContainerAppEnvironmentDaprComponentOutputs) GetDaprComponentId() string {
 	if x != nil {
 		return x.DaprComponentId
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentDaprComponentStackOutputs) GetComponentName() string {
+func (x *AzureContainerAppEnvironmentDaprComponentOutputs) GetComponentName() string {
 	if x != nil {
 		return x.ComponentName
 	}
@@ -86,8 +86,8 @@ var File_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_output
 
 const file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ncatalog/azure/azurecontainerappenvironmentdaprcomponent/v1alpha1/outputs.proto\x12Ddev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1\"\x8a\x01\n" +
-	"5AzureContainerAppEnvironmentDaprComponentStackOutputs\x12*\n" +
+	"Ncatalog/azure/azurecontainerappenvironmentdaprcomponent/v1alpha1/outputs.proto\x12Ddev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1\"\x85\x01\n" +
+	"0AzureContainerAppEnvironmentDaprComponentOutputs\x12*\n" +
 	"\x11dapr_component_id\x18\x01 \x01(\tR\x0fdaprComponentId\x12%\n" +
 	"\x0ecomponent_name\x18\x02 \x01(\tR\rcomponentNameB\x9f\x04\n" +
 	"Hcom.dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1B\fOutputsProtoP\x01Z\x8f\x01github.com/plantonhq/planton/catalog/azure/azurecontainerappenvironmentdaprcomponent/v1alpha1;azurecontainerappenvironmentdaprcomponentv1alpha1\xa2\x02\x04DPAA\xaa\x02DDev.Planton.Azure.Azurecontainerappenvironmentdaprcomponent.V1alpha1\xca\x02DDev\\Planton\\Azure\\Azurecontainerappenvironmentdaprcomponent\\V1alpha1\xe2\x02PDev\\Planton\\Azure\\Azurecontainerappenvironmentdaprcomponent\\V1alpha1\\GPBMetadata\xea\x02HDev::Planton::Azure::Azurecontainerappenvironmentdaprcomponent::V1alpha1b\x06proto3"
@@ -106,7 +106,7 @@ func file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_outpu
 
 var file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureContainerAppEnvironmentDaprComponentStackOutputs)(nil), // 0: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentStackOutputs
+	(*AzureContainerAppEnvironmentDaprComponentOutputs)(nil), // 0: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentOutputs
 }
 var file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesopensearch.v1alpha1;
 import "catalog/kubernetes/kubernetesopensearch/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//elasticsearch-kubernetes stack-input
-message KubernetesOpenSearchStackInput {
-  //target cloud-resource
+//elasticsearch-kubernetes iac-input
+message KubernetesOpenSearchIacInput {
+  // the catalog object to deploy
   KubernetesOpenSearch target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

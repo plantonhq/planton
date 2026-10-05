@@ -6,11 +6,11 @@ import (
 
 	kubernetesseaweedfsv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesseaweedfs/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds computed values derived from the stack input for use across
+// Locals holds computed values derived from the IaC input for use across
 // the module. Every resolution here has an exact twin in the Terraform
 // module's locals.tf — keep them in lockstep.
 type Locals struct {
@@ -38,7 +38,7 @@ type Locals struct {
 	ChartVersion string
 
 	// The S3 gateway posture, resolved from the spec's optional bools
-	// (component defaults: enabled with auth). Dedicated means the
+	// (kind defaults: enabled with auth). Dedicated means the
 	// gateway runs as its own Deployment; embedded runs it on the filer.
 	S3Enabled    bool
 	S3Auth       bool
@@ -79,14 +79,14 @@ type Locals struct {
 
 // initializeLocals extracts and transforms spec fields into module-local
 // values.
-func initializeLocals(_ *pulumi.Context, stackInput *kubernetesseaweedfsv1alpha1.KubernetesSeaweedFsStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *kubernetesseaweedfsv1alpha1.KubernetesSeaweedFsIacInput) *Locals {
+	target := iacInput.Target
 	spec := target.Spec
 
 	labels := map[string]string{
 		kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
 		kuberneteslabelkeys.ResourceName: target.Metadata.Name,
-		kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesSeaweedFs.String(),
+		kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesSeaweedFs.String(),
 	}
 	if target.Metadata.Id != "" {
 		labels[kuberneteslabelkeys.ResourceId] = target.Metadata.Id

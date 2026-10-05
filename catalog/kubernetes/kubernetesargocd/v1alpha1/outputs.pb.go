@@ -24,7 +24,7 @@ const (
 // *
 // Outputs exported after deploying Argo CD — the handles downstream
 // resources and humans compose against.
-type KubernetesArgocdStackOutputs struct {
+type KubernetesArgocdOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace Argo CD is installed in.
@@ -56,20 +56,20 @@ type KubernetesArgocdStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesArgocdStackOutputs) Reset() {
-	*x = KubernetesArgocdStackOutputs{}
+func (x *KubernetesArgocdOutputs) Reset() {
+	*x = KubernetesArgocdOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesargocd_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesArgocdStackOutputs) String() string {
+func (x *KubernetesArgocdOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesArgocdStackOutputs) ProtoMessage() {}
+func (*KubernetesArgocdOutputs) ProtoMessage() {}
 
-func (x *KubernetesArgocdStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesArgocdOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesargocd_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -81,47 +81,47 @@ func (x *KubernetesArgocdStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesArgocdStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesArgocdStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesArgocdOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesArgocdOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesargocd_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesArgocdStackOutputs) GetNamespace() string {
+func (x *KubernetesArgocdOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesArgocdStackOutputs) GetReleaseName() string {
+func (x *KubernetesArgocdOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesArgocdStackOutputs) GetServerService() string {
+func (x *KubernetesArgocdOutputs) GetServerService() string {
 	if x != nil {
 		return x.ServerService
 	}
 	return ""
 }
 
-func (x *KubernetesArgocdStackOutputs) GetServerKubeEndpoint() string {
+func (x *KubernetesArgocdOutputs) GetServerKubeEndpoint() string {
 	if x != nil {
 		return x.ServerKubeEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesArgocdStackOutputs) GetInitialAdminSecretName() string {
+func (x *KubernetesArgocdOutputs) GetInitialAdminSecretName() string {
 	if x != nil {
 		return x.InitialAdminSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesArgocdStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesArgocdOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -132,8 +132,8 @@ var File_catalog_kubernetes_kubernetesargocd_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_kubernetes_kubernetesargocd_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kubernetesargocd/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetesargocd.v1alpha1\"\xa5\x02\n" +
-	"\x1cKubernetesArgocdStackOutputs\x12\x1c\n" +
+	":catalog/kubernetes/kubernetesargocd/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetesargocd.v1alpha1\"\xa0\x02\n" +
+	"\x17KubernetesArgocdOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12%\n" +
 	"\x0eserver_service\x18\x03 \x01(\tR\rserverService\x120\n" +
@@ -156,7 +156,7 @@ func file_catalog_kubernetes_kubernetesargocd_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetesargocd_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesargocd_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesArgocdStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesargocd.v1alpha1.KubernetesArgocdStackOutputs
+	(*KubernetesArgocdOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesargocd.v1alpha1.KubernetesArgocdOutputs
 }
 var file_catalog_kubernetes_kubernetesargocd_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

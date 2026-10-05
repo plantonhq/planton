@@ -267,7 +267,7 @@ bazel-test:
 
 # Generates kind_map_gen.go containing ToMessageMap.
 # The "-tags codegen" flag is REQUIRED to avoid chicken-and-egg compilation errors.
-# See pkg/crkreflect/new_instance.go and pkg/crkreflect/codegen/main.go for details.
+# See pkg/catalogkindreflect/new_instance.go and pkg/catalogkindreflect/codegen/main.go for details.
 # Regenerates pkg/conversion/embedded/specs -- the byte-for-byte mirror of
 # the co-located conversion specs (catalog/<provider>/<kind>/conversions/*.yaml) that
 # ships inside standalone binaries. The mirror exists because Go embeds
@@ -320,10 +320,10 @@ build-catalog-schemas: build-catalog-schema-plugin
 verify-catalog-schemas:
 	go run ./pkg/catalogschema/cli verify --zip build/catalog-schemas.zip
 
-.PHONY: generate-cloud-resource-kind-map
-generate-cloud-resource-kind-map:
-	rm -f pkg/crkreflect/kind_map_gen.go
-	go run -tags codegen ./pkg/crkreflect/codegen
+.PHONY: generate-catalog-kind-map
+generate-catalog-kind-map:
+	rm -f pkg/catalogkindreflect/kind_map_gen.go
+	go run -tags codegen ./pkg/catalogkindreflect/codegen
 
 .PHONY: generate-kubernetes-types
 generate-kubernetes-types:
@@ -394,12 +394,12 @@ generate-provider-parity-report:
 generate-reference: generate-proto-docs
 	go run ./pkg/explain/refgen
 
-# Regenerates the committed per-component cost estimates
-# (catalog/_pricing/estimates/): derived components replay every preset
+# Regenerates the committed per-kind cost estimates
+# (catalog/_pricing/estimates/): derived kinds replay every preset
 # through their cost derivation (catalog/_pricing/derivations/), modeled
-# components join their estimate model (catalog/_pricing/models/) with the
+# kinds join their estimate model (catalog/_pricing/models/) with the
 # provider's price book (catalog/_pricing/pricebook/), and cluster-capacity
-# components replay their presets through their capacity derivation
+# kinds replay their presets through their capacity derivation
 # (catalog/_pricing/capacity/) into footprint estimates. Always whole-tree:
 # the dead-price sweep
 # needs every model's references. Offline and deterministic: unchanged
@@ -463,7 +463,7 @@ build-go: fmt deps vet
 build-cli: build-go
 
 .PHONY: build
-build: protos generate-cloud-resource-kind-map generate-proto-docs bazel-mod-tidy bazel-gazelle bazel-build-cli build-cli e2e-matrix
+build: protos generate-catalog-kind-map generate-proto-docs bazel-mod-tidy bazel-gazelle bazel-build-cli build-cli e2e-matrix
 
 ${build_dir}/${name}: build-go
 
@@ -669,25 +669,25 @@ e2e-test-digitalocean-pulumi:  ## Run DigitalOcean Pulumi E2E tests only
 e2e-test-digitalocean-terraform:  ## Run DigitalOcean Terraform E2E tests only
 	go test -tags=e2e -timeout=60m -v -count=1 -run ".*_Terraform" ./e2e/digitalocean/...
 
-# ── Generic component E2E targets ────────────────────────────────────────────
+# ── Generic kind E2E targets ────────────────────────────────────────────
 
-# Resolve the component name's provider prefix to the test package that owns it
+# Resolve the kind name's provider prefix to the test package that owns it
 # (see the harness-setup note at the top of the E2E section for why runs must
 # never sweep ./e2e/...). Unknown prefixes fall back to the full sweep.
 # DigitalOcean is matched before Kubernetes: DigitalOceanKubernetesCluster
 # contains "Kubernetes", so prefix order is load-bearing.
-e2e_component_pkg = $(if $(findstring DigitalOcean,$(component)),./e2e/digitalocean/...,\
-$(if $(findstring Kubernetes,$(component)),./e2e/,\
-$(if $(findstring Aws,$(component)),./e2e/aws/...,\
-$(if $(findstring Gcp,$(component)),./e2e/gcp/...,\
-$(if $(findstring Azure,$(component)),./e2e/azure/...,\
-$(if $(findstring Auth0,$(component)),./e2e/auth0/...,\
-$(if $(findstring Cloudflare,$(component)),./e2e/cloudflare/...,\
-$(if $(findstring Stripe,$(component)),./e2e/stripe/...,./e2e/...))))))))
+e2e_kind_pkg = $(if $(findstring DigitalOcean,$(kind)),./e2e/digitalocean/...,\
+$(if $(findstring Kubernetes,$(kind)),./e2e/,\
+$(if $(findstring Aws,$(kind)),./e2e/aws/...,\
+$(if $(findstring Gcp,$(kind)),./e2e/gcp/...,\
+$(if $(findstring Azure,$(kind)),./e2e/azure/...,\
+$(if $(findstring Auth0,$(kind)),./e2e/auth0/...,\
+$(if $(findstring Cloudflare,$(kind)),./e2e/cloudflare/...,\
+$(if $(findstring Stripe,$(kind)),./e2e/stripe/...,./e2e/...))))))))
 
-.PHONY: e2e-test-component
-e2e-test-component:  ## Single component E2E test (usage: make e2e-test-component component=KubernetesNamespace)
-	go test -tags=e2e -timeout=120m -v -count=1 -run "Test.*$(component)" $(strip $(e2e_component_pkg))
+.PHONY: e2e-test-kind
+e2e-test-kind:  ## Single kind E2E test (usage: make e2e-test-kind kind=KubernetesNamespace)
+	go test -tags=e2e -timeout=120m -v -count=1 -run "Test.*$(kind)" $(strip $(e2e_kind_pkg))
 
 .PHONY: e2e-matrix
 e2e-matrix:  ## Regenerate E2E GitHub Actions matrix JSON from profiles

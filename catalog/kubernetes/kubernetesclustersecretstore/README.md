@@ -60,7 +60,7 @@ Store readiness depends on external reachability (the cloud secrets API, Vault) 
 - **`spec.config.controller_class`**: shard stores across multiple operator installations
 - **`spec.config.refresh_interval` / `retry`**: connection re-validation and retry tuning
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

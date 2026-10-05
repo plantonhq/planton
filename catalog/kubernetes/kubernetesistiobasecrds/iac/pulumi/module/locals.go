@@ -20,9 +20,9 @@ type Locals struct {
 	Labels map[string]string
 }
 
-// initializeLocals computes values from the stack input.
-func initializeLocals(_ *pulumi.Context, stackInput *kubernetesistiobasecrdsv1alpha1.KubernetesIstioBaseCrdsStackInput) *Locals {
-	metadata := stackInput.Target.Metadata
+// initializeLocals computes values from the IaC input.
+func initializeLocals(_ *pulumi.Context, iacInput *kubernetesistiobasecrdsv1alpha1.KubernetesIstioBaseCrdsIacInput) *Locals {
+	metadata := iacInput.Target.Metadata
 
 	resourceName := metadata.Name + "-istio-base-crds"
 

@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsrestapivpclink.v1alpha1;
 
-// AwsRestApiVpcLinkStackOutputs captures observable identifiers from a
+// AwsRestApiVpcLinkOutputs captures observable identifiers from a
 // provisioned REST API VPC link. Integrations reference the link ID in
 // their connection settings.
-message AwsRestApiVpcLinkStackOutputs {
+message AwsRestApiVpcLinkOutputs {
   // The VPC link ID (what integrations set as their connection).
   string vpc_link_id = 1;
 

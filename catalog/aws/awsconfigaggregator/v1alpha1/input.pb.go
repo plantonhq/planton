@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsConfigAggregatorStackInput is the input for the IaC modules
+// AwsConfigAggregatorIacInput is the input for the IaC modules
 // that manage Config aggregation.
-type AwsConfigAggregatorStackInput struct {
+type AwsConfigAggregatorIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsConfigAggregator resource to deploy.
 	Target *AwsConfigAggregator `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsConfigAggregatorStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsConfigAggregatorStackInput) Reset() {
-	*x = AwsConfigAggregatorStackInput{}
+func (x *AwsConfigAggregatorIacInput) Reset() {
+	*x = AwsConfigAggregatorIacInput{}
 	mi := &file_catalog_aws_awsconfigaggregator_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsConfigAggregatorStackInput) String() string {
+func (x *AwsConfigAggregatorIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsConfigAggregatorStackInput) ProtoMessage() {}
+func (*AwsConfigAggregatorIacInput) ProtoMessage() {}
 
-func (x *AwsConfigAggregatorStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsConfigAggregatorIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsconfigaggregator_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsConfigAggregatorStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsConfigAggregatorStackInput.ProtoReflect.Descriptor instead.
-func (*AwsConfigAggregatorStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsConfigAggregatorIacInput.ProtoReflect.Descriptor instead.
+func (*AwsConfigAggregatorIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsconfigaggregator_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsConfigAggregatorStackInput) GetTarget() *AwsConfigAggregator {
+func (x *AwsConfigAggregatorIacInput) GetTarget() *AwsConfigAggregator {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsConfigAggregatorStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsConfigAggregatorIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsconfigaggregator_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_aws_awsconfigaggregator_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awsconfigaggregator/v1alpha1/input.proto\x12,dev.planton.aws.awsconfigaggregator.v1alpha1\x1a2catalog/aws/awsconfigaggregator/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc7\x01\n" +
-	"\x1dAwsConfigAggregatorStackInput\x12Y\n" +
+	"4catalog/aws/awsconfigaggregator/v1alpha1/input.proto\x12,dev.planton.aws.awsconfigaggregator.v1alpha1\x1a2catalog/aws/awsconfigaggregator/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc5\x01\n" +
+	"\x1bAwsConfigAggregatorIacInput\x12Y\n" +
 	"\x06target\x18\x01 \x01(\v2A.dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xf6\x02\n" +
 	"0com.dev.planton.aws.awsconfigaggregator.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsconfigaggregator_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsconfigaggregator_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsconfigaggregator_v1alpha1_input_proto_goTypes = []any{
-	(*AwsConfigAggregatorStackInput)(nil), // 0: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStackInput
-	(*AwsConfigAggregator)(nil),           // 1: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregator
-	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsConfigAggregatorIacInput)(nil), // 0: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorIacInput
+	(*AwsConfigAggregator)(nil),         // 1: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregator
+	(*aws.AwsProviderConfig)(nil),       // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsconfigaggregator_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStackInput.target:type_name -> dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregator
-	2, // 1: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorIacInput.target:type_name -> dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregator
+	2, // 1: dev.planton.aws.awsconfigaggregator.v1alpha1.AwsConfigAggregatorIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

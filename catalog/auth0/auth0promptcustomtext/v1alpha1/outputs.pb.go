@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0PromptCustomTextStackOutputs names the custom text managed.
+// Auth0PromptCustomTextOutputs names the custom text managed.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/prompt_custom_text#attributes-reference
-type Auth0PromptCustomTextStackOutputs struct {
+type Auth0PromptCustomTextOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// prompt is the prompt the words belong to.
 	Prompt string `protobuf:"bytes,1,opt,name=prompt,proto3" json:"prompt,omitempty"`
@@ -37,20 +37,20 @@ type Auth0PromptCustomTextStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Auth0PromptCustomTextStackOutputs) Reset() {
-	*x = Auth0PromptCustomTextStackOutputs{}
+func (x *Auth0PromptCustomTextOutputs) Reset() {
+	*x = Auth0PromptCustomTextOutputs{}
 	mi := &file_catalog_auth0_auth0promptcustomtext_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Auth0PromptCustomTextStackOutputs) String() string {
+func (x *Auth0PromptCustomTextOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Auth0PromptCustomTextStackOutputs) ProtoMessage() {}
+func (*Auth0PromptCustomTextOutputs) ProtoMessage() {}
 
-func (x *Auth0PromptCustomTextStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *Auth0PromptCustomTextOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_auth0_auth0promptcustomtext_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *Auth0PromptCustomTextStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Auth0PromptCustomTextStackOutputs.ProtoReflect.Descriptor instead.
-func (*Auth0PromptCustomTextStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use Auth0PromptCustomTextOutputs.ProtoReflect.Descriptor instead.
+func (*Auth0PromptCustomTextOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0promptcustomtext_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Auth0PromptCustomTextStackOutputs) GetPrompt() string {
+func (x *Auth0PromptCustomTextOutputs) GetPrompt() string {
 	if x != nil {
 		return x.Prompt
 	}
 	return ""
 }
 
-func (x *Auth0PromptCustomTextStackOutputs) GetLanguage() string {
+func (x *Auth0PromptCustomTextOutputs) GetLanguage() string {
 	if x != nil {
 		return x.Language
 	}
 	return ""
 }
 
-func (x *Auth0PromptCustomTextStackOutputs) GetId() string {
+func (x *Auth0PromptCustomTextOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
@@ -92,8 +92,8 @@ var File_catalog_auth0_auth0promptcustomtext_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_auth0_auth0promptcustomtext_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/auth0/auth0promptcustomtext/v1alpha1/outputs.proto\x120dev.planton.auth0.auth0promptcustomtext.v1alpha1\"g\n" +
-	"!Auth0PromptCustomTextStackOutputs\x12\x16\n" +
+	":catalog/auth0/auth0promptcustomtext/v1alpha1/outputs.proto\x120dev.planton.auth0.auth0promptcustomtext.v1alpha1\"b\n" +
+	"\x1cAuth0PromptCustomTextOutputs\x12\x16\n" +
 	"\x06prompt\x18\x01 \x01(\tR\x06prompt\x12\x1a\n" +
 	"\blanguage\x18\x02 \x01(\tR\blanguage\x12\x0e\n" +
 	"\x02id\x18\x03 \x01(\tR\x02idB\x92\x03\n" +
@@ -113,7 +113,7 @@ func file_catalog_auth0_auth0promptcustomtext_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_auth0_auth0promptcustomtext_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0promptcustomtext_v1alpha1_outputs_proto_goTypes = []any{
-	(*Auth0PromptCustomTextStackOutputs)(nil), // 0: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextStackOutputs
+	(*Auth0PromptCustomTextOutputs)(nil), // 0: dev.planton.auth0.auth0promptcustomtext.v1alpha1.Auth0PromptCustomTextOutputs
 }
 var file_catalog_auth0_auth0promptcustomtext_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

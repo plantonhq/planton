@@ -4,7 +4,7 @@ Deploys a self-managed Compute Engine SSL certificate — you bring the PEM chai
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine API enablement** -- the module enables `compute.googleapis.com` on the target project before creating the certificate, so a fresh project works without manual API setup
 - **Compute Engine SSL Certificate** -- global (blank `region`) for global external Application Load Balancer proxies, or regional for regional external and internal ALB proxies
@@ -14,13 +14,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **An org secret holding the private key** -- the `privateKey` field is sensitive: it carries a `$secret/<slug>` reference, never plaintext. Store the unencrypted PEM key as a managed secret first.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the certificate will be created. Provide the project ID directly, reference a GcpProject Cloud Resource via ValueFromRef, or omit `projectId` to use the provider connection's default project. The module enables the Compute Engine API itself — no manual API activation is needed.
+- **A GCP project** where the certificate will be created. Provide the project ID directly, reference a GcpProject Infra Component via ValueFromRef, or omit `projectId` to use the provider connection's default project. The module enables the Compute Engine API itself — no manual API activation is needed.
 - **The issued certificate chain** -- leaf first, then intermediates (at least one intermediate, at most 5 certificates total), and its unencrypted RSA-2048+/ECDSA P-256 private key.
 
 ## Deploy
@@ -55,7 +55,7 @@ spec:
 planton apply -f ssl-certificate.yaml
 ```
 
-This creates a global certificate ready for a target HTTPS proxy's certificate list. The runner resolves the `$secret/` reference just-in-time — the manifest never carries the key. A Stack Job tracks the provisioning in real time.
+This creates a global certificate ready for a target HTTPS proxy's certificate list. The runner resolves the `$secret/` reference just-in-time — the manifest never carries the key. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,15 +88,15 @@ These are the most important decisions when configuring a self-managed SSL certi
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -118,7 +118,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the certificate is created
-- [**GCP Target HTTPS Proxy**](/cloud-catalog/gcp-target-https-proxy) -- consumes the certificate's `self_link` in its certificate list
-- [**GCP Managed SSL Certificate**](/cloud-catalog/gcp-managed-ssl-certificate) -- the hands-off alternative when Google-issued renewal fits
-- [**GCP SSL Policy**](/cloud-catalog/gcp-ssl-policy) -- controls which TLS versions and ciphers the proxy negotiates alongside this certificate
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the certificate is created
+- [**GCP Target HTTPS Proxy**](/infra-catalog/gcp-target-https-proxy) -- consumes the certificate's `self_link` in its certificate list
+- [**GCP Managed SSL Certificate**](/infra-catalog/gcp-managed-ssl-certificate) -- the hands-off alternative when Google-issued renewal fits
+- [**GCP SSL Policy**](/infra-catalog/gcp-ssl-policy) -- controls which TLS versions and ciphers the proxy negotiates alongside this certificate

@@ -35,7 +35,7 @@ type AwsTransitGatewayVpcAttachment struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration defining how the attachment is
 	// provisioned.
 	Spec *AwsTransitGatewayVpcAttachmentSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -89,7 +89,7 @@ func (x *AwsTransitGatewayVpcAttachment) GetKind() string {
 	return ""
 }
 
-func (x *AwsTransitGatewayVpcAttachment) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsTransitGatewayVpcAttachment) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -116,7 +116,7 @@ type AwsTransitGatewayVpcAttachmentStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after
 	// provisioning.
-	Outputs       *AwsTransitGatewayVpcAttachmentStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsTransitGatewayVpcAttachmentOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -151,7 +151,7 @@ func (*AwsTransitGatewayVpcAttachmentStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsTransitGatewayVpcAttachmentStatus) GetOutputs() *AwsTransitGatewayVpcAttachmentStackOutputs {
+func (x *AwsTransitGatewayVpcAttachmentStatus) GetOutputs() *AwsTransitGatewayVpcAttachmentOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -169,11 +169,11 @@ const file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_api_proto_rawDesc
 	"apiVersion\x129\n" +
 	"\x04kind\x18\x02 \x01(\tB%\xbaH\"r \n" +
 	"\x1eAwsTransitGatewayVpcAttachmentR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12w\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12w\n" +
 	"\x04spec\x18\x04 \x01(\v2[.dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12u\n" +
-	"\x06status\x18\x05 \x01(\v2].dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentStatusR\x06status\"\xa5\x01\n" +
-	"$AwsTransitGatewayVpcAttachmentStatus\x12}\n" +
-	"\aoutputs\x18\x01 \x01(\v2c.dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentStackOutputsR\aoutputsB\xc1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2].dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentStatusR\x06status\"\xa0\x01\n" +
+	"$AwsTransitGatewayVpcAttachmentStatus\x12x\n" +
+	"\aoutputs\x18\x01 \x01(\v2^.dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentOutputsR\aoutputsB\xc1\x03\n" +
 	";com.dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1B\bApiProtoP\x01Zwgithub.com/plantonhq/planton/catalog/aws/awstransitgatewayvpcattachment/v1alpha1;awstransitgatewayvpcattachmentv1alpha1\xa2\x02\x04DPAA\xaa\x027Dev.Planton.Aws.Awstransitgatewayvpcattachment.V1alpha1\xca\x027Dev\\Planton\\Aws\\Awstransitgatewayvpcattachment\\V1alpha1\xe2\x02CDev\\Planton\\Aws\\Awstransitgatewayvpcattachment\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Aws::Awstransitgatewayvpcattachment::V1alpha1b\x06proto3"
 
 var (
@@ -190,17 +190,17 @@ func file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_api_proto_rawDescG
 
 var file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_api_proto_goTypes = []any{
-	(*AwsTransitGatewayVpcAttachment)(nil),             // 0: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachment
-	(*AwsTransitGatewayVpcAttachmentStatus)(nil),       // 1: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentStatus
-	(*shared.CloudResourceMetadata)(nil),               // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsTransitGatewayVpcAttachmentSpec)(nil),         // 3: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentSpec
-	(*AwsTransitGatewayVpcAttachmentStackOutputs)(nil), // 4: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentStackOutputs
+	(*AwsTransitGatewayVpcAttachment)(nil),        // 0: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachment
+	(*AwsTransitGatewayVpcAttachmentStatus)(nil),  // 1: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentStatus
+	(*shared.CatalogObjectMetadata)(nil),          // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsTransitGatewayVpcAttachmentSpec)(nil),    // 3: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentSpec
+	(*AwsTransitGatewayVpcAttachmentOutputs)(nil), // 4: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentOutputs
 }
 var file_catalog_aws_awstransitgatewayvpcattachment_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachment.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachment.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachment.spec:type_name -> dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentSpec
 	1, // 2: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachment.status:type_name -> dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentStatus
-	4, // 3: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentStatus.outputs:type_name -> dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentStackOutputs
+	4, // 3: dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentStatus.outputs:type_name -> dev.planton.aws.awstransitgatewayvpcattachment.v1alpha1.AwsTransitGatewayVpcAttachmentOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

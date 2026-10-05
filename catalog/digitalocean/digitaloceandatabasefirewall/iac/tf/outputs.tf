@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanDatabaseFirewallStackOutputs
+# Outputs — exactly the DigitalOceanDatabaseFirewallOutputs
 # contract, identical across both provisioners. The rule set is a property
 # of its cluster; the cluster UUID is the only durable identity (the
 # Terraform state id is a random unique string).

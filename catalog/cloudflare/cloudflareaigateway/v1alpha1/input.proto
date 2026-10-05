@@ -5,10 +5,10 @@ package dev.planton.cloudflare.cloudflareaigateway.v1alpha1;
 import "catalog/cloudflare/cloudflareaigateway/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-// CloudflareAiGatewayStackInput is the input to the IaC module.
+// CloudflareAiGatewayIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-message CloudflareAiGatewayStackInput {
-  // target cloud-resource to be deployed
+message CloudflareAiGatewayIacInput {
+  // the catalog object to deploy to be deployed
   CloudflareAiGateway target = 1;
   // provider-config for Cloudflare authentication
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

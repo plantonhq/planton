@@ -4,7 +4,7 @@ Deploys an Amazon SageMaker model package group — the model registry's unit of
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SageMaker Model Package Group** — named from `metadata.name`, with an optional description that is part of the group's create-time identity
 - **Model Package Group Policy** — created only when `resourcePolicy` is set; the IAM resource policy granting other accounts access to the group (cross-account model sharing). Removing the block from the spec deletes the policy, closing the group to its own account.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreateModelPackageGroup` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreateModelPackageGroup` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -46,7 +46,7 @@ spec:
 planton apply -f model-registry.yaml
 ```
 
-This creates the model package group; training pipelines register versioned packages into it by name from the moment it exists. A Stack Job tracks the provisioning in real time.
+This creates the model package group; training pipelines register versioned packages into it by name from the moment it exists. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -64,13 +64,13 @@ These are the most important decisions when configuring a model registry group. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — the spec's only inputs are the region, a description, and a policy document; cross-account principals travel as account IDs inside the policy JSON.
+This kind has no foreign key dependencies — the spec's only inputs are the region, a description, and a policy document; cross-account principals travel as account IDs inside the policy JSON.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -87,6 +87,6 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS SageMaker Model**](/cloud-catalog/aws-sagemaker-model) — deploys versioned packages registered in this group via `modelPackageArn`
-- [**AWS SageMaker Pipeline**](/cloud-catalog/aws-sagemaker-pipeline) — the training pipelines that register model package versions into the group
-- [**AWS SageMaker MLflow App**](/cloud-catalog/aws-sagemaker-mlflow-app) — auto-registers models logged to MLflow into the registry when enabled
+- [**AWS SageMaker Model**](/infra-catalog/aws-sagemaker-model) — deploys versioned packages registered in this group via `modelPackageArn`
+- [**AWS SageMaker Pipeline**](/infra-catalog/aws-sagemaker-pipeline) — the training pipelines that register model package versions into the group
+- [**AWS SageMaker MLflow App**](/infra-catalog/aws-sagemaker-mlflow-app) — auto-registers models logged to MLflow into the registry when enabled

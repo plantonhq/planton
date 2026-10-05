@@ -1,0 +1,1754 @@
+---
+alwaysApply: false
+---
+
+# Update: Enhance Existing Kinds
+
+## Purpose
+
+This rule updates **existing kinds** to fix gaps, enhance features, or refresh documentation. It intelligently determines what needs updating based on your intent or audit results.
+
+## Role
+
+You are the Planton Code Partner. This rule orchestrates updates to existing kinds, ensuring changes maintain consistency with the ideal state defined in `architecture/catalog-kind.md`.
+
+## Design Philosophy (NON-NEGOTIABLE): World-Class Per Kind
+
+Updates hold the same bar the forge rule states: treat the kind you are updating as if
+the entire platform existed **solely** to give the best possible self-service experience for
+that one resource. Breadth — of providers, or of kinds within a provider — is never a
+reason to leave a single kind's experience shallow. Decisions are never driven by
+implementation complexity or by how another kind or provider modeled a similar concept;
+derive design only from the target provider's own authoritative API (for cloud providers: the
+local Terraform provider clone; for Kubernetes: the pinned upstream Helm chart / CRD schema /
+core API types — never web memory), and judge every choice by the experience a user of this
+one kind will come to expect.
+
+Read those references for FACTS only — field sets, defaults, validation bounds, ForceNew
+behavior. Never copy or adapt code text from the Terraform provider repos (MPL-2.0 —
+file-level copyleft incompatible with this Apache-2.0 work) or any BUSL HashiCorp repo into
+catalog modules; write original implementations informed by the facts. Consuming the
+Apache-2.0 Pulumi SDKs from go.mod and calling their APIs is normal dependency usage and is
+not restricted.
+
+**Read the resource's website doc page in the clone alongside its schema.** The schema is
+the completeness floor for arguments, but requiredness and target/protocol restrictions can
+live ONLY in the provider's `website/docs/` page and the service itself: a schema can type a
+field as a plain optional string while the doc page states a hard service-side contract
+(e.g. an argument "Only REST APIs are supported", or a nested block the service requires
+despite the schema marking it optional). A surface modeled from the schema alone can pass
+every offline gate and be categorically undeployable live. When the doc page and schema
+disagree, the doc page plus a live probe is the truth to model.
+
+**Extending a kind that manages live objects keeps unset unmanaged.** Every field the
+update adds has presence, and both modules send it only when the spec sets it, so an
+object deployed before the update previews no change. That holds only for provider
+arguments with a computed value: an optional argument the provider does not compute is
+planned for removal whenever the spec leaves it unset and the object holds a value.
+Find each one in the provider schema, measure it with the blind-import round-trip
+(`PLANTON_E2E_IMPORT_ROUNDTRIP=1`), and name it in the field comment and the GUIDE's
+adoption section: an adopted object declares its live value.
+
+## Improve this workflow as you use it (NON-NEGOTIABLE)
+
+If updating a kind required knowledge this rule or its flow rules did not give you — an undocumented mechanism you had to reverse-engineer, a wrong or misleading implication, a missing step, or a stale path — amend this rule, the relevant flow rule, or `architecture/catalog-kind.md` in the same session, as timeless guidance (never naming a project or a task), so the next agent never has to re-learn it. The workflow is expected to get sharper with every use.
+
+## Knowledge lands where its READER lives (NON-NEGOTIABLE)
+
+The clause above covers WORKFLOW lessons — knowledge the next *building*
+agent needs. Most lessons a session earns (especially live-E2E sessions) are
+CONFIGURATION lessons: knowledge the next *configuring* agent, or the human
+reading the docs, needs at the moment they write a manifest. Those never
+belong in this rule — an agent configuring a kind does not read forge
+workflows. Before a session ends, classify every lesson by its reader and
+land it in that reader's surface:
+
+| Reader | Surface | Example of what belongs there |
+|---|---|---|
+| An agent (or human) WRITING a manifest | The spec proto's field comments | "the EBS CSI driver refuses to clone unencrypted source volumes", "reusing a backup name against a bucket holding prior records fails — records outlive the CR" |
+| An agent MAINTAINING a module | Module comments (both engines) at the mechanism they explain | "this guard is null-safe because tfvars emits null for unset optionals" |
+| A human EVALUATING or OPERATING the kind | `GUIDE.md`, the catalog page, presets' explainers | operational recipes (a min-0 tainted burst node group), cross-kind prerequisites (an annotation set that requires a controller installed) |
+| The next BUILDING agent | This rule / flow rules / doctrine | engine mechanics, gate design, projection idioms |
+
+The test: *if a future manifest could repeat the mistake, the warning must
+sit on the field the manifest author will be reading when they make it.*
+A lesson recorded only in a workflow rule (or worse, only in a session
+record) is considered NOT captured. Live-caught constraints that upstream
+docs do not state (a cloud API rejection, a controller behavior, a timing
+reality) are the highest-value comments in the catalog — they are the
+knowledge nobody else has written down. Keep the comments timeless and
+evidence-flavored ("verified live: ..."), never narrating who learned it or
+when.
+
+## When to Use Update
+
+Use update when you need to:
+- ✅ **Fill gaps** identified by audit (incomplete kind)
+- ✅ **Add fields** to proto schema (extend configuration)
+- ✅ **Modify IaC** modules (change deployment logic)
+- ✅ **Refresh documentation** (update the guide, catalog page, or presets)
+- ✅ **Fix issues** (broken tests, build errors, outdated examples)
+- ✅ **Enhance features** (add support for new provider features)
+
+**Don't use update when:**
+- ❌ Kind doesn't exist (use **forge** instead)
+- ❌ You want to remove kind (use **delete**)
+- ❌ You just want to check status (use **audit**)
+
+## Usage
+
+### Basic Syntax
+
+```
+@update-catalog-kind <KindName> [--scenario <type>] [--explain "<description>"]
+```
+
+### Update Scenarios
+
+#### Scenario 1: Fill Gaps (Audit-Driven)
+
+**When:** Kind is incomplete, audit shows missing items
+
+```
+@update-catalog-kind CloudflareD1Database --scenario fill-gaps
+```
+
+**What it does:**
+1. Runs audit (or uses existing audit report)
+2. Identifies missing files/features
+3. Runs appropriate forge flow rules to fill gaps
+4. Re-runs validation
+
+**Example gaps:**
+- Missing Terraform module → runs rules 012-013
+- Missing kind guide → runs rule 019
+- Failed tests → fixes and re-runs rule 019
+- Missing presets → runs rule 018 to generate initial presets (2-3 common configurations)
+- A logo the catalog-logo gate rejects (`go test ./pkg/cataloglogo/`: `shared-glyph`, `missing-provenance`, `malformed-svg`) → runs rule 021 to author the kind's own glyph with its provenance `<desc>`; the fixed kind's entries leave `pkg/cataloglogo/baseline.yaml`
+
+**Logo replacement rule (any scenario):** when a provider that offers its icons for third-party diagrams (rule 021's provider list; Google Cloud does, Kubernetes does for its own objects, AWS does in two forms, Azure does, Cloudflare and DigitalOcean do not) has since published an official icon for a kind whose `logo.svg` opens its `<desc>` with `Planton-drawn glyph`, replace the drawing with the official mark per rule 021 step 2 -- an official mark always wins over a drawn one, and only for the kind that IS the provider's own product or object (its children keep their drawn glyphs, and another project's software hosted on the provider stays drawn whatever that project publishes). `grep -l "Planton-drawn glyph" catalog/<provider>/*/logo.svg` lists the candidates.
+
+#### Scenario 2: Proto Schema Changed
+
+**When:** You've modified spec.proto and need to propagate changes
+
+```
+@update-catalog-kind GcpCertManagerCert --scenario proto-changed
+```
+
+**What it does:**
+1. Regenerates proto stubs: `make protos` (rule 015)
+2. Validates kind tests: `go test ./catalog/<provider>/<kind>/...`
+3. Updates Terraform variables.tf to match spec.proto
+4. **Validates existing presets against new schema** (if `presets/` exists):
+   - Checks the LAYOUT first: presets must be flat `{NN}-{name}.yaml` + `{NN}-{name}.md`
+     pairs directly under `presets/` (rule 018's convention). A legacy
+     subdirectory layout (`{NN}-{name}/manifest.yaml` + `README.md`) is invisible
+     to the downstream preset consumers (the catalog bundle and content packaging
+     scan the flat pairs), so the presets silently never publish — flatten them as
+     part of the update. Also verify every preset carries the spec's required fields (e.g.
+     `region`): presets predating a requiredness change can be invalid without
+     anything failing until a user copies one.
+   - Checks for renamed fields (preset uses old field names that no longer exist in spec.proto)
+   - Checks for removed fields (preset references fields deleted from spec.proto)
+   - Checks for new required fields (preset may need them added)
+   - Checks for changed `StringValueOrRef` types (may need `value:` wrapper added or removed)
+   - **A field that BECOMES a `StringValueOrRef` is proven on both of its paths, and
+     the two proofs live in different places.** The literal path (`value:`) is the
+     tree's: `validate-manifest` on every preset, `planton validate-refs --check`
+     (the annotated `default_kind_field_path` must resolve on the target kind's
+     real outputs), the module's own read (`GetX().GetValue()` on Pulumi; the
+     Terraform variable stays `string` because tfvars generation flattens the
+     wrapper), and the offline plan/preview rendering the same object as before.
+     The reference path (`valueFrom:`) can only be proven through the set lane --
+     `planton apply -f <dir>` on a multi-document input -- because that is the one
+     lane that resolves references between nodes; and the set lane refuses
+     `--module-dir` and pulls each node's module from a PUBLISHED release. So the
+     reference-path live proof runs AFTER the release, against the released
+     modules (`--module-version vX.Y.Z`), with the CLI built from the tree (its
+     schema knows the new type) -- and it doubles as the release's published-form
+     verification. Plan the session in that order; a defect the released module
+     reveals ships as the next patch release (tags are immutable).
+   - Checks for changed `recommended_default` / `default` annotations (preset values and comments may need updating)
+   - Updates stale presets to match the new schema
+   - **Mechanically validates every preset AND the e2e manifest** with the CLI built
+     from the working tree: `planton validate-manifest <file>` must pass for each
+     `presets/*.yaml` and `e2e/manifest.yaml` of the touched kind. Eyeballing
+     is not validation — angle-bracket placeholders in format-validated fields, bare
+     strings where a `StringValueOrRef` wrapper is required, and stale enum spellings
+     all pass review and fail this command. These files are public catalog artifacts;
+     an invalid one ships a broken copy-paste experience.
+6. **Annotates secret-by-default fields**: any newly added or renamed secret-bearing field MUST be
+   annotated `(dev.planton.shared.options.sensitive) = true` (a look-alike non-secret gets
+   `(sensitive_exempt_reason)` instead); then `planton secret-coverage --check` MUST pass. See rule
+   `002-spec-validate` ("SENSITIVE FIELD OPTIONS"). (For a dedicated annotation-only pass, see Scenario 8.)
+7. Runs build validation: `go build ./catalog/<provider>/<kind>/...` (rule 016)
+8. Runs test validation: `go test -v ./catalog/<provider>/<kind>/...` (rule 017)
+
+**Use when:**
+- Added new fields to spec.proto
+- Changed field types
+- Added/modified validations
+- Renamed fields
+
+**Provider validators are not always the service's real contract:** an IaC
+provider's schema validator can be LOOSER than the cloud API it wraps (e.g. a
+validator accepting a numeric RANGE where the service accepts only two exact
+VALUES and rejects everything else at create time). Never loosen an existing
+spec rule to match a provider validator without a live-API proof — the tighter
+rule may be carrying the service's actual behavior. When a live call rejects a
+value the provider validator allowed, promote the API's real constraint into
+the spec rule and note the observed rejection in the rule's comment, so
+misconfigurations fail at validation rather than at deploy.
+
+**A "keyless" or "ambient identity" claim is verified against the CLIENT,
+never inferred from a sibling arm:** "leave the key empty and the pods' cloud
+identity takes over" is a property of one storage client's credential
+constructor, not of a cloud. Before a spec field says it, read two sources at
+the pin: the operator's CRD `required` list for the credential field (Percona
+Server for MongoDB requires `credentialsSecret` on every `gcs` block — a
+keyless manifest is rejected at apply), and the storage client's constructor
+in the pinned clone, searching for the error it raises when credentials are
+absent (Percona Backup for MongoDB's Google client: "clientEmail and
+privateKey are required" — no ADC path exists, while the same project's S3
+arm is keyless through the AWS SDK's chain). A keyed client gets a REQUIRED
+credential referenceable from the catalog's identity kind (`StringValueOrRef`
+onto the identity's exported key), never an optional string whose emptiness
+quietly means "nothing". A keyless client gets the EXACT IAM grant its calls
+need on the field comment, verified live — Barman Cloud probes the bucket with
+`storage.buckets.get` before every WAL archive, so GCS keyless needs
+`roles/storage.legacyBucketReader` beside `roles/storage.objectAdmin`, and
+objectAdmin alone fails every archive (live-caught on GKE).
+
+**An S3-compatible store gets its own arm in ITS vocabulary, and the module
+does the S3 translation:** "S3-compatible" is a wire protocol, not a
+configuration surface. When a store the catalog already models (Cloudflare R2
+through `CloudflareR2Bucket` and `CloudflareAccountApiToken`) is reachable
+only by hand-typing an endpoint host, a region token, and a key pair minted
+elsewhere, add an arm whose fields are the store's own nouns as references
+onto those kinds (the bucket's account and jurisdiction, the token as the
+credential) and let the module compose what the client needs -- the
+jurisdiction's endpoint host, the fixed region, the addressing style, the
+credential pair the owning kind exports. Read three sources first: the
+store's published S3 compatibility matrix (which operations and checksum types
+it implements), the operator's CRD for the S3 block's knobs at the pin, and
+the storage CLIENT's code for what it sends by default -- a client's default
+request checksums (aws-sdk-go-v2's `RequestChecksumCalculation`, boto3's data
+integrity protections) are the first thing an S3-compatible store rejects,
+and the upstream's own escape hatch (the Barman Cloud plugin's
+`instanceSidecarConfiguration.env` with `AWS_REQUEST_CHECKSUM_CALCULATION=
+when_required`) belongs in the module, not in a user's manifest. Facts that
+are the store's, not the consumer's (the host table, a credential
+derivation), live once in a shared Go package the consuming modules import,
+with the Terraform twins carrying the same table under a comment naming that
+package.
+
+**A one-shot controller verb waits for the state its controller assumes:**
+the never-block-on-a-controller posture has one exception. When a module
+renders an object the operator runs exactly once and never retries on error
+(Percona's `PerconaServerMongoDBRestore`), and the operator's own
+precondition check is weaker than what the run needs (its "agents are up"
+check reads heartbeats that a fresh cluster's crash-looping agents wrote
+before they died; the resync it then sends reaches no listening agent and its
+30-second deadline parks the Restore in a terminal "not found"), the module
+gates the one-shot on the state the controller assumes -- the cluster's
+`status.state == ready` -- with the engine's own await (`pulumi.com/waitFor`
+with a JSONPath, `wait_for { field {...} }` on `kubectl_manifest`), sized
+with an explicit timeout, and ONLY when the one-shot is declared. Prove the
+race with the controller's log before writing the gate; a gate that merely
+"seems safer" is the posture violation the exception exists to prevent.
+
+**Validation message quality:** When adding or modifying CEL validations, every `message` string must meet the quality standards in rule `002-spec-validate` ("VALIDATION MESSAGE QUALITY"). These messages are rendered directly in user-facing UIs and CLIs. Write them like a knowledgeable colleague helping someone configure this kind for the first time.
+
+#### Scenario 3: Refresh Documentation
+
+**When:** You have new research or want to update docs
+
+```
+@update-catalog-kind KubernetesPostgres --scenario refresh-docs
+```
+
+**What it does:**
+1. Refreshes GUIDE.md (rule 019)
+2. Updates README.md (kind root) if needed
+3. Updates IaC documentation (Pulumi/Terraform READMEs)
+4. Verifies the in-code module comments still meet the module-comment bar (`architecture/catalog-kind.md` §4.1), not just the READMEs
+
+**Use when:**
+- New best practices discovered
+- Provider changed features
+- Better examples available
+- Documentation is outdated
+
+#### Scenario 4: Update IaC Implementation
+
+**When:** You need to modify Pulumi or Terraform deployment logic
+
+```
+@update-catalog-kind AwsRdsInstance --scenario update-iac --explain "add multi-AZ support"
+```
+
+**What it does:**
+1. **Entrypoint-completeness gate first:** verify `iac/pulumi/` carries `Pulumi.yaml` and
+   `main.go` (and NO `Makefile` — the anatomy gate forbids it) before touching logic. A missing `Pulumi.yaml` passes every offline
+   gate (the Go program builds fine) and only fails at live deploy time, with the
+   misleading `pulumi stack init` error "pass the fully qualified name
+   (organization/project/stack)" — the CLI found no Pulumi project in the module
+   dir. An EXISTING `Pulumi.yaml` must also be inspected for the legacy
+   `runtime.options.binary` residue — with ANY value, not just `binary: main`
+   (a project-named binary like `binary: aws-<kind>` looks deliberate and
+   modern but is the same defect): no clean checkout contains a prebuilt
+   binary of any name, every offline gate passes, and the failure appears
+   only at deploy/preview time as `unable to find '<value>' executable` —
+   the canonical shape is a plain `runtime: go`. On the Terraform side, verify
+   `iac/tf/outputs.tf` exists: a module without it passes `tofu validate` AND
+   the variables.tf drift guard, and the gap only surfaces as a cross-engine
+   parity failure at live verify (Terraform emits zero outputs while
+   Pulumi exports them all — the class was found live on AwsNeptuneCluster).
+   Also verify the exact pin `= x.y.z` in `iac/tf/provider.tf` is lifted to the
+   provider family's floor constraint (see forge rule 012) before adding fields
+   that need a newer provider. Finally verify the test-manifest anatomy exists:
+   `e2e/manifest.yaml` at the kind root (a kind can lack it — and
+   without it the offline `tofu plan` proof has NO input, so that gate silently
+   never runs for the kind). Create it from the current spec when missing;
+   make the e2e manifest exercise the full surface so the plan proof covers
+   arms the live lanes exclude. (`iac/pulumi/iac-input.yaml` is NOT
+   committed anatomy — the repo gitignores that path catalog-wide; it is
+   CLI-written preview output that doubles as a local-run convenience.
+   Never create or commit one.)
+   The tofu plan proof itself: `cd iac/tf && planton tofu init --manifest
+   ../../e2e/manifest.yaml --module-dir .` then `planton tofu plan --manifest
+   ../../e2e/manifest.yaml --module-dir .`. The CLI renders the manifest into
+   `.terraform/terraform.tfvars` on its own (no separate `load-tfvars` step),
+   but it hands tofu the var-file path RELATIVE to the module dir — so the
+   commands must run from INSIDE `iac/tf` with `--module-dir .`; invoking from
+   the repo root with a full `--module-dir` path fails with a misleading
+   "Failed to read variables file ... does not exist" even though the CLI just
+   wrote that file (tofu resolves the relative path against the module dir,
+   doubling it).
+   Before the Pulumi proof, check the e2e manifest for legacy
+   `pulumi.planton.dev/*` annotations (organization/project/stack.name):
+   the CLI prefers an annotation-derived stack over `--stack`, so a
+   manifest carrying them hijacks the proof onto a stack FQDN a local
+   backend rejects ("organization name must be 'organization'"). The
+   current canonical-manifest convention carries NO pulumi annotations —
+   strip them as part of the update.
+   The Pulumi side has an equivalent offline proof — run it whenever the live
+   lanes are deferred (it is what catches the `options.binary` class above,
+   which `go build` cannot):
+   `cd iac/pulumi && pulumi stack init organization/<Pulumi.yaml name>/proof`
+   then `planton pulumi preview --manifest ../../e2e/manifest.yaml --stack
+   organization/<Pulumi.yaml name>/proof --module-dir .`, and
+   `pulumi stack rm --yes` afterwards. Two path gotchas: `--module-dir` must
+   be `.`-from-inside-the-module or an ABSOLUTE path — a repo-root-relative
+   path fails with "failed to read input file ... iac-input.yaml: no such
+   file" because the CLI passes the built iac-input's path through an env
+   var the Pulumi program resolves against ITS OWN working directory. And
+   the CLI WRITES the built IaC input to `<module-dir>/iac-input.yaml`,
+   overwriting the committed local-run entrypoint file — review that file's
+   diff after the proof (the built input from the e2e manifest is usually a
+   fine dev entrypoint, but never commit one carrying real credentials from
+   a populated provider-config). A third rewrite to watch: the CLI
+   REGENERATES `<module-dir>/Pulumi.yaml`'s `name` from the stack FQDN's
+   project segment before every run — a preview whose stack name does not
+   use the COMMITTED `Pulumi.yaml` name (which is why the stack-init
+   convention above says `organization/<Pulumi.yaml name>/proof`) leaves
+   the module dirty with a phantom project rename that is tool fallout,
+   not an edit. Check `git status` on the module dir after every proof and
+   revert anything the wrapper rewrote; never commit a `Pulumi.yaml` name
+   change you did not deliberately make. Like the tofu plan proof, the AWS provider
+   resolves credentials at preview time, so the ambient chain must carry a
+   live session (`aws sts get-caller-identity` proves it) even though
+   nothing is created.
+   Know the offline proofs' blind spot: CR sections an operator copies
+   VERBATIM into core-API objects (pod templates, service templates,
+   volume-claim templates) must be authored to core-API validity, and
+   plan/preview CANNOT catch a violation — the operator materializes the
+   copy at reconcile time and only the API server rejects it (verified
+   live, twice in one CR: an explicit container entry without an image —
+   an explicit entry SUPPRESSES the operator's default-image injection —
+   and a ClusterIP service template without ports; both rendered clean
+   plans and previews, then stalled reconciliation with API rejections
+   only the operator's own log surfaced). When a module renders any
+   verbatim-copied template, cross-check the operator's template-copy
+   semantics in the pinned clone and author the template as if writing
+   the core object itself. A Helm-backed kind has the same class one
+   layer down: `helm.sh/v3:Release` renders chart templates only at
+   APPLY, so a chart requiring newer Helm template functions than the
+   provider's embedded SDK (e.g. `fromToml`, Helm >= 3.16) previews clean
+   and fails at install — verify the chart's template-function floor
+   against the engine's embedded Helm version (the provider clone's
+   go.mod is the authority) whenever adopting a newly-pinned chart.
+2. Updates Pulumi module based on your explanation, keeping comments at the module-comment bar (`architecture/catalog-kind.md` §4.1)
+3. Updates Terraform module to maintain feature parity AND comment-quality parity (never strip module comments)
+4. Updates tests if needed
+5. Runs build validation: `go build ./catalog/<provider>/<kind>/...` (rule 016)
+6. Runs E2E tests
+7. Runs test validation: `go test -v ./catalog/<provider>/<kind>/...` (rule 017)
+
+**Use when:**
+- Adding new resources to deployment
+- Changing resource configuration
+- Fixing deployment bugs
+- Optimizing resource creation
+
+#### Scenario 5: Fix Specific Issue
+
+**When:** You have a specific problem to fix
+
+```
+@update-catalog-kind GcpCertManagerCert --explain "presets use deprecated fields, update to match current spec"
+```
+
+**What it does:**
+1. Analyzes the issue description
+2. Determines which files need updating
+3. Makes targeted fixes
+4. Runs relevant validations
+
+**Use when:**
+- Build is broken
+- Tests are failing
+- Examples don't work
+- Documentation has errors
+
+#### Scenario 6: Auto (Let AI Decide)
+
+**When:** You're not sure what scenario applies
+
+```
+@update-catalog-kind CloudflareD1Database
+```
+
+**What it does:**
+1. Runs audit to assess current state
+2. Checks for preset issues: missing `presets/` directory, stale presets referencing old field names, or presets missing new required fields
+3. Asks you what you want to update
+4. Determines best scenario automatically
+5. Proceeds with appropriate updates
+
+**Default behavior** when no scenario specified.
+
+## Workflow
+
+### Step 1: Validate Kind Exists
+
+1. Lookup kind in `catalog_kind.proto`
+2. Verify kind path exists
+3. If not found, suggest using `@forge-catalog-kind` instead
+
+### Step 2: Determine Update Scope
+
+**Important:** Before proceeding with any update, read the kind's guide (`GUIDE.md` at the kind root) if it exists. This document contains critical context about:
+- Kind's purpose and design philosophy
+- Parity accounting (the pinned provider version, deliberate compositions, and recorded exclusions)
+- Deployment landscape and provider-specific considerations
+- Best practices and known gotchas
+- Historical evolution and design rationale
+
+**This context is essential for making informed update decisions.**
+
+Based on scenario:
+
+**Fill Gaps:**
+- Run audit (or read latest audit report)
+- Parse completion score and missing items
+- Check if `presets/` is missing or empty -- if so, add rule 018 to the execution list
+- Build list of forge rules to run
+
+**Proto Changed:**
+- Check if spec.proto was recently modified
+- Consult GUIDE.md to understand which fields are essential
+- Identify dependent files that need updating
+- **Check existing presets**: Read `presets/*.yaml` and compare field names against new spec.proto to detect stale references
+- Plan regeneration sequence
+- **Must execute**: `make protos` to regenerate Go stubs
+- **Must execute**: `go test ./catalog/<provider>/<kind>/...` to validate spec tests
+- **Must execute**: `go build ./catalog/<provider>/<kind>/...` for build validation
+- **Must validate**: Existing presets are consistent with new spec.proto (no stale field names, correct StringValueOrRef usage)
+- **A chart's mode switch is a chart fact, never a product fact.** Helm
+  charts for stateful software often expose one mode knob (`dev` /
+  `standalone` / `ha`) that fuses facts the software itself keeps apart --
+  a storage engine and a replica count, a topology and a durability
+  posture. A kind that copies that knob inherits the fusion: users are
+  offered an "HA" arm that really means one engine, and rules end up keyed
+  on the arm instead of the fact. Model the facts the software has (read
+  its own configuration reference), drive the chart's mode FROM them in
+  both engines, and put each engine's stanza in the configuration string
+  the chart hands you -- the chart is never told a value it lacks, and no
+  template is patched. Before calling any chart mode "production", read
+  upstream's own posture on what that mode runs: a chart's default (file
+  storage, an embedded database) is a chart default, not a recommendation,
+  and when the kind's own rules keep steering users away from it (every
+  backup fixture avoids it), the default is the defect. A shape that makes
+  a rule unwritable (a volume inside the one engine that has one) beats a
+  CEL that refuses it; and a scalar with a declared `(default)` is filled
+  in by the manifest loader BEFORE validation, so a CEL keyed on
+  `has(this.<scalar>)` cannot tell a written value from the default --
+  key on the value.
+
+**Refresh Docs:**
+- Read existing GUIDE.md to understand current state
+- Identify documentation files
+- Plan regeneration sequence
+- Preserve custom modifications where possible
+
+**Update IaC:**
+- Parse explanation of what needs changing
+- Consult GUIDE.md for deployment architecture context
+- Identify affected module files
+- **Re-check stale SDK-deferral comments**: any module comment deferring a
+  spec field because it is "not available in the pinned SDK/provider" is a
+  claim about a moving target. Verify each one against the currently
+  resolved provider (Terraform) and SDK (Pulumi) versions -- search the
+  local canonical provider clone and the vendored Pulumi SDK for the
+  argument. If the field has since landed, wire it in BOTH engines and
+  delete the deferral comment; a stale deferral is a silent parity gap that
+  no offline gate will ever flag.
+- **Grep the TF module for `.value` reads on generator-flattened fields**:
+  the variables.tf generator flattens `StringValueOrRef` fields to plain
+  strings, but a module authored against an older hand-written contract may
+  still read `try(var.spec.<field>.value, null)`. On a flat string that
+  expression errors and `try()` swallows it to null -- the field is
+  SILENTLY DROPPED on every apply while `tofu validate`, the drift guard,
+  and the plan all stay green. Search `rg '\.value' iac/tf/` and cross-check
+  every hit against the generated contract; anything reading `.value` on a
+  flattened scalar is a live defect to fix in the same session.
+- **Reconcile the identity-tag set across BOTH engines**: older modules
+  predate the settled tag convention (the `Name` tag plus the
+  `planton.ai/*` identity keys, with user labels merged in unable to
+  override them) and commonly diverge -- e.g. a Terraform `locals.tf` that
+  merges only `{ Name }` with labels while the Pulumi module applies the
+  `awstagkeys` identity set WITHOUT `Name`, so the same manifest tags the
+  resource differently per engine. Tags are not outputs, so only the
+  tag guards catch this: `hack/guards/ensure_cross_engine_tag_keys.sh`
+  (AWS key sets) and `hack/guards/ensure_cross_engine_azure_tag_values.sh`
+  (Azure keys and values -- `resource_kind` is the lowercased
+  CatalogKind enum name as a literal in `locals.tf`, and `resource_id`
+  is written only when `metadata.id` is set, never the name). When touching
+  an older kind, diff the two engines' tag maps against the current
+  convention and converge both in the same change.
+- **Never read a proto oneof through an interface assertion in module code**:
+  asserting `x.Source.(interface{ GetValue() string })` compiles and silently
+  matches NOTHING — generated oneof wrapper structs carry plain fields, not
+  getters, so the branch never runs and the dependent resource is silently
+  skipped. Every offline gate stays green; the failure surfaces live as a
+  missing satellite (e.g. an env Secret that never materializes, wedging pod
+  startup until the engine's readiness await times out). Switch on the
+  concrete wrapper type (`case *Msg_Value:`) or call the getter on the PARENT
+  message (`s.GetValue()`), never an interface assertion on the oneof field.
+- **In Terraform locals that render CR specs or Helm values, assemble
+  conditional objects with the null-prune idiom — never conditional-merge
+  idioms**: write every conditional entry as `key = cond ? value : null`
+  inside ONE object literal and prune with
+  `{ for k, v in {...} : k => v if v != null }`. The two tempting
+  alternatives are both broken, each with a different failure mode:
+  `cond ? {…} : {}` ternaries pass `terraform validate` but fail at PLAN
+  with "inconsistent conditional result types" whenever the branches carry
+  different attribute sets — and a CHAINED per-arm ternary
+  (`t == "a" ? {…} : t == "b" ? {…} : null`) selecting between differently
+  shaped objects is the same failure wearing a oneof costume: render ONE
+  object literal carrying every arm's keys (each key gated on its arm,
+  `null` otherwise) and null-prune it. When the two branches happen to be
+  convertible (an object literal against a null-pruned for-expression),
+  the ternary does NOT fail at plan -- it unifies both to `map(string)`, and
+  a chart that copies the values into the workload's config hands it a
+  quoted `"true"` (Loki's and Tempo's `s3forcepathstyle`, refused at start
+  and seen only as a Helm install timing out); and `merge(concat(cond ? [{…}] : [], …)...)`
+  silently UNIFIES primitive-only sibling objects into `map(string)` — the
+  ternary converts each tuple to a list, and concat's element-type
+  unification then coerces numbers and booleans to strings
+  (`size: "4096"`, `create: "true"`), which server-side apply rejects (or
+  worse, a chart tolerates) only at deploy time. The null-prune form keeps
+  every value's type because a for-expression over an object literal
+  produces an object, never a unified map. When a leaf map legitimately
+  holds only same-typed strings (identity labels, secret data), plain
+  merge with `cond ? {k = v} : {}` is safe — the hazard is mixed primitive
+  types. The same plan-time trap hides in guard expressions:
+  `coalesce(x, {})` fails at PLAN with "all arguments must have the same
+  type" whenever `x` is a populated object (coalesce requires same-typed
+  arguments — an empty object literal is not the same type).   Guard
+  nullable locals with a plain `x != null ?` and always-map locals with
+  `length(x) > 0 ?`; never `length(coalesce(x, {}))`.
+  Two sharpenings of the same class: (1) the `jsondecode(jsonencode(…))`
+  seam rescues mixed-shape LIST concatenation (env lists mixing
+  `{name,value}` and `{name,valueFrom}` entries) but does NOT rescue a
+  ternary — plan-time constant folding re-derives concrete object types
+  straight through `jsondecode`, so
+  `cond ? jsondecode(jsonencode({rich})) : jsondecode(jsonencode({thin}))`
+  fails at PLAN exactly like the bare ternary (and `terraform validate`
+  still passes — only a real plan with values catches it). (2) A
+  branch-shaped conditional (an enabled-vs-disabled block whose arms
+  carry different attribute sets) decomposes into a MERGE of
+  complementary single-attribute ternaries — each ternary gates ONE
+  attribute against `{}` (`merge({enabled = cond}, cond ? {image = {…}} : {},
+  cond ? {replicaCount = n} : {}, !cond ? {replicas = {enabled = false}} : {})`)
+  — the branch shape never lives in one conditional expression.
+- **crd2pulumi cannot type a CRD field that is a map of NESTED objects**
+  (name-keyed maps whose values are objects — e.g. backup-storage maps):
+  it generates `map[string]map[string]string`, which structurally cannot
+  carry the nested bodies, and any adapter smuggling heterogeneous values
+  through the generated input type PANICS at runtime inside the provider's
+  input marshaling. When a rebuild meets such a CRD, render the whole CR
+  via `apiextensions.NewCustomResource` + `kubernetes.UntypedArgs` (plain
+  nested maps mirroring the Terraform `yamlencode` locals) and delete the
+  unconsumed generated package — full text in the forge rule's Phase 5.
+- **Operators that create cluster-scoped singletons at RUNTIME (fixed-name
+  webhooks and the like) need the MODULE to own those objects** — created
+  before the release, deleted with the resource, operator-managed fields
+  ignored, `pulumi.com/patchForce` on the Pulumi side — because Kubernetes
+  never garbage-collects a cluster-scoped dependent of a namespaced owner
+  and uninstall otherwise strands a Fail-closed webhook that bricks the
+  cluster. Full text in the forge rule's Phase 5.
+- **`try(x, "") != ""` does NOT guard an `optional` scalar inside a PRESENT
+  block**: proto `optional` fields arrive in tfvars as `null` (a present key
+  with a null value), so `try()` succeeds, returns null, and `null != ""` is
+  TRUE — the null then reaches the string template and fails the plan with
+  "Invalid template interpolation value" (or worse, renders on an engine
+  that tolerates it — a live-only cross-engine divergence, since generated
+  Go getters return `""` for unset optionals and the Pulumi module stays
+  correct). The null-safe read for optional scalars is
+  `try(coalesce(var.spec.block.field), "")`: coalesce rejects a lone
+  null/empty argument and `try` turns that rejection into `""`. The offline
+  `tofu plan` proofs must include a manifest where the optional field's
+  PARENT BLOCK is present but the optional scalar itself is omitted — the
+  absent-block case alone never exercises this trap.
+- **Pin Helm charts against the CHART REPOSITORY INDEX, never the vendored
+  Chart.yaml at an app tag**: chart releases are cut separately from
+  application releases, so the `Chart.yaml` inside an upstream repo at app
+  tag vX.Y.Z routinely still declares the PREVIOUS chart version (and the
+  served chart for app vX.Y.Z may not exist yet). A module that pins the
+  vendored number installs an older chart than the one designed against —
+  and every offline gate stays green because the version is just a string.
+  Verify what the repository actually serves
+  (`curl <repo-url>/index.yaml`, match the entry's `appVersion`) and pin
+  THAT chart version in the spec default and both modules' fallbacks.
+  The same class inverts for projects that MIRROR packaged charts into a
+  separate helm repo: the mirror's default-branch chart SOURCE lags the
+  release tags (a values.yaml read there yields a stale surface — wrong
+  defaults, missing keys — while the served index looks current). When a
+  chart has both a source repo and a mirror/pages repo, design from the
+  SOURCE repo's chart directory at the release tag the served index
+  names, and treat the mirror as index evidence only.
+  **OCI-served charts have no index.yaml** — verify through the registry's
+  tags API instead (`curl "https://<registry>/v2/<repo>/tags/list"` with a
+  pull-scope bearer token from the registry's `/token` endpoint, or
+  `helm show chart oci://<repo>/<chart> --version <v>`), and READ the
+  served chart itself when designing (pull the chart tgz; the vendored
+  copy at the repo tag lags the same way). OCI charts also wire
+  differently per engine: the Terraform helm provider takes
+  `repository = "oci://<registry>/<namespace>"` plus the bare `chart`
+  name and joins them internally, while Pulumi's helm Release takes the
+  fully JOINED `oci://…/<chart>` as the chart reference with NO
+  repository opts — the two-sided pattern (with comments at both sites)
+  lives in the kuberneteshelmrelease modules and every OCI-backed typed
+  kind since.
+- **Read the upstream's DEPRECATION notices during every pin reconcile, and
+  model the REPLACEMENT architecture — never a surface with an announced
+  removal**: mature upstreams fork their configuration surfaces (a built-in
+  mechanism deprecated in favor of a plugin/extension architecture, an
+  in-tree arm split into its own CRD) and announce the removal several
+  minors out. Typing the deprecated surface ships a spec whose backbone
+  dies on a routine upstream upgrade — a breaking spec change later, on
+  upstream's schedule instead of ours — and every kind that copies the
+  shape inherits the regret. CloudNativePG is the worked example: its
+  in-tree `barmanObjectStore` backup stanza is deprecated with a removal
+  announced two minors ahead, so the typed backup surface models the
+  Barman Cloud plugin architecture (a separate plugin deployment beside
+  the operator, an `ObjectStore` CR per backup destination, `plugins`
+  wiring on the Cluster) even though the in-tree stanza still validates at
+  the pinned release. Check the release notes and the CRD's own
+  deprecation markers at every pin jump; when the replacement needs a
+  companion deployment (the plugin), it belongs on the OPERATOR kind as a
+  typed arm, and its external dependencies (cert-manager for plugin TLS)
+  are documented — never hidden.
+- **A chart move re-reads the chart's CRD posture, and two invariants hold
+  through every update of a chart-backed kind.** The forge rule's CRD
+  decision tree (its Post-Forge Live E2E Validation section) placed the
+  kind on one of three branches by reading the chart AT THE PIN; a
+  `chart_version` move is a new pin, so read the new chart the same way
+  before touching a module. A branch-1 kind (the chart owns its CRD
+  lifecycle behind an install switch and a keep switch) stays branch 1 only
+  while the new chart still templates its CRDs behind the SAME switches
+  the module maps `crds.install` and `crds.keep_on_uninstall` onto; a
+  derive-branch kind re-derives from the new pin and never gains a staged
+  copy. The two invariants, both machine-enforced and never relaxed for a
+  "small" bump: (1) **a module is its directory** — nothing outside
+  `iac/tf/` or `iac/pulumi/` is ever read, because release packaging zips
+  exactly that directory and the Pulumi binary lane runs from a generated
+  workspace holding only `Pulumi.yaml`, so a relative read of a sibling
+  path passes in the source tree and fails in every release (the anatomy
+  gate forbids `iac/crds/`; the self-containment guard forbids parent-path
+  reads in either engine); (2) **a module derives, never copies, what a
+  pinned artifact already carries** — a vendored CRD is frozen at one
+  version while `chart_version` moves with the user, so the schema silently
+  stops matching the operator it serves, and no count guard fixes that;
+  only derivation does. When the kind's DEFAULT chart version moves, every
+  copy of the default moves in the same change — the proto field default,
+  the Pulumi module's default, the Terraform module's default, the presets,
+  the docs, and any client that seeds the field — and the kind's e2e
+  install scenario advances with it: the first act pins the PREVIOUS
+  published chart explicitly (a first act that follows the default has
+  nothing to move to) and the `e2e-upgrade-manifest` second act carries
+  the new default, so every catalog release re-proves the chart upgrade in
+  place on both engines. The kind's MINIMUM chart version is a different
+  number with a different reason (the first chart on which the module's
+  dials mean anything) and moves only when an older chart would silently
+  drop a dial — never merely because the default moved.
+- **A field added to a kind whose definition ANOTHER catalog resource
+  installs lands with its refusal explained.** When a kind declares a
+  custom resource (`kubectl_manifest` / `apiextensions.NewCustomResource`)
+  whose CRD comes from a different kind's chart (KubernetesPlantonPlatform
+  under KubernetesPlantonOperator is the pattern), a new spec field reaches
+  the API server before every cluster's definition knows it: the catalog
+  release ships the field, the chart that installed the definition is
+  whatever version the adopter pinned, and nothing upgrades that chart
+  implicitly. Server-side apply refuses such a field outright (never a
+  silent prune) — but with the mechanism's sentence only (`.spec.x.y: field
+  not declared in schema`). The recognizer in `pkg/failure` turns it into
+  the three parts, naming the resource that installs the definition; the
+  same update that adds the field (a) confirms the kind is in
+  `definitionOwners` (`pkg/failure/kubernetes.go`) so the next step names
+  the owning kind and its version field, and (b) states the minimum
+  owning-chart version in the field's proto comment and the preset that
+  uses it, because the module cannot read the installed definition at plan
+  time and must not try (a live read in a module is the divergence the two
+  invariants above exist to prevent). Never add a module-side precondition
+  for this class; the explanation belongs where the engine output is read.
+- **Custom resources apply through `kubectl_manifest` (alekc/kubectl), not
+  the hashicorp provider's `kubernetes_manifest`**: `kubernetes_manifest`
+  requires a reachable cluster AND the CRD's OpenAPI schema at PLAN time,
+  so a CR can never be planned before its operator/CRDs are installed —
+  which breaks single-run Infra Charts (operator + CR together) and makes
+  offline plan proofs impossible. `kubectl_manifest` renders from
+  `yaml_body` with no plan-time cluster dependency, applies server-side,
+  and supports import (`apiVersion//kind//name[//namespace]`). When a kind's
+  scenarios need the operator present, declare it as a registry
+  prerequisite (`CatalogKindMeta.prerequisites`) — the E2E harness
+  deploys prerequisite fixtures automatically, and a fixture manifest can
+  chain further fixtures it references via the
+  `planton.dev/e2e-prerequisites` annotation.
+- **kubectl_manifest kinds ARE import-mappable — use the composed-ID
+  vocabulary, never skip the map**: the kubernetes provider catalog carries a
+  `kubectl_manifest` row whose id_format is
+  `"{api_version}//{kind}//{name}[//{namespace}]"`. A typed-CR module renders
+  exactly one GVK, so the kind map declares `api_version` and `kind`
+  with the `literal` derivation; `name` derives from metadata.name (plus the
+  kind's name output); `namespace` derives from the namespace
+  output / spec field for namespaced kinds and is left derivation-less for
+  cluster-scoped kinds — the bracketed `[//{namespace}]` segment group then
+  drops wholesale, which matters because the kubectl importer REJECTS a
+  trailing `//`. Modules that materialize convention-named satellite Secrets
+  key their `for_each` by the SECRET NAME, so `from_address_key` derives the
+  `{secret_name}` placeholder blind. The importer reconstructs `yaml_body`
+  from the STRIPPED LIVE object and resets every provider-side knob to its
+  schema default, so the catalog row declares those knobs config-only and
+  `yaml_body`/`yaml_body_parsed` write-normalized — the first post-import
+  plan re-asserting the module's rendered manifest is a server-side no-op.
+- **When a module declares SEVERAL resources of one type whose ID
+  placeholders carry different values** (a control-plane module installing
+  multiple Helm releases — each release's `{release_name}` is a different
+  constant), scope the import-map declarations per Terraform logical
+  resource name via `tofu_resource_name`: the declaration scoped to the
+  address's logical name wins, unscoped declarations are the fallback, and
+  the offline conformance guard rejects a scope that names no real module
+  resource. Same discipline for module-owned multi-document bundles: key the
+  `kubectl_manifest` `for_each` by each document's OWN NAME (never the split
+  index — positional keys are not identity and cannot feed an import ID), so
+  `from_address_key` derives the `{name}` placeholder blind and state
+  addresses survive bundle reorderings.
+- **`from_address_key` only serves `for_each` resources — count-indexed
+  singletons need their own scoped derivation**: a conditional satellite
+  written as `count = cond ? 1 : 0` has address key `0`, which cannot feed
+  an import ID, and the failure is invisible offline (conformance checks
+  placeholder coverage, not derivability of a live name) — only the blind
+  round-trip lane catches it ("values [x] not derivable"). When a module
+  mixes `for_each` satellite families (keyed by the FULL object name) with
+  count-indexed singletons (a backup-credentials Secret, a region Secret),
+  keep the unscoped `from_address_key` declaration as the fallback for the
+  families and add a `tofu_resource_name`-scoped declaration per singleton
+  — deterministic satellite names are metadata.name plus a fixed suffix, so
+  `from_metadata_name_suffix` derives each one blind.
+- **A credential the module can mint is never required by the spec.** An
+  update that finds a `sensitive` field with `required = true`, or a
+  module that leaves a chart to generate a credential it logs once, fixes
+  both in the same pass: the field becomes optional (a declared value wins;
+  empty means the module generates it -- `random_password` / `random.
+  RandomPassword`, same alphabet and length in both engines, letters and
+  digits only, keyed by the credential's identity), the Secret it lands in
+  gains an output (`KubernetesSecretKey`), the e2e `minimal` scenario
+  declares the user without the password, the presets drop their
+  placeholder passwords, and the import map gains the by-value row below.
+  Reference shapes: `KubernetesValkey`, `KubernetesNeo4j`, `KubernetesNats`.
+- **A module-owned Secret the workload reads only at start carries a
+  checksum on the pod template.** Env variables and most config files are
+  read once, at process start; nothing rolls a Deployment or StatefulSet
+  when the Secret behind them changes, so a rotated `sensitive` value sits
+  unused until someone restarts the pods. Stamp the pods with
+  `checksum/credentials`: the SHA-256 of the Secret's data as JSON with
+  sorted keys (Go `json.Marshal` of the map, OpenTofu
+  `sha256(jsonencode(map))` -- byte-identical, so both engines stamp the
+  same value), wherever the chart takes pod annotations. The apply that
+  writes the new value then rolls the workload onto it. Skip it only when
+  the workload re-reads the value on every use (Alertmanager's `_file`
+  credentials), and say so where the Secret is built. A module test pins
+  that a changed value changes the checksum and an unchanged one does not.
+  Reference shapes: `KubernetesGrafana` (sign-in), `KubernetesLoki` and
+  `KubernetesTempo` (the r2 arm).
+- **A module-generated credential (`random_password`) is import-mappable —
+  by VALUE, with two mandatory guards**: the random provider keeps no
+  cloud-side state, so its import ID is the password value itself, read
+  from the Secret the module materialized it into. The map row derives it
+  through `from_cluster_secret_key` (secret = metadata.name + suffix, plus
+  the data key) — cluster-connected contexts execute exactly the human
+  recipe the row's `where_to_find` gives; disconnected contexts fall back
+  to asking. Guard one: the resource declaration carries `lifecycle
+  ignore_changes` (TF) / `pulumi.IgnoreChanges` on ALL generation-shape
+  arguments — the importer assumes the provider's own generation defaults
+  (`special=true`, verified live) and every argument forces replacement,
+  so without the guard the first plan after ANY import proposes rotating
+  the live credential. Rotation stays an explicit verb, never plan
+  fallout. Guard two: the value is secret material — resolving contexts
+  redact it from progress lines, command echoes, and error wraps (the
+  round-trip harness does this whenever an id_format carries a
+  `from_cluster_secret_key`-derived placeholder). Guard three, for the
+  SALTED-HASH class: `random_password.bcrypt_hash` is NOT import-stable
+  — the provider recomputes it with a fresh salt on import (verified
+  live: after a blind re-import, only the hash-wired data key drifted),
+  so any cluster object wiring `bcrypt_hash` re-renders that one value
+  on the first post-adoption apply. The rewrite is functionally a no-op
+  (equivalent hash of the same password); declare exactly that dotted
+  sub-path in the kind map's `import_normalized` entry with the
+  reason, never a provider-catalog-wide tolerance and never
+  ignore_changes on the referencing Secret's data (which would blind a
+  REAL rotation from propagating to the hash).
+- **A COLLECTION of generated credentials is keyed by each credential's
+  IDENTITY (the username), never by list position — on BOTH engines**:
+  a positional key (`for_each` over an index, or an index-derived env
+  name) silently re-pairs passwords with usernames when the user list is
+  REORDERED — user B inherits user A's live password and vice versa, with
+  nothing in the plan that reads like a rotation. Keyed by username
+  (unique by CEL), reorders are no-ops and a rename is honestly a NEW
+  credential; positional names stay fine for derived plumbing that
+  carries no state (env-var names, config references) because they
+  re-render consistently on both sides of the pairing. The import map
+  then serves the whole collection with ONE row:
+  `from_cluster_secret_key` with `key_from_address_key: true` reads each
+  instance's value from the materialized Secret under the instance's own
+  address key — the username.
+- **Operator-owned CRs delete with BACKGROUND propagation, declared
+  explicitly on both engines**: the operator's finalizer IS the CR's
+  cascade — foreground propagation (the Pulumi provider's DEFAULT for
+  every resource, and `kubectl_manifest`'s default whenever `wait` is
+  set) deadlocks teardown when any involved operator keeps reconciling a
+  deleting child back to life (verified live: a foregroundDeletion
+  finalizer waiting on a child CR whose own operator recreates its
+  children — and the fixture uninstall then wedges on that operator's
+  pre-delete hook). Declare `delete_cascade = "Background"` on the TF
+  resource and the `pulumi.com/deletionPropagationPolicy: background`
+  annotation on the Pulumi CR, with twin comments.
+- **A chart arm that bundles an operator AND a CR it reconciles in ONE
+  release cannot uninstall cleanly — reject the arm, compose separate
+  kinds instead**: Helm uninstall issues every delete in one pass, so
+  the operator's Deployment dies seconds after the CR's delete while
+  the CR still carries that operator's finalizer — the release then
+  burns its full uninstall wait ("uninstallation completed with 1
+  error(s): context deadline exceeded"), the CR's children keep
+  running, and namespace deletion wedges on the same finalizer
+  (verified live, three lanes; the upstream README's own remedy was
+  "try deleting the namespace"). No values surface can sequence the
+  deletes — hooks and extra-manifest surfaces do not exist in such
+  charts, keep-annotations only relocate the deadlock, and operators
+  add finalizers unconditionally at reconcile. Audit UNINSTALL at the
+  pin before adopting any operator-bundling arm: identify who
+  processes each CR's finalizer after the operator dies in the same
+  pass — if nobody, model the dependency as a composed reference to
+  the catalog's separate operator + CR kinds, whose destroy order is
+  correct by construction. (Deletion still completes eventually via
+  the children's ownerReferences once the finalizer is CLEARED — the
+  manual unstick is a finalizer patch — but a kind whose destroy
+  needs manual surgery is not shippable.)
+- **Module-owned keep-on-uninstall on Pulumi needs the CLASSIC `yaml`
+  package plus a transformation — `yaml/v2` cannot do it**: yaml/v2
+  components register remotely and their children are created
+  PROVIDER-side, beyond the reach of any SDK-side resource option or
+  transformation; the classic package's `GetChildOptions` forwards only
+  parent/version/pluginDownloadURL, so a plain `RetainOnDelete` on the
+  ConfigGroup silently retains only the component wrapper. Deliver the
+  option through a resource TRANSFORMATION on a classic-yaml ConfigGroup
+  (transformations propagate down the in-process parent chain) — the
+  semantic twin of `kubectl_manifest`'s `apply_only = true` ("Delete is
+  a no-op" in the provider source).
+- **Split multi-document YAML bundles on separator LINES, never the bare
+  `---` substring**: CRD schema description strings embed `---` (unix
+  permission strings, TODO markers), and a substring split corrupts the
+  documents — match `(?m)^---[ \t]*$` (or HCL `split("\n---", ...)`)
+  and parse-filter comment-only documents.
+- **Operators with NO Helm chart whose official distribution is a released
+  MANIFEST install from that manifest, fetched tag-pinned and applied per
+  document — never a community chart, never a hand-maintained copy.** The
+  module class: Terraform fetches via `data "http"` and applies one
+  `kubectl_manifest` `for_each` keyed by each document's own COMPOSED
+  IDENTITY (`apiVersion//kind//name[//namespace]`) — name-only keys
+  collide when a bundle reuses one name across kinds (a ServiceAccount
+  and a Deployment sharing the operator's name is the norm), and the
+  composed key doubles as the import ID: the map derives every
+  composed-ID placeholder via `from_address_key_segment` (0-based `//`
+  segments; the namespace segment resolves empty for cluster-scoped
+  documents and its bracketed group drops). Pulumi applies via the
+  CLASSIC `yaml` ConfigFile with the manifest URL plus a TRANSFORMATION
+  that patches the typed overrides onto the operator Deployment (env
+  appends, image/resources/placement) — the Terraform twin patches
+  through locals merges, and swapping the patched document into the
+  applied set uses `merge(all_docs, { (key) = patched })`, never a
+  per-element ternary (differently-shaped objects fail plan-time type
+  unification). Two more contracts: apply with SERVER-SIDE APPLY on both
+  engines when any document is large (a CRD past ~256 KB exceeds the
+  client-side last-applied-configuration annotation cap — verified at a
+  342 KB CRD), and give such kinds NO user-facing version field when a
+  typed SDK is generated from the bundle's CRD (the module pins the
+  release; a selectable version would drift the CRD schema away from the
+  typed resources built on it). Fixed names/namespaces baked into the
+  manifest's own cross-references (webhook client configs, certificate
+  DNS names, CA-injection annotations) are NOT configurable — document
+  them as the upstream contract instead of rewriting the reference graph.
+- **A manifest bundle that packs an operator WITH its CRDs applies as
+  THREE ordered groups — namespace ← workloads ← CRDs — on BOTH
+  engines; a flat one-pass apply is wrong in both directions** (verified
+  live, both engines): at CREATE, parallel application races namespaced
+  documents against the Namespace ("unable to create new content...")
+  and passes only on scheduling luck; at DESTROY, deleting the CRDs in
+  the same pass as the operator wedges any CRD whose CRs carry
+  operator-processed finalizers — operators routinely maintain RUNTIME
+  CRs of their own (a webhook's self-owned installer object exists even
+  with zero user CRs), so the drain needs the operator ALIVE. The chain
+  gives destroy the reverse order: CRDs drain FIRST (delete-waited)
+  while the operator runs, then workloads, then the namespace awaited
+  to fully gone (a fixed install namespace still Terminating fails the
+  next install). Terraform: three `kubectl_manifest` resources with
+  `depends_on`, `wait = true` on the namespace + CRD groups, and
+  `wait_for_rollout = false` on the workloads group. Pulumi: three
+  chained classic-yaml ConfigGroups with a group-scoped skipAwait
+  transformation on the workloads group — awaiting ANY workload-group
+  resource deadlocks the chain when the operator binary requires its
+  CRDs at startup (a webhook that fatals until its CRD is served blocks
+  its Deployment await, and skipping only Deployments moves the
+  deadlock to the webhook Service's endpoints await; verified live).
+- **Done means serving: an operator kind reports success only when the
+  operator can serve the resources it defines — the E2E verifier
+  CONFIRMS that, it never supplies it.** The workloads group cannot
+  await its rollout (above), so when the operator's custom resources are
+  admitted by a webhook the operator registers at RUNTIME (not a
+  document of the bundle), the module ends with a READINESS GATE after
+  the CRD group: a stand-in ConfigMap, the same on both engines, whose
+  creation waits until the operator Deployments rolled out AND a
+  server-side dry run of one of its resources comes back admitted with
+  the webhook's defaults filled in. Rollout alone is not enough —
+  measured on the Tekton operator, defaulting went live 5–10s after both
+  Deployments reported available. Terraform runs the gate as the
+  stand-in's create-time `local-exec` provisioner (`force_new`, so a
+  failure or a release move gates again); Pulumi as a `BeforeCreate`
+  resource hook with `ReplaceOnChanges(*)` + `DeleteBeforeReplace` (a
+  BEFORE hook: a failing after-hook still records the resource on newer
+  engines, so the next run would skip the gate). The script is one text
+  under the cross-engine script parity guard, carried through the
+  environment so the deploy log shows one line, and needs `kubectl` on
+  PATH (the Planton runner image carries it). The stand-in depends on
+  the CRD group, so a destroy deletes it first and the teardown order is
+  untouched. The verifier asks the same question FIRST and with no
+  wait, and the kind carries a scenario that holds the operator's pods
+  off a node until 60s into the deploy (a node pool that starts empty),
+  so a module that reports done early fails its own lane. An operator
+  that registers no admission webhook needs no gate — its resources are
+  stored as written and reconciled once it starts — and its module says
+  so where the gate would be. Reference: KubernetesTektonOperator
+  (`iac/tf/readiness_gate.tf`, `iac/pulumi/module/readiness_gate.go`,
+  `e2e/scenarios/cold-node-pool.yaml`).
+- **CONFIG-ONLY attributes (delete-waits, cascade modes, lifecycle
+  knobs) DEGRADE to defaults in any freshly-imported state — never let
+  correctness ride an attribute the importer cannot read back without a
+  reconcile-apply**: an import stores only what the cluster/API
+  returns, so `wait`/`delete_cascade`-class arguments come back
+  null/false and a destroy from that state silently skips every
+  delete-wait the module's teardown ordering depends on (verified
+  live: a namespace delete-wait that blocked correctly from applied
+  state returned instantly from imported state and wedged an
+  operator-finalizer drain). The adopter workflow is import → APPLY →
+  operate — the reconcile apply writes config-only attributes into
+  state; the E2E import round-trip performs the same reconcile-apply
+  after its zero-change plan proof for exactly this reason.
+- **Disabling a chart default the chart guards with `if` uses a
+  CHART-FALSY EMPTY value ("" / 0), never a null — a null's survival to
+  Helm differs by engine**: Terraform's yamlencode carries `null`
+  through and Helm null-deletes the key, but the same nil does NOT
+  survive the Pulumi release seam — the key vanishes from the values
+  instead of overriding, and the chart default silently rides (verified
+  live: a percent-based JVM heap whose fixed `-Xmx` default was
+  "null-deleted" on both engines actually kept the chart's 8G `-Xmx` on
+  the Pulumi lanes, overriding the percent sizing inside the container
+  limit — invisible offline because both plans LOOK correct, and
+  invisible live until a sibling value validated against the real
+  heap). When the chart's guard is `{{ if .Values.x }}`, an empty
+  string/zero is falsy and expresses the disable identically through
+  BOTH engines; reserve null-deletes for map-entry removal the chart
+  iterates (and verify those live on both engines).
+- **A generated credential that a server resolves through its OWN
+  config/env re-parsing must use a parser-safe alphabet — letters
+  only, length compensating entropy**: some servers substitute env-var
+  references in config and re-PARSE the resolved value as a config
+  token (verified live: a config parser lexing a random password —
+  digit-led tokens as numbers, `#`/`$`/braces/quotes as structure —
+  crash-loops every server INTERMITTENTLY, flaky by draw, because each
+  apply generates a fresh password and only some draws contain a
+  breaking shape). Read the server's config parser at the pin whenever
+  a generated secret is injected via an env reference the config
+  consumes; a pure-letter value is the only shape a token lexer can
+  never misread.
+- **Every modeled server-option PAIR has an init-time validation to
+  mirror — grep the server's provider/config factories at the pin**:
+  servers validate option PAIRINGS at startup (`init()` in provider
+  factories, config validators), and on Kubernetes a failed pairing
+  surfaces only as CrashLoopBackOff with the real error buried in the
+  crashed container's logs (verified live: an option legal on its own
+  was rejected at boot because its companion option lacked a required
+  FORM — a full URL rather than a bare hostname). Modeling the fields
+  without their pairing rules ships apply-time-clean manifests that
+  can never boot. At design time, `rg "IllegalArgumentException|must
+  be set|requires"` through the server's config/provider factories for
+  every option the spec models, and mirror each pairing as a CEL rule
+  whose message names the server's own rule.
+- **A chart's default image reference can point at a DELETED registry —
+  probe pullability at the pin, never trust the default**: verified
+  live with a sidecar image whose entire upstream registry namespace
+  was removed (the manifest endpoint returns not-found); every install
+  with the chart default then times out on a forever-unpullable pod.
+  At every chart pin/audit, HEAD each default image's registry manifest;
+  when a default is dead, the module re-points it at the maintainer's
+  live repository at the same tag (loudly commented, spec-noted,
+  helm_values-overridable).
+- **Charts truncate their FULLNAME but not the names built from it —
+  audit the longest child-name suffix**: Kubernetes caps object names at
+  63 characters; a chart whose fullname rule truncates at 63 can still
+  render a child Service/Deployment name (fullname + a 30-40 char
+  suffix) past the cap, failing the install at the API server for
+  ordinary release names (verified live). Compute the chart's longest
+  suffix; when the budget breaks realistic names, pin `fullnameOverride`
+  to metadata.name (the catalog's Helm-kind identity convention) and
+  record the resulting name-length budget on the spec.
+- **Helm cannot adopt CRDs that already exist without its ownership
+  metadata**: a chart that templates CRDs fails to install onto a cluster
+  where another tool (or a CRDs-only installer kind) already applied them
+  ("invalid ownership metadata"). When a kind family carries BOTH a
+  CRDs-only installer kind and a full install kind, the full kind must apply
+  the CRD bundle ITSELF (server-side apply, module-owned, outside the Helm
+  release — exclude the chart's copies, e.g. istio base's
+  `base.excludedCRDs`) so both kinds co-own the CRDs and the CRDs-only →
+  full-install migration is a plain redeploy instead of a hard conflict.
+- **A chart that carries CRDs sits on exactly one branch of the CRD
+  decision tree, and an update never moves it to a fourth**: the chart
+  owns its lifecycle (map `crds { install, keep_on_uninstall }`), upstream
+  ships a separate CRD chart (a second kept release), or the module
+  DERIVES the CRD set from the pinned version and applies it kept ahead of
+  the release. Two invariants hold across every update: a module is its
+  directory and reads nothing outside it (no `iac/crds/`, no `../` reads —
+  the anatomy gate and `hack/guards/ensure_modules_are_self_contained.sh`
+  enforce both), and a module derives, never copies, what a pinned
+  artifact already carries. A chart-version bump therefore changes ONE
+  pin and nothing else; if an update finds itself re-staging a CRD file,
+  the kind is on the wrong branch. Every CRD-lifecycle failure text names
+  what was observed, what it means, and the next step — full tree, facts,
+  and failure set in the forge rule's Post-Forge Live E2E Validation
+  section.
+- **When an engine provider cannot express a spec field, fail the plan — never
+  silently drop it**: alongside the `PARITY-EXCEPTION:` twin comments, add a
+  Terraform `lifecycle { precondition }` on the resource that rejects a set
+  value with an error naming the gap and the working engine. A documented
+  divergence that silently ignores user intent still deploys different
+  behavior per engine; a loud plan failure routes the user before anything
+  ships. (Keep the kind's e2e manifest free of those fields — the offline
+  plan proof runs through both engines from one manifest.)
+  The same discipline runs in the OTHER direction: when the PULUMI side is
+  the one that cannot express a field (the pinned SDK predates a provider
+  argument the Terraform provider already ships), the Pulumi module returns
+  a loud error when the field is set — naming the gap, the working engine,
+  and that the exception dissolves at the next SDK upgrade — instead of
+  omitting the argument silently. Verify expressibility against the PINNED
+  SDK version in go.mod (`$(go env GOMODCACHE)/...@<pinned>/...`), never
+  against an upstream clone's newer branch: the clone shows where the
+  provider is going, the pin decides what the module can do today.
+- **Verify the Pulumi module sets the cloud name argument explicitly**
+  (`Name`/`AlarmName`/equivalent from `metadata.name`): modules authored
+  before the explicit-naming mandate rely on Pulumi auto-naming, which
+  appends a random suffix and silently diverges from the Terraform module's
+  exact `metadata.name` -- same manifest, two physical names. Compiles
+  clean, validates clean; only a live cross-engine comparison or code
+  review catches it.
+- **A spec comment that names Secret keys, environment variables, or file
+  paths ANOTHER kind consumes is verified against the TEMPLATE that
+  consumes them**: the chart template, the operator's controller, the script
+  -- never the values file, the README, or the consuming project's own docs.
+  The template is the contract; everything else is prose about it. A comment
+  authored from the docs told operators to create a Secret under keys the
+  chart never read; a pod built from that comment fails on every run, and no
+  offline gate can see it. When a spec field is a BYO Secret, quote the
+  consuming template's exact key names in the comment and cite where they
+  were read.
+- **A module-owned Job that waits for a HUMAN step is never awaited by the
+  deploy and never carries a finished-Job TTL**: Pulumi awaits Jobs to
+  completion by default and Terraform's `kubernetes_job_v1` defaults
+  `wait_for_completion = true`, so a Job whose success depends on an
+  operator's action (a Secret they create after `bao operator init`, a
+  token they mint) hangs the deploy until timeout and reports failure.
+  Annotate `pulumi.com/skipAwait: "true"` and set `wait_for_completion =
+  false`, in both engines, with the module comment saying why. Never set
+  `ttlSecondsAfterFinished` on a one-shot Job whose re-run would REPEAT its
+  effect (a restore installing the snapshot again over live data): the next
+  apply sees the finished Job gone, recreates it, and it runs again. Name it
+  by a hash of its declaration so a changed declaration is a new Job and an
+  unchanged one is a no-op. Bound the Job's work inside its script (a
+  preflight poll) and leave the wait for the human unbounded on purpose.
+- **Script text a kind ships through BOTH engines is a Go raw-string
+  constant and an HCL heredoc kept byte-identical, marked for the parity
+  guard**: a module is its directory (release packaging zips each engine
+  alone), so the text lives twice on purpose -- the ONLY difference is HCL's
+  `$${` / `%%{` escaping. Put `# parity: <go-file> <const>` on the line
+  above each Terraform heredoc opener (plain `<<`, never `<<-`) and
+  `hack/guards/ensure_cross_engine_script_parity.sh` diffs the pair on every
+  change; a heredoc without the marker is a drift nobody will catch.
+- **An IAM grant a spec comment or guide names is verified against the
+  CLIENT's first call in its SDK source, never against the role's name**: a
+  cloud role's name says what it is FOR, not which permissions it carries,
+  and the first thing many clients do is READ the resource they were
+  granted use of. A KMS seal wrapper fetches the key's metadata when the
+  server configures itself (a key-existence check); the encrypter-decrypter
+  role carries only the use permissions, so a vault documented with that one
+  role crash-loops on "Permission denied" before it can initialize, and no
+  offline gate can see it. Read the client's startup path in the pinned
+  clone, list every permission it exercises, and name every predefined role
+  the identity needs -- with the failure the missing one produces -- on the
+  field, in the guide's resource-set table, in the preset explainers, and in
+  the real-cluster batch that proves the set.
+- **A module-owned satellite that reaches its own server waits, bounded, for
+  the server to answer before it acts**: a backup job that fires inside an
+  unseal window, a rolling restart, or a leader election finds the active
+  Service with no endpoints and dies on "connection refused" in under a
+  second; with `restartPolicy: OnFailure` and a small backoff limit the Job
+  spends its retries in fifteen seconds and deletes its pod, taking every
+  log line with it. Poll the server's own readiness call (`bao status`
+  exits 0 only for an unsealed, initialized server) for a bounded window
+  before the first request, then let the failure text explain itself as
+  before. Prove it in the lane by creating the run right after init, not
+  after the server has been Ready for a minute.
+- **An operational truth the module enforces or prints is a spec FACT, and
+  it lives in the proto comment of the field it belongs to -- never only in
+  the module**: a name budget a precondition enforces, the pod state a
+  waiting Job shows (`CreateContainerConfigError` until an operator's Secret
+  exists), the recovery loop a script prints when an install fails, the DNS
+  name a job needs in a TLS certificate. The module's own comments and the
+  preset explainers do not reach an agent composing a manifest: the
+  packaged skill ships `reference.md` (generated from the proto comments),
+  `GUIDE.md`, and `_patterns/` -- not `iac/`, not `presets/`, not
+  `README.md`. Four such truths once lived only in a kind's `vars.go`,
+  `scripts.go`, and `restore.go`; every gate was green and no agent could
+  have warned a user about any of them. Write the fact on the field (the
+  Two-Layer Law of `_rules/docs/write-catalog-kind-guide.mdc`), quote
+  the module's exact wording so the reference page and the job log tell one
+  story, regenerate, and give the guide only the judgment around it.
+- Plan update and test sequence
+
+**Fix Issue:**
+- Parse issue description
+- Read GUIDE.md for relevant context
+- Identify affected files
+- Plan targeted fixes
+
+**Auto:**
+- Run quick audit
+- Read GUIDE.md if exists
+- Ask clarifying questions
+- Determine best scenario
+- Proceed with that scenario
+
+### Step 3: Execute Updates
+
+For each identified update:
+
+1. **Backup current state** (optional, if --backup flag)
+2. **Run appropriate forge flow rules** or make targeted edits
+3. **Validate after each step**
+4. **Handle errors** (retry up to 3 times)
+5. **Track progress**
+
+### Step 4: Final Validation
+
+After all updates, **execute validation commands in sequence**:
+
+1. **If proto files changed**: Run `make protos` to regenerate Go stubs
+2. **Always run kind tests**: `go test ./catalog/<provider>/<kind>/...`
+   - This validates buf.validate rules in spec.proto
+   - Ensures spec_test.go passes with current validation logic
+3. **If Pulumi/Go code changed**: Run `go build ./catalog/<provider>/<kind>/...` to validate build (rule 016)
+4. **Always run kind tests**: Run `go test -v ./catalog/<provider>/<kind>/...` to validate tests (rule 017)
+5. **If proto files changed and presets exist**: Verify all preset YAML field names exist in current spec.proto, all StringValueOrRef fields use `value:` wrapper, and apiVersion/kind still match api.proto
+5b. **If the spec surface or the module's resource set changed and the kind
+   ships catalog data sidecars** (`cost.yaml`, `controls.yaml`,
+   `iac/permissions.yaml`): refresh them in the same change -- renamed or removed
+   spec fields orphan the field paths in `cost.yaml`/`controls.yaml` (the
+   `lint.catalog-data` gate fails on any path that no longer resolves), new
+   billing-relevant fields need cost-driver entries, new security-relevant fields
+   may move a control from not_applicable to configurable, and added/removed
+   module resources change the derived permission statements (update the notes
+   citing the terraform resource types). Validate with
+   `go test ./pkg/finops/... ./pkg/compliance/... ./pkg/iac/permissions/... ./pkg/iac/actioninventory/`
+   (the last proves every permission name exists in the provider's inventory
+   snapshot; a new service prefix needs `make generate-action-inventory
+   ARMS=<provider>` in the same change).
+6. **If the Terraform module's resource set changed and the kind ships import
+   recipes** (`iac/import-map.yaml`): update the provider catalog
+   (`aa_import/catalog.yaml`) and the kind map for the added/removed resource
+   types, then re-prove with the live import round-trip
+   (`PLANTON_E2E_IMPORT_ROUNDTRIP=1` on the kind's terraform E2E lane) and
+   refresh the ledger in `pkg/iac/importmap/README.md`. The offline conformance
+   guard (`TestImportMapConformance`, rides `make test`) fails on any module
+   resource type the catalog does not cover -- treat that failure as this step's
+   tripwire, not a nuisance. Full discipline: `pkg/iac/importmap/README.md`.
+7. **If the spec surface or the Terraform module's resource set changed, and the
+   provider is instrumented for provider parity** (committed artifacts under
+   `pkg/providerparity/schemas/`): re-run the accounting and refresh the kind's
+   recorded judgment (`iac/provider-parity.yaml`) for added/renamed/removed fields
+   and resources:
+   ```bash
+   planton provider-parity --provider <provider> --ga-schema <ga-schema> --kind <Kind>
+   ```
+   New arguments are matched, mapped, or excluded WITH a reason; removed surface is
+   pruned (stale manifest entries fail the gate). If the kind was at total accounting
+   before the update, it must still be after -- never re-baseline a kind that was
+   clean. The `lint.provider-parity` CI lane is this step's tripwire.
+   If the provider has a committed parity page (`catalog/<provider>/terraform-parity.md`),
+   regenerate it in the same change -- `make generate-provider-parity-report` -- the
+   page's drift test fails CI when the accounting moved and the page did not.
+8. Generate update report
+9. Recommend running audit to verify improvements
+
+### Step 5: Report Results
+
+Show:
+- What was updated
+- Before/after comparison
+- Any warnings or issues
+- Next steps
+
+## Examples
+
+### Example 1: Fill Gaps After Audit
+
+```
+# First run audit
+@audit-catalog-kind CloudflareD1Database
+
+# Audit shows 65% complete, missing:
+# - Terraform module
+# - Kind guide (GUIDE.md)
+# - Pulumi module README
+# - Presets
+
+# Run update to fill gaps
+@update-catalog-kind CloudflareD1Database --scenario fill-gaps
+
+# Update executes:
+# - Rules 012-013 (Terraform module + README)
+# - Rule 019 (Kind guide)
+# - Rule 018 (Presets -- generates 2-3 initial presets)
+# - Rules 018-019 (Validation)
+
+# Result: 95-100% complete
+```
+
+### Example 2: Add New Field to Proto
+
+```
+# You manually edited spec.proto to add a new field:
+# bool enable_ssl = 10;
+
+# Propagate changes
+@update-catalog-kind GcpCloudSql --scenario proto-changed
+
+# Update executes:
+# - make protos (regenerate proto stubs)
+# - go test ./catalog/gcp/gcpcloudsql/v1alpha1/ (validate spec tests)
+# - Update Terraform variables.tf (add enable_ssl variable)
+# - Validate presets against new schema (check for stale fields, add enable_ssl if appropriate)
+# - go build ./catalog/<provider>/<kind>/... (validate build)
+# - go test -v ./catalog/<provider>/<kind>/... (validate tests)
+
+# Result: All files consistent with new schema, including presets
+```
+
+### Example 3: Refresh Outdated Documentation
+
+```
+# Provider released new features, docs are outdated
+@update-catalog-kind AwsRdsInstance --scenario refresh-docs
+
+# Update executes:
+# - Refresh GUIDE.md with current judgment
+# - Update README.md (kind root) with current best practices
+# - Update IaC READMEs
+
+# Result: Documentation reflects current state
+```
+
+### Example 4: Add Multi-Region Support
+
+```
+@update-catalog-kind GcpGkeCluster --scenario update-iac --explain "add support for multi-region clusters with read replicas in different regions"
+
+# Update executes:
+# - Analyze current Pulumi module
+# - Add multi-region logic to Pulumi
+# - Add same logic to Terraform (feature parity)
+# - Update tests for multi-region scenarios
+# - Validate build and tests
+
+# Result: Both IaC modules support multi-region
+```
+
+## Flags and Options
+
+### --scenario <type>
+Specify update scenario:
+- `fill-gaps` - Fill missing items from audit
+- `proto-changed` - Propagate proto schema changes
+- `refresh-docs` - Update documentation
+- `update-iac` - Modify deployment logic
+- `apply-default-semantics` - Formalize comment-only defaults as field options (Scenario 7)
+- `annotate-sensitive` - Annotate/exempt secret-by-default fields and pass the coverage gate (Scenario 8)
+- `rename-kind` - Rename a kind end to end: enum value, directory, protos, modules, docs, cross-references (Scenario 9)
+- `auto` - Let AI determine scenario (default)
+
+### --explain "<description>"
+Provide context for the update:
+```
+--explain "add support for custom VPC configuration"
+--explain "examples use old field names, update to current schema"
+--explain "tests are failing due to validation rule changes"
+```
+
+### --dry-run
+Show what would be updated without making changes:
+```
+@update-catalog-kind CloudflareD1Database --scenario fill-gaps --dry-run
+```
+
+### --backup
+Create backup before making changes:
+```
+@update-catalog-kind GcpCertManagerCert --scenario proto-changed --backup
+```
+
+### --resume-from <rule-number>
+Resume from a specific rule (if previous update failed):
+```
+@update-catalog-kind CloudflareD1Database --resume-from 012
+```
+
+## Error Handling
+
+### Automatic Recovery
+- Each step retries up to 3 times on failures
+- Build errors are auto-fixed when possible
+- Test failures trigger analysis and fixes
+
+### Manual Intervention
+If update fails after retries:
+1. Update stops with clear error message
+2. Shows what succeeded and what failed
+3. Provides fix suggestions
+4. Allows resume from failure point
+
+### Conflict Resolution
+If update would overwrite custom changes:
+1. Shows diff of proposed changes
+2. Asks for confirmation
+3. Option to skip conflicting files
+4. Option to merge changes manually
+
+## Safety Features
+
+### Backup Before Update
+Use `--backup` flag to create backup OUTSIDE the catalog (the anatomy gate keeps the
+kind file set closed -- never write backup dirs into `catalog/`):
+```
+/tmp/planton-backups/cloudflared1database-backup-2025-11-13-143022/
+```
+
+### Dry-Run Mode
+Use `--dry-run` to preview changes:
+```
+📋 Update Plan for CloudflareD1Database
+
+Scenario: fill-gaps
+Identified Gaps (from audit):
+  ❌ Missing: iac/tf/ (Terraform module)
+  ❌ Missing: GUIDE.md (kind guide)
+  ❌ Missing: presets/ (no presets)
+Planned Updates:
+  1. Run rules 012-013 → Create Terraform module + README
+  2. Run rule 019 → Write GUIDE.md
+  3. Run rule 018 → Generate initial presets (2-3 common configurations)
+
+Estimated time: 10-15 minutes
+No files will be modified (dry-run mode)
+
+Run without --dry-run to apply changes.
+```
+
+### Validation Checkpoints
+Update validates after each major change:
+
+**After Proto Changes:**
+1. Run `make protos` from project root to regenerate Go stubs
+2. Run kind tests: `go test ./catalog/<provider>/<kind>/...`
+   - Validates buf.validate rules in spec.proto are correct
+   - Ensures spec_test.go passes with current validation logic
+3. Run `go build ./catalog/<provider>/<kind>/...` to validate build
+4. Run `planton secret-coverage --check` -- any newly added/renamed secret-bearing field must be
+   annotated `sensitive` (or exempted with `sensitive_exempt_reason`); the gate must be green.
+   Do NOT pre-emptively exempt: the guard flags fields by NAME pattern, and an exemption on a
+   field the pattern does not match (e.g. `secret_arn` -- `*_arn` names are never flagged) is
+   itself a gate FAILURE ("pointless exemption"). Run the guard first; annotate only what it
+   reports, and let the field comment carry the not-actually-secret rationale for everything else
+5. If `presets/` exists: validate all preset field names exist in the updated spec.proto, check StringValueOrRef compliance, and verify apiVersion/kind still match api.proto
+
+**After Pulumi/Go Code Changes:**
+1. Run `go build ./catalog/<provider>/<kind>/...` to validate build
+2. Run kind tests: `go test -v ./catalog/<provider>/<kind>/...`
+
+**Always (Final Validation):**
+1. Run kind tests: `go test -v ./catalog/<provider>/<kind>/...` to validate tests pass
+2. Verify examples work with current schema
+3. Verify presets are consistent with current spec.proto (if presets exist)
+
+**Critical:** Kind-specific tests must pass before proceeding. These tests validate that buf.validate rules work correctly.
+
+**Live-E2E phase and profile honesty.** An update that changes deployable
+behavior is complete only when the live lanes re-prove it — but the authoring
+and proving phases may be executed by different sessions (the forge rule's
+"Profile honesty" section carries the full mechanics). When the update session
+does not run the lanes itself, set `e2e/profile.yaml` to
+`status: pending_proof` (never leave a green profile claiming a surface the
+lanes have not re-proven) and hand the kind to a proving session; that session
+owns the kind completely while proving — including spec/preset/docs changes
+live evidence demands — and finishes by flipping the profile back to green,
+landing live-caught lessons on the surfaces their readers use, and
+regenerating the CI matrix.
+
+## Progress Tracking
+
+Update provides real-time progress:
+
+```
+🔄 Update: CloudflareD1Database (fill-gaps)
+
+Current State (from audit):
+  Overall: 65% complete
+  Missing: Terraform module, kind guide
+
+Phase 1: Terraform Module
+[1/8] ✅ Generated variables.tf
+[2/8] ✅ Generated provider.tf
+[3/8] ✅ Generated locals.tf
+[4/8] ✅ Generated main.tf
+[5/8] ✅ Generated outputs.tf
+[6/8] ✅ Generated README.md
+[7/8] ✅ Passed Terraform validate
+[8/8] ✅ Passed Terraform E2E test
+
+Phase 2: Documentation
+[9/9] ✅ Wrote GUIDE.md (kind guide)
+
+Phase 3: Final Validation
+[11/11] ✅ Build validation passed
+[12/12] ✅ Test validation passed
+
+✅ Update complete!
+
+Before: 65% complete
+After: 98% complete (+33%)
+
+Next step: Run @audit-catalog-kind CloudflareD1Database to verify
+```
+
+## Integration with Other Rules
+
+### After Audit
+```
+# Audit identifies gaps
+@audit-catalog-kind CloudflareD1Database
+
+# Update fills gaps
+@update-catalog-kind CloudflareD1Database --scenario fill-gaps
+```
+
+### Before Audit
+```
+# Update kind
+@update-catalog-kind CloudflareD1Database --explain "added multi-region support"
+
+# Verify no regressions
+@audit-catalog-kind CloudflareD1Database
+```
+
+### With Forge
+```
+# Forge creates baseline (maybe 60-80% complete)
+@forge-catalog-kind NewKind --provider aws
+
+# Update fills remaining gaps
+@update-catalog-kind NewKind --scenario fill-gaps
+```
+
+## Reference
+
+- **Ideal State:** `architecture/catalog-kind.md`
+- **Forge Flow Rules:** `_rules/catalog-kind/forge/flow/`
+- **Update README:** `_rules/catalog-kind/update/README.md`
+- **Audit Rule:** `_rules/catalog-kind/audit/audit-catalog-kind.mdc`
+- **Preset Convention:** `architecture/presets.md`
+- **Preset Rules:** `_rules/catalog-kind/presets/` (create, audit, validate)
+
+## Tips
+
+### Before Updating
+
+1. **Run audit first** - Know current state
+2. **Commit changes** - Have clean git state
+3. **Plan updates** - Know what you want to change
+4. **Use dry-run** - Preview changes first
+
+### During Update
+
+1. **Be specific** - Provide clear --explain descriptions
+2. **Watch progress** - Errors show immediately
+3. **Review diffs** - Check what changed
+4. **Test locally** - Don't assume it works
+
+### After Update
+
+1. **Run audit** - Verify improvements
+2. **Test deployment** - Use e2e manifest
+3. **Review generated code** - Ensure quality
+4. **Commit changes** - Track what changed
+
+## Troubleshooting
+
+### "Kind not found"
+**Error:** `Kind CloudflareD1Database not found in catalog_kind.proto`
+
+**Solution:** Check kind name spelling, or use `@forge-catalog-kind` to create it.
+
+### "No gaps to fill"
+**Error:** `Kind is already 100% complete, no updates needed`
+
+**Solution:** Use a different scenario or provide --explain with specific changes.
+
+### "Proto regeneration failed"
+**Check:**
+1. Proto syntax is valid
+2. buf.validate rules are correct
+3. No circular dependencies
+4. Run `make protos` manually to see error
+
+### "Update would overwrite custom changes"
+**Action:** Choose one:
+1. Skip conflicting files (keep custom changes)
+2. Allow overwrite (lose custom changes)
+3. Cancel and merge manually
+4. Create backup first (--backup)
+
+## Success Criteria
+
+After update completes:
+
+✅ All targeted items are updated
+✅ Build validation passes
+✅ Test validation passes
+✅ No regressions introduced
+✅ Audit score improved (if filling gaps)
+✅ Documentation is current
+✅ Examples work with current schema
+✅ Existing presets are consistent with current spec.proto (no stale field names, correct StringValueOrRef usage)
+
+---
+
+**Ready to update?** Run `@update-catalog-kind <KindName>` and follow the prompts!
+
+#### Scenario 7: Apply Default Field Option Semantics
+
+**When:** Kind has default values in comments but not enforced via proto field options
+
+```
+@update-catalog-kind KubernetesGhaRunnerScaleSet --scenario apply-default-semantics
+```
+
+**What it does:**
+1. Reads spec.proto to identify fields with defaults in comments but missing field options
+2. For each identified field:
+   - Adds `optional` keyword
+   - Adds `[(dev.planton.shared.options.default) = "<value>"]`
+3. Regenerates proto stubs: `make protos`
+4. Updates spec_test.go to use pointers for optional fields
+5. Updates IaC module to use getter methods (e.g., `GetFieldName()`)
+6. Removes any defensive default checks (framework handles it)
+7. **Updates existing presets** (if `presets/` exists):
+   - For each field that gained a `default` or `recommended_default` annotation, update the preset value and comment to cite the annotation
+   - For each field that changed from required to optional-with-default, the preset may now omit it or include it with a comment
+8. Runs build validation: `go build ./catalog/<provider>/<kind>/...`
+9. Runs test validation: `go test -v ./catalog/<provider>/<kind>/...`
+
+**Use when:**
+- Audit or review reveals defaults are only in comments
+- Fields need proper presence tracking for zero-value handling
+- Custom linter `DEFAULT_REQUIRES_OPTIONAL` would fail on new defaults
+
+**Reference:** See `_rules/protos/apply-planton-default-option-semantics.mdc` for detailed process
+
+#### Scenario 8: Annotate Sensitive Fields (Secret-by-default)
+
+**When:** A kind has secret-bearing fields that are not yet annotated `sensitive` (e.g. a
+pre-existing kind, or `planton secret-coverage --check` reports a gap)
+
+```
+@update-catalog-kind AwsRdsInstance --scenario annotate-sensitive
+```
+
+**What it does:**
+1. Runs `planton secret-coverage --check` (and/or reads the report) to list unannotated
+   secret-looking fields for the kind.
+2. For each field, decides secret vs look-alike:
+   - **Secret** (password, token, API/client *secret*, private key/PEM, PSK, access-key *secret*,
+     credential-bearing connection string) -> add `[(dev.planton.shared.options.sensitive) = true]`.
+     Applies to string fields and to the literal of `StringValueOrRef` fields; composes with the
+     foreign-key `(dev.planton.shared.foreignkey.v1.default_kind)` annotation.
+   - **Look-alike, NOT a secret** (public key, access-key *id*, resource *name*, key *algorithm*) ->
+     add `[(dev.planton.shared.options.sensitive_exempt_reason) = "<why>"]`. Never both on one field.
+3. Regenerates proto stubs: `make protos`.
+4. Re-runs the gate until green: `planton secret-coverage --check`. A genuine, deliberate deferral
+   (rare) is recorded with `planton secret-coverage --write-baseline` -- never to silence a field that
+   should simply be annotated.
+5. Runs build + test validation (rules 016/017).
+
+**Use when:**
+- `planton secret-coverage --check` reports a new gap
+- A secret-bearing field was added without its `sensitive` annotation
+- Backfilling secure-by-default coverage on an older kind
+
+**Reference:** rule `002-spec-validate` ("SENSITIVE FIELD OPTIONS") and the `sensitive` /
+`sensitive_exempt_reason` comments in `shared/options/options.proto`.
+
+#### Scenario 9: Rename a Kind
+
+**When:** A kind's name must change (e.g. aligning with the provider's own naming
+conventions). A rename keeps the enum **number** — only the name changes everywhere.
+
+```
+@update-catalog-kind AwsNetworkLoadBalancer --scenario rename-kind --explain "rename to AwsNlb"
+```
+
+**What it does (the complete rename surface — miss none of these):**
+1. **Enum value** in `catalog_kind.proto`: rename the value, keep the number and
+   `kind_meta` (renumbering is never part of a rename).
+2. **Kind directory**: `git mv provider/<provider>/<oldkind>/v1 provider/<provider>/<newkind>/v1`.
+   The CLI resolves a manifest's module directory from the kind name via `catalogkindreflect`,
+   so the kind and its directory MUST move in lockstep.
+3. **Protos** (all four): the proto `package`, the `go_package` option, the
+   intra-kind `import "catalog/..."` paths, and every message name
+   (`<Kind>`, `<Kind>Spec`, `<Kind>Status`, `<Kind>IacInput`, `<Kind>Outputs`,
+   and all nested spec messages — follow the sibling convention `<Kind><Noun>`).
+4. **Manifests**: `kind:` in `e2e/manifest.yaml` and every `presets/*.yaml`.
+5. **Both IaC modules — watch the identity-tag asymmetry.** The Pulumi module derives
+   the `resource-kind` identity tag from the enum (`CatalogKind_<Kind>.String()`),
+   so it renames itself; the Terraform module hardcodes the kind string in `locals.tf`
+   (`"planton.dev/resource-kind" = "<Kind>"`; on Azure, `"resource_kind" = "<kind>"`,
+   the enum name lowercased) and MUST be updated by hand or the two engines diverge on
+   tag parity (for Azure, `hack/guards/ensure_cross_engine_azure_tag_values.sh` refuses
+   the stale literal). Also update module comments and Go type
+   references (the generated stubs rename with the protos).
+6. **Docs**: kind `README.md` H1 (the kind name), `catalog.md` H1 (the display
+   name — this drives the public catalog slug and sidebar label), `GUIDE.md`,
+   `iac/tf/README.md`, preset `.md` files. Provider *service* names in prose stay
+   natural; only the kind/type identity changes.
+7. **Cross-references in OTHER kinds**: `git grep -i <oldname>` across the repo —
+   example manifests in docs, and proto
+   comments that name the kind.
+8. **Regenerate**: `make protos` -> `make generate-catalog-kind-map` ->
+   `make reset-gazelle` (the Go package path changed).
+9. **Validate**: kind spec tests, targeted package builds
+   (`go build ./catalog/<provider>/<kind>/...` — NEVER a repo-root
+   `go build ./...`, which compiles 70+ kind modules at once and halts the machine;
+   use `make build-go` for the repo-wide gate), the Pulumi entrypoint build,
+   `planton validate-refs --check`, `planton secret-coverage --check`,
+   `tofu init -backend=false && tofu validate` in `iac/tf/`, and a final
+   `git grep -i <oldname>` sweep that must return zero tracked-file hits. Historical
+   records stay untouched and are excluded from the sweep: `_changelog/` entries AND
+   other kinds' dated `docs/audit/*.md` reports (rewriting a dated audit would
+   falsify what was true at audit time). The renamed kind's OWN stale audit
+   reports are the exception — delete them, since they describe a kind that no longer
+   exists at that path and a fresh audit replaces them.
+
+**Use when:**
+- A kind's name diverges from the provider's own naming format
+- A kind is being consolidated under a family naming convention
+
+#### Scenario 10: Fix a Foreign-Key Default Annotation
+
+**When:** A field's `(dev.planton.shared.foreignkey.v1.default_kind)` /
+`default_kind_field_path` pair points at a kind that is not the natural producer of the
+referenced value. The console's reference quick-picks derive SOLELY from these
+annotations, so a wrong default is a user-facing wrong suggestion on every deploy wizard
+that renders the field.
+
+```
+@update-catalog-kind KubernetesAirflow --scenario fix-fk-default --explain "logging password secret points at Postgres"
+```
+
+**The class to check first — shared-message reuse.** A `default_kind` lives on a MESSAGE
+field, and messages get reused. A shared FK-defaulting message may be reused ONLY where
+its default kind is the natural source in EVERY consuming context; the moment a second
+context needs a different (or no) producer, SPLIT the message instead of letting the
+default leak. Annotation inventories cannot see this defect — it hides in the message
+reuse, not in any single annotation — so sweep by message: for every message carrying a
+`default_kind`, list every field typed with it and judge each context independently.
+
+**What it does:**
+1. Establishes the correct target from the producing kind's `outputs.proto` (never from
+   memory): the output field must exist and hold the referenced value's name. A reference
+   to a named object points at the output that publishes the object's name
+   (`status.outputs.secret_name`), never at `metadata.name`: that is the Planton resource's
+   name, and a kind with its own `spec.name` can name its object differently
+   (`pkg/refcheck` refuses it). When NO
+   catalog kind produces the value (e.g. a bring-your-own HTTP Basic credential), the
+   honest fix is a message with NO default annotation — a bare `StringValueOrRef` is an
+   established shape; never point a default at a kind that merely lives nearby.
+2. Splits the shared message: the context whose default is correct keeps the existing
+   message; each mismatched context gets its own message (same field numbers and shapes —
+   the retype is wire-compatible) with comments teaching the target Secret's key layout
+   and when the default output is empty.
+3. Sweeps Go type literals the retype breaks: spec tests, and any module helper that
+   names the message type in a signature. Shared helpers serving multiple contexts take a
+   small local interface over the generated getters (mind the typed-nil-in-interface
+   trap: probe emptiness through the nil-safe getters, not `== nil`).
+4. Regenerates stubs (chunked `buf generate --path` under the proto-build lock), then
+   `make generate-reference` and `make generate-proto-docs` — the FK tables and the
+   referenced kinds' "referenced by" sections must follow.
+5. Gates: kind spec tests, targeted package + Pulumi entrypoint builds,
+   `planton validate-refs --check` (machine-verifies the new path against the target's
+   outputs), `planton secret-coverage --check`.
+6. Sweeps presets and e2e manifests for the affected fields: explicit `value:` shapes are
+   unaffected; a bare `valueFrom` relying on the removed/changed default must be updated
+   in the same change.
+
+**Use when:**
+- A reference quick-pick offers a kind that cannot produce the value
+- A platform FK-annotation inventory reports a suspect default
+- An audit finds one FK-defaulting message consumed by unrelated contexts

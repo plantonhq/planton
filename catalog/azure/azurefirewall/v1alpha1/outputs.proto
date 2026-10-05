@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefirewall.v1alpha1;
 
-// **AzureFirewallStackOutputs** captures the outputs of provisioning an
+// **AzureFirewallOutputs** captures the outputs of provisioning an
 // Azure Firewall instance.
-message AzureFirewallStackOutputs {
+message AzureFirewallOutputs {
   // The Azure Resource Manager ID of the firewall.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/azureFirewalls/{name}
   string firewall_id = 1;

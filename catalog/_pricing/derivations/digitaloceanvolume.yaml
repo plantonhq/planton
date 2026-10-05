@@ -7,9 +7,9 @@
 # Formatting, labels, tags, and attachment are free. The estimate generator
 # replays the catalog presets through these rules to emit
 # ../estimates/digitaloceanvolume.yaml.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: digitaloceanvolume
 spec:

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Deep-rebuilt the `GcpGkeNodePool` component from a 12-field skeleton to the released
+Deep-rebuilt the `GcpGkeNodePool` kind from a 12-field skeleton to the released
 google-provider floor (~40 spec surfaces): full node configuration (GPUs with
 GKE-managed drivers, Spot capacity, shielded/confidential VMs, CMEK boot disks, local
 SSDs, kubelet and Linux tuning), per-zone and total autoscaling with scale-to-zero,

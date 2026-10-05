@@ -6,7 +6,7 @@
 
 **apiVersion**: `digital-ocean.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 DigitalOceanVpcSpec defines the specification required to deploy a DigitalOcean Virtual
 Private Cloud (VPC) -- a private, isolated network for Droplets and other resources within one
@@ -94,7 +94,7 @@ from /16 through /24, and the range must not overlap any other network in the ac
 Example: "10.10.0.0/16"
 
 When omitted, DigitalOcean auto-generates a non-conflicting range and reports it back
-through the `ip_range` stack output. The range is immutable: changing it after creation
+through the `ip_range` output. The range is immutable: changing it after creation
 REPLACES the VPC.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^([0-9]{1,3}\\.){3}[0-9]{1,3}/(1[6-9]|2[0-4])$"}}

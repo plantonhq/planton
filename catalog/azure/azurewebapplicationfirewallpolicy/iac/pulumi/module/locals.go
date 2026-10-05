@@ -5,7 +5,7 @@ import (
 
 	azurewebapplicationfirewallpolicyv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurewebapplicationfirewallpolicy/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -129,18 +129,18 @@ var modeStrings = map[azurewebapplicationfirewallpolicyv1alpha1.AzureWebApplicat
 	azurewebapplicationfirewallpolicyv1alpha1.AzureWebApplicationFirewallPolicyMode_DETECTION:  "Detection",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurewebapplicationfirewallpolicyv1alpha1.AzureWebApplicationFirewallPolicyStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurewebapplicationfirewallpolicyv1alpha1.AzureWebApplicationFirewallPolicyIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureWebApplicationFirewallPolicy = stackInput.Target
-	target := stackInput.Target
+	locals.AzureWebApplicationFirewallPolicy = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureWebApplicationFirewallPolicy.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureWebApplicationFirewallPolicy.String()),
 	}
 
 	if target.Metadata.Id != "" {

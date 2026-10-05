@@ -1,10 +1,10 @@
 # AWS EKS Node Group
 
-Deploys a managed EKS node group — an EC2 fleet AWS provisions, health-checks, and rolls for you, registered as workers of an existing EKS cluster. The component supports inline instance configuration or launch-template-driven fleets, On-Demand/Spot/Capacity-Block purchase models, auto-scaling bounds, Kubernetes labels and taints, controlled version rollouts, and managed node auto-repair.
+Deploys a managed EKS node group — an EC2 fleet AWS provisions, health-checks, and rolls for you, registered as workers of an existing EKS cluster. The kind supports inline instance configuration or launch-template-driven fleets, On-Demand/Spot/Capacity-Block purchase models, auto-scaling bounds, Kubernetes labels and taints, controlled version rollouts, and managed node auto-repair.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EKS Managed Node Group** -- EC2 worker nodes attached to the referenced EKS cluster, placed in your subnets, assuming the referenced IAM role, with the launch configuration, capacity type, scaling bounds, scheduling metadata, and update/repair policy you declare
 - **Auto Scaling Group** -- managed by EKS behind the node group, scaling between `scaling.minSize` and `scaling.maxSize`
@@ -16,7 +16,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -24,7 +24,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 - **An existing EKS cluster** to register with. Reference an AwsEksCluster's `name` output via ValueFromRef, or provide a literal cluster name for a cluster managed outside Planton.
 - **An IAM role** trusting `ec2.amazonaws.com` with the worker policies attached (`AmazonEKSWorkerNodePolicy`, `AmazonEC2ContainerRegistryReadOnly`, `AmazonEKS_CNI_Policy`) — attach them on the role itself; this component never modifies a role it merely references.
 - **At least one subnet** — typically the cluster VPC's private subnets. One subnet is a legitimate zonal topology; use two-plus zones for fleets that should survive a zone impairment.
-- **A launch template** (optional) -- for custom AMIs, IMDSv2 enforcement, or encrypted volumes. Reference an AwsLaunchTemplate Cloud Resource; AWS then forbids the inline instance/disk/SSH knobs.
+- **A launch template** (optional) -- for custom AMIs, IMDSv2 enforcement, or encrypted volumes. Reference an AwsLaunchTemplate Infra Component; AWS then forbids the inline instance/disk/SSH knobs.
 
 ## Deploy
 
@@ -64,7 +64,7 @@ spec:
 planton apply -f eks-node-group.yaml
 ```
 
-This creates an On-Demand node group with m6i.large instances scaling between 2 and 5 nodes on 100 GiB root disks, no SSH access, no labels or taints. A Stack Job tracks the provisioning in real time.
+This creates an On-Demand node group with m6i.large instances scaling between 2 and 5 nodes on 100 GiB root disks, no SSH access, no labels or taints. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -117,7 +117,7 @@ These are the most important decisions when configuring an EKS node group. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -127,9 +127,9 @@ These are the most important decisions when configuring an EKS node group. Explo
 | **AwsLaunchTemplate** (optional) | `launchTemplate.launchTemplateId` | `status.outputs.launch_template_id` |
 | **AwsSecurityGroup** (optional) | `remoteAccess.sourceSecurityGroupIds` | `status.outputs.security_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -152,8 +152,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS EKS Cluster**](/cloud-catalog/aws-eks-cluster) -- provides the Kubernetes control plane this node group registers with
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides the worker node role with the EKS and ECR policies
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides the subnets for worker node placement
-- [**AWS Launch Template**](/cloud-catalog/aws-launch-template) -- provides custom launch mechanics for template-driven fleets
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- scopes SSH access when remote access is enabled
+- [**AWS EKS Cluster**](/infra-catalog/aws-eks-cluster) -- provides the Kubernetes control plane this node group registers with
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides the worker node role with the EKS and ECR policies
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides the subnets for worker node placement
+- [**AWS Launch Template**](/infra-catalog/aws-launch-template) -- provides custom launch mechanics for template-driven fleets
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- scopes SSH access when remote access is enabled

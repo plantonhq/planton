@@ -5,9 +5,9 @@ package dev.planton.aws.awsbedrockguardrail.v1alpha1;
 import "catalog/aws/awsbedrockguardrail/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBedrockGuardrailStackInput is the input for the IaC modules that
+// AwsBedrockGuardrailIacInput is the input for the IaC modules that
 // deploy the Bedrock guardrail.
-message AwsBedrockGuardrailStackInput {
+message AwsBedrockGuardrailIacInput {
   // target is the AwsBedrockGuardrail resource to deploy.
   AwsBedrockGuardrail target = 1;
   // provider_config contains the AWS provider credentials and configuration.

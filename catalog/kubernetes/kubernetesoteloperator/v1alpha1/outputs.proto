@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesoteloperator.v1alpha1;
 
-//otel-operator-kubernetes stack outputs
-message KubernetesOtelOperatorStackOutputs {
+//otel-operator-kubernetes outputs
+message KubernetesOtelOperatorOutputs {
   //namespace the operator runs in.
   string namespace = 1;
 

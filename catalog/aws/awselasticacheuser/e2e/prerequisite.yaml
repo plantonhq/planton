@@ -1,5 +1,5 @@
 # AwsElasticacheUser install profile used as a prerequisite by composed
-# components (AwsElasticacheUserGroup and, eventually, RBAC-enabled caches).
+# kinds (AwsElasticacheUserGroup and, eventually, RBAC-enabled caches).
 # Two documents: a locked-down mandatory "default" user plus one
 # password-authenticated application user. AWS refuses to create a user group
 # unless a member's user NAME is "default". Full metadata is supplied for
@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awselasticacheuser
+    e2e-catalog-kind: awselasticacheuser
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -35,7 +35,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awselasticacheuser
+    e2e-catalog-kind: awselasticacheuser
   annotations:
     planton.dev/e2e: "true"
   tags:

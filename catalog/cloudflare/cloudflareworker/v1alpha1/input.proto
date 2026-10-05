@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflareworker.v1alpha1;
 import "catalog/cloudflare/cloudflareworker/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-worker stack-input
-message CloudflareWorkerStackInput {
-  //target cloud-resource
+//cloudflare-worker iac-input
+message CloudflareWorkerIacInput {
+  // the catalog object to deploy
   CloudflareWorker target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

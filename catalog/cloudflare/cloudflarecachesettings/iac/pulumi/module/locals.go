@@ -12,10 +12,10 @@ type Locals struct {
 	CloudflareCacheSettings  *cloudflarecachesettingsv1alpha1.CloudflareCacheSettings
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarecachesettingsv1alpha1.CloudflareCacheSettingsStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarecachesettingsv1alpha1.CloudflareCacheSettingsIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareCacheSettings = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareCacheSettings = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

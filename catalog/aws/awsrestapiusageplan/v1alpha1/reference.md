@@ -6,7 +6,7 @@
 
 **apiVersion**: `aws.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 AwsRestApiUsagePlanSpec defines the desired configuration for an AWS
 API Gateway usage plan with its API keys.
@@ -19,7 +19,7 @@ AwsRestApiGateway component; requests then need a valid key on the
 X-Api-Key header (or from the authorizer, per the API's
 api_key_source).
 
-A plan spans APIs and stages - which is why it is its own component
+A plan spans APIs and stages - which is why it is its own kind
 rather than part of AwsRestApiGateway. The component bundles the
 plan, its stage coverage, and the keys it admits (each key is
 created AND attached to the plan).

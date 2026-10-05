@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcpbackendservice
 spec:
@@ -42,7 +42,7 @@ spec:
       evidence:
         type: spec_default
         reference: Unset (the default) applies no edge filter. Referencing a GcpCloudArmorPolicy of type CLOUD_ARMOR_EDGE filters requests -- geo/IP blocking at Google's edge -- BEFORE they reach the CDN cache, protecting cached content that security_policy (evaluated after the cache) never sees.
-      notes: The full WAF rule language -- preconfigured OWASP rules, rate limiting -- lives on the referenced GcpCloudArmorPolicy kind; this component is the attachment point, with security_policy guarding the backends and edge_security_policy guarding the cache.
+      notes: The full WAF rule language -- preconfigured OWASP rules, rate limiting -- lives on the referenced GcpCloudArmorPolicy component; this component is the attachment point, with security_policy guarding the backends and edge_security_policy guarding the cache.
     - control_id: rbac
       status: enforced_by_default
       evidence:

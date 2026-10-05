@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awscloudwatchloganomalydetector.v1alpha1;
 
-// AwsCloudwatchLogAnomalyDetectorStackOutputs captures the observable
+// AwsCloudwatchLogAnomalyDetectorOutputs captures the observable
 // state of the anomaly detector after apply.
-message AwsCloudwatchLogAnomalyDetectorStackOutputs {
+message AwsCloudwatchLogAnomalyDetectorOutputs {
   // The detector's ARN (its identity and the provider's import ID).
   string anomaly_detector_arn = 1;
 }

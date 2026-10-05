@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetescronjob
 spec:
@@ -10,19 +10,19 @@ spec:
   values:
     - name: cron_job_name
       derivations:
-        - from_stack_output: cron_job_name
+        - from_output: cron_job_name
         - from_metadata_name: true
       where_to_find: >-
         `kubectl get cronjobs -A` (NAME column).
     - name: cron_job_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `kubectl get cronjobs -A` (NAMESPACE column).
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the workload's namespace.
@@ -34,7 +34,7 @@ spec:
         only present when the corresponding spec arm is used.
     - name: secret_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the workload.

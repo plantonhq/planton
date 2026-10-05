@@ -20,8 +20,8 @@ type Locals struct {
 	IsRegional bool
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcpurlmapv1alpha1.GcpUrlMapStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(ctx *pulumi.Context, iacInput *gcpurlmapv1alpha1.GcpUrlMapIacInput) *Locals {
+	target := iacInput.Target
 
 	urlMapName := target.Spec.UrlMapName
 	if urlMapName == "" {

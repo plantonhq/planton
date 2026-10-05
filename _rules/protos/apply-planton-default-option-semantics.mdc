@@ -1,16 +1,16 @@
 ---
-description: Action rule to apply default option semantics to a component's proto and IaC module
+description: Action rule to apply default option semantics to a kind's proto and IaC module
 globs:
 alwaysApply: false
 ---
 
 # Rule: Apply Planton Default Option Semantics
 
-Purpose: When a component has fields with default values documented in comments but not enforced via proto field options, this rule ensures the proper semantics are applied.
+Purpose: When a kind has fields with default values documented in comments but not enforced via proto field options, this rule ensures the proper semantics are applied.
 
 ## When to Use This Rule
 
-Invoke this rule when you encounter a component where:
+Invoke this rule when you encounter a kind where:
 - Proto fields have default values mentioned in comments (e.g., `// Default: "default"`)
 - But the fields are NOT marked as `optional`
 - And do NOT have the `(dev.planton.shared.options.default)` field option
@@ -85,7 +85,7 @@ make protos
 
 Ensure the IaC module compiles:
 ```bash
-go build ./catalog/kubernetes/<component>/iac/pulumi/module/...
+go build ./catalog/kubernetes/<kind>/iac/pulumi/module/...
 ```
 
 ## Fields to Skip
@@ -98,7 +98,7 @@ Do NOT apply this rule to:
 
 ## Step-by-Step Process
 
-1. **Read the proto file** for the target component
+1. **Read the proto file** for the target kind
 2. **Identify fields** with defaults in comments but missing field options
 3. **For each identified field**:
    - Add `optional` keyword

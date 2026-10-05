@@ -1,6 +1,6 @@
 # Apache Airflow — the platform's scheduler: the API server (UI + REST),
 # scheduler, DAG processor and triggerer, with the migration and
-# admin-bootstrap Jobs. The executor stays on the component's default —
+# admin-bootstrap Jobs. The executor stays on the kind's default —
 # KubernetesExecutor: every task runs as its own ephemeral pod, so there
 # is no broker, no idle worker fleet, and Spark-bound tasks simply submit
 # SparkApplications against the operator installed beside it. That default
@@ -59,7 +59,7 @@ spec:
       # add a credential Secret on the deployed resource — the README's
       # day-2 notes walk through it. When dags_git_repo is empty this
       # whole block is absent and DAGs come baked into the image (the
-      # component's documented default posture).
+      # kind's documented default posture).
       repo: "{{ values.dags_git_repo }}"
       ref: "{{ values.dags_git_ref }}"
 {% endif %}

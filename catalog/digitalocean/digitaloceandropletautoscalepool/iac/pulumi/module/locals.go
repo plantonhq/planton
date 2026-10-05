@@ -5,7 +5,7 @@ import (
 
 	digitaloceandropletautoscalepoolv1alpha1 "github.com/plantonhq/planton/catalog/digitalocean/digitaloceandropletautoscalepool/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/digitalocean/digitaloceanlabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -15,18 +15,18 @@ type Locals struct {
 	DigitalOceanLabels               map[string]string
 }
 
-// initializeLocals copies stack-input fields into the Locals struct and
+// initializeLocals copies iac-input fields into the Locals struct and
 // builds the standard Planton label set, which lands on every member
 // droplet as tags.
-func initializeLocals(_ *pulumi.Context, stackInput *digitaloceandropletautoscalepoolv1alpha1.DigitalOceanDropletAutoscalePoolStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *digitaloceandropletautoscalepoolv1alpha1.DigitalOceanDropletAutoscalePoolIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.DigitalOceanDropletAutoscalePool = stackInput.Target
+	locals.DigitalOceanDropletAutoscalePool = iacInput.Target
 
 	locals.DigitalOceanLabels = map[string]string{
 		digitaloceanlabelkeys.Resource:     strconv.FormatBool(true),
 		digitaloceanlabelkeys.ResourceName: locals.DigitalOceanDropletAutoscalePool.Metadata.Name,
-		digitaloceanlabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_DigitalOceanDropletAutoscalePool.String(),
+		digitaloceanlabelkeys.ResourceKind: catalogkind.CatalogKind_DigitalOceanDropletAutoscalePool.String(),
 	}
 
 	if locals.DigitalOceanDropletAutoscalePool.Metadata.Org != "" {

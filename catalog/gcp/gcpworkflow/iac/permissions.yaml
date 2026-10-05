@@ -2,9 +2,9 @@
 # provision, update, and destroy this component with the official modules.
 # Every entry is `derived` (static analysis of the module sources, cited in
 # notes) until the live capture lane upgrades it to `proven`. Schema:
-# iac/componentpermissions/v1.
+# iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: gcpworkflow
 spec:
@@ -25,7 +25,7 @@ spec:
           - workflows.workflows.delete
           - workflows.operations.get
         provenance: derived
-        notes: Covers google_workflows_workflow -- create, read/refresh, in-place updates (source, env vars, service account, log levels; each source-affecting update deploys a new revision), and destroy. Workflow mutations return long-running operations the provider polls, authorized as workflows.operations.get. The committed action-inventory snapshot (pkg/iac/actioninventory/gcp.yaml) carries the workflows service prefix and lists every workflows.* permission here; the list was also verified live against Google's Workflows roles-and-permissions documentation (https://cloud.google.com/workflows/docs/access-control). The component's READMEs previously recommended roles/workflows.editor "or broader" -- that role carries all five of these plus execution, callback, and Cloud KMS Autokey permissions the deployer never exercises; this list is the least-privilege equivalent for what the modules actually do.
+        notes: Covers google_workflows_workflow -- create, read/refresh, in-place updates (source, env vars, service account, log levels; each source-affecting update deploys a new revision), and destroy. Workflow mutations return long-running operations the provider polls, authorized as workflows.operations.get. The committed action-inventory snapshot (pkg/iac/actioninventory/gcp.yaml) carries the workflows service prefix and lists every workflows.* permission here; the list was also verified live against Google's Workflows roles-and-permissions documentation (https://cloud.google.com/workflows/docs/access-control). The kind's READMEs previously recommended roles/workflows.editor "or broader" -- that role carries all five of these plus execution, callback, and Cloud KMS Autokey permissions the deployer never exercises; this list is the least-privilege equivalent for what the modules actually do.
       - purpose: BindResourceManagerTags
         permissions:
           - workflows.workflows.createTagBinding
@@ -40,7 +40,7 @@ spec:
         provenance: derived
         condition:
           spec_field_set: service_account
-        notes: Required when service_account names the identity the workflow's executions run as (both presets do) -- the Workflows API demands actAs on that account at deploy time. Migrated from the component READMEs, which stated the deployer needs "iam.serviceAccounts.actAs on the workflow's service account when one is set".
+        notes: Required when service_account names the identity the workflow's executions run as (both presets do) -- the Workflows API demands actAs on that account at deploy time. Migrated from the kinds' READMEs, which stated the deployer needs "iam.serviceAccounts.actAs on the workflow's service account when one is set".
       - purpose: ManageEnvSecrets
         permissions:
           - serviceusage.services.enable

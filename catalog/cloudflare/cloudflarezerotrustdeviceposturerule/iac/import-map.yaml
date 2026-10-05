@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezerotrustdeviceposturerule
 spec:
@@ -13,7 +13,7 @@ spec:
         id field).
     - name: rule_id
       derivations:
-        - from_stack_output: rule_id
+        - from_output: rule_id
       where_to_find: >-
         `GET /accounts/<account_id>/devices/posture` on the Cloudflare v4
         API (the id field; match by name), or the Zero Trust dashboard ->

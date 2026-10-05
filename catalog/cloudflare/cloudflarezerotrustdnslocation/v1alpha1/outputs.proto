@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarezerotrustdnslocation.v1alpha1;
 
-// CloudflareZeroTrustDnsLocationStackOutputs captures the observable outputs
+// CloudflareZeroTrustDnsLocationOutputs captures the observable outputs
 // after creating the DNS location.
-message CloudflareZeroTrustDnsLocationStackOutputs {
+message CloudflareZeroTrustDnsLocationOutputs {
   // The Cloudflare-assigned UUID of the location.
   string location_id = 1;
 

@@ -17,8 +17,8 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/plantonhq/planton/shared/options"
 	"github.com/zclconf/go-cty/cty"
 	"google.golang.org/protobuf/proto"
@@ -41,8 +41,8 @@ type secretHome struct {
 
 // declaredSecretHomes walks the kind's spec and returns every secret home it declares, sorted by
 // the home's path. A kind that declares none returns nothing, and the checks below do not run.
-func declaredSecretHomes(kind cloudresourcekind.CloudResourceKind) []secretHome {
-	instance, err := crkreflect.NewInstance(kind)
+func declaredSecretHomes(kind catalogkind.CatalogKind) []secretHome {
+	instance, err := catalogkindreflect.NewInstance(kind)
 	if err != nil {
 		return nil
 	}

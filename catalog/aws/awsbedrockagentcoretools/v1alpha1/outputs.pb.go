@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockAgentCoreToolsStackOutputs captures observable identifiers
+// AwsBedrockAgentCoreToolsOutputs captures observable identifiers
 // from a provisioned AgentCore tools bundle. Downstream resources
 // (evaluation harnesses' browser/code-interpreter tools, agent code
 // starting tool sessions) wire dependencies via StringValueOrRef.
-type AwsBedrockAgentCoreToolsStackOutputs struct {
+type AwsBedrockAgentCoreToolsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Browser IDs keyed by each `browsers` entry's name.
 	BrowserIds map[string]string `protobuf:"bytes,1,rep,name=browser_ids,json=browserIds,proto3" json:"browser_ids,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
@@ -44,20 +44,20 @@ type AwsBedrockAgentCoreToolsStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AwsBedrockAgentCoreToolsStackOutputs) Reset() {
-	*x = AwsBedrockAgentCoreToolsStackOutputs{}
+func (x *AwsBedrockAgentCoreToolsOutputs) Reset() {
+	*x = AwsBedrockAgentCoreToolsOutputs{}
 	mi := &file_catalog_aws_awsbedrockagentcoretools_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockAgentCoreToolsStackOutputs) String() string {
+func (x *AwsBedrockAgentCoreToolsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockAgentCoreToolsStackOutputs) ProtoMessage() {}
+func (*AwsBedrockAgentCoreToolsOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockAgentCoreToolsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockAgentCoreToolsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockagentcoretools_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,47 +69,47 @@ func (x *AwsBedrockAgentCoreToolsStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockAgentCoreToolsStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockAgentCoreToolsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockAgentCoreToolsOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockAgentCoreToolsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockagentcoretools_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockAgentCoreToolsStackOutputs) GetBrowserIds() map[string]string {
+func (x *AwsBedrockAgentCoreToolsOutputs) GetBrowserIds() map[string]string {
 	if x != nil {
 		return x.BrowserIds
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreToolsStackOutputs) GetBrowserArns() map[string]string {
+func (x *AwsBedrockAgentCoreToolsOutputs) GetBrowserArns() map[string]string {
 	if x != nil {
 		return x.BrowserArns
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreToolsStackOutputs) GetBrowserProfileIds() map[string]string {
+func (x *AwsBedrockAgentCoreToolsOutputs) GetBrowserProfileIds() map[string]string {
 	if x != nil {
 		return x.BrowserProfileIds
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreToolsStackOutputs) GetBrowserProfileArns() map[string]string {
+func (x *AwsBedrockAgentCoreToolsOutputs) GetBrowserProfileArns() map[string]string {
 	if x != nil {
 		return x.BrowserProfileArns
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreToolsStackOutputs) GetCodeInterpreterIds() map[string]string {
+func (x *AwsBedrockAgentCoreToolsOutputs) GetCodeInterpreterIds() map[string]string {
 	if x != nil {
 		return x.CodeInterpreterIds
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreToolsStackOutputs) GetCodeInterpreterArns() map[string]string {
+func (x *AwsBedrockAgentCoreToolsOutputs) GetCodeInterpreterArns() map[string]string {
 	if x != nil {
 		return x.CodeInterpreterArns
 	}
@@ -120,16 +120,16 @@ var File_catalog_aws_awsbedrockagentcoretools_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_aws_awsbedrockagentcoretools_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awsbedrockagentcoretools/v1alpha1/outputs.proto\x121dev.planton.aws.awsbedrockagentcoretools.v1alpha1\"\xea\n" +
+	";catalog/aws/awsbedrockagentcoretools/v1alpha1/outputs.proto\x121dev.planton.aws.awsbedrockagentcoretools.v1alpha1\"\xc7\n" +
 	"\n" +
-	"$AwsBedrockAgentCoreToolsStackOutputs\x12\x88\x01\n" +
-	"\vbrowser_ids\x18\x01 \x03(\v2g.dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.BrowserIdsEntryR\n" +
-	"browserIds\x12\x8b\x01\n" +
-	"\fbrowser_arns\x18\x02 \x03(\v2h.dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.BrowserArnsEntryR\vbrowserArns\x12\x9e\x01\n" +
-	"\x13browser_profile_ids\x18\x03 \x03(\v2n.dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.BrowserProfileIdsEntryR\x11browserProfileIds\x12\xa1\x01\n" +
-	"\x14browser_profile_arns\x18\x04 \x03(\v2o.dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.BrowserProfileArnsEntryR\x12browserProfileArns\x12\xa1\x01\n" +
-	"\x14code_interpreter_ids\x18\x05 \x03(\v2o.dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.CodeInterpreterIdsEntryR\x12codeInterpreterIds\x12\xa4\x01\n" +
-	"\x15code_interpreter_arns\x18\x06 \x03(\v2p.dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.CodeInterpreterArnsEntryR\x13codeInterpreterArns\x1a=\n" +
+	"\x1fAwsBedrockAgentCoreToolsOutputs\x12\x83\x01\n" +
+	"\vbrowser_ids\x18\x01 \x03(\v2b.dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.BrowserIdsEntryR\n" +
+	"browserIds\x12\x86\x01\n" +
+	"\fbrowser_arns\x18\x02 \x03(\v2c.dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.BrowserArnsEntryR\vbrowserArns\x12\x99\x01\n" +
+	"\x13browser_profile_ids\x18\x03 \x03(\v2i.dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.BrowserProfileIdsEntryR\x11browserProfileIds\x12\x9c\x01\n" +
+	"\x14browser_profile_arns\x18\x04 \x03(\v2j.dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.BrowserProfileArnsEntryR\x12browserProfileArns\x12\x9c\x01\n" +
+	"\x14code_interpreter_ids\x18\x05 \x03(\v2j.dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.CodeInterpreterIdsEntryR\x12codeInterpreterIds\x12\x9f\x01\n" +
+	"\x15code_interpreter_arns\x18\x06 \x03(\v2k.dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.CodeInterpreterArnsEntryR\x13codeInterpreterArns\x1a=\n" +
 	"\x0fBrowserIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a>\n" +
@@ -164,21 +164,21 @@ func file_catalog_aws_awsbedrockagentcoretools_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_aws_awsbedrockagentcoretools_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_catalog_aws_awsbedrockagentcoretools_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockAgentCoreToolsStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs
-	nil, // 1: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.BrowserIdsEntry
-	nil, // 2: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.BrowserArnsEntry
-	nil, // 3: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.BrowserProfileIdsEntry
-	nil, // 4: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.BrowserProfileArnsEntry
-	nil, // 5: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.CodeInterpreterIdsEntry
-	nil, // 6: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.CodeInterpreterArnsEntry
+	(*AwsBedrockAgentCoreToolsOutputs)(nil), // 0: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs
+	nil,                                     // 1: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.BrowserIdsEntry
+	nil,                                     // 2: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.BrowserArnsEntry
+	nil,                                     // 3: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.BrowserProfileIdsEntry
+	nil,                                     // 4: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.BrowserProfileArnsEntry
+	nil,                                     // 5: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.CodeInterpreterIdsEntry
+	nil,                                     // 6: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.CodeInterpreterArnsEntry
 }
 var file_catalog_aws_awsbedrockagentcoretools_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.browser_ids:type_name -> dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.BrowserIdsEntry
-	2, // 1: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.browser_arns:type_name -> dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.BrowserArnsEntry
-	3, // 2: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.browser_profile_ids:type_name -> dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.BrowserProfileIdsEntry
-	4, // 3: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.browser_profile_arns:type_name -> dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.BrowserProfileArnsEntry
-	5, // 4: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.code_interpreter_ids:type_name -> dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.CodeInterpreterIdsEntry
-	6, // 5: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.code_interpreter_arns:type_name -> dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsStackOutputs.CodeInterpreterArnsEntry
+	1, // 0: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.browser_ids:type_name -> dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.BrowserIdsEntry
+	2, // 1: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.browser_arns:type_name -> dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.BrowserArnsEntry
+	3, // 2: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.browser_profile_ids:type_name -> dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.BrowserProfileIdsEntry
+	4, // 3: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.browser_profile_arns:type_name -> dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.BrowserProfileArnsEntry
+	5, // 4: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.code_interpreter_ids:type_name -> dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.CodeInterpreterIdsEntry
+	6, // 5: dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.code_interpreter_arns:type_name -> dev.planton.aws.awsbedrockagentcoretools.v1alpha1.AwsBedrockAgentCoreToolsOutputs.CodeInterpreterArnsEntry
 	6, // [6:6] is the sub-list for method output_type
 	6, // [6:6] is the sub-list for method input_type
 	6, // [6:6] is the sub-list for extension type_name

@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpproject.v1alpha1;
 
-// GcpProjectStackOutputs surfaces key attributes of the newly-provisioned
+// GcpProjectOutputs surfaces key attributes of the newly-provisioned
 // Google Cloud project. These values are stored in the resource.status
 // for downstream modules (e.g. networking, CI/CD) to consume.
-message GcpProjectStackOutputs {
+message GcpProjectOutputs {
   // Display name of the project (mirrors spec.name).
   string name = 1;
 

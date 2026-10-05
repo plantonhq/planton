@@ -4,7 +4,7 @@ Run your own private certificate authority on Google Cloud: one trust anchor you
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `privateca.googleapis.com` on the project (never disabled on destroy)
 - **CA pool** -- a `privateca_ca_pool` with its tier, issuance policy, publishing options, and optional at-rest encryption key
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with CA Service admin permissions (`roles/privateca.caManager`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with CA Service admin permissions (`roles/privateca.caManager`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Required Dependencies
@@ -50,7 +50,7 @@ spec:
 planton apply -f private-ca-pool.yaml
 ```
 
-This creates a DevOps-tier pool for 30-day certificates on P-256 keys. Add a `GcpPrivateCaCertificateAuthority` to it before it can issue. A Stack Job tracks the provisioning in real time.
+This creates a DevOps-tier pool for 30-day certificates on P-256 keys. Add a `GcpPrivateCaCertificateAuthority` to it before it can issue. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -68,16 +68,16 @@ These are the most important decisions when configuring this component. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpKmsKey** | `kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
@@ -95,7 +95,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Private CA Certificate Authority**](/cloud-catalog/gcp-private-ca-certificate-authority) -- the authorities inside the pool
-- [**GCP Private CA Certificate**](/cloud-catalog/gcp-private-ca-certificate) -- certificates issued from it
-- [**GCP Private CA Certificate Template**](/cloud-catalog/gcp-private-ca-certificate-template) -- reusable certificate shapes
-- [**GCP Managed Kafka Cluster**](/cloud-catalog/gcp-managed-kafka-cluster) -- mTLS clients trusted by pool
+- [**GCP Private CA Certificate Authority**](/infra-catalog/gcp-private-ca-certificate-authority) -- the authorities inside the pool
+- [**GCP Private CA Certificate**](/infra-catalog/gcp-private-ca-certificate) -- certificates issued from it
+- [**GCP Private CA Certificate Template**](/infra-catalog/gcp-private-ca-certificate-template) -- reusable certificate shapes
+- [**GCP Managed Kafka Cluster**](/infra-catalog/gcp-managed-kafka-cluster) -- mTLS clients trusted by pool

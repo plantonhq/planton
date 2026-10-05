@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP KMS key.
-type GcpKmsKeyStackOutputs struct {
+type GcpKmsKeyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified crypto key resource path.
 	// Format: projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{name}
@@ -57,20 +57,20 @@ type GcpKmsKeyStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *GcpKmsKeyStackOutputs) Reset() {
-	*x = GcpKmsKeyStackOutputs{}
+func (x *GcpKmsKeyOutputs) Reset() {
+	*x = GcpKmsKeyOutputs{}
 	mi := &file_catalog_gcp_gcpkmskey_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpKmsKeyStackOutputs) String() string {
+func (x *GcpKmsKeyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpKmsKeyStackOutputs) ProtoMessage() {}
+func (*GcpKmsKeyOutputs) ProtoMessage() {}
 
-func (x *GcpKmsKeyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpKmsKeyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpkmskey_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,40 +82,40 @@ func (x *GcpKmsKeyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpKmsKeyStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpKmsKeyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpKmsKeyOutputs.ProtoReflect.Descriptor instead.
+func (*GcpKmsKeyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpkmskey_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpKmsKeyStackOutputs) GetKeyId() string {
+func (x *GcpKmsKeyOutputs) GetKeyId() string {
 	if x != nil {
 		return x.KeyId
 	}
 	return ""
 }
 
-func (x *GcpKmsKeyStackOutputs) GetKeyName() string {
+func (x *GcpKmsKeyOutputs) GetKeyName() string {
 	if x != nil {
 		return x.KeyName
 	}
 	return ""
 }
 
-func (x *GcpKmsKeyStackOutputs) GetPrimaryVersionName() string {
+func (x *GcpKmsKeyOutputs) GetPrimaryVersionName() string {
 	if x != nil {
 		return x.PrimaryVersionName
 	}
 	return ""
 }
 
-func (x *GcpKmsKeyStackOutputs) GetPrimaryState() string {
+func (x *GcpKmsKeyOutputs) GetPrimaryState() string {
 	if x != nil {
 		return x.PrimaryState
 	}
 	return ""
 }
 
-func (x *GcpKmsKeyStackOutputs) GetInitialVersionName() string {
+func (x *GcpKmsKeyOutputs) GetInitialVersionName() string {
 	if x != nil {
 		return x.InitialVersionName
 	}
@@ -126,8 +126,8 @@ var File_catalog_gcp_gcpkmskey_v1alpha1_outputs_proto protoreflect.FileDescripto
 
 const file_catalog_gcp_gcpkmskey_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	",catalog/gcp/gcpkmskey/v1alpha1/outputs.proto\x12\"dev.planton.gcp.gcpkmskey.v1alpha1\"\xd2\x01\n" +
-	"\x15GcpKmsKeyStackOutputs\x12\x15\n" +
+	",catalog/gcp/gcpkmskey/v1alpha1/outputs.proto\x12\"dev.planton.gcp.gcpkmskey.v1alpha1\"\xcd\x01\n" +
+	"\x10GcpKmsKeyOutputs\x12\x15\n" +
 	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x12\x19\n" +
 	"\bkey_name\x18\x02 \x01(\tR\akeyName\x120\n" +
 	"\x14primary_version_name\x18\x03 \x01(\tR\x12primaryVersionName\x12#\n" +
@@ -149,7 +149,7 @@ func file_catalog_gcp_gcpkmskey_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpkmskey_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpkmskey_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpKmsKeyStackOutputs)(nil), // 0: dev.planton.gcp.gcpkmskey.v1alpha1.GcpKmsKeyStackOutputs
+	(*GcpKmsKeyOutputs)(nil), // 0: dev.planton.gcp.gcpkmskey.v1alpha1.GcpKmsKeyOutputs
 }
 var file_catalog_gcp_gcpkmskey_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

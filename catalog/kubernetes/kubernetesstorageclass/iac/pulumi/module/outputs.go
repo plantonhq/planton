@@ -4,14 +4,14 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output key constants aligned with KubernetesStorageClassStackOutputs field names.
+// Output key constants aligned with KubernetesStorageClassOutputs field names.
 const (
 	OutputStorageClassName = "storage_class_name"
 	OutputProvisioner      = "provisioner"
 	OutputIsDefaultClass   = "is_default_class"
 )
 
-// exportOutputs exports the stack outputs from the created StorageClass.
+// exportOutputs exports the outputs from the created StorageClass.
 func exportOutputs(ctx *pulumi.Context, locals *Locals) error {
 	ctx.Export(OutputStorageClassName, pulumi.String(locals.Name))
 	ctx.Export(OutputProvisioner, pulumi.String(locals.Spec.GetProvisioner()))

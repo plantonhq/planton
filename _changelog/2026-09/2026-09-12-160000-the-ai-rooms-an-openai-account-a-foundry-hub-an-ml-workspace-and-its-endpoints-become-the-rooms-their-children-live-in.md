@@ -8,7 +8,7 @@ Five Azure AI and machine-learning kinds whose metadata already described their 
 - **`AzureAiFoundry`** is a container: every AI Foundry project is created inside its hub and deploys into the hub's resource group (the project spec carries no group of its own). The hub's vault and storage reaches are already access.
 - **`AzureMachineLearningWorkspace`** is a container: datastores, compute clusters and instances, and online and batch endpoints are ARM children of the workspace (`workspaces/{ws}/datastores|computes|onlineEndpoints|batchEndpoints/{name}`). Exempt: a compute cluster's and a compute instance's `subnet_id` (an ARM child of its workspace whose nodes attach to the subnet -- the AKS node pool's rule; without the mark a compute on its own subnet would fall to a mixed-kind tie between the workspace and the subnet) and the workspace's `serverless_compute.subnet_id` (the workspace injects serverless nodes into the subnet and never lives there).
 - **`AzureMachineLearningOnlineEndpoint` and `AzureMachineLearningBatchEndpoint`** are containers in their turn: every online deployment is an ARM child created under the endpoint whose traffic map routes to it, every batch deployment under the endpoint whose default-deployment pointer routes to it (`.../onlineEndpoints|batchEndpoints/{endpoint}/deployments/{name}`), and neither can exist without its endpoint -- so the deployments draw inside the endpoint, inside the workspace. A batch deployment's compute cluster is a reach and is not a room.
-- The containment-decision registry (`shared/cloudresourcekind/testdata/containment_decisions.txt`) gains ten `contained` lines -- every typed reference into one of the five, each from a kind that lives inside it -- and five `exempt` lines moved from `contained`.
+- The containment-decision registry (`shared/catalogkind/testdata/containment_decisions.txt`) gains ten `contained` lines -- every typed reference into one of the five, each from a kind that lives inside it -- and five `exempt` lines moved from `contained`.
 
 This change also carries, word for word, five earlier Azure containment corrections that were proposed on their own and overlapped with it or with each other on regenerated files: a Network Watcher flow log writes to the storage account it records into; a container group, a backup instance, and an AKS node pool reach what they name; what reaches into a Key Vault never lives in it, and a role lives where it is defined; a SQL failover group lives on its primary and a Cosmos DB role in its account; what reaches into a storage account, an event hub, or a Service Bus topic never lives in it. Their own notes stand beside this one.
 
@@ -21,7 +21,7 @@ The five travel with the ten rooms already in this change because every containe
 ## How to check
 
 ```bash
-go test ./shared/cloudresourcekind/... -run TestContainmentDecisions   # green; 10 placements added, 5 reaches exempt beyond the ten rooms' lines
-grep -n -B1 'container_kind: true' shared/cloudresourcekind/cloud_resource_kind.proto | grep -c Azure   # the Azure container kinds, fifteen more than before this change
+go test ./shared/catalogkind/... -run TestContainmentDecisions   # green; 10 placements added, 5 reaches exempt beyond the ten rooms' lines
+grep -n -B1 'container_kind: true' shared/catalogkind/catalog_kind.proto | grep -c Azure   # the Azure container kinds, fifteen more than before this change
 grep -rln containment_exempt catalog/azure --include=spec.proto | wc -l
 ```

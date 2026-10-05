@@ -5,10 +5,10 @@ package dev.planton.azure.azurevirtualwan.v1alpha1;
 import "catalog/azure/azurevirtualwan/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureVirtualWanStackInput is the input to the IaC modules
+// AzureVirtualWanIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureVirtualWanStackInput {
+message AzureVirtualWanIacInput {
   // The Virtual WAN resource to deploy.
   AzureVirtualWan target = 1;
 

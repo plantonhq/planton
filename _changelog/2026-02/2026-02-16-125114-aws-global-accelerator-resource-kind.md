@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsGlobalAccelerator as a new deployment component (R30, enum 283) — a Layer 4 networking service that provides static anycast IP addresses and routes traffic through the AWS global network to healthy endpoints across multiple regions. This is the deepest nested spec in the Planton AWS provider, bundling the full accelerator-listener-endpoint group-endpoint hierarchy into a single resource.
+Added AwsGlobalAccelerator as a new catalog kind (R30, enum 283) — a Layer 4 networking service that provides static anycast IP addresses and routes traffic through the AWS global network to healthy endpoints across multiple regions. This is the deepest nested spec in the Planton AWS provider, bundling the full accelerator-listener-endpoint group-endpoint hierarchy into a single resource.
 
 ## Problem Statement / Motivation
 
@@ -20,7 +20,7 @@ The AWS resource expansion project targets ~57 resource kinds for comprehensive 
 
 ## Solution / What's New
 
-A complete AwsGlobalAccelerator deployment component with three-level nested spec design following the NLB listener-bundling pattern.
+A complete AwsGlobalAccelerator catalog kind with three-level nested spec design following the NLB listener-bundling pattern.
 
 ### Resource Hierarchy
 
@@ -45,7 +45,7 @@ flowchart TB
 - **4 CEL validations** at spec level (ip_address_type, BYOIP max 2)
 - **4 CEL validations** at listener level (protocol, client_affinity, port_ranges max)
 - **5 CEL validations** at endpoint group level (health check protocol, interval 10/30 only, path required for HTTP, traffic dial range, port overrides max)
-- **stack_outputs.proto**: 7 outputs including map outputs for listener ARNs and endpoint group ARNs (composite key: listener_name/group_name)
+- **outputs.proto**: 7 outputs including map outputs for listener ARNs and endpoint group ARNs (composite key: listener_name/group_name)
 
 ### Validation Tests (25 tests)
 
@@ -71,7 +71,7 @@ flowchart TB
 ### Key Design Decisions
 
 1. **Bundled full hierarchy** — accelerator + listeners + endpoint groups + endpoints in one resource (follows Transit Gateway and NLB precedents)
-2. **Excluded custom routing** — fundamentally different resource type (~5% adoption), separate component if needed
+2. **Excluded custom routing** — fundamentally different resource type (~5% adoption), separate kind if needed
 3. **Excluded cross-account attachments** — separate lifecycle, enterprise feature
 4. **Included BYOIP** — trivial complexity (1 field), enables key differentiator, ForceNew means can't add later
 5. **Endpoints optional within groups** — allows creating infrastructure first, registering endpoints later
@@ -89,8 +89,8 @@ flowchart TB
 
 - **AWS resource kinds**: 283 enum registered, id_prefix "awsga"
 - **Files created**: ~50 files across proto, IaC, docs, presets, site catalog
-- **Infra chart enablement**: Global anycast networking for multi-region charts
-- **Phase 3 progress**: 2 of 7 specialized components complete
+- **Infra Chart enablement**: Global anycast networking for multi-region charts
+- **Phase 3 progress**: 2 of 7 specialized kinds complete
 
 ## Related Work
 

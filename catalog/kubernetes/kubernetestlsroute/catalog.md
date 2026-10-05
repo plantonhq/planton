@@ -1,21 +1,21 @@
 # Kubernetes TLSRoute
 
-Creates a namespaced Kubernetes Gateway API `TLSRoute` -- a route that matches inbound TLS connections by their **SNI hostname** and forwards them, still encrypted, to one or more backend Services (TLS passthrough). The Gateway never decrypts the traffic: the backend terminates TLS itself. This is the standard way to expose services that must hold their own certificate (databases, mTLS services, or apps doing end-to-end TLS). This component mirrors the upstream Gateway API `TLSRoute` (standard channel, `gateway.networking.k8s.io/v1` from Gateway API v1.6) spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
+Creates a namespaced Kubernetes Gateway API `TLSRoute` -- a route that matches inbound TLS connections by their **SNI hostname** and forwards them, still encrypted, to one or more backend Services (TLS passthrough). The Gateway never decrypts the traffic: the backend terminates TLS itself. This is the standard way to expose services that must hold their own certificate (databases, mTLS services, or apps doing end-to-end TLS). This kind mirrors the upstream Gateway API `TLSRoute` (standard channel, `gateway.networking.k8s.io/v1` from Gateway API v1.6) spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A namespaced TLSRoute** named after `metadata.name` in `spec.namespace`, attached to the Gateway listener(s) in `spec.parentRefs`, matching the `spec.hostnames` SNI names, and forwarding to the backends in its single rule.
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
 
-The Gateway controller reconciles the route asynchronously: it reports per-parent `Accepted` / `ResolvedRefs` conditions in the route's status, which you observe with `kubectl` (these controller-managed values are intentionally not stored as stack outputs).
+The Gateway controller reconciles the route asynchronously: it reports per-parent `Accepted` / `ResolvedRefs` conditions in the route's status, which you observe with `kubectl` (these controller-managed values are intentionally not stored as outputs).
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -62,7 +62,7 @@ spec:
 planton apply -f tls-route.yaml
 ```
 
-This creates a TLSRoute in `prod-apps` that attaches to the `tls-passthrough` listener of `prod-gateway`, matches connections whose SNI is `secure.example.com`, and forwards them, still encrypted, to the `secure-app` Service on port 8443. A Stack Job tracks the provisioning in real time.
+This creates a TLSRoute in `prod-apps` that attaches to the `tls-passthrough` listener of `prod-gateway`, matches connections whose SNI is `secure.example.com`, and forwards them, still encrypted, to the `secure-app` Service on port 8443. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -107,7 +107,7 @@ These are the most important decisions when configuring a TLSRoute. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
@@ -117,9 +117,9 @@ These are the most important decisions when configuring a TLSRoute. Explore the 
 
 Literal names (`value:`) cover targets created outside Planton; cross-namespace references additionally require a Reference Grant in the target namespace.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -136,8 +136,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Gateway API CRDs**](/cloud-catalog/kubernetes-gateway-api-crds) -- installs the Gateway API CRDs (v1.6.0+ standard channel carries TLSRoute); deploy first.
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- the Gateway whose TLS passthrough listener this route attaches to (`parentRefs`); install first.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the namespace (`spec.namespace`) the route runs in.
-- [**Kubernetes ReferenceGrant**](/cloud-catalog/kubernetes-reference-grant) -- authorizes cross-namespace parent or backend references from this route.
-- [**Kubernetes Service**](/cloud-catalog/kubernetes-service) -- the backend workloads (`backendRefs`) that terminate TLS and receive traffic.
+- [**Kubernetes Gateway API CRDs**](/infra-catalog/kubernetes-gateway-api-crds) -- installs the Gateway API CRDs (v1.6.0+ standard channel carries TLSRoute); deploy first.
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- the Gateway whose TLS passthrough listener this route attaches to (`parentRefs`); install first.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the namespace (`spec.namespace`) the route runs in.
+- [**Kubernetes ReferenceGrant**](/infra-catalog/kubernetes-reference-grant) -- authorizes cross-namespace parent or backend references from this route.
+- [**Kubernetes Service**](/infra-catalog/kubernetes-service) -- the backend workloads (`backendRefs`) that terminate TLS and receive traffic.

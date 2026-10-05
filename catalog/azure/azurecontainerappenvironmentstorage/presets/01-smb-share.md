@@ -12,7 +12,7 @@ This preset registers a standard SMB Azure Files share on a Container App Enviro
 
 - **Read-write access** (`accessMode: READ_WRITE`) -- Workloads can write; use READ_ONLY for shared configuration or reference data
 - **SMB path** (`accountName` + `accessKey`) -- The share is addressed by storage account name and authenticated with an account key; the key is the one field that rotates in place
-- **References over literals** -- `shareName` and `accountName` resolve from `AzureStorageShare` / `AzureStorageAccount` outputs when composed in an infra chart
+- **References over literals** -- `shareName` and `accountName` resolve from `AzureStorageShare` / `AzureStorageAccount` outputs when composed in an Infra Chart
 
 ## Placeholders to Replace
 

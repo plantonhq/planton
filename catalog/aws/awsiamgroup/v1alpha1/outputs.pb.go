@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsIamGroupStackOutputs captures the observable state of the IAM
+// AwsIamGroupOutputs captures the observable state of the IAM
 // group after apply.
-type AwsIamGroupStackOutputs struct {
+type AwsIamGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The group's ARN.
 	GroupArn string `protobuf:"bytes,1,opt,name=group_arn,json=groupArn,proto3" json:"group_arn,omitempty"`
@@ -36,20 +36,20 @@ type AwsIamGroupStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsIamGroupStackOutputs) Reset() {
-	*x = AwsIamGroupStackOutputs{}
+func (x *AwsIamGroupOutputs) Reset() {
+	*x = AwsIamGroupOutputs{}
 	mi := &file_catalog_aws_awsiamgroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsIamGroupStackOutputs) String() string {
+func (x *AwsIamGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsIamGroupStackOutputs) ProtoMessage() {}
+func (*AwsIamGroupOutputs) ProtoMessage() {}
 
-func (x *AwsIamGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsIamGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsiamgroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *AwsIamGroupStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsIamGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsIamGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsIamGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AwsIamGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiamgroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsIamGroupStackOutputs) GetGroupArn() string {
+func (x *AwsIamGroupOutputs) GetGroupArn() string {
 	if x != nil {
 		return x.GroupArn
 	}
 	return ""
 }
 
-func (x *AwsIamGroupStackOutputs) GetGroupName() string {
+func (x *AwsIamGroupOutputs) GetGroupName() string {
 	if x != nil {
 		return x.GroupName
 	}
 	return ""
 }
 
-func (x *AwsIamGroupStackOutputs) GetGroupId() string {
+func (x *AwsIamGroupOutputs) GetGroupId() string {
 	if x != nil {
 		return x.GroupId
 	}
@@ -91,8 +91,8 @@ var File_catalog_aws_awsiamgroup_v1alpha1_outputs_proto protoreflect.FileDescrip
 
 const file_catalog_aws_awsiamgroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/aws/awsiamgroup/v1alpha1/outputs.proto\x12$dev.planton.aws.awsiamgroup.v1alpha1\"p\n" +
-	"\x17AwsIamGroupStackOutputs\x12\x1b\n" +
+	".catalog/aws/awsiamgroup/v1alpha1/outputs.proto\x12$dev.planton.aws.awsiamgroup.v1alpha1\"k\n" +
+	"\x12AwsIamGroupOutputs\x12\x1b\n" +
 	"\tgroup_arn\x18\x01 \x01(\tR\bgroupArn\x12\x1d\n" +
 	"\n" +
 	"group_name\x18\x02 \x01(\tR\tgroupName\x12\x19\n" +
@@ -113,7 +113,7 @@ func file_catalog_aws_awsiamgroup_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsiamgroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsiamgroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsIamGroupStackOutputs)(nil), // 0: dev.planton.aws.awsiamgroup.v1alpha1.AwsIamGroupStackOutputs
+	(*AwsIamGroupOutputs)(nil), // 0: dev.planton.aws.awsiamgroup.v1alpha1.AwsIamGroupOutputs
 }
 var file_catalog_aws_awsiamgroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

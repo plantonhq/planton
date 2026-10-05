@@ -300,7 +300,7 @@ type CloudflareDnsZoneSpec struct {
 	// the server echoes, or omit the block.
 	DnsSettings *CloudflareDnsZoneDnsSettings `protobuf:"bytes,7,opt,name=dns_settings,json=dnsSettings,proto3" json:"dns_settings,omitempty"`
 	// Optional DNSSEC configuration. Enable to have Cloudflare sign the zone; the
-	// DS record material to hand to your registrar is published as stack outputs.
+	// DS record material to hand to your registrar is published as outputs.
 	// DNSSEC activates only on an ACTIVE (registrar-delegated) zone: on a
 	// PENDING zone Cloudflare rejects the enable with 400 code 1017 "Invalid
 	// zone plan for action" (measured live; the same call succeeds on an
@@ -1220,7 +1220,7 @@ func (x *CloudflareDnsZoneInternalDns) GetReferenceZoneId() *v1.StringValueOrRef
 
 // CloudflareDnsZoneDnssec configures DNSSEC for the zone. Enabling DNSSEC has
 // Cloudflare sign the zone; the resulting DS record material is published as
-// stack outputs for you to enter at your domain registrar.
+// outputs for you to enter at your domain registrar.
 type CloudflareDnsZoneDnssec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whether DNSSEC is active for the zone.

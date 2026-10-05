@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awshttpapivpclink.v1alpha1;
 
-// AwsHttpApiVpcLinkStackOutputs captures observable identifiers from a
+// AwsHttpApiVpcLinkOutputs captures observable identifiers from a
 // provisioned API Gateway v2 VPC link. Private integrations on HTTP APIs
 // reference the link by its ID.
-message AwsHttpApiVpcLinkStackOutputs {
+message AwsHttpApiVpcLinkOutputs {
   // The VPC link ID (e.g. "abc123"). This is the identifier private
   // integrations set as their connection_id.
   string vpc_link_id = 1;

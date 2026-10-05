@@ -11,7 +11,7 @@ go_library(
     deps = [
         "//catalog/kubernetes/aa_e2e/verify",
         "//e2e/framework/provider",
-        "//iac/componentpermissions/v1:componentpermissions",
+        "//iac/catalogkindpermissions/v1:catalogkindpermissions",
         "//pkg/iac/permissions",
         "@com_github_pkg_errors//:errors",
         "@io_k8s_sigs_yaml//:yaml",
@@ -24,6 +24,6 @@ go_test(
     embed = [":aa_e2e"],
     deps = [
         "//e2e/framework/provider",
-        "//iac/componentpermissions/v1:componentpermissions",
+        "//iac/catalogkindpermissions/v1:catalogkindpermissions",
     ],
 )

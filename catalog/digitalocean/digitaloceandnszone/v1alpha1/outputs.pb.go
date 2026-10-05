@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanDnsZoneStackOutputs captures the identifiers exported after a
+// DigitalOceanDnsZoneOutputs captures the identifiers exported after a
 // DNS zone (domain) is provisioned on DigitalOcean.
-type DigitalOceanDnsZoneStackOutputs struct {
+type DigitalOceanDnsZoneOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The domain name of the DNS zone (e.g. "example.com").
 	ZoneName string `protobuf:"bytes,1,opt,name=zone_name,json=zoneName,proto3" json:"zone_name,omitempty"`
@@ -48,20 +48,20 @@ type DigitalOceanDnsZoneStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDnsZoneStackOutputs) Reset() {
-	*x = DigitalOceanDnsZoneStackOutputs{}
+func (x *DigitalOceanDnsZoneOutputs) Reset() {
+	*x = DigitalOceanDnsZoneOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDnsZoneStackOutputs) String() string {
+func (x *DigitalOceanDnsZoneOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDnsZoneStackOutputs) ProtoMessage() {}
+func (*DigitalOceanDnsZoneOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanDnsZoneStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDnsZoneOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -73,40 +73,40 @@ func (x *DigitalOceanDnsZoneStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDnsZoneStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDnsZoneStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDnsZoneOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDnsZoneOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDnsZoneStackOutputs) GetZoneName() string {
+func (x *DigitalOceanDnsZoneOutputs) GetZoneName() string {
 	if x != nil {
 		return x.ZoneName
 	}
 	return ""
 }
 
-func (x *DigitalOceanDnsZoneStackOutputs) GetZoneId() string {
+func (x *DigitalOceanDnsZoneOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *DigitalOceanDnsZoneStackOutputs) GetNameservers() []string {
+func (x *DigitalOceanDnsZoneOutputs) GetNameservers() []string {
 	if x != nil {
 		return x.Nameservers
 	}
 	return nil
 }
 
-func (x *DigitalOceanDnsZoneStackOutputs) GetUrn() string {
+func (x *DigitalOceanDnsZoneOutputs) GetUrn() string {
 	if x != nil {
 		return x.Urn
 	}
 	return ""
 }
 
-func (x *DigitalOceanDnsZoneStackOutputs) GetRecordIds() map[string]string {
+func (x *DigitalOceanDnsZoneOutputs) GetRecordIds() map[string]string {
 	if x != nil {
 		return x.RecordIds
 	}
@@ -117,14 +117,14 @@ var File_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto protore
 
 const file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/digitalocean/digitaloceandnszone/v1alpha1/outputs.proto\x125dev.planton.digitalocean.digitaloceandnszone.v1alpha1\"\xd0\x02\n" +
-	"\x1fDigitalOceanDnsZoneStackOutputs\x12\x1b\n" +
+	"?catalog/digitalocean/digitaloceandnszone/v1alpha1/outputs.proto\x125dev.planton.digitalocean.digitaloceandnszone.v1alpha1\"\xc5\x02\n" +
+	"\x1aDigitalOceanDnsZoneOutputs\x12\x1b\n" +
 	"\tzone_name\x18\x01 \x01(\tR\bzoneName\x12\x17\n" +
 	"\azone_id\x18\x02 \x01(\tR\x06zoneId\x12 \n" +
 	"\vnameservers\x18\x03 \x03(\tR\vnameservers\x12\x10\n" +
-	"\x03urn\x18\x04 \x01(\tR\x03urn\x12\x84\x01\n" +
+	"\x03urn\x18\x04 \x01(\tR\x03urn\x12\x7f\n" +
 	"\n" +
-	"record_ids\x18\x05 \x03(\v2e.dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneStackOutputs.RecordIdsEntryR\trecordIds\x1a<\n" +
+	"record_ids\x18\x05 \x03(\v2`.dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneOutputs.RecordIdsEntryR\trecordIds\x1a<\n" +
 	"\x0eRecordIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xae\x03\n" +
@@ -144,11 +144,11 @@ func file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanDnsZoneStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneStackOutputs
-	nil,                                     // 1: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneStackOutputs.RecordIdsEntry
+	(*DigitalOceanDnsZoneOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneOutputs
+	nil,                                // 1: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneOutputs.RecordIdsEntry
 }
 var file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneStackOutputs.record_ids:type_name -> dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneStackOutputs.RecordIdsEntry
+	1, // 0: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneOutputs.record_ids:type_name -> dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneOutputs.RecordIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

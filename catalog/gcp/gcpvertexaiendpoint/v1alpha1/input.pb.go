@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GcpVertexAiEndpointStackInput struct {
+type GcpVertexAiEndpointIacInput struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Target         *GcpVertexAiEndpoint   `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -30,20 +30,20 @@ type GcpVertexAiEndpointStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiEndpointStackInput) Reset() {
-	*x = GcpVertexAiEndpointStackInput{}
+func (x *GcpVertexAiEndpointIacInput) Reset() {
+	*x = GcpVertexAiEndpointIacInput{}
 	mi := &file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiEndpointStackInput) String() string {
+func (x *GcpVertexAiEndpointIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiEndpointStackInput) ProtoMessage() {}
+func (*GcpVertexAiEndpointIacInput) ProtoMessage() {}
 
-func (x *GcpVertexAiEndpointStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiEndpointIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,19 +55,19 @@ func (x *GcpVertexAiEndpointStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiEndpointStackInput.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiEndpointStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiEndpointIacInput.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiEndpointIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiEndpointStackInput) GetTarget() *GcpVertexAiEndpoint {
+func (x *GcpVertexAiEndpointIacInput) GetTarget() *GcpVertexAiEndpoint {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpVertexAiEndpointStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpVertexAiEndpointIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -78,8 +78,8 @@ var File_catalog_gcp_gcpvertexaiendpoint_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpvertexaiendpoint/v1alpha1/input.proto\x12,dev.planton.gcp.gcpvertexaiendpoint.v1alpha1\x1a2catalog/gcp/gcpvertexaiendpoint/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc7\x01\n" +
-	"\x1dGcpVertexAiEndpointStackInput\x12Y\n" +
+	"4catalog/gcp/gcpvertexaiendpoint/v1alpha1/input.proto\x12,dev.planton.gcp.gcpvertexaiendpoint.v1alpha1\x1a2catalog/gcp/gcpvertexaiendpoint/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc5\x01\n" +
+	"\x1bGcpVertexAiEndpointIacInput\x12Y\n" +
 	"\x06target\x18\x01 \x01(\v2A.dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpointR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xf6\x02\n" +
 	"0com.dev.planton.gcp.gcpvertexaiendpoint.v1alpha1B\n" +
@@ -99,13 +99,13 @@ func file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_input_proto_goTypes = []any{
-	(*GcpVertexAiEndpointStackInput)(nil), // 0: dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpointStackInput
-	(*GcpVertexAiEndpoint)(nil),           // 1: dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpoint
-	(*gcp.GcpProviderConfig)(nil),         // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpVertexAiEndpointIacInput)(nil), // 0: dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpointIacInput
+	(*GcpVertexAiEndpoint)(nil),         // 1: dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpoint
+	(*gcp.GcpProviderConfig)(nil),       // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpointStackInput.target:type_name -> dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpoint
-	2, // 1: dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpointStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpointIacInput.target:type_name -> dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpoint
+	2, // 1: dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpointIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

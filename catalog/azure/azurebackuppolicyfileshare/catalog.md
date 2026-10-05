@@ -4,7 +4,7 @@ Creates an Azure Backup policy for Azure Files shares -- the schedule and layere
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **File-share backup policy** -- an ARM child of its vault (`.../vaults/{vault}/backupPolicies/{name}`) carrying the schedule, the daily/weekly/monthly/yearly retention ladder, the timezone, and the snapshot or vault-standard tier choice. ARM carries no tags on backup policies.
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -53,7 +53,7 @@ spec:
 planton apply -f policy.yaml
 ```
 
-This creates a snapshot-tier policy that backs up its shares nightly at 23:00 UTC and keeps each backup for 30 days -- ready for AzureBackupProtectedFileShare bindings to attach shares to it. A Stack Job tracks the provisioning in real time.
+This creates a snapshot-tier policy that backs up its shares nightly at 23:00 UTC and keeps each backup for 30 days -- ready for AzureBackupProtectedFileShare bindings to attach shares to it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -101,16 +101,16 @@ These are the most important decisions when configuring a file-share backup poli
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzureRecoveryServicesVault** | `recoveryVaultName` | `status.outputs.recovery_services_vault_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -130,7 +130,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the vault's resource group, where the policy lives
-- [**Azure Recovery Services Vault**](/cloud-catalog/azure-recovery-services-vault) -- the vault the policy is a child of
-- [**Azure Backup Container (Storage Account)**](/cloud-catalog/azure-backup-container-storage-account) -- registers each storage account whose shares the policy will protect
-- [**Azure Backup Protected File Share**](/cloud-catalog/azure-backup-protected-file-share) -- binds an individual share to this policy via its `backup_policy_id` output
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the vault's resource group, where the policy lives
+- [**Azure Recovery Services Vault**](/infra-catalog/azure-recovery-services-vault) -- the vault the policy is a child of
+- [**Azure Backup Container (Storage Account)**](/infra-catalog/azure-backup-container-storage-account) -- registers each storage account whose shares the policy will protect
+- [**Azure Backup Protected File Share**](/infra-catalog/azure-backup-protected-file-share) -- binds an individual share to this policy via its `backup_policy_id` output

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarehyperdriveconfig
 spec:
@@ -17,7 +17,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: hyperdrive_id
       derivations:
-        - from_stack_output: hyperdrive_id
+        - from_output: hyperdrive_id
       where_to_find: >-
         Cloudflare dashboard -> Storage & Databases -> Hyperdrive -> the
         config (the ID on the settings pane), or

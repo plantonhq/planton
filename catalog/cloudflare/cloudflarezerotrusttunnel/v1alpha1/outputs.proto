@@ -4,9 +4,9 @@ package dev.planton.cloudflare.cloudflarezerotrusttunnel.v1alpha1;
 
 import "shared/options/options.proto";
 
-// CloudflareZeroTrustTunnelStackOutputs captures the outputs after provisioning a
+// CloudflareZeroTrustTunnelOutputs captures the outputs after provisioning a
 // Cloudflare Tunnel.
-message CloudflareZeroTrustTunnelStackOutputs {
+message CloudflareZeroTrustTunnelOutputs {
   // The Cloudflare-assigned UUID of the tunnel. Referenced by routes
   // (CloudflareZeroTrustTunnelRoute) and used to build the CNAME target.
   string tunnel_id = 1;

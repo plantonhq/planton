@@ -29,6 +29,6 @@ This preset creates a GPU-backed model-serving endpoint: one NVIDIA L4 per insta
 - **01-public-api-service** — the standard CPU service shape
 - **02-private-vpc-service** — add VPC egress if the model reads from private stores
 
-## Related Components
+## Related Kinds
 
 - [GcpGkeNodePool](/docs/catalog/gcp/gcpgkenodepool) — GPU node pools, when the workload outgrows one-GPU-per-instance serving

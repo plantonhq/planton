@@ -10,9 +10,9 @@
 # the only storage engine that has a volume -- and the audit volume reads
 # the server's, both falling back to their spec-declared default sizes when
 # a PRESENT block omits its size.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesopenbao
 spec:

@@ -1,7 +1,7 @@
 # AzureStorageDataLakeGen2Filesystem - Terraform Module
 
 Terraform implementation for the AzureStorageDataLakeGen2Filesystem
-component.
+kind.
 
 ## Resources Created
 

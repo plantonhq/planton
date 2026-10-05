@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpSharedVpcHostSpec enables one project as a Shared VPC HOST: the
 project whose VPC networks and subnetworks other projects (the SERVICE
@@ -46,7 +46,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpsharedvpchost
+    e2e-catalog-kind: gcpsharedvpchost
   annotations:
     planton.dev/e2e: "true"
   tags:

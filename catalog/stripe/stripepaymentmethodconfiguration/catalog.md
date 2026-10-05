@@ -1,10 +1,10 @@
 # Stripe Payment Method Configuration
 
-Declares which payment methods your checkout offers -- cards, wallets, bank debits, buy now pay later, local methods -- method by method, as a configuration of your own that every checkout names. One Cloud Resource per configuration.
+Declares which payment methods your checkout offers -- cards, wallets, bank debits, buy now pay later, local methods -- method by method, as a configuration of your own that every checkout names. One Infra Component per configuration.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module creates one payment-method configuration in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module creates one payment-method configuration in the Stripe account your Stripe connection's key belongs to:
 
 - **A preference per method** -- on, off, or left to Stripe, for any of 59 methods
 - **What is really available** -- the methods Stripe reports on and with their capability active
@@ -54,7 +54,7 @@ spec:
 planton apply -f stripe-payment-method-configuration.yaml
 ```
 
-Name `status.outputs.id` as `payment_method_configuration` when your application creates a Checkout Session. A Stack Job tracks the change in real time.
+Name `status.outputs.id` as `payment_method_configuration` when your application creates a Checkout Session. An Infra Job tracks the change in real time.
 
 ## Key Configuration
 
@@ -70,11 +70,11 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -95,5 +95,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Stripe Billing Portal Configuration**](/cloud-catalog/stripe-billing-portal-configuration) -- reference this configuration so the portal offers the same methods.
-- [**Stripe Webhook Endpoint**](/cloud-catalog/stripe-webhook-endpoint) -- where the payments these methods complete arrive as events.
+- [**Stripe Billing Portal Configuration**](/infra-catalog/stripe-billing-portal-configuration) -- reference this configuration so the portal offers the same methods.
+- [**Stripe Webhook Endpoint**](/infra-catalog/stripe-webhook-endpoint) -- where the payments these methods complete arrive as events.

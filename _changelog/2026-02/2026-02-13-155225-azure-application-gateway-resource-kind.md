@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AzureApplicationGateway (enum 416, id_prefix: azagw) as a new Planton cloud resource kind, providing Layer 7 (HTTP/HTTPS) load balancing with SSL termination, host-based routing, custom health probes, cookie-based session affinity, and optional WAF protection. This is R10 in the Azure resource expansion project, completing the networking tier alongside the previously implemented AzureLoadBalancer (L4).
+Added AzureApplicationGateway (enum 416, id_prefix: azagw) as a new Planton catalog kind, providing Layer 7 (HTTP/HTTPS) load balancing with SSL termination, host-based routing, custom health probes, cookie-based session affinity, and optional WAF protection. This is R10 in the Azure resource expansion project, completing the networking tier alongside the previously implemented AzureLoadBalancer (L4).
 
 ## Problem Statement / Motivation
 
@@ -21,7 +21,7 @@ The Azure resource expansion project targets 24 resource kinds to enable enterpr
 
 ## Solution / What's New
 
-A complete deployment component for Azure Application Gateway with both Pulumi and Terraform IaC modules, 57 validation tests, and production-quality documentation.
+A complete catalog kind for Azure Application Gateway with both Pulumi and Terraform IaC modules, 57 validation tests, and production-quality documentation.
 
 ### Architecture
 
@@ -60,7 +60,7 @@ flowchart TB
 Deep research into the `azurerm_application_gateway` Terraform provider schema (17+ nested block types) revealed 10 corrections to the original T02 spec design:
 
 1. **Added `resource_group` and `region`** -- missing from T02, required per DD05 pattern
-2. **Added `backend_http_settings`** -- CRITICAL missing component; App GW cannot route without it
+2. **Added `backend_http_settings`** -- CRITICAL missing block; App GW cannot route without it
 3. **Added health probes** -- important for production; Azure's default probes are unreliable
 4. **Added SSL certificates** -- Key Vault reference for HTTPS (primary L7 use case)
 5. **Restructured frontend ports** -- auto-derived from listener port values
@@ -83,9 +83,9 @@ Deep research into the `azurerm_application_gateway` Terraform provider schema (
 ### Proto API (4 files)
 
 - **spec.proto**: 8 message types -- `AzureApplicationGatewaySpec`, `AzureApplicationGatewayAutoscale`, `AzureBackendAddressPool`, `AzureBackendHttpSettings`, `AzureHttpListener`, `AzureRequestRoutingRule`, `AzureHealthProbe`, `AzureSslCertificate`
-- **stack_outputs.proto**: `app_gateway_id`, `app_gateway_name`
+- **outputs.proto**: `app_gateway_id`, `app_gateway_name`
 - **api.proto**: KRM-style `AzureApplicationGateway` with metadata/spec/status
-- **stack_input.proto**: Target resource + Azure provider config
+- **iac_input.proto**: Target resource + Azure provider config
 
 ### Validation (57 tests)
 
@@ -94,7 +94,7 @@ Deep research into the `azurerm_application_gateway` Terraform provider schema (
 
 ### Pulumi Module
 
-Uses `network.NewApplicationGateway` from `pulumi-azure/sdk/v6/go/azure/network`. Single resource call with all sub-components as nested `Args` structs.
+Uses `network.NewApplicationGateway` from `pulumi-azure/sdk/v6/go/azure/network`. Single resource call with all sub-kinds as nested `Args` structs.
 
 ### Terraform Module
 
@@ -103,14 +103,14 @@ Single `azurerm_application_gateway` resource with dynamic blocks for all repeat
 ## Benefits
 
 - **L7 load balancing**: SSL termination, host-based routing, WAF -- the core enterprise networking primitives
-- **Infra chart ready**: All references use `StringValueOrRef` for composability in enterprise-network-foundation
+- **Infra Chart ready**: All references use `StringValueOrRef` for composability in enterprise-network-foundation
 - **Production-quality**: 57 tests, comprehensive documentation, both IaC implementations
 - **Clean 80/20**: Covers the primary use cases without the complexity of path-based routing, redirects, or rewrite rules
 
 ## Impact
 
 - **Azure provider**: 11th resource kind (R10 of 24 in the expansion queue)
-- **Infra charts**: Enables the L7 ingress point in enterprise-network-foundation
+- **Infra Charts**: Enables the L7 ingress point in enterprise-network-foundation
 - **Users**: Can deploy production Application Gateways with SSL, WAF, host routing, and health probes
 - **Next resource**: R11 AzurePostgresqlFlexibleServer (database tier begins)
 

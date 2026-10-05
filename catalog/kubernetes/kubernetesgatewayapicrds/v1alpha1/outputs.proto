@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1;
 
-// KubernetesGatewayApiCrdsStackOutputs captures observable outputs from the
+// KubernetesGatewayApiCrdsOutputs captures observable outputs from the
 // Gateway API CRDs installation.
-message KubernetesGatewayApiCrdsStackOutputs {
+message KubernetesGatewayApiCrdsOutputs {
   // Gateway API version that was installed (e.g., "v1.2.1", "v1.3.0").
   string installed_version = 1;
 

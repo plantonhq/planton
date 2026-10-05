@@ -4,7 +4,7 @@ Creates an Azure AI Foundry hub -- the shared foundation (security, storage, net
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **AI Foundry Hub** -- ARM-wise an ML workspace of kind "Hub" (`Microsoft.MachineLearningServices/workspaces`), attached to your key vault and storage account, optionally wired to Application Insights and a container registry
 
@@ -58,7 +58,7 @@ spec:
 planton apply -f azure-ai-foundry.yaml
 ```
 
-This creates a hub with a system-assigned identity, attached to the referenced key vault and storage account, in the referenced resource group. A Stack Job tracks the provisioning in real time.
+This creates a hub with a system-assigned identity, attached to the referenced key vault and storage account, in the referenced resource group. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -99,7 +99,7 @@ These are the most important decisions when configuring the hub. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -113,9 +113,9 @@ These are the most important decisions when configuring the hub. Explore the ful
 | **AzureUserAssignedIdentity** | `primaryUserAssignedIdentity` | `status.outputs.identity_id` |
 | **AzureUserAssignedIdentity** | `encryption.userAssignedIdentityId` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -135,8 +135,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure AI Foundry Project**](/cloud-catalog/azure-ai-foundry-project) -- the per-team workspace created inside this hub
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- required secrets companion
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- required artifacts companion
-- [**Azure AI Search Service**](/cloud-catalog/azure-search-service) -- retrieval for the projects' RAG applications
-- [**Azure Cognitive Account**](/cloud-catalog/azure-cognitive-account) -- the Azure OpenAI models the projects call
+- [**Azure AI Foundry Project**](/infra-catalog/azure-ai-foundry-project) -- the per-team workspace created inside this hub
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- required secrets companion
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- required artifacts companion
+- [**Azure AI Search Service**](/infra-catalog/azure-search-service) -- retrieval for the projects' RAG applications
+- [**Azure Cognitive Account**](/infra-catalog/azure-cognitive-account) -- the Azure OpenAI models the projects call

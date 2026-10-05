@@ -4,7 +4,7 @@ Deploys a metadata container in the AWS Glue Data Catalog that organizes table d
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Glue Catalog Database** -- a metadata namespace in the AWS Glue Data Catalog, in one of three shapes: a regular database (with optional description, default S3 location, free-form catalog `parameters`, and Lake Formation `createTableDefaultPermissions`), a resource link (`targetDatabase`) pointing at a database shared from another account or region, or a federated database (`federatedDatabase`) projecting an external source such as a Redshift datashare into the catalog
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -46,7 +46,7 @@ spec:
 planton apply -f glue-database.yaml
 ```
 
-This creates a Glue Catalog Database named `analytics` with a description. No default S3 location is configured, so each table must specify its own storage location explicitly. A Stack Job tracks the provisioning and streams progress in real time.
+This creates a Glue Catalog Database named `analytics` with a description. No default S3 location is configured, so each table must specify its own storage location explicitly. An Infra Job tracks the provisioning and streams progress in real time.
 
 ## Key Configuration
 
@@ -68,13 +68,13 @@ These are the most important decisions when configuring a Glue Catalog Database.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — `locationUri` is a plain S3 URI with a user-defined path prefix, and the resource-link and federated-database coordinates are catalog identifiers, not resource references.
+This kind has no foreign key dependencies — `locationUri` is a plain S3 URI with a user-defined path prefix, and the resource-link and federated-database coordinates are catalog identifiers, not resource references.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -96,5 +96,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 The database carries no foreign key references of its own, but it genuinely co-deploys with:
 
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- backs the `locationUri` default table storage path and holds the data the catalog describes
-- [**AWS Athena Workgroup**](/cloud-catalog/aws-athena-workgroup) -- runs SQL queries against the tables cataloged in this database
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- backs the `locationUri` default table storage path and holds the data the catalog describes
+- [**AWS Athena Workgroup**](/infra-catalog/aws-athena-workgroup) -- runs SQL queries against the tables cataloged in this database

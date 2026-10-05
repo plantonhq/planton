@@ -1,6 +1,6 @@
-# AwsBedrockFlow — Component Guide
+# AwsBedrockFlow — Kind Guide
 
-Authored operational judgment for the Bedrock flow component: the design
+Authored operational judgment for the Bedrock flow kind: the design
 decisions behind the spec's shape, and what to know before running flows
 in production.
 
@@ -22,7 +22,7 @@ in production.
   `conditional`; the modules derive AWS's Data/Conditional discriminator.
 - **The inline prompt tree mirrors AwsBedrockPrompt.** Upstream shares
   the same Go models between the prompt resource and the flow's inline
-  prompt node; the two components' specs, modules, and parity manifests
+  prompt node; the two kinds' specs, modules, and parity manifests
   mirror each other divergence-for-divergence — change them together.
 - **One-value vocabularies are module constants**: inline-code language
   (Python_3), cache-point type (default), and the retrieval/storage

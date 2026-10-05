@@ -18,17 +18,17 @@ message AzureSearchService {
   string kind = 2 [(buf.validate.field).string.const = 'AzureSearchService'];
 
   // Standard Planton metadata (name, org, env, labels, tags).
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // Search service specification.
   AzureSearchServiceSpec spec = 4 [(buf.validate.field).required = true];
 
-  // Deployment status containing stack outputs. Populated after deployment.
+  // Deployment status containing outputs. Populated after deployment.
   AzureSearchServiceStatus status = 5;
 }
 
 // AzureSearchServiceStatus holds the deployment outputs.
 message AzureSearchServiceStatus {
-  // Stack outputs from the IaC deployment.
-  AzureSearchServiceStackOutputs outputs = 1;
+  // Outputs from the IaC deployment.
+  AzureSearchServiceOutputs outputs = 1;
 }

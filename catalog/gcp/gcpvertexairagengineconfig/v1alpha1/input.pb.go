@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-vertex-ai-rag-engine-config stack-input
-type GcpVertexAiRagEngineConfigStackInput struct {
+// gcp-vertex-ai-rag-engine-config iac-input
+type GcpVertexAiRagEngineConfigIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpVertexAiRagEngineConfig `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpVertexAiRagEngineConfigStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiRagEngineConfigStackInput) Reset() {
-	*x = GcpVertexAiRagEngineConfigStackInput{}
+func (x *GcpVertexAiRagEngineConfigIacInput) Reset() {
+	*x = GcpVertexAiRagEngineConfigIacInput{}
 	mi := &file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiRagEngineConfigStackInput) String() string {
+func (x *GcpVertexAiRagEngineConfigIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiRagEngineConfigStackInput) ProtoMessage() {}
+func (*GcpVertexAiRagEngineConfigIacInput) ProtoMessage() {}
 
-func (x *GcpVertexAiRagEngineConfigStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiRagEngineConfigIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpVertexAiRagEngineConfigStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiRagEngineConfigStackInput.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiRagEngineConfigStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiRagEngineConfigIacInput.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiRagEngineConfigIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiRagEngineConfigStackInput) GetTarget() *GcpVertexAiRagEngineConfig {
+func (x *GcpVertexAiRagEngineConfigIacInput) GetTarget() *GcpVertexAiRagEngineConfig {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpVertexAiRagEngineConfigStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpVertexAiRagEngineConfigIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_input_proto protoreflec
 
 const file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpvertexairagengineconfig/v1alpha1/input.proto\x123dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1\x1a9catalog/gcp/gcpvertexairagengineconfig/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xdc\x01\n" +
-	"$GcpVertexAiRagEngineConfigStackInput\x12g\n" +
+	";catalog/gcp/gcpvertexairagengineconfig/v1alpha1/input.proto\x123dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1\x1a9catalog/gcp/gcpvertexairagengineconfig/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xda\x01\n" +
+	"\"GcpVertexAiRagEngineConfigIacInput\x12g\n" +
 	"\x06target\x18\x01 \x01(\v2O.dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xa7\x03\n" +
 	"7com.dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_input_proto_goTypes = []any{
-	(*GcpVertexAiRagEngineConfigStackInput)(nil), // 0: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigStackInput
-	(*GcpVertexAiRagEngineConfig)(nil),           // 1: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfig
-	(*gcp.GcpProviderConfig)(nil),                // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpVertexAiRagEngineConfigIacInput)(nil), // 0: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigIacInput
+	(*GcpVertexAiRagEngineConfig)(nil),         // 1: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfig
+	(*gcp.GcpProviderConfig)(nil),              // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpvertexairagengineconfig_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigStackInput.target:type_name -> dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfig
-	2, // 1: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigIacInput.target:type_name -> dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfig
+	2, // 1: dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

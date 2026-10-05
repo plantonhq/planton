@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpRedisClusterStackOutputs captures the observable values of a
+// GcpRedisClusterOutputs captures the observable values of a
 // Memorystore for Redis Cluster after provisioning.
 //
 // A cluster is reached over Private Service Connect. With psc_configs set,
@@ -29,7 +29,7 @@ const (
 // connect to. Without psc_configs, the three *_service_attachment handles
 // are what a consumer's forwarding rules target, and GcpRedisClusterEndpointSet
 // registers those rules on the cluster.
-type GcpRedisClusterStackOutputs struct {
+type GcpRedisClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource path of the cluster
 	// (projects/{project}/locations/{region}/clusters/{cluster}). The
@@ -74,20 +74,20 @@ type GcpRedisClusterStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *GcpRedisClusterStackOutputs) Reset() {
-	*x = GcpRedisClusterStackOutputs{}
+func (x *GcpRedisClusterOutputs) Reset() {
+	*x = GcpRedisClusterOutputs{}
 	mi := &file_catalog_gcp_gcprediscluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpRedisClusterStackOutputs) String() string {
+func (x *GcpRedisClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpRedisClusterStackOutputs) ProtoMessage() {}
+func (*GcpRedisClusterOutputs) ProtoMessage() {}
 
-func (x *GcpRedisClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpRedisClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcprediscluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -99,89 +99,89 @@ func (x *GcpRedisClusterStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpRedisClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpRedisClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpRedisClusterOutputs.ProtoReflect.Descriptor instead.
+func (*GcpRedisClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcprediscluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpRedisClusterStackOutputs) GetName() string {
+func (x *GcpRedisClusterOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpRedisClusterStackOutputs) GetUid() string {
+func (x *GcpRedisClusterOutputs) GetUid() string {
 	if x != nil {
 		return x.Uid
 	}
 	return ""
 }
 
-func (x *GcpRedisClusterStackOutputs) GetState() string {
+func (x *GcpRedisClusterOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
 	return ""
 }
 
-func (x *GcpRedisClusterStackOutputs) GetDiscoveryEndpointAddress() string {
+func (x *GcpRedisClusterOutputs) GetDiscoveryEndpointAddress() string {
 	if x != nil {
 		return x.DiscoveryEndpointAddress
 	}
 	return ""
 }
 
-func (x *GcpRedisClusterStackOutputs) GetDiscoveryEndpointPort() int32 {
+func (x *GcpRedisClusterOutputs) GetDiscoveryEndpointPort() int32 {
 	if x != nil {
 		return x.DiscoveryEndpointPort
 	}
 	return 0
 }
 
-func (x *GcpRedisClusterStackOutputs) GetDiscoveryServiceAttachment() string {
+func (x *GcpRedisClusterOutputs) GetDiscoveryServiceAttachment() string {
 	if x != nil {
 		return x.DiscoveryServiceAttachment
 	}
 	return ""
 }
 
-func (x *GcpRedisClusterStackOutputs) GetPrimaryServiceAttachment() string {
+func (x *GcpRedisClusterOutputs) GetPrimaryServiceAttachment() string {
 	if x != nil {
 		return x.PrimaryServiceAttachment
 	}
 	return ""
 }
 
-func (x *GcpRedisClusterStackOutputs) GetReaderServiceAttachment() string {
+func (x *GcpRedisClusterOutputs) GetReaderServiceAttachment() string {
 	if x != nil {
 		return x.ReaderServiceAttachment
 	}
 	return ""
 }
 
-func (x *GcpRedisClusterStackOutputs) GetSizeGb() int32 {
+func (x *GcpRedisClusterOutputs) GetSizeGb() int32 {
 	if x != nil {
 		return x.SizeGb
 	}
 	return 0
 }
 
-func (x *GcpRedisClusterStackOutputs) GetShardCount() int32 {
+func (x *GcpRedisClusterOutputs) GetShardCount() int32 {
 	if x != nil {
 		return x.ShardCount
 	}
 	return 0
 }
 
-func (x *GcpRedisClusterStackOutputs) GetReplicaCount() int32 {
+func (x *GcpRedisClusterOutputs) GetReplicaCount() int32 {
 	if x != nil {
 		return x.ReplicaCount
 	}
 	return 0
 }
 
-func (x *GcpRedisClusterStackOutputs) GetBackupCollection() string {
+func (x *GcpRedisClusterOutputs) GetBackupCollection() string {
 	if x != nil {
 		return x.BackupCollection
 	}
@@ -192,8 +192,8 @@ var File_catalog_gcp_gcprediscluster_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcprediscluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcprediscluster/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcprediscluster.v1alpha1\"\x97\x04\n" +
-	"\x1bGcpRedisClusterStackOutputs\x12\x12\n" +
+	"2catalog/gcp/gcprediscluster/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcprediscluster.v1alpha1\"\x92\x04\n" +
+	"\x16GcpRedisClusterOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x10\n" +
 	"\x03uid\x18\x02 \x01(\tR\x03uid\x12\x14\n" +
 	"\x05state\x18\x03 \x01(\tR\x05state\x12<\n" +
@@ -224,7 +224,7 @@ func file_catalog_gcp_gcprediscluster_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_gcp_gcprediscluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcprediscluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpRedisClusterStackOutputs)(nil), // 0: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterStackOutputs
+	(*GcpRedisClusterOutputs)(nil), // 0: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterOutputs
 }
 var file_catalog_gcp_gcprediscluster_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

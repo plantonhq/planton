@@ -29,7 +29,7 @@ func minimalGatewayEndpoint() *AwsVpcEndpoint {
 	return &AwsVpcEndpoint{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsVpcEndpoint",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "platform-s3-gateway",
 		},
 		Spec: &AwsVpcEndpointSpec{
@@ -49,7 +49,7 @@ func minimalInterfaceEndpoint() *AwsVpcEndpoint {
 	return &AwsVpcEndpoint{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsVpcEndpoint",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "platform-sts-endpoint",
 		},
 		Spec: &AwsVpcEndpointSpec{

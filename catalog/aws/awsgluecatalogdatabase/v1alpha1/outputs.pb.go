@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsGlueCatalogDatabaseStackOutputs captures observable identifiers from a
+// AwsGlueCatalogDatabaseOutputs captures observable identifiers from a
 // provisioned Glue Data Catalog database. These outputs are used by downstream
 // resources (Athena workgroups, Glue crawlers, Glue ETL jobs, Redshift Spectrum
 // queries) and for operational visibility via StringValueOrRef.
-type AwsGlueCatalogDatabaseStackOutputs struct {
+type AwsGlueCatalogDatabaseOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the Glue Data Catalog database. Used in Athena queries
 	// (FROM database.table), Glue crawler configurations, Glue ETL job scripts,
@@ -46,20 +46,20 @@ type AwsGlueCatalogDatabaseStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsGlueCatalogDatabaseStackOutputs) Reset() {
-	*x = AwsGlueCatalogDatabaseStackOutputs{}
+func (x *AwsGlueCatalogDatabaseOutputs) Reset() {
+	*x = AwsGlueCatalogDatabaseOutputs{}
 	mi := &file_catalog_aws_awsgluecatalogdatabase_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsGlueCatalogDatabaseStackOutputs) String() string {
+func (x *AwsGlueCatalogDatabaseOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsGlueCatalogDatabaseStackOutputs) ProtoMessage() {}
+func (*AwsGlueCatalogDatabaseOutputs) ProtoMessage() {}
 
-func (x *AwsGlueCatalogDatabaseStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsGlueCatalogDatabaseOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsgluecatalogdatabase_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,26 +71,26 @@ func (x *AwsGlueCatalogDatabaseStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsGlueCatalogDatabaseStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsGlueCatalogDatabaseStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsGlueCatalogDatabaseOutputs.ProtoReflect.Descriptor instead.
+func (*AwsGlueCatalogDatabaseOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsgluecatalogdatabase_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsGlueCatalogDatabaseStackOutputs) GetDatabaseName() string {
+func (x *AwsGlueCatalogDatabaseOutputs) GetDatabaseName() string {
 	if x != nil {
 		return x.DatabaseName
 	}
 	return ""
 }
 
-func (x *AwsGlueCatalogDatabaseStackOutputs) GetDatabaseArn() string {
+func (x *AwsGlueCatalogDatabaseOutputs) GetDatabaseArn() string {
 	if x != nil {
 		return x.DatabaseArn
 	}
 	return ""
 }
 
-func (x *AwsGlueCatalogDatabaseStackOutputs) GetCatalogId() string {
+func (x *AwsGlueCatalogDatabaseOutputs) GetCatalogId() string {
 	if x != nil {
 		return x.CatalogId
 	}
@@ -101,8 +101,8 @@ var File_catalog_aws_awsgluecatalogdatabase_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_aws_awsgluecatalogdatabase_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/aws/awsgluecatalogdatabase/v1alpha1/outputs.proto\x12/dev.planton.aws.awsgluecatalogdatabase.v1alpha1\"\x8b\x01\n" +
-	"\"AwsGlueCatalogDatabaseStackOutputs\x12#\n" +
+	"9catalog/aws/awsgluecatalogdatabase/v1alpha1/outputs.proto\x12/dev.planton.aws.awsgluecatalogdatabase.v1alpha1\"\x86\x01\n" +
+	"\x1dAwsGlueCatalogDatabaseOutputs\x12#\n" +
 	"\rdatabase_name\x18\x01 \x01(\tR\fdatabaseName\x12!\n" +
 	"\fdatabase_arn\x18\x02 \x01(\tR\vdatabaseArn\x12\x1d\n" +
 	"\n" +
@@ -123,7 +123,7 @@ func file_catalog_aws_awsgluecatalogdatabase_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_aws_awsgluecatalogdatabase_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsgluecatalogdatabase_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsGlueCatalogDatabaseStackOutputs)(nil), // 0: dev.planton.aws.awsgluecatalogdatabase.v1alpha1.AwsGlueCatalogDatabaseStackOutputs
+	(*AwsGlueCatalogDatabaseOutputs)(nil), // 0: dev.planton.aws.awsgluecatalogdatabase.v1alpha1.AwsGlueCatalogDatabaseOutputs
 }
 var file_catalog_aws_awsgluecatalogdatabase_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

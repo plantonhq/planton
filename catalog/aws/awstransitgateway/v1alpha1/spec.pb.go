@@ -46,7 +46,7 @@ const (
 // inspection VPC hair-pinning) with custom route tables.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsTransitGatewaySpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the Transit Gateway will be created. All attached

@@ -164,14 +164,14 @@ KubernetesCertManager -> KubernetesClusterIssuer -> KubernetesCertificate
 (For pure TLS passthrough the backend holds its own certificate, so the
 cert-manager prefix is optional; it applies when the Gateway terminates TLS.)
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `routeName` | Name of the created TLSRoute (equals metadata.name). |
 | `namespace` | Namespace the TLSRoute was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Gateway](../kubernetesgateway)
 - [Kubernetes Gateway Class](../kubernetesgatewayclass)

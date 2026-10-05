@@ -24,13 +24,13 @@ const defaultLogRetentionDays = 30
 // immutable: every apply that changes anything registers a NEW revision of
 // the family, and the task_definition_arn output carries the revision --
 // which is exactly what lets a referencing ECS service roll on each change.
-func Resources(ctx *pulumi.Context, stackInput *awsecstaskdefinitionv1alpha1.AwsEcsTaskDefinitionStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsecstaskdefinitionv1alpha1.AwsEcsTaskDefinitionIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which
+	// Build the AWS provider from the IaC input via the shared builder, which
 	// resolves the right credential mechanism (static keys, keyless web identity,
 	// or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsEcsTaskDefinition.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsEcsTaskDefinition.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

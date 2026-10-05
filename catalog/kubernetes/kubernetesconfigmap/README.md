@@ -2,27 +2,27 @@
 
 ## Overview
 
-**KubernetesConfigMap** is a Planton component that creates and manages Kubernetes ConfigMaps as first-class, declaratively managed resources. A ConfigMap holds non-confidential configuration data — file-like text values, property settings, or binary payloads — that pods consume as environment variables, command-line arguments, or mounted files.
+**KubernetesConfigMap** is a catalog kind that creates and manages Kubernetes ConfigMaps as first-class, declaratively managed resources. A ConfigMap holds non-confidential configuration data — file-like text values, property settings, or binary payloads — that pods consume as environment variables, command-line arguments, or mounted files.
 
-The component covers the complete Kubernetes ConfigMap surface: UTF-8 `data`, base64-encoded `binary_data`, and the `immutable` flag. There is nothing an upstream ConfigMap can express that this spec cannot.
+The kind covers the complete Kubernetes ConfigMap surface: UTF-8 `data`, base64-encoded `binary_data`, and the `immutable` flag. There is nothing an upstream ConfigMap can express that this spec cannot.
 
 ## Purpose
 
-ConfigMaps are the standard Kubernetes mechanism for decoupling configuration from container images. Every non-trivial workload consumes at least one: environment settings, feature flags, property files, nginx configs, dashboards. Managing them declaratively — with validation, drift detection, and cross-resource references — is what this component provides.
+ConfigMaps are the standard Kubernetes mechanism for decoupling configuration from container images. Every non-trivial workload consumes at least one: environment settings, feature flags, property files, nginx configs, dashboards. Managing them declaratively — with validation, drift detection, and cross-resource references — is what this kind provides.
 
 **Key value over raw manifests:**
 
 - **Schema-level validation**: Key character rules, base64 validation for `binary_data` values, and a cross-field rule rejecting keys that appear in both `data` and `binary_data` — all caught before anything reaches the cluster
-- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an infra chart can create the namespace and the ConfigMap in one run
+- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an Infra Chart can create the namespace and the ConfigMap in one run
 - **Immutable ConfigMaps**: First-class support for the immutability flag (stable since Kubernetes 1.21)
 - **Dual IaC support**: Both Pulumi and Terraform implementations with feature parity
 - **Lifecycle management**: Integrated with Planton's deployment lifecycle for status tracking and outputs
 
-## Relationship to Other Components
+## Relationship to Other Kinds
 
-- **KubernetesSecret**: The confidential mirror of this component. The two kinds are deliberate mirrors — same namespace handling, same immutability semantics, same key rules. Use KubernetesSecret for passwords, tokens, keys, and certificates; use KubernetesConfigMap for everything that is safe to read.
+- **KubernetesSecret**: The confidential mirror of this kind. The two kinds are deliberate mirrors — same namespace handling, same immutability semantics, same key rules. Use KubernetesSecret for passwords, tokens, keys, and certificates; use KubernetesConfigMap for everything that is safe to read.
 - **KubernetesNamespace**: Provides the target namespace. Reference it from `spec.namespace` to deploy both in one chart.
-- **Workload components** (KubernetesDeployment and friends): Consume the ConfigMap by name via `envFrom`, `configMapKeyRef`, or `configMap` volumes. The created name and namespace are exported as stack outputs for exactly this composition.
+- **Workload kinds** (KubernetesDeployment and friends): Consume the ConfigMap by name via `envFrom`, `configMapKeyRef`, or `configMap` volumes. The created name and namespace are exported as outputs for exactly this composition.
 
 ## Data Model
 
@@ -65,7 +65,7 @@ The recommended pattern for immutable configuration is versioned, roll-forward n
 - **`spec.immutable`**: Locks data after creation.
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton labels for tracking and governance.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -74,7 +74,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace (literal value or resolved reference)
 2. Merge user labels and annotations with standard Planton tracking labels
@@ -91,7 +91,7 @@ Use **KubernetesConfigMap** when you need:
 - Property files, environment settings, or feature flags consumed by workloads
 - Binary configuration payloads (up to the 1MiB limit)
 - Immutable, versioned configuration for production rollouts
-- Namespace-and-config created together in one infra chart
+- Namespace-and-config created together in one Infra Chart
 
 **Do NOT use** when:
 

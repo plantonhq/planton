@@ -4,9 +4,9 @@ package dev.planton.azure.azureexpressroutecircuit.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureExpressRouteCircuitStackOutputs** captures the outputs of
+// **AzureExpressRouteCircuitOutputs** captures the outputs of
 // provisioning an ExpressRoute circuit.
-message AzureExpressRouteCircuitStackOutputs {
+message AzureExpressRouteCircuitOutputs {
   // The Azure Resource Manager ID of the circuit.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/expressRouteCircuits/{name}
   string express_route_circuit_id = 1;

@@ -22,7 +22,7 @@ message AzureEventgridNamespaceTopic {
   string kind = 2 [(buf.validate.field).string.const = 'AzureEventgridNamespaceTopic'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   AzureEventgridNamespaceTopicSpec spec = 4 [(buf.validate.field).required = true];
@@ -34,7 +34,7 @@ message AzureEventgridNamespaceTopic {
 // AzureEventgridNamespaceTopicStatus represents the status of an
 // Azure Event Grid namespace topic deployment.
 message AzureEventgridNamespaceTopicStatus {
-  //stack-outputs
-  //  azure-eventgrid-namespace-topic stack-outputs
-  AzureEventgridNamespaceTopicStackOutputs outputs = 1;
+  //outputs
+  //  azure-eventgrid-namespace-topic outputs
+  AzureEventgridNamespaceTopicOutputs outputs = 1;
 }

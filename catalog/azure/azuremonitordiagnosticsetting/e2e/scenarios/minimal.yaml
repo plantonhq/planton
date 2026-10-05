@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuremonitordiagnosticsetting
+    e2e-catalog-kind: azuremonitordiagnosticsetting
   annotations:
     planton.dev/e2e: "true"
   tags:

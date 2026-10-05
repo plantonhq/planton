@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsManagedPrometheusStackOutputs captures the observable state of
+// AwsManagedPrometheusOutputs captures the observable state of
 // the workspace and its satellites after apply.
-type AwsManagedPrometheusStackOutputs struct {
+type AwsManagedPrometheusOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The workspace's ID (the provider's import ID for the workspace
 	// and most satellites).
@@ -46,20 +46,20 @@ type AwsManagedPrometheusStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AwsManagedPrometheusStackOutputs) Reset() {
-	*x = AwsManagedPrometheusStackOutputs{}
+func (x *AwsManagedPrometheusOutputs) Reset() {
+	*x = AwsManagedPrometheusOutputs{}
 	mi := &file_catalog_aws_awsmanagedprometheus_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsManagedPrometheusStackOutputs) String() string {
+func (x *AwsManagedPrometheusOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsManagedPrometheusStackOutputs) ProtoMessage() {}
+func (*AwsManagedPrometheusOutputs) ProtoMessage() {}
 
-func (x *AwsManagedPrometheusStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsManagedPrometheusOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsmanagedprometheus_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,47 +71,47 @@ func (x *AwsManagedPrometheusStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsManagedPrometheusStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsManagedPrometheusStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsManagedPrometheusOutputs.ProtoReflect.Descriptor instead.
+func (*AwsManagedPrometheusOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmanagedprometheus_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsManagedPrometheusStackOutputs) GetWorkspaceId() string {
+func (x *AwsManagedPrometheusOutputs) GetWorkspaceId() string {
 	if x != nil {
 		return x.WorkspaceId
 	}
 	return ""
 }
 
-func (x *AwsManagedPrometheusStackOutputs) GetWorkspaceArn() string {
+func (x *AwsManagedPrometheusOutputs) GetWorkspaceArn() string {
 	if x != nil {
 		return x.WorkspaceArn
 	}
 	return ""
 }
 
-func (x *AwsManagedPrometheusStackOutputs) GetPrometheusEndpoint() string {
+func (x *AwsManagedPrometheusOutputs) GetPrometheusEndpoint() string {
 	if x != nil {
 		return x.PrometheusEndpoint
 	}
 	return ""
 }
 
-func (x *AwsManagedPrometheusStackOutputs) GetRuleGroupNamespaceArns() map[string]string {
+func (x *AwsManagedPrometheusOutputs) GetRuleGroupNamespaceArns() map[string]string {
 	if x != nil {
 		return x.RuleGroupNamespaceArns
 	}
 	return nil
 }
 
-func (x *AwsManagedPrometheusStackOutputs) GetAnomalyDetectorIds() map[string]string {
+func (x *AwsManagedPrometheusOutputs) GetAnomalyDetectorIds() map[string]string {
 	if x != nil {
 		return x.AnomalyDetectorIds
 	}
 	return nil
 }
 
-func (x *AwsManagedPrometheusStackOutputs) GetAnomalyDetectorArns() map[string]string {
+func (x *AwsManagedPrometheusOutputs) GetAnomalyDetectorArns() map[string]string {
 	if x != nil {
 		return x.AnomalyDetectorArns
 	}
@@ -122,14 +122,14 @@ var File_catalog_aws_awsmanagedprometheus_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_aws_awsmanagedprometheus_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/aws/awsmanagedprometheus/v1alpha1/outputs.proto\x12-dev.planton.aws.awsmanagedprometheus.v1alpha1\"\xd9\x06\n" +
-	" AwsManagedPrometheusStackOutputs\x12!\n" +
+	"7catalog/aws/awsmanagedprometheus/v1alpha1/outputs.proto\x12-dev.planton.aws.awsmanagedprometheus.v1alpha1\"\xc5\x06\n" +
+	"\x1bAwsManagedPrometheusOutputs\x12!\n" +
 	"\fworkspace_id\x18\x01 \x01(\tR\vworkspaceId\x12#\n" +
 	"\rworkspace_arn\x18\x02 \x01(\tR\fworkspaceArn\x12/\n" +
-	"\x13prometheus_endpoint\x18\x03 \x01(\tR\x12prometheusEndpoint\x12\xa6\x01\n" +
-	"\x19rule_group_namespace_arns\x18\x04 \x03(\v2k.dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusStackOutputs.RuleGroupNamespaceArnsEntryR\x16ruleGroupNamespaceArns\x12\x99\x01\n" +
-	"\x14anomaly_detector_ids\x18\x05 \x03(\v2g.dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusStackOutputs.AnomalyDetectorIdsEntryR\x12anomalyDetectorIds\x12\x9c\x01\n" +
-	"\x15anomaly_detector_arns\x18\x06 \x03(\v2h.dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusStackOutputs.AnomalyDetectorArnsEntryR\x13anomalyDetectorArns\x1aI\n" +
+	"\x13prometheus_endpoint\x18\x03 \x01(\tR\x12prometheusEndpoint\x12\xa1\x01\n" +
+	"\x19rule_group_namespace_arns\x18\x04 \x03(\v2f.dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusOutputs.RuleGroupNamespaceArnsEntryR\x16ruleGroupNamespaceArns\x12\x94\x01\n" +
+	"\x14anomaly_detector_ids\x18\x05 \x03(\v2b.dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusOutputs.AnomalyDetectorIdsEntryR\x12anomalyDetectorIds\x12\x97\x01\n" +
+	"\x15anomaly_detector_arns\x18\x06 \x03(\v2c.dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusOutputs.AnomalyDetectorArnsEntryR\x13anomalyDetectorArns\x1aI\n" +
 	"\x1bRuleGroupNamespaceArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aE\n" +
@@ -155,15 +155,15 @@ func file_catalog_aws_awsmanagedprometheus_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_aws_awsmanagedprometheus_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_catalog_aws_awsmanagedprometheus_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsManagedPrometheusStackOutputs)(nil), // 0: dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusStackOutputs
-	nil,                                      // 1: dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusStackOutputs.RuleGroupNamespaceArnsEntry
-	nil,                                      // 2: dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusStackOutputs.AnomalyDetectorIdsEntry
-	nil,                                      // 3: dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusStackOutputs.AnomalyDetectorArnsEntry
+	(*AwsManagedPrometheusOutputs)(nil), // 0: dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusOutputs
+	nil,                                 // 1: dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusOutputs.RuleGroupNamespaceArnsEntry
+	nil,                                 // 2: dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusOutputs.AnomalyDetectorIdsEntry
+	nil,                                 // 3: dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusOutputs.AnomalyDetectorArnsEntry
 }
 var file_catalog_aws_awsmanagedprometheus_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusStackOutputs.rule_group_namespace_arns:type_name -> dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusStackOutputs.RuleGroupNamespaceArnsEntry
-	2, // 1: dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusStackOutputs.anomaly_detector_ids:type_name -> dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusStackOutputs.AnomalyDetectorIdsEntry
-	3, // 2: dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusStackOutputs.anomaly_detector_arns:type_name -> dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusStackOutputs.AnomalyDetectorArnsEntry
+	1, // 0: dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusOutputs.rule_group_namespace_arns:type_name -> dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusOutputs.RuleGroupNamespaceArnsEntry
+	2, // 1: dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusOutputs.anomaly_detector_ids:type_name -> dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusOutputs.AnomalyDetectorIdsEntry
+	3, // 2: dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusOutputs.anomaly_detector_arns:type_name -> dev.planton.aws.awsmanagedprometheus.v1alpha1.AwsManagedPrometheusOutputs.AnomalyDetectorArnsEntry
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

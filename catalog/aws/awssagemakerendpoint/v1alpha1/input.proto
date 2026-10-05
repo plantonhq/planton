@@ -5,9 +5,9 @@ package dev.planton.aws.awssagemakerendpoint.v1alpha1;
 import "catalog/aws/awssagemakerendpoint/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSagemakerEndpointStackInput is the input for the IaC modules that
+// AwsSagemakerEndpointIacInput is the input for the IaC modules that
 // deploy the SageMaker endpoint and its configuration.
-message AwsSagemakerEndpointStackInput {
+message AwsSagemakerEndpointIacInput {
   // target is the AwsSagemakerEndpoint resource to deploy.
   AwsSagemakerEndpoint target = 1;
   // provider_config contains the AWS provider credentials and configuration.

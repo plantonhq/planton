@@ -16,7 +16,7 @@ Pulumi Go module that creates an Auth0 Resource Server (API), its scopes, and th
 
 ## Environment Variables
 
-When `provider_config` is not set in the stack input, the module falls back to environment variables:
+When `provider_config` is not set in the IaC input, the module falls back to environment variables:
 
 | Variable | Description |
 |---|---|

@@ -5,10 +5,10 @@ package dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1;
 import "catalog/aws/awsfsxdatarepositoryassociation/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsFsxDataRepositoryAssociationStackInput is the input for the
+// AwsFsxDataRepositoryAssociationIacInput is the input for the
 // aws-fsx-data-repository-association IaC modules.
-message AwsFsxDataRepositoryAssociationStackInput {
-  // target cloud-resource
+message AwsFsxDataRepositoryAssociationIacInput {
+  // the catalog object to deploy
   AwsFsxDataRepositoryAssociation target = 1;
 
   // provider-config

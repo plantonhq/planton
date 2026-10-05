@@ -36,7 +36,7 @@ Gateway stays yours and is never modified.
 - **`gateway_ref.name` and `namespace` are foreign keys to
   KubernetesGateway** — `value:` for a Gateway created outside Planton (as
   in this preset); `valueFrom:` naming a KubernetesGateway resource when the
-  Gateway is Planton's own, so an infra chart declares the Gateway and the
+  Gateway is Planton's own, so an Infra Chart declares the Gateway and the
   platform together, the platform deploys after its Gateway, and a renamed
   Gateway carries the route with it. One `valueFrom` pair wires both fields
   from the same resource (its `gateway_name` and `namespace` outputs)

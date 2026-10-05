@@ -5,9 +5,9 @@ package dev.planton.stripe.stripewebhookendpoint.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/stripewebhookendpoint/v1alpha1/api.proto";
 
-// StripeWebhookEndpointStackInput is the input to the StripeWebhookEndpoint IaC module.
+// StripeWebhookEndpointIacInput is the input to the StripeWebhookEndpoint IaC module.
 // It contains the target resource and the Stripe provider configuration.
-message StripeWebhookEndpointStackInput {
+message StripeWebhookEndpointIacInput {
   // target is the StripeWebhookEndpoint resource to be deployed.
   StripeWebhookEndpoint target = 1;
 

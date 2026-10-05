@@ -16,7 +16,7 @@ The single-screen `auth0.PromptScreenPartial` is never declared: this module own
 
 ## Environment Variables
 
-When `provider_config` is not set in the stack input, the module falls back to environment variables:
+When `provider_config` is not set in the IaC input, the module falls back to environment variables:
 
 | Variable | Description |
 |---|---|

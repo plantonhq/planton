@@ -4,7 +4,7 @@ Creates one cert-manager Issuer — a NAMESPACE-SCOPED certificate authority fro
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Issuer** -- the cert-manager custom resource, named after `metadata.name`, in the specified namespace, configured with the selected signing backend
 - **Credential Secrets** -- wherever the backend needs a credential (a DNS token, Vault token, TSIG key), the module materializes it as a Kubernetes Secret in the Issuer's own namespace and wires the CR's secretRef to it
@@ -50,7 +50,7 @@ spec:
 planton apply -f issuer.yaml
 ```
 
-This creates a self-signed Issuer in `team-payments` — the starting point of the standard CA-chain bootstrap. `selfSigned: {}` is a complete, meaningful configuration: presence selects the backend. A Stack Job tracks the provisioning in real time.
+This creates a self-signed Issuer in `team-payments` — the starting point of the standard CA-chain bootstrap. `selfSigned: {}` is a complete, meaningful configuration: presence selects the backend. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,7 +88,7 @@ These are the most important decisions when configuring an Issuer. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -96,9 +96,9 @@ These are the most important decisions when configuring an Issuer. Explore the f
 | **KubernetesCertificate** | `config.ca.caSecretName` | `status.outputs.secret_name` |
 | **KubernetesServiceAccount** | `config.vault.kubernetesAuth.serviceAccountName` | `metadata.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -116,7 +116,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) -- must be installed first; provides the controller and CRDs.
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) -- requests certificates from this Issuer (same namespace); also produces the CA Secret a CA-backend Issuer consumes.
-- [**Cert Manager Cluster Issuer**](/cloud-catalog/kubernetes-cluster-issuer) -- the cluster-scoped alternative for platform-wide public TLS.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- reference it so infra charts create the namespace and this Issuer in dependency order.
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) -- must be installed first; provides the controller and CRDs.
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) -- requests certificates from this Issuer (same namespace); also produces the CA Secret a CA-backend Issuer consumes.
+- [**Cert Manager Cluster Issuer**](/infra-catalog/kubernetes-cluster-issuer) -- the cluster-scoped alternative for platform-wide public TLS.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference it so Infra Charts create the namespace and this Issuer in dependency order.

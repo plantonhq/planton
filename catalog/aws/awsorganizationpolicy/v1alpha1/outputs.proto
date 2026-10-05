@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsorganizationpolicy.v1alpha1;
 
-// AwsOrganizationPolicyStackOutputs captures the observable state of
+// AwsOrganizationPolicyOutputs captures the observable state of
 // the organization policy after apply.
-message AwsOrganizationPolicyStackOutputs {
+message AwsOrganizationPolicyOutputs {
   // The policy's AWS-generated ID ("p-..." - also the provider's
   // import ID; each folded attachment imports as
   // "{target_id}:{policy_id}").

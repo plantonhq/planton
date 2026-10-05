@@ -28,9 +28,9 @@ type Locals struct {
 // initializeLocals derives the bare Connect cluster id and the defaulted
 // connector id. Connectors carry no labels, so there is no attribution
 // label set.
-func initializeLocals(_ *pulumi.Context, stackInput *gcpmanagedkafkaconnectorv1alpha1.GcpManagedKafkaConnectorStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpmanagedkafkaconnectorv1alpha1.GcpManagedKafkaConnectorIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpManagedKafkaConnector = stackInput.Target
+	locals.GcpManagedKafkaConnector = iacInput.Target
 	spec := locals.GcpManagedKafkaConnector.Spec
 
 	connectCluster := spec.ConnectCluster.GetValue()
@@ -41,6 +41,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpmanagedkafkaconnectorv1a
 		locals.ConnectorId = locals.GcpManagedKafkaConnector.Metadata.Name
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

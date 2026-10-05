@@ -20,7 +20,7 @@ export const ProductIndex: FC = () => {
       <PageHero eyebrow={{ label: 'Product' }} title={what.title} lede={what.claim} forWhom="For the platform engineer deciding what to hand their team, and the developer who wants to see what their agent gets.">
         <Doors {...START_DOORS} className="justify-center mt-2" />
         <Box className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-10 w-full">
-          <Metric value={PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} label="Component Kinds" />
+          <Metric value={PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} label="Catalog Kinds" />
           <Metric value={PLATFORM_STATS.CLOUD_PROVIDER_COUNT} label="Providers" />
           <Metric value={PLATFORM_STATS.INFRA_CHART_COUNT} label="Infra Charts" />
           <Metric value={PLATFORM_STATS.IN_PRODUCTION_SINCE} label="In Production Since" />

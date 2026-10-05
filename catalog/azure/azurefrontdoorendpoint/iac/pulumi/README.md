@@ -1,7 +1,7 @@
 # AzureFrontDoorEndpoint - Pulumi Module
 
-Pulumi implementation for the AzureFrontDoorEndpoint deployment
-component.
+Pulumi implementation for the AzureFrontDoorEndpoint
+kind.
 
 ## Architecture
 
@@ -17,7 +17,7 @@ cdn.FrontdoorEndpoint (single resource)
   parent reference and nothing that could contradict it.
 - **`enabled` is sent only when explicitly disabled** -- Azure's default
   is enabled, the platform materializes the documented default centrally,
-  and stack inputs never carry proto defaults; sending nothing and
+  and IaC inputs never carry proto defaults; sending nothing and
   sending `true` are behaviorally identical.
 - **`host_name` is the load-bearing output** -- Azure generates a
   globally unique `{name}-{hash}.z01.azurefd.net` hostname; custom-domain
@@ -27,6 +27,6 @@ cdn.FrontdoorEndpoint (single resource)
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless web-identity (OIDC), and
 ambient credential chains. Never construct a provider inline.

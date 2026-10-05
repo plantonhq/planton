@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsroute53resolverquerylog.v1alpha1;
 
-// AwsRoute53ResolverQueryLogStackOutputs captures the observable state
+// AwsRoute53ResolverQueryLogOutputs captures the observable state
 // of the resolver query logging configuration after apply.
-message AwsRoute53ResolverQueryLogStackOutputs {
+message AwsRoute53ResolverQueryLogOutputs {
   // The configuration's id (rqlc-...) - the provider's import ID.
   string query_log_config_id = 1;
 

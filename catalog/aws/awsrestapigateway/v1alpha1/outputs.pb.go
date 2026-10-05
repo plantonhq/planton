@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRestApiGatewayStackOutputs captures observable identifiers from a
+// AwsRestApiGatewayOutputs captures observable identifiers from a
 // provisioned REST API. Downstream resources (custom domains' base-path
 // mappings, usage plans' api_stages) wire dependencies via
 // StringValueOrRef.
-type AwsRestApiGatewayStackOutputs struct {
+type AwsRestApiGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The REST API ID (the {restapi-id} in invoke URLs and import IDs).
 	RestApiId string `protobuf:"bytes,1,opt,name=rest_api_id,json=restApiId,proto3" json:"rest_api_id,omitempty"`
@@ -91,20 +91,20 @@ type AwsRestApiGatewayStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AwsRestApiGatewayStackOutputs) Reset() {
-	*x = AwsRestApiGatewayStackOutputs{}
+func (x *AwsRestApiGatewayOutputs) Reset() {
+	*x = AwsRestApiGatewayOutputs{}
 	mi := &file_catalog_aws_awsrestapigateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRestApiGatewayStackOutputs) String() string {
+func (x *AwsRestApiGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRestApiGatewayStackOutputs) ProtoMessage() {}
+func (*AwsRestApiGatewayOutputs) ProtoMessage() {}
 
-func (x *AwsRestApiGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRestApiGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsrestapigateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -116,145 +116,145 @@ func (x *AwsRestApiGatewayStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRestApiGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRestApiGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRestApiGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRestApiGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsrestapigateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetRestApiId() string {
+func (x *AwsRestApiGatewayOutputs) GetRestApiId() string {
 	if x != nil {
 		return x.RestApiId
 	}
 	return ""
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetRestApiArn() string {
+func (x *AwsRestApiGatewayOutputs) GetRestApiArn() string {
 	if x != nil {
 		return x.RestApiArn
 	}
 	return ""
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetExecutionArn() string {
+func (x *AwsRestApiGatewayOutputs) GetExecutionArn() string {
 	if x != nil {
 		return x.ExecutionArn
 	}
 	return ""
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetRootResourceId() string {
+func (x *AwsRestApiGatewayOutputs) GetRootResourceId() string {
 	if x != nil {
 		return x.RootResourceId
 	}
 	return ""
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetStageName() string {
+func (x *AwsRestApiGatewayOutputs) GetStageName() string {
 	if x != nil {
 		return x.StageName
 	}
 	return ""
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetStageArn() string {
+func (x *AwsRestApiGatewayOutputs) GetStageArn() string {
 	if x != nil {
 		return x.StageArn
 	}
 	return ""
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetInvokeUrl() string {
+func (x *AwsRestApiGatewayOutputs) GetInvokeUrl() string {
 	if x != nil {
 		return x.InvokeUrl
 	}
 	return ""
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetDeploymentId() string {
+func (x *AwsRestApiGatewayOutputs) GetDeploymentId() string {
 	if x != nil {
 		return x.DeploymentId
 	}
 	return ""
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetClientCertificateId() string {
+func (x *AwsRestApiGatewayOutputs) GetClientCertificateId() string {
 	if x != nil {
 		return x.ClientCertificateId
 	}
 	return ""
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetClientCertificatePem() string {
+func (x *AwsRestApiGatewayOutputs) GetClientCertificatePem() string {
 	if x != nil {
 		return x.ClientCertificatePem
 	}
 	return ""
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetResourceIds() map[string]string {
+func (x *AwsRestApiGatewayOutputs) GetResourceIds() map[string]string {
 	if x != nil {
 		return x.ResourceIds
 	}
 	return nil
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetAuthorizerIds() map[string]string {
+func (x *AwsRestApiGatewayOutputs) GetAuthorizerIds() map[string]string {
 	if x != nil {
 		return x.AuthorizerIds
 	}
 	return nil
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetModelIds() map[string]string {
+func (x *AwsRestApiGatewayOutputs) GetModelIds() map[string]string {
 	if x != nil {
 		return x.ModelIds
 	}
 	return nil
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetRequestValidatorIds() map[string]string {
+func (x *AwsRestApiGatewayOutputs) GetRequestValidatorIds() map[string]string {
 	if x != nil {
 		return x.RequestValidatorIds
 	}
 	return nil
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetDocumentationPartIds() map[string]string {
+func (x *AwsRestApiGatewayOutputs) GetDocumentationPartIds() map[string]string {
 	if x != nil {
 		return x.DocumentationPartIds
 	}
 	return nil
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetRouteResourceIds() map[string]string {
+func (x *AwsRestApiGatewayOutputs) GetRouteResourceIds() map[string]string {
 	if x != nil {
 		return x.RouteResourceIds
 	}
 	return nil
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetRouteMethods() map[string]string {
+func (x *AwsRestApiGatewayOutputs) GetRouteMethods() map[string]string {
 	if x != nil {
 		return x.RouteMethods
 	}
 	return nil
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetResponseResourceIds() map[string]string {
+func (x *AwsRestApiGatewayOutputs) GetResponseResourceIds() map[string]string {
 	if x != nil {
 		return x.ResponseResourceIds
 	}
 	return nil
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetResponseMethods() map[string]string {
+func (x *AwsRestApiGatewayOutputs) GetResponseMethods() map[string]string {
 	if x != nil {
 		return x.ResponseMethods
 	}
 	return nil
 }
 
-func (x *AwsRestApiGatewayStackOutputs) GetResponseStatusCodes() map[string]string {
+func (x *AwsRestApiGatewayOutputs) GetResponseStatusCodes() map[string]string {
 	if x != nil {
 		return x.ResponseStatusCodes
 	}
@@ -265,8 +265,8 @@ var File_catalog_aws_awsrestapigateway_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awsrestapigateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awsrestapigateway/v1alpha1/outputs.proto\x12*dev.planton.aws.awsrestapigateway.v1alpha1\"\xc5\x13\n" +
-	"\x1dAwsRestApiGatewayStackOutputs\x12\x1e\n" +
+	"4catalog/aws/awsrestapigateway/v1alpha1/outputs.proto\x12*dev.planton.aws.awsrestapigateway.v1alpha1\"\x8c\x13\n" +
+	"\x18AwsRestApiGatewayOutputs\x12\x1e\n" +
 	"\vrest_api_id\x18\x01 \x01(\tR\trestApiId\x12 \n" +
 	"\frest_api_arn\x18\x02 \x01(\tR\n" +
 	"restApiArn\x12#\n" +
@@ -280,17 +280,17 @@ const file_catalog_aws_awsrestapigateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\rdeployment_id\x18\b \x01(\tR\fdeploymentId\x122\n" +
 	"\x15client_certificate_id\x18\t \x01(\tR\x13clientCertificateId\x124\n" +
 	"\x16client_certificate_pem\x18\n" +
-	" \x01(\tR\x14clientCertificatePem\x12}\n" +
-	"\fresource_ids\x18\v \x03(\v2Z.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ResourceIdsEntryR\vresourceIds\x12\x83\x01\n" +
-	"\x0eauthorizer_ids\x18\f \x03(\v2\\.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.AuthorizerIdsEntryR\rauthorizerIds\x12t\n" +
-	"\tmodel_ids\x18\r \x03(\v2W.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ModelIdsEntryR\bmodelIds\x12\x96\x01\n" +
-	"\x15request_validator_ids\x18\x0e \x03(\v2b.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.RequestValidatorIdsEntryR\x13requestValidatorIds\x12\x99\x01\n" +
-	"\x16documentation_part_ids\x18\x0f \x03(\v2c.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.DocumentationPartIdsEntryR\x14documentationPartIds\x12\x8d\x01\n" +
-	"\x12route_resource_ids\x18\x10 \x03(\v2_.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.RouteResourceIdsEntryR\x10routeResourceIds\x12\x80\x01\n" +
-	"\rroute_methods\x18\x11 \x03(\v2[.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.RouteMethodsEntryR\frouteMethods\x12\x96\x01\n" +
-	"\x15response_resource_ids\x18\x12 \x03(\v2b.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ResponseResourceIdsEntryR\x13responseResourceIds\x12\x89\x01\n" +
-	"\x10response_methods\x18\x13 \x03(\v2^.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ResponseMethodsEntryR\x0fresponseMethods\x12\x96\x01\n" +
-	"\x15response_status_codes\x18\x14 \x03(\v2b.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ResponseStatusCodesEntryR\x13responseStatusCodes\x1a>\n" +
+	" \x01(\tR\x14clientCertificatePem\x12x\n" +
+	"\fresource_ids\x18\v \x03(\v2U.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ResourceIdsEntryR\vresourceIds\x12~\n" +
+	"\x0eauthorizer_ids\x18\f \x03(\v2W.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.AuthorizerIdsEntryR\rauthorizerIds\x12o\n" +
+	"\tmodel_ids\x18\r \x03(\v2R.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ModelIdsEntryR\bmodelIds\x12\x91\x01\n" +
+	"\x15request_validator_ids\x18\x0e \x03(\v2].dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.RequestValidatorIdsEntryR\x13requestValidatorIds\x12\x94\x01\n" +
+	"\x16documentation_part_ids\x18\x0f \x03(\v2^.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.DocumentationPartIdsEntryR\x14documentationPartIds\x12\x88\x01\n" +
+	"\x12route_resource_ids\x18\x10 \x03(\v2Z.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.RouteResourceIdsEntryR\x10routeResourceIds\x12{\n" +
+	"\rroute_methods\x18\x11 \x03(\v2V.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.RouteMethodsEntryR\frouteMethods\x12\x91\x01\n" +
+	"\x15response_resource_ids\x18\x12 \x03(\v2].dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ResponseResourceIdsEntryR\x13responseResourceIds\x12\x84\x01\n" +
+	"\x10response_methods\x18\x13 \x03(\v2Y.dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ResponseMethodsEntryR\x0fresponseMethods\x12\x91\x01\n" +
+	"\x15response_status_codes\x18\x14 \x03(\v2].dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ResponseStatusCodesEntryR\x13responseStatusCodes\x1a>\n" +
 	"\x10ResourceIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a@\n" +
@@ -337,29 +337,29 @@ func file_catalog_aws_awsrestapigateway_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsrestapigateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_catalog_aws_awsrestapigateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRestApiGatewayStackOutputs)(nil), // 0: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs
-	nil,                                   // 1: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ResourceIdsEntry
-	nil,                                   // 2: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.AuthorizerIdsEntry
-	nil,                                   // 3: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ModelIdsEntry
-	nil,                                   // 4: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.RequestValidatorIdsEntry
-	nil,                                   // 5: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.DocumentationPartIdsEntry
-	nil,                                   // 6: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.RouteResourceIdsEntry
-	nil,                                   // 7: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.RouteMethodsEntry
-	nil,                                   // 8: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ResponseResourceIdsEntry
-	nil,                                   // 9: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ResponseMethodsEntry
-	nil,                                   // 10: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ResponseStatusCodesEntry
+	(*AwsRestApiGatewayOutputs)(nil), // 0: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs
+	nil,                              // 1: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ResourceIdsEntry
+	nil,                              // 2: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.AuthorizerIdsEntry
+	nil,                              // 3: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ModelIdsEntry
+	nil,                              // 4: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.RequestValidatorIdsEntry
+	nil,                              // 5: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.DocumentationPartIdsEntry
+	nil,                              // 6: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.RouteResourceIdsEntry
+	nil,                              // 7: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.RouteMethodsEntry
+	nil,                              // 8: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ResponseResourceIdsEntry
+	nil,                              // 9: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ResponseMethodsEntry
+	nil,                              // 10: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ResponseStatusCodesEntry
 }
 var file_catalog_aws_awsrestapigateway_v1alpha1_outputs_proto_depIdxs = []int32{
-	1,  // 0: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.resource_ids:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ResourceIdsEntry
-	2,  // 1: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.authorizer_ids:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.AuthorizerIdsEntry
-	3,  // 2: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.model_ids:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ModelIdsEntry
-	4,  // 3: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.request_validator_ids:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.RequestValidatorIdsEntry
-	5,  // 4: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.documentation_part_ids:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.DocumentationPartIdsEntry
-	6,  // 5: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.route_resource_ids:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.RouteResourceIdsEntry
-	7,  // 6: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.route_methods:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.RouteMethodsEntry
-	8,  // 7: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.response_resource_ids:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ResponseResourceIdsEntry
-	9,  // 8: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.response_methods:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ResponseMethodsEntry
-	10, // 9: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.response_status_codes:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayStackOutputs.ResponseStatusCodesEntry
+	1,  // 0: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.resource_ids:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ResourceIdsEntry
+	2,  // 1: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.authorizer_ids:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.AuthorizerIdsEntry
+	3,  // 2: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.model_ids:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ModelIdsEntry
+	4,  // 3: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.request_validator_ids:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.RequestValidatorIdsEntry
+	5,  // 4: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.documentation_part_ids:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.DocumentationPartIdsEntry
+	6,  // 5: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.route_resource_ids:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.RouteResourceIdsEntry
+	7,  // 6: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.route_methods:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.RouteMethodsEntry
+	8,  // 7: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.response_resource_ids:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ResponseResourceIdsEntry
+	9,  // 8: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.response_methods:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ResponseMethodsEntry
+	10, // 9: dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.response_status_codes:type_name -> dev.planton.aws.awsrestapigateway.v1alpha1.AwsRestApiGatewayOutputs.ResponseStatusCodesEntry
 	10, // [10:10] is the sub-list for method output_type
 	10, // [10:10] is the sub-list for method input_type
 	10, // [10:10] is the sub-list for extension type_name

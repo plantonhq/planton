@@ -1,4 +1,4 @@
-# Outputs mirror the GcpGkeWorkloadIdentityBindingStackOutputs proto message
+# Outputs mirror the GcpGkeWorkloadIdentityBindingOutputs proto message
 
 output "member" {
   description = "The IAM member string added to the policy, e.g. 'serviceAccount:my-project.svc.id.goog[cert-manager/cert-manager]'"

@@ -4,7 +4,7 @@ The smallest useful Temporal: all four server services, the Web UI,
 and one Temporal namespace (`default`) — against a composed
 KubernetesPostgres named `temporal-db` in the same Kubernetes
 namespace. Point a worker at the exported `frontend_endpoint` and run
-workflows; reach the UI over the port-forward command in the stack
+workflows; reach the UI over the port-forward command in the
 outputs.
 
 The database references do all the wiring: the host resolves to the

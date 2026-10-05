@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareCustomHostnameStackOutputs captures the outputs after onboarding a
+// CloudflareCustomHostnameOutputs captures the outputs after onboarding a
 // custom hostname. The ownership-verification fields are what the customer adds to
 // their DNS (or serves over HTTP) to prove control and activate the hostname.
-type CloudflareCustomHostnameStackOutputs struct {
+type CloudflareCustomHostnameOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The custom hostname identifier.
 	CustomHostnameId string `protobuf:"bytes,1,opt,name=custom_hostname_id,json=customHostnameId,proto3" json:"custom_hostname_id,omitempty"`
@@ -49,20 +49,20 @@ type CloudflareCustomHostnameStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareCustomHostnameStackOutputs) Reset() {
-	*x = CloudflareCustomHostnameStackOutputs{}
+func (x *CloudflareCustomHostnameOutputs) Reset() {
+	*x = CloudflareCustomHostnameOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareCustomHostnameStackOutputs) String() string {
+func (x *CloudflareCustomHostnameOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareCustomHostnameStackOutputs) ProtoMessage() {}
+func (*CloudflareCustomHostnameOutputs) ProtoMessage() {}
 
-func (x *CloudflareCustomHostnameStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareCustomHostnameOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,61 +74,61 @@ func (x *CloudflareCustomHostnameStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareCustomHostnameStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareCustomHostnameStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareCustomHostnameOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareCustomHostnameOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareCustomHostnameStackOutputs) GetCustomHostnameId() string {
+func (x *CloudflareCustomHostnameOutputs) GetCustomHostnameId() string {
 	if x != nil {
 		return x.CustomHostnameId
 	}
 	return ""
 }
 
-func (x *CloudflareCustomHostnameStackOutputs) GetOwnershipVerificationName() string {
+func (x *CloudflareCustomHostnameOutputs) GetOwnershipVerificationName() string {
 	if x != nil {
 		return x.OwnershipVerificationName
 	}
 	return ""
 }
 
-func (x *CloudflareCustomHostnameStackOutputs) GetOwnershipVerificationType() string {
+func (x *CloudflareCustomHostnameOutputs) GetOwnershipVerificationType() string {
 	if x != nil {
 		return x.OwnershipVerificationType
 	}
 	return ""
 }
 
-func (x *CloudflareCustomHostnameStackOutputs) GetOwnershipVerificationValue() string {
+func (x *CloudflareCustomHostnameOutputs) GetOwnershipVerificationValue() string {
 	if x != nil {
 		return x.OwnershipVerificationValue
 	}
 	return ""
 }
 
-func (x *CloudflareCustomHostnameStackOutputs) GetOwnershipVerificationHttpUrl() string {
+func (x *CloudflareCustomHostnameOutputs) GetOwnershipVerificationHttpUrl() string {
 	if x != nil {
 		return x.OwnershipVerificationHttpUrl
 	}
 	return ""
 }
 
-func (x *CloudflareCustomHostnameStackOutputs) GetOwnershipVerificationHttpBody() string {
+func (x *CloudflareCustomHostnameOutputs) GetOwnershipVerificationHttpBody() string {
 	if x != nil {
 		return x.OwnershipVerificationHttpBody
 	}
 	return ""
 }
 
-func (x *CloudflareCustomHostnameStackOutputs) GetCreatedAt() string {
+func (x *CloudflareCustomHostnameOutputs) GetCreatedAt() string {
 	if x != nil {
 		return x.CreatedAt
 	}
 	return ""
 }
 
-func (x *CloudflareCustomHostnameStackOutputs) GetZoneId() string {
+func (x *CloudflareCustomHostnameOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
@@ -139,8 +139,8 @@ var File_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_outputs_proto prot
 
 const file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/cloudflare/cloudflarecustomhostname/v1alpha1/outputs.proto\x128dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1\"\x87\x04\n" +
-	"$CloudflareCustomHostnameStackOutputs\x12,\n" +
+	"Bcatalog/cloudflare/cloudflarecustomhostname/v1alpha1/outputs.proto\x128dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1\"\x82\x04\n" +
+	"\x1fCloudflareCustomHostnameOutputs\x12,\n" +
 	"\x12custom_hostname_id\x18\x01 \x01(\tR\x10customHostnameId\x12>\n" +
 	"\x1bownership_verification_name\x18\x03 \x01(\tR\x19ownershipVerificationName\x12>\n" +
 	"\x1bownership_verification_type\x18\x04 \x01(\tR\x19ownershipVerificationType\x12@\n" +
@@ -167,7 +167,7 @@ func file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_outputs_proto_raw
 
 var file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareCustomHostnameStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameStackOutputs
+	(*CloudflareCustomHostnameOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1.CloudflareCustomHostnameOutputs
 }
 var file_catalog_cloudflare_cloudflarecustomhostname_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

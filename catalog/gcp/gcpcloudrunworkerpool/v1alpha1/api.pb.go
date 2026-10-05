@@ -31,7 +31,7 @@ type GcpCloudRunWorkerPool struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpCloudRunWorkerPoolSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpCloudRunWorkerPool) GetKind() string {
 	return ""
 }
 
-func (x *GcpCloudRunWorkerPool) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpCloudRunWorkerPool) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpCloudRunWorkerPool) GetStatus() *GcpCloudRunWorkerPoolStatus {
 // gcp-cloud-run-worker-pool status
 type GcpCloudRunWorkerPoolStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpCloudRunWorkerPoolStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpCloudRunWorkerPoolOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpCloudRunWorkerPoolStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpCloudRunWorkerPoolStatus) GetOutputs() *GcpCloudRunWorkerPoolStackOutputs {
+func (x *GcpCloudRunWorkerPoolStatus) GetOutputs() *GcpCloudRunWorkerPoolOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15GcpCloudRunWorkerPoolR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
 	"\x04spec\x18\x04 \x01(\v2I.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolStatusR\x06status\"\x8a\x01\n" +
-	"\x1bGcpCloudRunWorkerPoolStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolStackOutputsR\aoutputsB\x82\x03\n" +
+	"\x06status\x18\x05 \x01(\v2K.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolStatusR\x06status\"\x85\x01\n" +
+	"\x1bGcpCloudRunWorkerPoolStatus\x12f\n" +
+	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolOutputsR\aoutputsB\x82\x03\n" +
 	"2com.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1B\bApiProtoP\x01Zegithub.com/plantonhq/planton/catalog/gcp/gcpcloudrunworkerpool/v1alpha1;gcpcloudrunworkerpoolv1alpha1\xa2\x02\x04DPGG\xaa\x02.Dev.Planton.Gcp.Gcpcloudrunworkerpool.V1alpha1\xca\x02.Dev\\Planton\\Gcp\\Gcpcloudrunworkerpool\\V1alpha1\xe2\x02:Dev\\Planton\\Gcp\\Gcpcloudrunworkerpool\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Gcp::Gcpcloudrunworkerpool::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_api_proto_goTypes = []any{
-	(*GcpCloudRunWorkerPool)(nil),             // 0: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPool
-	(*GcpCloudRunWorkerPoolStatus)(nil),       // 1: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpCloudRunWorkerPoolSpec)(nil),         // 3: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolSpec
-	(*GcpCloudRunWorkerPoolStackOutputs)(nil), // 4: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolStackOutputs
+	(*GcpCloudRunWorkerPool)(nil),        // 0: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPool
+	(*GcpCloudRunWorkerPoolStatus)(nil),  // 1: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpCloudRunWorkerPoolSpec)(nil),    // 3: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolSpec
+	(*GcpCloudRunWorkerPoolOutputs)(nil), // 4: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolOutputs
 }
 var file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPool.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPool.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPool.spec:type_name -> dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolSpec
 	1, // 2: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPool.status:type_name -> dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolStatus
-	4, // 3: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolStatus.outputs:type_name -> dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolStackOutputs
+	4, // 3: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolStatus.outputs:type_name -> dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

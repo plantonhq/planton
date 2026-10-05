@@ -1,4 +1,4 @@
-# Stack outputs — identical names and derivations in the Pulumi module's
+# Outputs — identical names and derivations in the Pulumi module's
 # outputs.go / main.go exports. Every child name derives from the fullname
 # pinned to the resource name via fullnameOverride.
 

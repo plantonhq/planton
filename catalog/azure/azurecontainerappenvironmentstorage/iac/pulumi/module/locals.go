@@ -17,8 +17,8 @@ var accessModeStrings = map[azurecontainerappenvironmentstoragev1alpha1.AzureCon
 
 // The storage registration carries no tags (ARM does not support them on
 // managedEnvironments/storages), so locals stay minimal.
-func initializeLocals(ctx *pulumi.Context, stackInput *azurecontainerappenvironmentstoragev1alpha1.AzureContainerAppEnvironmentStorageStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurecontainerappenvironmentstoragev1alpha1.AzureContainerAppEnvironmentStorageIacInput) *Locals {
 	return &Locals{
-		AzureContainerAppEnvironmentStorage: stackInput.Target,
+		AzureContainerAppEnvironmentStorage: iacInput.Target,
 	}
 }

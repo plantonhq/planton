@@ -2,11 +2,11 @@
 
 ## Overview
 
-**KubernetesSecret** is an Planton component that implements a "Secret-as-a-Service" pattern for creating and managing Kubernetes Secrets as first-class, declaratively managed resources. It provides type-safe configuration for all common Kubernetes secret types -- Opaque, TLS, DockerConfigJson, BasicAuth, and SSHAuth -- with per-type validation and a clean, structured API.
+**KubernetesSecret** is a catalog kind that implements a "Secret-as-a-Service" pattern for creating and managing Kubernetes Secrets as first-class, declaratively managed resources. It provides type-safe configuration for all common Kubernetes secret types -- Opaque, TLS, DockerConfigJson, BasicAuth, and SSHAuth -- with per-type validation and a clean, structured API.
 
 ## Purpose
 
-Kubernetes Secrets are foundational to every cluster, yet creating and managing them declaratively with proper typing and validation requires boilerplate across different IaC tools. This component abstracts that complexity into a single, type-safe API that follows the 80/20 principle: supporting the five most common secret types that cover the vast majority of production use cases.
+Kubernetes Secrets are foundational to every cluster, yet creating and managing them declaratively with proper typing and validation requires boilerplate across different IaC tools. This kind abstracts that complexity into a single, type-safe API that follows the 80/20 principle: supporting the five most common secret types that cover the vast majority of production use cases.
 
 **Key value over raw manifests:**
 
@@ -16,12 +16,12 @@ Kubernetes Secrets are foundational to every cluster, yet creating and managing 
 - **Lifecycle management**: Integrated with Planton's deployment lifecycle for status tracking and outputs
 - **Immutable secrets**: First-class support for Kubernetes immutable secrets (1.21+)
 
-## Relationship to Other Components
+## Relationship to Other Kinds
 
 - **KubernetesExternalSecret** (with the External Secrets Operator installed via **KubernetesExternalSecretsOperator**): Syncs secrets _from external backends_ (AWS Secrets Manager, Vault, etc.) into Kubernetes. Use when secrets originate in an external provider.
-- **KubernetesSecret** (this component): Creates secrets _directly_ with literal values provided at deploy time. Use when secret data is available in your CI/CD pipeline, environment config, or IaC variables.
+- **KubernetesSecret** (this kind): Creates secrets _directly_ with literal values provided at deploy time. Use when secret data is available in your CI/CD pipeline, environment config, or IaC variables.
 
-These are complementary components, not overlapping.
+These are complementary kinds, not overlapping.
 
 ## Supported Secret Types
 
@@ -59,7 +59,7 @@ For SSH key-based authentication. Maps to Kubernetes type `kubernetes.io/ssh-aut
 - **`spec.annotations`**: Annotations for custom metadata
 - **`spec.immutable`**: When true, prevents updates to secret data after creation
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -69,7 +69,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Determine the Kubernetes secret type from the `oneof secret_data` variant
 2. Map the type-safe fields to the corresponding Kubernetes Secret `stringData` keys

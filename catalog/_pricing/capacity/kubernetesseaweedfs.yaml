@@ -8,9 +8,9 @@
 # optional dedicated S3 gateway -- each bound to its own replicas and
 # resources; master, volume, and filer instances additionally carry a
 # per-pod data PVC. The admin console binds as a fifth singleton class.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesseaweedfs
 spec:

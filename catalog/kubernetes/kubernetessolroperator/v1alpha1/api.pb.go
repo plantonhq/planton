@@ -31,7 +31,7 @@ type KubernetesSolrOperator struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesSolrOperatorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesSolrOperator) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesSolrOperator) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesSolrOperator) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesSolrOperator) GetStatus() *KubernetesSolrOperatorStatus {
 // kubernetes-solr-operator status.
 type KubernetesSolrOperatorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesSolrOperatorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesSolrOperatorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesSolrOperatorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetessolroperator_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesSolrOperatorStatus) GetOutputs() *KubernetesSolrOperatorStackOutputs {
+func (x *KubernetesSolrOperatorStatus) GetOutputs() *KubernetesSolrOperatorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetessolroperator_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16KubernetesSolrOperatorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
 	"\x04spec\x18\x04 \x01(\v2R.dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12l\n" +
-	"\x06status\x18\x05 \x01(\v2T.dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorStatusR\x06status\"\x94\x01\n" +
-	"\x1cKubernetesSolrOperatorStatus\x12t\n" +
-	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorStackOutputsR\aoutputsB\xb3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2T.dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorStatusR\x06status\"\x8f\x01\n" +
+	"\x1cKubernetesSolrOperatorStatus\x12o\n" +
+	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorOutputsR\aoutputsB\xb3\x03\n" +
 	":com.dev.planton.kubernetes.kubernetessolroperator.v1alpha1B\bApiProtoP\x01Zngithub.com/plantonhq/planton/catalog/kubernetes/kubernetessolroperator/v1alpha1;kubernetessolroperatorv1alpha1\xa2\x02\x04DPKK\xaa\x026Dev.Planton.Kubernetes.Kubernetessolroperator.V1alpha1\xca\x026Dev\\Planton\\Kubernetes\\Kubernetessolroperator\\V1alpha1\xe2\x02BDev\\Planton\\Kubernetes\\Kubernetessolroperator\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Kubernetes::Kubernetessolroperator::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetessolroperator_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_kubernetes_kubernetessolroperator_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetessolroperator_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesSolrOperator)(nil),             // 0: dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperator
-	(*KubernetesSolrOperatorStatus)(nil),       // 1: dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesSolrOperatorSpec)(nil),         // 3: dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorSpec
-	(*KubernetesSolrOperatorStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorStackOutputs
+	(*KubernetesSolrOperator)(nil),        // 0: dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperator
+	(*KubernetesSolrOperatorStatus)(nil),  // 1: dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesSolrOperatorSpec)(nil),    // 3: dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorSpec
+	(*KubernetesSolrOperatorOutputs)(nil), // 4: dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetessolroperator_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperator.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperator.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperator.spec:type_name -> dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorSpec
 	1, // 2: dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperator.status:type_name -> dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorStatus
-	4, // 3: dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetessolroperator.v1alpha1.KubernetesSolrOperatorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

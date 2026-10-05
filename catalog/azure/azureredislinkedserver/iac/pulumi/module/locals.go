@@ -17,12 +17,12 @@ var serverRoleStrings = map[azureredislinkedserverv1alpha1.AzureRedisLinkedServe
 	azureredislinkedserverv1alpha1.AzureRedisLinkedServerRole_SECONDARY: "Secondary",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureredislinkedserverv1alpha1.AzureRedisLinkedServerStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureredislinkedserverv1alpha1.AzureRedisLinkedServerIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureRedisLinkedServer = stackInput.Target
-	locals.TargetRedisCacheId = stackInput.Target.Spec.TargetRedisCacheId.GetValue()
-	locals.LinkedRedisCacheId = stackInput.Target.Spec.LinkedRedisCacheId.GetValue()
+	locals.AzureRedisLinkedServer = iacInput.Target
+	locals.TargetRedisCacheId = iacInput.Target.Spec.TargetRedisCacheId.GetValue()
+	locals.LinkedRedisCacheId = iacInput.Target.Spec.LinkedRedisCacheId.GetValue()
 
 	// No Azure tags: ARM does not support tags on linked servers, so the
 	// platform's identity tags live on the caches themselves.

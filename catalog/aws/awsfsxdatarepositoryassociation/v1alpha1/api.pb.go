@@ -35,7 +35,7 @@ type AwsFsxDataRepositoryAssociation struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, environment,
 	// labels) and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration of the association.
 	Spec *AwsFsxDataRepositoryAssociationSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds post-deployment information.
@@ -88,7 +88,7 @@ func (x *AwsFsxDataRepositoryAssociation) GetKind() string {
 	return ""
 }
 
-func (x *AwsFsxDataRepositoryAssociation) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsFsxDataRepositoryAssociation) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -115,7 +115,7 @@ type AwsFsxDataRepositoryAssociationStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the observable values returned by Pulumi/Terraform
 	// after provisioning.
-	Outputs       *AwsFsxDataRepositoryAssociationStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsFsxDataRepositoryAssociationOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AwsFsxDataRepositoryAssociationStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsFsxDataRepositoryAssociationStatus) GetOutputs() *AwsFsxDataRepositoryAssociationStackOutputs {
+func (x *AwsFsxDataRepositoryAssociationStatus) GetOutputs() *AwsFsxDataRepositoryAssociationOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_api_proto_rawDes
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
 	"\x1fAwsFsxDataRepositoryAssociationR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12y\n" +
 	"\x04spec\x18\x04 \x01(\v2].dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12w\n" +
-	"\x06status\x18\x05 \x01(\v2_.dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationStatusR\x06status\"\xa8\x01\n" +
-	"%AwsFsxDataRepositoryAssociationStatus\x12\x7f\n" +
-	"\aoutputs\x18\x01 \x01(\v2e.dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationStackOutputsR\aoutputsB\xc8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2_.dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationStatusR\x06status\"\xa3\x01\n" +
+	"%AwsFsxDataRepositoryAssociationStatus\x12z\n" +
+	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationOutputsR\aoutputsB\xc8\x03\n" +
 	"<com.dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1B\bApiProtoP\x01Zygithub.com/plantonhq/planton/catalog/aws/awsfsxdatarepositoryassociation/v1alpha1;awsfsxdatarepositoryassociationv1alpha1\xa2\x02\x04DPAA\xaa\x028Dev.Planton.Aws.Awsfsxdatarepositoryassociation.V1alpha1\xca\x028Dev\\Planton\\Aws\\Awsfsxdatarepositoryassociation\\V1alpha1\xe2\x02DDev\\Planton\\Aws\\Awsfsxdatarepositoryassociation\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Aws::Awsfsxdatarepositoryassociation::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_api_proto_rawDesc
 
 var file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_api_proto_goTypes = []any{
-	(*AwsFsxDataRepositoryAssociation)(nil),             // 0: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociation
-	(*AwsFsxDataRepositoryAssociationStatus)(nil),       // 1: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationStatus
-	(*shared.CloudResourceMetadata)(nil),                // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsFsxDataRepositoryAssociationSpec)(nil),         // 3: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationSpec
-	(*AwsFsxDataRepositoryAssociationStackOutputs)(nil), // 4: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationStackOutputs
+	(*AwsFsxDataRepositoryAssociation)(nil),        // 0: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociation
+	(*AwsFsxDataRepositoryAssociationStatus)(nil),  // 1: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationStatus
+	(*shared.CatalogObjectMetadata)(nil),           // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsFsxDataRepositoryAssociationSpec)(nil),    // 3: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationSpec
+	(*AwsFsxDataRepositoryAssociationOutputs)(nil), // 4: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationOutputs
 }
 var file_catalog_aws_awsfsxdatarepositoryassociation_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociation.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociation.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociation.spec:type_name -> dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationSpec
 	1, // 2: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociation.status:type_name -> dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationStatus
-	4, // 3: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationStatus.outputs:type_name -> dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationStackOutputs
+	4, // 3: dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationStatus.outputs:type_name -> dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

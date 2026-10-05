@@ -9,18 +9,18 @@ network).
 
 ```
 iac/pulumi/
-├── main.go            # entrypoint (loads stack-input, calls module.Resources)
+├── main.go            # entrypoint (loads iac-input, calls module.Resources)
 ├── Pulumi.yaml
 └── module/
     ├── main.go            # Resources(): provider setup + route()
-    ├── locals.go          # stack-input references
+    ├── locals.go          # iac-input references
     ├── route.go           # the cloudflare.ZeroTrustTunnelCloudflaredRoute
     └── outputs.go         # output constant names
 ```
 
 ## Inputs
 
-A `CloudflareZeroTrustTunnelRouteStackInput` (target + provider config).
+A `CloudflareZeroTrustTunnelRouteIacInput` (target + provider config).
 Required: `account_id`, `network` (the CIDR — unique per virtual network), and
 `tunnel_id`. Optional: `virtual_network_id` and `comment`.
 

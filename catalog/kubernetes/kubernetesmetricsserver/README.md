@@ -10,7 +10,7 @@ metrics-server built-in as a managed component — do not install this
 component there.** EKS, kind, k3s, kubeadm, and self-managed clusters
 need it.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You need custom or external metrics** (queue depth, requests per second)
   — that is Prometheus-adapter / KEDA territory; metrics-server serves only
@@ -88,7 +88,7 @@ both engines) for anything beyond it.
 - **`spec.helm_values`**: escape hatch for chart values beyond the typed
   fields — never the primary interface
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

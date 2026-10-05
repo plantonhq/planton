@@ -48,7 +48,7 @@ const (
 // exception: it is a pointer AWS moves in place, not part of the revision.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsAppRunnerAutoScalingConfigurationSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the auto scaling configuration will be created.

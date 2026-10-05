@@ -1,9 +1,9 @@
-# Where each placeholder in this component's import-ID formats comes
+# Where each placeholder in this kind's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml). The
 # canary imports by name, groups by name (the for_each key), and each
 # association by "{canary_arn},{group_name}".
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awscloudwatchsynthetics
 spec:
@@ -17,7 +17,7 @@ spec:
         (Name).
     - name: canary_arn
       derivations:
-        - from_stack_output: canary_arn
+        - from_output: canary_arn
       where_to_find: >-
         The canary's ARN -- `aws synthetics describe-canaries` (Arn).
     - name: group_name

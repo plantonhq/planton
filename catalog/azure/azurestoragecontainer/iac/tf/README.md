@@ -1,7 +1,7 @@
 # AzureStorageContainer - Terraform Module
 
-Terraform implementation for the AzureStorageContainer deployment
-component.
+Terraform implementation for the AzureStorageContainer
+kind.
 
 ## Resources Created
 

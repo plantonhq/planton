@@ -27,7 +27,7 @@ The pool inherits its project and location from the parent cluster (both resolve
 - **Node tuning**: kubelet (CPU/memory/topology managers, CFS quota, PID limits, log rotation, image GC by threshold AND age, parallel image pulls, soft-eviction thresholds with grace periods and minimum reclaim (reclaim values are percentage-only — GKE rejects absolute quantities), crash-loop backoff caps, single-process OOM kill, unsafe sysctl allowlists, the insecure read-only port), Linux (sysctls, cgroup mode, hugepages, transparent hugepage modes, signed-kernel-module enforcement, PTP/KVM time sync, swap with sizing profiles and encryption), logging variant, image streaming (GCFS)
 - **Capacity**: Spot and legacy preemptible VMs, Compute Engine reservation affinity (incl. reserve-or-fail), secondary boot disks for image preloading (each disk image a `GcpComputeImage` reference to its `image_id`, or the image's path)
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|
@@ -50,7 +50,7 @@ matched, mapped, or excluded with the reason recorded in
 |---|---|
 | `maintenance_policy.exclusion_until_end_of_support.start_time` / `end_time` | Computed-only in the provider: GKE derives the exclusion window from the pool's version once `excludeUpgradesUntilEndOfSupport` is set; there is no input to author. |
 
-## Related Components
+## Related Kinds
 
 - **GcpGkeCluster** — the control plane this pool attaches to (references its `name` and `location` outputs)
 - **GcpServiceAccount** — the node identity (`service_account` reference)

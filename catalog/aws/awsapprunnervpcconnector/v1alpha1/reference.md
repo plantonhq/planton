@@ -30,7 +30,7 @@ Design notes:
   security groups must admit ingress from these groups.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

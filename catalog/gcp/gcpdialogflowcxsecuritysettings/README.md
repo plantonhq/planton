@@ -4,7 +4,7 @@ Dialogflow CX security settings -- the redaction, retention, audio-export, and I
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `dialogflow.googleapis.com` on the project (never disabled on destroy)
 - **Security settings** -- a `dialogflow_cx_security_settings` with its redaction, retention, audio-export, and Insights-export policy
@@ -71,7 +71,7 @@ planton apply -f dialogflow-cx-security-settings.yaml
 - `redactionStrategy`, `redactionScope`, `purgeDataTypes`, and `audioFormat` take only the values Google lists.
 - The two templates must be full Sensitive Data Protection template names of the matching kind.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -99,7 +99,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpDialogflowCxAgent** -- the agents that apply these settings
 - **GcpGcsBucket** -- the bucket exported audio lands in

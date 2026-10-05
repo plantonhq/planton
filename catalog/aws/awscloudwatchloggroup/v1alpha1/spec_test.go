@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	fkv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -28,7 +28,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "my-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{Region: "us-west-2"},
@@ -41,7 +41,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "short-lived-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -57,7 +57,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "standard-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -73,7 +73,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "annual-retention-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -89,7 +89,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "decade-retention-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -105,7 +105,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "encrypted-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -126,7 +126,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "encrypted-logs-ref",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -135,7 +135,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 				KmsKeyId: &fkv1.StringValueOrRef{
 					LiteralOrRef: &fkv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &fkv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AwsKmsKey,
+							Kind:      catalogkind.CatalogKind_AwsKmsKey,
 							Name:      "log-encryption-key",
 							FieldPath: "status.outputs.key_arn",
 						},
@@ -151,7 +151,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "standard-class-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -168,7 +168,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "ia-class-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -185,7 +185,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "delivery-class-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -201,7 +201,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "protected-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -218,7 +218,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "unprotected-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -234,7 +234,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "prod-app-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -243,7 +243,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 				KmsKeyId: &fkv1.StringValueOrRef{
 					LiteralOrRef: &fkv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &fkv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AwsKmsKey,
+							Kind:      catalogkind.CatalogKind_AwsKmsKey,
 							Name:      "log-key",
 							FieldPath: "status.outputs.key_arn",
 						},
@@ -265,7 +265,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-retention-2",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -280,7 +280,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-retention-10",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -295,7 +295,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-retention-45",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -310,7 +310,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-retention-100",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -325,7 +325,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-retention-negative",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -344,7 +344,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-class-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -359,7 +359,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-class-lowercase",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -378,7 +378,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-delivery-retention",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -398,7 +398,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "wrong.planton.dev/v1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{Region: "us-west-2"},
@@ -411,7 +411,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "WrongKind",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{Region: "us-west-2"},
@@ -434,7 +434,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-logs",
 			},
 		}
@@ -450,7 +450,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "app-logs-with-filter",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -477,7 +477,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "latency-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -507,7 +507,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "filter-no-transformation",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -539,7 +539,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "dup-filter-names",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -555,7 +555,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "default-with-dimensions",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -585,7 +585,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "too-many-dimensions",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -614,7 +614,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-unit",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -645,7 +645,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "streamed-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -656,7 +656,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 						DestinationArn: &fkv1.StringValueOrRef{
 							LiteralOrRef: &fkv1.StringValueOrRef_ValueFrom{
 								ValueFrom: &fkv1.ValueFromRef{
-									Kind:      cloudresourcekind.CloudResourceKind_AwsKinesisStream,
+									Kind:      catalogkind.CatalogKind_AwsKinesisStream,
 									Name:      "analytics-stream",
 									FieldPath: "status.outputs.stream_arn",
 								},
@@ -665,7 +665,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 						RoleArn: &fkv1.StringValueOrRef{
 							LiteralOrRef: &fkv1.StringValueOrRef_ValueFrom{
 								ValueFrom: &fkv1.ValueFromRef{
-									Kind: cloudresourcekind.CloudResourceKind_AwsIamRole,
+									Kind: catalogkind.CatalogKind_AwsIamRole,
 									Name: "cwl-to-kinesis",
 								},
 							},
@@ -695,7 +695,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "too-many-subscriptions",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -713,7 +713,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "subscription-no-destination",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -731,7 +731,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-distribution",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -757,7 +757,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-system-field",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -793,7 +793,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "dup-subscription-names",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -813,7 +813,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "ia-with-filter",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -867,7 +867,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "governed-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -888,7 +888,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-filter-name",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -914,7 +914,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-metric-name",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -940,7 +940,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-subscription-name",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -969,7 +969,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "source-log-enriched",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -999,7 +999,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "streamed-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1015,7 +1015,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "dup-streams",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1031,7 +1031,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-stream-name",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1051,7 +1051,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "transformed-logs",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1076,7 +1076,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "mutate-first",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1100,7 +1100,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "empty-entry",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1121,7 +1121,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "double-entry",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1151,7 +1151,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "double-grok",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1169,7 +1169,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "vended-not-first",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1190,7 +1190,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "vpc-flow-parsed",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1215,7 +1215,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-vended-source",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1235,7 +1235,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-ocsf-source",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1258,7 +1258,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "ocsf-converted",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1281,7 +1281,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "flatten-without-element",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1306,7 +1306,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "ia-with-transformer",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1335,7 +1335,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "oversized-pipeline",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1359,7 +1359,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "too-many-parse-json",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1381,7 +1381,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "too-many-add-keys",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1402,7 +1402,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-type-conversion",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{
@@ -1427,7 +1427,7 @@ var _ = ginkgo.Describe("AwsCloudwatchLogGroupSpec validations", func() {
 		input := &AwsCloudwatchLogGroup{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudwatchLogGroup",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "full-pipeline",
 			},
 			Spec: &AwsCloudwatchLogGroupSpec{

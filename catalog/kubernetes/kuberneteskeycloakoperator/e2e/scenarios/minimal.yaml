@@ -1,4 +1,4 @@
-# Component defaults end to end: the namespaced watch (the operator and
+# Kind defaults end to end: the namespaced watch (the operator and
 # its future Keycloak declarations share this namespace — several teams
 # can run isolated stacks side by side), upstream's own image and
 # resources, the module-stamped namespace on every namespaced document

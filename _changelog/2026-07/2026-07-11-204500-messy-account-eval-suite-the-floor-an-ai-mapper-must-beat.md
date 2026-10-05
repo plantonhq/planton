@@ -51,10 +51,10 @@ blind is part of the bar.
   own modules tag everything they deploy (`planton.ai/resource-kind`,
   `planton.ai/environment`, ...) — on a seeded exam account those tags ARE
   the answer key. Both eval lanes now strip exactly the platform's seeding
-  fingerprints between scan and proposer (`planton.ai/*`, `e2e-component`,
+  fingerprints between scan and proposer (`planton.ai/*`, `e2e-catalog-kind`,
   and `managed-by` only when it carries the e2e marker value); Name tags
   and realistic user tags stay. The redaction is a property of the
-  pipeline, never a general tag scrubber, and the tags remain on the cloud
+  pipeline, never a general tag scrubber, and the tags remain on the provider
   resources for fixture sweeps.
 - **Refs-axis completeness**: an unproposed instance's `value_from` edges
   now stay in the denominator as missing edges (mirroring the spec axis) —
@@ -63,13 +63,13 @@ blind is part of the bar.
 
 ## Suite-composition rule amended
 
-A suite member is a manifest for a **live-proven component** — either an
+A suite member is a manifest for a **live-proven kind** — either an
 existing E2E scenario or a suite-owned fixture (`suites/<name>/members/`).
-Either way the deployment code is the same module the component's own E2E
+Either way the deployment code is the same module the kind's own E2E
 lane proves; the suite's live lane proves the composition. Suites never
 invent parallel deployment paths. (The messy account could not be
 assembled from the tidy existing scenarios without polluting every
-component lane with exam-specific fixtures.)
+kind lane with exam-specific fixtures.)
 
 ## Exam-fairness rule for members
 

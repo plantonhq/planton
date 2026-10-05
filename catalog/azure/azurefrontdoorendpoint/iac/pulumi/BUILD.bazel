@@ -8,7 +8,7 @@ go_library(
     deps = [
         "//catalog/azure/azurefrontdoorendpoint/iac/pulumi/module",
         "//catalog/azure/azurefrontdoorendpoint/v1alpha1",
-        "//pkg/iac/pulumi/pulumimodule/stackinput",
+        "//pkg/iac/pulumi/pulumimodule/iacinput",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
     ],

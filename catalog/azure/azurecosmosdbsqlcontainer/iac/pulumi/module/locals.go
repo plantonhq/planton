@@ -40,11 +40,11 @@ var conflictResolutionModeStrings = map[azurecosmosdbsqlcontainerv1alpha1.AzureC
 	azurecosmosdbsqlcontainerv1alpha1.AzureCosmosdbSqlContainerConflictResolutionMode_CUSTOM:           "Custom",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurecosmosdbsqlcontainerv1alpha1.AzureCosmosdbSqlContainerStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurecosmosdbsqlcontainerv1alpha1.AzureCosmosdbSqlContainerIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureCosmosdbSqlContainer = stackInput.Target
-	locals.SqlDatabaseId = stackInput.Target.Spec.SqlDatabaseId.GetValue()
+	locals.AzureCosmosdbSqlContainer = iacInput.Target
+	locals.SqlDatabaseId = iacInput.Target.Spec.SqlDatabaseId.GetValue()
 
 	// No Azure tags: ARM does not support tags on Cosmos child
 	// resources, so the platform's identity tags live on the account.

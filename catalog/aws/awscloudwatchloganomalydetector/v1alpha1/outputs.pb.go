@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudwatchLogAnomalyDetectorStackOutputs captures the observable
+// AwsCloudwatchLogAnomalyDetectorOutputs captures the observable
 // state of the anomaly detector after apply.
-type AwsCloudwatchLogAnomalyDetectorStackOutputs struct {
+type AwsCloudwatchLogAnomalyDetectorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The detector's ARN (its identity and the provider's import ID).
 	AnomalyDetectorArn string `protobuf:"bytes,1,opt,name=anomaly_detector_arn,json=anomalyDetectorArn,proto3" json:"anomaly_detector_arn,omitempty"`
@@ -31,20 +31,20 @@ type AwsCloudwatchLogAnomalyDetectorStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AwsCloudwatchLogAnomalyDetectorStackOutputs) Reset() {
-	*x = AwsCloudwatchLogAnomalyDetectorStackOutputs{}
+func (x *AwsCloudwatchLogAnomalyDetectorOutputs) Reset() {
+	*x = AwsCloudwatchLogAnomalyDetectorOutputs{}
 	mi := &file_catalog_aws_awscloudwatchloganomalydetector_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudwatchLogAnomalyDetectorStackOutputs) String() string {
+func (x *AwsCloudwatchLogAnomalyDetectorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudwatchLogAnomalyDetectorStackOutputs) ProtoMessage() {}
+func (*AwsCloudwatchLogAnomalyDetectorOutputs) ProtoMessage() {}
 
-func (x *AwsCloudwatchLogAnomalyDetectorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudwatchLogAnomalyDetectorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudwatchloganomalydetector_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -56,12 +56,12 @@ func (x *AwsCloudwatchLogAnomalyDetectorStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudwatchLogAnomalyDetectorStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCloudwatchLogAnomalyDetectorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudwatchLogAnomalyDetectorOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCloudwatchLogAnomalyDetectorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudwatchloganomalydetector_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudwatchLogAnomalyDetectorStackOutputs) GetAnomalyDetectorArn() string {
+func (x *AwsCloudwatchLogAnomalyDetectorOutputs) GetAnomalyDetectorArn() string {
 	if x != nil {
 		return x.AnomalyDetectorArn
 	}
@@ -72,8 +72,8 @@ var File_catalog_aws_awscloudwatchloganomalydetector_v1alpha1_outputs_proto prot
 
 const file_catalog_aws_awscloudwatchloganomalydetector_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/aws/awscloudwatchloganomalydetector/v1alpha1/outputs.proto\x128dev.planton.aws.awscloudwatchloganomalydetector.v1alpha1\"_\n" +
-	"+AwsCloudwatchLogAnomalyDetectorStackOutputs\x120\n" +
+	"Bcatalog/aws/awscloudwatchloganomalydetector/v1alpha1/outputs.proto\x128dev.planton.aws.awscloudwatchloganomalydetector.v1alpha1\"Z\n" +
+	"&AwsCloudwatchLogAnomalyDetectorOutputs\x120\n" +
 	"\x14anomaly_detector_arn\x18\x01 \x01(\tR\x12anomalyDetectorArnB\xcc\x03\n" +
 	"<com.dev.planton.aws.awscloudwatchloganomalydetector.v1alpha1B\fOutputsProtoP\x01Zygithub.com/plantonhq/planton/catalog/aws/awscloudwatchloganomalydetector/v1alpha1;awscloudwatchloganomalydetectorv1alpha1\xa2\x02\x04DPAA\xaa\x028Dev.Planton.Aws.Awscloudwatchloganomalydetector.V1alpha1\xca\x028Dev\\Planton\\Aws\\Awscloudwatchloganomalydetector\\V1alpha1\xe2\x02DDev\\Planton\\Aws\\Awscloudwatchloganomalydetector\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Aws::Awscloudwatchloganomalydetector::V1alpha1b\x06proto3"
 
@@ -91,7 +91,7 @@ func file_catalog_aws_awscloudwatchloganomalydetector_v1alpha1_outputs_proto_raw
 
 var file_catalog_aws_awscloudwatchloganomalydetector_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudwatchloganomalydetector_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCloudwatchLogAnomalyDetectorStackOutputs)(nil), // 0: dev.planton.aws.awscloudwatchloganomalydetector.v1alpha1.AwsCloudwatchLogAnomalyDetectorStackOutputs
+	(*AwsCloudwatchLogAnomalyDetectorOutputs)(nil), // 0: dev.planton.aws.awscloudwatchloganomalydetector.v1alpha1.AwsCloudwatchLogAnomalyDetectorOutputs
 }
 var file_catalog_aws_awscloudwatchloganomalydetector_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

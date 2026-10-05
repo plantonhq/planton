@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 //
 // IAM groups (and their membership/policy satellites) are untaggable at
 // AWS, so this module carries no tag map - the one deliberate absence
@@ -16,7 +16,7 @@ type Locals struct {
 	Spec   *awsiamgroupv1alpha1.AwsIamGroupSpec
 }
 
-func initializeLocals(_ *pulumi.Context, in *awsiamgroupv1alpha1.AwsIamGroupStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awsiamgroupv1alpha1.AwsIamGroupIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec

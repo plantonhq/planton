@@ -4,7 +4,7 @@ Deploys an Azure Public IP Prefix — a reserved, CONTIGUOUS range of public IP 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Public IP Prefix** -- the reserved range, sized by your CIDR length (Azure's default is /28 — 16 addresses), with the SKU, tier, IP version, and zone anchoring you chose
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically and merged with the user tags
@@ -15,12 +15,12 @@ The actual CIDR is assigned by Azure at creation and surfaces as the `ip_prefix`
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the prefix will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the prefix will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **A size plan**: running out later means a SECOND prefix (and a second allowlist entry) — size for the growth you expect. IPv4 spans /21 (2,048 addresses) to /31 (2).
 
 ## Deploy
@@ -58,7 +58,7 @@ spec:
 planton apply -f prefix.yaml
 ```
 
-This reserves 16 contiguous zone-redundant addresses; the assigned CIDR lands in `status.outputs.ip_prefix` — hand that one value to every partner allowlist. A Stack Job tracks the provisioning in real time.
+This reserves 16 contiguous zone-redundant addresses; the assigned CIDR lands in `status.outputs.ip_prefix` — hand that one value to every partner allowlist. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,15 +89,15 @@ These are the most important decisions when configuring a Public IP Prefix. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -118,7 +118,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the prefix is created
-- [**Azure Public IP**](/cloud-catalog/azure-public-ip) -- allocates individual addresses from the range by referencing its `public_ip_prefix_id`
-- [**Azure NAT Gateway**](/cloud-catalog/azure-nat-gateway) -- associates the whole prefix for outbound SNAT, the flagship consumption
-- [**Azure Load Balancer**](/cloud-catalog/azure-load-balancer) -- fronts traffic with public IPs drawn from the allowlisted range
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the prefix is created
+- [**Azure Public IP**](/infra-catalog/azure-public-ip) -- allocates individual addresses from the range by referencing its `public_ip_prefix_id`
+- [**Azure NAT Gateway**](/infra-catalog/azure-nat-gateway) -- associates the whole prefix for outbound SNAT, the flagship consumption
+- [**Azure Load Balancer**](/infra-catalog/azure-load-balancer) -- fronts traffic with public IPs drawn from the allowlisted range

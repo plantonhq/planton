@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpcertmanagercert.v1alpha1;
 
 // Outputs produced after provisioning a Certificate Manager certificate.
-message GcpCertManagerCertStackOutputs {
+message GcpCertManagerCertOutputs {
   // Fully-qualified resource ID of the certificate
   // (projects/{project}/locations/{location}/certificates/{name}).
   string certificate_id = 1;

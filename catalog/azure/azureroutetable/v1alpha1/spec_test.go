@@ -37,7 +37,7 @@ func validResource() *AzureRouteTable {
 	return &AzureRouteTable{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureRouteTable",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-route-table",
 		},
 		Spec: &AzureRouteTableSpec{

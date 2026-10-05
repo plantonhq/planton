@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awseventbridgescheduler.v1alpha1;
 
-// AwsEventBridgeSchedulerStackOutputs captures the observable state of
+// AwsEventBridgeSchedulerOutputs captures the observable state of
 // the schedule (and owned group) after apply.
-message AwsEventBridgeSchedulerStackOutputs {
+message AwsEventBridgeSchedulerOutputs {
   // The schedule's ARN.
   string schedule_arn = 1;
 

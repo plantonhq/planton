@@ -6,7 +6,7 @@ Deploys a Google Cloud Composer environment (`google_composer_environment`) — 
 
 Cloud Composer lets teams run production Airflow without operating Kubernetes, databases, or storage themselves. You declare the environment — sizing, networking, software, security — and upload DAGs to a bucket; Composer handles everything underneath.
 
-This component targets **Composer 2.x and 3**. Composer 1.x is a deprecated generation and its fields are excluded. Both networking models are covered: VPC peering (Composer 2.x) and Private Service Connect, including Composer 3's network-attachment entry point.
+This kind targets **Composer 2.x and 3**. Composer 1.x is a deprecated generation and its fields are excluded. Both networking models are covered: VPC peering (Composer 2.x) and Private Service Connect, including Composer 3's network-attachment entry point.
 
 **Timing note**: environment creation takes 25-45 minutes — Composer assembles a GKE cluster, Cloud SQL database, and web server behind the scenes.
 
@@ -46,7 +46,7 @@ This creates a small public-endpoint environment in the provider's default proje
 
 **Immutable fields** (require environment replacement if changed): `region`, `environment_name`, all node networking (`network`, `subnetwork`, network attachment, IP allocation), `private_environment_config`, `kms_key_name`, and `storage_bucket`. Workload sizing, environment size, resilience mode, software configuration, maintenance window, access control, and labels update in place.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -69,7 +69,7 @@ This creates a small public-endpoint environment in the provider's default proje
 
 - **Composer 1.x fields** (`node_count`; node_config `zone`, `machine_type`, `disk_size_gb`, `oauth_scopes`; `ip_allocation_policy.use_ip_aliases`; software_config `python_version`, `scheduler_count`; `database_config`; `web_server_config`; private_environment_config `web_server_ipv4_cidr_block`) — Composer 1 is a deprecated generation.
 
-## Related Components
+## Related Kinds
 
 - **GcpVpcNetwork** / **GcpSubnetwork** — the network and subnetwork for VPC peering deployments
 - **GcpServiceAccount** — the node identity (must hold `roles/composer.worker`)

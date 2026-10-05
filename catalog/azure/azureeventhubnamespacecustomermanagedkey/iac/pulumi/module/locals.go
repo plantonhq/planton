@@ -10,15 +10,15 @@ type Locals struct {
 	EventhubNamespaceId                      string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureeventhubnamespacecustomermanagedkeyv1alpha1.AzureEventHubNamespaceCustomerManagedKeyStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureeventhubnamespacecustomermanagedkeyv1alpha1.AzureEventHubNamespaceCustomerManagedKeyIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureEventHubNamespaceCustomerManagedKey = stackInput.Target
+	locals.AzureEventHubNamespaceCustomerManagedKey = iacInput.Target
 
 	// The eventhub_namespace_id field is a StringValueOrRef. The platform
 	// middleware resolves valueFrom references before IaC modules run, so
 	// .GetValue() always returns the resolved literal ARM id.
-	locals.EventhubNamespaceId = stackInput.Target.Spec.EventhubNamespaceId.GetValue()
+	locals.EventhubNamespaceId = iacInput.Target.Spec.EventhubNamespaceId.GetValue()
 
 	// The CMK configuration carries no Azure tags: it is a property of the
 	// namespace, not an ARM object of its own, so the platform's identity

@@ -1,10 +1,10 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: digitaloceanmonitoralert
 spec:
   billing_model: free
-  notes: Alert policies ride DigitalOcean's built-in monitoring, which is included with the resources being watched -- policies, metrics, email, and Slack delivery all carry no charge. The watched droplets, load balancers, and database clusters are billed by their own kinds.
+  notes: Alert policies ride DigitalOcean's built-in monitoring, which is included with the resources being watched -- policies, metrics, email, and Slack delivery all carry no charge. The watched droplets, load balancers, and database clusters are billed by their own components.

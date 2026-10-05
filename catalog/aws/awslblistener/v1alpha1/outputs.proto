@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awslblistener.v1alpha1;
 
-// AwsLbListenerStackOutputs captures the observable outputs of a provisioned
+// AwsLbListenerOutputs captures the observable outputs of a provisioned
 // listener, for listener rules (and any other per-listener attachment) to
 // reference.
-message AwsLbListenerStackOutputs {
+message AwsLbListenerOutputs {
   // The ARN of the listener (e.g. "arn:aws:elasticloadbalancing:us-west-2:
   // 123456789012:listener/app/api/50dc6c495c0c9188/f2f7dc8efc522ab2"). The
   // primary handle other resources reference via

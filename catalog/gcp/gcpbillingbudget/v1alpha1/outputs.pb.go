@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpBillingBudgetStackOutputs captures the budget after provisioning.
-type GcpBillingBudgetStackOutputs struct {
+// GcpBillingBudgetOutputs captures the budget after provisioning.
+type GcpBillingBudgetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The budget's resource name, `billingAccounts/{account}/budgets/{id}` --
 	// the handle the Cloud Billing API and console address it by.
@@ -35,20 +35,20 @@ type GcpBillingBudgetStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpBillingBudgetStackOutputs) Reset() {
-	*x = GcpBillingBudgetStackOutputs{}
+func (x *GcpBillingBudgetOutputs) Reset() {
+	*x = GcpBillingBudgetOutputs{}
 	mi := &file_catalog_gcp_gcpbillingbudget_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpBillingBudgetStackOutputs) String() string {
+func (x *GcpBillingBudgetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpBillingBudgetStackOutputs) ProtoMessage() {}
+func (*GcpBillingBudgetOutputs) ProtoMessage() {}
 
-func (x *GcpBillingBudgetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpBillingBudgetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpbillingbudget_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,26 +60,26 @@ func (x *GcpBillingBudgetStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpBillingBudgetStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpBillingBudgetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpBillingBudgetOutputs.ProtoReflect.Descriptor instead.
+func (*GcpBillingBudgetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbillingbudget_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpBillingBudgetStackOutputs) GetName() string {
+func (x *GcpBillingBudgetOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpBillingBudgetStackOutputs) GetBudgetId() string {
+func (x *GcpBillingBudgetOutputs) GetBudgetId() string {
 	if x != nil {
 		return x.BudgetId
 	}
 	return ""
 }
 
-func (x *GcpBillingBudgetStackOutputs) GetBillingAccount() string {
+func (x *GcpBillingBudgetOutputs) GetBillingAccount() string {
 	if x != nil {
 		return x.BillingAccount
 	}
@@ -90,8 +90,8 @@ var File_catalog_gcp_gcpbillingbudget_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpbillingbudget_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpbillingbudget/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpbillingbudget.v1alpha1\"x\n" +
-	"\x1cGcpBillingBudgetStackOutputs\x12\x12\n" +
+	"3catalog/gcp/gcpbillingbudget/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpbillingbudget.v1alpha1\"s\n" +
+	"\x17GcpBillingBudgetOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
 	"\tbudget_id\x18\x02 \x01(\tR\bbudgetId\x12'\n" +
 	"\x0fbilling_account\x18\x03 \x01(\tR\x0ebillingAccountB\xe3\x02\n" +
@@ -111,7 +111,7 @@ func file_catalog_gcp_gcpbillingbudget_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpbillingbudget_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpbillingbudget_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpBillingBudgetStackOutputs)(nil), // 0: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetStackOutputs
+	(*GcpBillingBudgetOutputs)(nil), // 0: dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetOutputs
 }
 var file_catalog_gcp_gcpbillingbudget_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

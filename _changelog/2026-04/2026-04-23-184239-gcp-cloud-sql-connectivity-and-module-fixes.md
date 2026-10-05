@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added Cloud SQL connectivity options (native volume mount and Auth Proxy sidecar) to the GcpCloudRun component, fixed three behavioral bugs in GcpCloudSql (disk_auto_resize, deletion_protection, ipv4_enabled were hardcoded/ignored), added missing FK-enabling stack outputs to GcpVpc and GcpSubnetwork, created comprehensive validation tests for GcpCloudRun, and brought all presets/manifests to consistent camelCase convention. Deleted all legacy examples.md files from the provider tree.
+Added Cloud SQL connectivity options (native volume mount and Auth Proxy sidecar) to the GcpCloudRun kind, fixed three behavioral bugs in GcpCloudSql (disk_auto_resize, deletion_protection, ipv4_enabled were hardcoded/ignored), added missing FK-enabling outputs to GcpVpc and GcpSubnetwork, created comprehensive validation tests for GcpCloudRun, and brought all presets/manifests to consistent camelCase convention. Deleted all legacy examples.md files from the provider tree.
 
 ## Problem Statement / Motivation
 
@@ -15,9 +15,9 @@ Odwen, a customer running Cloud Run + Cloud SQL on GCP, had critical security an
 1. Cloud SQL was open to the internet (`0.0.0.0/0` in authorized_networks)
 2. Cloud Run connected to Cloud SQL over public internet via hardcoded IP
 3. No `sslmode` on database connections
-4. The planton GcpCloudRun component had no way to declare Cloud SQL connectivity
+4. The planton GcpCloudRun kind had no way to declare Cloud SQL connectivity
 
-Additionally, during analysis, three Pulumi module bugs were discovered that would block any private networking configuration, and FK resolution between Cloud Run, VPC, and Subnetwork was broken due to missing stack outputs.
+Additionally, during analysis, three Pulumi module bugs were discovered that would block any private networking configuration, and FK resolution between Cloud Run, VPC, and Subnetwork was broken due to missing outputs.
 
 ### Pain Points
 
@@ -58,9 +58,9 @@ CEL validation enforces mutual exclusion: exactly one of `connection` or `auth_p
 
 Same three fixes applied to the Terraform module (`variables.tf` + `main.tf`).
 
-### New Stack Outputs for FK Resolution
+### New Outputs for FK Resolution
 
-| Component | New Outputs | Consumer |
+| Kind | New Outputs | Consumer |
 |-----------|-------------|----------|
 | GcpVpc | `network_name`, `network_id` | Cloud Run `vpcAccess.network`, Cloud SQL `network.vpcId` |
 | GcpSubnetwork | `subnetwork_name` | Cloud Run `vpcAccess.subnet` |
@@ -84,9 +84,9 @@ Same three fixes applied to the Terraform module (`variables.tf` + `main.tf`).
 - `GcpCloudRunCloudSqlDirectConnection` (native: `instances` as `StringValueOrRef[]`)
 - `GcpCloudRunCloudSqlAuthProxy` (sidecar: `instances`, `port`, `use_private_ip`)
 
-**GcpVpc stack_outputs.proto** -- fields 4-5: `network_name`, `network_id`
+**GcpVpc outputs.proto** -- fields 4-5: `network_name`, `network_id`
 
-**GcpSubnetwork stack_outputs.proto** -- field 5: `subnetwork_name`
+**GcpSubnetwork outputs.proto** -- field 5: `subnetwork_name`
 
 **GcpCloudSql spec.proto** -- renamed field 7: `disk_autoresize` to `disk_auto_resize`
 

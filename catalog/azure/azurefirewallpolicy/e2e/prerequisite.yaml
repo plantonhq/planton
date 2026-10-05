@@ -1,5 +1,5 @@
 # AzureFirewallPolicy install profile used as a prerequisite by composed
-# components (declared via prerequisites: [AzureFirewallPolicy] in the kind
+# kinds (declared via prerequisites: [AzureFirewallPolicy] in the kind
 # registry -- the rule collection group -- and via the
 # planton.dev/e2e-prerequisites annotation by the firewall's
 # policy-attach scenario). The harness deploys this document (via the
@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurefirewallpolicy
+    e2e-catalog-kind: azurefirewallpolicy
   annotations:
     planton.dev/e2e: "true"
   tags:

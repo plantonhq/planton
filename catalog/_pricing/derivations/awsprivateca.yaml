@@ -7,9 +7,9 @@
 # the committed meter is the monthly CA fee, forked on a single field
 # (usage_mode, unset meaning GENERAL_PURPOSE). Per-certificate issuance
 # fees are one-time charges tiered on account-level monthly volume --
-# excluded, not derived. Schema: finops/componentcostderivation/v1.
+# excluded, not derived. Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsprivateca
 spec:

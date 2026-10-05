@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-ecr-repo stack outputs
-type AwsEcrRepoStackOutputs struct {
+// aws-ecr-repo outputs
+type AwsEcrRepoOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The repository name, matching spec.repository_name
 	RepositoryName string `protobuf:"bytes,1,opt,name=repository_name,json=repositoryName,proto3" json:"repository_name,omitempty"`
@@ -36,20 +36,20 @@ type AwsEcrRepoStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsEcrRepoStackOutputs) Reset() {
-	*x = AwsEcrRepoStackOutputs{}
+func (x *AwsEcrRepoOutputs) Reset() {
+	*x = AwsEcrRepoOutputs{}
 	mi := &file_catalog_aws_awsecrrepo_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEcrRepoStackOutputs) String() string {
+func (x *AwsEcrRepoOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEcrRepoStackOutputs) ProtoMessage() {}
+func (*AwsEcrRepoOutputs) ProtoMessage() {}
 
-func (x *AwsEcrRepoStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEcrRepoOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsecrrepo_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,33 +61,33 @@ func (x *AwsEcrRepoStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEcrRepoStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEcrRepoStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEcrRepoOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEcrRepoOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsecrrepo_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEcrRepoStackOutputs) GetRepositoryName() string {
+func (x *AwsEcrRepoOutputs) GetRepositoryName() string {
 	if x != nil {
 		return x.RepositoryName
 	}
 	return ""
 }
 
-func (x *AwsEcrRepoStackOutputs) GetRepositoryUrl() string {
+func (x *AwsEcrRepoOutputs) GetRepositoryUrl() string {
 	if x != nil {
 		return x.RepositoryUrl
 	}
 	return ""
 }
 
-func (x *AwsEcrRepoStackOutputs) GetRepositoryArn() string {
+func (x *AwsEcrRepoOutputs) GetRepositoryArn() string {
 	if x != nil {
 		return x.RepositoryArn
 	}
 	return ""
 }
 
-func (x *AwsEcrRepoStackOutputs) GetRegistryId() string {
+func (x *AwsEcrRepoOutputs) GetRegistryId() string {
 	if x != nil {
 		return x.RegistryId
 	}
@@ -98,8 +98,8 @@ var File_catalog_aws_awsecrrepo_v1alpha1_outputs_proto protoreflect.FileDescript
 
 const file_catalog_aws_awsecrrepo_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/aws/awsecrrepo/v1alpha1/outputs.proto\x12#dev.planton.aws.awsecrrepo.v1alpha1\"\xb0\x01\n" +
-	"\x16AwsEcrRepoStackOutputs\x12'\n" +
+	"-catalog/aws/awsecrrepo/v1alpha1/outputs.proto\x12#dev.planton.aws.awsecrrepo.v1alpha1\"\xab\x01\n" +
+	"\x11AwsEcrRepoOutputs\x12'\n" +
 	"\x0frepository_name\x18\x01 \x01(\tR\x0erepositoryName\x12%\n" +
 	"\x0erepository_url\x18\x02 \x01(\tR\rrepositoryUrl\x12%\n" +
 	"\x0erepository_arn\x18\x03 \x01(\tR\rrepositoryArn\x12\x1f\n" +
@@ -121,7 +121,7 @@ func file_catalog_aws_awsecrrepo_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsecrrepo_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsecrrepo_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEcrRepoStackOutputs)(nil), // 0: dev.planton.aws.awsecrrepo.v1alpha1.AwsEcrRepoStackOutputs
+	(*AwsEcrRepoOutputs)(nil), // 0: dev.planton.aws.awsecrrepo.v1alpha1.AwsEcrRepoOutputs
 }
 var file_catalog_aws_awsecrrepo_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

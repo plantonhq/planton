@@ -1,4 +1,4 @@
-# AliCloudDnsZone Component Added
+# AliCloudDnsZone Kind Added
 
 **Date**: 2026-02-19
 **Component**: AliCloudDnsZone
@@ -7,15 +7,15 @@
 
 ## Summary
 
-Added the AliCloudDnsZone deployment component -- manages DNS domains in the Alibaba Cloud Alidns service. This is the prerequisite for creating DNS records (A, AAAA, CNAME, MX, TXT, etc.) via the AliCloudDnsRecord component.
+Added the AliCloudDnsZone catalog kind -- manages DNS domains in the Alibaba Cloud Alidns service. This is the prerequisite for creating DNS records (A, AAAA, CNAME, MX, TXT, etc.) via the AliCloudDnsRecord kind.
 
-Registering a domain in Alidns does not purchase or transfer it -- it creates a hosted zone so that DNS records can be managed. Users point their domain registrar's NS records to the DNS servers returned in the stack outputs.
+Registering a domain in Alidns does not purchase or transfer it -- it creates a hosted zone so that DNS records can be managed. Users point their domain registrar's NS records to the DNS servers returned in the outputs.
 
 ## What Was Created
 
 ### API Definition
-- `apis/dev/planton/provider/alicloud/aliclouddnszone/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AliCloudDnsZone = 3040` in `CloudResourceKind` enum under the DNS category
+- `apis/dev/planton/provider/alicloud/aliclouddnszone/v1/` -- Full proto API (spec, api, iac_input, outputs)
+- Registered `AliCloudDnsZone = 3040` in `CatalogKind` enum under the DNS category
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and a single `dns.AlidnsDomain` resource with all spec fields mapped
@@ -25,7 +25,7 @@ Registering a domain in Alidns does not purchase or transfer it -- it creates a 
 - Ginkgo/Gomega spec validation tests: 11 specs covering valid inputs (minimal, full config, subdomain, tags only), missing required fields (region, domain_name), wrong api_version/kind, missing metadata, missing spec, and domain_name max length
 
 ### Documentation
-- README.md with configuration reference, output reference, and related components
+- README.md with configuration reference, output reference, and related kinds
 - examples.md with 3 YAML examples (minimal, with tags/resource group, with group assignment)
 - catalog-page.md with full configuration reference, quick start, and examples
 - docs/README.md with comprehensive research documentation
@@ -38,7 +38,7 @@ Registering a domain in Alidns does not purchase or transfer it -- it creates a 
 
 - **`group_name` -> `group_id`**: T02 listed `group_name` as an input, but the provider takes `group_id`. `group_name` is a computed output.
 - **Added `remark`**: Provider supports a remark field for domain description. Not in T02 but useful.
-- **Added `tags`**: Consistent with all other Alibaba Cloud components.
+- **Added `tags`**: Consistent with all other Alibaba Cloud kinds.
 - **Added `region`**: Alidns is global, but the provider requires a region for initialization.
 
 ## Fields Excluded for v1

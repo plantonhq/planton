@@ -43,7 +43,7 @@ Lists are account-scoped. The list **type is immutable** at Cloudflare: changing
 | `description` | string | Purpose. |
 | `items` | list of `{value, description}` | Set of entries. `value` is required. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

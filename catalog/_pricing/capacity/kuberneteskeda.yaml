@@ -6,9 +6,9 @@
 # resources block. The workloads KEDA scales carry their own capacity on
 # their own components; scaling declarations (ScaledObject, ScaledJob,
 # TriggerAuthentication) are separate resources.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kuberneteskeda
 spec:

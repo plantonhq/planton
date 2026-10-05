@@ -10,12 +10,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurecontainerregistryv1alpha1.AzureContainerRegistryStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurecontainerregistryv1alpha1.AzureContainerRegistryIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -40,7 +40,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerregistryv1alpha1.A
 	}
 
 	// Presence-guarded true-default optional bools: an absent spec value
-	// explicitly falls back to the proto/Azure default so stack-input
+	// explicitly falls back to the proto/Azure default so iac-input
 	// paths that bypass the manifest loader deploy identically to the
 	// Terraform module's optional(bool, true) defaults.
 	if spec.PublicNetworkAccessEnabled != nil {
@@ -142,7 +142,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerregistryv1alpha1.A
 		return errors.Wrapf(err, "failed to create container registry %s", spec.RegistryName)
 	}
 
-	// Export stack outputs from the created resource. The admin
+	// Export outputs from the created resource. The admin
 	// credentials and the system-assigned principal id are empty strings
 	// when their features are off, matching the Terraform module's try()
 	// fallbacks.

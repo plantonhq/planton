@@ -4,11 +4,11 @@ Provisions a DigitalOcean project -- the complete `digitalocean_project` resourc
 
 ## Layout
 
-- `main.go` -- entrypoint (`package main`), loads the stack input and calls the module
+- `main.go` -- entrypoint (`package main`), loads the IaC input and calls the module
 - `module/main.go` -- orchestration: locals, provider, resource
 - `module/project.go` -- the `Project` resource and output exports
 - `module/locals.go` -- target handle (a project has no tag surface, so no label set applies)
-- `module/outputs.go` -- output key constants (the `DigitalOceanProjectStackOutputs` contract)
+- `module/outputs.go` -- output key constants (the `DigitalOceanProjectOutputs` contract)
 
 ## Behavior notes
 

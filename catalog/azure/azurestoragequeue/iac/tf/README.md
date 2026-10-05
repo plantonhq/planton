@@ -1,6 +1,6 @@
 # AzureStorageQueue - Terraform Module
 
-Terraform implementation for the AzureStorageQueue component.
+Terraform implementation for the AzureStorageQueue kind.
 
 ## Resources Created
 

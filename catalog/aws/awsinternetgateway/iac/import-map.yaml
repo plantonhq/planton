@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsinternetgateway
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: internet_gateway_id
       derivations:
-        - from_stack_output: internet_gateway_id
+        - from_output: internet_gateway_id
         - from_arn_part: resource_id
       where_to_find: >-
         VPC console -> Internet gateways (the Internet gateway ID column),

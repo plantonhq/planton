@@ -24,7 +24,7 @@ the upstream repository.
 
 If the staging area does not exist, it will be automatically cloned first.
 
-Use this command periodically to ensure you have access to the latest components
+Use this command periodically to ensure you have access to the latest kinds
 and bug fixes, especially before running apply/preview/destroy operations.`,
 	Example: `  # Pull latest changes from upstream
   planton pull

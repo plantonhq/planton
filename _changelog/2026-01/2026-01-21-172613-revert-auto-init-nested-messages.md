@@ -6,7 +6,7 @@
 
 ## Summary
 
-Reverted the auto-initialization behavior for unset nested messages that was introduced in the previous change. Unset nested messages now remain unset to preserve user intent, fixing regressions in components like AWS ECS Service where optional feature messages were being inadvertently enabled. This restores clear semantics: unset optional messages mean "I don't want this feature", while explicitly set empty messages mean "I want this feature with defaults".
+Reverted the auto-initialization behavior for unset nested messages that was introduced in the previous change. Unset nested messages now remain unset to preserve user intent, fixing regressions in kinds like AWS ECS Service where optional feature messages were being inadvertently enabled. This restores clear semantics: unset optional messages mean "I don't want this feature", while explicitly set empty messages mean "I want this feature with defaults".
 
 ## Problem Statement / Motivation
 

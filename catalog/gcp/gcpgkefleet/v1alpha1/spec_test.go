@@ -28,7 +28,7 @@ var _ = ginkgo.Describe("GcpGkeFleetSpec", func() {
 		return &GcpGkeFleet{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpGkeFleet",
-			Metadata:   &shared.CloudResourceMetadata{Name: "platform-fleet"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "platform-fleet"},
 			Spec:       &GcpGkeFleetSpec{},
 		}
 	}

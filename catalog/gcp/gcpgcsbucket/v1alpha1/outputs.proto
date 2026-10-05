@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpgcsbucket.v1alpha1;
 
-//gcp-gcs-bucket stack outputs
-message GcpGcsBucketStackOutputs {
+//gcp-gcs-bucket outputs
+message GcpGcsBucketOutputs {
   // ID of the bucket. For GCS this equals the globally unique bucket name —
   // the value every consumer (backend buckets, function sources, Dataproc
   // staging, Pub/Sub sinks) references.

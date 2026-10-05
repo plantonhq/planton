@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-key-vault-certificate stack-input
-type AzureKeyVaultCertificateStackInput struct {
+// azure-key-vault-certificate iac-input
+type AzureKeyVaultCertificateIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AzureKeyVaultCertificate `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureKeyVaultCertificateStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureKeyVaultCertificateStackInput) Reset() {
-	*x = AzureKeyVaultCertificateStackInput{}
+func (x *AzureKeyVaultCertificateIacInput) Reset() {
+	*x = AzureKeyVaultCertificateIacInput{}
 	mi := &file_catalog_azure_azurekeyvaultcertificate_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureKeyVaultCertificateStackInput) String() string {
+func (x *AzureKeyVaultCertificateIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureKeyVaultCertificateStackInput) ProtoMessage() {}
+func (*AzureKeyVaultCertificateIacInput) ProtoMessage() {}
 
-func (x *AzureKeyVaultCertificateStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureKeyVaultCertificateIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurekeyvaultcertificate_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureKeyVaultCertificateStackInput) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureKeyVaultCertificateStackInput.ProtoReflect.Descriptor instead.
-func (*AzureKeyVaultCertificateStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureKeyVaultCertificateIacInput.ProtoReflect.Descriptor instead.
+func (*AzureKeyVaultCertificateIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurekeyvaultcertificate_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureKeyVaultCertificateStackInput) GetTarget() *AzureKeyVaultCertificate {
+func (x *AzureKeyVaultCertificateIacInput) GetTarget() *AzureKeyVaultCertificate {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureKeyVaultCertificateStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureKeyVaultCertificateIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azurekeyvaultcertificate_v1alpha1_input_proto protoreflec
 
 const file_catalog_azure_azurekeyvaultcertificate_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/azure/azurekeyvaultcertificate/v1alpha1/input.proto\x123dev.planton.azure.azurekeyvaultcertificate.v1alpha1\x1a9catalog/azure/azurekeyvaultcertificate/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xdc\x01\n" +
-	"\"AzureKeyVaultCertificateStackInput\x12e\n" +
+	";catalog/azure/azurekeyvaultcertificate/v1alpha1/input.proto\x123dev.planton.azure.azurekeyvaultcertificate.v1alpha1\x1a9catalog/azure/azurekeyvaultcertificate/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xda\x01\n" +
+	" AzureKeyVaultCertificateIacInput\x12e\n" +
 	"\x06target\x18\x01 \x01(\v2M.dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xa5\x03\n" +
 	"7com.dev.planton.azure.azurekeyvaultcertificate.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azurekeyvaultcertificate_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_azure_azurekeyvaultcertificate_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurekeyvaultcertificate_v1alpha1_input_proto_goTypes = []any{
-	(*AzureKeyVaultCertificateStackInput)(nil), // 0: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateStackInput
-	(*AzureKeyVaultCertificate)(nil),           // 1: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificate
-	(*azure.AzureProviderConfig)(nil),          // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureKeyVaultCertificateIacInput)(nil), // 0: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateIacInput
+	(*AzureKeyVaultCertificate)(nil),         // 1: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificate
+	(*azure.AzureProviderConfig)(nil),        // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurekeyvaultcertificate_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateStackInput.target:type_name -> dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificate
-	2, // 1: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateIacInput.target:type_name -> dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificate
+	2, // 1: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

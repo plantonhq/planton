@@ -3,14 +3,14 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # The spec pins the job to exactly ONE scope (account XOR zone), so a given
 # stack needs only that scope's entries. "Logs Read" / "Logs Write" exist
 # at BOTH account and zone scope -- grant the one matching the spec's
 # scope.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflarelogpushjob
 spec:

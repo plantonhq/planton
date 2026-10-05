@@ -34,17 +34,17 @@ import (
 // applying the resource — the same never-block-on-a-controller posture as
 // the cert-manager issuers. Terraform equivalent: kubectl_manifest without
 // a wait_for block.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesclustersecretstorev1alpha1.KubernetesClusterSecretStoreStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesclustersecretstorev1alpha1.KubernetesClusterSecretStoreIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	result, err := externalsecretsstore.BuildSpec(
-		locals.StoreName, locals.SecretsNamespace, true, stackInput.Target.Spec.Config)
+		locals.StoreName, locals.SecretsNamespace, true, iacInput.Target.Spec.Config)
 	if err != nil {
 		return errors.Wrap(err, "failed to build cluster secret store spec")
 	}

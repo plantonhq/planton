@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceancdn.v1alpha1;
 import "catalog/digitalocean/digitaloceancdn/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-cdn stack-input
-message DigitalOceanCdnStackInput {
-  //target cloud-resource
+//digital-ocean-cdn iac-input
+message DigitalOceanCdnIacInput {
+  // the catalog object to deploy
   DigitalOceanCdn target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

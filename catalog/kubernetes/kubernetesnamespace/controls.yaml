@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kubernetesnamespace
 spec:
@@ -60,7 +60,7 @@ spec:
       notes: A namespace is an API object with no running replicas -- it exists cluster-wide by nature. Zone spread applies to the workloads inside it, not to the namespace.
     - control_id: deletion-protection
       status: not_applicable
-      notes: Kubernetes offers no deletion-protection flag on namespaces, and deleting one CASCADES to every object inside it -- the highest-blast-radius delete this component class has. Protection is operational (cluster RBAC on namespace delete, change review).
+      notes: Kubernetes offers no deletion-protection flag on namespaces, and deleting one CASCADES to every object inside it -- the highest-blast-radius delete this kind has. Protection is operational (cluster RBAC on namespace delete, change review).
     - control_id: managed-patching
       status: not_applicable
       notes: There is no software to patch -- the namespace is configuration held by the cluster's API server, whose version lifecycle belongs to the cluster component.

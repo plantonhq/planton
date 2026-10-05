@@ -41,7 +41,7 @@ import "shared/options/options.proto";
 // key choice. Network, data-access, and retention rules update in place.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 message AwsOpenSearchServerlessCollectionSpec {
   // The AWS region where the collection will be created.
   // Example: "us-west-2", "eu-west-1"

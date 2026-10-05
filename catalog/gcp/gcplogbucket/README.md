@@ -4,7 +4,7 @@ Creates a Cloud Logging bucket — the container where log entries are STORED: h
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Log bucket** -- exactly ONE of `google_logging_{project|folder|organization|billing_account}_bucket_config`, selected by the spec's `scope`
 - **Log views** (optional) -- one `google_logging_log_view` per `logViews[]` entry — named, independently grantable slices of the bucket

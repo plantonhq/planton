@@ -1,5 +1,5 @@
 # AzureFrontDoorOrigin install profile used as a prerequisite by
-# composed components (AzureFrontDoorRoute, declared via prerequisites in
+# composed kinds (AzureFrontDoorRoute, declared via prerequisites in
 # the kind registry -- ARM rejects a route whose origin group has no
 # origins yet). The harness deploys this origin after the fixture origin
 # group; the route's origin_ids list references its origin_id output to
@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurefrontdoororigin
+    e2e-catalog-kind: azurefrontdoororigin
   annotations:
     planton.dev/e2e: "true"
   tags:

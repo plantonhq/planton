@@ -4,7 +4,7 @@ Deploys a fully managed Windows file system on Amazon FSx for Windows File Serve
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **FSx Windows File System** -- an enterprise-grade SMB file system joined to an Active Directory domain, with configurable deployment type (SINGLE_AZ_1, SINGLE_AZ_2, MULTI_AZ_1), storage media (SSD or HDD), throughput capacity, and DNS aliases
 - **Active Directory Join** -- the file system joins either an AWS Managed Microsoft AD (via `activeDirectoryId`) or a self-managed AD domain (via `selfManagedActiveDirectory`) for Windows ACL-based access control
@@ -17,16 +17,16 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **One or two subnets** in the target VPC. Single-AZ deployments require exactly one subnet. Multi-AZ (MULTI_AZ_1) requires two subnets in different Availability Zones plus a `preferredSubnetId`. Provide subnet IDs directly or reference AwsSubnet Cloud Resources via ValueFromRef.
-- **A security group** that allows SMB traffic (TCP 445), WinRM (TCP 5985), and Active Directory communication (TCP/UDP 53, 88, 389, 636). Provide the ID directly or reference an AwsSecurityGroup Cloud Resource.
+- **One or two subnets** in the target VPC. Single-AZ deployments require exactly one subnet. Multi-AZ (MULTI_AZ_1) requires two subnets in different Availability Zones plus a `preferredSubnetId`. Provide subnet IDs directly or reference AwsSubnet Infra Components via ValueFromRef.
+- **A security group** that allows SMB traffic (TCP 445), WinRM (TCP 5985), and Active Directory communication (TCP/UDP 53, 88, 389, 636). Provide the ID directly or reference an AwsSecurityGroup Infra Component.
 - **An Active Directory domain** -- every Windows file system must join an AD domain. Provide either an AWS Managed Microsoft AD directory ID (`activeDirectoryId`) or configure `selfManagedActiveDirectory` with domain name, DNS IPs, and join credentials (direct or via Secrets Manager ARN).
-- **A KMS key** (optional) -- for customer-managed encryption at rest instead of the default AWS-managed FSx key. Provide the ARN directly or reference an AwsKmsKey Cloud Resource.
-- **A CloudWatch log group** (optional) -- required only when enabling audit logging. The log group name must start with `/aws/fsx/`. Reference an AwsCloudwatchLogGroup Cloud Resource via ValueFromRef.
+- **A KMS key** (optional) -- for customer-managed encryption at rest instead of the default AWS-managed FSx key. Provide the ARN directly or reference an AwsKmsKey Infra Component.
+- **A CloudWatch log group** (optional) -- required only when enabling audit logging. The log group name must start with `/aws/fsx/`. Reference an AwsCloudwatchLogGroup Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f fsx-windows.yaml
 ```
 
-This creates a single-AZ Windows file system with 256 GiB SSD storage, 32 MB/s throughput, joined to an AWS Managed Microsoft AD, 7-day automatic backup retention, and no audit logging. A Stack Job tracks the provisioning in real time.
+This creates a single-AZ Windows file system with 256 GiB SSD storage, 32 MB/s throughput, joined to an AWS Managed Microsoft AD, 7-day automatic backup retention, and no audit logging. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -107,7 +107,7 @@ These are the most important decisions when configuring an FSx Windows file syst
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -117,9 +117,9 @@ These are the most important decisions when configuring an FSx Windows file syst
 | **AwsKmsKey** (optional) | `kmsKeyId` | `status.outputs.key_arn` |
 | **AwsCloudwatchLogGroup** (optional) | `auditLogConfiguration.auditLogDestination` | `status.outputs.log_group_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -143,7 +143,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- provides subnets for file system network interface placement
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- controls SMB (TCP 445), WinRM (TCP 5985), and AD traffic access to the file system
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for encryption at rest
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) -- receives file access and share access audit events for compliance
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- provides subnets for file system network interface placement
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- controls SMB (TCP 445), WinRM (TCP 5985), and AD traffic access to the file system
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for encryption at rest
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) -- receives file access and share access audit events for compliance

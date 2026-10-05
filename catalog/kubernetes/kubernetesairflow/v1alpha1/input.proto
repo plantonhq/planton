@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesairflow.v1alpha1;
 import "catalog/kubernetes/kubernetesairflow/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//airflow-kubernetes stack-input
-message KubernetesAirflowStackInput {
-  //target cloud-resource
+//airflow-kubernetes iac-input
+message KubernetesAirflowIacInput {
+  // the catalog object to deploy
   KubernetesAirflow target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

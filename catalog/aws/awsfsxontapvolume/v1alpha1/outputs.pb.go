@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsFsxOntapVolumeStackOutputs captures observable identifiers from a
+// AwsFsxOntapVolumeOutputs captures observable identifiers from a
 // provisioned FSx for ONTAP Volume. These outputs are used by downstream
 // resources and monitoring tools.
 //
@@ -31,7 +31,7 @@ const (
 // - SnapMirror: needs `uuid` for replication relationships
 // - Monitoring: needs `volume_id` for CloudWatch metrics
 // - FlexCache: needs `flexcache_endpoint_type` to identify origin volumes
-type AwsFsxOntapVolumeStackOutputs struct {
+type AwsFsxOntapVolumeOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ID of the volume (e.g., "fsvol-0123456789abcdef0"). Primary identifier
 	// used in AWS APIs and CloudWatch metrics for this volume.
@@ -63,20 +63,20 @@ type AwsFsxOntapVolumeStackOutputs struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *AwsFsxOntapVolumeStackOutputs) Reset() {
-	*x = AwsFsxOntapVolumeStackOutputs{}
+func (x *AwsFsxOntapVolumeOutputs) Reset() {
+	*x = AwsFsxOntapVolumeOutputs{}
 	mi := &file_catalog_aws_awsfsxontapvolume_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsFsxOntapVolumeStackOutputs) String() string {
+func (x *AwsFsxOntapVolumeOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsFsxOntapVolumeStackOutputs) ProtoMessage() {}
+func (*AwsFsxOntapVolumeOutputs) ProtoMessage() {}
 
-func (x *AwsFsxOntapVolumeStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsFsxOntapVolumeOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsfsxontapvolume_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -88,47 +88,47 @@ func (x *AwsFsxOntapVolumeStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsFsxOntapVolumeStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsFsxOntapVolumeStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsFsxOntapVolumeOutputs.ProtoReflect.Descriptor instead.
+func (*AwsFsxOntapVolumeOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsfsxontapvolume_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsFsxOntapVolumeStackOutputs) GetVolumeId() string {
+func (x *AwsFsxOntapVolumeOutputs) GetVolumeId() string {
 	if x != nil {
 		return x.VolumeId
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapVolumeStackOutputs) GetArn() string {
+func (x *AwsFsxOntapVolumeOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapVolumeStackOutputs) GetUuid() string {
+func (x *AwsFsxOntapVolumeOutputs) GetUuid() string {
 	if x != nil {
 		return x.Uuid
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapVolumeStackOutputs) GetFileSystemId() string {
+func (x *AwsFsxOntapVolumeOutputs) GetFileSystemId() string {
 	if x != nil {
 		return x.FileSystemId
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapVolumeStackOutputs) GetFlexcacheEndpointType() string {
+func (x *AwsFsxOntapVolumeOutputs) GetFlexcacheEndpointType() string {
 	if x != nil {
 		return x.FlexcacheEndpointType
 	}
 	return ""
 }
 
-func (x *AwsFsxOntapVolumeStackOutputs) GetOntapVolumeType() string {
+func (x *AwsFsxOntapVolumeOutputs) GetOntapVolumeType() string {
 	if x != nil {
 		return x.OntapVolumeType
 	}
@@ -139,8 +139,8 @@ var File_catalog_aws_awsfsxontapvolume_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awsfsxontapvolume_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awsfsxontapvolume/v1alpha1/outputs.proto\x12*dev.planton.aws.awsfsxontapvolume.v1alpha1\"\xec\x01\n" +
-	"\x1dAwsFsxOntapVolumeStackOutputs\x12\x1b\n" +
+	"4catalog/aws/awsfsxontapvolume/v1alpha1/outputs.proto\x12*dev.planton.aws.awsfsxontapvolume.v1alpha1\"\xe7\x01\n" +
+	"\x18AwsFsxOntapVolumeOutputs\x12\x1b\n" +
 	"\tvolume_id\x18\x01 \x01(\tR\bvolumeId\x12\x10\n" +
 	"\x03arn\x18\x02 \x01(\tR\x03arn\x12\x12\n" +
 	"\x04uuid\x18\x03 \x01(\tR\x04uuid\x12$\n" +
@@ -163,7 +163,7 @@ func file_catalog_aws_awsfsxontapvolume_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsfsxontapvolume_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsfsxontapvolume_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsFsxOntapVolumeStackOutputs)(nil), // 0: dev.planton.aws.awsfsxontapvolume.v1alpha1.AwsFsxOntapVolumeStackOutputs
+	(*AwsFsxOntapVolumeOutputs)(nil), // 0: dev.planton.aws.awsfsxontapvolume.v1alpha1.AwsFsxOntapVolumeOutputs
 }
 var file_catalog_aws_awsfsxontapvolume_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

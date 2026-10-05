@@ -5,10 +5,10 @@ package dev.planton.azure.azuremanagedredisaccesspolicyassignment.v1alpha1;
 import "catalog/azure/azuremanagedredisaccesspolicyassignment/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureManagedRedisAccessPolicyAssignmentStackInput is the input to the
+// AzureManagedRedisAccessPolicyAssignmentIacInput is the input to the
 // IaC module. It contains the target resource and provider configuration.
-message AzureManagedRedisAccessPolicyAssignmentStackInput {
-  // target cloud-resource to be deployed
+message AzureManagedRedisAccessPolicyAssignmentIacInput {
+  // the catalog object to deploy to be deployed
   AzureManagedRedisAccessPolicyAssignment target = 1;
   // provider-config for Azure authentication
   dev.planton.azure.AzureProviderConfig provider_config = 2;

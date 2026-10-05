@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsec2instance.v1alpha1;
 
-// AwsEc2InstanceStackOutputs captures the observable outputs of a
+// AwsEc2InstanceOutputs captures the observable outputs of a
 // provisioned EC2 instance -- the identifiers and addresses downstream
 // resources and operators reference.
-message AwsEc2InstanceStackOutputs {
+message AwsEc2InstanceOutputs {
   // The instance ID (e.g. "i-0123456789abcdef0"). The primary handle:
   // what load-balancer target groups register (an AwsLbTargetGroup
   // instance target references this output), what the CLI and APIs

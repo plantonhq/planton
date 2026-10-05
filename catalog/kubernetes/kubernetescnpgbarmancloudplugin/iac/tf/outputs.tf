@@ -1,4 +1,4 @@
-# Stack outputs -- flattened onto KubernetesCnpgBarmanCloudPluginStackOutputs
+# Outputs -- flattened onto KubernetesCnpgBarmanCloudPluginOutputs
 # by the platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

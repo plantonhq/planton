@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefabriccapacity.v1alpha1;
 
-// **AzureFabricCapacityStackOutputs** captures the outputs from
+// **AzureFabricCapacityOutputs** captures the outputs from
 // provisioning a Microsoft Fabric capacity.
-message AzureFabricCapacityStackOutputs {
+message AzureFabricCapacityOutputs {
   // The capacity's Azure Resource Manager ID.
   string fabric_capacity_id = 1;
 

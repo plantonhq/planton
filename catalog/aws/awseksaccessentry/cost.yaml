@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awseksaccessentry
 spec:
   billing_model: free
   free_tier: An access entry is a free authorization object in the EKS control plane -- Amazon EKS's meters bill per cluster hour (with a higher rate for extended-support Kubernetes versions), for Auto Mode compute, and for hybrid-node vCPU-hours, and none of them count access entries or their policy associations. Granting one principal or a hundred access to a cluster adds nothing to the bill, and EKS itself creates entries for node roles without charge.
-  notes: "No field of this spec buys anything: the principal mapping, Kubernetes groups, and policy associations are authorization metadata stored in the EKS control plane. The real spend lives on the AwsEksCluster this entry attaches to -- its per-cluster hourly fee and the compute (node groups, Fargate, Auto Mode) running in it, billed on their own meters as their own catalog kinds. Nothing this entry can express -- broader policy scopes, more groups, more associations -- moves any meter anywhere; the only costs it influences are whatever the granted principal chooses to deploy once inside, which bills to those workloads' own resources."
+  notes: "No field of this spec buys anything: the principal mapping, Kubernetes groups, and policy associations are authorization metadata stored in the EKS control plane. The real spend lives on the AwsEksCluster this entry attaches to -- its per-cluster hourly fee and the compute (node groups, Fargate, Auto Mode) running in it, billed on their own meters as their own components. Nothing this entry can express -- broader policy scopes, more groups, more associations -- moves any meter anywhere; the only costs it influences are whatever the granted principal chooses to deploy once inside, which bills to those workloads' own resources."

@@ -22,12 +22,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanKubernetesClusterStackOutputs captures the key outputs after
+// DigitalOceanKubernetesClusterOutputs captures the key outputs after
 // provisioning a DigitalOcean Kubernetes cluster. Outputs are durable
 // identifiers and connection details; live state (status, timestamps) is
 // read from the API, never exported, because an apply-time snapshot goes
 // stale immediately.
-type DigitalOceanKubernetesClusterStackOutputs struct {
+type DigitalOceanKubernetesClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The unique identifier (UUID) of the created Kubernetes cluster.
 	ClusterId string `protobuf:"bytes,1,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
@@ -58,20 +58,20 @@ type DigitalOceanKubernetesClusterStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanKubernetesClusterStackOutputs) Reset() {
-	*x = DigitalOceanKubernetesClusterStackOutputs{}
+func (x *DigitalOceanKubernetesClusterOutputs) Reset() {
+	*x = DigitalOceanKubernetesClusterOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanKubernetesClusterStackOutputs) String() string {
+func (x *DigitalOceanKubernetesClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanKubernetesClusterStackOutputs) ProtoMessage() {}
+func (*DigitalOceanKubernetesClusterOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanKubernetesClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanKubernetesClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -83,61 +83,61 @@ func (x *DigitalOceanKubernetesClusterStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanKubernetesClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanKubernetesClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanKubernetesClusterOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanKubernetesClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanKubernetesClusterStackOutputs) GetClusterId() string {
+func (x *DigitalOceanKubernetesClusterOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
 	return ""
 }
 
-func (x *DigitalOceanKubernetesClusterStackOutputs) GetKubeconfig() string {
+func (x *DigitalOceanKubernetesClusterOutputs) GetKubeconfig() string {
 	if x != nil {
 		return x.Kubeconfig
 	}
 	return ""
 }
 
-func (x *DigitalOceanKubernetesClusterStackOutputs) GetApiServerEndpoint() string {
+func (x *DigitalOceanKubernetesClusterOutputs) GetApiServerEndpoint() string {
 	if x != nil {
 		return x.ApiServerEndpoint
 	}
 	return ""
 }
 
-func (x *DigitalOceanKubernetesClusterStackOutputs) GetUrn() string {
+func (x *DigitalOceanKubernetesClusterOutputs) GetUrn() string {
 	if x != nil {
 		return x.Urn
 	}
 	return ""
 }
 
-func (x *DigitalOceanKubernetesClusterStackOutputs) GetIpv4Address() string {
+func (x *DigitalOceanKubernetesClusterOutputs) GetIpv4Address() string {
 	if x != nil {
 		return x.Ipv4Address
 	}
 	return ""
 }
 
-func (x *DigitalOceanKubernetesClusterStackOutputs) GetDefaultNodePoolId() string {
+func (x *DigitalOceanKubernetesClusterOutputs) GetDefaultNodePoolId() string {
 	if x != nil {
 		return x.DefaultNodePoolId
 	}
 	return ""
 }
 
-func (x *DigitalOceanKubernetesClusterStackOutputs) GetClusterSubnet() string {
+func (x *DigitalOceanKubernetesClusterOutputs) GetClusterSubnet() string {
 	if x != nil {
 		return x.ClusterSubnet
 	}
 	return ""
 }
 
-func (x *DigitalOceanKubernetesClusterStackOutputs) GetServiceSubnet() string {
+func (x *DigitalOceanKubernetesClusterOutputs) GetServiceSubnet() string {
 	if x != nil {
 		return x.ServiceSubnet
 	}
@@ -148,8 +148,8 @@ var File_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_outputs_pro
 
 const file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/digitalocean/digitaloceankubernetescluster/v1alpha1/outputs.proto\x12?dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1\x1a\x1cshared/options/options.proto\"\xd4\x02\n" +
-	")DigitalOceanKubernetesClusterStackOutputs\x12\x1d\n" +
+	"Icatalog/digitalocean/digitaloceankubernetescluster/v1alpha1/outputs.proto\x12?dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1\x1a\x1cshared/options/options.proto\"\xcf\x02\n" +
+	"$DigitalOceanKubernetesClusterOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12$\n" +
 	"\n" +
@@ -177,7 +177,7 @@ func file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_outputs_pr
 
 var file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanKubernetesClusterStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1.DigitalOceanKubernetesClusterStackOutputs
+	(*DigitalOceanKubernetesClusterOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1.DigitalOceanKubernetesClusterOutputs
 }
 var file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

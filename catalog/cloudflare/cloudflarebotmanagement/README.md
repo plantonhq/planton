@@ -58,7 +58,7 @@ Every other field is optional, and unset means not managed. Fields are gated by 
 | `cf_robots_variant` | string | `off` or `policy_only`. |
 | `is_robots_txt_managed` | bool | Serve a Cloudflare-managed robots.txt prepended to the origin's. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

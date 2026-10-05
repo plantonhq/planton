@@ -27,7 +27,7 @@ func validServer(spec *CloudflareZeroTrustMcpServerSpec) *CloudflareZeroTrustMcp
 	return &CloudflareZeroTrustMcpServer{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustMcpServer",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-mcp-server",
 		},
 		Spec: spec,

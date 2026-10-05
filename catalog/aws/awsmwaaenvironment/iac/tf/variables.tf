@@ -1,5 +1,5 @@
 variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name        = string
     id          = optional(string, "")
@@ -144,7 +144,7 @@ variable "spec" {
     # endpoint_management controls who manages the VPC endpoints for the environment.
     # "SERVICE" (default): AWS creates and manages VPC endpoints automatically.
     # "CUSTOMER": you create and manage VPC endpoints yourself against the
-    # database_vpc_endpoint_service and webserver_vpc_endpoint_service stack
+    # database_vpc_endpoint_service and webserver_vpc_endpoint_service
     # outputs (advanced, <5% adoption).
     # ForceNew: changing this forces environment replacement.
     endpoint_management = optional(string, "")

@@ -33,7 +33,7 @@ type CloudflareZeroTrustAccessServiceToken struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareZeroTrustAccessServiceTokenSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *CloudflareZeroTrustAccessServiceToken) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessServiceToken) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareZeroTrustAccessServiceToken) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *CloudflareZeroTrustAccessServiceToken) GetStatus() *CloudflareZeroTrust
 // an Access service token.
 type CloudflareZeroTrustAccessServiceTokenStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareZeroTrustAccessServiceTokenStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareZeroTrustAccessServiceTokenOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*CloudflareZeroTrustAccessServiceTokenStatus) Descriptor() ([]byte, []int)
 	return file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareZeroTrustAccessServiceTokenStatus) GetOutputs() *CloudflareZeroTrustAccessServiceTokenStackOutputs {
+func (x *CloudflareZeroTrustAccessServiceTokenStatus) GetOutputs() *CloudflareZeroTrustAccessServiceTokenOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_api
 	"apiVersion\x12@\n" +
 	"\x04kind\x18\x02 \x01(\tB,\xbaH)r'\n" +
 	"%CloudflareZeroTrustAccessServiceTokenR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8c\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8c\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2p.dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x8a\x01\n" +
-	"\x06status\x18\x05 \x01(\v2r.dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenStatusR\x06status\"\xc2\x01\n" +
-	"+CloudflareZeroTrustAccessServiceTokenStatus\x12\x92\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2x.dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenStackOutputsR\aoutputsB\x9d\x04\n" +
+	"\x06status\x18\x05 \x01(\v2r.dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenStatusR\x06status\"\xbd\x01\n" +
+	"+CloudflareZeroTrustAccessServiceTokenStatus\x12\x8d\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2s.dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenOutputsR\aoutputsB\x9d\x04\n" +
 	"Icom.dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1B\bApiProtoP\x01Z\x8c\x01github.com/plantonhq/planton/catalog/cloudflare/cloudflarezerotrustaccessservicetoken/v1alpha1;cloudflarezerotrustaccessservicetokenv1alpha1\xa2\x02\x04DPCC\xaa\x02EDev.Planton.Cloudflare.Cloudflarezerotrustaccessservicetoken.V1alpha1\xca\x02EDev\\Planton\\Cloudflare\\Cloudflarezerotrustaccessservicetoken\\V1alpha1\xe2\x02QDev\\Planton\\Cloudflare\\Cloudflarezerotrustaccessservicetoken\\V1alpha1\\GPBMetadata\xea\x02IDev::Planton::Cloudflare::Cloudflarezerotrustaccessservicetoken::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_api_
 
 var file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareZeroTrustAccessServiceToken)(nil),             // 0: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceToken
-	(*CloudflareZeroTrustAccessServiceTokenStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenStatus
-	(*shared.CloudResourceMetadata)(nil),                      // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareZeroTrustAccessServiceTokenSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenSpec
-	(*CloudflareZeroTrustAccessServiceTokenStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenStackOutputs
+	(*CloudflareZeroTrustAccessServiceToken)(nil),        // 0: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceToken
+	(*CloudflareZeroTrustAccessServiceTokenStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenStatus
+	(*shared.CatalogObjectMetadata)(nil),                 // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareZeroTrustAccessServiceTokenSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenSpec
+	(*CloudflareZeroTrustAccessServiceTokenOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustaccessservicetoken_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceToken.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceToken.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceToken.spec:type_name -> dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenSpec
 	1, // 2: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceToken.status:type_name -> dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenStatus
-	4, // 3: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1.CloudflareZeroTrustAccessServiceTokenOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpIdentityPlatformTenantSpec", func() {
 		return &GcpIdentityPlatformTenant{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpIdentityPlatformTenant",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-tenant",
 			},
 			Spec: &GcpIdentityPlatformTenantSpec{

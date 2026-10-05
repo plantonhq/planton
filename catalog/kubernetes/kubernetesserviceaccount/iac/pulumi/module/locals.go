@@ -26,8 +26,8 @@ type Locals struct {
 	// Context for Pulumi operations
 	Ctx *pulumi.Context
 
-	// Stack input containing the target resource
-	StackInput *kubernetesserviceaccountv1alpha1.KubernetesServiceAccountStackInput
+	// IaC input containing the target resource
+	IacInput *kubernetesserviceaccountv1alpha1.KubernetesServiceAccountIacInput
 
 	// Target service account resource
 	Target *kubernetesserviceaccountv1alpha1.KubernetesServiceAccount
@@ -64,12 +64,12 @@ type Locals struct {
 }
 
 // initializeLocals creates and populates the Locals struct
-func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesserviceaccountv1alpha1.KubernetesServiceAccountStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *kubernetesserviceaccountv1alpha1.KubernetesServiceAccountIacInput) *Locals {
 	locals := &Locals{
-		Ctx:        ctx,
-		StackInput: stackInput,
-		Target:     stackInput.Target,
-		Spec:       stackInput.Target.Spec,
+		Ctx:      ctx,
+		IacInput: iacInput,
+		Target:   iacInput.Target,
+		Spec:     iacInput.Target.Spec,
 	}
 
 	locals.ServiceAccountName = locals.Spec.Name
@@ -146,7 +146,7 @@ func buildAnnotations(locals *Locals, workloadIdentityAnnotations map[string]str
 
 // translateWorkloadIdentity converts the workload-identity oneof into the exact
 // ServiceAccount annotations each cloud's webhook expects, and returns the bound
-// identity handle for the stack outputs.
+// identity handle for the outputs.
 //
 // The translation is intentionally the ONLY place cloud specifics appear: the
 // ServiceAccount itself is cloud-agnostic, and the annotation is the entire

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureRedisLinkedServerStackOutputs** captures the outputs of linking
+// **AzureRedisLinkedServerOutputs** captures the outputs of linking
 // two Premium Redis caches into a geo-replication pair.
-type AzureRedisLinkedServerStackOutputs struct {
+type AzureRedisLinkedServerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the linked-server resource.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Cache/redis/{primary}/linkedServers/{secondary}
@@ -40,20 +40,20 @@ type AzureRedisLinkedServerStackOutputs struct {
 	sizeCache                    protoimpl.SizeCache
 }
 
-func (x *AzureRedisLinkedServerStackOutputs) Reset() {
-	*x = AzureRedisLinkedServerStackOutputs{}
+func (x *AzureRedisLinkedServerOutputs) Reset() {
+	*x = AzureRedisLinkedServerOutputs{}
 	mi := &file_catalog_azure_azureredislinkedserver_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureRedisLinkedServerStackOutputs) String() string {
+func (x *AzureRedisLinkedServerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureRedisLinkedServerStackOutputs) ProtoMessage() {}
+func (*AzureRedisLinkedServerOutputs) ProtoMessage() {}
 
-func (x *AzureRedisLinkedServerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureRedisLinkedServerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureredislinkedserver_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *AzureRedisLinkedServerStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureRedisLinkedServerStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureRedisLinkedServerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureRedisLinkedServerOutputs.ProtoReflect.Descriptor instead.
+func (*AzureRedisLinkedServerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureredislinkedserver_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureRedisLinkedServerStackOutputs) GetLinkedServerId() string {
+func (x *AzureRedisLinkedServerOutputs) GetLinkedServerId() string {
 	if x != nil {
 		return x.LinkedServerId
 	}
 	return ""
 }
 
-func (x *AzureRedisLinkedServerStackOutputs) GetLinkedServerName() string {
+func (x *AzureRedisLinkedServerOutputs) GetLinkedServerName() string {
 	if x != nil {
 		return x.LinkedServerName
 	}
 	return ""
 }
 
-func (x *AzureRedisLinkedServerStackOutputs) GetGeoReplicatedPrimaryHostName() string {
+func (x *AzureRedisLinkedServerOutputs) GetGeoReplicatedPrimaryHostName() string {
 	if x != nil {
 		return x.GeoReplicatedPrimaryHostName
 	}
@@ -95,8 +95,8 @@ var File_catalog_azure_azureredislinkedserver_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_azure_azureredislinkedserver_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/azure/azureredislinkedserver/v1alpha1/outputs.proto\x121dev.planton.azure.azureredislinkedserver.v1alpha1\"\xc4\x01\n" +
-	"\"AzureRedisLinkedServerStackOutputs\x12(\n" +
+	";catalog/azure/azureredislinkedserver/v1alpha1/outputs.proto\x121dev.planton.azure.azureredislinkedserver.v1alpha1\"\xbf\x01\n" +
+	"\x1dAzureRedisLinkedServerOutputs\x12(\n" +
 	"\x10linked_server_id\x18\x01 \x01(\tR\x0elinkedServerId\x12,\n" +
 	"\x12linked_server_name\x18\x02 \x01(\tR\x10linkedServerName\x12F\n" +
 	" geo_replicated_primary_host_name\x18\x03 \x01(\tR\x1cgeoReplicatedPrimaryHostNameB\x99\x03\n" +
@@ -116,7 +116,7 @@ func file_catalog_azure_azureredislinkedserver_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_azure_azureredislinkedserver_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureredislinkedserver_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureRedisLinkedServerStackOutputs)(nil), // 0: dev.planton.azure.azureredislinkedserver.v1alpha1.AzureRedisLinkedServerStackOutputs
+	(*AzureRedisLinkedServerOutputs)(nil), // 0: dev.planton.azure.azureredislinkedserver.v1alpha1.AzureRedisLinkedServerOutputs
 }
 var file_catalog_azure_azureredislinkedserver_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

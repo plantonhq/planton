@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-s3-bucket stack outputs
-type AwsS3BucketStackOutputs struct {
+// aws-s3-bucket outputs
+type AwsS3BucketOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id (name) of the S3 bucket created on AWS
 	BucketId string `protobuf:"bytes,1,opt,name=bucket_id,json=bucketId,proto3" json:"bucket_id,omitempty"`
@@ -56,20 +56,20 @@ type AwsS3BucketStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsS3BucketStackOutputs) Reset() {
-	*x = AwsS3BucketStackOutputs{}
+func (x *AwsS3BucketOutputs) Reset() {
+	*x = AwsS3BucketOutputs{}
 	mi := &file_catalog_aws_awss3bucket_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsS3BucketStackOutputs) String() string {
+func (x *AwsS3BucketOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsS3BucketStackOutputs) ProtoMessage() {}
+func (*AwsS3BucketOutputs) ProtoMessage() {}
 
-func (x *AwsS3BucketStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsS3BucketOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awss3bucket_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -81,61 +81,61 @@ func (x *AwsS3BucketStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsS3BucketStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsS3BucketStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsS3BucketOutputs.ProtoReflect.Descriptor instead.
+func (*AwsS3BucketOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awss3bucket_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsS3BucketStackOutputs) GetBucketId() string {
+func (x *AwsS3BucketOutputs) GetBucketId() string {
 	if x != nil {
 		return x.BucketId
 	}
 	return ""
 }
 
-func (x *AwsS3BucketStackOutputs) GetBucketArn() string {
+func (x *AwsS3BucketOutputs) GetBucketArn() string {
 	if x != nil {
 		return x.BucketArn
 	}
 	return ""
 }
 
-func (x *AwsS3BucketStackOutputs) GetRegion() string {
+func (x *AwsS3BucketOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AwsS3BucketStackOutputs) GetBucketRegionalDomainName() string {
+func (x *AwsS3BucketOutputs) GetBucketRegionalDomainName() string {
 	if x != nil {
 		return x.BucketRegionalDomainName
 	}
 	return ""
 }
 
-func (x *AwsS3BucketStackOutputs) GetHostedZoneId() string {
+func (x *AwsS3BucketOutputs) GetHostedZoneId() string {
 	if x != nil {
 		return x.HostedZoneId
 	}
 	return ""
 }
 
-func (x *AwsS3BucketStackOutputs) GetBucketDomainName() string {
+func (x *AwsS3BucketOutputs) GetBucketDomainName() string {
 	if x != nil {
 		return x.BucketDomainName
 	}
 	return ""
 }
 
-func (x *AwsS3BucketStackOutputs) GetWebsiteEndpoint() string {
+func (x *AwsS3BucketOutputs) GetWebsiteEndpoint() string {
 	if x != nil {
 		return x.WebsiteEndpoint
 	}
 	return ""
 }
 
-func (x *AwsS3BucketStackOutputs) GetWebsiteDomain() string {
+func (x *AwsS3BucketOutputs) GetWebsiteDomain() string {
 	if x != nil {
 		return x.WebsiteDomain
 	}
@@ -146,8 +146,8 @@ var File_catalog_aws_awss3bucket_v1alpha1_outputs_proto protoreflect.FileDescrip
 
 const file_catalog_aws_awss3bucket_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	".catalog/aws/awss3bucket/v1alpha1/outputs.proto\x12$dev.planton.aws.awss3bucket.v1alpha1\"\xd2\x02\n" +
-	"\x17AwsS3BucketStackOutputs\x12\x1b\n" +
+	".catalog/aws/awss3bucket/v1alpha1/outputs.proto\x12$dev.planton.aws.awss3bucket.v1alpha1\"\xcd\x02\n" +
+	"\x12AwsS3BucketOutputs\x12\x1b\n" +
 	"\tbucket_id\x18\x01 \x01(\tR\bbucketId\x12\x1d\n" +
 	"\n" +
 	"bucket_arn\x18\x02 \x01(\tR\tbucketArn\x12\x16\n" +
@@ -173,7 +173,7 @@ func file_catalog_aws_awss3bucket_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awss3bucket_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awss3bucket_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsS3BucketStackOutputs)(nil), // 0: dev.planton.aws.awss3bucket.v1alpha1.AwsS3BucketStackOutputs
+	(*AwsS3BucketOutputs)(nil), // 0: dev.planton.aws.awss3bucket.v1alpha1.AwsS3BucketOutputs
 }
 var file_catalog_aws_awss3bucket_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

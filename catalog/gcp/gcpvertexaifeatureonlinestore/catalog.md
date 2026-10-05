@@ -4,7 +4,7 @@ Serves your models' features in production at millisecond latency: when a reques
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project
 - **Online store** -- a `vertex.AiFeatureOnlineStore` with Bigtable or Optimized storage
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -67,7 +67,7 @@ spec:
 planton apply -f vertex-ai-feature-online-store.yaml
 ```
 
-This creates a one-to-three-node Bigtable store serving two customer features, refreshed every six hours. A Stack Job tracks the provisioning in real time.
+This creates a one-to-three-node Bigtable store serving two customer features, refreshed every six hours. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,7 +85,7 @@ These are the most important decisions when configuring an online store. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -95,9 +95,9 @@ These are the most important decisions when configuring an online store. Explore
 | **GcpBigQueryTable** | `featureViews[].bigQuerySource.uri` | `status.outputs.qualified_name` |
 | **GcpKmsKey** | `kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -118,7 +118,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Vertex AI Feature Group**](/cloud-catalog/gcp-vertex-ai-feature-group) -- the registered features views serve
-- [**GCP BigQuery Table**](/cloud-catalog/gcp-big-query-table) -- a view's direct source
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption
-- [**GCP Global Forwarding Rule**](/cloud-catalog/gcp-global-forwarding-rule) -- the consumer-side PSC endpoint
+- [**GCP Vertex AI Feature Group**](/infra-catalog/gcp-vertex-ai-feature-group) -- the registered features views serve
+- [**GCP BigQuery Table**](/infra-catalog/gcp-big-query-table) -- a view's direct source
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed encryption
+- [**GCP Global Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- the consumer-side PSC endpoint

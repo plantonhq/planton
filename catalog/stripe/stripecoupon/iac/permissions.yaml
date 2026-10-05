@@ -7,7 +7,7 @@
 # exactly this file upgrades it to `proven` -- Stripe's refusal names the missing permission, so
 # that run also proves each label.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: stripecoupon
 spec:

@@ -16,7 +16,7 @@ Terraform/OpenTofu module that customizes one of the emails an Auth0 tenant send
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `template`, `from`, `subject`, `body` (required); `syntax` (default `liquid`), `enabled` (default `true`), `result_url`, `url_lifetime_in_seconds`, `include_email_in_redirect` (optional) |
 
 ## Outputs

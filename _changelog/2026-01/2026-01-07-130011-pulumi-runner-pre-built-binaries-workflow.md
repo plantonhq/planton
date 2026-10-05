@@ -6,7 +6,7 @@
 
 ## Summary
 
-Introduced a new GitHub Actions workflow that builds pre-compiled binaries for all 130 Pulumi deployment components in parallel, eliminating the need for Go compilation at runtime. This replaces the previous Go cache pre-warming approach with a more direct solution: ship binaries, not caches.
+Introduced a new GitHub Actions workflow that builds pre-compiled binaries for all 130 Pulumi catalog kinds in parallel, eliminating the need for Go compilation at runtime. This replaces the previous Go cache pre-warming approach with a more direct solution: ship binaries, not caches.
 
 ## Problem Statement
 
@@ -29,7 +29,7 @@ The previous IaC Runner base image strategy pre-warmed Go caches for each cloud 
 
 ### Pre-Built Binary Approach
 
-Instead of shipping Go caches, compile all 130 Pulumi deployment components to standalone binaries during the CI build. The binaries can be executed directly by the Pulumi Automation API without any Go compilation at runtime.
+Instead of shipping Go caches, compile all 130 Pulumi catalog kinds to standalone binaries during the CI build. The binaries can be executed directly by the Pulumi Automation API without any Go compilation at runtime.
 
 ```mermaid
 flowchart TB
@@ -41,7 +41,7 @@ flowchart TB
     end
     
     subgraph After ["After: Pre-Built Binaries"]
-        A1[Matrix: 130 parallel jobs] --> A2[go build per component]
+        A1[Matrix: 130 parallel jobs] --> A2[go build per kind]
         A2 --> A3[Upload binary artifacts]
         A3 --> A4[Download + combine]
         A4 --> A5[COPY binaries to image]
@@ -51,7 +51,7 @@ flowchart TB
 
 ### Key Design Decisions
 
-1. **One matrix entry per component**: 130 parallel jobs on native GitHub runners (well under 256 limit)
+1. **One matrix entry per kind**: 130 parallel jobs on native GitHub runners (well under 256 limit)
 2. **Static binaries**: `CGO_ENABLED=0` for maximum portability
 3. **Stripped binaries**: `-ldflags="-s -w"` to reduce size
 4. **Native runner caching**: Leverage GitHub's built-in Go caching, no self-hosted runners needed
@@ -77,7 +77,7 @@ strategy:
   matrix:
     include:
       - provider: aws
-        component: awsekscluster
+        kind: awsekscluster
         path: apis/dev/planton/provider/aws/awsekscluster/v1/iac/pulumi
       # ... 129 more entries
 ```
@@ -85,7 +85,7 @@ strategy:
 **2. build-image (single job)**
 
 - Downloads all 130 binary artifacts
-- Organizes into `binaries/{provider}/{component}` structure
+- Organizes into `binaries/{provider}/{kind}` structure
 - Builds Docker image with COPY
 - Pushes to GHCR
 
@@ -104,9 +104,9 @@ COPY binaries/ ${PLANTON_BINARIES_DIR}/
 
 The image still includes Go toolchain for organization (custom) modules that aren't part of planton.
 
-### Component Coverage
+### Kind Coverage
 
-| Provider | Components |
+| Provider | Kinds |
 |----------|------------|
 | Kubernetes | 45 |
 | AWS | 22 |
@@ -150,7 +150,7 @@ The image still includes Go toolchain for organization (custom) modules that are
 
 | File | Purpose |
 |------|---------|
-| `.github/workflows/pulumi-runner.yml` | 130-component matrix build workflow |
+| `.github/workflows/pulumi-runner.yml` | 130-kind matrix build workflow |
 
 ### Modified
 
@@ -171,16 +171,16 @@ git push origin v0.0.100
 
 Or manually via workflow dispatch with a version input.
 
-### Adding New Components
+### Adding New Kinds
 
-When adding a new deployment component:
+When adding a new catalog kind:
 
-1. Create component at `apis/dev/planton/provider/{provider}/{component}/v1/iac/pulumi/`
+1. Create kind at `apis/dev/planton/provider/{provider}/{kind}/v1/iac/pulumi/`
 2. Add entry to workflow matrix:
    ```yaml
    - provider: {provider}
-     component: {component}
-     path: apis/dev/planton/provider/{provider}/{component}/v1/iac/pulumi
+     kind: {kind}
+     path: apis/dev/planton/provider/{provider}/{kind}/v1/iac/pulumi
    ```
 3. Next release will include the new binary
 

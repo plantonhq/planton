@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureRouteTableStackInput is the input to the IaC modules (Pulumi/Terraform).
+// AzureRouteTableIacInput is the input to the IaC modules (Pulumi/Terraform).
 // It contains the target resource definition and Azure provider credentials.
-type AzureRouteTableStackInput struct {
+type AzureRouteTableIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The route table resource to deploy.
 	Target *AzureRouteTable `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AzureRouteTableStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureRouteTableStackInput) Reset() {
-	*x = AzureRouteTableStackInput{}
+func (x *AzureRouteTableIacInput) Reset() {
+	*x = AzureRouteTableIacInput{}
 	mi := &file_catalog_azure_azureroutetable_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureRouteTableStackInput) String() string {
+func (x *AzureRouteTableIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureRouteTableStackInput) ProtoMessage() {}
+func (*AzureRouteTableIacInput) ProtoMessage() {}
 
-func (x *AzureRouteTableStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureRouteTableIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureroutetable_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureRouteTableStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureRouteTableStackInput.ProtoReflect.Descriptor instead.
-func (*AzureRouteTableStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureRouteTableIacInput.ProtoReflect.Descriptor instead.
+func (*AzureRouteTableIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureroutetable_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureRouteTableStackInput) GetTarget() *AzureRouteTable {
+func (x *AzureRouteTableIacInput) GetTarget() *AzureRouteTable {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureRouteTableStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureRouteTableIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azureroutetable_v1alpha1_input_proto protoreflect.FileDes
 
 const file_catalog_azure_azureroutetable_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/azure/azureroutetable/v1alpha1/input.proto\x12*dev.planton.azure.azureroutetable.v1alpha1\x1a0catalog/azure/azureroutetable/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xc1\x01\n" +
-	"\x19AzureRouteTableStackInput\x12S\n" +
+	"2catalog/azure/azureroutetable/v1alpha1/input.proto\x12*dev.planton.azure.azureroutetable.v1alpha1\x1a0catalog/azure/azureroutetable/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xbf\x01\n" +
+	"\x17AzureRouteTableIacInput\x12S\n" +
 	"\x06target\x18\x01 \x01(\v2;.dev.planton.azure.azureroutetable.v1alpha1.AzureRouteTableR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xe6\x02\n" +
 	".com.dev.planton.azure.azureroutetable.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_azure_azureroutetable_v1alpha1_input_proto_rawDescGZIP() []byt
 
 var file_catalog_azure_azureroutetable_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureroutetable_v1alpha1_input_proto_goTypes = []any{
-	(*AzureRouteTableStackInput)(nil), // 0: dev.planton.azure.azureroutetable.v1alpha1.AzureRouteTableStackInput
+	(*AzureRouteTableIacInput)(nil),   // 0: dev.planton.azure.azureroutetable.v1alpha1.AzureRouteTableIacInput
 	(*AzureRouteTable)(nil),           // 1: dev.planton.azure.azureroutetable.v1alpha1.AzureRouteTable
 	(*azure.AzureProviderConfig)(nil), // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureroutetable_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureroutetable.v1alpha1.AzureRouteTableStackInput.target:type_name -> dev.planton.azure.azureroutetable.v1alpha1.AzureRouteTable
-	2, // 1: dev.planton.azure.azureroutetable.v1alpha1.AzureRouteTableStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureroutetable.v1alpha1.AzureRouteTableIacInput.target:type_name -> dev.planton.azure.azureroutetable.v1alpha1.AzureRouteTable
+	2, // 1: dev.planton.azure.azureroutetable.v1alpha1.AzureRouteTableIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

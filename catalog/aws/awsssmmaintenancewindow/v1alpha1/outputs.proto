@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsssmmaintenancewindow.v1alpha1;
 
-// AwsSsmMaintenanceWindowStackOutputs captures the observable state of
+// AwsSsmMaintenanceWindowOutputs captures the observable state of
 // the maintenance window after apply.
-message AwsSsmMaintenanceWindowStackOutputs {
+message AwsSsmMaintenanceWindowOutputs {
   // The window's AWS-generated ID ("mw-..." - also the provider's
   // import ID).
   string window_id = 1;

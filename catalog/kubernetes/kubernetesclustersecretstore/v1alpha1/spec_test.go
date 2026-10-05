@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	kubernetesprovider "github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -38,7 +38,7 @@ var _ = ginkgo.Describe("KubernetesClusterSecretStore Validation Tests", func() 
 		input = &KubernetesClusterSecretStore{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesClusterSecretStore",
-			Metadata:   &shared.CloudResourceMetadata{Name: "aws-prod"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "aws-prod"},
 			Spec: &KubernetesClusterSecretStoreSpec{
 				SecretsNamespace: literal("external-secrets"),
 				Config:           awsBackend(),
@@ -92,7 +92,7 @@ var _ = ginkgo.Describe("KubernetesClusterSecretStore Validation Tests", func() 
 						VaultUrl: &foreignkeyv1.StringValueOrRef{
 							LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 								ValueFrom: &foreignkeyv1.ValueFromRef{
-									Kind:      cloudresourcekind.CloudResourceKind_AzureKeyVault,
+									Kind:      catalogkind.CatalogKind_AzureKeyVault,
 									Name:      "platform-kv",
 									FieldPath: "status.outputs.vault_uri",
 								},

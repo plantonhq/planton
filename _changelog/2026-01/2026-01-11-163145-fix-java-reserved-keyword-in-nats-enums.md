@@ -27,7 +27,7 @@ apis/stubs/java/.../StreamDiscardEnum.java:73: error: enum constant expected her
 
 ### Pain Points
 
-- Java build (`//apis/stubs/java:cloudresource_validation_test`) failed completely
+- Java build (`//apis/stubs/java:infracomponent_validation_test`) failed completely
 - Blocked all Java-dependent builds and tests
 - Reserved keyword collision is a common protobuf pitfall across languages
 
@@ -117,7 +117,7 @@ discard = each.value.discard == "new_msgs" ? "new" : each.value.discard
 
 ## Impact
 
-| Component | Changes |
+| Kind | Changes |
 |-----------|---------|
 | `spec.proto` | 2 enum values renamed with explanatory comments |
 | `streams.go` (Pulumi) | 2 conversion functions updated |

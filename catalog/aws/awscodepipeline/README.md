@@ -6,7 +6,7 @@ Deploy and manage AWS CodePipeline continuous delivery pipelines that orchestrat
 
 AWS CodePipeline is a fully managed CI/CD orchestration service that automates your release process. A pipeline is an ordered sequence of stages — each containing one or more actions that perform tasks such as fetching source code, running builds, executing tests, requiring manual approval, or deploying to production environments.
 
-This component creates a CodePipeline pipeline with full support for:
+This kind creates a CodePipeline pipeline with full support for:
 - **Stages and actions** — source, build, test, deploy, approval, invoke, and compute (inline shell commands without a build project)
 - **Artifact stores** — S3-backed storage for passing artifacts between stages
 - **V2 features** — git-based triggers for automatic execution, pipeline-level variables for parameterization, and advanced execution modes (QUEUED, PARALLEL)
@@ -229,7 +229,7 @@ spec:
 | `defaultValue` | string | No | Default value when not supplied at execution time |
 | `description` | string | No | Human-readable explanation of the variable |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|

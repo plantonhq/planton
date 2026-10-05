@@ -6,7 +6,7 @@
 
 ## Summary
 
-Refactored protobuf enum values across 9 deployment components to exactly match the string values expected by their respective cloud provider APIs. This enables Go code to use the `.String()` method directly instead of verbose switch statements, significantly simplifying the Pulumi module implementations.
+Refactored protobuf enum values across 9 catalog kinds to exactly match the string values expected by their respective cloud provider APIs. This enables Go code to use the `.String()` method directly instead of verbose switch statements, significantly simplifying the Pulumi module implementations.
 
 ## Problem Statement
 
@@ -59,9 +59,9 @@ if locals.CivoDatabase.Spec.Engine == 0 {
 
 ## Implementation Details
 
-### Components Updated
+### Kinds Updated
 
-| Component | Enum | Before → After |
+| Kind | Enum | Before → After |
 |-----------|------|----------------|
 | **cloudflarer2bucket** | `CloudflareR2Location` | `CLOUDFLARE_R2_LOCATION_UNSPECIFIED` → `auto` |
 | **cloudflareloadbalancer** | `SessionAffinity` | `SESSION_AFFINITY_NONE/COOKIE` → `none/cookie` |
@@ -181,7 +181,7 @@ if a.Type != 0 {
 ## Related Work
 
 - This work was done alongside the Cloudflare R2 bucket custom domain feature
-- Pattern can be applied to other components as they're updated
+- Pattern can be applied to other kinds as they're updated
 
 ---
 

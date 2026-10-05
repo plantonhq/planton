@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceandatabasefirewall.v1alpha1;
 
-// DigitalOceanDatabaseFirewallStackOutputs captures the key outputs after
+// DigitalOceanDatabaseFirewallOutputs captures the key outputs after
 // provisioning a database firewall rule set. The rule set is a property of
 // its cluster -- DigitalOcean mints no stable standalone id for it (the
 // Terraform state id is a random unique string), so the cluster UUID IS
 // the durable identity and the only output.
-message DigitalOceanDatabaseFirewallStackOutputs {
+message DigitalOceanDatabaseFirewallOutputs {
   // UUID of the database cluster whose inbound sources this rule set
   // defines.
   string cluster_id = 1;

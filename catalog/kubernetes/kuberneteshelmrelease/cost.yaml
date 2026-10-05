@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kuberneteshelmrelease
 spec:
@@ -25,4 +25,4 @@ spec:
     - "values_yaml and the set/set_string/set_sensitive layers are opaque chart-values documents this catalog does not parse -- even resource requests declared inside them (as the 01-https-repo-chart preset's podinfo values do) are invisible to the catalog's derivation grammar"
     - "the typed fields govern Helm MECHANICS only -- atomicity, waits, history depth, CRD handling -- none of them declares capacity"
     - the price of whatever the release reserves is the target cluster's node and storage-class economics, which this catalog cannot know
-  notes: "This is the catalog's sole intentional passthrough -- a generic 'helm install' for charts the catalog has no first-class component for. A typed catalog component always wins where one exists: it validates configuration before deploy, exports composable outputs, and carries a real cost profile -- this component, by design, can promise none of that. Its own direct footprint is negligible (a Helm release record Secret per revision, bounded by max_history)."
+  notes: "This is the catalog's sole intentional passthrough -- a generic 'helm install' for charts the catalog has no first-class kind for. A typed catalog kind always wins where one exists: it validates configuration before deploy, exports composable outputs, and carries a real cost profile -- this component, by design, can promise none of that. Its own direct footprint is negligible (a Helm release record Secret per revision, bounded by max_history)."

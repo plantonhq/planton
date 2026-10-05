@@ -59,7 +59,7 @@ func cert(spec *AzureKeyVaultCertificateSpec) *AzureKeyVaultCertificate {
 	return &AzureKeyVaultCertificate{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureKeyVaultCertificate",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-certificate",
 		},
 		Spec: spec,

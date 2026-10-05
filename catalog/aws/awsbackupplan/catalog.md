@@ -4,7 +4,7 @@ Deploys an AWS Backup plan: the scheduled rules that create recovery points, and
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Backup Plan** — the named plan holding every rule: schedules, backup windows, continuous (point-in-time) backups, lifecycle, copy actions, air-gapped targeting, and scan actions. Windows VSS application-consistent backups (EC2 only at the pinned provider) ride along via `advancedBackupSettings`
 - **Backup Selections** — one per `selections` entry, each assigning resources to the plan under the IAM role AWS Backup assumes. Created and destroyed with the plan
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with AWS Backup permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with AWS Backup permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -67,7 +67,7 @@ spec:
 planton apply -f backup-plan.yaml
 ```
 
-This creates a plan with one rule firing daily at 05:00 UTC into the referenced vault, expiring recovery points after 35 days, covering every resource tagged `backup=true` under the referenced role. A Stack Job tracks the provisioning in real time.
+This creates a plan with one rule firing daily at 05:00 UTC into the referenced vault, expiring recovery points after 35 days, covering every resource tagged `backup=true` under the referenced role. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -119,7 +119,7 @@ These are the most important decisions when configuring a backup plan. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -129,16 +129,16 @@ These are the most important decisions when configuring a backup plan. Explore t
 | **AwsIamRole** | `selections[].iamRoleArn` | `status.outputs.role_arn` |
 | **AwsIamRole** | `scanSetting.scannerRoleArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `plan_id` | The plan's AWS-generated UUID — its real identity at AWS and the provider's import ID | Addressing the plan in AWS CLI/API operations and imports |
 | `plan_arn` | The plan's ARN | IAM policies scoping backup administration to specific plans |
 
-`plan_version` (a new ID on every plan update) and `selection_ids` (AWS-generated selection IDs keyed by selection name, importable as `{plan_id}|{selection_id}`) are also exported; they are operational echoes for auditing and import, not composition inputs — no catalog component consumes them via ValueFromRef.
+`plan_version` (a new ID on every plan update) and `selection_ids` (AWS-generated selection IDs keyed by selection name, importable as `{plan_id}|{selection_id}`) are also exported; they are operational echoes for auditing and import, not composition inputs — no catalog kind consumes them via ValueFromRef.
 
 ## Common Patterns
 
@@ -152,7 +152,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Backup Vault**](/cloud-catalog/aws-backup-vault) — every rule's target, plus copy-action and air-gapped destinations
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the role AWS Backup assumes for selections, and the GuardDuty scanner role
-- [**AWS Backup Restore Testing Plan**](/cloud-catalog/aws-backup-restore-testing-plan) — proves the recovery points this plan creates actually restore
-- [**AWS Backup Framework**](/cloud-catalog/aws-backup-framework) — audits that resources are covered by a plan and that retention meets policy
+- [**AWS Backup Vault**](/infra-catalog/aws-backup-vault) — every rule's target, plus copy-action and air-gapped destinations
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the role AWS Backup assumes for selections, and the GuardDuty scanner role
+- [**AWS Backup Restore Testing Plan**](/infra-catalog/aws-backup-restore-testing-plan) — proves the recovery points this plan creates actually restore
+- [**AWS Backup Framework**](/infra-catalog/aws-backup-framework) — audits that resources are covered by a plan and that retention meets policy

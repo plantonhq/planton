@@ -30,7 +30,7 @@ func minimalValidRunner() *GcpPlantonRunner {
 	return &GcpPlantonRunner{
 		ApiVersion: "gcp.planton.dev/v1alpha1",
 		Kind:       "GcpPlantonRunner",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "vpc-runner",
 		},
 		Spec: &GcpPlantonRunnerSpec{

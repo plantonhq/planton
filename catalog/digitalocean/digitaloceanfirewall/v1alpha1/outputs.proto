@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceanfirewall.v1alpha1;
 
-// DigitalOceanFirewallStackOutputs captures the identifiers exported after a
+// DigitalOceanFirewallOutputs captures the identifiers exported after a
 // firewall is provisioned. The firewall's live status and pending per-Droplet
 // changes are deliberately NOT outputs: they are apply-time snapshots that go
 // stale immediately; verification reads them from the live API instead.
-message DigitalOceanFirewallStackOutputs {
+message DigitalOceanFirewallOutputs {
   // The unique ID of the firewall (a UUID assigned by DigitalOcean).
   string firewall_id = 1;
 }

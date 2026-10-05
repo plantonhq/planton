@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockknowledgebase.v1alpha1;
 
-// AwsBedrockKnowledgeBaseStackOutputs captures observable identifiers from
+// AwsBedrockKnowledgeBaseOutputs captures observable identifiers from
 // a provisioned Bedrock knowledge base. These outputs are used by
 // downstream resources (agents, flows) to wire dependencies via
 // StringValueOrRef.
-message AwsBedrockKnowledgeBaseStackOutputs {
+message AwsBedrockKnowledgeBaseOutputs {
   // The unique knowledge base identifier (e.g. "EMDPPAYPZI") - the join
   // key agents and flows use.
   string knowledge_base_id = 1;

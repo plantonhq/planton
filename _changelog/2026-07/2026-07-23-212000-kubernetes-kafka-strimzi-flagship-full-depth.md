@@ -30,7 +30,7 @@
   policy, rack awareness, JVM heap, and maintenance windows. The
   embedded ingress block and the bundled Confluent Schema Registry and
   Kowl UI containers are gone — the schema-registry and console roles
-  move to permissively-licensed first-class components.
+  move to permissively-licensed first-class kinds.
 - **KubernetesKafkaTopic (new)** — declarative topics reconciled by the
   cluster's topic operator, with the placement contract (the cluster's
   own namespace, the `strimzi.io/cluster` binding) on the exact fields

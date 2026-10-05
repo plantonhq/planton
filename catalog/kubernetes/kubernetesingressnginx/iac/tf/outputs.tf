@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesIngressNginxStackOutputs by the
+# Outputs — flattened onto KubernetesIngressNginxOutputs by the
 # platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

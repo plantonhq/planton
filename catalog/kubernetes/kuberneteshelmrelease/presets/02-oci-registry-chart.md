@@ -2,7 +2,7 @@
 
 This preset installs [podinfo](https://github.com/stefanprodan/podinfo) 6.9.2 from an OCI registry (`oci://ghcr.io/stefanprodan/charts`) — the same chart as preset 01, pulled the other way charts are published. More and more projects ship charts only to OCI registries (GHCR, ECR, ACR, Artifact Registry); the manifest shape is identical to the HTTPS form except for the `repo` scheme.
 
-**Before reaching for this component at all:** if the catalog has a first-class component for what you're deploying, use it instead. KubernetesHelmRelease is the intentional passthrough for charts no component covers.
+**Before reaching for this kind at all:** if the catalog has a first-class kind for what you're deploying, use it instead. KubernetesHelmRelease is the intentional passthrough for charts no kind covers.
 
 ## When to Use
 

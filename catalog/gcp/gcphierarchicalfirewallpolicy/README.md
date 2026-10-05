@@ -4,7 +4,7 @@ Creates a hierarchical firewall policy — an ordered set of firewall rules that
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Firewall policy** -- the `compute_firewall_policy` container on the organization or folder, named by Google with a numeric ID
 - **Rules** -- one `compute_firewall_policy_rule` per `rules` entry, keyed by priority
@@ -105,7 +105,7 @@ planton apply -f org-baseline.yaml
 - `targetSecureTags` and `targetServiceAccounts` are mutually exclusive.
 - `ports` only with `tcp`, `udp`, `6`, or `17`; `ipProtocol` is a well-known name, `all`, or a number 0-255.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -137,7 +137,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpNetworkFirewallPolicy](/docs/catalog/gcp/gcpnetworkfirewallpolicy) — the project-level policy attached to VPC networks
 - [GcpFirewallRule](/docs/catalog/gcp/gcpfirewallrule) — legacy per-network VPC firewall rules, evaluated after every policy

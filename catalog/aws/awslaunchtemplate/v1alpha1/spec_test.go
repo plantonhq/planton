@@ -27,7 +27,7 @@ func minimalValidLaunchTemplate() *AwsLaunchTemplate {
 	return &AwsLaunchTemplate{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsLaunchTemplate",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "web",
 		},
 		Spec: &AwsLaunchTemplateSpec{

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuredataprotectionbackuppolicy.v1alpha1;
 
-// **AzureDataProtectionBackupPolicyStackOutputs** captures the
+// **AzureDataProtectionBackupPolicyOutputs** captures the
 // outputs of provisioning a Data Protection backup policy.
-message AzureDataProtectionBackupPolicyStackOutputs {
+message AzureDataProtectionBackupPolicyOutputs {
   // The Azure Resource Manager ID of the policy -- what backup
   // instances bind their policy by.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DataProtection/backupVaults/{vault}/backupPolicies/{name}

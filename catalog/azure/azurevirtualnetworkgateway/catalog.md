@@ -4,7 +4,7 @@ Deploys an Azure virtual network gateway -- the managed appliance that terminate
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Virtual Network Gateway** -- a VPN or ExpressRoute gateway of the chosen SKU in the specified region and resource group, bound to the referenced GatewaySubnet and (for VPN gateways) public IPs
 - **NAT Rules** -- one `natRules` entry each, translating overlapping address space; each rule's ARM id surfaces in the `nat_rule_ids` output under its name
@@ -16,7 +16,7 @@ Connections are NOT created here -- each AzureVirtualNetworkGatewayConnection is
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -62,7 +62,7 @@ spec:
 planton apply -f azure-virtual-network-gateway.yaml
 ```
 
-This creates a route-based VpnGw1AZ VPN gateway with BGP enabled -- expect 25-45 minutes to provision. A Stack Job tracks the provisioning in real time.
+This creates a route-based VpnGw1AZ VPN gateway with BGP enabled -- expect 25-45 minutes to provision. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -110,7 +110,7 @@ These are the most important decisions when configuring a gateway. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -119,16 +119,16 @@ These are the most important decisions when configuring a gateway. Explore the f
 | **AzurePublicIp** (per configuration) | `ipConfigurations[].publicIpAddressId` | `status.outputs.public_ip_id` |
 | **AzureLocalNetworkGateway** (forced tunneling) | `defaultLocalNetworkGatewayId` | `status.outputs.local_network_gateway_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `virtual_network_gateway_id` | Azure Resource Manager ID of the gateway | AzureVirtualNetworkGatewayConnection's `virtualNetworkGatewayId` (and `peerVirtualNetworkGatewayId` for VNet-to-VNet) |
 | `nat_rule_ids` | ARM ids of the gateway's NAT rules, keyed by rule name | Connections' `egressNatRuleIds`/`ingressNatRuleIds` (supplied as literals) |
 
-The only other output, `virtual_network_gateway_name`, echoes the gateway's name back; no downstream Cloud Resource consumes it. The gateway's public address is not an output here -- it belongs to the referenced AzurePublicIp and surfaces through that kind's outputs.
+The only other output, `virtual_network_gateway_name`, echoes the gateway's name back; no downstream Infra Component consumes it. The gateway's public address is not an output here -- it belongs to the referenced AzurePublicIp and surfaces through that kind's outputs.
 
 ## Common Patterns
 
@@ -142,8 +142,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the gateway is created in
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- the dedicated "GatewaySubnet" the gateway lives in
-- [**Azure Public IP**](/cloud-catalog/azure-public-ip) -- the addresses tunnels terminate on
-- [**Azure Local Network Gateway**](/cloud-catalog/azure-local-network-gateway) -- describes each on-premises site
-- [**Azure Virtual Network Gateway Connection**](/cloud-catalog/azure-virtual-network-gateway-connection) -- the tunnels that terminate on this gateway
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the gateway is created in
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- the dedicated "GatewaySubnet" the gateway lives in
+- [**Azure Public IP**](/infra-catalog/azure-public-ip) -- the addresses tunnels terminate on
+- [**Azure Local Network Gateway**](/infra-catalog/azure-local-network-gateway) -- describes each on-premises site
+- [**Azure Virtual Network Gateway Connection**](/infra-catalog/azure-virtual-network-gateway-connection) -- the tunnels that terminate on this gateway

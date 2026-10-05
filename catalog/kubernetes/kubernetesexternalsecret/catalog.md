@@ -4,7 +4,7 @@ Declares ONE secret sync: the External Secrets Operator reads the referenced ent
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ExternalSecret** -- the ESO custom resource declaring the sync (store reference, entries/pulls, target, refresh lifecycle)
 - **Kubernetes Secret** (materialized by the operator, not the module) -- named `target.name` (defaulting to this resource's name), refreshed on the interval, consumed by workloads
@@ -60,11 +60,11 @@ spec:
 planton apply -f external-secret.yaml
 ```
 
-This syncs two fields of one structured backend entry into a Kubernetes Secret named `app-database`, refreshed hourly (the upstream default). A Stack Job tracks the provisioning in real time.
+This syncs two fields of one structured backend entry into a Kubernetes Secret named `app-database`, refreshed hourly (the upstream default). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the namespace and the store to resources managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, wire the namespace and the store to resources managed by other Infra Components:
 
 ```yaml
 spec:
@@ -103,7 +103,7 @@ These are the most important decisions when configuring the sync. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -111,9 +111,9 @@ These are the most important decisions when configuring the sync. Explore the fu
 | **KubernetesSecretStore** | `storeRef.secretStore.name` | `status.outputs.store_name` |
 | **KubernetesClusterSecretStore** | `storeRef.clusterSecretStore.name` | `status.outputs.store_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -133,7 +133,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Secret Store**](/cloud-catalog/kubernetes-secret-store) -- the namespaced connection this sync reads through; deploy one first
-- [**Cluster Secret Store**](/cloud-catalog/kubernetes-cluster-secret-store) -- the cluster-scoped alternative when many namespaces share one backend connection
-- [**External Secrets Operator**](/cloud-catalog/kubernetes-external-secrets-operator) -- the machinery that does the syncing
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- the typical consumer: wire env and volumes to this resource's `secret_name` output instead of hardcoding; a registry pull secret rendered here is named in the workload's `pod.imagePullSecrets` with an explicit `kind: KubernetesExternalSecret` and `fieldPath: status.outputs.secret_name` -- the pull route that works without a Planton backend, because the cluster reads the credential from your secrets manager
+- [**Secret Store**](/infra-catalog/kubernetes-secret-store) -- the namespaced connection this sync reads through; deploy one first
+- [**Cluster Secret Store**](/infra-catalog/kubernetes-cluster-secret-store) -- the cluster-scoped alternative when many namespaces share one backend connection
+- [**External Secrets Operator**](/infra-catalog/kubernetes-external-secrets-operator) -- the machinery that does the syncing
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- the typical consumer: wire env and volumes to this resource's `secret_name` output instead of hardcoding; a registry pull secret rendered here is named in the workload's `pod.imagePullSecrets` with an explicit `kind: KubernetesExternalSecret` and `fieldPath: status.outputs.secret_name` -- the pull route that works without a Planton backend, because the cluster reads the credential from your secrets manager

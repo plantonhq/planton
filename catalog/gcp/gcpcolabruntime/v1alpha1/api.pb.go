@@ -31,7 +31,7 @@ type GcpColabRuntime struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpColabRuntimeSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpColabRuntime) GetKind() string {
 	return ""
 }
 
-func (x *GcpColabRuntime) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpColabRuntime) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpColabRuntime) GetStatus() *GcpColabRuntimeStatus {
 // gcp-colab-runtime status
 type GcpColabRuntimeStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpColabRuntimeStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpColabRuntimeOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpColabRuntimeStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcolabruntime_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpColabRuntimeStatus) GetOutputs() *GcpColabRuntimeStackOutputs {
+func (x *GcpColabRuntimeStatus) GetOutputs() *GcpColabRuntimeOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpcolabruntime_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12*\n" +
 	"\x04kind\x18\x02 \x01(\tB\x16\xbaH\x13r\x11\n" +
 	"\x0fGcpColabRuntimeR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Y\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Y\n" +
 	"\x04spec\x18\x04 \x01(\v2=.dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12W\n" +
-	"\x06status\x18\x05 \x01(\v2?.dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeStatusR\x06status\"x\n" +
-	"\x15GcpColabRuntimeStatus\x12_\n" +
-	"\aoutputs\x18\x01 \x01(\v2E.dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeStackOutputsR\aoutputsB\xd8\x02\n" +
+	"\x06status\x18\x05 \x01(\v2?.dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeStatusR\x06status\"s\n" +
+	"\x15GcpColabRuntimeStatus\x12Z\n" +
+	"\aoutputs\x18\x01 \x01(\v2@.dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeOutputsR\aoutputsB\xd8\x02\n" +
 	",com.dev.planton.gcp.gcpcolabruntime.v1alpha1B\bApiProtoP\x01ZYgithub.com/plantonhq/planton/catalog/gcp/gcpcolabruntime/v1alpha1;gcpcolabruntimev1alpha1\xa2\x02\x04DPGG\xaa\x02(Dev.Planton.Gcp.Gcpcolabruntime.V1alpha1\xca\x02(Dev\\Planton\\Gcp\\Gcpcolabruntime\\V1alpha1\xe2\x024Dev\\Planton\\Gcp\\Gcpcolabruntime\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Gcp::Gcpcolabruntime::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_gcp_gcpcolabruntime_v1alpha1_api_proto_msgTypes = make([]protoi
 var file_catalog_gcp_gcpcolabruntime_v1alpha1_api_proto_goTypes = []any{
 	(*GcpColabRuntime)(nil),              // 0: dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntime
 	(*GcpColabRuntimeStatus)(nil),        // 1: dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*GcpColabRuntimeSpec)(nil),          // 3: dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeSpec
-	(*GcpColabRuntimeStackOutputs)(nil),  // 4: dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeStackOutputs
+	(*GcpColabRuntimeOutputs)(nil),       // 4: dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeOutputs
 }
 var file_catalog_gcp_gcpcolabruntime_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntime.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntime.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntime.spec:type_name -> dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeSpec
 	1, // 2: dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntime.status:type_name -> dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeStatus
-	4, // 3: dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeStatus.outputs:type_name -> dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeStackOutputs
+	4, // 3: dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeStatus.outputs:type_name -> dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

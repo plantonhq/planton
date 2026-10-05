@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.aws.awscloudwatchcompositealarm.v1alpha1;
 
-// AwsCloudwatchCompositeAlarmStackOutputs captures observable identifiers
+// AwsCloudwatchCompositeAlarmOutputs captures observable identifiers
 // from a provisioned CloudWatch composite alarm.
 //
 // The primary output is `alarm_arn`. The `alarm_name` is the join key other
 // alarms use to address this composite — a parent composite alarm's
 // `alarm_rule` references it by name, as does an actions_suppressor.
-message AwsCloudwatchCompositeAlarmStackOutputs {
+message AwsCloudwatchCompositeAlarmOutputs {
   // The Amazon Resource Name (ARN) of the composite alarm.
   string alarm_arn = 1;
 

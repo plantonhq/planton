@@ -4,7 +4,7 @@ Deploys an Azure Monitor data collection rule (DCR) -- the routing table declari
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Data collection rule** -- the collection policy with its data sources, destinations, data flows, custom-stream declarations, optional platform kind, and (optionally) a managed identity, ingesting through a Data Collection Endpoint when one is referenced
 - **Azure Tags** -- Planton-derived metadata tags merged with the manifest's `tags` (user values win on key conflicts)
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **A resource group** -- the rule lives in a referenced resource group.
 - **At least one destination** -- typically an AzureLogAnalyticsWorkspace (reference its `workspace_id` output); Event Hub and storage destinations reference their own kinds' outputs.
 
@@ -86,7 +86,7 @@ spec:
 planton apply -f data-collection-rule.yaml
 ```
 
-This creates a reusable Linux baseline policy -- security-relevant syslog (filtered facilities and severities, not `*`) plus a once-a-minute CPU/memory baseline, landing in one Log Analytics workspace; nothing is collected until machines associate with the rule. A Stack Job tracks the provisioning in real time.
+This creates a reusable Linux baseline policy -- security-relevant syslog (filtered facilities and severities, not `*`) plus a once-a-minute CPU/memory baseline, landing in one Log Analytics workspace; nothing is collected until machines associate with the rule. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -140,7 +140,7 @@ These are the most important decisions when configuring a data collection rule. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -152,9 +152,9 @@ These are the most important decisions when configuring a data collection rule. 
 
 `dataCollectionEndpointId` and `monitorAccountId` carry no default kind -- Data Collection Endpoints and Azure Monitor workspaces are not yet catalog kinds; pass their literal ARM IDs.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -176,9 +176,9 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Monitor Data Collection Rule Association**](/cloud-catalog/azure-monitor-data-collection-rule-association) -- attaches each machine to this rule; collection starts only through associations
-- [**Azure Log Analytics Workspace**](/cloud-catalog/azure-log-analytics-workspace) -- the usual log destination, referenced by `workspace_id`; a workspace can also name this rule as its default DCR
-- [**Azure Event Hub**](/cloud-catalog/azure-event-hub) -- streaming destination for telemetry leaving Azure Monitor, referenced by `event_hub_id`
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- blob and table destinations for archival, referenced by `storage_account_id`
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the rule's user-assigned identity, grantable on destinations before the rule exists
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the group the rule lives in
+- [**Azure Monitor Data Collection Rule Association**](/infra-catalog/azure-monitor-data-collection-rule-association) -- attaches each machine to this rule; collection starts only through associations
+- [**Azure Log Analytics Workspace**](/infra-catalog/azure-log-analytics-workspace) -- the usual log destination, referenced by `workspace_id`; a workspace can also name this rule as its default DCR
+- [**Azure Event Hub**](/infra-catalog/azure-event-hub) -- streaming destination for telemetry leaving Azure Monitor, referenced by `event_hub_id`
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- blob and table destinations for archival, referenced by `storage_account_id`
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the rule's user-assigned identity, grantable on destinations before the rule exists
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the group the rule lives in

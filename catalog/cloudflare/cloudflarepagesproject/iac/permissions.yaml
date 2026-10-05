@@ -3,17 +3,17 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # Binding targets (KV namespaces, D1 databases, R2 buckets, Queues,
 # Workers) are referenced by ID/name resolved from other components'
 # outputs -- the modules never call those services' APIs. The git-provider
 # authorization for git-connected projects is a one-time, browser-driven
 # dashboard step outside any token this inventory covers (the spec's own
-# contract records this). The component README and catalog.md carried no
+# contract records this). The kind's README and catalog.md carried no
 # named permission prose to migrate.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflarepagesproject
 spec:

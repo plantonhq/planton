@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureroleassignment
 spec:
   billing_model: free
   free_tier: A role assignment is a pure authorization record in Azure Resource Manager -- the grant of a role to a principal at a scope. Microsoft.Authorization resources carry no meter; creating, holding, and evaluating any number of assignments never bills.
-  notes: "No field of this spec buys anything: scope, role, principal, ABAC condition, and the pinned GUID are all grant metadata stored and evaluated by ARM's authorization engine at no charge. The real spend lives entirely in the resources the grant unlocks -- the Key Vault, storage account, or cluster the principal is being given access to bill as their own catalog kinds regardless of who holds roles on them."
+  notes: "No field of this spec buys anything: scope, role, principal, ABAC condition, and the pinned GUID are all grant metadata stored and evaluated by ARM's authorization engine at no charge. The real spend lives entirely in the resources the grant unlocks -- the Key Vault, storage account, or cluster the principal is being given access to bill as their own components regardless of who holds roles on them."

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpPrivateCaPoolStackOutputs captures the pool's identity -- what authorities,
+// GcpPrivateCaPoolOutputs captures the pool's identity -- what authorities,
 // certificates, and TLS consumers (Kafka and Redis clusters) reference.
-type GcpPrivateCaPoolStackOutputs struct {
+type GcpPrivateCaPoolOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name --
 	// projects/{project}/locations/{location}/caPools/{ca_pool_id}.
@@ -36,20 +36,20 @@ type GcpPrivateCaPoolStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpPrivateCaPoolStackOutputs) Reset() {
-	*x = GcpPrivateCaPoolStackOutputs{}
+func (x *GcpPrivateCaPoolOutputs) Reset() {
+	*x = GcpPrivateCaPoolOutputs{}
 	mi := &file_catalog_gcp_gcpprivatecapool_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpPrivateCaPoolStackOutputs) String() string {
+func (x *GcpPrivateCaPoolOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpPrivateCaPoolStackOutputs) ProtoMessage() {}
+func (*GcpPrivateCaPoolOutputs) ProtoMessage() {}
 
-func (x *GcpPrivateCaPoolStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpPrivateCaPoolOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpprivatecapool_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *GcpPrivateCaPoolStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpPrivateCaPoolStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpPrivateCaPoolStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpPrivateCaPoolOutputs.ProtoReflect.Descriptor instead.
+func (*GcpPrivateCaPoolOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpprivatecapool_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpPrivateCaPoolStackOutputs) GetName() string {
+func (x *GcpPrivateCaPoolOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpPrivateCaPoolStackOutputs) GetCaPoolId() string {
+func (x *GcpPrivateCaPoolOutputs) GetCaPoolId() string {
 	if x != nil {
 		return x.CaPoolId
 	}
 	return ""
 }
 
-func (x *GcpPrivateCaPoolStackOutputs) GetLocation() string {
+func (x *GcpPrivateCaPoolOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -91,8 +91,8 @@ var File_catalog_gcp_gcpprivatecapool_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpprivatecapool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpprivatecapool/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpprivatecapool.v1alpha1\"l\n" +
-	"\x1cGcpPrivateCaPoolStackOutputs\x12\x12\n" +
+	"3catalog/gcp/gcpprivatecapool/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpprivatecapool.v1alpha1\"g\n" +
+	"\x17GcpPrivateCaPoolOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\n" +
 	"ca_pool_id\x18\x02 \x01(\tR\bcaPoolId\x12\x1a\n" +
@@ -113,7 +113,7 @@ func file_catalog_gcp_gcpprivatecapool_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpprivatecapool_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpprivatecapool_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpPrivateCaPoolStackOutputs)(nil), // 0: dev.planton.gcp.gcpprivatecapool.v1alpha1.GcpPrivateCaPoolStackOutputs
+	(*GcpPrivateCaPoolOutputs)(nil), // 0: dev.planton.gcp.gcpprivatecapool.v1alpha1.GcpPrivateCaPoolOutputs
 }
 var file_catalog_gcp_gcpprivatecapool_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

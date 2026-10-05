@@ -4,7 +4,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output keys for stack outputs
+// Output keys for outputs
 const (
 	OutputNamespace              = "namespace"
 	OutputNamespaceID            = "namespace_id"
@@ -18,7 +18,7 @@ const (
 	OutputAnnotationsJSON        = "annotations_json"
 )
 
-// exportOutputs exports all stack outputs
+// exportOutputs exports all outputs
 func exportOutputs(ctx *pulumi.Context, locals *Locals) error {
 	// Export namespace name
 	ctx.Export(OutputNamespace, pulumi.String(locals.NamespaceName))

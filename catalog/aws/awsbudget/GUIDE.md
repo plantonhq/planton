@@ -1,6 +1,6 @@
-# AwsBudget — Component Guide
+# AwsBudget — Kind Guide
 
-Authored operational judgment for the budget component: the design
+Authored operational judgment for the budget kind: the design
 decisions behind the spec's shape, and what to know before operating
 budgets in production.
 

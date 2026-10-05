@@ -4,7 +4,7 @@ Deploys a shared-capacity elastic pool onto an existing Azure SQL logical server
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SQL Elastic Pool** -- on the referenced logical server, in the SAME region as the server (Azure rejects a mismatch), with the chosen SKU, shared capacity, and storage cap
 - **Per-Database Limits** -- the guaranteed minimum and burst maximum every member database gets
@@ -59,7 +59,7 @@ spec:
 planton apply -f mssql-elastic-pool.yaml
 ```
 
-This creates an 8-vCore General Purpose pool where every member database can burst to 2 vCores with no reserved floor. A Stack Job tracks the provisioning in real time.
+This creates an 8-vCore General Purpose pool where every member database can burst to 2 vCores with no reserved floor. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,15 +96,15 @@ These are the most important decisions when configuring an elastic pool. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureMssqlServer** | `serverId` | `status.outputs.server_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,5 +124,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure MSSQL Server**](/cloud-catalog/azure-mssql-server) -- the logical server that hosts the pool (same region, always)
-- [**Azure MSSQL Database**](/cloud-catalog/azure-mssql-database) -- members join via the pool's `elastic_pool_id` output
+- [**Azure MSSQL Server**](/infra-catalog/azure-mssql-server) -- the logical server that hosts the pool (same region, always)
+- [**Azure MSSQL Database**](/infra-catalog/azure-mssql-database) -- members join via the pool's `elastic_pool_id` output

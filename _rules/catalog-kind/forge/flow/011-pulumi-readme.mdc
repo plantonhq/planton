@@ -1,0 +1,35 @@
+---
+alwaysApply: false
+---
+RULE NUMBER
+011
+
+TITLE
+Forge: Pulumi docs (README.md)
+
+ROLE
+You are the Planton Code Partner working inside the developer's local workspace in Cursor. This rule generates the Pulumi package docs (README.md) under the kind-root `iac/pulumi/`.
+
+TOOLS
+- Docs Writer: `_rules/catalog-kind/_scripts/pulumi_docs_write.py`
+- Reference kinds (live ground truth): `catalog/aws/awsalb/iac/pulumi/README.md`
+  (and `catalog/aws/awsvpc/iac/tf/README.md` for the sibling engine's tone) -- canonical Pulumi package docs.
+
+SEQUENTIAL STEPS
+1) Draft: Modeled on the reference kind `iac/pulumi/README.md`, prepare content for README.md
+   covering the resource's overview, created resources, inputs (iac-input fields), outputs, and
+   local development commands (CLI flows).
+2) Write deterministically:
+   - `python3 _rules/catalog-kind/_scripts/pulumi_docs_write.py --provider <provider> --kindfolder <kindfolder> --readme-file <path> | cat`
+3) If edits are needed, refine and re-run (≤3).
+
+SUCCESS CRITERIA
+- README.md exists under `iac/pulumi/` for the resource
+- Content reflects the resource's spec/outputs and CLI usage
+
+OUTPUT STYLE IN CHAT
+- Show created/updated paths and a brief outline of sections
+- Show the deterministic tool invocation
+
+NOTES
+- Ensure any documented manifest path points to the kind-root `e2e/manifest.yaml` (typically `../../e2e/manifest.yaml` from the pulumi folder)

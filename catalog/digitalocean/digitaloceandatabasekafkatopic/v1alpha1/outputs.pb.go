@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DigitalOceanDatabaseKafkaTopicStackOutputs captures the key outputs after
+// DigitalOceanDatabaseKafkaTopicOutputs captures the key outputs after
 // provisioning a Kafka topic. DigitalOcean has no standalone topic id --
 // the (cluster, topic name) pair IS the identity -- so both halves are
 // exported for consumers and verification tooling.
@@ -32,7 +32,7 @@ const (
 // stale "active" in stored outputs is worse than no value. Live state is
 // read from the API by whoever needs it -- the E2E verifier asserts it that
 // way.
-type DigitalOceanDatabaseKafkaTopicStackOutputs struct {
+type DigitalOceanDatabaseKafkaTopicOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// UUID of the Kafka database cluster the topic lives in.
 	ClusterId string `protobuf:"bytes,1,opt,name=cluster_id,json=clusterId,proto3" json:"cluster_id,omitempty"`
@@ -42,20 +42,20 @@ type DigitalOceanDatabaseKafkaTopicStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDatabaseKafkaTopicStackOutputs) Reset() {
-	*x = DigitalOceanDatabaseKafkaTopicStackOutputs{}
+func (x *DigitalOceanDatabaseKafkaTopicOutputs) Reset() {
+	*x = DigitalOceanDatabaseKafkaTopicOutputs{}
 	mi := &file_catalog_digitalocean_digitaloceandatabasekafkatopic_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDatabaseKafkaTopicStackOutputs) String() string {
+func (x *DigitalOceanDatabaseKafkaTopicOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDatabaseKafkaTopicStackOutputs) ProtoMessage() {}
+func (*DigitalOceanDatabaseKafkaTopicOutputs) ProtoMessage() {}
 
-func (x *DigitalOceanDatabaseKafkaTopicStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDatabaseKafkaTopicOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandatabasekafkatopic_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,19 +67,19 @@ func (x *DigitalOceanDatabaseKafkaTopicStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDatabaseKafkaTopicStackOutputs.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDatabaseKafkaTopicStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDatabaseKafkaTopicOutputs.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDatabaseKafkaTopicOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandatabasekafkatopic_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDatabaseKafkaTopicStackOutputs) GetClusterId() string {
+func (x *DigitalOceanDatabaseKafkaTopicOutputs) GetClusterId() string {
 	if x != nil {
 		return x.ClusterId
 	}
 	return ""
 }
 
-func (x *DigitalOceanDatabaseKafkaTopicStackOutputs) GetTopicName() string {
+func (x *DigitalOceanDatabaseKafkaTopicOutputs) GetTopicName() string {
 	if x != nil {
 		return x.TopicName
 	}
@@ -90,8 +90,8 @@ var File_catalog_digitalocean_digitaloceandatabasekafkatopic_v1alpha1_outputs_pr
 
 const file_catalog_digitalocean_digitaloceandatabasekafkatopic_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Jcatalog/digitalocean/digitaloceandatabasekafkatopic/v1alpha1/outputs.proto\x12@dev.planton.digitalocean.digitaloceandatabasekafkatopic.v1alpha1\"w\n" +
-	"*DigitalOceanDatabaseKafkaTopicStackOutputs\x12\x1d\n" +
+	"Jcatalog/digitalocean/digitaloceandatabasekafkatopic/v1alpha1/outputs.proto\x12@dev.planton.digitalocean.digitaloceandatabasekafkatopic.v1alpha1\"r\n" +
+	"%DigitalOceanDatabaseKafkaTopicOutputs\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12\x1d\n" +
 	"\n" +
@@ -112,7 +112,7 @@ func file_catalog_digitalocean_digitaloceandatabasekafkatopic_v1alpha1_outputs_p
 
 var file_catalog_digitalocean_digitaloceandatabasekafkatopic_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceandatabasekafkatopic_v1alpha1_outputs_proto_goTypes = []any{
-	(*DigitalOceanDatabaseKafkaTopicStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandatabasekafkatopic.v1alpha1.DigitalOceanDatabaseKafkaTopicStackOutputs
+	(*DigitalOceanDatabaseKafkaTopicOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandatabasekafkatopic.v1alpha1.DigitalOceanDatabaseKafkaTopicOutputs
 }
 var file_catalog_digitalocean_digitaloceandatabasekafkatopic_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

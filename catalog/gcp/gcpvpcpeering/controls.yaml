@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcpvpcpeering
 spec:
@@ -59,7 +59,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: The peering's state (ACTIVE / INACTIVE) and state_details are exported as stack outputs and readable from the network resource; traffic over the peering appears in VPC Flow Logs when the subnetworks enable them (GcpSubnetwork).
+        reference: The peering's state (ACTIVE / INACTIVE) and state_details are exported as outputs and readable from the network resource; traffic over the peering appears in VPC Flow Logs when the subnetworks enable them (GcpSubnetwork).
     - control_id: backup-recovery
       status: not_applicable
       notes: Declarative configuration fully re-creatable from source control; there is no data to back up.

@@ -13,7 +13,7 @@ The CI workflow reads this profile to determine:
 - What tools to install (kind, kubectl, pulumi, tofu, aws-cli, gcloud, ...)
 - How many parallel test cells to run
 - Which GitHub Actions environment holds the secrets
-- What default cost class and schedule lane apply to the provider's components
+- What default cost class and schedule lane apply to the provider's kinds
 
 This keeps CI workflows thin and provider-agnostic. Adding a new provider to E2E
 means creating one `aa_e2e/profile.yaml` -- no workflow YAML changes.
@@ -52,11 +52,11 @@ Field semantics are documented in the proto comments in `spec.proto`. The
 profile YAML is loaded by `pkg/e2e/profile/` and consumed by the `planton e2e
 discover` CLI command.
 
-## Relationship to ComponentE2EProfile
+## Relationship to CatalogKindE2EProfile
 
-The provider profile sets defaults. Individual components can override
+The provider profile sets defaults. Individual kinds can override
 `cost_class` in their own profile when they are more expensive than typical
-components in the same provider (e.g., an EKS cluster component in the AWS
+kinds in the same provider (e.g., an EKS cluster kind in the AWS
 provider).
 
 ---

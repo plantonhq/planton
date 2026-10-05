@@ -14,9 +14,9 @@ import (
 // The OpenTofu twin renders the same pair from the same condition.
 
 func canaryLocals(canary *bool) *Locals {
-	return initializeLocals(nil, &kuberneteslokiv1alpha1.KubernetesLokiStackInput{
+	return initializeLocals(nil, &kuberneteslokiv1alpha1.KubernetesLokiIacInput{
 		Target: &kuberneteslokiv1alpha1.KubernetesLoki{
-			Metadata: &shared.CloudResourceMetadata{Name: "logs"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "logs"},
 			Spec: &kuberneteslokiv1alpha1.KubernetesLokiSpec{
 				Namespace:     literal("observability"),
 				CanaryEnabled: canary,

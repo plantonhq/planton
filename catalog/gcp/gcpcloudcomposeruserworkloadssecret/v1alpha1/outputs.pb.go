@@ -23,7 +23,7 @@ const (
 
 // Outputs produced after provisioning a Cloud Composer user workloads
 // Secret. The Secret's data is deliberately never exported.
-type GcpCloudComposerUserWorkloadsSecretStackOutputs struct {
+type GcpCloudComposerUserWorkloadsSecretOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified resource name.
 	// Format: projects/{project}/locations/{region}/environments/{environment}/userWorkloadsSecrets/{name}
@@ -35,20 +35,20 @@ type GcpCloudComposerUserWorkloadsSecretStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCloudComposerUserWorkloadsSecretStackOutputs) Reset() {
-	*x = GcpCloudComposerUserWorkloadsSecretStackOutputs{}
+func (x *GcpCloudComposerUserWorkloadsSecretOutputs) Reset() {
+	*x = GcpCloudComposerUserWorkloadsSecretOutputs{}
 	mi := &file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudComposerUserWorkloadsSecretStackOutputs) String() string {
+func (x *GcpCloudComposerUserWorkloadsSecretOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudComposerUserWorkloadsSecretStackOutputs) ProtoMessage() {}
+func (*GcpCloudComposerUserWorkloadsSecretOutputs) ProtoMessage() {}
 
-func (x *GcpCloudComposerUserWorkloadsSecretStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudComposerUserWorkloadsSecretOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *GcpCloudComposerUserWorkloadsSecretStackOutputs) ProtoReflect() protore
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudComposerUserWorkloadsSecretStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudComposerUserWorkloadsSecretStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudComposerUserWorkloadsSecretOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudComposerUserWorkloadsSecretOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudComposerUserWorkloadsSecretStackOutputs) GetName() string {
+func (x *GcpCloudComposerUserWorkloadsSecretOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpCloudComposerUserWorkloadsSecretStackOutputs) GetSecretName() string {
+func (x *GcpCloudComposerUserWorkloadsSecretOutputs) GetSecretName() string {
 	if x != nil {
 		return x.SecretName
 	}
@@ -83,8 +83,8 @@ var File_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_outputs_proto 
 
 const file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/gcp/gcpcloudcomposeruserworkloadssecret/v1alpha1/outputs.proto\x12<dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1\"f\n" +
-	"/GcpCloudComposerUserWorkloadsSecretStackOutputs\x12\x12\n" +
+	"Fcatalog/gcp/gcpcloudcomposeruserworkloadssecret/v1alpha1/outputs.proto\x12<dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1\"a\n" +
+	"*GcpCloudComposerUserWorkloadsSecretOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1f\n" +
 	"\vsecret_name\x18\x02 \x01(\tR\n" +
 	"secretNameB\xe9\x03\n" +
@@ -104,7 +104,7 @@ func file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_outputs_proto
 
 var file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudComposerUserWorkloadsSecretStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretStackOutputs
+	(*GcpCloudComposerUserWorkloadsSecretOutputs)(nil), // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadssecret.v1alpha1.GcpCloudComposerUserWorkloadsSecretOutputs
 }
 var file_catalog_gcp_gcpcloudcomposeruserworkloadssecret_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -5,7 +5,7 @@ import (
 
 	azureaifoundryprojectv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureaifoundryproject/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -26,11 +26,11 @@ var identityTypeWire = map[azureaifoundryprojectv1alpha1.AzureAiFoundryProjectId
 	azureaifoundryprojectv1alpha1.AzureAiFoundryProjectIdentityType_SYSTEM_AND_USER_ASSIGNED: "SystemAssigned, UserAssigned",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureaifoundryprojectv1alpha1.AzureAiFoundryProjectStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureaifoundryprojectv1alpha1.AzureAiFoundryProjectIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureAiFoundryProject = stackInput.Target
-	target := stackInput.Target
+	locals.AzureAiFoundryProject = iacInput.Target
+	target := iacInput.Target
 
 	// Metadata-derived tags first, then the user's spec tags merged over
 	// them: user tags deliberately win so an org's governance conventions
@@ -39,7 +39,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureaifoundryprojectv1al
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureAiFoundryProject.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureAiFoundryProject.String()),
 	}
 
 	if target.Metadata.Id != "" {

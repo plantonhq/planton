@@ -16,9 +16,9 @@ make up
 make destroy
 ```
 
-## Stack Input
+## IaC Input
 
-The module reads `AwsFsxOpenzfsFileSystemStackInput` from Pulumi config, containing:
+The module reads `AwsFsxOpenzfsFileSystemIacInput` from Pulumi config, containing:
 
 - `target` — the `AwsFsxOpenzfsFileSystem` resource manifest (metadata + spec)
 - `provider_config` — AWS credentials (access key, secret key, region, session token)

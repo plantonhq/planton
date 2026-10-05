@@ -39,7 +39,7 @@ type Result struct {
 	// Credential Secrets to materialize before the CR.
 	Secrets []CredentialSecret
 	// Name of the ACME account private key Secret cert-manager will create
-	// (empty for non-ACME backends). Exported as a stack output.
+	// (empty for non-ACME backends). Exported as an output.
 	AcmeAccountKeySecretName string
 }
 

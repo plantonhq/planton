@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcpserviceaccount
 spec:
@@ -38,7 +38,7 @@ spec:
       field_path: user_managed_key
       evidence:
         type: spec_default
-        reference: The message's PRESENCE is the decision to create a static key; omitted -- the default -- means keyless, and the component's own contract says to prefer Workload Identity on GKE, attached identities on Cloud Run/Compute, impersonation, and federation, all of which authenticate this account with short-lived platform-issued tokens.
+        reference: The message's PRESENCE is the decision to create a static key; omitted -- the default -- means keyless, and the kind's own contract says to prefer Workload Identity on GKE, attached identities on Cloud Run/Compute, impersonation, and federation, all of which authenticate this account with short-lived platform-issued tokens.
       notes: When a key is unavoidable, the spec still grades the posture -- public_key_data (upload flow) keeps the private key in your custody so GCP never sees or returns key material, and keepers gives declarative rotation by replacing the key on any value change. key_base64 is a live credential; treat its appearance in outputs as the cost of the opt-out.
     - control_id: no-legacy-auth
       status: configurable

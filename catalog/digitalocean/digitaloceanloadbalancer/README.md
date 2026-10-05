@@ -2,7 +2,7 @@
 
 A DigitalOcean load balancer described once in a Planton manifest: regional and global types, sizing by slug or scaling units, forwarding rules with TLS termination or passthrough, health checks with full threshold tuning, cookie-based sticky sessions, backend targeting by Droplet references or tag, VPC and subnet placement, an LB-level firewall, HTTPS redirect, PROXY protocol, backend keepalive, idle-timeout, TLS cipher policy, project placement, bring-your-own-IP, and the global balancer's domains, target balancers, CDN, and regional failover.
 
-## What this component models
+## What this kind models
 
 The spec maps one-to-one onto DigitalOcean's load balancer:
 

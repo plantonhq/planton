@@ -5,10 +5,10 @@ package dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1;
 import "catalog/azure/azuremachinelearningonlineendpoint/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureMachineLearningOnlineEndpointStackInput is the input to the IaC
+// AzureMachineLearningOnlineEndpointIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-message AzureMachineLearningOnlineEndpointStackInput {
+message AzureMachineLearningOnlineEndpointIacInput {
   // The online endpoint resource to deploy.
   AzureMachineLearningOnlineEndpoint target = 1;
 

@@ -43,7 +43,7 @@ var _ = ginkgo.Describe("GcpRedisClusterSpec", func() {
 		return &GcpRedisCluster{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpRedisCluster",
-			Metadata:   &shared.CloudResourceMetadata{Name: "orders-cache"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "orders-cache"},
 			Spec: &GcpRedisClusterSpec{
 				Region:     "us-central1",
 				ShardCount: 1,

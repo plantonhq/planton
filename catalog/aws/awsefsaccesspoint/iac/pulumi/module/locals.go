@@ -5,19 +5,19 @@ import (
 
 	awsefsaccesspointv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsefsaccesspoint/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 type Locals struct {
 	AwsEfsAccessPoint *awsefsaccesspointv1alpha1.AwsEfsAccessPoint
 	AwsTags           map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *awsefsaccesspointv1alpha1.AwsEfsAccessPointStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awsefsaccesspointv1alpha1.AwsEfsAccessPointIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsEfsAccessPoint = stackInput.Target
+	locals.AwsEfsAccessPoint = iacInput.Target
 
 	// Resource-identity tags follow the catalog convention. An access point
 	// has no name argument at all — the Name tag IS its console display name,
@@ -27,7 +27,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *awsefsaccesspointv1alpha1
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsEfsAccessPoint.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsEfsAccessPoint.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsEfsAccessPoint.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsEfsAccessPoint.String(),
 		awstagkeys.ResourceId:   locals.AwsEfsAccessPoint.Metadata.Id,
 	}
 

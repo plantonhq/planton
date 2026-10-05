@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsLaunchTemplateStackOutputs captures the observable outputs of a
+// AwsLaunchTemplateOutputs captures the observable outputs of a
 // provisioned launch template, for auto-scaling groups, EKS node groups,
 // and Batch compute environments to reference.
-type AwsLaunchTemplateStackOutputs struct {
+type AwsLaunchTemplateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The launch template ID (e.g. "lt-0123456789abcdef0"). The primary
 	// handle other resources reference via
@@ -45,20 +45,20 @@ type AwsLaunchTemplateStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsLaunchTemplateStackOutputs) Reset() {
-	*x = AwsLaunchTemplateStackOutputs{}
+func (x *AwsLaunchTemplateOutputs) Reset() {
+	*x = AwsLaunchTemplateOutputs{}
 	mi := &file_catalog_aws_awslaunchtemplate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsLaunchTemplateStackOutputs) String() string {
+func (x *AwsLaunchTemplateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsLaunchTemplateStackOutputs) ProtoMessage() {}
+func (*AwsLaunchTemplateOutputs) ProtoMessage() {}
 
-func (x *AwsLaunchTemplateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsLaunchTemplateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awslaunchtemplate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,33 +70,33 @@ func (x *AwsLaunchTemplateStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsLaunchTemplateStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsLaunchTemplateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsLaunchTemplateOutputs.ProtoReflect.Descriptor instead.
+func (*AwsLaunchTemplateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awslaunchtemplate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsLaunchTemplateStackOutputs) GetLaunchTemplateId() string {
+func (x *AwsLaunchTemplateOutputs) GetLaunchTemplateId() string {
 	if x != nil {
 		return x.LaunchTemplateId
 	}
 	return ""
 }
 
-func (x *AwsLaunchTemplateStackOutputs) GetLaunchTemplateArn() string {
+func (x *AwsLaunchTemplateOutputs) GetLaunchTemplateArn() string {
 	if x != nil {
 		return x.LaunchTemplateArn
 	}
 	return ""
 }
 
-func (x *AwsLaunchTemplateStackOutputs) GetLatestVersion() int64 {
+func (x *AwsLaunchTemplateOutputs) GetLatestVersion() int64 {
 	if x != nil {
 		return x.LatestVersion
 	}
 	return 0
 }
 
-func (x *AwsLaunchTemplateStackOutputs) GetDefaultVersion() int64 {
+func (x *AwsLaunchTemplateOutputs) GetDefaultVersion() int64 {
 	if x != nil {
 		return x.DefaultVersion
 	}
@@ -107,8 +107,8 @@ var File_catalog_aws_awslaunchtemplate_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awslaunchtemplate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awslaunchtemplate/v1alpha1/outputs.proto\x12*dev.planton.aws.awslaunchtemplate.v1alpha1\"\xcd\x01\n" +
-	"\x1dAwsLaunchTemplateStackOutputs\x12,\n" +
+	"4catalog/aws/awslaunchtemplate/v1alpha1/outputs.proto\x12*dev.planton.aws.awslaunchtemplate.v1alpha1\"\xc8\x01\n" +
+	"\x18AwsLaunchTemplateOutputs\x12,\n" +
 	"\x12launch_template_id\x18\x01 \x01(\tR\x10launchTemplateId\x12.\n" +
 	"\x13launch_template_arn\x18\x02 \x01(\tR\x11launchTemplateArn\x12%\n" +
 	"\x0elatest_version\x18\x03 \x01(\x03R\rlatestVersion\x12'\n" +
@@ -129,7 +129,7 @@ func file_catalog_aws_awslaunchtemplate_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awslaunchtemplate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awslaunchtemplate_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsLaunchTemplateStackOutputs)(nil), // 0: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateStackOutputs
+	(*AwsLaunchTemplateOutputs)(nil), // 0: dev.planton.aws.awslaunchtemplate.v1alpha1.AwsLaunchTemplateOutputs
 }
 var file_catalog_aws_awslaunchtemplate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

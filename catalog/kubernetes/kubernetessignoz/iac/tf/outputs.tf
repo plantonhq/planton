@@ -1,4 +1,4 @@
-# Stack outputs — identical names and derivations in the Pulumi module's
+# Outputs — identical names and derivations in the Pulumi module's
 # outputs.go / main.go exports. Every child name derives from the
 # fullname pinned via fullnameOverride (the release name). The
 # clickhouse_* outputs are passthroughs of the DECLARED connection —

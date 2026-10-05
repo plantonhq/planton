@@ -14,7 +14,7 @@ import (
 // policy schemas. Every rule is scoped to exactly this collection
 // ("collection/<name>", "index/<name>/<pattern>") -- the account-wide
 // pattern-matching form these policies also support is deliberately outside
-// this component's contract.
+// this kind's contract.
 
 // encryptionPolicy renders the collection-scoped encryption security policy
 // -- the one policy that must exist BEFORE the collection (AWS rejects

@@ -25,7 +25,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input = &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "my-spa-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -64,7 +64,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "my-web-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -96,7 +96,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "my-mobile-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -143,7 +143,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "backend-api-client",
 					},
 					Spec: &Auth0ClientSpec{
@@ -168,7 +168,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "app-with-refresh-tokens",
 					},
 					Spec: &Auth0ClientSpec{
@@ -196,7 +196,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "org-enabled-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -218,7 +218,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "app-with-metadata",
 						Labels: map[string]string{
 							"team": "platform",
@@ -243,7 +243,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "embedded-login-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -268,7 +268,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "backchannel-logout-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -290,7 +290,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "hs256-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -309,7 +309,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "ps256-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -329,7 +329,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "m2m-with-api-grant",
 					},
 					Spec: &Auth0ClientSpec{
@@ -358,7 +358,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "m2m-with-resource-server-ref",
 					},
 					Spec: &Auth0ClientSpec{
@@ -389,7 +389,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "spa-with-connections",
 					},
 					Spec: &Auth0ClientSpec{
@@ -411,7 +411,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "spa-with-connection-refs",
 					},
 					Spec: &Auth0ClientSpec{
@@ -445,7 +445,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "platform-admin-service",
 					},
 					Spec: &Auth0ClientSpec{
@@ -501,7 +501,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: nil,
@@ -516,7 +516,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "wrong.api.version/v1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -533,7 +533,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "WrongKind",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -550,7 +550,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -568,7 +568,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -586,7 +586,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -604,7 +604,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -624,7 +624,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -644,7 +644,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -664,7 +664,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -684,7 +684,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -704,7 +704,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -724,7 +724,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -744,7 +744,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -764,7 +764,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -782,7 +782,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -801,7 +801,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{
@@ -825,7 +825,7 @@ var _ = ginkgo.Describe("Auth0Client Validation Tests", func() {
 				input := &Auth0Client{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Client",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-app",
 					},
 					Spec: &Auth0ClientSpec{

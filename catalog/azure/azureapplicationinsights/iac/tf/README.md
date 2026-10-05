@@ -1,7 +1,7 @@
 # AzureApplicationInsights - Terraform Module
 
-Terraform implementation for the AzureApplicationInsights deployment
-component.
+Terraform implementation for the AzureApplicationInsights
+kind.
 
 ## Resources Created
 

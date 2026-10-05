@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceancdn.v1alpha1;
 
-// DigitalOceanCdnStackOutputs captures the key outputs after provisioning a
+// DigitalOceanCdnOutputs captures the key outputs after provisioning a
 // CDN endpoint.
-message DigitalOceanCdnStackOutputs {
+message DigitalOceanCdnOutputs {
   // UUID of the CDN endpoint (the resource's API identity and its import
   // id).
   string cdn_id = 1;

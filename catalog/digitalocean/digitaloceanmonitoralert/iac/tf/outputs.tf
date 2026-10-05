@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanMonitorAlertStackOutputs
+# Outputs — exactly the DigitalOceanMonitorAlertOutputs
 # contract, identical across both provisioners. The resource id IS the
 # policy UUID; the provider's own uuid attribute is declared but never
 # populated at the pinned version.

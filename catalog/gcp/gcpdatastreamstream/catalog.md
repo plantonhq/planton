@@ -4,7 +4,7 @@ Replicates an operational database into BigQuery or Cloud Storage continuously, 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Stream** -- a `datastream_stream` with one source arm, one destination arm, a backfill mode, and optional per-table rules
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Datastream admin permissions (`roles/datastream.admin`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Datastream admin permissions (`roles/datastream.admin`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Required Dependencies
@@ -64,7 +64,7 @@ spec:
 planton apply -f datastream-stream.yaml
 ```
 
-This creates the stream `NOT_STARTED`; set `desiredState: RUNNING` to start it. A Stack Job tracks the provisioning in real time.
+This creates the stream `NOT_STARTED`; set `desiredState: RUNNING` to start it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,7 +84,7 @@ These are the most important decisions when configuring this component. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -95,9 +95,9 @@ These are the most important decisions when configuring this component. Explore 
 | **GcpGcsBucket** | `blmtConfig.bucket` | `status.outputs.bucket_name` |
 | **GcpBigQueryConnection** | `blmtConfig.connectionName` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
@@ -115,7 +115,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Datastream Connection Profile**](/cloud-catalog/gcp-datastream-connection-profile) -- source and destination
-- [**GCP Datastream Private Connection**](/cloud-catalog/gcp-datastream-private-connection) -- private reachability
-- [**GCP BigQuery Dataset**](/cloud-catalog/gcp-bigquery-dataset) -- where tables land
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- encryption
+- [**GCP Datastream Connection Profile**](/infra-catalog/gcp-datastream-connection-profile) -- source and destination
+- [**GCP Datastream Private Connection**](/infra-catalog/gcp-datastream-private-connection) -- private reachability
+- [**GCP BigQuery Dataset**](/infra-catalog/gcp-bigquery-dataset) -- where tables land
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- encryption

@@ -5,7 +5,7 @@ import (
 
 	awstgwrtv1 "github.com/plantonhq/planton/catalog/aws/awstransitgatewayroutetable/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -16,11 +16,11 @@ type Locals struct {
 	AwsTags    map[string]string
 }
 
-// initializeLocals reads the stack input and builds the Locals instance.
-func initializeLocals(ctx *pulumi.Context, stackInput *awstgwrtv1.AwsTransitGatewayRouteTableStackInput) *Locals {
+// initializeLocals reads the IaC input and builds the Locals instance.
+func initializeLocals(ctx *pulumi.Context, iacInput *awstgwrtv1.AwsTransitGatewayRouteTableIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.RouteTable = stackInput.Target
+	locals.RouteTable = iacInput.Target
 
 	// Identity tags match the Terraform module key-for-key. The Name tag IS
 	// the route table's console identity -- route tables have no name
@@ -30,7 +30,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *awstgwrtv1.AwsTransitGate
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.RouteTable.Metadata.Org,
 		awstagkeys.Environment:  locals.RouteTable.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsTransitGatewayRouteTable.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsTransitGatewayRouteTable.String(),
 		awstagkeys.ResourceId:   locals.RouteTable.Metadata.Id,
 	}
 

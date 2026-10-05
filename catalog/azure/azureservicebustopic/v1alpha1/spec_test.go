@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -20,7 +20,7 @@ func minimalTopic() *AzureServiceBusTopic {
 	return &AzureServiceBusTopic{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureServiceBusTopic",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-topic",
 		},
 		Spec: &AzureServiceBusTopicSpec{
@@ -48,7 +48,7 @@ var _ = ginkgo.Describe("AzureServiceBusTopicSpec Validation Tests", func() {
 				input.Spec.NamespaceId = &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AzureServiceBusNamespace,
+							Kind:      catalogkind.CatalogKind_AzureServiceBusNamespace,
 							Name:      "shared-bus",
 							FieldPath: "status.outputs.namespace_id",
 						},

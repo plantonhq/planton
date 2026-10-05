@@ -19,12 +19,12 @@ type Locals struct {
 // of the circuit and carries no tags of its own (the provider schema has
 // no tags argument; governance tags live on the parent circuit).
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureexpressroutecircuitpeeringv1alpha1.AzureExpressRouteCircuitPeeringStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureexpressroutecircuitpeeringv1alpha1.AzureExpressRouteCircuitPeeringIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureExpressRouteCircuitPeering = stackInput.Target
-	locals.ResourceGroupName = stackInput.Target.Spec.ResourceGroup.GetValue()
-	locals.ExpressRouteCircuitName = stackInput.Target.Spec.ExpressRouteCircuitName.GetValue()
+	locals.AzureExpressRouteCircuitPeering = iacInput.Target
+	locals.ResourceGroupName = iacInput.Target.Spec.ResourceGroup.GetValue()
+	locals.ExpressRouteCircuitName = iacInput.Target.Spec.ExpressRouteCircuitName.GetValue()
 
 	return locals
 }

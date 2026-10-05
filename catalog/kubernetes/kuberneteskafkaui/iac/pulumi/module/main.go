@@ -19,17 +19,17 @@ import (
 // The release is named after metadata.name (NOT a fixed chart name):
 // several consoles coexist in one cluster, each rendering its own
 // Deployment and Service under the chart's fullname for that release.
-func Resources(ctx *pulumi.Context, stackInput *kuberneteskafkauiv1alpha1.KubernetesKafkaUiStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kuberneteskafkauiv1alpha1.KubernetesKafkaUiIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

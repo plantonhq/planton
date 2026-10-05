@@ -5,20 +5,20 @@ import (
 
 	awsfsxdrav1 "github.com/plantonhq/planton/catalog/aws/awsfsxdatarepositoryassociation/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds the association definition from the stack input and the AWS
+// Locals holds the association definition from the IaC input and the AWS
 // tags applied to the created resource.
 type Locals struct {
 	AwsFsxDataRepositoryAssociation *awsfsxdrav1.AwsFsxDataRepositoryAssociation
 	AwsTags                         map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *awsfsxdrav1.AwsFsxDataRepositoryAssociationStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awsfsxdrav1.AwsFsxDataRepositoryAssociationIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsFsxDataRepositoryAssociation = stackInput.Target
+	locals.AwsFsxDataRepositoryAssociation = iacInput.Target
 
 	// Resource-identity tags follow the catalog convention. Associations have
 	// no cloud name argument, so the Name tag carries metadata.name — the
@@ -29,7 +29,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *awsfsxdrav1.AwsFsxDataRep
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsFsxDataRepositoryAssociation.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsFsxDataRepositoryAssociation.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsFsxDataRepositoryAssociation.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsFsxDataRepositoryAssociation.String(),
 		awstagkeys.ResourceId:   locals.AwsFsxDataRepositoryAssociation.Metadata.Id,
 	}
 

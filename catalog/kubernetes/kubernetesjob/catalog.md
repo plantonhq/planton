@@ -4,7 +4,7 @@ Runs work to completion on any Kubernetes cluster as a batch/v1 Job: pods are cr
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **Kubernetes Job** -- the batch workload resource that creates pods and runs them to completion, with the configured fan-out, retry budgets, deadlines, failure/success policies, and container specification
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -57,11 +57,11 @@ spec:
 planton apply -f job.yaml
 ```
 
-This creates a single-pod Job (parallelism and completions default to 1) with up to 3 retries on failure and automatic cleanup 1 hour after it finishes. A Stack Job tracks the provisioning in real time.
+This creates a single-pod Job (parallelism and completions default to 1) with up to 3 retries on failure and automatic cleanup 1 hour after it finishes. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the Job to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the Job to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -93,7 +93,7 @@ These are the most important decisions when configuring a Kubernetes Job. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -101,9 +101,9 @@ These are the most important decisions when configuring a Kubernetes Job. Explor
 | **KubernetesServiceAccount** | `pod.serviceAccount` | `status.outputs.service_account_name` |
 | **KubernetesSecret** | `pod.imagePullSecrets` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -123,7 +123,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the target namespace for the Job
-- [**Kubernetes ServiceAccount**](/cloud-catalog/kubernetes-service-account) -- keyless cloud access for the run's lifetime via workload identity
-- [**Kubernetes Secret**](/cloud-catalog/kubernetes-secret) -- image pull secrets and referenced credential material
-- [**Kubernetes CronJob**](/cloud-catalog/kubernetes-cron-job) -- the scheduled twin: runs this same batch surface on a cron schedule
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the target namespace for the Job
+- [**Kubernetes ServiceAccount**](/infra-catalog/kubernetes-service-account) -- keyless cloud access for the run's lifetime via workload identity
+- [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) -- image pull secrets and referenced credential material
+- [**Kubernetes CronJob**](/infra-catalog/kubernetes-cron-job) -- the scheduled twin: runs this same batch surface on a cron schedule

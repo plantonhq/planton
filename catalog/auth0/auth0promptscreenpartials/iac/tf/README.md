@@ -17,7 +17,7 @@ The single-screen `auth0_prompt_screen_partial` is never declared: this module o
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `prompt_type`, and `screen_partials` (one entry per screen: `screen_name` and its `insertion_points`) |
 
 ## Outputs

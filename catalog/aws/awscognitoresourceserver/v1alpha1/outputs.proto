@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awscognitoresourceserver.v1alpha1;
 
-// AwsCognitoResourceServerStackOutputs captures observable identifiers from a
+// AwsCognitoResourceServerOutputs captures observable identifiers from a
 // provisioned Cognito resource server.
-message AwsCognitoResourceServerStackOutputs {
+message AwsCognitoResourceServerOutputs {
   // The resource server's identifier within its pool -- the scope prefix
   // access tokens carry (e.g. "https://api.example.com").
   string resource_server_identifier = 1;

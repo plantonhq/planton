@@ -10,7 +10,7 @@ This preset creates the gateway alone: one scale unit (~2 Gbps, the guaranteed f
 ## Key Configuration Choices
 
 - **One scale unit** -- the right floor unless committed circuit bandwidth already exceeds ~2 Gbps; raising it later is an in-place update
-- **Cost honesty** -- the gateway bills hourly PER SCALE UNIT from creation, connections or not, and takes ~30 minutes to provision; the verified figure lives in the component's generated estimate at `catalog/_pricing/estimates/azureexpressroutegateway.yaml`
+- **Cost honesty** -- the gateway bills hourly PER SCALE UNIT from creation, connections or not, and takes ~30 minutes to provision; the verified figure lives in the kind's generated estimate at `catalog/_pricing/estimates/azureexpressroutegateway.yaml`
 - **Region must match the hub's** -- the gateway deploys INTO the hub
 
 ## Placeholders to Replace

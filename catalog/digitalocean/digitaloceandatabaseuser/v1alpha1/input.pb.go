@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// digital-ocean-database-user stack-input
-type DigitalOceanDatabaseUserStackInput struct {
+// digital-ocean-database-user iac-input
+type DigitalOceanDatabaseUserIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *DigitalOceanDatabaseUser `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type DigitalOceanDatabaseUserStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *DigitalOceanDatabaseUserStackInput) Reset() {
-	*x = DigitalOceanDatabaseUserStackInput{}
+func (x *DigitalOceanDatabaseUserIacInput) Reset() {
+	*x = DigitalOceanDatabaseUserIacInput{}
 	mi := &file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DigitalOceanDatabaseUserStackInput) String() string {
+func (x *DigitalOceanDatabaseUserIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DigitalOceanDatabaseUserStackInput) ProtoMessage() {}
+func (*DigitalOceanDatabaseUserIacInput) ProtoMessage() {}
 
-func (x *DigitalOceanDatabaseUserStackInput) ProtoReflect() protoreflect.Message {
+func (x *DigitalOceanDatabaseUserIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *DigitalOceanDatabaseUserStackInput) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DigitalOceanDatabaseUserStackInput.ProtoReflect.Descriptor instead.
-func (*DigitalOceanDatabaseUserStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use DigitalOceanDatabaseUserIacInput.ProtoReflect.Descriptor instead.
+func (*DigitalOceanDatabaseUserIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DigitalOceanDatabaseUserStackInput) GetTarget() *DigitalOceanDatabaseUser {
+func (x *DigitalOceanDatabaseUserIacInput) GetTarget() *DigitalOceanDatabaseUser {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *DigitalOceanDatabaseUserStackInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
+func (x *DigitalOceanDatabaseUserIacInput) GetProviderConfig() *digitalocean.DigitalOceanProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_input_proto prot
 
 const file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/digitalocean/digitaloceandatabaseuser/v1alpha1/input.proto\x12:dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1\x1a@catalog/digitalocean/digitaloceandatabaseuser/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xf1\x01\n" +
-	"\"DigitalOceanDatabaseUserStackInput\x12l\n" +
+	"Bcatalog/digitalocean/digitaloceandatabaseuser/v1alpha1/input.proto\x12:dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1\x1a@catalog/digitalocean/digitaloceandatabaseuser/v1alpha1/api.proto\x1a#catalog/digitalocean/provider.proto\"\xef\x01\n" +
+	" DigitalOceanDatabaseUserIacInput\x12l\n" +
 	"\x06target\x18\x01 \x01(\v2T.dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1.DigitalOceanDatabaseUserR\x06target\x12]\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v24.dev.planton.digitalocean.DigitalOceanProviderConfigR\x0eproviderConfigB\xcf\x03\n" +
 	">com.dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_input_proto_raw
 
 var file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_input_proto_goTypes = []any{
-	(*DigitalOceanDatabaseUserStackInput)(nil),      // 0: dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1.DigitalOceanDatabaseUserStackInput
+	(*DigitalOceanDatabaseUserIacInput)(nil),        // 0: dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1.DigitalOceanDatabaseUserIacInput
 	(*DigitalOceanDatabaseUser)(nil),                // 1: dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1.DigitalOceanDatabaseUser
 	(*digitalocean.DigitalOceanProviderConfig)(nil), // 2: dev.planton.digitalocean.DigitalOceanProviderConfig
 }
 var file_catalog_digitalocean_digitaloceandatabaseuser_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1.DigitalOceanDatabaseUserStackInput.target:type_name -> dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1.DigitalOceanDatabaseUser
-	2, // 1: dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1.DigitalOceanDatabaseUserStackInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
+	1, // 0: dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1.DigitalOceanDatabaseUserIacInput.target:type_name -> dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1.DigitalOceanDatabaseUser
+	2, // 1: dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1.DigitalOceanDatabaseUserIacInput.provider_config:type_name -> dev.planton.digitalocean.DigitalOceanProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

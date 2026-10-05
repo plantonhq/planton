@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsMemorydbUserStackOutputs captures observable identifiers from a
+// AwsMemorydbUserOutputs captures observable identifiers from a
 // provisioned MemoryDB user. These outputs are used by downstream resources
 // to wire dependencies via StringValueOrRef — most importantly the ACL's
 // `user_names` membership list.
-type AwsMemorydbUserStackOutputs struct {
+type AwsMemorydbUserOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The user's name — the single identity clients present in the AUTH
 	// command and the identifier ACLs reference in their membership list.
@@ -44,20 +44,20 @@ type AwsMemorydbUserStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AwsMemorydbUserStackOutputs) Reset() {
-	*x = AwsMemorydbUserStackOutputs{}
+func (x *AwsMemorydbUserOutputs) Reset() {
+	*x = AwsMemorydbUserOutputs{}
 	mi := &file_catalog_aws_awsmemorydbuser_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsMemorydbUserStackOutputs) String() string {
+func (x *AwsMemorydbUserOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsMemorydbUserStackOutputs) ProtoMessage() {}
+func (*AwsMemorydbUserOutputs) ProtoMessage() {}
 
-func (x *AwsMemorydbUserStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsMemorydbUserOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsmemorydbuser_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,26 +69,26 @@ func (x *AwsMemorydbUserStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsMemorydbUserStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsMemorydbUserStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsMemorydbUserOutputs.ProtoReflect.Descriptor instead.
+func (*AwsMemorydbUserOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmemorydbuser_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsMemorydbUserStackOutputs) GetUserName() string {
+func (x *AwsMemorydbUserOutputs) GetUserName() string {
 	if x != nil {
 		return x.UserName
 	}
 	return ""
 }
 
-func (x *AwsMemorydbUserStackOutputs) GetUserArn() string {
+func (x *AwsMemorydbUserOutputs) GetUserArn() string {
 	if x != nil {
 		return x.UserArn
 	}
 	return ""
 }
 
-func (x *AwsMemorydbUserStackOutputs) GetMinimumEngineVersion() string {
+func (x *AwsMemorydbUserOutputs) GetMinimumEngineVersion() string {
 	if x != nil {
 		return x.MinimumEngineVersion
 	}
@@ -99,8 +99,8 @@ var File_catalog_aws_awsmemorydbuser_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_aws_awsmemorydbuser_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awsmemorydbuser/v1alpha1/outputs.proto\x12(dev.planton.aws.awsmemorydbuser.v1alpha1\"\x8b\x01\n" +
-	"\x1bAwsMemorydbUserStackOutputs\x12\x1b\n" +
+	"2catalog/aws/awsmemorydbuser/v1alpha1/outputs.proto\x12(dev.planton.aws.awsmemorydbuser.v1alpha1\"\x86\x01\n" +
+	"\x16AwsMemorydbUserOutputs\x12\x1b\n" +
 	"\tuser_name\x18\x01 \x01(\tR\buserName\x12\x19\n" +
 	"\buser_arn\x18\x02 \x01(\tR\auserArn\x124\n" +
 	"\x16minimum_engine_version\x18\x03 \x01(\tR\x14minimumEngineVersionB\xdc\x02\n" +
@@ -120,7 +120,7 @@ func file_catalog_aws_awsmemorydbuser_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awsmemorydbuser_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsmemorydbuser_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsMemorydbUserStackOutputs)(nil), // 0: dev.planton.aws.awsmemorydbuser.v1alpha1.AwsMemorydbUserStackOutputs
+	(*AwsMemorydbUserOutputs)(nil), // 0: dev.planton.aws.awsmemorydbuser.v1alpha1.AwsMemorydbUserOutputs
 }
 var file_catalog_aws_awsmemorydbuser_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

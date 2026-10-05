@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azuremssqlelasticpoolv1alpha1.AzureMssqlElasticPoolStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuremssqlelasticpoolv1alpha1.AzureMssqlElasticPoolIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -79,7 +79,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuremssqlelasticpoolv1alpha1.Az
 	}
 
 	// Member databases inherit this window (and must not set their own).
-	// Presence-guarded to the spec default -- stack inputs built from a
+	// Presence-guarded to the spec default -- IaC inputs built from a
 	// manifest do NOT materialize proto defaults.
 	if spec.MaintenanceConfigurationName != nil {
 		poolArgs.MaintenanceConfigurationName = pulumi.String(spec.GetMaintenanceConfigurationName())
@@ -95,7 +95,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuremssqlelasticpoolv1alpha1.Az
 		return errors.Wrapf(err, "failed to create mssql elastic pool %s", spec.PoolName)
 	}
 
-	// Export stack outputs from the created resource.
+	// Export outputs from the created resource.
 	ctx.Export(OpElasticPoolId, pool.ID())
 	ctx.Export(OpElasticPoolName, pool.Name)
 

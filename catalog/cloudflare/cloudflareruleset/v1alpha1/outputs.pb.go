@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareRulesetStackOutputs captures the observable outputs after provisioning a Cloudflare Ruleset.
-type CloudflareRulesetStackOutputs struct {
+// CloudflareRulesetOutputs captures the observable outputs after provisioning a Cloudflare Ruleset.
+type CloudflareRulesetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned unique identifier of the ruleset.
 	RulesetId string `protobuf:"bytes,1,opt,name=ruleset_id,json=rulesetId,proto3" json:"ruleset_id,omitempty"`
@@ -38,20 +38,20 @@ type CloudflareRulesetStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareRulesetStackOutputs) Reset() {
-	*x = CloudflareRulesetStackOutputs{}
+func (x *CloudflareRulesetOutputs) Reset() {
+	*x = CloudflareRulesetOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareruleset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareRulesetStackOutputs) String() string {
+func (x *CloudflareRulesetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareRulesetStackOutputs) ProtoMessage() {}
+func (*CloudflareRulesetOutputs) ProtoMessage() {}
 
-func (x *CloudflareRulesetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareRulesetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareruleset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,40 +63,40 @@ func (x *CloudflareRulesetStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareRulesetStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareRulesetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareRulesetOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareRulesetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareruleset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareRulesetStackOutputs) GetRulesetId() string {
+func (x *CloudflareRulesetOutputs) GetRulesetId() string {
 	if x != nil {
 		return x.RulesetId
 	}
 	return ""
 }
 
-func (x *CloudflareRulesetStackOutputs) GetVersion() string {
+func (x *CloudflareRulesetOutputs) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
 	return ""
 }
 
-func (x *CloudflareRulesetStackOutputs) GetZoneId() string {
+func (x *CloudflareRulesetOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
 	return ""
 }
 
-func (x *CloudflareRulesetStackOutputs) GetPhase() string {
+func (x *CloudflareRulesetOutputs) GetPhase() string {
 	if x != nil {
 		return x.Phase
 	}
 	return ""
 }
 
-func (x *CloudflareRulesetStackOutputs) GetLastUpdated() string {
+func (x *CloudflareRulesetOutputs) GetLastUpdated() string {
 	if x != nil {
 		return x.LastUpdated
 	}
@@ -107,8 +107,8 @@ var File_catalog_cloudflare_cloudflareruleset_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_cloudflare_cloudflareruleset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/cloudflare/cloudflareruleset/v1alpha1/outputs.proto\x121dev.planton.cloudflare.cloudflareruleset.v1alpha1\"\xaa\x01\n" +
-	"\x1dCloudflareRulesetStackOutputs\x12\x1d\n" +
+	";catalog/cloudflare/cloudflareruleset/v1alpha1/outputs.proto\x121dev.planton.cloudflare.cloudflareruleset.v1alpha1\"\xa5\x01\n" +
+	"\x18CloudflareRulesetOutputs\x12\x1d\n" +
 	"\n" +
 	"ruleset_id\x18\x01 \x01(\tR\trulesetId\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12\x17\n" +
@@ -131,7 +131,7 @@ func file_catalog_cloudflare_cloudflareruleset_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_cloudflare_cloudflareruleset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareruleset_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareRulesetStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetStackOutputs
+	(*CloudflareRulesetOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareruleset.v1alpha1.CloudflareRulesetOutputs
 }
 var file_catalog_cloudflare_cloudflareruleset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -4,7 +4,7 @@ Deploys an Azure IP Group — a named SET of IP addresses and CIDR ranges that A
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **IP Group** -- the named address set with its entries (single IPs and CIDR blocks, up to 5,000 per group)
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically and merged with the user tags
@@ -15,12 +15,12 @@ The rules that reference the group are NOT created here — they live on firewal
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the group will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the group will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **An address-set plan by INTENT**: one group per policy meaning ("branch-offices", "on-prem-datacenter", "blocked-scanners") — the names become the vocabulary your firewall rules read as.
 
 ## Deploy
@@ -56,7 +56,7 @@ spec:
 planton apply -f ip-group.yaml
 ```
 
-This creates the `branch-offices` group with two trusted ranges -- every firewall rule referencing it matches them, and a new branch joins by adding one address here, with no policy edit. A Stack Job tracks the provisioning in real time.
+This creates the `branch-offices` group with two trusted ranges -- every firewall rule referencing it matches them, and a new branch joins by adding one address here, with no policy edit. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ These are the most important decisions when configuring an IP Group. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -110,7 +110,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the IP Group is created
-- [**Azure Firewall**](/cloud-catalog/azure-firewall) -- the enforcement point whose policies reference this group's address set
-- [**Azure Firewall Policy**](/cloud-catalog/azure-firewall-policy) -- carries the rule collections whose rules reference this group by `ip_group_id`
-- [**Azure Route Table**](/cloud-catalog/azure-route-table) -- the complementary steering layer that sends traffic through the firewall these rules run on
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the IP Group is created
+- [**Azure Firewall**](/infra-catalog/azure-firewall) -- the enforcement point whose policies reference this group's address set
+- [**Azure Firewall Policy**](/infra-catalog/azure-firewall-policy) -- carries the rule collections whose rules reference this group by `ip_group_id`
+- [**Azure Route Table**](/infra-catalog/azure-route-table) -- the complementary steering layer that sends traffic through the firewall these rules run on

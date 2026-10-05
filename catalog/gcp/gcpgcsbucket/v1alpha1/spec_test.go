@@ -37,7 +37,7 @@ var _ = ginkgo.Describe("GcpGcsBucketSpec", func() {
 		return &GcpGcsBucket{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpGcsBucket",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-gcs-bucket",
 			},
 			Spec: &GcpGcsBucketSpec{

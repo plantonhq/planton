@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureStorageDataLakeGen2FilesystemStackOutputs** captures the outputs
+// **AzureStorageDataLakeGen2FilesystemOutputs** captures the outputs
 // of provisioning a Data Lake Gen2 filesystem.
-type AzureStorageDataLakeGen2FilesystemStackOutputs struct {
+type AzureStorageDataLakeGen2FilesystemOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The filesystem's Azure Resource Manager ID -- ADLS filesystems
 	// surface in ARM as blob containers, so this is the container-proxy
@@ -43,20 +43,20 @@ type AzureStorageDataLakeGen2FilesystemStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureStorageDataLakeGen2FilesystemStackOutputs) Reset() {
-	*x = AzureStorageDataLakeGen2FilesystemStackOutputs{}
+func (x *AzureStorageDataLakeGen2FilesystemOutputs) Reset() {
+	*x = AzureStorageDataLakeGen2FilesystemOutputs{}
 	mi := &file_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureStorageDataLakeGen2FilesystemStackOutputs) String() string {
+func (x *AzureStorageDataLakeGen2FilesystemOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureStorageDataLakeGen2FilesystemStackOutputs) ProtoMessage() {}
+func (*AzureStorageDataLakeGen2FilesystemOutputs) ProtoMessage() {}
 
-func (x *AzureStorageDataLakeGen2FilesystemStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureStorageDataLakeGen2FilesystemOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,26 +68,26 @@ func (x *AzureStorageDataLakeGen2FilesystemStackOutputs) ProtoReflect() protoref
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureStorageDataLakeGen2FilesystemStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureStorageDataLakeGen2FilesystemStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureStorageDataLakeGen2FilesystemOutputs.ProtoReflect.Descriptor instead.
+func (*AzureStorageDataLakeGen2FilesystemOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureStorageDataLakeGen2FilesystemStackOutputs) GetFilesystemId() string {
+func (x *AzureStorageDataLakeGen2FilesystemOutputs) GetFilesystemId() string {
 	if x != nil {
 		return x.FilesystemId
 	}
 	return ""
 }
 
-func (x *AzureStorageDataLakeGen2FilesystemStackOutputs) GetFilesystemName() string {
+func (x *AzureStorageDataLakeGen2FilesystemOutputs) GetFilesystemName() string {
 	if x != nil {
 		return x.FilesystemName
 	}
 	return ""
 }
 
-func (x *AzureStorageDataLakeGen2FilesystemStackOutputs) GetStorageAccountName() string {
+func (x *AzureStorageDataLakeGen2FilesystemOutputs) GetStorageAccountName() string {
 	if x != nil {
 		return x.StorageAccountName
 	}
@@ -98,8 +98,8 @@ var File_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_outputs_proto
 
 const file_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/azure/azurestoragedatalakegen2filesystem/v1alpha1/outputs.proto\x12=dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1\"\xb0\x01\n" +
-	".AzureStorageDataLakeGen2FilesystemStackOutputs\x12#\n" +
+	"Gcatalog/azure/azurestoragedatalakegen2filesystem/v1alpha1/outputs.proto\x12=dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1\"\xab\x01\n" +
+	")AzureStorageDataLakeGen2FilesystemOutputs\x12#\n" +
 	"\rfilesystem_id\x18\x01 \x01(\tR\ffilesystemId\x12'\n" +
 	"\x0ffilesystem_name\x18\x02 \x01(\tR\x0efilesystemName\x120\n" +
 	"\x14storage_account_name\x18\x03 \x01(\tR\x12storageAccountNameB\xee\x03\n" +
@@ -119,7 +119,7 @@ func file_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_outputs_prot
 
 var file_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureStorageDataLakeGen2FilesystemStackOutputs)(nil), // 0: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemStackOutputs
+	(*AzureStorageDataLakeGen2FilesystemOutputs)(nil), // 0: dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1.AzureStorageDataLakeGen2FilesystemOutputs
 }
 var file_catalog_azure_azurestoragedatalakegen2filesystem_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

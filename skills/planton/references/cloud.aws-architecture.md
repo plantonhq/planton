@@ -49,7 +49,7 @@ one sentence.
 
 ## Cost posture
 
-`cost-transparency.md` governs the duty; the AWS specifics that matter most:
+`craft.cost-transparency.md` governs the duty; the AWS specifics that matter most:
 the always-on trio (EKS control plane, NAT, load balancers) usually IS the
 bill at small scale — architecture choices that remove one of them outweigh
 any instance-type tuning. Prefer Graviton (ARM) instance types where the
@@ -59,7 +59,7 @@ on-demand, Fargate) for spiky workloads.
 ## Composing beyond AWS primitives
 
 The catalog also carries Kubernetes workload kinds — when the user's EKS
-cluster is the platform, in-cluster components (ingress-nginx, cert-manager,
-Istio) compose per `kubernetes-on-cluster.md`. The AWS judgment still
+cluster is the platform, in-cluster kinds (ingress-nginx, cert-manager,
+Istio) compose per `infra.kubernetes-on-cluster.md`. The AWS judgment still
 applies underneath: the cluster's endpoint exposure, node sizing, and NAT
 shape follow the motive.

@@ -5,9 +5,9 @@ package dev.planton.azure.azurecontainerregistry.v1alpha1;
 import "catalog/azure/azurecontainerregistry/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-container-registry stack-input
-message AzureContainerRegistryStackInput {
-  //target cloud-resource
+//azure-container-registry iac-input
+message AzureContainerRegistryIacInput {
+  // the catalog object to deploy
   AzureContainerRegistry target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

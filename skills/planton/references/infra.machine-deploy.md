@@ -4,7 +4,7 @@ On a signed-in Planton — a hosted or self-hosted instance, where deploys
 normally run on infrastructure the organization operates — the machine you
 are working on can become the deploy engine for THIS person's own work:
 deployments run right here using the cloud login already on the machine,
-the credentials never leave it, and every chart, project, and deployment
+the credentials never leave it, and every chart, Infra Stack, and deployment
 record still lands in the organization. For a brand-new team this is the
 fastest honest path from conversation to real infrastructure — nothing
 needs to be wired into the organization first — and for some people it is
@@ -98,7 +98,7 @@ With the machine connected (or the org already wired), deploying a composed
 chart is yours to perform when the user explicitly asks — the same
 one-confirmation discipline as every mutation. One precondition first: when
 the organization's catalog policy disables kinds this chart uses, the user
-hears the disclosure BEFORE the deploy starts — which components, that the
+hears the disclosure BEFORE the deploy starts — which kinds, that the
 rest deploys now, and that an Infrastructure Admin can enable them
 (`catalog-availability.md`); a policy refusal mid-pipeline means the
 disclosure was skipped, not that something broke.
@@ -107,12 +107,12 @@ disclosure was skipped, not that something broke.
 planton chart install <name> <chart-dir> -m "why, like a commit message" --plain
 ```
 
-The install creates the project and starts its deployment pipeline
+The install creates the Infra Stack and starts its deployment pipeline
 immediately; follow the pipeline output and narrate what happens — which
 resource is deploying, what failed and why, in the user's vocabulary. The
 org and environment ride your CLI context (`--org`/`-e` when they don't).
-A working copy of a deployed project keeps its own rules
-(`references/infra.deployed-projects.md`) — there the save verb is the deploy.
+A working copy of a deployed Infra Stack keeps its own rules
+(`references/infra.deployed-stacks.md`) — there the save verb is the deploy.
 
 ## When it doesn't work — every failure has a way forward
 

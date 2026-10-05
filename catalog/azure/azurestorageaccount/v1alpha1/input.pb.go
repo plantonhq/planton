@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-storage-account stack-input
-type AzureStorageAccountStackInput struct {
+// azure-storage-account iac-input
+type AzureStorageAccountIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AzureStorageAccount `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureStorageAccountStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureStorageAccountStackInput) Reset() {
-	*x = AzureStorageAccountStackInput{}
+func (x *AzureStorageAccountIacInput) Reset() {
+	*x = AzureStorageAccountIacInput{}
 	mi := &file_catalog_azure_azurestorageaccount_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureStorageAccountStackInput) String() string {
+func (x *AzureStorageAccountIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureStorageAccountStackInput) ProtoMessage() {}
+func (*AzureStorageAccountIacInput) ProtoMessage() {}
 
-func (x *AzureStorageAccountStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureStorageAccountIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurestorageaccount_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureStorageAccountStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureStorageAccountStackInput.ProtoReflect.Descriptor instead.
-func (*AzureStorageAccountStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureStorageAccountIacInput.ProtoReflect.Descriptor instead.
+func (*AzureStorageAccountIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurestorageaccount_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureStorageAccountStackInput) GetTarget() *AzureStorageAccount {
+func (x *AzureStorageAccountIacInput) GetTarget() *AzureStorageAccount {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureStorageAccountStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureStorageAccountIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azurestorageaccount_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_azure_azurestorageaccount_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/azure/azurestorageaccount/v1alpha1/input.proto\x12.dev.planton.azure.azurestorageaccount.v1alpha1\x1a4catalog/azure/azurestorageaccount/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xcd\x01\n" +
-	"\x1dAzureStorageAccountStackInput\x12[\n" +
+	"6catalog/azure/azurestorageaccount/v1alpha1/input.proto\x12.dev.planton.azure.azurestorageaccount.v1alpha1\x1a4catalog/azure/azurestorageaccount/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xcb\x01\n" +
+	"\x1bAzureStorageAccountIacInput\x12[\n" +
 	"\x06target\x18\x01 \x01(\v2C.dev.planton.azure.azurestorageaccount.v1alpha1.AzureStorageAccountR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x82\x03\n" +
 	"2com.dev.planton.azure.azurestorageaccount.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azurestorageaccount_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_azure_azurestorageaccount_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurestorageaccount_v1alpha1_input_proto_goTypes = []any{
-	(*AzureStorageAccountStackInput)(nil), // 0: dev.planton.azure.azurestorageaccount.v1alpha1.AzureStorageAccountStackInput
-	(*AzureStorageAccount)(nil),           // 1: dev.planton.azure.azurestorageaccount.v1alpha1.AzureStorageAccount
-	(*azure.AzureProviderConfig)(nil),     // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureStorageAccountIacInput)(nil), // 0: dev.planton.azure.azurestorageaccount.v1alpha1.AzureStorageAccountIacInput
+	(*AzureStorageAccount)(nil),         // 1: dev.planton.azure.azurestorageaccount.v1alpha1.AzureStorageAccount
+	(*azure.AzureProviderConfig)(nil),   // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurestorageaccount_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurestorageaccount.v1alpha1.AzureStorageAccountStackInput.target:type_name -> dev.planton.azure.azurestorageaccount.v1alpha1.AzureStorageAccount
-	2, // 1: dev.planton.azure.azurestorageaccount.v1alpha1.AzureStorageAccountStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurestorageaccount.v1alpha1.AzureStorageAccountIacInput.target:type_name -> dev.planton.azure.azurestorageaccount.v1alpha1.AzureStorageAccount
+	2, // 1: dev.planton.azure.azurestorageaccount.v1alpha1.AzureStorageAccountIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

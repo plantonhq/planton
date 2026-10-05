@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorroutev1alpha1.AzureFrontDoorRouteStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurefrontdoorroutev1alpha1.AzureFrontDoorRouteIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -26,7 +26,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorroutev1alpha1.Azur
 	}
 
 	// The origin-leg protocol default (MatchRequest) is materialized here
-	// because stack inputs never carry proto defaults.
+	// because IaC inputs never carry proto defaults.
 	forwardingProtocol := forwardingProtocolStrings[spec.ForwardingProtocol]
 	if forwardingProtocol == "" {
 		forwardingProtocol = "MatchRequest"
@@ -111,7 +111,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorroutev1alpha1.Azur
 		return errors.Wrapf(err, "failed to create front door route %s", spec.RouteName)
 	}
 
-	// Export stack outputs. No hostname output on purpose: the
+	// Export outputs. No hostname output on purpose: the
 	// client-facing hostname lives on the endpoint's outputs.
 	ctx.Export(OpRouteId, createdRoute.ID())
 	ctx.Export(OpRouteName, createdRoute.Name)

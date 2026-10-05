@@ -27,7 +27,7 @@ func minimalValidNodeGroup() *AwsEksNodeGroup {
 	return &AwsEksNodeGroup{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsEksNodeGroup",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "workers",
 		},
 		Spec: &AwsEksNodeGroupSpec{

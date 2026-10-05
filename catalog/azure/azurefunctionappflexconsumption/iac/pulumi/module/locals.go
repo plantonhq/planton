@@ -5,7 +5,7 @@ import (
 
 	azurefunctionappflexconsumptionv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurefunctionappflexconsumption/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -104,11 +104,11 @@ var cookieExpirationConventionStrings = map[azurefunctionappflexconsumptionv1alp
 	azurefunctionappflexconsumptionv1alpha1.AzureFunctionAppFlexConsumptionCookieExpirationConvention_IDENTITY_PROVIDER_DERIVED: "IdentityProviderDerived",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefunctionappflexconsumptionv1alpha1.AzureFunctionAppFlexConsumptionStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefunctionappflexconsumptionv1alpha1.AzureFunctionAppFlexConsumptionIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFunctionAppFlexConsumption = stackInput.Target
-	target := stackInput.Target
+	locals.AzureFunctionAppFlexConsumption = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -119,7 +119,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurefunctionappflexconsu
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureFunctionAppFlexConsumption.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureFunctionAppFlexConsumption.String()),
 	}
 
 	if target.Metadata.Id != "" {

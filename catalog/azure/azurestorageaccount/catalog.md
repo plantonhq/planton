@@ -1,10 +1,10 @@
 # Azure Storage Account
 
-Deploys an Azure Storage Account -- the multi-service storage primitive that fronts Blob (objects), Files (SMB/NFS shares), Queues, Tables, and Data Lake Storage Gen2 behind one globally-unique DNS name. Kind, performance tier, and replication together pick the SKU; the service-level blocks (blob, file, static website) tune the data services the account exposes. The account is the CONTAINER -- its data-plane children (blob containers, file shares, queues, tables, Data Lake filesystems, local SFTP users, object-replication policies) are their own first-class Cloud Resources referencing this account's outputs. Blob lifecycle management is the deliberate exception: Azure models it as one per-account policy document, so it is folded in as `lifecycleRules`.
+Deploys an Azure Storage Account -- the multi-service storage primitive that fronts Blob (objects), Files (SMB/NFS shares), Queues, Tables, and Data Lake Storage Gen2 behind one globally-unique DNS name. Kind, performance tier, and replication together pick the SKU; the service-level blocks (blob, file, static website) tune the data services the account exposes. The account is the CONTAINER -- its data-plane children (blob containers, file shares, queues, tables, Data Lake filesystems, local SFTP users, object-replication policies) are their own first-class Infra Components referencing this account's outputs. Blob lifecycle management is the deliberate exception: Azure models it as one per-account policy document, so it is folded in as `lifecycleRules`.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions one Storage Account carrying every configured surface:
+When you deploy this Infra Component, the IaC module provisions one Storage Account carrying every configured surface:
 
 - **The account** -- General-Purpose v2 (the default), Premium Block Blobs, Premium File Shares, or a legacy kind; Standard or Premium tier; LRS through RA-GZRS replication; the default blob access tier
 - **Data Lake & protocols** -- the hierarchical namespace (real directories, POSIX ACLs, the dfs endpoint), and the SFTP / NFSv3 endpoints built on it
@@ -25,12 +25,12 @@ Blob containers are NOT created here -- each AzureStorageContainer references `s
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the account will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the account will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **The account name** -- 3-24 LOWERCASE letters and digits only (no hyphens), globally unique across all of Azure: it becomes the DNS prefix of every service endpoint ({name}.blob.core.windows.net and friends).
 - **For customer-managed keys** -- a Key Vault with purge protection, an AzureKeyVaultKey, and an AzureUserAssignedIdentity holding wrap/unwrap on the vault (the "Key Vault Crypto Service Encryption User" role), all BEFORE the account deploys.
 - **For firewall subnet rules** -- each admitted AzureSubnet needs the Microsoft.Storage service endpoint enabled.
@@ -74,7 +74,7 @@ spec:
 planton apply -f azure-storage-account.yaml
 ```
 
-This creates a zone-redundant General-Purpose v2 account with versioning and 30-day soft delete; everything unspecified keeps Azure's own default (Standard tier, Hot access tier, TLS 1.2, HTTPS required). A Stack Job tracks the provisioning in real time.
+This creates a zone-redundant General-Purpose v2 account with versioning and 30-day soft delete; everything unspecified keeps Azure's own default (Standard tier, Hot access tier, TLS 1.2, HTTPS required). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -129,7 +129,7 @@ These are the most important decisions when configuring a Storage Account. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -138,9 +138,9 @@ These are the most important decisions when configuring a Storage Account. Explo
 | **AzureKeyVaultKey** | `customerManagedKey.keyVaultKeyId` | `status.outputs.versionless_id` |
 | **AzureSubnet** (per firewall rule) | `networkRules.virtualNetworkSubnetIds[]` | `status.outputs.subnet_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef. The account ARM ID is the composition seam the whole storage family references:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef. The account ARM ID is the composition seam the whole storage family references:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -168,18 +168,18 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the account is created in
-- [**Azure Storage Container**](/cloud-catalog/azure-storage-container) -- blob containers referencing the account ID (the primary composition edge)
-- [**Azure Storage Share**](/cloud-catalog/azure-storage-share) -- SMB/NFS file shares on the account's file service
-- [**Azure Storage Queue**](/cloud-catalog/azure-storage-queue) -- lightweight message queues on the account's queue service
-- [**Azure Storage Table**](/cloud-catalog/azure-storage-table) -- NoSQL key-attribute tables on the account's table service
-- [**Azure Storage Data Lake Gen2 Filesystem**](/cloud-catalog/azure-storage-data-lake-gen2-filesystem) -- Data Lake filesystems on a hierarchical-namespace account
-- [**Azure Storage Local User**](/cloud-catalog/azure-storage-local-user) -- SFTP credentials when the SFTP endpoint is on
-- [**Azure Storage Encryption Scope**](/cloud-catalog/azure-storage-encryption-scope) -- per-scope encryption keys within the account
-- [**Azure Storage Object Replication**](/cloud-catalog/azure-storage-object-replication) -- cross-account async blob replication policies
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- unwraps the customer-managed key; composes vault grants before the account exists
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the customer-managed encryption key
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- service-endpoint subnets admitted through the firewall
-- [**Azure Private Endpoint**](/cloud-catalog/azure-private-endpoint) -- private connectivity when the public endpoint is off
-- [**Azure Monitor Diagnostic Setting**](/cloud-catalog/azure-monitor-diagnostic-setting) -- data-access telemetry against the per-service IDs
-- [**Azure Function App**](/cloud-catalog/azure-function-app) and [**Azure Linux Web App**](/cloud-catalog/azure-linux-web-app) -- bind the account for their runtime storage
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the account is created in
+- [**Azure Storage Container**](/infra-catalog/azure-storage-container) -- blob containers referencing the account ID (the primary composition edge)
+- [**Azure Storage Share**](/infra-catalog/azure-storage-share) -- SMB/NFS file shares on the account's file service
+- [**Azure Storage Queue**](/infra-catalog/azure-storage-queue) -- lightweight message queues on the account's queue service
+- [**Azure Storage Table**](/infra-catalog/azure-storage-table) -- NoSQL key-attribute tables on the account's table service
+- [**Azure Storage Data Lake Gen2 Filesystem**](/infra-catalog/azure-storage-data-lake-gen2-filesystem) -- Data Lake filesystems on a hierarchical-namespace account
+- [**Azure Storage Local User**](/infra-catalog/azure-storage-local-user) -- SFTP credentials when the SFTP endpoint is on
+- [**Azure Storage Encryption Scope**](/infra-catalog/azure-storage-encryption-scope) -- per-scope encryption keys within the account
+- [**Azure Storage Object Replication**](/infra-catalog/azure-storage-object-replication) -- cross-account async blob replication policies
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- unwraps the customer-managed key; composes vault grants before the account exists
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the customer-managed encryption key
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- service-endpoint subnets admitted through the firewall
+- [**Azure Private Endpoint**](/infra-catalog/azure-private-endpoint) -- private connectivity when the public endpoint is off
+- [**Azure Monitor Diagnostic Setting**](/infra-catalog/azure-monitor-diagnostic-setting) -- data-access telemetry against the per-service IDs
+- [**Azure Function App**](/infra-catalog/azure-function-app) and [**Azure Linux Web App**](/infra-catalog/azure-linux-web-app) -- bind the account for their runtime storage

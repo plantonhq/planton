@@ -3,14 +3,14 @@ package module
 import (
 	"strconv"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 
 	awsecrrepov1alpha1 "github.com/plantonhq/planton/catalog/aws/awsecrrepo/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds the AWS ECR Repo resource definition from the stack input
+// Locals holds the AWS ECR Repo resource definition from the IaC input
 // and a map of AWS tags to apply to resources.
 type Locals struct {
 	AwsEcrRepo *awsecrrepov1alpha1.AwsEcrRepo
@@ -18,11 +18,11 @@ type Locals struct {
 }
 
 // initializeLocals is similar to Terraform "locals" usage. It reads
-// values from AwsEcrRepoStackInput to build a Locals instance.
-func initializeLocals(ctx *pulumi.Context, stackInput *awsecrrepov1alpha1.AwsEcrRepoStackInput) *Locals {
+// values from AwsEcrRepoIacInput to build a Locals instance.
+func initializeLocals(ctx *pulumi.Context, iacInput *awsecrrepov1alpha1.AwsEcrRepoIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AwsEcrRepo = stackInput.Target
+	locals.AwsEcrRepo = iacInput.Target
 
 	// No Name tag: the repository has a real name of its own
 	// (spec.repository_name, a slash-namespaced registry path) — tagging
@@ -34,7 +34,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *awsecrrepov1alpha1.AwsEcr
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsEcrRepo.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsEcrRepo.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsEcrRepo.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsEcrRepo.String(),
 		awstagkeys.ResourceId:   locals.AwsEcrRepo.Metadata.Id,
 	}
 

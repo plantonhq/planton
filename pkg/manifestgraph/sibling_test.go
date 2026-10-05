@@ -10,7 +10,7 @@ import (
 	kubernetespostgresv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetespostgres/v1alpha1"
 	"github.com/plantonhq/planton/pkg/refannotations"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/proto"
@@ -23,7 +23,7 @@ import (
 func routeNamingGateway(name, env, gatewayName string) proto.Message {
 	return &kuberneteshttproutev1alpha1.KubernetesHttpRoute{
 		Kind:     "KubernetesHttpRoute",
-		Metadata: &shared.CloudResourceMetadata{Name: name, Env: env},
+		Metadata: &shared.CatalogObjectMetadata{Name: name, Env: env},
 		Spec: &kuberneteshttproutev1alpha1.KubernetesHttpRouteSpec{
 			Namespace:  literal("shop"),
 			ParentRefs: []*kubernetes.KubernetesGatewayApiParentReference{{Name: literal(gatewayName)}},
@@ -34,7 +34,7 @@ func routeNamingGateway(name, env, gatewayName string) proto.Message {
 func gateway(name, env string) proto.Message {
 	return &kubernetesgatewayv1alpha1.KubernetesGateway{
 		Kind:     "KubernetesGateway",
-		Metadata: &shared.CloudResourceMetadata{Name: name, Env: env},
+		Metadata: &shared.CatalogObjectMetadata{Name: name, Env: env},
 		Spec:     &kubernetesgatewayv1alpha1.KubernetesGatewaySpec{Namespace: literal("istio-ingress")},
 	}
 }
@@ -42,7 +42,7 @@ func gateway(name, env string) proto.Message {
 func postgres(name, env string) proto.Message {
 	return &kubernetespostgresv1alpha1.KubernetesPostgres{
 		Kind:     "KubernetesPostgres",
-		Metadata: &shared.CloudResourceMetadata{Name: name, Env: env},
+		Metadata: &shared.CatalogObjectMetadata{Name: name, Env: env},
 		Spec:     &kubernetespostgresv1alpha1.KubernetesPostgresSpec{Namespace: literal("app")},
 	}
 }
@@ -50,7 +50,7 @@ func postgres(name, env string) proto.Message {
 func cnpgOperator(name, env string) proto.Message {
 	return &kubernetescloudnativepgoperatorv1alpha1.KubernetesCloudNativePgOperator{
 		Kind:     "KubernetesCloudNativePgOperator",
-		Metadata: &shared.CloudResourceMetadata{Name: name, Env: env},
+		Metadata: &shared.CatalogObjectMetadata{Name: name, Env: env},
 		Spec:     &kubernetescloudnativepgoperatorv1alpha1.KubernetesCloudNativePgOperatorSpec{Namespace: literal("cnpg-system")},
 	}
 }
@@ -77,7 +77,7 @@ func TestCollectLiteralUses_ReadsTheLiteralArmAtDepth(t *testing.T) {
 	// Looked up by path, never by position: protoreflect's Range visits
 	// fields in an order protobuf-go deliberately perturbs per binary, so a
 	// positional assertion flips whenever any linked descriptor changes.
-	assert.Equal(t, cloudresourcekind.CloudResourceKind_KubernetesGateway,
+	assert.Equal(t, catalogkind.CatalogKind_KubernetesGateway,
 		refannotations.Of(byPath["spec.parent_refs[0].name"].Field).DefaultKind, "the declaring field carries the default kind the literal is matched against")
 }
 
@@ -96,17 +96,17 @@ func TestLiteralSibling_NeverCrossesEnvsOrKinds(t *testing.T) {
 func TestLiteralSibling_LeavesTheNamespaceToPlacement(t *testing.T) {
 	g := graphOver(gateway("public-gateway", "dev"))
 	assert.Empty(t, g.DependsOn[0])
-	assert.Equal(t, []Identity{{Kind: cloudresourcekind.CloudResourceKind_KubernetesNamespace, Slug: "istio-ingress", Env: "dev"}}, g.Derived,
+	assert.Equal(t, []Identity{{Kind: catalogkind.CatalogKind_KubernetesNamespace, Slug: "istio-ingress", Env: "dev"}}, g.Derived,
 		"a literal namespace is the placement source's: it alone mints a derived target")
 }
 
 func TestOperatorPrerequisites_FilterToTheOperatorGroup(t *testing.T) {
-	assert.Equal(t, []cloudresourcekind.CloudResourceKind{cloudresourcekind.CloudResourceKind_KubernetesCloudNativePgOperator},
-		operatorPrerequisites(cloudresourcekind.CloudResourceKind_KubernetesPostgres))
-	assert.Equal(t, []cloudresourcekind.CloudResourceKind{cloudresourcekind.CloudResourceKind_KubernetesGatewayApiCrds},
-		operatorPrerequisites(cloudresourcekind.CloudResourceKind_KubernetesGateway),
+	assert.Equal(t, []catalogkind.CatalogKind{catalogkind.CatalogKind_KubernetesCloudNativePgOperator},
+		operatorPrerequisites(catalogkind.CatalogKind_KubernetesPostgres))
+	assert.Equal(t, []catalogkind.CatalogKind{catalogkind.CatalogKind_KubernetesGatewayApiCrds},
+		operatorPrerequisites(catalogkind.CatalogKind_KubernetesGateway),
 		"a CRD bundle is a cluster-singleton prerequisite of the same class as an operator")
-	assert.Empty(t, operatorPrerequisites(cloudresourcekind.CloudResourceKind_KubernetesNamespace),
+	assert.Empty(t, operatorPrerequisites(catalogkind.CatalogKind_KubernetesNamespace),
 		"a kind with no prerequisite yields nothing")
 }
 
@@ -124,10 +124,10 @@ func TestOperatorPrerequisite_EdgeOnlyWhenExactlyOneInstance(t *testing.T) {
 func TestBuildGraph_AnInferredEdgeYieldsToTheAuthorsCycle(t *testing.T) {
 	operator := &kubernetescloudnativepgoperatorv1alpha1.KubernetesCloudNativePgOperator{
 		Kind:     "KubernetesCloudNativePgOperator",
-		Metadata: &shared.CloudResourceMetadata{Name: "cnpg", Env: "dev"},
+		Metadata: &shared.CatalogObjectMetadata{Name: "cnpg", Env: "dev"},
 		Spec: &kubernetescloudnativepgoperatorv1alpha1.KubernetesCloudNativePgOperatorSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{
-				Kind: cloudresourcekind.CloudResourceKind_KubernetesPostgres, Name: "app-db", FieldPath: "status.outputs.namespace",
+				Kind: catalogkind.CatalogKind_KubernetesPostgres, Name: "app-db", FieldPath: "status.outputs.namespace",
 			}}},
 		},
 	}

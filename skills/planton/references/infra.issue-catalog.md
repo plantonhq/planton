@@ -34,7 +34,7 @@ Cannot find field: nonExistentField in message …AwsKmsKeySpec
 **Symptom:**
 
 ```
-Invalid valueFrom references: Field 'no_such_output' not found in …StackOutputs for kind: AwsIamRole
+Invalid valueFrom references: Field 'no_such_output' not found in …Outputs for kind: AwsIamRole
 ```
 
 **Fix:**
@@ -57,7 +57,7 @@ one or more sensitive fields must reference an existing org secret (use '$secret
 
 1. Plaintext or a placeholder in the field → replace it with a `$secret/...`
    reference; a sensitive field never accepts a literal
-   (`config-references.md`).
+   (`infra.config-references.md`).
 2. "secret not found for organization slug …" → the reference is org-scoped
    but no org secret has that slug. `planton secret list -o json` — if the
    secret is environment-scoped (its record carries an `env`), add the sigil:
@@ -82,7 +82,7 @@ spec.containers[0].env[1].value (STRIPE_KEY) holds a secret reference, but its v
 ```
 
 **Cause:** the field is marked `(no secrets: use <field>)` on the
-component's page. The runner resolves a `$secret/...` to its plain value
+kind's page. The runner resolves a `$secret/...` to its plain value
 before the module runs, so in this field the secret itself would be written
 into the revision, task definition, or pod spec.
 
@@ -90,7 +90,7 @@ into the revision, task definition, or pod spec.
 on Cloud Run the same env entry's `secretValue` (and drop its `value`), on
 ECS the container's `secretEnvironment` map (and remove the key from
 `environment`), on a Kubernetes workload an entry under `env.secrets`
-(`config-references.md`, "Where a secret reference may go"). Never replace
+(`infra.config-references.md`, "Where a secret reference may go"). Never replace
 the reference with a literal to make the refusal go away: a literal in a
 field every viewer reads is the same leak, typed by hand. The secret homes
 are themselves `sensitive`, so once moved, the reference must name a secret
@@ -167,20 +167,20 @@ defaults in values.yaml when they look numeric.
 pipeline node starts):
 
 ```
-No provider connection available for CloudResource creation.
+No provider connection available for InfraComponent creation.
 ```
 
 **Fix:** The resource carries no `planton.dev/connection` annotation and the
 org/env has no default Kubernetes connection. If the cluster is in the SAME
 chart, the annotation is missing — add it to every Kubernetes-kind resource
-(the same-chart pattern in `kubernetes-on-cluster.md`). If the cluster lives
+(the same-chart pattern in `infra.kubernetes-on-cluster.md`). If the cluster lives
 elsewhere, the organization has no cluster connection yet: a cluster deployed
 through Planton (or connected via the desktop) establishes the default
 binding automatically, so this error means no such cluster exists — deploy or
 connect one; do not paper over it with annotations or params. The same error
 on NON-Kubernetes kinds means the organization has no connection for that
 cloud at all — the machine's own login may be the fastest way forward
-(`machine-deploy.md`: probe, offer, consent), and an organization cloud
+(`infra.machine-deploy.md`: probe, offer, consent), and an organization cloud
 account connected through the console is the standing alternative.
 
 ## Connection slug not found at deploy time

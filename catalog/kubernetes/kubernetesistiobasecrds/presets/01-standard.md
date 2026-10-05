@@ -4,13 +4,13 @@ This preset installs the Istio custom resource definitions on a cluster. The spe
 
 ## When to Use
 
-- Before deploying any typed Istio component (DestinationRule, ServiceEntry, PeerAuthentication, RequestAuthentication, AuthorizationPolicy, Telemetry, EnvoyFilter)
+- Before deploying any typed Istio kind (DestinationRule, ServiceEntry, PeerAuthentication, RequestAuthentication, AuthorizationPolicy, Telemetry, EnvoyFilter)
 - Clusters that consume Istio APIs (for example, ambient mode or CRD-driven tooling) without running the full mesh yet
 - As the CRD prerequisite that decouples API installation from mesh installation
 
 ## Key Configuration Choices
 
-- **Empty spec** (`spec: {}`) — the component installs the Istio CRD set as-is; versioning follows the component's pinned Istio release, so there is nothing to tune
+- **Empty spec** (`spec: {}`) — the component installs the Istio CRD set as-is; versioning follows the kind's pinned Istio release, so there is nothing to tune
 
 ## Placeholders to Replace
 

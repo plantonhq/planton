@@ -15,8 +15,8 @@ type Locals struct {
 	HealthCheckName string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcphealthcheckv1alpha1.GcpHealthCheckStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(ctx *pulumi.Context, iacInput *gcphealthcheckv1alpha1.GcpHealthCheckIacInput) *Locals {
+	target := iacInput.Target
 
 	healthCheckName := target.Spec.HealthCheckName
 	if healthCheckName == "" {

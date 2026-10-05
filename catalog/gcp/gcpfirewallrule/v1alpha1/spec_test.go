@@ -31,7 +31,7 @@ func validFirewallRule() *GcpFirewallRule {
 	return &GcpFirewallRule{
 		ApiVersion: "gcp.planton.dev/v1alpha1",
 		Kind:       "GcpFirewallRule",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-firewall-rule",
 		},
 		Spec: &GcpFirewallRuleSpec{

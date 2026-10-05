@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsS3TableBucketStackOutputs captures the observable state of the
+// AwsS3TableBucketOutputs captures the observable state of the
 // table bucket and its contents after apply.
-type AwsS3TableBucketStackOutputs struct {
+type AwsS3TableBucketOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The table bucket's ARN - what catalog integrations, policies,
 	// and replication destinations reference, and the provider's
@@ -43,20 +43,20 @@ type AwsS3TableBucketStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *AwsS3TableBucketStackOutputs) Reset() {
-	*x = AwsS3TableBucketStackOutputs{}
+func (x *AwsS3TableBucketOutputs) Reset() {
+	*x = AwsS3TableBucketOutputs{}
 	mi := &file_catalog_aws_awss3tablebucket_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsS3TableBucketStackOutputs) String() string {
+func (x *AwsS3TableBucketOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsS3TableBucketStackOutputs) ProtoMessage() {}
+func (*AwsS3TableBucketOutputs) ProtoMessage() {}
 
-func (x *AwsS3TableBucketStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsS3TableBucketOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awss3tablebucket_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,33 +68,33 @@ func (x *AwsS3TableBucketStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsS3TableBucketStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsS3TableBucketStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsS3TableBucketOutputs.ProtoReflect.Descriptor instead.
+func (*AwsS3TableBucketOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awss3tablebucket_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsS3TableBucketStackOutputs) GetTableBucketArn() string {
+func (x *AwsS3TableBucketOutputs) GetTableBucketArn() string {
 	if x != nil {
 		return x.TableBucketArn
 	}
 	return ""
 }
 
-func (x *AwsS3TableBucketStackOutputs) GetOwnerAccountId() string {
+func (x *AwsS3TableBucketOutputs) GetOwnerAccountId() string {
 	if x != nil {
 		return x.OwnerAccountId
 	}
 	return ""
 }
 
-func (x *AwsS3TableBucketStackOutputs) GetTableArns() map[string]string {
+func (x *AwsS3TableBucketOutputs) GetTableArns() map[string]string {
 	if x != nil {
 		return x.TableArns
 	}
 	return nil
 }
 
-func (x *AwsS3TableBucketStackOutputs) GetTableWarehouseLocations() map[string]string {
+func (x *AwsS3TableBucketOutputs) GetTableWarehouseLocations() map[string]string {
 	if x != nil {
 		return x.TableWarehouseLocations
 	}
@@ -105,13 +105,13 @@ var File_catalog_aws_awss3tablebucket_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_aws_awss3tablebucket_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awss3tablebucket/v1alpha1/outputs.proto\x12)dev.planton.aws.awss3tablebucket.v1alpha1\"\x96\x04\n" +
-	"\x1cAwsS3TableBucketStackOutputs\x12(\n" +
+	"3catalog/aws/awss3tablebucket/v1alpha1/outputs.proto\x12)dev.planton.aws.awss3tablebucket.v1alpha1\"\x87\x04\n" +
+	"\x17AwsS3TableBucketOutputs\x12(\n" +
 	"\x10table_bucket_arn\x18\x01 \x01(\tR\x0etableBucketArn\x12(\n" +
-	"\x10owner_account_id\x18\x02 \x01(\tR\x0eownerAccountId\x12u\n" +
+	"\x10owner_account_id\x18\x02 \x01(\tR\x0eownerAccountId\x12p\n" +
 	"\n" +
-	"table_arns\x18\x03 \x03(\v2V.dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketStackOutputs.TableArnsEntryR\ttableArns\x12\xa0\x01\n" +
-	"\x19table_warehouse_locations\x18\x04 \x03(\v2d.dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketStackOutputs.TableWarehouseLocationsEntryR\x17tableWarehouseLocations\x1a<\n" +
+	"table_arns\x18\x03 \x03(\v2Q.dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketOutputs.TableArnsEntryR\ttableArns\x12\x9b\x01\n" +
+	"\x19table_warehouse_locations\x18\x04 \x03(\v2_.dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketOutputs.TableWarehouseLocationsEntryR\x17tableWarehouseLocations\x1a<\n" +
 	"\x0eTableArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aJ\n" +
@@ -134,13 +134,13 @@ func file_catalog_aws_awss3tablebucket_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awss3tablebucket_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_aws_awss3tablebucket_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsS3TableBucketStackOutputs)(nil), // 0: dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketStackOutputs
-	nil,                                  // 1: dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketStackOutputs.TableArnsEntry
-	nil,                                  // 2: dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketStackOutputs.TableWarehouseLocationsEntry
+	(*AwsS3TableBucketOutputs)(nil), // 0: dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketOutputs
+	nil,                             // 1: dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketOutputs.TableArnsEntry
+	nil,                             // 2: dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketOutputs.TableWarehouseLocationsEntry
 }
 var file_catalog_aws_awss3tablebucket_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketStackOutputs.table_arns:type_name -> dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketStackOutputs.TableArnsEntry
-	2, // 1: dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketStackOutputs.table_warehouse_locations:type_name -> dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketStackOutputs.TableWarehouseLocationsEntry
+	1, // 0: dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketOutputs.table_arns:type_name -> dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketOutputs.TableArnsEntry
+	2, // 1: dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketOutputs.table_warehouse_locations:type_name -> dev.planton.aws.awss3tablebucket.v1alpha1.AwsS3TableBucketOutputs.TableWarehouseLocationsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

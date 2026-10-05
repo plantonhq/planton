@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzurePrivateLinkServiceStackOutputs** captures the outputs of
+// **AzurePrivateLinkServiceOutputs** captures the outputs of
 // provisioning a Private Link Service.
-type AzurePrivateLinkServiceStackOutputs struct {
+type AzurePrivateLinkServiceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Private Link Service.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/privateLinkServices/{name}
@@ -38,20 +38,20 @@ type AzurePrivateLinkServiceStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzurePrivateLinkServiceStackOutputs) Reset() {
-	*x = AzurePrivateLinkServiceStackOutputs{}
+func (x *AzurePrivateLinkServiceOutputs) Reset() {
+	*x = AzurePrivateLinkServiceOutputs{}
 	mi := &file_catalog_azure_azureprivatelinkservice_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePrivateLinkServiceStackOutputs) String() string {
+func (x *AzurePrivateLinkServiceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePrivateLinkServiceStackOutputs) ProtoMessage() {}
+func (*AzurePrivateLinkServiceOutputs) ProtoMessage() {}
 
-func (x *AzurePrivateLinkServiceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzurePrivateLinkServiceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureprivatelinkservice_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *AzurePrivateLinkServiceStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePrivateLinkServiceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzurePrivateLinkServiceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePrivateLinkServiceOutputs.ProtoReflect.Descriptor instead.
+func (*AzurePrivateLinkServiceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureprivatelinkservice_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePrivateLinkServiceStackOutputs) GetPrivateLinkServiceId() string {
+func (x *AzurePrivateLinkServiceOutputs) GetPrivateLinkServiceId() string {
 	if x != nil {
 		return x.PrivateLinkServiceId
 	}
 	return ""
 }
 
-func (x *AzurePrivateLinkServiceStackOutputs) GetPrivateLinkServiceName() string {
+func (x *AzurePrivateLinkServiceOutputs) GetPrivateLinkServiceName() string {
 	if x != nil {
 		return x.PrivateLinkServiceName
 	}
 	return ""
 }
 
-func (x *AzurePrivateLinkServiceStackOutputs) GetAlias() string {
+func (x *AzurePrivateLinkServiceOutputs) GetAlias() string {
 	if x != nil {
 		return x.Alias
 	}
@@ -93,8 +93,8 @@ var File_catalog_azure_azureprivatelinkservice_v1alpha1_outputs_proto protorefle
 
 const file_catalog_azure_azureprivatelinkservice_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/azure/azureprivatelinkservice/v1alpha1/outputs.proto\x122dev.planton.azure.azureprivatelinkservice.v1alpha1\"\xad\x01\n" +
-	"#AzurePrivateLinkServiceStackOutputs\x125\n" +
+	"<catalog/azure/azureprivatelinkservice/v1alpha1/outputs.proto\x122dev.planton.azure.azureprivatelinkservice.v1alpha1\"\xa8\x01\n" +
+	"\x1eAzurePrivateLinkServiceOutputs\x125\n" +
 	"\x17private_link_service_id\x18\x01 \x01(\tR\x14privateLinkServiceId\x129\n" +
 	"\x19private_link_service_name\x18\x02 \x01(\tR\x16privateLinkServiceName\x12\x14\n" +
 	"\x05alias\x18\x03 \x01(\tR\x05aliasB\xa0\x03\n" +
@@ -114,7 +114,7 @@ func file_catalog_azure_azureprivatelinkservice_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_azure_azureprivatelinkservice_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureprivatelinkservice_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzurePrivateLinkServiceStackOutputs)(nil), // 0: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceStackOutputs
+	(*AzurePrivateLinkServiceOutputs)(nil), // 0: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceOutputs
 }
 var file_catalog_azure_azureprivatelinkservice_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

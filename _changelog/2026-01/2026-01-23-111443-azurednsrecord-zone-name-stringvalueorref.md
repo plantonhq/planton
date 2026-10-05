@@ -1,10 +1,10 @@
-# Azure DNS Record Component with Zone Reference Support
+# Azure DNS Record Kind with Zone Reference Support
 
 **Date**: January 23, 2026
 
 ## Summary
 
-Added the **AzureDnsRecord** deployment component to Planton, enabling declarative management of individual DNS records in Azure DNS Zones. The component uses `StringValueOrRef` for the `zone_name` field, allowing records to reference `AzureDnsZone` resources via `value_from` for seamless infrastructure wiring.
+Added the **AzureDnsRecord** catalog kind to Planton, enabling declarative management of individual DNS records in Azure DNS Zones. The kind uses `StringValueOrRef` for the `zone_name` field, allowing records to reference `AzureDnsZone` resources via `value_from` for seamless infrastructure wiring.
 
 ## Problem Statement
 
@@ -16,13 +16,13 @@ Users needed a way to create individual DNS records in Azure DNS Zones as standa
 
 ### Pain Points
 
-- No standalone Azure DNS record component existed
+- No standalone Azure DNS record kind existed
 - Users had to embed all records in the zone spec or use raw Terraform/Pulumi
 - No `value_from` support for wiring zone references between resources
 
 ## Solution
 
-Created a complete `AzureDnsRecord` deployment component following the Planton forge pattern with:
+Created a complete `AzureDnsRecord` catalog kind following the Planton forge pattern with:
 
 - `zone_name` as `StringValueOrRef` with default kind `AzureDnsZone`
 - Support for all major DNS record types (A, AAAA, CNAME, MX, TXT, NS, SRV, CAA, PTR)
@@ -47,7 +47,7 @@ flowchart TB
         F[Create DNS Record in Zone]
     end
     
-    subgraph Outputs["Stack Outputs"]
+    subgraph Outputs["Outputs"]
         G[record_id]
         H[fqdn]
     end
@@ -85,7 +85,7 @@ AzureDnsRecord = 409 [(kind_meta) = {
 
 | Category | Files |
 |----------|-------|
-| Proto definitions | `api.proto`, `spec.proto`, `stack_input.proto`, `stack_outputs.proto` |
+| Proto definitions | `api.proto`, `spec.proto`, `iac_input.proto`, `outputs.proto` |
 | Generated stubs | `*.pb.go` files |
 | Pulumi module | `main.go`, `locals.go`, `outputs.go` + entrypoint |
 | Terraform module | `variables.tf`, `main.tf`, `locals.tf`, `outputs.tf`, `provider.tf` |
@@ -121,13 +121,13 @@ spec:
 
 ## Impact
 
-- **New Component**: `AzureDnsRecord` added to Azure provider (enum 409)
+- **New Kind**: `AzureDnsRecord` added to Azure provider (enum 409)
 - **Pattern Consistency**: Follows same `StringValueOrRef` pattern as `AwsRoute53DnsRecord` and `GcpDnsRecord`
-- **Multi-Cloud Parity**: Azure now has standalone DNS record component like AWS and GCP
+- **Multi-Cloud Parity**: Azure now has standalone DNS record kind like AWS and GCP
 
 ## Related Work
 
-- `AzureDnsZone` - Parent zone component that outputs `zone_name`
+- `AzureDnsZone` - Parent zone kind that outputs `zone_name`
 - `AwsRoute53DnsRecord` - AWS equivalent with `zone_id` reference
 - `GcpDnsRecord` - GCP equivalent with `managed_zone` reference
 

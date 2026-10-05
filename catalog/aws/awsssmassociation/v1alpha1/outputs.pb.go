@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSsmAssociationStackOutputs captures the observable state of the
+// AwsSsmAssociationOutputs captures the observable state of the
 // association after apply.
-type AwsSsmAssociationStackOutputs struct {
+type AwsSsmAssociationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The association's AWS-generated ID (a UUID - also the provider's
 	// import ID; the association's name is NOT its identity at AWS).
@@ -37,20 +37,20 @@ type AwsSsmAssociationStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsSsmAssociationStackOutputs) Reset() {
-	*x = AwsSsmAssociationStackOutputs{}
+func (x *AwsSsmAssociationOutputs) Reset() {
+	*x = AwsSsmAssociationOutputs{}
 	mi := &file_catalog_aws_awsssmassociation_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSsmAssociationStackOutputs) String() string {
+func (x *AwsSsmAssociationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSsmAssociationStackOutputs) ProtoMessage() {}
+func (*AwsSsmAssociationOutputs) ProtoMessage() {}
 
-func (x *AwsSsmAssociationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSsmAssociationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsssmassociation_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *AwsSsmAssociationStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSsmAssociationStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSsmAssociationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSsmAssociationOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSsmAssociationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsssmassociation_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSsmAssociationStackOutputs) GetAssociationId() string {
+func (x *AwsSsmAssociationOutputs) GetAssociationId() string {
 	if x != nil {
 		return x.AssociationId
 	}
 	return ""
 }
 
-func (x *AwsSsmAssociationStackOutputs) GetAssociationArn() string {
+func (x *AwsSsmAssociationOutputs) GetAssociationArn() string {
 	if x != nil {
 		return x.AssociationArn
 	}
 	return ""
 }
 
-func (x *AwsSsmAssociationStackOutputs) GetDocumentName() string {
+func (x *AwsSsmAssociationOutputs) GetDocumentName() string {
 	if x != nil {
 		return x.DocumentName
 	}
@@ -92,8 +92,8 @@ var File_catalog_aws_awsssmassociation_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awsssmassociation_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awsssmassociation/v1alpha1/outputs.proto\x12*dev.planton.aws.awsssmassociation.v1alpha1\"\x94\x01\n" +
-	"\x1dAwsSsmAssociationStackOutputs\x12%\n" +
+	"4catalog/aws/awsssmassociation/v1alpha1/outputs.proto\x12*dev.planton.aws.awsssmassociation.v1alpha1\"\x8f\x01\n" +
+	"\x18AwsSsmAssociationOutputs\x12%\n" +
 	"\x0eassociation_id\x18\x01 \x01(\tR\rassociationId\x12'\n" +
 	"\x0fassociation_arn\x18\x02 \x01(\tR\x0eassociationArn\x12#\n" +
 	"\rdocument_name\x18\x03 \x01(\tR\fdocumentNameB\xea\x02\n" +
@@ -113,7 +113,7 @@ func file_catalog_aws_awsssmassociation_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsssmassociation_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsssmassociation_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSsmAssociationStackOutputs)(nil), // 0: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationStackOutputs
+	(*AwsSsmAssociationOutputs)(nil), // 0: dev.planton.aws.awsssmassociation.v1alpha1.AwsSsmAssociationOutputs
 }
 var file_catalog_aws_awsssmassociation_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

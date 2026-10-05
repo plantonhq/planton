@@ -45,7 +45,7 @@
 
 - **The import framework gained the `import_normalized` vocabulary for
   values that cannot round-trip by provider construction.** A
-  component's import map may now declare, per module resource, dotted
+  kind's import map may now declare, per module resource, dotted
   attribute sub-paths whose post-import plan update is the documented
   adoption shape — each with a mandatory reason. The round-trip oracle
   tolerates exactly those sub-paths and still fails on any sibling

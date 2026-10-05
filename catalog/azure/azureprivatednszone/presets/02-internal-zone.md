@@ -9,7 +9,7 @@ existed.
 To make VMs discoverable by hostname automatically, pair the zone with an
 `AzurePrivateDnsZoneVirtualNetworkLink` that sets
 `registrationEnabled: true` (one such link per network) -- see that
-component's presets.
+kind's presets.
 
 ## When to Use
 

@@ -4,7 +4,7 @@ Deploys a Cloud Tasks queue with configurable rate limits, retry behavior, queue
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloud Tasks Queue** -- a managed task queue in the specified GCP project and region, configured with rate limits, retry behavior, and optional queue-level dispatch defaults
 - **Queue-Level HTTP Target** -- created only when `httpTarget` is configured; sets queue-wide authentication (OAuth or OIDC), HTTP method override, header overrides, and URI overrides applied to all dispatched tasks
@@ -16,14 +16,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the Cloud Tasks queue will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the Cloud Tasks queue will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **Cloud Tasks API** enabled in the target project.
-- **GCP service account** (if using queue-level authentication) -- the service account must exist in the same project, and the deploying principal must have `iam.serviceAccounts.actAs` permission on it. Reference via ValueFromRef to a GcpServiceAccount Cloud Resource.
+- **GCP service account** (if using queue-level authentication) -- the service account must exist in the same project, and the deploying principal must have `iam.serviceAccounts.actAs` permission on it. Reference via ValueFromRef to a GcpServiceAccount Infra Component.
 - **HTTP endpoint** (Cloud Run, Cloud Functions, or external) that the queue will dispatch tasks to.
 
 ## Deploy
@@ -54,7 +54,7 @@ spec:
 planton apply -f cloud-tasks-queue.yaml
 ```
 
-This creates a Cloud Tasks queue with GCP-managed defaults for rate limits and retry behavior; no queue-level HTTP target, authentication, or logging is configured -- individual tasks define their own targets. A Stack Job tracks the provisioning in real time.
+This creates a Cloud Tasks queue with GCP-managed defaults for rate limits and retry behavior; no queue-level HTTP target, authentication, or logging is configured -- individual tasks define their own targets. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,7 +96,7 @@ These are the most important decisions when configuring a Cloud Tasks queue. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -104,9 +104,9 @@ These are the most important decisions when configuring a Cloud Tasks queue. Exp
 | **GcpServiceAccount** (optional) | `httpTarget.oauthToken.serviceAccountEmail` | `status.outputs.email` |
 | **GcpServiceAccount** (optional) | `httpTarget.oidcToken.serviceAccountEmail` | `status.outputs.email` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,5 +126,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the queue is created
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- provides the identity for OAuth or OIDC token generation on task dispatch
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the queue is created
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- provides the identity for OAuth or OIDC token generation on task dispatch

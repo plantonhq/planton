@@ -7,7 +7,7 @@ engine.** An EC2NodeClass does nothing without a Karpenter installation
 (KubernetesKarpenter) on an EKS or EKS-compatible cluster, and no node
 launches from it until a KubernetesKarpenterNodePool references it.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want to declare fleet constraints** — instance types, zones,
   capacity type, taints, lifetime, and consolidation policy live on the
@@ -102,7 +102,7 @@ validate time, not at apply.
   (prefix delegation for pod density), `associate_public_ip_address`,
   `connection_tracking`, `cpu_options`, `detailed_monitoring`
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

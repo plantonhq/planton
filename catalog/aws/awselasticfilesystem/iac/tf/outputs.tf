@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Stack Outputs -- matching AwsElasticFileSystemStackOutputs
+# Outputs -- matching AwsElasticFileSystemOutputs
 # ---------------------------------------------------------------------------
 # Primary consumers: EKS (PersistentVolume), ECS (task def volumes),
 # AwsEfsAccessPoint (file_system_id), EC2 (direct NFS mount).

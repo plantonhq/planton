@@ -4,7 +4,7 @@
 // Provider-config census: the contract side of PROVIDER-BLOCK parity. Where
 // the spec census walks each kind's spec, this walks the provider's one
 // config proto (catalog/<provider>/provider.proto) and enumerates its leaf
-// fields -- the exact surface a stack input's provider_config can express.
+// fields -- the exact surface an IaC input's provider_config can express.
 // The provider-config accounting joins it against the distilled schema's
 // provider block exactly like depth accounting joins specs against resource
 // blocks.
@@ -13,8 +13,8 @@ package providerparity
 
 import (
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/providerdetect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/providerdetect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -28,7 +28,7 @@ const configPathRoot = "config"
 // providerdetect.ProviderConfigProto -- the same map the CLI's -p validation
 // trusts, so the census can never disagree with the runtime about which type
 // a provider's config is.
-func ProviderConfigCensus(provider cloudresourcekind.CloudResourceProvider) ([]string, error) {
+func ProviderConfigCensus(provider catalogkind.CatalogProvider) ([]string, error) {
 	msg, err := providerdetect.ProviderConfigProto(provider)
 	if err != nil {
 		return nil, errors.Wrapf(err, "no provider config proto for %s", provider.String())

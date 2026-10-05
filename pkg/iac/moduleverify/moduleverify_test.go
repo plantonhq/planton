@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 	"github.com/plantonhq/planton/pkg/iac/tofu/generators"
 )
@@ -75,7 +75,7 @@ func requireWarningContaining(t *testing.T, result *Result, fragment string) {
 // schema-conformant input surface by construction.
 func generatedVariablesTF(t *testing.T, kindName string) string {
 	t.Helper()
-	instance, err := crkreflect.NewInstance(crkreflect.KindFromString(kindName))
+	instance, err := catalogkindreflect.NewInstance(catalogkindreflect.KindFromString(kindName))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -331,13 +331,13 @@ const validPulumiMain = `package main
 
 import "github.com/example/x/module"
 
-type AwsS3BucketStackInput struct{}
+type AwsS3BucketIacInput struct{}
 
-func LoadStackInput(v interface{}) error { return nil }
+func LoadIacInput(v interface{}) error { return nil }
 
 func main() {
-	stackInput := &AwsS3BucketStackInput{}
-	_ = LoadStackInput(stackInput)
+	iacInput := &AwsS3BucketIacInput{}
+	_ = LoadIacInput(iacInput)
 	_ = module.Resources
 }
 `
@@ -359,13 +359,13 @@ func TestVerify_Pulumi_WrongPackageName(t *testing.T) {
 	requireErrorContaining(t, result, "package main")
 }
 
-func TestVerify_Pulumi_MissingStackInputReference(t *testing.T) {
+func TestVerify_Pulumi_MissingIacInputReference(t *testing.T) {
 	moduleDir := writeModule(t, map[string]string{
 		"Pulumi.yaml": "name: x\nruntime: go\n",
 		"main.go":     "package main\n\nfunc main() {}\n",
 	})
 	result := mustVerify(t, Input{KindName: "AwsS3Bucket", ModuleDir: moduleDir, Provisioner: provisioner.ProvisionerTypePulumi})
-	requireErrorContaining(t, result, "AwsS3BucketStackInput")
+	requireErrorContaining(t, result, "AwsS3BucketIacInput")
 }
 
 func TestVerify_Pulumi_MissingGoModContext(t *testing.T) {
@@ -382,7 +382,7 @@ func TestVerify_Pulumi_MissingGoModContext(t *testing.T) {
 
 func TestVerify_UnknownKind(t *testing.T) {
 	if _, err := Verify(Input{KindName: "NoSuchKind", ModuleDir: t.TempDir()}); err == nil ||
-		!strings.Contains(err.Error(), "unknown cloud resource kind") {
+		!strings.Contains(err.Error(), "unknown catalog kind") {
 		t.Fatalf("expected the unknown-kind error, got: %v", err)
 	}
 }

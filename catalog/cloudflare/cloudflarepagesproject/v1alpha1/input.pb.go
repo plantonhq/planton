@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// cloudflare-pages-project stack-input
-type CloudflarePagesProjectStackInput struct {
+// cloudflare-pages-project iac-input
+type CloudflarePagesProjectIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *CloudflarePagesProject `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type CloudflarePagesProjectStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflarePagesProjectStackInput) Reset() {
-	*x = CloudflarePagesProjectStackInput{}
+func (x *CloudflarePagesProjectIacInput) Reset() {
+	*x = CloudflarePagesProjectIacInput{}
 	mi := &file_catalog_cloudflare_cloudflarepagesproject_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflarePagesProjectStackInput) String() string {
+func (x *CloudflarePagesProjectIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflarePagesProjectStackInput) ProtoMessage() {}
+func (*CloudflarePagesProjectIacInput) ProtoMessage() {}
 
-func (x *CloudflarePagesProjectStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflarePagesProjectIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarepagesproject_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *CloudflarePagesProjectStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflarePagesProjectStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflarePagesProjectStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflarePagesProjectIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflarePagesProjectIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarepagesproject_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflarePagesProjectStackInput) GetTarget() *CloudflarePagesProject {
+func (x *CloudflarePagesProjectIacInput) GetTarget() *CloudflarePagesProject {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflarePagesProjectStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflarePagesProjectIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_cloudflare_cloudflarepagesproject_v1alpha1_input_proto protoref
 
 const file_catalog_cloudflare_cloudflarepagesproject_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	">catalog/cloudflare/cloudflarepagesproject/v1alpha1/input.proto\x126dev.planton.cloudflare.cloudflarepagesproject.v1alpha1\x1a<catalog/cloudflare/cloudflarepagesproject/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xe5\x01\n" +
-	" CloudflarePagesProjectStackInput\x12f\n" +
+	">catalog/cloudflare/cloudflarepagesproject/v1alpha1/input.proto\x126dev.planton.cloudflare.cloudflarepagesproject.v1alpha1\x1a<catalog/cloudflare/cloudflarepagesproject/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xe3\x01\n" +
+	"\x1eCloudflarePagesProjectIacInput\x12f\n" +
 	"\x06target\x18\x01 \x01(\v2N.dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xb5\x03\n" +
 	":com.dev.planton.cloudflare.cloudflarepagesproject.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_cloudflare_cloudflarepagesproject_v1alpha1_input_proto_rawDesc
 
 var file_catalog_cloudflare_cloudflarepagesproject_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarepagesproject_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflarePagesProjectStackInput)(nil),    // 0: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectStackInput
+	(*CloudflarePagesProjectIacInput)(nil),      // 0: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectIacInput
 	(*CloudflarePagesProject)(nil),              // 1: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProject
 	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflarepagesproject_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectStackInput.target:type_name -> dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProject
-	2, // 1: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectIacInput.target:type_name -> dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProject
+	2, // 1: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

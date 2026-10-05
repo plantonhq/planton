@@ -5,9 +5,9 @@ package dev.planton.aws.awssagemakermlflowapp.v1alpha1;
 import "catalog/aws/awssagemakermlflowapp/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSagemakerMlflowAppStackInput is the input for the IaC modules that
+// AwsSagemakerMlflowAppIacInput is the input for the IaC modules that
 // deploy the MLflow app.
-message AwsSagemakerMlflowAppStackInput {
+message AwsSagemakerMlflowAppIacInput {
   // target is the AwsSagemakerMlflowApp resource to deploy.
   AwsSagemakerMlflowApp target = 1;
   // provider_config contains the AWS provider credentials and configuration.

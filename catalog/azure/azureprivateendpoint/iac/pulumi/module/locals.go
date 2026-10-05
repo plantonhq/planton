@@ -5,7 +5,7 @@ import (
 
 	azureprivateendpointv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureprivateendpoint/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -15,11 +15,11 @@ type Locals struct {
 	AzureTags            map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureprivateendpointv1alpha1.AzurePrivateEndpointStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureprivateendpointv1alpha1.AzurePrivateEndpointIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzurePrivateEndpoint = stackInput.Target
-	target := stackInput.Target
+	locals.AzurePrivateEndpoint = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -28,7 +28,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureprivateendpointv1alp
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzurePrivateEndpoint.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzurePrivateEndpoint.String()),
 	}
 
 	if target.Metadata.Id != "" {

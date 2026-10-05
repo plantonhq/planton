@@ -4,11 +4,11 @@ Provisions an uptime probe on an external endpoint plus its alert rules -- the c
 
 ## Layout
 
-- `main.go` -- entrypoint (`package main`), loads the stack input and calls the module
+- `main.go` -- entrypoint (`package main`), loads the IaC input and calls the module
 - `module/main.go` -- orchestration: locals, provider, resources
 - `module/uptime_check.go` -- the `UptimeCheck` resource, the per-row `UptimeAlert` children, and output exports
 - `module/locals.go` -- target handle (a check has no tag surface, so no label set applies)
-- `module/outputs.go` -- output key constants (the `DigitalOceanUptimeCheckStackOutputs` contract)
+- `module/outputs.go` -- output key constants (the `DigitalOceanUptimeCheckOutputs` contract)
 
 ## Behavior notes
 

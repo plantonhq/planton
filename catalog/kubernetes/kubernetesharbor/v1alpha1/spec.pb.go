@@ -36,7 +36,7 @@ const (
 // with its registryctl sidecar deployment), jobservice (replication,
 // GC, scan jobs), the Trivy vulnerability scanner (on by default),
 // an optional Prometheus exporter, and an nginx front door that
-// terminates client traffic for every exposure mode this component
+// terminates client traffic for every exposure mode this kind
 // models. State lives in PostgreSQL, Redis, and the artifact storage
 // backend — each with an in-cluster arm for evaluation and an
 // external arm for production composition.
@@ -131,7 +131,7 @@ type KubernetesHarborSpec struct {
 	Jobservice *KubernetesHarborJobservice `protobuf:"bytes,14,opt,name=jobservice,proto3" json:"jobservice,omitempty"`
 	// *
 	// Sizing for the nginx front door (always deployed — it terminates
-	// client traffic for every exposure mode this component models).
+	// client traffic for every exposure mode this kind models).
 	Nginx *KubernetesHarborComponent `protobuf:"bytes,15,opt,name=nginx,proto3" json:"nginx,omitempty"`
 	// *
 	// TLS between Harbor's own components (core ↔ registry ↔

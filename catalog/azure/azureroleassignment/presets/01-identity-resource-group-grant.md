@@ -29,7 +29,7 @@ PrincipalNotFound retries).
 
 - Granting a workload identity access to the resource group its dependencies live in
 - Granting a CI/CD deploy identity scoped rights on an environment
-- Any identity + grant pair created together in one infra chart
+- Any identity + grant pair created together in one Infra Chart
 
 ## Key Configuration Choices
 

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarehyperdriveconfig.v1alpha1;
 
-// CloudflareHyperdriveConfigStackOutputs captures the outputs after deploying a
+// CloudflareHyperdriveConfigOutputs captures the outputs after deploying a
 // Cloudflare Hyperdrive config.
-message CloudflareHyperdriveConfigStackOutputs {
+message CloudflareHyperdriveConfigOutputs {
   // The Cloudflare-assigned identifier of the Hyperdrive config. A Worker's
   // `hyperdrive` binding references this value.
   string hyperdrive_id = 1;

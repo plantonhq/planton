@@ -1,11 +1,11 @@
 syntax = "proto3";
 package dev.planton.aws.awsclientvpn.v1alpha1;
 
-// AwsClientVpnStackOutputs captures the output values obtained after
+// AwsClientVpnOutputs captures the output values obtained after
 // provisioning the AWS Client VPN endpoint. These outputs include the
 // identifiers needed for connecting to or managing the VPN, and can be
 // referenced by other resources via StringValueOrRef.
-message AwsClientVpnStackOutputs {
+message AwsClientVpnOutputs {
   // The AWS-assigned identifier for the Client VPN endpoint
   // (e.g. "cvpn-endpoint-012345abcdeEXAMPLE"). Used for AWS CLI/API
   // operations — including exporting the client configuration file

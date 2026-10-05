@@ -11,13 +11,13 @@ import (
 // and clusters. Membership is modeled here as references: the ACL is the
 // single place an application's cluster access is granted or revoked, and
 // this module never mutates the users it references.
-func Resources(ctx *pulumi.Context, stackInput *awsmemorydbaclv1alpha1.AwsMemorydbAclStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsmemorydbaclv1alpha1.AwsMemorydbAclIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which
+	// Build the AWS provider from the IaC input via the shared builder, which
 	// resolves the right credential mechanism (static keys, keyless web identity,
 	// or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsMemorydbAcl.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsMemorydbAcl.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

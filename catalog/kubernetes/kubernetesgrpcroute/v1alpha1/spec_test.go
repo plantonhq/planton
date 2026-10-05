@@ -40,7 +40,7 @@ var _ = ginkgo.Describe("KubernetesGrpcRoute Validation Tests", func() {
 		input = &KubernetesGrpcRoute{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesGrpcRoute",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-grpc-route",
 			},
 			Spec: &KubernetesGrpcRouteSpec{

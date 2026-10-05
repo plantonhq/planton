@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpaddress.v1alpha1;
 
 // Outputs produced after provisioning a GCP regional address.
-message GcpAddressStackOutputs {
+message GcpAddressOutputs {
   // The reserved IP address or the start of the reserved CIDR range.
   // For EXTERNAL addresses this is a public IP. For INTERNAL addresses
   // this is the reserved private IP or range start.

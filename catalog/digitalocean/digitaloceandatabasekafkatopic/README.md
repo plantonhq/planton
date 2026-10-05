@@ -2,11 +2,11 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_database_kafka_topic` resource at the pinned provider version.
 
-## What this component models
+## What this kind models
 
 A topic on a DigitalOcean managed Kafka cluster, with the complete per-topic configuration block -- partitions, replication, cleanup/compaction policy, retention, segment tuning, and message-format controls.
 
-The component covers the provider's full argument surface:
+The kind covers the provider's full argument surface:
 
 - `cluster` -- the owning Kafka cluster, wired by reference (or a literal cluster UUID)
 - `topic_name` -- the topic's name (create-only: renaming replaces the topic and drops its messages)

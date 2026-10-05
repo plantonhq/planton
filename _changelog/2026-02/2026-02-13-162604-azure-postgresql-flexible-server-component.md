@@ -1,4 +1,4 @@
-# AzurePostgresqlFlexibleServer Deployment Component
+# AzurePostgresqlFlexibleServer Catalog Kind
 
 **Date**: February 13, 2026
 **Type**: Feature
@@ -6,11 +6,11 @@
 
 ## Summary
 
-Forged the AzurePostgresqlFlexibleServer deployment component (R11 in the Azure resource expansion queue), providing a fully managed PostgreSQL Flexible Server with bundled databases, firewall rules, VNet integration, and zone-redundant high availability. Applied 11 corrections to the original T02 spec based on deep research of the Terraform provider source (API version 2025-08-01) and Pulumi SDK.
+Forged the AzurePostgresqlFlexibleServer catalog kind (R11 in the Azure resource expansion queue), providing a fully managed PostgreSQL Flexible Server with bundled databases, firewall rules, VNet integration, and zone-redundant high availability. Applied 11 corrections to the original T02 spec based on deep research of the Terraform provider source (API version 2025-08-01) and Pulumi SDK.
 
 ## Problem Statement / Motivation
 
-The Azure resource expansion sub-project (20260212.05) requires 24 new Azure resource kinds to enable enterprise infra charts. PostgreSQL Flexible Server is the first database resource in the queue and a critical building block for the database-stack, container-apps-environment, and web-app-environment infra charts.
+The Azure resource expansion sub-project (20260212.05) requires 24 new Azure resource kinds to enable enterprise Infra Charts. PostgreSQL Flexible Server is the first database resource in the queue and a critical building block for the database-stack, container-apps-environment, and web-app-environment Infra Charts.
 
 ### Pain Points
 
@@ -20,16 +20,16 @@ The Azure resource expansion sub-project (20260212.05) requires 24 new Azure res
 
 ## Solution / What's New
 
-### Complete Deployment Component (31 files)
+### Complete Catalog Kind (31 files)
 
-A production-ready AzurePostgresqlFlexibleServer component following the forge workflow's 19-step process:
+A production-ready AzurePostgresqlFlexibleServer kind following the forge workflow's 19-step process:
 
-- **4 proto files** -- spec, api, stack_input, stack_outputs with comprehensive buf.validate rules
+- **4 proto files** -- spec, api, iac_input, outputs with comprehensive buf.validate rules
 - **37 validation tests** -- covering valid inputs (public, VNet, HA, databases, valueFrom references) and invalid inputs (missing fields, range violations, invalid versions, invalid HA modes)
 - **Pulumi IaC module** -- using `pulumi-azure` v6 classic provider (`postgresql` package)
 - **Terraform module** -- with feature parity using `azurerm_postgresql_flexible_server`
 - **Production-quality documentation** -- README, 6 YAML examples, comprehensive research docs
-- **Registered** as enum 430 in `cloud_resource_kind.proto`
+- **Registered** as enum 430 in `catalog_kind.proto`
 
 ### 11 Corrections from T02 Spec
 
@@ -81,7 +81,7 @@ flowchart TD
 
 **Database ID map**: Exported as `pulumi.StringMap` following KeyVault's `secret_id_map` pattern.
 
-### Stack Outputs
+### Outputs
 
 | Output | Type | Purpose |
 |--------|------|---------|
@@ -93,7 +93,7 @@ flowchart TD
 
 ## Benefits
 
-- **First database resource** in the Azure expansion, unlocking the database-stack infra chart
+- **First database resource** in the Azure expansion, unlocking the database-stack Infra Chart
 - **37 validation tests** ensuring all buf.validate rules are correct and exercised
 - **Dual IaC** with Pulumi and Terraform feature parity
 - **6 YAML examples** covering minimal, VNet, HA, infra-chart valueFrom, database-stack pattern, and geo-redundant backup
@@ -103,7 +103,7 @@ flowchart TD
 
 - **Azure resource count**: 12 of 24 complete (was 11)
 - **Database resources**: 1 of 5 complete (PostgreSQL done; MySQL, MSSQL, CosmosDB, Redis pending)
-- **Infra chart readiness**: database-stack chart can now be prototyped
+- **Infra Chart readiness**: database-stack chart can now be prototyped
 - **Pattern established**: Database resource pattern (bundled server + databases + firewall rules) reusable for MySQL and MSSQL
 
 ## Related Work

@@ -23,7 +23,7 @@ const (
 
 // Outputs produced after provisioning a Cloud Composer user workloads
 // ConfigMap.
-type GcpCloudComposerUserWorkloadsConfigMapStackOutputs struct {
+type GcpCloudComposerUserWorkloadsConfigMapOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified resource name.
 	// Format: projects/{project}/locations/{region}/environments/{environment}/userWorkloadsConfigMaps/{name}
@@ -35,20 +35,20 @@ type GcpCloudComposerUserWorkloadsConfigMapStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCloudComposerUserWorkloadsConfigMapStackOutputs) Reset() {
-	*x = GcpCloudComposerUserWorkloadsConfigMapStackOutputs{}
+func (x *GcpCloudComposerUserWorkloadsConfigMapOutputs) Reset() {
+	*x = GcpCloudComposerUserWorkloadsConfigMapOutputs{}
 	mi := &file_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudComposerUserWorkloadsConfigMapStackOutputs) String() string {
+func (x *GcpCloudComposerUserWorkloadsConfigMapOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudComposerUserWorkloadsConfigMapStackOutputs) ProtoMessage() {}
+func (*GcpCloudComposerUserWorkloadsConfigMapOutputs) ProtoMessage() {}
 
-func (x *GcpCloudComposerUserWorkloadsConfigMapStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudComposerUserWorkloadsConfigMapOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *GcpCloudComposerUserWorkloadsConfigMapStackOutputs) ProtoReflect() prot
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudComposerUserWorkloadsConfigMapStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudComposerUserWorkloadsConfigMapStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudComposerUserWorkloadsConfigMapOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudComposerUserWorkloadsConfigMapOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudComposerUserWorkloadsConfigMapStackOutputs) GetName() string {
+func (x *GcpCloudComposerUserWorkloadsConfigMapOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpCloudComposerUserWorkloadsConfigMapStackOutputs) GetConfigMapName() string {
+func (x *GcpCloudComposerUserWorkloadsConfigMapOutputs) GetConfigMapName() string {
 	if x != nil {
 		return x.ConfigMapName
 	}
@@ -83,8 +83,8 @@ var File_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_outputs_pro
 
 const file_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/gcp/gcpcloudcomposeruserworkloadsconfigmap/v1alpha1/outputs.proto\x12?dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1\"p\n" +
-	"2GcpCloudComposerUserWorkloadsConfigMapStackOutputs\x12\x12\n" +
+	"Icatalog/gcp/gcpcloudcomposeruserworkloadsconfigmap/v1alpha1/outputs.proto\x12?dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1\"k\n" +
+	"-GcpCloudComposerUserWorkloadsConfigMapOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12&\n" +
 	"\x0fconfig_map_name\x18\x02 \x01(\tR\rconfigMapNameB\xfe\x03\n" +
 	"Ccom.dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1B\fOutputsProtoP\x01Z\x87\x01github.com/plantonhq/planton/catalog/gcp/gcpcloudcomposeruserworkloadsconfigmap/v1alpha1;gcpcloudcomposeruserworkloadsconfigmapv1alpha1\xa2\x02\x04DPGG\xaa\x02?Dev.Planton.Gcp.Gcpcloudcomposeruserworkloadsconfigmap.V1alpha1\xca\x02?Dev\\Planton\\Gcp\\Gcpcloudcomposeruserworkloadsconfigmap\\V1alpha1\xe2\x02KDev\\Planton\\Gcp\\Gcpcloudcomposeruserworkloadsconfigmap\\V1alpha1\\GPBMetadata\xea\x02CDev::Planton::Gcp::Gcpcloudcomposeruserworkloadsconfigmap::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_outputs_pr
 
 var file_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudComposerUserWorkloadsConfigMapStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapStackOutputs
+	(*GcpCloudComposerUserWorkloadsConfigMapOutputs)(nil), // 0: dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1.GcpCloudComposerUserWorkloadsConfigMapOutputs
 }
 var file_catalog_gcp_gcpcloudcomposeruserworkloadsconfigmap_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

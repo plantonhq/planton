@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarelogpushjob
 spec:
@@ -18,7 +18,7 @@ spec:
         Zone ID in the right-hand panel).
     - name: job_id
       derivations:
-        - from_stack_output: job_id
+        - from_output: job_id
       where_to_find: >-
         `GET /{accounts|zones}/<scope_id>/logpush/jobs` on the Cloudflare v4
         API (the numeric id field; match by name or destination_conf), or the

@@ -22,12 +22,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsTransitGatewayStackInput provides the inputs to the IaC modules
+// AwsTransitGatewayIacInput provides the inputs to the IaC modules
 // (Pulumi or Terraform) that provision the Transit Gateway and its
 // VPC attachments.
-type AwsTransitGatewayStackInput struct {
+type AwsTransitGatewayIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsTransitGateway `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -35,20 +35,20 @@ type AwsTransitGatewayStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsTransitGatewayStackInput) Reset() {
-	*x = AwsTransitGatewayStackInput{}
+func (x *AwsTransitGatewayIacInput) Reset() {
+	*x = AwsTransitGatewayIacInput{}
 	mi := &file_catalog_aws_awstransitgateway_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsTransitGatewayStackInput) String() string {
+func (x *AwsTransitGatewayIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsTransitGatewayStackInput) ProtoMessage() {}
+func (*AwsTransitGatewayIacInput) ProtoMessage() {}
 
-func (x *AwsTransitGatewayStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsTransitGatewayIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awstransitgateway_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AwsTransitGatewayStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsTransitGatewayStackInput.ProtoReflect.Descriptor instead.
-func (*AwsTransitGatewayStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsTransitGatewayIacInput.ProtoReflect.Descriptor instead.
+func (*AwsTransitGatewayIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awstransitgateway_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsTransitGatewayStackInput) GetTarget() *AwsTransitGateway {
+func (x *AwsTransitGatewayIacInput) GetTarget() *AwsTransitGateway {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsTransitGatewayStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsTransitGatewayIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_aws_awstransitgateway_v1alpha1_input_proto protoreflect.FileDes
 
 const file_catalog_aws_awstransitgateway_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awstransitgateway/v1alpha1/input.proto\x12*dev.planton.aws.awstransitgateway.v1alpha1\x1a0catalog/aws/awstransitgateway/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc1\x01\n" +
-	"\x1bAwsTransitGatewayStackInput\x12U\n" +
+	"2catalog/aws/awstransitgateway/v1alpha1/input.proto\x12*dev.planton.aws.awstransitgateway.v1alpha1\x1a0catalog/aws/awstransitgateway/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xbf\x01\n" +
+	"\x19AwsTransitGatewayIacInput\x12U\n" +
 	"\x06target\x18\x01 \x01(\v2=.dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xe8\x02\n" +
 	".com.dev.planton.aws.awstransitgateway.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_aws_awstransitgateway_v1alpha1_input_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awstransitgateway_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awstransitgateway_v1alpha1_input_proto_goTypes = []any{
-	(*AwsTransitGatewayStackInput)(nil), // 0: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayStackInput
-	(*AwsTransitGateway)(nil),           // 1: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGateway
-	(*aws.AwsProviderConfig)(nil),       // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsTransitGatewayIacInput)(nil), // 0: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayIacInput
+	(*AwsTransitGateway)(nil),         // 1: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGateway
+	(*aws.AwsProviderConfig)(nil),     // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awstransitgateway_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayStackInput.target:type_name -> dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGateway
-	2, // 1: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayIacInput.target:type_name -> dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGateway
+	2, // 1: dev.planton.aws.awstransitgateway.v1alpha1.AwsTransitGatewayIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

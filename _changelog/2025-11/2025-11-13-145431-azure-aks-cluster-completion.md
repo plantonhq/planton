@@ -1,4 +1,4 @@
-# Azure AKS Cluster Component Completion
+# Azure AKS Cluster Kind Completion
 
 **Date**: November 13, 2025  
 **Type**: Enhancement  
@@ -6,11 +6,11 @@
 
 ## Summary
 
-The AzureAksCluster component has been completed from 78% to 97% production-readiness, making it the third fully-implemented managed Kubernetes provider in Planton (alongside AWS EKS and GCP GKE). Both Pulumi and Terraform IaC modules now provision complete AKS clusters with VNet integration, managed identities, Azure AD RBAC, monitoring, and security controls. Comprehensive documentation with six usage scenarios and detailed Terraform module docs enable users to deploy production-grade Kubernetes clusters on Azure.
+The AzureAksCluster kind has been completed from 78% to 97% production-readiness, making it the third fully-implemented managed Kubernetes provider in Planton (alongside AWS EKS and GCP GKE). Both Pulumi and Terraform IaC modules now provision complete AKS clusters with VNet integration, managed identities, Azure AD RBAC, monitoring, and security controls. Comprehensive documentation with six usage scenarios and detailed Terraform module docs enable users to deploy production-grade Kubernetes clusters on Azure.
 
 ## Problem Statement / Motivation
 
-The AzureAksCluster component existed in the codebase with a well-designed protobuf API specification and exceptional research documentation (627 lines covering the AKS deployment landscape, production patterns, and anti-patterns), but the infrastructure-as-code implementation was incomplete. This created a gap between the API promise and actual functionality.
+The AzureAksCluster kind existed in the codebase with a well-designed protobuf API specification and exceptional research documentation (627 lines covering the AKS deployment landscape, production patterns, and anti-patterns), but the infrastructure-as-code implementation was incomplete. This created a gap between the API promise and actual functionality.
 
 ### Pain Points
 
@@ -21,7 +21,7 @@ The AzureAksCluster component existed in the codebase with a well-designed proto
 - **Incomplete supporting docs**: Terraform module lacked a README
 - **Users couldn't deploy**: API existed but neither IaC backend could provision clusters
 
-The component scored 78% on the audit checklist but only because the protobuf definitions, tests, and research docs were excellent. The actual provisioning capability—the core value proposition—was missing.
+The kind scored 78% on the audit checklist but only because the protobuf definitions, tests, and research docs were excellent. The actual provisioning capability—the core value proposition—was missing.
 
 ## Solution / What's New
 
@@ -48,7 +48,7 @@ Production-ready Terraform module with:
 - `main.tf`: Resource group and AKS cluster with full configuration
 - `variables.tf`: Complete spec object matching protobuf definition
 - `locals.tf`: Local variables for resource naming and configuration logic
-- `outputs.tf`: All outputs aligned to `AzureAksClusterStackOutputs` proto
+- `outputs.tf`: All outputs aligned to `AzureAksClusterOutputs` proto
 - `provider.tf`: Azure provider configuration
 - `README.md`: 300+ line comprehensive module documentation
 
@@ -65,7 +65,7 @@ Production-ready Terraform module with:
 The Pulumi implementation follows the established pattern from AWS EKS and GCP GKE components, using **Pulumi Azure Native SDK v3**:
 
 ```go
-func Resources(ctx *pulumi.Context, stackInput *azureaksclusterv1.AzureAksClusterStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *azureaksclusterv1.AzureAksClusterIacInput) error {
     // 1. Initialize Azure provider with credentials
     provider, err := azurenative.NewProvider(ctx, "azure", &azurenative.ProviderArgs{
         ClientId:       pulumi.String(azureProviderConfig.ClientId),
@@ -224,7 +224,7 @@ planton apply -f prod-aks-cluster.yaml
 
 ### For Developers
 
-**Reference implementation**: The 627-line research document combined with working code provides the definitive guide for AKS deployment patterns in Planton. Future Azure components can reference this implementation.
+**Reference implementation**: The 627-line research document combined with working code provides the definitive guide for AKS deployment patterns in Planton. Future Azure kinds can reference this implementation.
 
 **Test harness**: `iac/hack/manifest.yaml` provides an immediately usable test manifest for development and CI/CD verification.
 
@@ -236,7 +236,7 @@ planton apply -f prod-aks-cluster.yaml
 - **Files created**: 8 new files (locals.tf, outputs.tf, tf/README.md, hack/manifest.yaml, examples.md, 3 audit/summary files)
 - **Files modified**: 5 files (Pulumi main.go, outputs.go, Terraform variables.tf, provider.tf, main.tf)
 - **Line count**: ~550 lines of implementation code (Pulumi + Terraform), ~800 lines of documentation
-- **Test status**: ✅ All component tests pass (1 passed, 0 failed), zero linting errors
+- **Test status**: ✅ All kind tests pass (1 passed, 0 failed), zero linting errors
 - **Time to complete**: ~8 minutes from 78% to 97%
 
 ## Impact
@@ -247,21 +247,21 @@ planton apply -f prod-aks-cluster.yaml
 
 **Multi-cloud teams**: Organizations using Planton for EKS (AWS) or GKE (GCP) can now extend to Azure with zero workflow changes—same manifest format, same CLI commands.
 
-**Documentation consumers**: The combination of comprehensive research docs (deployment landscape analysis) and practical examples (6 scenarios) makes AzureAksCluster one of the best-documented components in the repository.
+**Documentation consumers**: The combination of comprehensive research docs (deployment landscape analysis) and practical examples (6 scenarios) makes AzureAksCluster one of the best-documented kinds in the repository.
 
 ### Production Readiness
 
-The component is now production-ready (97% completion score):
+The kind is now production-ready (97% completion score):
 
 ✅ **Critical items complete**:
-- Cloud Resource Registry entry
+- Catalog Kind Registry entry
 - Protobuf API with validations
 - Generated Go stubs
 - Unit tests (passing)
 - Both IaC modules functional
 
 ✅ **Quality validated**:
-- Component tests: `go test ./apis/.../azureakscluster/v1/` passes
+- Kind tests: `go test ./apis/.../azureakscluster/v1/` passes
 - No linting errors
 - Follows established patterns from EKS/GKE components
 - Security defaults (Azure AD RBAC, managed identity, authorized IP ranges)
@@ -333,19 +333,19 @@ module "private_aks" {
 
 ## Related Work
 
-**Similar managed Kubernetes components**:
+**Similar managed Kubernetes kinds**:
 - AWS EKS Cluster (`awsekscluster/v1`) - Reference implementation for Pulumi patterns
 - GCP GKE Cluster (`gcpgkecluster/v1`) - Reference for multi-cloud consistency
 - Azure AKS Node Pool (`azureaksnodepool/v1`) - Companion resource for additional node pools
 
-**Azure provider components**:
+**Azure provider kinds**:
 - Azure VPC (`azurevpc/v1`) - Provides VNet/subnet for AKS nodes via foreign key reference
 - Azure Container Registry (`azurecontainerregistry/v1`) - Image storage for AKS workloads
 - Azure Key Vault (`azurekeyvault/v1`) - Secrets management for AKS pods
 
 **Audit methodology**:
-- Component audit framework (`deployment-component/audit/`) - Scoring system used to measure completion
-- Complete component workflow (`deployment-component/complete/`) - Orchestration pattern followed in this work
+- Kind audit framework (`catalog-kind/audit/`) - Scoring system used to measure completion
+- Complete kind workflow (`catalog-kind/complete/`) - Orchestration pattern followed in this work
 
 ## Technical Decisions
 
@@ -419,7 +419,7 @@ These enhancements would increase spec complexity but provide more control. The 
 
 ## Testing & Verification
 
-**Component tests passed**:
+**Kind tests passed**:
 ```bash
 $ go test ./apis/dev/planton/provider/azure/azureakscluster/v1/ -v
 === RUN   TestAzureAksClusterSpec
@@ -439,7 +439,7 @@ No linter errors found.
 
 **Manual verification approach** (for users):
 
-1. Create test VNet and subnet in Azure portal or via AzureVpc component
+1. Create test VNet and subnet in Azure portal or via AzureVpc kind
 2. Update `iac/hack/manifest.yaml` with actual subscription ID and subnet ID
 3. Deploy: `planton apply -f iac/hack/manifest.yaml`
 4. Verify: `az aks get-credentials` and `kubectl get nodes`

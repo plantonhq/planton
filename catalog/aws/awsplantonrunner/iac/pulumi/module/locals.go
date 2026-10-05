@@ -3,7 +3,7 @@ package module
 import (
 	"strconv"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 
 	awsplantonrunnerv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsplantonrunner/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
@@ -26,11 +26,11 @@ type Locals struct {
 	RegistrationName string
 }
 
-// initializeLocals pulls values from the stack input and populates the
+// initializeLocals pulls values from the IaC input and populates the
 // Locals struct. Similar to Terraform's "locals" concept.
-func initializeLocals(ctx *pulumi.Context, stackInput *awsplantonrunnerv1alpha1.AwsPlantonRunnerStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awsplantonrunnerv1alpha1.AwsPlantonRunnerIacInput) *Locals {
 	locals := &Locals{
-		AwsPlantonRunner: stackInput.Target,
+		AwsPlantonRunner: iacInput.Target,
 	}
 
 	locals.RegistrationName = locals.AwsPlantonRunner.Metadata.Name
@@ -48,7 +48,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *awsplantonrunnerv1alpha1.
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsPlantonRunner.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsPlantonRunner.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsPlantonRunner.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsPlantonRunner.String(),
 		awstagkeys.ResourceId:   locals.AwsPlantonRunner.Metadata.Id,
 	}
 

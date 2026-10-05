@@ -285,7 +285,7 @@ planton destroy -f manifest.yaml
 
 - [2025-11-18 Unified Apply/Destroy Commands](../2025-11/2025-11-18-unified-apply-destroy-commands.md) - Initial unified command implementation (noted Terraform as "not yet implemented")
 - [2025-11-18 Unified Init/Plan/Refresh Commands](../2025-11/2025-11-18-125409-unified-init-plan-refresh-commands.md) - Extended unified commands
-- [2026-01-13 Stack Input CLI Support](2026-01-13-084929-stack-input-cli-support-and-command-refactoring.md) - iacrunner/iacflags refactoring that made this change easier
+- [2026-01-13 IaC Input CLI Support](2026-01-13-084929-iac-input-cli-support-and-command-refactoring.md) - iacrunner/iacflags refactoring that made this change easier
 
 ## Coding Guidelines Updated
 

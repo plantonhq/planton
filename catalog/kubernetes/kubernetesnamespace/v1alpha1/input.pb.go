@@ -23,10 +23,10 @@ const (
 )
 
 // *
-// **KubernetesNamespaceStackInput** defines the input structure for deploying a Kubernetes namespace.
+// **KubernetesNamespaceIacInput** defines the input structure for deploying a Kubernetes namespace.
 // This message contains the target namespace specification and the Kubernetes cluster configuration
 // required by the IaC modules (Pulumi and Terraform) to create and configure the namespace.
-type KubernetesNamespaceStackInput struct {
+type KubernetesNamespaceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The target Kubernetes namespace resource to be created.
@@ -42,20 +42,20 @@ type KubernetesNamespaceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesNamespaceStackInput) Reset() {
-	*x = KubernetesNamespaceStackInput{}
+func (x *KubernetesNamespaceIacInput) Reset() {
+	*x = KubernetesNamespaceIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesnamespace_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesNamespaceStackInput) String() string {
+func (x *KubernetesNamespaceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesNamespaceStackInput) ProtoMessage() {}
+func (*KubernetesNamespaceIacInput) ProtoMessage() {}
 
-func (x *KubernetesNamespaceStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesNamespaceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesnamespace_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,19 +67,19 @@ func (x *KubernetesNamespaceStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesNamespaceStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesNamespaceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesNamespaceIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesNamespaceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesnamespace_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesNamespaceStackInput) GetTarget() *KubernetesNamespace {
+func (x *KubernetesNamespaceIacInput) GetTarget() *KubernetesNamespace {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesNamespaceStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesNamespaceIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -90,8 +90,8 @@ var File_catalog_kubernetes_kubernetesnamespace_v1alpha1_input_proto protoreflec
 
 const file_catalog_kubernetes_kubernetesnamespace_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesnamespace/v1alpha1/input.proto\x123dev.planton.kubernetes.kubernetesnamespace.v1alpha1\x1a9catalog/kubernetes/kubernetesnamespace/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xdc\x01\n" +
-	"\x1dKubernetesNamespaceStackInput\x12`\n" +
+	";catalog/kubernetes/kubernetesnamespace/v1alpha1/input.proto\x123dev.planton.kubernetes.kubernetesnamespace.v1alpha1\x1a9catalog/kubernetes/kubernetesnamespace/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xda\x01\n" +
+	"\x1bKubernetesNamespaceIacInput\x12`\n" +
 	"\x06target\x18\x01 \x01(\v2H.dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xa0\x03\n" +
 	"7com.dev.planton.kubernetes.kubernetesnamespace.v1alpha1B\n" +
@@ -111,13 +111,13 @@ func file_catalog_kubernetes_kubernetesnamespace_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesnamespace_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesnamespace_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesNamespaceStackInput)(nil),       // 0: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceStackInput
+	(*KubernetesNamespaceIacInput)(nil),         // 0: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceIacInput
 	(*KubernetesNamespace)(nil),                 // 1: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespace
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesnamespace_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceStackInput.target:type_name -> dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespace
-	2, // 1: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceIacInput.target:type_name -> dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespace
+	2, // 1: dev.planton.kubernetes.kubernetesnamespace.v1alpha1.KubernetesNamespaceIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

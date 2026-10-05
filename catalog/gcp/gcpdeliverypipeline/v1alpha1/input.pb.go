@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-delivery-pipeline stack-input
-type GcpDeliveryPipelineStackInput struct {
+// gcp-delivery-pipeline iac-input
+type GcpDeliveryPipelineIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpDeliveryPipeline `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpDeliveryPipelineStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpDeliveryPipelineStackInput) Reset() {
-	*x = GcpDeliveryPipelineStackInput{}
+func (x *GcpDeliveryPipelineIacInput) Reset() {
+	*x = GcpDeliveryPipelineIacInput{}
 	mi := &file_catalog_gcp_gcpdeliverypipeline_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDeliveryPipelineStackInput) String() string {
+func (x *GcpDeliveryPipelineIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDeliveryPipelineStackInput) ProtoMessage() {}
+func (*GcpDeliveryPipelineIacInput) ProtoMessage() {}
 
-func (x *GcpDeliveryPipelineStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpDeliveryPipelineIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdeliverypipeline_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpDeliveryPipelineStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDeliveryPipelineStackInput.ProtoReflect.Descriptor instead.
-func (*GcpDeliveryPipelineStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDeliveryPipelineIacInput.ProtoReflect.Descriptor instead.
+func (*GcpDeliveryPipelineIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdeliverypipeline_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDeliveryPipelineStackInput) GetTarget() *GcpDeliveryPipeline {
+func (x *GcpDeliveryPipelineIacInput) GetTarget() *GcpDeliveryPipeline {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpDeliveryPipelineStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpDeliveryPipelineIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpdeliverypipeline_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_gcp_gcpdeliverypipeline_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpdeliverypipeline/v1alpha1/input.proto\x12,dev.planton.gcp.gcpdeliverypipeline.v1alpha1\x1a2catalog/gcp/gcpdeliverypipeline/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc7\x01\n" +
-	"\x1dGcpDeliveryPipelineStackInput\x12Y\n" +
+	"4catalog/gcp/gcpdeliverypipeline/v1alpha1/input.proto\x12,dev.planton.gcp.gcpdeliverypipeline.v1alpha1\x1a2catalog/gcp/gcpdeliverypipeline/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xc5\x01\n" +
+	"\x1bGcpDeliveryPipelineIacInput\x12Y\n" +
 	"\x06target\x18\x01 \x01(\v2A.dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xf6\x02\n" +
 	"0com.dev.planton.gcp.gcpdeliverypipeline.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpdeliverypipeline_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_gcp_gcpdeliverypipeline_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdeliverypipeline_v1alpha1_input_proto_goTypes = []any{
-	(*GcpDeliveryPipelineStackInput)(nil), // 0: dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineStackInput
-	(*GcpDeliveryPipeline)(nil),           // 1: dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipeline
-	(*gcp.GcpProviderConfig)(nil),         // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpDeliveryPipelineIacInput)(nil), // 0: dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineIacInput
+	(*GcpDeliveryPipeline)(nil),         // 1: dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipeline
+	(*gcp.GcpProviderConfig)(nil),       // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpdeliverypipeline_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineStackInput.target:type_name -> dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipeline
-	2, // 1: dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineIacInput.target:type_name -> dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipeline
+	2, // 1: dev.planton.gcp.gcpdeliverypipeline.v1alpha1.GcpDeliveryPipelineIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

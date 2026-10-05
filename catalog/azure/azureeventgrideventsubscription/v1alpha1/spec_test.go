@@ -52,7 +52,7 @@ func validResource() *AzureEventgridEventSubscription {
 	return &AzureEventgridEventSubscription{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureEventgridEventSubscription",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-eges",
 		},
 		Spec: &AzureEventgridEventSubscriptionSpec{

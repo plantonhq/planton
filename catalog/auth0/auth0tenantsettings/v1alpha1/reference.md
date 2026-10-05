@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0TenantSettingsSpec manages the settings of an existing Auth0 tenant:
 how it presents itself to the people who sign in through it (its name, logo,
@@ -72,7 +72,7 @@ https://www.pulumi.com/registry/packages/auth0/api-docs/tenant/
 
 ```yaml
 # Auth0 Tenant Settings Test Manifest
-# This file is used for testing the Auth0TenantSettings component. It exercises
+# This file is used for testing the Auth0TenantSettings kind. It exercises
 # the whole spec, so the offline plan and preview proofs cover every argument
 # and block the modules can send, including settings a live lane's tenant may
 # not be entitled to (mtls and pushed authorization requests need the

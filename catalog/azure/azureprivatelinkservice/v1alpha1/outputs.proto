@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureprivatelinkservice.v1alpha1;
 
-// **AzurePrivateLinkServiceStackOutputs** captures the outputs of
+// **AzurePrivateLinkServiceOutputs** captures the outputs of
 // provisioning a Private Link Service.
-message AzurePrivateLinkServiceStackOutputs {
+message AzurePrivateLinkServiceOutputs {
   // The Azure Resource Manager ID of the Private Link Service.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/privateLinkServices/{name}
   string private_link_service_id = 1;

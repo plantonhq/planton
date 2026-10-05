@@ -4,7 +4,7 @@ This preset creates a rotating symmetric key whose access is delegated through K
 
 ## When to Use
 
-- Wiring "this workload may use this key" as a first-class dependency edge in an infra chart, without hand-editing key policies
+- Wiring "this workload may use this key" as a first-class dependency edge in an Infra Chart, without hand-editing key policies
 - Sharing encrypted data with another AWS account (the partner decrypts under a scoped, revocable grant)
 - Keeping the key policy small and auditable while access grows and shrinks with deployments
 

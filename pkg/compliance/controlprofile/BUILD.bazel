@@ -6,7 +6,7 @@ go_library(
     importpath = "github.com/plantonhq/planton/pkg/compliance/controlprofile",
     visibility = ["//visibility:public"],
     deps = [
-        "//compliance/componentcontrolprofile/v1:componentcontrolprofile",
+        "//compliance/catalogkindcontrolprofile/v1:catalogkindcontrolprofile",
         "//pkg/protobufyaml",
         "@com_github_pkg_errors//:errors",
     ],
@@ -17,9 +17,9 @@ go_test(
     srcs = ["conformance_test.go"],
     embed = [":controlprofile"],
     deps = [
-        "//compliance/componentcontrolprofile/v1:componentcontrolprofile",
+        "//compliance/catalogkindcontrolprofile/v1:catalogkindcontrolprofile",
+        "//pkg/catalogkindreflect",
         "//pkg/compliance/controlcatalog",
-        "//pkg/crkreflect",
         "//pkg/specpath",
         "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//reflect/protoreflect",

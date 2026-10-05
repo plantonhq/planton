@@ -13,10 +13,10 @@ import (
 // order: instance template -> instance group manager -> autoscaler /
 // per-instance configs / resize requests. Zonal vs regional resource
 // selection follows the spec's zone-XOR-region selector.
-func Resources(ctx *pulumi.Context, stackInput *gcpcomputemigv1alpha1.GcpComputeMigStackInput) error {
-	locals := initializeLocals(stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcpcomputemigv1alpha1.GcpComputeMigIacInput) error {
+	locals := initializeLocals(iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

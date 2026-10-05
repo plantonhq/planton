@@ -125,7 +125,7 @@ fi
 
 # The lanes read the outputs through env tokens. Emails and the bucket name
 # are deterministic from the manifests; the Mongo key is the identity node's
-# stack output, read from its set-lane workspace state (a live credential —
+# output, read from its set-lane workspace state (a live credential —
 # the env file is mode 600 and lives outside the repo).
 mongo_gsa="planton-e2e-gke-mongo-backup@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
 pg_gsa="planton-e2e-gke-pg-backup@${GCP_PROJECT_ID}.iam.gserviceaccount.com"

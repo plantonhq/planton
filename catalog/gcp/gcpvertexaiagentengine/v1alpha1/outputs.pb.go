@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpVertexAiAgentEngineStackOutputs captures what the Agent Engine
+// GcpVertexAiAgentEngineOutputs captures what the Agent Engine
 // instance resolved to.
-type GcpVertexAiAgentEngineStackOutputs struct {
+type GcpVertexAiAgentEngineOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name of the agent:
 	// projects/{project}/locations/{location}/reasoningEngines/{id} -- what
@@ -43,20 +43,20 @@ type GcpVertexAiAgentEngineStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiAgentEngineStackOutputs) Reset() {
-	*x = GcpVertexAiAgentEngineStackOutputs{}
+func (x *GcpVertexAiAgentEngineOutputs) Reset() {
+	*x = GcpVertexAiAgentEngineOutputs{}
 	mi := &file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiAgentEngineStackOutputs) String() string {
+func (x *GcpVertexAiAgentEngineOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiAgentEngineStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiAgentEngineOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiAgentEngineStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiAgentEngineOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,40 +68,40 @@ func (x *GcpVertexAiAgentEngineStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiAgentEngineStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiAgentEngineStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiAgentEngineOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiAgentEngineOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiAgentEngineStackOutputs) GetName() string {
+func (x *GcpVertexAiAgentEngineOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpVertexAiAgentEngineStackOutputs) GetReasoningEngineId() string {
+func (x *GcpVertexAiAgentEngineOutputs) GetReasoningEngineId() string {
 	if x != nil {
 		return x.ReasoningEngineId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiAgentEngineStackOutputs) GetLocation() string {
+func (x *GcpVertexAiAgentEngineOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpVertexAiAgentEngineStackOutputs) GetCreateTime() string {
+func (x *GcpVertexAiAgentEngineOutputs) GetCreateTime() string {
 	if x != nil {
 		return x.CreateTime
 	}
 	return ""
 }
 
-func (x *GcpVertexAiAgentEngineStackOutputs) GetUpdateTime() string {
+func (x *GcpVertexAiAgentEngineOutputs) GetUpdateTime() string {
 	if x != nil {
 		return x.UpdateTime
 	}
@@ -112,8 +112,8 @@ var File_catalog_gcp_gcpvertexaiagentengine_v1alpha1_outputs_proto protoreflect.
 
 const file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/gcp/gcpvertexaiagentengine/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpvertexaiagentengine.v1alpha1\"\xc6\x01\n" +
-	"\"GcpVertexAiAgentEngineStackOutputs\x12\x12\n" +
+	"9catalog/gcp/gcpvertexaiagentengine/v1alpha1/outputs.proto\x12/dev.planton.gcp.gcpvertexaiagentengine.v1alpha1\"\xc1\x01\n" +
+	"\x1dGcpVertexAiAgentEngineOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12.\n" +
 	"\x13reasoning_engine_id\x18\x02 \x01(\tR\x11reasoningEngineId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x12\x1f\n" +
@@ -137,7 +137,7 @@ func file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_outputs_proto_rawDescGZIP(
 
 var file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiAgentEngineStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineStackOutputs
+	(*GcpVertexAiAgentEngineOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineOutputs
 }
 var file_catalog_gcp_gcpvertexaiagentengine_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

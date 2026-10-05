@@ -1,5 +1,5 @@
 # The OpenBao seal node set — what a vault on GKE needs to unseal itself
-# without a human, created from the catalog exactly as the component guide's
+# without a human, created from the catalog exactly as the kind guide's
 # resource-set table says: an identity for the SERVER (distinct from the
 # backup job's, 01-backup-identities.yaml — the seal key and the snapshot
 # bucket are different blast radii), Workload Identity trust for the server

@@ -27,7 +27,7 @@ spec:
       fieldPath: status.outputs.id
 ```
 
-See the Auth0CustomDomain component for the whole three-resource install.
+See the Auth0CustomDomain kind for the whole three-resource install.
 
 ## Key Behaviors
 

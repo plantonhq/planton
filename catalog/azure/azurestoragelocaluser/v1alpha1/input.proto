@@ -5,9 +5,9 @@ package dev.planton.azure.azurestoragelocaluser.v1alpha1;
 import "catalog/azure/azurestoragelocaluser/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-storage-local-user stack-input
-message AzureStorageLocalUserStackInput {
-  //target cloud-resource
+//azure-storage-local-user iac-input
+message AzureStorageLocalUserIacInput {
+  // the catalog object to deploy
   AzureStorageLocalUser target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

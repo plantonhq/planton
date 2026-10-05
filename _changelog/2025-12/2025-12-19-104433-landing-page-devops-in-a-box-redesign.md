@@ -43,7 +43,7 @@ Three-column layout targeting key audiences:
 ### 3. Infra Hub Section
 - Zero-config CI/CD with live Terraform visualization mock
 - Infra Charts explanation (DAG orchestration)
-- Deployment Component Store by cloud provider (AWS, GCP, Azure)
+- Catalog Kind Store by cloud provider (AWS, GCP, Azure)
 - Customer proof point: iorta TechNext
 
 ### 4. Service Hub Section

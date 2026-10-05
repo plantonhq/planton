@@ -4,7 +4,7 @@ Deploys an ECS cluster: the logical boundary that groups services and tasks, dec
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ECS Cluster** — a managed cluster with optional Container Insights, ECS Exec audit configuration, customer-managed storage encryption, and a Service Connect default namespace
 - **EC2 Capacity Providers** — one per `ec2CapacityProviders` entry, each wrapping a referenced auto-scaling group with ECS-managed scaling, termination protection, and draining; keyed by name so adding or removing one never disturbs the others
@@ -16,7 +16,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -55,7 +55,7 @@ spec:
 planton apply -f ecs-cluster.yaml
 ```
 
-This creates a Fargate-ready cluster with enhanced Container Insights. A Stack Job tracks the provisioning in real time.
+This creates a Fargate-ready cluster with enhanced Container Insights. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -99,7 +99,7 @@ These are the most important decisions when configuring an ECS cluster. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -112,9 +112,9 @@ These are the most important decisions when configuring an ECS cluster. Explore 
 | **AwsKmsKey** (optional) | `managedStorageConfiguration.fargateEphemeralStorageKmsKeyId` | `status.outputs.key_arn` |
 | **AwsKmsKey** (optional) | `managedStorageConfiguration.kmsKeyId` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -137,9 +137,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Auto Scaling Group**](/cloud-catalog/aws-auto-scaling-group) — provides the instance fleets behind EC2 capacity providers
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) / [**AWS IAM Instance Profile**](/cloud-catalog/aws-iam-instance-profile) — the infrastructure and instance identities behind managed-instances capacity
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) / [**AWS Security Group**](/cloud-catalog/aws-security-group) — where managed instances launch and what guards them
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — encrypts ECS Exec sessions and ECS-managed storage
-- [**AWS ECS Task Definition**](/cloud-catalog/aws-ecs-task-definition) — the workload blueprints services deploy into this cluster
-- [**AWS ECS Service**](/cloud-catalog/aws-ecs-service) — runs and scales tasks inside this cluster, referencing its `cluster_arn` output
+- [**AWS Auto Scaling Group**](/infra-catalog/aws-auto-scaling-group) — provides the instance fleets behind EC2 capacity providers
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) / [**AWS IAM Instance Profile**](/infra-catalog/aws-iam-instance-profile) — the infrastructure and instance identities behind managed-instances capacity
+- [**AWS Subnet**](/infra-catalog/aws-subnet) / [**AWS Security Group**](/infra-catalog/aws-security-group) — where managed instances launch and what guards them
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — encrypts ECS Exec sessions and ECS-managed storage
+- [**AWS ECS Task Definition**](/infra-catalog/aws-ecs-task-definition) — the workload blueprints services deploy into this cluster
+- [**AWS ECS Service**](/infra-catalog/aws-ecs-service) — runs and scales tasks inside this cluster, referencing its `cluster_arn` output

@@ -46,7 +46,7 @@ const (
 //   - A group only accepts users of its own engine and region.
 //   - Memcached has no RBAC: user groups apply to Redis and Valkey only.
 //   - Credentials, region, and deployment workflow live outside this spec in
-//     stack inputs.
+//     IaC inputs.
 type AwsElasticacheUserGroupSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the user group is created. Must match the region

@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpvertexainotebook.v1alpha1;
 
 // Outputs produced after provisioning a GCP Vertex AI Workbench instance.
-message GcpVertexAiNotebookStackOutputs {
+message GcpVertexAiNotebookOutputs {
   // The fully qualified instance ID.
   // Format: projects/{project}/locations/{location}/instances/{instance_id}
   string instance_id = 1;

@@ -77,7 +77,7 @@ resource "kubernetes_cron_job_v1" "this" {
         # job_template.success_policy). A spec with success_policy deploys
         # identically through Pulumi; on Terraform each run's Job falls back to
         # the default success criterion (all `completions` pods must succeed).
-        # Stack outputs are unaffected.
+        # Outputs are unaffected.
 
         dynamic "pod_failure_policy" {
           for_each = try(var.spec.job_template.pod_failure_policy, null) != null ? [var.spec.job_template.pod_failure_policy] : []
@@ -694,7 +694,7 @@ resource "kubernetes_cron_job_v1" "this" {
                 # spec using the sleep hook deploys identically through Pulumi;
                 # on Terraform express the same drain with exec
                 # ["/bin/sleep", "N"] (requires a sleep binary in the image).
-                # Stack outputs are unaffected.
+                # Outputs are unaffected.
                 dynamic "lifecycle" {
                   for_each = try(container.value.lifecycle, null) != null ? [container.value.lifecycle] : []
                   content {

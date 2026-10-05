@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-artifact-registry-repo stack outputs
-type GcpArtifactRegistryRepoStackOutputs struct {
+// gcp-artifact-registry-repo outputs
+type GcpArtifactRegistryRepoOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Short name of the repository (the repository ID), e.g. "app-images".
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -47,20 +47,20 @@ type GcpArtifactRegistryRepoStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpArtifactRegistryRepoStackOutputs) Reset() {
-	*x = GcpArtifactRegistryRepoStackOutputs{}
+func (x *GcpArtifactRegistryRepoOutputs) Reset() {
+	*x = GcpArtifactRegistryRepoOutputs{}
 	mi := &file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpArtifactRegistryRepoStackOutputs) String() string {
+func (x *GcpArtifactRegistryRepoOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpArtifactRegistryRepoStackOutputs) ProtoMessage() {}
+func (*GcpArtifactRegistryRepoOutputs) ProtoMessage() {}
 
-func (x *GcpArtifactRegistryRepoStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpArtifactRegistryRepoOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,33 +72,33 @@ func (x *GcpArtifactRegistryRepoStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpArtifactRegistryRepoStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpArtifactRegistryRepoStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpArtifactRegistryRepoOutputs.ProtoReflect.Descriptor instead.
+func (*GcpArtifactRegistryRepoOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpArtifactRegistryRepoStackOutputs) GetName() string {
+func (x *GcpArtifactRegistryRepoOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpArtifactRegistryRepoStackOutputs) GetRepositoryPath() string {
+func (x *GcpArtifactRegistryRepoOutputs) GetRepositoryPath() string {
 	if x != nil {
 		return x.RepositoryPath
 	}
 	return ""
 }
 
-func (x *GcpArtifactRegistryRepoStackOutputs) GetRegistryUri() string {
+func (x *GcpArtifactRegistryRepoOutputs) GetRegistryUri() string {
 	if x != nil {
 		return x.RegistryUri
 	}
 	return ""
 }
 
-func (x *GcpArtifactRegistryRepoStackOutputs) GetLocation() string {
+func (x *GcpArtifactRegistryRepoOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -109,8 +109,8 @@ var File_catalog_gcp_gcpartifactregistryrepo_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpartifactregistryrepo/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpartifactregistryrepo.v1alpha1\"\xa1\x01\n" +
-	"#GcpArtifactRegistryRepoStackOutputs\x12\x12\n" +
+	":catalog/gcp/gcpartifactregistryrepo/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpartifactregistryrepo.v1alpha1\"\x9c\x01\n" +
+	"\x1eGcpArtifactRegistryRepoOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12'\n" +
 	"\x0frepository_path\x18\x02 \x01(\tR\x0erepositoryPath\x12!\n" +
 	"\fregistry_uri\x18\x03 \x01(\tR\vregistryUri\x12\x1a\n" +
@@ -131,7 +131,7 @@ func file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpArtifactRegistryRepoStackOutputs)(nil), // 0: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoStackOutputs
+	(*GcpArtifactRegistryRepoOutputs)(nil), // 0: dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoOutputs
 }
 var file_catalog_gcp_gcpartifactregistryrepo_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

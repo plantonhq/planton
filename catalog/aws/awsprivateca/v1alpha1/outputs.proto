@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsprivateca.v1alpha1;
 
-// AwsPrivateCaStackOutputs captures the observable state of the
+// AwsPrivateCaOutputs captures the observable state of the
 // private CA after apply.
-message AwsPrivateCaStackOutputs {
+message AwsPrivateCaOutputs {
   // The CA's ARN - the join key every consumer uses (MSK's TLS
   // client-auth CA list, AwsCertManagerCert's issuing CA, a
   // subordinate's parent reference).

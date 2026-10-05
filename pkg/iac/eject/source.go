@@ -7,7 +7,7 @@ import (
 	"github.com/plantonhq/planton/internal/cli/cliprint"
 	"github.com/plantonhq/planton/internal/cli/staging"
 	"github.com/plantonhq/planton/internal/cli/version"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumisource"
@@ -89,7 +89,7 @@ func resolveFromStaging(kindName string, prov provisioner.ProvisionerType, targe
 		dir, err = tofumodule.GetLocalModulePath(repoRoot, kindName)
 	}
 	if err != nil {
-		kind := crkreflect.KindFromString(kindName)
+		kind := catalogkindreflect.KindFromString(kindName)
 		return nil, errors.Wrapf(err,
 			"the official %s module for %s was not found in the staging checkout — expected at %s; run 'planton pull' to refresh the staging area",
 			describeProvisioner(prov), kindName, moduleSubPath(kind, kindName, prov))

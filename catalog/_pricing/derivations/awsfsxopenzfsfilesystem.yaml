@@ -6,9 +6,9 @@
 # manifests. Storage and throughput prices are selected by the
 # manifest's own deployment_type through the price book's attribute
 # identities. Prices live in the provider's price book (../pricebook/).
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsfsxopenzfsfilesystem
 spec:

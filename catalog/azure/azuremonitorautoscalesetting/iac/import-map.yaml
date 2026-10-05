@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuremonitorautoscalesetting
 spec:
@@ -7,7 +7,7 @@ spec:
   values:
     - name: autoscale_setting_id
       derivations:
-        - from_stack_output: autoscale_setting_id
+        - from_output: autoscale_setting_id
       where_to_find: >-
         `az monitor autoscale show -g <resource-group> -n <name> --query
-        id`, or the component's own autoscale_setting_id stack output.
+        id`, or the component's own autoscale_setting_id output.

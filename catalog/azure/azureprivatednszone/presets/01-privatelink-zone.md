@@ -17,7 +17,7 @@ Swap the `name` for any other service's privatelink zone:
 
 The zone answers nobody until it is linked: pair it with an
 `AzurePrivateDnsZoneVirtualNetworkLink` per network whose workloads call
-the service (see that component's presets).
+the service (see that kind's presets).
 
 ## When to Use
 

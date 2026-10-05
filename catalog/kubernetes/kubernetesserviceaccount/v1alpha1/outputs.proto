@@ -3,12 +3,12 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesserviceaccount.v1alpha1;
 
 /**
- * **KubernetesServiceAccountStackOutputs** captures observable outputs from a Kubernetes
+ * **KubernetesServiceAccountOutputs** captures observable outputs from a Kubernetes
  * ServiceAccount deployment. Downstream resources compose on these handles: workloads set
  * `spec.serviceAccountName`, RBAC grants target the identity, and cloud trust configuration
  * (IAM bindings, trust policies, federated credentials) references the RBAC subject string.
  */
-message KubernetesServiceAccountStackOutputs {
+message KubernetesServiceAccountOutputs {
   /**
    * The name of the created ServiceAccount — the value workloads set in
    * `spec.serviceAccountName`.

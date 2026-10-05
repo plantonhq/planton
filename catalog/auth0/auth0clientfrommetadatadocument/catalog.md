@@ -4,7 +4,7 @@ Registers an application in an Auth0 tenant from the Client ID Metadata Document
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module creates:
+When you deploy this Infra Component, the IaC module creates:
 
 - **An application registered from its metadata document** in the tenant your Auth0 connection's credential belongs to -- Auth0 fetches the document at `externalClientId`, validates it, and registers the application as a strict third-party client; the module then applies only the settings the spec declares
 - **The document's validation result** -- reported in the outputs on every read, with the warnings and violations Auth0 found in the document
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module creates:
 
 ### Planton Setup
 
-- **Auth0 Provider Connection** -- an active connection in the Connect module with the tenant's domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Auth0 Provider Connection** -- an active connection in the Connect module with the tenant's domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Auth0 Tenant Settings** -- with Client ID Metadata Document registration turned on; Auth0 refuses the registration otherwise.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f auth0-client-from-metadata-document.yaml
 ```
 
-This registers the application from the document Acme's MCP client serves, with a description of your own over the document's. A Stack Job tracks the provisioning in real time.
+This registers the application from the document Acme's MCP client serves, with a description of your own over the document's. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -71,13 +71,13 @@ These are the most important decisions when configuring an Auth0 Client From Met
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. `defaultOrganization.organizationId` takes an Auth0 Organization's id as a string, and the tenant is the one the Auth0 connection's credential belongs to.
+This kind has no foreign key dependencies. `defaultOrganization.organizationId` takes an Auth0 Organization's id as a string, and the tenant is the one the Auth0 connection's credential belongs to.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -98,7 +98,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Auth0 Tenant Settings**](/cloud-catalog/auth0-tenant-settings) -- turns on Client ID Metadata Document registration, which this kind needs.
-- [**Auth0 Connection**](/cloud-catalog/auth0-connection) -- a domain-level connection (`isDomainConnection: true`) is the only way third-party applications sign people in.
-- [**Auth0 Resource Server**](/cloud-catalog/auth0-resource-server) -- the API the client is granted access to, and where sender-constrained tokens are required.
-- [**Auth0 Client**](/cloud-catalog/auth0-client) -- for a first-party application whose settings you own entirely, with no metadata document.
+- [**Auth0 Tenant Settings**](/infra-catalog/auth0-tenant-settings) -- turns on Client ID Metadata Document registration, which this kind needs.
+- [**Auth0 Connection**](/infra-catalog/auth0-connection) -- a domain-level connection (`isDomainConnection: true`) is the only way third-party applications sign people in.
+- [**Auth0 Resource Server**](/infra-catalog/auth0-resource-server) -- the API the client is granted access to, and where sender-constrained tokens are required.
+- [**Auth0 Client**](/infra-catalog/auth0-client) -- for a first-party application whose settings you own entirely, with no metadata document.

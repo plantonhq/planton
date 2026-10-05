@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpfilestoreinstance.v1alpha1;
 
-// GcpFilestoreInstanceStackOutputs captures observable values produced after
+// GcpFilestoreInstanceOutputs captures observable values produced after
 // provisioning a Filestore instance.
-message GcpFilestoreInstanceStackOutputs {
+message GcpFilestoreInstanceOutputs {
   // Fully qualified resource ID of the Filestore instance.
   // Format: projects/{project}/locations/{location}/instances/{instance}
   string instance_id = 1;

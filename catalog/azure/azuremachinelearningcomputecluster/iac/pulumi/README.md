@@ -2,7 +2,7 @@
 
 ## Overview
 
-Creates an auto-scaling compute cluster on an Azure Machine Learning workspace using the classic `pulumi-azure` (azurerm-bridged) SDK, from the kind's typed stack input.
+Creates an auto-scaling compute cluster on an Azure Machine Learning workspace using the classic `pulumi-azure` (azurerm-bridged) SDK, from the kind's typed IaC input.
 
 ## Design Decisions
 
@@ -13,7 +13,7 @@ Creates an auto-scaling compute cluster on an Azure Machine Learning workspace u
 
 ## Inputs
 
-The module consumes `AzureMachineLearningComputeClusterStackInput`: the target resource (metadata + spec) and the Azure provider configuration. The workspace and subnet references arrive pre-resolved; `GetValue()` returns the literal ARM ID.
+The module consumes `AzureMachineLearningComputeClusterIacInput`: the target resource (metadata + spec) and the Azure provider configuration. The workspace and subnet references arrive pre-resolved; `GetValue()` returns the literal ARM ID.
 
 ## Outputs
 

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarehealthcheck.v1alpha1;
 
-// CloudflareHealthcheckStackOutputs captures the observable outputs after
+// CloudflareHealthcheckOutputs captures the observable outputs after
 // creating a health check.
-message CloudflareHealthcheckStackOutputs {
+message CloudflareHealthcheckOutputs {
   // The ID of the created health check.
   string healthcheck_id = 1;
 

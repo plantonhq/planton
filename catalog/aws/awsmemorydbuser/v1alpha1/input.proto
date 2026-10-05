@@ -5,9 +5,9 @@ package dev.planton.aws.awsmemorydbuser.v1alpha1;
 import "catalog/aws/awsmemorydbuser/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-memorydb-user stack-input
-message AwsMemorydbUserStackInput {
-  //target cloud-resource
+//aws-memorydb-user iac-input
+message AwsMemorydbUserIacInput {
+  // the catalog object to deploy
   AwsMemorydbUser target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

@@ -31,7 +31,7 @@ type KubernetesSeaweedFs struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesSeaweedFsSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesSeaweedFs) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesSeaweedFs) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesSeaweedFs) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesSeaweedFs) GetStatus() *KubernetesSeaweedFsStatus {
 // seaweedfs-kubernetes status.
 type KubernetesSeaweedFsStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesSeaweedFsStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesSeaweedFsOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesSeaweedFsStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesSeaweedFsStatus) GetOutputs() *KubernetesSeaweedFsStackOutputs {
+func (x *KubernetesSeaweedFsStatus) GetOutputs() *KubernetesSeaweedFsOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13KubernetesSeaweedFsR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
 	"\x04spec\x18\x04 \x01(\v2L.dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12f\n" +
-	"\x06status\x18\x05 \x01(\v2N.dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsStatusR\x06status\"\x8b\x01\n" +
-	"\x19KubernetesSeaweedFsStatus\x12n\n" +
-	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsStackOutputsR\aoutputsB\x9e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2N.dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsStatusR\x06status\"\x86\x01\n" +
+	"\x19KubernetesSeaweedFsStatus\x12i\n" +
+	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsOutputsR\aoutputsB\x9e\x03\n" +
 	"7com.dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1B\bApiProtoP\x01Zhgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesseaweedfs/v1alpha1;kubernetesseaweedfsv1alpha1\xa2\x02\x04DPKK\xaa\x023Dev.Planton.Kubernetes.Kubernetesseaweedfs.V1alpha1\xca\x023Dev\\Planton\\Kubernetes\\Kubernetesseaweedfs\\V1alpha1\xe2\x02?Dev\\Planton\\Kubernetes\\Kubernetesseaweedfs\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Kubernetes::Kubernetesseaweedfs::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesSeaweedFs)(nil),             // 0: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFs
-	(*KubernetesSeaweedFsStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesSeaweedFsSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsSpec
-	(*KubernetesSeaweedFsStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsStackOutputs
+	(*KubernetesSeaweedFs)(nil),          // 0: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFs
+	(*KubernetesSeaweedFsStatus)(nil),    // 1: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesSeaweedFsSpec)(nil),      // 3: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsSpec
+	(*KubernetesSeaweedFsOutputs)(nil),   // 4: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsOutputs
 }
 var file_catalog_kubernetes_kubernetesseaweedfs_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFs.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFs.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFs.spec:type_name -> dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsSpec
 	1, // 2: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFs.status:type_name -> dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsStatus
-	4, // 3: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1.KubernetesSeaweedFsOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

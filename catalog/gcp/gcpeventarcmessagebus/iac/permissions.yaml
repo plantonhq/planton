@@ -2,9 +2,9 @@
 # provision, update, and destroy this component with the official modules.
 # Every entry is `derived` (static analysis of the module sources, cited in
 # notes) until the live capture lane upgrades it to `proven`. Schema:
-# iac/componentpermissions/v1.
+# iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: gcpeventarcmessagebus
 spec:
@@ -25,7 +25,7 @@ spec:
           - eventarc.messageBuses.delete
           - eventarc.operations.get
         provenance: derived
-        notes: Covers google_eventarc_message_bus -- create, read/refresh, in-place updates (display name, labels, logging, CMEK), and destroy. Eventarc mutations return long-running operations the provider polls, authorized as eventarc.operations.get (shared by every group below). The committed action-inventory snapshot (pkg/iac/actioninventory/gcp.yaml) carries the eventarc service prefix and lists every eventarc.* permission in this manifest; the list was also verified live against Google's Eventarc access-control documentation (https://cloud.google.com/eventarc/standard/docs/access-control, whose role tables publish the full permission inventory for the Advanced resources too). The component's READMEs previously recommended roles/eventarc.admin -- that role carries the full eventarc.* family including publish, IAM-policy, and channel permissions the deployer never exercises; this manifest is the least-privilege equivalent for what the modules actually do.
+        notes: Covers google_eventarc_message_bus -- create, read/refresh, in-place updates (display name, labels, logging, CMEK), and destroy. Eventarc mutations return long-running operations the provider polls, authorized as eventarc.operations.get (shared by every group below). The committed action-inventory snapshot (pkg/iac/actioninventory/gcp.yaml) carries the eventarc service prefix and lists every eventarc.* permission in this manifest; the list was also verified live against Google's Eventarc access-control documentation (https://cloud.google.com/eventarc/standard/docs/access-control, whose role tables publish the full permission inventory for the Advanced resources too). The kind's READMEs previously recommended roles/eventarc.admin -- that role carries the full eventarc.* family including publish, IAM-policy, and channel permissions the deployer never exercises; this manifest is the least-privilege equivalent for what the modules actually do.
       - purpose: ManageGoogleApiSources
         permissions:
           - eventarc.googleApiSources.create

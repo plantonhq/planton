@@ -12,9 +12,9 @@ type Locals struct {
 }
 
 // initializeLocals creates and returns a Locals struct.
-func initializeLocals(ctx *pulumi.Context, stackInput *gcpserviceaccountv1alpha1.GcpServiceAccountStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *gcpserviceaccountv1alpha1.GcpServiceAccountIacInput) *Locals {
 	locals := &Locals{
-		GcpServiceAccount: stackInput.Target,
+		GcpServiceAccount: iacInput.Target,
 	}
 	return locals
 }

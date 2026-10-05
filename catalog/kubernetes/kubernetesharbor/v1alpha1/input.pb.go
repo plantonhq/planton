@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// harbor-kubernetes stack-input
-type KubernetesHarborStackInput struct {
+// harbor-kubernetes iac-input
+type KubernetesHarborIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *KubernetesHarbor `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-credential
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesHarborStackInput struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *KubernetesHarborStackInput) Reset() {
-	*x = KubernetesHarborStackInput{}
+func (x *KubernetesHarborIacInput) Reset() {
+	*x = KubernetesHarborIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesharbor_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesHarborStackInput) String() string {
+func (x *KubernetesHarborIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesHarborStackInput) ProtoMessage() {}
+func (*KubernetesHarborIacInput) ProtoMessage() {}
 
-func (x *KubernetesHarborStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesHarborIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesharbor_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,26 +60,26 @@ func (x *KubernetesHarborStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesHarborStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesHarborStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesHarborIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesHarborIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesharbor_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesHarborStackInput) GetTarget() *KubernetesHarbor {
+func (x *KubernetesHarborIacInput) GetTarget() *KubernetesHarbor {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesHarborStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesHarborIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
 	return nil
 }
 
-func (x *KubernetesHarborStackInput) GetKubernetesNamespace() string {
+func (x *KubernetesHarborIacInput) GetKubernetesNamespace() string {
 	if x != nil {
 		return x.KubernetesNamespace
 	}
@@ -90,8 +90,8 @@ var File_catalog_kubernetes_kubernetesharbor_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetesharbor_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetesharbor/v1alpha1/input.proto\x120dev.planton.kubernetes.kubernetesharbor.v1alpha1\x1a6catalog/kubernetes/kubernetesharbor/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\x86\x02\n" +
-	"\x1aKubernetesHarborStackInput\x12Z\n" +
+	"8catalog/kubernetes/kubernetesharbor/v1alpha1/input.proto\x120dev.planton.kubernetes.kubernetesharbor.v1alpha1\x1a6catalog/kubernetes/kubernetesharbor/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\x84\x02\n" +
+	"\x18KubernetesHarborIacInput\x12Z\n" +
 	"\x06target\x18\x01 \x01(\v2B.dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarborR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfig\x121\n" +
 	"\x14kubernetes_namespace\x18\x03 \x01(\tR\x13kubernetesNamespaceB\x8b\x03\n" +
@@ -112,13 +112,13 @@ func file_catalog_kubernetes_kubernetesharbor_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_kubernetes_kubernetesharbor_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesharbor_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesHarborStackInput)(nil),          // 0: dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarborStackInput
+	(*KubernetesHarborIacInput)(nil),            // 0: dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarborIacInput
 	(*KubernetesHarbor)(nil),                    // 1: dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarbor
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesharbor_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarborStackInput.target:type_name -> dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarbor
-	2, // 1: dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarborStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarborIacInput.target:type_name -> dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarbor
+	2, // 1: dev.planton.kubernetes.kubernetesharbor.v1alpha1.KubernetesHarborIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

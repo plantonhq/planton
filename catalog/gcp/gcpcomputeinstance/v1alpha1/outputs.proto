@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcomputeinstance.v1alpha1;
 
-// GcpComputeInstanceStackOutputs captures values returned after provisioning a Compute Engine instance.
-message GcpComputeInstanceStackOutputs {
+// GcpComputeInstanceOutputs captures values returned after provisioning a Compute Engine instance.
+message GcpComputeInstanceOutputs {
   // Name of the Compute Engine instance.
   string instance_name = 1;
 

@@ -4,9 +4,9 @@
 # -- Azure meters the NOTIFICATIONS it sends, per channel, each with its
 # own rate and monthly free grant, so the profile is usage_based with no
 # baseline charges: an action group no alert ever fires into costs
-# exactly nothing. Schema: finops/componentcostprofile/v1.
+# exactly nothing. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azuremonitoractiongroup
 spec:

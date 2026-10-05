@@ -5,9 +5,9 @@ package dev.planton.aws.awsmanagedprometheus.v1alpha1;
 import "catalog/aws/awsmanagedprometheus/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsManagedPrometheusStackInput is the input for the IaC modules that
+// AwsManagedPrometheusIacInput is the input for the IaC modules that
 // manage an Amazon Managed Prometheus workspace and its satellites.
-message AwsManagedPrometheusStackInput {
+message AwsManagedPrometheusIacInput {
   // target is the AwsManagedPrometheus resource to deploy.
   AwsManagedPrometheus target = 1;
   // provider_config contains the AWS provider credentials and configuration.

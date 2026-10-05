@@ -19,7 +19,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpurlmap
+    e2e-catalog-kind: gcpurlmap
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpurlmap/e2e/prerequisites/gcpbackendservice-managed.yaml,catalog/gcp/gcpurlmap/e2e/prerequisites/gcpbackendservice-mirror.yaml"

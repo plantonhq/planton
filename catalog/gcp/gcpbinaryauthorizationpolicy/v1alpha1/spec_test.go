@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpBinaryAuthorizationPolicySpec", func() {
 		return &GcpBinaryAuthorizationPolicy{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpBinaryAuthorizationPolicy",
-			Metadata:   &shared.CloudResourceMetadata{Name: "project-policy"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "project-policy"},
 			Spec: &GcpBinaryAuthorizationPolicySpec{
 				DefaultAdmissionRule: &GcpBinaryAuthorizationPolicyAdmissionRule{
 					EvaluationMode:  "ALWAYS_ALLOW",

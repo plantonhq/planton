@@ -28,7 +28,7 @@ func buildValidActionGroup() *AzureMonitorActionGroup {
 	return &AzureMonitorActionGroup{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMonitorActionGroup",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ag",
 		},
 		Spec: &AzureMonitorActionGroupSpec{

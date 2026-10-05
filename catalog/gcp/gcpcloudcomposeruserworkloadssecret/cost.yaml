@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpcloudcomposeruserworkloadssecret
 spec:
   billing_model: free
   free_tier: A user-workloads Secret is a Kubernetes Secret Composer manages inside the environment's cluster, and Cloud Composer's pricing has no meter for it -- Composer 3 bills DCU-hours for the environment's compute plus database storage and network transfer, Composer 2 bills the environment's vCPU, memory, storage, and an hourly environment fee, and none of those SKUs count Secrets or the entries inside them. This is also not Secret Manager -- no per-secret-version or per-access charge exists here.
-  notes: "No field of this spec buys anything: the data map is base64-encoded credential material stored in the environment's managed cluster, and rotating it in place moves no meter. The real spend is the parent Cloud Composer ENVIRONMENT this Secret is delivered into -- its schedulers, workers, triggerers, DAG processors, and web server bill DCU-hours (Composer 3) or per-resource SKUs plus the environment fee (Composer 2) around the clock, with the Airflow metadata database billing storage per GiB-hour on top. What the credentials UNLOCK is the other place spend appears. The databases and APIs these connection URIs and tokens point at bill on their own meters, as their own catalog kinds."
+  notes: "No field of this spec buys anything: the data map is base64-encoded credential material stored in the environment's managed cluster, and rotating it in place moves no meter. The real spend is the parent Cloud Composer ENVIRONMENT this Secret is delivered into -- its schedulers, workers, triggerers, DAG processors, and web server bill DCU-hours (Composer 3) or per-resource SKUs plus the environment fee (Composer 2) around the clock, with the Airflow metadata database billing storage per GiB-hour on top. What the credentials UNLOCK is the other place spend appears. The databases and APIs these connection URIs and tokens point at bill on their own meters, as their own components."

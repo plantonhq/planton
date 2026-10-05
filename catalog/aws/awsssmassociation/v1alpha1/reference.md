@@ -6,7 +6,7 @@
 
 **apiVersion**: `aws.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 AwsSsmAssociationSpec defines the desired configuration for one AWS
 Systems Manager State Manager association: the binding of an SSM
@@ -16,7 +16,7 @@ every instance tagged env=prod every night").
 The document reference accepts ANY document name - an AWS-managed
 document (AWS-RunShellScript, AmazonCloudWatch-ManageAgent, ...) as
 a literal value, or a customer-owned AwsSsmDocument by reference -
-which is why the association is its own component rather than a
+which is why the association is its own kind rather than a
 document satellite. Changing the document forces replacement; every
 other change creates a new association version in place.
 

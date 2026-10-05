@@ -77,7 +77,7 @@ This creates an empty 100 GB pd-balanced data disk named `app-data` (the disk na
 
 At most one source (`image` / `sourceSnapshot` / `sourceInstantSnapshot` / `sourceStorageObject` / `sourceDisk`) may be set — enforced at validation time, before anything deploys. Customer-supplied (raw CSEK) keys are deliberately not modeled: raw key material never flows through manifests or state — use CMEK.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

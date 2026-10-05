@@ -31,7 +31,7 @@ Per-user compute is the main driver, tempered by the 3-hour idle timeout:
 - EFS home directories: billed per GB-month
 - S3 shared notebook outputs: billed per GB-month, the cheapest storage tier here
 
-The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awssagemakerdomain.yaml` — computed from the pinned price book, never hand-typed here.
+The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awssagemakerdomain.yaml` — computed from the pinned price book, never hand-typed here.
 
 ## Customization
 

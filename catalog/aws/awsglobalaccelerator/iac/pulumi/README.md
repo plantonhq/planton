@@ -17,7 +17,7 @@ each listener's endpoint groups.
 
 ## How It Works
 
-The module receives an `AwsGlobalAcceleratorStackInput` (the manifest plus
+The module receives an `AwsGlobalAcceleratorIacInput` (the manifest plus
 provider credentials), builds the AWS provider through the shared builder,
 and renders the family from the spec. Send conditions match the Terraform
 module argument-for-argument: presence-honest optionals pass through only

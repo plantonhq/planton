@@ -4,7 +4,7 @@ Deploys a Pub/Sub topic in a GCP project with configurable message retention, re
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Pub/Sub API enablement** -- the module enables `pubsub.googleapis.com` in the target project before creating the topic (never disabled on destroy)
 - **Pub/Sub Topic** -- a named topic resource in the specified GCP project for publishing and distributing messages to subscribers
@@ -18,12 +18,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the topic will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef. The module enables the Pub/Sub API itself — no manual API setup is needed.
+- **A GCP project** where the topic will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef. The module enables the Pub/Sub API itself — no manual API setup is needed.
 - **Cloud KMS CryptoKey Encrypter/Decrypter role** granted to the Pub/Sub service account on the KMS key (only for CMEK encryption).
 - **GCS bucket** accessible to the Pub/Sub service account (only for Cloud Storage ingestion).
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f pubsub-topic.yaml
 ```
 
-This creates a topic with Google-managed encryption, no message retention, no regional storage constraints, and no schema validation. A Stack Job tracks the provisioning in real time.
+This creates a topic with Google-managed encryption, no message retention, no regional storage constraints, and no schema validation. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,7 +100,7 @@ These are the most important decisions when configuring a Pub/Sub topic. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -112,9 +112,9 @@ These are the most important decisions when configuring a Pub/Sub topic. Explore
 | **GcpServiceAccount** (optional) | ingestion `gcpServiceAccount` fields | `status.outputs.email` |
 | **GcpVertexAiEndpoint** (optional, per transform) | `messageTransforms[].aiInference.endpoint` | `status.outputs.endpoint_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -136,10 +136,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the topic is created
-- [**GCP Pub/Sub Schema**](/cloud-catalog/gcp-pub-sub-schema) -- provides the message contract enforced at publish time
-- [**GCP Pub/Sub Subscription**](/cloud-catalog/gcp-pub-sub-subscription) -- consumes this topic's stream (pull, push, BigQuery, or Cloud Storage delivery)
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides the CMEK encryption key for messages at rest
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- provides the source bucket for Cloud Storage ingestion
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the federated identity ingestion pipelines authenticate with, and the caller for AI-inference transforms
-- [**GCP Vertex AI Endpoint**](/cloud-catalog/gcp-vertex-ai-endpoint) -- the model endpoint behind AI-inference message transforms
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the topic is created
+- [**GCP Pub/Sub Schema**](/infra-catalog/gcp-pub-sub-schema) -- provides the message contract enforced at publish time
+- [**GCP Pub/Sub Subscription**](/infra-catalog/gcp-pub-sub-subscription) -- consumes this topic's stream (pull, push, BigQuery, or Cloud Storage delivery)
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides the CMEK encryption key for messages at rest
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- provides the source bucket for Cloud Storage ingestion
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the federated identity ingestion pipelines authenticate with, and the caller for AI-inference transforms
+- [**GCP Vertex AI Endpoint**](/infra-catalog/gcp-vertex-ai-endpoint) -- the model endpoint behind AI-inference message transforms

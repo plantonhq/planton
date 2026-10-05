@@ -4,9 +4,9 @@ package dev.planton.aws.awscodebuildproject.v1alpha1;
 
 import "shared/options/options.proto";
 
-// AwsCodeBuildProjectStackOutputs captures observable identifiers and
+// AwsCodeBuildProjectOutputs captures observable identifiers and
 // endpoints from the AWS CodeBuild project deployment.
-message AwsCodeBuildProjectStackOutputs {
+message AwsCodeBuildProjectOutputs {
   // The Amazon Resource Name (ARN) of the CodeBuild project.
   // Use this for IAM policies, EventBridge targets, and cross-resource references.
   string project_arn = 1;

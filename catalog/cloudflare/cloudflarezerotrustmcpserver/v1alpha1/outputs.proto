@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarezerotrustmcpserver.v1alpha1;
 
-// CloudflareZeroTrustMcpServerStackOutputs captures the observable outputs
+// CloudflareZeroTrustMcpServerOutputs captures the observable outputs
 // after registering the MCP server.
-message CloudflareZeroTrustMcpServerStackOutputs {
+message CloudflareZeroTrustMcpServerOutputs {
   // The server's identifier -- what MCP portals reference in their
   // servers[] rows.
   string server_id = 1;

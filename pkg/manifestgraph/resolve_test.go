@@ -3,15 +3,15 @@ package manifestgraph
 import (
 	"testing"
 
-	testk8sv1alpha1 "github.com/plantonhq/planton/catalog/_test/testcloudresourcekubernetes/v1alpha1"
+	testk8sv1alpha1 "github.com/plantonhq/planton/catalog/_test/testcatalogkindkubernetes/v1alpha1"
 	auth0connectionv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0connection/v1alpha1"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"github.com/stretchr/testify/assert"
 )
 
-func ref(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func ref(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{Kind: kind, Name: name, FieldPath: fieldPath},
@@ -27,12 +27,12 @@ func literal(v string) *foreignkeyv1.StringValueOrRef {
 // the container shapes the old spec-tree walker could not rewrite (maps) and
 // the plain singular case.
 func TestResolveRefs_SingularAndMapContainers(t *testing.T) {
-	msg := &testk8sv1alpha1.TestCloudResourceKubernetes{
-		Metadata: &shared.CloudResourceMetadata{Name: "consumer", Env: "dev"},
-		Spec: &testk8sv1alpha1.TestCloudResourceKubernetesSpec{
-			Namespace: ref(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "apps", "spec.name"),
+	msg := &testk8sv1alpha1.TestCatalogKindKubernetes{
+		Metadata: &shared.CatalogObjectMetadata{Name: "consumer", Env: "dev"},
+		Spec: &testk8sv1alpha1.TestCatalogKindKubernetesSpec{
+			Namespace: ref(catalogkind.CatalogKind_KubernetesNamespace, "apps", "spec.name"),
 			RefMap: map[string]*foreignkeyv1.StringValueOrRef{
-				"primary": ref(cloudresourcekind.CloudResourceKind_TestCloudResourceGeneric, "producer", "status.outputs.id"),
+				"primary": ref(catalogkind.CatalogKind_TestCatalogKindGeneric, "producer", "status.outputs.id"),
 				"keep":    literal("untouched"),
 			},
 		},
@@ -62,11 +62,11 @@ func TestResolveRefs_SingularAndMapContainers(t *testing.T) {
 // references mix.
 func TestResolveRefs_ListContainer(t *testing.T) {
 	msg := &auth0connectionv1alpha1.Auth0Connection{
-		Metadata: &shared.CloudResourceMetadata{Name: "conn", Env: "dev"},
+		Metadata: &shared.CatalogObjectMetadata{Name: "conn", Env: "dev"},
 		Spec: &auth0connectionv1alpha1.Auth0ConnectionSpec{
 			EnabledClients: []*foreignkeyv1.StringValueOrRef{
 				literal("client-literal"),
-				ref(cloudresourcekind.CloudResourceKind_Auth0Client, "web-app", "status.outputs.client_id"),
+				ref(catalogkind.CatalogKind_Auth0Client, "web-app", "status.outputs.client_id"),
 			},
 		},
 	}
@@ -91,14 +91,14 @@ func TestResolveRefs_ListContainer(t *testing.T) {
 // target missing the referenced field (missing-output — the composition
 // itself is wrong).
 func TestResolveRefs_FindingClasses(t *testing.T) {
-	msg := &testk8sv1alpha1.TestCloudResourceKubernetes{
-		Metadata: &shared.CloudResourceMetadata{Name: "consumer", Env: "dev"},
-		Spec: &testk8sv1alpha1.TestCloudResourceKubernetesSpec{
-			Namespace: ref(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "apps", "spec.name"),
+	msg := &testk8sv1alpha1.TestCatalogKindKubernetes{
+		Metadata: &shared.CatalogObjectMetadata{Name: "consumer", Env: "dev"},
+		Spec: &testk8sv1alpha1.TestCatalogKindKubernetesSpec{
+			Namespace: ref(catalogkind.CatalogKind_KubernetesNamespace, "apps", "spec.name"),
 			RefMap: map[string]*foreignkeyv1.StringValueOrRef{
 				// The path is VALID on the kind's outputs proto — but the
 				// deployed module's captured outputs won't carry it.
-				"broken": ref(cloudresourcekind.CloudResourceKind_TestCloudResourceGeneric, "producer", "status.outputs.id"),
+				"broken": ref(catalogkind.CatalogKind_TestCatalogKindGeneric, "producer", "status.outputs.id"),
 			},
 		},
 	}

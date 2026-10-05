@@ -4,7 +4,7 @@ Deploys a managed Apache Kafka cluster on Amazon MSK with configurable broker co
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **MSK Cluster** -- a managed Kafka cluster with the specified broker count, instance type, and Kafka version, distributed across subnets in multiple Availability Zones
 - **Inline MSK Configuration** -- created only when `serverProperties` entries are provided; applies Apache Kafka `server.properties` overrides (replication factor, min ISR, partition count, log retention)
@@ -20,13 +20,13 @@ Network ingress is composed, never embedded: brokers attach the referenced `secu
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **At least two subnets** in distinct Availability Zones. The number of broker nodes must be a multiple of the number of subnets. Reference AwsSubnet Cloud Resources via ValueFromRef or provide subnet IDs directly. Subnets are immutable after creation.
-- **Security groups** attached to the broker network interfaces. Reference AwsSecurityGroup Cloud Resources or provide security group IDs. Adding or removing groups after creation forces cluster replacement.
+- **At least two subnets** in distinct Availability Zones. The number of broker nodes must be a multiple of the number of subnets. Reference AwsSubnet Infra Components via ValueFromRef or provide subnet IDs directly. Subnets are immutable after creation.
+- **Security groups** attached to the broker network interfaces. Reference AwsSecurityGroup Infra Components or provide security group IDs. Adding or removing groups after creation forces cluster replacement.
 - **A KMS key** (optional) for encrypting data at rest on broker EBS volumes. The KMS key is immutable after creation.
 - **A CloudWatch log group, Firehose stream, or S3 bucket** (optional) for broker log delivery.
 - **SCRAM secrets** (optional) when SASL/SCRAM is enabled: Secrets Manager secrets named with the `AmazonMSK_` prefix and encrypted with a customer-managed KMS key.
@@ -67,7 +67,7 @@ spec:
 planton apply -f msk-cluster.yaml
 ```
 
-This creates a 3-broker Kafka 3.6.0 cluster attached to the referenced security group, with SASL/IAM authentication, TLS-only client encryption (the AWS default), default EBS storage, and the AWS-managed encryption key. A Stack Job tracks the provisioning in real time.
+This creates a 3-broker Kafka 3.6.0 cluster attached to the referenced security group, with SASL/IAM authentication, TLS-only client encryption (the AWS default), default EBS storage, and the AWS-managed encryption key. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -122,7 +122,7 @@ These are the most important decisions when configuring an MSK cluster. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -133,9 +133,9 @@ These are the most important decisions when configuring an MSK cluster. Explore 
 | **AwsKinesisFirehose** (optional) | `logging.firehose.deliveryStream` | `status.outputs.delivery_stream_name` |
 | **AwsS3Bucket** (optional) | `logging.s3.bucket` | `status.outputs.bucket_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -163,10 +163,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides the subnets brokers are placed in across Availability Zones
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- provides the security groups attached to broker network interfaces
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for EBS volume encryption at rest
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) -- provides the log group for broker log delivery
-- [**AWS Kinesis Firehose**](/cloud-catalog/aws-kinesis-firehose) -- provides a delivery stream for broker log delivery
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- provides an S3 bucket for broker log delivery
-- [**AWS Lambda Event Source Mapping**](/cloud-catalog/aws-lambda-event-source-mapping) -- consumes the cluster ARN to trigger Lambda functions from Kafka topics
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides the subnets brokers are placed in across Availability Zones
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- provides the security groups attached to broker network interfaces
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for EBS volume encryption at rest
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) -- provides the log group for broker log delivery
+- [**AWS Kinesis Firehose**](/infra-catalog/aws-kinesis-firehose) -- provides a delivery stream for broker log delivery
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- provides an S3 bucket for broker log delivery
+- [**AWS Lambda Event Source Mapping**](/infra-catalog/aws-lambda-event-source-mapping) -- consumes the cluster ARN to trigger Lambda functions from Kafka topics

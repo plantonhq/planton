@@ -7,9 +7,9 @@
 # live in the provider's price book (../pricebook/). Grammar-reachable:
 # one scraper is one collector billing every hour of the month, no
 # arithmetic beyond hours_in_month. Schema:
-# finops/componentcostderivation/v1.
+# finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsmanagedprometheusscraper
 spec:

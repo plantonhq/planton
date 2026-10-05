@@ -5,9 +5,9 @@ package dev.planton.aws.awsbackupframework.v1alpha1;
 import "catalog/aws/awsbackupframework/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBackupFrameworkStackInput is the input for the IaC modules that
+// AwsBackupFrameworkIacInput is the input for the IaC modules that
 // manage a Backup Audit Manager framework.
-message AwsBackupFrameworkStackInput {
+message AwsBackupFrameworkIacInput {
   // target is the AwsBackupFramework resource to deploy.
   AwsBackupFramework target = 1;
   // provider_config contains the AWS provider credentials and configuration.

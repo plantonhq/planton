@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.auth0.auth0emailtemplate.v1alpha1;
 
-// Auth0EmailTemplateStackOutputs names the template managed.
+// Auth0EmailTemplateOutputs names the template managed.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/email_template#attributes-reference
-message Auth0EmailTemplateStackOutputs {
+message Auth0EmailTemplateOutputs {
   // template is the email this resource customizes.
   string template = 1;
 

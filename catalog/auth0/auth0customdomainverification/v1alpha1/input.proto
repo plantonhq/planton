@@ -5,10 +5,10 @@ package dev.planton.auth0.auth0customdomainverification.v1alpha1;
 import "catalog/auth0/auth0customdomainverification/v1alpha1/api.proto";
 import "catalog/auth0/provider.proto";
 
-// Auth0CustomDomainVerificationStackInput is the input to the
+// Auth0CustomDomainVerificationIacInput is the input to the
 // Auth0CustomDomainVerification IaC module. It contains the target resource and
 // the Auth0 provider configuration.
-message Auth0CustomDomainVerificationStackInput {
+message Auth0CustomDomainVerificationIacInput {
   // target is the Auth0CustomDomainVerification resource to be deployed.
   Auth0CustomDomainVerification target = 1;
 

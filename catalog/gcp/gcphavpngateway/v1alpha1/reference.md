@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpHaVpnGatewaySpec creates one HA VPN GATEWAY and the Cloud Router its
 tunnels speak BGP through. The gateway is the Google Cloud end of every
@@ -44,7 +44,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcphavpngateway
+    e2e-catalog-kind: gcphavpngateway
   annotations:
     planton.dev/e2e: "true"
   tags:

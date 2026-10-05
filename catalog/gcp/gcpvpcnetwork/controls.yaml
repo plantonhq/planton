@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcpvpcnetwork
 spec:
@@ -23,7 +23,7 @@ spec:
       notes: Payload-level TLS between workloads remains the workloads' responsibility; this control covers the network fabric Google operates.
     - control_id: no-public-access
       status: not_applicable
-      notes: The network itself has no public reachability -- internet exposure is created by external addresses, forwarding rules, and Cloud NAT, each a separate catalog kind with its own posture. Every VPC firewall starts with default-deny ingress.
+      notes: The network itself has no public reachability -- internet exposure is created by external addresses, forwarding rules, and Cloud NAT, each a separate component with its own posture. Every VPC firewall starts with default-deny ingress.
     - control_id: restricted-ingress
       status: not_applicable
       notes: Ingress restriction lives on VPC firewall rules and policies -- separate catalog kinds that attach into the network. network_firewall_policy_enforcement_order only orders their evaluation.

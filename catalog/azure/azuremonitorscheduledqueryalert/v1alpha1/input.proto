@@ -5,10 +5,10 @@ package dev.planton.azure.azuremonitorscheduledqueryalert.v1alpha1;
 import "catalog/azure/azuremonitorscheduledqueryalert/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureMonitorScheduledQueryAlertStackInput is the input to the IaC module.
+// AzureMonitorScheduledQueryAlertIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-message AzureMonitorScheduledQueryAlertStackInput {
-  // target cloud-resource to be deployed
+message AzureMonitorScheduledQueryAlertIacInput {
+  // the catalog object to deploy to be deployed
   AzureMonitorScheduledQueryAlert target = 1;
   // provider-config for Azure authentication
   dev.planton.azure.AzureProviderConfig provider_config = 2;

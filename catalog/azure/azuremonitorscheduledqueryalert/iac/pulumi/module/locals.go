@@ -5,7 +5,7 @@ import (
 
 	azuremonitorscheduledqueryalertv1alpha1 "github.com/plantonhq/planton/catalog/azure/azuremonitorscheduledqueryalert/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -46,11 +46,11 @@ var identityTypeStrings = map[azuremonitorscheduledqueryalertv1alpha1.AzureMonit
 	azuremonitorscheduledqueryalertv1alpha1.AzureMonitorScheduledQueryAlertIdentityType_USER_ASSIGNED:   "UserAssigned",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremonitorscheduledqueryalertv1alpha1.AzureMonitorScheduledQueryAlertStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremonitorscheduledqueryalertv1alpha1.AzureMonitorScheduledQueryAlertIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMonitorScheduledQueryAlert = stackInput.Target
-	target := stackInput.Target
+	locals.AzureMonitorScheduledQueryAlert = iacInput.Target
+	target := iacInput.Target
 
 	// The resource_group field is a StringValueOrRef. The platform middleware
 	// resolves valueFrom references before IaC modules run, so .GetValue()
@@ -62,7 +62,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azuremonitorscheduledquer
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureMonitorScheduledQueryAlert.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureMonitorScheduledQueryAlert.String()),
 	}
 
 	if target.Metadata.Id != "" {

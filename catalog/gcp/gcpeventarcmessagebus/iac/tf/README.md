@@ -22,7 +22,7 @@ This directory contains the Terraform/OpenTofu implementation for deploying an E
 | `variables.tf` | GENERATED from the proto spec (`planton tofu generate-variables GcpEventarcMessageBus`) — never hand-edited |
 | `locals.tf` | Project fallback + bus-id derivation + label merge |
 | `main.tf` | API enablement + bus + sources + pipelines + enrollments |
-| `outputs.tf` | Stack outputs |
+| `outputs.tf` | Outputs |
 | `provider.tf` | google provider pin (`~> 8.3`) |
 | `backend.tf` | Local state backend (the runner injects the real backend) |
 

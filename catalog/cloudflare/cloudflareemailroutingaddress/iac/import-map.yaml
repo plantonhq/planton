@@ -1,12 +1,12 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflareemailroutingaddress
 spec:
   # A destination address's import identity is compound: the owning account
   # plus the address's own Cloudflare-assigned id. The account is spec-relative
   # (from_spec_field -- the harness already knows the account); the address id
-  # comes from a prior deploy's stack outputs.
+  # comes from a prior deploy's outputs.
   values:
     - name: account_id
       derivations:
@@ -16,7 +16,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: address_id
       derivations:
-        - from_stack_output: address_id
+        - from_output: address_id
       where_to_find: >-
         Cloudflare dashboard -> the account -> Email -> Email Routing ->
         Destination addresses (the id is in the API, not the UI), or

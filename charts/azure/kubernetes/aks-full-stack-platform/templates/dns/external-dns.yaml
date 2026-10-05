@@ -119,7 +119,7 @@ spec:
 {% endfor %}
   # Distinct ownership ID per cluster sharing a zone — the TXT registry is
   # what stops two controllers from fighting over the same records. The
-  # policy stays at the component default "upsert-only" (create and update,
+  # policy stays at the kind's default "upsert-only" (create and update,
   # never delete): the safe posture for zones that also hold records
   # managed by hand or by other systems.
   txtOwnerId: "{{ values.dns_txt_owner_id }}"

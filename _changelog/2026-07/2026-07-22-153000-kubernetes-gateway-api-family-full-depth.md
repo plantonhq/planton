@@ -1,7 +1,7 @@
 # Kubernetes Gateway API family at full depth: v1.6.1 rebuild, two new kinds, composed-ID state import for every typed CR
 
 **Date**: 2026-07-22
-**Scope**: `apis/dev/planton/provider/kubernetes` (gateway_api.proto shared types; kubernetesgatewayapicrds, kubernetesgatewayclass, kubernetesgateway, kuberneteshttproute, kubernetesgrpcroute, kubernetestcproute, kubernetestlsroute, kubernetesreferencegrant rebuilt; kubernetesudproute + kuberneteslistenerset forged), `cloudresourcekind` (family renumbered 840–849; Istio 850–858; MetricsServer 859), `pkg/kubernetes/kubernetestypes` (gateway-api pin v1.5.1 → v1.6.1), `pkg/iac/importmap` + `apis/dev/planton/iac` (composed-ID import vocabulary), `aa_import/catalog.yaml` (kubectl_manifest row), fifteen component import maps, `aa_e2e/verify`, `e2e` + Makefile tiers, `pkg/outputs`, site catalog, `_rules/deployment-component/update`
+**Scope**: `apis/dev/planton/provider/kubernetes` (gateway_api.proto shared types; kubernetesgatewayapicrds, kubernetesgatewayclass, kubernetesgateway, kuberneteshttproute, kubernetesgrpcroute, kubernetestcproute, kubernetestlsroute, kubernetesreferencegrant rebuilt; kubernetesudproute + kuberneteslistenerset forged), `catalogkind` (family renumbered 840–849; Istio 850–858; MetricsServer 859), `pkg/kubernetes/kubernetestypes` (gateway-api pin v1.5.1 → v1.6.1), `pkg/iac/importmap` + `apis/dev/planton/iac` (composed-ID import vocabulary), `aa_import/catalog.yaml` (kubectl_manifest row), fifteen catalog kind import maps, `aa_e2e/verify`, `e2e` + Makefile tiers, `pkg/outputs`, site catalog, `_rules/catalog-kind/update`
 
 ## What changed
 
@@ -45,7 +45,7 @@ Route `parent_refs[].name` (→ KubernetesGateway), backend `name`s
 (→ KubernetesService), listener TLS `certificate_refs[].name`
 (→ KubernetesSecret — the cert-manager seam), frontend CA references
 (→ KubernetesConfigMap), and the ListenerSet's `parent_ref.name`
-(→ KubernetesGateway) are now `StringValueOrRef` foreign keys: infra charts
+(→ KubernetesGateway) are now `StringValueOrRef` foreign keys: Infra Charts
 wire them with `valueFrom` and get real dependency edges instead of manual
 relationship hints. ReferenceGrant's from/to fields deliberately stay plain
 — they are trust assertions about kinds, not pointers to instances.
@@ -64,14 +64,14 @@ same pattern ReferenceGrant already used, now uniform across the family.
 
 All seven existing CR kinds moved from `kubernetes_manifest` (which needs a
 live cluster at plan time) to alekc/kubectl's `kubectl_manifest`: routes and
-gateways can now be planned before the CRDs exist — single-run infra charts
+gateways can now be planned before the CRDs exist — single-run Infra Charts
 and offline plan proofs work. Identity labels converged on the `planton.ai/*`
 convention in both engines. Pre-anatomy debt paid: per-kind Pulumi project
-names, stack-input entrypoints, full-surface hack manifests.
+names, iac-input entrypoints, full-surface hack manifests.
 
 ### Composed-ID state import (framework uplift)
 
-- The component import-map vocabulary gained a `literal` derivation arm
+- The catalog kind import map vocabulary gained a `literal` derivation arm
   (constants of the module — a typed-CR module's apiVersion/kind).
 - id_format templates gained an optional SEGMENT GROUP syntax:
   `[//{namespace}]` disappears wholesale when the placeholder does not
@@ -83,7 +83,7 @@ names, stack-input entrypoints, full-surface hack manifests.
   (`{api_version}//{kind}//{name}[//{namespace}]`) with its provider-side
   knobs declared config-only and `yaml_body` write-normalized (the importer
   stores the stripped live object).
-- Fifteen component maps authored and proven: the nine Gateway API CR kinds
+- Fifteen kind maps authored and proven: the nine Gateway API CR kinds
   plus the six previously deferred kinds (ClusterIssuer, Issuer,
   Certificate, ClusterSecretStore, SecretStore, ExternalSecret). The CRD
   bundle installer is recorded as deliberately not applicable (positional

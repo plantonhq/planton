@@ -1,4 +1,4 @@
-# KubernetesPerconaPostgresOperator Component Completion to 100%
+# KubernetesPerconaPostgresOperator Kind Completion to 100%
 
 **Date**: November 16, 2025
 **Type**: Enhancement
@@ -6,23 +6,23 @@
 
 ## Summary
 
-Completed the KubernetesPerconaPostgresOperator deployment component from 88.85% to 100% by implementing comprehensive validation tests, standardizing Pulumi and Terraform module structures, and adding architecture documentation. This work ensures production-ready reliability for managing Percona Distribution for PostgreSQL operators on Kubernetes with full test coverage and consistent IaC patterns across both Pulumi and Terraform implementations.
+Completed the KubernetesPerconaPostgresOperator catalog kind from 88.85% to 100% by implementing comprehensive validation tests, standardizing Pulumi and Terraform module structures, and adding architecture documentation. This work ensures production-ready reliability for managing Percona Distribution for PostgreSQL operators on Kubernetes with full test coverage and consistent IaC patterns across both Pulumi and Terraform implementations.
 
 ## Problem Statement / Motivation
 
-The KubernetesPerconaPostgresOperator component was at 88.85% completion with several critical gaps preventing production certification:
+The KubernetesPerconaPostgresOperator kind was at 88.85% completion with several critical gaps preventing production certification:
 
 ### Critical Gaps
 
 1. **Missing Unit Tests (5.55% impact)**: No `spec_test.go` existed to validate buf.validate rules, creating untested validation logic that could fail silently in production
-2. **Non-Standard Pulumi Module (1.66% impact)**: Used custom file names (`percona_operator.go`, `vars.go`) instead of standard conventions (`main.go`, `locals.go`), breaking consistency with other components
+2. **Non-Standard Pulumi Module (1.66% impact)**: Used custom file names (`percona_operator.go`, `vars.go`) instead of standard conventions (`main.go`, `locals.go`), breaking consistency with other kinds
 3. **Incomplete Terraform Module (2.22% impact)**: Missing standard `locals.tf` and `outputs.tf` files with logic inline in `main.tf`, deviating from Planton module structure
 4. **Missing Architecture Documentation (2.23% impact)**: No `overview.md` file documenting Pulumi module design decisions and workflow
 
 ### Pain Points
 
 - **Test Coverage Gap**: Without validation tests, changes to spec.proto could introduce bugs that only surface during deployment
-- **Maintenance Confusion**: Non-standard file names forced developers to learn component-specific patterns instead of leveraging consistent conventions
+- **Maintenance Confusion**: Non-standard file names forced developers to learn kind-specific patterns instead of leveraging consistent conventions
 - **Terraform Inconsistency**: Inline locals and outputs made the module harder to understand and maintain
 - **Onboarding Friction**: New contributors lacked architectural context for understanding module implementation
 
@@ -47,7 +47,7 @@ var _ = ginkgo.Describe("KubernetesPerconaPostgresOperator Validation Tests", fu
         input = &KubernetesPerconaPostgresOperator{
             ApiVersion: "kubernetes.planton.dev/v1",
             Kind:       "KubernetesPerconaPostgresOperator",
-            Metadata:   &shared.CloudResourceMetadata{
+            Metadata:   &shared.CatalogObjectMetadata{
                 Name: "test-percona-postgres-operator",
             },
             Spec: &KubernetesPerconaPostgresOperatorSpec{
@@ -170,7 +170,7 @@ output "helm_status" {
 
 Created `overview.md` (6 lines, comprehensive paragraph format):
 
-> The Percona Operator for PostgreSQL Kubernetes Pulumi module streamlines deployment of the Percona Distribution for PostgreSQL operator within Kubernetes environments. By accepting a `KubernetesPerconaPostgresOperatorStackInput` specification with target cluster credentials, namespace settings, and container resource allocations, the module establishes a Kubernetes provider, creates a dedicated namespace, and leverages the official Percona Helm chart repository to install the Percona PostgreSQL operator (`pg-operator`) with enterprise-grade features including high availability, disaster recovery, automated backups, logical backups, point-in-time recovery, and connection pooling for running stateful PostgreSQL workloads in production Kubernetes environments.
+> The Percona Operator for PostgreSQL Kubernetes Pulumi module streamlines deployment of the Percona Distribution for PostgreSQL operator within Kubernetes environments. By accepting a `KubernetesPerconaPostgresOperatorIacInput` specification with target cluster credentials, namespace settings, and container resource allocations, the module establishes a Kubernetes provider, creates a dedicated namespace, and leverages the official Percona Helm chart repository to install the Percona PostgreSQL operator (`pg-operator`) with enterprise-grade features including high availability, disaster recovery, automated backups, logical backups, point-in-time recovery, and connection pooling for running stateful PostgreSQL workloads in production Kubernetes environments.
 
 ## Implementation Details
 
@@ -255,7 +255,7 @@ ok   0.540s
 ```
 
 ### Code Organization
-- **Standard Naming**: Pulumi modules use `main.go`/`locals.go` like all components
+- **Standard Naming**: Pulumi modules use `main.go`/`locals.go` like all kinds
 - **Terraform Best Practices**: Separated locals, outputs, and resources
 - **Maintainability**: Clear separation of concerns by file type
 - **Consistency**: Both IaC tools follow Planton patterns
@@ -300,7 +300,7 @@ iac/tf/main.tf                              (modified, 21 changes)
 - ✅ **Module Structure**: Both Pulumi and Terraform match expected layouts
 - ✅ **Test Coverage**: buf.validate rules verified through automated tests
 - ✅ **Documentation**: Architecture overview provided for maintainers
-- ✅ **Build Validation**: All tests pass, component builds successfully
+- ✅ **Build Validation**: All tests pass, kind builds successfully
 
 ## Percona Distribution for PostgreSQL Context
 
@@ -337,7 +337,7 @@ The Percona Distribution for PostgreSQL Operator (`pg-operator`) manages Postgre
 ```
 User → planton CLI
   ↓
-Stack Input (spec.proto)
+IaC Input (spec.proto)
   ↓
 Pulumi/Terraform Module
   ↓
@@ -362,8 +362,8 @@ The operator deployment includes:
 
 ## Related Work
 
-### Component Completion Series
-This is the final component in a coordinated Percona operator standardization effort:
+### Kind Completion Series
+This is the final kind in a coordinated Percona operator standardization effort:
 - ✅ **KubernetesPerconaMongoOperator**: 90.40% → 100%
 - ✅ **KubernetesPerconaMysqlOperator**: 82.21% → 100%
 - ✅ **KubernetesPerconaPostgresOperator**: 88.85% → 100% (this changelog)
@@ -376,10 +376,10 @@ The same standardization patterns were applied across all three operators:
 - Architecture documentation (overview.md)
 
 ### Audit Framework
-Component completion tracked via:
+Kind completion tracked via:
 - `docs/audit/2025-11-14-061536.md`: Initial audit showing 88.85%
-- Automated scoring measuring component completeness
-- `architecture/deployment-component.md`: Ideal state specification
+- Automated scoring measuring kind completeness
+- `architecture/catalog-kind.md`: Ideal state specification
 
 ## Testing Strategy
 
@@ -445,7 +445,7 @@ As the pg-operator evolves:
 
 ## File Locations
 
-**Component Root**:
+**Kind Root**:
 - `apis/dev/planton/provider/kubernetes/kubernetesperconapostgresoperator/v1/`
 
 **Key Files**:
@@ -458,7 +458,7 @@ As the pg-operator evolves:
 - `iac/tf/main.tf`: Terraform resources (namespace, helm_release)
 
 **Documentation**:
-- `README.md`: User-facing component overview (4.6 KB)
+- `README.md`: User-facing kind overview (4.6 KB)
 - `docs/README.md`: Comprehensive research documentation (20 KB)
 - `examples.md`: YAML configuration examples (3.8 KB)
 - `iac/pulumi/README.md`: Pulumi usage guide (5.1 KB)
@@ -470,7 +470,7 @@ As the pg-operator evolves:
 
 **Status**: ✅ Production Ready
 **Timeline**: Completed in single iteration (November 16, 2025)
-**Component Score**: 100.00% (previously 88.85%)
+**Kind Score**: 100.00% (previously 88.85%)
 **Spec Changes**: None - No protobuf API modifications
 **Helm Chart**: `pg-operator` v2.7.0 (consistent across Pulumi and Terraform)
 

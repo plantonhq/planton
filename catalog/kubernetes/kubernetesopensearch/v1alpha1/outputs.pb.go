@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-open-search stack outputs
-type KubernetesOpenSearchStackOutputs struct {
+// kubernetes-open-search outputs
+type KubernetesOpenSearchOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the cluster runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -57,20 +57,20 @@ type KubernetesOpenSearchStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesOpenSearchStackOutputs) Reset() {
-	*x = KubernetesOpenSearchStackOutputs{}
+func (x *KubernetesOpenSearchOutputs) Reset() {
+	*x = KubernetesOpenSearchOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesopensearch_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesOpenSearchStackOutputs) String() string {
+func (x *KubernetesOpenSearchOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesOpenSearchStackOutputs) ProtoMessage() {}
+func (*KubernetesOpenSearchOutputs) ProtoMessage() {}
 
-func (x *KubernetesOpenSearchStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesOpenSearchOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesopensearch_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,61 +82,61 @@ func (x *KubernetesOpenSearchStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesOpenSearchStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesOpenSearchStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesOpenSearchOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenSearchOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesopensearch_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesOpenSearchStackOutputs) GetNamespace() string {
+func (x *KubernetesOpenSearchOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesOpenSearchStackOutputs) GetClusterName() string {
+func (x *KubernetesOpenSearchOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *KubernetesOpenSearchStackOutputs) GetServiceName() string {
+func (x *KubernetesOpenSearchOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesOpenSearchStackOutputs) GetHttpEndpoint() string {
+func (x *KubernetesOpenSearchOutputs) GetHttpEndpoint() string {
 	if x != nil {
 		return x.HttpEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesOpenSearchStackOutputs) GetAdminCredentialsSecretName() string {
+func (x *KubernetesOpenSearchOutputs) GetAdminCredentialsSecretName() string {
 	if x != nil {
 		return x.AdminCredentialsSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesOpenSearchStackOutputs) GetDashboardsServiceName() string {
+func (x *KubernetesOpenSearchOutputs) GetDashboardsServiceName() string {
 	if x != nil {
 		return x.DashboardsServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesOpenSearchStackOutputs) GetDashboardsEndpoint() string {
+func (x *KubernetesOpenSearchOutputs) GetDashboardsEndpoint() string {
 	if x != nil {
 		return x.DashboardsEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesOpenSearchStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesOpenSearchOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -147,8 +147,8 @@ var File_catalog_kubernetes_kubernetesopensearch_v1alpha1_outputs_proto protoref
 
 const file_catalog_kubernetes_kubernetesopensearch_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesopensearch/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kubernetesopensearch.v1alpha1\"\x89\x03\n" +
-	" KubernetesOpenSearchStackOutputs\x12\x1c\n" +
+	">catalog/kubernetes/kubernetesopensearch/v1alpha1/outputs.proto\x124dev.planton.kubernetes.kubernetesopensearch.v1alpha1\"\x84\x03\n" +
+	"\x1bKubernetesOpenSearchOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12!\n" +
 	"\fservice_name\x18\x03 \x01(\tR\vserviceName\x12#\n" +
@@ -173,7 +173,7 @@ func file_catalog_kubernetes_kubernetesopensearch_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetesopensearch_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesopensearch_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesOpenSearchStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesopensearch.v1alpha1.KubernetesOpenSearchStackOutputs
+	(*KubernetesOpenSearchOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesopensearch.v1alpha1.KubernetesOpenSearchOutputs
 }
 var file_catalog_kubernetes_kubernetesopensearch_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -2,11 +2,11 @@
 
 Installs the official Keycloak Operator from the pinned keycloak-k8s-resources release manifests. Keycloak ships **no official Helm chart** — the operator IS the first-party Kubernetes distribution. It reconciles Keycloak declarations (declared with **Keycloak**) into running Keycloak StatefulSets, managing their Services, network policy, and the one-time bootstrap admin credential.
 
-This component installs the **manager only**. Installing it deploys NO Keycloak server: declare `KubernetesKeycloak` resources and the operator turns each into a running server.
+This kind installs the **manager only**. Installing it deploys NO Keycloak server: declare `KubernetesKeycloak` resources and the operator turns each into a running server.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module fetches the release manifests tag-pinned, stamps your namespace onto every namespaced document (upstream expects kustomize to do this), and applies them as ordered groups:
+When you deploy this Infra Component, the IaC module fetches the release manifests tag-pinned, stamps your namespace onto every namespaced document (upstream expects kustomize to do this), and applies them as ordered groups:
 
 - **16 plain-YAML documents** — the `keycloak-operator` ServiceAccount, RBAC, the metrics/health Service (port 80 → 8080), and the operator Deployment. No admission webhooks, no cert-manager dependency, no install hooks
 - **4 `k8s.keycloak.org` CRDs** (`keycloaks`, `keycloakrealmimports`, `keycloakoidcclients`, `keycloaksamlclients`) — documents of the applied manifest, so they install AND delete with this resource; see the destroy ordering under Key Configuration
@@ -51,7 +51,7 @@ spec:
 planton apply -f keycloak-operator.yaml
 ```
 
-The namespace is the only required field: everything else is an optional override of the bundle's own defaults. Declare a **Keycloak** resource next — in this same namespace under the default watch — to get a server. A Stack Job tracks the provisioning in real time.
+The namespace is the only required field: everything else is an optional override of the bundle's own defaults. Declare a **Keycloak** resource next — in this same namespace under the default watch — to get a server. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,13 +85,13 @@ These are the most important decisions when configuring the Keycloak Operator in
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -111,6 +111,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Keycloak**](/cloud-catalog/kubernetes-keycloak) — the server declarations this operator reconciles; deploy the operator FIRST (in the same namespace under the default watch), and destroy the declarations FIRST on the way out
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — provides the installation namespace by reference
-- [**PostgreSQL**](/cloud-catalog/kubernetes-postgres) — the production database a Keycloak declaration composes; co-locate it with the operator+server namespace so credential Secrets are readable
+- [**Keycloak**](/infra-catalog/kubernetes-keycloak) — the server declarations this operator reconciles; deploy the operator FIRST (in the same namespace under the default watch), and destroy the declarations FIRST on the way out
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — provides the installation namespace by reference
+- [**PostgreSQL**](/infra-catalog/kubernetes-postgres) — the production database a Keycloak declaration composes; co-locate it with the operator+server namespace so credential Secrets are readable

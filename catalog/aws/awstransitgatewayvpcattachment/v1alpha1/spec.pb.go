@@ -50,7 +50,7 @@ const (
 //     turning these off and composing AwsTransitGatewayRouteTable resources.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsTransitGatewayVpcAttachmentSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the attachment will be created. Must match the

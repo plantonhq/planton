@@ -1,22 +1,22 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflareemailroutingrule
 spec:
   # A routing rule's import identity is compound: the zone it lives in plus
   # the rule's own Cloudflare-assigned id. Both are discoverable from a prior
-  # deploy's stack outputs; neither is derivable from metadata.
+  # deploy's outputs; neither is derivable from metadata.
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the
         Cloudflare v4 API (the id field).
     - name: rule_id
       derivations:
-        - from_stack_output: rule_id
+        - from_output: rule_id
       where_to_find: >-
         Cloudflare dashboard -> the zone -> Email -> Email Routing -> Routing
         rules (the rule id is in the API, not the UI), or

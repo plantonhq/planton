@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsStepFunctionStackOutputs captures observable identifiers from a provisioned
+// AwsStepFunctionOutputs captures observable identifiers from a provisioned
 // Step Functions state machine. These outputs are used by downstream resources
 // (e.g., EventBridge rule targets, API Gateway integrations, Lambda invocations)
 // to wire dependencies via StringValueOrRef.
-type AwsStepFunctionStackOutputs struct {
+type AwsStepFunctionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the state machine. This is the primary
 	// identifier used for invoking the state machine and for cross-service
@@ -57,20 +57,20 @@ type AwsStepFunctionStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsStepFunctionStackOutputs) Reset() {
-	*x = AwsStepFunctionStackOutputs{}
+func (x *AwsStepFunctionOutputs) Reset() {
+	*x = AwsStepFunctionOutputs{}
 	mi := &file_catalog_aws_awsstepfunction_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsStepFunctionStackOutputs) String() string {
+func (x *AwsStepFunctionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsStepFunctionStackOutputs) ProtoMessage() {}
+func (*AwsStepFunctionOutputs) ProtoMessage() {}
 
-func (x *AwsStepFunctionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsStepFunctionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsstepfunction_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,54 +82,54 @@ func (x *AwsStepFunctionStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsStepFunctionStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsStepFunctionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsStepFunctionOutputs.ProtoReflect.Descriptor instead.
+func (*AwsStepFunctionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsstepfunction_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsStepFunctionStackOutputs) GetStateMachineArn() string {
+func (x *AwsStepFunctionOutputs) GetStateMachineArn() string {
 	if x != nil {
 		return x.StateMachineArn
 	}
 	return ""
 }
 
-func (x *AwsStepFunctionStackOutputs) GetStateMachineName() string {
+func (x *AwsStepFunctionOutputs) GetStateMachineName() string {
 	if x != nil {
 		return x.StateMachineName
 	}
 	return ""
 }
 
-func (x *AwsStepFunctionStackOutputs) GetStateMachineVersionArn() string {
+func (x *AwsStepFunctionOutputs) GetStateMachineVersionArn() string {
 	if x != nil {
 		return x.StateMachineVersionArn
 	}
 	return ""
 }
 
-func (x *AwsStepFunctionStackOutputs) GetRevisionId() string {
+func (x *AwsStepFunctionOutputs) GetRevisionId() string {
 	if x != nil {
 		return x.RevisionId
 	}
 	return ""
 }
 
-func (x *AwsStepFunctionStackOutputs) GetStatus() string {
+func (x *AwsStepFunctionOutputs) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *AwsStepFunctionStackOutputs) GetCreationDate() string {
+func (x *AwsStepFunctionOutputs) GetCreationDate() string {
 	if x != nil {
 		return x.CreationDate
 	}
 	return ""
 }
 
-func (x *AwsStepFunctionStackOutputs) GetAliasArns() map[string]string {
+func (x *AwsStepFunctionOutputs) GetAliasArns() map[string]string {
 	if x != nil {
 		return x.AliasArns
 	}
@@ -140,17 +140,17 @@ var File_catalog_aws_awsstepfunction_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_aws_awsstepfunction_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awsstepfunction/v1alpha1/outputs.proto\x12(dev.planton.aws.awsstepfunction.v1alpha1\"\xc3\x03\n" +
-	"\x1bAwsStepFunctionStackOutputs\x12*\n" +
+	"2catalog/aws/awsstepfunction/v1alpha1/outputs.proto\x12(dev.planton.aws.awsstepfunction.v1alpha1\"\xb9\x03\n" +
+	"\x16AwsStepFunctionOutputs\x12*\n" +
 	"\x11state_machine_arn\x18\x01 \x01(\tR\x0fstateMachineArn\x12,\n" +
 	"\x12state_machine_name\x18\x02 \x01(\tR\x10stateMachineName\x129\n" +
 	"\x19state_machine_version_arn\x18\x03 \x01(\tR\x16stateMachineVersionArn\x12\x1f\n" +
 	"\vrevision_id\x18\x04 \x01(\tR\n" +
 	"revisionId\x12\x16\n" +
 	"\x06status\x18\x05 \x01(\tR\x06status\x12#\n" +
-	"\rcreation_date\x18\x06 \x01(\tR\fcreationDate\x12s\n" +
+	"\rcreation_date\x18\x06 \x01(\tR\fcreationDate\x12n\n" +
 	"\n" +
-	"alias_arns\x18\a \x03(\v2T.dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStackOutputs.AliasArnsEntryR\taliasArns\x1a<\n" +
+	"alias_arns\x18\a \x03(\v2O.dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionOutputs.AliasArnsEntryR\taliasArns\x1a<\n" +
 	"\x0eAliasArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xdc\x02\n" +
@@ -170,11 +170,11 @@ func file_catalog_aws_awsstepfunction_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awsstepfunction_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsstepfunction_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsStepFunctionStackOutputs)(nil), // 0: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStackOutputs
-	nil,                                 // 1: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStackOutputs.AliasArnsEntry
+	(*AwsStepFunctionOutputs)(nil), // 0: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionOutputs
+	nil,                            // 1: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionOutputs.AliasArnsEntry
 }
 var file_catalog_aws_awsstepfunction_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStackOutputs.alias_arns:type_name -> dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionStackOutputs.AliasArnsEntry
+	1, // 0: dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionOutputs.alias_arns:type_name -> dev.planton.aws.awsstepfunction.v1alpha1.AwsStepFunctionOutputs.AliasArnsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

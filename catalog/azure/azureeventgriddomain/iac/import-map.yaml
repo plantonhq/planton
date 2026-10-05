@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azureeventgriddomain
 spec:
@@ -7,7 +7,7 @@ spec:
   values:
     - name: domain_id
       derivations:
-        - from_stack_output: domain_id
+        - from_output: domain_id
       where_to_find: >-
         `az eventgrid domain show --name <domain-name> --resource-group
-        <rg> --query id`, or the component's own domain_id stack output.
+        <rg> --query id`, or the component's own domain_id output.

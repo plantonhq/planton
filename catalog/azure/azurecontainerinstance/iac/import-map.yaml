@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurecontainerinstance
 spec:
@@ -12,7 +12,7 @@ spec:
   values:
     - name: container_group_id
       derivations:
-        - from_stack_output: container_group_id
+        - from_output: container_group_id
       where_to_find: >-
         Portal -> Container instances -> the group -> Properties ->
         Resource ID, or `az container show --name <name> -g <rg> --query

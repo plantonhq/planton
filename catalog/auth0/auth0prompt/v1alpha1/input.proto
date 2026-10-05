@@ -5,9 +5,9 @@ package dev.planton.auth0.auth0prompt.v1alpha1;
 import "catalog/auth0/auth0prompt/v1alpha1/api.proto";
 import "catalog/auth0/provider.proto";
 
-// Auth0PromptStackInput is the input to the Auth0Prompt IaC module.
+// Auth0PromptIacInput is the input to the Auth0Prompt IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-message Auth0PromptStackInput {
+message Auth0PromptIacInput {
   // target is the Auth0Prompt resource to be deployed.
   Auth0Prompt target = 1;
 

@@ -32,7 +32,7 @@ Custom domains compose rather than embed: a serverless network endpoint group (`
 - **GPU**: one accelerator per instance (`node_selector`), zonal-redundancy opt-out for cheaper capacity
 - **Safety**: `deletion_protection` defaults to true — a destroy fails until the manifest opts out; `deletion_policy` records the destroy stance (PREVENT / ABANDON)
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|
@@ -45,7 +45,7 @@ Custom domains compose rather than embed: a serverless network endpoint group (`
 
 ## Deliberately not modeled (recorded reasons)
 
-Everything the pinned GA provider can configure on `google_cloud_run_v2_service` is representable through this component, except the entries below — each a recorded decision (the machine-checked record lives in `iac/provider-parity.yaml`):
+Everything the pinned GA provider can configure on `google_cloud_run_v2_service` is representable through this kind, except the entries below — each a recorded decision (the machine-checked record lives in `iac/provider-parity.yaml`):
 
 | Excluded Feature | Why |
 |---|---|
@@ -55,7 +55,7 @@ Everything the pinned GA provider can configure on `google_cloud_run_v2_service`
 | Domain mapping (`google_cloud_run_domain_mapping`) | A separate resource with its own lifecycle, deliberately not folded in as a toggle. The production-grade custom-domain path is the composed load-balancer family (serverless NEG → backend service → URL map → HTTPS proxy → forwarding rule) with `GcpDnsRecord`. |
 | Service IAM beyond the public-invoker grant | Fine-grained invoker grants to specific identities are IAM-family territory; the modeled toggle covers the public/authenticated split every service decides. |
 
-## Related Components
+## Related Kinds
 
 - **GcpRegionNetworkEndpointGroup** — bridges this service into the global HTTPS load balancer (references `service_name`)
 - **GcpCloudSql** — databases mounted via the Cloud SQL volume (references `connection_name`)

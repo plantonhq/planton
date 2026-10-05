@@ -27,7 +27,7 @@ type AwsRoute53ResolverQueryLog struct {
 	state         protoimpl.MessageState            `protogen:"open.v1"`
 	ApiVersion    string                            `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                            `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata     `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata     `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsRoute53ResolverQueryLogSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsRoute53ResolverQueryLogStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsRoute53ResolverQueryLog) GetKind() string {
 	return ""
 }
 
-func (x *AwsRoute53ResolverQueryLog) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsRoute53ResolverQueryLog) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsRoute53ResolverQueryLog) GetStatus() *AwsRoute53ResolverQueryLogStat
 }
 
 type AwsRoute53ResolverQueryLogStatus struct {
-	state         protoimpl.MessageState                  `protogen:"open.v1"`
-	Outputs       *AwsRoute53ResolverQueryLogStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState             `protogen:"open.v1"`
+	Outputs       *AwsRoute53ResolverQueryLogOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsRoute53ResolverQueryLogStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsroute53resolverquerylog_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsRoute53ResolverQueryLogStatus) GetOutputs() *AwsRoute53ResolverQueryLogStackOutputs {
+func (x *AwsRoute53ResolverQueryLogStatus) GetOutputs() *AwsRoute53ResolverQueryLogOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsroute53resolverquerylog_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aAwsRoute53ResolverQueryLogR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
 	"\x04spec\x18\x04 \x01(\v2S.dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12m\n" +
-	"\x06status\x18\x05 \x01(\v2U.dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStatusR\x06status\"\x99\x01\n" +
-	" AwsRoute53ResolverQueryLogStatus\x12u\n" +
-	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2U.dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStatusR\x06status\"\x94\x01\n" +
+	" AwsRoute53ResolverQueryLogStatus\x12p\n" +
+	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogOutputsR\aoutputsB\xa5\x03\n" +
 	"7com.dev.planton.aws.awsroute53resolverquerylog.v1alpha1B\bApiProtoP\x01Zogithub.com/plantonhq/planton/catalog/aws/awsroute53resolverquerylog/v1alpha1;awsroute53resolverquerylogv1alpha1\xa2\x02\x04DPAA\xaa\x023Dev.Planton.Aws.Awsroute53resolverquerylog.V1alpha1\xca\x023Dev\\Planton\\Aws\\Awsroute53resolverquerylog\\V1alpha1\xe2\x02?Dev\\Planton\\Aws\\Awsroute53resolverquerylog\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Aws::Awsroute53resolverquerylog::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awsroute53resolverquerylog_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_aws_awsroute53resolverquerylog_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsroute53resolverquerylog_v1alpha1_api_proto_goTypes = []any{
-	(*AwsRoute53ResolverQueryLog)(nil),             // 0: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLog
-	(*AwsRoute53ResolverQueryLogStatus)(nil),       // 1: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsRoute53ResolverQueryLogSpec)(nil),         // 3: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogSpec
-	(*AwsRoute53ResolverQueryLogStackOutputs)(nil), // 4: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStackOutputs
+	(*AwsRoute53ResolverQueryLog)(nil),        // 0: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLog
+	(*AwsRoute53ResolverQueryLogStatus)(nil),  // 1: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsRoute53ResolverQueryLogSpec)(nil),    // 3: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogSpec
+	(*AwsRoute53ResolverQueryLogOutputs)(nil), // 4: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogOutputs
 }
 var file_catalog_aws_awsroute53resolverquerylog_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLog.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLog.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLog.spec:type_name -> dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogSpec
 	1, // 2: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLog.status:type_name -> dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStatus
-	4, // 3: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStatus.outputs:type_name -> dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStackOutputs
+	4, // 3: dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogStatus.outputs:type_name -> dev.planton.aws.awsroute53resolverquerylog.v1alpha1.AwsRoute53ResolverQueryLogOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

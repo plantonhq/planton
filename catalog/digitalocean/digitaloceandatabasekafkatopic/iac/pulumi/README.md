@@ -10,11 +10,11 @@ Provisions a topic on a DigitalOcean managed Kafka cluster -- the complete `digi
 
 ## Inputs
 
-`DigitalOceanDatabaseKafkaTopicStackInput`: the target `DigitalOceanDatabaseKafkaTopic` resource and the DigitalOcean provider config (API token).
+`DigitalOceanDatabaseKafkaTopicIacInput`: the target `DigitalOceanDatabaseKafkaTopic` resource and the DigitalOcean provider config (API token).
 
 ## Outputs
 
-Exactly the `DigitalOceanDatabaseKafkaTopicStackOutputs` contract: `cluster_id`, `topic_name`. The SDK's `State` property is deliberately not exported (an apply-time snapshot of an asynchronous create goes stale; live state belongs to whoever reads the API).
+Exactly the `DigitalOceanDatabaseKafkaTopicOutputs` contract: `cluster_id`, `topic_name`. The SDK's `State` property is deliberately not exported (an apply-time snapshot of an asynchronous create goes stale; live state belongs to whoever reads the API).
 
 ## Behavior notes
 

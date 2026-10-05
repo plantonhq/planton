@@ -23,7 +23,7 @@ const (
 
 // *
 // Outputs exported after installing the runner scale set controller.
-type KubernetesGhaRunnerScaleSetControllerStackOutputs struct {
+type KubernetesGhaRunnerScaleSetControllerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace the controller runs in.
@@ -41,20 +41,20 @@ type KubernetesGhaRunnerScaleSetControllerStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesGhaRunnerScaleSetControllerStackOutputs) Reset() {
-	*x = KubernetesGhaRunnerScaleSetControllerStackOutputs{}
+func (x *KubernetesGhaRunnerScaleSetControllerOutputs) Reset() {
+	*x = KubernetesGhaRunnerScaleSetControllerOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesgharunnerscalesetcontroller_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesGhaRunnerScaleSetControllerStackOutputs) String() string {
+func (x *KubernetesGhaRunnerScaleSetControllerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesGhaRunnerScaleSetControllerStackOutputs) ProtoMessage() {}
+func (*KubernetesGhaRunnerScaleSetControllerOutputs) ProtoMessage() {}
 
-func (x *KubernetesGhaRunnerScaleSetControllerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesGhaRunnerScaleSetControllerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesgharunnerscalesetcontroller_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *KubernetesGhaRunnerScaleSetControllerStackOutputs) ProtoReflect() proto
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesGhaRunnerScaleSetControllerStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesGhaRunnerScaleSetControllerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesGhaRunnerScaleSetControllerOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesGhaRunnerScaleSetControllerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgharunnerscalesetcontroller_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesGhaRunnerScaleSetControllerStackOutputs) GetNamespace() string {
+func (x *KubernetesGhaRunnerScaleSetControllerOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesGhaRunnerScaleSetControllerStackOutputs) GetReleaseName() string {
+func (x *KubernetesGhaRunnerScaleSetControllerOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesGhaRunnerScaleSetControllerStackOutputs) GetServiceAccountName() string {
+func (x *KubernetesGhaRunnerScaleSetControllerOutputs) GetServiceAccountName() string {
 	if x != nil {
 		return x.ServiceAccountName
 	}
@@ -96,8 +96,8 @@ var File_catalog_kubernetes_kubernetesgharunnerscalesetcontroller_v1alpha1_outpu
 
 const file_catalog_kubernetes_kubernetesgharunnerscalesetcontroller_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ocatalog/kubernetes/kubernetesgharunnerscalesetcontroller/v1alpha1/outputs.proto\x12Edev.planton.kubernetes.kubernetesgharunnerscalesetcontroller.v1alpha1\"\xa6\x01\n" +
-	"1KubernetesGhaRunnerScaleSetControllerStackOutputs\x12\x1c\n" +
+	"Ocatalog/kubernetes/kubernetesgharunnerscalesetcontroller/v1alpha1/outputs.proto\x12Edev.planton.kubernetes.kubernetesgharunnerscalesetcontroller.v1alpha1\"\xa1\x01\n" +
+	",KubernetesGhaRunnerScaleSetControllerOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x120\n" +
 	"\x14service_account_name\x18\x03 \x01(\tR\x12serviceAccountNameB\xa1\x04\n" +
@@ -117,7 +117,7 @@ func file_catalog_kubernetes_kubernetesgharunnerscalesetcontroller_v1alpha1_outp
 
 var file_catalog_kubernetes_kubernetesgharunnerscalesetcontroller_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesgharunnerscalesetcontroller_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesGhaRunnerScaleSetControllerStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgharunnerscalesetcontroller.v1alpha1.KubernetesGhaRunnerScaleSetControllerStackOutputs
+	(*KubernetesGhaRunnerScaleSetControllerOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesgharunnerscalesetcontroller.v1alpha1.KubernetesGhaRunnerScaleSetControllerOutputs
 }
 var file_catalog_kubernetes_kubernetesgharunnerscalesetcontroller_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

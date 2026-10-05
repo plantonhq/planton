@@ -1,10 +1,10 @@
 # Azure Service Bus Subscription
 
-Deploys a subscription under an Azure Service Bus topic -- an independent, optionally filtered view of the topic's message stream, with its own consumer semantics: lock duration, delivery attempts, sessions, and dead-lettering. Subscriptions are many-per-topic and typically owned by the consuming team rather than the team that provisioned the namespace -- which is why they are a first-class Cloud Resource referencing the topic.
+Deploys a subscription under an Azure Service Bus topic -- an independent, optionally filtered view of the topic's message stream, with its own consumer semantics: lock duration, delivery attempts, sessions, and dead-lettering. Subscriptions are many-per-topic and typically owned by the consuming team rather than the team that provisioned the namespace -- which is why they are a first-class Infra Component referencing the topic.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Service Bus Subscription** -- under the referenced topic, with your chosen delivery, TTL, session, dead-lettering, and lifecycle dials
 - **Filter rules** -- when the `rules` list is populated: SQL or correlation rules admitting messages into this subscription's view (additive alongside Azure's auto-created `$Default` catch-all)
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -59,7 +59,7 @@ spec:
 planton apply -f subscription.yaml
 ```
 
-This creates the `emea-consumer` subscription on the `order-events-topic` topic, admitting only high-priority EMEA messages via the SQL rule (plus everything else through the `$Default` catch-all until it is removed -- see Key Configuration). A Stack Job tracks the provisioning in real time.
+This creates the `emea-consumer` subscription on the `order-events-topic` topic, admitting only high-priority EMEA messages via the SQL rule (plus everything else through the `$Default` catch-all until it is removed -- see Key Configuration). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,7 +94,7 @@ These are the most important decisions when configuring a Service Bus subscripti
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -102,9 +102,9 @@ These are the most important decisions when configuring a Service Bus subscripti
 | **AzureServiceBusQueue** | `forwardTo` / `forwardDeadLetteredMessagesTo` | `status.outputs.queue_name` |
 | **AzureServiceBusTopic** | `forwardTo` / `forwardDeadLetteredMessagesTo` | `status.outputs.topic_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,7 +112,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `topic_name` | The parent topic's name, parsed from the resolved reference | The receive pair without a second reference |
 | `namespace_name` | The namespace's name, parsed from the resolved reference | The full namespace/topic/subscription receive triple |
 
-Consumers configure the receive triple -- the namespace endpoint, the topic name, and this subscription name. Credentials come from an AzureServiceBusAuthorizationRule or keyless Entra data-plane roles; the subscription itself mints none. The `subscription_id` output carries the ARM ID for audit tooling but is not typically wired into other Cloud Resources.
+Consumers configure the receive triple -- the namespace endpoint, the topic name, and this subscription name. Credentials come from an AzureServiceBusAuthorizationRule or keyless Entra data-plane roles; the subscription itself mints none. The `subscription_id` output carries the ARM ID for audit tooling but is not typically wired into other Infra Components.
 
 ## Common Patterns
 
@@ -126,7 +126,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Service Bus Topic**](/cloud-catalog/azure-service-bus-topic) -- the parent topic every subscription references
-- [**Azure Service Bus Queue**](/cloud-catalog/azure-service-bus-queue) -- the common forward-to target in the filter-then-funnel pattern
-- [**Azure Service Bus Namespace**](/cloud-catalog/azure-service-bus-namespace) -- the namespace whose endpoint consumers connect to
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- keyless data-plane grants for consumers
+- [**Azure Service Bus Topic**](/infra-catalog/azure-service-bus-topic) -- the parent topic every subscription references
+- [**Azure Service Bus Queue**](/infra-catalog/azure-service-bus-queue) -- the common forward-to target in the filter-then-funnel pattern
+- [**Azure Service Bus Namespace**](/infra-catalog/azure-service-bus-namespace) -- the namespace whose endpoint consumers connect to
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- keyless data-plane grants for consumers

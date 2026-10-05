@@ -26,7 +26,7 @@ import "shared/foreignkey/v1/foreign_key.proto";
 //   set, the IaC modules automatically enable KMS encryption; when absent, encryption is
 //   disabled (NONE). You can also use the Kinesis-owned key by passing "alias/aws/kinesis".
 // - Enhanced shard-level CloudWatch metrics are available for production observability.
-// - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+// - Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 message AwsKinesisStreamSpec {
   // The AWS region where the resource will be created.
   // Example: "us-west-2", "eu-west-1"

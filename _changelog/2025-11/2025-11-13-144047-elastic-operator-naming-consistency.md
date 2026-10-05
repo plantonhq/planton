@@ -2,7 +2,7 @@
 
 **Date**: November 13, 2025  
 **Type**: Refactoring  
-**Components**: API Definitions, Cloud Resource Registry, Documentation, Pulumi CLI Integration
+**Components**: API Definitions, Catalog Kind Registry, Documentation, Pulumi CLI Integration
 
 ## Summary
 
@@ -17,17 +17,17 @@ The Elastic Cloud on Kubernetes (ECK) Operator resource was originally named `El
 - **Redundant Context**: The resource lives under `provider/kubernetes/addon/`, making the "Kubernetes" suffix in the name redundant
 - **Verbose API Surface**: Users had to write `kind: ElasticOperatorKubernetes` in manifests, which is unnecessarily long
 - **Naming Inconsistency**: Mixed naming patterns across addon operators—some with suffixes, some without
-- **Code Verbosity**: Proto message types like `ElasticOperatorKubernetesSpec` and `ElasticOperatorKubernetesStackInput` were excessively long
+- **Code Verbosity**: Proto message types like `ElasticOperatorKubernetesSpec` and `ElasticOperatorKubernetesIacInput` were excessively long
 - **Poor Developer Experience**: The redundancy made code harder to read and type
 
-The provider namespace (`dev.planton.provider.kubernetes.addon.elasticoperator.v1`) already clearly indicates this is a Kubernetes component, so including "Kubernetes" in every message name adds noise without value.
+The provider namespace (`dev.planton.provider.kubernetes.addon.elasticoperator.v1`) already clearly indicates this is a Kubernetes kind, so including "Kubernetes" in every message name adds noise without value.
 
 ## Solution / What's New
 
 Performed a comprehensive rename from `ElasticOperatorKubernetes` to `ElasticOperator` across:
 
 1. **Proto API Definitions**: Updated all message types, field references, and validation constraints
-2. **Cloud Resource Registry**: Modified the enum entry in `cloud_resource_kind.proto`
+2. **Catalog Kind Registry**: Modified the enum entry in `catalog_kind.proto`
 3. **Documentation**: Updated all user-facing docs and implementation guides
 4. **Implementation Code**: Modified Go code in Pulumi modules to use renamed types
 5. **Directory Structure**: Renamed from `elasticoperatorkubernetes/` to `elasticoperator/`
@@ -82,33 +82,33 @@ message ElasticOperatorSpec { ... }
 message ElasticOperatorSpecContainer { ... }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/elasticoperator/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/elasticoperator/v1/iac_input.proto`
 
 ```protobuf
 // Before
-message ElasticOperatorKubernetesStackInput {
+message ElasticOperatorKubernetesIacInput {
   ElasticOperatorKubernetes target = 1;
 }
 
 // After
-message ElasticOperatorStackInput {
+message ElasticOperatorIacInput {
   ElasticOperator target = 1;
 }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/elasticoperator/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/elasticoperator/v1/outputs.proto`
 
 ```protobuf
 // Before
-message ElasticOperatorKubernetesStackOutputs { ... }
+message ElasticOperatorKubernetesOutputs { ... }
 
 // After
-message ElasticOperatorStackOutputs { ... }
+message ElasticOperatorOutputs { ... }
 ```
 
 ### Registry Update
 
-**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/catalogkind/catalog_kind.proto`
 
 ```protobuf
 // Before
@@ -134,20 +134,20 @@ ElasticOperator = 822 [(kind_meta) = {
 
 ```go
 // Before
-stackInput := &elasticoperatorv1.ElasticOperatorKubernetesStackInput{}
+iacInput := &elasticoperatorv1.ElasticOperatorKubernetesIacInput{}
 
 // After
-stackInput := &elasticoperatorv1.ElasticOperatorStackInput{}
+iacInput := &elasticoperatorv1.ElasticOperatorIacInput{}
 ```
 
 **File**: `apis/dev/planton/provider/kubernetes/addon/elasticoperator/v1/iac/pulumi/module/main.go`
 
 ```go
 // Before
-func Resources(ctx *pulumi.Context, stackInput *elasticoperatorv1.ElasticOperatorKubernetesStackInput) error
+func Resources(ctx *pulumi.Context, iacInput *elasticoperatorv1.ElasticOperatorKubernetesIacInput) error
 
 // After
-func Resources(ctx *pulumi.Context, stackInput *elasticoperatorv1.ElasticOperatorStackInput) error
+func Resources(ctx *pulumi.Context, iacInput *elasticoperatorv1.ElasticOperatorIacInput) error
 ```
 
 **File**: `apis/dev/planton/provider/kubernetes/addon/elasticoperator/v1/iac/pulumi/module/locals.go`
@@ -169,7 +169,7 @@ type Locals struct {
 ### Documentation Updates
 
 Updated all occurrences in:
-- `docs/README.md` (main component documentation with API references)
+- `docs/README.md` (main kind documentation with API references)
 
 ### Build Process
 
@@ -191,8 +191,8 @@ kind: ElasticOperator  # vs. kind: ElasticOperatorKubernetes
 
 Proto message names are now more concise:
 - `ElasticOperatorSpec` (was `ElasticOperatorKubernetesSpec`)
-- `ElasticOperatorStackInput` (was `ElasticOperatorKubernetesStackInput`)
-- `ElasticOperatorStackOutputs` (was `ElasticOperatorKubernetesStackOutputs`)
+- `ElasticOperatorIacInput` (was `ElasticOperatorKubernetesIacInput`)
+- `ElasticOperatorOutputs` (was `ElasticOperatorKubernetesOutputs`)
 
 ### Naming Consistency
 
@@ -247,17 +247,17 @@ spec:
 **Proto Definitions** (4 files):
 - `api.proto` - Main API message types
 - `spec.proto` - Spec and container message types
-- `stack_input.proto` - Stack input message type
-- `stack_outputs.proto` - Stack outputs message type
+- `iac_input.proto` - IaC input message type
+- `outputs.proto` - Outputs message type
 
 **Registry** (1 file):
-- `cloud_resource_kind.proto` - Enum entry
+- `catalog_kind.proto` - Enum entry
 
 **Documentation** (1 file):
-- `docs/README.md` - Component documentation
+- `docs/README.md` - Kind documentation
 
 **Implementation** (4 files):
-- `iac/pulumi/main.go` - Stack input type reference
+- `iac/pulumi/main.go` - IaC input type reference
 - `iac/pulumi/module/main.go` - Function signature
 - `iac/pulumi/module/locals.go` - Locals struct and field references
 - `iac/pulumi/module/elastic_operator.go` - Field access

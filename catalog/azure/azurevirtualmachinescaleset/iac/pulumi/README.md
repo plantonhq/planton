@@ -48,7 +48,7 @@ Lifecycle notes worth knowing before operating this resource:
 
 ## Inputs
 
-The module receives an `AzureVirtualMachineScaleSetStackInput` containing:
+The module receives an `AzureVirtualMachineScaleSetIacInput` containing:
 
 - `target.spec.region` / `resource_group` / `name` — the fleet's ARM identity (references resolved to literals by the platform)
 - `target.spec.orchestration_mode` — FLEXIBLE (default) or UNIFORM; selects the dispatch branch

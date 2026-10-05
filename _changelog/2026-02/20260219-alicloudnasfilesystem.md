@@ -1,4 +1,4 @@
-# AliCloudNasFileSystem Component Added
+# AliCloudNasFileSystem Kind Added
 
 **Date**: 2026-02-19
 **Component**: AliCloudNasFileSystem
@@ -7,13 +7,13 @@
 
 ## Summary
 
-Added the AliCloudNasFileSystem deployment component -- the second Storage-tier resource in the Alibaba Cloud catalog. This component manages an Alibaba Cloud NAS file system with a VPC mount target and optional custom access group with IP-based access rules. It supports both standard (auto-scaling) and extreme (dedicated throughput) file system types, NFS and SMB protocols, and optional encryption at rest.
+Added the AliCloudNasFileSystem catalog kind -- the second Storage-tier resource in the Alibaba Cloud catalog. This kind manages an Alibaba Cloud NAS file system with a VPC mount target and optional custom access group with IP-based access rules. It supports both standard (auto-scaling) and extreme (dedicated throughput) file system types, NFS and SMB protocols, and optional encryption at rest.
 
 ## What Was Created
 
 ### API Definition
-- `apis/dev/planton/provider/alicloud/alicloudnasfilesystem/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AliCloudNasFileSystem = 3051` in `CloudResourceKind` enum under the Storage category
+- `apis/dev/planton/provider/alicloud/alicloudnasfilesystem/v1/` -- Full proto API (spec, api, iac_input, outputs)
+- Registered `AliCloudNasFileSystem = 3051` in `CatalogKind` enum under the Storage category
 - 2 nested messages: `AliCloudNasEncryption`, `AliCloudNasAccessRule`
 
 ### IaC Modules
@@ -24,7 +24,7 @@ Added the AliCloudNasFileSystem deployment component -- the second Storage-tier 
 - Ginkgo/Gomega spec validation tests: 21 specs covering valid inputs (minimal NFS, full config with encryption and access rules, extreme NAS, SMB protocol, Premium storage, all_squash access rule), invalid inputs (missing region, missing protocol_type, invalid protocol_type, invalid storage_type, invalid file_system_type, missing vpc_id, missing vswitch_id, invalid encrypt_type, missing access_rule source_cidr_ip, invalid rw_access_type, invalid user_access_type, wrong api_version, wrong kind, missing metadata, missing spec)
 
 ### Documentation
-- README.md with configuration reference, file system types table, access rule fields, and related components
+- README.md with configuration reference, file system types table, access rule fields, and related kinds
 - examples.md with 4 YAML examples (minimal NFS, production encrypted with access rules, extreme NAS for HPC, SMB Capacity for archival)
 - catalog-page.md with full configuration reference and examples
 - docs/README.md with comprehensive research documentation covering all 14 NAS provider resources, storage types, encryption model, access control model, and mount target behavior
@@ -37,7 +37,7 @@ Added the AliCloudNasFileSystem deployment component -- the second Storage-tier 
 - **Encryption included (not in T02)**: Encryption is production-critical. Modeled as an optional `AliCloudNasEncryption` message (same pattern as OssBucket), supporting NAS-managed (1) and KMS customer-managed (2) encryption.
 - **`capacity` and `zone_id` added (not in T02)**: Required for extreme NAS but optional/ignored for standard NAS. Standard NAS auto-assigns zones and auto-scales capacity.
 - **Storage type values expanded**: T02 listed only "Performance" and "Capacity". The provider supports "Premium" for standard NAS and "standard"/"advance" for extreme NAS.
-- **CPFS excluded**: Cloud Parallel File System is a niche HPC product with distinct requirements. Can be added as a separate component if needed.
+- **CPFS excluded**: Cloud Parallel File System is a niche HPC product with distinct requirements. Can be added as a separate kind if needed.
 - **Composite bundling (DD07)**: File system + access group + access rules + mount target are bundled because a file system without a mount target is unreachable.
 
 ## Verification

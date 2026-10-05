@@ -5,10 +5,10 @@ package dev.planton.cloudflare.cloudflarelogpushjob.v1alpha1;
 import "catalog/cloudflare/cloudflarelogpushjob/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-// CloudflareLogpushJobStackInput is the input to the IaC module. It
+// CloudflareLogpushJobIacInput is the input to the IaC module. It
 // contains the target resource and provider configuration.
-message CloudflareLogpushJobStackInput {
-  // target cloud-resource to be deployed
+message CloudflareLogpushJobIacInput {
+  // the catalog object to deploy to be deployed
   CloudflareLogpushJob target = 1;
   // provider-config for Cloudflare authentication
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

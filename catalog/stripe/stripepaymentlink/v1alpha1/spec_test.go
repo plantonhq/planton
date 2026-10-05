@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -21,7 +21,7 @@ func link(spec *StripePaymentLinkSpec) *StripePaymentLink {
 	return &StripePaymentLink{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripePaymentLink",
-		Metadata:   &shared.CloudResourceMetadata{Name: "pro-monthly-link"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "pro-monthly-link"},
 		Spec:       spec,
 	}
 }
@@ -32,7 +32,7 @@ func boolPtr(v bool) *bool          { return &v }
 
 func priceRef(name string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
-		ValueFrom: &foreignkeyv1.ValueFromRef{Kind: cloudresourcekind.CloudResourceKind_StripePrice, Name: name},
+		ValueFrom: &foreignkeyv1.ValueFromRef{Kind: catalogkind.CatalogKind_StripePrice, Name: name},
 	}}
 }
 
@@ -89,7 +89,7 @@ var _ = ginkgo.Describe("StripePaymentLink Validation Tests", func() {
 				ShippingAddressCollection: &StripePaymentLinkShippingAddressCollection{AllowedCountries: []string{"US", "CA"}},
 				ShippingOptions: []*StripePaymentLinkShippingOption{{ShippingRate: &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
-						ValueFrom: &foreignkeyv1.ValueFromRef{Kind: cloudresourcekind.CloudResourceKind_StripeShippingRate, Name: "standard-shipping"},
+						ValueFrom: &foreignkeyv1.ValueFromRef{Kind: catalogkind.CatalogKind_StripeShippingRate, Name: "standard-shipping"},
 					},
 				}}},
 				CustomFields: []*StripePaymentLinkCustomField{

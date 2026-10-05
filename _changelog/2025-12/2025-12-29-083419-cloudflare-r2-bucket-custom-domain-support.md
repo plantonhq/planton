@@ -115,7 +115,7 @@ resource "cloudflare_r2_custom_domain" "main" {
 | File | Change |
 |------|--------|
 | `spec.proto` | Added `CloudflareR2BucketCustomDomainConfig` message and field |
-| `stack_outputs.proto` | Added `custom_domain_url` output |
+| `outputs.proto` | Added `custom_domain_url` output |
 | `bucket.go` | Added R2CustomDomain resource creation |
 | `outputs.go` | Added `OpCustomDomainUrl` constant |
 | `variables.tf` | Added custom_domain object with nested zone_id |
@@ -138,7 +138,7 @@ resource "cloudflare_r2_custom_domain" "main" {
 
 ### For Developers
 
-- **Consistent foreign key pattern**: Uses the same `StringValueOrRef` pattern as other components
+- **Consistent foreign key pattern**: Uses the same `StringValueOrRef` pattern as other kinds
 - **CEL conditional validation**: Modern approach to conditional field requirements
 - **Full IaC support**: Both Pulumi and Terraform implementations
 
@@ -167,7 +167,7 @@ spec:
 
 ### Provider Coverage
 
-The Cloudflare R2 Bucket component now provides:
+The Cloudflare R2 Bucket kind now provides:
 - ✅ Bucket creation with location hints
 - ✅ Public access configuration
 - ✅ Custom domain attachment
@@ -177,7 +177,7 @@ The Cloudflare R2 Bucket component now provides:
 
 - Uses the `StringValueOrRef` foreign key pattern from `shared/foreignkey/v1`
 - Similar to `CloudflareLoadBalancer` zone_id reference pattern
-- Extends the R2 bucket component following existing research documentation
+- Extends the R2 bucket kind following existing research documentation
 
 ---
 

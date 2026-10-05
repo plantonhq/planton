@@ -4,7 +4,7 @@ Deploys an Azure Application Gateway -- the Layer 7 (HTTP/HTTPS) load balancer a
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions one Application Gateway carrying every declared sub-object:
+When you deploy this Infra Component, the IaC module provisions one Application Gateway carrying every declared sub-object:
 
 - **The gateway** -- BASIC, STANDARD_V2, or WAF_V2 SKU with fixed capacity or autoscale bounds, availability zones, HTTP/2, FIPS mode, and request/response buffering posture
 - **Frontend IP Configurations** -- public (a referenced Standard AzurePublicIp) or private (an address in the gateway's own dedicated subnet), at least one; optionally exposed over Private Link to other networks
@@ -26,14 +26,14 @@ Pool membership is NOT created here -- each AzureNetworkInterface or scale set r
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the gateway will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
-- **A DEDICATED subnet** -- Azure allows no other resource type in the gateway's subnet. /24 is recommended for production (up to 125 v2 instances plus Azure-reserved addresses). Reference an AzureSubnet Cloud Resource.
-- **A Standard SKU public IP** (for public frontends) -- reference an AzurePublicIp Cloud Resource; DNS records point at ITS address output.
+- **An Azure Resource Group** where the gateway will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
+- **A DEDICATED subnet** -- Azure allows no other resource type in the gateway's subnet. /24 is recommended for production (up to 125 v2 instances plus Azure-reserved addresses). Reference an AzureSubnet Infra Component.
+- **A Standard SKU public IP** (for public frontends) -- reference an AzurePublicIp Infra Component; DNS records point at ITS address output.
 - **For Key Vault certificates** -- a user-assigned identity (AzureUserAssignedIdentity) with GET on the vault's secrets, granted BEFORE the gateway deploys.
 - **Time** -- applies run 15-25 minutes; Azure's slowest networking resource. Plan pipelines accordingly.
 
@@ -101,7 +101,7 @@ spec:
 planton apply -f azure-application-gateway.yaml
 ```
 
-This creates a zone-redundant autoscaling Standard v2 gateway with one public frontend, an HTTP listener, and a basic rule to an empty pool that members join after deploy. A Stack Job tracks the provisioning in real time.
+This creates a zone-redundant autoscaling Standard v2 gateway with one public frontend, an HTTP listener, and a basic rule to an empty pool that members join after deploy. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -160,7 +160,7 @@ These are the most important decisions when configuring an Application Gateway. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -171,9 +171,9 @@ These are the most important decisions when configuring an Application Gateway. 
 | **AzureKeyVaultCertificate** (per Key Vault certificate) | `sslCertificates[].keyVaultSecretId` | `status.outputs.versionless_secret_id` |
 | **AzureWebApplicationFirewallPolicy** (WAF_V2; three levels) | `firewallPolicyId`, `httpListeners[].firewallPolicyId`, path rules' `firewallPolicyId` | `status.outputs.policy_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef. The name-keyed maps are the composition seams:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef. The name-keyed maps are the composition seams:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -198,11 +198,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the gateway is created in
-- [**Azure Virtual Network**](/cloud-catalog/azure-virtual-network) and [**Azure Subnet**](/cloud-catalog/azure-subnet) -- host the gateway's dedicated subnet and private frontends
-- [**Azure Public IP**](/cloud-catalog/azure-public-ip) -- the address public frontends receive traffic on (and what DNS points at)
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- authenticates Key Vault certificate fetches
-- [**Azure Key Vault Certificate**](/cloud-catalog/azure-key-vault-certificate) -- the renewing TLS certificate source
-- [**Azure Web Application Firewall Policy**](/cloud-catalog/azure-web-application-firewall-policy) -- the WAF rules a WAF_v2 gateway enforces
-- [**Azure Network Interface**](/cloud-catalog/azure-network-interface) -- joins backend pools from the member side
-- [**Azure Virtual Machine**](/cloud-catalog/azure-virtual-machine) -- the workload the pools front (via its network interfaces)
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the gateway is created in
+- [**Azure Virtual Network**](/infra-catalog/azure-virtual-network) and [**Azure Subnet**](/infra-catalog/azure-subnet) -- host the gateway's dedicated subnet and private frontends
+- [**Azure Public IP**](/infra-catalog/azure-public-ip) -- the address public frontends receive traffic on (and what DNS points at)
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- authenticates Key Vault certificate fetches
+- [**Azure Key Vault Certificate**](/infra-catalog/azure-key-vault-certificate) -- the renewing TLS certificate source
+- [**Azure Web Application Firewall Policy**](/infra-catalog/azure-web-application-firewall-policy) -- the WAF rules a WAF_v2 gateway enforces
+- [**Azure Network Interface**](/infra-catalog/azure-network-interface) -- joins backend pools from the member side
+- [**Azure Virtual Machine**](/infra-catalog/azure-virtual-machine) -- the workload the pools front (via its network interfaces)

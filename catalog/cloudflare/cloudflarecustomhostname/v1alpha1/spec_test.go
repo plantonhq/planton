@@ -18,7 +18,7 @@ func validCustomHostname() *CloudflareCustomHostname {
 	return &CloudflareCustomHostname{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareCustomHostname",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-custom-hostname"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-custom-hostname"},
 		Spec: &CloudflareCustomHostnameSpec{
 			ZoneId:   zoneRef(),
 			Hostname: "support.acme.com",

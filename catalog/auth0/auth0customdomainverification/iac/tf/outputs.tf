@@ -1,5 +1,5 @@
 # Auth0CustomDomainVerification Outputs
-# Maps to the Auth0CustomDomainVerificationStackOutputs protobuf message: the
+# Maps to the Auth0CustomDomainVerificationOutputs protobuf message: the
 # custom domain once Auth0 has verified it.
 
 output "custom_domain_id" {

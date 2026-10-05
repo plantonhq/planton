@@ -606,7 +606,7 @@ var _ = ginkgo.Describe("DigitalOceanLoadBalancerSpec validations", func() {
 			input := &DigitalOceanLoadBalancer{
 				ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 				Kind:       "DigitalOceanLoadBalancer",
-				Metadata: &shared.CloudResourceMetadata{
+				Metadata: &shared.CatalogObjectMetadata{
 					Name: "test-lb",
 				},
 				Spec: makeValidHTTPSpec(),
@@ -618,7 +618,7 @@ var _ = ginkgo.Describe("DigitalOceanLoadBalancerSpec validations", func() {
 			input := &DigitalOceanLoadBalancer{
 				ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 				Kind:       "DigitalOceanLoadBalancer",
-				Metadata: &shared.CloudResourceMetadata{
+				Metadata: &shared.CatalogObjectMetadata{
 					Name: "test-global-lb",
 				},
 				Spec: makeValidGlobalSpec(),

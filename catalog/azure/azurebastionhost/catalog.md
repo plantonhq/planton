@@ -4,7 +4,7 @@ Deploys Azure Bastion -- the managed jump service for RDP/SSH sessions to virtua
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Bastion host** -- the jump service itself: on Basic/Standard/Premium, dedicated infrastructure bound to the `AzureBastionSubnet` and (unless private-only Premium) a Standard static public IP, with the SKU's feature knobs and 2-50 scale units; on Developer, a shared-infrastructure host attached directly to the virtual network
 - **Azure Tags** -- your governance tags merged over the Planton-derived resource tags (organization, environment, resource ID); a user tag with the same key wins
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -57,7 +57,7 @@ spec:
 planton apply -f bastion.yaml
 ```
 
-This creates a Basic host on dedicated infrastructure -- fixed 2 scale units, browser-based sessions with copy/paste -- reachable through the bound public IP; expect the create to run 10-14 minutes. A Stack Job tracks the provisioning in real time.
+This creates a Basic host on dedicated infrastructure -- fixed 2 scale units, browser-based sessions with copy/paste -- reachable through the bound public IP; expect the create to run 10-14 minutes. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -111,7 +111,7 @@ These are the most important decisions when configuring a Bastion host. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -120,9 +120,9 @@ These are the most important decisions when configuring a Bastion host. Explore 
 | **AzurePublicIp** (Basic/Standard; optional on Premium) | `ipConfiguration.publicIpAddressId` | `status.outputs.public_ip_id` |
 | **AzureVirtualNetwork** (Developer only) | `virtualNetworkId` | `status.outputs.virtual_network_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-The host is a session endpoint, not a building block: no downstream Cloud Resource consumes its outputs via ValueFromRef. `status.outputs` carries `bastion_host_id` and `bastion_host_name` for identification, `dns_name` -- the endpoint sessions connect through (empty until Azure assigns it), and `private_only_enabled` -- whether the host deployed without a public IP. Sessions open from the Azure portal's Connect blade, or from a local terminal via `az network bastion ssh/rdp/tunnel` when tunneling is enabled.
+The host is a session endpoint, not a building block: no downstream Infra Component consumes its outputs via ValueFromRef. `status.outputs` carries `bastion_host_id` and `bastion_host_name` for identification, `dns_name` -- the endpoint sessions connect through (empty until Azure assigns it), and `private_only_enabled` -- whether the host deployed without a public IP. Sessions open from the Azure portal's Connect blade, or from a local terminal via `az network bastion ssh/rdp/tunnel` when tunneling is enabled.
 
 ## Common Patterns
 
@@ -136,8 +136,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the host is created in
-- [**Azure Virtual Network**](/cloud-catalog/azure-virtual-network) -- the network the host serves; Developer hosts attach to it directly
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- the dedicated `AzureBastionSubnet` that dedicated-infrastructure hosts deploy into
-- [**Azure Public IP**](/cloud-catalog/azure-public-ip) -- the Standard static address the host binds exclusively
-- [**Azure Virtual Machine**](/cloud-catalog/azure-virtual-machine) -- the machines sessions reach over their private addresses
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the host is created in
+- [**Azure Virtual Network**](/infra-catalog/azure-virtual-network) -- the network the host serves; Developer hosts attach to it directly
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- the dedicated `AzureBastionSubnet` that dedicated-infrastructure hosts deploy into
+- [**Azure Public IP**](/infra-catalog/azure-public-ip) -- the Standard static address the host binds exclusively
+- [**Azure Virtual Machine**](/infra-catalog/azure-virtual-machine) -- the machines sessions reach over their private addresses

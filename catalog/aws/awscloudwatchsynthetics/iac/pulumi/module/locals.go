@@ -6,11 +6,11 @@ import (
 
 	awscloudwatchsyntheticsv1alpha1 "github.com/plantonhq/planton/catalog/aws/awscloudwatchsynthetics/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 type Locals struct {
 	Target *awscloudwatchsyntheticsv1alpha1.AwsCloudwatchSynthetics
 	Spec   *awscloudwatchsyntheticsv1alpha1.AwsCloudwatchSyntheticsSpec
@@ -23,7 +23,7 @@ type Locals struct {
 	ArtifactS3Location string
 }
 
-func initializeLocals(_ *pulumi.Context, in *awscloudwatchsyntheticsv1alpha1.AwsCloudwatchSyntheticsStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awscloudwatchsyntheticsv1alpha1.AwsCloudwatchSyntheticsIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec
@@ -38,7 +38,7 @@ func initializeLocals(_ *pulumi.Context, in *awscloudwatchsyntheticsv1alpha1.Aws
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsCloudwatchSynthetics.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsCloudwatchSynthetics.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

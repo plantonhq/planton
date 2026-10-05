@@ -59,7 +59,7 @@ directive, leaving links that were shared by URL eligible for indexing.
 
 ## Content Accuracy Decisions
 
-- **"600+ components across 17 clouds"** rather than an exact count. Three
+- **"600+ catalog kinds across 17 clouds"** rather than an exact count. Three
   internal sources disagree because they count different things: the API
   versioning ADR (2026-08-06) says 613 kinds, the monetization plan says 617,
   and a direct count of `kind_meta` annotations gives 676.

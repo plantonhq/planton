@@ -2,9 +2,9 @@
 # price choices from a manifest's spec fields. Field paths are spec-relative
 # proto field names. Price slugs resolve in the GCP price book
 # (catalog/_pricing/pricebook/gcp.yaml). Schema:
-# finops/componentcostderivation/v1.
+# finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpglobalforwardingrule
 spec:

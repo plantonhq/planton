@@ -5,9 +5,9 @@ package dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1;
 import "catalog/aws/awsdlmlifecyclepolicy/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsDlmLifecyclePolicyStackInput is the input for the IaC modules
+// AwsDlmLifecyclePolicyIacInput is the input for the IaC modules
 // that manage a Data Lifecycle Manager policy.
-message AwsDlmLifecyclePolicyStackInput {
+message AwsDlmLifecyclePolicyIacInput {
   // target is the AwsDlmLifecyclePolicy resource to deploy.
   AwsDlmLifecyclePolicy target = 1;
   // provider_config contains the AWS provider credentials and configuration.

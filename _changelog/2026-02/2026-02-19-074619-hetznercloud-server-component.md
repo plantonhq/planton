@@ -1,4 +1,4 @@
-# HetznerCloudServer: Core Compute with Full Cross-Component Wiring
+# HetznerCloudServer: Core Compute with Full Cross-Kind Wiring
 
 **Date**: February 19, 2026
 **Type**: Feature
@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added the `HetznerCloudServer` deployment component (R07, enum 3520, id_prefix: `hcsrv`) to Planton. This is the most interconnected Hetzner Cloud component, bundling `hcloud_server` with optional `hcloud_rdns` and cross-referencing five foundation components (SshKey, PlacementGroup, Firewall, Network, PrimaryIp) via `StringValueOrRef`. It is the first component to use `repeated StringValueOrRef` for multi-value references (ssh_keys, firewall_ids) and nested messages with `optional bool` defaults for the PublicNet configuration.
+Added the `HetznerCloudServer` catalog kind (R07, enum 3520, id_prefix: `hcsrv`) to Planton. This is the most interconnected Hetzner Cloud kind, bundling `hcloud_server` with optional `hcloud_rdns` and cross-referencing five foundation kinds (SshKey, PlacementGroup, Firewall, Network, PrimaryIp) via `StringValueOrRef`. It is the first kind to use `repeated StringValueOrRef` for multi-value references (ssh_keys, firewall_ids) and nested messages with `optional bool` defaults for the PublicNet configuration.
 
 ## Problem Statement / Motivation
 
-Hetzner Cloud servers are the core compute primitive. Every infra chart in the Hetzner Cloud catalog (server-environment, load-balanced-app, ha-server-cluster) requires servers as the central resource. Until now, we had no way to declaratively provision servers wired to the foundation components (SSH keys, firewalls, networks, placement groups, primary IPs) already implemented in R01-R06.
+Hetzner Cloud servers are the core compute primitive. Every Infra Chart in the Hetzner Cloud catalog (server-environment, load-balanced-app, ha-server-cluster) requires servers as the central resource. Until now, we had no way to declaratively provision servers wired to the foundation kinds (SSH keys, firewalls, networks, placement groups, primary IPs) already implemented in R01-R06.
 
 ### Pain Points
 
@@ -23,15 +23,15 @@ Hetzner Cloud servers are the core compute primitive. Every infra chart in the H
 
 ### Design Decisions
 
-**D1: Inline network blocks over separate hcloud_server_network resource.** The server "owns" its network attachments. Splitting into a separate resource would fragment the component's self-contained nature. Network attachment keying uses `network_id` as the natural key (CG02 pattern), with `for_each` in Terraform and direct iteration in Pulumi.
+**D1: Inline network blocks over separate hcloud_server_network resource.** The server "owns" its network attachments. Splitting into a separate resource would fragment the kind's self-contained nature. Network attachment keying uses `network_id` as the natural key (CG02 pattern), with `for_each` in Terraform and direct iteration in Pulumi.
 
 **D2: `optional bool` with default annotation for PublicNet.** Proto3 bools default to false, so an empty PublicNet message would unintentionally disable both IPv4 and IPv6. Using `optional bool` with `(dev.planton.shared.options.default) = "true"` ensures the IaC modules treat unset bools as `true`, matching the provider's default behavior.
 
-**D3: rDNS scoped to auto-assigned IPv4 only.** The `dns_ptr` field creates an `hcloud_rdns` record for the server's computed IPv4 address. If users attach Primary IPs via `public_net.ipv4`, they should manage rDNS on the HetznerCloudPrimaryIp component instead to avoid conflicting rDNS management on the same IP.
+**D3: rDNS scoped to auto-assigned IPv4 only.** The `dns_ptr` field creates an `hcloud_rdns` record for the server's computed IPv4 address. If users attach Primary IPs via `public_net.ipv4`, they should manage rDNS on the HetznerCloudPrimaryIp kind instead to avoid conflicting rDNS management on the same IP.
 
 **D4: Excluded operational fields.** `iso`, `rescue`, `allow_deprecated_images`, `ignore_remote_firewall_ids`, `datacenter` (deprecated), and `backup_window` (deprecated) are excluded as they are operational/runtime actions or deprecated fields, not declarative infrastructure configuration.
 
-### Component Architecture
+### Kind Architecture
 
 ```mermaid
 flowchart TB
@@ -46,8 +46,8 @@ flowchart TB
     subgraph proto [Proto API Layer]
         Spec["spec.proto\nserver_type + image + location\nssh_keys + firewall_ids\npublic_net + networks\noperational flags + dns_ptr"]
         API["api.proto\nHetznerCloudServer"]
-        SI["stack_input.proto"]
-        SO["stack_outputs.proto\nserver_id, ipv4_address\nipv6_address, status"]
+        SI["iac_input.proto"]
+        SO["outputs.proto\nserver_id, ipv4_address\nipv6_address, status"]
     end
 
     subgraph pulumi [Pulumi Module]
@@ -97,25 +97,25 @@ flowchart TB
 
 ## Benefits
 
-- Enables core compute provisioning as a first-class Planton component
+- Enables core compute provisioning as a first-class Planton kind
 - Establishes `repeated StringValueOrRef` pattern for multi-value references
 - Establishes `optional bool` with defaults pattern for nested messages
-- Clean composability: all foundation components (R01-R05) can be wired via spec
+- Clean composability: all foundation kinds (R01-R05) can be wired via spec
 - Unblocks R08 (Volume), R09 (Snapshot), R11 (LoadBalancer) which reference server_id
 
 ## Impact
 
 - **Users**: Can declaratively provision servers with SSH keys, firewalls, networks, placement groups, and primary IPs
-- **Future components**: R08 (Volume) and R09 (Snapshot) can reference `server_id` output; R11 (LoadBalancer) can target servers
-- **Infra charts**: All three charts (server-environment, load-balanced-app, ha-server-cluster) depend on this component
+- **Future kinds**: R08 (Volume) and R09 (Snapshot) can reference `server_id` output; R11 (LoadBalancer) can target servers
+- **Infra Charts**: All three charts (server-environment, load-balanced-app, ha-server-cluster) depend on this kind
 - **Pattern precedent**: `repeated StringValueOrRef` and nested `optional bool` defaults established for reuse
 
 ## Files Changed
 
 | Area | Files | Description |
 |------|-------|-------------|
-| Proto | 4 | spec (PublicNet + NetworkAttachment nested messages), api, stack_input, stack_outputs |
-| Enum | 1 | cloud_resource_kind.proto (added 3520) |
+| Proto | 4 | spec (PublicNet + NetworkAttachment nested messages), api, iac_input, outputs |
+| Enum | 1 | catalog_kind.proto (added 3520) |
 | Tests | 1 | spec_test.go (19 test cases) |
 | Pulumi | 5 | module (4 files) + entrypoint |
 | Terraform | 5 | provider, variables, locals, main, outputs |

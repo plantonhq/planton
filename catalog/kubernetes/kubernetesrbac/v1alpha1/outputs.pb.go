@@ -22,10 +22,10 @@ const (
 )
 
 // *
-// **KubernetesRbacStackOutputs** captures observable outputs from a Kubernetes RBAC grant
+// **KubernetesRbacOutputs** captures observable outputs from a Kubernetes RBAC grant
 // deployment — the names and kinds of the objects actually created, so downstream grants
 // and audits can compose on them without re-deriving naming rules.
-type KubernetesRbacStackOutputs struct {
+type KubernetesRbacOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The name of the role in the grant: the created Role/ClusterRole, or the existing role
@@ -49,20 +49,20 @@ type KubernetesRbacStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesRbacStackOutputs) Reset() {
-	*x = KubernetesRbacStackOutputs{}
+func (x *KubernetesRbacOutputs) Reset() {
+	*x = KubernetesRbacOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesrbac_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesRbacStackOutputs) String() string {
+func (x *KubernetesRbacOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesRbacStackOutputs) ProtoMessage() {}
+func (*KubernetesRbacOutputs) ProtoMessage() {}
 
-func (x *KubernetesRbacStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesRbacOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesrbac_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,40 +74,40 @@ func (x *KubernetesRbacStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesRbacStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesRbacStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesRbacOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesRbacOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesrbac_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesRbacStackOutputs) GetRoleName() string {
+func (x *KubernetesRbacOutputs) GetRoleName() string {
 	if x != nil {
 		return x.RoleName
 	}
 	return ""
 }
 
-func (x *KubernetesRbacStackOutputs) GetRoleKind() string {
+func (x *KubernetesRbacOutputs) GetRoleKind() string {
 	if x != nil {
 		return x.RoleKind
 	}
 	return ""
 }
 
-func (x *KubernetesRbacStackOutputs) GetBindingName() string {
+func (x *KubernetesRbacOutputs) GetBindingName() string {
 	if x != nil {
 		return x.BindingName
 	}
 	return ""
 }
 
-func (x *KubernetesRbacStackOutputs) GetBindingKind() string {
+func (x *KubernetesRbacOutputs) GetBindingKind() string {
 	if x != nil {
 		return x.BindingKind
 	}
 	return ""
 }
 
-func (x *KubernetesRbacStackOutputs) GetNamespace() string {
+func (x *KubernetesRbacOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -118,8 +118,8 @@ var File_catalog_kubernetes_kubernetesrbac_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetesrbac_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetesrbac/v1alpha1/outputs.proto\x12.dev.planton.kubernetes.kubernetesrbac.v1alpha1\"\xba\x01\n" +
-	"\x1aKubernetesRbacStackOutputs\x12\x1b\n" +
+	"8catalog/kubernetes/kubernetesrbac/v1alpha1/outputs.proto\x12.dev.planton.kubernetes.kubernetesrbac.v1alpha1\"\xb5\x01\n" +
+	"\x15KubernetesRbacOutputs\x12\x1b\n" +
 	"\trole_name\x18\x01 \x01(\tR\broleName\x12\x1b\n" +
 	"\trole_kind\x18\x02 \x01(\tR\broleKind\x12!\n" +
 	"\fbinding_name\x18\x03 \x01(\tR\vbindingName\x12!\n" +
@@ -141,7 +141,7 @@ func file_catalog_kubernetes_kubernetesrbac_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_kubernetes_kubernetesrbac_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesrbac_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesRbacStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacStackOutputs
+	(*KubernetesRbacOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacOutputs
 }
 var file_catalog_kubernetes_kubernetesrbac_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

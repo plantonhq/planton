@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpkmskeyring.v1alpha1;
 
 // Outputs produced after provisioning a GCP KMS key ring.
-message GcpKmsKeyRingStackOutputs {
+message GcpKmsKeyRingOutputs {
   // Fully qualified key ring resource path.
   // Format: projects/{project}/locations/{location}/keyRings/{name}
   // This is the primary identifier used by GcpKmsKey and other downstream

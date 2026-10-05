@@ -8,7 +8,7 @@ The `engine` values are DigitalOcean's own API slugs: PostgreSQL is `pg`, never 
 
 ## The version must be one DigitalOcean offers today
 
-`engineVersion` is checked against DigitalOcean's live offer list, not against a format. `GET /v2/databases/options` names the versions per engine, and a value not on it fails at create with `422 invalid cluster engine version` — a bare `"8"` for MySQL fails today because the only MySQL line offered is `"8.4"`. The list moves: PostgreSQL 15 leaves the offer in May 2027, and majors retire on a schedule DigitalOcean publishes in the same response. When a deploy fails with that error, read the options endpoint and raise the version; the presets in this component name the version they were verified against and the date.
+`engineVersion` is checked against DigitalOcean's live offer list, not against a format. `GET /v2/databases/options` names the versions per engine, and a value not on it fails at create with `422 invalid cluster engine version` — a bare `"8"` for MySQL fails today because the only MySQL line offered is `"8.4"`. The list moves: PostgreSQL 15 leaves the offer in May 2027, and majors retire on a schedule DigitalOcean publishes in the same response. When a deploy fails with that error, read the options endpoint and raise the version; the presets in this kind name the version they were verified against and the date.
 
 ## "cluster name is not available" means more than one thing
 

@@ -4,7 +4,7 @@ Deploys an Azure Data Factory -- the workspace every other Data Factory resource
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Data Factory** -- the workspace itself: managed identity, optional GitHub or Azure DevOps repository binding, global parameters, public-network posture, optional Purview connection, and inline customer-managed-key encryption
 - **Named credentials** (created only when `userManagedIdentityCredentials` or `servicePrincipalCredentials` are set) -- one per entry, wrapping a user-assigned identity or a service principal whose key lives in Key Vault; linked services reference them by name
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -54,7 +54,7 @@ spec:
 planton apply -f data-factory.yaml
 ```
 
-This creates a factory with a system-assigned identity and the managed virtual network enabled -- near-free at rest, ready for pipelines and private endpoints to onboard against it. A Stack Job tracks the provisioning in real time.
+This creates a factory with a system-assigned identity and the managed virtual network enabled -- near-free at rest, ready for pipelines and private endpoints to onboard against it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -112,7 +112,7 @@ These are the most important decisions when configuring a Data Factory. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -120,9 +120,9 @@ These are the most important decisions when configuring a Data Factory. Explore 
 | **AzureUserAssignedIdentity** (optional) | `identity.identityIds[]`, `customerManagedKey.userAssignedIdentityId`, `userManagedIdentityCredentials[].identityId` | `status.outputs.identity_id` |
 | **AzureKeyVaultKey** (CMK) | `customerManagedKey.keyVaultKeyId` | `status.outputs.versionless_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -143,12 +143,12 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the factory lives in
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- attached identities for CMK unwrapping and named credentials
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the customer-managed encryption key
-- [**Azure Data Factory Pipeline**](/cloud-catalog/azure-data-factory-pipeline) -- the pipelines created against the factory's `data_factory_id`
-- [**Azure Data Factory Linked Service**](/cloud-catalog/azure-data-factory-linked-service) -- connections to data stores, authenticating as the factory's identity or named credentials
-- [**Azure Data Factory Dataset**](/cloud-catalog/azure-data-factory-dataset) -- named views over linked-service data
-- [**Azure Data Factory Data Flow**](/cloud-catalog/azure-data-factory-data-flow) -- visually-authored transformations executed by pipelines
-- [**Azure Data Factory Trigger**](/cloud-catalog/azure-data-factory-trigger) -- schedules and events that start pipeline runs
-- [**Azure Data Factory Integration Runtime**](/cloud-catalog/azure-data-factory-integration-runtime) -- the compute pipelines and data flows execute on
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the factory lives in
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- attached identities for CMK unwrapping and named credentials
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the customer-managed encryption key
+- [**Azure Data Factory Pipeline**](/infra-catalog/azure-data-factory-pipeline) -- the pipelines created against the factory's `data_factory_id`
+- [**Azure Data Factory Linked Service**](/infra-catalog/azure-data-factory-linked-service) -- connections to data stores, authenticating as the factory's identity or named credentials
+- [**Azure Data Factory Dataset**](/infra-catalog/azure-data-factory-dataset) -- named views over linked-service data
+- [**Azure Data Factory Data Flow**](/infra-catalog/azure-data-factory-data-flow) -- visually-authored transformations executed by pipelines
+- [**Azure Data Factory Trigger**](/infra-catalog/azure-data-factory-trigger) -- schedules and events that start pipeline runs
+- [**Azure Data Factory Integration Runtime**](/infra-catalog/azure-data-factory-integration-runtime) -- the compute pipelines and data flows execute on

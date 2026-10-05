@@ -21,57 +21,57 @@ const (
 // shapes, and the release lanes probe one uploaded artifact per run, so drift
 // surfaces in CI rather than in the field.
 //
-// Module artifacts are keyed per component ({component}/...): a component has
+// Module artifacts are keyed per kind ({kind}/...): a kind has
 // exactly one live module set regardless of how many API versions it serves
 // (modules speak the hub version; older versions convert at the boundary), so
 // the key carries no version segment. The release tag above the key versions
 // the artifact, so shape stability holds across releases.
 
-// BuildPulumiDownloadURL constructs the R2 download URL for a Pulumi component binary.
+// BuildPulumiDownloadURL constructs the R2 download URL for a Pulumi module binary.
 //
-// URL format: https://downloads.planton.dev/releases/{version}/modules/pulumi/{component}/{platform}.gz
+// URL format: https://downloads.planton.dev/releases/{version}/modules/pulumi/{kind}/{platform}.gz
 // (windows artifacts carry the executable suffix: {platform}.exe.gz)
 //
 // Examples (on darwin/arm64):
 //
 //	BuildPulumiDownloadURL("AwsEcsService", "v0.3.50", "darwin_arm64")
 //	  -> https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/darwin_arm64.gz
-func BuildPulumiDownloadURL(component, releaseVersion, platform string) string {
-	// The release lane gzips "{component}.exe" on windows, so the remote
+func BuildPulumiDownloadURL(kindDir, releaseVersion, platform string) string {
+	// The release lane gzips "{kind}.exe" on windows, so the remote
 	// artifact name carries ".exe.gz" there; local cache naming re-adds the
 	// ".exe" independently (see pulumibinary.BuildBinaryName).
 	suffix := ".gz"
 	if strings.HasPrefix(platform, "windows") {
 		suffix = ".exe.gz"
 	}
-	return fmt.Sprintf("%s/%s/modules/pulumi/%s/%s%s", BaseURL, releaseVersion, strings.ToLower(component), platform, suffix)
+	return fmt.Sprintf("%s/%s/modules/pulumi/%s/%s%s", BaseURL, releaseVersion, strings.ToLower(kindDir), platform, suffix)
 }
 
 // BuildPulumiSourceDownloadURL constructs the R2 download URL for a Pulumi
-// component's source zip — the module's Go source tree, as opposed to the
+// kind's source zip — the module's Go source tree, as opposed to the
 // compiled per-platform binaries served by BuildPulumiDownloadURL. Source is
 // platform-independent, so the key carries no platform segment.
 //
-// URL format: https://downloads.planton.dev/releases/{version}/modules/pulumi/{component}/source.zip
+// URL format: https://downloads.planton.dev/releases/{version}/modules/pulumi/{kind}/source.zip
 //
 // Examples:
 //
 //	BuildPulumiSourceDownloadURL("AwsEcsService", "v0.3.50")
 //	  -> https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/source.zip
-func BuildPulumiSourceDownloadURL(component, releaseVersion string) string {
-	return fmt.Sprintf("%s/%s/modules/pulumi/%s/source.zip", BaseURL, releaseVersion, strings.ToLower(component))
+func BuildPulumiSourceDownloadURL(kindDir, releaseVersion string) string {
+	return fmt.Sprintf("%s/%s/modules/pulumi/%s/source.zip", BaseURL, releaseVersion, strings.ToLower(kindDir))
 }
 
 // BuildTerraformDownloadURL constructs the R2 download URL for a Terraform module zip.
 //
-// URL format: https://downloads.planton.dev/releases/{version}/modules/terraform/{component}/module.zip
+// URL format: https://downloads.planton.dev/releases/{version}/modules/terraform/{kind}/module.zip
 //
 // Examples:
 //
 //	BuildTerraformDownloadURL("AwsEcsService", "v0.3.50")
 //	  -> https://downloads.planton.dev/releases/v0.3.50/modules/terraform/awsecsservice/module.zip
-func BuildTerraformDownloadURL(component, releaseVersion string) string {
-	return fmt.Sprintf("%s/%s/modules/terraform/%s/module.zip", BaseURL, releaseVersion, strings.ToLower(component))
+func BuildTerraformDownloadURL(kindDir, releaseVersion string) string {
+	return fmt.Sprintf("%s/%s/modules/terraform/%s/module.zip", BaseURL, releaseVersion, strings.ToLower(kindDir))
 }
 
 // BuildDefinitionsDownloadURL constructs the R2 download URL for a file in

@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kubernetestekton
 spec:
@@ -21,7 +21,7 @@ spec:
       sku_meter: Kubernetes API objects and log storage
       impact: Completed PipelineRuns/TaskRuns keep their pods around until pruned -- finished pods reserve no scheduler capacity, but on a busy cluster the accumulation is unbounded API-object and node log growth. The pruner CronJob bounds it; empty means no cleanup.
   estimate_exclusions:
-    - no capacity artifact is published for this component -- the spec deliberately models no resource requests or limits (it renders a TektonConfig, not pod specs), and the component pods' sizing rides the operator's payload manifests at its pinned release, which this catalog does not restate; a spec-derived footprint would be empty
+    - no capacity artifact is published for this kind -- the spec deliberately models no resource requests or limits (it renders a TektonConfig, not pod specs), and the component pods' sizing rides the operator's payload manifests at its pinned release, which this catalog does not restate; a spec-derived footprint would be empty
     - the PipelineRun and TaskRun pods are the dominant capacity consumer -- created per run, sized by each pipeline's own declarations, gone when the run completes; no manifest-time statement can see them
     - the price of reserved CPU and memory is the target cluster's node economics, which this catalog cannot know
   notes: "This component creates no cloud SKU of its own -- its cost is the share of the cluster the operator-installed Tekton component pods (controllers, webhooks, dashboard, chains, and the pruner CronJob) reserve, realized on the cluster's bill. The operator that reconciles this declaration is a separate KubernetesTektonOperator with its own footprint. There is no helm_values escape hatch on this kind -- the rendered surface is the typed TektonConfig, with additional_params as the operator-knob escape valve."

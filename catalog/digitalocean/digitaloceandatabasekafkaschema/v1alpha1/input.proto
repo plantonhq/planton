@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1;
 import "catalog/digitalocean/digitaloceandatabasekafkaschema/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-database-kafka-schema stack-input
-message DigitalOceanDatabaseKafkaSchemaStackInput {
-  //target cloud-resource
+//digital-ocean-database-kafka-schema iac-input
+message DigitalOceanDatabaseKafkaSchemaIacInput {
+  // the catalog object to deploy
   DigitalOceanDatabaseKafkaSchema target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

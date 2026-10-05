@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpComputeImageStackOutputs captures the image's identity.
-type GcpComputeImageStackOutputs struct {
+// GcpComputeImageOutputs captures the image's identity.
+type GcpComputeImageOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the image in GCP.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -47,20 +47,20 @@ type GcpComputeImageStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpComputeImageStackOutputs) Reset() {
-	*x = GcpComputeImageStackOutputs{}
+func (x *GcpComputeImageOutputs) Reset() {
+	*x = GcpComputeImageOutputs{}
 	mi := &file_catalog_gcp_gcpcomputeimage_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpComputeImageStackOutputs) String() string {
+func (x *GcpComputeImageOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpComputeImageStackOutputs) ProtoMessage() {}
+func (*GcpComputeImageOutputs) ProtoMessage() {}
 
-func (x *GcpComputeImageStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpComputeImageOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcomputeimage_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,40 +72,40 @@ func (x *GcpComputeImageStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpComputeImageStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpComputeImageStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpComputeImageOutputs.ProtoReflect.Descriptor instead.
+func (*GcpComputeImageOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcomputeimage_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpComputeImageStackOutputs) GetName() string {
+func (x *GcpComputeImageOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpComputeImageStackOutputs) GetSelfLink() string {
+func (x *GcpComputeImageOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpComputeImageStackOutputs) GetFamily() string {
+func (x *GcpComputeImageOutputs) GetFamily() string {
 	if x != nil {
 		return x.Family
 	}
 	return ""
 }
 
-func (x *GcpComputeImageStackOutputs) GetDiskSizeGb() int32 {
+func (x *GcpComputeImageOutputs) GetDiskSizeGb() int32 {
 	if x != nil {
 		return x.DiskSizeGb
 	}
 	return 0
 }
 
-func (x *GcpComputeImageStackOutputs) GetImageId() string {
+func (x *GcpComputeImageOutputs) GetImageId() string {
 	if x != nil {
 		return x.ImageId
 	}
@@ -116,8 +116,8 @@ var File_catalog_gcp_gcpcomputeimage_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcpcomputeimage_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpcomputeimage/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpcomputeimage.v1alpha1\"\xa3\x01\n" +
-	"\x1bGcpComputeImageStackOutputs\x12\x12\n" +
+	"2catalog/gcp/gcpcomputeimage/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcpcomputeimage.v1alpha1\"\x9e\x01\n" +
+	"\x16GcpComputeImageOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
 	"\tself_link\x18\x02 \x01(\tR\bselfLink\x12\x16\n" +
 	"\x06family\x18\x03 \x01(\tR\x06family\x12 \n" +
@@ -140,7 +140,7 @@ func file_catalog_gcp_gcpcomputeimage_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_gcp_gcpcomputeimage_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcomputeimage_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpComputeImageStackOutputs)(nil), // 0: dev.planton.gcp.gcpcomputeimage.v1alpha1.GcpComputeImageStackOutputs
+	(*GcpComputeImageOutputs)(nil), // 0: dev.planton.gcp.gcpcomputeimage.v1alpha1.GcpComputeImageOutputs
 }
 var file_catalog_gcp_gcpcomputeimage_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

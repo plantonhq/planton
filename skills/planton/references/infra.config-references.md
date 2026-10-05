@@ -6,17 +6,17 @@ managed in the platform's config manager: a variable (plain config) or a
 secret (encrypted, resolved just-in-time inside the deployment runner, never
 stored in the manifest or readable back out of it). A variable reference
 works in any string field; a secret reference works in any field EXCEPT the
-ones a component marks as read by every viewer -- see "Where a secret
+ones a kind marks as read by every viewer -- see "Where a secret
 reference may go" below, because the field, not the reference, decides
 whether a secret stays secret. This file is the grammar, when to use it, and
 how to ground references against what actually exists.
 
-This is a DIFFERENT instrument from `valueFrom` (`dependencies.md`):
+This is a DIFFERENT instrument from `valueFrom` (`infra.dependencies.md`):
 
 | Value comes from | Wire it with |
 |---|---|
-| Another resource's deployment output (an id, ARN, endpoint the platform creates) | `valueFrom` — see `dependencies.md` |
-| A credential another resource GENERATES (a client secret, an access key, an admin password: a `(sensitive)` output) | `valueFrom`, into a sensitive field only — the platform already keeps it in the secret store and resolves the reference; see "A secret output" in `dependencies.md` |
+| Another resource's deployment output (an id, ARN, endpoint the platform creates) | `valueFrom` — see `infra.dependencies.md` |
+| A credential another resource GENERATES (a client secret, an access key, an admin password: a `(sensitive)` output) | `valueFrom`, into a sensitive field only — the platform already keeps it in the secret store and resolves the reference; see "A secret output" in `infra.dependencies.md` |
 | An operator-managed config value (a region-independent setting, a team-owned constant) | `$var/...` |
 | A credential or any sensitive value (password, API key, token, private key; a workload's `env.secrets[].value`, every value in a `KubernetesSecret`, an Auth0 action's secret) | `$secret/...` — the ONLY thing a sensitive field accepts; a value written there is refused before anything is created, on every write path |
 | A registry login a Kubernetes workload pulls with (`spec.pod.imageRegistries[].password`, a `KubernetesSecret`'s docker-registry password, a GHCR connection's `pullToken.token`) | `$secret/...` — and for the service's own registry, usually nothing: the deploy fills it from the registry connection (`references/service.pulling-private-images.md`) |
@@ -67,8 +67,8 @@ spec:
 
 ## Sensitive fields accept ONLY a secret reference
 
-Every field a component's schema marks sensitive (the explain report and the
-component reference page flag these) rejects plaintext before anything
+Every field a kind's schema marks sensitive (the explain report and the
+kind reference page flag these) rejects plaintext before anything
 deploys — the control plane validates that the field holds a well-formed
 `$secret/...` reference to an EXISTING secret. So for a password/key/token
 field there are exactly two failure modes to avoid:
@@ -85,10 +85,10 @@ any, carries the REFERENCE (see "In chart templates" below).
 ## Where a secret reference may go — and why
 
 The runner resolves every `$secret/...` to its plain value just before the
-component's module runs, and the module writes that value wherever the
+kind's module runs, and the module writes that value wherever the
 manifest put it. A reference is therefore only as secret as the field it sits
-in. Components mark the two kinds of field that matter, and the explain
-report (`planton explain <Kind>`) and the component reference page show both
+in. Kinds mark the two kinds of field that matter, and the explain
+report (`planton explain <Kind>`) and the kind reference page show both
 marks:
 
 - **`(sensitive)`** — secret material. Accepts only a `$secret/...`
@@ -99,7 +99,7 @@ marks:
   pod template, a Cloud Run revision, an ECS task definition (and ECS keeps
   every revision forever). A secret reference anywhere inside such a field is
   refused before anything deploys, and the refusal names the sibling field
-  to move it to — the component's SECRET HOME, which keeps the value in a
+  to move it to — the kind's SECRET HOME, which keeps the value in a
   secret store the workload reads by reference.
 
 On every runtime that takes environment variables, the pattern is one field

@@ -2,14 +2,14 @@
 # provision, update, and destroy this component with the official modules.
 # Every entry is `derived` (static analysis of the module sources, cited in
 # notes) until the live capture lane upgrades it to `proven`. Schema:
-# iac/componentpermissions/v1.
+# iac/catalogkindpermissions/v1.
 #
 # The module itself touches almost nothing: it declares ONE custom resource
 # and (optionally) a namespace. The OPERATOR — running under its own
 # ServiceAccount installed by KubernetesPlantonOperator — is what creates
 # the platform's dozens of workloads; none of that rides this principal.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: kubernetesplantonplatform
 spec:

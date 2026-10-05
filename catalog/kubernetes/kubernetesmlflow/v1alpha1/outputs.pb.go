@@ -23,11 +23,11 @@ const (
 )
 
 // *
-// **KubernetesMlflowStackOutputs** — the composition handles a
+// **KubernetesMlflowOutputs** — the composition handles a
 // deployed MLflow exports. ML clients (`mlflow` SDKs, pipelines,
 // training jobs) point MLFLOW_TRACKING_URI at the tracking endpoint;
 // the admin credential is exported as a Secret handle.
-type KubernetesMlflowStackOutputs struct {
+type KubernetesMlflowOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace MLflow runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -57,20 +57,20 @@ type KubernetesMlflowStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesMlflowStackOutputs) Reset() {
-	*x = KubernetesMlflowStackOutputs{}
+func (x *KubernetesMlflowOutputs) Reset() {
+	*x = KubernetesMlflowOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesmlflow_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesMlflowStackOutputs) String() string {
+func (x *KubernetesMlflowOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesMlflowStackOutputs) ProtoMessage() {}
+func (*KubernetesMlflowOutputs) ProtoMessage() {}
 
-func (x *KubernetesMlflowStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesMlflowOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesmlflow_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -82,47 +82,47 @@ func (x *KubernetesMlflowStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesMlflowStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesMlflowStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesMlflowOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesMlflowOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesmlflow_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesMlflowStackOutputs) GetNamespace() string {
+func (x *KubernetesMlflowOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesMlflowStackOutputs) GetService() string {
+func (x *KubernetesMlflowOutputs) GetService() string {
 	if x != nil {
 		return x.Service
 	}
 	return ""
 }
 
-func (x *KubernetesMlflowStackOutputs) GetTrackingEndpoint() string {
+func (x *KubernetesMlflowOutputs) GetTrackingEndpoint() string {
 	if x != nil {
 		return x.TrackingEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesMlflowStackOutputs) GetAdminPasswordSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesMlflowOutputs) GetAdminPasswordSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.AdminPasswordSecret
 	}
 	return nil
 }
 
-func (x *KubernetesMlflowStackOutputs) GetBackendStoreUriSecretName() string {
+func (x *KubernetesMlflowOutputs) GetBackendStoreUriSecretName() string {
 	if x != nil {
 		return x.BackendStoreUriSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesMlflowStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesMlflowOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -133,8 +133,8 @@ var File_catalog_kubernetes_kubernetesmlflow_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_kubernetes_kubernetesmlflow_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kubernetesmlflow/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetesmlflow.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xd8\x02\n" +
-	"\x1cKubernetesMlflowStackOutputs\x12\x1c\n" +
+	":catalog/kubernetes/kubernetesmlflow/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetesmlflow.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xd3\x02\n" +
+	"\x17KubernetesMlflowOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x18\n" +
 	"\aservice\x18\x02 \x01(\tR\aservice\x12+\n" +
 	"\x11tracking_endpoint\x18\x03 \x01(\tR\x10trackingEndpoint\x12_\n" +
@@ -157,11 +157,11 @@ func file_catalog_kubernetes_kubernetesmlflow_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetesmlflow_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesmlflow_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesMlflowStackOutputs)(nil),   // 0: dev.planton.kubernetes.kubernetesmlflow.v1alpha1.KubernetesMlflowStackOutputs
+	(*KubernetesMlflowOutputs)(nil),        // 0: dev.planton.kubernetes.kubernetesmlflow.v1alpha1.KubernetesMlflowOutputs
 	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetesmlflow_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesmlflow.v1alpha1.KubernetesMlflowStackOutputs.admin_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kubernetesmlflow.v1alpha1.KubernetesMlflowOutputs.admin_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

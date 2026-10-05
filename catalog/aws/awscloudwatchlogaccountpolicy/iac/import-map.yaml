@@ -1,7 +1,7 @@
-# Where each placeholder in this component's import-ID formats comes
+# Where each placeholder in this kind's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml).
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awscloudwatchlogaccountpolicy
 spec:

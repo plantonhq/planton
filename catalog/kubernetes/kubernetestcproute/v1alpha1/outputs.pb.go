@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesTcpRouteStackOutputs captures observable outputs after the TCPRoute
+// KubernetesTcpRouteOutputs captures observable outputs after the TCPRoute
 // is created on the target cluster. Controller-managed status (the per-parent
 // Accepted/ResolvedRefs conditions) is reconciled asynchronously by the Gateway
 // implementation and read via kubectl, so it is intentionally not stored here.
-type KubernetesTcpRouteStackOutputs struct {
+type KubernetesTcpRouteOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created TCPRoute (equals metadata.name). In InfraCharts this
 	// orders the route after the Gateway and backends it references.
@@ -38,20 +38,20 @@ type KubernetesTcpRouteStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesTcpRouteStackOutputs) Reset() {
-	*x = KubernetesTcpRouteStackOutputs{}
+func (x *KubernetesTcpRouteOutputs) Reset() {
+	*x = KubernetesTcpRouteOutputs{}
 	mi := &file_catalog_kubernetes_kubernetestcproute_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesTcpRouteStackOutputs) String() string {
+func (x *KubernetesTcpRouteOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesTcpRouteStackOutputs) ProtoMessage() {}
+func (*KubernetesTcpRouteOutputs) ProtoMessage() {}
 
-func (x *KubernetesTcpRouteStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesTcpRouteOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetestcproute_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *KubernetesTcpRouteStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesTcpRouteStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesTcpRouteStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesTcpRouteOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesTcpRouteOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetestcproute_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesTcpRouteStackOutputs) GetRouteName() string {
+func (x *KubernetesTcpRouteOutputs) GetRouteName() string {
 	if x != nil {
 		return x.RouteName
 	}
 	return ""
 }
 
-func (x *KubernetesTcpRouteStackOutputs) GetNamespace() string {
+func (x *KubernetesTcpRouteOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -86,8 +86,8 @@ var File_catalog_kubernetes_kubernetestcproute_v1alpha1_outputs_proto protorefle
 
 const file_catalog_kubernetes_kubernetestcproute_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kubernetestcproute/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kubernetestcproute.v1alpha1\"]\n" +
-	"\x1eKubernetesTcpRouteStackOutputs\x12\x1d\n" +
+	"<catalog/kubernetes/kubernetestcproute/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kubernetestcproute.v1alpha1\"X\n" +
+	"\x19KubernetesTcpRouteOutputs\x12\x1d\n" +
 	"\n" +
 	"route_name\x18\x01 \x01(\tR\trouteName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\x9b\x03\n" +
@@ -107,7 +107,7 @@ func file_catalog_kubernetes_kubernetestcproute_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_kubernetes_kubernetestcproute_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetestcproute_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesTcpRouteStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetestcproute.v1alpha1.KubernetesTcpRouteStackOutputs
+	(*KubernetesTcpRouteOutputs)(nil), // 0: dev.planton.kubernetes.kubernetestcproute.v1alpha1.KubernetesTcpRouteOutputs
 }
 var file_catalog_kubernetes_kubernetestcproute_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

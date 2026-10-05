@@ -1,11 +1,11 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: digitaloceandatabasedb
 spec:
   # Live-proven on BOTH engines, full lifecycle under the idempotency gate,
   # plus the blind import round-trip on the Terraform lane
-  # (`{cluster_id},{database_name}`, both from the stack outputs; lossless
+  # (`{cluster_id},{database_name}`, both from the outputs; lossless
   # -- nothing tolerated). ONE scenario: `minimal` -- an additional logical
   # database on the PostgreSQL cluster registry prerequisite
   # (`planton-oss-e2e-dodb-min`). The resource has exactly two create-only

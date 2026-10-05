@@ -105,7 +105,7 @@ spec:
 | `readAttributes` / `writeAttributes` | `string[]` | Attribute-level access for this client. Empty = all. |
 | `analyticsConfiguration` | `object` | Pinpoint wiring: `applicationArn` XOR (`applicationId` + `externalId` + `roleArn` ref). |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

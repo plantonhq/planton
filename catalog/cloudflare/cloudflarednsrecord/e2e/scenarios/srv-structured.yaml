@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: cloudflarednsrecord
+    e2e-catalog-kind: cloudflarednsrecord
   annotations:
     planton.dev/e2e: "true"
   tags:

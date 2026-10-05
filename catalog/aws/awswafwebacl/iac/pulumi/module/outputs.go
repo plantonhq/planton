@@ -1,7 +1,7 @@
 package module
 
 // Output key constants exported by this Pulumi module — must stay in
-// lockstep with AwsWafWebAclStackOutputs.
+// lockstep with AwsWafWebAclOutputs.
 const (
 	OpWebAclArn                 = "web_acl_arn"
 	OpWebAclId                  = "web_acl_id"

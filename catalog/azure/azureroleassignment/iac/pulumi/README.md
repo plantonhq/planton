@@ -17,7 +17,7 @@ assignment (delete + create). They carry no ARM tags -- the
 
 ## Inputs
 
-The module receives an `AzureRoleAssignmentStackInput` containing:
+The module receives an `AzureRoleAssignmentIacInput` containing:
 
 - `target.spec.scope` -- the ARM scope of the grant (references resolved to a literal by the platform)
 - `target.spec.role_definition_name` / `target.spec.role_definition_id` -- exactly one identifies the role

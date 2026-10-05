@@ -24,7 +24,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input = &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "security-events",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -54,7 +54,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "eu-events",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -76,7 +76,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "apac-events",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -100,7 +100,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "user-events-webhook",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -129,7 +129,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "basic-auth-webhook",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -158,7 +158,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "all-user-events",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -190,7 +190,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "login-only",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -239,7 +239,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: nil,
@@ -254,7 +254,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "wrong.api.version/v1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -279,7 +279,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "WrongKind",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -304,7 +304,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -322,7 +322,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -340,7 +340,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -362,7 +362,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -384,7 +384,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -404,7 +404,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -426,7 +426,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -448,7 +448,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -473,7 +473,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -498,7 +498,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -520,7 +520,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -545,7 +545,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -570,7 +570,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -595,7 +595,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{
@@ -621,7 +621,7 @@ var _ = ginkgo.Describe("Auth0EventStream Validation Tests", func() {
 				input := &Auth0EventStream{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0EventStream",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-stream",
 					},
 					Spec: &Auth0EventStreamSpec{

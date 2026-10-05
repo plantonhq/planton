@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuremachinelearningworkspace
 spec:
@@ -11,7 +11,7 @@ spec:
   values:
     - name: machine_learning_workspace_id
       derivations:
-        - from_stack_output: machine_learning_workspace_id
+        - from_output: machine_learning_workspace_id
       where_to_find: >-
         Portal -> Azure Machine Learning -> the workspace ->
         Properties -> Resource ID, or `az ml workspace show -g <rg>

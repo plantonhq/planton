@@ -1,4 +1,4 @@
-# KubernetesMongodb Terraform Module Fix and Component Completion
+# KubernetesMongodb Terraform Module Fix and Kind Completion
 
 **Date**: November 16, 2025  
 **Type**: Bug Fix + Enhancement  
@@ -6,11 +6,11 @@
 
 ## Summary
 
-Fixed a critical bug in the KubernetesMongodb Terraform module where `mongodb.tf` contained incorrect OpenFGA code instead of MongoDB implementation, updated stale examples to match current API, and completed the component with comprehensive Terraform documentation. This brings the component from 94.5% to 100% completion and makes it fully functional for Terraform users.
+Fixed a critical bug in the KubernetesMongodb Terraform module where `mongodb.tf` contained incorrect OpenFGA code instead of MongoDB implementation, updated stale examples to match current API, and completed the kind with comprehensive Terraform documentation. This brings the kind from 94.5% to 100% completion and makes it fully functional for Terraform users.
 
 ## Problem Statement / Motivation
 
-The KubernetesMongodb component had a **critical blocking issue** that prevented any Terraform deployments:
+The KubernetesMongodb kind had a **critical blocking issue** that prevented any Terraform deployments:
 
 ### Critical Bug: Wrong Implementation in mongodb.tf
 
@@ -24,7 +24,7 @@ resource "helm_release" "this" {
 }
 ```
 
-This was clearly a copy-paste error from another component that was never corrected. **Any Terraform deployment would fail or deploy the wrong application.**
+This was clearly a copy-paste error from another kind that was never corrected. **Any Terraform deployment would fail or deploy the wrong application.**
 
 ### Pain Points
 
@@ -204,7 +204,7 @@ resource "kubernetes_service_v1" "mongodb_external_lb" {
 - **After**: Terraform correctly deploys MongoDB using Percona Operator
 
 ### Users Affected
-- **All Terraform users**: Previously couldn't use this component at all
+- **All Terraform users**: Previously couldn't use this kind at all
 - **Production deployments**: Now have reliable, operator-based MongoDB
 - **Development teams**: Can deploy with flexible replica counts
 
@@ -259,7 +259,7 @@ kubectl get secret <password-secret-name> -n <namespace> \
 
 - Pulumi implementation (`iac/pulumi/module/mongodb.go`) was correct and used as reference
 - Audit report: `2025-11-15-120155.md`
-- Similar Percona operator pattern used in KubernetesMySQL component
+- Similar Percona operator pattern used in KubernetesMySQL kind
 
 ## Code Metrics
 

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Every Kubernetes data component now stamps its resource-identity labels, including `planton.ai/organization` and `planton.ai/environment`, on every pod it runs. Before, those labels reached only the namespace and the secrets the modules create. Temporal, OpenFGA, Valkey, Neo4j, OpenBao and PostgreSQL pods carried only their charts' own labels, so a log line, a metric or an alert from a database or a job queue couldn't say which organization's environment it came from, while every `KubernetesDeployment` pod could.
+Every Kubernetes data kind now stamps its resource-identity labels, including `planton.ai/organization` and `planton.ai/environment`, on every pod it runs. Before, those labels reached only the namespace and the secrets the modules create. Temporal, OpenFGA, Valkey, Neo4j, OpenBao and PostgreSQL pods carried only their charts' own labels, so a log line, a metric or an alert from a database or a job queue couldn't say which organization's environment it came from, while every `KubernetesDeployment` pod could.
 
 An Auth0 application can now be named for people, and an Auth0 tenant can be declared to introduce itself as the product. Universal Login reads "Log in to *tenant* to continue to *application*". The tenant's half defaulted to its identifier (for example `acme-prod`) and the application's to the resource's name (for example `console`), so a stranger's first screen named internal identifiers.
 
@@ -35,8 +35,8 @@ The modules' comments that said the labels were "never injected into the chart's
 
 ## Verification
 
-- Scoped gates pass: `go test` over the six Kubernetes modules (including OpenBao's new `TestRender_EveryServerPodNamesItsOrganizationAndEnvironment`), `catalog/auth0/...` (the new kind's spec tests), `pkg/anatomy`, `pkg/catalogbundle`, `pkg/presetvalidity`, `pkg/finops/...`, `pkg/crkreflect` (snapshot updated), `shared/...`, `pkg/explain/...`, and `e2e/framework/runner` fixture integrity.
+- Scoped gates pass: `go test` over the six Kubernetes modules (including OpenBao's new `TestRender_EveryServerPodNamesItsOrganizationAndEnvironment`), `catalog/auth0/...` (the new kind's spec tests), `pkg/anatomy`, `pkg/catalogbundle`, `pkg/presetvalidity`, `pkg/finops/...`, `pkg/catalogkindreflect` (snapshot updated), `shared/...`, `pkg/explain/...`, and `e2e/framework/runner` fixture integrity.
 - `terraform validate` passes for both Auth0 modules.
-- `make protos`, `make generate-cloud-resource-kind-map`, `make gazelle` and `make generate-reference` were regenerated.
+- `make protos`, `make generate-catalog-kind-map`, `make gazelle` and `make generate-reference` were regenerated.
 - Auth0Client's `variables.tf` is edited by hand for the one new field. The generator's full rewrite would have changed every unset field's default from null to `""`, a behavior change for every live client.
 - **Found on the way, left for its own change:** the Pulumi engine's identity labels spell the kind, name and id keys `planton.ai/kind`, `planton.ai/name` and `planton.ai/id` (`kuberneteslabelkeys`), where the Terraform modules write `planton.ai/resource-kind`, `-name` and `-id`. `organization` and `environment` agree.

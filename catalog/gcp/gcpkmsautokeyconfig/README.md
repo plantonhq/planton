@@ -4,7 +4,7 @@ Switches Cloud KMS Autokey on for a folder or a single project, so teams get cus
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `cloudkms.googleapis.com` on a project configuration's project and on a folder's key project (never disabled on destroy)
 - **Autokey configuration** -- `kms_autokey_config` on a folder, or `kms_project_autokey_config` on a project, applied over whatever configuration the scope already had
@@ -62,7 +62,7 @@ planton apply -f kms-autokey-config.yaml
 - `keyProject` and `DEDICATED_KEY_PROJECT` are folder-only; `DEDICATED_KEY_PROJECT` needs a `keyProject`.
 - `keyProjectResolutionMode` and `deletionPolicy` take only Google's values.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -90,7 +90,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpKmsKeyHandle** -- requests a key from Autokey for one resource
 - **GcpFolder** -- a folder configuration every project beneath it inherits

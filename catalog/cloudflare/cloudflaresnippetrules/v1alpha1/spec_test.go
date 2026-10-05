@@ -32,7 +32,7 @@ func validRules(spec *CloudflareSnippetRulesSpec) *CloudflareSnippetRules {
 	return &CloudflareSnippetRules{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareSnippetRules",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-snippet-rules",
 		},
 		Spec: spec,

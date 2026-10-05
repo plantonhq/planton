@@ -10,7 +10,7 @@ import (
 // databaseDbVerifier verifies a DigitalOceanDatabaseDb via
 // GET /v2/databases/{cluster_id}/dbs/{name}. The API has no standalone
 // database id -- the (cluster, name) pair is the identity -- so the
-// verifier reads both from the stack outputs.
+// verifier reads both from the outputs.
 type databaseDbVerifier struct{}
 
 func (*databaseDbVerifier) IDOutputKey() string { return "database_name" }
@@ -42,7 +42,7 @@ func (v *databaseDbVerifier) VerifyAbsentFromOutputs(ctx context.Context, client
 		return pkgerrors.Wrap(err, "digitaloceandatabasedb verify-absent failed")
 	}
 	if exists {
-		return &StillExistsError{Component: "digitaloceandatabasedb", ID: StringOutput(outputs, "database_name")}
+		return &StillExistsError{Kind: "digitaloceandatabasedb", ID: StringOutput(outputs, "database_name")}
 	}
 	return nil
 }

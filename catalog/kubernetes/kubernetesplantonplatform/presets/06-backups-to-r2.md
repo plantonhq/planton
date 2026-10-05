@@ -14,7 +14,7 @@ every user, and every secret, not a fresh install.
 ## When to Use
 
 - Any platform whose records you would mind losing — organizations,
-  environments, connections, projects, pipeline history, members, the
+  environments, connections, Infra Stacks, pipeline history, members, the
   identity realm, and the credentials behind every connection — which is
   every platform a team runs
 - An archive deliberately OUTSIDE the cluster's cloud provider, so no

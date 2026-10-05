@@ -19,7 +19,7 @@ func letsEncryptCert() *DigitalOceanCertificate {
 	return &DigitalOceanCertificate{
 		ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 		Kind:       "DigitalOceanCertificate",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-certificate",
 		},
 		Spec: &DigitalOceanCertificateSpec{
@@ -38,7 +38,7 @@ func customCert() *DigitalOceanCertificate {
 	return &DigitalOceanCertificate{
 		ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 		Kind:       "DigitalOceanCertificate",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-certificate",
 		},
 		Spec: &DigitalOceanCertificateSpec{

@@ -39,7 +39,7 @@ Key design notes:
   PLUS feature tier (`user_pool_tier`).
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

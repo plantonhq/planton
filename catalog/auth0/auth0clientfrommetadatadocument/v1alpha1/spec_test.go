@@ -23,7 +23,7 @@ func registration(spec *Auth0ClientFromMetadataDocumentSpec) *Auth0ClientFromMet
 	return &Auth0ClientFromMetadataDocument{
 		ApiVersion: "auth0.planton.dev/v1alpha1",
 		Kind:       "Auth0ClientFromMetadataDocument",
-		Metadata:   &shared.CloudResourceMetadata{Name: "mcp-client"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "mcp-client"},
 		Spec:       spec,
 	}
 }

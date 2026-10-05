@@ -4,7 +4,7 @@ Uploads a certificate to Cloudflare's account-level mTLS certificate store — t
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **mTLS Certificate** -- one `cloudflare_mtls_certificate` in the account-level store, CA or leaf per the `ca` flag, with the private key attached only when one is provided
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has SSL and Certificates Edit on the account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has SSL and Certificates Edit on the account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -51,7 +51,7 @@ spec:
 planton apply -f mtls-ca.yaml
 ```
 
-This uploads a CA certificate to the account store with no private key — the shape Authenticated Origin Pulls and CA hostname associations consume. A Stack Job tracks the provisioning in real time.
+This uploads a CA certificate to the account store with no private key — the shape Authenticated Origin Pulls and CA hostname associations consume. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -69,13 +69,13 @@ These are the most important decisions when configuring an mTLS certificate uplo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. The PEM material and account ID travel as literal values, and the private key arrives as a managed-secret reference rather than a typed component reference.
+This kind has no foreign key dependencies. The PEM material and account ID travel as literal values, and the private key arrives as a managed-secret reference rather than a typed component reference.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -91,10 +91,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **Leaf certificate for Workers mTLS** -- A client certificate with `ca: false` and its `privateKey` supplied as a managed-secret reference, presented by Cloudflare when a Worker's mTLS binding calls an origin that demands client authentication.
 
-**Zero-downtime rotation** -- Deploy the replacement as a second Cloud Resource, move consumers to its `certificate_id`, then destroy the original. Running both uploads in parallel during the switch is what makes the rotation invisible at the edge.
+**Zero-downtime rotation** -- Deploy the replacement as a second Infra Component, move consumers to its `certificate_id`, then destroy the original. Running both uploads in parallel during the switch is what makes the rotation invisible at the edge.
 
 ## Works With
 
-- [**Cloudflare Zone TLS Settings**](/cloud-catalog/cloudflare-zone-tls-settings) -- the CA hostname associations that scope an uploaded CA to specific hostnames.
-- [**Cloudflare Authenticated Origin Pulls**](/cloud-catalog/cloudflare-authenticated-origin-pulls) -- the zone-level enablement this CA validates client certificates for.
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) -- mTLS bindings that present leaf uploads from this store.
+- [**Cloudflare Zone TLS Settings**](/infra-catalog/cloudflare-zone-tls-settings) -- the CA hostname associations that scope an uploaded CA to specific hostnames.
+- [**Cloudflare Authenticated Origin Pulls**](/infra-catalog/cloudflare-authenticated-origin-pulls) -- the zone-level enablement this CA validates client certificates for.
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) -- mTLS bindings that present leaf uploads from this store.

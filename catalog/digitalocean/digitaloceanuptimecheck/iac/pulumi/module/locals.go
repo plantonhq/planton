@@ -11,9 +11,9 @@ type Locals struct {
 	DigitalOceanUptimeCheck *digitaloceanuptimecheckv1alpha1.DigitalOceanUptimeCheck
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *digitaloceanuptimecheckv1alpha1.DigitalOceanUptimeCheckStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *digitaloceanuptimecheckv1alpha1.DigitalOceanUptimeCheckIacInput) *Locals {
 	return &Locals{
-		DigitalOceanUptimeCheck: stackInput.Target,
+		DigitalOceanUptimeCheck: iacInput.Target,
 	}
 }

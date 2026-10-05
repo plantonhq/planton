@@ -43,7 +43,7 @@ spec: { ... }
 
 See `spec.proto` for the full surface including Kafka schema registry, provisioned pollers, MQ, and DocumentDB options.
 
-## Stack outputs
+## Outputs
 
 | Output | Description |
 |---|---|

@@ -4,7 +4,7 @@ Gives BigQuery workloads predictable, dedicated capacity: baseline slots that ar
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `bigqueryreservation.googleapis.com` on the admin project (never disabled on destroy)
 - **Reservation** -- a `bigquery_reservation` carrying the platform attribution labels
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with BigQuery resource admin permissions (`roles/bigquery.resourceAdmin`) on the admin project and on every assignee on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with BigQuery resource admin permissions (`roles/bigquery.resourceAdmin`) on the admin project and on every assignee on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -56,7 +56,7 @@ spec:
 planton apply -f bigquery-reservation.yaml
 ```
 
-This reserves 100 always-on Enterprise slots in `US`, lets autoscaling add up to 300 more, and routes `acme-analytics`' queries onto them. A Stack Job tracks the provisioning in real time.
+This reserves 100 always-on Enterprise slots in `US`, lets autoscaling add up to 300 more, and routes `acme-analytics`' queries onto them. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -74,7 +74,7 @@ These are the most important decisions when configuring this component. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -82,9 +82,9 @@ These are the most important decisions when configuring this component. Explore 
 | **GcpFolder** | `assignments[].assignee.folderId` | `status.outputs.folder_id` |
 | **GcpBigQueryReservationGroup** | `reservationGroup` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
@@ -104,6 +104,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP BigQuery Capacity Commitment**](/cloud-catalog/gcp-bigquery-capacity-commitment) -- discounted baseline slots
-- [**GCP BigQuery Reservation Group**](/cloud-catalog/gcp-bigquery-reservation-group) -- idle-slot sharing
-- [**GCP Project**](/cloud-catalog/gcp-project) -- assignees
+- [**GCP BigQuery Capacity Commitment**](/infra-catalog/gcp-bigquery-capacity-commitment) -- discounted baseline slots
+- [**GCP BigQuery Reservation Group**](/infra-catalog/gcp-bigquery-reservation-group) -- idle-slot sharing
+- [**GCP Project**](/infra-catalog/gcp-project) -- assignees

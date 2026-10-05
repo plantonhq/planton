@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflareloadbalancermonitor.v1alpha1;
 
-// CloudflareLoadBalancerMonitorStackOutputs captures the outputs after deploying
+// CloudflareLoadBalancerMonitorOutputs captures the outputs after deploying
 // a Cloudflare Load Balancer monitor.
-message CloudflareLoadBalancerMonitorStackOutputs {
+message CloudflareLoadBalancerMonitorOutputs {
   // The Cloudflare-assigned identifier of the monitor. A
   // CloudflareLoadBalancerPool references this value via its `monitor` field.
   string monitor_id = 1;

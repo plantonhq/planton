@@ -7,9 +7,9 @@
 # stateless console pod carrying the declared resources -- no persistent
 # volumes are bound, and one console observes many Kafka clusters
 # without growing its own footprint.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kuberneteskafkaui
 spec:

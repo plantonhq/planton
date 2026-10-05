@@ -31,7 +31,7 @@ type KubernetesAltinityOperator struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesAltinityOperatorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesAltinityOperator) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesAltinityOperator) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesAltinityOperator) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesAltinityOperator) GetStatus() *KubernetesAltinityOperatorStat
 // kubernetes-altinity-operator status
 type KubernetesAltinityOperatorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesAltinityOperatorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesAltinityOperatorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesAltinityOperatorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesAltinityOperatorStatus) GetOutputs() *KubernetesAltinityOperatorStackOutputs {
+func (x *KubernetesAltinityOperatorStatus) GetOutputs() *KubernetesAltinityOperatorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_api_proto_rawD
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aKubernetesAltinityOperatorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12v\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12v\n" +
 	"\x04spec\x18\x04 \x01(\v2Z.dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12t\n" +
-	"\x06status\x18\x05 \x01(\v2\\.dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorStatusR\x06status\"\xa0\x01\n" +
-	" KubernetesAltinityOperatorStatus\x12|\n" +
-	"\aoutputs\x18\x01 \x01(\v2b.dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorStackOutputsR\aoutputsB\xcf\x03\n" +
+	"\x06status\x18\x05 \x01(\v2\\.dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorStatusR\x06status\"\x9b\x01\n" +
+	" KubernetesAltinityOperatorStatus\x12w\n" +
+	"\aoutputs\x18\x01 \x01(\v2].dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorOutputsR\aoutputsB\xcf\x03\n" +
 	">com.dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1B\bApiProtoP\x01Zvgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesaltinityoperator/v1alpha1;kubernetesaltinityoperatorv1alpha1\xa2\x02\x04DPKK\xaa\x02:Dev.Planton.Kubernetes.Kubernetesaltinityoperator.V1alpha1\xca\x02:Dev\\Planton\\Kubernetes\\Kubernetesaltinityoperator\\V1alpha1\xe2\x02FDev\\Planton\\Kubernetes\\Kubernetesaltinityoperator\\V1alpha1\\GPBMetadata\xea\x02>Dev::Planton::Kubernetes::Kubernetesaltinityoperator::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_api_proto_rawDe
 
 var file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesAltinityOperator)(nil),             // 0: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperator
-	(*KubernetesAltinityOperatorStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesAltinityOperatorSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorSpec
-	(*KubernetesAltinityOperatorStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorStackOutputs
+	(*KubernetesAltinityOperator)(nil),        // 0: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperator
+	(*KubernetesAltinityOperatorStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesAltinityOperatorSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorSpec
+	(*KubernetesAltinityOperatorOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetesaltinityoperator_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperator.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperator.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperator.spec:type_name -> dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorSpec
 	1, // 2: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperator.status:type_name -> dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorStatus
-	4, // 3: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesaltinityoperator.v1alpha1.KubernetesAltinityOperatorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

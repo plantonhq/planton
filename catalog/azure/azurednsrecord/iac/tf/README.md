@@ -2,7 +2,7 @@
 
 Creates one DNS record set in an Azure public DNS zone. The record type is whichever typed payload the spec carries (spec validation guarantees exactly one), so exactly one of the module's nine count-gated `azurerm_dns_*_record` resources materializes.
 
-The module receives its inputs from the Planton stack-input contract (`metadata` + `spec` variables); `StringValueOrRef` fields (resource group, zone name, alias targets) arrive pre-resolved as strings.
+The module receives its inputs from the Planton iac-input contract (`metadata` + `spec` variables); `StringValueOrRef` fields (resource group, zone name, alias targets) arrive pre-resolved as strings.
 
 Key behaviors, documented inline in `main.tf` and `locals.tf`:
 

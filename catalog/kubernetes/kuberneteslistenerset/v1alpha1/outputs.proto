@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kuberneteslistenerset.v1alpha1;
 
-// KubernetesListenerSetStackOutputs captures observable outputs after the
+// KubernetesListenerSetOutputs captures observable outputs after the
 // ListenerSet is created on the target cluster. Controller-managed status
 // (per-listener Accepted/Programmed conditions and the parent Gateway's
 // AttachedListenerSets count) is reconciled asynchronously by the Gateway
 // implementation and read via kubectl, so it is intentionally not stored here.
-message KubernetesListenerSetStackOutputs {
+message KubernetesListenerSetOutputs {
   // Name of the created ListenerSet (equals metadata.name). Routes reference
   // this name in their parent_refs (kind: ListenerSet) to attach to the
   // merged listeners.

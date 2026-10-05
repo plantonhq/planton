@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awseksnodegroup.v1alpha1;
 
-// AwsEksNodeGroupStackOutputs describes the values returned after
+// AwsEksNodeGroupOutputs describes the values returned after
 // provisioning a managed EKS node group.
-message AwsEksNodeGroupStackOutputs {
+message AwsEksNodeGroupOutputs {
   // nodegroup_name is the name of the managed node group.
   string nodegroup_name = 1;
 

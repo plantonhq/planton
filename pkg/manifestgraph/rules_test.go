@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	testgenericv1alpha2 "github.com/plantonhq/planton/catalog/_test/testcloudresourcegeneric/v1alpha2"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	testgenericv1alpha2 "github.com/plantonhq/planton/catalog/_test/testcatalogkindgeneric/v1alpha2"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -16,19 +16,19 @@ import (
 // reader copies this table case for case (ValueFromRefsValidatorAnnotationTest),
 // so a change here is a change to both lanes.
 //
-// The fixture fields live on the hermetic TestCloudResourceGeneric spec:
-//   - candidate_ref: default TestCloudResourceGeneric `status.outputs.id`,
-//     plus TestCloudResourceKubernetes through two outputs
+// The fixture fields live on the hermetic TestCatalogKindGeneric spec:
+//   - candidate_ref: default TestCatalogKindGeneric `status.outputs.id`,
+//     plus TestCatalogKindKubernetes through two outputs
 //     (`status.outputs.external_hostname`, `status.outputs.internal_hostname`);
-//   - annotated_ref: default TestCloudResourceGeneric `status.outputs.id`
+//   - annotated_ref: default TestCatalogKindGeneric `status.outputs.id`
 //     only;
 //   - optional_ref: no annotations.
 var compositionKeyCases = []struct {
 	name     string
 	field    protoreflect.Name
-	kind     cloudresourcekind.CloudResourceKind
+	kind     catalogkind.CatalogKind
 	path     string
-	wantKind cloudresourcekind.CloudResourceKind
+	wantKind catalogkind.CatalogKind
 	wantPath string
 	// wantProblem is a substring of the one problem expected; empty means the
 	// reference is accepted.
@@ -36,47 +36,47 @@ var compositionKeyCases = []struct {
 }{
 	{
 		name: "no kind and no path take the default key", field: "candidate_ref",
-		wantKind: cloudresourcekind.CloudResourceKind_TestCloudResourceGeneric, wantPath: "status.outputs.id",
+		wantKind: catalogkind.CatalogKind_TestCatalogKindGeneric, wantPath: "status.outputs.id",
 	},
 	{
 		name: "a kind with one key defaults its path", field: "candidate_ref",
-		kind:     cloudresourcekind.CloudResourceKind_TestCloudResourceGeneric,
-		wantKind: cloudresourcekind.CloudResourceKind_TestCloudResourceGeneric, wantPath: "status.outputs.id",
+		kind:     catalogkind.CatalogKind_TestCatalogKindGeneric,
+		wantKind: catalogkind.CatalogKind_TestCatalogKindGeneric, wantPath: "status.outputs.id",
 	},
 	{
 		name: "a kind with two keys must name one", field: "candidate_ref",
-		kind:        cloudresourcekind.CloudResourceKind_TestCloudResourceKubernetes,
-		wantKind:    cloudresourcekind.CloudResourceKind_TestCloudResourceKubernetes,
+		kind:        catalogkind.CatalogKind_TestCatalogKindKubernetes,
+		wantKind:    catalogkind.CatalogKind_TestCatalogKindKubernetes,
 		wantProblem: "composes from more than one output (status.outputs.external_hostname, status.outputs.internal_hostname)",
 	},
 	{
 		name: "either key of a two-key kind is accepted", field: "candidate_ref",
-		kind: cloudresourcekind.CloudResourceKind_TestCloudResourceKubernetes, path: "status.outputs.internal_hostname",
-		wantKind: cloudresourcekind.CloudResourceKind_TestCloudResourceKubernetes, wantPath: "status.outputs.internal_hostname",
+		kind: catalogkind.CatalogKind_TestCatalogKindKubernetes, path: "status.outputs.internal_hostname",
+		wantKind: catalogkind.CatalogKind_TestCatalogKindKubernetes, wantPath: "status.outputs.internal_hostname",
 	},
 	{
 		name: "an output that is not a key of a candidate kind is refused", field: "candidate_ref",
-		kind: cloudresourcekind.CloudResourceKind_TestCloudResourceKubernetes, path: "status.outputs.endpoint",
-		wantKind:    cloudresourcekind.CloudResourceKind_TestCloudResourceKubernetes,
+		kind: catalogkind.CatalogKind_TestCatalogKindKubernetes, path: "status.outputs.endpoint",
+		wantKind:    catalogkind.CatalogKind_TestCatalogKindKubernetes,
 		wantPath:    "status.outputs.endpoint",
 		wantProblem: `the field's contract is one of "status.outputs.external_hostname", "status.outputs.internal_hostname"`,
 	},
 	{
 		name: "another output of the default kind is refused", field: "annotated_ref",
-		kind: cloudresourcekind.CloudResourceKind_TestCloudResourceGeneric, path: "status.outputs.name",
-		wantKind:    cloudresourcekind.CloudResourceKind_TestCloudResourceGeneric,
+		kind: catalogkind.CatalogKind_TestCatalogKindGeneric, path: "status.outputs.name",
+		wantKind:    catalogkind.CatalogKind_TestCatalogKindGeneric,
 		wantPath:    "status.outputs.name",
 		wantProblem: `the field's contract is "status.outputs.id"`,
 	},
 	{
 		name: "a kind outside the keys is accepted with an explicit path", field: "candidate_ref",
-		kind: cloudresourcekind.CloudResourceKind_KubernetesNamespace, path: "spec.name",
-		wantKind: cloudresourcekind.CloudResourceKind_KubernetesNamespace, wantPath: "spec.name",
+		kind: catalogkind.CatalogKind_KubernetesNamespace, path: "spec.name",
+		wantKind: catalogkind.CatalogKind_KubernetesNamespace, wantPath: "spec.name",
 	},
 	{
 		name: "a kind outside the keys needs a path", field: "candidate_ref",
-		kind:        cloudresourcekind.CloudResourceKind_KubernetesNamespace,
-		wantKind:    cloudresourcekind.CloudResourceKind_KubernetesNamespace,
+		kind:        catalogkind.CatalogKind_KubernetesNamespace,
+		wantKind:    catalogkind.CatalogKind_KubernetesNamespace,
 		wantProblem: "no annotated default applies",
 	},
 	{
@@ -86,7 +86,7 @@ var compositionKeyCases = []struct {
 }
 
 func TestCheckRef_CompositionKeys(t *testing.T) {
-	spec := (&testgenericv1alpha2.TestCloudResourceGenericSpec{}).ProtoReflect().Descriptor()
+	spec := (&testgenericv1alpha2.TestCatalogKindGenericSpec{}).ProtoReflect().Descriptor()
 	for _, tc := range compositionKeyCases {
 		t.Run(tc.name, func(t *testing.T) {
 			fd := spec.Fields().ByName(tc.field)

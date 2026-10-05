@@ -5,10 +5,10 @@ package dev.planton.aws.awselasticip.v1alpha1;
 import "catalog/aws/awselasticip/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsElasticIpStackInput provides the inputs required by Pulumi/Terraform modules
+// AwsElasticIpIacInput provides the inputs required by Pulumi/Terraform modules
 // to provision an Elastic IP.
-message AwsElasticIpStackInput {
-  // target cloud-resource
+message AwsElasticIpIacInput {
+  // the catalog object to deploy
   AwsElasticIp target = 1;
   // provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

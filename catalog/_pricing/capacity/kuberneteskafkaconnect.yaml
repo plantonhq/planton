@@ -7,9 +7,9 @@
 # Connect worker pod carrying the declared resources -- workers are
 # stateless (connector state lives in Kafka topics on the target cluster),
 # so no persistent volumes are bound.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kuberneteskafkaconnect
 spec:

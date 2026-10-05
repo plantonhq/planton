@@ -7,7 +7,7 @@ import "catalog/aws/awsopensearchserverlesscollection/v1alpha1/outputs.proto";
 import "catalog/aws/awsopensearchserverlesscollection/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// AwsOpenSearchServerlessCollection is a component for creating and managing
+// AwsOpenSearchServerlessCollection is a kind for creating and managing
 // Amazon OpenSearch Serverless collections - fully managed, auto-scaling
 // OpenSearch workspaces for search, time-series, and vector workloads -
 // together with the collection-scoped encryption, network, data-access, and
@@ -20,7 +20,7 @@ message AwsOpenSearchServerlessCollection {
   string kind = 2 [(buf.validate.field).string.const = 'AwsOpenSearchServerlessCollection'];
 
   // metadata contains standard resource metadata including name, labels, and annotations.
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec defines the desired state of the collection.
   AwsOpenSearchServerlessCollectionSpec spec = 4 [(buf.validate.field).required = true];
@@ -33,5 +33,5 @@ message AwsOpenSearchServerlessCollection {
 // for the collection.
 message AwsOpenSearchServerlessCollectionStatus {
   // outputs contains the values exported from the IaC stack after deployment.
-  AwsOpenSearchServerlessCollectionStackOutputs outputs = 1;
+  AwsOpenSearchServerlessCollectionOutputs outputs = 1;
 }

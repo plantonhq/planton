@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureRecoveryServicesVaultStackOutputs** captures the outputs of
+// **AzureRecoveryServicesVaultOutputs** captures the outputs of
 // provisioning a Recovery Services vault.
-type AzureRecoveryServicesVaultStackOutputs struct {
+type AzureRecoveryServicesVaultOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the vault.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.RecoveryServices/vaults/{name}
@@ -42,20 +42,20 @@ type AzureRecoveryServicesVaultStackOutputs struct {
 	sizeCache                  protoimpl.SizeCache
 }
 
-func (x *AzureRecoveryServicesVaultStackOutputs) Reset() {
-	*x = AzureRecoveryServicesVaultStackOutputs{}
+func (x *AzureRecoveryServicesVaultOutputs) Reset() {
+	*x = AzureRecoveryServicesVaultOutputs{}
 	mi := &file_catalog_azure_azurerecoveryservicesvault_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureRecoveryServicesVaultStackOutputs) String() string {
+func (x *AzureRecoveryServicesVaultOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureRecoveryServicesVaultStackOutputs) ProtoMessage() {}
+func (*AzureRecoveryServicesVaultOutputs) ProtoMessage() {}
 
-func (x *AzureRecoveryServicesVaultStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureRecoveryServicesVaultOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurerecoveryservicesvault_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *AzureRecoveryServicesVaultStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureRecoveryServicesVaultStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureRecoveryServicesVaultStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureRecoveryServicesVaultOutputs.ProtoReflect.Descriptor instead.
+func (*AzureRecoveryServicesVaultOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurerecoveryservicesvault_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureRecoveryServicesVaultStackOutputs) GetRecoveryServicesVaultId() string {
+func (x *AzureRecoveryServicesVaultOutputs) GetRecoveryServicesVaultId() string {
 	if x != nil {
 		return x.RecoveryServicesVaultId
 	}
 	return ""
 }
 
-func (x *AzureRecoveryServicesVaultStackOutputs) GetRecoveryServicesVaultName() string {
+func (x *AzureRecoveryServicesVaultOutputs) GetRecoveryServicesVaultName() string {
 	if x != nil {
 		return x.RecoveryServicesVaultName
 	}
 	return ""
 }
 
-func (x *AzureRecoveryServicesVaultStackOutputs) GetSystemAssignedIdentityPrincipalId() string {
+func (x *AzureRecoveryServicesVaultOutputs) GetSystemAssignedIdentityPrincipalId() string {
 	if x != nil {
 		return x.SystemAssignedIdentityPrincipalId
 	}
 	return ""
 }
 
-func (x *AzureRecoveryServicesVaultStackOutputs) GetResourceGuardAssociationId() string {
+func (x *AzureRecoveryServicesVaultOutputs) GetResourceGuardAssociationId() string {
 	if x != nil {
 		return x.ResourceGuardAssociationId
 	}
@@ -104,8 +104,8 @@ var File_catalog_azure_azurerecoveryservicesvault_v1alpha1_outputs_proto protore
 
 const file_catalog_azure_azurerecoveryservicesvault_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azurerecoveryservicesvault/v1alpha1/outputs.proto\x125dev.planton.azure.azurerecoveryservicesvault.v1alpha1\"\xbb\x02\n" +
-	"&AzureRecoveryServicesVaultStackOutputs\x12;\n" +
+	"?catalog/azure/azurerecoveryservicesvault/v1alpha1/outputs.proto\x125dev.planton.azure.azurerecoveryservicesvault.v1alpha1\"\xb6\x02\n" +
+	"!AzureRecoveryServicesVaultOutputs\x12;\n" +
 	"\x1arecovery_services_vault_id\x18\x01 \x01(\tR\x17recoveryServicesVaultId\x12?\n" +
 	"\x1crecovery_services_vault_name\x18\x02 \x01(\tR\x19recoveryServicesVaultName\x12P\n" +
 	"%system_assigned_identity_principal_id\x18\x03 \x01(\tR!systemAssignedIdentityPrincipalId\x12A\n" +
@@ -126,7 +126,7 @@ func file_catalog_azure_azurerecoveryservicesvault_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_azure_azurerecoveryservicesvault_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurerecoveryservicesvault_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureRecoveryServicesVaultStackOutputs)(nil), // 0: dev.planton.azure.azurerecoveryservicesvault.v1alpha1.AzureRecoveryServicesVaultStackOutputs
+	(*AzureRecoveryServicesVaultOutputs)(nil), // 0: dev.planton.azure.azurerecoveryservicesvault.v1alpha1.AzureRecoveryServicesVaultOutputs
 }
 var file_catalog_azure_azurerecoveryservicesvault_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

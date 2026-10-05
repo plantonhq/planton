@@ -25,8 +25,8 @@ import (
 	"regexp"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"gopkg.in/yaml.v3"
 )
 
@@ -86,15 +86,15 @@ type PatternExclusion struct {
 }
 
 // ProviderConfigManifestPath composes the manifest location for one provider.
-func ProviderConfigManifestPath(repoRoot string, provider cloudresourcekind.CloudResourceProvider) string {
-	return filepath.Join(repoRoot, catalogRoot, crkreflect.ProviderDirName(provider), ProviderConfigManifestFileName)
+func ProviderConfigManifestPath(repoRoot string, provider catalogkind.CatalogProvider) string {
+	return filepath.Join(repoRoot, catalogRoot, catalogkindreflect.ProviderDirName(provider), ProviderConfigManifestFileName)
 }
 
 // LoadProviderConfigManifest loads one provider's manifest, returning
 // (nil, nil) when the provider ships none -- absence is the enrollment
 // signal, not an error. Parsing is strict and validation failures are hard
 // errors, matching the per-kind manifests' contract.
-func LoadProviderConfigManifest(repoRoot string, provider cloudresourcekind.CloudResourceProvider) (*ProviderConfigManifest, error) {
+func LoadProviderConfigManifest(repoRoot string, provider catalogkind.CatalogProvider) (*ProviderConfigManifest, error) {
 	path := ProviderConfigManifestPath(repoRoot, provider)
 	f, err := os.Open(path)
 	if err != nil {

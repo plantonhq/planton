@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpRouterNatSpec", func() {
 		return &GcpRouterNat{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpRouterNat",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-router-nat",
 			},
 			Spec: &GcpRouterNatSpec{

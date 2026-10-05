@@ -8,7 +8,7 @@ declared in R2's own terms — the bucket, its account and jurisdiction, and a
 Cloudflare API token, all by reference to the catalog's Cloudflare kinds. The
 module does the S3 translation R2 needs (the jurisdiction's endpoint, region
 `auto`, path-style addressing, the token as an S3 key pair); nothing S3-shaped
-is typed. This is the production half of the DR resource set in the component
+is typed. This is the production half of the DR resource set in the kind's
 guide; the restore half is a second `KubernetesMongodb` declaring the same
 storage, a `restore` block, and the source's system-users Secret.
 

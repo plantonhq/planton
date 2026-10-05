@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpHaVpnGatewayStackOutputs captures the gateway and router identities a
+// GcpHaVpnGatewayOutputs captures the gateway and router identities a
 // GcpHaVpnConnection references and the two public addresses the other
 // side of every tunnel is configured to reach.
-type GcpHaVpnGatewayStackOutputs struct {
+type GcpHaVpnGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The gateway's self link -- what a GcpHaVpnConnection's `gateway`
 	// references (its tunnels attach here), and what another Google Cloud
@@ -55,20 +55,20 @@ type GcpHaVpnGatewayStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpHaVpnGatewayStackOutputs) Reset() {
-	*x = GcpHaVpnGatewayStackOutputs{}
+func (x *GcpHaVpnGatewayOutputs) Reset() {
+	*x = GcpHaVpnGatewayOutputs{}
 	mi := &file_catalog_gcp_gcphavpngateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpHaVpnGatewayStackOutputs) String() string {
+func (x *GcpHaVpnGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpHaVpnGatewayStackOutputs) ProtoMessage() {}
+func (*GcpHaVpnGatewayOutputs) ProtoMessage() {}
 
-func (x *GcpHaVpnGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpHaVpnGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcphavpngateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -80,61 +80,61 @@ func (x *GcpHaVpnGatewayStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpHaVpnGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpHaVpnGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpHaVpnGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*GcpHaVpnGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcphavpngateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpHaVpnGatewayStackOutputs) GetGatewaySelfLink() string {
+func (x *GcpHaVpnGatewayOutputs) GetGatewaySelfLink() string {
 	if x != nil {
 		return x.GatewaySelfLink
 	}
 	return ""
 }
 
-func (x *GcpHaVpnGatewayStackOutputs) GetGatewayName() string {
+func (x *GcpHaVpnGatewayOutputs) GetGatewayName() string {
 	if x != nil {
 		return x.GatewayName
 	}
 	return ""
 }
 
-func (x *GcpHaVpnGatewayStackOutputs) GetRegion() string {
+func (x *GcpHaVpnGatewayOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *GcpHaVpnGatewayStackOutputs) GetInterface_0IpAddress() string {
+func (x *GcpHaVpnGatewayOutputs) GetInterface_0IpAddress() string {
 	if x != nil {
 		return x.Interface_0IpAddress
 	}
 	return ""
 }
 
-func (x *GcpHaVpnGatewayStackOutputs) GetInterface_1IpAddress() string {
+func (x *GcpHaVpnGatewayOutputs) GetInterface_1IpAddress() string {
 	if x != nil {
 		return x.Interface_1IpAddress
 	}
 	return ""
 }
 
-func (x *GcpHaVpnGatewayStackOutputs) GetRouterName() string {
+func (x *GcpHaVpnGatewayOutputs) GetRouterName() string {
 	if x != nil {
 		return x.RouterName
 	}
 	return ""
 }
 
-func (x *GcpHaVpnGatewayStackOutputs) GetRouterSelfLink() string {
+func (x *GcpHaVpnGatewayOutputs) GetRouterSelfLink() string {
 	if x != nil {
 		return x.RouterSelfLink
 	}
 	return ""
 }
 
-func (x *GcpHaVpnGatewayStackOutputs) GetRouterAsn() uint32 {
+func (x *GcpHaVpnGatewayOutputs) GetRouterAsn() uint32 {
 	if x != nil {
 		return x.RouterAsn
 	}
@@ -145,8 +145,8 @@ var File_catalog_gcp_gcphavpngateway_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcphavpngateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcphavpngateway/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcphavpngateway.v1alpha1\"\xd8\x02\n" +
-	"\x1bGcpHaVpnGatewayStackOutputs\x12*\n" +
+	"2catalog/gcp/gcphavpngateway/v1alpha1/outputs.proto\x12(dev.planton.gcp.gcphavpngateway.v1alpha1\"\xd3\x02\n" +
+	"\x16GcpHaVpnGatewayOutputs\x12*\n" +
 	"\x11gateway_self_link\x18\x01 \x01(\tR\x0fgatewaySelfLink\x12!\n" +
 	"\fgateway_name\x18\x02 \x01(\tR\vgatewayName\x12\x16\n" +
 	"\x06region\x18\x03 \x01(\tR\x06region\x123\n" +
@@ -173,7 +173,7 @@ func file_catalog_gcp_gcphavpngateway_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_gcp_gcphavpngateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcphavpngateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpHaVpnGatewayStackOutputs)(nil), // 0: dev.planton.gcp.gcphavpngateway.v1alpha1.GcpHaVpnGatewayStackOutputs
+	(*GcpHaVpnGatewayOutputs)(nil), // 0: dev.planton.gcp.gcphavpngateway.v1alpha1.GcpHaVpnGatewayOutputs
 }
 var file_catalog_gcp_gcphavpngateway_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

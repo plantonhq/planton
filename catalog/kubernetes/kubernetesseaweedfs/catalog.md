@@ -6,7 +6,7 @@ Applications need S3 for artifacts, backups, datasets, and media even where no c
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm release** (official `seaweedfs` chart, pinned `4.40.0`, named `metadata.name`) — the master, volume, and filer tiers on PersistentVolumeClaims (5Gi/30Gi/10Gi chart defaults), the S3 gateway (embedded on the filer, or its own Deployment when `s3.dedicated` is declared), the `<name>-s3` Service on port 8333, and the install hook that creates every bucket declared in `s3.buckets`
 - **S3 credentials Secret** (`<name>-s3-secret`, when auth is on — the default) — admin and read-only access-key pairs, generated once, stable across upgrades, kept on uninstall
@@ -54,7 +54,7 @@ spec:
 planton apply -f seaweedfs.yaml
 ```
 
-This creates the smallest declarable store that actually serves: one master, one volume server, one filer, the S3 gateway embedded on the filer with authentication on (credentials in the `dev-seaweedfs-s3-secret` Secret), and one bucket created at install. A Stack Job tracks the provisioning in real time.
+This creates the smallest declarable store that actually serves: one master, one volume server, one filer, the S3 gateway embedded on the filer with authentication on (credentials in the `dev-seaweedfs-s3-secret` Secret), and one bucket created at install. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,7 +92,7 @@ These are the most important decisions when configuring a SeaweedFS store. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -102,9 +102,9 @@ These are the most important decisions when configuring a SeaweedFS store. Explo
 | **KubernetesStorageClass** | `filer.dataVolume.storageClass` | `status.outputs.storage_class_name` |
 | **KubernetesStorageClass** | `admin.dataVolume.storageClass` | `status.outputs.storage_class_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -130,8 +130,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first.
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) — SSD-backed classes for the tier data volumes.
-- [**Kubernetes Secret**](/cloud-catalog/kubernetes-secret) — bring-your-own S3 identities and console credentials.
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) and [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) — HTTP exposure over the exported S3 endpoint or admin console.
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) and [**Kubernetes CronJob**](/cloud-catalog/kubernetes-cron-job) — the workloads that consume the exported `s3_endpoint` and credentials Secret for artifacts, backups, and media.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first.
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) — SSD-backed classes for the tier data volumes.
+- [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) — bring-your-own S3 identities and console credentials.
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) and [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) — HTTP exposure over the exported S3 endpoint or admin console.
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) and [**Kubernetes CronJob**](/infra-catalog/kubernetes-cron-job) — the workloads that consume the exported `s3_endpoint` and credentials Secret for artifacts, backups, and media.

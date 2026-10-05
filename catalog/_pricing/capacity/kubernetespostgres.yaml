@@ -7,9 +7,9 @@
 # PostgreSQL pod carrying the declared resources plus its own PGDATA
 # volume (and a dedicated WAL volume when configured) -- the operator
 # provisions one PVC per instance from each declared size.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetespostgres
 spec:

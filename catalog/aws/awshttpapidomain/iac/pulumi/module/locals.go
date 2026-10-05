@@ -5,7 +5,7 @@ import (
 
 	awshttpapidomainv1alpha1 "github.com/plantonhq/planton/catalog/aws/awshttpapidomain/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -16,16 +16,16 @@ type Locals struct {
 	AwsTags          map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *awshttpapidomainv1alpha1.AwsHttpApiDomainStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awshttpapidomainv1alpha1.AwsHttpApiDomainIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsHttpApiDomain = stackInput.Target
+	locals.AwsHttpApiDomain = iacInput.Target
 
 	locals.AwsTags = map[string]string{
 		awstagkeys.Name:         locals.AwsHttpApiDomain.Metadata.Name,
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsHttpApiDomain.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsHttpApiDomain.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsHttpApiDomain.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsHttpApiDomain.String(),
 		awstagkeys.ResourceId:   locals.AwsHttpApiDomain.Metadata.Id,
 	}
 

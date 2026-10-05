@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRoute53DnsRecordStackInput defines the input for IaC modules that provision Route53 DNS records.
+// AwsRoute53DnsRecordIacInput defines the input for IaC modules that provision Route53 DNS records.
 // It combines the target resource specification with AWS provider configuration.
-type AwsRoute53DnsRecordStackInput struct {
+type AwsRoute53DnsRecordIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The target Route53 DNS record to create.
 	Target *AwsRoute53DnsRecord `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsRoute53DnsRecordStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsRoute53DnsRecordStackInput) Reset() {
-	*x = AwsRoute53DnsRecordStackInput{}
+func (x *AwsRoute53DnsRecordIacInput) Reset() {
+	*x = AwsRoute53DnsRecordIacInput{}
 	mi := &file_catalog_aws_awsroute53dnsrecord_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRoute53DnsRecordStackInput) String() string {
+func (x *AwsRoute53DnsRecordIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRoute53DnsRecordStackInput) ProtoMessage() {}
+func (*AwsRoute53DnsRecordIacInput) ProtoMessage() {}
 
-func (x *AwsRoute53DnsRecordStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsRoute53DnsRecordIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsroute53dnsrecord_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsRoute53DnsRecordStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRoute53DnsRecordStackInput.ProtoReflect.Descriptor instead.
-func (*AwsRoute53DnsRecordStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRoute53DnsRecordIacInput.ProtoReflect.Descriptor instead.
+func (*AwsRoute53DnsRecordIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsroute53dnsrecord_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRoute53DnsRecordStackInput) GetTarget() *AwsRoute53DnsRecord {
+func (x *AwsRoute53DnsRecordIacInput) GetTarget() *AwsRoute53DnsRecord {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsRoute53DnsRecordStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsRoute53DnsRecordIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsroute53dnsrecord_v1alpha1_input_proto protoreflect.FileD
 
 const file_catalog_aws_awsroute53dnsrecord_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awsroute53dnsrecord/v1alpha1/input.proto\x12,dev.planton.aws.awsroute53dnsrecord.v1alpha1\x1a2catalog/aws/awsroute53dnsrecord/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc7\x01\n" +
-	"\x1dAwsRoute53DnsRecordStackInput\x12Y\n" +
+	"4catalog/aws/awsroute53dnsrecord/v1alpha1/input.proto\x12,dev.planton.aws.awsroute53dnsrecord.v1alpha1\x1a2catalog/aws/awsroute53dnsrecord/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc5\x01\n" +
+	"\x1bAwsRoute53DnsRecordIacInput\x12Y\n" +
 	"\x06target\x18\x01 \x01(\v2A.dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xf6\x02\n" +
 	"0com.dev.planton.aws.awsroute53dnsrecord.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsroute53dnsrecord_v1alpha1_input_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awsroute53dnsrecord_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsroute53dnsrecord_v1alpha1_input_proto_goTypes = []any{
-	(*AwsRoute53DnsRecordStackInput)(nil), // 0: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordStackInput
-	(*AwsRoute53DnsRecord)(nil),           // 1: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecord
-	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsRoute53DnsRecordIacInput)(nil), // 0: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordIacInput
+	(*AwsRoute53DnsRecord)(nil),         // 1: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecord
+	(*aws.AwsProviderConfig)(nil),       // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsroute53dnsrecord_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordStackInput.target:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecord
-	2, // 1: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordIacInput.target:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecord
+	2, // 1: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

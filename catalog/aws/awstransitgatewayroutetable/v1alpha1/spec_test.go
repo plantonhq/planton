@@ -26,7 +26,7 @@ func validEnvelope(spec *AwsTransitGatewayRouteTableSpec) *AwsTransitGatewayRout
 	return &AwsTransitGatewayRouteTable{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsTransitGatewayRouteTable",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-route-table"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-route-table"},
 		Spec:       spec,
 	}
 }

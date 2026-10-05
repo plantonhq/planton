@@ -9,7 +9,7 @@ long-lived standalone cluster) custom resources into running Spark
 workloads. Install the operator once per cluster, then submit jobs
 against it.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want to declare a Spark job** — `SparkApplication` objects are
   per-JOB, run-to-completion declarations: submit them per pipeline
@@ -126,7 +126,7 @@ cluster is the normal posture: it watches cluster-wide by default.
   for the operator pods
 - **`spec.helm_values`**: the escape hatch (see above)
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

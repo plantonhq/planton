@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration (plus hashicorp/tls for the 
 variables.tf  — Input variables mirroring CloudflareOriginCaCertificateSpec
 locals.tf     — request_type / requested_validity defaults; generate_key flag
 main.tf       — optional tls_private_key + tls_cert_request, then cloudflare_origin_ca_certificate
-outputs.tf    — Stack outputs (certificate_id, certificate, private_key, expires_on)
+outputs.tf    — outputs (certificate_id, certificate, private_key, expires_on)
 ```
 
 ## Usage

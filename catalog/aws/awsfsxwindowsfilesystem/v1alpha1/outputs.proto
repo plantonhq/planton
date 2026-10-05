@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.aws.awsfsxwindowsfilesystem.v1alpha1;
 
-// AwsFsxWindowsFileSystemStackOutputs captures observable identifiers and
+// AwsFsxWindowsFileSystemOutputs captures observable identifiers and
 // endpoints from a provisioned FSx for Windows File Server. These outputs are
 // used by downstream resources to wire dependencies via StringValueOrRef.
 //
@@ -15,7 +15,7 @@ package dev.planton.aws.awsfsxwindowsfilesystem.v1alpha1;
 // - Network troubleshooting: uses `preferred_file_server_ip`, `network_interface_ids`
 //
 // Mount command: net use Z: \\<dns_name>\share
-message AwsFsxWindowsFileSystemStackOutputs {
+message AwsFsxWindowsFileSystemOutputs {
   // The ID of the file system (e.g., "fs-0123456789abcdef0"). Primary
   // identifier used by EKS SMB CSI driver, AWS Backup, and other AWS services.
   string file_system_id = 1;

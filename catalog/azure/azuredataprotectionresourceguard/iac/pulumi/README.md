@@ -8,7 +8,7 @@ Creates a Data Protection Resource Guard -- the approval gate behind Multi-User 
 
 - `dataprotection.ResourceGuard` -- the guard
 
-## Stack Outputs
+## Outputs
 
 - `resource_guard_id` -- the guard's full ARM ID; what backup vaults reference to enable Multi-User Authorization
 - `resource_guard_name` -- the guard's name
@@ -22,4 +22,4 @@ Creates a Data Protection Resource Guard -- the approval gate behind Multi-User 
 
 ## Required Permissions
 
-Least-privilege runner permissions for this component are declared in [`../permissions.yaml`](../permissions.yaml).
+Least-privilege runner permissions for this kind are declared in [`../permissions.yaml`](../permissions.yaml).

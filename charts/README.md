@@ -1,7 +1,7 @@
 # Infra Charts
 
 > **Deploy a whole environment from one template.** An Infra Chart bundles the
-> dozens of cloud resources behind a real environment — network, DNS, cluster,
+> dozens of Infra Components behind a real environment — network, DNS, cluster,
 > load balancer, certificates, registry — into a single, parameterized blueprint
 > you deploy with your own values.
 
@@ -23,7 +23,7 @@ whole thing as one coherent unit.
 
 Every chart earns its place: the catalog is deliberately small enough that
 each entry is a complete architecture a team recognizes and wants, built only
-from components whose schemas and modules meet the catalog's full depth bar.
+from kinds whose schemas and modules meet the catalog's full depth bar.
 
 ## Where a chart lives
 
@@ -43,15 +43,15 @@ The tree is provider-rooted, with one home rule:
 
 ## The mental model
 
-Planton's [components](../catalog) are LEGO blocks:
-each one is a single cloud resource (a VPC, a database, a cluster) with its own
-schema and IaC module. **An Infra Chart is a LEGO kit** — a curated set of those
-blocks that fit together to build something complete.
+Planton's [catalog](../catalog) is made of kinds:
+each one describes a single piece of infrastructure (a VPC, a database, a
+cluster) with its own schema and IaC module. **An Infra Chart is a LEGO kit**
+— a curated set of those blocks that fit together to build something complete.
 
 And the runtime relationship mirrors Kubernetes and Helm:
 
-> **An Infra Chart is to an Infra Project what a Helm chart is to a Helm
-> release.** The chart is the reusable blueprint; the project is a deployed
+> **An Infra Chart is to an Infra Stack what a Helm chart is to a Helm
+> release.** The chart is the reusable blueprint; the Infra Stack is a deployed
 > instance configured with your values.
 
 ## Using a chart
@@ -61,10 +61,10 @@ And the runtime relationship mirrors Kubernetes and Helm:
    tunable parameter and its default.
 3. Provide your values and deploy it through Planton.
 
-Each chart's templates render standard Planton cloud resources — the same
+Each chart's templates render standard Planton catalog objects — the same
 `apiVersion: <provider>.planton.dev/v1` manifests you would write by hand — so
 nothing about a chart is a black box: it is a transparent composition of the
-components in this repo.
+kinds in this repo.
 
 ## Anatomy of a chart
 
@@ -72,7 +72,7 @@ components in this repo.
 <provider>/<chart>/
 ├── Chart.yaml      # identity + description + catalog metadata
 ├── values.yaml     # parameters and their defaults (your knobs)
-├── templates/      # manifests that render the Cloud Resources
+├── templates/      # manifests that render the Infra Components
 └── README.md       # what it provisions and how to configure it
 ```
 
@@ -112,7 +112,7 @@ components in this repo.
   parameter, or the deploying environment's default.
 - **Documentation is part of the artifact.** Template comments, parameter
   descriptions, and READMEs render publicly and are held to the same bar as
-  the component schemas' field comments.
+  the kind's schemas' field comments.
 - **No hardcoded provisioner.** Chart resources must not carry a
   `planton.dev/provisioner` annotation. The IaC provisioner (OpenTofu vs
   Pulumi) is a property of the deployment target, resolved from the

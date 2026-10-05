@@ -10,8 +10,8 @@ type Locals struct {
 	// Context for Pulumi operations
 	Ctx *pulumi.Context
 
-	// Stack input containing the target resource
-	StackInput *kubernetesconfigmapv1alpha1.KubernetesConfigMapStackInput
+	// IaC input containing the target resource
+	IacInput *kubernetesconfigmapv1alpha1.KubernetesConfigMapIacInput
 
 	// Target configmap resource
 	Target *kubernetesconfigmapv1alpha1.KubernetesConfigMap
@@ -42,12 +42,12 @@ type Locals struct {
 }
 
 // initializeLocals creates and populates the Locals struct
-func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesconfigmapv1alpha1.KubernetesConfigMapStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *kubernetesconfigmapv1alpha1.KubernetesConfigMapIacInput) *Locals {
 	locals := &Locals{
-		Ctx:        ctx,
-		StackInput: stackInput,
-		Target:     stackInput.Target,
-		Spec:       stackInput.Target.Spec,
+		Ctx:      ctx,
+		IacInput: iacInput,
+		Target:   iacInput.Target,
+		Spec:     iacInput.Target.Spec,
 	}
 
 	locals.ConfigMapName = locals.Spec.Name

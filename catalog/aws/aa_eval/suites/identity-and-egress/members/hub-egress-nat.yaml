@@ -15,7 +15,7 @@ metadata:
   env: ops
   labels:
     managed-by: planton-e2e
-    e2e-component: awsnatgateway
+    e2e-catalog-kind: awsnatgateway
   annotations:
     planton.dev/e2e: "true"
   tags:

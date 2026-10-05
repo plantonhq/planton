@@ -5,9 +5,9 @@
 # consumed by each execution bill at the active rate from start to
 # completion and that no usage charges apply while a job runs no executions
 # -- so every dollar follows execution seconds, never the job object.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurecontainerappjob
 spec:

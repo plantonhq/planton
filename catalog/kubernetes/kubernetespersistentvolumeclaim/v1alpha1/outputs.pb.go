@@ -22,13 +22,13 @@ const (
 )
 
 // *
-// **KubernetesPersistentVolumeClaimStackOutputs** captures the observable
+// **KubernetesPersistentVolumeClaimOutputs** captures the observable
 // handles of a deployed PersistentVolumeClaim. Workloads mount the claim by
 // referencing `pvc_name` in their volume mounts; the outputs deliberately
 // avoid bind-time status (bound volume name, phase) because a claim under a
 // wait_for_first_consumer StorageClass is correctly Pending until a pod
 // consumes it.
-type KubernetesPersistentVolumeClaimStackOutputs struct {
+type KubernetesPersistentVolumeClaimOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The name of the PersistentVolumeClaim object as created in the cluster —
 	// the value workload volume mounts reference as their claim name.
@@ -41,20 +41,20 @@ type KubernetesPersistentVolumeClaimStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesPersistentVolumeClaimStackOutputs) Reset() {
-	*x = KubernetesPersistentVolumeClaimStackOutputs{}
+func (x *KubernetesPersistentVolumeClaimOutputs) Reset() {
+	*x = KubernetesPersistentVolumeClaimOutputs{}
 	mi := &file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPersistentVolumeClaimStackOutputs) String() string {
+func (x *KubernetesPersistentVolumeClaimOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPersistentVolumeClaimStackOutputs) ProtoMessage() {}
+func (*KubernetesPersistentVolumeClaimOutputs) ProtoMessage() {}
 
-func (x *KubernetesPersistentVolumeClaimStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPersistentVolumeClaimOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *KubernetesPersistentVolumeClaimStackOutputs) ProtoReflect() protoreflec
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPersistentVolumeClaimStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesPersistentVolumeClaimStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPersistentVolumeClaimOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesPersistentVolumeClaimOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPersistentVolumeClaimStackOutputs) GetPvcName() string {
+func (x *KubernetesPersistentVolumeClaimOutputs) GetPvcName() string {
 	if x != nil {
 		return x.PvcName
 	}
 	return ""
 }
 
-func (x *KubernetesPersistentVolumeClaimStackOutputs) GetNamespace() string {
+func (x *KubernetesPersistentVolumeClaimOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesPersistentVolumeClaimStackOutputs) GetStorageRequest() string {
+func (x *KubernetesPersistentVolumeClaimOutputs) GetStorageRequest() string {
 	if x != nil {
 		return x.StorageRequest
 	}
@@ -96,8 +96,8 @@ var File_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_outputs_pro
 
 const file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/kubernetes/kubernetespersistentvolumeclaim/v1alpha1/outputs.proto\x12?dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1\"\x8f\x01\n" +
-	"+KubernetesPersistentVolumeClaimStackOutputs\x12\x19\n" +
+	"Icatalog/kubernetes/kubernetespersistentvolumeclaim/v1alpha1/outputs.proto\x12?dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1\"\x8a\x01\n" +
+	"&KubernetesPersistentVolumeClaimOutputs\x12\x19\n" +
 	"\bpvc_name\x18\x01 \x01(\tR\apvcName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12'\n" +
 	"\x0fstorage_request\x18\x03 \x01(\tR\x0estorageRequestB\xf7\x03\n" +
@@ -117,7 +117,7 @@ func file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_outputs_pr
 
 var file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesPersistentVolumeClaimStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimStackOutputs
+	(*KubernetesPersistentVolumeClaimOutputs)(nil), // 0: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimOutputs
 }
 var file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

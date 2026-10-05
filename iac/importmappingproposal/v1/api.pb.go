@@ -23,7 +23,7 @@ const (
 )
 
 // ImportMappingProposal is a mapper's structured answer to "how do these
-// discovered cloud resources map into Planton components?" -- proposed
+// discovered provider resources map into Planton kinds?" -- proposed
 // manifests plus an accounting of which discovered resources each one
 // covers, and the honest remainder that maps to nothing. Follows the KRM
 // pattern (apiVersion + kind + metadata + spec).
@@ -60,7 +60,7 @@ type ImportMappingProposal struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *ImportMappingProposalSpec    `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -110,7 +110,7 @@ func (x *ImportMappingProposal) GetKind() string {
 	return ""
 }
 
-func (x *ImportMappingProposal) GetMetadata() *shared.CloudResourceMetadata {
+func (x *ImportMappingProposal) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -133,7 +133,7 @@ const file_iac_importmappingproposal_v1_api_proto_rawDesc = "" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
 	"\x04kind\x18\x02 \x01(\tR\x04kind\x12E\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataR\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataR\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.iac.importmappingproposal.v1.ImportMappingProposalSpecR\x04specB\xd0\x02\n" +
 	",com.dev.planton.iac.importmappingproposal.v1B\bApiProtoP\x01ZQgithub.com/plantonhq/planton/iac/importmappingproposal/v1;importmappingproposalv1\xa2\x02\x04DPII\xaa\x02(Dev.Planton.Iac.Importmappingproposal.V1\xca\x02(Dev\\Planton\\Iac\\Importmappingproposal\\V1\xe2\x024Dev\\Planton\\Iac\\Importmappingproposal\\V1\\GPBMetadata\xea\x02,Dev::Planton::Iac::Importmappingproposal::V1b\x06proto3"
 
@@ -152,11 +152,11 @@ func file_iac_importmappingproposal_v1_api_proto_rawDescGZIP() []byte {
 var file_iac_importmappingproposal_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_iac_importmappingproposal_v1_api_proto_goTypes = []any{
 	(*ImportMappingProposal)(nil),        // 0: dev.planton.iac.importmappingproposal.v1.ImportMappingProposal
-	(*shared.CloudResourceMetadata)(nil), // 1: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 1: dev.planton.shared.CatalogObjectMetadata
 	(*ImportMappingProposalSpec)(nil),    // 2: dev.planton.iac.importmappingproposal.v1.ImportMappingProposalSpec
 }
 var file_iac_importmappingproposal_v1_api_proto_depIdxs = []int32{
-	1, // 0: dev.planton.iac.importmappingproposal.v1.ImportMappingProposal.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	1, // 0: dev.planton.iac.importmappingproposal.v1.ImportMappingProposal.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	2, // 1: dev.planton.iac.importmappingproposal.v1.ImportMappingProposal.spec:type_name -> dev.planton.iac.importmappingproposal.v1.ImportMappingProposalSpec
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type

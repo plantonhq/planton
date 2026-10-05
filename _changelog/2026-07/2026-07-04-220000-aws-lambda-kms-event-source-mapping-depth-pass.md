@@ -1,7 +1,7 @@
 # AWS Lambda Rebuild, Event Source Mapping Forge, and KMS Key Depth Pass
 
 **Date:** 2026-07-04  
-**Scope:** Components #21–#23 — `AwsLambda`, `AwsLambdaEventSourceMapping` (enum 352), `AwsKmsKey`
+**Scope:** Kinds #21–#23 — `AwsLambda`, `AwsLambdaEventSourceMapping` (enum 352), `AwsKmsKey`
 
 ## Summary
 

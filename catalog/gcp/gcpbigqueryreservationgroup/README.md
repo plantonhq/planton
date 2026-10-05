@@ -4,7 +4,7 @@ A BigQuery reservation group -- a named set of reservations in one administratio
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `bigqueryreservation.googleapis.com` on the admin project (never disabled on destroy)
 - **Reservation group** -- a `bigquery_reservation_group`
@@ -58,7 +58,7 @@ planton apply -f bigquery-reservation-group.yaml
 
 - `reservationGroupName` is letters, digits, and dashes.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -85,7 +85,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpBigQueryReservation** -- the reservations that join the group
 

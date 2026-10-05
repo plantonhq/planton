@@ -17,15 +17,15 @@ import (
 
 // metadataVariableDescription is the fixed description of the shared resource
 // envelope variable.
-const metadataVariableDescription = "Cloud resource metadata"
+const metadataVariableDescription = "Catalog object metadata"
 
-// cloudResourceMetadataFullName is the shared resource-envelope message. Its
+// catalogObjectMetadataFullName is the shared resource-envelope message. Its
 // Terraform shape is an invariant across every kind, so it is emitted from one
 // canonical block (canonicalMetadataObject) rather than derived per kind -- the
 // proto carries no field constraints, and the envelope deliberately exposes only
 // name/id/org/env/labels/annotations/tags to modules (slug/group/relationships
 // are orchestrator concerns dropped during object conversion).
-const cloudResourceMetadataFullName = "dev.planton.shared.CloudResourceMetadata"
+const catalogObjectMetadataFullName = "dev.planton.shared.CatalogObjectMetadata"
 
 // topLevelSkipFieldNames lists proto field names to skip at the top level of
 // the resource message. These are proto envelope fields that have no meaning
@@ -78,7 +78,7 @@ func ProtoToVariablesTF(msg proto.Message) (string, error) {
 
 		var tfType TFType
 		var desc string
-		if isCloudResourceMetadataField(fd) {
+		if isCatalogObjectMetadataField(fd) {
 			// The resource envelope is uniform across kinds: emit the canonical
 			// block instead of deriving from the (constraint-free) proto, which
 			// would wrongly mark every attribute required and leak orchestrator
@@ -452,12 +452,12 @@ func isRequiredField(fd protoreflect.FieldDescriptor) bool {
 	return false
 }
 
-// isCloudResourceMetadataField reports whether a field is the shared resource
+// isCatalogObjectMetadataField reports whether a field is the shared resource
 // metadata envelope, which is emitted from the canonical block.
-func isCloudResourceMetadataField(fd protoreflect.FieldDescriptor) bool {
+func isCatalogObjectMetadataField(fd protoreflect.FieldDescriptor) bool {
 	return fd.Kind() == protoreflect.MessageKind &&
 		!fd.IsMap() && !fd.IsList() &&
-		string(fd.Message().FullName()) == cloudResourceMetadataFullName
+		string(fd.Message().FullName()) == catalogObjectMetadataFullName
 }
 
 // canonicalMetadataObject returns the fixed Terraform shape of the shared

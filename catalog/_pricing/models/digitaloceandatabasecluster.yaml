@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -11,9 +11,9 @@
 # computed here and defended in their bases. DigitalOcean prices managed
 # databases identically in every region (the pricing page carries one table
 # per engine with no region dimension), so every referenced entry is pinned
-# "global". Schema: finops/componentcostestimatemodel/v1.
+# "global". Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: digitaloceandatabasecluster
 spec:

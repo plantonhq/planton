@@ -1,4 +1,4 @@
-# AWS FSx ONTAP Volume Component
+# AWS FSx ONTAP Volume Kind
 
 **Date**: February 16, 2026
 **Type**: Feature
@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsFsxOntapVolume (R29f) — the final component in the FSx ONTAP hierarchy and the last AWS resource in the cloud provider expansion project. ONTAP Volumes are data containers within a Storage Virtual Machine, supporting tiering, SnapLock WORM compliance, FlexGroup distribution, and storage efficiency.
+Added AwsFsxOntapVolume (R29f) — the final kind in the FSx ONTAP hierarchy and the last AWS resource in the cloud provider expansion project. ONTAP Volumes are data containers within a Storage Virtual Machine, supporting tiering, SnapLock WORM compliance, FlexGroup distribution, and storage efficiency.
 
 ## Problem Statement / Motivation
 
@@ -21,9 +21,9 @@ The FSx ONTAP hierarchy in Planton was incomplete. File systems (R29d) and SVMs 
 
 ## Solution / What's New
 
-A complete AwsFsxOntapVolume component covering the full `aws_fsx_ontap_volume` Terraform resource surface, including all three optional configuration blocks (tiering, SnapLock, aggregates).
+A complete AwsFsxOntapVolume kind covering the full `aws_fsx_ontap_volume` Terraform resource surface, including all three optional configuration blocks (tiering, SnapLock, aggregates).
 
-### Component Architecture
+### Kind Architecture
 
 ```mermaid
 flowchart TB
@@ -75,9 +75,9 @@ flowchart TB
 
 - **`size_in_megabytes` only** — excluded `size_in_bytes` (for >2 PB volumes). Int32 max covers ~2.1 PB, which is sufficient for 99.9% of use cases
 - **Explicit `name` field** — ONTAP volume names (alphanumeric + underscore) are incompatible with Planton metadata names (hyphens), same pattern as the SVM sibling
-- **`volume_type` excluded** — always "ONTAP" in this context, implicit from component name
+- **`volume_type` excluded** — always "ONTAP" in this context, implicit from kind name
 - **`final_backup_tags` excluded** — deletion-time tag configuration, very niche
-- **SnapLock included** — despite 3-level nesting, this is ONTAP's flagship compliance feature. Excluding it would make the component incomplete for its primary enterprise use case
+- **SnapLock included** — despite 3-level nesting, this is ONTAP's flagship compliance feature. Excluding it would make the kind incomplete for its primary enterprise use case
 
 ## Benefits
 
@@ -88,13 +88,13 @@ flowchart TB
 
 ## Impact
 
-- Completes the FSx ONTAP component family (R29a-R29f: 6 components)
-- Completes the entire AWS resource expansion (R01-R32: 35 new components + F1-F6 fixes)
-- Enables future infra charts combining ONTAP file systems, SVMs, and volumes
+- Completes the FSx ONTAP kind family (R29a-R29f: 6 kinds)
+- Completes the entire AWS resource expansion (R01-R32: 35 new kinds + F1-F6 fixes)
+- Enables future Infra Charts combining ONTAP file systems, SVMs, and volumes
 
 ## Related Work
 
-- `2026-02-16-152255-aws-fsx-ontap-storage-virtual-machine.md` — Parent SVM component
+- `2026-02-16-152255-aws-fsx-ontap-storage-virtual-machine.md` — Parent SVM kind
 - `2026-02-16-*-aws-fsx-ontap-file-system.md` — Grandparent file system component
 - Project: `20260215.02.sp.aws-resource-expansion` — AWS expansion sub-project (now complete)
 

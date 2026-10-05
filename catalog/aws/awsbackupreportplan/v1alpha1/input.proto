@@ -5,9 +5,9 @@ package dev.planton.aws.awsbackupreportplan.v1alpha1;
 import "catalog/aws/awsbackupreportplan/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBackupReportPlanStackInput is the input for the IaC modules that
+// AwsBackupReportPlanIacInput is the input for the IaC modules that
 // manage a Backup Audit Manager report plan.
-message AwsBackupReportPlanStackInput {
+message AwsBackupReportPlanIacInput {
   // target is the AwsBackupReportPlan resource to deploy.
   AwsBackupReportPlan target = 1;
   // provider_config contains the AWS provider credentials and configuration.

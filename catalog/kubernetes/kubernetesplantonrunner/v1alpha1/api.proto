@@ -22,7 +22,7 @@ message KubernetesPlantonRunner {
 
   // metadata captures identifying information (name, org, version, etc.)
   // and must pass standard validations for resource naming.
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec holds the core configuration defining where the runner lives,
   // how big it is, which build it runs, and the token it joins with.
@@ -37,5 +37,5 @@ message KubernetesPlantonRunner {
 message KubernetesPlantonRunnerStatus {
   // outputs captures the outputs returned by Pulumi/Terraform after
   // provisioning.
-  KubernetesPlantonRunnerStackOutputs outputs = 1;
+  KubernetesPlantonRunnerOutputs outputs = 1;
 }

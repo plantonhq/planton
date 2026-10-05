@@ -5,10 +5,10 @@ package dev.planton.aws.awsegressonlyinternetgateway.v1alpha1;
 import "catalog/aws/awsegressonlyinternetgateway/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsEgressOnlyInternetGatewayStackInput is the input to the IaC modules (Pulumi
+// AwsEgressOnlyInternetGatewayIacInput is the input to the IaC modules (Pulumi
 // / Terraform) that deploy an AwsEgressOnlyInternetGateway resource.
-message AwsEgressOnlyInternetGatewayStackInput {
-  // target cloud-resource
+message AwsEgressOnlyInternetGatewayIacInput {
+  // the catalog object to deploy
   AwsEgressOnlyInternetGateway target = 1;
   // provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

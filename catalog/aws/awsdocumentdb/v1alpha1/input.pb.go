@@ -22,8 +22,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsDocumentDbStackInput is the input for the IaC modules that deploy the DocumentDB cluster.
-type AwsDocumentDbStackInput struct {
+// AwsDocumentDbIacInput is the input for the IaC modules that deploy the DocumentDB cluster.
+type AwsDocumentDbIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsDocumentDb resource to deploy.
 	Target *AwsDocumentDb `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -33,20 +33,20 @@ type AwsDocumentDbStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsDocumentDbStackInput) Reset() {
-	*x = AwsDocumentDbStackInput{}
+func (x *AwsDocumentDbIacInput) Reset() {
+	*x = AwsDocumentDbIacInput{}
 	mi := &file_catalog_aws_awsdocumentdb_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsDocumentDbStackInput) String() string {
+func (x *AwsDocumentDbIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsDocumentDbStackInput) ProtoMessage() {}
+func (*AwsDocumentDbIacInput) ProtoMessage() {}
 
-func (x *AwsDocumentDbStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsDocumentDbIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsdocumentdb_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsDocumentDbStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsDocumentDbStackInput.ProtoReflect.Descriptor instead.
-func (*AwsDocumentDbStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsDocumentDbIacInput.ProtoReflect.Descriptor instead.
+func (*AwsDocumentDbIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsdocumentdb_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsDocumentDbStackInput) GetTarget() *AwsDocumentDb {
+func (x *AwsDocumentDbIacInput) GetTarget() *AwsDocumentDb {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsDocumentDbStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsDocumentDbIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awsdocumentdb_v1alpha1_input_proto protoreflect.FileDescrip
 
 const file_catalog_aws_awsdocumentdb_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	".catalog/aws/awsdocumentdb/v1alpha1/input.proto\x12&dev.planton.aws.awsdocumentdb.v1alpha1\x1a,catalog/aws/awsdocumentdb/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb5\x01\n" +
-	"\x17AwsDocumentDbStackInput\x12M\n" +
+	".catalog/aws/awsdocumentdb/v1alpha1/input.proto\x12&dev.planton.aws.awsdocumentdb.v1alpha1\x1a,catalog/aws/awsdocumentdb/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb3\x01\n" +
+	"\x15AwsDocumentDbIacInput\x12M\n" +
 	"\x06target\x18\x01 \x01(\v25.dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xcc\x02\n" +
 	"*com.dev.planton.aws.awsdocumentdb.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awsdocumentdb_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsdocumentdb_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsdocumentdb_v1alpha1_input_proto_goTypes = []any{
-	(*AwsDocumentDbStackInput)(nil), // 0: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbStackInput
-	(*AwsDocumentDb)(nil),           // 1: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDb
-	(*aws.AwsProviderConfig)(nil),   // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsDocumentDbIacInput)(nil), // 0: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbIacInput
+	(*AwsDocumentDb)(nil),         // 1: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDb
+	(*aws.AwsProviderConfig)(nil), // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsdocumentdb_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbStackInput.target:type_name -> dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDb
-	2, // 1: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbIacInput.target:type_name -> dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDb
+	2, // 1: dev.planton.aws.awsdocumentdb.v1alpha1.AwsDocumentDbIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

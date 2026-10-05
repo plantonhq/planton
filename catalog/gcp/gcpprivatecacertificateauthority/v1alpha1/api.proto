@@ -16,7 +16,7 @@ message GcpPrivateCaCertificateAuthority {
   string kind = 2 [(buf.validate.field).string.const = 'GcpPrivateCaCertificateAuthority'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   GcpPrivateCaCertificateAuthoritySpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message GcpPrivateCaCertificateAuthority {
 
 //GcpPrivateCaCertificateAuthority status
 message GcpPrivateCaCertificateAuthorityStatus {
-  //stack-outputs
-  GcpPrivateCaCertificateAuthorityStackOutputs outputs = 1;
+  //outputs
+  GcpPrivateCaCertificateAuthorityOutputs outputs = 1;
 }

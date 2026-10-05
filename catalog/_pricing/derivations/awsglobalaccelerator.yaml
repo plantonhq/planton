@@ -6,9 +6,9 @@
 # the provider's price book (../pricebook/). The accelerator's fixed fee is
 # globally uniform (the offer prices it for location "Any"); the two
 # AWS-allocated static IPv4 addresses bill as in-use public IPv4 addresses
-# at the uniform standard rate. Schema: finops/componentcostderivation/v1.
+# at the uniform standard rate. Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsglobalaccelerator
 spec:

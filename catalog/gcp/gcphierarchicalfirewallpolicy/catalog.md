@@ -4,7 +4,7 @@ Creates a hierarchical firewall policy: an ordered set of firewall rules that li
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Firewall policy** -- the `compute_firewall_policy` container on the organization or folder, named by Google with a server-assigned numeric ID
 - **Rules** -- one `compute_firewall_policy_rule` per `rules` entry, keyed by priority
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module whose identity holds `roles/compute.orgFirewallPolicyAdmin` on the organization (or on the folder the policy lives under and every folder it is associated with). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module whose identity holds `roles/compute.orgFirewallPolicyAdmin` on the organization (or on the folder the policy lives under and every folder it is associated with). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Organization
 
@@ -71,7 +71,7 @@ spec:
 planton apply -f org-baseline.yaml
 ```
 
-This creates a policy under the organization with two rules -- a logged deny of SSH from anywhere, then a delegation of everything else -- and enforces it on the whole organization, guarded against accidental destroy. A Stack Job tracks the provisioning in real time.
+This creates a policy under the organization with two rules -- a logged deny of SSH from anywhere, then a delegation of everything else -- and enforces it on the whole organization, guarded against accidental destroy. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -132,7 +132,7 @@ These are the most important decisions when configuring a hierarchical policy. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -141,9 +141,9 @@ These are the most important decisions when configuring a hierarchical policy. E
 | **GcpTagValue** | `rules[].targetSecureTags[]`, `rules[].match.srcSecureTags[]` | `status.outputs.name` |
 | **GcpServiceAccount** | `rules[].targetServiceAccounts[]` | `status.outputs.email` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -166,8 +166,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Network Firewall Policy**](/cloud-catalog/gcp-network-firewall-policy) -- the project-level policy attached to VPC networks, evaluated after this one
-- [**GCP Folder**](/cloud-catalog/gcp-folder) -- the folder a policy lives under or is enforced on
-- [**GCP Tag Value**](/cloud-catalog/gcp-tag-value) -- the secure tags rules key on
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the networks `targetResources` and `srcNetworks` reference
-- [**GCP Firewall Rule**](/cloud-catalog/gcp-firewall-rule) -- legacy per-network rules, evaluated last
+- [**GCP Network Firewall Policy**](/infra-catalog/gcp-network-firewall-policy) -- the project-level policy attached to VPC networks, evaluated after this one
+- [**GCP Folder**](/infra-catalog/gcp-folder) -- the folder a policy lives under or is enforced on
+- [**GCP Tag Value**](/infra-catalog/gcp-tag-value) -- the secure tags rules key on
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the networks `targetResources` and `srcNetworks` reference
+- [**GCP Firewall Rule**](/infra-catalog/gcp-firewall-rule) -- legacy per-network rules, evaluated last

@@ -10,11 +10,11 @@ Provisions a private-network peering between exactly two VPCs -- the complete `d
 
 ## Inputs
 
-`DigitalOceanVpcPeeringStackInput`: the target `DigitalOceanVpcPeering` resource and the DigitalOcean provider config (API token).
+`DigitalOceanVpcPeeringIacInput`: the target `DigitalOceanVpcPeering` resource and the DigitalOcean provider config (API token).
 
 ## Outputs
 
-Exactly the `DigitalOceanVpcPeeringStackOutputs` contract: `peering_id` (Pulumi's resource id). The SDK's `Status` property is deliberately not exported (the resource waits for ACTIVE, so a stored status could only ever say ACTIVE and would go stale; live status belongs to whoever reads the API).
+Exactly the `DigitalOceanVpcPeeringOutputs` contract: `peering_id` (Pulumi's resource id). The SDK's `Status` property is deliberately not exported (the resource waits for ACTIVE, so a stored status could only ever say ACTIVE and would go stale; live status belongs to whoever reads the API).
 
 ## Behavior notes
 

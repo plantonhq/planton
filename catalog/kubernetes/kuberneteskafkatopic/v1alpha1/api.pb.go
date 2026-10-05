@@ -31,7 +31,7 @@ type KubernetesKafkaTopic struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesKafkaTopicSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesKafkaTopic) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesKafkaTopic) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesKafkaTopic) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesKafkaTopic) GetStatus() *KubernetesKafkaTopicStatus {
 // kubernetes-kafka-topic status
 type KubernetesKafkaTopicStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesKafkaTopicStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesKafkaTopicOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesKafkaTopicStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesKafkaTopicStatus) GetOutputs() *KubernetesKafkaTopicStackOutputs {
+func (x *KubernetesKafkaTopicStatus) GetOutputs() *KubernetesKafkaTopicOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_api_proto_rawDesc = 
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14KubernetesKafkaTopicR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
 	"\x04spec\x18\x04 \x01(\v2N.dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12h\n" +
-	"\x06status\x18\x05 \x01(\v2P.dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicStatusR\x06status\"\x8e\x01\n" +
-	"\x1aKubernetesKafkaTopicStatus\x12p\n" +
-	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2P.dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicStatusR\x06status\"\x89\x01\n" +
+	"\x1aKubernetesKafkaTopicStatus\x12k\n" +
+	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicOutputsR\aoutputsB\xa5\x03\n" +
 	"8com.dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1B\bApiProtoP\x01Zjgithub.com/plantonhq/planton/catalog/kubernetes/kuberneteskafkatopic/v1alpha1;kuberneteskafkatopicv1alpha1\xa2\x02\x04DPKK\xaa\x024Dev.Planton.Kubernetes.Kuberneteskafkatopic.V1alpha1\xca\x024Dev\\Planton\\Kubernetes\\Kuberneteskafkatopic\\V1alpha1\xe2\x02@Dev\\Planton\\Kubernetes\\Kuberneteskafkatopic\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Kubernetes::Kuberneteskafkatopic::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_api_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesKafkaTopic)(nil),             // 0: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopic
-	(*KubernetesKafkaTopicStatus)(nil),       // 1: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesKafkaTopicSpec)(nil),         // 3: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicSpec
-	(*KubernetesKafkaTopicStackOutputs)(nil), // 4: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicStackOutputs
+	(*KubernetesKafkaTopic)(nil),         // 0: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopic
+	(*KubernetesKafkaTopicStatus)(nil),   // 1: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesKafkaTopicSpec)(nil),     // 3: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicSpec
+	(*KubernetesKafkaTopicOutputs)(nil),  // 4: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicOutputs
 }
 var file_catalog_kubernetes_kuberneteskafkatopic_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopic.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopic.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopic.spec:type_name -> dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicSpec
 	1, // 2: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopic.status:type_name -> dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicStatus
-	4, // 3: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicStackOutputs
+	4, // 3: dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicStatus.outputs:type_name -> dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1.KubernetesKafkaTopicOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

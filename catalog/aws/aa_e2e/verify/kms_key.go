@@ -18,7 +18,7 @@ import (
 // PendingDeletion/PendingReplicaDeletion states -- otherwise verify-absent
 // could never pass within a test run's lifetime.
 //
-// When the stack outputs report grants (the grant_ids map, keyed by spec
+// When the outputs report grants (the grant_ids map, keyed by spec
 // position), existence is asserted per grant via ListGrants -- CreateGrant
 // returning is not proof the grant landed on the key. Absence asserts the
 // grants are gone FIRST (the module's default teardown REVOKES each grant --

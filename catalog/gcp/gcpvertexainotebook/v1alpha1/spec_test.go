@@ -30,7 +30,7 @@ var _ = ginkgo.Describe("GcpVertexAiNotebookSpec", func() {
 		return &GcpVertexAiNotebook{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVertexAiNotebook",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-notebook",
 			},
 			Spec: &GcpVertexAiNotebookSpec{
@@ -575,7 +575,7 @@ var _ = ginkgo.Describe("GcpVertexAiNotebookSpec", func() {
 		msg := &GcpVertexAiNotebook{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVertexAiNotebook",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-notebook",
 			},
 		}

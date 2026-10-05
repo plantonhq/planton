@@ -4,7 +4,7 @@ Deploys a Qdrant vector database — the engine behind semantic search, RAG retr
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** — created (with the standard Planton governance labels) only when `createNamespace` is `true`; otherwise the namespace must already exist
 - **Qdrant Helm Release** — the official chart at the pinned `chartVersion` (default 1.18.2), which creates:
@@ -12,14 +12,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
   - a **ClusterIP Service** carrying REST 6333 and gRPC 6334 — what in-cluster clients use, and what the exported endpoints point at; exposure beyond the cluster composes from first-class kinds (KubernetesIngress, Gateway API) over the exported service handle
   - a **PersistentVolumeClaim per pod** for the data volume (10Gi on the cluster's default StorageClass unless configured) — vectors, payloads, and the write-ahead log
   - a **separate snapshots PVC per pod** — only when the `snapshots` block is declared; otherwise snapshots land on the data volume and can fill it
-- **API-key Secret** — when a key uses the `generate` arm, the chart mints it ONCE at first install (stable across upgrades) and keeps it in the chart-owned Secret; key material never enters a manifest, and the Secret name is exported in the stack outputs
+- **API-key Secret** — when a key uses the `generate` arm, the chart mints it ONCE at first install (stable across upgrades) and keeps it in the chart-owned Secret; key material never enters a manifest, and the Secret name is exported in the outputs
 - **ServiceMonitor** — only when `serviceMonitorEnabled` is `true` (requires the Prometheus Operator CRDs on the cluster)
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** — an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** — an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -78,7 +78,7 @@ This creates a production-shaped 3-node cluster: the quorum posture (Raft surviv
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the cluster to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the cluster to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -112,7 +112,7 @@ These are the most important decisions when configuring Qdrant. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -120,9 +120,9 @@ These are the most important decisions when configuring Qdrant. Explore the full
 | **KubernetesStorageClass** | `storage.storageClass`, `snapshots.storageClass` | `status.outputs.storage_class_name` |
 | **KubernetesCertificate** | `tls.secret` | `status.outputs.secret_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -147,7 +147,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — provides the namespace for the cluster
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) — fast storage for the data volume, cold storage for snapshots
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) — cert-manager-issued TLS Secrets for the client listeners
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) — composes exposure over the exported service handle instead of a direct LoadBalancer
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — provides the namespace for the cluster
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) — fast storage for the data volume, cold storage for snapshots
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) — cert-manager-issued TLS Secrets for the client listeners
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) — composes exposure over the exported service handle instead of a direct LoadBalancer

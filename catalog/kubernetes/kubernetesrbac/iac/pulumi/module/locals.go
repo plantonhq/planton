@@ -22,8 +22,8 @@ type Locals struct {
 	// Context for Pulumi operations
 	Ctx *pulumi.Context
 
-	// Stack input containing the target resource
-	StackInput *kubernetesrbacv1alpha1.KubernetesRbacStackInput
+	// IaC input containing the target resource
+	IacInput *kubernetesrbacv1alpha1.KubernetesRbacIacInput
 
 	// Target RBAC grant resource
 	Target *kubernetesrbacv1alpha1.KubernetesRbac
@@ -61,12 +61,12 @@ type Locals struct {
 
 // initializeLocals resolves the three orthogonal choices of the spec (scope, role
 // source, subjects) into concrete Kubernetes object names and kinds.
-func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesrbacv1alpha1.KubernetesRbacStackInput) (*Locals, error) {
+func initializeLocals(ctx *pulumi.Context, iacInput *kubernetesrbacv1alpha1.KubernetesRbacIacInput) (*Locals, error) {
 	locals := &Locals{
-		Ctx:        ctx,
-		StackInput: stackInput,
-		Target:     stackInput.Target,
-		Spec:       stackInput.Target.Spec,
+		Ctx:      ctx,
+		IacInput: iacInput,
+		Target:   iacInput.Target,
+		Spec:     iacInput.Target.Spec,
 	}
 
 	spec := locals.Spec

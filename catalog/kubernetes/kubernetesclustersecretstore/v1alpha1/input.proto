@@ -6,8 +6,8 @@ import "catalog/kubernetes/kubernetesclustersecretstore/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 //input for kubernetes-cluster-secret-store stack
-message KubernetesClusterSecretStoreStackInput {
-  //target cloud-resource
+message KubernetesClusterSecretStoreIacInput {
+  // the catalog object to deploy
   KubernetesClusterSecretStore target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

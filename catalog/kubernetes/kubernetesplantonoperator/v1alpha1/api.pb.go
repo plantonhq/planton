@@ -35,7 +35,7 @@ type KubernetesPlantonOperator struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesPlantonOperatorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -88,7 +88,7 @@ func (x *KubernetesPlantonOperator) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesPlantonOperator) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesPlantonOperator) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *KubernetesPlantonOperator) GetStatus() *KubernetesPlantonOperatorStatus
 // KubernetesPlantonOperatorStatus describes the observed state of KubernetesPlantonOperator.
 type KubernetesPlantonOperatorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesPlantonOperatorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesPlantonOperatorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*KubernetesPlantonOperatorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesPlantonOperatorStatus) GetOutputs() *KubernetesPlantonOperatorStackOutputs {
+func (x *KubernetesPlantonOperatorStatus) GetOutputs() *KubernetesPlantonOperatorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_api_proto_rawDe
 	"apiVersion\x124\n" +
 	"\x04kind\x18\x02 \x01(\tB \xbaH\x1dr\x1b\n" +
 	"\x19KubernetesPlantonOperatorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12t\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12t\n" +
 	"\x04spec\x18\x04 \x01(\v2X.dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12r\n" +
-	"\x06status\x18\x05 \x01(\v2Z.dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorStatusR\x06status\"\x9d\x01\n" +
-	"\x1fKubernetesPlantonOperatorStatus\x12z\n" +
-	"\aoutputs\x18\x01 \x01(\v2`.dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorStackOutputsR\aoutputsB\xc8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Z.dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorStatusR\x06status\"\x98\x01\n" +
+	"\x1fKubernetesPlantonOperatorStatus\x12u\n" +
+	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorOutputsR\aoutputsB\xc8\x03\n" +
 	"=com.dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1B\bApiProtoP\x01Ztgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesplantonoperator/v1alpha1;kubernetesplantonoperatorv1alpha1\xa2\x02\x04DPKK\xaa\x029Dev.Planton.Kubernetes.Kubernetesplantonoperator.V1alpha1\xca\x029Dev\\Planton\\Kubernetes\\Kubernetesplantonoperator\\V1alpha1\xe2\x02EDev\\Planton\\Kubernetes\\Kubernetesplantonoperator\\V1alpha1\\GPBMetadata\xea\x02=Dev::Planton::Kubernetes::Kubernetesplantonoperator::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_api_proto_rawDes
 
 var file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesPlantonOperator)(nil),             // 0: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperator
-	(*KubernetesPlantonOperatorStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorStatus
-	(*shared.CloudResourceMetadata)(nil),          // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesPlantonOperatorSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorSpec
-	(*KubernetesPlantonOperatorStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorStackOutputs
+	(*KubernetesPlantonOperator)(nil),        // 0: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperator
+	(*KubernetesPlantonOperatorStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorStatus
+	(*shared.CatalogObjectMetadata)(nil),     // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesPlantonOperatorSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorSpec
+	(*KubernetesPlantonOperatorOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperator.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperator.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperator.spec:type_name -> dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorSpec
 	1, // 2: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperator.status:type_name -> dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorStatus
-	4, // 3: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

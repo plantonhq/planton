@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsauroradsql.v1alpha1;
 
-// AwsAuroraDsqlStackOutputs captures the observable state of the
+// AwsAuroraDsqlOutputs captures the observable state of the
 // Aurora DSQL cluster after apply.
-message AwsAuroraDsqlStackOutputs {
+message AwsAuroraDsqlOutputs {
   // The AWS-generated cluster identifier - the provider's import ID.
   string identifier = 1;
 

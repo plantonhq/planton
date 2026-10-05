@@ -23,7 +23,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awssecuritygroup
+    e2e-catalog-kind: awssecuritygroup
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/aws/awssecuritygroup/e2e/fixture-second-vpc.yaml"

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflareemailroutingaddress.v1alpha1;
 
-// CloudflareEmailRoutingAddressStackOutputs captures the outputs after creating a
+// CloudflareEmailRoutingAddressOutputs captures the outputs after creating a
 // destination address.
-message CloudflareEmailRoutingAddressStackOutputs {
+message CloudflareEmailRoutingAddressOutputs {
   // The Cloudflare-assigned identifier of the destination address.
   string address_id = 1;
 

@@ -3,4 +3,4 @@
 name: auth0-action
 runtime:
   name: go
-description: Pulumi module for Auth0Action component
+description: Pulumi module for Auth0Action kind

@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpServiceAccountStackOutputs surfaces the identity handles of the created
+// GcpServiceAccountOutputs surfaces the identity handles of the created
 // service account — everything a downstream resource could need to reference it.
-type GcpServiceAccountStackOutputs struct {
+type GcpServiceAccountOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The service account email: <service_account_id>@<project>.iam.gserviceaccount.com.
 	// The most common reference handle — workload configs (GKE, Cloud Run, Cloud
@@ -52,20 +52,20 @@ type GcpServiceAccountStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpServiceAccountStackOutputs) Reset() {
-	*x = GcpServiceAccountStackOutputs{}
+func (x *GcpServiceAccountOutputs) Reset() {
+	*x = GcpServiceAccountOutputs{}
 	mi := &file_catalog_gcp_gcpserviceaccount_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpServiceAccountStackOutputs) String() string {
+func (x *GcpServiceAccountOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpServiceAccountStackOutputs) ProtoMessage() {}
+func (*GcpServiceAccountOutputs) ProtoMessage() {}
 
-func (x *GcpServiceAccountStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpServiceAccountOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpserviceaccount_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -77,40 +77,40 @@ func (x *GcpServiceAccountStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpServiceAccountStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpServiceAccountStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpServiceAccountOutputs.ProtoReflect.Descriptor instead.
+func (*GcpServiceAccountOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpserviceaccount_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpServiceAccountStackOutputs) GetEmail() string {
+func (x *GcpServiceAccountOutputs) GetEmail() string {
 	if x != nil {
 		return x.Email
 	}
 	return ""
 }
 
-func (x *GcpServiceAccountStackOutputs) GetMember() string {
+func (x *GcpServiceAccountOutputs) GetMember() string {
 	if x != nil {
 		return x.Member
 	}
 	return ""
 }
 
-func (x *GcpServiceAccountStackOutputs) GetUniqueId() string {
+func (x *GcpServiceAccountOutputs) GetUniqueId() string {
 	if x != nil {
 		return x.UniqueId
 	}
 	return ""
 }
 
-func (x *GcpServiceAccountStackOutputs) GetName() string {
+func (x *GcpServiceAccountOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpServiceAccountStackOutputs) GetKeyBase64() string {
+func (x *GcpServiceAccountOutputs) GetKeyBase64() string {
 	if x != nil {
 		return x.KeyBase64
 	}
@@ -121,8 +121,8 @@ var File_catalog_gcp_gcpserviceaccount_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_gcp_gcpserviceaccount_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpserviceaccount/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpserviceaccount.v1alpha1\x1a\x1cshared/options/options.proto\"\xa3\x01\n" +
-	"\x1dGcpServiceAccountStackOutputs\x12\x14\n" +
+	"4catalog/gcp/gcpserviceaccount/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpserviceaccount.v1alpha1\x1a\x1cshared/options/options.proto\"\x9e\x01\n" +
+	"\x18GcpServiceAccountOutputs\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x16\n" +
 	"\x06member\x18\x02 \x01(\tR\x06member\x12\x1b\n" +
 	"\tunique_id\x18\x03 \x01(\tR\buniqueId\x12\x12\n" +
@@ -145,7 +145,7 @@ func file_catalog_gcp_gcpserviceaccount_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_gcp_gcpserviceaccount_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpserviceaccount_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpServiceAccountStackOutputs)(nil), // 0: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountStackOutputs
+	(*GcpServiceAccountOutputs)(nil), // 0: dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountOutputs
 }
 var file_catalog_gcp_gcpserviceaccount_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

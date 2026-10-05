@@ -25,7 +25,7 @@ framework's deployment lands `FAILED` (visible in the console's
 deployment status, not as an apply error).
 
 The compliance REPORT the framework feeds is deliberately NOT part of
-this component — see [AwsBackupReportPlan](../awsbackupreportplan).
+this kind — see [AwsBackupReportPlan](../awsbackupreportplan).
 
 See [v1alpha1/reference.md](v1alpha1/reference.md) for the full field
 reference generated from the spec proto.

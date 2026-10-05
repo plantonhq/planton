@@ -12,8 +12,8 @@ type Locals struct {
 	GcpIdentityPlatformConfig *gcpidentityplatformconfigv1alpha1.GcpIdentityPlatformConfig
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpidentityplatformconfigv1alpha1.GcpIdentityPlatformConfigStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpidentityplatformconfigv1alpha1.GcpIdentityPlatformConfigIacInput) *Locals {
 	return &Locals{
-		GcpIdentityPlatformConfig: stackInput.Target,
+		GcpIdentityPlatformConfig: iacInput.Target,
 	}
 }

@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesReferenceGrantStackOutputs captures observable outputs after the
+// KubernetesReferenceGrantOutputs captures observable outputs after the
 // ReferenceGrant is created on the target cluster. ReferenceGrant has NO status
 // subresource upstream (the Gateway API project deliberately omitted it), so there
 // is no controller-managed status to reconcile or surface -- only the identifying
 // coordinates are exported.
-type KubernetesReferenceGrantStackOutputs struct {
+type KubernetesReferenceGrantOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created ReferenceGrant (equals metadata.name). In InfraCharts this
 	// lets the grant be referenced as a low-dependency leaf that consumers
@@ -40,20 +40,20 @@ type KubernetesReferenceGrantStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesReferenceGrantStackOutputs) Reset() {
-	*x = KubernetesReferenceGrantStackOutputs{}
+func (x *KubernetesReferenceGrantOutputs) Reset() {
+	*x = KubernetesReferenceGrantOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesreferencegrant_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesReferenceGrantStackOutputs) String() string {
+func (x *KubernetesReferenceGrantOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesReferenceGrantStackOutputs) ProtoMessage() {}
+func (*KubernetesReferenceGrantOutputs) ProtoMessage() {}
 
-func (x *KubernetesReferenceGrantStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesReferenceGrantOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesreferencegrant_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,19 +65,19 @@ func (x *KubernetesReferenceGrantStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesReferenceGrantStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesReferenceGrantStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesReferenceGrantOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesReferenceGrantOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesreferencegrant_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesReferenceGrantStackOutputs) GetReferenceGrantName() string {
+func (x *KubernetesReferenceGrantOutputs) GetReferenceGrantName() string {
 	if x != nil {
 		return x.ReferenceGrantName
 	}
 	return ""
 }
 
-func (x *KubernetesReferenceGrantStackOutputs) GetNamespace() string {
+func (x *KubernetesReferenceGrantOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -88,8 +88,8 @@ var File_catalog_kubernetes_kubernetesreferencegrant_v1alpha1_outputs_proto prot
 
 const file_catalog_kubernetes_kubernetesreferencegrant_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/kubernetes/kubernetesreferencegrant/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetesreferencegrant.v1alpha1\"v\n" +
-	"$KubernetesReferenceGrantStackOutputs\x120\n" +
+	"Bcatalog/kubernetes/kubernetesreferencegrant/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetesreferencegrant.v1alpha1\"q\n" +
+	"\x1fKubernetesReferenceGrantOutputs\x120\n" +
 	"\x14reference_grant_name\x18\x01 \x01(\tR\x12referenceGrantName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\xc5\x03\n" +
 	"<com.dev.planton.kubernetes.kubernetesreferencegrant.v1alpha1B\fOutputsProtoP\x01Zrgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesreferencegrant/v1alpha1;kubernetesreferencegrantv1alpha1\xa2\x02\x04DPKK\xaa\x028Dev.Planton.Kubernetes.Kubernetesreferencegrant.V1alpha1\xca\x028Dev\\Planton\\Kubernetes\\Kubernetesreferencegrant\\V1alpha1\xe2\x02DDev\\Planton\\Kubernetes\\Kubernetesreferencegrant\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Kubernetes::Kubernetesreferencegrant::V1alpha1b\x06proto3"
@@ -108,7 +108,7 @@ func file_catalog_kubernetes_kubernetesreferencegrant_v1alpha1_outputs_proto_raw
 
 var file_catalog_kubernetes_kubernetesreferencegrant_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesreferencegrant_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesReferenceGrantStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesreferencegrant.v1alpha1.KubernetesReferenceGrantStackOutputs
+	(*KubernetesReferenceGrantOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesreferencegrant.v1alpha1.KubernetesReferenceGrantOutputs
 }
 var file_catalog_kubernetes_kubernetesreferencegrant_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

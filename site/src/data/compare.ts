@@ -107,9 +107,9 @@ export const COMPARE: ComparePage = {
       both: 'Keep the orchestrator for the Terraform you already run outside Planton. Your Terraform stays yours: the modules are open-source Terraform and Pulumi, and what you already run is adopted, not rewritten.',
       planton: [
         // Chapter 11's claim; the validation the Coding Agents page already documents.
-        { label: 'Typed Self-Service, Not Authoring', text: 'Every component is a typed schema over an open-source module. A person or an agent writes a short manifest, the schema validates it before anything touches your cloud, and the module that runs is the same one every time.' },
+        { label: 'Typed Self-Service, Not Authoring', text: 'Every kind is a typed schema over an open-source module. A person or an agent writes a short manifest, the schema validates it before anything touches your cloud, and the module that runs is the same one every time.' },
         // Chapter 11, proof 1, second sentence
-        { label: 'One Vocabulary, Not a Hundred Field Names', text: 'Every covered component reports its controls against the same fixed list of 17, so what you check is one vocabulary, not each kind\u2019s field names.' },
+        { label: 'One Vocabulary, Not a Hundred Field Names', text: 'Every covered kind reports its controls against the same fixed list of 17, so what you check is one vocabulary, not each kind\u2019s field names.' },
         { label: 'Every Door Obeys the Same Rules', text: rules.claim },
       ],
       provenAt: '/product/open-source',
@@ -134,7 +134,7 @@ export const COMPARE: ComparePage = {
     {
       // Chapters 2 and 11. The engines are named as the CLI runs them: the Terraform module runs under OpenTofu or Terraform, the other module under Pulumi.
       question: 'Why not just Terraform?',
-      answer: 'Planton does not compete with Terraform; it runs the modules. Every component ships with a pre-written, tested open-source module in Terraform, which OpenTofu or Terraform runs, and another for Pulumi, and you choose the engine without changing your manifest. What changes is who writes what: the manifest is yours, short and typed; the module is Planton\u2019s, and it does the rest.',
+      answer: 'Planton does not compete with Terraform; it runs the modules. Every kind ships with a pre-written, tested open-source module in Terraform, which OpenTofu or Terraform runs, and another for Pulumi, and you choose the engine without changing your manifest. What changes is who writes what: the manifest is yours, short and typed; the module is Planton\u2019s, and it does the rest.',
       readMore: '/product/open-source',
     },
     {
@@ -146,7 +146,7 @@ export const COMPARE: ComparePage = {
     {
       // Chapter 5
       question: 'Is it a set of operators reconciling my cluster?',
-      answer: 'No. Nothing runs in your cluster watching your resources. Every change is one stack job: it plans, pauses at the gates you set, applies from a runner in your own network, and is kept and queryable with the exact configuration embedded. A control loop cannot naturally pause between the plan and the apply; a job can, and that pause is where your approvals live. The trade is that nothing self-heals: a job runs when a person, a push, or an agent asks.',
+      answer: 'No. Nothing runs in your cluster watching your resources. Every change is one Infra Job: it plans, pauses at the gates you set, applies from a runner in your own network, and is kept and queryable with the exact configuration embedded. A control loop cannot naturally pause between the plan and the apply; a job can, and that pause is where your approvals live. The trade is that nothing self-heals: a job runs when a person, a push, or an agent asks.',
       readMore: '/trust/the-record',
     },
   ],

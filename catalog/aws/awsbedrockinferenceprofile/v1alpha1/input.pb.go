@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockInferenceProfileStackInput is the input for the IaC modules
+// AwsBedrockInferenceProfileIacInput is the input for the IaC modules
 // that deploy the Bedrock inference profile.
-type AwsBedrockInferenceProfileStackInput struct {
+type AwsBedrockInferenceProfileIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsBedrockInferenceProfile resource to deploy.
 	Target *AwsBedrockInferenceProfile `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsBedrockInferenceProfileStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBedrockInferenceProfileStackInput) Reset() {
-	*x = AwsBedrockInferenceProfileStackInput{}
+func (x *AwsBedrockInferenceProfileIacInput) Reset() {
+	*x = AwsBedrockInferenceProfileIacInput{}
 	mi := &file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockInferenceProfileStackInput) String() string {
+func (x *AwsBedrockInferenceProfileIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockInferenceProfileStackInput) ProtoMessage() {}
+func (*AwsBedrockInferenceProfileIacInput) ProtoMessage() {}
 
-func (x *AwsBedrockInferenceProfileStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockInferenceProfileIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBedrockInferenceProfileStackInput) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockInferenceProfileStackInput.ProtoReflect.Descriptor instead.
-func (*AwsBedrockInferenceProfileStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockInferenceProfileIacInput.ProtoReflect.Descriptor instead.
+func (*AwsBedrockInferenceProfileIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockInferenceProfileStackInput) GetTarget() *AwsBedrockInferenceProfile {
+func (x *AwsBedrockInferenceProfileIacInput) GetTarget() *AwsBedrockInferenceProfile {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsBedrockInferenceProfileStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsBedrockInferenceProfileIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbedrockinferenceprofile_v1alpha1_input_proto protoreflec
 
 const file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awsbedrockinferenceprofile/v1alpha1/input.proto\x123dev.planton.aws.awsbedrockinferenceprofile.v1alpha1\x1a9catalog/aws/awsbedrockinferenceprofile/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xdc\x01\n" +
-	"$AwsBedrockInferenceProfileStackInput\x12g\n" +
+	";catalog/aws/awsbedrockinferenceprofile/v1alpha1/input.proto\x123dev.planton.aws.awsbedrockinferenceprofile.v1alpha1\x1a9catalog/aws/awsbedrockinferenceprofile/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xda\x01\n" +
+	"\"AwsBedrockInferenceProfileIacInput\x12g\n" +
 	"\x06target\x18\x01 \x01(\v2O.dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xa7\x03\n" +
 	"7com.dev.planton.aws.awsbedrockinferenceprofile.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_input_proto_goTypes = []any{
-	(*AwsBedrockInferenceProfileStackInput)(nil), // 0: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileStackInput
-	(*AwsBedrockInferenceProfile)(nil),           // 1: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfile
-	(*aws.AwsProviderConfig)(nil),                // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsBedrockInferenceProfileIacInput)(nil), // 0: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileIacInput
+	(*AwsBedrockInferenceProfile)(nil),         // 1: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfile
+	(*aws.AwsProviderConfig)(nil),              // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsbedrockinferenceprofile_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileStackInput.target:type_name -> dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfile
-	2, // 1: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileIacInput.target:type_name -> dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfile
+	2, // 1: dev.planton.aws.awsbedrockinferenceprofile.v1alpha1.AwsBedrockInferenceProfileIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

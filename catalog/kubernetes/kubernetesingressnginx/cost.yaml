@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kubernetesingressnginx
 spec:
@@ -22,7 +22,7 @@ spec:
       impact: daemon_set switches the controller to ONE POD PER (SELECTED) NODE -- the reservation multiplies by node count, which grows with the cluster rather than with this manifest.
     - field_path: service.type
       sku_meter: cloud load balancer
-      impact: The default load_balancer makes the host cloud provision a load balancer for the controller Service -- a real, separately-billed cloud resource (hourly plus data processing on AWS/GCP/Azure), shaped entirely by service.annotations. node_port and cluster_ip provision nothing.
+      impact: The default load_balancer makes the host cloud provision a load balancer for the controller Service -- a real, separately-billed provider resource (hourly plus data processing on AWS/GCP/Azure), shaped entirely by service.annotations. node_port and cluster_ip provision nothing.
     - field_path: service.internal.enabled
       sku_meter: cloud load balancer
       impact: Adds the chart's SECOND, internal load-balancer Service alongside the external one -- a second billed cloud load balancer answering a private address from the same pods.

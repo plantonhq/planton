@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsiaminstanceprofile
 spec:
   billing_model: free
   free_tier: An instance profile is the IAM container that delivers a role to EC2 instances, and IAM is a feature of the AWS account offered at no additional charge -- no meter counts profiles, the role they carry, or the credential vending the instance metadata service performs against them. One profile on one instance or one profile shared across a thousand-node Auto Scaling group costs identically nothing.
-  notes: "No field of this spec buys anything: the carried role reference and the path are IAM control-plane configuration. The real spend lives on either side of the profile -- the EC2 instances launched with it bill per-instance-hour as their own catalog kind, and whatever the delivered role's credentials CALL bills on those services' meters. The role itself (AwsIamRole) is equally free; nothing in the identity-delivery chain ever appears on an invoice."
+  notes: "No field of this spec buys anything: the carried role reference and the path are IAM control-plane configuration. The real spend lives on either side of the profile -- the EC2 instances launched with it bill per-instance-hour as their own component, and whatever the delivered role's credentials CALL bills on those services' meters. The role itself (AwsIamRole) is equally free; nothing in the identity-delivery chain ever appears on an invoice."

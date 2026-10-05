@@ -1,6 +1,6 @@
 # DNS-Validated Certificate with External DNS
 
-This preset requests an ACM certificate for a domain whose DNS lives outside Route53 (Cloudflare, a registrar's DNS, an on-prem zone). The deployment creates the certificate and finishes without waiting: the certificate rests in `PENDING_VALIDATION`, and the exact CNAME records to create are exported as the `domain_validation_records` stack output. Once the records exist in your DNS, ACM issues the certificate -- and renews it automatically for as long as the records stay in place.
+This preset requests an ACM certificate for a domain whose DNS lives outside Route53 (Cloudflare, a registrar's DNS, an on-prem zone). The deployment creates the certificate and finishes without waiting: the certificate rests in `PENDING_VALIDATION`, and the exact CNAME records to create are exported as the `domain_validation_records` output. Once the records exist in your DNS, ACM issues the certificate -- and renews it automatically for as long as the records stay in place.
 
 ## When to Use
 
@@ -23,7 +23,7 @@ This preset requests an ACM certificate for a domain whose DNS lives outside Rou
 
 ## After Deploying
 
-1. Read the `domain_validation_records` stack output -- one CNAME per domain.
+1. Read the `domain_validation_records` output -- one CNAME per domain.
 2. Create each record in your DNS provider exactly as given.
 3. ACM detects the records (typically within minutes) and flips the certificate to `ISSUED`.
 

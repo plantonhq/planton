@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecosmosdbsqlroledefinition.v1alpha1;
 
-// **AzureCosmosdbSqlRoleDefinitionStackOutputs** captures the outputs of
+// **AzureCosmosdbSqlRoleDefinitionOutputs** captures the outputs of
 // provisioning a Cosmos DB SQL role definition. The fully-scoped ARM
 // resource ID is the definition's identity for composition -- it is
 // exactly what a Cosmos DB SQL role assignment binds -- and the
 // GUID/name coordinates are exported so downstream automation can reason
 // about the role without re-reading the spec.
-message AzureCosmosdbSqlRoleDefinitionStackOutputs {
+message AzureCosmosdbSqlRoleDefinitionOutputs {
   // The fully-scoped Azure Resource Manager ID of the role definition.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DocumentDB/databaseAccounts/{account}/sqlRoleDefinitions/{guid}
   // This is the value an AzureCosmosdbSqlRoleAssignment's

@@ -1,4 +1,4 @@
-# The component defaults: the web-UI login ON with the
+# The kind defaults: the web-UI login ON with the
 # module-generated credential (upstream's open, anyone-can-start-tests
 # UI never ships), one worker, an inline locustfile swarming the
 # composed podinfo fixture. Co-located with the fixture's namespace

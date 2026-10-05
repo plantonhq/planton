@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureVirtualMachineStackOutputs** captures the outputs of provisioning
+// **AzureVirtualMachineOutputs** captures the outputs of provisioning
 // an Azure Virtual Machine.
-type AzureVirtualMachineStackOutputs struct {
+type AzureVirtualMachineOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the VM -- what role assignments,
 	// diagnostics, and backup policies scope to.
@@ -51,20 +51,20 @@ type AzureVirtualMachineStackOutputs struct {
 	sizeCache                         protoimpl.SizeCache
 }
 
-func (x *AzureVirtualMachineStackOutputs) Reset() {
-	*x = AzureVirtualMachineStackOutputs{}
+func (x *AzureVirtualMachineOutputs) Reset() {
+	*x = AzureVirtualMachineOutputs{}
 	mi := &file_catalog_azure_azurevirtualmachine_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVirtualMachineStackOutputs) String() string {
+func (x *AzureVirtualMachineOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVirtualMachineStackOutputs) ProtoMessage() {}
+func (*AzureVirtualMachineOutputs) ProtoMessage() {}
 
-func (x *AzureVirtualMachineStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureVirtualMachineOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevirtualmachine_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -76,54 +76,54 @@ func (x *AzureVirtualMachineStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVirtualMachineStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureVirtualMachineStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVirtualMachineOutputs.ProtoReflect.Descriptor instead.
+func (*AzureVirtualMachineOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualmachine_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVirtualMachineStackOutputs) GetVmId() string {
+func (x *AzureVirtualMachineOutputs) GetVmId() string {
 	if x != nil {
 		return x.VmId
 	}
 	return ""
 }
 
-func (x *AzureVirtualMachineStackOutputs) GetVmName() string {
+func (x *AzureVirtualMachineOutputs) GetVmName() string {
 	if x != nil {
 		return x.VmName
 	}
 	return ""
 }
 
-func (x *AzureVirtualMachineStackOutputs) GetVirtualMachineGuid() string {
+func (x *AzureVirtualMachineOutputs) GetVirtualMachineGuid() string {
 	if x != nil {
 		return x.VirtualMachineGuid
 	}
 	return ""
 }
 
-func (x *AzureVirtualMachineStackOutputs) GetPrivateIpAddress() string {
+func (x *AzureVirtualMachineOutputs) GetPrivateIpAddress() string {
 	if x != nil {
 		return x.PrivateIpAddress
 	}
 	return ""
 }
 
-func (x *AzureVirtualMachineStackOutputs) GetPublicIpAddress() string {
+func (x *AzureVirtualMachineOutputs) GetPublicIpAddress() string {
 	if x != nil {
 		return x.PublicIpAddress
 	}
 	return ""
 }
 
-func (x *AzureVirtualMachineStackOutputs) GetComputerName() string {
+func (x *AzureVirtualMachineOutputs) GetComputerName() string {
 	if x != nil {
 		return x.ComputerName
 	}
 	return ""
 }
 
-func (x *AzureVirtualMachineStackOutputs) GetSystemAssignedIdentityPrincipalId() string {
+func (x *AzureVirtualMachineOutputs) GetSystemAssignedIdentityPrincipalId() string {
 	if x != nil {
 		return x.SystemAssignedIdentityPrincipalId
 	}
@@ -134,8 +134,8 @@ var File_catalog_azure_azurevirtualmachine_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_azure_azurevirtualmachine_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/azure/azurevirtualmachine/v1alpha1/outputs.proto\x12.dev.planton.azure.azurevirtualmachine.v1alpha1\"\xd2\x02\n" +
-	"\x1fAzureVirtualMachineStackOutputs\x12\x13\n" +
+	"8catalog/azure/azurevirtualmachine/v1alpha1/outputs.proto\x12.dev.planton.azure.azurevirtualmachine.v1alpha1\"\xcd\x02\n" +
+	"\x1aAzureVirtualMachineOutputs\x12\x13\n" +
 	"\x05vm_id\x18\x01 \x01(\tR\x04vmId\x12\x17\n" +
 	"\avm_name\x18\x02 \x01(\tR\x06vmName\x120\n" +
 	"\x14virtual_machine_guid\x18\x03 \x01(\tR\x12virtualMachineGuid\x12,\n" +
@@ -159,7 +159,7 @@ func file_catalog_azure_azurevirtualmachine_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_azure_azurevirtualmachine_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurevirtualmachine_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureVirtualMachineStackOutputs)(nil), // 0: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineStackOutputs
+	(*AzureVirtualMachineOutputs)(nil), // 0: dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineOutputs
 }
 var file_catalog_azure_azurevirtualmachine_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

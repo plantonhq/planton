@@ -80,7 +80,7 @@ The `build` target no longer calls `copy-docs` separately since `yarn build` is 
 
 ### CI Workflow Changes
 
-Both `release.website.yaml` and `auto-release.website.yaml` had a 3-line `Copy component documentation` step removed. The build contract is now: `yarn build` produces a complete, deployable `out/` directory.
+Both `release.website.yaml` and `auto-release.website.yaml` had a 3-line `Copy kind documentation` step removed. The build contract is now: `yarn build` produces a complete, deployable `out/` directory.
 
 ### New Manual Deploy Workflow
 

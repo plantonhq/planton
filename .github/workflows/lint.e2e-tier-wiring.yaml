@@ -1,7 +1,7 @@
 # =============================================================================
 # E2E Tier-Wiring Guard
 # =============================================================================
-# Fails the PR when a Kubernetes component with a runnable E2E profile is not
+# Fails the PR when a Kubernetes kind with a runnable E2E profile is not
 # fully wired into the E2E tiers: both engine test entrypoints must exist in
 # e2e/kubernetes_test.go, and each entrypoint's base name must appear in a
 # Makefile e2e-test-kubernetes-tier* -run regex. The wiring is three

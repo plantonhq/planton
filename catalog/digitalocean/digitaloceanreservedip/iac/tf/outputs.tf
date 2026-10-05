@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanReservedIpStackOutputs contract,
+# Outputs — exactly the DigitalOceanReservedIpOutputs contract,
 # identical across both provisioners. The address IS the resource identity
 # (imports and API lookups address the reservation by it).
 

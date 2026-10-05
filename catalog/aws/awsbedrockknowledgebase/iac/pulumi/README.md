@@ -30,4 +30,4 @@ using Pulumi (Go).
 ## Usage
 
 The module is executed by the Planton platform through the entrypoint in
-`main.go`, which loads the `AwsBedrockKnowledgeBaseStackInput`.
+`main.go`, which loads the `AwsBedrockKnowledgeBaseIacInput`.

@@ -10,7 +10,7 @@ Created the Cloud Ops documentation section (3 new pages) and rewrote the Servic
 
 ## Problem Statement / Motivation
 
-Cloud Ops is a shipped, daily-use feature that lets developers and operators inspect pods, stream logs, exec into containers, and browse cloud resources — all without distributing credentials. Despite being one of Planton's most distinctive capabilities (dual-mode access, credential-free operations via Runner Tunnel), it had no documentation whatsoever.
+Cloud Ops is a shipped, daily-use feature that lets developers and operators inspect pods, stream logs, exec into containers, and browse provider resources — all without distributing credentials. Despite being one of Planton's most distinctive capabilities (dual-mode access, credential-free operations via Runner Tunnel), it had no documentation whatsoever.
 
 Additionally, the existing `service-hub/kubernetes-dashboard.md` page described Cloud Ops features but was marketing-heavy, referenced "Planton" inconsistently, included unverified "Coming Soon" sections for ECS and Cloud Run dashboards, and contained fabricated troubleshooting scenarios.
 
@@ -29,7 +29,7 @@ Additionally, the existing `service-hub/kubernetes-dashboard.md` page described 
 
 **`cloud-ops/kubernetes-operations.md`** — Comprehensive Kubernetes operations reference. Covers pod viewing, log streaming with filters, browser-based container exec, resource browsing with DAG visualization, resource editing and deletion. Includes full CLI reference with all flags documented from Go source.
 
-**`cloud-ops/resource-browser.md`** — Multi-cloud resource browsing for AWS (EC2, S3), GCP (Compute Engine, Cloud Storage), and Azure (VMs, Blob Storage). Complete CLI reference for all 8 provider commands with exact flags, filter syntax, and connection resolution.
+**`cloud-ops/resource-browser.md`** — Provider resource browsing for AWS (EC2, S3), GCP (Compute Engine, Cloud Storage), and Azure (VMs, Blob Storage). Complete CLI reference for all 8 provider commands with exact flags, filter syntax, and connection resolution.
 
 ### 1 Page Rewritten
 

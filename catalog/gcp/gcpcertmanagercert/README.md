@@ -103,7 +103,7 @@ planton tofu apply --manifest certificate.yaml
 4. **Rotate self-managed material in place** — consumers reference the
    certificate by name and never notice the swap.
 
-## Related Components
+## Related Kinds
 
 - **GcpCertManagerDnsAuthorization** — the domain-control proof this
   certificate references

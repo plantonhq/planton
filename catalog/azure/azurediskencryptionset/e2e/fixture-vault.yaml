@@ -1,7 +1,7 @@
 # A purge-protection-enabled Key Vault for the disk encryption set. Azure
 # requires purge protection on any vault backing disk encryption. NOTE: a
 # purge-protected vault cannot be purged on teardown (Azure holds it 7+
-# days), which is why this component's live E2E is profile-deferred -- this
+# days), which is why this kind's live E2E is profile-deferred -- this
 # fixture is here for a throwaway-subscription run only.
 apiVersion: azure.planton.dev/v1alpha1
 kind: AzureKeyVault
@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurekeyvault
+    e2e-catalog-kind: azurekeyvault
   annotations:
     planton.dev/e2e: "true"
   tags:

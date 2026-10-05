@@ -1,5 +1,5 @@
 # AzureVirtualNetwork install profile used as a prerequisite by composed
-# components (declared via prerequisites: [AzureVirtualNetwork] in the kind
+# kinds (declared via prerequisites: [AzureVirtualNetwork] in the kind
 # registry). The E2E harness deploys this document (via the network's Pulumi
 # module) after its own prerequisite (the fixture resource group, whose name
 # the resource_group reference below addresses), and captures its outputs --
@@ -17,7 +17,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurevirtualnetwork
+    e2e-catalog-kind: azurevirtualnetwork
   annotations:
     planton.dev/e2e: "true"
   tags:

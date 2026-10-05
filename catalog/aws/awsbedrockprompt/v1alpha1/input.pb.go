@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockPromptStackInput is the input for the IaC modules that deploy
+// AwsBedrockPromptIacInput is the input for the IaC modules that deploy
 // the Bedrock prompt.
-type AwsBedrockPromptStackInput struct {
+type AwsBedrockPromptIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsBedrockPrompt resource to deploy.
 	Target *AwsBedrockPrompt `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsBedrockPromptStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBedrockPromptStackInput) Reset() {
-	*x = AwsBedrockPromptStackInput{}
+func (x *AwsBedrockPromptIacInput) Reset() {
+	*x = AwsBedrockPromptIacInput{}
 	mi := &file_catalog_aws_awsbedrockprompt_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockPromptStackInput) String() string {
+func (x *AwsBedrockPromptIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockPromptStackInput) ProtoMessage() {}
+func (*AwsBedrockPromptIacInput) ProtoMessage() {}
 
-func (x *AwsBedrockPromptStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockPromptIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockprompt_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBedrockPromptStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockPromptStackInput.ProtoReflect.Descriptor instead.
-func (*AwsBedrockPromptStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockPromptIacInput.ProtoReflect.Descriptor instead.
+func (*AwsBedrockPromptIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockprompt_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockPromptStackInput) GetTarget() *AwsBedrockPrompt {
+func (x *AwsBedrockPromptIacInput) GetTarget() *AwsBedrockPrompt {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsBedrockPromptStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsBedrockPromptIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbedrockprompt_v1alpha1_input_proto protoreflect.FileDesc
 
 const file_catalog_aws_awsbedrockprompt_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/aws/awsbedrockprompt/v1alpha1/input.proto\x12)dev.planton.aws.awsbedrockprompt.v1alpha1\x1a/catalog/aws/awsbedrockprompt/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xbe\x01\n" +
-	"\x1aAwsBedrockPromptStackInput\x12S\n" +
+	"1catalog/aws/awsbedrockprompt/v1alpha1/input.proto\x12)dev.planton.aws.awsbedrockprompt.v1alpha1\x1a/catalog/aws/awsbedrockprompt/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xbc\x01\n" +
+	"\x18AwsBedrockPromptIacInput\x12S\n" +
 	"\x06target\x18\x01 \x01(\v2;.dev.planton.aws.awsbedrockprompt.v1alpha1.AwsBedrockPromptR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xe1\x02\n" +
 	"-com.dev.planton.aws.awsbedrockprompt.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsbedrockprompt_v1alpha1_input_proto_rawDescGZIP() []byte
 
 var file_catalog_aws_awsbedrockprompt_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockprompt_v1alpha1_input_proto_goTypes = []any{
-	(*AwsBedrockPromptStackInput)(nil), // 0: dev.planton.aws.awsbedrockprompt.v1alpha1.AwsBedrockPromptStackInput
-	(*AwsBedrockPrompt)(nil),           // 1: dev.planton.aws.awsbedrockprompt.v1alpha1.AwsBedrockPrompt
-	(*aws.AwsProviderConfig)(nil),      // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsBedrockPromptIacInput)(nil), // 0: dev.planton.aws.awsbedrockprompt.v1alpha1.AwsBedrockPromptIacInput
+	(*AwsBedrockPrompt)(nil),         // 1: dev.planton.aws.awsbedrockprompt.v1alpha1.AwsBedrockPrompt
+	(*aws.AwsProviderConfig)(nil),    // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsbedrockprompt_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockprompt.v1alpha1.AwsBedrockPromptStackInput.target:type_name -> dev.planton.aws.awsbedrockprompt.v1alpha1.AwsBedrockPrompt
-	2, // 1: dev.planton.aws.awsbedrockprompt.v1alpha1.AwsBedrockPromptStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsbedrockprompt.v1alpha1.AwsBedrockPromptIacInput.target:type_name -> dev.planton.aws.awsbedrockprompt.v1alpha1.AwsBedrockPrompt
+	2, // 1: dev.planton.aws.awsbedrockprompt.v1alpha1.AwsBedrockPromptIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

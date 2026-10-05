@@ -22,11 +22,11 @@ const (
 )
 
 // *
-// **KubernetesManifestStackOutputs** captures the observable handles of an
+// **KubernetesManifestOutputs** captures the observable handles of an
 // applied raw manifest. The resource inventory is derived by parsing the
 // input YAML — identically on both engines — so downstream tooling can see
 // WHAT was applied without re-parsing the manifest itself.
-type KubernetesManifestStackOutputs struct {
+type KubernetesManifestOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The anchor namespace: where namespaced documents without an explicit
 	// metadata.namespace were applied.
@@ -40,20 +40,20 @@ type KubernetesManifestStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *KubernetesManifestStackOutputs) Reset() {
-	*x = KubernetesManifestStackOutputs{}
+func (x *KubernetesManifestOutputs) Reset() {
+	*x = KubernetesManifestOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesmanifest_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesManifestStackOutputs) String() string {
+func (x *KubernetesManifestOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesManifestStackOutputs) ProtoMessage() {}
+func (*KubernetesManifestOutputs) ProtoMessage() {}
 
-func (x *KubernetesManifestStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesManifestOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesmanifest_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,19 +65,19 @@ func (x *KubernetesManifestStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesManifestStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesManifestStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesManifestOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesManifestOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesmanifest_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesManifestStackOutputs) GetNamespace() string {
+func (x *KubernetesManifestOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesManifestStackOutputs) GetAppliedResources() []string {
+func (x *KubernetesManifestOutputs) GetAppliedResources() []string {
 	if x != nil {
 		return x.AppliedResources
 	}
@@ -88,8 +88,8 @@ var File_catalog_kubernetes_kubernetesmanifest_v1alpha1_outputs_proto protorefle
 
 const file_catalog_kubernetes_kubernetesmanifest_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kubernetesmanifest/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kubernetesmanifest.v1alpha1\"k\n" +
-	"\x1eKubernetesManifestStackOutputs\x12\x1c\n" +
+	"<catalog/kubernetes/kubernetesmanifest/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kubernetesmanifest.v1alpha1\"f\n" +
+	"\x19KubernetesManifestOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12+\n" +
 	"\x11applied_resources\x18\x02 \x03(\tR\x10appliedResourcesB\x9b\x03\n" +
 	"6com.dev.planton.kubernetes.kubernetesmanifest.v1alpha1B\fOutputsProtoP\x01Zfgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesmanifest/v1alpha1;kubernetesmanifestv1alpha1\xa2\x02\x04DPKK\xaa\x022Dev.Planton.Kubernetes.Kubernetesmanifest.V1alpha1\xca\x022Dev\\Planton\\Kubernetes\\Kubernetesmanifest\\V1alpha1\xe2\x02>Dev\\Planton\\Kubernetes\\Kubernetesmanifest\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Kubernetes::Kubernetesmanifest::V1alpha1b\x06proto3"
@@ -108,7 +108,7 @@ func file_catalog_kubernetes_kubernetesmanifest_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_kubernetes_kubernetesmanifest_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesmanifest_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesManifestStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestStackOutputs
+	(*KubernetesManifestOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesmanifest.v1alpha1.KubernetesManifestOutputs
 }
 var file_catalog_kubernetes_kubernetesmanifest_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -3,5 +3,5 @@
 name: auth0-event-stream
 runtime:
   name: go
-description: Pulumi module for Auth0EventStream component
+description: Pulumi module for Auth0EventStream kind
 

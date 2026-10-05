@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsbedrockknowledgebase
 spec:
@@ -10,13 +10,13 @@ spec:
   values:
     - name: knowledge_base_id
       derivations:
-        - from_stack_output: knowledge_base_id
+        - from_output: knowledge_base_id
       where_to_find: >-
         Bedrock console -> Knowledge bases -> <knowledge base> (the ID),
         or `aws bedrock-agent list-knowledge-bases` (knowledgeBaseId).
     - name: data_source_id
       derivations:
-        - from_stack_output_keyed_by_address: data_source_ids
+        - from_output_keyed_by_address: data_source_ids
       where_to_find: >-
         `aws bedrock-agent list-data-sources --knowledge-base-id <id>`
         lists dataSourceId per source; match each to its

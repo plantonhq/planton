@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSesAccountSettingsStackOutputs captures the observable identity
+// AwsSesAccountSettingsOutputs captures the observable identity
 // of the region's SES account settings.
-type AwsSesAccountSettingsStackOutputs struct {
+type AwsSesAccountSettingsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The 12-digit AWS account ID the settings belong to (also the
 	// provider's import ID for the suppression singleton).
@@ -32,20 +32,20 @@ type AwsSesAccountSettingsStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsSesAccountSettingsStackOutputs) Reset() {
-	*x = AwsSesAccountSettingsStackOutputs{}
+func (x *AwsSesAccountSettingsOutputs) Reset() {
+	*x = AwsSesAccountSettingsOutputs{}
 	mi := &file_catalog_aws_awssesaccountsettings_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSesAccountSettingsStackOutputs) String() string {
+func (x *AwsSesAccountSettingsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSesAccountSettingsStackOutputs) ProtoMessage() {}
+func (*AwsSesAccountSettingsOutputs) ProtoMessage() {}
 
-func (x *AwsSesAccountSettingsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSesAccountSettingsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssesaccountsettings_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,12 +57,12 @@ func (x *AwsSesAccountSettingsStackOutputs) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSesAccountSettingsStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSesAccountSettingsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSesAccountSettingsOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSesAccountSettingsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssesaccountsettings_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSesAccountSettingsStackOutputs) GetAccountId() string {
+func (x *AwsSesAccountSettingsOutputs) GetAccountId() string {
 	if x != nil {
 		return x.AccountId
 	}
@@ -73,8 +73,8 @@ var File_catalog_aws_awssesaccountsettings_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_aws_awssesaccountsettings_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awssesaccountsettings/v1alpha1/outputs.proto\x12.dev.planton.aws.awssesaccountsettings.v1alpha1\"B\n" +
-	"!AwsSesAccountSettingsStackOutputs\x12\x1d\n" +
+	"8catalog/aws/awssesaccountsettings/v1alpha1/outputs.proto\x12.dev.planton.aws.awssesaccountsettings.v1alpha1\"=\n" +
+	"\x1cAwsSesAccountSettingsOutputs\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x01 \x01(\tR\taccountIdB\x86\x03\n" +
 	"2com.dev.planton.aws.awssesaccountsettings.v1alpha1B\fOutputsProtoP\x01Zegithub.com/plantonhq/planton/catalog/aws/awssesaccountsettings/v1alpha1;awssesaccountsettingsv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Aws.Awssesaccountsettings.V1alpha1\xca\x02.Dev\\Planton\\Aws\\Awssesaccountsettings\\V1alpha1\xe2\x02:Dev\\Planton\\Aws\\Awssesaccountsettings\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Aws::Awssesaccountsettings::V1alpha1b\x06proto3"
@@ -93,7 +93,7 @@ func file_catalog_aws_awssesaccountsettings_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_aws_awssesaccountsettings_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssesaccountsettings_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSesAccountSettingsStackOutputs)(nil), // 0: dev.planton.aws.awssesaccountsettings.v1alpha1.AwsSesAccountSettingsStackOutputs
+	(*AwsSesAccountSettingsOutputs)(nil), // 0: dev.planton.aws.awssesaccountsettings.v1alpha1.AwsSesAccountSettingsOutputs
 }
 var file_catalog_aws_awssesaccountsettings_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

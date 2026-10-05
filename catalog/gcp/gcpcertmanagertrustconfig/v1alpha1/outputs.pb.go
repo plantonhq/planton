@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a Certificate Manager trust config.
-type GcpCertManagerTrustConfigStackOutputs struct {
+type GcpCertManagerTrustConfigOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name of the trust config
 	// (projects/{project}/locations/{location}/trustConfigs/{name}) -- the
@@ -38,20 +38,20 @@ type GcpCertManagerTrustConfigStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpCertManagerTrustConfigStackOutputs) Reset() {
-	*x = GcpCertManagerTrustConfigStackOutputs{}
+func (x *GcpCertManagerTrustConfigOutputs) Reset() {
+	*x = GcpCertManagerTrustConfigOutputs{}
 	mi := &file_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCertManagerTrustConfigStackOutputs) String() string {
+func (x *GcpCertManagerTrustConfigOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCertManagerTrustConfigStackOutputs) ProtoMessage() {}
+func (*GcpCertManagerTrustConfigOutputs) ProtoMessage() {}
 
-func (x *GcpCertManagerTrustConfigStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCertManagerTrustConfigOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *GcpCertManagerTrustConfigStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCertManagerTrustConfigStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCertManagerTrustConfigStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCertManagerTrustConfigOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCertManagerTrustConfigOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCertManagerTrustConfigStackOutputs) GetTrustConfigId() string {
+func (x *GcpCertManagerTrustConfigOutputs) GetTrustConfigId() string {
 	if x != nil {
 		return x.TrustConfigId
 	}
 	return ""
 }
 
-func (x *GcpCertManagerTrustConfigStackOutputs) GetTrustConfigName() string {
+func (x *GcpCertManagerTrustConfigOutputs) GetTrustConfigName() string {
 	if x != nil {
 		return x.TrustConfigName
 	}
 	return ""
 }
 
-func (x *GcpCertManagerTrustConfigStackOutputs) GetLocation() string {
+func (x *GcpCertManagerTrustConfigOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -93,8 +93,8 @@ var File_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_outputs_proto protorefle
 
 const file_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/gcp/gcpcertmanagertrustconfig/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1\"\x97\x01\n" +
-	"%GcpCertManagerTrustConfigStackOutputs\x12&\n" +
+	"<catalog/gcp/gcpcertmanagertrustconfig/v1alpha1/outputs.proto\x122dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1\"\x92\x01\n" +
+	" GcpCertManagerTrustConfigOutputs\x12&\n" +
 	"\x0ftrust_config_id\x18\x01 \x01(\tR\rtrustConfigId\x12*\n" +
 	"\x11trust_config_name\x18\x02 \x01(\tR\x0ftrustConfigName\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocationB\xa2\x03\n" +
@@ -114,7 +114,7 @@ func file_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCertManagerTrustConfigStackOutputs)(nil), // 0: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigStackOutputs
+	(*GcpCertManagerTrustConfigOutputs)(nil), // 0: dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1.GcpCertManagerTrustConfigOutputs
 }
 var file_catalog_gcp_gcpcertmanagertrustconfig_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

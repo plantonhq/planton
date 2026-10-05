@@ -51,11 +51,11 @@ import (
 // KeycloakRealmImport / KeycloakOidcClient / KeycloakSamlClient CR on
 // the cluster. Always destroy KubernetesKeycloak resources FIRST while
 // the operator still runs.
-func Resources(ctx *pulumi.Context, stackInput *kuberneteskeycloakoperatorv1alpha1.KubernetesKeycloakOperatorStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kuberneteskeycloakoperatorv1alpha1.KubernetesKeycloakOperatorIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}

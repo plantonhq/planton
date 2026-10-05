@@ -20,7 +20,7 @@ the repository policy.
 
 ## How It Works
 
-The module receives an `AwsEcrRepoStackInput` (the manifest plus provider
+The module receives an `AwsEcrRepoIacInput` (the manifest plus provider
 credentials), builds the AWS provider through the shared builder, and
 renders the repository from the spec. Send conditions match the Terraform
 module argument-for-argument: optional scalars pass through only when

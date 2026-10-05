@@ -40,7 +40,7 @@ var _ = ginkgo.Describe("GcpDataprocAutoscalingPolicySpec", func() {
 		return &GcpDataprocAutoscalingPolicy{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpDataprocAutoscalingPolicy",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-autoscaling-policy",
 			},
 			Spec: &GcpDataprocAutoscalingPolicySpec{

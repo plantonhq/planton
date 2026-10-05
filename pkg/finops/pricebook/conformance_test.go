@@ -41,7 +41,7 @@ var (
 //     duplicate identity would turn every match into an ambiguity
 //     refusal.
 //
-// Whether entries are actually referenced (and agree with component cost
+// Whether entries are actually referenced (and agree with kind cost
 // profiles on units) is the estimate generator's cross-artifact check --
 // this gate keeps each book internally sound.
 func TestPriceBookConformance(t *testing.T) {

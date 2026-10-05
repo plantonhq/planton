@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsAuroraDsqlStackOutputs captures the observable state of the
+// AwsAuroraDsqlOutputs captures the observable state of the
 // Aurora DSQL cluster after apply.
-type AwsAuroraDsqlStackOutputs struct {
+type AwsAuroraDsqlOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS-generated cluster identifier - the provider's import ID.
 	Identifier string `protobuf:"bytes,1,opt,name=identifier,proto3" json:"identifier,omitempty"`
@@ -46,20 +46,20 @@ type AwsAuroraDsqlStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsAuroraDsqlStackOutputs) Reset() {
-	*x = AwsAuroraDsqlStackOutputs{}
+func (x *AwsAuroraDsqlOutputs) Reset() {
+	*x = AwsAuroraDsqlOutputs{}
 	mi := &file_catalog_aws_awsauroradsql_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsAuroraDsqlStackOutputs) String() string {
+func (x *AwsAuroraDsqlOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsAuroraDsqlStackOutputs) ProtoMessage() {}
+func (*AwsAuroraDsqlOutputs) ProtoMessage() {}
 
-func (x *AwsAuroraDsqlStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsAuroraDsqlOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsauroradsql_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,40 +71,40 @@ func (x *AwsAuroraDsqlStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsAuroraDsqlStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsAuroraDsqlStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsAuroraDsqlOutputs.ProtoReflect.Descriptor instead.
+func (*AwsAuroraDsqlOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsauroradsql_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsAuroraDsqlStackOutputs) GetIdentifier() string {
+func (x *AwsAuroraDsqlOutputs) GetIdentifier() string {
 	if x != nil {
 		return x.Identifier
 	}
 	return ""
 }
 
-func (x *AwsAuroraDsqlStackOutputs) GetClusterArn() string {
+func (x *AwsAuroraDsqlOutputs) GetClusterArn() string {
 	if x != nil {
 		return x.ClusterArn
 	}
 	return ""
 }
 
-func (x *AwsAuroraDsqlStackOutputs) GetEndpoint() string {
+func (x *AwsAuroraDsqlOutputs) GetEndpoint() string {
 	if x != nil {
 		return x.Endpoint
 	}
 	return ""
 }
 
-func (x *AwsAuroraDsqlStackOutputs) GetVpcEndpointServiceName() string {
+func (x *AwsAuroraDsqlOutputs) GetVpcEndpointServiceName() string {
 	if x != nil {
 		return x.VpcEndpointServiceName
 	}
 	return ""
 }
 
-func (x *AwsAuroraDsqlStackOutputs) GetEncryptionType() string {
+func (x *AwsAuroraDsqlOutputs) GetEncryptionType() string {
 	if x != nil {
 		return x.EncryptionType
 	}
@@ -115,8 +115,8 @@ var File_catalog_aws_awsauroradsql_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awsauroradsql_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awsauroradsql/v1alpha1/outputs.proto\x12&dev.planton.aws.awsauroradsql.v1alpha1\"\xdc\x01\n" +
-	"\x19AwsAuroraDsqlStackOutputs\x12\x1e\n" +
+	"0catalog/aws/awsauroradsql/v1alpha1/outputs.proto\x12&dev.planton.aws.awsauroradsql.v1alpha1\"\xd7\x01\n" +
+	"\x14AwsAuroraDsqlOutputs\x12\x1e\n" +
 	"\n" +
 	"identifier\x18\x01 \x01(\tR\n" +
 	"identifier\x12\x1f\n" +
@@ -141,7 +141,7 @@ func file_catalog_aws_awsauroradsql_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsauroradsql_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsauroradsql_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsAuroraDsqlStackOutputs)(nil), // 0: dev.planton.aws.awsauroradsql.v1alpha1.AwsAuroraDsqlStackOutputs
+	(*AwsAuroraDsqlOutputs)(nil), // 0: dev.planton.aws.awsauroradsql.v1alpha1.AwsAuroraDsqlOutputs
 }
 var file_catalog_aws_awsauroradsql_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

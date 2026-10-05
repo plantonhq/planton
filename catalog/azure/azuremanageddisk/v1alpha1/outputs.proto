@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremanageddisk.v1alpha1;
 
-// **AzureManagedDiskStackOutputs** captures the outputs of provisioning an
+// **AzureManagedDiskOutputs** captures the outputs of provisioning an
 // Azure Managed Disk.
-message AzureManagedDiskStackOutputs {
+message AzureManagedDiskOutputs {
   // The Azure Resource Manager ID of the disk. This is the primary
   // output: AzureVirtualMachine's data_disk_attachments references it to
   // attach the disk.

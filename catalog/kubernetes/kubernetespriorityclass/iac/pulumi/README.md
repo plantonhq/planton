@@ -8,7 +8,7 @@ This Pulumi module creates and manages a Kubernetes `scheduling.k8s.io/v1` Prior
 
 ```
 iac/pulumi/
-├── main.go              # Entrypoint: loads stack input, calls module
+├── main.go              # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml          # Pulumi project configuration
 ├── Makefile             # Make targets for preview/up/down/refresh
 └── module/
@@ -20,14 +20,14 @@ iac/pulumi/
 
 ## How It Works
 
-1. **Stack Input Loading**: The entrypoint loads `KubernetesPriorityClassStackInput` from Pulumi config
+1. **IaC Input Loading**: The entrypoint loads `KubernetesPriorityClassIacInput` from Pulumi config
 2. **Locals Initialization**: `locals.go` computes:
    - Standard Planton labels merged with user labels (identity keys cannot be overridden)
    - User annotations
    - The resolved preemption policy: the API string for the explicit value, or the server default `PreemptLowerPriority` when the spec omits it
 3. **Provider Creation**: Kubernetes provider is initialized from `provider_config`
 4. **PriorityClass Creation**: A single `scheduling.k8s.io/v1` PriorityClass is created with the value, global-default flag, description, and preemption policy — with `DeleteBeforeReplace` set
-5. **Output Export**: Class name and value are exported as stack outputs
+5. **Output Export**: Class name and value are exported as outputs
 
 ## Semantics Preserved by the Module
 

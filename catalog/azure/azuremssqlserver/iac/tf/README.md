@@ -1,6 +1,6 @@
 # AzureMssqlServer - Terraform Module
 
-Terraform implementation for the AzureMssqlServer component.
+Terraform implementation for the AzureMssqlServer kind.
 
 ## Resources Created
 

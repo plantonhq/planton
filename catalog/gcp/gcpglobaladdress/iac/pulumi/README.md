@@ -31,7 +31,7 @@ iac/pulumi/
     ├── main.go       # Module coordinator
     ├── global_address.go  # Global address resource creation
     ├── locals.go     # Local values and labels
-    └── outputs.go    # Stack output constants
+    └── outputs.go    # Output constants
 ```
 
 ## Quick Start
@@ -45,7 +45,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the global address specification:
+Provide a `iac-input.yaml` with the global address specification:
 
 ```yaml
 target:
@@ -83,7 +83,7 @@ pulumi stack output creation_timestamp
 
 ## Inputs
 
-The module consumes `GcpGlobalAddressStackInput`, which includes:
+The module consumes `GcpGlobalAddressIacInput`, which includes:
 
 | Field | Required | Description |
 |-------|----------|-------------|
@@ -112,14 +112,14 @@ make update-deps   # Update Planton dependencies to latest
 
 ## Debugging
 
-Use `debug.sh` for local runs with a sample stack input:
+Use `debug.sh` for local runs with a sample IaC input:
 
 ```bash
 ./debug.sh preview
 ./debug.sh up
 ```
 
-Ensure `stack-input.yaml` exists in the current directory or is pointed to by the script. Enable verbose Pulumi logging with `PULUMI_DEBUG=1 pulumi preview`.
+Ensure `iac-input.yaml` exists in the current directory or is pointed to by the script. Enable verbose Pulumi logging with `PULUMI_DEBUG=1 pulumi preview`.
 
 ## Related
 

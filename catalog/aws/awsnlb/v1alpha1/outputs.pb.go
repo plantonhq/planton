@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsNlbStackOutputs captures observable identifiers from a
+// AwsNlbOutputs captures observable identifiers from a
 // provisioned Network Load Balancer, for listeners (which attach by ARN),
 // Route53 alias records, and Global Accelerator endpoints to reference.
-type AwsNlbStackOutputs struct {
+type AwsNlbOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// ARN of the Network Load Balancer. The primary handle other resources
 	// reference via status.outputs.load_balancer_arn -- listeners attach
@@ -45,20 +45,20 @@ type AwsNlbStackOutputs struct {
 	sizeCache                protoimpl.SizeCache
 }
 
-func (x *AwsNlbStackOutputs) Reset() {
-	*x = AwsNlbStackOutputs{}
+func (x *AwsNlbOutputs) Reset() {
+	*x = AwsNlbOutputs{}
 	mi := &file_catalog_aws_awsnlb_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsNlbStackOutputs) String() string {
+func (x *AwsNlbOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsNlbStackOutputs) ProtoMessage() {}
+func (*AwsNlbOutputs) ProtoMessage() {}
 
-func (x *AwsNlbStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsNlbOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsnlb_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,33 +70,33 @@ func (x *AwsNlbStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsNlbStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsNlbStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsNlbOutputs.ProtoReflect.Descriptor instead.
+func (*AwsNlbOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsnlb_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsNlbStackOutputs) GetLoadBalancerArn() string {
+func (x *AwsNlbOutputs) GetLoadBalancerArn() string {
 	if x != nil {
 		return x.LoadBalancerArn
 	}
 	return ""
 }
 
-func (x *AwsNlbStackOutputs) GetLoadBalancerName() string {
+func (x *AwsNlbOutputs) GetLoadBalancerName() string {
 	if x != nil {
 		return x.LoadBalancerName
 	}
 	return ""
 }
 
-func (x *AwsNlbStackOutputs) GetLoadBalancerDnsName() string {
+func (x *AwsNlbOutputs) GetLoadBalancerDnsName() string {
 	if x != nil {
 		return x.LoadBalancerDnsName
 	}
 	return ""
 }
 
-func (x *AwsNlbStackOutputs) GetLoadBalancerHostedZoneId() string {
+func (x *AwsNlbOutputs) GetLoadBalancerHostedZoneId() string {
 	if x != nil {
 		return x.LoadBalancerHostedZoneId
 	}
@@ -107,8 +107,8 @@ var File_catalog_aws_awsnlb_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_aws_awsnlb_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	")catalog/aws/awsnlb/v1alpha1/outputs.proto\x12\x1fdev.planton.aws.awsnlb.v1alpha1\"\xe3\x01\n" +
-	"\x12AwsNlbStackOutputs\x12*\n" +
+	")catalog/aws/awsnlb/v1alpha1/outputs.proto\x12\x1fdev.planton.aws.awsnlb.v1alpha1\"\xde\x01\n" +
+	"\rAwsNlbOutputs\x12*\n" +
 	"\x11load_balancer_arn\x18\x01 \x01(\tR\x0floadBalancerArn\x12,\n" +
 	"\x12load_balancer_name\x18\x02 \x01(\tR\x10loadBalancerName\x123\n" +
 	"\x16load_balancer_dns_name\x18\x03 \x01(\tR\x13loadBalancerDnsName\x12>\n" +
@@ -129,7 +129,7 @@ func file_catalog_aws_awsnlb_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awsnlb_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsnlb_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsNlbStackOutputs)(nil), // 0: dev.planton.aws.awsnlb.v1alpha1.AwsNlbStackOutputs
+	(*AwsNlbOutputs)(nil), // 0: dev.planton.aws.awsnlb.v1alpha1.AwsNlbOutputs
 }
 var file_catalog_aws_awsnlb_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

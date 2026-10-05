@@ -13,7 +13,7 @@ planton tofu apply --manifest ../../e2e/manifest.yaml --auto-approve
 planton tofu destroy --manifest ../../e2e/manifest.yaml --auto-approve
 ```
 
-Credentials are passed via the stack input through the CLI, not in `spec`.
+Credentials are passed via the IaC input through the CLI, not in `spec`.
 
 ## Files
 
@@ -21,7 +21,7 @@ Credentials are passed via the stack input through the CLI, not in `spec`.
 - `provider.tf` — provider setup
 - `locals.tf` — computed locals; `metadata.name` is the AWS user id
 - `main.tf` — `aws_elasticache_user`
-- `outputs.tf` — outputs matching `AwsElasticacheUserStackOutputs`
+- `outputs.tf` — outputs matching `AwsElasticacheUserOutputs`
 
 ## Examples
 

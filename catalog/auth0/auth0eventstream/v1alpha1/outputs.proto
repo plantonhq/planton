@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.auth0.auth0eventstream.v1alpha1;
 
-// Auth0EventStreamStackOutputs contains the outputs from an Auth0 Event Stream deployment.
+// Auth0EventStreamOutputs contains the outputs from an Auth0 Event Stream deployment.
 // These outputs provide essential identifiers and status information for monitoring
 // and integrating the event stream with downstream systems.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/event_stream#attributes-reference
 // https://www.pulumi.com/registry/packages/auth0/api-docs/eventstream/#outputs
-message Auth0EventStreamStackOutputs {
+message Auth0EventStreamOutputs {
   // id is the unique identifier of the Auth0 event stream.
   // This is used internally by Auth0 to identify the event stream.
   // Format: "est_XXXXXXXXXXXXXXXX"

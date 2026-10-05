@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcprouternat.v1alpha1;
 
 // Outputs produced after provisioning a GCP Cloud Router and NAT.
-message GcpRouterNatStackOutputs {
+message GcpRouterNatOutputs {
   // Name of the Cloud NAT gateway (as created in GCP).
   string name = 1;
 

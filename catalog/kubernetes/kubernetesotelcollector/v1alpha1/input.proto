@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesotelcollector.v1alpha1;
 import "catalog/kubernetes/kubernetesotelcollector/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//otel-collector-kubernetes stack-input
-message KubernetesOtelCollectorStackInput {
-  //target cloud-resource
+//otel-collector-kubernetes iac-input
+message KubernetesOtelCollectorIacInput {
+  // the catalog object to deploy
   KubernetesOtelCollector target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

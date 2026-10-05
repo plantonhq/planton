@@ -4,7 +4,7 @@ Stores a secret (a password, API key, connection string, or any small sensitive 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Key Vault secret** -- the versioned secret with its content-type hint, activation/expiry attributes, and tags (merged over the Planton-derived metadata tags; user values win, capped at 15 total)
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **The value's source** -- a managed secret (referenced as `$secret/<slug>`) or another resource's sensitive output via ValueFromRef; never a literal in the manifest.
 
 ### Azure Subscription
@@ -53,7 +53,7 @@ spec:
 planton apply -f secret.yaml
 ```
 
-This stores one secret in the vault with its value resolved from the managed secret at deploy time -- the manifest records that the secret exists and where it lives, never what it is. A Stack Job tracks the provisioning in real time.
+This stores one secret in the vault with its value resolved from the managed secret at deploy time -- the manifest records that the secret exists and where it lives, never what it is. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -93,14 +93,14 @@ These are the most important decisions when configuring a Key Vault secret. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureKeyVault** | `keyVaultId` | `status.outputs.key_vault_id` |
 | **Any credential-emitting resource** (e.g. AzureStorageAccount) | `value` | `status.outputs.primary_connection_string` (or the source's sensitive output) |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains the identifiers consumers reference to read the secret -- the VALUE is never an output:
 
@@ -122,7 +122,7 @@ After provisioning, `status.outputs` contains the identifiers consumers referenc
 
 ## Works With
 
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- the vault the secret lives in
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- a typical value source (connection strings and access keys worth vaulting)
-- [**Azure AI Search Service**](/cloud-catalog/azure-search-service) -- another value source (admin keys under a rotation policy)
-- [**Azure Function App Flex Consumption**](/cloud-catalog/azure-function-app-flex-consumption) -- consumes the secret at runtime through Key Vault references in app settings
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- the vault the secret lives in
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- a typical value source (connection strings and access keys worth vaulting)
+- [**Azure AI Search Service**](/infra-catalog/azure-search-service) -- another value source (admin keys under a rotation policy)
+- [**Azure Function App Flex Consumption**](/infra-catalog/azure-function-app-flex-consumption) -- consumes the secret at runtime through Key Vault references in app settings

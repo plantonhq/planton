@@ -8,7 +8,7 @@ import (
 )
 
 // catalogDatabase creates the Glue Data Catalog database and exports its
-// stack outputs.
+// outputs.
 //
 // A single metadata resource with three creation shapes: a regular database,
 // a resource link to a database shared from another account/region
@@ -99,7 +99,7 @@ func catalogDatabase(ctx *pulumi.Context, locals *Locals, provider *aws.Provider
 		return errors.Wrap(err, "failed to create Glue Catalog Database")
 	}
 
-	// Stack outputs (contract: AwsGlueCatalogDatabaseStackOutputs).
+	// Outputs (contract: AwsGlueCatalogDatabaseOutputs).
 	ctx.Export(OpDatabaseName, db.Name)
 	ctx.Export(OpDatabaseArn, db.Arn)
 	ctx.Export(OpCatalogId, db.CatalogId)

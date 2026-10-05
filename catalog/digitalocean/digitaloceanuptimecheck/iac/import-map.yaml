@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceanuptimecheck
 spec:
@@ -14,13 +14,13 @@ spec:
   values:
     - name: check_id
       derivations:
-        - from_stack_output: check_id
+        - from_output: check_id
       where_to_find: >-
         `doctl monitoring uptime list` (the ID column), or the check's page
         URL in the control panel's Monitoring -> Uptime section.
     - name: alert_id
       derivations:
-        - from_stack_output_keyed_by_address: alert_ids
+        - from_output_keyed_by_address: alert_ids
       where_to_find: >-
         The UUID of each alert row: the `alert_ids` output keyed by
         "<row index>-<alert name>", or `doctl monitoring uptime alert list

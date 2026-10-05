@@ -37,7 +37,7 @@ planton pulumi destroy \
 
 ## Examples
 
-See [`e2e/manifest.yaml`](../../e2e/manifest.yaml) and the component presets for
+See [`e2e/manifest.yaml`](../../e2e/manifest.yaml) and the kind's presets for
 sample manifests covering managed Route53 validation, external DNS, wildcard
 domains, and imported certificates.
 

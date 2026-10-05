@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesIssuerStackOutputs captures observable outputs after
+// KubernetesIssuerOutputs captures observable outputs after
 // the Issuer is created.
-type KubernetesIssuerStackOutputs struct {
+type KubernetesIssuerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace where the Issuer was created.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -37,20 +37,20 @@ type KubernetesIssuerStackOutputs struct {
 	sizeCache                protoimpl.SizeCache
 }
 
-func (x *KubernetesIssuerStackOutputs) Reset() {
-	*x = KubernetesIssuerStackOutputs{}
+func (x *KubernetesIssuerOutputs) Reset() {
+	*x = KubernetesIssuerOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesissuer_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesIssuerStackOutputs) String() string {
+func (x *KubernetesIssuerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesIssuerStackOutputs) ProtoMessage() {}
+func (*KubernetesIssuerOutputs) ProtoMessage() {}
 
-func (x *KubernetesIssuerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesIssuerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesissuer_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,26 +62,26 @@ func (x *KubernetesIssuerStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesIssuerStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesIssuerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesIssuerOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesIssuerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesissuer_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesIssuerStackOutputs) GetNamespace() string {
+func (x *KubernetesIssuerOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesIssuerStackOutputs) GetIssuerName() string {
+func (x *KubernetesIssuerOutputs) GetIssuerName() string {
 	if x != nil {
 		return x.IssuerName
 	}
 	return ""
 }
 
-func (x *KubernetesIssuerStackOutputs) GetAcmeAccountKeySecretName() string {
+func (x *KubernetesIssuerOutputs) GetAcmeAccountKeySecretName() string {
 	if x != nil {
 		return x.AcmeAccountKeySecretName
 	}
@@ -92,8 +92,8 @@ var File_catalog_kubernetes_kubernetesissuer_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_kubernetes_kubernetesissuer_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kubernetesissuer/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetesissuer.v1alpha1\"\x9d\x01\n" +
-	"\x1cKubernetesIssuerStackOutputs\x12\x1c\n" +
+	":catalog/kubernetes/kubernetesissuer/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetesissuer.v1alpha1\"\x98\x01\n" +
+	"\x17KubernetesIssuerOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x1f\n" +
 	"\vissuer_name\x18\x02 \x01(\tR\n" +
 	"issuerName\x12>\n" +
@@ -114,7 +114,7 @@ func file_catalog_kubernetes_kubernetesissuer_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetesissuer_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesissuer_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesIssuerStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerStackOutputs
+	(*KubernetesIssuerOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesissuer.v1alpha1.KubernetesIssuerOutputs
 }
 var file_catalog_kubernetes_kubernetesissuer_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

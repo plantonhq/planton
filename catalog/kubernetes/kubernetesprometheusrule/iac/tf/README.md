@@ -6,7 +6,7 @@ The converter hands the module the manifest's spec with its upstream keys, null 
 
 ## Prerequisites
 
-- The prometheus-operator CRDs on the cluster (see the `KubernetesKubePrometheusStack` component). `kubectl_manifest` needs no cluster connection at plan time, so the rule can be planned before the CRDs exist.
+- The prometheus-operator CRDs on the cluster (see the `KubernetesKubePrometheusStack` kind). `kubectl_manifest` needs no cluster connection at plan time, so the rule can be planned before the CRDs exist.
 - The target namespace (see `KubernetesNamespace`).
 
 ## Usage

@@ -27,7 +27,7 @@ func validIdp(spec *CloudflareZeroTrustAccessIdentityProviderSpec) *CloudflareZe
 	return &CloudflareZeroTrustAccessIdentityProvider{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustAccessIdentityProvider",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-idp",
 		},
 		Spec: spec,

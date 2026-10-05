@@ -3,7 +3,7 @@ package module
 import (
 	"strconv"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 
 	awscodepipelinev1alpha1 "github.com/plantonhq/planton/catalog/aws/awscodepipeline/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
@@ -27,7 +27,7 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, in *awscodepipelinev1alpha1.AwsCodePipelineStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, in *awscodepipelinev1alpha1.AwsCodePipelineIacInput) *Locals {
 	locals := &Locals{}
 	locals.AwsCodePipeline = in.Target
 
@@ -37,7 +37,7 @@ func initializeLocals(ctx *pulumi.Context, in *awscodepipelinev1alpha1.AwsCodePi
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsCodePipeline.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsCodePipeline.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsCodePipeline.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsCodePipeline.String(),
 		awstagkeys.ResourceId:   locals.AwsCodePipeline.Metadata.Id,
 	}
 

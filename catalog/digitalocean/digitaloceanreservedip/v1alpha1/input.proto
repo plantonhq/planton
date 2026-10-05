@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceanreservedip.v1alpha1;
 import "catalog/digitalocean/digitaloceanreservedip/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-reserved-ip stack-input
-message DigitalOceanReservedIpStackInput {
-  //target cloud-resource
+//digital-ocean-reserved-ip iac-input
+message DigitalOceanReservedIpIacInput {
+  // the catalog object to deploy
   DigitalOceanReservedIp target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

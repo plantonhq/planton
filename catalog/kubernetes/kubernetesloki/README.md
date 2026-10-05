@@ -5,7 +5,7 @@
 **One resource is ONE Grafana Loki install** — a log-aggregation backend
 that indexes log *labels* and stores compressed chunks in object storage.
 
-Not the right component when:
+Not the right kind when:
 
 - **You need something to SHIP the logs** — Loki stores logs, it does not
   collect them. Deploy a `KubernetesOtelCollector` in daemonset mode (its
@@ -47,7 +47,7 @@ token).
 ## Schema and retention
 
 Loki normally makes every user hand-author a `schema_config`; this
-component derives it (TSDB, schema v13). `retention_period` enables the
+kind derives it (TSDB, schema v13). `retention_period` enables the
 compactor's deletion (a multiple of 24h). `schema_from_date` exists only
 for importing an existing cluster.
 

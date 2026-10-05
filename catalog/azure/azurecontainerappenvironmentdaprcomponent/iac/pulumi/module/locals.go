@@ -11,8 +11,8 @@ type Locals struct {
 
 // The Dapr component carries no tags (ARM does not support them on
 // managedEnvironments/daprComponents), so locals stay minimal.
-func initializeLocals(ctx *pulumi.Context, stackInput *azurecontainerappenvironmentdaprcomponentv1alpha1.AzureContainerAppEnvironmentDaprComponentStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurecontainerappenvironmentdaprcomponentv1alpha1.AzureContainerAppEnvironmentDaprComponentIacInput) *Locals {
 	return &Locals{
-		AzureContainerAppEnvironmentDaprComponent: stackInput.Target,
+		AzureContainerAppEnvironmentDaprComponent: iacInput.Target,
 	}
 }

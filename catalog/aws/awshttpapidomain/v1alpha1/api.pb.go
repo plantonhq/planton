@@ -34,7 +34,7 @@ type AwsHttpApiDomain struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, environment,
 	// labels) and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration of the custom domain.
 	Spec *AwsHttpApiDomainSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds post-deployment information.
@@ -87,7 +87,7 @@ func (x *AwsHttpApiDomain) GetKind() string {
 	return ""
 }
 
-func (x *AwsHttpApiDomain) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsHttpApiDomain) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -114,7 +114,7 @@ type AwsHttpApiDomainStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the observable values returned by Pulumi/Terraform
 	// after provisioning.
-	Outputs       *AwsHttpApiDomainStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsHttpApiDomainOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AwsHttpApiDomainStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awshttpapidomain_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsHttpApiDomainStatus) GetOutputs() *AwsHttpApiDomainStackOutputs {
+func (x *AwsHttpApiDomainStatus) GetOutputs() *AwsHttpApiDomainOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_aws_awshttpapidomain_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12+\n" +
 	"\x04kind\x18\x02 \x01(\tB\x17\xbaH\x14r\x12\n" +
 	"\x10AwsHttpApiDomainR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12[\n" +
 	"\x04spec\x18\x04 \x01(\v2?.dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12Y\n" +
-	"\x06status\x18\x05 \x01(\v2A.dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainStatusR\x06status\"{\n" +
-	"\x16AwsHttpApiDomainStatus\x12a\n" +
-	"\aoutputs\x18\x01 \x01(\v2G.dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainStackOutputsR\aoutputsB\xdf\x02\n" +
+	"\x06status\x18\x05 \x01(\v2A.dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainStatusR\x06status\"v\n" +
+	"\x16AwsHttpApiDomainStatus\x12\\\n" +
+	"\aoutputs\x18\x01 \x01(\v2B.dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainOutputsR\aoutputsB\xdf\x02\n" +
 	"-com.dev.planton.aws.awshttpapidomain.v1alpha1B\bApiProtoP\x01Z[github.com/plantonhq/planton/catalog/aws/awshttpapidomain/v1alpha1;awshttpapidomainv1alpha1\xa2\x02\x04DPAA\xaa\x02)Dev.Planton.Aws.Awshttpapidomain.V1alpha1\xca\x02)Dev\\Planton\\Aws\\Awshttpapidomain\\V1alpha1\xe2\x025Dev\\Planton\\Aws\\Awshttpapidomain\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Aws::Awshttpapidomain::V1alpha1b\x06proto3"
 
 var (
@@ -190,15 +190,15 @@ var file_catalog_aws_awshttpapidomain_v1alpha1_api_proto_msgTypes = make([]proto
 var file_catalog_aws_awshttpapidomain_v1alpha1_api_proto_goTypes = []any{
 	(*AwsHttpApiDomain)(nil),             // 0: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomain
 	(*AwsHttpApiDomainStatus)(nil),       // 1: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsHttpApiDomainSpec)(nil),         // 3: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainSpec
-	(*AwsHttpApiDomainStackOutputs)(nil), // 4: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainStackOutputs
+	(*AwsHttpApiDomainOutputs)(nil),      // 4: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainOutputs
 }
 var file_catalog_aws_awshttpapidomain_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomain.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomain.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomain.spec:type_name -> dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainSpec
 	1, // 2: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomain.status:type_name -> dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainStatus
-	4, // 3: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainStatus.outputs:type_name -> dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainStackOutputs
+	4, // 3: dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainStatus.outputs:type_name -> dev.planton.aws.awshttpapidomain.v1alpha1.AwsHttpApiDomainOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

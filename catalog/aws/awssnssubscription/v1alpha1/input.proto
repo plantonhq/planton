@@ -5,10 +5,10 @@ package dev.planton.aws.awssnssubscription.v1alpha1;
 import "catalog/aws/awssnssubscription/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSnsSubscriptionStackInput is the input for the aws-sns-subscription
+// AwsSnsSubscriptionIacInput is the input for the aws-sns-subscription
 // IaC modules.
-message AwsSnsSubscriptionStackInput {
-  // target cloud-resource
+message AwsSnsSubscriptionIacInput {
+  // the catalog object to deploy
   AwsSnsSubscription target = 1;
 
   // provider-config

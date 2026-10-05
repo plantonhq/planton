@@ -10,11 +10,11 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *kubernetesrequestauthenticationv1alpha1.KubernetesRequestAuthenticationStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesrequestauthenticationv1alpha1.KubernetesRequestAuthenticationIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubeProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
@@ -31,7 +31,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesrequestauthenticationv
 
 // createRequestAuthentication creates the namespaced Istio RequestAuthentication
 // using the typed crd2pulumi SDK (istiosecurityv1.NewRequestAuthentication),
-// consistent with every other Planton Istio component. The typed approach catches
+// consistent with every other Planton Istio kind. The typed approach catches
 // field-name and structure errors at compile time. Each optional upstream block is
 // only attached when present, so unset fields fall through to istiod's defaults.
 func createRequestAuthentication(
@@ -43,7 +43,7 @@ func createRequestAuthentication(
 
 	// The typed resource's Spec field is a PtrInput satisfied by the Args value
 	// itself (not the SpecPtr() wrapper, which marshals to the wrong element
-	// type); assigned directly below, mirroring the PeerAuthentication component.
+	// type); assigned directly below, mirroring the PeerAuthentication kind.
 	raSpec := istiosecurityv1.RequestAuthenticationSpecArgs{}
 
 	if selector := spec.GetSelector(); selector != nil && len(selector.GetMatchLabels()) > 0 {

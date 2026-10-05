@@ -4,7 +4,7 @@ Starts builds automatically. A Cloud Build trigger watches for an event -- a pus
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- the Cloud Build API on the trigger's project
 - **Trigger** -- the trigger, with its event source and its build
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Build triggers in the target project, and to act as the trigger's service account when it sets one. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Build triggers in the target project, and to act as the trigger's service account when it sets one. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Account
@@ -56,7 +56,7 @@ spec:
 planton apply -f cloud-build-trigger.yaml
 ```
 
-This builds every push to main with the repository's `cloudbuild.yaml`. A Stack Job tracks the provisioning in real time.
+This builds every push to main with the repository's `cloudbuild.yaml`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -76,7 +76,7 @@ These are the most important decisions when configuring a trigger. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -90,9 +90,9 @@ These are the most important decisions when configuring a trigger. Explore the f
 | **GcpGcsBucket** | `build.logsBucket` | `status.outputs.url` |
 | **GcpKmsKey** | `build.secrets[].kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,8 +112,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cloud Build Repository**](/cloud-catalog/gcp-cloud-build-repository) -- the repository a trigger builds from
-- [**GCP Cloud Build Worker Pool**](/cloud-catalog/gcp-cloud-build-worker-pool) -- private machines builds run on
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the identity builds run as
-- [**GCP Pub/Sub Topic**](/cloud-catalog/gcp-pub-sub-topic) -- the topic a Pub/Sub trigger listens on
-- [**GCP Secret Manager Secret**](/cloud-catalog/gcp-secret-manager-secret) -- webhook keys and build secrets
+- [**GCP Cloud Build Repository**](/infra-catalog/gcp-cloud-build-repository) -- the repository a trigger builds from
+- [**GCP Cloud Build Worker Pool**](/infra-catalog/gcp-cloud-build-worker-pool) -- private machines builds run on
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the identity builds run as
+- [**GCP Pub/Sub Topic**](/infra-catalog/gcp-pub-sub-topic) -- the topic a Pub/Sub trigger listens on
+- [**GCP Secret Manager Secret**](/infra-catalog/gcp-secret-manager-secret) -- webhook keys and build secrets

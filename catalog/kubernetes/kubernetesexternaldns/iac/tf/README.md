@@ -1,6 +1,6 @@
 # KubernetesExternalDns Terraform Module
 
-Terraform/OpenTofu module for the KubernetesExternalDns component: installs
+Terraform/OpenTofu module for the KubernetesExternalDns kind: installs
 ExternalDNS from the official Helm chart (`external-dns` at
 https://kubernetes-sigs.github.io/external-dns/) with the DNS provider fully
 decoupled from the host cluster.

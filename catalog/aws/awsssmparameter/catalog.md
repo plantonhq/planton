@@ -4,7 +4,7 @@ Deploys one AWS Systems Manager Parameter Store entry: a named configuration val
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SSM Parameter** — the named value with its type, tier, optional description, and optional write-validation pattern. The name is an explicit spec field (slashes cannot live in `metadata.name`), and changing it forces replacement.
 - **KMS Encryption Binding** — configured only when `keyId` is set on a SecureString parameter; without it, SecureString encrypts under the account's AWS-managed `aws/ssm` key.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with permissions to manage SSM parameters (plus KMS permissions when using a customer-managed key). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with permissions to manage SSM parameters (plus KMS permissions when using a customer-managed key). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **An org secret** (only for `secureValue`) — the managed secret holding the parameter's value, referenced as `$secret/<slug>` in the manifest.
 
 ### AWS Account
@@ -54,7 +54,7 @@ spec:
 planton apply -f ssm-parameter.yaml
 ```
 
-This creates a SecureString at `/prod/orders/db-password` encrypted under the referenced KMS key, its value pulled from the org secret at deploy time. A Stack Job tracks the provisioning in real time.
+This creates a SecureString at `/prod/orders/db-password` encrypted under the referenced KMS key, its value pulled from the org secret at deploy time. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,15 +95,15 @@ These are the most important decisions when configuring a parameter. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsKmsKey** | `keyId` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,5 +124,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — encrypts SecureString values, wired via the `keyId` reference
-- [**AWS Secrets Manager Secret**](/cloud-catalog/aws-secrets-manager-secret) — the alternative store when a secret needs managed rotation or cross-region replication rather than a plain encrypted value
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — encrypts SecureString values, wired via the `keyId` reference
+- [**AWS Secrets Manager Secret**](/infra-catalog/aws-secrets-manager-secret) — the alternative store when a secret needs managed rotation or cross-region replication rather than a plain encrypted value

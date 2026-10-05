@@ -4,7 +4,7 @@ Purchases dedicated, guaranteed Amazon Bedrock model serving capacity in model u
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Provisioned Model** — reserved throughput for the referenced model (typically a custom model's output ARN; a foundation-model ARN where AWS allows direct provisioning), sized by `modelUnits` and addressable by its own ARN, which applications invoke exactly like a model ID
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Bedrock provisioned-throughput permissions (`bedrock:CreateProvisionedModelThroughput` and its read/update/delete siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Bedrock provisioned-throughput permissions (`bedrock:CreateProvisionedModelThroughput` and its read/update/delete siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **The model to serve** — typically an AwsBedrockCustomModel whose `custom_model_arn` this purchase serves; fine-tuned models cannot serve on-demand at all.
 
 ### AWS Account
@@ -51,7 +51,7 @@ spec:
 planton apply -f provisioned-throughput.yaml
 ```
 
-This purchases one no-commitment model unit for the referenced fine-tuned model — hourly billing starts at creation, and the purchase can be deleted at any time. A Stack Job tracks the provisioning in real time.
+This purchases one no-commitment model unit for the referenced fine-tuned model — hourly billing starts at creation, and the purchase can be deleted at any time. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -86,15 +86,15 @@ These are the most important decisions when configuring a throughput purchase. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsBedrockCustomModel** | `modelArn` | `status.outputs.custom_model_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -114,6 +114,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Bedrock Custom Model**](/cloud-catalog/aws-bedrock-custom-model) — the fine-tuned model this purchase serves, wired via `modelArn`
-- [**AWS Bedrock Agent**](/cloud-catalog/aws-bedrock-agent) — agent aliases route production traffic through this capacity via `routing.provisionedThroughput`
-- [**AWS Bedrock Model Access**](/cloud-catalog/aws-bedrock-model-access) — the agreement required before provisioning capacity for a marketplace foundation model
+- [**AWS Bedrock Custom Model**](/infra-catalog/aws-bedrock-custom-model) — the fine-tuned model this purchase serves, wired via `modelArn`
+- [**AWS Bedrock Agent**](/infra-catalog/aws-bedrock-agent) — agent aliases route production traffic through this capacity via `routing.provisionedThroughput`
+- [**AWS Bedrock Model Access**](/infra-catalog/aws-bedrock-model-access) — the agreement required before provisioning capacity for a marketplace foundation model

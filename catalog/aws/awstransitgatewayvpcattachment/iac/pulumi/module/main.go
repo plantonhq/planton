@@ -11,12 +11,12 @@ import (
 // Pulumi module. It creates the attachment and exports its outputs -- the
 // attachment ID is the join key Transit Gateway route tables associate,
 // propagate, and route against.
-func Resources(ctx *pulumi.Context, stackInput *awstgwattachv1.AwsTransitGatewayVpcAttachmentStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awstgwattachv1.AwsTransitGatewayVpcAttachmentIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.VpcAttachment.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.VpcAttachment.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs captures the outputs of
+// AzurePrivateDnsZoneVirtualNetworkLinkOutputs captures the outputs of
 // provisioning a private DNS zone virtual network link.
-type AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs struct {
+type AzurePrivateDnsZoneVirtualNetworkLinkOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the virtual network link.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/privateDnsZones/{zone}/virtualNetworkLinks/{name}
@@ -34,20 +34,20 @@ type AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs) Reset() {
-	*x = AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs{}
+func (x *AzurePrivateDnsZoneVirtualNetworkLinkOutputs) Reset() {
+	*x = AzurePrivateDnsZoneVirtualNetworkLinkOutputs{}
 	mi := &file_catalog_azure_azureprivatednszonevirtualnetworklink_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs) String() string {
+func (x *AzurePrivateDnsZoneVirtualNetworkLinkOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs) ProtoMessage() {}
+func (*AzurePrivateDnsZoneVirtualNetworkLinkOutputs) ProtoMessage() {}
 
-func (x *AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzurePrivateDnsZoneVirtualNetworkLinkOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureprivatednszonevirtualnetworklink_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs) ProtoReflect() proto
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePrivateDnsZoneVirtualNetworkLinkOutputs.ProtoReflect.Descriptor instead.
+func (*AzurePrivateDnsZoneVirtualNetworkLinkOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureprivatednszonevirtualnetworklink_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs) GetLinkId() string {
+func (x *AzurePrivateDnsZoneVirtualNetworkLinkOutputs) GetLinkId() string {
 	if x != nil {
 		return x.LinkId
 	}
 	return ""
 }
 
-func (x *AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs) GetLinkName() string {
+func (x *AzurePrivateDnsZoneVirtualNetworkLinkOutputs) GetLinkName() string {
 	if x != nil {
 		return x.LinkName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azureprivatednszonevirtualnetworklink_v1alpha1_outputs_pr
 
 const file_catalog_azure_azureprivatednszonevirtualnetworklink_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Jcatalog/azure/azureprivatednszonevirtualnetworklink/v1alpha1/outputs.proto\x12@dev.planton.azure.azureprivatednszonevirtualnetworklink.v1alpha1\"i\n" +
-	"1AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs\x12\x17\n" +
+	"Jcatalog/azure/azureprivatednszonevirtualnetworklink/v1alpha1/outputs.proto\x12@dev.planton.azure.azureprivatednszonevirtualnetworklink.v1alpha1\"d\n" +
+	",AzurePrivateDnsZoneVirtualNetworkLinkOutputs\x12\x17\n" +
 	"\alink_id\x18\x01 \x01(\tR\x06linkId\x12\x1b\n" +
 	"\tlink_name\x18\x02 \x01(\tR\blinkNameB\x83\x04\n" +
 	"Dcom.dev.planton.azure.azureprivatednszonevirtualnetworklink.v1alpha1B\fOutputsProtoP\x01Z\x87\x01github.com/plantonhq/planton/catalog/azure/azureprivatednszonevirtualnetworklink/v1alpha1;azureprivatednszonevirtualnetworklinkv1alpha1\xa2\x02\x04DPAA\xaa\x02@Dev.Planton.Azure.Azureprivatednszonevirtualnetworklink.V1alpha1\xca\x02@Dev\\Planton\\Azure\\Azureprivatednszonevirtualnetworklink\\V1alpha1\xe2\x02LDev\\Planton\\Azure\\Azureprivatednszonevirtualnetworklink\\V1alpha1\\GPBMetadata\xea\x02DDev::Planton::Azure::Azureprivatednszonevirtualnetworklink::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_azure_azureprivatednszonevirtualnetworklink_v1alpha1_outputs_p
 
 var file_catalog_azure_azureprivatednszonevirtualnetworklink_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureprivatednszonevirtualnetworklink_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs)(nil), // 0: dev.planton.azure.azureprivatednszonevirtualnetworklink.v1alpha1.AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs
+	(*AzurePrivateDnsZoneVirtualNetworkLinkOutputs)(nil), // 0: dev.planton.azure.azureprivatednszonevirtualnetworklink.v1alpha1.AzurePrivateDnsZoneVirtualNetworkLinkOutputs
 }
 var file_catalog_azure_azureprivatednszonevirtualnetworklink_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

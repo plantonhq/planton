@@ -1,4 +1,4 @@
-# AwsSnsTopic install profile used as a prerequisite by composed components
+# AwsSnsTopic install profile used as a prerequisite by composed kinds
 # (declared via the scenario's e2e-prerequisites annotation or the kind's
 # registry prerequisites). A standard topic with AWS defaults -- enough for
 # subscription scenarios that wire SQS endpoints. Full metadata is supplied
@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awssnstopic
+    e2e-catalog-kind: awssnstopic
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -9,7 +9,7 @@ terraform apply
 ```
 
 Region and credentials are injected by the runtime as environment variables
-(resolved from the stack input's provider configuration); the module itself
+(resolved from the IaC input's provider configuration); the module itself
 takes only `metadata` and `spec`.
 
 ## Resources Created
@@ -29,4 +29,4 @@ carries two variables:
 
 ## Outputs
 
-See `outputs.tf` — matches `AwsFsxOpenzfsFileSystemStackOutputs` proto definition.
+See `outputs.tf` — matches `AwsFsxOpenzfsFileSystemOutputs` proto definition.

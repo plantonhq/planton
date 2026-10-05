@@ -3,6 +3,6 @@
 name: auth0-client
 runtime:
   name: go
-description: Pulumi module for Auth0Client component
+description: Pulumi module for Auth0Client kind
 
 

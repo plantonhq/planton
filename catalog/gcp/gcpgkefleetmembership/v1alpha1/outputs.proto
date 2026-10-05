@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpgkefleetmembership.v1alpha1;
 
-// GcpGkeFleetMembershipStackOutputs carries the membership's identity.
-message GcpGkeFleetMembershipStackOutputs {
+// GcpGkeFleetMembershipOutputs carries the membership's identity.
+message GcpGkeFleetMembershipOutputs {
   // Full resource name:
   // projects/{project}/locations/{location}/memberships/{membership_id} --
   // what GcpGkeFleetScope.membership_bindings and

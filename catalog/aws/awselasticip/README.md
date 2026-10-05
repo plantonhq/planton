@@ -17,7 +17,7 @@ An **Elastic IP (EIP)** is a static, public IPv4 address that you allocate from 
 
 ## Prerequisites
 
-- An AWS account and region configured in your Planton stack input.
+- An AWS account and region configured in your Planton IaC input.
 - (Optional) A registered BYOIP address range if you need IPs from your own pool.
 
 ## Spec Fields

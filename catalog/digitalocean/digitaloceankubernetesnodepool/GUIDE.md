@@ -1,6 +1,6 @@
 # DigitalOcean Kubernetes Node Pool -- Operational Guide
 
-Live-earned judgment for operating additional DOKS worker pools. The [README](README.md) covers what the component models; this covers how it behaves.
+Live-earned judgment for operating additional DOKS worker pools. The [README](README.md) covers what the kind models; this covers how it behaves.
 
 ## The default pool is not this kind
 

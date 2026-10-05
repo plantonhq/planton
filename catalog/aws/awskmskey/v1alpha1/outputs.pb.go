@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsKmsKeyStackOutputs captures the observable identifiers of a
+// AwsKmsKeyOutputs captures the observable identifiers of a
 // deployed KMS key -- the join keys everything that encrypts with it
 // references.
-type AwsKmsKeyStackOutputs struct {
+type AwsKmsKeyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The generated key ID (UUID; "mrk-..." for multi-Region keys).
 	KeyId string `protobuf:"bytes,1,opt,name=key_id,json=keyId,proto3" json:"key_id,omitempty"`
@@ -46,20 +46,20 @@ type AwsKmsKeyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsKmsKeyStackOutputs) Reset() {
-	*x = AwsKmsKeyStackOutputs{}
+func (x *AwsKmsKeyOutputs) Reset() {
+	*x = AwsKmsKeyOutputs{}
 	mi := &file_catalog_aws_awskmskey_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsKmsKeyStackOutputs) String() string {
+func (x *AwsKmsKeyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsKmsKeyStackOutputs) ProtoMessage() {}
+func (*AwsKmsKeyOutputs) ProtoMessage() {}
 
-func (x *AwsKmsKeyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsKmsKeyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awskmskey_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,33 +71,33 @@ func (x *AwsKmsKeyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsKmsKeyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsKmsKeyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsKmsKeyOutputs.ProtoReflect.Descriptor instead.
+func (*AwsKmsKeyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awskmskey_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsKmsKeyStackOutputs) GetKeyId() string {
+func (x *AwsKmsKeyOutputs) GetKeyId() string {
 	if x != nil {
 		return x.KeyId
 	}
 	return ""
 }
 
-func (x *AwsKmsKeyStackOutputs) GetKeyArn() string {
+func (x *AwsKmsKeyOutputs) GetKeyArn() string {
 	if x != nil {
 		return x.KeyArn
 	}
 	return ""
 }
 
-func (x *AwsKmsKeyStackOutputs) GetAliasNames() []string {
+func (x *AwsKmsKeyOutputs) GetAliasNames() []string {
 	if x != nil {
 		return x.AliasNames
 	}
 	return nil
 }
 
-func (x *AwsKmsKeyStackOutputs) GetGrantIds() map[string]string {
+func (x *AwsKmsKeyOutputs) GetGrantIds() map[string]string {
 	if x != nil {
 		return x.GrantIds
 	}
@@ -108,13 +108,13 @@ var File_catalog_aws_awskmskey_v1alpha1_outputs_proto protoreflect.FileDescripto
 
 const file_catalog_aws_awskmskey_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	",catalog/aws/awskmskey/v1alpha1/outputs.proto\x12\"dev.planton.aws.awskmskey.v1alpha1\"\x8b\x02\n" +
-	"\x15AwsKmsKeyStackOutputs\x12\x15\n" +
+	",catalog/aws/awskmskey/v1alpha1/outputs.proto\x12\"dev.planton.aws.awskmskey.v1alpha1\"\x81\x02\n" +
+	"\x10AwsKmsKeyOutputs\x12\x15\n" +
 	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x12\x17\n" +
 	"\akey_arn\x18\x02 \x01(\tR\x06keyArn\x12\x1f\n" +
 	"\valias_names\x18\x03 \x03(\tR\n" +
-	"aliasNames\x12d\n" +
-	"\tgrant_ids\x18\x04 \x03(\v2G.dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyStackOutputs.GrantIdsEntryR\bgrantIds\x1a;\n" +
+	"aliasNames\x12_\n" +
+	"\tgrant_ids\x18\x04 \x03(\v2B.dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyOutputs.GrantIdsEntryR\bgrantIds\x1a;\n" +
 	"\rGrantIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xb2\x02\n" +
@@ -134,11 +134,11 @@ func file_catalog_aws_awskmskey_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awskmskey_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awskmskey_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsKmsKeyStackOutputs)(nil), // 0: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyStackOutputs
-	nil,                           // 1: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyStackOutputs.GrantIdsEntry
+	(*AwsKmsKeyOutputs)(nil), // 0: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyOutputs
+	nil,                      // 1: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyOutputs.GrantIdsEntry
 }
 var file_catalog_aws_awskmskey_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyStackOutputs.grant_ids:type_name -> dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyStackOutputs.GrantIdsEntry
+	1, // 0: dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyOutputs.grant_ids:type_name -> dev.planton.aws.awskmskey.v1alpha1.AwsKmsKeyOutputs.GrantIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

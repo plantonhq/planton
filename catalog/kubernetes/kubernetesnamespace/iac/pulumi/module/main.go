@@ -9,14 +9,14 @@ import (
 
 // Resources is the main entry point for the Pulumi module.
 // It orchestrates the creation of a complete Kubernetes namespace with quotas, policies, and configurations.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesnamespacev1alpha1.KubernetesNamespaceStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetesnamespacev1alpha1.KubernetesNamespaceIacInput) error {
 	// Initialize locals with derived values
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// Create Kubernetes provider from credentials
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 		"kubernetes",
 	)
 	if err != nil {

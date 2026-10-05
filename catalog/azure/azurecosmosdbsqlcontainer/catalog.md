@@ -4,7 +4,7 @@ Deploys a SQL (NoSQL) API container inside a Cosmos DB database — the unit of 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cosmos DB SQL Container** -- a named container inside the referenced SQL database, with its partition key definition (single or hierarchical), optional unique key constraints, indexing policy, TTL settings, and conflict-resolution policy
 - **Dedicated Throughput** (optional) -- fixed RU/s or an autoscale ceiling owned by this container alone, when either is declared; omit both to share the database's provisioned budget (or on serverless accounts)
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **A Cosmos DB SQL database** to attach to. Reference an AzureCosmosdbSqlDatabase Cloud Resource via ValueFromRef, or provide the database's ARM ID directly.
+- **A Cosmos DB SQL database** to attach to. Reference an AzureCosmosdbSqlDatabase Infra Component via ValueFromRef, or provide the database's ARM ID directly.
 - **A partition key design** -- the single most consequential decision for Cosmos DB performance and cost. Pick a property with high cardinality, even request distribution, and frequent use in query filters (tenantId, userId, deviceId). It is fixed at creation.
 
 ## Deploy
@@ -54,7 +54,7 @@ spec:
 planton apply -f cosmosdb-sql-container.yaml
 ```
 
-This creates a hash-partitioned container with 400 RU/s of dedicated throughput and Azure's default indexing (everything, consistently). A Stack Job tracks the provisioning in real time.
+This creates a hash-partitioned container with 400 RU/s of dedicated throughput and Azure's default indexing (everything, consistently). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -76,15 +76,15 @@ These are the most important decisions when configuring a SQL container. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | AzureCosmosdbSqlDatabase | `sqlDatabaseId` | `status.outputs.sql_database_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -105,6 +105,6 @@ There are deliberately no endpoint or credential outputs here: connectivity and 
 
 ## Works With
 
-- [**Azure Cosmos DB SQL Database**](/cloud-catalog/azure-cosmosdb-sql-database) — the parent database this container lives in, referenced via `sql_database_id`
-- [**Azure Cosmos DB Account**](/cloud-catalog/azure-cosmosdb-account) — the account that owns connectivity, keys, and network posture for everything inside
-- [**Azure Cosmos DB SQL Role Assignment**](/cloud-catalog/azure-cosmosdb-sql-role-assignment) — data-plane grants scoped to this container (`{account-id}/dbs/{database-name}/colls/{container-name}`)
+- [**Azure Cosmos DB SQL Database**](/infra-catalog/azure-cosmosdb-sql-database) — the parent database this container lives in, referenced via `sql_database_id`
+- [**Azure Cosmos DB Account**](/infra-catalog/azure-cosmosdb-account) — the account that owns connectivity, keys, and network posture for everything inside
+- [**Azure Cosmos DB SQL Role Assignment**](/infra-catalog/azure-cosmosdb-sql-role-assignment) — data-plane grants scoped to this container (`{account-id}/dbs/{database-name}/colls/{container-name}`)

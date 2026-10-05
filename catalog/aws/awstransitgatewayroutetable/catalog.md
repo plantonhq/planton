@@ -4,7 +4,7 @@ Creates an isolated routing domain inside an AWS Transit Gateway hub. A route ta
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Transit Gateway Route Table** -- the routing domain itself
 - **Route Table Associations** -- one per entry in `associations`, binding each attachment's outbound lookups to this table (optionally taking over an existing association in the same apply)
@@ -18,7 +18,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -62,7 +62,7 @@ spec:
 planton apply -f route-table.yaml
 ```
 
-This creates a domain where one attachment routes by this table, one shared-services attachment advertises its routes in, and one CIDR is blackholed so this domain can never reach it. A Stack Job tracks the provisioning in real time.
+This creates a domain where one attachment routes by this table, one shared-services attachment advertises its routes in, and one CIDR is blackholed so this domain can never reach it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -108,16 +108,16 @@ These are the most important decisions when configuring a route table. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsTransitGateway** | `transitGatewayId` | `status.outputs.transit_gateway_id` |
 | **AwsTransitGatewayVpcAttachment** | `associations[].attachmentId`, `propagations[]`, `routes[].attachmentId`, `prefixListReferences[].attachmentId` | `status.outputs.attachment_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -138,5 +138,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Transit Gateway**](/cloud-catalog/aws-transit-gateway) -- the hub this routing domain lives inside; provides `transit_gateway_id`
-- [**AWS Transit Gateway VPC Attachment**](/cloud-catalog/aws-transit-gateway-vpc-attachment) -- the attachments this table associates, propagates, and routes against; provide `attachment_id`
+- [**AWS Transit Gateway**](/infra-catalog/aws-transit-gateway) -- the hub this routing domain lives inside; provides `transit_gateway_id`
+- [**AWS Transit Gateway VPC Attachment**](/infra-catalog/aws-transit-gateway-vpc-attachment) -- the attachments this table associates, propagates, and routes against; provide `attachment_id`

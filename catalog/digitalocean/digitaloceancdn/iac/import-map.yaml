@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceancdn
 spec:
@@ -11,7 +11,7 @@ spec:
   values:
     - name: cdn_id
       derivations:
-        - from_stack_output: cdn_id
+        - from_output: cdn_id
       where_to_find: >-
         DigitalOcean control panel -> Spaces Object Storage -> the bucket's
         Settings -> CDN section, or the API (GET /v2/cdn/endpoints).

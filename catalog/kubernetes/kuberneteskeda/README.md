@@ -9,7 +9,7 @@ already runs KEDA (or another external-metrics adapter such as
 Prometheus-adapter serving external metrics) before adding this component;
 a second installation would fight the first over the registration.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You only scale on CPU/memory** — that is plain HorizontalPodAutoscaler
   territory backed by metrics-server; KEDA's value is real-world signals
@@ -106,7 +106,7 @@ both engines) for anything beyond it.
 - **`spec.helm_values`**: escape hatch for chart values beyond the typed
   fields — never the primary interface
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

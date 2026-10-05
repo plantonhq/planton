@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefrontdoorruleset.v1alpha1;
 
-// **AzureFrontDoorRuleSetStackOutputs** captures the outputs of
+// **AzureFrontDoorRuleSetOutputs** captures the outputs of
 // provisioning an Azure Front Door rule set. The rules inside the set
 // export no individual IDs on purpose: nothing references a rule --
 // routes attach the whole set.
-message AzureFrontDoorRuleSetStackOutputs {
+message AzureFrontDoorRuleSetOutputs {
   // The Azure Resource Manager ID of the rule set -- what
   // AzureFrontDoorRoute's rule_set_ids references to attach this
   // delivery policy.

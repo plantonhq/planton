@@ -11,7 +11,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureeventhubauthorizationrule
+    e2e-catalog-kind: azureeventhubauthorizationrule
   annotations:
     planton.dev/e2e: "true"
     # Deploy order: namespace, then hub.

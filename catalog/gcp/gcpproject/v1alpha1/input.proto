@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpproject.v1alpha1;
 import "catalog/gcp/gcpproject/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-project stack-input
-message GcpProjectStackInput {
-  //target cloud-resource
+//gcp-project iac-input
+message GcpProjectIacInput {
+  // the catalog object to deploy
   GcpProject target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

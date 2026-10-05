@@ -35,7 +35,7 @@ Three kinds in one session (owner-approved override of the one-per-session rhyth
 - Closed Pulumi parity gap: `WorkerReplacementStrategy` wired (SDK v7).
 - Naming basis converged: `metadata.id` → `metadata.name` on both engines.
 - Registry: `prerequisites: [AwsSubnet, AwsSecurityGroup]`.
-- Generator-owned `variables.tf` + drift allowlist entry; Pulumi entrypoint anatomy completed (Makefile, stack-input.yaml).
+- Generator-owned `variables.tf` + drift allowlist entry; Pulumi entrypoint anatomy completed (Makefile, iac-input.yaml).
 - E2E scaffold (deferred profile, scenarios, `mwaaEnvironmentVerifier`, dual-engine test stubs).
 - Presets, spec tests, docs rewritten.
 
@@ -44,7 +44,7 @@ Three kinds in one session (owner-approved override of the one-per-session rhyth
 - Package `awsmskserverlesscluster/v1/` with full anatomy: 4 protos, TF + Pulumi modules, presets, docs, catalog-page, hack manifest.
 - Spec: `region`, `subnet_ids` (FK AwsSubnet, min 1), `security_group_ids` (FK AwsSecurityGroup, max 5, optional). SASL/IAM auth **not** modeled as a decorative bool — both modules hardcode `client_authentication.sasl.iam.enabled = true`; message header documents mandatory IAM auth.
 - Outputs: `cluster_arn`, `cluster_name`, `cluster_uuid`, `bootstrap_brokers_sasl_iam`.
-- Enum `351`, `id_prefix: "awsmsksl"`, `prerequisites: [AwsSubnet]`; crkreflect map regenerated.
+- Enum `351`, `id_prefix: "awsmsksl"`, `prerequisites: [AwsSubnet]`; catalogkindreflect map regenerated.
 - Verifier, conformance case, drift allowlist, E2E profile (deferred), site catalog mirror.
 
 ### E2E discover fix

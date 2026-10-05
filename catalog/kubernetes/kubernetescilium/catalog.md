@@ -4,7 +4,7 @@ Installs Cilium -- the eBPF-based networking, network-security, and observabilit
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **The Cilium Helm release** (release name fixed to `cilium` -- ONE installation per cluster) in `spec.namespace`: the agent DaemonSet on every node, the cilium-operator Deployment, and the generated CNI configuration.
 - **Hubble components** when enabled: the relay (cluster-wide flow aggregation) and the UI (service-map console).
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -61,11 +61,11 @@ spec:
 planton apply -f cilium.yaml
 ```
 
-This installs Cilium as the primary CNI on a kind cluster (created with `disableDefaultCNI: true` and `kubeProxyMode: none`), with eBPF service load-balancing and the Hubble service map. A Stack Job tracks the provisioning in real time.
+This installs Cilium as the primary CNI on a kind cluster (created with `disableDefaultCNI: true` and `kubeProxyMode: none`), with eBPF service load-balancing and the Hubble service map. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the namespace to a resource managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, wire the namespace to a resource managed by another Infra Component:
 
 ```yaml
 spec:
@@ -99,7 +99,7 @@ These are the most important decisions when configuring Cilium. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -107,9 +107,9 @@ These are the most important decisions when configuring Cilium. Explore the full
 
 Most installs pass the literal `kube-system` instead of a reference. Gateway API support additionally expects the Gateway API CRDs on the cluster — a runtime prerequisite, not a manifest reference.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -134,8 +134,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Gateway API CRDs**](/cloud-catalog/kubernetes-gateway-api-crds) -- prerequisite for Gateway API support; Cilium then registers the `cilium` GatewayClass.
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- consumes the exported GatewayClass for north-south routing.
-- [**Kubernetes NetworkPolicy**](/cloud-catalog/kubernetes-network-policy) -- the policies Cilium enforces under the chosen enforcement posture.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the namespace (`namespace`) the release installs into.
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) (or an existing Prometheus operator) -- required for the ServiceMonitor toggles; scrapes the agent, operator, and Hubble metrics.
+- [**Kubernetes Gateway API CRDs**](/infra-catalog/kubernetes-gateway-api-crds) -- prerequisite for Gateway API support; Cilium then registers the `cilium` GatewayClass.
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- consumes the exported GatewayClass for north-south routing.
+- [**Kubernetes NetworkPolicy**](/infra-catalog/kubernetes-network-policy) -- the policies Cilium enforces under the chosen enforcement posture.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the namespace (`namespace`) the release installs into.
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) (or an existing Prometheus operator) -- required for the ServiceMonitor toggles; scrapes the agent, operator, and Hubble metrics.

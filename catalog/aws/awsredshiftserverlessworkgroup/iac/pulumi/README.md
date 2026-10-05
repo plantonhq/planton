@@ -9,7 +9,7 @@ resource that deserves to be its own node.
 ## Requirements
 
 - Planton CLI built locally
-- Valid AWS credential provided via the CLI stack input (not in `spec`)
+- Valid AWS credential provided via the CLI IaC input (not in `spec`)
 
 ## CLI commands
 

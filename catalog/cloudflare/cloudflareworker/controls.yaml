@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: cloudflareworker
 spec:
@@ -14,7 +14,7 @@ spec:
       notes: A Worker stores no application data -- it is code plus configuration held by Cloudflare's control plane; state lives in the services it binds (KV, D1, R2, Durable Objects), each with its own control profile. Secret bindings are managed-secret references resolved just-in-time at deploy (the spec marks their values sensitive), never plaintext in the manifest.
     - control_id: enc-at-rest-cmk
       status: not_applicable
-      notes: No data-at-rest key surface exists for this component class (see enc-at-rest); Cloudflare offers no customer-managed-key option for Worker scripts or their configuration.
+      notes: No data-at-rest key surface exists for this kind (see enc-at-rest); Cloudflare offers no customer-managed-key option for Worker scripts or their configuration.
     - control_id: enc-in-transit
       status: enforced_by_default
       evidence:
@@ -42,7 +42,7 @@ spec:
       field_path: kv_namespaces
       evidence:
         type: spec_default
-        reference: The spec's binding families -- kv_namespaces (the cited field; the same holds for r2_buckets, d1_databases, queues, services, durable_objects, hyperdrive_configs, ai, and the rest) -- give the script keyless, platform-issued access to every bound service; no static credential is ever held for a bound resource, and foreign-key references compose the bindings from other catalog components' outputs.
+        reference: The spec's binding families -- kv_namespaces (the cited field; the same holds for r2_buckets, d1_databases, queues, services, durable_objects, hyperdrive_configs, ai, and the rest) -- give the script keyless, platform-issued access to every bound service; no static credential is ever held for a bound resource, and foreign-key references compose the bindings from other components' outputs.
       notes: Preset 01-api-with-custom-domain binds KV and D1 keylessly. The secrets list exists for external systems the binding model cannot reach; each value is a managed-secret reference resolved at deploy.
     - control_id: no-legacy-auth
       status: not_applicable

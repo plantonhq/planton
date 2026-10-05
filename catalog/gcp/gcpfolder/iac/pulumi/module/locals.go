@@ -24,8 +24,8 @@ type Locals struct {
 	Parent string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpfolderv1alpha1.GcpFolderStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpfolderv1alpha1.GcpFolderIacInput) *Locals {
+	target := iacInput.Target
 
 	displayName := target.Spec.DisplayName
 	if displayName == "" {

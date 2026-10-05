@@ -17,7 +17,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureipgroup
+    e2e-catalog-kind: azureipgroup
   annotations:
     planton.dev/e2e: "true"
   tags:

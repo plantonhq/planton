@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpmemorystoreinstance.v1alpha1;
 import "catalog/gcp/gcpmemorystoreinstance/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-memorystore-instance stack-input
-message GcpMemorystoreInstanceStackInput {
-  //target cloud-resource
+//gcp-memorystore-instance iac-input
+message GcpMemorystoreInstanceIacInput {
+  // the catalog object to deploy
   GcpMemorystoreInstance target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

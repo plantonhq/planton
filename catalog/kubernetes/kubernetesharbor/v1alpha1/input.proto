@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesharbor.v1alpha1;
 import "catalog/kubernetes/kubernetesharbor/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// harbor-kubernetes stack-input
-message KubernetesHarborStackInput {
-  // target cloud-resource
+// harbor-kubernetes iac-input
+message KubernetesHarborIacInput {
+  // the catalog object to deploy
   KubernetesHarbor target = 1;
   // provider-credential
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

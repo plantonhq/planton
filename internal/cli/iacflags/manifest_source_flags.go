@@ -10,7 +10,7 @@ import (
 var clipboardFlagNames = []string{string(flag.Clipboard), "clip", "cb"}
 
 // AddManifestSourceFlags adds flags for specifying the manifest source.
-// Priority order: --clipboard > --stack-input > --manifest > --input-dir > --kustomize-dir+--overlay
+// Priority order: --clipboard > --iac-input > --manifest > --input-dir > --kustomize-dir+--overlay
 // Clipboard flag supports aliases: --clipboard, --clip, --cb, -c
 func AddManifestSourceFlags(cmd *cobra.Command) {
 	// Primary clipboard flag with shorthand -c
@@ -26,10 +26,10 @@ func AddManifestSourceFlags(cmd *cobra.Command) {
 	_ = cmd.PersistentFlags().MarkHidden("cb")
 
 	cmd.PersistentFlags().StringP(string(flag.Manifest), "f", "",
-		"path of the component manifest file")
+		"path of the manifest file")
 
-	cmd.PersistentFlags().StringP(string(flag.StackInput), "i", "",
-		"path to a YAML file containing the stack input (extracts manifest from target field)")
+	cmd.PersistentFlags().StringP(string(flag.IacInput), "i", "",
+		"path to a YAML file containing the IaC input (extracts manifest from target field)")
 
 	cmd.PersistentFlags().String(string(flag.InputDir), "",
 		"directory containing target.yaml and credential yaml files")

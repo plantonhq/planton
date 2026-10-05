@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudTrailEventDataStoreStackOutputs captures the observable
+// AwsCloudTrailEventDataStoreOutputs captures the observable
 // state of the event data store after apply.
-type AwsCloudTrailEventDataStoreStackOutputs struct {
+type AwsCloudTrailEventDataStoreOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The event data store's ARN (also the provider's import ID).
 	EventDataStoreArn string `protobuf:"bytes,1,opt,name=event_data_store_arn,json=eventDataStoreArn,proto3" json:"event_data_store_arn,omitempty"`
@@ -31,20 +31,20 @@ type AwsCloudTrailEventDataStoreStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AwsCloudTrailEventDataStoreStackOutputs) Reset() {
-	*x = AwsCloudTrailEventDataStoreStackOutputs{}
+func (x *AwsCloudTrailEventDataStoreOutputs) Reset() {
+	*x = AwsCloudTrailEventDataStoreOutputs{}
 	mi := &file_catalog_aws_awscloudtraileventdatastore_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudTrailEventDataStoreStackOutputs) String() string {
+func (x *AwsCloudTrailEventDataStoreOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudTrailEventDataStoreStackOutputs) ProtoMessage() {}
+func (*AwsCloudTrailEventDataStoreOutputs) ProtoMessage() {}
 
-func (x *AwsCloudTrailEventDataStoreStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudTrailEventDataStoreOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudtraileventdatastore_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -56,12 +56,12 @@ func (x *AwsCloudTrailEventDataStoreStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudTrailEventDataStoreStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCloudTrailEventDataStoreStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudTrailEventDataStoreOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCloudTrailEventDataStoreOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudtraileventdatastore_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudTrailEventDataStoreStackOutputs) GetEventDataStoreArn() string {
+func (x *AwsCloudTrailEventDataStoreOutputs) GetEventDataStoreArn() string {
 	if x != nil {
 		return x.EventDataStoreArn
 	}
@@ -72,8 +72,8 @@ var File_catalog_aws_awscloudtraileventdatastore_v1alpha1_outputs_proto protoref
 
 const file_catalog_aws_awscloudtraileventdatastore_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/aws/awscloudtraileventdatastore/v1alpha1/outputs.proto\x124dev.planton.aws.awscloudtraileventdatastore.v1alpha1\"Z\n" +
-	"'AwsCloudTrailEventDataStoreStackOutputs\x12/\n" +
+	">catalog/aws/awscloudtraileventdatastore/v1alpha1/outputs.proto\x124dev.planton.aws.awscloudtraileventdatastore.v1alpha1\"U\n" +
+	"\"AwsCloudTrailEventDataStoreOutputs\x12/\n" +
 	"\x14event_data_store_arn\x18\x01 \x01(\tR\x11eventDataStoreArnB\xb0\x03\n" +
 	"8com.dev.planton.aws.awscloudtraileventdatastore.v1alpha1B\fOutputsProtoP\x01Zqgithub.com/plantonhq/planton/catalog/aws/awscloudtraileventdatastore/v1alpha1;awscloudtraileventdatastorev1alpha1\xa2\x02\x04DPAA\xaa\x024Dev.Planton.Aws.Awscloudtraileventdatastore.V1alpha1\xca\x024Dev\\Planton\\Aws\\Awscloudtraileventdatastore\\V1alpha1\xe2\x02@Dev\\Planton\\Aws\\Awscloudtraileventdatastore\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Aws::Awscloudtraileventdatastore::V1alpha1b\x06proto3"
 
@@ -91,7 +91,7 @@ func file_catalog_aws_awscloudtraileventdatastore_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_aws_awscloudtraileventdatastore_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscloudtraileventdatastore_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCloudTrailEventDataStoreStackOutputs)(nil), // 0: dev.planton.aws.awscloudtraileventdatastore.v1alpha1.AwsCloudTrailEventDataStoreStackOutputs
+	(*AwsCloudTrailEventDataStoreOutputs)(nil), // 0: dev.planton.aws.awscloudtraileventdatastore.v1alpha1.AwsCloudTrailEventDataStoreOutputs
 }
 var file_catalog_aws_awscloudtraileventdatastore_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

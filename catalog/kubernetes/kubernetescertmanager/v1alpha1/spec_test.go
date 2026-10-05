@@ -29,7 +29,7 @@ var _ = ginkgo.Describe("KubernetesCertManager Validation Tests", func() {
 		input = &KubernetesCertManager{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesCertManager",
-			Metadata:   &shared.CloudResourceMetadata{Name: "cert-manager"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "cert-manager"},
 			Spec: &KubernetesCertManagerSpec{
 				Namespace:       literal("cert-manager"),
 				CreateNamespace: true,

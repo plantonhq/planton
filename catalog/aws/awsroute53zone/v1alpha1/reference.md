@@ -12,7 +12,7 @@ metadata.name (e.g. a zone named "example.com" hosts that domain) and is
 create-time immutable (ForceNew).
 
 A hosted zone is either PUBLIC (resolves on the internet; Route 53 assigns
-four authoritative name servers, exported as stack outputs for registrar
+four authoritative name servers, exported as outputs for registrar
 delegation) or PRIVATE (resolves only inside the associated VPCs —
 split-horizon DNS). The private/public choice shapes the rest of the
 surface: reusable delegation sets, DNSSEC signing, accelerated recovery,

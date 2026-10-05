@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcloudrunjob.v1alpha1;
 
-// GcpCloudRunJobStackOutputs captures values returned after provisioning.
-message GcpCloudRunJobStackOutputs {
+// GcpCloudRunJobOutputs captures values returned after provisioning.
+message GcpCloudRunJobOutputs {
   // Name of the Cloud Run job as created in GCP — the handle gcloud and
   // Scheduler reference when triggering executions.
   string job_name = 1;

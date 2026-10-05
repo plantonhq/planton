@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -28,7 +28,7 @@ func literal(v string) *foreignkeyv1.StringValueOrRef {
 
 // outputRef is a convenience for building content that reads another
 // resource's output.
-func outputRef(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func outputRef(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 		ValueFrom: &foreignkeyv1.ValueFromRef{Kind: kind, Name: name, FieldPath: fieldPath},
 	}}
@@ -39,7 +39,7 @@ func record(name string, spec *CloudflareDnsRecordSpec) *CloudflareDnsRecord {
 	return &CloudflareDnsRecord{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareDnsRecord",
-		Metadata:   &shared.CloudResourceMetadata{Name: name},
+		Metadata:   &shared.CatalogObjectMetadata{Name: name},
 		Spec:       spec,
 	}
 }
@@ -59,7 +59,7 @@ var _ = ginkgo.Describe("CloudflareDnsRecordSpec Custom Validation Tests", func(
 			ginkgo.It("accepts an NS record whose content is one of a zone's name servers", func() {
 				err := protovalidate.Validate(record("ns", &CloudflareDnsRecordSpec{
 					ZoneId: zoneRef(), Name: "aws", Type: CloudflareDnsRecordSpec_NS,
-					Content: outputRef(cloudresourcekind.CloudResourceKind_AwsRoute53Zone, "aws-example-com", "status.outputs.nameservers.0"),
+					Content: outputRef(catalogkind.CatalogKind_AwsRoute53Zone, "aws-example-com", "status.outputs.nameservers.0"),
 				}))
 				gomega.Expect(err).To(gomega.BeNil())
 			})
@@ -67,7 +67,7 @@ var _ = ginkgo.Describe("CloudflareDnsRecordSpec Custom Validation Tests", func(
 			ginkgo.It("accepts a CNAME record whose content is a validation target", func() {
 				err := protovalidate.Validate(record("cname", &CloudflareDnsRecordSpec{
 					ZoneId: zoneRef(), Name: "id", Type: CloudflareDnsRecordSpec_CNAME,
-					Content: outputRef(cloudresourcekind.CloudResourceKind_GcpCertManagerDnsAuthorization, "example-com", "status.outputs.dns_record_data"),
+					Content: outputRef(catalogkind.CatalogKind_GcpCertManagerDnsAuthorization, "example-com", "status.outputs.dns_record_data"),
 				}))
 				gomega.Expect(err).To(gomega.BeNil())
 			})
@@ -226,7 +226,7 @@ var _ = ginkgo.Describe("CloudflareDnsRecordSpec Custom Validation Tests", func(
 			ginkgo.It("rejects a referenced content beside a data block", func() {
 				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
 					ZoneId: zoneRef(), Name: "_sip._tcp", Type: CloudflareDnsRecordSpec_SRV,
-					Content: outputRef(cloudresourcekind.CloudResourceKind_CloudflareDnsZone, "example-com", "status.outputs.nameservers.0"),
+					Content: outputRef(catalogkind.CatalogKind_CloudflareDnsZone, "example-com", "status.outputs.nameservers.0"),
 					Data:    &CloudflareDnsRecordSpec_Srv{Srv: &SrvData{Priority: 10, Weight: 5, Port: 5060, Target: literal("sip.example.com")}},
 				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())

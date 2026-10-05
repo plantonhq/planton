@@ -27,7 +27,7 @@ type AwsBackupPlan struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsBackupPlanSpec            `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsBackupPlanStatus          `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsBackupPlan) GetKind() string {
 	return ""
 }
 
-func (x *AwsBackupPlan) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsBackupPlan) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsBackupPlan) GetStatus() *AwsBackupPlanStatus {
 }
 
 type AwsBackupPlanStatus struct {
-	state         protoimpl.MessageState     `protogen:"open.v1"`
-	Outputs       *AwsBackupPlanStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Outputs       *AwsBackupPlanOutputs  `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsBackupPlanStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbackupplan_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsBackupPlanStatus) GetOutputs() *AwsBackupPlanStackOutputs {
+func (x *AwsBackupPlanStatus) GetOutputs() *AwsBackupPlanOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsbackupplan_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12(\n" +
 	"\x04kind\x18\x02 \x01(\tB\x14\xbaH\x11r\x0f\n" +
 	"\rAwsBackupPlanR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
 	"\x04spec\x18\x04 \x01(\v29.dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12S\n" +
-	"\x06status\x18\x05 \x01(\v2;.dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanStatusR\x06status\"r\n" +
-	"\x13AwsBackupPlanStatus\x12[\n" +
-	"\aoutputs\x18\x01 \x01(\v2A.dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanStackOutputsR\aoutputsB\xca\x02\n" +
+	"\x06status\x18\x05 \x01(\v2;.dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanStatusR\x06status\"m\n" +
+	"\x13AwsBackupPlanStatus\x12V\n" +
+	"\aoutputs\x18\x01 \x01(\v2<.dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanOutputsR\aoutputsB\xca\x02\n" +
 	"*com.dev.planton.aws.awsbackupplan.v1alpha1B\bApiProtoP\x01ZUgithub.com/plantonhq/planton/catalog/aws/awsbackupplan/v1alpha1;awsbackupplanv1alpha1\xa2\x02\x04DPAA\xaa\x02&Dev.Planton.Aws.Awsbackupplan.V1alpha1\xca\x02&Dev\\Planton\\Aws\\Awsbackupplan\\V1alpha1\xe2\x022Dev\\Planton\\Aws\\Awsbackupplan\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Aws::Awsbackupplan::V1alpha1b\x06proto3"
 
 var (
@@ -177,15 +177,15 @@ var file_catalog_aws_awsbackupplan_v1alpha1_api_proto_msgTypes = make([]protoimp
 var file_catalog_aws_awsbackupplan_v1alpha1_api_proto_goTypes = []any{
 	(*AwsBackupPlan)(nil),                // 0: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlan
 	(*AwsBackupPlanStatus)(nil),          // 1: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsBackupPlanSpec)(nil),            // 3: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanSpec
-	(*AwsBackupPlanStackOutputs)(nil),    // 4: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanStackOutputs
+	(*AwsBackupPlanOutputs)(nil),         // 4: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanOutputs
 }
 var file_catalog_aws_awsbackupplan_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlan.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlan.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlan.spec:type_name -> dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanSpec
 	1, // 2: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlan.status:type_name -> dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanStatus
-	4, // 3: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanStatus.outputs:type_name -> dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanStackOutputs
+	4, // 3: dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanStatus.outputs:type_name -> dev.planton.aws.awsbackupplan.v1alpha1.AwsBackupPlanOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

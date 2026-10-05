@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpspannerbackupschedule.v1alpha1;
 
-// GcpSpannerBackupScheduleStackOutputs captures observable values produced
+// GcpSpannerBackupScheduleOutputs captures observable values produced
 // after provisioning a Cloud Spanner backup schedule.
-message GcpSpannerBackupScheduleStackOutputs {
+message GcpSpannerBackupScheduleOutputs {
   // Fully qualified backup schedule ID.
   // Format: projects/{project}/instances/{instance}/databases/{database}/backupSchedules/{name}
   // This is the canonical identifier used for API calls.

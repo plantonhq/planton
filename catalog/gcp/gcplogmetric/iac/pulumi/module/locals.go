@@ -17,8 +17,8 @@ type Locals struct {
 	MetricName string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcplogmetricv1alpha1.GcpLogMetricStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcplogmetricv1alpha1.GcpLogMetricIacInput) *Locals {
+	target := iacInput.Target
 
 	metricName := target.Spec.MetricName
 	if metricName == "" {

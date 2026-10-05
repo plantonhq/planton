@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsbedrockagentcoregateway
 spec:
@@ -9,13 +9,13 @@ spec:
   values:
     - name: gateway_id
       derivations:
-        - from_stack_output: gateway_id
+        - from_output: gateway_id
       where_to_find: >-
         Bedrock AgentCore console -> Gateways -> <gateway> (the ID), or
         `aws bedrock-agentcore-control list-gateways` (gatewayId).
     - name: target_id
       derivations:
-        - from_stack_output_keyed_by_address: target_ids
+        - from_output_keyed_by_address: target_ids
       where_to_find: >-
         `aws bedrock-agentcore-control list-gateway-targets
         --gateway-identifier <id>` lists targetId per target; match each

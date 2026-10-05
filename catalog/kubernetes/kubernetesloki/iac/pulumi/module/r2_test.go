@@ -25,9 +25,9 @@ func literal(v string) *foreignkeyv1.StringValueOrRef {
 }
 
 func r2Locals(jurisdiction, secret string) *Locals {
-	return initializeLocals(nil, &kuberneteslokiv1alpha1.KubernetesLokiStackInput{
+	return initializeLocals(nil, &kuberneteslokiv1alpha1.KubernetesLokiIacInput{
 		Target: &kuberneteslokiv1alpha1.KubernetesLoki{
-			Metadata: &shared.CloudResourceMetadata{Name: "hub-logs"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "hub-logs"},
 			Spec: &kuberneteslokiv1alpha1.KubernetesLokiSpec{
 				Namespace: literal("observability"),
 				Storage: &kuberneteslokiv1alpha1.KubernetesLokiStorage{

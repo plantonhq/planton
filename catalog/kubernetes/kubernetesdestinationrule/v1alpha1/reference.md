@@ -2865,7 +2865,7 @@ express the dependency via metadata.relationships, e.g.:
       - kind: KubernetesDeployment
         name: "{{ values.app }}"
         type: depends_on
-See the component's "Composing in Infra Charts" docs for the full pattern.
+See the kind's "Composing in Infra Charts" docs for the full pattern.
 
 ### spec.workloadSelector.matchLabels
 

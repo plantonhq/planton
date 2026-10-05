@@ -31,7 +31,7 @@ type AwsVpc struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsVpcSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsVpc) GetKind() string {
 	return ""
 }
 
-func (x *AwsVpc) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsVpc) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsVpc) GetStatus() *AwsVpcStatus {
 // aws-vpc status
 type AwsVpcStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsVpcStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsVpcOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsVpcStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsvpc_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsVpcStatus) GetOutputs() *AwsVpcStackOutputs {
+func (x *AwsVpcStatus) GetOutputs() *AwsVpcOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -163,11 +163,11 @@ const file_catalog_aws_awsvpc_v1alpha1_api_proto_rawDesc = "" +
 	"\x04kind\x18\x02 \x01(\tB\r\xbaH\n" +
 	"r\b\n" +
 	"\x06AwsVpcR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12G\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12G\n" +
 	"\x04spec\x18\x04 \x01(\v2+.dev.planton.aws.awsvpc.v1alpha1.AwsVpcSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12E\n" +
-	"\x06status\x18\x05 \x01(\v2-.dev.planton.aws.awsvpc.v1alpha1.AwsVpcStatusR\x06status\"]\n" +
-	"\fAwsVpcStatus\x12M\n" +
-	"\aoutputs\x18\x01 \x01(\v23.dev.planton.aws.awsvpc.v1alpha1.AwsVpcStackOutputsR\aoutputsB\x99\x02\n" +
+	"\x06status\x18\x05 \x01(\v2-.dev.planton.aws.awsvpc.v1alpha1.AwsVpcStatusR\x06status\"X\n" +
+	"\fAwsVpcStatus\x12H\n" +
+	"\aoutputs\x18\x01 \x01(\v2..dev.planton.aws.awsvpc.v1alpha1.AwsVpcOutputsR\aoutputsB\x99\x02\n" +
 	"#com.dev.planton.aws.awsvpc.v1alpha1B\bApiProtoP\x01ZGgithub.com/plantonhq/planton/catalog/aws/awsvpc/v1alpha1;awsvpcv1alpha1\xa2\x02\x04DPAA\xaa\x02\x1fDev.Planton.Aws.Awsvpc.V1alpha1\xca\x02\x1fDev\\Planton\\Aws\\Awsvpc\\V1alpha1\xe2\x02+Dev\\Planton\\Aws\\Awsvpc\\V1alpha1\\GPBMetadata\xea\x02#Dev::Planton::Aws::Awsvpc::V1alpha1b\x06proto3"
 
 var (
@@ -186,15 +186,15 @@ var file_catalog_aws_awsvpc_v1alpha1_api_proto_msgTypes = make([]protoimpl.Messa
 var file_catalog_aws_awsvpc_v1alpha1_api_proto_goTypes = []any{
 	(*AwsVpc)(nil),                       // 0: dev.planton.aws.awsvpc.v1alpha1.AwsVpc
 	(*AwsVpcStatus)(nil),                 // 1: dev.planton.aws.awsvpc.v1alpha1.AwsVpcStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsVpcSpec)(nil),                   // 3: dev.planton.aws.awsvpc.v1alpha1.AwsVpcSpec
-	(*AwsVpcStackOutputs)(nil),           // 4: dev.planton.aws.awsvpc.v1alpha1.AwsVpcStackOutputs
+	(*AwsVpcOutputs)(nil),                // 4: dev.planton.aws.awsvpc.v1alpha1.AwsVpcOutputs
 }
 var file_catalog_aws_awsvpc_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsvpc.v1alpha1.AwsVpc.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsvpc.v1alpha1.AwsVpc.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsvpc.v1alpha1.AwsVpc.spec:type_name -> dev.planton.aws.awsvpc.v1alpha1.AwsVpcSpec
 	1, // 2: dev.planton.aws.awsvpc.v1alpha1.AwsVpc.status:type_name -> dev.planton.aws.awsvpc.v1alpha1.AwsVpcStatus
-	4, // 3: dev.planton.aws.awsvpc.v1alpha1.AwsVpcStatus.outputs:type_name -> dev.planton.aws.awsvpc.v1alpha1.AwsVpcStackOutputs
+	4, // 3: dev.planton.aws.awsvpc.v1alpha1.AwsVpcStatus.outputs:type_name -> dev.planton.aws.awsvpc.v1alpha1.AwsVpcOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

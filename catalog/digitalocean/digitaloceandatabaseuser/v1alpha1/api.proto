@@ -16,7 +16,7 @@ message DigitalOceanDatabaseUser {
   string kind = 2 [(buf.validate.field).string.const = 'DigitalOceanDatabaseUser'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   DigitalOceanDatabaseUserSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,7 +27,7 @@ message DigitalOceanDatabaseUser {
 
 // digital-ocean-database-user status
 message DigitalOceanDatabaseUserStatus {
-  //stack-outputs
-  //  digital-ocean-database-user stack-outputs
-  DigitalOceanDatabaseUserStackOutputs outputs = 1;
+  //outputs
+  //  digital-ocean-database-user outputs
+  DigitalOceanDatabaseUserOutputs outputs = 1;
 }

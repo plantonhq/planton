@@ -9,7 +9,7 @@ import (
 	wafv1 "github.com/plantonhq/planton/catalog/aws/awswafwebacl/v1alpha1"
 	eventhubnsv1 "github.com/plantonhq/planton/catalog/azure/azureeventhubnamespace/v1alpha1"
 	composerv1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudcomposerenvironment/v1alpha1"
-	costestimatev1 "github.com/plantonhq/planton/finops/componentcostestimate/v1"
+	costestimatev1 "github.com/plantonhq/planton/finops/catalogkindcostestimate/v1"
 	"github.com/plantonhq/planton/pkg/finops/costderivation"
 	"github.com/plantonhq/planton/pkg/finops/costestimator"
 	"github.com/plantonhq/planton/pkg/finops/pricebook"
@@ -448,17 +448,17 @@ func TestPresetReplayHonesty(t *testing.T) {
 	})
 }
 
-// generatedPresets parses one component's generated estimate document out
+// generatedPresets parses one kind's generated estimate document out
 // of the in-memory summary, keyed by preset stem.
-func generatedPresets(t *testing.T, summary *Summary, component string) map[string]*costestimatev1.PresetEstimate {
+func generatedPresets(t *testing.T, summary *Summary, kindDir string) map[string]*costestimatev1.PresetEstimate {
 	t.Helper()
-	content, ok := summary.Files[filepath.Join("catalog/_pricing/estimates", component+".yaml")]
+	content, ok := summary.Files[filepath.Join("catalog/_pricing/estimates", kindDir+".yaml")]
 	if !ok {
-		t.Fatalf("no generated estimate for %s", component)
+		t.Fatalf("no generated estimate for %s", kindDir)
 	}
-	estimate := &costestimatev1.ComponentCostEstimate{}
+	estimate := &costestimatev1.CatalogKindCostEstimate{}
 	if err := protobufyaml.LoadYamlBytes([]byte(content), estimate); err != nil {
-		t.Fatalf("parsing generated estimate for %s: %v", component, err)
+		t.Fatalf("parsing generated estimate for %s: %v", kindDir, err)
 	}
 	presets := map[string]*costestimatev1.PresetEstimate{}
 	for _, preset := range estimate.GetSpec().GetPresets() {

@@ -10,12 +10,12 @@ import (
 // Resources orchestrates SNS topic creation and exports outputs. Subscriptions
 // are first-class AwsSnsSubscription resources that reference this topic's
 // exported topic_arn.
-func Resources(ctx *pulumi.Context, stackInput *awssnstopicv1alpha1.AwsSnsTopicStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awssnstopicv1alpha1.AwsSnsTopicIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.Target.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.Target.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

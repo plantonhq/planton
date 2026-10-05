@@ -4,7 +4,7 @@ Deploys an Azure Private DNS Zone Virtual Network Link — the attachment that m
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Virtual Network Link** -- the attachment written on the zone, with your registration and resolution-policy dials
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically and merged with the user tags
@@ -15,12 +15,12 @@ The link is an ARM **child of the zone** — it carries no region and no resourc
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **A Private DNS Zone** to link — reference an AzurePrivateDnsZone Cloud Resource's `zone_id` output, or provide the full ARM ID of an existing zone.
+- **A Private DNS Zone** to link — reference an AzurePrivateDnsZone Infra Component's `zone_id` output, or provide the full ARM ID of an existing zone.
 - **A Virtual Network** to make the zone resolvable from — reference an AzureVirtualNetwork's `virtual_network_id` output, or provide the full ARM ID.
 
 ## Deploy
@@ -58,7 +58,7 @@ spec:
 planton apply -f link.yaml
 ```
 
-This writes the link on the referenced zone: workloads in `hub-vnet` can now resolve the zone's records — and only that network; each spoke gets its own link. A Stack Job tracks the provisioning in real time.
+This writes the link on the referenced zone: workloads in `hub-vnet` can now resolve the zone's records — and only that network; each spoke gets its own link. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,16 +92,16 @@ These are the most important decisions when configuring a Virtual Network Link. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzurePrivateDnsZone** | `privateDnsZoneId` | `status.outputs.zone_id` |
 | **AzureVirtualNetwork** | `virtualNetworkId` | `status.outputs.virtual_network_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-`status.outputs` carries `link_id` (the child path under the zone) and `link_name`, but the link is a leaf — no downstream Cloud Resource references it. Its effect is entirely side-band: names in the zone start resolving from inside the linked network.
+`status.outputs` carries `link_id` (the child path under the zone) and `link_name`, but the link is a leaf — no downstream Infra Component references it. Its effect is entirely side-band: names in the zone start resolving from inside the linked network.
 
 ## Common Patterns
 
@@ -115,7 +115,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Private DNS Zone**](/cloud-catalog/azure-private-dns-zone) -- the zone this link is written on, referenced by its `zone_id` output
-- [**Azure Virtual Network**](/cloud-catalog/azure-virtual-network) -- the network that gains resolution, referenced by its `virtual_network_id` output
-- [**Azure Private Endpoint**](/cloud-catalog/azure-private-endpoint) -- writes the privatelink records this link makes resolvable
-- [**Azure Virtual Network Peering**](/cloud-catalog/azure-virtual-network-peering) -- connects networks, but does NOT propagate DNS links — each peered network still needs its own link
+- [**Azure Private DNS Zone**](/infra-catalog/azure-private-dns-zone) -- the zone this link is written on, referenced by its `zone_id` output
+- [**Azure Virtual Network**](/infra-catalog/azure-virtual-network) -- the network that gains resolution, referenced by its `virtual_network_id` output
+- [**Azure Private Endpoint**](/infra-catalog/azure-private-endpoint) -- writes the privatelink records this link makes resolvable
+- [**Azure Virtual Network Peering**](/infra-catalog/azure-virtual-network-peering) -- connects networks, but does NOT propagate DNS links — each peered network still needs its own link

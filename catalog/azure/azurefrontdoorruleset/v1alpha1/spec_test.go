@@ -32,7 +32,7 @@ func minimalSpec() *AzureFrontDoorRuleSet {
 	return &AzureFrontDoorRuleSet{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFrontDoorRuleSet",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-front-door-rule-set",
 		},
 		Spec: &AzureFrontDoorRuleSetSpec{

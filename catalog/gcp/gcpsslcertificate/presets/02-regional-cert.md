@@ -23,7 +23,7 @@ A self-managed certificate scoped to one region — for regional external and in
 
 ## Remix Notes
 
-- The `region` stack output confirms scope — regional proxies reject certificates from other regions or global scope
+- The `region` output confirms scope — regional proxies reject certificates from other regions or global scope
 - Clear `region` to create the global twin for global external HTTPS proxies
 
 ## Related Presets

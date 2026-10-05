@@ -25,7 +25,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "my-eip",
 			},
 			Spec: &AwsElasticIpSpec{Region: "us-east-1"},
@@ -38,7 +38,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "wavelength-eip",
 			},
 			Spec: &AwsElasticIpSpec{
@@ -54,7 +54,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "byoip-eip",
 			},
 			Spec: &AwsElasticIpSpec{
@@ -70,7 +70,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "byoip-specific-eip",
 			},
 			Spec: &AwsElasticIpSpec{
@@ -87,7 +87,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "full-config-eip",
 			},
 			Spec: &AwsElasticIpSpec{
@@ -105,7 +105,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "ipam-eip",
 			},
 			Spec: &AwsElasticIpSpec{
@@ -121,7 +121,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "ipam-recover-eip",
 			},
 			Spec: &AwsElasticIpSpec{
@@ -138,7 +138,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "instance-eip",
 			},
 			Spec: &AwsElasticIpSpec{
@@ -156,7 +156,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "eni-eip",
 			},
 			Spec: &AwsElasticIpSpec{
@@ -176,7 +176,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 			input := &AwsElasticIp{
 				ApiVersion: "aws.planton.dev/v1alpha1",
 				Kind:       "AwsElasticIp",
-				Metadata: &shared.CloudResourceMetadata{
+				Metadata: &shared.CatalogObjectMetadata{
 					Name: "rdns-eip",
 				},
 				Spec: &AwsElasticIpSpec{
@@ -197,7 +197,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-address-eip",
 			},
 			Spec: &AwsElasticIpSpec{
@@ -217,7 +217,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "double-target-eip",
 			},
 			Spec: &AwsElasticIpSpec{
@@ -238,7 +238,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "dangling-private-ip-eip",
 			},
 			Spec: &AwsElasticIpSpec{
@@ -254,7 +254,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "bad-private-ip-eip",
 			},
 			Spec: &AwsElasticIpSpec{
@@ -278,7 +278,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 			input := &AwsElasticIp{
 				ApiVersion: "aws.planton.dev/v1alpha1",
 				Kind:       "AwsElasticIp",
-				Metadata: &shared.CloudResourceMetadata{
+				Metadata: &shared.CatalogObjectMetadata{
 					Name: "bad-rdns-eip",
 				},
 				Spec: &AwsElasticIpSpec{
@@ -299,7 +299,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "wrong.planton.dev/v1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-eip",
 			},
 			Spec: &AwsElasticIpSpec{Region: "us-east-1"},
@@ -312,7 +312,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "WrongKind",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-eip",
 			},
 			Spec: &AwsElasticIpSpec{Region: "us-east-1"},
@@ -335,7 +335,7 @@ var _ = ginkgo.Describe("AwsElasticIpSpec validations", func() {
 		input := &AwsElasticIp{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsElasticIp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-eip",
 			},
 		}

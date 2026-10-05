@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1;
 import "catalog/digitalocean/digitaloceancontainerregistry/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-container-registry stack-input
-message DigitalOceanContainerRegistryStackInput {
-  //target cloud-resource
+//digital-ocean-container-registry iac-input
+message DigitalOceanContainerRegistryIacInput {
+  // the catalog object to deploy
   DigitalOceanContainerRegistry target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

@@ -6,18 +6,18 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/internal/manifest"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/protobufyaml"
 	suitev1 "github.com/plantonhq/planton/qa/mappingevalsuite/v1"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/proto"
 )
 
-// SuiteMember is one validated suite member: the declared component plus its
+// SuiteMember is one validated suite member: the declared kind plus its
 // loaded fixture manifest.
 type SuiteMember struct {
-	Component    string
-	Kind         cloudresourcekind.CloudResourceKind
+	KindDir      string
+	Kind         catalogkind.CatalogKind
 	Name         string
 	ManifestPath string
 	// Manifest is the fixture as authored -- value_from references
@@ -35,7 +35,7 @@ type LoadedSuite struct {
 }
 
 // LoadSuite reads a MappingEvalSuite from YAML and validates it against the
-// repo: every member's manifest exists, parses as its declared component's
+// repo: every member's manifest exists, parses as its declared kind's
 // kind, and references only members listed BEFORE it. Deploy order is list
 // order, so a forward or dangling reference means the suite cannot deploy --
 // it fails here, before anything touches the cloud.
@@ -60,29 +60,29 @@ func LoadSuite(repoRoot, suitePath string) (*LoadedSuite, error) {
 	loaded := &LoadedSuite{Suite: s}
 	// Names seen so far, keyed by kind -- the backward-reference rule's
 	// lookup table.
-	earlier := map[cloudresourcekind.CloudResourceKind]map[string]bool{}
+	earlier := map[catalogkind.CatalogKind]map[string]bool{}
 	allEarlierNames := map[string]bool{}
 
 	for i, member := range s.GetSpec().GetMembers() {
-		kind := crkreflect.KindFromString(member.GetComponent())
-		if kind == cloudresourcekind.CloudResourceKind_unspecified {
-			return nil, errors.Errorf("members[%d]: component %q is not a registered kind", i, member.GetComponent())
+		kind := catalogkindreflect.KindFromString(member.GetKindDir())
+		if kind == catalogkind.CatalogKind_unspecified {
+			return nil, errors.Errorf("members[%d]: kind %q is not a registered kind", i, member.GetKindDir())
 		}
 		manifestPath := filepath.Join(repoRoot, member.GetManifestPath())
 		if _, err := os.Stat(manifestPath); err != nil {
-			return nil, errors.Errorf("members[%d] (%s): manifest %s does not exist", i, member.GetComponent(), member.GetManifestPath())
+			return nil, errors.Errorf("members[%d] (%s): manifest %s does not exist", i, member.GetKindDir(), member.GetManifestPath())
 		}
 		m, err := manifest.LoadManifest(manifestPath)
 		if err != nil {
-			return nil, errors.Wrapf(err, "members[%d] (%s): loading %s", i, member.GetComponent(), member.GetManifestPath())
+			return nil, errors.Wrapf(err, "members[%d] (%s): loading %s", i, member.GetKindDir(), member.GetManifestPath())
 		}
-		if got := crkreflect.KindFromString(kindNameOf(m)); got != kind {
-			return nil, errors.Errorf("members[%d]: manifest %s is a %s, but the member declares component %q",
-				i, member.GetManifestPath(), got, member.GetComponent())
+		if got := catalogkindreflect.KindFromString(kindNameOf(m)); got != kind {
+			return nil, errors.Errorf("members[%d]: manifest %s is a %s, but the member declares kind %q",
+				i, member.GetManifestPath(), got, member.GetKindDir())
 		}
 		name := manifestMetadataName(m)
 		if name == "" {
-			return nil, errors.Errorf("members[%d] (%s): manifest has no metadata.name", i, member.GetComponent())
+			return nil, errors.Errorf("members[%d] (%s): manifest has no metadata.name", i, member.GetKindDir())
 		}
 		if earlier[kind][name] {
 			return nil, errors.Errorf("members[%d]: duplicate member %s %q", i, kind, name)
@@ -106,7 +106,7 @@ func LoadSuite(repoRoot, suitePath string) (*LoadedSuite, error) {
 		allEarlierNames[name] = true
 
 		loaded.Members = append(loaded.Members, SuiteMember{
-			Component:    member.GetComponent(),
+			KindDir:      member.GetKindDir(),
 			Kind:         kind,
 			Name:         name,
 			ManifestPath: manifestPath,
@@ -119,8 +119,8 @@ func LoadSuite(repoRoot, suitePath string) (*LoadedSuite, error) {
 
 // earlierTargetExists mirrors edgeTargetExists but against the members
 // already listed.
-func earlierTargetExists(edge RefEdge, earlier map[cloudresourcekind.CloudResourceKind]map[string]bool, allNames map[string]bool) bool {
-	if edge.TargetKind != cloudresourcekind.CloudResourceKind_unspecified {
+func earlierTargetExists(edge RefEdge, earlier map[catalogkind.CatalogKind]map[string]bool, allNames map[string]bool) bool {
+	if edge.TargetKind != catalogkind.CatalogKind_unspecified {
 		return earlier[edge.TargetKind][edge.TargetName]
 	}
 	return allNames[edge.TargetName]

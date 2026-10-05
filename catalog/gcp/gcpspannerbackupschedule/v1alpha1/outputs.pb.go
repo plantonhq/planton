@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpSpannerBackupScheduleStackOutputs captures observable values produced
+// GcpSpannerBackupScheduleOutputs captures observable values produced
 // after provisioning a Cloud Spanner backup schedule.
-type GcpSpannerBackupScheduleStackOutputs struct {
+type GcpSpannerBackupScheduleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified backup schedule ID.
 	// Format: projects/{project}/instances/{instance}/databases/{database}/backupSchedules/{name}
@@ -35,20 +35,20 @@ type GcpSpannerBackupScheduleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpSpannerBackupScheduleStackOutputs) Reset() {
-	*x = GcpSpannerBackupScheduleStackOutputs{}
+func (x *GcpSpannerBackupScheduleOutputs) Reset() {
+	*x = GcpSpannerBackupScheduleOutputs{}
 	mi := &file_catalog_gcp_gcpspannerbackupschedule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSpannerBackupScheduleStackOutputs) String() string {
+func (x *GcpSpannerBackupScheduleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSpannerBackupScheduleStackOutputs) ProtoMessage() {}
+func (*GcpSpannerBackupScheduleOutputs) ProtoMessage() {}
 
-func (x *GcpSpannerBackupScheduleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpSpannerBackupScheduleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpspannerbackupschedule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *GcpSpannerBackupScheduleStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSpannerBackupScheduleStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpSpannerBackupScheduleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSpannerBackupScheduleOutputs.ProtoReflect.Descriptor instead.
+func (*GcpSpannerBackupScheduleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpspannerbackupschedule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSpannerBackupScheduleStackOutputs) GetScheduleId() string {
+func (x *GcpSpannerBackupScheduleOutputs) GetScheduleId() string {
 	if x != nil {
 		return x.ScheduleId
 	}
 	return ""
 }
 
-func (x *GcpSpannerBackupScheduleStackOutputs) GetScheduleName() string {
+func (x *GcpSpannerBackupScheduleOutputs) GetScheduleName() string {
 	if x != nil {
 		return x.ScheduleName
 	}
@@ -83,8 +83,8 @@ var File_catalog_gcp_gcpspannerbackupschedule_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_gcp_gcpspannerbackupschedule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/gcp/gcpspannerbackupschedule/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpspannerbackupschedule.v1alpha1\"l\n" +
-	"$GcpSpannerBackupScheduleStackOutputs\x12\x1f\n" +
+	";catalog/gcp/gcpspannerbackupschedule/v1alpha1/outputs.proto\x121dev.planton.gcp.gcpspannerbackupschedule.v1alpha1\"g\n" +
+	"\x1fGcpSpannerBackupScheduleOutputs\x12\x1f\n" +
 	"\vschedule_id\x18\x01 \x01(\tR\n" +
 	"scheduleId\x12#\n" +
 	"\rschedule_name\x18\x02 \x01(\tR\fscheduleNameB\x9b\x03\n" +
@@ -104,7 +104,7 @@ func file_catalog_gcp_gcpspannerbackupschedule_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_gcp_gcpspannerbackupschedule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpspannerbackupschedule_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpSpannerBackupScheduleStackOutputs)(nil), // 0: dev.planton.gcp.gcpspannerbackupschedule.v1alpha1.GcpSpannerBackupScheduleStackOutputs
+	(*GcpSpannerBackupScheduleOutputs)(nil), // 0: dev.planton.gcp.gcpspannerbackupschedule.v1alpha1.GcpSpannerBackupScheduleOutputs
 }
 var file_catalog_gcp_gcpspannerbackupschedule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

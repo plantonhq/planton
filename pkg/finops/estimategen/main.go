@@ -1,4 +1,4 @@
-// Command estimategen writes the generated per-component cost estimates.
+// Command estimategen writes the generated per-kind cost estimates.
 // Run through `make generate-cost-estimates`. Generation is always
 // whole-tree: the dead-price sweep needs every model's references, so a
 // scoped run could never prove the price books clean. See generate.go for

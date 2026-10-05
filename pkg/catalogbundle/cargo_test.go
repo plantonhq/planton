@@ -10,8 +10,8 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"sigs.k8s.io/yaml"
 
-	costestimatev1 "github.com/plantonhq/planton/finops/componentcostestimate/v1"
-	permissionsv1 "github.com/plantonhq/planton/iac/componentpermissions/v1"
+	costestimatev1 "github.com/plantonhq/planton/finops/catalogkindcostestimate/v1"
+	permissionsv1 "github.com/plantonhq/planton/iac/catalogkindpermissions/v1"
 	"github.com/plantonhq/planton/pkg/protobufyaml"
 )
 
@@ -61,7 +61,7 @@ func TestFactSheetCargoRoundTrip(t *testing.T) {
 		}
 	}
 
-	// The central documents ride with the component cargo.
+	// The central documents ride with the kind cargo.
 	if _, aboardOK := bundle.Compliance()[controlsCatalogEntryName]; !aboardOK {
 		t.Error("the control catalog is missing from the bundle")
 	}
@@ -99,7 +99,7 @@ func TestFactSheetCargoRoundTrip(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	estimate := &costestimatev1.ComponentCostEstimate{}
+	estimate := &costestimatev1.CatalogKindCostEstimate{}
 	if err := protobufyaml.LoadYamlBytes(estimateRaw, estimate); err != nil {
 		t.Fatal(err)
 	}
@@ -140,7 +140,7 @@ func TestFactSheetCargoRoundTrip(t *testing.T) {
 	}
 
 	// The token-scoped providers' arms fold into the provenance summary
-	// like every IAM arm: a component whose manifest declares only a
+	// like every IAM arm: a kind whose manifest declares only a
 	// cloudflare, digital_ocean, or auth0 section still summarizes as
 	// derived -- an empty summary here would mean the fold silently skips
 	// the section.
@@ -160,11 +160,11 @@ func TestFactSheetCargoRoundTrip(t *testing.T) {
 		}
 	}
 
-	// An uncovered component's entry document carries no summary keys at
+	// An uncovered kind's entry document carries no summary keys at
 	// all (omitempty holds) -- absence is the honest state. The exemplar is
 	// chosen DYNAMICALLY (the first entry document, in name order, whose
 	// kind ships no cost cargo) so growing coverage can never rot this
-	// test; when every component is covered, there is nothing left to
+	// test; when every kind is covered, there is nothing left to
 	// assert and the honest-absence property holds vacuously.
 	uncoveredName := ""
 	for name := range bundle.entries {
@@ -180,7 +180,7 @@ func TestFactSheetCargoRoundTrip(t *testing.T) {
 		}
 	}
 	if uncoveredName == "" {
-		t.Log("every component ships fact-sheets -- no uncovered entry left to assert honest absence on")
+		t.Log("every kind ships fact-sheets -- no uncovered entry left to assert honest absence on")
 		return
 	}
 	var uncovered map[string]any
@@ -204,7 +204,7 @@ func TestFactSheetCargoRoundTrip(t *testing.T) {
 // provenance, builds a spec holding exactly one derived entry there, and
 // demands the summary see it; a new section fails here until it is folded.
 func TestPermissionsProvenanceFoldsEverySection(t *testing.T) {
-	sections := (&permissionsv1.ComponentPermissionsSpec{}).ProtoReflect().Descriptor().Fields()
+	sections := (&permissionsv1.CatalogKindPermissionsSpec{}).ProtoReflect().Descriptor().Fields()
 	lists := 0
 	for i := 0; i < sections.Len(); i++ {
 		section := sections.Get(i)
@@ -225,12 +225,12 @@ func TestPermissionsProvenanceFoldsEverySection(t *testing.T) {
 			lists++
 			name := string(section.Name()) + "." + string(field.Name())
 			t.Run(name, func(t *testing.T) {
-				spec := &permissionsv1.ComponentPermissionsSpec{}
+				spec := &permissionsv1.CatalogKindPermissionsSpec{}
 				entries := spec.ProtoReflect().Mutable(section).Message().Mutable(field).List()
 				entry := entries.NewElement()
 				entry.Message().Set(provenanceField, protoreflect.ValueOfEnum(permissionsv1.Provenance_derived.Number()))
 				entries.Append(entry)
-				got := computePermissionsProvenance(&permissionsv1.ComponentPermissions{Spec: spec})
+				got := computePermissionsProvenance(&permissionsv1.CatalogKindPermissions{Spec: spec})
 				if got != "derived" {
 					t.Errorf("a manifest whose only entry is one derived %s summarizes as %q, want derived -- computePermissionsProvenance does not fold %s", name, got, name)
 				}
@@ -247,7 +247,7 @@ func TestPermissionsProvenanceFoldsEverySection(t *testing.T) {
 // entry claiming summaries it has no cargo for, and a malformed document.
 func TestConformanceRefusesIncoherentCargo(t *testing.T) {
 	descriptors := linkedDescriptorSetBytes(t)
-	controlsDoc := []byte("apiVersion: compliance.planton.dev/v1\nkind: ComponentControlProfile\n")
+	controlsDoc := []byte("apiVersion: compliance.planton.dev/v1\nkind: CatalogKindControlProfile\n")
 
 	cases := []struct {
 		name        string
@@ -257,7 +257,7 @@ func TestConformanceRefusesIncoherentCargo(t *testing.T) {
 		{
 			name: "cargo keyed by no user-facing kind",
 			contents: map[string][]byte{
-				"costs/aws/awsimaginarything.yaml": []byte("apiVersion: finops.planton.dev/v1\nkind: ComponentCostProfile\n"),
+				"costs/aws/awsimaginarything.yaml": []byte("apiVersion: finops.planton.dev/v1\nkind: CatalogKindCostProfile\n"),
 			},
 			wantFinding: "not keyed by a user-facing registry kind",
 		},
@@ -282,14 +282,14 @@ func TestConformanceRefusesIncoherentCargo(t *testing.T) {
 		{
 			name: "malformed cargo document",
 			contents: map[string][]byte{
-				"costs/aws/awsvpc.yaml": []byte("kind: ComponentCostProfile\nnot_a_field: true\n"),
+				"costs/aws/awsvpc.yaml": []byte("kind: CatalogKindCostProfile\nnot_a_field: true\n"),
 			},
 			wantFinding: "does not parse against its schema",
 		},
 		{
 			name: "malformed derivation document",
 			contents: map[string][]byte{
-				"derivations/aws/awsvpc.yaml": []byte("kind: ComponentCostDerivation\nnot_a_field: true\n"),
+				"derivations/aws/awsvpc.yaml": []byte("kind: CatalogKindCostDerivation\nnot_a_field: true\n"),
 			},
 			wantFinding: "does not parse against its schema",
 		},
@@ -313,16 +313,16 @@ func TestConformanceRefusesIncoherentCargo(t *testing.T) {
 }
 
 // A tree whose fact-sheet coverage is partial fails the BUILD with the
-// component named -- the whole-or-not-at-all standard holds at packing
+// kind named -- the whole-or-not-at-all standard holds at packing
 // time, not just at conformance time.
 func TestCollectCargoRefusesPartialCoverage(t *testing.T) {
 	dir := t.TempDir()
-	componentDir := filepath.Join(dir, "aws", "awswidget")
-	if err := os.MkdirAll(componentDir, 0o755); err != nil {
+	kindPath := filepath.Join(dir, "aws", "awswidget")
+	if err := os.MkdirAll(kindPath, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	costDoc := "apiVersion: finops.planton.dev/v1\nkind: ComponentCostProfile\nmetadata:\n  name: awswidget\nspec:\n  billingModel: usage_based\n"
-	if err := os.WriteFile(filepath.Join(componentDir, "cost.yaml"), []byte(costDoc), 0o644); err != nil {
+	costDoc := "apiVersion: finops.planton.dev/v1\nkind: CatalogKindCostProfile\nmetadata:\n  name: awswidget\nspec:\n  billingModel: usage_based\n"
+	if err := os.WriteFile(filepath.Join(kindPath, "cost.yaml"), []byte(costDoc), 0o644); err != nil {
 		t.Fatal(err)
 	}
 
@@ -334,23 +334,23 @@ func TestCollectCargoRefusesPartialCoverage(t *testing.T) {
 	}
 }
 
-// A derivation whose component ships no cost profile fails the BUILD with
-// the file named -- derivations price covered components only.
+// A derivation whose kind ships no cost profile fails the BUILD with
+// the file named -- derivations price covered kinds only.
 func TestCollectCargoRefusesOrphanDerivation(t *testing.T) {
 	dir := t.TempDir()
 	derivationsDir := filepath.Join(dir, "_pricing", "derivations")
 	if err := os.MkdirAll(derivationsDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	derivationDoc := "apiVersion: finops.planton.dev/v1\nkind: ComponentCostDerivation\nmetadata:\n  name: awswidget\nspec:\n  currency: USD\n"
+	derivationDoc := "apiVersion: finops.planton.dev/v1\nkind: CatalogKindCostDerivation\nmetadata:\n  name: awswidget\nspec:\n  currency: USD\n"
 	if err := os.WriteFile(filepath.Join(derivationsDir, "awswidget.yaml"), []byte(derivationDoc), 0o644); err != nil {
 		t.Fatal(err)
 	}
 
 	entries := map[string][]byte{}
 	if _, err := collectCargo(dir, entries); err == nil {
-		t.Fatal("a derivation without a covered component must fail cargo collection")
-	} else if !strings.Contains(err.Error(), "derivations price covered components only") {
+		t.Fatal("a derivation without a covered kind must fail cargo collection")
+	} else if !strings.Contains(err.Error(), "derivations price covered kinds only") {
 		t.Fatalf("the refusal must name the rule, got: %v", err)
 	}
 }

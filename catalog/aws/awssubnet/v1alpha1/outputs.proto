@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awssubnet.v1alpha1;
 
-// AwsSubnetStackOutputs contains the values produced by deploying an AwsSubnet.
+// AwsSubnetOutputs contains the values produced by deploying an AwsSubnet.
 // Downstream components (compute, load balancers, databases, EKS/ECS, ...)
 // reference these via StringValueOrRef to compose a topology.
-message AwsSubnetStackOutputs {
+message AwsSubnetOutputs {
   // The subnet's id (e.g. "subnet-0abc123").
   string subnet_id = 1;
 

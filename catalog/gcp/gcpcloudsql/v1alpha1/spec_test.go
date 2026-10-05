@@ -61,7 +61,7 @@ var _ = ginkgo.Describe("GcpCloudSqlSpec", func() {
 		return &GcpCloudSql{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudSql",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-postgres",
 			},
 			Spec: &GcpCloudSqlSpec{

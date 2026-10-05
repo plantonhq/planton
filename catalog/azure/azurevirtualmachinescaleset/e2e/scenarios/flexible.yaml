@@ -1,6 +1,6 @@
 # FLEXIBLE-orchestration scenario: a one-instance burstable Linux fleet
 # in the fixture subnet -- the mode Azure recommends for new workloads
-# and this component's default. Regional spreading with fault-domain
+# and this kind's default. Regional spreading with fault-domain
 # count 1 (the zonal-or-minimal contract), SSH-key auth, and a
 # managed-storage boot-diagnostics block. The throwaway public key
 # exists only so ARM accepts the profile; it grants access to nothing.
@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurevirtualmachinescaleset
+    e2e-catalog-kind: azurevirtualmachinescaleset
   annotations:
     planton.dev/e2e: "true"
   tags:

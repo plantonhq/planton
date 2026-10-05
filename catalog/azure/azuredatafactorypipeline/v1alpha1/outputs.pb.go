@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDataFactoryPipelineStackOutputs** captures the outputs from
+// **AzureDataFactoryPipelineOutputs** captures the outputs from
 // provisioning an Azure Data Factory pipeline.
-type AzureDataFactoryPipelineStackOutputs struct {
+type AzureDataFactoryPipelineOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The pipeline's Azure Resource Manager ID
 	// ({factory_id}/pipelines/{name}).
@@ -35,20 +35,20 @@ type AzureDataFactoryPipelineStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureDataFactoryPipelineStackOutputs) Reset() {
-	*x = AzureDataFactoryPipelineStackOutputs{}
+func (x *AzureDataFactoryPipelineOutputs) Reset() {
+	*x = AzureDataFactoryPipelineOutputs{}
 	mi := &file_catalog_azure_azuredatafactorypipeline_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataFactoryPipelineStackOutputs) String() string {
+func (x *AzureDataFactoryPipelineOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataFactoryPipelineStackOutputs) ProtoMessage() {}
+func (*AzureDataFactoryPipelineOutputs) ProtoMessage() {}
 
-func (x *AzureDataFactoryPipelineStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDataFactoryPipelineOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredatafactorypipeline_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureDataFactoryPipelineStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataFactoryPipelineStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDataFactoryPipelineStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataFactoryPipelineOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDataFactoryPipelineOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredatafactorypipeline_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataFactoryPipelineStackOutputs) GetPipelineId() string {
+func (x *AzureDataFactoryPipelineOutputs) GetPipelineId() string {
 	if x != nil {
 		return x.PipelineId
 	}
 	return ""
 }
 
-func (x *AzureDataFactoryPipelineStackOutputs) GetPipelineName() string {
+func (x *AzureDataFactoryPipelineOutputs) GetPipelineName() string {
 	if x != nil {
 		return x.PipelineName
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuredatafactorypipeline_v1alpha1_outputs_proto protorefl
 
 const file_catalog_azure_azuredatafactorypipeline_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azuredatafactorypipeline/v1alpha1/outputs.proto\x123dev.planton.azure.azuredatafactorypipeline.v1alpha1\"l\n" +
-	"$AzureDataFactoryPipelineStackOutputs\x12\x1f\n" +
+	"=catalog/azure/azuredatafactorypipeline/v1alpha1/outputs.proto\x123dev.planton.azure.azuredatafactorypipeline.v1alpha1\"g\n" +
+	"\x1fAzureDataFactoryPipelineOutputs\x12\x1f\n" +
 	"\vpipeline_id\x18\x01 \x01(\tR\n" +
 	"pipelineId\x12#\n" +
 	"\rpipeline_name\x18\x02 \x01(\tR\fpipelineNameB\xa7\x03\n" +
@@ -104,7 +104,7 @@ func file_catalog_azure_azuredatafactorypipeline_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_azure_azuredatafactorypipeline_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredatafactorypipeline_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDataFactoryPipelineStackOutputs)(nil), // 0: dev.planton.azure.azuredatafactorypipeline.v1alpha1.AzureDataFactoryPipelineStackOutputs
+	(*AzureDataFactoryPipelineOutputs)(nil), // 0: dev.planton.azure.azuredatafactorypipeline.v1alpha1.AzureDataFactoryPipelineOutputs
 }
 var file_catalog_azure_azuredatafactorypipeline_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

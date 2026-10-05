@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1;
 
-// GcpVertexAiRagEngineConfigStackOutputs captures what the RAG Engine
+// GcpVertexAiRagEngineConfigOutputs captures what the RAG Engine
 // configuration of one project and location resolved to.
-message GcpVertexAiRagEngineConfigStackOutputs {
+message GcpVertexAiRagEngineConfigOutputs {
   // Full resource name of the singleton configuration:
   // projects/{project}/locations/{location}/ragEngineConfig.
   string name = 1;

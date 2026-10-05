@@ -21,7 +21,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureprivateendpoint
+    e2e-catalog-kind: azureprivateendpoint
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/azure/azureprivateendpoint/e2e/fixture-target-account.yaml,catalog/azure/azureprivateendpoint/e2e/fixture-dns-zone.yaml"

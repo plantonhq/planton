@@ -35,10 +35,10 @@ type AzureLocalNetworkGateway struct {
 	// Resource kind. Must be "AzureLocalNetworkGateway".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Local network gateway specification.
 	Spec *AzureLocalNetworkGatewaySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureLocalNetworkGatewayStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -88,7 +88,7 @@ func (x *AzureLocalNetworkGateway) GetKind() string {
 	return ""
 }
 
-func (x *AzureLocalNetworkGateway) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureLocalNetworkGateway) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureLocalNetworkGateway) GetStatus() *AzureLocalNetworkGatewayStatus {
 // AzureLocalNetworkGatewayStatus holds the deployment outputs.
 type AzureLocalNetworkGatewayStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureLocalNetworkGatewayStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureLocalNetworkGatewayOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureLocalNetworkGatewayStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurelocalnetworkgateway_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureLocalNetworkGatewayStatus) GetOutputs() *AzureLocalNetworkGatewayStackOutputs {
+func (x *AzureLocalNetworkGatewayStatus) GetOutputs() *AzureLocalNetworkGatewayOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azurelocalnetworkgateway_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18AzureLocalNetworkGatewayR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
 	"\x04spec\x18\x04 \x01(\v2Q.dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewaySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
-	"\x06status\x18\x05 \x01(\v2S.dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayStatusR\x06status\"\x95\x01\n" +
-	"\x1eAzureLocalNetworkGatewayStatus\x12s\n" +
-	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayStackOutputsR\aoutputsB\xa3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2S.dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayStatusR\x06status\"\x90\x01\n" +
+	"\x1eAzureLocalNetworkGatewayStatus\x12n\n" +
+	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayOutputsR\aoutputsB\xa3\x03\n" +
 	"7com.dev.planton.azure.azurelocalnetworkgateway.v1alpha1B\bApiProtoP\x01Zmgithub.com/plantonhq/planton/catalog/azure/azurelocalnetworkgateway/v1alpha1;azurelocalnetworkgatewayv1alpha1\xa2\x02\x04DPAA\xaa\x023Dev.Planton.Azure.Azurelocalnetworkgateway.V1alpha1\xca\x023Dev\\Planton\\Azure\\Azurelocalnetworkgateway\\V1alpha1\xe2\x02?Dev\\Planton\\Azure\\Azurelocalnetworkgateway\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Azure::Azurelocalnetworkgateway::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azurelocalnetworkgateway_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_azure_azurelocalnetworkgateway_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurelocalnetworkgateway_v1alpha1_api_proto_goTypes = []any{
-	(*AzureLocalNetworkGateway)(nil),             // 0: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGateway
-	(*AzureLocalNetworkGatewayStatus)(nil),       // 1: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureLocalNetworkGatewaySpec)(nil),         // 3: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewaySpec
-	(*AzureLocalNetworkGatewayStackOutputs)(nil), // 4: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayStackOutputs
+	(*AzureLocalNetworkGateway)(nil),        // 0: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGateway
+	(*AzureLocalNetworkGatewayStatus)(nil),  // 1: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureLocalNetworkGatewaySpec)(nil),    // 3: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewaySpec
+	(*AzureLocalNetworkGatewayOutputs)(nil), // 4: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayOutputs
 }
 var file_catalog_azure_azurelocalnetworkgateway_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGateway.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGateway.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGateway.spec:type_name -> dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewaySpec
 	1, // 2: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGateway.status:type_name -> dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayStatus
-	4, // 3: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayStatus.outputs:type_name -> dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayStackOutputs
+	4, // 3: dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayStatus.outputs:type_name -> dev.planton.azure.azurelocalnetworkgateway.v1alpha1.AzureLocalNetworkGatewayOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -102,7 +102,7 @@ This creates a PostgreSQL 16 instance with a public IPv4 address and **no author
 - A present `network` block must enable at least one path: `ipv4Enabled`, `privateNetwork`, or `psc.enabled`; `authorizedNetworks` require `ipv4Enabled`; `allocatedIpRange` and private-path require `privateNetwork`; `serverCaPool` pairs exactly with `serverCaMode: CUSTOMER_MANAGED_CAS_CA`.
 - `replicaConfiguration` requires `masterInstanceName`; `secondaryZone` requires `REGIONAL`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -145,7 +145,7 @@ Everything else on `google_sql_database_instance` at the pinned provider is repr
 | `replication_cluster.psa_write_endpoint` | Documented read-only field; DR pairing is driven through `failoverDrReplicaName`. |
 | `user_labels` | Driven by the platform metadata labels on both engines, not spec surface. |
 
-## Related Components
+## Related Kinds
 
 - [GcpCloudSqlDatabase](/docs/catalog/gcp/gcpcloudsqldatabase) — logical databases inside this instance
 - [GcpCloudSqlUser](/docs/catalog/gcp/gcpcloudsqluser) — per-application users

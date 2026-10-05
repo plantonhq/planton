@@ -1,24 +1,24 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarecertificatepack
 spec:
   # A certificate pack's import identity is compound: the zone it was ordered
   # in plus the pack's own Cloudflare-assigned id. Both come from a prior
-  # deploy's stack outputs -- zone_id is a StringValueOrRef on the spec, not
+  # deploy's outputs -- zone_id is a StringValueOrRef on the spec, not
   # a scalar leaf. Import is supported but not recommended (replace the
   # certificate instead); most order fields do not round-trip.
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the
         Cloudflare v4 API (the id field).
     - name: certificate_pack_id
       derivations:
-        - from_stack_output: certificate_pack_id
+        - from_output: certificate_pack_id
       where_to_find: >-
         Cloudflare dashboard -> the zone -> SSL/TLS -> Edge Certificates
         (open the advanced certificate pack; the id is in the URL), or

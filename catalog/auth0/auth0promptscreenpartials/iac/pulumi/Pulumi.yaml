@@ -3,4 +3,4 @@
 name: auth0-prompt-screen-partials
 runtime:
   name: go
-description: Pulumi module for Auth0PromptScreenPartials component
+description: Pulumi module for Auth0PromptScreenPartials kind

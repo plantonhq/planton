@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureVpnServerConfigurationStackOutputs** captures the outputs of
+// **AzureVpnServerConfigurationOutputs** captures the outputs of
 // provisioning a VPN server configuration.
-type AzureVpnServerConfigurationStackOutputs struct {
+type AzureVpnServerConfigurationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the VPN server configuration --
 	// what a point-to-site VPN gateway references as its
@@ -40,20 +40,20 @@ type AzureVpnServerConfigurationStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureVpnServerConfigurationStackOutputs) Reset() {
-	*x = AzureVpnServerConfigurationStackOutputs{}
+func (x *AzureVpnServerConfigurationOutputs) Reset() {
+	*x = AzureVpnServerConfigurationOutputs{}
 	mi := &file_catalog_azure_azurevpnserverconfiguration_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVpnServerConfigurationStackOutputs) String() string {
+func (x *AzureVpnServerConfigurationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVpnServerConfigurationStackOutputs) ProtoMessage() {}
+func (*AzureVpnServerConfigurationOutputs) ProtoMessage() {}
 
-func (x *AzureVpnServerConfigurationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureVpnServerConfigurationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevpnserverconfiguration_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *AzureVpnServerConfigurationStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVpnServerConfigurationStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureVpnServerConfigurationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVpnServerConfigurationOutputs.ProtoReflect.Descriptor instead.
+func (*AzureVpnServerConfigurationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevpnserverconfiguration_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVpnServerConfigurationStackOutputs) GetVpnServerConfigurationId() string {
+func (x *AzureVpnServerConfigurationOutputs) GetVpnServerConfigurationId() string {
 	if x != nil {
 		return x.VpnServerConfigurationId
 	}
 	return ""
 }
 
-func (x *AzureVpnServerConfigurationStackOutputs) GetVpnServerConfigurationName() string {
+func (x *AzureVpnServerConfigurationOutputs) GetVpnServerConfigurationName() string {
 	if x != nil {
 		return x.VpnServerConfigurationName
 	}
 	return ""
 }
 
-func (x *AzureVpnServerConfigurationStackOutputs) GetPolicyGroupIds() map[string]string {
+func (x *AzureVpnServerConfigurationOutputs) GetPolicyGroupIds() map[string]string {
 	if x != nil {
 		return x.PolicyGroupIds
 	}
@@ -95,11 +95,11 @@ var File_catalog_azure_azurevpnserverconfiguration_v1alpha1_outputs_proto protor
 
 const file_catalog_azure_azurevpnserverconfiguration_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/azure/azurevpnserverconfiguration/v1alpha1/outputs.proto\x126dev.planton.azure.azurevpnserverconfiguration.v1alpha1\"\x8e\x03\n" +
-	"'AzureVpnServerConfigurationStackOutputs\x12=\n" +
+	"@catalog/azure/azurevpnserverconfiguration/v1alpha1/outputs.proto\x126dev.planton.azure.azurevpnserverconfiguration.v1alpha1\"\x84\x03\n" +
+	"\"AzureVpnServerConfigurationOutputs\x12=\n" +
 	"\x1bvpn_server_configuration_id\x18\x01 \x01(\tR\x18vpnServerConfigurationId\x12A\n" +
-	"\x1dvpn_server_configuration_name\x18\x02 \x01(\tR\x1avpnServerConfigurationName\x12\x9d\x01\n" +
-	"\x10policy_group_ids\x18\x03 \x03(\v2s.dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStackOutputs.PolicyGroupIdsEntryR\x0epolicyGroupIds\x1aA\n" +
+	"\x1dvpn_server_configuration_name\x18\x02 \x01(\tR\x1avpnServerConfigurationName\x12\x98\x01\n" +
+	"\x10policy_group_ids\x18\x03 \x03(\v2n.dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationOutputs.PolicyGroupIdsEntryR\x0epolicyGroupIds\x1aA\n" +
 	"\x13PolicyGroupIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xbc\x03\n" +
@@ -119,11 +119,11 @@ func file_catalog_azure_azurevpnserverconfiguration_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_azure_azurevpnserverconfiguration_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurevpnserverconfiguration_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureVpnServerConfigurationStackOutputs)(nil), // 0: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStackOutputs
-	nil, // 1: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStackOutputs.PolicyGroupIdsEntry
+	(*AzureVpnServerConfigurationOutputs)(nil), // 0: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationOutputs
+	nil, // 1: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationOutputs.PolicyGroupIdsEntry
 }
 var file_catalog_azure_azurevpnserverconfiguration_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStackOutputs.policy_group_ids:type_name -> dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationStackOutputs.PolicyGroupIdsEntry
+	1, // 0: dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationOutputs.policy_group_ids:type_name -> dev.planton.azure.azurevpnserverconfiguration.v1alpha1.AzureVpnServerConfigurationOutputs.PolicyGroupIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

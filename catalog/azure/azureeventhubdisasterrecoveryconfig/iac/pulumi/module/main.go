@@ -8,16 +8,16 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureeventhubdisasterrecoveryconfigv1alpha1.AzureEventHubDisasterRecoveryConfigStackInput) error {
-	locals, err := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureeventhubdisasterrecoveryconfigv1alpha1.AzureEventHubDisasterRecoveryConfigIacInput) error {
+	locals, err := initializeLocals(ctx, iacInput)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize locals")
 	}
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -57,7 +57,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureeventhubdisasterrecoverycon
 		return errors.Wrapf(err, "failed to create Event Hubs disaster-recovery config %s", spec.AliasName)
 	}
 
-	// Export stack outputs. No credential outputs here: Azure's Event Hubs
+	// Export outputs. No credential outputs here: Azure's Event Hubs
 	// DR resource exposes none. Alias-addressed connection strings surface
 	// on the namespace and authorization-rule kinds instead.
 	ctx.Export(OpDisasterRecoveryConfigId, createdPairing.ID())

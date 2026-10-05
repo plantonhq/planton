@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesKedaStackOutputs by the
+# Outputs — flattened onto KubernetesKedaOutputs by the
 # platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

@@ -13,7 +13,7 @@ Creates a Data Protection backup policy -- the schedule and retention rules for 
 - `dataprotection.BackupPolicyPostgresqlFlexibleServer` -- the `postgresql_flexible_server` variant
 - `dataprotection.BackupPolicyDataLakeStorage` -- the `data_lake_storage` variant
 
-## Stack Outputs
+## Outputs
 
 - `backup_policy_id` -- the policy's full ARM ID, whichever variant ran; what backup instances bind their policy by
 - `backup_policy_name` -- the policy's name, unique on its vault
@@ -28,4 +28,4 @@ Creates a Data Protection backup policy -- the schedule and retention rules for 
 
 ## Required Permissions
 
-Least-privilege runner permissions for this component are declared in [`../permissions.yaml`](../permissions.yaml).
+Least-privilege runner permissions for this kind are declared in [`../permissions.yaml`](../permissions.yaml).

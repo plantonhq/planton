@@ -15,9 +15,9 @@ type Locals struct {
 	TableName string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpbigtabletablev1alpha1.GcpBigtableTableStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpbigtabletablev1alpha1.GcpBigtableTableIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpBigtableTable = stackInput.Target
+	locals.GcpBigtableTable = iacInput.Target
 
 	locals.TableName = locals.GcpBigtableTable.Spec.TableName
 	if locals.TableName == "" {

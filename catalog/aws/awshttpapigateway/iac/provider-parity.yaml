@@ -9,7 +9,7 @@
 # The recurring reason class here: the module fixes protocol_type to "HTTP",
 # so every WebSocket-only argument is deliberately outside this kind's
 # surface -- WebSocket APIs are a separate protocol surface (their own
-# route/response model) and would be their own component.
+# route/response model) and would be their own kind.
 
 resources:
   aws_apigatewayv2_api:
@@ -24,7 +24,7 @@ resources:
       - arg: name
         reason: derived from metadata.name -- never free-form user surface
       - arg: protocol_type
-        reason: wired by the module to "HTTP" -- the kind's identity; WebSocket APIs are a separate protocol surface and would be their own component
+        reason: wired by the module to "HTTP" -- the kind's identity; WebSocket APIs are a separate protocol surface and would be their own kind
       - arg: api_key_selection_expression
         reason: WebSocket-only surface (API key selection applies to WebSocket APIs; HTTP APIs authorize via JWT/IAM/Lambda authorizers) -- deliberately unmodeled on this HTTP-only kind
       - arg: route_selection_expression

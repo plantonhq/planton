@@ -8,20 +8,20 @@ import (
 	"sort"
 
 	"github.com/plantonhq/planton/internal/cli/flag"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/tofu/generators"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 var GenerateModule = &cobra.Command{
-	Use:   "generate-module <component>",
+	Use:   "generate-module <kind>",
 	Short: "Generate the full thin Terraform module for a Kubernetes-CRD-projection kind",
 	Long: `The "generate-module" command emits the complete iac/tf Terraform module
 (variables.tf, backend.tf, locals.tf, main.tf, provider.tf, outputs.tf) for a
-component whose spec is a direct projection of a single Kubernetes
+kind whose spec is a direct projection of a single Kubernetes
 custom resource -- i.e. a kind annotated with kubernetes_manifest_projection in
-CloudResourceKindMeta (Istio, Gateway API, etc.).
+CatalogKindMeta (Istio, Gateway API, etc.).
 
 The module is a thin kubectl_manifest (alekc/kubectl) passthrough: variable
 "spec" is typed 'any' and handed to the CR verbatim, because the proto->tfvars
@@ -32,7 +32,7 @@ CRDs exist (single-run infra charts, offline plan proofs). Kinds without the
 projection annotation are rejected (use the standard 'generate-variables' +
 provider-resource module pattern instead).`,
 	Example: `
-  # Write the module into the component's iac/tf directory
+  # Write the module into the kind's iac/tf directory
   planton tofu generate-module KubernetesDestinationRule \
     --output-dir catalog/kubernetes/kubernetesdestinationrule/iac/tf
 `,
@@ -41,7 +41,7 @@ provider-resource module pattern instead).`,
 }
 
 func init() {
-	GenerateModule.Flags().String(string(flag.OutputDir), "", "output directory (the component's iac/tf dir); required")
+	GenerateModule.Flags().String(string(flag.OutputDir), "", "output directory (the kind's iac/tf dir); required")
 }
 
 func generateModuleHandler(cmd *cobra.Command, args []string) {
@@ -50,17 +50,17 @@ func generateModuleHandler(cmd *cobra.Command, args []string) {
 	outputDir, err := cmd.Flags().GetString(string(flag.OutputDir))
 	flag.Require(err, flag.OutputDir, outputDir, "--output-dir catalog/<provider>/<kind>/iac/tf")
 
-	cloudResourceKind := crkreflect.KindFromString(kindName)
-	manifestObject := crkreflect.ToMessageMap[cloudResourceKind]
+	catalogKind := catalogkindreflect.KindFromString(kindName)
+	manifestObject := catalogkindreflect.ToMessageMap[catalogKind]
 	if manifestObject == nil {
 		ui.Failure(
-			fmt.Sprintf("no spec message is registered for kind %s", cloudResourceKind.String()),
+			fmt.Sprintf("no spec message is registered for kind %s", catalogKind.String()),
 			"the kind exists in the catalog enum but its proto package is not linked into this binary",
-			"run `make generate-cloud-resource-kind-map` and rebuild, then retry",
+			"run `make generate-catalog-kind-map` and rebuild, then retry",
 		)
 	}
 
-	files, err := generators.GenerateManifestModule(cloudResourceKind, manifestObject)
+	files, err := generators.GenerateManifestModule(catalogKind, manifestObject)
 	if err != nil {
 		ui.Failure(
 			fmt.Sprintf("the Terraform module for %s could not be generated: %v", kindName, err),

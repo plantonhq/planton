@@ -4,7 +4,7 @@ package dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1;
 
 import "shared/options/options.proto";
 
-// DigitalOceanDatabaseConnectionPoolStackOutputs captures the key outputs
+// DigitalOceanDatabaseConnectionPoolOutputs captures the key outputs
 // after provisioning a connection pool on a DigitalOcean PostgreSQL
 // cluster. The cluster id and pool name are echoed so consumers (and
 // verification tooling) can address the pool directly -- the DigitalOcean
@@ -13,7 +13,7 @@ import "shared/options/options.proto";
 // The connection URIs are assembled by the provisioners from the pool's
 // live connection details and embed credentials, so equality across
 // engines is asserted on host/port, never on the full URI.
-message DigitalOceanDatabaseConnectionPoolStackOutputs {
+message DigitalOceanDatabaseConnectionPoolOutputs {
   // UUID of the PostgreSQL cluster the pool runs on.
   string cluster_id = 1;
 

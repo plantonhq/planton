@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureFirewallStackOutputs** captures the outputs of provisioning an
+// **AzureFirewallOutputs** captures the outputs of provisioning an
 // Azure Firewall instance.
-type AzureFirewallStackOutputs struct {
+type AzureFirewallOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the firewall.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/azureFirewalls/{name}
@@ -50,20 +50,20 @@ type AzureFirewallStackOutputs struct {
 	sizeCache                  protoimpl.SizeCache
 }
 
-func (x *AzureFirewallStackOutputs) Reset() {
-	*x = AzureFirewallStackOutputs{}
+func (x *AzureFirewallOutputs) Reset() {
+	*x = AzureFirewallOutputs{}
 	mi := &file_catalog_azure_azurefirewall_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureFirewallStackOutputs) String() string {
+func (x *AzureFirewallOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureFirewallStackOutputs) ProtoMessage() {}
+func (*AzureFirewallOutputs) ProtoMessage() {}
 
-func (x *AzureFirewallStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureFirewallOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurefirewall_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -75,47 +75,47 @@ func (x *AzureFirewallStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureFirewallStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureFirewallStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureFirewallOutputs.ProtoReflect.Descriptor instead.
+func (*AzureFirewallOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurefirewall_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureFirewallStackOutputs) GetFirewallId() string {
+func (x *AzureFirewallOutputs) GetFirewallId() string {
 	if x != nil {
 		return x.FirewallId
 	}
 	return ""
 }
 
-func (x *AzureFirewallStackOutputs) GetFirewallName() string {
+func (x *AzureFirewallOutputs) GetFirewallName() string {
 	if x != nil {
 		return x.FirewallName
 	}
 	return ""
 }
 
-func (x *AzureFirewallStackOutputs) GetPrivateIpAddress() string {
+func (x *AzureFirewallOutputs) GetPrivateIpAddress() string {
 	if x != nil {
 		return x.PrivateIpAddress
 	}
 	return ""
 }
 
-func (x *AzureFirewallStackOutputs) GetManagementPrivateIpAddress() string {
+func (x *AzureFirewallOutputs) GetManagementPrivateIpAddress() string {
 	if x != nil {
 		return x.ManagementPrivateIpAddress
 	}
 	return ""
 }
 
-func (x *AzureFirewallStackOutputs) GetVirtualHubPublicIpAddresses() []string {
+func (x *AzureFirewallOutputs) GetVirtualHubPublicIpAddresses() []string {
 	if x != nil {
 		return x.VirtualHubPublicIpAddresses
 	}
 	return nil
 }
 
-func (x *AzureFirewallStackOutputs) GetVirtualHubPrivateIpAddress() string {
+func (x *AzureFirewallOutputs) GetVirtualHubPrivateIpAddress() string {
 	if x != nil {
 		return x.VirtualHubPrivateIpAddress
 	}
@@ -126,8 +126,8 @@ var File_catalog_azure_azurefirewall_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_azure_azurefirewall_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/azure/azurefirewall/v1alpha1/outputs.proto\x12(dev.planton.azure.azurefirewall.v1alpha1\"\xdc\x02\n" +
-	"\x19AzureFirewallStackOutputs\x12\x1f\n" +
+	"2catalog/azure/azurefirewall/v1alpha1/outputs.proto\x12(dev.planton.azure.azurefirewall.v1alpha1\"\xd7\x02\n" +
+	"\x14AzureFirewallOutputs\x12\x1f\n" +
 	"\vfirewall_id\x18\x01 \x01(\tR\n" +
 	"firewallId\x12#\n" +
 	"\rfirewall_name\x18\x02 \x01(\tR\ffirewallName\x12,\n" +
@@ -151,7 +151,7 @@ func file_catalog_azure_azurefirewall_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_azure_azurefirewall_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurefirewall_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureFirewallStackOutputs)(nil), // 0: dev.planton.azure.azurefirewall.v1alpha1.AzureFirewallStackOutputs
+	(*AzureFirewallOutputs)(nil), // 0: dev.planton.azure.azurefirewall.v1alpha1.AzureFirewallOutputs
 }
 var file_catalog_azure_azurefirewall_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

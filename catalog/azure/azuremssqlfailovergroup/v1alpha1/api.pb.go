@@ -34,10 +34,10 @@ type AzureMssqlFailoverGroup struct {
 	// Resource kind. Must be "AzureMssqlFailoverGroup".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Failover group specification.
 	Spec *AzureMssqlFailoverGroupSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureMssqlFailoverGroupStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -87,7 +87,7 @@ func (x *AzureMssqlFailoverGroup) GetKind() string {
 	return ""
 }
 
-func (x *AzureMssqlFailoverGroup) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureMssqlFailoverGroup) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureMssqlFailoverGroup) GetStatus() *AzureMssqlFailoverGroupStatus {
 // AzureMssqlFailoverGroupStatus holds the deployment outputs.
 type AzureMssqlFailoverGroupStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureMssqlFailoverGroupStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureMssqlFailoverGroupOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureMssqlFailoverGroupStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremssqlfailovergroup_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureMssqlFailoverGroupStatus) GetOutputs() *AzureMssqlFailoverGroupStackOutputs {
+func (x *AzureMssqlFailoverGroupStatus) GetOutputs() *AzureMssqlFailoverGroupOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azuremssqlfailovergroup_v1alpha1_api_proto_rawDesc = ""
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17AzureMssqlFailoverGroupR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
 	"\x04spec\x18\x04 \x01(\v2O.dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12i\n" +
-	"\x06status\x18\x05 \x01(\v2Q.dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupStatusR\x06status\"\x92\x01\n" +
-	"\x1dAzureMssqlFailoverGroupStatus\x12q\n" +
-	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupStackOutputsR\aoutputsB\x9c\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Q.dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupStatusR\x06status\"\x8d\x01\n" +
+	"\x1dAzureMssqlFailoverGroupStatus\x12l\n" +
+	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupOutputsR\aoutputsB\x9c\x03\n" +
 	"6com.dev.planton.azure.azuremssqlfailovergroup.v1alpha1B\bApiProtoP\x01Zkgithub.com/plantonhq/planton/catalog/azure/azuremssqlfailovergroup/v1alpha1;azuremssqlfailovergroupv1alpha1\xa2\x02\x04DPAA\xaa\x022Dev.Planton.Azure.Azuremssqlfailovergroup.V1alpha1\xca\x022Dev\\Planton\\Azure\\Azuremssqlfailovergroup\\V1alpha1\xe2\x02>Dev\\Planton\\Azure\\Azuremssqlfailovergroup\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Azure::Azuremssqlfailovergroup::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azuremssqlfailovergroup_v1alpha1_api_proto_rawDescGZIP()
 
 var file_catalog_azure_azuremssqlfailovergroup_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremssqlfailovergroup_v1alpha1_api_proto_goTypes = []any{
-	(*AzureMssqlFailoverGroup)(nil),             // 0: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroup
-	(*AzureMssqlFailoverGroupStatus)(nil),       // 1: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureMssqlFailoverGroupSpec)(nil),         // 3: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupSpec
-	(*AzureMssqlFailoverGroupStackOutputs)(nil), // 4: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupStackOutputs
+	(*AzureMssqlFailoverGroup)(nil),        // 0: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroup
+	(*AzureMssqlFailoverGroupStatus)(nil),  // 1: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureMssqlFailoverGroupSpec)(nil),    // 3: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupSpec
+	(*AzureMssqlFailoverGroupOutputs)(nil), // 4: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupOutputs
 }
 var file_catalog_azure_azuremssqlfailovergroup_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroup.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroup.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroup.spec:type_name -> dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupSpec
 	1, // 2: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroup.status:type_name -> dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupStatus
-	4, // 3: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupStatus.outputs:type_name -> dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupStackOutputs
+	4, // 3: dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupStatus.outputs:type_name -> dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

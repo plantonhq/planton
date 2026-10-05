@@ -9,12 +9,12 @@ Pair `server_tls` with `replicas: 1`, or run multiple plain-HTTP
 replicas behind TLS terminated at an Ingress/Gateway (the spec
 carries this caveat on the field).
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You need Confluent Schema Registry itself** — Karapace is Aiven's
   Apache-2.0 registry, API-compatible with Confluent SR (existing SR
   clients work unchanged); if you need Confluent-proprietary
-  extensions beyond that API surface, this component does not provide
+  extensions beyond that API surface, this kind does not provide
   them.
 - **You want a database-backed registry** — there is no database:
   schemas live in a compacted Kafka topic (`_schemas` by convention)
@@ -114,7 +114,7 @@ over HTTP, wired to this registry for schema-aware payloads.
 - **`spec.port` / `spec.log_level` / `spec.image` /
   `spec.resources` / `spec.node_selector` / `spec.tolerations`**
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

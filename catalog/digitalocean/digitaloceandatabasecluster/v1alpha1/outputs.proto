@@ -4,9 +4,9 @@ package dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1;
 
 import "shared/options/options.proto";
 
-// DigitalOceanDatabaseClusterStackOutputs captures the key outputs after
+// DigitalOceanDatabaseClusterOutputs captures the key outputs after
 // provisioning a DigitalOcean database cluster.
-message DigitalOceanDatabaseClusterStackOutputs {
+message DigitalOceanDatabaseClusterOutputs {
   // The unique identifier (UUID) of the created database cluster.
   string cluster_id = 1;
 

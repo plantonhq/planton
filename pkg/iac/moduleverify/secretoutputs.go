@@ -19,11 +19,11 @@ import (
 	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/pkg/outputs"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/zclconf/go-cty/cty"
 )
 
-// A stack output the kind's schema marks `sensitive` is a secret the resource generates (a client
+// An output the kind's schema marks `sensitive` is a secret the resource generates (a client
 // secret, an access key, an admin password). The platform stores it in the organization's secret
 // store and keeps only a reference, but the engine sees the value first: an engine that does not
 // treat the output as a secret prints it in its own plan, apply and event logs, and Pulumi keeps
@@ -32,9 +32,9 @@ import (
 // which is worse than a deployment that fails. An output the engine hides although the schema
 // says it is public is a warning: nothing leaks, but the two declarations disagree.
 
-// stackOutputFields maps each top-level stack-outputs field name to whether the schema marks it
+// outputFields maps each top-level outputs field name to whether the schema marks it
 // a secret -- the one rule the platform and the CLI read too (outputs.SecretOutputs).
-func stackOutputFields(kind cloudresourcekind.CloudResourceKind) (map[string]bool, error) {
+func outputFields(kind catalogkind.CatalogKind) (map[string]bool, error) {
 	return outputs.SecretOutputs(kind)
 }
 
@@ -58,7 +58,7 @@ func publicOutputExportedAsSecret(kindName, output, engine, fix string) string {
 
 // checkSecretOutputsTofu holds outputs.tf's `sensitive` declarations to the schema's marks, in
 // both directions.
-func checkSecretOutputsTofu(kind cloudresourcekind.CloudResourceKind, kindName, moduleDir string, result *Result) {
+func checkSecretOutputsTofu(kind catalogkind.CatalogKind, kindName, moduleDir string, result *Result) {
 	src, err := os.ReadFile(filepath.Join(moduleDir, outputsFileName))
 	if err != nil {
 		// checkTofuOutputNames already reports a module that declares no outputs.
@@ -69,7 +69,7 @@ func checkSecretOutputsTofu(kind cloudresourcekind.CloudResourceKind, kindName, 
 		result.addError(outputsFileName, fmt.Sprintf("outputs.tf could not be parsed: %v", err))
 		return
 	}
-	schema, err := stackOutputFields(kind)
+	schema, err := outputFields(kind)
 	if err != nil {
 		result.addNotice(fmt.Sprintf("secret-outputs check skipped: %v", err))
 		return
@@ -135,17 +135,17 @@ type pulumiExport struct {
 	File   string
 }
 
-// checkPulumiOutputs holds the module's ctx.Export calls to the kind's stack-outputs schema: by
+// checkPulumiOutputs holds the module's ctx.Export calls to the kind's outputs schema: by
 // name (the join the generic transformer performs after every deployment, as outputs.tf is held
 // for OpenTofu) and by secrecy (a marked output is exported as pulumi.ToSecret(...), directly at
 // the export, and no other output is).
-func checkPulumiOutputs(kind cloudresourcekind.CloudResourceKind, kindName, moduleDir string, result *Result) {
+func checkPulumiOutputs(kind catalogkind.CatalogKind, kindName, moduleDir string, result *Result) {
 	exports, unresolved, err := collectPulumiExports(moduleDir)
 	if err != nil {
 		result.addNotice(fmt.Sprintf("outputs checks skipped: %v", err))
 		return
 	}
-	schema, err := stackOutputFields(kind)
+	schema, err := outputFields(kind)
 	if err != nil {
 		result.addNotice(fmt.Sprintf("outputs checks skipped: %v", err))
 		return
@@ -185,11 +185,11 @@ func checkPulumiOutputs(kind cloudresourcekind.CloudResourceKind, kindName, modu
 	if len(unknown) > 0 {
 		sort.Strings(unknown)
 		result.addWarning("", fmt.Sprintf(
-			"these exports match no %s stack-outputs field and are dropped after deployment: %s", kindName, strings.Join(unknown, ", ")))
+			"these exports match no %s outputs field and are dropped after deployment: %s", kindName, strings.Join(unknown, ", ")))
 	}
 	if len(unpopulated) > 0 && unresolved == 0 {
 		result.addWarning("", fmt.Sprintf(
-			"no export populates these %s stack-outputs fields, so they stay empty on deployed resources: %s", kindName, strings.Join(unpopulated, ", ")))
+			"no export populates these %s outputs fields, so they stay empty on deployed resources: %s", kindName, strings.Join(unpopulated, ", ")))
 	}
 }
 

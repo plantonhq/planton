@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuremssqldatabase
+    e2e-catalog-kind: azuremssqldatabase
   annotations:
     planton.dev/e2e: "true"
     # Scenario-local server (minimal-server.yaml) instead of the shared

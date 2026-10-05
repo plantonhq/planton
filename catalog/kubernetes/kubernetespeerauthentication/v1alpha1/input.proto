@@ -5,10 +5,10 @@ package dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1;
 import "catalog/kubernetes/kubernetespeerauthentication/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesPeerAuthenticationStackInput provides the inputs for creating the
+// KubernetesPeerAuthenticationIacInput provides the inputs for creating the
 // PeerAuthentication on a Kubernetes cluster.
-message KubernetesPeerAuthenticationStackInput {
-  // target cloud-resource
+message KubernetesPeerAuthenticationIacInput {
+  // the catalog object to deploy
   KubernetesPeerAuthentication target = 1;
   // provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

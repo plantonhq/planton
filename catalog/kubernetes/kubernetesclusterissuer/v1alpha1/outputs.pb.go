@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesClusterIssuerStackOutputs captures observable outputs after
+// KubernetesClusterIssuerOutputs captures observable outputs after
 // the ClusterIssuer is created.
-type KubernetesClusterIssuerStackOutputs struct {
+type KubernetesClusterIssuerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created ClusterIssuer (equals metadata.name). Use it in
 	// Certificate issuerRef.name (kind ClusterIssuer) and in the
@@ -39,20 +39,20 @@ type KubernetesClusterIssuerStackOutputs struct {
 	sizeCache                protoimpl.SizeCache
 }
 
-func (x *KubernetesClusterIssuerStackOutputs) Reset() {
-	*x = KubernetesClusterIssuerStackOutputs{}
+func (x *KubernetesClusterIssuerOutputs) Reset() {
+	*x = KubernetesClusterIssuerOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesclusterissuer_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesClusterIssuerStackOutputs) String() string {
+func (x *KubernetesClusterIssuerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesClusterIssuerStackOutputs) ProtoMessage() {}
+func (*KubernetesClusterIssuerOutputs) ProtoMessage() {}
 
-func (x *KubernetesClusterIssuerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesClusterIssuerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesclusterissuer_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *KubernetesClusterIssuerStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesClusterIssuerStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesClusterIssuerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesClusterIssuerOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesClusterIssuerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesclusterissuer_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesClusterIssuerStackOutputs) GetClusterIssuerName() string {
+func (x *KubernetesClusterIssuerOutputs) GetClusterIssuerName() string {
 	if x != nil {
 		return x.ClusterIssuerName
 	}
 	return ""
 }
 
-func (x *KubernetesClusterIssuerStackOutputs) GetSecretsNamespace() string {
+func (x *KubernetesClusterIssuerOutputs) GetSecretsNamespace() string {
 	if x != nil {
 		return x.SecretsNamespace
 	}
 	return ""
 }
 
-func (x *KubernetesClusterIssuerStackOutputs) GetAcmeAccountKeySecretName() string {
+func (x *KubernetesClusterIssuerOutputs) GetAcmeAccountKeySecretName() string {
 	if x != nil {
 		return x.AcmeAccountKeySecretName
 	}
@@ -94,8 +94,8 @@ var File_catalog_kubernetes_kubernetesclusterissuer_v1alpha1_outputs_proto proto
 
 const file_catalog_kubernetes_kubernetesclusterissuer_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/kubernetes/kubernetesclusterissuer/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesclusterissuer.v1alpha1\"\xc2\x01\n" +
-	"#KubernetesClusterIssuerStackOutputs\x12.\n" +
+	"Acatalog/kubernetes/kubernetesclusterissuer/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesclusterissuer.v1alpha1\"\xbd\x01\n" +
+	"\x1eKubernetesClusterIssuerOutputs\x12.\n" +
 	"\x13cluster_issuer_name\x18\x01 \x01(\tR\x11clusterIssuerName\x12+\n" +
 	"\x11secrets_namespace\x18\x02 \x01(\tR\x10secretsNamespace\x12>\n" +
 	"\x1cacme_account_key_secret_name\x18\x03 \x01(\tR\x18acmeAccountKeySecretNameB\xbe\x03\n" +
@@ -115,7 +115,7 @@ func file_catalog_kubernetes_kubernetesclusterissuer_v1alpha1_outputs_proto_rawD
 
 var file_catalog_kubernetes_kubernetesclusterissuer_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesclusterissuer_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesClusterIssuerStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesclusterissuer.v1alpha1.KubernetesClusterIssuerStackOutputs
+	(*KubernetesClusterIssuerOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesclusterissuer.v1alpha1.KubernetesClusterIssuerOutputs
 }
 var file_catalog_kubernetes_kubernetesclusterissuer_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

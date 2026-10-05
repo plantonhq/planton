@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpdeploytargetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdeploytarget/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -19,15 +19,15 @@ type Locals struct {
 	GcpLabels map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpdeploytargetv1alpha1.GcpDeployTargetStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpdeploytargetv1alpha1.GcpDeployTargetIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpDeployTarget = stackInput.Target
+	locals.GcpDeployTarget = iacInput.Target
 	metadata := locals.GcpDeployTarget.Metadata
 
 	attribution := map[string]string{
 		gcplabelkeys.Resource:     "true",
 		gcplabelkeys.ResourceName: metadata.Name,
-		gcplabelkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_GcpDeployTarget.String()),
+		gcplabelkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_GcpDeployTarget.String()),
 	}
 	if metadata.Org != "" {
 		attribution[gcplabelkeys.Organization] = metadata.Org
@@ -43,7 +43,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpdeploytargetv1alpha1.Gcp
 	// conflicts -- identical merge order to the Terraform module.
 	locals.GcpLabels = mergeLabels(locals.GcpDeployTarget.Spec.Labels, attribution)
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }
 

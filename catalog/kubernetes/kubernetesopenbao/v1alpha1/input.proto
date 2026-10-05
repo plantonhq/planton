@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesopenbao.v1alpha1;
 import "catalog/kubernetes/kubernetesopenbao/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesOpenBaoStackInput represents the input to the IaC module for deploying OpenBao.
-message KubernetesOpenBaoStackInput {
-  // Target cloud resource to deploy.
+// KubernetesOpenBaoIacInput represents the input to the IaC module for deploying OpenBao.
+message KubernetesOpenBaoIacInput {
+  // The OpenBao catalog object to deploy.
   KubernetesOpenBao target = 1;
 
   // Kubernetes provider configuration.

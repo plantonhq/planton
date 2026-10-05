@@ -20,4 +20,4 @@ A provisioned stream with predictable capacity, KMS encryption using the Kinesis
 
 ## Cost
 
-The cost drivers are the two provisioned shards (billed per shard-hour, running whether data flows or not) plus the extended-retention charge for hours 25-48. The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awskinesisstream.yaml` — computed from the pinned price book, never hand-typed here.
+The cost drivers are the two provisioned shards (billed per shard-hour, running whether data flows or not) plus the extended-retention charge for hours 25-48. The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awskinesisstream.yaml` — computed from the pinned price book, never hand-typed here.

@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kubernetesistio
 spec:
@@ -25,7 +25,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: module_default
-        reference: The modules render no external exposure -- istiod serves ClusterIP-only inside the cluster, and this component deliberately installs NO gateways. North-south exposure exists only when a KubernetesGateway resource asks istiod to provision one.
+        reference: The modules render no external exposure -- istiod serves ClusterIP-only inside the cluster, and this kind deliberately installs NO gateways. North-south exposure exists only when a KubernetesGateway resource asks istiod to provision one.
       notes: gateway_defaults.service_type shapes what auto-provisioned gateways expose (LoadBalancer by upstream default) -- but the exposure decision rides the KubernetesGateway that creates them.
     - control_id: restricted-ingress
       status: not_applicable

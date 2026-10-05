@@ -23,17 +23,17 @@ metadata:
   name: network-staples
 spec:
   members:
-    - component: awsvpc
+    - kind_dir: awsvpc
       manifest_path: catalog/aws/awsvpc/e2e/prerequisite.yaml
-    - component: awsinternetgateway
+    - kind_dir: awsinternetgateway
       manifest_path: catalog/aws/awsinternetgateway/e2e/prerequisite.yaml
-    - component: awssubnet
+    - kind_dir: awssubnet
       manifest_path: catalog/aws/awssubnet/e2e/scenarios/routed.yaml
-    - component: awss3bucket
+    - kind_dir: awss3bucket
       manifest_path: catalog/aws/awss3bucket/e2e/scenarios/minimal.yaml
-    - component: awssqsqueue
+    - kind_dir: awssqsqueue
       manifest_path: catalog/aws/awssqsqueue/e2e/scenarios/fifo-full-surface.yaml
-    - component: awssnstopic
+    - kind_dir: awssnstopic
       manifest_path: catalog/aws/awssnstopic/e2e/scenarios/standard-topic.yaml
   scan_scope:
     region: us-west-2

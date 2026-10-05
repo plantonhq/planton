@@ -5,9 +5,9 @@ package dev.planton.aws.awscloudwatchdashboard.v1alpha1;
 import "catalog/aws/awscloudwatchdashboard/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsCloudwatchDashboardStackInput is the input for the IaC modules
+// AwsCloudwatchDashboardIacInput is the input for the IaC modules
 // that manage a CloudWatch dashboard.
-message AwsCloudwatchDashboardStackInput {
+message AwsCloudwatchDashboardIacInput {
   // target is the AwsCloudwatchDashboard resource to deploy.
   AwsCloudwatchDashboard target = 1;
   // provider_config contains the AWS provider credentials and configuration.

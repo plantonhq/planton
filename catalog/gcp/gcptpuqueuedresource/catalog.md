@@ -4,7 +4,7 @@ Gets you TPU capacity even when Google is out of chips. A queued resource is a s
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `tpu.googleapis.com` on the project
 - **Queued resource** -- a `tpu.V2QueuedResource` (Google's beta-only TPU resource, used under the catalog's recorded admission)
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Cloud TPU admin permissions on the project, and TPU quota in the zone. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Cloud TPU admin permissions on the project, and TPU quota in the zone. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -46,7 +46,7 @@ spec:
 planton apply -f tpu-queued-resource.yaml
 ```
 
-This queues a request for a 16-chip v5e slice; the TPU appears when Google places it. A Stack Job tracks the provisioning in real time.
+This queues a request for a 16-chip v5e slice; the TPU appears when Google places it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -64,7 +64,7 @@ These are the most important decisions when configuring a request. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -72,9 +72,9 @@ These are the most important decisions when configuring a request. Explore the f
 | **GcpVpcNetwork** | `nodeSpecs[].node.networkConfig.network` | `status.outputs.network_id` |
 | **GcpSubnetwork** | `nodeSpecs[].node.networkConfig.subnetwork` | `status.outputs.subnetwork_self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -92,5 +92,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP TPU VM**](/cloud-catalog/gcp-tpu-vm) -- a TPU created directly when capacity is available
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- the nodes' private network
+- [**GCP TPU VM**](/infra-catalog/gcp-tpu-vm) -- a TPU created directly when capacity is available
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- the nodes' private network

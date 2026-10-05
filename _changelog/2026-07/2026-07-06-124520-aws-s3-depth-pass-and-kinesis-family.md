@@ -1,7 +1,7 @@
 # AWS S3 Depth Pass and the Kinesis Family to 90/10
 
 **Date:** 2026-07-06
-**Scope:** Components #31–#34 — `AwsS3Bucket` (breaking rebuild), `AwsKinesisStream`, `AwsKinesisStreamConsumer`, `AwsKinesisFirehose` (audit-only)
+**Scope:** Kinds #31–#34 — `AwsS3Bucket` (breaking rebuild), `AwsKinesisStream`, `AwsKinesisStreamConsumer`, `AwsKinesisFirehose` (audit-only)
 
 ## Summary
 

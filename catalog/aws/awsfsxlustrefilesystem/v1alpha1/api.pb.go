@@ -31,7 +31,7 @@ type AwsFsxLustreFileSystem struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsFsxLustreFileSystemSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AwsFsxLustreFileSystem) GetKind() string {
 	return ""
 }
 
-func (x *AwsFsxLustreFileSystem) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsFsxLustreFileSystem) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsFsxLustreFileSystem) GetStatus() *AwsFsxLustreFileSystemStatus {
 // aws-fsx-lustre-file-system status
 type AwsFsxLustreFileSystemStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsFsxLustreFileSystemStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsFsxLustreFileSystemOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsFsxLustreFileSystemStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsfsxlustrefilesystem_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsFsxLustreFileSystemStatus) GetOutputs() *AwsFsxLustreFileSystemStackOutputs {
+func (x *AwsFsxLustreFileSystemStatus) GetOutputs() *AwsFsxLustreFileSystemOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awsfsxlustrefilesystem_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16AwsFsxLustreFileSystemR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
 	"\x04spec\x18\x04 \x01(\v2K.dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12e\n" +
-	"\x06status\x18\x05 \x01(\v2M.dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemStatusR\x06status\"\x8d\x01\n" +
-	"\x1cAwsFsxLustreFileSystemStatus\x12m\n" +
-	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemStackOutputsR\aoutputsB\x89\x03\n" +
+	"\x06status\x18\x05 \x01(\v2M.dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemStatusR\x06status\"\x88\x01\n" +
+	"\x1cAwsFsxLustreFileSystemStatus\x12h\n" +
+	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemOutputsR\aoutputsB\x89\x03\n" +
 	"3com.dev.planton.aws.awsfsxlustrefilesystem.v1alpha1B\bApiProtoP\x01Zggithub.com/plantonhq/planton/catalog/aws/awsfsxlustrefilesystem/v1alpha1;awsfsxlustrefilesystemv1alpha1\xa2\x02\x04DPAA\xaa\x02/Dev.Planton.Aws.Awsfsxlustrefilesystem.V1alpha1\xca\x02/Dev\\Planton\\Aws\\Awsfsxlustrefilesystem\\V1alpha1\xe2\x02;Dev\\Planton\\Aws\\Awsfsxlustrefilesystem\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Aws::Awsfsxlustrefilesystem::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_aws_awsfsxlustrefilesystem_v1alpha1_api_proto_rawDescGZIP() []
 
 var file_catalog_aws_awsfsxlustrefilesystem_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsfsxlustrefilesystem_v1alpha1_api_proto_goTypes = []any{
-	(*AwsFsxLustreFileSystem)(nil),             // 0: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystem
-	(*AwsFsxLustreFileSystemStatus)(nil),       // 1: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsFsxLustreFileSystemSpec)(nil),         // 3: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemSpec
-	(*AwsFsxLustreFileSystemStackOutputs)(nil), // 4: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemStackOutputs
+	(*AwsFsxLustreFileSystem)(nil),        // 0: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystem
+	(*AwsFsxLustreFileSystemStatus)(nil),  // 1: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsFsxLustreFileSystemSpec)(nil),    // 3: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemSpec
+	(*AwsFsxLustreFileSystemOutputs)(nil), // 4: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemOutputs
 }
 var file_catalog_aws_awsfsxlustrefilesystem_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystem.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystem.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystem.spec:type_name -> dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemSpec
 	1, // 2: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystem.status:type_name -> dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemStatus
-	4, // 3: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemStatus.outputs:type_name -> dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemStackOutputs
+	4, // 3: dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemStatus.outputs:type_name -> dev.planton.aws.awsfsxlustrefilesystem.v1alpha1.AwsFsxLustreFileSystemOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

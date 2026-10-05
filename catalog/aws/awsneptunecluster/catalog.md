@@ -4,7 +4,7 @@ Deploys an Amazon Neptune graph database cluster — property graphs (Apache Tin
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Neptune Cluster** -- the shared-storage brain: endpoints, backups, encryption, and engine lifecycle. The cluster identifier comes from `metadata.name`
 - **Neptune Instances** -- one provider resource per `instances[]` entry, keyed by name: one writer (the lowest promotion tier) plus any readers. Adding or removing a reader is an in-place update, never a cluster replacement
@@ -20,14 +20,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **At least two subnets** in distinct Availability Zones. Private subnets are recommended -- Neptune is VPC-only and never internet-facing at the cluster level. Provide subnet IDs directly or reference AwsSubnet Cloud Resources via ValueFromRef. Alternatively, provide an existing `neptuneSubnetGroupName`.
+- **At least two subnets** in distinct Availability Zones. Private subnets are recommended -- Neptune is VPC-only and never internet-facing at the cluster level. Provide subnet IDs directly or reference AwsSubnet Infra Components via ValueFromRef. Alternatively, provide an existing `neptuneSubnetGroupName`.
 - **Security groups** (optional) governing who reaches the cluster port. Ingress rules live on the referenced AwsSecurityGroup nodes -- never inside this cluster. Empty keeps the VPC's default security group.
-- **A KMS key** (optional) for storage encryption beyond the default AWS-managed key. Provide the ARN directly or reference an AwsKmsKey Cloud Resource. Encryption is create-time only.
+- **A KMS key** (optional) for storage encryption beyond the default AWS-managed key. Provide the ARN directly or reference an AwsKmsKey Infra Component. Encryption is create-time only.
 - **IAM roles** (optional) for engine features that reach other AWS services. Required for bulk loading data from S3 and for Neptune ML.
 
 ## Deploy
@@ -71,7 +71,7 @@ spec:
 planton apply -f neptune-cluster.yaml
 ```
 
-This creates a two-instance cluster (a writer plus one reader for high availability) on AWS's current default engine version, with encrypted storage on the AWS-managed key, IAM database authentication, deletion protection, 7-day backup retention, and a named final snapshot on deletion. A Stack Job tracks the provisioning in real time.
+This creates a two-instance cluster (a writer plus one reader for high availability) on AWS's current default engine version, with encrypted storage on the AWS-managed key, IAM database authentication, deletion protection, 7-day backup retention, and a named final snapshot on deletion. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -125,7 +125,7 @@ These are the most important decisions when configuring a Neptune cluster. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -134,9 +134,9 @@ These are the most important decisions when configuring a Neptune cluster. Explo
 | **AwsKmsKey** (optional) | `kmsKeyId` | `status.outputs.key_arn` |
 | **AwsIamRole** (optional) | `iamRoles` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -162,7 +162,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides the subnets for the Neptune subnet group across multiple Availability Zones
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- provides network access control for the cluster endpoint
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for storage encryption
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides service roles for the S3 bulk loader and Neptune ML
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides the subnets for the Neptune subnet group across multiple Availability Zones
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- provides network access control for the cluster endpoint
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for storage encryption
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides service roles for the S3 bulk loader and Neptune ML

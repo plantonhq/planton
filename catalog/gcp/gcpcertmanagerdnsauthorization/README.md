@@ -77,7 +77,7 @@ spec:
 3. **Keep the authorization alive** across certificate rotations — it has
    its own lifecycle precisely so certificates can come and go.
 
-## Related Components
+## Related Kinds
 
 - **GcpCertManagerCert** — references this authorization by ID
 - **GcpDnsRecord** / **GcpDnsZone** — serve the validation record

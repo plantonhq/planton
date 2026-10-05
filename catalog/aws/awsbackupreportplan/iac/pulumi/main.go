@@ -4,16 +4,16 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/catalog/aws/awsbackupreportplan/iac/pulumi/module"
 	awsbackupreportplanv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsbackupreportplan/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		stackInput := &awsbackupreportplanv1alpha1.AwsBackupReportPlanStackInput{}
-		if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
-			return errors.Wrap(err, "failed to load stack-input")
+		iacInput := &awsbackupreportplanv1alpha1.AwsBackupReportPlanIacInput{}
+		if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
+			return errors.Wrap(err, "failed to load iac-input")
 		}
-		return module.Resources(ctx, stackInput)
+		return module.Resources(ctx, iacInput)
 	})
 }

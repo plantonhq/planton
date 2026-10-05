@@ -1,11 +1,11 @@
 # Kubernetes Karpenter (engine + NodePool + EC2NodeClass), Cluster Autoscaler, and Velero at full depth: five new kinds, a live backup/restore DR proof, and the first OCI-served typed Helm kind
 
 **Date**: 2026-07-23
-**Scope**: `apis/dev/planton/shared/cloudresourcekind` (five new kinds, 863–867), `apis/dev/planton/provider/kubernetes` (kuberneteskarpenter, kuberneteskarpenternodepool, kuberneteskarpenterec2nodeclass, kubernetesclusterautoscaler, kubernetesvelero forged), `pkg/kubernetes/kubernetestypes` (karpenter CRD generation set: NodePool + EC2NodeClass typed Pulumi SDK), `aa_e2e/verify` (Velero DR + ClusterAutoscaler verifiers, Karpenter registrations), `e2e` (ten new entrypoints), `pkg/outputs` (+5 conformance cases), `pkg/iac/importmap` (+2 proven round-trips ledgered), site catalog, `_rules/deployment-component` (update rule: OCI chart pinning/wiring; forge rule: chart-rendered sandbox fixtures; spec-validate flow: negated-all() CEL guard)
+**Scope**: `apis/dev/planton/shared/catalogkind` (five new kinds, 863–867), `apis/dev/planton/provider/kubernetes` (kuberneteskarpenter, kuberneteskarpenternodepool, kuberneteskarpenterec2nodeclass, kubernetesclusterautoscaler, kubernetesvelero forged), `pkg/kubernetes/kubernetestypes` (karpenter CRD generation set: NodePool + EC2NodeClass typed Pulumi SDK), `aa_e2e/verify` (Velero DR + ClusterAutoscaler verifiers, Karpenter registrations), `e2e` (ten new entrypoints), `pkg/outputs` (+5 conformance cases), `pkg/iac/importmap` (+2 proven round-trips ledgered), site catalog, `_rules/catalog-kind` (update rule: OCI chart pinning/wiring; forge rule: chart-rendered sandbox fixtures; spec-validate flow: negated-all() CEL guard)
 
 ## What changed
 
-Five new deployment components, each at full configuration depth with
+Five new catalog kinds, each at full configuration depth with
 dual-engine parity; live kind-cluster E2E on both engines where the kind
 cluster can honestly prove it, with clone-verified deferred profiles where
 it cannot:
@@ -51,7 +51,7 @@ it cannot:
   (restricted label domains, requirement operator contracts, budget
   pairings, static-mode exclusions) so mistakes surface at validate time.
 - `node_class_ref.name` is a real foreign key to
-  KubernetesKarpenterEc2NodeClass — infra charts wire the fleet chain with
+  KubernetesKarpenterEc2NodeClass — Infra Charts wire the fleet chain with
   valueFrom and get true dependency edges.
 - Terraform module generated as the kubectl_manifest projection; Pulumi on
   the typed crd2pulumi SDK (new karpenter generation set in
@@ -86,7 +86,7 @@ it cannot:
   the KWOK simulation arm (sandbox/test-only — the arm that makes a
   cloud-free kind lane possible at all). The docs are explicit that GKE and
   AKS ship a MANAGED autoscaler configured on the cluster kinds — this
-  component is for EKS/self-managed postures.
+  kind is for EKS/self-managed postures.
 - Typed scaling block for the flags every installation tunes (expander
   chain, node-group balancing, scan interval, provision timeout, the full
   scale-down set) + the chart's own `extraArgs` map contract for the long
@@ -118,14 +118,14 @@ it cannot:
   DaemonSet, kopia) — with typed Schedule entries (cron, TTL, scope
   filters, per-schedule overrides), server tuning, and the DR-safety
   posture documented: the chart's crds/-directory CRDs survive uninstall
-  by Helm's own contract, so backup records outlive the component
+  by Helm's own contract, so backup records outlive the kind
   (cleanup_on_uninstall exists but is loudly destructive).
 - Live E2E green on both engines including the program's first FULL DR
   behavioral proof: against an in-cluster MinIO fixture, the verifier
   backs up a live namespace (Backup → Completed), DELETES the namespace,
   restores it (Restore → Completed), and asserts the marker data came
   back intact — with verifier-owned Backup/Restore CRs (their CRDs are
-  installed by the component under test) and blind import round-trips on
+  installed by the kind under test) and blind import round-trips on
   both scenarios.
 
 ## E2E and verification

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureDataFactoryDatasetStackOutputs** captures the outputs from
+// **AzureDataFactoryDatasetOutputs** captures the outputs from
 // provisioning an Azure Data Factory dataset.
-type AzureDataFactoryDatasetStackOutputs struct {
+type AzureDataFactoryDatasetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The dataset's Azure Resource Manager ID
 	// ({factory_id}/datasets/{name}) -- the same ID shape for all
@@ -36,20 +36,20 @@ type AzureDataFactoryDatasetStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureDataFactoryDatasetStackOutputs) Reset() {
-	*x = AzureDataFactoryDatasetStackOutputs{}
+func (x *AzureDataFactoryDatasetOutputs) Reset() {
+	*x = AzureDataFactoryDatasetOutputs{}
 	mi := &file_catalog_azure_azuredatafactorydataset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureDataFactoryDatasetStackOutputs) String() string {
+func (x *AzureDataFactoryDatasetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureDataFactoryDatasetStackOutputs) ProtoMessage() {}
+func (*AzureDataFactoryDatasetOutputs) ProtoMessage() {}
 
-func (x *AzureDataFactoryDatasetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureDataFactoryDatasetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuredatafactorydataset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AzureDataFactoryDatasetStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureDataFactoryDatasetStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureDataFactoryDatasetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureDataFactoryDatasetOutputs.ProtoReflect.Descriptor instead.
+func (*AzureDataFactoryDatasetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredatafactorydataset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureDataFactoryDatasetStackOutputs) GetDatasetId() string {
+func (x *AzureDataFactoryDatasetOutputs) GetDatasetId() string {
 	if x != nil {
 		return x.DatasetId
 	}
 	return ""
 }
 
-func (x *AzureDataFactoryDatasetStackOutputs) GetDatasetName() string {
+func (x *AzureDataFactoryDatasetOutputs) GetDatasetName() string {
 	if x != nil {
 		return x.DatasetName
 	}
@@ -84,8 +84,8 @@ var File_catalog_azure_azuredatafactorydataset_v1alpha1_outputs_proto protorefle
 
 const file_catalog_azure_azuredatafactorydataset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/azure/azuredatafactorydataset/v1alpha1/outputs.proto\x122dev.planton.azure.azuredatafactorydataset.v1alpha1\"g\n" +
-	"#AzureDataFactoryDatasetStackOutputs\x12\x1d\n" +
+	"<catalog/azure/azuredatafactorydataset/v1alpha1/outputs.proto\x122dev.planton.azure.azuredatafactorydataset.v1alpha1\"b\n" +
+	"\x1eAzureDataFactoryDatasetOutputs\x12\x1d\n" +
 	"\n" +
 	"dataset_id\x18\x01 \x01(\tR\tdatasetId\x12!\n" +
 	"\fdataset_name\x18\x02 \x01(\tR\vdatasetNameB\xa0\x03\n" +
@@ -105,7 +105,7 @@ func file_catalog_azure_azuredatafactorydataset_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_azure_azuredatafactorydataset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuredatafactorydataset_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureDataFactoryDatasetStackOutputs)(nil), // 0: dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetStackOutputs
+	(*AzureDataFactoryDatasetOutputs)(nil), // 0: dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetOutputs
 }
 var file_catalog_azure_azuredatafactorydataset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

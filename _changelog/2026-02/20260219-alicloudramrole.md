@@ -1,4 +1,4 @@
-# AliCloudRamRole Component Added
+# AliCloudRamRole Kind Added
 
 **Date**: 2026-02-19
 **Component**: AliCloudRamRole
@@ -7,15 +7,15 @@
 
 ## Summary
 
-Added the AliCloudRamRole component for managing Alibaba Cloud RAM roles with bundled policy attachments.
+Added the AliCloudRamRole kind for managing Alibaba Cloud RAM roles with bundled policy attachments.
 
 RAM roles are the identity foundation for Alibaba Cloud -- ACK clusters, FC functions, ECS instances, and SAE applications all use RAM roles for service authentication via STS (Security Token Service).
 
 ## What Was Created
 
 ### API Definition
-- `apis/dev/planton/provider/alicloud/alicloudramrole/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AliCloudRamRole = 3010` in `CloudResourceKind` enum
+- `apis/dev/planton/provider/alicloud/alicloudramrole/v1/` -- Full proto API (spec, api, iac_input, outputs)
+- Registered `AliCloudRamRole = 3010` in `CatalogKind` enum
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider, RAM role, and iterates policy attachments as child resources
@@ -27,14 +27,14 @@ RAM roles are the identity foundation for Alibaba Cloud -- ACK clusters, FC func
   - Invalid: missing required fields, role_name length, max_session_duration range, invalid policy_type, wrong api_version/kind, missing policy_name
 
 ### Documentation
-- README.md with configuration reference, trust policy patterns, and related components
+- README.md with configuration reference, trust policy patterns, and related kinds
 - examples.md with minimal, ECS service role, and cross-account YAML examples
 
 ## Spec Design Decisions
 
 - **`role_name` not `name`**: Follows provider-authentic naming (`name` is deprecated in TF since v1.252.0)
 - **`max_session_duration`**: Added beyond T02 spec (range 3600-43200s, default 3600) -- important for CI/CD and cross-account workflows
-- **`tags`**: Added for consistency with LogProject and all existing provider components
+- **`tags`**: Added for consistency with LogProject and all existing provider kinds
 - **`force`**: Added for clean teardown support (force-detach policies before deletion)
 - **`policy_type` validation**: Uses `buf.validate string.in` with "System" and "Custom" values
 

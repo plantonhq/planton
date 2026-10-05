@@ -4,7 +4,7 @@ Deploys an AWS Systems Manager patch baseline: the patching policy for one opera
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Patch Baseline** — the approval rules, explicit approve/reject lists, optional global filters, and (for Linux) alternative patch source repositories, for one operating system. AWS identifies it as `pb-...`.
 - **Patch Group Registrations** — one per `patchGroups` entry, binding nodes tagged `Patch Group: <name>` to this baseline.
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with permissions to manage SSM patch baselines. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with permissions to manage SSM patch baselines. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -60,7 +60,7 @@ spec:
 planton apply -f patch-baseline.yaml
 ```
 
-This creates an Amazon Linux 2023 baseline auto-approving Critical and Important security patches seven days after release, governing every node tagged `Patch Group: prod-linux`, and reporting missing patches as CRITICAL compliance. A Stack Job tracks the provisioning in real time.
+This creates an Amazon Linux 2023 baseline auto-approving Critical and Important security patches seven days after release, governing every node tagged `Patch Group: prod-linux`, and reporting missing patches as CRITICAL compliance. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -82,13 +82,13 @@ These are the most important decisions when configuring a patch baseline. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — the approval policy, patch groups, and designation are all self-contained values. The binding to instances happens through the `Patch Group` tag on managed nodes, not through references.
+This kind has no foreign key dependencies — the approval policy, patch groups, and designation are all self-contained values. The binding to instances happens through the `Patch Group` tag on managed nodes, not through references.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,5 +109,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS SSM Association**](/cloud-catalog/aws-ssm-association) — schedules the recurring `AWS-RunPatchBaseline` scan that evaluates nodes against this baseline
-- [**AWS SSM Maintenance Window**](/cloud-catalog/aws-ssm-maintenance-window) — runs the patch install inside a declared window with rate controls and a hard cutoff
+- [**AWS SSM Association**](/infra-catalog/aws-ssm-association) — schedules the recurring `AWS-RunPatchBaseline` scan that evaluates nodes against this baseline
+- [**AWS SSM Maintenance Window**](/infra-catalog/aws-ssm-maintenance-window) — runs the patch install inside a declared window with rate controls and a hard cutoff

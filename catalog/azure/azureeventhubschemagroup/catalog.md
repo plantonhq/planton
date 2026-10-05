@@ -4,7 +4,7 @@ Creates a schema group in an Event Hubs namespace's schema registry -- a named c
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Schema Group** -- in the referenced namespace's schema registry, with your chosen evolution policy and serialization format
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -51,7 +51,7 @@ spec:
 planton apply -f schema-group.yaml
 ```
 
-This creates a BACKWARD-compatible Avro schema group named `telemetry-schemas` in the `telemetry-hubs` namespace's registry. A Stack Job tracks the provisioning in real time.
+This creates a BACKWARD-compatible Avro schema group named `telemetry-schemas` in the `telemetry-hubs` namespace's registry. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,15 +82,15 @@ These are the most important decisions when configuring a schema group. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureEventHubNamespace** | `namespaceId` | `status.outputs.namespace_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,7 +109,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Event Hub Namespace**](/cloud-catalog/azure-event-hub-namespace) -- the STANDARD+ namespace whose registry holds the group
-- [**Azure Event Hub**](/cloud-catalog/azure-event-hub) -- the streams whose events conform to the group's schemas
-- [**Azure Event Hub Consumer Group**](/cloud-catalog/azure-event-hub-consumer-group) -- the readers whose serializers resolve schemas from the group
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- keyless Schema Registry Reader/Contributor grants on the namespace
+- [**Azure Event Hub Namespace**](/infra-catalog/azure-event-hub-namespace) -- the STANDARD+ namespace whose registry holds the group
+- [**Azure Event Hub**](/infra-catalog/azure-event-hub) -- the streams whose events conform to the group's schemas
+- [**Azure Event Hub Consumer Group**](/infra-catalog/azure-event-hub-consumer-group) -- the readers whose serializers resolve schemas from the group
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- keyless Schema Registry Reader/Contributor grants on the namespace

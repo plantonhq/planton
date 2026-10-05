@@ -5,11 +5,11 @@ Pulumi (Go) IaC module for Gateway DNS locations.
 ## Architecture
 
 ```
-main.go                   — Entrypoint loading the stack input
+main.go                   — Entrypoint loading the IaC input
 module/main.go            — Resources(): provider setup, resource, outputs
 module/locals.go          — Locals initialization
 module/dns_location.go    — cloudflare.ZeroTrustDnsLocation
-module/outputs.go         — Stack output keys
+module/outputs.go         — output keys
 ```
 
 ## Behavior

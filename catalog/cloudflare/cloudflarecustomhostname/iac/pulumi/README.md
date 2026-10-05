@@ -1,6 +1,6 @@
 # CloudflareCustomHostname — Pulumi module
 
-Provisions a `cloudflare_custom_hostname` from the component's stack input.
+Provisions a `cloudflare_custom_hostname` from the component's IaC input.
 
 ## Field-name nuance (pulumi-cloudflare SDK v6.17.0)
 

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpAlloydbInstanceStackOutputs captures values returned after provisioning
+// GcpAlloydbInstanceOutputs captures values returned after provisioning
 // an AlloyDB instance.
-type GcpAlloydbInstanceStackOutputs struct {
+type GcpAlloydbInstanceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified instance resource name.
 	// Format: projects/{project}/locations/{location}/clusters/{cluster}/instances/{instance}
@@ -36,20 +36,20 @@ type GcpAlloydbInstanceStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpAlloydbInstanceStackOutputs) Reset() {
-	*x = GcpAlloydbInstanceStackOutputs{}
+func (x *GcpAlloydbInstanceOutputs) Reset() {
+	*x = GcpAlloydbInstanceOutputs{}
 	mi := &file_catalog_gcp_gcpalloydbinstance_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpAlloydbInstanceStackOutputs) String() string {
+func (x *GcpAlloydbInstanceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpAlloydbInstanceStackOutputs) ProtoMessage() {}
+func (*GcpAlloydbInstanceOutputs) ProtoMessage() {}
 
-func (x *GcpAlloydbInstanceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpAlloydbInstanceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpalloydbinstance_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *GcpAlloydbInstanceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpAlloydbInstanceStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpAlloydbInstanceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpAlloydbInstanceOutputs.ProtoReflect.Descriptor instead.
+func (*GcpAlloydbInstanceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpalloydbinstance_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpAlloydbInstanceStackOutputs) GetInstanceName() string {
+func (x *GcpAlloydbInstanceOutputs) GetInstanceName() string {
 	if x != nil {
 		return x.InstanceName
 	}
 	return ""
 }
 
-func (x *GcpAlloydbInstanceStackOutputs) GetIpAddress() string {
+func (x *GcpAlloydbInstanceOutputs) GetIpAddress() string {
 	if x != nil {
 		return x.IpAddress
 	}
 	return ""
 }
 
-func (x *GcpAlloydbInstanceStackOutputs) GetState() string {
+func (x *GcpAlloydbInstanceOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
@@ -91,8 +91,8 @@ var File_catalog_gcp_gcpalloydbinstance_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpalloydbinstance_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpalloydbinstance/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpalloydbinstance.v1alpha1\"z\n" +
-	"\x1eGcpAlloydbInstanceStackOutputs\x12#\n" +
+	"5catalog/gcp/gcpalloydbinstance/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpalloydbinstance.v1alpha1\"u\n" +
+	"\x19GcpAlloydbInstanceOutputs\x12#\n" +
 	"\rinstance_name\x18\x01 \x01(\tR\finstanceName\x12\x1d\n" +
 	"\n" +
 	"ip_address\x18\x02 \x01(\tR\tipAddress\x12\x14\n" +
@@ -113,7 +113,7 @@ func file_catalog_gcp_gcpalloydbinstance_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpalloydbinstance_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpalloydbinstance_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpAlloydbInstanceStackOutputs)(nil), // 0: dev.planton.gcp.gcpalloydbinstance.v1alpha1.GcpAlloydbInstanceStackOutputs
+	(*GcpAlloydbInstanceOutputs)(nil), // 0: dev.planton.gcp.gcpalloydbinstance.v1alpha1.GcpAlloydbInstanceOutputs
 }
 var file_catalog_gcp_gcpalloydbinstance_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsssmpatchbaseline
+    e2e-catalog-kind: awsssmpatchbaseline
   annotations:
     planton.dev/e2e: "true"
   tags:

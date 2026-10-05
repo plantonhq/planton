@@ -31,7 +31,7 @@ func validProfile(spec *CloudflareZeroTrustDeviceCustomProfileSpec) *CloudflareZ
 	return &CloudflareZeroTrustDeviceCustomProfile{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustDeviceCustomProfile",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-custom-profile",
 		},
 		Spec: spec,

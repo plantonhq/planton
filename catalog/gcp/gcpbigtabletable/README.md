@@ -57,7 +57,7 @@ planton apply -f table.yaml
 | `deletionProtection` | `string` | `PROTECTED` | API-side guard — deletion by ANY client fails until set `UNPROTECTED`. |
 | `rowKeySchema` | `string` | — | Structured row-key schema as Type JSON. In-place update unsupported: clear, apply, then set. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -90,7 +90,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 - **App profiles, authorized/logical/materialized views, schema bundles** — separate provider resources with real but second-order demand; Tier-2 candidates on concrete pull.
 - **Table IAM trio** — resource-scoped IAM stays unmodeled catalog-wide (additive project grants compose instead).
 
-## Related Components
+## Related Kinds
 
 - [GcpBigtableInstance](/docs/catalog/gcp/gcpbigtableinstance) — the parent instance
 - [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project

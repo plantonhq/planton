@@ -34,7 +34,7 @@ type KubernetesTektonOperator struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesTektonOperatorSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *KubernetesTektonOperator) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesTektonOperator) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesTektonOperator) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *KubernetesTektonOperator) GetStatus() *KubernetesTektonOperatorStatus {
 // KubernetesTektonOperatorStatus describes the observed state of KubernetesTektonOperator.
 type KubernetesTektonOperatorStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesTektonOperatorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesTektonOperatorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*KubernetesTektonOperatorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesTektonOperatorStatus) GetOutputs() *KubernetesTektonOperatorStackOutputs {
+func (x *KubernetesTektonOperatorStatus) GetOutputs() *KubernetesTektonOperatorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_api_proto_rawDes
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18KubernetesTektonOperatorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
 	"\x04spec\x18\x04 \x01(\v2V.dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12p\n" +
-	"\x06status\x18\x05 \x01(\v2X.dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorStatusR\x06status\"\x9a\x01\n" +
-	"\x1eKubernetesTektonOperatorStatus\x12x\n" +
-	"\aoutputs\x18\x01 \x01(\v2^.dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorStackOutputsR\aoutputsB\xc1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2X.dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorStatusR\x06status\"\x95\x01\n" +
+	"\x1eKubernetesTektonOperatorStatus\x12s\n" +
+	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorOutputsR\aoutputsB\xc1\x03\n" +
 	"<com.dev.planton.kubernetes.kubernetestektonoperator.v1alpha1B\bApiProtoP\x01Zrgithub.com/plantonhq/planton/catalog/kubernetes/kubernetestektonoperator/v1alpha1;kubernetestektonoperatorv1alpha1\xa2\x02\x04DPKK\xaa\x028Dev.Planton.Kubernetes.Kubernetestektonoperator.V1alpha1\xca\x028Dev\\Planton\\Kubernetes\\Kubernetestektonoperator\\V1alpha1\xe2\x02DDev\\Planton\\Kubernetes\\Kubernetestektonoperator\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Kubernetes::Kubernetestektonoperator::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_api_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesTektonOperator)(nil),             // 0: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperator
-	(*KubernetesTektonOperatorStatus)(nil),       // 1: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesTektonOperatorSpec)(nil),         // 3: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorSpec
-	(*KubernetesTektonOperatorStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorStackOutputs
+	(*KubernetesTektonOperator)(nil),        // 0: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperator
+	(*KubernetesTektonOperatorStatus)(nil),  // 1: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesTektonOperatorSpec)(nil),    // 3: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorSpec
+	(*KubernetesTektonOperatorOutputs)(nil), // 4: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperator.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperator.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperator.spec:type_name -> dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorSpec
 	1, // 2: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperator.status:type_name -> dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorStatus
-	4, // 3: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorStatus.outputs:type_name -> dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

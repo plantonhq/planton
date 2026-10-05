@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kubernetesopensearch
 spec:
@@ -19,7 +19,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: module_default
-        reference: The HTTP API serves https in EVERY posture -- even without a security block the image's demo security config is active (verified in the operator source, per the spec contract). Declaring security with generated TLS makes the operator issue a real CA and certificates for both layers; the component defaults per_node transport certificates to true (hostname-pinned, stronger than the operator's own shared-certificate default).
+        reference: The HTTP API serves https in EVERY posture -- even without a security block the image's demo security config is active (verified in the operator source, per the spec contract). Declaring security with generated TLS makes the operator issue a real CA and certificates for both layers; the kind's defaults per_node transport certificates to true (hostname-pinned, stronger than the operator's own shared-certificate default).
       notes: All three presets declare generated TLS on both layers. dashboards.tls extends https to the console.
     - control_id: no-public-access
       status: enforced_by_default

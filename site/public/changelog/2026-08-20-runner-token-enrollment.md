@@ -37,7 +37,7 @@ Organization Settings has a new RUNNERS section on both the web console and the 
 
 ## Deploy Runners into Your Own Cloud
 
-The Runners page funnels straight into deployment: pick AWS (ECS Fargate), GCP (Cloud Run), Azure (Container Apps), or Kubernetes (Helm), and the matching wizard walks you through deploying a runner as a first-class cloud resource. On Planton, the platform mints the join token server-side into the deployment's secret store — declaring a runner is genuinely one step, and the deployed runner enrolls itself on first boot.
+The Runners page funnels straight into deployment: pick AWS (ECS Fargate), GCP (Cloud Run), Azure (Container Apps), or Kubernetes (Helm), and the matching wizard walks you through deploying a runner as a first-class Infra Component. On Planton, the platform mints the join token server-side into the deployment's secret store — declaring a runner is genuinely one step, and the deployed runner enrolls itself on first boot.
 
 The same is available from the terminal: `planton runner deploy` ships a token into the target's secret store and deploys the runner container for any of the four targets.
 

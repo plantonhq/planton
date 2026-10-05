@@ -24,7 +24,7 @@ spec:
           kind: KubernetesPostgres
           name: superset-pg
           field_path: status.outputs.password_secret.name
-  # Everything else is the component's defaults — deliberately SECURED:
+  # Everything else is the kind's defaults — deliberately SECURED:
   # the session-signing SECRET_KEY is module-generated (Superset
   # refuses its insecure default) and the bootstrap admin password is
   # module-generated into `superset-admin-auth` (the chart's

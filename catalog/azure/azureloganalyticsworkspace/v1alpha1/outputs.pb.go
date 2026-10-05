@@ -22,7 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureLogAnalyticsWorkspaceStackOutputs** captures the outputs of provisioning
+// **AzureLogAnalyticsWorkspaceOutputs** captures the outputs of provisioning
 // an Azure Log Analytics Workspace.
 //
 // The `workspace_id` output (the ARM resource ID) is the composition seam:
@@ -30,7 +30,7 @@ const (
 // AzureMonitorDiagnosticSetting, and AzureMonitorScheduledQueryAlert all
 // reference the workspace by its ARM ID. The customer ID (a GUID Azure agents
 // authenticate against) is exported separately as `workspace_customer_id`.
-type AzureLogAnalyticsWorkspaceStackOutputs struct {
+type AzureLogAnalyticsWorkspaceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the Log Analytics Workspace.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.OperationalInsights/workspaces/{name}
@@ -64,20 +64,20 @@ type AzureLogAnalyticsWorkspaceStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureLogAnalyticsWorkspaceStackOutputs) Reset() {
-	*x = AzureLogAnalyticsWorkspaceStackOutputs{}
+func (x *AzureLogAnalyticsWorkspaceOutputs) Reset() {
+	*x = AzureLogAnalyticsWorkspaceOutputs{}
 	mi := &file_catalog_azure_azureloganalyticsworkspace_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureLogAnalyticsWorkspaceStackOutputs) String() string {
+func (x *AzureLogAnalyticsWorkspaceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureLogAnalyticsWorkspaceStackOutputs) ProtoMessage() {}
+func (*AzureLogAnalyticsWorkspaceOutputs) ProtoMessage() {}
 
-func (x *AzureLogAnalyticsWorkspaceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureLogAnalyticsWorkspaceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureloganalyticsworkspace_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -89,54 +89,54 @@ func (x *AzureLogAnalyticsWorkspaceStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureLogAnalyticsWorkspaceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureLogAnalyticsWorkspaceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureLogAnalyticsWorkspaceOutputs.ProtoReflect.Descriptor instead.
+func (*AzureLogAnalyticsWorkspaceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureloganalyticsworkspace_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureLogAnalyticsWorkspaceStackOutputs) GetWorkspaceId() string {
+func (x *AzureLogAnalyticsWorkspaceOutputs) GetWorkspaceId() string {
 	if x != nil {
 		return x.WorkspaceId
 	}
 	return ""
 }
 
-func (x *AzureLogAnalyticsWorkspaceStackOutputs) GetWorkspaceName() string {
+func (x *AzureLogAnalyticsWorkspaceOutputs) GetWorkspaceName() string {
 	if x != nil {
 		return x.WorkspaceName
 	}
 	return ""
 }
 
-func (x *AzureLogAnalyticsWorkspaceStackOutputs) GetWorkspaceCustomerId() string {
+func (x *AzureLogAnalyticsWorkspaceOutputs) GetWorkspaceCustomerId() string {
 	if x != nil {
 		return x.WorkspaceCustomerId
 	}
 	return ""
 }
 
-func (x *AzureLogAnalyticsWorkspaceStackOutputs) GetResourceGroupName() string {
+func (x *AzureLogAnalyticsWorkspaceOutputs) GetResourceGroupName() string {
 	if x != nil {
 		return x.ResourceGroupName
 	}
 	return ""
 }
 
-func (x *AzureLogAnalyticsWorkspaceStackOutputs) GetPrimarySharedKey() string {
+func (x *AzureLogAnalyticsWorkspaceOutputs) GetPrimarySharedKey() string {
 	if x != nil {
 		return x.PrimarySharedKey
 	}
 	return ""
 }
 
-func (x *AzureLogAnalyticsWorkspaceStackOutputs) GetSecondarySharedKey() string {
+func (x *AzureLogAnalyticsWorkspaceOutputs) GetSecondarySharedKey() string {
 	if x != nil {
 		return x.SecondarySharedKey
 	}
 	return ""
 }
 
-func (x *AzureLogAnalyticsWorkspaceStackOutputs) GetIdentityPrincipalId() string {
+func (x *AzureLogAnalyticsWorkspaceOutputs) GetIdentityPrincipalId() string {
 	if x != nil {
 		return x.IdentityPrincipalId
 	}
@@ -147,8 +147,8 @@ var File_catalog_azure_azureloganalyticsworkspace_v1alpha1_outputs_proto protore
 
 const file_catalog_azure_azureloganalyticsworkspace_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azureloganalyticsworkspace/v1alpha1/outputs.proto\x125dev.planton.azure.azureloganalyticsworkspace.v1alpha1\x1a\x1cshared/options/options.proto\"\xf6\x02\n" +
-	"&AzureLogAnalyticsWorkspaceStackOutputs\x12!\n" +
+	"?catalog/azure/azureloganalyticsworkspace/v1alpha1/outputs.proto\x125dev.planton.azure.azureloganalyticsworkspace.v1alpha1\x1a\x1cshared/options/options.proto\"\xf1\x02\n" +
+	"!AzureLogAnalyticsWorkspaceOutputs\x12!\n" +
 	"\fworkspace_id\x18\x01 \x01(\tR\vworkspaceId\x12%\n" +
 	"\x0eworkspace_name\x18\x02 \x01(\tR\rworkspaceName\x122\n" +
 	"\x15workspace_customer_id\x18\x03 \x01(\tR\x13workspaceCustomerId\x12.\n" +
@@ -172,7 +172,7 @@ func file_catalog_azure_azureloganalyticsworkspace_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_azure_azureloganalyticsworkspace_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureloganalyticsworkspace_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureLogAnalyticsWorkspaceStackOutputs)(nil), // 0: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceStackOutputs
+	(*AzureLogAnalyticsWorkspaceOutputs)(nil), // 0: dev.planton.azure.azureloganalyticsworkspace.v1alpha1.AzureLogAnalyticsWorkspaceOutputs
 }
 var file_catalog_azure_azureloganalyticsworkspace_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

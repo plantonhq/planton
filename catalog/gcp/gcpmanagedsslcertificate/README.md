@@ -50,7 +50,7 @@ Reference the certificate's `self_link` from a target HTTPS proxy's `sslCertific
 | `domains` | `string[]` | — (required, 1-100) | FQDNs the certificate is valid for. No wildcards. Immutable. |
 | `deletionPolicy` | `string` | `DELETE` | What happens on destroy: `DELETE`, `PREVENT`, or `ABANDON` (leave in GCP — useful mid-rotation handoff). |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -76,7 +76,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 - **No wildcards**: Google-managed certificates do not support `*.` wildcard domains.
 - **No sensitive fields**: Google manages the private key; nothing in this spec is marked sensitive.
 
-## Related Components
+## Related Kinds
 
 - [GcpUrlMap](/docs/catalog/gcp/gcpurlmap) — routes traffic behind the HTTPS proxy
 - [GcpBackendService](/docs/catalog/gcp/gcpbackendservice) — backends the load balancer targets

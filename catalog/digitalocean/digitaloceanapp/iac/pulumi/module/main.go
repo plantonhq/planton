@@ -9,13 +9,13 @@ import (
 
 func Resources(
 	ctx *pulumi.Context,
-	stackInput *digitaloceanappv1alpha1.DigitalOceanAppStackInput,
+	iacInput *digitaloceanappv1alpha1.DigitalOceanAppIacInput,
 ) error {
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	digitalOceanProvider, err := pulumidigitaloceanprovider.Get(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup digitalocean provider")

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azureaifoundryproject
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: ai_foundry_project_id
       derivations:
-        - from_stack_output: ai_foundry_project_id
+        - from_output: ai_foundry_project_id
       where_to_find: >-
         Portal -> Azure AI Foundry -> the project -> Properties ->
         Resource ID, or `az ml workspace show -g <hub-rg> -n <name>

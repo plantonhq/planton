@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-service-bus-queue stack-input
-type AzureServiceBusQueueStackInput struct {
+// azure-service-bus-queue iac-input
+type AzureServiceBusQueueIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AzureServiceBusQueue `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureServiceBusQueueStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureServiceBusQueueStackInput) Reset() {
-	*x = AzureServiceBusQueueStackInput{}
+func (x *AzureServiceBusQueueIacInput) Reset() {
+	*x = AzureServiceBusQueueIacInput{}
 	mi := &file_catalog_azure_azureservicebusqueue_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureServiceBusQueueStackInput) String() string {
+func (x *AzureServiceBusQueueIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureServiceBusQueueStackInput) ProtoMessage() {}
+func (*AzureServiceBusQueueIacInput) ProtoMessage() {}
 
-func (x *AzureServiceBusQueueStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureServiceBusQueueIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureservicebusqueue_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureServiceBusQueueStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureServiceBusQueueStackInput.ProtoReflect.Descriptor instead.
-func (*AzureServiceBusQueueStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureServiceBusQueueIacInput.ProtoReflect.Descriptor instead.
+func (*AzureServiceBusQueueIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureservicebusqueue_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureServiceBusQueueStackInput) GetTarget() *AzureServiceBusQueue {
+func (x *AzureServiceBusQueueIacInput) GetTarget() *AzureServiceBusQueue {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureServiceBusQueueStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureServiceBusQueueIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azureservicebusqueue_v1alpha1_input_proto protoreflect.Fi
 
 const file_catalog_azure_azureservicebusqueue_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/azure/azureservicebusqueue/v1alpha1/input.proto\x12/dev.planton.azure.azureservicebusqueue.v1alpha1\x1a5catalog/azure/azureservicebusqueue/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd0\x01\n" +
-	"\x1eAzureServiceBusQueueStackInput\x12]\n" +
+	"7catalog/azure/azureservicebusqueue/v1alpha1/input.proto\x12/dev.planton.azure.azureservicebusqueue.v1alpha1\x1a5catalog/azure/azureservicebusqueue/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xce\x01\n" +
+	"\x1cAzureServiceBusQueueIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x89\x03\n" +
 	"3com.dev.planton.azure.azureservicebusqueue.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azureservicebusqueue_v1alpha1_input_proto_rawDescGZIP() 
 
 var file_catalog_azure_azureservicebusqueue_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureservicebusqueue_v1alpha1_input_proto_goTypes = []any{
-	(*AzureServiceBusQueueStackInput)(nil), // 0: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueStackInput
-	(*AzureServiceBusQueue)(nil),           // 1: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueue
-	(*azure.AzureProviderConfig)(nil),      // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureServiceBusQueueIacInput)(nil), // 0: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueIacInput
+	(*AzureServiceBusQueue)(nil),         // 1: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueue
+	(*azure.AzureProviderConfig)(nil),    // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureservicebusqueue_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueStackInput.target:type_name -> dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueue
-	2, // 1: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueIacInput.target:type_name -> dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueue
+	2, // 1: dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

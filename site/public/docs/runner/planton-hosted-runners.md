@@ -51,18 +51,18 @@ See [Deployment](/docs/runner/deployment) to start one.
 2. Keep your organization's state in a backend your runner can reach: S3, GCS, Azure Blob, Cloudflare R2, Terraform Cloud, or Pulumi Cloud. Planton-managed state is available only to Planton-hosted runners, so a deploy on your own runner needs a backend of your own. Create one and make it your organization's default, so new resources keep their state there:
 
    ```bash
-   planton state-backend set-default my-s3-backend
+   planton infra state-backend set-default my-s3-backend
    ```
 
 3. Move the state of every existing resource off Planton-managed storage in one step. The console does the same from **Settings → State Backends**.
 
    ```bash
    # See what still lives in Planton-managed storage
-   planton state-backend list-planton-managed
+   planton infra state-backend list-planton-managed
 
    # Preview the move, then run it
-   planton state-backend move-off-planton --to my-s3-backend --dry-run
-   planton state-backend move-off-planton --to my-s3-backend
+   planton infra state-backend move-off-planton --to my-s3-backend --dry-run
+   planton infra state-backend move-off-planton --to my-s3-backend
    ```
 
    Give `--to` once per provisioner when you deploy with both OpenTofu and Pulumi. To move a single resource, use `planton tofu state migrate-backend` or `planton pulumi state migrate-backend`.

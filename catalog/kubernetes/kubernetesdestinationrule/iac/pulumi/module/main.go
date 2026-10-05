@@ -10,11 +10,11 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *kubernetesdestinationrulev1alpha1.KubernetesDestinationRuleStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesdestinationrulev1alpha1.KubernetesDestinationRuleIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubeProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
@@ -31,7 +31,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesdestinationrulev1alpha
 
 // createDestinationRule creates the namespaced Istio DestinationRule using the typed
 // crd2pulumi SDK (istionetworkingv1.NewDestinationRule), consistent with every other Planton
-// Istio component. The typed approach catches field-name and structure errors at compile time.
+// Istio kind. The typed approach catches field-name and structure errors at compile time.
 // Only `host` is always set (it is required upstream); every other block is attached
 // only when present (the per-path builders in traffic_policy.go return nil for absent protos),
 // so unset fields fall through to istiod's defaults.
@@ -44,7 +44,7 @@ func createDestinationRule(
 
 	// The typed resource's Spec field is a PtrInput satisfied by the Args value itself
 	// (not the SpecPtr() wrapper, which marshals to the wrong element type); assigned
-	// directly below, mirroring the sibling Istio components.
+	// directly below, mirroring the sibling Istio kinds.
 	//
 	// host is a StringValueOrRef foreign key (default: a KubernetesService's
 	// in-cluster FQDN output); the platform resolves valueFrom references before

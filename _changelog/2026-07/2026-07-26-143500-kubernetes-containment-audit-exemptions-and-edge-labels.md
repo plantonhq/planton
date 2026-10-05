@@ -2,7 +2,7 @@
 
 **Date**: July 26, 2026
 **Type**: Enhancement
-**Components**: Kubernetes Provider, API Definitions, Cloud Resource Kind Catalog
+**Components**: Kubernetes Provider, API Definitions, Infra Catalog
 
 ## Summary
 
@@ -12,7 +12,7 @@ containers (`KubernetesKafka` and `KubernetesKafkaConnect`: Strimzi topics,
 users, and connectors deploy INTO their cluster via the strimzi.io/cluster
 label, so engineers draw them inside the cluster's box), seventeen
 access-style references gain `containment_exempt` so diagrams stop nesting
-components inside resources they merely talk to, and the flagship Kubernetes
+kinds inside resources they merely talk to, and the flagship Kubernetes
 edges gain human-authored `diagram_label` wording ("issued by", "manages
 records in", "mirrors from", "schema registry for").
 
@@ -72,6 +72,6 @@ subject), "manages records in" (external-dns → zones), "unseal key ring" /
   descriptors; the diff shows exactly the authored verdicts (new contained
   lines for topic/user/connector placement, exempt lines for every
   annotated access reference).
-- Full `cloudresourcekind` test package green, including the option-number
+- Full `catalogkind` test package green, including the option-number
   pins and the annotation-placement guards.
 - Stubs regenerated for every edited proto directory.

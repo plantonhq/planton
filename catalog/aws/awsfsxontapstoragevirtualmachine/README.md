@@ -1,6 +1,6 @@
 # AwsFsxOntapStorageVirtualMachine
 
-An Planton component that provisions an **Amazon FSx for NetApp ONTAP Storage Virtual Machine (SVM)** — a logical data server within an FSx ONTAP file system providing multi-protocol data access (NFS, SMB, iSCSI).
+A catalog kind that provisions an **Amazon FSx for NetApp ONTAP Storage Virtual Machine (SVM)** — a logical data server within an FSx ONTAP file system providing multi-protocol data access (NFS, SMB, iSCSI).
 
 ## What Is an ONTAP SVM?
 
@@ -104,7 +104,7 @@ spec:
 | `file_system_administrators_group` | string | No | `Domain Admins` | AD group for admin privileges |
 | `organizational_unit_distinguished_name` | string | No | Computers | OU DN for computer object |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

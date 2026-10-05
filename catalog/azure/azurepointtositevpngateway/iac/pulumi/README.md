@@ -9,7 +9,7 @@ Virtual WAN hub that individual devices dial into.
 
 The Azure provider is built through the shared provider builder, which
 resolves the right credential mechanism (static client secret, keyless
-web identity, or ambient chain) from the stack input.
+web identity, or ambient chain) from the IaC input.
 
 ## Design Decisions
 
@@ -29,7 +29,7 @@ web identity, or ambient chain) from the stack input.
 
 ## Inputs
 
-The module receives an `AzurePointToSiteVpnGatewayStackInput` containing:
+The module receives an `AzurePointToSiteVpnGatewayIacInput` containing:
 
 - `target.spec.virtual_hub_id` -- the hub the gateway deploys into (one P2S gateway per hub)
 - `target.spec.vpn_server_configuration_id` -- the authentication policy

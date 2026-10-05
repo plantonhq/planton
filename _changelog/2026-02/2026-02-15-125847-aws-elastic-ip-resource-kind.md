@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsElasticIp as the twelfth new AWS resource kind in the cloud provider expansion project. This is a fundamentally simple component — a static public IPv4 address allocation — whose primary value lies in its outputs (`allocation_id`, `public_ip`) consumed by NLB, NAT Gateway, and EC2. Also backfilled the NLB's `allocation_id` field with the now-registerable `default_kind` annotation.
+Added AwsElasticIp as the twelfth new AWS resource kind in the cloud provider expansion project. This is a fundamentally simple kind — a static public IPv4 address allocation — whose primary value lies in its outputs (`allocation_id`, `public_ip`) consumed by NLB, NAT Gateway, and EC2. Also backfilled the NLB's `allocation_id` field with the now-registerable `default_kind` annotation.
 
 ## Problem Statement / Motivation
 
@@ -16,13 +16,13 @@ The AwsNetworkLoadBalancer (R09) was shipped with a gap: its `allocation_id` fie
 
 - NLB subnet mappings required hardcoded allocation IDs (no `valueFrom` support)
 - No way to declaratively manage static public IPs in Planton
-- Missing dependency in the infra chart DAG for IP allocation
+- Missing dependency in the Infra Chart DAG for IP allocation
 
 ## Solution / What's New
 
-### AwsElasticIp Component
+### AwsElasticIp Kind
 
-A nearly-zero-config component that allocates a VPC Elastic IP:
+A nearly-zero-config kind that allocates a VPC Elastic IP:
 
 - **3 optional spec fields**: `public_ipv4_pool`, `address`, `network_border_group`
 - **1 CEL validation**: `address` requires `public_ipv4_pool` (BYOIP constraint)
@@ -42,9 +42,9 @@ Updated the NLB's `allocation_id` field with:
 ### Proto API (4 files)
 
 - `spec.proto` — 3 optional string fields, 1 message-level CEL validation
-- `stack_outputs.proto` — 4 output fields (allocation_id, public_ip, arn, public_dns)
+- `outputs.proto` — 4 output fields (allocation_id, public_ip, arn, public_dns)
 - `api.proto` — KRM wiring with const apiVersion/kind
-- `stack_input.proto` — AwsElasticIp + AwsProviderConfig
+- `iac_input.proto` — AwsElasticIp + AwsProviderConfig
 
 ### Validation Tests (10 tests, all passing)
 
@@ -74,21 +74,21 @@ Updated the NLB's `allocation_id` field with:
 
 ### Enum Registration
 
-`AwsElasticIp = 281` in `cloud_resource_kind.proto`, id_prefix: `awseip`
+`AwsElasticIp = 281` in `catalog_kind.proto`, id_prefix: `awseip`
 
 ## Benefits
 
 - **Closes the NLB gap**: `valueFrom` references from NLB to EIP now work seamlessly
-- **Infra chart ready**: EIP outputs (`allocation_id`) compose into the dependency DAG
+- **Infra Chart ready**: EIP outputs (`allocation_id`) compose into the dependency DAG
 - **Zero-config for 95% of users**: Empty spec allocates a standard VPC EIP
 - **BYOIP support**: 3 optional fields cover the BYOIP edge case without cluttering the UX
 
 ## Impact
 
-- **New resource kind**: AwsElasticIp (enum 281) — the 37th cloud resource kind in Planton
+- **New resource kind**: AwsElasticIp (enum 281) — the 37th catalog kind in Planton
 - **NLB improvement**: Existing AwsNetworkLoadBalancer gains `default_kind` for `allocation_id`
 - **Files created**: ~35 files in `apis/dev/planton/provider/aws/awselasticip/v1/`
-- **Files modified**: NLB spec.proto, cloud_resource_kind.proto, site catalog index
+- **Files modified**: NLB spec.proto, catalog_kind.proto, site catalog index
 
 ## Related Work
 

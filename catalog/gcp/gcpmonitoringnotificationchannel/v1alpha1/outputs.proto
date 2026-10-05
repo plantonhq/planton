@@ -4,7 +4,7 @@ package dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1;
 
 // Outputs produced after provisioning a Cloud Monitoring notification
 // channel.
-message GcpMonitoringNotificationChannelStackOutputs {
+message GcpMonitoringNotificationChannelOutputs {
   // The server-assigned resource name of the channel.
   // Format: projects/{project}/notificationChannels/{channel_id}
   // This is THE composition handle: alert policies reference the channel by

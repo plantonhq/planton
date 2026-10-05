@@ -33,7 +33,7 @@ type CloudflareCacheSettings struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareCacheSettingsSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *CloudflareCacheSettings) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareCacheSettings) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareCacheSettings) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *CloudflareCacheSettings) GetStatus() *CloudflareCacheSettingsStatus {
 // CloudflareCacheSettingsStatus represents the observed state of a zone's cache settings.
 type CloudflareCacheSettingsStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareCacheSettingsStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareCacheSettingsOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareCacheSettingsStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarecachesettings_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareCacheSettingsStatus) GetOutputs() *CloudflareCacheSettingsStackOutputs {
+func (x *CloudflareCacheSettingsStatus) GetOutputs() *CloudflareCacheSettingsOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflarecachesettings_v1alpha1_api_proto_rawDesc
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17CloudflareCacheSettingsR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12p\n" +
 	"\x04spec\x18\x04 \x01(\v2T.dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12n\n" +
-	"\x06status\x18\x05 \x01(\v2V.dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsStatusR\x06status\"\x97\x01\n" +
-	"\x1dCloudflareCacheSettingsStatus\x12v\n" +
-	"\aoutputs\x18\x01 \x01(\v2\\.dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsStackOutputsR\aoutputsB\xba\x03\n" +
+	"\x06status\x18\x05 \x01(\v2V.dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsStatusR\x06status\"\x92\x01\n" +
+	"\x1dCloudflareCacheSettingsStatus\x12q\n" +
+	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsOutputsR\aoutputsB\xba\x03\n" +
 	";com.dev.planton.cloudflare.cloudflarecachesettings.v1alpha1B\bApiProtoP\x01Zpgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarecachesettings/v1alpha1;cloudflarecachesettingsv1alpha1\xa2\x02\x04DPCC\xaa\x027Dev.Planton.Cloudflare.Cloudflarecachesettings.V1alpha1\xca\x027Dev\\Planton\\Cloudflare\\Cloudflarecachesettings\\V1alpha1\xe2\x02CDev\\Planton\\Cloudflare\\Cloudflarecachesettings\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Cloudflare::Cloudflarecachesettings::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflarecachesettings_v1alpha1_api_proto_rawDescG
 
 var file_catalog_cloudflare_cloudflarecachesettings_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarecachesettings_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareCacheSettings)(nil),             // 0: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettings
-	(*CloudflareCacheSettingsStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareCacheSettingsSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsSpec
-	(*CloudflareCacheSettingsStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsStackOutputs
+	(*CloudflareCacheSettings)(nil),        // 0: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettings
+	(*CloudflareCacheSettingsStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareCacheSettingsSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsSpec
+	(*CloudflareCacheSettingsOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsOutputs
 }
 var file_catalog_cloudflare_cloudflarecachesettings_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettings.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettings.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettings.spec:type_name -> dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsSpec
 	1, // 2: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettings.status:type_name -> dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsStatus
-	4, // 3: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

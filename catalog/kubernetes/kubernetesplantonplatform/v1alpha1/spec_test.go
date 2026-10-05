@@ -13,7 +13,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -37,12 +37,12 @@ func literalRef(value string) *foreignkeyv1.StringValueOrRef {
 // gatewayRef is a valueFrom against a KubernetesGateway resource; an empty
 // fieldPath leans on the field's annotated default.
 func gatewayRef(name, fieldPath string) *foreignkeyv1.StringValueOrRef {
-	return refTo(cloudresourcekind.CloudResourceKind_KubernetesGateway, name, fieldPath)
+	return refTo(catalogkind.CatalogKind_KubernetesGateway, name, fieldPath)
 }
 
 // refTo is a valueFrom against any catalog resource — the shape a manifest
 // uses to follow another resource's output instead of typing its value.
-func refTo(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func refTo(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -61,7 +61,7 @@ func minimalValidPlatform() *KubernetesPlantonPlatform {
 	return &KubernetesPlantonPlatform{
 		ApiVersion: "kubernetes.planton.dev/v1alpha1",
 		Kind:       "KubernetesPlantonPlatform",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "planton",
 		},
 		Spec: &KubernetesPlantonPlatformSpec{
@@ -577,11 +577,11 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			byReference.Spec.Vault = &KubernetesPlantonPlatformVault{
 				AutoUnseal: &KubernetesPlantonPlatformVaultAutoUnseal{Seal: &KubernetesPlantonPlatformVaultAutoUnseal_GcpKms{
 					GcpKms: &KubernetesPlantonPlatformVaultGcpKmsSeal{
-						Project:                        refTo(cloudresourcekind.CloudResourceKind_GcpProject, "acme-platform", "status.outputs.project_id"),
+						Project:                        refTo(catalogkind.CatalogKind_GcpProject, "acme-platform", "status.outputs.project_id"),
 						Region:                         "global",
-						KeyRing:                        refTo(cloudresourcekind.CloudResourceKind_GcpKmsKeyRing, "planton-vault-unseal", "status.outputs.key_ring_name"),
-						CryptoKey:                      refTo(cloudresourcekind.CloudResourceKind_GcpKmsKey, "planton-vault-unseal", "status.outputs.key_name"),
-						WorkloadIdentityServiceAccount: refTo(cloudresourcekind.CloudResourceKind_GcpServiceAccount, "planton-vault-unseal", "status.outputs.email"),
+						KeyRing:                        refTo(catalogkind.CatalogKind_GcpKmsKeyRing, "planton-vault-unseal", "status.outputs.key_ring_name"),
+						CryptoKey:                      refTo(catalogkind.CatalogKind_GcpKmsKey, "planton-vault-unseal", "status.outputs.key_name"),
+						WorkloadIdentityServiceAccount: refTo(catalogkind.CatalogKind_GcpServiceAccount, "planton-vault-unseal", "status.outputs.email"),
 					},
 				}},
 			}
@@ -1403,14 +1403,14 @@ func r2StoreByReference(path string) *KubernetesPlantonPlatformObjectStore {
 	bucket := func(fieldPath string) *foreignkeyv1.StringValueOrRef {
 		return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
-				Kind: cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, Name: "acme-platform-backups", FieldPath: fieldPath,
+				Kind: catalogkind.CatalogKind_CloudflareR2Bucket, Name: "acme-platform-backups", FieldPath: fieldPath,
 			},
 		}}
 	}
 	token := func(fieldPath string) *foreignkeyv1.StringValueOrRef {
 		return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
-				Kind: cloudresourcekind.CloudResourceKind_CloudflareAccountApiToken, Name: "acme-platform-backups-writer", FieldPath: fieldPath,
+				Kind: catalogkind.CatalogKind_CloudflareAccountApiToken, Name: "acme-platform-backups-writer", FieldPath: fieldPath,
 			},
 		}}
 	}

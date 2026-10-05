@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsorganizationalunit.v1alpha1;
 
-// AwsOrganizationalUnitStackOutputs captures the observable state of
+// AwsOrganizationalUnitOutputs captures the observable state of
 // the organizational unit after apply.
-message AwsOrganizationalUnitStackOutputs {
+message AwsOrganizationalUnitOutputs {
   // The OU's AWS-generated ID ("ou-..." - also the provider's import
   // ID). Nested OUs, member accounts, and policy attachments
   // reference it.

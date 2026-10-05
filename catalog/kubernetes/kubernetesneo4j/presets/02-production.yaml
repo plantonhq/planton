@@ -49,7 +49,7 @@ spec:
   scheduling:
     node_selector:
       workload-class: database
-  # ClusterIP (the component default, restated for the record — NOTE
+  # ClusterIP (the kind's default, restated for the record — NOTE
   # the chart's own default is LoadBalancer; this component overrides
   # it by design). Exposure composes from first-class kinds
   # (KubernetesIngress, Gateway API) over the exported service handle.

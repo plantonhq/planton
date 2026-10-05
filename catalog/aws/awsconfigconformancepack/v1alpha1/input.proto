@@ -5,9 +5,9 @@ package dev.planton.aws.awsconfigconformancepack.v1alpha1;
 import "catalog/aws/awsconfigconformancepack/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsConfigConformancePackStackInput is the input for the IaC
+// AwsConfigConformancePackIacInput is the input for the IaC
 // modules that manage a Config conformance pack.
-message AwsConfigConformancePackStackInput {
+message AwsConfigConformancePackIacInput {
   // target is the AwsConfigConformancePack resource to deploy.
   AwsConfigConformancePack target = 1;
   // provider_config contains the AWS provider credentials and configuration.

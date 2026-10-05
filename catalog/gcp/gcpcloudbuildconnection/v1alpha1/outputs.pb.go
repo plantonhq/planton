@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpCloudBuildConnectionStackOutputs carries the connection's identity
+// GcpCloudBuildConnectionOutputs carries the connection's identity
 // and how far its installation has come.
-type GcpCloudBuildConnectionStackOutputs struct {
+type GcpCloudBuildConnectionOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/connections/{connection_id}.
@@ -41,20 +41,20 @@ type GcpCloudBuildConnectionStackOutputs struct {
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *GcpCloudBuildConnectionStackOutputs) Reset() {
-	*x = GcpCloudBuildConnectionStackOutputs{}
+func (x *GcpCloudBuildConnectionOutputs) Reset() {
+	*x = GcpCloudBuildConnectionOutputs{}
 	mi := &file_catalog_gcp_gcpcloudbuildconnection_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudBuildConnectionStackOutputs) String() string {
+func (x *GcpCloudBuildConnectionOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudBuildConnectionStackOutputs) ProtoMessage() {}
+func (*GcpCloudBuildConnectionOutputs) ProtoMessage() {}
 
-func (x *GcpCloudBuildConnectionStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudBuildConnectionOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudbuildconnection_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,33 +66,33 @@ func (x *GcpCloudBuildConnectionStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudBuildConnectionStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpCloudBuildConnectionStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudBuildConnectionOutputs.ProtoReflect.Descriptor instead.
+func (*GcpCloudBuildConnectionOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudbuildconnection_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudBuildConnectionStackOutputs) GetName() string {
+func (x *GcpCloudBuildConnectionOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpCloudBuildConnectionStackOutputs) GetConnectionId() string {
+func (x *GcpCloudBuildConnectionOutputs) GetConnectionId() string {
 	if x != nil {
 		return x.ConnectionId
 	}
 	return ""
 }
 
-func (x *GcpCloudBuildConnectionStackOutputs) GetInstallationStage() string {
+func (x *GcpCloudBuildConnectionOutputs) GetInstallationStage() string {
 	if x != nil {
 		return x.InstallationStage
 	}
 	return ""
 }
 
-func (x *GcpCloudBuildConnectionStackOutputs) GetInstallationActionUri() string {
+func (x *GcpCloudBuildConnectionOutputs) GetInstallationActionUri() string {
 	if x != nil {
 		return x.InstallationActionUri
 	}
@@ -103,8 +103,8 @@ var File_catalog_gcp_gcpcloudbuildconnection_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_gcp_gcpcloudbuildconnection_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpcloudbuildconnection/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpcloudbuildconnection.v1alpha1\"\xc5\x01\n" +
-	"#GcpCloudBuildConnectionStackOutputs\x12\x12\n" +
+	":catalog/gcp/gcpcloudbuildconnection/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpcloudbuildconnection.v1alpha1\"\xc0\x01\n" +
+	"\x1eGcpCloudBuildConnectionOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12#\n" +
 	"\rconnection_id\x18\x02 \x01(\tR\fconnectionId\x12-\n" +
 	"\x12installation_stage\x18\x03 \x01(\tR\x11installationStage\x126\n" +
@@ -125,7 +125,7 @@ func file_catalog_gcp_gcpcloudbuildconnection_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_gcp_gcpcloudbuildconnection_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudbuildconnection_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpCloudBuildConnectionStackOutputs)(nil), // 0: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionStackOutputs
+	(*GcpCloudBuildConnectionOutputs)(nil), // 0: dev.planton.gcp.gcpcloudbuildconnection.v1alpha1.GcpCloudBuildConnectionOutputs
 }
 var file_catalog_gcp_gcpcloudbuildconnection_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

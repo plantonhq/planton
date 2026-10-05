@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpVertexAiModelGardenDeploymentStackOutputs captures what the one-step
+// GcpVertexAiModelGardenDeploymentOutputs captures what the one-step
 // Model Garden deployment created: the endpoint the model serves from and
 // the deployed model on it. Output names follow GcpVertexAiEndpoint so a
 // chart reads an endpoint the same way whichever block made it.
-type GcpVertexAiModelGardenDeploymentStackOutputs struct {
+type GcpVertexAiModelGardenDeploymentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified endpoint resource path:
 	// projects/{project}/locations/{location}/endpoints/{endpoint_name}.
@@ -44,20 +44,20 @@ type GcpVertexAiModelGardenDeploymentStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiModelGardenDeploymentStackOutputs) Reset() {
-	*x = GcpVertexAiModelGardenDeploymentStackOutputs{}
+func (x *GcpVertexAiModelGardenDeploymentOutputs) Reset() {
+	*x = GcpVertexAiModelGardenDeploymentOutputs{}
 	mi := &file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiModelGardenDeploymentStackOutputs) String() string {
+func (x *GcpVertexAiModelGardenDeploymentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiModelGardenDeploymentStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiModelGardenDeploymentOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiModelGardenDeploymentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiModelGardenDeploymentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,40 +69,40 @@ func (x *GcpVertexAiModelGardenDeploymentStackOutputs) ProtoReflect() protorefle
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiModelGardenDeploymentStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiModelGardenDeploymentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiModelGardenDeploymentOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiModelGardenDeploymentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiModelGardenDeploymentStackOutputs) GetEndpointId() string {
+func (x *GcpVertexAiModelGardenDeploymentOutputs) GetEndpointId() string {
 	if x != nil {
 		return x.EndpointId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiModelGardenDeploymentStackOutputs) GetEndpointName() string {
+func (x *GcpVertexAiModelGardenDeploymentOutputs) GetEndpointName() string {
 	if x != nil {
 		return x.EndpointName
 	}
 	return ""
 }
 
-func (x *GcpVertexAiModelGardenDeploymentStackOutputs) GetDeployedModelId() string {
+func (x *GcpVertexAiModelGardenDeploymentOutputs) GetDeployedModelId() string {
 	if x != nil {
 		return x.DeployedModelId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiModelGardenDeploymentStackOutputs) GetDeployedModelDisplayName() string {
+func (x *GcpVertexAiModelGardenDeploymentOutputs) GetDeployedModelDisplayName() string {
 	if x != nil {
 		return x.DeployedModelDisplayName
 	}
 	return ""
 }
 
-func (x *GcpVertexAiModelGardenDeploymentStackOutputs) GetLocation() string {
+func (x *GcpVertexAiModelGardenDeploymentOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -113,8 +113,8 @@ var File_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_outputs_proto pro
 
 const file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/gcp/gcpvertexaimodelgardendeployment/v1alpha1/outputs.proto\x129dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1\"\xfb\x01\n" +
-	",GcpVertexAiModelGardenDeploymentStackOutputs\x12\x1f\n" +
+	"Ccatalog/gcp/gcpvertexaimodelgardendeployment/v1alpha1/outputs.proto\x129dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1\"\xf6\x01\n" +
+	"'GcpVertexAiModelGardenDeploymentOutputs\x12\x1f\n" +
 	"\vendpoint_id\x18\x01 \x01(\tR\n" +
 	"endpointId\x12#\n" +
 	"\rendpoint_name\x18\x02 \x01(\tR\fendpointName\x12*\n" +
@@ -137,7 +137,7 @@ func file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_outputs_proto_ra
 
 var file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiModelGardenDeploymentStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentStackOutputs
+	(*GcpVertexAiModelGardenDeploymentOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentOutputs
 }
 var file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

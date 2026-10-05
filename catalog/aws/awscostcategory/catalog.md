@@ -4,7 +4,7 @@ Deploys a Cost Explorer cost category: a dimension you define that groups every 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cost Category Definition** — the named category with its ordered rules, optional default value for unmatched spend, and optional effective start month. The provider's rule version is module-pinned to `CostCategoryExpression.v1`, the only value the API accepts.
 - **Split-Charge Rules** — configured only when `splitChargeRules` is set: re-allocations of one value's costs across target values, proportionally, evenly, or by fixed percentages.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Cost Explorer permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Cost Explorer permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f cost-category.yaml
 ```
 
-This creates a "Team" category with one inherited-value rule fanning out to a value per distinct `team` tag value — new teams appear automatically — and untagged spend landing visibly in `unallocated`. A Stack Job tracks the provisioning in real time.
+This creates a "Team" category with one inherited-value rule fanning out to a value per distinct `team` tag value — new teams appear automatically — and untagged spend landing visibly in `unallocated`. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -73,13 +73,13 @@ These are the most important decisions when configuring a cost category. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — rules reference accounts, tags, and other categories by name inside Cost Explorer expressions, which travel as plain values.
+This kind has no foreign key dependencies — rules reference accounts, tags, and other categories by name inside Cost Explorer expressions, which travel as plain values.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -100,5 +100,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Budget**](/cloud-catalog/aws-budget) — budgets scoped to a category's values through their filter expressions
-- [**AWS Cost Anomaly Monitor**](/cloud-catalog/aws-cost-anomaly-monitor) — CUSTOM monitors watching one category value's spend as its own anomaly stream
+- [**AWS Budget**](/infra-catalog/aws-budget) — budgets scoped to a category's values through their filter expressions
+- [**AWS Cost Anomaly Monitor**](/infra-catalog/aws-cost-anomaly-monitor) — CUSTOM monitors watching one category value's spend as its own anomaly stream

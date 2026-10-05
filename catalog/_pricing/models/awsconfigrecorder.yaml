@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,9 +6,9 @@
 # free and its one meter -- configuration items recorded -- follows the
 # fleet's size and change rate, which the manifest scopes but cannot
 # count -- stated in exclusions, never padded into fabricated dollars.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awsconfigrecorder
 spec:
@@ -32,4 +32,4 @@ spec:
         - global resources (IAM users, roles, policies) are recorded here too -- running this posture in more than one region bills the same IAM changes repeatedly, which is why global recording belongs in exactly one region
         - the DAILY override parks EC2 instances and network interfaces at one item per resource per day -- a rate four times the continuous per-item price that wins exactly when those chatty types change more than four times daily
         - snapshot and history files bill S3 storage on the referenced bucket
-      notes: Zero committed cost -- full-fleet recording commits nothing at creation, but this is the widest scope the component offers, and every resource change in the region starts the meter.
+      notes: Zero committed cost -- full-fleet recording commits nothing at creation, but this is the widest scope the kind offers, and every resource change in the region starts the meter.

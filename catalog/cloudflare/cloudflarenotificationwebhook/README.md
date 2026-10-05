@@ -40,7 +40,7 @@
 |-------|------|-------------|
 | `secret` | string reference | Shared secret sent with each delivery (or the vendor API key for Datadog, Splunk, Opsgenie). Sensitive and write-only -- Cloudflare never returns it. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|
@@ -74,7 +74,7 @@ spec:
 
 Real delete. Deleting the destination drops it from every notification policy that referenced it, and those policies simply stop delivering on that channel -- no error, no warning.
 
-## Related Components
+## Related Kinds
 
 - [Cloudflare Notification Policy](/docs/catalog/cloudflare/cloudflarenotificationpolicy) -- the alert rules that deliver here
 - [Cloudflare Logpush Job](/docs/catalog/cloudflare/cloudflarelogpushjob) -- log delivery, the record-level counterpart to alerting

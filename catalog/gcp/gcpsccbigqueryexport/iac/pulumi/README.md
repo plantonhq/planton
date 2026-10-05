@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Security Command Center 
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and the resource function |
-| `module/locals.go` | Stack input holder |
+| `module/locals.go` | IaC input holder |
 | `module/big_query_export.go` | The scope switch, project resolution and API enablement, the resource, the outputs |
 | `module/outputs.go` | Output key constants (`name`, `principal`) |
 

@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: cloudflareorigincacertificate
 spec:
   billing_model: free
   free_tier: "An Origin CA certificate is Cloudflare's free TLS certificate for the Cloudflare-to-origin hop -- the product's own availability table lists it as available on Free, Pro, Business, and Enterprise plans with no fee anywhere on the page (https://developers.cloudflare.com/ssl/origin-configuration/origin-ca/, fetched 2026-08-22). No meter counts certificates, hostnames on a certificate (up to 200 SANs), issuances, re-issuances, or revocations."
-  notes: "No field of this spec buys anything: hostnames, request_type (the key algorithm), requested_validity, and the optional bring-your-own csr are all issuance parameters for a certificate Cloudflare signs for free. The key/CSR generation the modules perform when csr is omitted happens locally in the IaC engine, not on any billed service. The real spend lives at the ORIGIN this certificate is installed on -- the Kubernetes cluster, load balancer, or VM that serves HTTPS behind Cloudflare bills as its own catalog kind -- and on the zone's own Cloudflare plan, which is chosen at the zone, never through this component. The certificate is not publicly trusted, so it also displaces nothing you would otherwise buy from a public CA for the origin hop."
+  notes: "No field of this spec buys anything: hostnames, request_type (the key algorithm), requested_validity, and the optional bring-your-own csr are all issuance parameters for a certificate Cloudflare signs for free. The key/CSR generation the modules perform when csr is omitted happens locally in the IaC engine, not on any billed service. The real spend lives at the ORIGIN this certificate is installed on -- the Kubernetes cluster, load balancer, or VM that serves HTTPS behind Cloudflare bills as its own component -- and on the zone's own Cloudflare plan, which is chosen at the zone, never through this component. The certificate is not publicly trusted, so it also displaces nothing you would otherwise buy from a public CA for the origin hop."

@@ -29,7 +29,7 @@ The operational consequence: destroying this resource is not symmetric with crea
 
 ## Cost behavior
 
-Two fields cost money. `argoSmartRouting` is a monthly base fee plus per-GB usage on origin-bound traffic; it is the loudest warning in this component because its no-op delete means the bill outlives the resource. `cacheReserve` bills by storage volume and operations -- cheaper to reason about, but it accumulates stored objects, so the charges continue as long as it is on regardless of traffic. Everything else here (`smartTieredCache`, `tieredCaching`, `regionalTieredCache`, `cacheVariants`) is free on any plan that has the features.
+Two fields cost money. `argoSmartRouting` is a monthly base fee plus per-GB usage on origin-bound traffic; it is the loudest warning in this kind because its no-op delete means the bill outlives the resource. `cacheReserve` bills by storage volume and operations -- cheaper to reason about, but it accumulates stored objects, so the charges continue as long as it is on regardless of traffic. Everything else here (`smartTieredCache`, `tieredCaching`, `regionalTieredCache`, `cacheVariants`) is free on any plan that has the features.
 
 ## Conventions and gotchas
 

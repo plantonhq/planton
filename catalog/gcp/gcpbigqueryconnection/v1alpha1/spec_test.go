@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpBigQueryConnectionSpec", func() {
 		return &GcpBigQueryConnection{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpBigQueryConnection",
-			Metadata:   &shared.CloudResourceMetadata{Name: "lake"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "lake"},
 			Spec:       &GcpBigQueryConnectionSpec{Location: "US"},
 		}
 	}

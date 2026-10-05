@@ -12,14 +12,14 @@ import (
 // the arguments already match the chosen check_type (endpoint probing,
 // calculated aggregation, CloudWatch mirroring, or recovery-control
 // mirroring), so this module maps fields 1:1 without re-validating.
-func Resources(ctx *pulumi.Context, stackInput *awsroute53healthcheckv1alpha1.AwsRoute53HealthCheckStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsroute53healthcheckv1alpha1.AwsRoute53HealthCheckIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 	spec := locals.AwsRoute53HealthCheck.Spec
 
-	// Build the AWS provider from the stack input via the shared builder, which
+	// Build the AWS provider from the IaC input via the shared builder, which
 	// resolves the right credential mechanism (static keys, keyless web
 	// identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

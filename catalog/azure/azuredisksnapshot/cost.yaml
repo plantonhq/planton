@@ -1,15 +1,15 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate: a snapshot commits real spend from the moment it completes
 # (Microsoft bills managed-disk snapshots per GB-month of the bytes they
 # hold), but the billed QUANTITY is the snapshot's occupied size -- the
 # used bytes of the source disk, or the delta since the previous snapshot
 # for incrementals -- which this manifest cannot see, so a dollar figure
 # here would be a guess wearing a dollar sign.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azuredisksnapshot
 spec:
@@ -33,7 +33,7 @@ spec:
       pricing_unit: GB-months
       impact: "Sizes the LOGICAL disk the snapshot describes, not the bill -- billing follows occupied bytes, so growing the logical size adds nothing until real data fills it."
   estimate_exclusions:
-    - "the billed quantity is the snapshot's occupied bytes -- the source disk's used size at creation, or the delta chain for incrementals -- which no field of this manifest carries; that is why no estimate document exists for this component"
+    - "the billed quantity is the snapshot's occupied bytes -- the source disk's used size at creation, or the delta chain for incrementals -- which no field of this manifest carries; that is why no estimate document exists for this kind"
     - "deleting a middle snapshot in an incremental chain does not necessarily free its full billed size -- Azure consolidates the deltas the next snapshot still needs"
     - "network_access_policy, disk_access_id, and public_network_access_enabled are free posture; a disk-access private endpoint bills on its own resource"
     - "restoring or copying the snapshot moves spend elsewhere -- a disk created from it bills as a managed disk, a cross-region copy bills egress and a second snapshot's storage in the target region"

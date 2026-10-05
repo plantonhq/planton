@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsfsxopenzfsfilesystem
+    e2e-catalog-kind: awsfsxopenzfsfilesystem
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsSecurityGroup"

@@ -4,7 +4,7 @@ Deploys an Amazon Bedrock AgentCore identity-and-access bundle — the credentia
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions, per named entry:
+When you deploy this Infra Component, the IaC module provisions, per named entry:
 
 - **Workload Identity** — one per `workloadIdentities` entry, with its OAuth2 return-URL allow-list for user-delegated token flows
 - **API Key Credential Provider** — one per `apiKeyCredentialProviders` entry; AWS stores the key in Secrets Manager under the service's token vault
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions, per named entry:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with AgentCore identity permissions (`bedrock-agentcore:CreateWorkloadIdentity`, `CreateApiKeyCredentialProvider`, `CreateOauth2CredentialProvider`, `CreatePolicyEngine`, `CreatePolicy` and their siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with AgentCore identity permissions (`bedrock-agentcore:CreateWorkloadIdentity`, `CreateApiKeyCredentialProvider`, `CreateOauth2CredentialProvider`, `CreatePolicyEngine`, `CreatePolicy` and their siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Org secrets for every credential value** — `apiKey`, `clientId`, and `clientSecret` are sensitive fields carrying `$secret/<slug>` references resolved just-in-time at deploy, never literals. Create the org secrets before applying the manifest.
 
 ### AWS Account
@@ -56,7 +56,7 @@ spec:
 planton apply -f agentcore-identity.yaml
 ```
 
-This vaults one API key and one GitHub OAuth client as credential providers — the values come from managed secrets resolved just-in-time at deploy, and consumers will reference the provider ARNs. A Stack Job tracks the provisioning in real time.
+This vaults one API key and one GitHub OAuth client as credential providers — the values come from managed secrets resolved just-in-time at deploy, and consumers will reference the provider ARNs. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -99,7 +99,7 @@ These are the most important decisions when configuring an identity bundle. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -107,9 +107,9 @@ These are the most important decisions when configuring an identity bundle. Expl
 
 Credential values (`apiKey`, `clientId`, `clientSecret`) travel as `$secret/<slug>` managed-secret references rather than foreign keys.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -133,7 +133,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Bedrock AgentCore Gateway**](/cloud-catalog/aws-bedrock-agent-core-gateway) — consumes provider ARNs for target credentials and the policy engine ARN for tool-call authorization
-- [**AWS Bedrock AgentCore Evaluation**](/cloud-catalog/aws-bedrock-agent-core-evaluation) — harness gateway tools authenticate through this bundle's OAuth2 providers
-- [**AWS Bedrock AgentCore Token Vault**](/cloud-catalog/aws-bedrock-agent-core-token-vault) — the account/region vault whose encryption key governs the secrets this bundle stores
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption for the policy engine's policies at rest
+- [**AWS Bedrock AgentCore Gateway**](/infra-catalog/aws-bedrock-agent-core-gateway) — consumes provider ARNs for target credentials and the policy engine ARN for tool-call authorization
+- [**AWS Bedrock AgentCore Evaluation**](/infra-catalog/aws-bedrock-agent-core-evaluation) — harness gateway tools authenticate through this bundle's OAuth2 providers
+- [**AWS Bedrock AgentCore Token Vault**](/infra-catalog/aws-bedrock-agent-core-token-vault) — the account/region vault whose encryption key governs the secrets this bundle stores
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption for the policy engine's policies at rest

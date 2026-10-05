@@ -15,7 +15,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 )
 
@@ -30,7 +30,7 @@ func secretHomeWarnings(result *Result) []string {
 }
 
 func TestDeclaredSecretHomes_ReadFromTheKindsSchema(t *testing.T) {
-	homes := declaredSecretHomes(crkreflect.KindFromString("GcpCloudRun"))
+	homes := declaredSecretHomes(catalogkindreflect.KindFromString("GcpCloudRun"))
 	for _, home := range homes {
 		if home.HomePath == "containers.env.secret_value" && home.Refused == "containers.env.value" {
 			return
@@ -42,14 +42,14 @@ func TestDeclaredSecretHomes_ReadFromTheKindsSchema(t *testing.T) {
 func TestVerify_SecretHomes_EveryOfficialModuleReadsItsKindsHomes(t *testing.T) {
 	root := repoRoot(t)
 	kindsWithHomes := 0
-	for _, kind := range crkreflect.KindsList() {
+	for _, kind := range catalogkindreflect.KindsList() {
 		homes := declaredSecretHomes(kind)
 		if len(homes) == 0 {
 			continue
 		}
 		kindsWithHomes++
-		kindName := crkreflect.ExtractKindNameByKind(kind)
-		iacDir := filepath.Join(root, "catalog", crkreflect.ProviderDirName(crkreflect.GetProvider(kind)),
+		kindName := catalogkindreflect.ExtractKindNameByKind(kind)
+		iacDir := filepath.Join(root, "catalog", catalogkindreflect.ProviderDirName(catalogkindreflect.GetProvider(kind)),
 			strings.ToLower(kind.String()), "iac")
 		for _, engine := range []struct {
 			dir         string

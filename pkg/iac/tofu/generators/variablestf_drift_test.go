@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -34,8 +34,8 @@ import (
 // to the generator.
 
 // migratedProviders are the providers whose whole catalog is generator-owned.
-var migratedProviders = []cloudresourcekind.CloudResourceProvider{
-	cloudresourcekind.CloudResourceProvider_gcp,
+var migratedProviders = []catalogkind.CatalogProvider{
+	catalogkind.CatalogProvider_gcp,
 }
 
 // generatorGaps names the kinds of a migrated provider whose module the
@@ -228,19 +228,19 @@ var migratedKinds = []string{
 // the migrated providers, because such an entry no longer excuses anything.
 func enrolledKinds(t *testing.T) []string {
 	t.Helper()
-	migrated := map[cloudresourcekind.CloudResourceProvider]bool{}
+	migrated := map[catalogkind.CatalogProvider]bool{}
 	for _, p := range migratedProviders {
 		migrated[p] = true
 	}
 	for kindName := range generatorGaps {
-		kind := crkreflect.KindFromString(kindName)
-		if !migrated[crkreflect.GetProvider(kind)] {
+		kind := catalogkindreflect.KindFromString(kindName)
+		if !migrated[catalogkindreflect.GetProvider(kind)] {
 			t.Fatalf("generatorGaps names %q, which is not a kind of a migrated provider; remove the stale entry", kindName)
 		}
 	}
 	kinds := append([]string(nil), migratedKinds...)
-	for _, kind := range crkreflect.KindsList() {
-		if !migrated[crkreflect.GetProvider(kind)] {
+	for _, kind := range catalogkindreflect.KindsList() {
+		if !migrated[catalogkindreflect.GetProvider(kind)] {
 			continue
 		}
 		if _, gap := generatorGaps[kind.String()]; gap {
@@ -263,8 +263,8 @@ func TestVariablesTFDrift(t *testing.T) {
 	for _, kindName := range enrolledKinds(t) {
 		kindName := kindName
 		t.Run(kindName, func(t *testing.T) {
-			kind := crkreflect.KindFromString(kindName)
-			msg, err := crkreflect.NewInstance(kind)
+			kind := catalogkindreflect.KindFromString(kindName)
+			msg, err := catalogkindreflect.NewInstance(kind)
 			if err != nil {
 				t.Fatalf("NewInstance(%s): %v", kindName, err)
 			}
@@ -301,11 +301,11 @@ func TestVariablesTFDrift(t *testing.T) {
 // moduleVariablesPath derives a kind's module variables.tf path from its proto
 // descriptor's source file: catalog/<p>/<kind>/<version>/api.proto ->
 // <repo>/catalog/<p>/<kind>/iac/tf/variables.tf (the module lives at the
-// component root, one level above the versioned contract).
+// kind root, one level above the versioned contract).
 func moduleVariablesPath(root string, msg proto.Message) string {
 	protoPath := msg.ProtoReflect().Descriptor().ParentFile().Path()
-	componentDir := filepath.Dir(filepath.Dir(protoPath))
-	return filepath.Join(root, componentDir, "iac", "tf", "variables.tf")
+	kindPath := filepath.Dir(filepath.Dir(protoPath))
+	return filepath.Join(root, kindPath, "iac", "tf", "variables.tf")
 }
 
 // repoRoot walks up from this test file to the directory containing go.mod.

@@ -22,7 +22,7 @@ import (
 //	                                   (default: ../../../skills/planton)
 //	PLANTON_SKILL_HOST_PROBE_CATALOG   a multi-cloud-catalog skill directory,
 //	                                   ideally a packaged copy carrying
-//	                                   components/ (default: the working
+//	                                   kinds/ (default: the working
 //	                                   tree's, which has no pack)
 //	PLANTON_SKILL_HOST_PROBE_BASELINE  a planton skill directory expected to
 //	                                   FAIL the checks (a released copy); the

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awscostcategory.v1alpha1;
 
-// AwsCostCategoryStackOutputs captures the observable state of the
+// AwsCostCategoryOutputs captures the observable state of the
 // cost category after apply.
-message AwsCostCategoryStackOutputs {
+message AwsCostCategoryOutputs {
   // The category's ARN (also the provider's import ID).
   string category_arn = 1;
 

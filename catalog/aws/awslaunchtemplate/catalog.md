@@ -4,7 +4,7 @@ Deploys an EC2 launch template — the reusable blueprint that describes how to 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Launch Template** -- the named, versioned blueprint. Versions are immutable in AWS: every spec change publishes a NEW version, and the module promotes it to the template's default so consumers following `$Default` pick it up on their next launch or instance refresh
 - **Block Device Mappings** -- attached only when `blockDeviceMappings` entries exist; each entry reshapes the AMI's root volume, attaches a data volume, maps instance store, or suppresses an AMI-baked device
@@ -17,13 +17,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
 - **An AMI in the template's region** -- AMI IDs are region-specific. Optional at the template level, but auto-scaling groups require the template they reference to carry one; leave it unset only for consumers that inject their own image (EKS node groups, EC2 Fleet).
-- **An IAM instance profile** (recommended) -- the launched machines' identity for SSM access, ECR pulls, and every AWS API call. Reference an AwsIamInstanceProfile Cloud Resource or pass a literal profile ARN.
+- **An IAM instance profile** (recommended) -- the launched machines' identity for SSM access, ECR pulls, and every AWS API call. Reference an AwsIamInstanceProfile Infra Component or pass a literal profile ARN.
 - **Security groups in the target VPC** -- the firewall posture every launch inherits. With explicit network interfaces, groups attach per interface instead.
 
 ## Deploy
@@ -68,7 +68,7 @@ spec:
 planton apply -f launch-template.yaml
 ```
 
-This publishes the golden web-fleet blueprint: IMDSv2 enforced, an encrypted gp3 root volume, and the fleet's IAM identity — every group and node group built on it inherits the posture. A Stack Job tracks the provisioning in real time.
+This publishes the golden web-fleet blueprint: IMDSv2 enforced, an encrypted gp3 root volume, and the fleet's IAM identity — every group and node group built on it inherits the posture. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -108,7 +108,7 @@ These are the most important decisions when configuring a launch template. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -118,9 +118,9 @@ These are the most important decisions when configuring a launch template. Explo
 | **AwsSubnet** (per interface) | `networkInterfaces[].subnetId` | `status.outputs.subnet_id` |
 | **AwsKmsKey** (per EBS mapping) | `blockDeviceMappings[].ebs.kmsKeyId` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -143,8 +143,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Auto Scaling Group**](/cloud-catalog/aws-auto-scaling-group) -- the fleet manager that launches from this template and rolls it out on version changes
-- [**AWS IAM Instance Profile**](/cloud-catalog/aws-iam-instance-profile) -- the fleet's identity for SSM, ECR, and every AWS API call
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- the firewall posture every launch inherits
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- customer-managed custody for encrypted EBS volumes
-- [**AWS EKS Node Group**](/cloud-catalog/aws-eks-node-group) -- launches worker nodes from a template that carries no AMI (EKS injects its own)
+- [**AWS Auto Scaling Group**](/infra-catalog/aws-auto-scaling-group) -- the fleet manager that launches from this template and rolls it out on version changes
+- [**AWS IAM Instance Profile**](/infra-catalog/aws-iam-instance-profile) -- the fleet's identity for SSM, ECR, and every AWS API call
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- the firewall posture every launch inherits
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- customer-managed custody for encrypted EBS volumes
+- [**AWS EKS Node Group**](/infra-catalog/aws-eks-node-group) -- launches worker nodes from a template that carries no AMI (EKS injects its own)

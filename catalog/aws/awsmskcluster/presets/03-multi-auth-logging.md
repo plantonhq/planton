@@ -26,7 +26,7 @@ comprehensive audit requirements.
 
 ## Cost Estimate
 
-The cost drivers are the three kafka.m5.large brokers (billed hourly, the dominant line) plus their EBS storage and nominal CloudWatch/Firehose/S3 log-delivery charges. The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awsmskcluster.yaml` — computed from the pinned price book, never hand-typed here.
+The cost drivers are the three kafka.m5.large brokers (billed hourly, the dominant line) plus their EBS storage and nominal CloudWatch/Firehose/S3 log-delivery charges. The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awsmskcluster.yaml` — computed from the pinned price book, never hand-typed here.
 
 ## Customization
 

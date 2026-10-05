@@ -33,16 +33,16 @@ import (
 // external reachability (the ACME server, Vault, DNS) that is not part of
 // applying the resource — the same never-block-on-a-controller posture as
 // Ingress. Terraform equivalent: kubectl_manifest without a wait_for block.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesclusterissuerv1alpha1.KubernetesClusterIssuerStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesclusterissuerv1alpha1.KubernetesClusterIssuerIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
-	result, err := certmanagerissuer.BuildSpec(locals.ClusterIssuerName, stackInput.Target.Spec.Config)
+	result, err := certmanagerissuer.BuildSpec(locals.ClusterIssuerName, iacInput.Target.Spec.Config)
 	if err != nil {
 		return errors.Wrap(err, "failed to build cluster issuer spec")
 	}

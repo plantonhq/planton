@@ -8,7 +8,7 @@ This Pulumi module creates and manages a Kubernetes ServiceAccount — the in-cl
 
 ```
 iac/pulumi/
-├── main.go          # Entrypoint: loads stack input, calls module
+├── main.go          # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml      # Pulumi project configuration
 ├── Makefile         # Make targets for preview/up/down/refresh
 └── module/
@@ -20,7 +20,7 @@ iac/pulumi/
 
 ## How It Works
 
-1. **Stack Input Loading**: The entrypoint loads `KubernetesServiceAccountStackInput` from Pulumi config
+1. **IaC Input Loading**: The entrypoint loads `KubernetesServiceAccountIacInput` from Pulumi config
 2. **Locals Initialization**: `locals.go` computes:
    - Standard Planton labels merged with user labels
    - Namespace defaulting (`default` when unset)

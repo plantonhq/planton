@@ -1,5 +1,5 @@
 variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name        = string
     id          = optional(string, "")
@@ -31,7 +31,7 @@ variable "spec" {
     # Example: "ALARM(\"cpu-high\") AND ALARM(\"error-rate-high\")"
     #
     # Compose alarm names from AwsCloudwatchAlarm resources via their exported
-    # `alarm_name` stack output. Maximum 10240 characters.
+    # `alarm_name` output. Maximum 10240 characters.
     alarm_rule = string
 
     # Human-readable description of what this composite alarm represents and

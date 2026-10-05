@@ -30,7 +30,7 @@ This approach had several limitations:
 
 4. **Shared Spec Limitations**: The generic `IngressSpec` was designed for multiple resource types, forcing NATS to inherit patterns that didn't match its specific needs.
 
-5. **Terraform Module Issues**: The Terraform module contained SolrCloud configuration instead of NATS-specific implementation, indicating it was copied from another component without proper adaptation.
+5. **Terraform Module Issues**: The Terraform module contained SolrCloud configuration instead of NATS-specific implementation, indicating it was copied from another kind without proper adaptation.
 
 ### The Solution
 
@@ -167,7 +167,7 @@ if locals.NatsKubernetes.Spec.Ingress.Hostname != "" {
 
 ### 4. Complete Terraform Module Rewrite
 
-**Previous State**: The Terraform module contained SolrCloud/Zookeeper configuration that was copied from another component but never adapted for NATS.
+**Previous State**: The Terraform module contained SolrCloud/Zookeeper configuration that was copied from another kind but never adapted for NATS.
 
 **New Implementation**: Complete NATS-specific Terraform module with:
 

@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpkmskey
 spec:
@@ -33,7 +33,7 @@ spec:
       sku_meter: active key version months
       pricing_unit: version-months
       impact: DESTROY_SCHEDULED versions still count as active and keep billing until the recovery window elapses and they are permanently destroyed -- a longer window extends the billing tail of every destroyed version.
-  free_tier: Only keys created through Cloud KMS Autokey receive free usage (100 active versions and 10,000 cryptographic operations per month per billing account); keys created directly -- as this component does -- have no free tier. Rotation is always free.
+  free_tier: Only keys created through Cloud KMS Autokey receive free usage (100 active versions and 10,000 cryptographic operations per month per billing account); keys created directly -- as this kind does -- have no free tier. Rotation is always free.
   estimate_exclusions:
     - cryptographic operation volume -- encrypt/decrypt/sign/verify calls bill per 10,000 and follow request traffic no manifest can know
     - versions beyond the initial one -- rotations, manual version creation, and imported versions each add an active version billing monthly

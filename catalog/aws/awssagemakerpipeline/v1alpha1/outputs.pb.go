@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSagemakerPipelineStackOutputs captures observable identifiers from
+// AwsSagemakerPipelineOutputs captures observable identifiers from
 // a provisioned pipeline. Executions start against `pipeline_name`
 // (StartPipelineExecution).
-type AwsSagemakerPipelineStackOutputs struct {
+type AwsSagemakerPipelineOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The pipeline name (the AWS identity executions start against).
 	PipelineName string `protobuf:"bytes,1,opt,name=pipeline_name,json=pipelineName,proto3" json:"pipeline_name,omitempty"`
@@ -34,20 +34,20 @@ type AwsSagemakerPipelineStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsSagemakerPipelineStackOutputs) Reset() {
-	*x = AwsSagemakerPipelineStackOutputs{}
+func (x *AwsSagemakerPipelineOutputs) Reset() {
+	*x = AwsSagemakerPipelineOutputs{}
 	mi := &file_catalog_aws_awssagemakerpipeline_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSagemakerPipelineStackOutputs) String() string {
+func (x *AwsSagemakerPipelineOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSagemakerPipelineStackOutputs) ProtoMessage() {}
+func (*AwsSagemakerPipelineOutputs) ProtoMessage() {}
 
-func (x *AwsSagemakerPipelineStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsSagemakerPipelineOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssagemakerpipeline_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsSagemakerPipelineStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSagemakerPipelineStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsSagemakerPipelineStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSagemakerPipelineOutputs.ProtoReflect.Descriptor instead.
+func (*AwsSagemakerPipelineOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakerpipeline_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSagemakerPipelineStackOutputs) GetPipelineName() string {
+func (x *AwsSagemakerPipelineOutputs) GetPipelineName() string {
 	if x != nil {
 		return x.PipelineName
 	}
 	return ""
 }
 
-func (x *AwsSagemakerPipelineStackOutputs) GetPipelineArn() string {
+func (x *AwsSagemakerPipelineOutputs) GetPipelineArn() string {
 	if x != nil {
 		return x.PipelineArn
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awssagemakerpipeline_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_aws_awssagemakerpipeline_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/aws/awssagemakerpipeline/v1alpha1/outputs.proto\x12-dev.planton.aws.awssagemakerpipeline.v1alpha1\"j\n" +
-	" AwsSagemakerPipelineStackOutputs\x12#\n" +
+	"7catalog/aws/awssagemakerpipeline/v1alpha1/outputs.proto\x12-dev.planton.aws.awssagemakerpipeline.v1alpha1\"e\n" +
+	"\x1bAwsSagemakerPipelineOutputs\x12#\n" +
 	"\rpipeline_name\x18\x01 \x01(\tR\fpipelineName\x12!\n" +
 	"\fpipeline_arn\x18\x02 \x01(\tR\vpipelineArnB\xff\x02\n" +
 	"1com.dev.planton.aws.awssagemakerpipeline.v1alpha1B\fOutputsProtoP\x01Zcgithub.com/plantonhq/planton/catalog/aws/awssagemakerpipeline/v1alpha1;awssagemakerpipelinev1alpha1\xa2\x02\x04DPAA\xaa\x02-Dev.Planton.Aws.Awssagemakerpipeline.V1alpha1\xca\x02-Dev\\Planton\\Aws\\Awssagemakerpipeline\\V1alpha1\xe2\x029Dev\\Planton\\Aws\\Awssagemakerpipeline\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Aws::Awssagemakerpipeline::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_aws_awssagemakerpipeline_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_aws_awssagemakerpipeline_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssagemakerpipeline_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsSagemakerPipelineStackOutputs)(nil), // 0: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineStackOutputs
+	(*AwsSagemakerPipelineOutputs)(nil), // 0: dev.planton.aws.awssagemakerpipeline.v1alpha1.AwsSagemakerPipelineOutputs
 }
 var file_catalog_aws_awssagemakerpipeline_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

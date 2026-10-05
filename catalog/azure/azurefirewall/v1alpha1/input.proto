@@ -5,10 +5,10 @@ package dev.planton.azure.azurefirewall.v1alpha1;
 import "catalog/azure/azurefirewall/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureFirewallStackInput is the input to the IaC modules
+// AzureFirewallIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and Azure
 // provider credentials.
-message AzureFirewallStackInput {
+message AzureFirewallIacInput {
   // The firewall resource to deploy.
   AzureFirewall target = 1;
 

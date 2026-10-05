@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awslaunchtemplate
 spec:
   billing_model: free
   free_tier: A launch template is a stored blueprint, and EC2 has no meter for it -- AWS charges for instances, volumes, and data transfer, never for the templates that describe them. A template with a thousand versions that never launches an instance costs exactly nothing.
-  notes: "Nothing in this spec bills until something LAUNCHES from the template, and then every field shapes what the launched instances cost as their own kinds: instance_type or instance_requirements picks the compute rate, block_device_mappings sizes the EBS volumes (a kms_key_id there adds KMS key-usage requests), spot_options switches launches to the Spot market, capacity_reservation draws on reserved capacity already paid for, and placement tenancy 'dedicated' or 'host' moves launches onto premium-priced hardware. Two fields deserve a call-out because they quietly raise the per-instance bill: detailed_monitoring enables 1-minute CloudWatch metrics billed per instance-metric per month, and ebs.volume_initialization_rate_mibps is a paid per-GiB snapshot-hydration rate on volumes it creates. All of that spend lands on the launched instances and volumes -- the consumers of this template (auto-scaling groups, EKS node groups, EC2 Fleet) are where the money moves."
+  notes: "Nothing in this spec bills until something LAUNCHES from the template, and then every field shapes what the launched instances cost as their own components: instance_type or instance_requirements picks the compute rate, block_device_mappings sizes the EBS volumes (a kms_key_id there adds KMS key-usage requests), spot_options switches launches to the Spot market, capacity_reservation draws on reserved capacity already paid for, and placement tenancy 'dedicated' or 'host' moves launches onto premium-priced hardware. Two fields deserve a call-out because they quietly raise the per-instance bill: detailed_monitoring enables 1-minute CloudWatch metrics billed per instance-metric per month, and ebs.volume_initialization_rate_mibps is a paid per-GiB snapshot-hydration rate on volumes it creates. All of that spend lands on the launched instances and volumes -- the consumers of this template (auto-scaling groups, EKS node groups, EC2 Fleet) are where the money moves."

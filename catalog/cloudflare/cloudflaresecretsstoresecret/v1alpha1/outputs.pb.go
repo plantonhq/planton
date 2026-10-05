@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareSecretsStoreSecretStackOutputs captures the observable outputs
+// CloudflareSecretsStoreSecretOutputs captures the observable outputs
 // after creating the secret. The secret VALUE is deliberately absent --
 // Cloudflare never returns it.
-type CloudflareSecretsStoreSecretStackOutputs struct {
+type CloudflareSecretsStoreSecretOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The secret's ID within its store.
 	SecretId string `protobuf:"bytes,1,opt,name=secret_id,json=secretId,proto3" json:"secret_id,omitempty"`
@@ -35,20 +35,20 @@ type CloudflareSecretsStoreSecretStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareSecretsStoreSecretStackOutputs) Reset() {
-	*x = CloudflareSecretsStoreSecretStackOutputs{}
+func (x *CloudflareSecretsStoreSecretOutputs) Reset() {
+	*x = CloudflareSecretsStoreSecretOutputs{}
 	mi := &file_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareSecretsStoreSecretStackOutputs) String() string {
+func (x *CloudflareSecretsStoreSecretOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareSecretsStoreSecretStackOutputs) ProtoMessage() {}
+func (*CloudflareSecretsStoreSecretOutputs) ProtoMessage() {}
 
-func (x *CloudflareSecretsStoreSecretStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareSecretsStoreSecretOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *CloudflareSecretsStoreSecretStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareSecretsStoreSecretStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareSecretsStoreSecretStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareSecretsStoreSecretOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareSecretsStoreSecretOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareSecretsStoreSecretStackOutputs) GetSecretId() string {
+func (x *CloudflareSecretsStoreSecretOutputs) GetSecretId() string {
 	if x != nil {
 		return x.SecretId
 	}
 	return ""
 }
 
-func (x *CloudflareSecretsStoreSecretStackOutputs) GetStoreId() string {
+func (x *CloudflareSecretsStoreSecretOutputs) GetStoreId() string {
 	if x != nil {
 		return x.StoreId
 	}
@@ -83,8 +83,8 @@ var File_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_outputs_proto 
 
 const file_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/cloudflare/cloudflaresecretsstoresecret/v1alpha1/outputs.proto\x12<dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1\"b\n" +
-	"(CloudflareSecretsStoreSecretStackOutputs\x12\x1b\n" +
+	"Fcatalog/cloudflare/cloudflaresecretsstoresecret/v1alpha1/outputs.proto\x12<dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1\"]\n" +
+	"#CloudflareSecretsStoreSecretOutputs\x12\x1b\n" +
 	"\tsecret_id\x18\x01 \x01(\tR\bsecretId\x12\x19\n" +
 	"\bstore_id\x18\x02 \x01(\tR\astoreIdB\xe1\x03\n" +
 	"@com.dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1B\fOutputsProtoP\x01Zzgithub.com/plantonhq/planton/catalog/cloudflare/cloudflaresecretsstoresecret/v1alpha1;cloudflaresecretsstoresecretv1alpha1\xa2\x02\x04DPCC\xaa\x02<Dev.Planton.Cloudflare.Cloudflaresecretsstoresecret.V1alpha1\xca\x02<Dev\\Planton\\Cloudflare\\Cloudflaresecretsstoresecret\\V1alpha1\xe2\x02HDev\\Planton\\Cloudflare\\Cloudflaresecretsstoresecret\\V1alpha1\\GPBMetadata\xea\x02@Dev::Planton::Cloudflare::Cloudflaresecretsstoresecret::V1alpha1b\x06proto3"
@@ -103,7 +103,7 @@ func file_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_outputs_proto
 
 var file_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareSecretsStoreSecretStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretStackOutputs
+	(*CloudflareSecretsStoreSecretOutputs)(nil), // 0: dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1.CloudflareSecretsStoreSecretOutputs
 }
 var file_catalog_cloudflare_cloudflaresecretsstoresecret_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

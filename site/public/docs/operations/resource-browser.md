@@ -1,6 +1,6 @@
 ---
 title: "Resource Browser"
-description: "Browse and list cloud resources across AWS, GCP, and Azure from a single CLI without distributing cloud console credentials"
+description: "Browse and list provider resources across AWS, GCP, and Azure from a single CLI without distributing cloud console credentials"
 icon: cloud
 order: 30
 tags:

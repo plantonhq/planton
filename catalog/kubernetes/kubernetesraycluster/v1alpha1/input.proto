@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesraycluster.v1alpha1;
 import "catalog/kubernetes/kubernetesraycluster/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//ray-cluster-kubernetes stack-input
-message KubernetesRayClusterStackInput {
-  //target cloud-resource
+//ray-cluster-kubernetes iac-input
+message KubernetesRayClusterIacInput {
+  // the catalog object to deploy
   KubernetesRayCluster target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

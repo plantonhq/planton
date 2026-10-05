@@ -1,0 +1,476 @@
+{
+    "apiVersion": "infra-hub.planton.ai/v1",
+    "kind": "InfraJob",
+    "metadata": {
+        "name": "ic_k8sms_01jq5xe4z7farkgenqsh47c1h0",
+        "id": "ij_01k4vk7sggqj0b2g91an4fq5da",
+        "org": "planton-cloud",
+        "env": "app-prod",
+        "version": {
+            "message": "Merge branch 'main' of github.com:plantonhq/planton"
+        }
+    },
+    "spec": {
+        "infraJobOperation": "update",
+        "essentials": {
+            "infraJobRunnerInfo": {
+                "kind": "infra_job_runner",
+                "name": "platform-infra-job-runner",
+                "id": "sjr_01jwwxp6d87nhszv1bdy38gda9"
+            },
+            "iacModuleInfo": {
+                "kind": "iac_module",
+                "name": "Microservice on Kubernetes (Default Pulumi)",
+                "id": "iacmod_01k4mvwpmg1djjx0f38fpdp2dx"
+            },
+            "provisioner": "pulumi",
+            "backendCredentialInfo": {
+                "kind": "pulumi_backend_credential",
+                "name": "platform-pulumi-state-backend",
+                "id": "pulcred_01jntk73ms1em8p7wk1r2c1end"
+            },
+            "flowControlPolicyInfo": {
+                "kind": "flow_control_policy",
+                "name": "platform-flow-control-policy",
+                "id": "fcp_01jwwxp4nnk6h7kyhjyh7ezwqy"
+            },
+            "providerCredentialInfo": {
+                "kind": "kubernetes_cluster_credential",
+                "name": "gke-mumbai-20240816",
+                "id": "k8scred_01jp6qzdsj70s228htskj53214"
+            }
+        },
+        "infraComponent": {
+            "apiVersion": "infra-hub.planton.ai/v1",
+            "kind": "InfraComponent",
+            "metadata": {
+                "name": "web-console",
+                "slug": "web-console",
+                "id": "ic_k8sms_01jq5xe4z7farkgenqsh47c1h0",
+                "org": "planton-cloud",
+                "env": "app-prod",
+                "labels": {
+                    "planton.ai/service": "svc_01jp2fzgmkqwdccbxeznfyj7r5",
+                    "planton.ai/pipeline": "pipe_01k4vjnnfp7k38j9qda5mnh34f",
+                    "git.repo": "https://github.com/plantonhq/planton",
+                    "git.commit": "f9f2c5e187e5687df227dec27c878bf82cf67e42"
+                },
+                "annotations": {
+                    "infra-hub.planton.ai/mutator.kind": "pipeline",
+                    "infra-hub.planton.ai/mutator.parent.id": "svc_01jp2fzgmkqwdccbxeznfyj7r5",
+                    "infra-hub.planton.ai/mutator.workflow-id": "service-pipeline/execute/deploy/org/planton-cloud/service/web-console.svc_01jp2fzgmkqwdccbxeznfyj7r5/pipeline/pipe_01k4vjnnfp7k38j9qda5mnh34f",
+                    "infra-hub.planton.ai/mutator.id": "pipe_01k4vjnnfp7k38j9qda5mnh34f",
+                    "infra-hub.planton.ai/mutator.parent.kind": "service",
+                    "audit.planton.ai/previousRevision": "ver_01k4syk94kevtdwxb0t7hz0a30"
+                },
+                "version": {
+                    "id": "ver_01k4vk7sgec5yemshcbj5g7m6k",
+                    "message": "Merge branch 'main' of github.com:plantonhq/planton"
+                }
+            },
+            "spec": {
+                "kind": "MicroserviceKubernetes",
+                "microserviceKubernetes": {
+                    "apiVersion": "kubernetes.planton.dev/v1alpha1",
+                    "kind": "MicroserviceKubernetes",
+                    "metadata": {
+                        "name": "web-console",
+                        "org": "planton-cloud",
+                        "env": "app-prod",
+                        "labels": {
+                            "planton.ai/service": "svc_01jp2fzgmkqwdccbxeznfyj7r5",
+                            "planton.ai/pipeline": "pipe_01k4vjnnfp7k38j9qda5mnh34f",
+                            "git.repo": "https://github.com/plantonhq/planton",
+                            "git.commit": "f9f2c5e187e5687df227dec27c878bf82cf67e42"
+                        },
+                        "version": {
+                            "message": "Merge branch 'main' of github.com:plantonhq/planton"
+                        }
+                    },
+                    "spec": {
+                        "version": "main",
+                        "container": {
+                            "app": {
+                                "image": {
+                                    "repo": "asia-south1-docker.pkg.dev/pc-artifact-registry/gcpart-planton-cloud-devtools-prod-mumbai-docker/github.com/plantonhq/planton/client-apps/web/console",
+                                    "tag": "f9f2c5e187e5687df227dec27c878bf82cf67e42"
+                                },
+                                "resources": {
+                                    "limits": {
+                                        "cpu": "2000m",
+                                        "memory": "2Gi"
+                                    },
+                                    "requests": {
+                                        "cpu": "250m",
+                                        "memory": "250Mi"
+                                    }
+                                },
+                                "env": {
+                                    "variables": {
+                                        "API_ENDPOINT": "$variables-group/planton-cloud-apis/prod.https-endpoint",
+                                        "GITHUB_INSTALL_URL": "$variables-group/github/app.install-url",
+                                        "GITLAB_AUTH_URL": "$variables-group/gitlab/auth-url",
+                                        "GITLAB_OAUTH_GROUP_APP_CLIENT_ID": "$variables-group/gitlab/oauth-app-client-id",
+                                        "GITLAB_OAUTH_TOKEN_URL": "$variables-group/gitlab/oauth-token-url",
+                                        "IAM_CLIENT_ID": "$variables-group/auth0/prod.web-console-client-id",
+                                        "IAM_DOMAIN": "$variables-group/auth0/idp-domain",
+                                        "IAM_LOGOUT_REDIRECT": "",
+                                        "NEXTAUTH_URL": "$variables-group/web-console/prod.next-auth-url",
+                                        "NEXTAUTH_URL_INTERNAL": "$variables-group/web-console/prod.next-auth-url"
+                                    },
+                                    "secrets": {
+                                        "GITLAB_OAUTH_GROUP_APP_CLIENT_SECRET": "$secret/@app-prod/gitlab/oauth.client-secret",
+                                        "IAM_CLIENT_SECRET": "$secret/@app-prod/auth0/web-console-client-secret",
+                                        "NEXTAUTH_SECRET": "$secret/@app-prod/planton-web/next-auth-secret"
+                                    }
+                                },
+                                "ports": [
+                                    {
+                                        "name": "app",
+                                        "containerPort": 3000,
+                                        "networkProtocol": "TCP",
+                                        "appProtocol": "http",
+                                        "servicePort": 80,
+                                        "isIngressPort": true
+                                    }
+                                ]
+                            }
+                        },
+                        "ingress": {
+                            "enabled": true,
+                            "dnsDomain": "planton.live"
+                        },
+                        "availability": {
+                            "minReplicas": 1,
+                            "horizontalPodAutoscaling": {}
+                        }
+                    }
+                }
+            },
+            "status": {
+                "infraJobId": "ij_01k4syk94nwj6zdqhzpqsjn3tc",
+                "audit": {
+                    "specAudit": {
+                        "createdBy": {
+                            "id": "swarup@leftbin.com",
+                            "avatar": "https://lh3.googleusercontent.com/a/ACg8ocLJjynVNrwM7dKCHt1i8UAbK4jVnapJ6_vUz_HImr_uINlaat0J=s96-c"
+                        },
+                        "createdAt": "2025-03-25T05:47:05.065Z",
+                        "updatedBy": {
+                            "id": "system"
+                        },
+                        "updatedAt": "2025-09-11T05:16:12.174Z",
+                        "event": "updated"
+                    },
+                    "statusAudit": {
+                        "createdBy": {},
+                        "createdAt": "2025-05-02T14:13:11.685Z",
+                        "updatedBy": {},
+                        "updatedAt": "2025-05-02T14:13:11.685Z",
+                        "event": "infra_job_update_completed"
+                    }
+                },
+                "lifecycle": {
+                    "isActive": true
+                }
+            }
+        },
+        "infraComponentMutator": {
+            "mutatorParentKind": "service",
+            "mutatorParentId": "svc_01jp2fzgmkqwdccbxeznfyj7r5",
+            "mutatorKind": "pipeline",
+            "mutatorId": "pipe_01k4vjnnfp7k38j9qda5mnh34f",
+            "workflowId": "service-pipeline/execute/deploy/org/planton-cloud/service/web-console.svc_01jp2fzgmkqwdccbxeznfyj7r5/pipeline/pipe_01k4vjnnfp7k38j9qda5mnh34f"
+        }
+    },
+    "status": {
+        "progress": {
+            "startTime": "2025-09-10T13:56:16.490Z",
+            "endTime": "2025-09-10T13:57:29.147Z",
+            "status": "completed",
+            "result": "succeeded"
+        },
+        "iacOperations": {
+            "init": {
+                "isRequired": true,
+                "isApproved": true,
+                "status": "completed",
+                "result": "succeeded",
+                "startTime": "2025-09-10T13:56:20.631147959Z",
+                "endTime": "2025-09-10T13:57:29.147Z"
+            },
+            "refresh": {
+                "isRequired": true,
+                "isApproved": true,
+                "status": "completed",
+                "result": "succeeded",
+                "startTime": "2025-09-10T13:56:25.035317311Z",
+                "endTime": "2025-09-10T13:57:29.147Z",
+                "snapshot": {
+                    "resourceRowMap": {
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:core/v1:Service::main": {
+                            "resourceKind": "kubernetes:core/v1:Service",
+                            "resourceName": "main",
+                            "isDone": true
+                        },
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace::service-app-prod-web-console": {
+                            "resourceKind": "kubernetes:core/v1:Namespace",
+                            "resourceName": "service-app-prod-web-console",
+                            "isDone": true
+                        },
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:apps/v1:Deployment::main": {
+                            "resourceKind": "kubernetes:apps/v1:Deployment",
+                            "resourceName": "main",
+                            "isDone": true
+                        },
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:pulumi:Stack::planton-cloud-app-prod.MicroserviceKubernetes.web-console": {
+                            "resourceKind": "pulumi:pulumi:Stack",
+                            "resourceName": "planton-cloud-app-prod.MicroserviceKubernetes.web-console",
+                            "isDone": true
+                        },
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes": {
+                            "resourceKind": "pulumi:providers:kubernetes",
+                            "resourceName": "kubernetes",
+                            "isDone": true
+                        },
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:core/v1:Secret::main": {
+                            "resourceKind": "kubernetes:core/v1:Secret",
+                            "resourceName": "main",
+                            "isDone": true
+                        },
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:cert-manager.io/v1:Certificate::ingress-certificate": {
+                            "resourceKind": "kubernetes:cert-manager.io/v1:Certificate",
+                            "resourceName": "ingress-certificate",
+                            "isDone": true
+                        },
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:gateway.networking.k8s.io/v1:HTTPRoute::http-external-redirect": {
+                            "resourceKind": "kubernetes:gateway.networking.k8s.io/v1:HTTPRoute",
+                            "resourceName": "http-external-redirect",
+                            "isDone": true
+                        },
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:gateway.networking.k8s.io/v1:HTTPRoute::https-internal": {
+                            "resourceKind": "kubernetes:gateway.networking.k8s.io/v1:HTTPRoute",
+                            "resourceName": "https-internal",
+                            "isDone": true
+                        },
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:gateway.networking.k8s.io/v1:Gateway::external": {
+                            "resourceKind": "kubernetes:gateway.networking.k8s.io/v1:Gateway",
+                            "resourceName": "external",
+                            "isDone": true
+                        },
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:core/v1:ServiceAccount::web-console": {
+                            "resourceKind": "kubernetes:core/v1:ServiceAccount",
+                            "resourceName": "web-console",
+                            "isDone": true
+                        },
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:gateway.networking.k8s.io/v1:HTTPRoute::https-external": {
+                            "resourceKind": "kubernetes:gateway.networking.k8s.io/v1:HTTPRoute",
+                            "resourceName": "https-external",
+                            "isDone": true
+                        },
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:gateway.networking.k8s.io/v1:Gateway::internal": {
+                            "resourceKind": "kubernetes:gateway.networking.k8s.io/v1:Gateway",
+                            "resourceName": "internal",
+                            "isDone": true
+                        },
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:core/v1:Secret::image-pull-secret": {
+                            "resourceKind": "kubernetes:core/v1:Secret",
+                            "resourceName": "image-pull-secret",
+                            "isDone": true
+                        },
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:gateway.networking.k8s.io/v1:HTTPRoute::http-internal-redirect": {
+                            "resourceKind": "kubernetes:gateway.networking.k8s.io/v1:HTTPRoute",
+                            "resourceName": "http-internal-redirect",
+                            "isDone": true
+                        }
+                    },
+                    "resourceDiffs": [
+                        "    --outputs:--\n    external_hostname   : \"service-app-prod-web-console.planton.live\"\n    internal_hostname   : \"service-app-prod-web-console-internal.planton.live\"\n    kube_endpoint       : \"main.service-app-prod-web-console.svc.cluster.local\"\n    namespace           : \"service-app-prod-web-console\"\n    port_forward_command: \"kubectl port-forward -n service-app-prod-web-console service/main 8080:8080\"\n    service             : \"main\"\n",
+                        "Deployment initialization complete\n",
+                        "Service initialization complete\n",
+                        "\n",
+                        "\n",
+                        "Resources:\n    15 unchanged\n\nDuration: 2s\n"
+                    ],
+                    "summary": {
+                        "durationSeconds": 2
+                    }
+                }
+            },
+            "updatePreview": {
+                "isRequired": true,
+                "isApproved": true,
+                "status": "completed",
+                "result": "succeeded",
+                "startTime": "2025-09-10T13:56:42.130073925Z",
+                "endTime": "2025-09-10T13:57:29.147Z",
+                "snapshot": {
+                    "resourceRowMap": {
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:apps/v1:Deployment::main": {
+                            "resourceKind": "kubernetes:apps/v1:Deployment",
+                            "resourceName": "main",
+                            "status": "update",
+                            "isDone": true,
+                            "elapsedDurationSeconds": "18"
+                        }
+                    },
+                    "resourceDiffs": [
+                        "  pulumi:pulumi:Stack: (same)\n    [urn=urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:pulumi:Stack::planton-cloud-app-prod.MicroserviceKubernetes.web-console]\n",
+                        "~ kubernetes:apps/v1:Deployment: (update)\n    [id=service-app-prod-web-console/web-console]\n    [urn=urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:apps/v1:Deployment::main]\n    [provider=urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8]\n  ~ spec: {\n      ~ template: {\n          ~ spec: {\n              ~ containers: [\n                  ~ [0]: {\n                          ~ image: \"asia-south1-docker.pkg.dev/pc-artifact-registry/gcpart-planton-cloud-devtools-prod-mumbai-docker/github.com/plantonhq/planton/client-apps/web/console:1ffddb649ecdef917f98f4c700619478712c512d\" => \"asia-south1-docker.pkg.dev/pc-artifact-registry/gcpart-planton-cloud-devtools-prod-mumbai-docker/github.com/plantonhq/planton/client-apps/web/console:7422963dfae43554cd59f9427165334e0a8c9809\"\n                        }\n                ]\n            }\n        }\n    }\n",
+                        "Resources:\n    ~ 1 updated\n    14 unchanged\n\nDuration: 3s\n"
+                    ],
+                    "summary": {
+                        "durationSeconds": 3
+                    }
+                }
+            },
+            "destroyPreview": {},
+            "update": {
+                "isRequired": true,
+                "isApproved": true,
+                "status": "completed",
+                "result": "succeeded",
+                "startTime": "2025-09-10T13:56:54.780811456Z",
+                "endTime": "2025-09-10T13:57:29.147Z",
+                "snapshot": {
+                    "resourceRowMap": {
+                        "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:apps/v1:Deployment::main": {
+                            "resourceKind": "kubernetes:apps/v1:Deployment",
+                            "resourceName": "main",
+                            "status": "updated",
+                            "isDone": true,
+                            "elapsedDurationSeconds": "39"
+                        }
+                    },
+                    "resourceDiffs": [
+                        "  pulumi:pulumi:Stack: (same)\n    [urn=urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:pulumi:Stack::planton-cloud-app-prod.MicroserviceKubernetes.web-console]\n",
+                        "~ kubernetes:apps/v1:Deployment: (update)\n    [id=service-app-prod-web-console/web-console]\n    [urn=urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:apps/v1:Deployment::main]\n    [provider=urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8]\n  ~ spec: {\n      ~ template: {\n          ~ spec: {\n              ~ containers: [\n                  ~ [0]: {\n                          ~ image: \"asia-south1-docker.pkg.dev/pc-artifact-registry/gcpart-planton-cloud-devtools-prod-mumbai-docker/github.com/plantonhq/planton/client-apps/web/console:1ffddb649ecdef917f98f4c700619478712c512d\" => \"asia-south1-docker.pkg.dev/pc-artifact-registry/gcpart-planton-cloud-devtools-prod-mumbai-docker/github.com/plantonhq/planton/client-apps/web/console:7422963dfae43554cd59f9427165334e0a8c9809\"\n                        }\n                ]\n            }\n        }\n    }\n",
+                        "Waiting for app ReplicaSet to be available (0/1 Pods available)\n",
+                        "Deployment initialization complete\n",
+                        "\n",
+                        "    --outputs:--\n  ~ metadata  : {\n      ~ annotations      : {\n          ~ deployment.kubernetes.io/revision: \"2\" => \"3\"\n            pulumi.com/patchForce            : \"true\"\n        }\n        creationTimestamp: \"2025-09-10T11:55:04Z\"\n      ~ generation       : 2 => 3\n        labels           : {\n            planton.ai/environment : \"app-prod\"\n            planton.ai/id          : \"ic_k8sms_01jq5xe4z7farkgenqsh47c1h0\"\n            planton.ai/kind        : \"MicroserviceKubernetes\"\n            planton.ai/name        : \"web-console\"\n            planton.ai/organization: \"planton-cloud\"\n            planton.ai/resource    : \"true\"\n        }\n      ~ managedFields    : [\n          ~ [0]: {\n                    apiVersion: \"apps/v1\"\n                    fieldsType: \"FieldsV1\"\n                    fieldsV1  : {\n                        f:metadata: {\n                            f:annotations: {\n                                f:pulumi.com/patchForce: {}\n                            }\n                            f:labels     : {\n                                f:planton.ai/environment : {}\n                                f:planton.ai/id          : {}\n                                f:planton.ai/kind        : {}\n                                f:planton.ai/name        : {}\n                                f:planton.ai/organization: {}\n                                f:planton.ai/resource    : {}\n                            }\n                        }\n                        f:spec    : {\n                            f:replicas: {}\n                            f:selector: {}\n                            f:template: {\n                                f:metadata: {\n                                    f:labels: {\n                                        f:planton.ai/environment : {}\n                                        f:planton.ai/id          : {}\n                                        f:planton.ai/kind        : {}\n                                        f:planton.ai/name        : {}\n                                        f:planton.ai/organization: {}\n                                        f:planton.ai/resource    : {}\n                                    }\n                                }\n                                f:spec    : {\n                                    f:containers                   : {\n                                        k:{\"name\":\"microservice\"}: {\n                                            .          : {}\n                                            f:env      : {\n                                                k:{\"name\":\"API_ENDPOINT\"}                        : {\n                                                    .      : {}\n                                                    f:name : {}\n                                                    f:value: {}\n                                                }\n                                                k:{\"name\":\"GITHUB_INSTALL_URL\"}                  : {\n                                                    .      : {}\n                                                    f:name : {}\n                                                    f:value: {}\n                                                }\n                                                k:{\"name\":\"GITLAB_AUTH_URL\"}                     : {\n                                                    .      : {}\n                                                    f:name : {}\n                                                    f:value: {}\n                                                }\n                                                k:{\"name\":\"GITLAB_OAUTH_GROUP_APP_CLIENT_ID\"}    : {\n                                                    .      : {}\n                                                    f:name : {}\n                                                    f:value: {}\n                                                }\n                                                k:{\"name\":\"GITLAB_OAUTH_GROUP_APP_CLIENT_SECRET\"}: {\n                                                    .          : {}\n                                                    f:name     : {}\n                                                    f:valueFrom: {\n                                                        f:secretKeyRef: {}\n                                                    }\n                                                }\n                                                k:{\"name\":\"GITLAB_OAUTH_TOKEN_URL\"}              : {\n                                                    .      : {}\n                                                    f:name : {}\n                                                    f:value: {}\n                                                }\n                                                k:{\"name\":\"HOSTNAME\"}                            : {\n                                                    .          : {}\n                                                    f:name     : {}\n                                                    f:valueFrom: {\n                                                        f:fieldRef: {}\n                                                    }\n                                                }\n                                                k:{\"name\":\"IAM_CLIENT_ID\"}                       : {\n                                                    .      : {}\n                                                    f:name : {}\n                                                    f:value: {}\n                                                }\n                                                k:{\"name\":\"IAM_CLIENT_SECRET\"}                   : {\n                                                    .          : {}\n                                                    f:name     : {}\n                                                    f:valueFrom: {\n                                                        f:secretKeyRef: {}\n                                                    }\n                                                }\n                                                k:{\"name\":\"IAM_DOMAIN\"}                          : {\n                                                    .      : {}\n                                                    f:name : {}\n                                                    f:value: {}\n                                                }\n                                                k:{\"name\":\"IAM_LOGOUT_REDIRECT\"}                 : {\n                                                    .     : {}\n                                                    f:name: {}\n                                                }\n                                                k:{\"name\":\"K8S_POD_ID\"}                          : {\n                                                    .          : {}\n                                                    f:name     : {}\n                                                    f:valueFrom: {\n                                                        f:fieldRef: {}\n                                                    }\n                                                }\n                                                k:{\"name\":\"NEXTAUTH_SECRET\"}                     : {\n                                                    .          : {}\n                                                    f:name     : {}\n                                                    f:valueFrom: {\n                                                        f:secretKeyRef: {}\n                                                    }\n                                                }\n                                                k:{\"name\":\"NEXTAUTH_URL\"}                        : {\n                                                    .      : {}\n                                                    f:name : {}\n                                                    f:value: {}\n                                                }\n                                                k:{\"name\":\"NEXTAUTH_URL_INTERNAL\"}               : {\n                                                    .      : {}\n                                                    f:name : {}\n                                                    f:value: {}\n                                                }\n                                            }\n                                            f:image    : {}\n                                            f:lifecycle: {\n                                                f:preStop: {\n                                                    f:exec: {\n                                                        f:command: {}\n                                                    }\n                                                }\n                                            }\n                                            f:name     : {}\n                                            f:ports    : {\n                                                k:{\"containerPort\":3000,\"protocol\":\"TCP\"}: {\n                                                    .              : {}\n                                                    f:containerPort: {}\n                                                    f:name         : {}\n                                                }\n                                            }\n                                            f:resources: {\n                                                f:limits  : {\n                                                    f:cpu   : {}\n                                                    f:memory: {}\n                                                }\n                                                f:requests: {\n                                                    f:cpu   : {}\n                                                    f:memory: {}\n                                                }\n                                            }\n                                        }\n                                    }\n                                    f:imagePullSecrets             : {\n                                        k:{\"name\":\"image-pull-secret\"}: {}\n                                    }\n                                    f:serviceAccountName           : {}\n                                    f:terminationGracePeriodSeconds: {}\n                                }\n                            }\n                        }\n                    }\n                    manager   : \"pulumi-kubernetes-91040609\"\n                    operation : \"Apply\"\n                  ~ time      : \"2025-09-10T12:26:18Z\" => \"2025-09-10T13:57:03Z\"\n                }\n          ~ [1]: {\n                    apiVersion : \"apps/v1\"\n                    fieldsType : \"FieldsV1\"\n                    fieldsV1   : {\n                        f:metadata: {\n                            f:annotations: {\n                                f:deployment.kubernetes.io/revision: {}\n                            }\n                        }\n                        f:status  : {\n                            f:availableReplicas : {}\n                            f:conditions        : {\n                                .                       : {}\n                                k:{\"type\":\"Available\"}  : {\n                                    .                   : {}\n                                    f:lastTransitionTime: {}\n                                    f:lastUpdateTime    : {}\n                                    f:message           : {}\n                                    f:reason            : {}\n                                    f:status            : {}\n                                    f:type              : {}\n                                }\n                                k:{\"type\":\"Progressing\"}: {\n                                    .                   : {}\n                                    f:lastTransitionTime: {}\n                                    f:lastUpdateTime    : {}\n                                    f:message           : {}\n                                    f:reason            : {}\n                                    f:status            : {}\n                                    f:type              : {}\n                                }\n                            }\n                            f:observedGeneration: {}\n                            f:readyReplicas     : {}\n                            f:replicas          : {}\n                            f:updatedReplicas   : {}\n                        }\n                    }\n                    manager    : \"kube-controller-manager\"\n                    operation  : \"Update\"\n                    subresource: \"status\"\n                  ~ time       : \"2025-09-10T12:26:34Z\" => \"2025-09-10T13:57:09Z\"\n                }\n        ]\n        name             : \"web-console\"\n        namespace        : \"service-app-prod-web-console\"\n      ~ resourceVersion  : \"1757507194524735010\" => \"1757512629801631010\"\n        uid              : \"793a9188-fc4d-4893-adb1-1f40e73c3102\"\n    }\n  ~ spec      : {\n        progressDeadlineSeconds: 600\n        replicas               : 1\n        revisionHistoryLimit   : 10\n        selector               : {\n            matchLabels: {\n                planton.ai/environment : \"app-prod\"\n                planton.ai/id          : \"ic_k8sms_01jq5xe4z7farkgenqsh47c1h0\"\n                planton.ai/kind        : \"MicroserviceKubernetes\"\n                planton.ai/name        : \"web-console\"\n                planton.ai/organization: \"planton-cloud\"\n                planton.ai/resource    : \"true\"\n            }\n        }\n        strategy               : {\n            rollingUpdate: {\n                maxSurge      : \"25%\"\n                maxUnavailable: \"25%\"\n            }\n            type         : \"RollingUpdate\"\n        }\n      ~ template               : {\n            metadata: {\n                labels: {\n                    planton.ai/environment : \"app-prod\"\n                    planton.ai/id          : \"ic_k8sms_01jq5xe4z7farkgenqsh47c1h0\"\n                    planton.ai/kind        : \"MicroserviceKubernetes\"\n                    planton.ai/name        : \"web-console\"\n                    planton.ai/organization: \"planton-cloud\"\n                    planton.ai/resource    : \"true\"\n                }\n            }\n          ~ spec    : {\n              ~ containers                   : [\n                  ~ [0]: {\n                            env                     : [\n                                [0]: {\n                                    name     : \"HOSTNAME\"\n                                    valueFrom: {\n                                        fieldRef: {\n                                            apiVersion: \"v1\"\n                                            fieldPath : \"status.podIP\"\n                                        }\n                                    }\n                                }\n                                [1]: {\n                                    name     : \"K8S_POD_ID\"\n                                    valueFrom: {\n                                        fieldRef: {\n                                            apiVersion: \"v1\"\n                                            fieldPath : \"metadata.name\"\n                                        }\n                                    }\n                                }\n                                [2]: {\n                                    name : \"API_ENDPOINT\"\n                                    value: \"https://api.live.planton.ai\"\n                                }\n                                [3]: {\n                                    name : \"GITHUB_INSTALL_URL\"\n                                    value: \"https://github.com/apps/planton-cloud/installations/new\"\n                                }\n                                [4]: {\n                                    name : \"GITLAB_AUTH_URL\"\n                                    value: \"https://gitlab.com/oauth/authorize\"\n                                }\n                                [5]: {\n                                    name : \"GITLAB_OAUTH_GROUP_APP_CLIENT_ID\"\n                                    value: \"24b6fc84c05b82623f9ce019432df5313758136ee8e8121558fb1334b2b0c77d\"\n                                }\n                                [6]: {\n                                    name : \"GITLAB_OAUTH_TOKEN_URL\"\n                                    value: \"https://gitlab.com/oauth/token\"\n                                }\n                                [7]: {\n                                    name : \"IAM_CLIENT_ID\"\n                                    value: \"ypo0MN7gcqQbO0R8MN7BaP25L8enBoAd\"\n                                }\n                                [8]: {\n                                    name : \"IAM_DOMAIN\"\n                                    value: \"planton-cloud-prod.us.auth0.com\"\n                                }\n                                [9]: {\n                                    name: \"IAM_LOGOUT_REDIRECT\"\n                                }\n                                [10]: {\n                                    name : \"NEXTAUTH_URL\"\n                                    value: \"https://planton.ai\"\n                                }\n                                [11]: {\n                                    name : \"NEXTAUTH_URL_INTERNAL\"\n                                    value: \"https://planton.ai\"\n                                }\n                                [12]: {\n                                    name     : \"GITLAB_OAUTH_GROUP_APP_CLIENT_SECRET\"\n                                    valueFrom: {\n                                        secretKeyRef: {\n                                            key : \"GITLAB_OAUTH_GROUP_APP_CLIENT_SECRET\"\n                                            name: \"main\"\n                                        }\n                                    }\n                                }\n                                [13]: {\n                                    name     : \"IAM_CLIENT_SECRET\"\n                                    valueFrom: {\n                                        secretKeyRef: {\n                                            key : \"IAM_CLIENT_SECRET\"\n                                            name: \"main\"\n                                        }\n                                    }\n                                }\n                                [14]: {\n                                    name     : \"NEXTAUTH_SECRET\"\n                                    valueFrom: {\n                                        secretKeyRef: {\n                                            key : \"NEXTAUTH_SECRET\"\n                                            name: \"main\"\n                                        }\n                                    }\n                                }\n                            ]\n                          ~ image                   : \"asia-south1-docker.pkg.dev/pc-artifact-registry/gcpart-planton-cloud-devtools-prod-mumbai-docker/github.com/plantonhq/planton/client-apps/web/console:1ffddb649ecdef917f98f4c700619478712c512d\" => \"asia-south1-docker.pkg.dev/pc-artifact-registry/gcpart-planton-cloud-devtools-prod-mumbai-docker/github.com/plantonhq/planton/client-apps/web/console:7422963dfae43554cd59f9427165334e0a8c9809\"\n                            imagePullPolicy         : \"IfNotPresent\"\n                            lifecycle               : {\n                                preStop: {\n                                    exec: {\n                                        command: [\n                                            [0]: \"/bin/sleep\"\n                                            [1]: \"60\"\n                                        ]\n                                    }\n                                }\n                            }\n                            name                    : \"microservice\"\n                            ports                   : [\n                                [0]: {\n                                    containerPort: 3000\n                                    name         : \"app\"\n                                    protocol     : \"TCP\"\n                                }\n                            ]\n                            resources               : {\n                                limits  : {\n                                    cpu   : \"2\"\n                                    memory: \"2Gi\"\n                                }\n                                requests: {\n                                    cpu   : \"250m\"\n                                    memory: \"250Mi\"\n                                }\n                            }\n                            terminationMessagePath  : \"/dev/termination-log\"\n                            terminationMessagePolicy: \"File\"\n                        }\n                ]\n                dnsPolicy                    : \"ClusterFirst\"\n                imagePullSecrets             : [\n                    [0]: {\n                        name: \"image-pull-secret\"\n                    }\n                ]\n                restartPolicy                : \"Always\"\n                schedulerName                : \"default-scheduler\"\n                serviceAccount               : \"web-console\"\n                serviceAccountName           : \"web-console\"\n                terminationGracePeriodSeconds: 60\n            }\n        }\n    }\n  ~ status    : {\n        availableReplicas : 1\n      ~ conditions        : [\n            [0]: {\n                    lastTransitionTime: \"2025-09-10T11:55:09Z\"\n                    lastUpdateTime    : \"2025-09-10T11:55:09Z\"\n                    message           : \"Deployment has minimum availability.\"\n                    reason            : \"MinimumReplicasAvailable\"\n                    status            : \"True\"\n                    type              : \"Available\"\n                }\n          ~ [1]: {\n                    lastTransitionTime: \"2025-09-10T11:55:04Z\"\n                  ~ lastUpdateTime    : \"2025-09-10T12:26:34Z\" => \"2025-09-10T13:57:09Z\"\n                  ~ message           : \"ReplicaSet \\\"web-console-897fc7869\\\" has successfully progressed.\" => \"ReplicaSet \\\"web-console-759df98588\\\" has successfully progressed.\"\n                    reason            : \"NewReplicaSetAvailable\"\n                    status            : \"True\"\n                    type              : \"Progressing\"\n                }\n        ]\n      ~ observedGeneration: 2 => 3\n        readyReplicas     : 1\n        replicas          : 1\n        updatedReplicas   : 1\n    }\n",
+                        "    --outputs:--\n    external_hostname   : \"service-app-prod-web-console.planton.live\"\n    internal_hostname   : \"service-app-prod-web-console-internal.planton.live\"\n    kube_endpoint       : \"main.service-app-prod-web-console.svc.cluster.local\"\n    namespace           : \"service-app-prod-web-console\"\n    port_forward_command: \"kubectl port-forward -n service-app-prod-web-console service/main 8080:8080\"\n    service             : \"main\"\n",
+                        "Resources:\n    ~ 1 updated\n    14 unchanged\n\nDuration: 12s\n"
+                    ],
+                    "summary": {
+                        "durationSeconds": 12
+                    },
+                    "outputs": {
+                        "external_hostname": "service-app-prod-web-console.planton.live",
+                        "internal_hostname": "service-app-prod-web-console-internal.planton.live",
+                        "kube_endpoint": "main.service-app-prod-web-console.svc.cluster.local",
+                        "namespace": "service-app-prod-web-console",
+                        "port_forward_command": "kubectl port-forward -n service-app-prod-web-console service/main 8080:8080",
+                        "service": "main"
+                    }
+                }
+            },
+            "destroy": {}
+        },
+        "iacResources": [
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:pulumi:Stack::planton-cloud-app-prod.MicroserviceKubernetes.web-console",
+                "resourceType": "pulumi:pulumi:Stack",
+                "logicalName": "planton-cloud-app-prod.MicroserviceKubernetes.web-console"
+            },
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes",
+                "resourceType": "pulumi:providers:kubernetes",
+                "logicalName": "kubernetes"
+            },
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:cert-manager.io/v1:Certificate::ingress-certificate",
+                "resourceType": "kubernetes:cert-manager.io/v1:Certificate",
+                "provider": "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8",
+                "logicalName": "ingress-certificate"
+            },
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace::service-app-prod-web-console",
+                "resourceType": "kubernetes:core/v1:Namespace",
+                "provider": "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8",
+                "logicalName": "service-app-prod-web-console"
+            },
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:gateway.networking.k8s.io/v1:Gateway::external",
+                "resourceType": "kubernetes:gateway.networking.k8s.io/v1:Gateway",
+                "provider": "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8",
+                "logicalName": "external"
+            },
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:core/v1:ServiceAccount::web-console",
+                "resourceType": "kubernetes:core/v1:ServiceAccount",
+                "provider": "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8",
+                "logicalName": "web-console"
+            },
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:core/v1:Secret::image-pull-secret",
+                "resourceType": "kubernetes:core/v1:Secret",
+                "provider": "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8",
+                "logicalName": "image-pull-secret"
+            },
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:gateway.networking.k8s.io/v1:Gateway::internal",
+                "resourceType": "kubernetes:gateway.networking.k8s.io/v1:Gateway",
+                "provider": "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8",
+                "logicalName": "internal"
+            },
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:core/v1:Secret::main",
+                "resourceType": "kubernetes:core/v1:Secret",
+                "provider": "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8",
+                "logicalName": "main"
+            },
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:gateway.networking.k8s.io/v1:HTTPRoute::http-external-redirect",
+                "resourceType": "kubernetes:gateway.networking.k8s.io/v1:HTTPRoute",
+                "provider": "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8",
+                "logicalName": "http-external-redirect"
+            },
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:gateway.networking.k8s.io/v1:HTTPRoute::https-external",
+                "resourceType": "kubernetes:gateway.networking.k8s.io/v1:HTTPRoute",
+                "provider": "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8",
+                "logicalName": "https-external"
+            },
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:gateway.networking.k8s.io/v1:HTTPRoute::https-internal",
+                "resourceType": "kubernetes:gateway.networking.k8s.io/v1:HTTPRoute",
+                "provider": "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8",
+                "logicalName": "https-internal"
+            },
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:gateway.networking.k8s.io/v1:HTTPRoute::http-internal-redirect",
+                "resourceType": "kubernetes:gateway.networking.k8s.io/v1:HTTPRoute",
+                "provider": "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8",
+                "logicalName": "http-internal-redirect"
+            },
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:apps/v1:Deployment::main",
+                "resourceType": "kubernetes:apps/v1:Deployment",
+                "provider": "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8",
+                "logicalName": "main"
+            },
+            {
+                "address": "app-prod.MicroserviceKubernetes.web-console::planton-cloud::kubernetes:core/v1:Namespace$kubernetes:core/v1:Service::main",
+                "resourceType": "kubernetes:core/v1:Service",
+                "provider": "urn:pulumi:app-prod.MicroserviceKubernetes.web-console::planton-cloud::pulumi:providers:kubernetes::kubernetes::d9d99076-b8b9-496c-ac8d-a3ec958982d8",
+                "logicalName": "main"
+            }
+        ],
+        "audit": {
+            "specAudit": {
+                "createdBy": {
+                    "id": "swarup@leftbin.com",
+                    "avatar": "https://lh3.googleusercontent.com/a/ACg8ocLJjynVNrwM7dKCHt1i8UAbK4jVnapJ6_vUz_HImr_uINlaat0J=s96-c"
+                },
+                "createdAt": "2025-09-10T13:56:16.294Z",
+                "updatedBy": {
+                    "id": "swarup@leftbin.com",
+                    "avatar": "https://lh3.googleusercontent.com/a/ACg8ocLJjynVNrwM7dKCHt1i8UAbK4jVnapJ6_vUz_HImr_uINlaat0J=s96-c"
+                },
+                "updatedAt": "2025-09-10T13:56:16.294Z",
+                "event": "created"
+            }
+        }
+    }
+}

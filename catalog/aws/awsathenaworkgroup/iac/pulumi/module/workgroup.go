@@ -7,7 +7,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// workgroup creates the Athena workgroup and exports its stack outputs.
+// workgroup creates the Athena workgroup and exports its outputs.
 //
 // One provider resource carries the whole surface; everything interesting
 // lives inside the single Configuration input. Two provider behaviors shape
@@ -246,7 +246,7 @@ func workgroup(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) erro
 	}
 
 	// -------------------------------------------------------------------
-	// Stack outputs (contract: AwsAthenaWorkgroupStackOutputs)
+	// Outputs (contract: AwsAthenaWorkgroupOutputs)
 	// -------------------------------------------------------------------
 
 	ctx.Export(OpWorkgroupArn, wg.Arn)

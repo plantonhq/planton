@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceanbucket.v1alpha1;
 
-// DigitalOceanBucketStackOutputs captures the bucket's identity and
+// DigitalOceanBucketOutputs captures the bucket's identity and
 // addressing endpoints after provisioning.
-message DigitalOceanBucketStackOutputs {
+message DigitalOceanBucketOutputs {
   // The provider's resource id for the bucket, which IS the bucket name --
   // Spaces buckets have no separate UUID. Import addressing pairs it with
   // the region ("<region>,<name>").

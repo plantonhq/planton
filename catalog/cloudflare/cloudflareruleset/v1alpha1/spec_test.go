@@ -24,7 +24,7 @@ func validResource() *CloudflareRuleset {
 	return &CloudflareRuleset{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareRuleset",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-origin-rule"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-origin-rule"},
 		Spec: &CloudflareRulesetSpec{
 			ZoneId:      &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "zone-abc123"}},
 			RulesetKind: rulesetKindPtr(CloudflareRulesetSpec_zone),

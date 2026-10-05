@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/plantonhq/planton/pkg/refannotations"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -157,7 +157,7 @@ func BuildGraph(set *Set) *Graph {
 					FieldPath: use.FieldPath, Message: p,
 				})
 			}
-			if target.Kind == cloudresourcekind.CloudResourceKind_unspecified || target.Name == "" {
+			if target.Kind == catalogkind.CatalogKind_unspecified || target.Name == "" {
 				continue
 			}
 			targetID := target.Identity(nodeID.Env)
@@ -199,7 +199,7 @@ func BuildGraph(set *Set) *Graph {
 
 		// Source 3: literal namespace placement.
 		for _, nsName := range literalNamespacePlacements(node.Msg) {
-			nsID := Identity{Kind: cloudresourcekind.CloudResourceKind_KubernetesNamespace, Slug: GenerateSlug(nsName), Env: nodeID.Env}
+			nsID := Identity{Kind: catalogkind.CatalogKind_KubernetesNamespace, Slug: GenerateSlug(nsName), Env: nodeID.Env}
 			if producer, ok := set.Lookup(nsID); ok {
 				addEdge(i, producer, EdgeSourceNamespacePlacement, "")
 				continue
@@ -227,7 +227,7 @@ func BuildGraph(set *Set) *Graph {
 		// externally created gateway, a cloud id).
 		for _, use := range node.literalUses {
 			kind := refannotations.Of(use.Field).DefaultKind
-			if kind == cloudresourcekind.CloudResourceKind_unspecified || kind == cloudresourcekind.CloudResourceKind_KubernetesNamespace {
+			if kind == catalogkind.CatalogKind_unspecified || kind == catalogkind.CatalogKind_KubernetesNamespace {
 				continue
 			}
 			siblingID := Identity{Kind: kind, Slug: GenerateSlug(use.Value), Env: nodeID.Env}
@@ -319,7 +319,7 @@ func literalNamespacePlacements(msg proto.Message) []string {
 			return true
 		}
 		annotations := refannotations.Of(fd)
-		if annotations.DefaultKind != cloudresourcekind.CloudResourceKind_KubernetesNamespace || annotations.ContainmentExempt {
+		if annotations.DefaultKind != catalogkind.CatalogKind_KubernetesNamespace || annotations.ContainmentExempt {
 			return true
 		}
 		svor, ok := v.Message().Interface().(*foreignkeyv1.StringValueOrRef)

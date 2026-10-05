@@ -1,7 +1,7 @@
 # AWS Certificate Manager and CloudFront Rebuild — The Edge Pair
 
 **Date:** 2026-07-05  
-**Scope:** Components #24–#25 — `AwsCertManagerCert`, `AwsCloudFront`; plus the deferred Lambda/KMS/event-source-mapping live-E2E catch-up
+**Scope:** Kinds #24–#25 — `AwsCertManagerCert`, `AwsCloudFront`; plus the deferred Lambda/KMS/event-source-mapping live-E2E catch-up
 
 ## Summary
 
@@ -43,7 +43,7 @@ green — surfacing and fixing four real defects along the way.
 - **Referential CEL:** every behavior's `target_origin_id` must name a
   declared origin OR origin group — broken wiring is unrepresentable.
 - **New harness verifiers:** `awss3objectset` (per-key HeadObject via a new
-  `OutputsVerifier` interface — the kind also gained a `bucket_id` stack
+  `OutputsVerifier` interface — the kind also gained a `bucket_id`
   output) and `awssqsqueue` (GetQueueAttributes). These closed the gap that
   made the Lambda/ESM prerequisite chains unverifiable.
 - **E2E scenario honesty (ACM):** a requested DNS-validated certificate on an
@@ -76,7 +76,7 @@ green — surfacing and fixing four real defects along the way.
 |------|--------|
 | AwsCertManagerCert | Route53 zone optional; three exclusive creation modes; outputs enriched (spec shape changes) |
 | AwsCloudFront | Full spec rebuild — origins require `origin_id`, behaviors target origins by id, viewer certificate is a block (top-level `certificateArn` gone) |
-| AwsS3ObjectSet | New `bucket_id` stack output (additive) |
+| AwsS3ObjectSet | New `bucket_id` output (additive) |
 | charts/aws/static-website | Breaks on new CloudFront shape (`isDefault`, top-level `certificateArn`) — charts wave, not this session |
 
 ACM's chart consumers (`ecs-environment`, `microservices-backend`) were

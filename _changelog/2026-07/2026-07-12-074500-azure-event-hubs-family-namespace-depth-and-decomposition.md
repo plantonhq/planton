@@ -2,7 +2,7 @@
 
 **Date**: 2026-07-12
 **Type**: Feature (breaking rework + seven new kinds + two reference retrofits)
-**Scope**: `apis/dev/planton/provider/azure/azureeventhub*`, `azuremonitoractiongroup`, `azuremonitordiagnosticsetting`, `cloudresourcekind`, `pkg/crkreflect`, `pkg/outputs`, `aa_e2e`, `e2e/azure`
+**Scope**: `apis/dev/planton/provider/azure/azureeventhub*`, `azuremonitoractiongroup`, `azuremonitordiagnosticsetting`, `catalogkind`, `pkg/catalogkindreflect`, `pkg/outputs`, `aa_e2e`, `e2e/azure`
 
 ## Summary
 
@@ -125,7 +125,7 @@ Zero orphans after the sweep.
   chunked `buf generate` (persistent remote-plugin degradation; the
   documented `--path` workaround) + the full-tree Java compile gate;
   kind-map + gazelle regen; targeted + release-equivalent builds ×8;
-  `make build-go`; Bazel builds of all 8 component trees;
+  `make build-go`; Bazel builds of all 8 kind trees;
   `secret-coverage --check` (fourteen new sensitive credential faces);
   `validate-refs --check` (13 new FK edges); `pkg/outputs` conformance
   cases ×8; full `planton tofu plan` on all 8 hack manifests (every

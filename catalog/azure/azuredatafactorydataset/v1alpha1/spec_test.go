@@ -53,7 +53,7 @@ func validResource() *AzureDataFactoryDataset {
 	return &AzureDataFactoryDataset{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureDataFactoryDataset",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-adf-dataset",
 		},
 		Spec: &AzureDataFactoryDatasetSpec{

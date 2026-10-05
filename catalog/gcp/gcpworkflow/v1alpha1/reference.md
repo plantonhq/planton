@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpWorkflowSpec defines a Cloud Workflows workflow — a serverless
 orchestrator that executes a sequence of steps (HTTP calls, connector
@@ -17,7 +17,7 @@ handles errors, and records the result.
 
 Every deployment of new source mints a new REVISION; executions started
 before a deploy finish on the revision they started with. The
-revision_id stack output tracks the deployed revision.
+revision_id output tracks the deployed revision.
 
 ## Example
 

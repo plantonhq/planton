@@ -5,9 +5,9 @@ package dev.planton.aws.awsroute53resolverendpoint.v1alpha1;
 import "catalog/aws/awsroute53resolverendpoint/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsRoute53ResolverEndpointStackInput is the input for the IaC
+// AwsRoute53ResolverEndpointIacInput is the input for the IaC
 // modules that manage a resolver endpoint with its forwarding rules.
-message AwsRoute53ResolverEndpointStackInput {
+message AwsRoute53ResolverEndpointIacInput {
   // target is the AwsRoute53ResolverEndpoint resource to deploy.
   AwsRoute53ResolverEndpoint target = 1;
   // provider_config contains the AWS provider credentials and configuration.

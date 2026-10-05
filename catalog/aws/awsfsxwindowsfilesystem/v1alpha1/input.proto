@@ -5,9 +5,9 @@ package dev.planton.aws.awsfsxwindowsfilesystem.v1alpha1;
 import "catalog/aws/awsfsxwindowsfilesystem/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// aws-fsx-windows-file-system stack-input
-message AwsFsxWindowsFileSystemStackInput {
-  // target cloud-resource
+// aws-fsx-windows-file-system iac-input
+message AwsFsxWindowsFileSystemIacInput {
+  // the catalog object to deploy
   AwsFsxWindowsFileSystem target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

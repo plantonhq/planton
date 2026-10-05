@@ -31,7 +31,7 @@ type CloudflarePagesProject struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflarePagesProjectSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *CloudflarePagesProject) GetKind() string {
 	return ""
 }
 
-func (x *CloudflarePagesProject) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflarePagesProject) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *CloudflarePagesProject) GetStatus() *CloudflarePagesProjectStatus {
 // cloudflare-pages-project status
 type CloudflarePagesProjectStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	cloudflare-pages-project stack-outputs
-	Outputs       *CloudflarePagesProjectStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	cloudflare-pages-project outputs
+	Outputs       *CloudflarePagesProjectOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflarePagesProjectStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarepagesproject_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflarePagesProjectStatus) GetOutputs() *CloudflarePagesProjectStackOutputs {
+func (x *CloudflarePagesProjectStatus) GetOutputs() *CloudflarePagesProjectOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflarepagesproject_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16CloudflarePagesProjectR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12n\n" +
 	"\x04spec\x18\x04 \x01(\v2R.dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12l\n" +
-	"\x06status\x18\x05 \x01(\v2T.dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectStatusR\x06status\"\x94\x01\n" +
-	"\x1cCloudflarePagesProjectStatus\x12t\n" +
-	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectStackOutputsR\aoutputsB\xb3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2T.dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectStatusR\x06status\"\x8f\x01\n" +
+	"\x1cCloudflarePagesProjectStatus\x12o\n" +
+	"\aoutputs\x18\x01 \x01(\v2U.dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectOutputsR\aoutputsB\xb3\x03\n" +
 	":com.dev.planton.cloudflare.cloudflarepagesproject.v1alpha1B\bApiProtoP\x01Zngithub.com/plantonhq/planton/catalog/cloudflare/cloudflarepagesproject/v1alpha1;cloudflarepagesprojectv1alpha1\xa2\x02\x04DPCC\xaa\x026Dev.Planton.Cloudflare.Cloudflarepagesproject.V1alpha1\xca\x026Dev\\Planton\\Cloudflare\\Cloudflarepagesproject\\V1alpha1\xe2\x02BDev\\Planton\\Cloudflare\\Cloudflarepagesproject\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Cloudflare::Cloudflarepagesproject::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflarepagesproject_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_cloudflare_cloudflarepagesproject_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarepagesproject_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflarePagesProject)(nil),             // 0: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProject
-	(*CloudflarePagesProjectStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflarePagesProjectSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectSpec
-	(*CloudflarePagesProjectStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectStackOutputs
+	(*CloudflarePagesProject)(nil),        // 0: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProject
+	(*CloudflarePagesProjectStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflarePagesProjectSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectSpec
+	(*CloudflarePagesProjectOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectOutputs
 }
 var file_catalog_cloudflare_cloudflarepagesproject_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProject.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProject.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProject.spec:type_name -> dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectSpec
 	1, // 2: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProject.status:type_name -> dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectStatus
-	4, // 3: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarepagesproject.v1alpha1.CloudflarePagesProjectOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

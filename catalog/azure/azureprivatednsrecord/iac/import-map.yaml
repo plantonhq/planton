@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azureprivatednsrecord
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: record_id
       derivations:
-        - from_stack_output: record_id
+        - from_output: record_id
       where_to_find: >-
         Compose {private-dns-zone-id}/{TYPE}/{record-name} (TYPE is A,
         AAAA, CNAME, MX, PTR, SRV, or TXT), or `az network private-dns

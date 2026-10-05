@@ -4,7 +4,7 @@ Deploys a Dataproc cluster for Apache Spark, Hadoop, and related data processing
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Dataproc API enablement** -- `dataproc.googleapis.com` is enabled in the target project (never disabled on destroy, so tearing down one cluster cannot break the rest of the project)
 - **Dataproc Cluster** -- a managed cluster resource in the specified GCP project and region, configured with the chosen Dataproc image version, master/worker topology, and software components
@@ -25,16 +25,16 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the cluster will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef. The module enables the Dataproc API itself; the **Compute Engine API** must already be enabled for the GCE arm's VMs.
-- **A VPC network or subnetwork** for cluster node placement. Using a subnetwork is recommended for production clusters with controlled IP ranges. Provide directly or reference GcpVpcNetwork/GcpSubnetwork Cloud Resources via ValueFromRef.
+- **A GCP project** where the cluster will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef. The module enables the Dataproc API itself; the **Compute Engine API** must already be enabled for the GCE arm's VMs.
+- **A VPC network or subnetwork** for cluster node placement. Using a subnetwork is recommended for production clusters with controlled IP ranges. Provide directly or reference GcpVpcNetwork/GcpSubnetwork Infra Components via ValueFromRef.
 - **A custom service account** (recommended for production) with minimal permissions for cluster VMs. The default Compute Engine service account works for development.
 - **Cloud NAT or Private Google Access** (only with `internalIpOnly: true`) so private nodes can reach the internet for container image pulls and package installs.
-- **An existing GKE cluster** (only for the virtual arm) that Dataproc registers Spark workloads onto — reference a GcpGkeCluster Cloud Resource.
+- **An existing GKE cluster** (only for the virtual arm) that Dataproc registers Spark workloads onto — reference a GcpGkeCluster Infra Component.
 
 ## Deploy
 
@@ -64,7 +64,7 @@ spec:
 planton apply -f dataproc-cluster.yaml
 ```
 
-This creates a standard cluster with GCP defaults: 1 master and 2 workers on default machine types, 500 GB pd-standard disks, the latest stable Dataproc image, and no lifecycle management — add `lifecycleConfig` before leaving a cluster like this unattended. A Stack Job tracks the provisioning in real time.
+This creates a standard cluster with GCP defaults: 1 master and 2 workers on default machine types, 500 GB pd-standard disks, the latest stable Dataproc image, and no lifecycle management — add `lifecycleConfig` before leaving a cluster like this unattended. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -123,7 +123,7 @@ These are the most important decisions when configuring a Dataproc cluster. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -142,9 +142,9 @@ These are the most important decisions when configuring a Dataproc cluster. Expl
 | **GcpGcsBucket** (virtual arm) | `virtualClusterConfig.stagingBucket` | `status.outputs.bucket_id` |
 | **GcpDataprocCluster** (virtual arm) | `virtualClusterConfig.auxiliaryServicesConfig.sparkHistoryServerConfig.dataprocCluster` | `status.outputs.cluster_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -166,12 +166,12 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the cluster is created
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- provides the VPC network for cluster node placement
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- provides the subnet with controlled IP ranges for cluster nodes
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- provides the identity for cluster VMs
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- provides staging and temp buckets for job dependencies and shuffle data
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides the CMEK encryption key for cluster persistent disks
-- [**GCP Dataproc Autoscaling Policy**](/cloud-catalog/gcp-dataproc-autoscaling-policy) -- provides the reusable worker-scaling contract attached via `autoscalingPolicyUri`
-- [**GCP GKE Cluster**](/cloud-catalog/gcp-gke-cluster) -- hosts the virtual arm's Spark pods
-- [**GCP GKE Node Pool**](/cloud-catalog/gcp-gke-node-pool) -- provides the node pools the virtual arm schedules Dataproc roles onto
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the cluster is created
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC network for cluster node placement
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- provides the subnet with controlled IP ranges for cluster nodes
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- provides the identity for cluster VMs
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- provides staging and temp buckets for job dependencies and shuffle data
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides the CMEK encryption key for cluster persistent disks
+- [**GCP Dataproc Autoscaling Policy**](/infra-catalog/gcp-dataproc-autoscaling-policy) -- provides the reusable worker-scaling contract attached via `autoscalingPolicyUri`
+- [**GCP GKE Cluster**](/infra-catalog/gcp-gke-cluster) -- hosts the virtual arm's Spark pods
+- [**GCP GKE Node Pool**](/infra-catalog/gcp-gke-node-pool) -- provides the node pools the virtual arm schedules Dataproc roles onto

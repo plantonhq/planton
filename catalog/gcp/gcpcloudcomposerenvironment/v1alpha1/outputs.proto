@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcloudcomposerenvironment.v1alpha1;
 
-// GcpCloudComposerEnvironmentStackOutputs captures observable identifiers and
+// GcpCloudComposerEnvironmentOutputs captures observable identifiers and
 // endpoints from a provisioned Cloud Composer environment.
-message GcpCloudComposerEnvironmentStackOutputs {
+message GcpCloudComposerEnvironmentOutputs {
   // Fully qualified resource ID of the Composer environment.
   // Format: projects/{project}/locations/{region}/environments/{name}
   string environment_id = 1;

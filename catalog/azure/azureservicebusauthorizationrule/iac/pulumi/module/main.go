@@ -8,13 +8,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureservicebusauthorizationrulev1alpha1.AzureServiceBusAuthorizationRuleStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureservicebusauthorizationrulev1alpha1.AzureServiceBusAuthorizationRuleIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -118,11 +118,11 @@ func Resources(ctx *pulumi.Context, stackInput *azureservicebusauthorizationrule
 
 	default:
 		// Unreachable behind the spec's exactly-one-scope CEL; guards a
-		// stack input that bypassed validation.
+		// IaC input that bypassed validation.
 		return errors.New("exactly one of namespace_id, queue_id, or topic_id must be set")
 	}
 
-	// Export stack outputs -- identical faces regardless of scope. Alias
+	// Export outputs -- identical faces regardless of scope. Alias
 	// connection strings are only populated when the namespace carries a
 	// geo-DR pairing.
 	ctx.Export(OpAuthorizationRuleId, ruleId)

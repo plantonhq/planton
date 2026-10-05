@@ -5,7 +5,7 @@ This preset caps how MANY objects a namespace may hold — pods, Services, and P
 ## When to Use
 
 - The first quota on any shared namespace: contain sprawl before governing compute
-- Capping cost-bearing objects — PVCs claim storage, and Services of type LoadBalancer provision cloud resources (add `services.loadbalancers` to cap those specifically)
+- Capping cost-bearing objects — PVCs claim storage, and Services of type LoadBalancer provision provider resources (add `services.loadbalancers` to cap those specifically)
 - Namespaces hosting operators or CI systems that can create objects in unbounded loops
 
 ## Key Configuration Choices

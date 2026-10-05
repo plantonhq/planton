@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCodePipelineStackInput is the input for the IaC modules that
+// AwsCodePipelineIacInput is the input for the IaC modules that
 // deploy the CodePipeline pipeline, stages, and actions.
-type AwsCodePipelineStackInput struct {
+type AwsCodePipelineIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsCodePipeline resource to deploy.
 	Target *AwsCodePipeline `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsCodePipelineStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsCodePipelineStackInput) Reset() {
-	*x = AwsCodePipelineStackInput{}
+func (x *AwsCodePipelineIacInput) Reset() {
+	*x = AwsCodePipelineIacInput{}
 	mi := &file_catalog_aws_awscodepipeline_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCodePipelineStackInput) String() string {
+func (x *AwsCodePipelineIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCodePipelineStackInput) ProtoMessage() {}
+func (*AwsCodePipelineIacInput) ProtoMessage() {}
 
-func (x *AwsCodePipelineStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsCodePipelineIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscodepipeline_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsCodePipelineStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCodePipelineStackInput.ProtoReflect.Descriptor instead.
-func (*AwsCodePipelineStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCodePipelineIacInput.ProtoReflect.Descriptor instead.
+func (*AwsCodePipelineIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscodepipeline_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCodePipelineStackInput) GetTarget() *AwsCodePipeline {
+func (x *AwsCodePipelineIacInput) GetTarget() *AwsCodePipeline {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsCodePipelineStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsCodePipelineIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awscodepipeline_v1alpha1_input_proto protoreflect.FileDescr
 
 const file_catalog_aws_awscodepipeline_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awscodepipeline/v1alpha1/input.proto\x12(dev.planton.aws.awscodepipeline.v1alpha1\x1a.catalog/aws/awscodepipeline/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xbb\x01\n" +
-	"\x19AwsCodePipelineStackInput\x12Q\n" +
+	"0catalog/aws/awscodepipeline/v1alpha1/input.proto\x12(dev.planton.aws.awscodepipeline.v1alpha1\x1a.catalog/aws/awscodepipeline/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb9\x01\n" +
+	"\x17AwsCodePipelineIacInput\x12Q\n" +
 	"\x06target\x18\x01 \x01(\v29.dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xda\x02\n" +
 	",com.dev.planton.aws.awscodepipeline.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awscodepipeline_v1alpha1_input_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awscodepipeline_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awscodepipeline_v1alpha1_input_proto_goTypes = []any{
-	(*AwsCodePipelineStackInput)(nil), // 0: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineStackInput
-	(*AwsCodePipeline)(nil),           // 1: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipeline
-	(*aws.AwsProviderConfig)(nil),     // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsCodePipelineIacInput)(nil), // 0: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineIacInput
+	(*AwsCodePipeline)(nil),         // 1: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipeline
+	(*aws.AwsProviderConfig)(nil),   // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awscodepipeline_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineStackInput.target:type_name -> dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipeline
-	2, // 1: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineIacInput.target:type_name -> dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipeline
+	2, // 1: dev.planton.aws.awscodepipeline.v1alpha1.AwsCodePipelineIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

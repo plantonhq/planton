@@ -4,7 +4,7 @@ Deploys an Amazon CloudFront distribution — the global CDN front door that ter
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CloudFront Distribution** -- the global distribution; identity is the AWS-generated ID (metadata.name drives the Name tag)
 - **Origins** -- one per `origins[]` entry, each with its type arm: an S3 REST origin (optionally with a module-created Origin Access Control so the bucket stays fully private), a custom/HTTP origin (load balancers, API endpoints, S3 *website* endpoints), or a provisioned VPC origin reaching private resources
@@ -19,14 +19,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
 - **An origin** -- the content source CloudFront fetches from. For S3 use the REGIONAL bucket endpoint (the `bucket_regional_domain_name` output of AwsS3Bucket) with an Origin Access Control; for load balancers the LB DNS name; S3 *website* endpoints join as custom origins (they speak plain HTTP only).
-- **An ACM certificate** (required for custom domains) -- MUST live in `us-east-1` regardless of where anything else lives. Provide the ARN directly or reference an AwsCertManagerCert Cloud Resource.
-- **A WAF web ACL** (optional) -- CLOUDFRONT scope, which must also live in `us-east-1`. Reference an AwsWafWebAcl Cloud Resource or pass the ARN.
+- **An ACM certificate** (required for custom domains) -- MUST live in `us-east-1` regardless of where anything else lives. Provide the ARN directly or reference an AwsCertManagerCert Infra Component.
+- **A WAF web ACL** (optional) -- CLOUDFRONT scope, which must also live in `us-east-1`. Reference an AwsWafWebAcl Infra Component or pass the ARN.
 - **Bucket policy for OAC origins** -- allow the distribution's ARN on the `cloudfront.amazonaws.com` principal (an `AWS:SourceArn` condition) so the private bucket serves CloudFront alone.
 
 ## Deploy
@@ -66,7 +66,7 @@ spec:
 planton apply -f cloudfront.yaml
 ```
 
-This creates a distribution serving a fully private S3 bucket through a module-created Origin Access Control, redirecting viewers to HTTPS, compressing at the edge, and caching with the AWS managed static-content policy. Deploys take 5-15 minutes — CloudFront pushes configuration to every edge location. A Stack Job tracks the provisioning in real time.
+This creates a distribution serving a fully private S3 bucket through a module-created Origin Access Control, redirecting viewers to HTTPS, compressing at the edge, and caching with the AWS managed static-content policy. Deploys take 5-15 minutes — CloudFront pushes configuration to every edge location. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -113,7 +113,7 @@ These are the most important decisions when configuring a CloudFront distributio
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -122,9 +122,9 @@ These are the most important decisions when configuring a CloudFront distributio
 | **AwsWafWebAcl** (optional) | `webAclArn` | `status.outputs.web_acl_arn` |
 | **AwsCloudFront** (optional) | `continuousDeployment.stagingDistributionDnsNames[]` | `status.outputs.domain_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -146,7 +146,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- provides the regional bucket endpoint origins serve from
-- [**AWS ACM Certificate**](/cloud-catalog/aws-cert-manager-cert) -- provides the us-east-1 certificate for custom domain HTTPS
-- [**AWS Route 53 DNS Record**](/cloud-catalog/aws-route53-dns-record) -- points custom domains at the distribution via alias records
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) -- provides Lambda@Edge versions for behavior-attached edge logic
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- provides the regional bucket endpoint origins serve from
+- [**AWS ACM Certificate**](/infra-catalog/aws-cert-manager-cert) -- provides the us-east-1 certificate for custom domain HTTPS
+- [**AWS Route 53 DNS Record**](/infra-catalog/aws-route53-dns-record) -- points custom domains at the distribution via alias records
+- [**AWS Lambda**](/infra-catalog/aws-lambda) -- provides Lambda@Edge versions for behavior-attached edge logic

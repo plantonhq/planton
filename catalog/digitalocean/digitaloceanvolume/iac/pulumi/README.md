@@ -1,13 +1,13 @@
 # DigitalOcean Volume -- Pulumi Module
 
-Deploys a `digitalocean:index/volume:Volume` from a `DigitalOceanVolume` stack input: the full provider argument surface -- name, region, size, description, one-time filesystem formatting with an optional label, snapshot source, and tags. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete argument surface -- no PARITY-EXCEPTION guards. (The SDK renames the volume's `urn` attribute to `VolumeUrn`; the module exports it under the contract's `urn` key. The SDK's `FilesystemType` input maps to the provider's DEPRECATED attribute -- this module wires `InitialFilesystemType`, never that one.)
+Deploys a `digitalocean:index/volume:Volume` from a `DigitalOceanVolume` IaC input: the full provider argument surface -- name, region, size, description, one-time filesystem formatting with an optional label, snapshot source, and tags. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete argument surface -- no PARITY-EXCEPTION guards. (The SDK renames the volume's `urn` attribute to `VolumeUrn`; the module exports it under the contract's `urn` key. The SDK's `FilesystemType` input maps to the provider's DEPRECATED attribute -- this module wires `InitialFilesystemType`, never that one.)
 
 ## Module structure
 
-- `main.go` -- Pulumi program entry point reading the stack input
+- `main.go` -- Pulumi program entry point reading the IaC input
 - `module/main.go` -- `Resources()`: locals, provider, volume
-- `module/locals.go` -- stack-input references and the standard Planton label map
-- `module/volume.go` -- the volume resource and stack-output exports
+- `module/locals.go` -- iac-input references and the standard Planton label map
+- `module/volume.go` -- the volume resource and output exports
 - `module/outputs.go` -- output key constants (the kind's outputs.proto contract)
 
 ## Behavior notes
@@ -18,4 +18,4 @@ Deploys a `digitalocean:index/volume:Volume` from a `DigitalOceanVolume` stack i
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Terraform module: `volume_id`, `urn`.
+Exactly the kind's output contract, identical to the Terraform module: `volume_id`, `urn`.

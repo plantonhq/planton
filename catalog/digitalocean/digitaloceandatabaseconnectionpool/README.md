@@ -2,9 +2,9 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_database_connection_pool` resource at the pinned provider version.
 
-## What this component models
+## What this kind models
 
-A PgBouncer connection pool on a DigitalOcean managed PostgreSQL cluster -- the endpoint applications should connect to when their connection count would otherwise exhaust the cluster's limit. The component covers the provider's full argument surface:
+A PgBouncer connection pool on a DigitalOcean managed PostgreSQL cluster -- the endpoint applications should connect to when their connection count would otherwise exhaust the cluster's limit. The kind covers the provider's full argument surface:
 
 - `cluster` -- the owning PostgreSQL cluster, by literal UUID or by reference to a `DigitalOceanDatabaseCluster`
 - `pool_name` -- the pool's API identity and the "database name" clients connect to (3-63 chars)

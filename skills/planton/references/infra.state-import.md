@@ -1,4 +1,4 @@
-# State Import — Adopting Cloud Resources That Exist but Aren't in State
+# State Import — Adopting Provider Resources That Exist but Aren't in State
 
 Read this when a deploy fails saying something **already exists** — the
 signature of an orphaned resource: an earlier run created it in the cloud,
@@ -7,7 +7,7 @@ through a long create). The cloud has the resource; the state file does not;
 every rerun tries to create it again and collides.
 
 Recognize the signature in the failed node's engine logs (step 3 of the
-diagnosis workflow in `planton-cli.md`):
+diagnosis workflow in `craft.planton-cli.md`):
 
 ```
 googleapi: Error 409: Already exists: projects/.../clusters/prod-cluster   # GCP
@@ -17,38 +17,38 @@ Error: ... a resource with the ID "..." already exists                     # gen
 ```
 
 **The repair is import, not delete-and-retry.** The platform has first-class
-state-import commands: they run a stack job that adopts the existing cloud
-resource into the CloudResource's IaC state — **the cloud is never touched,
+state-import commands: they run an Infra Job that adopts the existing provider
+resource into the InfraComponent's IaC state — **the cloud is never touched,
 only the state file is updated** — and then a fresh apply reconciles the
 desired configuration against what was adopted.
 
 ## The commands
 
-The provisioner family matters (check `.planton/project.yaml` or the stack
-job record; OpenTofu and Terraform are interchangeable here):
+The provisioner family matters (check `.planton/stack.yaml` or the Infra
+Job record; OpenTofu and Terraform are interchangeable here):
 
 ```
 # OpenTofu / Terraform — the state entry is a resource ADDRESS (type.name):
-planton tofu state import <CR_ID | Kind name> \
+planton tofu state import <IC_ID | Kind name> \
   --address "<tf_type.tf_name>" --id "<cloud-provider-id>" \
   -m "adopt orphaned resource created by failed run" [--dry-run]
 
 # Pulumi — the state entry is a TYPE plus a logical NAME:
-planton pulumi state import <CR_ID | Kind name> \
+planton pulumi state import <IC_ID | Kind name> \
   --type "<pulumi:type:Token>" --name "<logical-name>" --id "<cloud-provider-id>" \
   -m "adopt orphaned resource created by failed run" [--dry-run]
 ```
 
-- The target is the **CloudResource whose stack owns the orphan**: pass its
-  id (`cr_...`) or `<Kind> <name>` under the current org/env context (e.g.
+- The target is the **InfraComponent whose stack owns the orphan**: pass its
+  id (`ic_...`) or `<Kind> <name>` under the current org/env context (e.g.
   `GcpGkeCluster prod-cluster`). Find it with
-  `planton search cloud-resources --org <org> -e <env>`.
+  `planton search infra-components --org <org> -e <env>`.
 - `--dry-run` prints the equivalent native `tofu import`/`pulumi import`
   command without creating anything — always show the user a dry run before
   the real one.
 - The import job is **idempotent** (importing an already-tracked resource
   succeeds) and runs `init → import → refresh → preview → capture` as one
-  stack job. It reports drift but does not apply it — reconciling is the
+  Infra Job. It reports drift but does not apply it — reconciling is the
   follow-up deploy.
 - One import command adopts ONE resource; run it once per orphan.
 
@@ -92,8 +92,8 @@ to show the user exactly what would run before committing.
 - An import is a **platform mutation** (it changes the stack's recorded
   state): explain what it adopts and get a yes — one confirmation per
   import. `--dry-run` and every lookup above run freely.
-- Never repair by deleting the cloud resource so the rerun "works" unless
+- Never repair by deleting the provider resource so the rerun "works" unless
   the user explicitly chooses that instead — deletion destroys whatever the
   resource already holds and is a cloud mutation with its own confirmation.
 - After a successful import, the deploy is still pending: save/rerun (its
-  own consent, per `deployed-projects.md`) and confirm the run goes green.
+  own consent, per `infra.deployed-stacks.md`) and confirm the run goes green.

@@ -1,10 +1,10 @@
 # AWS CloudWatch Composite Alarm
 
-Deploys a CloudWatch composite alarm — a boolean rule over the states of OTHER alarms (metric alarms from [AwsCloudwatchAlarm](/cloud-catalog/aws-cloudwatch-alarm), or other composites) that acts only when the combined expression is true. It has no metrics, periods, or thresholds of its own; it re-evaluates whenever any referenced alarm changes state. Composites are the standard way to suppress alert storms (one page for a shared-cause outage instead of one per symptom), express dependencies (page the team that can actually act), and gate paging on maintenance windows via the actions suppressor.
+Deploys a CloudWatch composite alarm — a boolean rule over the states of OTHER alarms (metric alarms from [AwsCloudwatchAlarm](/infra-catalog/aws-cloudwatch-alarm), or other composites) that acts only when the combined expression is true. It has no metrics, periods, or thresholds of its own; it re-evaluates whenever any referenced alarm changes state. Composites are the standard way to suppress alert storms (one page for a shared-cause outage instead of one per symptom), express dependencies (page the team that can actually act), and gate paging on maintenance windows via the actions suppressor.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CloudWatch Composite Alarm** -- the rule expression, evaluated against the referenced alarms' states in the same account and region
 - **State-Transition Actions** -- up to 5 actions each for ALARM, OK, and INSUFFICIENT_DATA transitions (SNS topics and SSM OpsItems; Auto Scaling and EC2 actions are metric-alarm-only)
@@ -15,8 +15,8 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **Constituent alarms** -- the [AwsCloudwatchAlarm](/cloud-catalog/aws-cloudwatch-alarm) resources the rule references, deployed first so their `alarm_name` outputs exist. The notification path usually starts with an [AwsSnsTopic](/cloud-catalog/aws-sns-topic).
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **Constituent alarms** -- the [AwsCloudwatchAlarm](/infra-catalog/aws-cloudwatch-alarm) resources the rule references, deployed first so their `alarm_name` outputs exist. The notification path usually starts with an [AwsSnsTopic](/infra-catalog/aws-sns-topic).
 
 ### AWS Account
 
@@ -60,7 +60,7 @@ spec:
 planton apply -f composite-alarm.yaml
 ```
 
-This pages once when the database drags the API down — instead of once per symptom. A Stack Job tracks the provisioning in real time.
+This pages once when the database drags the API down — instead of once per symptom. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,7 +92,7 @@ These are the most important decisions when configuring a composite alarm. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -103,9 +103,9 @@ These are the most important decisions when configuring a composite alarm. Explo
 
 The rule expression itself composes alarm names as plain strings — typically taken from constituent alarms' `alarm_name` outputs.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,7 +122,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS CloudWatch Alarm**](/cloud-catalog/aws-cloudwatch-alarm) -- the constituent alarms the rule composes, and the suppressor flag
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) -- where ALARM / OK / INSUFFICIENT_DATA notifications go
-- [**AWS Route 53 Health Check**](/cloud-catalog/aws-route53-health-check) -- a CLOUDWATCH_METRIC health check can mirror an alarm's state into DNS failover
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) -- where the metrics feeding the constituent alarms often originate
+- [**AWS CloudWatch Alarm**](/infra-catalog/aws-cloudwatch-alarm) -- the constituent alarms the rule composes, and the suppressor flag
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) -- where ALARM / OK / INSUFFICIENT_DATA notifications go
+- [**AWS Route 53 Health Check**](/infra-catalog/aws-route53-health-check) -- a CLOUDWATCH_METRIC health check can mirror an alarm's state into DNS failover
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) -- where the metrics feeding the constituent alarms often originate

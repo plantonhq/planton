@@ -8,9 +8,9 @@
 # carrying the declared resources and its data volume; Enterprise
 # clustering multiplies across RESOURCES (members sharing cluster_name),
 # never inside one manifest. Schema:
-# finops/componentcapacityderivation/v1.
+# finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesneo4j
 spec:

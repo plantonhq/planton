@@ -4,7 +4,7 @@ Requests a customer-managed encryption key from Cloud KMS Autokey for one resour
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `cloudkms.googleapis.com` on the handle's project (never disabled on destroy)
 - **Key handle** -- one `kms_key_handle`, and through it the Autokey key
@@ -65,7 +65,7 @@ planton apply -f kms-key-handle.yaml
 - `location` is a region, multi-region, or `global`.
 - `resourceTypeSelector` has the form `service.googleapis.com/Type`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -92,7 +92,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpKmsAutokeyConfig** -- turns Autokey on for the project or folder
 - **GcpGcsBucket**, **GcpComputeDisk**, **GcpBigQueryDataset**, **GcpPubSubTopic**, **GcpCloudSql**, **GcpSecretManagerSecret**, **GcpArtifactRegistryRepo**, **GcpSpannerDatabase**, and the other kinds Autokey serves -- consume `kms_key`

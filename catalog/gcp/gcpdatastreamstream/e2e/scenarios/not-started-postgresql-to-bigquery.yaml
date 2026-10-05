@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpdatastreamstream
+    e2e-catalog-kind: gcpdatastreamstream
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "GcpSecretManagerSecret,catalog/gcp/gcpdatastreamstream/e2e/prerequisites/postgresql-source-profile.yaml"

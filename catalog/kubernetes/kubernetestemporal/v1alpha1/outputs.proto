@@ -3,12 +3,12 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetestemporal.v1alpha1;
 
 /**
- * **KubernetesTemporalStackOutputs** — the composition handles a
+ * **KubernetesTemporalOutputs** — the composition handles a
  * deployed Temporal cluster exports. Workers and clients join through
  * the frontend gRPC endpoint; humans reach the Web UI through its
  * service handle (compose exposure kinds over it).
  */
-message KubernetesTemporalStackOutputs {
+message KubernetesTemporalOutputs {
   // Namespace the cluster runs in.
   string namespace = 1;
 

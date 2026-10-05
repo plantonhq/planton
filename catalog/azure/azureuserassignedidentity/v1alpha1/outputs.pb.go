@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureUserAssignedIdentityStackOutputs contains the outputs from a deployed
+// AzureUserAssignedIdentityOutputs contains the outputs from a deployed
 // User-Assigned Managed Identity resource.
 //
 // These outputs are consumed by downstream resources that need to reference
@@ -30,7 +30,7 @@ const (
 // - AzureFunctionApp (managed identity for accessing Azure services)
 // - AzureLinuxWebApp (managed identity for accessing Azure services)
 // - AzureContainerApp (managed identity for accessing Azure services)
-type AzureUserAssignedIdentityStackOutputs struct {
+type AzureUserAssignedIdentityOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the User-Assigned Managed Identity.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{name}
@@ -53,20 +53,20 @@ type AzureUserAssignedIdentityStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureUserAssignedIdentityStackOutputs) Reset() {
-	*x = AzureUserAssignedIdentityStackOutputs{}
+func (x *AzureUserAssignedIdentityOutputs) Reset() {
+	*x = AzureUserAssignedIdentityOutputs{}
 	mi := &file_catalog_azure_azureuserassignedidentity_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureUserAssignedIdentityStackOutputs) String() string {
+func (x *AzureUserAssignedIdentityOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureUserAssignedIdentityStackOutputs) ProtoMessage() {}
+func (*AzureUserAssignedIdentityOutputs) ProtoMessage() {}
 
-func (x *AzureUserAssignedIdentityStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureUserAssignedIdentityOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureuserassignedidentity_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -78,33 +78,33 @@ func (x *AzureUserAssignedIdentityStackOutputs) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureUserAssignedIdentityStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureUserAssignedIdentityStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureUserAssignedIdentityOutputs.ProtoReflect.Descriptor instead.
+func (*AzureUserAssignedIdentityOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureuserassignedidentity_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureUserAssignedIdentityStackOutputs) GetIdentityId() string {
+func (x *AzureUserAssignedIdentityOutputs) GetIdentityId() string {
 	if x != nil {
 		return x.IdentityId
 	}
 	return ""
 }
 
-func (x *AzureUserAssignedIdentityStackOutputs) GetPrincipalId() string {
+func (x *AzureUserAssignedIdentityOutputs) GetPrincipalId() string {
 	if x != nil {
 		return x.PrincipalId
 	}
 	return ""
 }
 
-func (x *AzureUserAssignedIdentityStackOutputs) GetClientId() string {
+func (x *AzureUserAssignedIdentityOutputs) GetClientId() string {
 	if x != nil {
 		return x.ClientId
 	}
 	return ""
 }
 
-func (x *AzureUserAssignedIdentityStackOutputs) GetTenantId() string {
+func (x *AzureUserAssignedIdentityOutputs) GetTenantId() string {
 	if x != nil {
 		return x.TenantId
 	}
@@ -115,8 +115,8 @@ var File_catalog_azure_azureuserassignedidentity_v1alpha1_outputs_proto protoref
 
 const file_catalog_azure_azureuserassignedidentity_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/azure/azureuserassignedidentity/v1alpha1/outputs.proto\x124dev.planton.azure.azureuserassignedidentity.v1alpha1\"\xa5\x01\n" +
-	"%AzureUserAssignedIdentityStackOutputs\x12\x1f\n" +
+	">catalog/azure/azureuserassignedidentity/v1alpha1/outputs.proto\x124dev.planton.azure.azureuserassignedidentity.v1alpha1\"\xa0\x01\n" +
+	" AzureUserAssignedIdentityOutputs\x12\x1f\n" +
 	"\videntity_id\x18\x01 \x01(\tR\n" +
 	"identityId\x12!\n" +
 	"\fprincipal_id\x18\x02 \x01(\tR\vprincipalId\x12\x1b\n" +
@@ -138,7 +138,7 @@ func file_catalog_azure_azureuserassignedidentity_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_azure_azureuserassignedidentity_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureuserassignedidentity_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureUserAssignedIdentityStackOutputs)(nil), // 0: dev.planton.azure.azureuserassignedidentity.v1alpha1.AzureUserAssignedIdentityStackOutputs
+	(*AzureUserAssignedIdentityOutputs)(nil), // 0: dev.planton.azure.azureuserassignedidentity.v1alpha1.AzureUserAssignedIdentityOutputs
 }
 var file_catalog_azure_azureuserassignedidentity_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

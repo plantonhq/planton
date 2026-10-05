@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awscognitoidentityprovider
+    e2e-catalog-kind: awscognitoidentityprovider
   annotations:
     planton.dev/e2e: "true"
   tags:

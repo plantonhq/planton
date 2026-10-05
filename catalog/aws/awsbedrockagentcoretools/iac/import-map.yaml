@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsbedrockagentcoretools
 spec:
@@ -9,20 +9,20 @@ spec:
   values:
     - name: browser_id
       derivations:
-        - from_stack_output_keyed_by_address: browser_ids
+        - from_output_keyed_by_address: browser_ids
       where_to_find: >-
         `aws bedrock-agentcore-control list-browsers` lists browserId per
         browser; match each to its spec.browsers entry by name.
     - name: profile_id
       derivations:
-        - from_stack_output_keyed_by_address: browser_profile_ids
+        - from_output_keyed_by_address: browser_profile_ids
       where_to_find: >-
         `aws bedrock-agentcore-control list-browser-profiles` lists
         profileId per profile; match each to its spec.browser_profiles
         entry by name.
     - name: code_interpreter_id
       derivations:
-        - from_stack_output_keyed_by_address: code_interpreter_ids
+        - from_output_keyed_by_address: code_interpreter_ids
       where_to_find: >-
         `aws bedrock-agentcore-control list-code-interpreters` lists
         codeInterpreterId per interpreter; match each to its

@@ -4,7 +4,7 @@ A Vertex AI schedule -- a cron that launches a run on a timer, either a **Colab 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project (never disabled on destroy)
 - **Schedule** -- a `colab_schedule` launching the declared notebook or pipeline run, paused or active per `desiredState`
@@ -84,7 +84,7 @@ planton apply -f colab-schedule.yaml
 - Exactly one of `notebookExecutionJob` and `pipelineJob`, and the notebook arm's three exactly-one pairs.
 - Timestamps are RFC 3339; durations are seconds ending in `s`; notebook sources are `gs://` paths.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -113,7 +113,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpColabRuntimeTemplate** -- the machine notebook runs use
 - **GcpGcsBucket** -- notebook sources and executed outputs

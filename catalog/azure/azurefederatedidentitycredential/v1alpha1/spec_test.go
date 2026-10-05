@@ -38,7 +38,7 @@ func validResource() *AzureFederatedIdentityCredential {
 	return &AzureFederatedIdentityCredential{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFederatedIdentityCredential",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-federated-credential",
 		},
 		Spec: &AzureFederatedIdentityCredentialSpec{

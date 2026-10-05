@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpiamcustomrole.v1alpha1;
 
 // Outputs produced after provisioning a GCP IAM custom role.
-message GcpIamCustomRoleStackOutputs {
+message GcpIamCustomRoleOutputs {
   // The fully-qualified role name: projects/<project>/roles/<role_id>.
   // This is the grantable handle — feed it directly into IAM grants
   // (GcpProjectIamMember's role field) exactly as IAM policies expect it.

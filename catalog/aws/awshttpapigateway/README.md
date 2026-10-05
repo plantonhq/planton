@@ -1,6 +1,6 @@
 # AWS HTTP API Gateway
 
-The **AwsHttpApiGateway** component provides a declarative way to deploy AWS API Gateway HTTP APIs (v2) with bundled stages, routes, integrations, and optional authorizers. HTTP APIs are optimized for Lambda proxy and HTTP proxy integrations, offering lower latency and cost compared to REST APIs.
+The **AwsHttpApiGateway** kind provides a declarative way to deploy AWS API Gateway HTTP APIs (v2) with bundled stages, routes, integrations, and optional authorizers. HTTP APIs are optimized for Lambda proxy and HTTP proxy integrations, offering lower latency and cost compared to REST APIs.
 
 ## Overview
 
@@ -14,7 +14,7 @@ AWS API Gateway HTTP APIs (API Gateway v2) are designed for building low-latency
 - **Automatic deployments** — Changes to routes and integrations are automatically deployed to the stage
 - **Native CORS support** — Built-in CORS configuration without custom integration responses
 
-This component bundles the API, a single stage, routes with inline integrations, and optional authorizers into one declarative resource. The underlying IaC modules create and wire together the necessary API Gateway resources automatically. Custom domains are the separate `AwsHttpApiDomain` component (a domain outlives any one API and maps many APIs); VPC links are the separate `AwsHttpApiVpcLink` component (one link is shared by many APIs).
+This kind bundles the API, a single stage, routes with inline integrations, and optional authorizers into one declarative resource. The underlying IaC modules create and wire together the necessary API Gateway resources automatically. Custom domains are the separate `AwsHttpApiDomain` kind (a domain outlives any one API and maps many APIs); VPC links are the separate `AwsHttpApiVpcLink` kind (one link is shared by many APIs).
 
 ## When to Use
 
@@ -30,7 +30,7 @@ Use **AwsHttpApiGateway** when you need to:
 **When not to use:**
 
 - WebSocket APIs (a separate protocol surface with its own route/response model)
-- APIs requiring API keys and usage plans (a REST API feature; use the AwsRestApiUsagePlan component, or JWT/IAM/Lambda authorizers on HTTP APIs)
+- APIs requiring API keys and usage plans (a REST API feature; use the AwsRestApiUsagePlan kind, or JWT/IAM/Lambda authorizers on HTTP APIs)
 
 **Custom domains** are configured with the `AwsHttpApiDomain` component, which maps one or more APIs (by `api_id`) onto an owned domain with an ACM certificate. **Private backends** are reached through an `AwsHttpApiVpcLink` referenced from the integration's `connection_id`.
 
@@ -207,7 +207,7 @@ Configures JWT validation for a JWT authorizer.
 | `issuer` | `string` | **Yes** | Token issuer URL (e.g., Cognito: "https://cognito-idp.{region}.amazonaws.com/{userPoolId}") |
 | `audiences` | `string[]` | **Yes** | Expected audiences (e.g., Cognito app client ID). HTTP APIs validate both the `iss` and `aud` claims, so at least one audience is required |
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -375,7 +375,7 @@ spec:
             fieldPath: status.outputs.vpc_link_id
 ```
 
-## Related Components
+## Related Kinds
 
 - [AwsLambda](/docs/catalog/aws/awslambda) — Lambda functions used as backend integrations
 - [AwsHttpApiVpcLink](/docs/catalog/aws/awshttpapivpclink) — VPC links for private integrations

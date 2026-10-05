@@ -10,11 +10,11 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *kuberneteshttproutev1alpha1.KubernetesHttpRouteStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kuberneteshttproutev1alpha1.KubernetesHttpRouteIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubeProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
@@ -32,7 +32,7 @@ func Resources(ctx *pulumi.Context, stackInput *kuberneteshttproutev1alpha1.Kube
 
 // createHttpRoute creates the namespaced Gateway API HTTPRoute using the typed
 // crd2pulumi SDK (gatewayv1.NewHTTPRoute), consistent with every other Planton
-// ingress component. The typed approach catches field-name and structure errors
+// ingress kind. The typed approach catches field-name and structure errors
 // at compile time rather than at deployment time. The upstream HTTPRouteSpec is
 // the largest in the family, so its mapping is split across parent_refs.go,
 // rules.go, matches.go, filters.go, and backend_refs.go.

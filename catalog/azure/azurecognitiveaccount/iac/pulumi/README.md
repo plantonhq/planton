@@ -2,7 +2,7 @@
 
 ## Overview
 
-Provisions an Azure AI services account and its composed responsible-AI children (blocklists and content-filter policies) using the classic `pulumi-azure` (azurerm-bridged) SDK, from the kind's typed stack input.
+Provisions an Azure AI services account and its composed responsible-AI children (blocklists and content-filter policies) using the classic `pulumi-azure` (azurerm-bridged) SDK, from the kind's typed IaC input.
 
 ## Design Decisions
 
@@ -13,7 +13,7 @@ Provisions an Azure AI services account and its composed responsible-AI children
 
 ## Inputs
 
-The module consumes `AzureCognitiveAccountStackInput`: the target resource (metadata + spec) and the Azure provider configuration. StringValueOrRef fields arrive pre-resolved; `GetValue()` returns the literal.
+The module consumes `AzureCognitiveAccountIacInput`: the target resource (metadata + spec) and the Azure provider configuration. StringValueOrRef fields arrive pre-resolved; `GetValue()` returns the literal.
 
 ## Outputs
 

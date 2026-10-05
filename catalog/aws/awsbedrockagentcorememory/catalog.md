@@ -4,7 +4,7 @@ Deploys an Amazon Bedrock AgentCore memory — a managed store that gives agents
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Memory** — the store itself, named by `memoryName`, with a 7–365 day short-term window (`eventExpiryDays`), optional customer-managed KMS encryption, indexed metadata keys for filtered retrieval, and optional Kinesis delivery of long-term records
 - **Memory Strategy** — one per `strategies` entry: an extraction pipeline with its namespace templates, and for CUSTOM entries the prompt/model overrides per pipeline step. AWS serializes all strategy changes through the parent memory, and the modules order them accordingly
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with AgentCore control-plane permissions (`bedrock-agentcore:CreateMemory` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with AgentCore control-plane permissions (`bedrock-agentcore:CreateMemory` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -59,7 +59,7 @@ spec:
 planton apply -f agentcore-memory.yaml
 ```
 
-This creates a memory with a 30-day event window and two built-in extraction strategies — semantic facts per actor and per-session summaries — running fully AWS-managed with no execution role. A Stack Job tracks the provisioning in real time.
+This creates a memory with a 30-day event window and two built-in extraction strategies — semantic facts per actor and per-session summaries — running fully AWS-managed with no execution role. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -106,7 +106,7 @@ These are the most important decisions when configuring a memory. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -114,9 +114,9 @@ These are the most important decisions when configuring a memory. Explore the fu
 | **AwsIamRole** | `executionRoleArn` | `status.outputs.role_arn` |
 | **AwsKinesisStream** | `kinesisDelivery.dataStreamArn` | `status.outputs.stream_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -136,8 +136,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Bedrock AgentCore Evaluation**](/cloud-catalog/aws-bedrock-agent-core-evaluation) — harnesses read and write this memory during evaluation runs via `memory_arn`
-- [**AWS Bedrock AgentCore Runtime**](/cloud-catalog/aws-bedrock-agent-core-runtime) — agents hosted on a runtime write events and query records through the AgentCore data plane
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the execution role for custom-strategy model invocation and Kinesis delivery
-- [**AWS Kinesis Data Stream**](/cloud-catalog/aws-kinesis-stream) — receives long-term memory records as they are written
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption for the memory at rest
+- [**AWS Bedrock AgentCore Evaluation**](/infra-catalog/aws-bedrock-agent-core-evaluation) — harnesses read and write this memory during evaluation runs via `memory_arn`
+- [**AWS Bedrock AgentCore Runtime**](/infra-catalog/aws-bedrock-agent-core-runtime) — agents hosted on a runtime write events and query records through the AgentCore data plane
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the execution role for custom-strategy model invocation and Kinesis delivery
+- [**AWS Kinesis Data Stream**](/infra-catalog/aws-kinesis-stream) — receives long-term memory records as they are written
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption for the memory at rest

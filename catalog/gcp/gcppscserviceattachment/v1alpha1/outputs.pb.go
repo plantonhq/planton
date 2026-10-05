@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpPscServiceAttachmentStackOutputs captures the published service after
+// GcpPscServiceAttachmentOutputs captures the published service after
 // provisioning -- above all the self_link a consumer's PSC endpoint (a
 // regional GcpGlobalForwardingRule with an empty scheme) targets.
-type GcpPscServiceAttachmentStackOutputs struct {
+type GcpPscServiceAttachmentOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Self-link URI of the service attachment: the value a consumer
 	// forwarding rule names as its target.
@@ -44,20 +44,20 @@ type GcpPscServiceAttachmentStackOutputs struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *GcpPscServiceAttachmentStackOutputs) Reset() {
-	*x = GcpPscServiceAttachmentStackOutputs{}
+func (x *GcpPscServiceAttachmentOutputs) Reset() {
+	*x = GcpPscServiceAttachmentOutputs{}
 	mi := &file_catalog_gcp_gcppscserviceattachment_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpPscServiceAttachmentStackOutputs) String() string {
+func (x *GcpPscServiceAttachmentOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpPscServiceAttachmentStackOutputs) ProtoMessage() {}
+func (*GcpPscServiceAttachmentOutputs) ProtoMessage() {}
 
-func (x *GcpPscServiceAttachmentStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpPscServiceAttachmentOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcppscserviceattachment_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,40 +69,40 @@ func (x *GcpPscServiceAttachmentStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpPscServiceAttachmentStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpPscServiceAttachmentStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpPscServiceAttachmentOutputs.ProtoReflect.Descriptor instead.
+func (*GcpPscServiceAttachmentOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcppscserviceattachment_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpPscServiceAttachmentStackOutputs) GetSelfLink() string {
+func (x *GcpPscServiceAttachmentOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpPscServiceAttachmentStackOutputs) GetAttachmentName() string {
+func (x *GcpPscServiceAttachmentOutputs) GetAttachmentName() string {
 	if x != nil {
 		return x.AttachmentName
 	}
 	return ""
 }
 
-func (x *GcpPscServiceAttachmentStackOutputs) GetRegion() string {
+func (x *GcpPscServiceAttachmentOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *GcpPscServiceAttachmentStackOutputs) GetFingerprint() string {
+func (x *GcpPscServiceAttachmentOutputs) GetFingerprint() string {
 	if x != nil {
 		return x.Fingerprint
 	}
 	return ""
 }
 
-func (x *GcpPscServiceAttachmentStackOutputs) GetConnectedEndpointsCount() string {
+func (x *GcpPscServiceAttachmentOutputs) GetConnectedEndpointsCount() string {
 	if x != nil {
 		return x.ConnectedEndpointsCount
 	}
@@ -113,8 +113,8 @@ var File_catalog_gcp_gcppscserviceattachment_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_gcp_gcppscserviceattachment_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcppscserviceattachment/v1alpha1/outputs.proto\x120dev.planton.gcp.gcppscserviceattachment.v1alpha1\"\xe1\x01\n" +
-	"#GcpPscServiceAttachmentStackOutputs\x12\x1b\n" +
+	":catalog/gcp/gcppscserviceattachment/v1alpha1/outputs.proto\x120dev.planton.gcp.gcppscserviceattachment.v1alpha1\"\xdc\x01\n" +
+	"\x1eGcpPscServiceAttachmentOutputs\x12\x1b\n" +
 	"\tself_link\x18\x01 \x01(\tR\bselfLink\x12'\n" +
 	"\x0fattachment_name\x18\x02 \x01(\tR\x0eattachmentName\x12\x16\n" +
 	"\x06region\x18\x03 \x01(\tR\x06region\x12 \n" +
@@ -136,7 +136,7 @@ func file_catalog_gcp_gcppscserviceattachment_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_gcp_gcppscserviceattachment_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcppscserviceattachment_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpPscServiceAttachmentStackOutputs)(nil), // 0: dev.planton.gcp.gcppscserviceattachment.v1alpha1.GcpPscServiceAttachmentStackOutputs
+	(*GcpPscServiceAttachmentOutputs)(nil), // 0: dev.planton.gcp.gcppscserviceattachment.v1alpha1.GcpPscServiceAttachmentOutputs
 }
 var file_catalog_gcp_gcppscserviceattachment_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

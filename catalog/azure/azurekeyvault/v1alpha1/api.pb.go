@@ -31,7 +31,7 @@ type AzureKeyVault struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureKeyVaultSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AzureKeyVault) GetKind() string {
 	return ""
 }
 
-func (x *AzureKeyVault) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureKeyVault) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AzureKeyVault) GetStatus() *AzureKeyVaultStatus {
 // azure-key-vault status
 type AzureKeyVaultStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureKeyVaultStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureKeyVaultOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AzureKeyVaultStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurekeyvault_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureKeyVaultStatus) GetOutputs() *AzureKeyVaultStackOutputs {
+func (x *AzureKeyVaultStatus) GetOutputs() *AzureKeyVaultOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_azure_azurekeyvault_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12(\n" +
 	"\x04kind\x18\x02 \x01(\tB\x14\xbaH\x11r\x0f\n" +
 	"\rAzureKeyVaultR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12W\n" +
 	"\x04spec\x18\x04 \x01(\v2;.dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12U\n" +
-	"\x06status\x18\x05 \x01(\v2=.dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultStatusR\x06status\"t\n" +
-	"\x13AzureKeyVaultStatus\x12]\n" +
-	"\aoutputs\x18\x01 \x01(\v2C.dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultStackOutputsR\aoutputsB\xd6\x02\n" +
+	"\x06status\x18\x05 \x01(\v2=.dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultStatusR\x06status\"o\n" +
+	"\x13AzureKeyVaultStatus\x12X\n" +
+	"\aoutputs\x18\x01 \x01(\v2>.dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultOutputsR\aoutputsB\xd6\x02\n" +
 	",com.dev.planton.azure.azurekeyvault.v1alpha1B\bApiProtoP\x01ZWgithub.com/plantonhq/planton/catalog/azure/azurekeyvault/v1alpha1;azurekeyvaultv1alpha1\xa2\x02\x04DPAA\xaa\x02(Dev.Planton.Azure.Azurekeyvault.V1alpha1\xca\x02(Dev\\Planton\\Azure\\Azurekeyvault\\V1alpha1\xe2\x024Dev\\Planton\\Azure\\Azurekeyvault\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Azure::Azurekeyvault::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_azure_azurekeyvault_v1alpha1_api_proto_msgTypes = make([]protoi
 var file_catalog_azure_azurekeyvault_v1alpha1_api_proto_goTypes = []any{
 	(*AzureKeyVault)(nil),                // 0: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVault
 	(*AzureKeyVaultStatus)(nil),          // 1: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AzureKeyVaultSpec)(nil),            // 3: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultSpec
-	(*AzureKeyVaultStackOutputs)(nil),    // 4: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultStackOutputs
+	(*AzureKeyVaultOutputs)(nil),         // 4: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultOutputs
 }
 var file_catalog_azure_azurekeyvault_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVault.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVault.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVault.spec:type_name -> dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultSpec
 	1, // 2: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVault.status:type_name -> dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultStatus
-	4, // 3: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultStatus.outputs:type_name -> dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultStackOutputs
+	4, // 3: dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultStatus.outputs:type_name -> dev.planton.azure.azurekeyvault.v1alpha1.AzureKeyVaultOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

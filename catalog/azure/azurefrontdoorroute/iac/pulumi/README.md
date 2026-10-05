@@ -1,6 +1,6 @@
 # AzureFrontDoorRoute - Pulumi Module
 
-Pulumi implementation for the AzureFrontDoorRoute component.
+Pulumi implementation for the AzureFrontDoorRoute kind.
 
 ## Architecture
 
@@ -27,7 +27,7 @@ cdn.FrontdoorRoute (single resource)
   Front Door distinguishes an EMPTY collection ("disassociate") from an
   absent one, so empty `rule_set_ids`/`custom_domain_ids` lists are
   omitted and absence and emptiness agree.
-- **Enum defaults are materialized in the module** -- stack inputs never
+- **Enum defaults are materialized in the module** -- IaC inputs never
   carry proto defaults, so unspecified `forwarding_protocol` deploys
   `MatchRequest` and unspecified `query_string_caching_behavior` deploys
   `IgnoreQueryString`, exactly as the spec documents.
@@ -37,6 +37,6 @@ cdn.FrontdoorRoute (single resource)
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless web-identity (OIDC), and
 ambient credential chains. Never construct a provider inline.

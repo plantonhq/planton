@@ -7,7 +7,7 @@
 
 ## Summary
 
-Completed the AwsEcsCluster component implementation by adding the two most critical production features identified in the research documentation: **default capacity provider strategy** for cost optimization (up to 70% savings) and **enhanced execute command configuration** for production-grade security auditing.
+Completed the AwsEcsCluster kind implementation by adding the two most critical production features identified in the research documentation: **default capacity provider strategy** for cost optimization (up to 70% savings) and **enhanced execute command configuration** for production-grade security auditing.
 
 ## Problem Statement
 
@@ -180,7 +180,7 @@ execute_command_configuration:
 
 ### Production Readiness
 
-The component now implements all production essentials from the research:
+The kind now implements all production essentials from the research:
 
 1. ✅ CloudWatch Container Insights (monitoring)
 2. ✅ **Capacity Providers** (infrastructure choice)
@@ -257,7 +257,7 @@ For a production cluster running 100 tasks:
 All validation steps passed:
 
 1. ✅ **Protobuf compilation**: `make protos` succeeded
-2. ✅ **Component tests**: 12/12 tests passing (expanded from 1)
+2. ✅ **Kind tests**: 12/12 tests passing (expanded from 1)
 3. ✅ **Build validation**: `make build` succeeded, all platforms compiled
 4. ✅ **Full test suite**: `make test` succeeded, all tests passing
 5. ✅ **Code formatting**: `go fmt` applied
@@ -348,14 +348,14 @@ execute_command_configuration:
 **Proto Stubs Regenerated**: 4
 - `spec.pb.go`
 - `api.pb.go`
-- `stack_input.pb.go`
-- `stack_outputs.pb.go`
+- `iac_input.pb.go`
+- `outputs.pb.go`
 
 ## References
 
 - Research Document: `docs/README.md` - Section "Production Essentials: The Features That Matter"
 - Audit Report: `docs/audit/2025-11-13-183616.md`
-- Architecture Guide: `architecture/deployment-component.md`
+- Architecture Guide: `architecture/catalog-kind.md`
 - AWS Documentation: ECS Capacity Provider Strategy
 - AWS Documentation: ECS Execute Command Configuration
 
@@ -412,7 +412,7 @@ execute_command_configuration:
 
 ## Next Steps
 
-1. ✅ Component is production-ready with cost optimization
+1. ✅ Kind is production-ready with cost optimization
 2. ✅ All tests passing (12/12)
 3. ✅ Documentation complete with production examples
 4. ✅ Build validation successful
@@ -420,10 +420,10 @@ execute_command_configuration:
 
 ## Conclusion
 
-The AwsEcsCluster component now implements the complete 80/20 principle identified in the comprehensive research documentation. The two most critical production features have been added:
+The AwsEcsCluster kind now implements the complete 80/20 principle identified in the comprehensive research documentation. The two most critical production features have been added:
 
 1. **Default capacity provider strategy** - Enables up to 70% cost savings through Fargate Spot while maintaining reliability
 2. **Enhanced execute command configuration** - Provides production-grade security auditing with CloudWatch/S3 logging and KMS encryption
 
-The component is now truly production-ready with proper cost optimization and compliance-ready security auditing. Users can achieve significant cost savings (56%+ in typical scenarios) while maintaining security and compliance requirements.
+The kind is now truly production-ready with proper cost optimization and compliance-ready security auditing. Users can achieve significant cost savings (56%+ in typical scenarios) while maintaining security and compliance requirements.
 

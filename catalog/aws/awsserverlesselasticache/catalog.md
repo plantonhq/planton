@@ -4,7 +4,7 @@ Deploys an ElastiCache Serverless cache with consumption-based pricing and autom
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Serverless Cache** -- an ElastiCache Serverless cache using the specified engine (Redis, Valkey, or Memcached), with AWS managing all node scaling, replication, and patching automatically
 - **Cache Usage Limits** -- created only when scaling bounds are provided; configures minimum and maximum limits for data storage (GB) and compute (ECPU/s)
@@ -17,12 +17,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **VPC subnets** (recommended) -- private subnets for the cache's VPC endpoints. Provide subnet IDs directly or reference AwsSubnet Cloud Resources via ValueFromRef. The `subnetIds` field is ForceNew -- changing subnets destroys and recreates the cache.
+- **VPC subnets** (recommended) -- private subnets for the cache's VPC endpoints. Provide subnet IDs directly or reference AwsSubnet Infra Components via ValueFromRef. The `subnetIds` field is ForceNew -- changing subnets destroys and recreates the cache.
 - **A security group** (recommended) -- controls network access to the cache endpoint (default port 6379 for Redis/Valkey, 11211 for Memcached). Provide the ID directly or reference an AwsSecurityGroup via ValueFromRef.
 - **A KMS key** (optional) -- for customer-managed at-rest encryption. The `kmsKeyId` field is ForceNew -- changing the key destroys and recreates the cache.
 - **A Redis ACL user group** (optional) -- for fine-grained access control (Redis/Valkey engines only).
@@ -54,7 +54,7 @@ spec:
 planton apply -f serverless-cache.yaml
 ```
 
-This creates a Redis 7.x serverless cache with AWS-managed scaling defaults and encryption. No VPC placement, scaling limits, or snapshots are configured. A Stack Job tracks the provisioning in real time.
+This creates a Redis 7.x serverless cache with AWS-managed scaling defaults and encryption. No VPC placement, scaling limits, or snapshots are configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -101,7 +101,7 @@ These are the most important decisions when configuring ElastiCache Serverless. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -110,9 +110,9 @@ These are the most important decisions when configuring ElastiCache Serverless. 
 | **AwsKmsKey** (optional) | `kmsKeyId` | `status.outputs.key_arn` |
 | **AwsElasticacheUserGroup** (optional) | `userGroupId` | `status.outputs.user_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -136,7 +136,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides the subnets for cache endpoint VPC placement
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- controls network-level access to the cache endpoint
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for at-rest encryption
-- [**AWS ElastiCache User Group**](/cloud-catalog/aws-elasticache-user-group) -- provides Redis ACL access control for Redis and Valkey caches
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides the subnets for cache endpoint VPC placement
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- controls network-level access to the cache endpoint
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for at-rest encryption
+- [**AWS ElastiCache User Group**](/infra-catalog/aws-elasticache-user-group) -- provides Redis ACL access control for Redis and Valkey caches

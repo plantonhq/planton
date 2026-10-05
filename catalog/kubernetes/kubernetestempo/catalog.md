@@ -6,10 +6,10 @@ The grain is deliberate: **this kind is the single-binary Tempo** — one Statef
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm release** (official grafana-community `tempo` chart, default pin `2.2.3` pairing with Tempo `2.10.7`, named `metadata.name`) — one Tempo StatefulSet with OTLP receivers on gRPC 4317 and HTTP 4318 always on
-- **A PersistentVolumeClaim** (default 10Gi on the cluster's default StorageClass) — the chart's own default is an emptyDir that loses every trace on pod restart; this component deliberately inverts that. With local storage the volume holds ALL trace blocks; with an object-storage backend it holds only the write-ahead log. `ephemeral: true` restores the chart's throwaway posture
+- **A PersistentVolumeClaim** (default 10Gi on the cluster's default StorageClass) — the chart's own default is an emptyDir that loses every trace on pod restart; this kind deliberately inverts that. With local storage the volume holds ALL trace blocks; with an object-storage backend it holds only the write-ahead log. `ephemeral: true` restores the chart's throwaway posture
 - **Object-storage wiring** when a backend is declared — S3/S3-compatible (bucket AND endpoint required; Tempo never derives the endpoint from the region), GCS, or Azure Blob. Empty credentials mean the pod's ambient identity (IRSA on EKS, workload identity on GKE, federated identity on AKS — the recommended keyless postures); declared credentials are references to existing Secrets, injected as environment variables and never rendered into config
 - **Kubernetes Namespace** — created only when `createNamespace` is true; otherwise the namespace must already exist
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f tempo.yaml
 ```
 
-This minimal install is a complete trace store: one replica on a 10Gi persistent volume, OTLP receivers on 4317/4318, a 24-hour retention window, single-tenant, and no data leaving the cluster. A Stack Job tracks the provisioning in real time.
+This minimal install is a complete trace store: one replica on a 10Gi persistent volume, OTLP receivers on 4317/4318, a 24-hour retention window, single-tenant, and no data leaving the cluster. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -80,19 +80,19 @@ These are the most important decisions when configuring a Tempo installation. Ex
 
 **Retention speaks Go durations — there is no day unit** — `retention` accepts minutes or hours only (`30m`, `24h`; a week is `168h`, never `7d`). The chart default of 24h suits a dev loop; raise it for anything users depend on. Longer retention costs volume capacity with local storage and object-store bytes with a backend.
 
-**OTLP-first ingest** — gRPC 4317 and HTTP 4318 are always on; they are the 2026 wire standard. `jaegerReceiversEnabled` opens the four legacy Jaeger protocols (gRPC 14250, thrift-binary 6832, thrift-compact 6831, thrift-http 14268) for fleets still migrating — the component deliberately narrows the chart's all-receivers default, because every closed port is one less ingest surface.
+**OTLP-first ingest** — gRPC 4317 and HTTP 4318 are always on; they are the 2026 wire standard. `jaegerReceiversEnabled` opens the four legacy Jaeger protocols (gRPC 14250, thrift-binary 6832, thrift-compact 6831, thrift-http 14268) for fleets still migrating — the kind deliberately narrows the chart's all-receivers default, because every closed port is one less ingest surface.
 
 **Multi-tenancy is a header contract** — with `multiTenancyEnabled`, an `X-Scope-OrgID` tenant header is required on every push AND every query; senders and the Grafana datasource must both carry it, or queries return empty results rather than errors.
 
 **The metrics generator lights up Grafana's service map** — it derives service-graph and span metrics from the trace stream and remote-writes them to a Prometheus. The URL accepts a literal or a reference to a **kube-prometheus-stack** (its `prometheus_endpoint` output); the target Prometheus must accept pushes (`prometheus.enableRemoteWriteReceiver: true` on the stack), and when the URL carries no path the modules append the standard `/api/v1/write`. An empty `processors` list runs both `serviceGraphs` and `spanMetrics` — Tempo's own default set.
 
-**Grafana is the query surface** — `tempoQueryEnabled` adds the Jaeger-UI-compatible query sidecar on 16686 only for tooling that speaks the Jaeger API. `usageReporting` is the component's privacy-first divergence from Tempo's report-by-default: no anonymous statistics leave the cluster without an explicit opt-in.
+**Grafana is the query surface** — `tempoQueryEnabled` adds the Jaeger-UI-compatible query sidecar on 16686 only for tooling that speaks the Jaeger API. `usageReporting` is the kind's privacy-first divergence from Tempo's report-by-default: no anonymous statistics leave the cluster without an explicit opt-in.
 
 **`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (per-receiver tuning, tenant overrides, search concurrency). Anything here silently overrides the typed fields on every deploy; never put secrets in it (object-storage credentials belong in the typed Secret-reference fields), and leave `fullnameOverride` alone — the naming contract the outputs derive from depends on it.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
@@ -102,9 +102,9 @@ These are the most important decisions when configuring a Tempo installation. Ex
 
 Object-storage credentials (`spec.storage.s3.credentials`, `spec.storage.gcs.serviceAccountKeySecret`, `spec.storage.azure.accountKeySecret`) and `spec.imagePullSecrets` name existing Secrets by name + key — references to material that already lives in the cluster, needed only when ambient keyless identity is unavailable.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,7 +120,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
-**Dev single-node** — one monolithic replica on a persistent volume with OTLP receivers — the smallest honest trace store; the component defaults carry the whole posture. Start from the **Dev single-node Tempo** preset.
+**Dev single-node** — one monolithic replica on a persistent volume with OTLP receivers — the smallest honest trace store; the kind's defaults carry the whole posture. Start from the **Dev single-node Tempo** preset.
 
 **Production on object storage** — two replicas against an S3-compatible backend (an in-cluster SeaweedFS; AWS S3, GCS or Azure by swapping the block), a two-week retention window, and the metrics generator remote-writing to the cluster's Prometheus. Start from the **Production Tempo on object storage** preset.
 
@@ -128,11 +128,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first.
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) — SSD-backed classes for the data volume.
-- [**Kubernetes Secret**](/cloud-catalog/kubernetes-secret) — object-storage credentials and image-pull Secrets, always by reference.
-- [**SeaweedFS**](/cloud-catalog/kubernetes-seaweed-fs) — the in-cluster S3-compatible backend for the storage block.
-- [**OpenTelemetry Collector**](/cloud-catalog/kubernetes-otel-collector) — sends spans to the exported OTLP endpoints from a traces pipeline.
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) — receives the metrics generator's remote-write (the service map's data) and provides the ServiceMonitor CRDs.
-- [**Grafana**](/cloud-catalog/kubernetes-grafana) — reads traces back through a `tempo` datasource at the exported HTTP endpoint.
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) — HTTP exposure over the exported Service handle (Gateway API kinds compose the same way).
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first.
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) — SSD-backed classes for the data volume.
+- [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) — object-storage credentials and image-pull Secrets, always by reference.
+- [**SeaweedFS**](/infra-catalog/kubernetes-seaweed-fs) — the in-cluster S3-compatible backend for the storage block.
+- [**OpenTelemetry Collector**](/infra-catalog/kubernetes-otel-collector) — sends spans to the exported OTLP endpoints from a traces pipeline.
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) — receives the metrics generator's remote-write (the service map's data) and provides the ServiceMonitor CRDs.
+- [**Grafana**](/infra-catalog/kubernetes-grafana) — reads traces back through a `tempo` datasource at the exported HTTP endpoint.
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) — HTTP exposure over the exported Service handle (Gateway API kinds compose the same way).

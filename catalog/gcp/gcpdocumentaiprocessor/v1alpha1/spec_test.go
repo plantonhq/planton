@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpDocumentAiProcessorSpec", func() {
 		return &GcpDocumentAiProcessor{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpDocumentAiProcessor",
-			Metadata:   &shared.CloudResourceMetadata{Name: "invoice-ocr"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "invoice-ocr"},
 			Spec: &GcpDocumentAiProcessorSpec{
 				Location: "us",
 				Type:     "OCR_PROCESSOR",

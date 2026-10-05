@@ -51,7 +51,7 @@ The provider's raw `{type, parameters[]}` name/value model was deliberately NOT 
 
 ### Outputs, presets, docs
 
-- Stack outputs gain `destination_id` + `version_id` (the UpdateDestination coordinates); conformance case extended.
+- Outputs gain `destination_id` + `version_id` (the UpdateDestination coordinates); conformance case extended.
 - Presets: two new marquee patterns (`05-snowflake-streaming` with Secrets Manager credentials, `06-iceberg-lakehouse` with unique-key upserts); `04-s3-parquet-analytics` now demonstrates real dynamic partitioning (metadata-extraction processor + `!{partitionKeyFromQuery:...}` prefix — the old preset enabled partitioning with no key source).
 - **Two pre-existing preset defects fixed**: every preset manifest was missing the required `region` (invalid since authoring — nothing exercised them), and the presets used a legacy subdirectory layout invisible to the public-site catalog mirror (its scanner only reads flat `NN-name.yaml`+`.md` pairs) — they had never published. Flattened to the current convention; the kind's presets now appear on the site for the first time.
 - README/catalog page/architecture doc rewritten to the eight-destination, three-source surface with the omissions ledger reduced to two honest entries (legacy Elasticsearch arm — a superseded API for the same domain fleet the `opensearch` arm serves; prefix expressions live in the `prefix` string).
@@ -70,7 +70,7 @@ The provider's raw `{type, parameters[]}` name/value model was deliberately NOT 
 
 ## Live-Run Operational Learning (folded into the forge rule)
 
-A fresh private `PULUMI_HOME` has no plugin cache, so every Pulumi command resolves plugins via anonymous GitHub API calls; back-to-back lanes exhaust the anonymous rate limit, and the failure lands wherever the next resolution happens — including `pulumi destroy`/`stack rm` during dependency teardown. Fixtures then orphan and every later lane fails DEPENDENCIES-UP with `EntityAlreadyExists`/`BucketAlreadyOwnedByYou` conflicts. Exporting `GITHUB_TOKEN` for live lanes eliminates the class; the guidance now lives in the component-forge workflow rule, and the update rule gained a preset-layout gate (flat pairs + required-field validation) from the preset findings.
+A fresh private `PULUMI_HOME` has no plugin cache, so every Pulumi command resolves plugins via anonymous GitHub API calls; back-to-back lanes exhaust the anonymous rate limit, and the failure lands wherever the next resolution happens — including `pulumi destroy`/`stack rm` during dependency teardown. Fixtures then orphan and every later lane fails DEPENDENCIES-UP with `EntityAlreadyExists`/`BucketAlreadyOwnedByYou` conflicts. Exporting `GITHUB_TOKEN` for live lanes eliminates the class; the guidance now lives in the kind-forge workflow rule, and the update rule gained a preset-layout gate (flat pairs + required-field validation) from the preset findings.
 
 ## Deferred Surface (recorded)
 

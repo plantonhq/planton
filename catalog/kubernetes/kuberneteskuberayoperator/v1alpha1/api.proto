@@ -16,7 +16,7 @@ message KubernetesKubeRayOperator {
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesKubeRayOperator'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   KubernetesKubeRayOperatorSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message KubernetesKubeRayOperator {
 
 //kuberay-operator-kubernetes status.
 message KubernetesKubeRayOperatorStatus {
-  //stack-outputs
-  KubernetesKubeRayOperatorStackOutputs outputs = 1;
+  //outputs
+  KubernetesKubeRayOperatorOutputs outputs = 1;
 }

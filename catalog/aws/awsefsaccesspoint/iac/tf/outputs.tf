@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Stack Outputs -- matching AwsEfsAccessPointStackOutputs
+# Outputs -- matching AwsEfsAccessPointOutputs
 # ---------------------------------------------------------------------------
 # Primary consumers: Lambda (file_system_config needs the ARN), ECS task
 # definitions (EFS volume authorization needs the ID).

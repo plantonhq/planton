@@ -2,7 +2,7 @@
 
 ## Overview
 
-Provisions an Azure Machine Learning workspace with its composed network outbound rules using the classic `pulumi-azure` (azurerm-bridged) SDK, from the kind's typed stack input.
+Provisions an Azure Machine Learning workspace with its composed network outbound rules using the classic `pulumi-azure` (azurerm-bridged) SDK, from the kind's typed IaC input.
 
 ## Design Decisions
 
@@ -13,7 +13,7 @@ Provisions an Azure Machine Learning workspace with its composed network outboun
 
 ## Inputs
 
-The module consumes `AzureMachineLearningWorkspaceStackInput`: the target resource (metadata + spec) and the Azure provider configuration. Every reference field arrives pre-resolved; `GetValue()` returns the literal.
+The module consumes `AzureMachineLearningWorkspaceIacInput`: the target resource (metadata + spec) and the Azure provider configuration. Every reference field arrives pre-resolved; `GetValue()` returns the literal.
 
 ## Outputs
 

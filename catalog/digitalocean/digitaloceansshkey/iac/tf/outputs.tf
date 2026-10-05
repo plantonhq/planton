@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanSshKeyStackOutputs contract,
+# Outputs — exactly the DigitalOceanSshKeyOutputs contract,
 # identical across both provisioners.
 
 output "ssh_key_id" {

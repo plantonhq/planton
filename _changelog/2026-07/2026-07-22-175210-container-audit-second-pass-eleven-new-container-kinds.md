@@ -104,11 +104,11 @@ flowchart LR
 ```
 
 - `container_kind: true` added to the eleven kinds' `(kind_meta)` blocks in
-  `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`.
+  `apis/dev/planton/shared/catalogkind/catalog_kind.proto`.
 - `(dev.planton.shared.foreignkey.v1.containment_exempt) = true` authored on
   the five access-style reference fields.
 - Golden registry regenerated:
-  `go test ./apis/dev/planton/shared/cloudresourcekind/... -run TestContainmentDecisions -update`
+  `go test ./apis/dev/planton/shared/catalogkind/... -run TestContainmentDecisions -update`
   — now 517 contained + 111 exempt verdicts (628 total, up from 615).
 
 ## Benefits

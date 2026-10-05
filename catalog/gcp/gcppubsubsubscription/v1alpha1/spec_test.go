@@ -37,7 +37,7 @@ var _ = ginkgo.Describe("GcpPubSubSubscriptionSpec", func() {
 		return &GcpPubSubSubscription{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpPubSubSubscription",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-pubsub-subscription",
 			},
 			Spec: &GcpPubSubSubscriptionSpec{

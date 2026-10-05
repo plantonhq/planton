@@ -4,7 +4,7 @@ Deploys an API Gateway v2 VPC link — the managed network attachment that lets 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API Gateway v2 VPC Link** -- the managed attachment HTTP APIs route through (this is the v2 link for HTTP APIs; REST APIs use a different, NLB-only v1 link)
 - **Managed Network Interfaces** -- cross-account ENIs in your chosen subnets (create-time immutable; the link can only reach targets in AZs it has an ENI in)
@@ -15,8 +15,8 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **Network resources** -- the target VPC's [AWS Subnet](/cloud-catalog/aws-subnet) resources (at least one; two AZs for production) and ideally an egress-scoped [AWS Security Group](/cloud-catalog/aws-security-group), deployed first and referenced.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **Network resources** -- the target VPC's [AWS Subnet](/infra-catalog/aws-subnet) resources (at least one; two AZs for production) and ideally an egress-scoped [AWS Security Group](/infra-catalog/aws-security-group), deployed first and referenced.
 
 ### AWS Account
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f http-api-vpc-link.yaml
 ```
 
-This creates a two-AZ link with an egress-scoped security group — the shape every HTTP API in the VPC shares. A Stack Job tracks the provisioning in real time.
+This creates a two-AZ link with an egress-scoped security group — the shape every HTTP API in the VPC shares. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -101,16 +101,16 @@ These are the most important decisions when configuring a VPC link. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsSubnet** | `subnetIds[]` | `status.outputs.subnet_id` |
 | **AwsSecurityGroup** (optional) | `securityGroupIds[]` | `status.outputs.security_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -127,7 +127,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS HTTP API Gateway**](/cloud-catalog/aws-http-api-gateway) -- the API whose private integrations route through this link (references `vpc_link_id`)
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- where the link's ENIs land
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- the egress contract to the private backend
-- [**AWS ALB**](/cloud-catalog/aws-alb) -- the internal load balancer the link typically fronts
+- [**AWS HTTP API Gateway**](/infra-catalog/aws-http-api-gateway) -- the API whose private integrations route through this link (references `vpc_link_id`)
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- where the link's ENIs land
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- the egress contract to the private backend
+- [**AWS ALB**](/infra-catalog/aws-alb) -- the internal load balancer the link typically fronts

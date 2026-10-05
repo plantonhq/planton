@@ -6,7 +6,7 @@ import (
 	digitaloceanprovider "github.com/plantonhq/planton/catalog/digitalocean"
 	digitaloceankubernetesnodepoolv1alpha1 "github.com/plantonhq/planton/catalog/digitalocean/digitaloceankubernetesnodepool/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/digitalocean/digitaloceanlabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -18,16 +18,16 @@ type Locals struct {
 }
 
 // initializeLocals mirrors the pattern used in digital_ocean_vpc.
-func initializeLocals(_ *pulumi.Context, stackInput *digitaloceankubernetesnodepoolv1alpha1.DigitalOceanKubernetesNodePoolStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *digitaloceankubernetesnodepoolv1alpha1.DigitalOceanKubernetesNodePoolIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.DigitalOceanKubernetesNodePool = stackInput.Target
+	locals.DigitalOceanKubernetesNodePool = iacInput.Target
 
 	// Standard Planton labels for DigitalOcean resources.
 	locals.DigitalOceanLabels = map[string]string{
 		digitaloceanlabelkeys.Resource:     strconv.FormatBool(true),
 		digitaloceanlabelkeys.ResourceName: locals.DigitalOceanKubernetesNodePool.Metadata.Name,
-		digitaloceanlabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_DigitalOceanKubernetesNodePool.String(),
+		digitaloceanlabelkeys.ResourceKind: catalogkind.CatalogKind_DigitalOceanKubernetesNodePool.String(),
 	}
 
 	if locals.DigitalOceanKubernetesNodePool.Metadata.Org != "" {
@@ -42,7 +42,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *digitaloceankubernetesnodep
 		locals.DigitalOceanLabels[digitaloceanlabelkeys.ResourceId] = locals.DigitalOceanKubernetesNodePool.Metadata.Id
 	}
 
-	locals.DigitalOceanProviderConfig = stackInput.ProviderConfig
+	locals.DigitalOceanProviderConfig = iacInput.ProviderConfig
 
 	return locals
 }

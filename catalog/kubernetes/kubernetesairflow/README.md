@@ -34,7 +34,7 @@ argument. The same discipline covers every key the chart would
 otherwise regenerate on each upgrade render (logging out every
 session): the Fernet key, API session key, FAB webserver key and JWT
 signing secret are module-generated once and stable, exported by
-NAME in the stack outputs. Back up the Fernet key Secret — losing it
+NAME in the outputs. Back up the Fernet key Secret — losing it
 orphans every credential Airflow has stored.
 
 ## Executors

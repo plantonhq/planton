@@ -31,7 +31,7 @@ import "shared/options/options.proto";
 //   either destroys and recreates the user. `access_string` and the
 //   authentication mode update in place.
 // - Credentials, region, and deployment workflow live outside this spec in
-//   stack inputs.
+//   IaC inputs.
 message AwsElasticacheUserSpec {
   // The AWS region where the user is created. ElastiCache users are regional
   // resources — a user group can only contain users from its own region.

@@ -1,18 +1,18 @@
-# Import map: where each {placeholder} in this component's import IDs comes
+# Import map: where each {placeholder} in this kind's import IDs comes
 # from (formats live in catalog/cloudflare/aa_import/catalog.yaml). The
 # singletons import as the bare zone id; CA associations add the mTLS
 # certificate id when adopting a certificate's list. Per-hostname overrides
 # are NOT importable (defective upstream ImportState at v5.23.0 -- the
 # catalog row carries the reason and the re-assert-from-config recipe).
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezonetlssettings
 spec:
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the

@@ -6,9 +6,9 @@
 # GatewayLoadBalancer, per reached resource for the VPC Lattice types --
 # so the profile carries the honest always-billing arm rather than letting
 # "usage_based" imply a free idle it does not have.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsvpcendpoint
 spec:

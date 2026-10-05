@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecognitivedeployment.v1alpha1;
 
-// **AzureCognitiveDeploymentStackOutputs** captures the outputs of
+// **AzureCognitiveDeploymentOutputs** captures the outputs of
 // provisioning a model deployment.
-message AzureCognitiveDeploymentStackOutputs {
+message AzureCognitiveDeploymentOutputs {
   // The Azure Resource Manager ID of the deployment.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.CognitiveServices/accounts/{account}/deployments/{name}
   string deployment_id = 1;

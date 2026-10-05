@@ -5,9 +5,9 @@
 # telemetry in the LINKED Log Analytics workspace, so the money rides
 # THAT component's per-GB ingestion and retention meters; this spec's
 # fields are the dials that decide how many GB arrive there. Schema:
-# finops/componentcostprofile/v1.
+# finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureapplicationinsights
 spec:

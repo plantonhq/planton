@@ -5,7 +5,7 @@ import (
 
 	azurevpnsitev1alpha1 "github.com/plantonhq/planton/catalog/azure/azurevpnsite/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -23,11 +23,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurevpnsitev1alpha1.AzureVpnSiteStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurevpnsitev1alpha1.AzureVpnSiteIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureVpnSite = stackInput.Target
-	target := stackInput.Target
+	locals.AzureVpnSite = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -38,7 +38,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurevpnsitev1alpha1.Azur
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureVpnSite.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureVpnSite.String()),
 	}
 
 	if target.Metadata.Id != "" {

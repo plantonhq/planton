@@ -31,7 +31,7 @@ func validResource() *AzureCognitiveDeployment {
 	return &AzureCognitiveDeployment{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureCognitiveDeployment",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-cognitive-deployment",
 		},
 		Spec: &AzureCognitiveDeploymentSpec{

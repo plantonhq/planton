@@ -4,7 +4,7 @@ Deploys a federated identity provider into an existing Cognito User Pool, enabli
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cognito Identity Provider** -- a federation registration attached to the specified User Pool, configured with provider-specific details (OAuth client credentials, OIDC issuer, or SAML metadata) and optional attribute mapping from provider claims to pool schema attributes
 
@@ -12,12 +12,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A Cognito User Pool** -- the identity provider attaches to an existing pool. Provide the `userPoolId` directly or reference an AwsCognitoUserPool Cloud Resource via ValueFromRef.
+- **A Cognito User Pool** -- the identity provider attaches to an existing pool. Provide the `userPoolId` directly or reference an AwsCognitoUserPool Infra Component via ValueFromRef.
 - **Provider credentials** -- OAuth client ID and secret (for Google, Facebook, Amazon, OIDC), Apple private key and team ID (for Sign In with Apple), or SAML metadata URL/file (for SAML 2.0). Obtain these from the external identity provider's developer console.
 
 ## Deploy
@@ -56,7 +56,7 @@ spec:
 planton apply -f cognito-idp.yaml
 ```
 
-This creates a Google identity provider attached to the specified User Pool with email and username attribute mapping. The client secret is a managed-secret reference (`$secret/<slug>`) — the platform rejects plaintext secrets and resolves the reference just-in-time at deploy. After creation, add `"Google"` to the `supportedIdentityProviders` list on your User Pool Client to enable federated sign-in. A Stack Job tracks the provisioning in real time.
+This creates a Google identity provider attached to the specified User Pool with email and username attribute mapping. The client secret is a managed-secret reference (`$secret/<slug>`) — the platform rejects plaintext secrets and resolves the reference just-in-time at deploy. After creation, add `"Google"` to the `supportedIdentityProviders` list on your User Pool Client to enable federated sign-in. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,15 +87,15 @@ These are the most important decisions when configuring a Cognito Identity Provi
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsCognitoUserPool** | `userPoolId` | `status.outputs.user_pool_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,5 +115,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Cognito User Pool**](/cloud-catalog/aws-cognito-user-pool) -- provides the parent user pool that this identity provider attaches to
-- [**AWS Cognito User Pool Client**](/cloud-catalog/aws-cognito-user-pool-client) -- lists this provider's name in `supportedIdentityProviders` to offer the sign-in option to an application
+- [**AWS Cognito User Pool**](/infra-catalog/aws-cognito-user-pool) -- provides the parent user pool that this identity provider attaches to
+- [**AWS Cognito User Pool Client**](/infra-catalog/aws-cognito-user-pool-client) -- lists this provider's name in `supportedIdentityProviders` to offer the sign-in option to an application

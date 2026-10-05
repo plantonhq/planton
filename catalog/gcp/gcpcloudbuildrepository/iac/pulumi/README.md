@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Cloud Build repository l
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `repository` |
-| `module/locals.go` | Stack input |
+| `module/locals.go` | IaC input |
 | `module/repository.go` | The link, the connection-name parser, the outputs |
 | `module/outputs.go` | Output key constants (`name`, `repository_id`, `remote_uri`) |
 

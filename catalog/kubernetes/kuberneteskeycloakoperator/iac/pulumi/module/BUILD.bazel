@@ -17,7 +17,7 @@ go_library(
         "//catalog/kubernetes/kuberneteskeycloakoperator/v1alpha1",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/yaml",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",

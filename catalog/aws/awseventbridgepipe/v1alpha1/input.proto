@@ -5,9 +5,9 @@ package dev.planton.aws.awseventbridgepipe.v1alpha1;
 import "catalog/aws/awseventbridgepipe/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsEventBridgePipeStackInput is the input for the IaC modules that
+// AwsEventBridgePipeIacInput is the input for the IaC modules that
 // manage an EventBridge Pipe.
-message AwsEventBridgePipeStackInput {
+message AwsEventBridgePipeIacInput {
   // target is the AwsEventBridgePipe resource to deploy.
   AwsEventBridgePipe target = 1;
   // provider_config contains the AWS provider credentials and configuration.

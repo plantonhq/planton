@@ -10,11 +10,11 @@ go_library(
     importpath = "github.com/plantonhq/planton/pkg/iac/provisioner",
     visibility = ["//visibility:public"],
     deps = [
-        "//pkg/crkreflect",
+        "//pkg/catalogkindreflect",
         "//pkg/iac/provisionerannotationkeys",
         "//pkg/reflection/metadatareflect",
         "//shared",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@com_github_pkg_errors//:errors",
         "@org_golang_google_protobuf//proto",
     ],
@@ -29,6 +29,6 @@ go_test(
         "//catalog/openfga/openfgastore/v1alpha1",
         "//pkg/iac/provisionerannotationkeys",
         "//shared",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
     ],
 )

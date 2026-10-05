@@ -32,7 +32,7 @@ Design notes:
   turning these off and composing AwsTransitGatewayRouteTable resources.
 
 Credentials, region, and deployment workflow live outside this spec in
-stack inputs.
+IaC inputs.
 
 ## Example
 

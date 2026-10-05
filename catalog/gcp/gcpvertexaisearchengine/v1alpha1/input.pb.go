@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-vertex-ai-search-engine stack-input
-type GcpVertexAiSearchEngineStackInput struct {
+// gcp-vertex-ai-search-engine iac-input
+type GcpVertexAiSearchEngineIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpVertexAiSearchEngine `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpVertexAiSearchEngineStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiSearchEngineStackInput) Reset() {
-	*x = GcpVertexAiSearchEngineStackInput{}
+func (x *GcpVertexAiSearchEngineIacInput) Reset() {
+	*x = GcpVertexAiSearchEngineIacInput{}
 	mi := &file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiSearchEngineStackInput) String() string {
+func (x *GcpVertexAiSearchEngineIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiSearchEngineStackInput) ProtoMessage() {}
+func (*GcpVertexAiSearchEngineIacInput) ProtoMessage() {}
 
-func (x *GcpVertexAiSearchEngineStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiSearchEngineIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpVertexAiSearchEngineStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiSearchEngineStackInput.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiSearchEngineStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiSearchEngineIacInput.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiSearchEngineIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiSearchEngineStackInput) GetTarget() *GcpVertexAiSearchEngine {
+func (x *GcpVertexAiSearchEngineIacInput) GetTarget() *GcpVertexAiSearchEngine {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpVertexAiSearchEngineStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpVertexAiSearchEngineIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpvertexaisearchengine_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/gcp/gcpvertexaisearchengine/v1alpha1/input.proto\x120dev.planton.gcp.gcpvertexaisearchengine.v1alpha1\x1a6catalog/gcp/gcpvertexaisearchengine/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd3\x01\n" +
-	"!GcpVertexAiSearchEngineStackInput\x12a\n" +
+	"8catalog/gcp/gcpvertexaisearchengine/v1alpha1/input.proto\x120dev.planton.gcp.gcpvertexaisearchengine.v1alpha1\x1a6catalog/gcp/gcpvertexaisearchengine/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd1\x01\n" +
+	"\x1fGcpVertexAiSearchEngineIacInput\x12a\n" +
 	"\x06target\x18\x01 \x01(\v2I.dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"4com.dev.planton.gcp.gcpvertexaisearchengine.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_input_proto_goTypes = []any{
-	(*GcpVertexAiSearchEngineStackInput)(nil), // 0: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineStackInput
-	(*GcpVertexAiSearchEngine)(nil),           // 1: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngine
-	(*gcp.GcpProviderConfig)(nil),             // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpVertexAiSearchEngineIacInput)(nil), // 0: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineIacInput
+	(*GcpVertexAiSearchEngine)(nil),         // 1: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngine
+	(*gcp.GcpProviderConfig)(nil),           // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineStackInput.target:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngine
-	2, // 1: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineIacInput.target:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngine
+	2, // 1: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

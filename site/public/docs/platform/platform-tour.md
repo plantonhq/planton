@@ -1,6 +1,6 @@
 ---
 title: "Platform Tour"
-description: "A walkthrough of the Planton console — sidebar navigation, context selector, Deployment Component Store, and what each section contains."
+description: "A walkthrough of the Planton console — sidebar navigation, context selector, Infra Catalog, and what each section contains."
 icon: tour
 order: 20
 tags:
@@ -17,7 +17,7 @@ This page walks through the Planton web console section by section, explaining w
 
 The console has three main areas:
 
-- **Header** — context selector (top-left), search, Deployment Component Store and IaC Module Registry (top-right)
+- **Header** — context selector (top-left), search, Infra Catalog and IaC Module Registry (top-right)
 - **Sidebar** — primary navigation to all platform sections
 - **Main content** — the active page, which changes based on your sidebar selection and context
 
@@ -74,19 +74,19 @@ The landing page after login. For new users, it shows the getting-started checkl
 
 ### Infra Hub
 
-The infrastructure management section. The Infra Hub route activates for cloud resources, infra projects, and environments.
+The infrastructure management section. The Infra Hub route activates for Infra Components, Infra Stacks, and environments.
 
-**Cloud Resources tab** — lists all deployed infrastructure in the current environment. Each row shows the resource name, kind (e.g., AWS VPC, GCP GKE Cluster), status, and last deployment timestamp. Click a resource to see its full configuration, stack job history, and outputs.
+**Infra Components tab** — lists all deployed infrastructure in the current environment. Each row shows the resource name, kind (e.g., AWS VPC, GCP GKE Cluster), status, and last deployment timestamp. Click a resource to see its full configuration, Infra Job history, and outputs.
 
-**Infra Projects tab** — lists Infra Chart deployments. Each Infra Project groups multiple related Cloud Resources deployed as a coordinated unit. The detail view includes a DAG visualization showing resource dependencies and deployment progress.
+**Infra Stacks tab** — lists Infra Chart deployments. Each Infra Stack groups multiple related Infra Components deployed as a coordinated unit. The detail view includes a DAG visualization showing resource dependencies and deployment progress.
 
 **Environments tab** — lists environments in the organization with creation details.
 
-<!-- SCREENSHOT: Infra Hub Cloud Resources
-  Page: /orgs/{org}/cloud-resources
-  Action: Show the Cloud Resources tab with at least 2-3 resources listed
+<!-- SCREENSHOT: Infra Hub Infra Components
+  Page: /orgs/{org}/infra-components
+  Action: Show the Infra Components tab with at least 2-3 resources listed
   Focus: The resource list table with status indicators
-  Alt: Infra Hub showing Cloud Resources tab with deployed infrastructure listed in a table
+  Alt: Infra Hub showing Infra Components tab with deployed infrastructure listed in a table
 -->
 
 [Learn more about Infrastructure](/docs/infrastructure)
@@ -163,23 +163,23 @@ Organization-wide configuration with three tabs:
 
 Beyond the context selector, the header provides quick access to two important features:
 
-### Deployment Component Store
+### Infra Catalog
 
-Click the store icon in the header (right side) to open the catalog of deployable infrastructure components. The store has two sections:
+Click the store icon in the header (right side) to open the catalog of deployable infrastructure kinds. The store has two sections:
 
-- **Deployment Components** — individual Cloud Resource templates (e.g., AWS VPC, GCP GKE Cluster, Azure AKS). Filter by cloud provider and search by name. Click **Deploy** on any component to start the deployment wizard.
-- **Infra Charts** — pre-composed collections of Deployment Components that deploy together as a coordinated unit (e.g., an AWS ECS environment with VPC, cluster, load balancer, and DNS).
+- **Catalog Kinds** — individual Infra Component templates (e.g., AWS VPC, GCP GKE Cluster, Azure AKS). Filter by cloud provider and search by name. Click **Deploy** on any kind to start the deployment wizard.
+- **Infra Charts** — pre-composed templates of catalog objects installed together as a coordinated unit (e.g., an AWS ECS environment with VPC, cluster, load balancer, and DNS).
 
-<!-- SCREENSHOT: Deployment Component Store
+<!-- SCREENSHOT: Infra Catalog
   Page: /platform/deployment-store
-  Action: Show the component catalog with provider filter
-  Focus: The component grid with deploy buttons
-  Alt: Deployment Component Store showing infrastructure components filterable by cloud provider
+  Action: Show the kind catalog with provider filter
+  Focus: The kind grid with deploy buttons
+  Alt: Infra Catalog showing infrastructure kinds filterable by cloud provider
 -->
 
 ### IaC Module Registry
 
-Click the IaC Module Registry icon in the header to browse the Pulumi, Terraform, and OpenTofu modules that back each Deployment Component. This is useful for understanding what infrastructure-as-code runs behind a deployment, or for referencing module parameters.
+Click the IaC Module Registry icon in the header to browse the Pulumi, Terraform, and OpenTofu modules that back each catalog kind. This is useful for understanding what infrastructure-as-code runs behind a deployment, or for referencing module parameters.
 
 ## Navigation Patterns
 
@@ -196,7 +196,7 @@ The console adapts based on your current context:
 There are three ways to find what you need:
 
 1. **Sidebar navigation** — click the section name to see all resources of that type
-2. **Deployment Component Store** — browse or search the catalog when you want to deploy something new
+2. **Infra Catalog** — browse or search the catalog when you want to deploy something new
 3. **Context selector** — switch environments to see resources in a different deployment stage
 
 ## Related Documentation

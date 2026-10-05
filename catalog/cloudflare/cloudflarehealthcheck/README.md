@@ -51,7 +51,7 @@ Health checks are a paid zone feature (Pro plans and above include a small allot
 | `http_config` | object | HTTP/HTTPS probe details. Only valid when `type` is HTTP or HTTPS. The provider's header map is `header`; this spec wraps values as `headers`. |
 | `tcp_config` | object | TCP probe details. Only valid when `type` is TCP. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

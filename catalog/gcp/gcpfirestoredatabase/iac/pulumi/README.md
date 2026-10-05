@@ -3,7 +3,7 @@
 ## Quick Start
 
 ```bash
-# From the component directory
+# From the kind directory
 cd catalog/gcp/gcpfirestoredatabase/iac/pulumi
 
 # Preview changes

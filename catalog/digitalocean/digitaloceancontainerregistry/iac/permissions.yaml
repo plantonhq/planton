@@ -3,11 +3,11 @@
 # modules. DigitalOcean authenticates with a bearer API token carrying
 # named scopes; every group entry is `derived` (static analysis of the
 # module sources, cited in notes) until the live capture lane upgrades it
-# to `proven`. Schema: iac/componentpermissions/v1.
+# to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # The registry takes no DigitalOcean tags (no tag scope).
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: digitaloceancontainerregistry
 spec:
@@ -26,4 +26,4 @@ spec:
           - registry:read
           - registry:update
         provenance: derived
-        notes: "When the spec's docker_credentials block is set: the runner mints/re-mints the Docker credential via GET /v2/registry/docker-credentials, and DigitalOcean's own OpenAPI spec (registry_get_dockerCredentials.yml) declares BOTH registry:read and registry:update on that endpoint. The minted Docker credential is itself a SECRET exported through the docker_credentials stack output -- these scopes are what let the runner mint it, not what consumers use to pull."
+        notes: "When the spec's docker_credentials block is set: the runner mints/re-mints the Docker credential via GET /v2/registry/docker-credentials, and DigitalOcean's own OpenAPI spec (registry_get_dockerCredentials.yml) declares BOTH registry:read and registry:update on that endpoint. The minted Docker credential is itself a SECRET exported through the docker_credentials output -- these scopes are what let the runner mint it, not what consumers use to pull."

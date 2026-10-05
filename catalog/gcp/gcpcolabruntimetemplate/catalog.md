@@ -4,7 +4,7 @@ Gives your data scientists pre-approved notebook machines. A Colab Enterprise ru
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project
 - **Runtime template** -- a `colab.RuntimeTemplate` with the declared settings
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -52,7 +52,7 @@ spec:
 planton apply -f colab-runtime-template.yaml
 ```
 
-This publishes a one-GPU template that shuts idle runtimes down after an hour. A Stack Job tracks the provisioning in real time.
+This publishes a one-GPU template that shuts idle runtimes down after an hour. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -72,7 +72,7 @@ These are the most important decisions when configuring a template. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -81,9 +81,9 @@ These are the most important decisions when configuring a template. Explore the 
 | **GcpSubnetwork** | `networkSpec.subnetwork` | `status.outputs.subnetwork_self_link` |
 | **GcpKmsKey** | `kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -101,7 +101,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Colab Runtime**](/cloud-catalog/gcp-colab-runtime) -- runtimes assigned from the template
-- [**GCP Colab Schedule**](/cloud-catalog/gcp-colab-schedule) -- scheduled notebook runs
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- private networking
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption
+- [**GCP Colab Runtime**](/infra-catalog/gcp-colab-runtime) -- runtimes assigned from the template
+- [**GCP Colab Schedule**](/infra-catalog/gcp-colab-schedule) -- scheduled notebook runs
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- private networking
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed encryption

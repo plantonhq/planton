@@ -6,13 +6,13 @@
 
 **apiVersion**: `aws.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 AwsConfigAggregatorSpec defines the desired configuration for AWS
 Config aggregation - the cross-account, cross-region rollup of
 Config data into one queryable view.
 
-Aggregation has two sides, and this component models both as arms:
+Aggregation has two sides, and this kind models both as arms:
 
   - aggregation: the AGGREGATOR itself, deployed in the account
     that collects. It references no Config recorder - aggregation

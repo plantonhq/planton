@@ -4,7 +4,7 @@ A project's Binary Authorization policy: the rule GKE applies to every pod creat
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `binaryauthorization.googleapis.com` on the project (never disabled on destroy)
 - **Policy** -- the project's `binary_authorization_policy`, replacing whatever policy it had
@@ -74,7 +74,7 @@ planton apply -f binary-authorization-policy.yaml
 - Each cluster has at most one rule; `cluster` is `{location}.{cluster_name}`.
 - Modes take only Google's values.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -102,7 +102,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpBinaryAuthorizationAttestor** -- the signers a rule requires
 - **GcpGkeCluster** -- enforces the policy with `PROJECT_SINGLETON_POLICY_ENFORCE`

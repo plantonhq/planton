@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ray-cluster-kubernetes stack-input
-type KubernetesRayClusterStackInput struct {
+// ray-cluster-kubernetes iac-input
+type KubernetesRayClusterIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *KubernetesRayCluster `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesRayClusterStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesRayClusterStackInput) Reset() {
-	*x = KubernetesRayClusterStackInput{}
+func (x *KubernetesRayClusterIacInput) Reset() {
+	*x = KubernetesRayClusterIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesraycluster_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesRayClusterStackInput) String() string {
+func (x *KubernetesRayClusterIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesRayClusterStackInput) ProtoMessage() {}
+func (*KubernetesRayClusterIacInput) ProtoMessage() {}
 
-func (x *KubernetesRayClusterStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesRayClusterIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesraycluster_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesRayClusterStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesRayClusterStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesRayClusterStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesRayClusterIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesRayClusterIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesraycluster_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesRayClusterStackInput) GetTarget() *KubernetesRayCluster {
+func (x *KubernetesRayClusterIacInput) GetTarget() *KubernetesRayCluster {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesRayClusterStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesRayClusterIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetesraycluster_v1alpha1_input_proto protorefle
 
 const file_catalog_kubernetes_kubernetesraycluster_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kubernetesraycluster/v1alpha1/input.proto\x124dev.planton.kubernetes.kubernetesraycluster.v1alpha1\x1a:catalog/kubernetes/kubernetesraycluster/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xdf\x01\n" +
-	"\x1eKubernetesRayClusterStackInput\x12b\n" +
+	"<catalog/kubernetes/kubernetesraycluster/v1alpha1/input.proto\x124dev.planton.kubernetes.kubernetesraycluster.v1alpha1\x1a:catalog/kubernetes/kubernetesraycluster/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xdd\x01\n" +
+	"\x1cKubernetesRayClusterIacInput\x12b\n" +
 	"\x06target\x18\x01 \x01(\v2J.dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xa7\x03\n" +
 	"8com.dev.planton.kubernetes.kubernetesraycluster.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetesraycluster_v1alpha1_input_proto_rawDescGZ
 
 var file_catalog_kubernetes_kubernetesraycluster_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesraycluster_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesRayClusterStackInput)(nil),      // 0: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStackInput
+	(*KubernetesRayClusterIacInput)(nil),        // 0: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterIacInput
 	(*KubernetesRayCluster)(nil),                // 1: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayCluster
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesraycluster_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStackInput.target:type_name -> dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayCluster
-	2, // 1: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterIacInput.target:type_name -> dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayCluster
+	2, // 1: dev.planton.kubernetes.kubernetesraycluster.v1alpha1.KubernetesRayClusterIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

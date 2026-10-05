@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEgressOnlyInternetGatewayStackOutputs contains the values produced by
+// AwsEgressOnlyInternetGatewayOutputs contains the values produced by
 // deploying an AwsEgressOnlyInternetGateway. Downstream components reference
 // these via StringValueOrRef -- most commonly an AwsSubnet IPv6 route whose
 // target is this gateway's id.
-type AwsEgressOnlyInternetGatewayStackOutputs struct {
+type AwsEgressOnlyInternetGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The egress-only internet gateway's id (e.g. "eigw-0abc123"). This is the
 	// value a subnet route uses as its target_id when target_type is
@@ -40,20 +40,20 @@ type AwsEgressOnlyInternetGatewayStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsEgressOnlyInternetGatewayStackOutputs) Reset() {
-	*x = AwsEgressOnlyInternetGatewayStackOutputs{}
+func (x *AwsEgressOnlyInternetGatewayOutputs) Reset() {
+	*x = AwsEgressOnlyInternetGatewayOutputs{}
 	mi := &file_catalog_aws_awsegressonlyinternetgateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEgressOnlyInternetGatewayStackOutputs) String() string {
+func (x *AwsEgressOnlyInternetGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEgressOnlyInternetGatewayStackOutputs) ProtoMessage() {}
+func (*AwsEgressOnlyInternetGatewayOutputs) ProtoMessage() {}
 
-func (x *AwsEgressOnlyInternetGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEgressOnlyInternetGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsegressonlyinternetgateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *AwsEgressOnlyInternetGatewayStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEgressOnlyInternetGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEgressOnlyInternetGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEgressOnlyInternetGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEgressOnlyInternetGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsegressonlyinternetgateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEgressOnlyInternetGatewayStackOutputs) GetEgressOnlyInternetGatewayId() string {
+func (x *AwsEgressOnlyInternetGatewayOutputs) GetEgressOnlyInternetGatewayId() string {
 	if x != nil {
 		return x.EgressOnlyInternetGatewayId
 	}
 	return ""
 }
 
-func (x *AwsEgressOnlyInternetGatewayStackOutputs) GetVpcId() string {
+func (x *AwsEgressOnlyInternetGatewayOutputs) GetVpcId() string {
 	if x != nil {
 		return x.VpcId
 	}
 	return ""
 }
 
-func (x *AwsEgressOnlyInternetGatewayStackOutputs) GetRegion() string {
+func (x *AwsEgressOnlyInternetGatewayOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -95,8 +95,8 @@ var File_catalog_aws_awsegressonlyinternetgateway_v1alpha1_outputs_proto protore
 
 const file_catalog_aws_awsegressonlyinternetgateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/aws/awsegressonlyinternetgateway/v1alpha1/outputs.proto\x125dev.planton.aws.awsegressonlyinternetgateway.v1alpha1\"\x9f\x01\n" +
-	"(AwsEgressOnlyInternetGatewayStackOutputs\x12D\n" +
+	"?catalog/aws/awsegressonlyinternetgateway/v1alpha1/outputs.proto\x125dev.planton.aws.awsegressonlyinternetgateway.v1alpha1\"\x9a\x01\n" +
+	"#AwsEgressOnlyInternetGatewayOutputs\x12D\n" +
 	"\x1fegress_only_internet_gateway_id\x18\x01 \x01(\tR\x1begressOnlyInternetGatewayId\x12\x15\n" +
 	"\x06vpc_id\x18\x02 \x01(\tR\x05vpcId\x12\x16\n" +
 	"\x06region\x18\x03 \x01(\tR\x06regionB\xb7\x03\n" +
@@ -116,7 +116,7 @@ func file_catalog_aws_awsegressonlyinternetgateway_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_aws_awsegressonlyinternetgateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsegressonlyinternetgateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEgressOnlyInternetGatewayStackOutputs)(nil), // 0: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayStackOutputs
+	(*AwsEgressOnlyInternetGatewayOutputs)(nil), // 0: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayOutputs
 }
 var file_catalog_aws_awsegressonlyinternetgateway_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

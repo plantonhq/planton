@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureBackupProtectedVmStackOutputs** captures the outputs of
+// **AzureBackupProtectedVmOutputs** captures the outputs of
 // registering a VM under backup protection.
-type AzureBackupProtectedVmStackOutputs struct {
+type AzureBackupProtectedVmOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the protected item.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.RecoveryServices/vaults/{vault}/backupFabrics/Azure/protectionContainers/iaasvmcontainer;iaasvmcontainerv2;{vm-rg};{vm-name}/protectedItems/VM;iaasvmcontainerv2;{vm-rg};{vm-name}
@@ -32,20 +32,20 @@ type AzureBackupProtectedVmStackOutputs struct {
 	sizeCache           protoimpl.SizeCache
 }
 
-func (x *AzureBackupProtectedVmStackOutputs) Reset() {
-	*x = AzureBackupProtectedVmStackOutputs{}
+func (x *AzureBackupProtectedVmOutputs) Reset() {
+	*x = AzureBackupProtectedVmOutputs{}
 	mi := &file_catalog_azure_azurebackupprotectedvm_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureBackupProtectedVmStackOutputs) String() string {
+func (x *AzureBackupProtectedVmOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureBackupProtectedVmStackOutputs) ProtoMessage() {}
+func (*AzureBackupProtectedVmOutputs) ProtoMessage() {}
 
-func (x *AzureBackupProtectedVmStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureBackupProtectedVmOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurebackupprotectedvm_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,12 +57,12 @@ func (x *AzureBackupProtectedVmStackOutputs) ProtoReflect() protoreflect.Message
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureBackupProtectedVmStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureBackupProtectedVmStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureBackupProtectedVmOutputs.ProtoReflect.Descriptor instead.
+func (*AzureBackupProtectedVmOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurebackupprotectedvm_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureBackupProtectedVmStackOutputs) GetBackupProtectedVmId() string {
+func (x *AzureBackupProtectedVmOutputs) GetBackupProtectedVmId() string {
 	if x != nil {
 		return x.BackupProtectedVmId
 	}
@@ -73,8 +73,8 @@ var File_catalog_azure_azurebackupprotectedvm_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_azure_azurebackupprotectedvm_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/azure/azurebackupprotectedvm/v1alpha1/outputs.proto\x121dev.planton.azure.azurebackupprotectedvm.v1alpha1\"Y\n" +
-	"\"AzureBackupProtectedVmStackOutputs\x123\n" +
+	";catalog/azure/azurebackupprotectedvm/v1alpha1/outputs.proto\x121dev.planton.azure.azurebackupprotectedvm.v1alpha1\"T\n" +
+	"\x1dAzureBackupProtectedVmOutputs\x123\n" +
 	"\x16backup_protected_vm_id\x18\x01 \x01(\tR\x13backupProtectedVmIdB\x99\x03\n" +
 	"5com.dev.planton.azure.azurebackupprotectedvm.v1alpha1B\fOutputsProtoP\x01Zigithub.com/plantonhq/planton/catalog/azure/azurebackupprotectedvm/v1alpha1;azurebackupprotectedvmv1alpha1\xa2\x02\x04DPAA\xaa\x021Dev.Planton.Azure.Azurebackupprotectedvm.V1alpha1\xca\x021Dev\\Planton\\Azure\\Azurebackupprotectedvm\\V1alpha1\xe2\x02=Dev\\Planton\\Azure\\Azurebackupprotectedvm\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Azure::Azurebackupprotectedvm::V1alpha1b\x06proto3"
 
@@ -92,7 +92,7 @@ func file_catalog_azure_azurebackupprotectedvm_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_azure_azurebackupprotectedvm_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurebackupprotectedvm_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureBackupProtectedVmStackOutputs)(nil), // 0: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmStackOutputs
+	(*AzureBackupProtectedVmOutputs)(nil), // 0: dev.planton.azure.azurebackupprotectedvm.v1alpha1.AzureBackupProtectedVmOutputs
 }
 var file_catalog_azure_azurebackupprotectedvm_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

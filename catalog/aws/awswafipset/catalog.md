@@ -4,7 +4,7 @@ Deploys a WAFv2 IP set — a named, reusable collection of IP addresses and CIDR
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **WAFv2 IP Set** -- the named address collection in the chosen scope (REGIONAL or CLOUDFRONT). The set name comes from `metadata.name`; scope and IP address family are create-time immutable, and the address list itself updates in place
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -51,7 +51,7 @@ spec:
 planton apply -f waf-ip-set.yaml
 ```
 
-This publishes the allow-list; pair it with a web ACL whose default action is block and an early-priority allow rule referencing this set's ARN. A Stack Job tracks the provisioning in real time.
+This publishes the allow-list; pair it with a web ACL whose default action is block and an early-priority allow rule referencing this set's ARN. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -67,13 +67,13 @@ These are the most important decisions when configuring an IP set. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. The set is a leaf — it references no other Cloud Resources; web ACLs reference it, never the reverse.
+This kind has no foreign key dependencies. The set is a leaf — it references no other Infra Components; web ACLs reference it, never the reverse.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -91,7 +91,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS WAF Web ACL**](/cloud-catalog/aws-waf-web-acl) -- references this set through `ip_set_reference` rule statements; the rule's action (allow, block, count, CAPTCHA) decides what a match means
-- [**AWS WAF Regex Pattern Set**](/cloud-catalog/aws-waf-regex-pattern-set) -- the sibling reusable-collection kind for pattern matching instead of source-IP matching
-- [**AWS ALB**](/cloud-catalog/aws-alb) -- the most common REGIONAL association target of the web ACLs that consume this set
-- [**AWS CloudFront**](/cloud-catalog/aws-cloud-front) -- the association target of CLOUDFRONT-scoped web ACLs (its `webAclArn` binds the web ACL)
+- [**AWS WAF Web ACL**](/infra-catalog/aws-waf-web-acl) -- references this set through `ip_set_reference` rule statements; the rule's action (allow, block, count, CAPTCHA) decides what a match means
+- [**AWS WAF Regex Pattern Set**](/infra-catalog/aws-waf-regex-pattern-set) -- the sibling reusable-collection kind for pattern matching instead of source-IP matching
+- [**AWS ALB**](/infra-catalog/aws-alb) -- the most common REGIONAL association target of the web ACLs that consume this set
+- [**AWS CloudFront**](/infra-catalog/aws-cloud-front) -- the association target of CLOUDFRONT-scoped web ACLs (its `webAclArn` binds the web ACL)

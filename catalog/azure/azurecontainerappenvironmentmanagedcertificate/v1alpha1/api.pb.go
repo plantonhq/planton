@@ -34,7 +34,7 @@ type AzureContainerAppEnvironmentManagedCertificate struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureContainerAppEnvironmentManagedCertificateSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureContainerAppEnvironmentManagedCertificate) GetKind() string {
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentManagedCertificate) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureContainerAppEnvironmentManagedCertificate) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureContainerAppEnvironmentManagedCertificate) GetStatus() *AzureConta
 // AzureContainerAppEnvironmentManagedCertificateStatus holds the deployment status and outputs.
 type AzureContainerAppEnvironmentManagedCertificateStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureContainerAppEnvironmentManagedCertificateStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureContainerAppEnvironmentManagedCertificateOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureContainerAppEnvironmentManagedCertificateStatus) Descriptor() ([]byt
 	return file_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureContainerAppEnvironmentManagedCertificateStatus) GetOutputs() *AzureContainerAppEnvironmentManagedCertificateStackOutputs {
+func (x *AzureContainerAppEnvironmentManagedCertificateStatus) GetOutputs() *AzureContainerAppEnvironmentManagedCertificateOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1
 	"apiVersion\x12I\n" +
 	"\x04kind\x18\x02 \x01(\tB5\xbaH2r0\n" +
 	".AzureContainerAppEnvironmentManagedCertificateR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x99\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x99\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2}.dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x97\x01\n" +
-	"\x06status\x18\x05 \x01(\v2\x7f.dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateStatusR\x06status\"\xd9\x01\n" +
-	"4AzureContainerAppEnvironmentManagedCertificateStatus\x12\xa0\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2\x85\x01.dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateStackOutputsR\aoutputsB\xbe\x04\n" +
+	"\x06status\x18\x05 \x01(\v2\x7f.dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateStatusR\x06status\"\xd4\x01\n" +
+	"4AzureContainerAppEnvironmentManagedCertificateStatus\x12\x9b\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2\x80\x01.dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateOutputsR\aoutputsB\xbe\x04\n" +
 	"Mcom.dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1B\bApiProtoP\x01Z\x99\x01github.com/plantonhq/planton/catalog/azure/azurecontainerappenvironmentmanagedcertificate/v1alpha1;azurecontainerappenvironmentmanagedcertificatev1alpha1\xa2\x02\x04DPAA\xaa\x02IDev.Planton.Azure.Azurecontainerappenvironmentmanagedcertificate.V1alpha1\xca\x02IDev\\Planton\\Azure\\Azurecontainerappenvironmentmanagedcertificate\\V1alpha1\xe2\x02UDev\\Planton\\Azure\\Azurecontainerappenvironmentmanagedcertificate\\V1alpha1\\GPBMetadata\xea\x02MDev::Planton::Azure::Azurecontainerappenvironmentmanagedcertificate::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1_
 
 var file_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1_api_proto_goTypes = []any{
-	(*AzureContainerAppEnvironmentManagedCertificate)(nil),             // 0: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificate
-	(*AzureContainerAppEnvironmentManagedCertificateStatus)(nil),       // 1: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateStatus
-	(*shared.CloudResourceMetadata)(nil),                               // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureContainerAppEnvironmentManagedCertificateSpec)(nil),         // 3: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateSpec
-	(*AzureContainerAppEnvironmentManagedCertificateStackOutputs)(nil), // 4: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateStackOutputs
+	(*AzureContainerAppEnvironmentManagedCertificate)(nil),        // 0: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificate
+	(*AzureContainerAppEnvironmentManagedCertificateStatus)(nil),  // 1: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateStatus
+	(*shared.CatalogObjectMetadata)(nil),                          // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureContainerAppEnvironmentManagedCertificateSpec)(nil),    // 3: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateSpec
+	(*AzureContainerAppEnvironmentManagedCertificateOutputs)(nil), // 4: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateOutputs
 }
 var file_catalog_azure_azurecontainerappenvironmentmanagedcertificate_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificate.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificate.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificate.spec:type_name -> dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateSpec
 	1, // 2: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificate.status:type_name -> dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateStatus
-	4, // 3: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateStatus.outputs:type_name -> dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateStackOutputs
+	4, // 3: dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateStatus.outputs:type_name -> dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1.AzureContainerAppEnvironmentManagedCertificateOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

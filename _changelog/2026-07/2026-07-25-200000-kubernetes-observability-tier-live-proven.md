@@ -24,7 +24,7 @@
   8192MB and requests container memory at 1.2× — a 9830Mi request that
   never schedules on a node with less than ~10Gi allocatable, and
   because the install is atomic the WHOLE release rolls back, reading as
-  "Loki won't install." The spec's caching comments, the component docs,
+  "Loki won't install." The spec's caching comments, the kind docs,
   and the dev preset now teach the failure mode and the sizing recipe
   (`caching.chunks_cache_memory_mb`; 128–1024MB serves light query
   loads), and the kind-lane scenarios size the caches explicitly.
@@ -49,7 +49,7 @@
   human-facing log lines), and the forge workflow teaches the class for
   every verifier asserting against protojson APIs.
 
-- **Workflow lessons folded into the component forge rule**: chart
+- **Workflow lessons folded into the kind forge rule**: chart
   defaults can be unschedulable by RESOURCE REQUEST, not just topology —
   read every companion workload's default requests (including computed
   factors) at the pin, and treat a request exceeding a small node's

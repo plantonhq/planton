@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureApplicationSecurityGroupStackOutputs** captures the outputs of
+// **AzureApplicationSecurityGroupOutputs** captures the outputs of
 // provisioning an Azure Application Security Group.
-type AzureApplicationSecurityGroupStackOutputs struct {
+type AzureApplicationSecurityGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the application security group. This
 	// is the composition seam: network interfaces
@@ -38,20 +38,20 @@ type AzureApplicationSecurityGroupStackOutputs struct {
 	sizeCache                    protoimpl.SizeCache
 }
 
-func (x *AzureApplicationSecurityGroupStackOutputs) Reset() {
-	*x = AzureApplicationSecurityGroupStackOutputs{}
+func (x *AzureApplicationSecurityGroupOutputs) Reset() {
+	*x = AzureApplicationSecurityGroupOutputs{}
 	mi := &file_catalog_azure_azureapplicationsecuritygroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureApplicationSecurityGroupStackOutputs) String() string {
+func (x *AzureApplicationSecurityGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureApplicationSecurityGroupStackOutputs) ProtoMessage() {}
+func (*AzureApplicationSecurityGroupOutputs) ProtoMessage() {}
 
-func (x *AzureApplicationSecurityGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureApplicationSecurityGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureapplicationsecuritygroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,19 +63,19 @@ func (x *AzureApplicationSecurityGroupStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureApplicationSecurityGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureApplicationSecurityGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureApplicationSecurityGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AzureApplicationSecurityGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureapplicationsecuritygroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureApplicationSecurityGroupStackOutputs) GetApplicationSecurityGroupId() string {
+func (x *AzureApplicationSecurityGroupOutputs) GetApplicationSecurityGroupId() string {
 	if x != nil {
 		return x.ApplicationSecurityGroupId
 	}
 	return ""
 }
 
-func (x *AzureApplicationSecurityGroupStackOutputs) GetApplicationSecurityGroupName() string {
+func (x *AzureApplicationSecurityGroupOutputs) GetApplicationSecurityGroupName() string {
 	if x != nil {
 		return x.ApplicationSecurityGroupName
 	}
@@ -86,8 +86,8 @@ var File_catalog_azure_azureapplicationsecuritygroup_v1alpha1_outputs_proto prot
 
 const file_catalog_azure_azureapplicationsecuritygroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/azure/azureapplicationsecuritygroup/v1alpha1/outputs.proto\x128dev.planton.azure.azureapplicationsecuritygroup.v1alpha1\"\xb5\x01\n" +
-	")AzureApplicationSecurityGroupStackOutputs\x12A\n" +
+	"Bcatalog/azure/azureapplicationsecuritygroup/v1alpha1/outputs.proto\x128dev.planton.azure.azureapplicationsecuritygroup.v1alpha1\"\xb0\x01\n" +
+	"$AzureApplicationSecurityGroupOutputs\x12A\n" +
 	"\x1dapplication_security_group_id\x18\x01 \x01(\tR\x1aapplicationSecurityGroupId\x12E\n" +
 	"\x1fapplication_security_group_name\x18\x02 \x01(\tR\x1capplicationSecurityGroupNameB\xca\x03\n" +
 	"<com.dev.planton.azure.azureapplicationsecuritygroup.v1alpha1B\fOutputsProtoP\x01Zwgithub.com/plantonhq/planton/catalog/azure/azureapplicationsecuritygroup/v1alpha1;azureapplicationsecuritygroupv1alpha1\xa2\x02\x04DPAA\xaa\x028Dev.Planton.Azure.Azureapplicationsecuritygroup.V1alpha1\xca\x028Dev\\Planton\\Azure\\Azureapplicationsecuritygroup\\V1alpha1\xe2\x02DDev\\Planton\\Azure\\Azureapplicationsecuritygroup\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Azure::Azureapplicationsecuritygroup::V1alpha1b\x06proto3"
@@ -106,7 +106,7 @@ func file_catalog_azure_azureapplicationsecuritygroup_v1alpha1_outputs_proto_raw
 
 var file_catalog_azure_azureapplicationsecuritygroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureapplicationsecuritygroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureApplicationSecurityGroupStackOutputs)(nil), // 0: dev.planton.azure.azureapplicationsecuritygroup.v1alpha1.AzureApplicationSecurityGroupStackOutputs
+	(*AzureApplicationSecurityGroupOutputs)(nil), // 0: dev.planton.azure.azureapplicationsecuritygroup.v1alpha1.AzureApplicationSecurityGroupOutputs
 }
 var file_catalog_azure_azureapplicationsecuritygroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

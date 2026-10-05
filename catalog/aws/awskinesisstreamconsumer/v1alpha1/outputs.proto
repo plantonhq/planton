@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awskinesisstreamconsumer.v1alpha1;
 
-// AwsKinesisStreamConsumerStackOutputs captures observable identifiers from a
+// AwsKinesisStreamConsumerOutputs captures observable identifiers from a
 // registered Kinesis enhanced fan-out consumer. These outputs are used by
 // downstream configurations (e.g., Lambda event source mappings with enhanced
 // fan-out) to wire dependencies via StringValueOrRef.
-message AwsKinesisStreamConsumerStackOutputs {
+message AwsKinesisStreamConsumerOutputs {
   // The Amazon Resource Name (ARN) of the registered stream consumer. This is
   // the primary identifier used for Lambda event source mappings configured
   // with enhanced fan-out (StartingPosition + ConsumerARN), IAM policies, and

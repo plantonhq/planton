@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRedshiftServerlessNamespaceStackOutputs captures the observable
+// AwsRedshiftServerlessNamespaceOutputs captures the observable
 // identifiers of the namespace after deployment.
-type AwsRedshiftServerlessNamespaceStackOutputs struct {
+type AwsRedshiftServerlessNamespaceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The namespace name. Exported because it is the join key workgroups
-	// attach with -- downstream references resolve against stack outputs,
+	// attach with -- downstream references resolve against outputs,
 	// so the name must surface here even though it equals metadata.name.
 	NamespaceName string `protobuf:"bytes,1,opt,name=namespace_name,json=namespaceName,proto3" json:"namespace_name,omitempty"`
 	// The unique identifier AWS assigns to the namespace.
@@ -44,20 +44,20 @@ type AwsRedshiftServerlessNamespaceStackOutputs struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *AwsRedshiftServerlessNamespaceStackOutputs) Reset() {
-	*x = AwsRedshiftServerlessNamespaceStackOutputs{}
+func (x *AwsRedshiftServerlessNamespaceOutputs) Reset() {
+	*x = AwsRedshiftServerlessNamespaceOutputs{}
 	mi := &file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRedshiftServerlessNamespaceStackOutputs) String() string {
+func (x *AwsRedshiftServerlessNamespaceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRedshiftServerlessNamespaceStackOutputs) ProtoMessage() {}
+func (*AwsRedshiftServerlessNamespaceOutputs) ProtoMessage() {}
 
-func (x *AwsRedshiftServerlessNamespaceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRedshiftServerlessNamespaceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,40 +69,40 @@ func (x *AwsRedshiftServerlessNamespaceStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRedshiftServerlessNamespaceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRedshiftServerlessNamespaceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRedshiftServerlessNamespaceOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRedshiftServerlessNamespaceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRedshiftServerlessNamespaceStackOutputs) GetNamespaceName() string {
+func (x *AwsRedshiftServerlessNamespaceOutputs) GetNamespaceName() string {
 	if x != nil {
 		return x.NamespaceName
 	}
 	return ""
 }
 
-func (x *AwsRedshiftServerlessNamespaceStackOutputs) GetNamespaceId() string {
+func (x *AwsRedshiftServerlessNamespaceOutputs) GetNamespaceId() string {
 	if x != nil {
 		return x.NamespaceId
 	}
 	return ""
 }
 
-func (x *AwsRedshiftServerlessNamespaceStackOutputs) GetArn() string {
+func (x *AwsRedshiftServerlessNamespaceOutputs) GetArn() string {
 	if x != nil {
 		return x.Arn
 	}
 	return ""
 }
 
-func (x *AwsRedshiftServerlessNamespaceStackOutputs) GetDbName() string {
+func (x *AwsRedshiftServerlessNamespaceOutputs) GetDbName() string {
 	if x != nil {
 		return x.DbName
 	}
 	return ""
 }
 
-func (x *AwsRedshiftServerlessNamespaceStackOutputs) GetAdminPasswordSecretArn() string {
+func (x *AwsRedshiftServerlessNamespaceOutputs) GetAdminPasswordSecretArn() string {
 	if x != nil {
 		return x.AdminPasswordSecretArn
 	}
@@ -113,8 +113,8 @@ var File_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_outputs_proto proto
 
 const file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/aws/awsredshiftserverlessnamespace/v1alpha1/outputs.proto\x127dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1\"\xdc\x01\n" +
-	"*AwsRedshiftServerlessNamespaceStackOutputs\x12%\n" +
+	"Acatalog/aws/awsredshiftserverlessnamespace/v1alpha1/outputs.proto\x127dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1\"\xd7\x01\n" +
+	"%AwsRedshiftServerlessNamespaceOutputs\x12%\n" +
 	"\x0enamespace_name\x18\x01 \x01(\tR\rnamespaceName\x12!\n" +
 	"\fnamespace_id\x18\x02 \x01(\tR\vnamespaceId\x12\x10\n" +
 	"\x03arn\x18\x03 \x01(\tR\x03arn\x12\x17\n" +
@@ -136,7 +136,7 @@ func file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_outputs_proto_rawD
 
 var file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRedshiftServerlessNamespaceStackOutputs)(nil), // 0: dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1.AwsRedshiftServerlessNamespaceStackOutputs
+	(*AwsRedshiftServerlessNamespaceOutputs)(nil), // 0: dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1.AwsRedshiftServerlessNamespaceOutputs
 }
 var file_catalog_aws_awsredshiftserverlessnamespace_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

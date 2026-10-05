@@ -31,7 +31,7 @@ This preset uses `valueFrom` references to compose with:
 
 ## Cost Estimate
 
-The cost drivers are the six kafka.m7g.xlarge brokers (billed hourly, the dominant line) plus the 6 TB of EBS storage and the tiered-storage S3 tier — significantly cheaper per GB than keeping everything on local EBS. The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awsmskcluster.yaml` — computed from the pinned price book, never hand-typed here.
+The cost drivers are the six kafka.m7g.xlarge brokers (billed hourly, the dominant line) plus the 6 TB of EBS storage and the tiered-storage S3 tier — significantly cheaper per GB than keeping everything on local EBS. The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awsmskcluster.yaml` — computed from the pinned price book, never hand-typed here.
 
 ## Customization
 

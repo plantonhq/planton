@@ -149,7 +149,7 @@ func domainName(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) err
 		}
 	}
 
-	// Export outputs matching AwsHttpApiDomainStackOutputs. The nested
+	// Export outputs matching AwsHttpApiDomainOutputs. The nested
 	// configuration outputs (target domain + hosted zone) are the DNS
 	// composition surface.
 	ctx.Export(OpDomainName, createdDomain.ID())

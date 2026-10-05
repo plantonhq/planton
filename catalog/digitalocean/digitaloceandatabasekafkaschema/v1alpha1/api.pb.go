@@ -31,7 +31,7 @@ type DigitalOceanDatabaseKafkaSchema struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *DigitalOceanDatabaseKafkaSchemaSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *DigitalOceanDatabaseKafkaSchema) GetKind() string {
 	return ""
 }
 
-func (x *DigitalOceanDatabaseKafkaSchema) GetMetadata() *shared.CloudResourceMetadata {
+func (x *DigitalOceanDatabaseKafkaSchema) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *DigitalOceanDatabaseKafkaSchema) GetStatus() *DigitalOceanDatabaseKafka
 // digital-ocean-database-kafka-schema status
 type DigitalOceanDatabaseKafkaSchemaStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	digital-ocean-database-kafka-schema stack-outputs
-	Outputs       *DigitalOceanDatabaseKafkaSchemaStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	digital-ocean-database-kafka-schema outputs
+	Outputs       *DigitalOceanDatabaseKafkaSchemaOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*DigitalOceanDatabaseKafkaSchemaStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *DigitalOceanDatabaseKafkaSchemaStatus) GetOutputs() *DigitalOceanDatabaseKafkaSchemaStackOutputs {
+func (x *DigitalOceanDatabaseKafkaSchemaStatus) GetOutputs() *DigitalOceanDatabaseKafkaSchemaOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_api_pro
 	"apiVersion\x12:\n" +
 	"\x04kind\x18\x02 \x01(\tB&\xbaH#r!\n" +
 	"\x1fDigitalOceanDatabaseKafkaSchemaR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x82\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x82\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2f.dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x80\x01\n" +
-	"\x06status\x18\x05 \x01(\v2h.dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaStatusR\x06status\"\xb2\x01\n" +
-	"%DigitalOceanDatabaseKafkaSchemaStatus\x12\x88\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2n.dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaStackOutputsR\aoutputsB\xff\x03\n" +
+	"\x06status\x18\x05 \x01(\v2h.dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaStatusR\x06status\"\xad\x01\n" +
+	"%DigitalOceanDatabaseKafkaSchemaStatus\x12\x83\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2i.dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaOutputsR\aoutputsB\xff\x03\n" +
 	"Ecom.dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1B\bApiProtoP\x01Z\x82\x01github.com/plantonhq/planton/catalog/digitalocean/digitaloceandatabasekafkaschema/v1alpha1;digitaloceandatabasekafkaschemav1alpha1\xa2\x02\x04DPDD\xaa\x02ADev.Planton.Digitalocean.Digitaloceandatabasekafkaschema.V1alpha1\xca\x02ADev\\Planton\\Digitalocean\\Digitaloceandatabasekafkaschema\\V1alpha1\xe2\x02MDev\\Planton\\Digitalocean\\Digitaloceandatabasekafkaschema\\V1alpha1\\GPBMetadata\xea\x02EDev::Planton::Digitalocean::Digitaloceandatabasekafkaschema::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_api_prot
 
 var file_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_api_proto_goTypes = []any{
-	(*DigitalOceanDatabaseKafkaSchema)(nil),             // 0: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchema
-	(*DigitalOceanDatabaseKafkaSchemaStatus)(nil),       // 1: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaStatus
-	(*shared.CloudResourceMetadata)(nil),                // 2: dev.planton.shared.CloudResourceMetadata
-	(*DigitalOceanDatabaseKafkaSchemaSpec)(nil),         // 3: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaSpec
-	(*DigitalOceanDatabaseKafkaSchemaStackOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaStackOutputs
+	(*DigitalOceanDatabaseKafkaSchema)(nil),        // 0: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchema
+	(*DigitalOceanDatabaseKafkaSchemaStatus)(nil),  // 1: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaStatus
+	(*shared.CatalogObjectMetadata)(nil),           // 2: dev.planton.shared.CatalogObjectMetadata
+	(*DigitalOceanDatabaseKafkaSchemaSpec)(nil),    // 3: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaSpec
+	(*DigitalOceanDatabaseKafkaSchemaOutputs)(nil), // 4: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaOutputs
 }
 var file_catalog_digitalocean_digitaloceandatabasekafkaschema_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchema.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchema.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchema.spec:type_name -> dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaSpec
 	1, // 2: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchema.status:type_name -> dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaStatus
-	4, // 3: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaStackOutputs
+	4, // 3: dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaStatus.outputs:type_name -> dev.planton.digitalocean.digitaloceandatabasekafkaschema.v1alpha1.DigitalOceanDatabaseKafkaSchemaOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

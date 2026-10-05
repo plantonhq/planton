@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockModelAccessStackInput is the input for the IaC modules that
+// AwsBedrockModelAccessIacInput is the input for the IaC modules that
 // deploy the Bedrock model access.
-type AwsBedrockModelAccessStackInput struct {
+type AwsBedrockModelAccessIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsBedrockModelAccess resource to deploy.
 	Target *AwsBedrockModelAccess `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsBedrockModelAccessStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsBedrockModelAccessStackInput) Reset() {
-	*x = AwsBedrockModelAccessStackInput{}
+func (x *AwsBedrockModelAccessIacInput) Reset() {
+	*x = AwsBedrockModelAccessIacInput{}
 	mi := &file_catalog_aws_awsbedrockmodelaccess_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockModelAccessStackInput) String() string {
+func (x *AwsBedrockModelAccessIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockModelAccessStackInput) ProtoMessage() {}
+func (*AwsBedrockModelAccessIacInput) ProtoMessage() {}
 
-func (x *AwsBedrockModelAccessStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockModelAccessIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockmodelaccess_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsBedrockModelAccessStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockModelAccessStackInput.ProtoReflect.Descriptor instead.
-func (*AwsBedrockModelAccessStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockModelAccessIacInput.ProtoReflect.Descriptor instead.
+func (*AwsBedrockModelAccessIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockmodelaccess_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockModelAccessStackInput) GetTarget() *AwsBedrockModelAccess {
+func (x *AwsBedrockModelAccessIacInput) GetTarget() *AwsBedrockModelAccess {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsBedrockModelAccessStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsBedrockModelAccessIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awsbedrockmodelaccess_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_aws_awsbedrockmodelaccess_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/aws/awsbedrockmodelaccess/v1alpha1/input.proto\x12.dev.planton.aws.awsbedrockmodelaccess.v1alpha1\x1a4catalog/aws/awsbedrockmodelaccess/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcd\x01\n" +
-	"\x1fAwsBedrockModelAccessStackInput\x12]\n" +
+	"6catalog/aws/awsbedrockmodelaccess/v1alpha1/input.proto\x12.dev.planton.aws.awsbedrockmodelaccess.v1alpha1\x1a4catalog/aws/awsbedrockmodelaccess/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xcb\x01\n" +
+	"\x1dAwsBedrockModelAccessIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.aws.awsbedrockmodelaccess.v1alpha1.AwsBedrockModelAccessR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"2com.dev.planton.aws.awsbedrockmodelaccess.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awsbedrockmodelaccess_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_aws_awsbedrockmodelaccess_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbedrockmodelaccess_v1alpha1_input_proto_goTypes = []any{
-	(*AwsBedrockModelAccessStackInput)(nil), // 0: dev.planton.aws.awsbedrockmodelaccess.v1alpha1.AwsBedrockModelAccessStackInput
-	(*AwsBedrockModelAccess)(nil),           // 1: dev.planton.aws.awsbedrockmodelaccess.v1alpha1.AwsBedrockModelAccess
-	(*aws.AwsProviderConfig)(nil),           // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsBedrockModelAccessIacInput)(nil), // 0: dev.planton.aws.awsbedrockmodelaccess.v1alpha1.AwsBedrockModelAccessIacInput
+	(*AwsBedrockModelAccess)(nil),         // 1: dev.planton.aws.awsbedrockmodelaccess.v1alpha1.AwsBedrockModelAccess
+	(*aws.AwsProviderConfig)(nil),         // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsbedrockmodelaccess_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockmodelaccess.v1alpha1.AwsBedrockModelAccessStackInput.target:type_name -> dev.planton.aws.awsbedrockmodelaccess.v1alpha1.AwsBedrockModelAccess
-	2, // 1: dev.planton.aws.awsbedrockmodelaccess.v1alpha1.AwsBedrockModelAccessStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsbedrockmodelaccess.v1alpha1.AwsBedrockModelAccessIacInput.target:type_name -> dev.planton.aws.awsbedrockmodelaccess.v1alpha1.AwsBedrockModelAccess
+	2, // 1: dev.planton.aws.awsbedrockmodelaccess.v1alpha1.AwsBedrockModelAccessIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

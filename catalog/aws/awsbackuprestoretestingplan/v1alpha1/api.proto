@@ -10,11 +10,11 @@ import "shared/metadata.proto";
 message AwsBackupRestoreTestingPlan {
   string api_version = 1 [(buf.validate.field).string.const = 'aws.planton.dev/v1alpha1'];
   string kind = 2 [(buf.validate.field).string.const = 'AwsBackupRestoreTestingPlan'];
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
   AwsBackupRestoreTestingPlanSpec spec = 4 [(buf.validate.field).required = true];
   AwsBackupRestoreTestingPlanStatus status = 5;
 }
 
 message AwsBackupRestoreTestingPlanStatus {
-  AwsBackupRestoreTestingPlanStackOutputs outputs = 1;
+  AwsBackupRestoreTestingPlanOutputs outputs = 1;
 }

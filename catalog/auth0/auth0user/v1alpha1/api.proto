@@ -7,7 +7,7 @@ import "catalog/auth0/auth0user/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0user/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0User is a component that manages an Auth0 User: an identity in one of
+// Auth0User is a kind that manages an Auth0 User: an identity in one of
 // the tenant's database or passwordless connections, with its profile, its
 // authoritative roles and direct API permissions, and -- on a database
 // connection -- a password the modules mint when none is declared.
@@ -74,13 +74,13 @@ message Auth0User {
   // Must be "Auth0User" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'Auth0User'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the user within Planton (never sent to Auth0;
   //   the email, username, or phone number is the sign-in identifier)
   // - org: Organization that owns this user
   // - env: Environment (development, staging, production)
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the desired configuration for the Auth0 user: the
   // connection, the profile, the password posture, roles, and permissions.
@@ -95,8 +95,8 @@ message Auth0User {
 // Auth0UserStatus represents the current state of an Auth0 User resource.
 // This is populated by the deployment system and contains read-only outputs.
 message Auth0UserStatus {
-  // outputs contains the stack outputs from the Auth0 user deployment: the
+  // outputs contains the outputs from the Auth0 user deployment: the
   // user's identity-provider subject, the profile as stored, the connection,
   // and the module-minted password when one was generated.
-  Auth0UserStackOutputs outputs = 1;
+  Auth0UserOutputs outputs = 1;
 }

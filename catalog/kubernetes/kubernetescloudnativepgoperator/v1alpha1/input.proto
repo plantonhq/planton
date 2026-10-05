@@ -5,10 +5,10 @@ package dev.planton.kubernetes.kubernetescloudnativepgoperator.v1alpha1;
 import "catalog/kubernetes/kubernetescloudnativepgoperator/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesCloudNativePgOperatorStackInput is the input for both IaC
+// KubernetesCloudNativePgOperatorIacInput is the input for both IaC
 // modules (Pulumi and Terraform) of the kubernetes-cloud-native-pg-operator
-// component.
-message KubernetesCloudNativePgOperatorStackInput {
+// kind.
+message KubernetesCloudNativePgOperatorIacInput {
   // the kubernetes-cloud-native-pg-operator resource to deploy
   KubernetesCloudNativePgOperator target = 1;
 

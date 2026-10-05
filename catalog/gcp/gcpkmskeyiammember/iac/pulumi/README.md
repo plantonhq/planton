@@ -29,7 +29,7 @@ iac/pulumi/
     ├── main.go        # Module coordinator
     ├── iam_member.go  # IAM member grant creation
     ├── locals.go      # Resolved resource holder
-    └── outputs.go     # Stack output constants
+    └── outputs.go     # Output constants
 ```
 
 ## Quick Start
@@ -43,7 +43,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the grant specification:
+Provide a `iac-input.yaml` with the grant specification:
 
 ```yaml
 target:
@@ -63,19 +63,19 @@ target:
 ### 3. Deploy
 
 ```bash
-export STACK_INPUT_FILE_PATH=stack-input.yaml
-make up
+export IAC_INPUT_YAML_FILE=iac-input.yaml
+pulumi up
 ```
 
 ### 4. Destroy
 
 ```bash
-make destroy
+pulumi destroy
 ```
 
 Destroy removes exactly this (role, member) pair from the key's policy — no other grant is touched. The key and its material are never affected.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

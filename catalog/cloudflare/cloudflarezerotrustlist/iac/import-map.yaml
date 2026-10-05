@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezerotrustlist
 spec:
@@ -15,7 +15,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: list_id
       derivations:
-        - from_stack_output: list_id
+        - from_output: list_id
       where_to_find: >-
         Zero Trust dashboard -> My Team -> Lists -> the list, or
         `GET /accounts/<account_id>/gateway/lists` on the Cloudflare v4

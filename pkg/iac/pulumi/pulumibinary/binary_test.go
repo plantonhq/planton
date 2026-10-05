@@ -11,15 +11,15 @@ import (
 // must compose exactly the key the release lanes upload, for a kind the
 // registry knows.
 func TestBuildDownloadURLMatchesDownloadsGrammar(t *testing.T) {
-	const component = "AwsS3Bucket"
+	const kindDir = "AwsS3Bucket"
 	const release = "v0.3.50"
 
-	got, err := BuildDownloadURL(component, release)
+	got, err := BuildDownloadURL(kindDir, release)
 	if err != nil {
 		t.Fatalf("BuildDownloadURL() error: %v", err)
 	}
 
-	want := downloads.BuildPulumiDownloadURL(component, release, GetPlatformSuffix())
+	want := downloads.BuildPulumiDownloadURL(kindDir, release, GetPlatformSuffix())
 	if got != want {
 		t.Errorf("BuildDownloadURL() = %q, want %q", got, want)
 	}

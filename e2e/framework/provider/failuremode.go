@@ -15,11 +15,11 @@ import "context"
 // scenario annotation `planton.dev/e2e-expected-runtime-failure`; the
 // annotation's value is passed as cause (e.g. "refused-join") so a harness can
 // support several causes over time. Runs between VERIFY-RES and DESTROY, so
-// stack outputs are available on tc. Implementations own their polling: runtime
+// outputs are available on tc. Implementations own their polling: runtime
 // failures take time to surface (a crash-looping container needs a restart or
 // two before its state and logs attest the cause).
 type RuntimeCauseVerifier interface {
-	VerifyRuntimeFailureCause(ctx context.Context, tc *ComponentTestContext, cause string) error
+	VerifyRuntimeFailureCause(ctx context.Context, tc *KindTestContext, cause string) error
 }
 
 // DeployFailureVerifier verifies that a deploy which FAILED failed for exactly
@@ -28,10 +28,10 @@ type RuntimeCauseVerifier interface {
 // readiness). Activated by the scenario annotation
 // `planton.dev/e2e-expect-deploy-failure`; the annotation's value is passed as
 // expectation. deployErr carries the engine's full error output for
-// classification. Stack outputs do NOT exist when this runs -- implementations
+// classification. Outputs do NOT exist when this runs -- implementations
 // derive identity from the manifest (via ManifestPathKey on ctx or
 // tc.ManifestPath) and must verify the partially-created resource's state with
 // the provider's own APIs BEFORE the runner destroys it.
 type DeployFailureVerifier interface {
-	VerifyExpectedDeployFailure(ctx context.Context, tc *ComponentTestContext, expectation string, deployErr error) error
+	VerifyExpectedDeployFailure(ctx context.Context, tc *KindTestContext, expectation string, deployErr error) error
 }

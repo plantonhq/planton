@@ -29,4 +29,4 @@ and 10%+ above normal.
   root member present with `null` when unused. A sparser or unprefixed
   document deploys fine, then proposes a replacement on every re-plan
 - The SNS topic's policy must allow costalerts.amazonaws.com to
-  publish ([AWS SNS Topic](/cloud-catalog/aws-sns-topic))
+  publish ([AWS SNS Topic](/infra-catalog/aws-sns-topic))

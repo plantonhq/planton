@@ -12,7 +12,7 @@ fixed-name Service, Secrets, and ConfigMap. The Helm release name is
 therefore fixed to `plugin-barman-cloud` and never derives from
 `metadata.name`.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **The thing that installed CloudNativePG also owns a plugin toggle** —
   a self-hosted platform operator that installs CloudNativePG for its own
@@ -133,14 +133,14 @@ the DATABASE pods, so the keyless posture (EKS IRSA / GKE Workload
 Identity / AKS Workload Identity) is declared per KubernetesPostgres —
 its `workload_identity` field annotates each cluster's own
 ServiceAccount, and its backup block's keyless arm points at the store.
-This component is identical on every environment Kubernetes runs in.
+This kind is identical on every environment Kubernetes runs in.
 
 | Environment | This component | Where backup identity lives |
 |---|---|---|
 | Any cluster, catalog operator | `namespace` by reference to the operator resource | `KubernetesPostgres.spec.workload_identity` + the backup block's keyless arm, per database |
 | Any cluster, resident operator (Helm, GitOps, a platform operator without a plugin toggle) | `namespace` as the literal operator namespace | same |
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

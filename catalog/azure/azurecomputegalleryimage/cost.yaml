@@ -1,15 +1,15 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate: the image DEFINITION is free (catalog metadata, like the
 # gallery that holds it), but every declared VERSION commits real spend --
 # Microsoft bills each version's regional replicas as managed-disk
 # snapshots, per GB-month of the version's occupied size, times replicas,
 # times regions -- and the occupied size is a build artifact this manifest
 # cannot see, so a dollar figure here would be a guess wearing a dollar
-# sign. Schema: finops/componentcostprofile/v1.
+# sign. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurecomputegalleryimage
 spec:
@@ -41,7 +41,7 @@ spec:
       pricing_unit: GB
       impact: "Full (the default) materializes durable replicas -- storage in every region plus first-replica egress. Shallow references the source directly instead: instant publish, no replica storage, no egress -- but the source snapshot or image must live on (and keep billing) for the version's whole life."
   estimate_exclusions:
-    - "the billed quantity is each version's OCCUPIED size -- a fact of the build artifact (the source snapshot, managed image, or VHD), invisible to this manifest -- which is why no estimate document exists for this component"
+    - "the billed quantity is each version's OCCUPIED size -- a fact of the build artifact (the source snapshot, managed image, or VHD), invisible to this manifest -- which is why no estimate document exists for this kind"
     - "inter-region network egress bills once per additional target region when a version publishes (first replica only); intra-region replica copies are free"
     - "the version's SOURCE bills on its own component -- the AzureDiskSnapshot per GB-month, the managed image or VHD on its storage -- and Shallow-mode versions keep that source billing for their whole life"
     - "the definition's identity, security flags, recommended sizing, and the parent gallery are all free catalog metadata (Microsoft charges nothing for the Compute Gallery service itself)"

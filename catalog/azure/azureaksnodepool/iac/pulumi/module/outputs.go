@@ -1,6 +1,6 @@
 package module
 
-// Stack-output keys, matching AzureAksNodePoolStackOutputs field for field.
+// Output keys, matching AzureAksNodePoolOutputs field for field.
 const (
 	OpNodePoolId       = "node_pool_id"
 	OpNodePoolName     = "node_pool_name"

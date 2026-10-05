@@ -13,7 +13,7 @@ import (
 // The Cognito family verifies through the cognito-idp control plane. The user
 // pool is keyed by its own id; the three pool-scoped kinds (app client,
 // identity provider, resource server) have COMPOSITE AWS identities -- (pool
-// id, X) -- and no ARN, so their verifiers read the pool id from the stack
+// id, X) -- and no ARN, so their verifiers read the pool id from the
 // outputs (every kind echoes its resolved user_pool_id) via the
 // OutputsVerifier path. Cognito deletes are synchronous: gone means gone, no
 // DELETING states to special-case.

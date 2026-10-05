@@ -2,7 +2,7 @@
 
 A DigitalOcean SSL certificate described once in a Planton manifest: either a free Let's Encrypt certificate that DigitalOcean issues and auto-renews (supply the domains), or a custom certificate you upload as PEM material (supply the key and certificate). The choice of branch in the manifest fully determines the certificate type — there is no separate type field to keep consistent.
 
-## What this component models
+## What this kind models
 
 The spec maps onto DigitalOcean's `digitalocean_certificate` in full:
 

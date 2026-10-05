@@ -6,17 +6,17 @@
 
 ## Summary
 
-Migrated the GcpCloudCdn component's `gcp_project_id` field from a plain `string` to `StringValueOrRef` type, enabling cross-resource references. Users can now reference a `GcpProject` resource dynamically instead of hardcoding the project ID.
+Migrated the GcpCloudCdn kind's `gcp_project_id` field from a plain `string` to `StringValueOrRef` type, enabling cross-resource references. Users can now reference a `GcpProject` resource dynamically instead of hardcoding the project ID.
 
 ## Problem Statement / Motivation
 
-The GcpCloudCdn component used a plain `string` type for the `gcp_project_id` field with a regex pattern validation. This required users to hardcode GCP project identifiers and didn't allow referencing other Planton resources.
+The GcpCloudCdn kind used a plain `string` type for the `gcp_project_id` field with a regex pattern validation. This required users to hardcode GCP project identifiers and didn't allow referencing other Planton resources.
 
 ### Pain Points
 
 - **No cross-resource references**: Couldn't reference a `GcpProject` resource's output
 - **Hardcoded values**: Project IDs had to be known at manifest authoring time
-- **Inconsistent with other GCP components**: Many components already support `StringValueOrRef`
+- **Inconsistent with other GCP kinds**: Many kinds already support `StringValueOrRef`
 
 ## Solution / What's New
 
@@ -109,7 +109,7 @@ spec:
 
 - **Cross-resource references**: Reference GcpProject outputs dynamically
 - **Improved composability**: Chain CDN resources to projects
-- **Consistency**: Aligns with other GCP components
+- **Consistency**: Aligns with other GCP kinds
 - **Backward compatible**: Direct values still work with `value:` syntax
 
 ## Impact

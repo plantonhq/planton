@@ -16,7 +16,7 @@ OpenTofu module that declares one Stripe Radar list and its items. Stripe kinds 
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `alias`, `name` (required); `item_type` (replaces), `items`, `metadata` (optional) |
 
 ## Outputs

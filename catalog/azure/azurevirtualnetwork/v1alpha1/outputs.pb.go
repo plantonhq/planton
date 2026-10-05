@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureVirtualNetworkStackOutputs captures the outputs of provisioning an
+// AzureVirtualNetworkOutputs captures the outputs of provisioning an
 // Azure Virtual Network.
 //
 // The primary output is `virtual_network_id`, the join key for everything
 // that lives inside or attaches to the network: AzureSubnet partitions it,
 // AzurePrivateDnsZoneVirtualNetworkLink makes private DNS zones resolvable
 // from it, and AzureVnetPeering connects it to other networks.
-type AzureVirtualNetworkStackOutputs struct {
+type AzureVirtualNetworkOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the virtual network.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{name}
@@ -51,20 +51,20 @@ type AzureVirtualNetworkStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureVirtualNetworkStackOutputs) Reset() {
-	*x = AzureVirtualNetworkStackOutputs{}
+func (x *AzureVirtualNetworkOutputs) Reset() {
+	*x = AzureVirtualNetworkOutputs{}
 	mi := &file_catalog_azure_azurevirtualnetwork_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVirtualNetworkStackOutputs) String() string {
+func (x *AzureVirtualNetworkOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVirtualNetworkStackOutputs) ProtoMessage() {}
+func (*AzureVirtualNetworkOutputs) ProtoMessage() {}
 
-func (x *AzureVirtualNetworkStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureVirtualNetworkOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevirtualnetwork_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -76,33 +76,33 @@ func (x *AzureVirtualNetworkStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVirtualNetworkStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureVirtualNetworkStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVirtualNetworkOutputs.ProtoReflect.Descriptor instead.
+func (*AzureVirtualNetworkOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualnetwork_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVirtualNetworkStackOutputs) GetVirtualNetworkId() string {
+func (x *AzureVirtualNetworkOutputs) GetVirtualNetworkId() string {
 	if x != nil {
 		return x.VirtualNetworkId
 	}
 	return ""
 }
 
-func (x *AzureVirtualNetworkStackOutputs) GetVirtualNetworkName() string {
+func (x *AzureVirtualNetworkOutputs) GetVirtualNetworkName() string {
 	if x != nil {
 		return x.VirtualNetworkName
 	}
 	return ""
 }
 
-func (x *AzureVirtualNetworkStackOutputs) GetGuid() string {
+func (x *AzureVirtualNetworkOutputs) GetGuid() string {
 	if x != nil {
 		return x.Guid
 	}
 	return ""
 }
 
-func (x *AzureVirtualNetworkStackOutputs) GetAddressSpaces() []string {
+func (x *AzureVirtualNetworkOutputs) GetAddressSpaces() []string {
 	if x != nil {
 		return x.AddressSpaces
 	}
@@ -113,8 +113,8 @@ var File_catalog_azure_azurevirtualnetwork_v1alpha1_outputs_proto protoreflect.F
 
 const file_catalog_azure_azurevirtualnetwork_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/azure/azurevirtualnetwork/v1alpha1/outputs.proto\x12.dev.planton.azure.azurevirtualnetwork.v1alpha1\"\xbc\x01\n" +
-	"\x1fAzureVirtualNetworkStackOutputs\x12,\n" +
+	"8catalog/azure/azurevirtualnetwork/v1alpha1/outputs.proto\x12.dev.planton.azure.azurevirtualnetwork.v1alpha1\"\xb7\x01\n" +
+	"\x1aAzureVirtualNetworkOutputs\x12,\n" +
 	"\x12virtual_network_id\x18\x01 \x01(\tR\x10virtualNetworkId\x120\n" +
 	"\x14virtual_network_name\x18\x02 \x01(\tR\x12virtualNetworkName\x12\x12\n" +
 	"\x04guid\x18\x03 \x01(\tR\x04guid\x12%\n" +
@@ -135,7 +135,7 @@ func file_catalog_azure_azurevirtualnetwork_v1alpha1_outputs_proto_rawDescGZIP()
 
 var file_catalog_azure_azurevirtualnetwork_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurevirtualnetwork_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureVirtualNetworkStackOutputs)(nil), // 0: dev.planton.azure.azurevirtualnetwork.v1alpha1.AzureVirtualNetworkStackOutputs
+	(*AzureVirtualNetworkOutputs)(nil), // 0: dev.planton.azure.azurevirtualnetwork.v1alpha1.AzureVirtualNetworkOutputs
 }
 var file_catalog_azure_azurevirtualnetwork_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

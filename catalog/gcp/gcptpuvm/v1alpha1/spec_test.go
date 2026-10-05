@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpTpuVmSpec", func() {
 		return &GcpTpuVm{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpTpuVm",
-			Metadata:   &shared.CloudResourceMetadata{Name: "train-v5e"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "train-v5e"},
 			Spec: &GcpTpuVmSpec{
 				Zone:           "us-central1-a",
 				RuntimeVersion: "v2-alpha-tpuv5-lite",

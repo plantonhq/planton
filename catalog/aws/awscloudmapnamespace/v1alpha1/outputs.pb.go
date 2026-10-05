@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsCloudMapNamespaceStackOutputs captures the observable state of
+// AwsCloudMapNamespaceOutputs captures the observable state of
 // the Cloud Map namespace after apply.
-type AwsCloudMapNamespaceStackOutputs struct {
+type AwsCloudMapNamespaceOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The namespace's id (ns-...) - the provider's import ID (a
 	// PRIVATE_DNS namespace imports as "{namespace_id}:{vpc_id}").
@@ -49,20 +49,20 @@ type AwsCloudMapNamespaceStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AwsCloudMapNamespaceStackOutputs) Reset() {
-	*x = AwsCloudMapNamespaceStackOutputs{}
+func (x *AwsCloudMapNamespaceOutputs) Reset() {
+	*x = AwsCloudMapNamespaceOutputs{}
 	mi := &file_catalog_aws_awscloudmapnamespace_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsCloudMapNamespaceStackOutputs) String() string {
+func (x *AwsCloudMapNamespaceOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsCloudMapNamespaceStackOutputs) ProtoMessage() {}
+func (*AwsCloudMapNamespaceOutputs) ProtoMessage() {}
 
-func (x *AwsCloudMapNamespaceStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsCloudMapNamespaceOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awscloudmapnamespace_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,54 +74,54 @@ func (x *AwsCloudMapNamespaceStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsCloudMapNamespaceStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsCloudMapNamespaceStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsCloudMapNamespaceOutputs.ProtoReflect.Descriptor instead.
+func (*AwsCloudMapNamespaceOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscloudmapnamespace_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsCloudMapNamespaceStackOutputs) GetNamespaceId() string {
+func (x *AwsCloudMapNamespaceOutputs) GetNamespaceId() string {
 	if x != nil {
 		return x.NamespaceId
 	}
 	return ""
 }
 
-func (x *AwsCloudMapNamespaceStackOutputs) GetNamespaceArn() string {
+func (x *AwsCloudMapNamespaceOutputs) GetNamespaceArn() string {
 	if x != nil {
 		return x.NamespaceArn
 	}
 	return ""
 }
 
-func (x *AwsCloudMapNamespaceStackOutputs) GetHostedZoneId() string {
+func (x *AwsCloudMapNamespaceOutputs) GetHostedZoneId() string {
 	if x != nil {
 		return x.HostedZoneId
 	}
 	return ""
 }
 
-func (x *AwsCloudMapNamespaceStackOutputs) GetHttpName() string {
+func (x *AwsCloudMapNamespaceOutputs) GetHttpName() string {
 	if x != nil {
 		return x.HttpName
 	}
 	return ""
 }
 
-func (x *AwsCloudMapNamespaceStackOutputs) GetServiceIds() map[string]string {
+func (x *AwsCloudMapNamespaceOutputs) GetServiceIds() map[string]string {
 	if x != nil {
 		return x.ServiceIds
 	}
 	return nil
 }
 
-func (x *AwsCloudMapNamespaceStackOutputs) GetServiceArns() map[string]string {
+func (x *AwsCloudMapNamespaceOutputs) GetServiceArns() map[string]string {
 	if x != nil {
 		return x.ServiceArns
 	}
 	return nil
 }
 
-func (x *AwsCloudMapNamespaceStackOutputs) GetInstanceServiceIds() map[string]string {
+func (x *AwsCloudMapNamespaceOutputs) GetInstanceServiceIds() map[string]string {
 	if x != nil {
 		return x.InstanceServiceIds
 	}
@@ -132,16 +132,16 @@ var File_catalog_aws_awscloudmapnamespace_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_aws_awscloudmapnamespace_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/aws/awscloudmapnamespace/v1alpha1/outputs.proto\x12-dev.planton.aws.awscloudmapnamespace.v1alpha1\"\x98\x06\n" +
-	" AwsCloudMapNamespaceStackOutputs\x12!\n" +
+	"7catalog/aws/awscloudmapnamespace/v1alpha1/outputs.proto\x12-dev.planton.aws.awscloudmapnamespace.v1alpha1\"\x82\x06\n" +
+	"\x1bAwsCloudMapNamespaceOutputs\x12!\n" +
 	"\fnamespace_id\x18\x01 \x01(\tR\vnamespaceId\x12#\n" +
 	"\rnamespace_arn\x18\x02 \x01(\tR\fnamespaceArn\x12$\n" +
 	"\x0ehosted_zone_id\x18\x03 \x01(\tR\fhostedZoneId\x12\x1b\n" +
-	"\thttp_name\x18\x04 \x01(\tR\bhttpName\x12\x80\x01\n" +
-	"\vservice_ids\x18\x05 \x03(\v2_.dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackOutputs.ServiceIdsEntryR\n" +
-	"serviceIds\x12\x83\x01\n" +
-	"\fservice_arns\x18\x06 \x03(\v2`.dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackOutputs.ServiceArnsEntryR\vserviceArns\x12\x99\x01\n" +
-	"\x14instance_service_ids\x18\a \x03(\v2g.dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackOutputs.InstanceServiceIdsEntryR\x12instanceServiceIds\x1a=\n" +
+	"\thttp_name\x18\x04 \x01(\tR\bhttpName\x12{\n" +
+	"\vservice_ids\x18\x05 \x03(\v2Z.dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceOutputs.ServiceIdsEntryR\n" +
+	"serviceIds\x12~\n" +
+	"\fservice_arns\x18\x06 \x03(\v2[.dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceOutputs.ServiceArnsEntryR\vserviceArns\x12\x94\x01\n" +
+	"\x14instance_service_ids\x18\a \x03(\v2b.dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceOutputs.InstanceServiceIdsEntryR\x12instanceServiceIds\x1a=\n" +
 	"\x0fServiceIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a>\n" +
@@ -167,15 +167,15 @@ func file_catalog_aws_awscloudmapnamespace_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_aws_awscloudmapnamespace_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_catalog_aws_awscloudmapnamespace_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsCloudMapNamespaceStackOutputs)(nil), // 0: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackOutputs
-	nil,                                      // 1: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackOutputs.ServiceIdsEntry
-	nil,                                      // 2: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackOutputs.ServiceArnsEntry
-	nil,                                      // 3: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackOutputs.InstanceServiceIdsEntry
+	(*AwsCloudMapNamespaceOutputs)(nil), // 0: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceOutputs
+	nil,                                 // 1: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceOutputs.ServiceIdsEntry
+	nil,                                 // 2: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceOutputs.ServiceArnsEntry
+	nil,                                 // 3: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceOutputs.InstanceServiceIdsEntry
 }
 var file_catalog_aws_awscloudmapnamespace_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackOutputs.service_ids:type_name -> dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackOutputs.ServiceIdsEntry
-	2, // 1: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackOutputs.service_arns:type_name -> dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackOutputs.ServiceArnsEntry
-	3, // 2: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackOutputs.instance_service_ids:type_name -> dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceStackOutputs.InstanceServiceIdsEntry
+	1, // 0: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceOutputs.service_ids:type_name -> dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceOutputs.ServiceIdsEntry
+	2, // 1: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceOutputs.service_arns:type_name -> dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceOutputs.ServiceArnsEntry
+	3, // 2: dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceOutputs.instance_service_ids:type_name -> dev.planton.aws.awscloudmapnamespace.v1alpha1.AwsCloudMapNamespaceOutputs.InstanceServiceIdsEntry
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

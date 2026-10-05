@@ -23,11 +23,11 @@ const (
 )
 
 // *
-// **KubernetesPersistentVolumeClaimStackInput** defines the input structure
+// **KubernetesPersistentVolumeClaimIacInput** defines the input structure
 // for deploying a Kubernetes PersistentVolumeClaim. It carries the target
 // claim specification and the Kubernetes cluster configuration the IaC
 // modules (Pulumi and Terraform) need to reach the cluster.
-type KubernetesPersistentVolumeClaimStackInput struct {
+type KubernetesPersistentVolumeClaimIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The target PersistentVolumeClaim resource to be created.
@@ -43,20 +43,20 @@ type KubernetesPersistentVolumeClaimStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesPersistentVolumeClaimStackInput) Reset() {
-	*x = KubernetesPersistentVolumeClaimStackInput{}
+func (x *KubernetesPersistentVolumeClaimIacInput) Reset() {
+	*x = KubernetesPersistentVolumeClaimIacInput{}
 	mi := &file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPersistentVolumeClaimStackInput) String() string {
+func (x *KubernetesPersistentVolumeClaimIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPersistentVolumeClaimStackInput) ProtoMessage() {}
+func (*KubernetesPersistentVolumeClaimIacInput) ProtoMessage() {}
 
-func (x *KubernetesPersistentVolumeClaimStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPersistentVolumeClaimIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,19 +68,19 @@ func (x *KubernetesPersistentVolumeClaimStackInput) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPersistentVolumeClaimStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesPersistentVolumeClaimStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPersistentVolumeClaimIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesPersistentVolumeClaimIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPersistentVolumeClaimStackInput) GetTarget() *KubernetesPersistentVolumeClaim {
+func (x *KubernetesPersistentVolumeClaimIacInput) GetTarget() *KubernetesPersistentVolumeClaim {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesPersistentVolumeClaimStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesPersistentVolumeClaimIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -91,8 +91,8 @@ var File_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_input_proto
 
 const file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/kubernetes/kubernetespersistentvolumeclaim/v1alpha1/input.proto\x12?dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1\x1aEcatalog/kubernetes/kubernetespersistentvolumeclaim/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\x80\x02\n" +
-	")KubernetesPersistentVolumeClaimStackInput\x12x\n" +
+	"Gcatalog/kubernetes/kubernetespersistentvolumeclaim/v1alpha1/input.proto\x12?dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1\x1aEcatalog/kubernetes/kubernetespersistentvolumeclaim/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xfe\x01\n" +
+	"'KubernetesPersistentVolumeClaimIacInput\x12x\n" +
 	"\x06target\x18\x01 \x01(\v2`.dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xf5\x03\n" +
 	"Ccom.dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1B\n" +
@@ -112,13 +112,13 @@ func file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_input_prot
 
 var file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesPersistentVolumeClaimStackInput)(nil), // 0: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimStackInput
-	(*KubernetesPersistentVolumeClaim)(nil),           // 1: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaim
-	(*kubernetes.KubernetesProviderConfig)(nil),       // 2: dev.planton.kubernetes.KubernetesProviderConfig
+	(*KubernetesPersistentVolumeClaimIacInput)(nil), // 0: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimIacInput
+	(*KubernetesPersistentVolumeClaim)(nil),         // 1: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaim
+	(*kubernetes.KubernetesProviderConfig)(nil),     // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetespersistentvolumeclaim_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimStackInput.target:type_name -> dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaim
-	2, // 1: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimIacInput.target:type_name -> dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaim
+	2, // 1: dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1.KubernetesPersistentVolumeClaimIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

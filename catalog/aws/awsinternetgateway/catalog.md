@@ -4,7 +4,7 @@ Attaches an internet gateway to an AWS VPC -- the VPC's door to the public inter
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Internet gateway** -- an EC2 internet gateway, attached to the specified VPC
 - **VPC attachment** -- the gateway is attached to the VPC referenced by `vpcId`; changing `vpcId` on a later apply re-attaches the gateway to the new VPC rather than recreating it
@@ -16,8 +16,8 @@ Attaching a gateway does not expose anything on its own. To build a working publ
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **A VPC** -- the gateway must attach to a VPC. Deploy an [AWS VPC](/cloud-catalog/aws-vpc) first, or reference an existing one by id.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **A VPC** -- the gateway must attach to a VPC. Deploy an [AWS VPC](/infra-catalog/aws-vpc) first, or reference an existing one by id.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -55,7 +55,7 @@ spec:
 planton apply -f internet-gateway.yaml
 ```
 
-This attaches an internet gateway to a Planton-managed VPC by reference. A Stack Job tracks the provisioning in real time.
+This attaches an internet gateway to a Planton-managed VPC by reference. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ An internet gateway has a deliberately small surface -- the value is in how it c
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsVpc** | `vpcId` | `status.outputs.vpc_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -116,7 +116,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 An internet gateway sits between a VPC and the subnets that need internet reachability:
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- the network the gateway attaches to, referenced by `status.outputs.vpc_id`
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- routes a default route to this gateway's `internet_gateway_id` to become public
-- [**AWS NAT Gateway**](/cloud-catalog/aws-nat-gateway) -- lives in a public subnet that routes here, giving private subnets outbound IPv4 access
-- [**AWS Egress-Only Internet Gateway**](/cloud-catalog/aws-egress-only-internet-gateway) -- the IPv6 outbound-only counterpart for dual-stack VPCs that need no inbound exposure
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- the network the gateway attaches to, referenced by `status.outputs.vpc_id`
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- routes a default route to this gateway's `internet_gateway_id` to become public
+- [**AWS NAT Gateway**](/infra-catalog/aws-nat-gateway) -- lives in a public subnet that routes here, giving private subnets outbound IPv4 access
+- [**AWS Egress-Only Internet Gateway**](/infra-catalog/aws-egress-only-internet-gateway) -- the IPv6 outbound-only counterpart for dual-stack VPCs that need no inbound exposure

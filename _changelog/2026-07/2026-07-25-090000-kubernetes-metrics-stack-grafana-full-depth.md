@@ -26,7 +26,7 @@
   disables paired with those toggles, registry/pull-secret overrides,
   and `helm_values` merged last. Monitor discovery is deliberately
   CLUSTER-WIDE by default (wider than the chart's release-fenced
-  default — what makes every component's `service_monitor_enabled`
+  default — what makes every kind's `service_monitor_enabled`
   toggle light up with zero wiring), with `release_managed_only`
   restoring the fence. The CRDs ride the chart's crds SUBCHART
   (install-once, never chart-upgraded, KEPT on uninstall); `skip_crds`
@@ -98,7 +98,7 @@ coverage gaps closed in review); offline `tofu` plan and
 `pulumi preview` proofs across full-surface AND minimal shapes for all
 four modules, re-run after the review fixes with the split image
 rendering spot-checked in the plan output; secret-coverage, reference,
-containment, import-map and stack-outputs conformance gates;
+containment, import-map and outputs conformance gates;
 repo-wide build; e2e-build/e2e-vet; license footers; all presets and
 scenario manifests CLI-validated. Three independent line-level reviews
 (both module pairs against the chart sources, and the full E2E/satellite

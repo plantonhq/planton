@@ -3,16 +3,16 @@ package main
 import (
 	"github.com/plantonhq/planton/catalog/gcp/gcpvertexaiindex/iac/pulumi/module"
 	gcpvertexaiindexv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiindex/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		stackInput := &gcpvertexaiindexv1alpha1.GcpVertexAiIndexStackInput{}
-		if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
+		iacInput := &gcpvertexaiindexv1alpha1.GcpVertexAiIndexIacInput{}
+		if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
 			return err
 		}
-		return module.Resources(ctx, stackInput)
+		return module.Resources(ctx, iacInput)
 	})
 }

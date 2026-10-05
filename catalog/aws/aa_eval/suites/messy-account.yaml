@@ -21,8 +21,8 @@
 #     is an inference no deterministic mapper attempts.
 #   - A name-derived kind (S3) so the name-derivability rule keeps applying.
 #
-# Members are suite-owned fixtures (members/) for live-proven components:
-# the modules are the same ones the components' own e2e lanes prove; this
+# Members are suite-owned fixtures (members/) for live-proven kinds:
+# the modules are the same ones the kinds' own e2e lanes prove; this
 # suite's live lane proves the composition. Environments ride metadata.env
 # (prod/staging) as the partition-scoring answer key: this is the ONE suite
 # that grades environment assignment, because its member names deliberately
@@ -41,27 +41,27 @@ metadata:
   name: messy-account
 spec:
   members:
-    - component: awsvpc
+    - kind_dir: awsvpc
       manifest_path: catalog/aws/aa_eval/suites/messy-account/members/orders-prod-vpc.yaml
-    - component: awsinternetgateway
+    - kind_dir: awsinternetgateway
       manifest_path: catalog/aws/aa_eval/suites/messy-account/members/orders-prod-igw.yaml
-    - component: awssubnet
+    - kind_dir: awssubnet
       manifest_path: catalog/aws/aa_eval/suites/messy-account/members/orders-prod-app-subnet.yaml
-    - component: awsvpc
+    - kind_dir: awsvpc
       manifest_path: catalog/aws/aa_eval/suites/messy-account/members/orders-stg-vpc.yaml
-    - component: awssubnet
+    - kind_dir: awssubnet
       manifest_path: catalog/aws/aa_eval/suites/messy-account/members/orders-stg-app-subnet.yaml
-    - component: awskmskey
+    - kind_dir: awskmskey
       manifest_path: catalog/aws/aa_eval/suites/messy-account/members/orders-prod-data-key.yaml
-    - component: awssecuritygroup
+    - kind_dir: awssecuritygroup
       manifest_path: catalog/aws/aa_eval/suites/messy-account/members/orders-prod-app-sg.yaml
-    - component: awsdynamodb
+    - kind_dir: awsdynamodb
       manifest_path: catalog/aws/aa_eval/suites/messy-account/members/orders-prod-table.yaml
-    - component: awssqsqueue
+    - kind_dir: awssqsqueue
       manifest_path: catalog/aws/aa_eval/suites/messy-account/members/orders-prod-events.yaml
-    - component: awsecrrepo
+    - kind_dir: awsecrrepo
       manifest_path: catalog/aws/aa_eval/suites/messy-account/members/orders-api.yaml
-    - component: awss3bucket
+    - kind_dir: awss3bucket
       manifest_path: catalog/aws/aa_eval/suites/messy-account/members/orders-archive-bucket.yaml
   scan_scope:
     region: us-west-2

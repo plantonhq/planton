@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// azure-virtual-machine-scale-set stack-input
-type AzureVirtualMachineScaleSetStackInput struct {
+// azure-virtual-machine-scale-set iac-input
+type AzureVirtualMachineScaleSetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AzureVirtualMachineScaleSet `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AzureVirtualMachineScaleSetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureVirtualMachineScaleSetStackInput) Reset() {
-	*x = AzureVirtualMachineScaleSetStackInput{}
+func (x *AzureVirtualMachineScaleSetIacInput) Reset() {
+	*x = AzureVirtualMachineScaleSetIacInput{}
 	mi := &file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVirtualMachineScaleSetStackInput) String() string {
+func (x *AzureVirtualMachineScaleSetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVirtualMachineScaleSetStackInput) ProtoMessage() {}
+func (*AzureVirtualMachineScaleSetIacInput) ProtoMessage() {}
 
-func (x *AzureVirtualMachineScaleSetStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureVirtualMachineScaleSetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AzureVirtualMachineScaleSetStackInput) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVirtualMachineScaleSetStackInput.ProtoReflect.Descriptor instead.
-func (*AzureVirtualMachineScaleSetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVirtualMachineScaleSetIacInput.ProtoReflect.Descriptor instead.
+func (*AzureVirtualMachineScaleSetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVirtualMachineScaleSetStackInput) GetTarget() *AzureVirtualMachineScaleSet {
+func (x *AzureVirtualMachineScaleSetIacInput) GetTarget() *AzureVirtualMachineScaleSet {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureVirtualMachineScaleSetStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureVirtualMachineScaleSetIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_azure_azurevirtualmachinescaleset_v1alpha1_input_proto protoref
 
 const file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	">catalog/azure/azurevirtualmachinescaleset/v1alpha1/input.proto\x126dev.planton.azure.azurevirtualmachinescaleset.v1alpha1\x1a<catalog/azure/azurevirtualmachinescaleset/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe5\x01\n" +
-	"%AzureVirtualMachineScaleSetStackInput\x12k\n" +
+	">catalog/azure/azurevirtualmachinescaleset/v1alpha1/input.proto\x126dev.planton.azure.azurevirtualmachinescaleset.v1alpha1\x1a<catalog/azure/azurevirtualmachinescaleset/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe3\x01\n" +
+	"#AzureVirtualMachineScaleSetIacInput\x12k\n" +
 	"\x06target\x18\x01 \x01(\v2S.dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xba\x03\n" +
 	":com.dev.planton.azure.azurevirtualmachinescaleset.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_input_proto_rawDesc
 
 var file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_input_proto_goTypes = []any{
-	(*AzureVirtualMachineScaleSetStackInput)(nil), // 0: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetStackInput
-	(*AzureVirtualMachineScaleSet)(nil),           // 1: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSet
-	(*azure.AzureProviderConfig)(nil),             // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureVirtualMachineScaleSetIacInput)(nil), // 0: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetIacInput
+	(*AzureVirtualMachineScaleSet)(nil),         // 1: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSet
+	(*azure.AzureProviderConfig)(nil),           // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetStackInput.target:type_name -> dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSet
-	2, // 1: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetIacInput.target:type_name -> dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSet
+	2, // 1: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

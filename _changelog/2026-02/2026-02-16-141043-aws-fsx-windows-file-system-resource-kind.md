@@ -6,24 +6,24 @@
 
 ## Summary
 
-Added AwsFsxWindowsFileSystem as a new Planton resource kind (enum 293, id prefix `awsfxw`), continuing the FSx family expansion alongside Lustre (R29a) and OpenZFS (R29b). This component deploys fully managed Windows file systems with mandatory Active Directory integration, SMB protocol access, audit logging, and multi-AZ failover support.
+Added AwsFsxWindowsFileSystem as a new Planton resource kind (enum 293, id prefix `awsfxw`), continuing the FSx family expansion alongside Lustre (R29a) and OpenZFS (R29b). This kind deploys fully managed Windows file systems with mandatory Active Directory integration, SMB protocol access, audit logging, and multi-AZ failover support.
 
 ## Problem Statement / Motivation
 
-The FSx family was split into separate components because each file system type has fundamentally different Terraform resources, schemas, and use cases. Windows File Server is the most enterprise-oriented FSx type, providing Windows-native features like SMB, DFS namespaces, Windows ACLs, and Active Directory authentication that are essential for .NET applications, SQL Server, home directories, and content management systems.
+The FSx family was split into separate kinds because each file system type has fundamentally different Terraform resources, schemas, and use cases. Windows File Server is the most enterprise-oriented FSx type, providing Windows-native features like SMB, DFS namespaces, Windows ACLs, and Active Directory authentication that are essential for .NET applications, SQL Server, home directories, and content management systems.
 
 ### Pain Points
 
-- No Planton component for managed Windows file shares
+- No Planton kind for managed Windows file shares
 - Windows workloads on AWS require AD-integrated SMB storage
 - MULTI_AZ deployments need careful subnet and failover configuration
 - Audit logging for compliance requires non-trivial setup
 
 ## Solution / What's New
 
-A complete deployment component covering the full lifecycle of an FSx for Windows File Server file system.
+A complete catalog kind covering the full lifecycle of an FSx for Windows File Server file system.
 
-### Component Architecture
+### Kind Architecture
 
 ```mermaid
 flowchart TB
@@ -46,9 +46,9 @@ flowchart TB
 ### Proto API (4 files)
 
 - **spec.proto** — 18 fields across the main spec plus 3 nested messages (SelfManagedActiveDirectory, AuditLogConfiguration, DiskIopsConfiguration). 10 CEL cross-field validations covering AD mutual exclusion, HDD compatibility, throughput valid values, and more.
-- **stack_outputs.proto** — 8 outputs including Windows-specific `preferred_file_server_ip` and `remote_administration_endpoint`.
+- **outputs.proto** — 8 outputs including Windows-specific `preferred_file_server_ip` and `remote_administration_endpoint`.
 - **api.proto** — KRM wiring with `aws.planton.dev/v1` API version.
-- **stack_input.proto** — Standard AWS provider config + target resource.
+- **iac_input.proto** — Standard AWS provider config + target resource.
 
 ### Key Design Decisions
 
@@ -91,7 +91,7 @@ flowchart TB
 - **37 files** created, **5,205 lines** of code
 - **79 validation tests**, all passing
 - **3 presets**: development, production, multi-AZ HA
-- **8 stack outputs**
+- **8 outputs**
 - **10 CEL validations**
 - **3 nested messages** (SelfManagedActiveDirectory, AuditLogConfiguration, DiskIopsConfiguration)
 

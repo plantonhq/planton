@@ -37,7 +37,7 @@ var _ = ginkgo.Describe("GcpBinaryAuthorizationAttestorSpec", func() {
 		return &GcpBinaryAuthorizationAttestor{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpBinaryAuthorizationAttestor",
-			Metadata:   &shared.CloudResourceMetadata{Name: "built-by-ci"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "built-by-ci"},
 			Spec: &GcpBinaryAuthorizationAttestorSpec{
 				Note: &GcpBinaryAuthorizationAttestorNote{HumanReadableName: "CI build pipeline"},
 			},

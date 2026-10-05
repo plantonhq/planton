@@ -41,7 +41,7 @@ spec:
     branch: master
 ```
 
-## Stack outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

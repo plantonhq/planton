@@ -1,10 +1,10 @@
 # AWS MemoryDB ACL
 
-Deploys a MemoryDB Access Control List — the single attachment point between identities and clusters in MemoryDB's only authentication model. Users ([AwsMemorydbUser](/cloud-catalog/aws-memorydb-user)) join the ACL, and a cluster ([AwsMemorydbCluster](/cloud-catalog/aws-memorydb-cluster)) attaches exactly one ACL. Granting or revoking an application's database access is an in-place membership edit here — the cluster and the users themselves never change.
+Deploys a MemoryDB Access Control List — the single attachment point between identities and clusters in MemoryDB's only authentication model. Users ([AwsMemorydbUser](/infra-catalog/aws-memorydb-user)) join the ACL, and a cluster ([AwsMemorydbCluster](/infra-catalog/aws-memorydb-cluster)) attaches exactly one ACL. Granting or revoking an application's database access is an in-place membership edit here — the cluster and the users themselves never change.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **MemoryDB ACL** -- one access control list whose AWS name is the resource name (create-time immutable, max 40 characters), carrying the user set it grants access to; membership edits apply in place
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
@@ -13,8 +13,8 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **Member users (optional at create)** -- deploy [AwsMemorydbUser](/cloud-catalog/aws-memorydb-user) resources first to reference them in membership; an empty ACL is valid and can be populated later.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **Member users (optional at create)** -- deploy [AwsMemorydbUser](/infra-catalog/aws-memorydb-user) resources first to reference them in membership; an empty ACL is valid and can be populated later.
 
 ### AWS Account
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f memorydb-acl.yaml
 ```
 
-This creates an ACL holding the orders-service user, ready for a cluster to attach. A Stack Job tracks the provisioning in real time.
+This creates an ACL holding the orders-service user, ready for a cluster to attach. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ These are the most important decisions when configuring a MemoryDB ACL. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsMemorydbUser** (optional) | `userNames` | `status.outputs.user_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -111,5 +111,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS MemoryDB User**](/cloud-catalog/aws-memorydb-user) -- the identities this ACL collects (references `user_name`)
-- [**AWS MemoryDB Cluster**](/cloud-catalog/aws-memorydb-cluster) -- the durable database that attaches this ACL via `acl_name`
+- [**AWS MemoryDB User**](/infra-catalog/aws-memorydb-user) -- the identities this ACL collects (references `user_name`)
+- [**AWS MemoryDB Cluster**](/infra-catalog/aws-memorydb-cluster) -- the durable database that attaches this ACL via `acl_name`

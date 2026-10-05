@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceansshkey
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: ssh_key_id
       derivations:
-        - from_stack_output: ssh_key_id
+        - from_output: ssh_key_id
       where_to_find: >-
         `doctl compute ssh-key list` (the ID column) -- the control panel's
         Settings -> Security page shows names and fingerprints but not the

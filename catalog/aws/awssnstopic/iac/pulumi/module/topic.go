@@ -150,7 +150,7 @@ func topic(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*sns.To
 		}
 	}
 
-	// Export outputs matching AwsSnsTopicStackOutputs.
+	// Export outputs matching AwsSnsTopicOutputs.
 	ctx.Export(OpTopicArn, t.Arn)
 	ctx.Export(OpTopicName, t.Name)
 	ctx.Export(OpOwner, t.Owner)

@@ -24,7 +24,7 @@ func createUniformWindows(ctx *pulumi.Context, locals *Locals, azureProvider pul
 		Tags:              pulumi.ToStringMap(locals.AzureTags),
 
 		// Azure-default-true gates: unset explicitly falls back to the
-		// proto default so stack-input paths that bypass the manifest
+		// proto default so iac-input paths that bypass the manifest
 		// loader deploy identically on both engines.
 		EnableAutomaticUpdates:     pulumi.Bool(optionalBool(windows.AutomaticUpdatesEnabled, true)),
 		ProvisionVmAgent:           pulumi.Bool(optionalBool(spec.ProvisionVmAgent, true)),

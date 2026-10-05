@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzurePrivateLinkServiceStackInput is the input to the IaC modules
+// AzurePrivateLinkServiceIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzurePrivateLinkServiceStackInput struct {
+type AzurePrivateLinkServiceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Private Link Service resource to deploy.
 	Target *AzurePrivateLinkService `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzurePrivateLinkServiceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzurePrivateLinkServiceStackInput) Reset() {
-	*x = AzurePrivateLinkServiceStackInput{}
+func (x *AzurePrivateLinkServiceIacInput) Reset() {
+	*x = AzurePrivateLinkServiceIacInput{}
 	mi := &file_catalog_azure_azureprivatelinkservice_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzurePrivateLinkServiceStackInput) String() string {
+func (x *AzurePrivateLinkServiceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzurePrivateLinkServiceStackInput) ProtoMessage() {}
+func (*AzurePrivateLinkServiceIacInput) ProtoMessage() {}
 
-func (x *AzurePrivateLinkServiceStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzurePrivateLinkServiceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureprivatelinkservice_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzurePrivateLinkServiceStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzurePrivateLinkServiceStackInput.ProtoReflect.Descriptor instead.
-func (*AzurePrivateLinkServiceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzurePrivateLinkServiceIacInput.ProtoReflect.Descriptor instead.
+func (*AzurePrivateLinkServiceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureprivatelinkservice_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzurePrivateLinkServiceStackInput) GetTarget() *AzurePrivateLinkService {
+func (x *AzurePrivateLinkServiceIacInput) GetTarget() *AzurePrivateLinkService {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzurePrivateLinkServiceStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzurePrivateLinkServiceIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azureprivatelinkservice_v1alpha1_input_proto protoreflect
 
 const file_catalog_azure_azureprivatelinkservice_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	":catalog/azure/azureprivatelinkservice/v1alpha1/input.proto\x122dev.planton.azure.azureprivatelinkservice.v1alpha1\x1a8catalog/azure/azureprivatelinkservice/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd9\x01\n" +
-	"!AzurePrivateLinkServiceStackInput\x12c\n" +
+	":catalog/azure/azureprivatelinkservice/v1alpha1/input.proto\x122dev.planton.azure.azureprivatelinkservice.v1alpha1\x1a8catalog/azure/azureprivatelinkservice/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xd7\x01\n" +
+	"\x1fAzurePrivateLinkServiceIacInput\x12c\n" +
 	"\x06target\x18\x01 \x01(\v2K.dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\x9e\x03\n" +
 	"6com.dev.planton.azure.azureprivatelinkservice.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azureprivatelinkservice_v1alpha1_input_proto_rawDescGZIP
 
 var file_catalog_azure_azureprivatelinkservice_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureprivatelinkservice_v1alpha1_input_proto_goTypes = []any{
-	(*AzurePrivateLinkServiceStackInput)(nil), // 0: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceStackInput
-	(*AzurePrivateLinkService)(nil),           // 1: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkService
-	(*azure.AzureProviderConfig)(nil),         // 2: dev.planton.azure.AzureProviderConfig
+	(*AzurePrivateLinkServiceIacInput)(nil), // 0: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceIacInput
+	(*AzurePrivateLinkService)(nil),         // 1: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkService
+	(*azure.AzureProviderConfig)(nil),       // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureprivatelinkservice_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceStackInput.target:type_name -> dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkService
-	2, // 1: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceIacInput.target:type_name -> dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkService
+	2, // 1: dev.planton.azure.azureprivatelinkservice.v1alpha1.AzurePrivateLinkServiceIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

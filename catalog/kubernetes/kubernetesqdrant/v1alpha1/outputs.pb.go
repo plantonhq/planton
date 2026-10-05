@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// qdrant-kubernetes stack outputs
-type KubernetesQdrantStackOutputs struct {
+// qdrant-kubernetes outputs
+type KubernetesQdrantOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the cluster runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -52,20 +52,20 @@ type KubernetesQdrantStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesQdrantStackOutputs) Reset() {
-	*x = KubernetesQdrantStackOutputs{}
+func (x *KubernetesQdrantOutputs) Reset() {
+	*x = KubernetesQdrantOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesqdrant_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesQdrantStackOutputs) String() string {
+func (x *KubernetesQdrantOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesQdrantStackOutputs) ProtoMessage() {}
+func (*KubernetesQdrantOutputs) ProtoMessage() {}
 
-func (x *KubernetesQdrantStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesQdrantOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesqdrant_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -77,61 +77,61 @@ func (x *KubernetesQdrantStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesQdrantStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesQdrantStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesQdrantOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesQdrantOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesqdrant_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesQdrantStackOutputs) GetNamespace() string {
+func (x *KubernetesQdrantOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesQdrantStackOutputs) GetReleaseName() string {
+func (x *KubernetesQdrantOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesQdrantStackOutputs) GetServiceName() string {
+func (x *KubernetesQdrantOutputs) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesQdrantStackOutputs) GetHttpEndpoint() string {
+func (x *KubernetesQdrantOutputs) GetHttpEndpoint() string {
 	if x != nil {
 		return x.HttpEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesQdrantStackOutputs) GetGrpcEndpoint() string {
+func (x *KubernetesQdrantOutputs) GetGrpcEndpoint() string {
 	if x != nil {
 		return x.GrpcEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesQdrantStackOutputs) GetApiKeySecretName() string {
+func (x *KubernetesQdrantOutputs) GetApiKeySecretName() string {
 	if x != nil {
 		return x.ApiKeySecretName
 	}
 	return ""
 }
 
-func (x *KubernetesQdrantStackOutputs) GetReadOnlyApiKeySecretName() string {
+func (x *KubernetesQdrantOutputs) GetReadOnlyApiKeySecretName() string {
 	if x != nil {
 		return x.ReadOnlyApiKeySecretName
 	}
 	return ""
 }
 
-func (x *KubernetesQdrantStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesQdrantOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -142,8 +142,8 @@ var File_catalog_kubernetes_kubernetesqdrant_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_kubernetes_kubernetesqdrant_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kubernetesqdrant/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetesqdrant.v1alpha1\"\xee\x02\n" +
-	"\x1cKubernetesQdrantStackOutputs\x12\x1c\n" +
+	":catalog/kubernetes/kubernetesqdrant/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kubernetesqdrant.v1alpha1\"\xe9\x02\n" +
+	"\x17KubernetesQdrantOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12!\n" +
 	"\fservice_name\x18\x03 \x01(\tR\vserviceName\x12#\n" +
@@ -168,7 +168,7 @@ func file_catalog_kubernetes_kubernetesqdrant_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kubernetesqdrant_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesqdrant_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesQdrantStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantStackOutputs
+	(*KubernetesQdrantOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesqdrant.v1alpha1.KubernetesQdrantOutputs
 }
 var file_catalog_kubernetes_kubernetesqdrant_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

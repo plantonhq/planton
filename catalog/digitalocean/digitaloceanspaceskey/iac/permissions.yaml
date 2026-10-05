@@ -3,13 +3,13 @@
 # modules. DigitalOcean authenticates with a bearer API token carrying
 # named scopes; every group entry is `derived` (static analysis of the
 # module sources, cited in notes) until the live capture lane upgrades it
-# to `proven`. Schema: iac/componentpermissions/v1.
+# to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # Note: keys are managed through the control-plane REST API -- the runner
 # needs NO Spaces (S3) credentials to manage keys; the key it creates IS a
 # Spaces credential for workloads.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: digitaloceanspaceskey
 spec:

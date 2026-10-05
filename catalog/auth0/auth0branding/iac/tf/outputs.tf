@@ -1,5 +1,5 @@
 # Auth0Branding Outputs
-# Maps to the Auth0BrandingStackOutputs protobuf message: the branding as
+# Maps to the Auth0BrandingOutputs protobuf message: the branding as
 # applied.
 
 output "theme_id" {

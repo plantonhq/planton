@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awssagemakermodel.v1alpha1;
 
-// AwsSagemakerModelStackOutputs captures observable identifiers from a
+// AwsSagemakerModelOutputs captures observable identifiers from a
 // provisioned SageMaker model. Endpoints wire their variants to
 // `model_name` via StringValueOrRef.
-message AwsSagemakerModelStackOutputs {
+message AwsSagemakerModelOutputs {
   // The model name (the AWS identity - endpoint production variants
   // reference it).
   string model_name = 1;

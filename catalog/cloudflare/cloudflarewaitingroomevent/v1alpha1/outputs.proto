@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarewaitingroomevent.v1alpha1;
 
-// CloudflareWaitingRoomEventStackOutputs captures the observable outputs after
+// CloudflareWaitingRoomEventOutputs captures the observable outputs after
 // creating a waiting room event.
-message CloudflareWaitingRoomEventStackOutputs {
+message CloudflareWaitingRoomEventOutputs {
   // The ID of the created event.
   string event_id = 1;
 

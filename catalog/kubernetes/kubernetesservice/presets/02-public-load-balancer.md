@@ -1,6 +1,6 @@
 # Public Load Balancer
 
-This preset asks the cloud provider to provision an external load balancer in front of the selected pods. Once deployed, the provider's address lands in the stack outputs — `load_balancer_ip` on IP-based providers (GCP, Azure, MetalLB) or `load_balancer_hostname` on hostname-based ones (AWS ELB/NLB).
+This preset asks the cloud provider to provision an external load balancer in front of the selected pods. Once deployed, the provider's address lands in the outputs — `load_balancer_ip` on IP-based providers (GCP, Azure, MetalLB) or `load_balancer_hostname` on hostname-based ones (AWS ELB/NLB).
 
 ## When to Use
 

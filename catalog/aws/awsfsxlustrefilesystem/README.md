@@ -8,7 +8,7 @@ FSx for Lustre provides a POSIX-compliant parallel file system optimized for wor
 
 Lustre is a single-AZ file system. Data durability depends on the deployment type: scratch file systems provide temporary storage with no replication, while persistent file systems replicate data within the AZ and support automatic backups. All file systems are encrypted at rest by default.
 
-This component provisions the FSx Lustre file system, its network interface (ENI) in the specified subnet, optional CloudWatch logging, backup configuration, metadata IOPS tuning, and S3 data repository integration.
+This kind provisions the FSx Lustre file system, its network interface (ENI) in the specified subnet, optional CloudWatch logging, backup configuration, metadata IOPS tuning, and S3 data repository integration.
 
 ## When to Use It
 

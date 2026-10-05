@@ -3,7 +3,7 @@
 # dying pod is not recovery), then DESCRIBE the completed workflow (its
 # history must survive in the composed PostgreSQL — the
 # storage-separation proof) and run a SECOND workflow end to end. The
-# component defaults against the fixture are the honest shape for this.
+# kind defaults against the fixture are the honest shape for this.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesTemporal
 metadata:

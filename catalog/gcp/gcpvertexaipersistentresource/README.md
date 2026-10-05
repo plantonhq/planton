@@ -4,7 +4,7 @@ A Vertex AI persistent resource -- a long-running cluster of machines Vertex AI 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project (never disabled on destroy)
 - **Persistent resource** -- a `vertex_ai_persistent_resource` with its resource pools, networking, runtime identity rule, and optional CMEK
@@ -80,7 +80,7 @@ planton apply -f vertex-ai-persistent-resource.yaml
 - Accelerator types and boot disk types are Google's lists.
 - DNS peering domains end with a dot.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -109,7 +109,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpVpcNetwork** -- the network the resource peers with
 - **GcpServiceNetworkingConnection** -- the private services access peering the network needs

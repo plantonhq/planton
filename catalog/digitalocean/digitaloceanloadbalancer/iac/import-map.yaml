@@ -1,15 +1,15 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceanloadbalancer
 spec:
   # The balancer's identity is its API UUID, which the module exports as
-  # the load_balancer_id stack output -- zero user input when state is
+  # the load_balancer_id output -- zero user input when state is
   # present. The provider's importer is a passthrough of that UUID.
   values:
     - name: load_balancer_id
       derivations:
-        - from_stack_output: load_balancer_id
+        - from_output: load_balancer_id
       where_to_find: >-
         DigitalOcean control panel -> Networking -> Load Balancers -> the
         balancer -> the UUID in the page URL, or `doctl compute

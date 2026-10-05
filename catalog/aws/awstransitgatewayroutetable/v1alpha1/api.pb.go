@@ -35,7 +35,7 @@ type AwsTransitGatewayRouteTable struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration defining how the route table and its
 	// routing domain are provisioned.
 	Spec *AwsTransitGatewayRouteTableSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -89,7 +89,7 @@ func (x *AwsTransitGatewayRouteTable) GetKind() string {
 	return ""
 }
 
-func (x *AwsTransitGatewayRouteTable) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsTransitGatewayRouteTable) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -116,7 +116,7 @@ type AwsTransitGatewayRouteTableStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after
 	// provisioning.
-	Outputs       *AwsTransitGatewayRouteTableStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsTransitGatewayRouteTableOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -151,7 +151,7 @@ func (*AwsTransitGatewayRouteTableStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awstransitgatewayroutetable_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsTransitGatewayRouteTableStatus) GetOutputs() *AwsTransitGatewayRouteTableStackOutputs {
+func (x *AwsTransitGatewayRouteTableStatus) GetOutputs() *AwsTransitGatewayRouteTableOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -169,11 +169,11 @@ const file_catalog_aws_awstransitgatewayroutetable_v1alpha1_api_proto_rawDesc = 
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bAwsTransitGatewayRouteTableR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
 	"\x04spec\x18\x04 \x01(\v2U.dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
-	"\x06status\x18\x05 \x01(\v2W.dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableStatusR\x06status\"\x9c\x01\n" +
-	"!AwsTransitGatewayRouteTableStatus\x12w\n" +
-	"\aoutputs\x18\x01 \x01(\v2].dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableStackOutputsR\aoutputsB\xac\x03\n" +
+	"\x06status\x18\x05 \x01(\v2W.dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableStatusR\x06status\"\x97\x01\n" +
+	"!AwsTransitGatewayRouteTableStatus\x12r\n" +
+	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableOutputsR\aoutputsB\xac\x03\n" +
 	"8com.dev.planton.aws.awstransitgatewayroutetable.v1alpha1B\bApiProtoP\x01Zqgithub.com/plantonhq/planton/catalog/aws/awstransitgatewayroutetable/v1alpha1;awstransitgatewayroutetablev1alpha1\xa2\x02\x04DPAA\xaa\x024Dev.Planton.Aws.Awstransitgatewayroutetable.V1alpha1\xca\x024Dev\\Planton\\Aws\\Awstransitgatewayroutetable\\V1alpha1\xe2\x02@Dev\\Planton\\Aws\\Awstransitgatewayroutetable\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Aws::Awstransitgatewayroutetable::V1alpha1b\x06proto3"
 
 var (
@@ -190,17 +190,17 @@ func file_catalog_aws_awstransitgatewayroutetable_v1alpha1_api_proto_rawDescGZIP
 
 var file_catalog_aws_awstransitgatewayroutetable_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awstransitgatewayroutetable_v1alpha1_api_proto_goTypes = []any{
-	(*AwsTransitGatewayRouteTable)(nil),             // 0: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTable
-	(*AwsTransitGatewayRouteTableStatus)(nil),       // 1: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsTransitGatewayRouteTableSpec)(nil),         // 3: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableSpec
-	(*AwsTransitGatewayRouteTableStackOutputs)(nil), // 4: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableStackOutputs
+	(*AwsTransitGatewayRouteTable)(nil),        // 0: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTable
+	(*AwsTransitGatewayRouteTableStatus)(nil),  // 1: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsTransitGatewayRouteTableSpec)(nil),    // 3: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableSpec
+	(*AwsTransitGatewayRouteTableOutputs)(nil), // 4: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableOutputs
 }
 var file_catalog_aws_awstransitgatewayroutetable_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTable.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTable.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTable.spec:type_name -> dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableSpec
 	1, // 2: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTable.status:type_name -> dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableStatus
-	4, // 3: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableStatus.outputs:type_name -> dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableStackOutputs
+	4, // 3: dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableStatus.outputs:type_name -> dev.planton.aws.awstransitgatewayroutetable.v1alpha1.AwsTransitGatewayRouteTableOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -19,7 +19,7 @@
 // `ops` converts from -> to (the upgrade); `reverse` converts to -> from
 // (the downgrade) and must be authored explicitly -- round-trips are law:
 // downgrade(upgrade(doc)) == doc except for losses the spec declares.
-// `outputPaths` declares stack-output renames so referrer documents (which
+// `outputPaths` declares output renames so referrer documents (which
 // hold other kinds' output paths as data) can be rewritten in the same
 // migration run.
 package conversion
@@ -44,7 +44,7 @@ type Spec struct {
 	// Reverse converts a document from `To` back to `From` (the downgrade).
 	Reverse []Op `json:"reverse"`
 
-	// OutputPaths declares stack-output field renames between the versions.
+	// OutputPaths declares output field renames between the versions.
 	OutputPaths []OutputPath `json:"outputPaths,omitempty"`
 }
 

@@ -5,10 +5,10 @@ package dev.planton.aws.awsrdsproxy.v1alpha1;
 import "catalog/aws/awsrdsproxy/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsRdsProxyStackInput is the input for the IaC modules that manage
+// AwsRdsProxyIacInput is the input for the IaC modules that manage
 // an RDS Proxy with its connection pool, endpoints, and database
 // target.
-message AwsRdsProxyStackInput {
+message AwsRdsProxyIacInput {
   // target is the AwsRdsProxy resource to deploy.
   AwsRdsProxy target = 1;
   // provider_config contains the AWS provider credentials and configuration.

@@ -1,6 +1,6 @@
 package module
 
-// Stack output keys — must stay in lockstep with AwsWafIpSetStackOutputs.
+// Output keys — must stay in lockstep with AwsWafIpSetOutputs.
 const (
 	OpIpSetArn  = "ip_set_arn"
 	OpIpSetId   = "ip_set_id"

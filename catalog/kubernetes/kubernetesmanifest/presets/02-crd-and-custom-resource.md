@@ -2,12 +2,12 @@
 
 This preset applies a CustomResourceDefinition and a custom resource of that new type in one manifest — the ordering problem that breaks a naive `kubectl apply -f` (the custom resource is rejected because its type does not exist yet, forcing a second apply). Both engines handle it in a single pass: the Pulumi engine's `yaml/v2` ConfigGroup orders the CRD install before the custom resources that use it, and the Terraform engine's `kubectl_manifest` applies server-side without needing the type registered at plan time.
 
-Before reaching for this preset, check the catalog: if a first-class component covers what you need, use it — typed components validate configuration before deploy and export composable outputs. KubernetesManifest is the escape hatch for resources no component covers, and a CRD bundle is one of its canonical uses.
+Before reaching for this preset, check the catalog: if a first-class kind covers what you need, use it — typed kinds validate configuration before deploy and export composable outputs. KubernetesManifest is the escape hatch for resources no kind covers, and a CRD bundle is one of its canonical uses.
 
 ## When to Use
 
 - Installing an operator's or vendor's CRDs together with the initial custom resources that configure it
-- Deploying an exotic custom resource for which no first-class catalog component exists
+- Deploying an exotic custom resource for which no first-class catalog kind exists
 - Any manifest where a document's type is defined by another document in the same manifest
 
 ## Key Configuration Choices

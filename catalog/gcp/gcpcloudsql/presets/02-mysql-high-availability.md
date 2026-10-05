@@ -27,7 +27,7 @@ This preset deploys a MySQL 8.0 instance with regional high availability and bin
 - **01-postgres-production-private** — the private-IP pattern when workloads live inside one VPC
 - **03-postgres-read-replica** — the read-scaling pattern (works for MySQL too, thanks to the binary logs enabled here)
 
-## Related Components
+## Related Kinds
 
 - [GcpCloudSqlDatabase](/docs/catalog/gcp/gcpcloudsqldatabase) — create application databases on this instance
 - [GcpCloudSqlUser](/docs/catalog/gcp/gcpcloudsqluser) — per-application users; IAM-type users pair well with the Auth Proxy pattern

@@ -5,9 +5,9 @@ package dev.planton.aws.awsbedrockflow.v1alpha1;
 import "catalog/aws/awsbedrockflow/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBedrockFlowStackInput is the input for the IaC modules that deploy
+// AwsBedrockFlowIacInput is the input for the IaC modules that deploy
 // the Bedrock flow.
-message AwsBedrockFlowStackInput {
+message AwsBedrockFlowIacInput {
   // target is the AwsBedrockFlow resource to deploy.
   AwsBedrockFlow target = 1;
   // provider_config contains the AWS provider credentials and configuration.

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesingress
 spec:
@@ -8,13 +8,13 @@ spec:
   values:
     - name: ingress_name
       derivations:
-        - from_stack_output: ingress_name
+        - from_output: ingress_name
         - from_spec_field: name
       where_to_find: >-
         `kubectl get ingresses -A` (NAME column).
     - name: ingress_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `kubectl get ingresses -A` (NAMESPACE column); "default" when the

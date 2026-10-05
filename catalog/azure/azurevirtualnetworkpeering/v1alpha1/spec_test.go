@@ -42,7 +42,7 @@ func validResource() *AzureVirtualNetworkPeering {
 	return &AzureVirtualNetworkPeering{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureVirtualNetworkPeering",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-peering",
 		},
 		Spec: &AzureVirtualNetworkPeeringSpec{

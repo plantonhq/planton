@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpVertexAiFeatureOnlineStoreStackOutputs captures the store's identity,
+// GcpVertexAiFeatureOnlineStoreOutputs captures the store's identity,
 // where clients reach it, and the feature views it serves.
-type GcpVertexAiFeatureOnlineStoreStackOutputs struct {
+type GcpVertexAiFeatureOnlineStoreOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/featureOnlineStores/{feature_online_store_id}.
@@ -44,20 +44,20 @@ type GcpVertexAiFeatureOnlineStoreStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiFeatureOnlineStoreStackOutputs) Reset() {
-	*x = GcpVertexAiFeatureOnlineStoreStackOutputs{}
+func (x *GcpVertexAiFeatureOnlineStoreOutputs) Reset() {
+	*x = GcpVertexAiFeatureOnlineStoreOutputs{}
 	mi := &file_catalog_gcp_gcpvertexaifeatureonlinestore_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiFeatureOnlineStoreStackOutputs) String() string {
+func (x *GcpVertexAiFeatureOnlineStoreOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiFeatureOnlineStoreStackOutputs) ProtoMessage() {}
+func (*GcpVertexAiFeatureOnlineStoreOutputs) ProtoMessage() {}
 
-func (x *GcpVertexAiFeatureOnlineStoreStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiFeatureOnlineStoreOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaifeatureonlinestore_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,47 +69,47 @@ func (x *GcpVertexAiFeatureOnlineStoreStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiFeatureOnlineStoreStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiFeatureOnlineStoreStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiFeatureOnlineStoreOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiFeatureOnlineStoreOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaifeatureonlinestore_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiFeatureOnlineStoreStackOutputs) GetName() string {
+func (x *GcpVertexAiFeatureOnlineStoreOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpVertexAiFeatureOnlineStoreStackOutputs) GetFeatureOnlineStoreId() string {
+func (x *GcpVertexAiFeatureOnlineStoreOutputs) GetFeatureOnlineStoreId() string {
 	if x != nil {
 		return x.FeatureOnlineStoreId
 	}
 	return ""
 }
 
-func (x *GcpVertexAiFeatureOnlineStoreStackOutputs) GetLocation() string {
+func (x *GcpVertexAiFeatureOnlineStoreOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpVertexAiFeatureOnlineStoreStackOutputs) GetPublicEndpointDomainName() string {
+func (x *GcpVertexAiFeatureOnlineStoreOutputs) GetPublicEndpointDomainName() string {
 	if x != nil {
 		return x.PublicEndpointDomainName
 	}
 	return ""
 }
 
-func (x *GcpVertexAiFeatureOnlineStoreStackOutputs) GetServiceAttachment() string {
+func (x *GcpVertexAiFeatureOnlineStoreOutputs) GetServiceAttachment() string {
 	if x != nil {
 		return x.ServiceAttachment
 	}
 	return ""
 }
 
-func (x *GcpVertexAiFeatureOnlineStoreStackOutputs) GetFeatureViewNames() []string {
+func (x *GcpVertexAiFeatureOnlineStoreOutputs) GetFeatureViewNames() []string {
 	if x != nil {
 		return x.FeatureViewNames
 	}
@@ -120,8 +120,8 @@ var File_catalog_gcp_gcpvertexaifeatureonlinestore_v1alpha1_outputs_proto protor
 
 const file_catalog_gcp_gcpvertexaifeatureonlinestore_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/gcp/gcpvertexaifeatureonlinestore/v1alpha1/outputs.proto\x126dev.planton.gcp.gcpvertexaifeatureonlinestore.v1alpha1\"\xae\x02\n" +
-	")GcpVertexAiFeatureOnlineStoreStackOutputs\x12\x12\n" +
+	"@catalog/gcp/gcpvertexaifeatureonlinestore/v1alpha1/outputs.proto\x126dev.planton.gcp.gcpvertexaifeatureonlinestore.v1alpha1\"\xa9\x02\n" +
+	"$GcpVertexAiFeatureOnlineStoreOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x125\n" +
 	"\x17feature_online_store_id\x18\x02 \x01(\tR\x14featureOnlineStoreId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x12=\n" +
@@ -144,7 +144,7 @@ func file_catalog_gcp_gcpvertexaifeatureonlinestore_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_gcp_gcpvertexaifeatureonlinestore_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaifeatureonlinestore_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVertexAiFeatureOnlineStoreStackOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaifeatureonlinestore.v1alpha1.GcpVertexAiFeatureOnlineStoreStackOutputs
+	(*GcpVertexAiFeatureOnlineStoreOutputs)(nil), // 0: dev.planton.gcp.gcpvertexaifeatureonlinestore.v1alpha1.GcpVertexAiFeatureOnlineStoreOutputs
 }
 var file_catalog_gcp_gcpvertexaifeatureonlinestore_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

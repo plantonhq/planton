@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/internal/cli/cliprint"
 	"github.com/plantonhq/planton/internal/manifest"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/backendconfig"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule"
 )
@@ -40,7 +40,7 @@ func Cancel(moduleDir, stackFqdn, targetManifestPath string, valueOverrides map[
 		return errors.New("Pulumi stack FQDN is required. Provide it via --stack flag or set pulumi.planton.dev/stack.fqdn label in manifest")
 	}
 
-	kindName, err := crkreflect.ExtractKindFromProto(manifestObject)
+	kindName, err := catalogkindreflect.ExtractKindFromProto(manifestObject)
 	if err != nil {
 		return errors.Wrapf(err, "failed to extract kind name from manifest proto")
 	}

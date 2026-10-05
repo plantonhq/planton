@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurebackupprotectedfileshare.v1alpha1;
 
-// **AzureBackupProtectedFileShareStackOutputs** captures the outputs
+// **AzureBackupProtectedFileShareOutputs** captures the outputs
 // of registering a file share under backup protection.
-message AzureBackupProtectedFileShareStackOutputs {
+message AzureBackupProtectedFileShareOutputs {
   // The Azure Resource Manager ID of the protected item. Azure names
   // the item by the share's SYSTEM name (not its friendly name).
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.RecoveryServices/vaults/{vault}/backupFabrics/Azure/protectionContainers/StorageContainer;storage;{sa-rg};{sa-name}/protectedItems/AzureFileShare;{system-name}

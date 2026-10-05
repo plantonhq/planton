@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azurevirtualmachinescaleset.v1alpha1;
 
-// **AzureVirtualMachineScaleSetStackOutputs** captures the outputs of
+// **AzureVirtualMachineScaleSetOutputs** captures the outputs of
 // provisioning an Azure Virtual Machine Scale Set.
 //
 // The scale set's ARM id is the seam a standalone AzureVirtualMachine's
@@ -11,7 +11,7 @@ package dev.planton.azure.azurevirtualmachinescaleset.v1alpha1;
 // autoscale resources scope to. The system-assigned principal is the
 // AzureRoleAssignment seam for granting the fleet access without stored
 // credentials.
-message AzureVirtualMachineScaleSetStackOutputs {
+message AzureVirtualMachineScaleSetOutputs {
   // The Azure Resource Manager ID of the scale set.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachineScaleSets/{name}
   string scale_set_id = 1;

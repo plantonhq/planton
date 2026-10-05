@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureMonitorAutoscaleSettingStackInput is the input to the IaC modules
+// AzureMonitorAutoscaleSettingIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-type AzureMonitorAutoscaleSettingStackInput struct {
+type AzureMonitorAutoscaleSettingIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The autoscale setting resource to deploy.
 	Target *AzureMonitorAutoscaleSetting `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureMonitorAutoscaleSettingStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureMonitorAutoscaleSettingStackInput) Reset() {
-	*x = AzureMonitorAutoscaleSettingStackInput{}
+func (x *AzureMonitorAutoscaleSettingIacInput) Reset() {
+	*x = AzureMonitorAutoscaleSettingIacInput{}
 	mi := &file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMonitorAutoscaleSettingStackInput) String() string {
+func (x *AzureMonitorAutoscaleSettingIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMonitorAutoscaleSettingStackInput) ProtoMessage() {}
+func (*AzureMonitorAutoscaleSettingIacInput) ProtoMessage() {}
 
-func (x *AzureMonitorAutoscaleSettingStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureMonitorAutoscaleSettingIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureMonitorAutoscaleSettingStackInput) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMonitorAutoscaleSettingStackInput.ProtoReflect.Descriptor instead.
-func (*AzureMonitorAutoscaleSettingStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMonitorAutoscaleSettingIacInput.ProtoReflect.Descriptor instead.
+func (*AzureMonitorAutoscaleSettingIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMonitorAutoscaleSettingStackInput) GetTarget() *AzureMonitorAutoscaleSetting {
+func (x *AzureMonitorAutoscaleSettingIacInput) GetTarget() *AzureMonitorAutoscaleSetting {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureMonitorAutoscaleSettingStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureMonitorAutoscaleSettingIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuremonitorautoscalesetting_v1alpha1_input_proto protore
 
 const file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azuremonitorautoscalesetting/v1alpha1/input.proto\x127dev.planton.azure.azuremonitorautoscalesetting.v1alpha1\x1a=catalog/azure/azuremonitorautoscalesetting/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe8\x01\n" +
-	"&AzureMonitorAutoscaleSettingStackInput\x12m\n" +
+	"?catalog/azure/azuremonitorautoscalesetting/v1alpha1/input.proto\x127dev.planton.azure.azuremonitorautoscalesetting.v1alpha1\x1a=catalog/azure/azuremonitorautoscalesetting/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe6\x01\n" +
+	"$AzureMonitorAutoscaleSettingIacInput\x12m\n" +
 	"\x06target\x18\x01 \x01(\v2U.dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xc1\x03\n" +
 	";com.dev.planton.azure.azuremonitorautoscalesetting.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_input_proto_rawDes
 
 var file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_input_proto_goTypes = []any{
-	(*AzureMonitorAutoscaleSettingStackInput)(nil), // 0: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingStackInput
-	(*AzureMonitorAutoscaleSetting)(nil),           // 1: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSetting
-	(*azure.AzureProviderConfig)(nil),              // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureMonitorAutoscaleSettingIacInput)(nil), // 0: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingIacInput
+	(*AzureMonitorAutoscaleSetting)(nil),         // 1: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSetting
+	(*azure.AzureProviderConfig)(nil),            // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingStackInput.target:type_name -> dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSetting
-	2, // 1: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingIacInput.target:type_name -> dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSetting
+	2, // 1: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

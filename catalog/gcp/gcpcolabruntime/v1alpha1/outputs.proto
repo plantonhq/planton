@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcolabruntime.v1alpha1;
 
-// GcpColabRuntimeStackOutputs carries the runtime's identity.
-message GcpColabRuntimeStackOutputs {
+// GcpColabRuntimeOutputs carries the runtime's identity.
+message GcpColabRuntimeOutputs {
   // Full resource name:
   // projects/{project}/locations/{location}/notebookRuntimes/{runtime_id}.
   string name = 1;

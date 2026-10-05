@@ -1,4 +1,4 @@
-// Package verify implements per-component resource verification for the
+// Package verify implements per-kind resource verification for the
 // DigitalOcean E2E harness. Each verifier answers two questions through the
 // DigitalOcean REST API (godo): does the resource exist after deploy, and is
 // it gone after destroy. A 404 from the API is the ONLY absence signal; every
@@ -28,7 +28,7 @@ import (
 // is no region parameter (region is a property of the resource, not of the
 // API endpoint).
 type Verifier interface {
-	// IDOutputKey is the stack-output key carrying the identifier used to
+	// IDOutputKey is the output key carrying the identifier used to
 	// verify the resource (e.g. "vpc_id"). The key names come from each
 	// kind's outputs.proto -- they are contract, not convention.
 	IDOutputKey() string
@@ -38,7 +38,7 @@ type Verifier interface {
 	VerifyAbsent(ctx context.Context, client *godo.Client, id string) error
 }
 
-// OutputsVerifier inspects the full stack output map when a single string id
+// OutputsVerifier inspects the full output map when a single string id
 // is insufficient (e.g. a DNS record is addressed by domain + record id, and
 // a Spaces bucket by region + name).
 type OutputsVerifier interface {
@@ -47,11 +47,11 @@ type OutputsVerifier interface {
 	VerifyAbsentFromOutputs(ctx context.Context, client *godo.Client, outputs map[string]interface{}) error
 }
 
-// verifiers maps component slugs (the catalog directory names) to their
+// verifiers maps kind slugs (the catalog directory names) to their
 // verifiers. Every kind that appears in another kind's registry prerequisites
 // MUST have an entry here, or composed scenarios fail at DEPENDENCIES-UP.
 var verifiers = map[string]Verifier{
-	"digitaloceanapp":                    &appVerifier{component: "digitaloceanapp", idOutputKey: "app_id", urlOutputKey: "live_url"},
+	"digitaloceanapp":                    &appVerifier{kind: "digitaloceanapp", idOutputKey: "app_id", urlOutputKey: "live_url"},
 	"digitaloceanbucket":                 &bucketVerifier{},
 	"digitaloceancdn":                    &cdnVerifier{},
 	"digitaloceancertificate":            &certificateVerifier{},
@@ -69,7 +69,7 @@ var verifiers = map[string]Verifier{
 	"digitaloceandroplet":                &dropletVerifier{},
 	"digitaloceandropletautoscalepool":   &dropletAutoscalePoolVerifier{},
 	"digitaloceanfirewall":               &firewallVerifier{},
-	"digitaloceanfunction":               &appVerifier{component: "digitaloceanfunction", idOutputKey: "function_id", urlOutputKey: "https_endpoint"},
+	"digitaloceanfunction":               &appVerifier{kind: "digitaloceanfunction", idOutputKey: "function_id", urlOutputKey: "https_endpoint"},
 	"digitaloceankubernetescluster":      &kubernetesClusterVerifier{},
 	"digitaloceankubernetesnodepool":     &kubernetesNodePoolVerifier{},
 	"digitaloceanloadbalancer":           &loadBalancerVerifier{},
@@ -94,8 +94,8 @@ var verifiers = map[string]Verifier{
 // 404 seconds after that) -- while a genuine API error must fail the phase
 // immediately rather than be retried into a timeout.
 type StillExistsError struct {
-	// Component is the catalog slug of the kind whose resource lingers.
-	Component string
+	// Kind is the catalog slug of the kind whose resource lingers.
+	Kind string
 	// ID is the identifier the probe used (a UUID, a name, or a composite).
 	ID string
 	// Detail optionally replaces the default "still exists after destroy"
@@ -106,9 +106,9 @@ type StillExistsError struct {
 
 func (e *StillExistsError) Error() string {
 	if e.Detail != "" {
-		return fmt.Sprintf("%s %q %s", e.Component, e.ID, e.Detail)
+		return fmt.Sprintf("%s %q %s", e.Kind, e.ID, e.Detail)
 	}
-	return fmt.Sprintf("%s %q still exists after destroy", e.Component, e.ID)
+	return fmt.Sprintf("%s %q still exists after destroy", e.Kind, e.ID)
 }
 
 // IsStillExists reports whether err (anywhere in its chain) is a
@@ -118,11 +118,11 @@ func IsStillExists(err error) bool {
 	return errors.As(err, &target)
 }
 
-// GetVerifier returns the verifier for a component, or an error if none is registered.
-func GetVerifier(component string) (Verifier, error) {
-	v, ok := verifiers[component]
+// GetVerifier returns the verifier for a kind, or an error if none is registered.
+func GetVerifier(kind string) (Verifier, error) {
+	v, ok := verifiers[kind]
 	if !ok {
-		return nil, pkgerrors.Errorf("no DigitalOcean verifier registered for component %q", component)
+		return nil, pkgerrors.Errorf("no DigitalOcean verifier registered for kind %q", kind)
 	}
 	return v, nil
 }
@@ -139,7 +139,7 @@ func isNotFound(err error) bool {
 	return false
 }
 
-// StringOutput reads a string-valued stack output, tolerating non-string
+// StringOutput reads a string-valued output, tolerating non-string
 // scalars: DigitalOcean's numeric ids (droplets, DNS records) may decode as
 // float64 or json.Number depending on the engine's JSON path, and a float64
 // rendered with %v would turn 12345678 into "1.2345678e+07". Exported because
@@ -155,7 +155,7 @@ func StringOutput(outputs map[string]interface{}, key string) string {
 	return scalarString(v)
 }
 
-// StringSliceOutput reads a list-valued stack output (a `repeated string`
+// StringSliceOutput reads a list-valued output (a `repeated string`
 // in the outputs contract) as []string, tolerating a missing or empty list
 // and applying StringOutput's scalar care to every element. Order is the
 // engine's; callers that compare sets must not rely on it.
@@ -174,7 +174,7 @@ func StringSliceOutput(outputs map[string]interface{}, key string) []string {
 	return out
 }
 
-// StringMapOutput reads a map-valued stack output (a `map<string, string>`
+// StringMapOutput reads a map-valued output (a `map<string, string>`
 // in the outputs contract -- the per-instance id maps that keyed blind
 // imports derive from) as map[string]string, tolerating a missing or empty
 // map and applying StringOutput's scalar care to every value.

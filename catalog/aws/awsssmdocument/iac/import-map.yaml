@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsssmdocument
 spec:
@@ -10,7 +10,7 @@ spec:
     - name: document_name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: document_name
+        - from_output: document_name
       where_to_find: >-
         Systems Manager console -> Documents -> Owned by me (the
         document's name), or `aws ssm list-documents

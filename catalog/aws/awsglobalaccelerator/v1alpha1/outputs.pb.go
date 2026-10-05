@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsGlobalAcceleratorStackOutputs captures observable identifiers and endpoints
+// AwsGlobalAcceleratorOutputs captures observable identifiers and endpoints
 // from a provisioned Global Accelerator. These outputs are the primary interface
 // for downstream resources to wire dependencies via StringValueOrRef.
 //
 // The DNS names and hosted zone ID are used to create Route53 alias records
 // pointing custom domains to the accelerator. The listener and endpoint group
 // ARN maps enable fine-grained cross-resource references.
-type AwsGlobalAcceleratorStackOutputs struct {
+type AwsGlobalAcceleratorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name of the Global Accelerator. Used in IAM policies
 	// and cross-service permissions.
@@ -63,20 +63,20 @@ type AwsGlobalAcceleratorStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AwsGlobalAcceleratorStackOutputs) Reset() {
-	*x = AwsGlobalAcceleratorStackOutputs{}
+func (x *AwsGlobalAcceleratorOutputs) Reset() {
+	*x = AwsGlobalAcceleratorOutputs{}
 	mi := &file_catalog_aws_awsglobalaccelerator_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsGlobalAcceleratorStackOutputs) String() string {
+func (x *AwsGlobalAcceleratorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsGlobalAcceleratorStackOutputs) ProtoMessage() {}
+func (*AwsGlobalAcceleratorOutputs) ProtoMessage() {}
 
-func (x *AwsGlobalAcceleratorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsGlobalAcceleratorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsglobalaccelerator_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -88,54 +88,54 @@ func (x *AwsGlobalAcceleratorStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsGlobalAcceleratorStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsGlobalAcceleratorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsGlobalAcceleratorOutputs.ProtoReflect.Descriptor instead.
+func (*AwsGlobalAcceleratorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsglobalaccelerator_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsGlobalAcceleratorStackOutputs) GetAcceleratorArn() string {
+func (x *AwsGlobalAcceleratorOutputs) GetAcceleratorArn() string {
 	if x != nil {
 		return x.AcceleratorArn
 	}
 	return ""
 }
 
-func (x *AwsGlobalAcceleratorStackOutputs) GetAcceleratorDnsName() string {
+func (x *AwsGlobalAcceleratorOutputs) GetAcceleratorDnsName() string {
 	if x != nil {
 		return x.AcceleratorDnsName
 	}
 	return ""
 }
 
-func (x *AwsGlobalAcceleratorStackOutputs) GetAcceleratorDualStackDnsName() string {
+func (x *AwsGlobalAcceleratorOutputs) GetAcceleratorDualStackDnsName() string {
 	if x != nil {
 		return x.AcceleratorDualStackDnsName
 	}
 	return ""
 }
 
-func (x *AwsGlobalAcceleratorStackOutputs) GetAcceleratorHostedZoneId() string {
+func (x *AwsGlobalAcceleratorOutputs) GetAcceleratorHostedZoneId() string {
 	if x != nil {
 		return x.AcceleratorHostedZoneId
 	}
 	return ""
 }
 
-func (x *AwsGlobalAcceleratorStackOutputs) GetAcceleratorIpAddresses() []string {
+func (x *AwsGlobalAcceleratorOutputs) GetAcceleratorIpAddresses() []string {
 	if x != nil {
 		return x.AcceleratorIpAddresses
 	}
 	return nil
 }
 
-func (x *AwsGlobalAcceleratorStackOutputs) GetListenerArns() map[string]string {
+func (x *AwsGlobalAcceleratorOutputs) GetListenerArns() map[string]string {
 	if x != nil {
 		return x.ListenerArns
 	}
 	return nil
 }
 
-func (x *AwsGlobalAcceleratorStackOutputs) GetEndpointGroupArns() map[string]string {
+func (x *AwsGlobalAcceleratorOutputs) GetEndpointGroupArns() map[string]string {
 	if x != nil {
 		return x.EndpointGroupArns
 	}
@@ -146,15 +146,15 @@ var File_catalog_aws_awsglobalaccelerator_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_aws_awsglobalaccelerator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/aws/awsglobalaccelerator/v1alpha1/outputs.proto\x12-dev.planton.aws.awsglobalaccelerator.v1alpha1\"\xe3\x05\n" +
-	" AwsGlobalAcceleratorStackOutputs\x12'\n" +
+	"7catalog/aws/awsglobalaccelerator/v1alpha1/outputs.proto\x12-dev.planton.aws.awsglobalaccelerator.v1alpha1\"\xd4\x05\n" +
+	"\x1bAwsGlobalAcceleratorOutputs\x12'\n" +
 	"\x0faccelerator_arn\x18\x01 \x01(\tR\x0eacceleratorArn\x120\n" +
 	"\x14accelerator_dns_name\x18\x02 \x01(\tR\x12acceleratorDnsName\x12D\n" +
 	"\x1faccelerator_dual_stack_dns_name\x18\x03 \x01(\tR\x1bacceleratorDualStackDnsName\x12;\n" +
 	"\x1aaccelerator_hosted_zone_id\x18\x04 \x01(\tR\x17acceleratorHostedZoneId\x128\n" +
-	"\x18accelerator_ip_addresses\x18\x05 \x03(\tR\x16acceleratorIpAddresses\x12\x86\x01\n" +
-	"\rlistener_arns\x18\x06 \x03(\v2a.dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackOutputs.ListenerArnsEntryR\flistenerArns\x12\x96\x01\n" +
-	"\x13endpoint_group_arns\x18\a \x03(\v2f.dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackOutputs.EndpointGroupArnsEntryR\x11endpointGroupArns\x1a?\n" +
+	"\x18accelerator_ip_addresses\x18\x05 \x03(\tR\x16acceleratorIpAddresses\x12\x81\x01\n" +
+	"\rlistener_arns\x18\x06 \x03(\v2\\.dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorOutputs.ListenerArnsEntryR\flistenerArns\x12\x91\x01\n" +
+	"\x13endpoint_group_arns\x18\a \x03(\v2a.dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorOutputs.EndpointGroupArnsEntryR\x11endpointGroupArns\x1a?\n" +
 	"\x11ListenerArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aD\n" +
@@ -177,13 +177,13 @@ func file_catalog_aws_awsglobalaccelerator_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_aws_awsglobalaccelerator_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_aws_awsglobalaccelerator_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsGlobalAcceleratorStackOutputs)(nil), // 0: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackOutputs
-	nil,                                      // 1: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackOutputs.ListenerArnsEntry
-	nil,                                      // 2: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackOutputs.EndpointGroupArnsEntry
+	(*AwsGlobalAcceleratorOutputs)(nil), // 0: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorOutputs
+	nil,                                 // 1: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorOutputs.ListenerArnsEntry
+	nil,                                 // 2: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorOutputs.EndpointGroupArnsEntry
 }
 var file_catalog_aws_awsglobalaccelerator_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackOutputs.listener_arns:type_name -> dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackOutputs.ListenerArnsEntry
-	2, // 1: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackOutputs.endpoint_group_arns:type_name -> dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorStackOutputs.EndpointGroupArnsEntry
+	1, // 0: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorOutputs.listener_arns:type_name -> dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorOutputs.ListenerArnsEntry
+	2, // 1: dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorOutputs.endpoint_group_arns:type_name -> dev.planton.aws.awsglobalaccelerator.v1alpha1.AwsGlobalAcceleratorOutputs.EndpointGroupArnsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

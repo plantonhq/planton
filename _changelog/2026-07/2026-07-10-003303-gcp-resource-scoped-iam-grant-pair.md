@@ -12,7 +12,7 @@ The GCP catalog modeled IAM grants only at project scope (`GcpProjectIamMember`)
 1. **Who may use a service account?** Granting `roles/iam.workloadIdentityUser` (federated impersonation — the terminal hop of keyless CI/CD), `roles/iam.serviceAccountTokenCreator` (short-lived token minting), or `roles/iam.serviceAccountUser` (actAs for Cloud Run/GCE/Functions deploys) belongs ON the account. A project-wide grant of those roles allows acting as EVERY account in the project.
 2. **Who may use a crypto key?** Every CMEK consumer's service agent needs `roles/cloudkms.cryptoKeyEncrypterDecrypter` on the key it encrypts with. A project-wide grant over-privileges, and it carries no dependency edge — so a first CMEK deploy can race IAM propagation.
 
-This change forges both kinds as full components with additive-only semantics (`*_iam_binding` / `*_iam_policy` authoritative modes remain deliberately unmodeled — clobber semantics are hostile to composition).
+This change forges both kinds as full kinds with additive-only semantics (`*_iam_binding` / `*_iam_policy` authoritative modes remain deliberately unmodeled — clobber semantics are hostile to composition).
 
 ## What Was Built
 
@@ -34,7 +34,7 @@ This change forges both kinds as full components with additive-only semantics (`
 
 - Both engines (Terraform on `google ~> 6.0`, Pulumi on pulumi-gcp v9) at 100% behavioral parity: identical deploy-time validation (member format with `deleted:` rejection; identifier shape checks), identical condition handling, identical outputs — verified by the `pkg/outputs` conformance cases, `planton validate-outputs`, and live E2E output checks (4/4 proto fields populated per engine).
 - Design substance verified against the released provider tag (v6.50.0), including the shared IAM member base schema; the KMS IAM `condition` block is GA in the released source (the resource doc page's Beta annotation is stale) and is proven live.
-- Kind registry entries with prerequisites (`[GcpServiceAccount]`; `[GcpKmsKeyRing, GcpKmsKey, GcpServiceAccount]`), crkreflect kind-map regeneration, spec tests (14 cases each), 3 presets each, hack manifests, full doc sets, site catalog pages.
+- Kind registry entries with prerequisites (`[GcpServiceAccount]`; `[GcpKmsKeyRing, GcpKmsKey, GcpServiceAccount]`), catalogkindreflect kind-map regeneration, spec tests (14 cases each), 3 presets each, hack manifests, full doc sets, site catalog pages.
 
 ## E2E
 

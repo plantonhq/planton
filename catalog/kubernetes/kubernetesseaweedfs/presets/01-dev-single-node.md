@@ -15,7 +15,7 @@ preset is one node of everything, with availability equal to the
 StatefulSets rescheduling their pods and the PVCs surviving it.
 Nothing is exposed outside the cluster; SDKs use the exported
 `s3_endpoint` (path-style, port 8333) with the credentials from the
-Secret in the stack outputs.
+Secret in the outputs.
 
 Change first: the bucket name (and add one entry per bucket your app
 needs — the hook creates them at install), then `volume.data_volume.size`

@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpcloudfunctionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudfunction/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -17,9 +17,9 @@ type Locals struct {
 	FunctionName      string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudfunctionv1alpha1.GcpCloudFunctionStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpcloudfunctionv1alpha1.GcpCloudFunctionIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpCloudFunction = stackInput.Target
+	locals.GcpCloudFunction = iacInput.Target
 
 	// Function name defaults to metadata.name.
 	locals.FunctionName = locals.GcpCloudFunction.Spec.FunctionName
@@ -36,7 +36,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudfunctionv1alpha1.Gc
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.FunctionName
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpCloudFunction.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpCloudFunction.String())
 
 	if locals.GcpCloudFunction.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = locals.GcpCloudFunction.Metadata.Org
@@ -48,6 +48,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudfunctionv1alpha1.Gc
 		locals.GcpLabels[gcplabelkeys.ResourceId] = locals.GcpCloudFunction.Metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

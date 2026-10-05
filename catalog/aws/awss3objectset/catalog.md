@@ -4,7 +4,7 @@ Deploys one or more objects into an existing S3 bucket, supporting inline text c
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **S3 Object (one per inline-content entry)** -- an S3 object for each `objects` item carrying `content` or `contentBase64`, uploaded to the target bucket with the specified key, content, content headers (type, caching, encoding, disposition, language), user metadata, website redirect, storage class, per-object encryption override (SSE mode, KMS key, bucket key), integrity checksum, Object Lock retention and legal hold, canned ACL, and tags
 - **S3 Object Copy (one per copy entry)** -- for each `objects` item carrying `copyFrom`, a server-side copy of the named source object into the target bucket, with the same per-object destination surface plus copy-time preconditions, Requester Pays acknowledgment, and metadata preserve-or-replace control
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An S3 bucket** -- the target bucket must exist. Provide the bucket name directly or reference an AwsS3Bucket Cloud Resource via ValueFromRef.
+- **An S3 bucket** -- the target bucket must exist. Provide the bucket name directly or reference an AwsS3Bucket Infra Component via ValueFromRef.
 - **Bucket region match** -- the `region` field must match the region of the target bucket.
 
 ## Deploy
@@ -53,7 +53,7 @@ spec:
 planton apply -f s3-objects.yaml
 ```
 
-This uploads a single JSON configuration file to the `config/app.json` key in the target bucket. A Stack Job tracks the provisioning in real time.
+This uploads a single JSON configuration file to the `config/app.json` key in the target bucket. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,7 +90,7 @@ These are the most important decisions when configuring an S3 object set. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -98,9 +98,9 @@ These are the most important decisions when configuring an S3 object set. Explor
 | **AwsS3Bucket** | `objects[].copyFrom.sourceBucket` | `status.outputs.bucket_id` |
 | **AwsKmsKey** | `objects[].kmsKey` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -123,5 +123,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- provides the target bucket for object uploads
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- customer-managed key for per-object SSE-KMS encryption overrides
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- provides the target bucket for object uploads
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- customer-managed key for per-object SSE-KMS encryption overrides

@@ -4,8 +4,8 @@ package dev.planton.kubernetes.kubernetesjenkins.v1alpha1;
 
 import "catalog/kubernetes/kubernetes.proto";
 
-//jenkins-kubernetes stack outputs.
-message KubernetesJenkinsStackOutputs {
+//jenkins-kubernetes outputs.
+message KubernetesJenkinsOutputs {
   //kubernetes namespace in which jenkins-kubernetes is created.
   string namespace = 1;
 

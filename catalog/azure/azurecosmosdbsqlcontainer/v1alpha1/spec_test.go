@@ -30,7 +30,7 @@ func minimalSpec() *AzureCosmosdbSqlContainer {
 	return &AzureCosmosdbSqlContainer{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureCosmosdbSqlContainer",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-sql-container",
 		},
 		Spec: &AzureCosmosdbSqlContainerSpec{

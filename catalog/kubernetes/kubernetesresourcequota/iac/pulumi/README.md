@@ -8,7 +8,7 @@ This Pulumi module creates and manages a namespace-governance pair: a `core/v1` 
 
 ```
 iac/pulumi/
-├── main.go              # Entrypoint: loads stack input, calls module
+├── main.go              # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml          # Pulumi project configuration
 ├── Makefile             # Make targets for preview/up/down/refresh
 └── module/
@@ -20,7 +20,7 @@ iac/pulumi/
 
 ## How It Works
 
-1. **Stack Input Loading**: The entrypoint loads `KubernetesResourceQuotaStackInput` from Pulumi config
+1. **IaC Input Loading**: The entrypoint loads `KubernetesResourceQuotaIacInput` from Pulumi config
 2. **Locals Initialization**: `locals.go` computes:
    - Standard Planton labels merged with user labels (identity keys cannot be overridden)
    - User annotations
@@ -29,7 +29,7 @@ iac/pulumi/
 3. **Provider Creation**: Kubernetes provider is initialized from `provider_config`
 4. **ResourceQuota Creation**: A `core/v1` ResourceQuota is created with the `hard` caps, scopes (mapped to API strings), and scope selector
 5. **LimitRange Creation (conditional)**: When `limit_defaults` is non-empty, a `core/v1` LimitRange is created with one item per entry, mapping type and all quantity maps one-to-one
-6. **Output Export**: Quota name, namespace, and the LimitRange name (empty when none exists) are exported as stack outputs
+6. **Output Export**: Quota name, namespace, and the LimitRange name (empty when none exists) are exported as outputs
 
 ## The Two-Object Creation
 

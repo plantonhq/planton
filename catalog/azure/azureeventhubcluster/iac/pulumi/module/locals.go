@@ -5,7 +5,7 @@ import (
 
 	azureeventhubclusterv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureeventhubcluster/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -15,11 +15,11 @@ type Locals struct {
 	AzureTags            map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureeventhubclusterv1alpha1.AzureEventHubClusterStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureeventhubclusterv1alpha1.AzureEventHubClusterIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureEventHubCluster = stackInput.Target
-	target := stackInput.Target
+	locals.AzureEventHubCluster = iacInput.Target
+	target := iacInput.Target
 
 	// The resource_group field is a StringValueOrRef. The platform middleware
 	// resolves valueFrom references before IaC modules run, so .GetValue()
@@ -31,7 +31,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureeventhubclusterv1alp
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureEventHubCluster.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureEventHubCluster.String()),
 	}
 
 	if target.Metadata.Id != "" {

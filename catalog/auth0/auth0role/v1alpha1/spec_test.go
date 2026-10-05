@@ -24,7 +24,7 @@ var _ = ginkgo.Describe("Auth0Role Validation Tests", func() {
 				input = &Auth0Role{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Role",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "viewer",
 					},
 					Spec: &Auth0RoleSpec{},
@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("Auth0Role Validation Tests", func() {
 				input := &Auth0Role{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Role",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "editor",
 					},
 					Spec: &Auth0RoleSpec{
@@ -60,7 +60,7 @@ var _ = ginkgo.Describe("Auth0Role Validation Tests", func() {
 				input := &Auth0Role{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Role",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "viewer",
 					},
 					Spec: &Auth0RoleSpec{
@@ -84,7 +84,7 @@ var _ = ginkgo.Describe("Auth0Role Validation Tests", func() {
 				input := &Auth0Role{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Role",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "administrator",
 					},
 					Spec: &Auth0RoleSpec{
@@ -137,7 +137,7 @@ var _ = ginkgo.Describe("Auth0Role Validation Tests", func() {
 				input := &Auth0Role{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Role",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "viewer",
 					},
 					Spec: nil,
@@ -152,7 +152,7 @@ var _ = ginkgo.Describe("Auth0Role Validation Tests", func() {
 				input := &Auth0Role{
 					ApiVersion: "wrong.api.version/v1",
 					Kind:       "Auth0Role",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "viewer",
 					},
 					Spec: &Auth0RoleSpec{
@@ -169,7 +169,7 @@ var _ = ginkgo.Describe("Auth0Role Validation Tests", func() {
 				input := &Auth0Role{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "WrongKind",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "viewer",
 					},
 					Spec: &Auth0RoleSpec{
@@ -186,7 +186,7 @@ var _ = ginkgo.Describe("Auth0Role Validation Tests", func() {
 				input := &Auth0Role{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Role",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "viewer",
 					},
 					Spec: &Auth0RoleSpec{
@@ -209,7 +209,7 @@ var _ = ginkgo.Describe("Auth0Role Validation Tests", func() {
 				input := &Auth0Role{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0Role",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "viewer",
 					},
 					Spec: &Auth0RoleSpec{

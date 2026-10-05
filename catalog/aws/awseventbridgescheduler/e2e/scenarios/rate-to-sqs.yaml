@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awseventbridgescheduler
+    e2e-catalog-kind: awseventbridgescheduler
   annotations:
     planton.dev/e2e: "true"
     # The SQS target fixture; the registry prerequisite (AwsIamRole)

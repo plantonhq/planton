@@ -4,9 +4,9 @@
 # notes) until the live capture lane upgrades it to `proven`. Neptune
 # cluster management actions live under the rds: prefix -- the neptune-db:
 # namespace is the data plane (queries), which the runner never touches.
-# Schema: iac/componentpermissions/v1.
+# Schema: iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: awsneptunecluster
 spec:

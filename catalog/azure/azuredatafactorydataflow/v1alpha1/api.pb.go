@@ -34,7 +34,7 @@ type AzureDataFactoryDataFlow struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureDataFactoryDataFlowSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureDataFactoryDataFlow) GetKind() string {
 	return ""
 }
 
-func (x *AzureDataFactoryDataFlow) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureDataFactoryDataFlow) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,10 +112,10 @@ func (x *AzureDataFactoryDataFlow) GetStatus() *AzureDataFactoryDataFlowStatus {
 // Data Factory data flow deployment.
 type AzureDataFactoryDataFlowStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-data-factory-data-flow stack-outputs
-	Outputs       *AzureDataFactoryDataFlowStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-data-factory-data-flow outputs
+	Outputs       *AzureDataFactoryDataFlowOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureDataFactoryDataFlowStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuredatafactorydataflow_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureDataFactoryDataFlowStatus) GetOutputs() *AzureDataFactoryDataFlowStackOutputs {
+func (x *AzureDataFactoryDataFlowStatus) GetOutputs() *AzureDataFactoryDataFlowOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azuredatafactorydataflow_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18AzureDataFactoryDataFlowR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
 	"\x04spec\x18\x04 \x01(\v2Q.dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
-	"\x06status\x18\x05 \x01(\v2S.dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowStatusR\x06status\"\x95\x01\n" +
-	"\x1eAzureDataFactoryDataFlowStatus\x12s\n" +
-	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowStackOutputsR\aoutputsB\xa3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2S.dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowStatusR\x06status\"\x90\x01\n" +
+	"\x1eAzureDataFactoryDataFlowStatus\x12n\n" +
+	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowOutputsR\aoutputsB\xa3\x03\n" +
 	"7com.dev.planton.azure.azuredatafactorydataflow.v1alpha1B\bApiProtoP\x01Zmgithub.com/plantonhq/planton/catalog/azure/azuredatafactorydataflow/v1alpha1;azuredatafactorydataflowv1alpha1\xa2\x02\x04DPAA\xaa\x023Dev.Planton.Azure.Azuredatafactorydataflow.V1alpha1\xca\x023Dev\\Planton\\Azure\\Azuredatafactorydataflow\\V1alpha1\xe2\x02?Dev\\Planton\\Azure\\Azuredatafactorydataflow\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Azure::Azuredatafactorydataflow::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azuredatafactorydataflow_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_azure_azuredatafactorydataflow_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuredatafactorydataflow_v1alpha1_api_proto_goTypes = []any{
-	(*AzureDataFactoryDataFlow)(nil),             // 0: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlow
-	(*AzureDataFactoryDataFlowStatus)(nil),       // 1: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureDataFactoryDataFlowSpec)(nil),         // 3: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowSpec
-	(*AzureDataFactoryDataFlowStackOutputs)(nil), // 4: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowStackOutputs
+	(*AzureDataFactoryDataFlow)(nil),        // 0: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlow
+	(*AzureDataFactoryDataFlowStatus)(nil),  // 1: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureDataFactoryDataFlowSpec)(nil),    // 3: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowSpec
+	(*AzureDataFactoryDataFlowOutputs)(nil), // 4: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowOutputs
 }
 var file_catalog_azure_azuredatafactorydataflow_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlow.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlow.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlow.spec:type_name -> dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowSpec
 	1, // 2: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlow.status:type_name -> dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowStatus
-	4, // 3: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowStatus.outputs:type_name -> dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowStackOutputs
+	4, // 3: dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowStatus.outputs:type_name -> dev.planton.azure.azuredatafactorydataflow.v1alpha1.AzureDataFactoryDataFlowOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

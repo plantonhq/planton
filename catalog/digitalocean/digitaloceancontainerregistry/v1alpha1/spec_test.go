@@ -25,7 +25,7 @@ func registry() *DigitalOceanContainerRegistry {
 	return &DigitalOceanContainerRegistry{
 		ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 		Kind:       "DigitalOceanContainerRegistry",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-registry",
 		},
 		Spec: &DigitalOceanContainerRegistrySpec{

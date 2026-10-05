@@ -19,7 +19,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsdlmlifecyclepolicy
+    e2e-catalog-kind: awsdlmlifecyclepolicy
   annotations:
     # The consumer-scoped execution role (prerequisites/awsiamrole.yaml)
     # rides the kind's registry AwsIamRole edge - naming it here too

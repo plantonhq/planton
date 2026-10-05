@@ -4,7 +4,7 @@ Sets the tier of Vertex AI RAG Engine's managed vector database for one project 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project (never disabled on destroy)
 - **RAG Engine configuration** -- the `vertex_ai_rag_engine_config` singleton for the location, PATCHed to the declared tier
@@ -60,7 +60,7 @@ planton apply -f rag-engine-config.yaml
 - `tier` is one of the three values Google offers.
 - `location` is a region name (`us-central1`, `europe-west4`).
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -87,7 +87,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpVectorSearchCollection** -- an external vector database RAG Engine can use instead of its managed one
 - **GcpVertexAiAgentEngine** -- the agent runtime that typically consumes a RAG corpus

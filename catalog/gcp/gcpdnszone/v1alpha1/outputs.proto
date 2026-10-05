@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpdnszone.v1alpha1;
 
-// GcpDnsZoneStackOutputs captures values returned after provisioning a
+// GcpDnsZoneOutputs captures values returned after provisioning a
 // Cloud DNS managed zone.
-message GcpDnsZoneStackOutputs {
+message GcpDnsZoneOutputs {
   // Numeric identifier the Cloud DNS API assigns to the managed zone.
   string zone_id = 1;
 

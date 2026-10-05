@@ -13,7 +13,7 @@ agent slug.
 ## The one-skill doctrine
 
 The Planton Assistant has ONE skill: `planton`. It carries both product
-domains — infrastructure (charts, manifest sets, deployed projects) and
+domains — infrastructure (charts, manifest sets, deployed Infra Stacks) and
 service delivery (registration, deploys, CI/CD, the offline lane) — as
 domains of a single craft with a single doctrine: one "Know your
 instruments" ladder, one set of invariants, one prohibitions list. Do not
@@ -23,7 +23,7 @@ doctrine documents that WILL drift apart, and the agent reconciling them
 mid-conversation is the failure mode.
 
 `multi-cloud-catalog` is the one deliberate exception, and the reasons are
-its admission test: its content is GENERATED at package time (the component
+its admission test: its content is GENERATED at package time (the kind
 reference pack assembled from `catalog/`, far too large to author or review
 as prose) and it is a research layer other skills read from rather than a
 craft of its own. A new skill is justified only by BOTH properties —
@@ -103,11 +103,11 @@ skill's domains:
 
 | Domain | Carries |
 |---|---|
-| `infra.*` | Chart craft and lifecycle: format, templating, dependencies, config references, environments, the build contract, deployed projects, machine deploys, state import |
+| `infra.*` | Chart craft and lifecycle: format, templating, dependencies, config references, environments, the build contract, deployed Infra Stacks, machine deploys, state import |
 | `cloud.*` | Provider judgment: AWS architecture, Kubernetes architecture, read-only cloud exploration |
 | `service.*` | Service delivery: registration doors, briefing a service from its page, reading a service's repository and writing a fix back as a pull request, delivery verbs, runs and build failures, fixing a failed run from its page (including the repository's own CI run, read through Planton), managed pipelines and their authoring, organization publishing of pipelines and tasks, serving domains, previews, local env vars, kustomize authoring, the offline/GitHub-Actions lane, the delete cascade |
 | `self-hosted.*` | Administering a Planton the person runs themselves: reading the platform the operator converges, front doors and the CLI, upgrading, the first admin and seats, connecting a company directory, primary sign-in and the break-glass, mapping groups to roles, offboarding and sync |
-| `catalog.*` | The research layer's doors: component grounding, catalog availability |
+| `catalog.*` | The research layer's doors: kind grounding, catalog availability |
 | `craft.*` | Working method and the person: discovery, personalization, the profile vocabulary, the CLI command map, cost transparency, gap filing |
 
 Choosing a name: two segments (`<domain>.<topic>.md`) is the default;
@@ -128,7 +128,7 @@ when the estate is large enough to need domains.
 - **Cite it or it fails the gate**: add the file's row to SKILL.md's
   reference table in the same change that creates it.
 - **Compose, never duplicate.** Facts that have an authoritative home
-  elsewhere — component schemas, generated reference pages, the secret
+  elsewhere — kind schemas, generated reference pages, the secret
   snippets surface, another reference's topic — are pointed at, never
   copied. A copied fact is a fact that rots.
 
@@ -177,9 +177,9 @@ schemas, real failure modes. There is no bulk-import path: a skill earns
 its place here by being verifiably correct, and behavioral claims about an
 agent's judgment are proven against a live engine before they ship.
 
-Skills carry judgment and workflow. Component facts (what a deployment
-component is, its fields, its examples) live in the generated reference
-pages beside each component's protos (`catalog/...`), and the verified
+Skills carry judgment and workflow. Kind facts (what a deployment
+kind is, its fields, its examples) live in the generated reference
+pages beside each kind's protos (`catalog/...`), and the verified
 data layer (cost fact-sheets with generated estimates, control posture,
 provisioning-permission manifests) lives in the catalog's committed
 sidecars and central `_pricing/`/`_compliance/` trees — both are composed

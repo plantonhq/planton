@@ -23,11 +23,11 @@ planton tofu apply --manifest e2e/manifest.yaml --auto-approve
 planton tofu destroy --manifest e2e/manifest.yaml --auto-approve
 ```
 
-**Note**: Credentials are provided via stack input (CLI), not in the manifest `spec`.
+**Note**: Credentials are provided via IaC input (CLI), not in the manifest `spec`.
 
 Deploys propagate to every CloudFront edge location, so expect apply/destroy
 to take 5-15 minutes each while the distribution converges (and destroy first
 disables the distribution, which is itself a propagation).
 
 For more examples, see [`e2e/manifest.yaml`](../../e2e/manifest.yaml) and the
-component presets.
+kind's presets.

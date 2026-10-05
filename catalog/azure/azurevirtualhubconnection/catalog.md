@@ -4,7 +4,7 @@ Deploys a Virtual Hub Connection -- the attachment that joins one spoke virtual 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Virtual Hub Connection** -- the ARM attachment between the hub and the spoke VNet, with its routing configuration
 
@@ -14,7 +14,7 @@ The connection carries no tags of its own -- ARM addresses it as a child of the 
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -51,7 +51,7 @@ spec:
 planton apply -f azure-virtual-hub-connection.yaml
 ```
 
-This attaches the spoke VNet to the hub with ARM's default routing -- any-to-any reachability through the hub's built-in route table. The connection provisions in a few minutes and is free; transit through the hub is what bills. A Stack Job tracks the provisioning in real time.
+This attaches the spoke VNet to the hub with ARM's default routing -- any-to-any reachability through the hub's built-in route table. The connection provisions in a few minutes and is free; transit through the hub is what bills. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -86,7 +86,7 @@ These are the most important decisions when configuring a connection. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -95,15 +95,15 @@ These are the most important decisions when configuring a connection. Explore th
 | **AzureVirtualHub** (optional) | `routing.associatedRouteTableId` | `status.outputs.default_route_table_id` or `status.outputs.route_table_ids.<name>` |
 | **AzureVirtualHub** (optional) | `routing.inboundRouteMapId` / `outboundRouteMapId` | `status.outputs.route_map_ids.<name>` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `virtual_hub_connection_id` | ARM ID of the connection | A hub BGP peering's `virtualNetworkConnectionId` |
 
-The only other output, `virtual_hub_connection_name`, echoes the connection's name back; no downstream Cloud Resource consumes it.
+The only other output, `virtual_hub_connection_name`, echoes the connection's name back; no downstream Infra Component consumes it.
 
 ## Common Patterns
 
@@ -115,5 +115,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Virtual Hub**](/cloud-catalog/azure-virtual-hub) -- the hub the network attaches to
-- [**Azure Virtual Network**](/cloud-catalog/azure-virtual-network) -- the spoke being attached
+- [**Azure Virtual Hub**](/infra-catalog/azure-virtual-hub) -- the hub the network attaches to
+- [**Azure Virtual Network**](/infra-catalog/azure-virtual-network) -- the spoke being attached

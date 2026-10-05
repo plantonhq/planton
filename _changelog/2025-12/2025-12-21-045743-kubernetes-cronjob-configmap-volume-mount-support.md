@@ -6,7 +6,7 @@
 
 ## Summary
 
-Enhanced the KubernetesCronJob component to support creating ConfigMaps from inline content and mounting them (along with Secrets, HostPaths, EmptyDirs, and PVCs) as volumes into containers. This enables deploying CronJobs that require configuration files—a common pattern for batch jobs like database backups, data processing scripts, and scheduled tasks.
+Enhanced the KubernetesCronJob kind to support creating ConfigMaps from inline content and mounting them (along with Secrets, HostPaths, EmptyDirs, and PVCs) as volumes into containers. This enables deploying CronJobs that require configuration files—a common pattern for batch jobs like database backups, data processing scripts, and scheduled tasks.
 
 ## Problem Statement / Motivation
 
@@ -19,7 +19,7 @@ Deploying CronJobs that need configuration files (backup scripts, config files, 
 
 - **No declarative ConfigMap creation**: Users couldn't define configuration file content alongside their CronJob
 - **No volume mount support**: Even if ConfigMaps existed, there was no way to mount them
-- **Inconsistency with KubernetesDeployment**: The KubernetesDeployment component already had this support
+- **Inconsistency with KubernetesDeployment**: The KubernetesDeployment kind already had this support
 
 ## Solution / What's New
 
@@ -140,7 +140,7 @@ spec:
 ### Who Is Affected
 
 - **KubernetesCronJob users**: New capabilities for configuration management
-- **Consistency across components**: KubernetesCronJob now has feature parity with KubernetesDeployment for volume mounts
+- **Consistency across kinds**: KubernetesCronJob now has feature parity with KubernetesDeployment for volume mounts
 
 ### Backward Compatibility
 

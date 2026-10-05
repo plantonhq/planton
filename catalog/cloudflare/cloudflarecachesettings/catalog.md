@@ -4,7 +4,7 @@ Manages a Cloudflare zone's caching and performance posture as one resource: Sma
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions one zone-scoped API object per managed setting:
+When you deploy this Infra Component, the IaC module provisions one zone-scoped API object per managed setting:
 
 - **Smart Tiered Cache** — one `cloudflare_tiered_cache`, created only when `smartTieredCache` is set; the dashboard's Tiered Cache toggle. Real delete: destroy disables it.
 - **Generic Tiered Caching** — one `cloudflare_argo_tiered_caching`, created only when `tieredCaching` is set. No delete at Cloudflare.
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions one zone-scoped A
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module whose API token has Cache Settings edit access on the target zone; Argo Smart Routing additionally requires the Argo edit permission. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module whose API token has Cache Settings edit access on the target zone; Argo Smart Routing additionally requires the Argo edit permission. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
@@ -53,7 +53,7 @@ spec:
 planton apply -f cache-settings.yaml
 ```
 
-This enables Smart Tiered Cache on the zone and manages nothing else — every other setting stays exactly as it is. A Stack Job tracks the provisioning in real time.
+This enables Smart Tiered Cache on the zone and manages nothing else — every other setting stays exactly as it is. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,13 +92,13 @@ These are the most important decisions when configuring cache settings. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 This component's `status.outputs` only echoes the managed zone's ID back (`zone_id`) — cache settings are a zone singleton with no resource ID of their own, so the zone is the identity and there is nothing new for downstream resources to consume.
 
@@ -114,7 +114,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — the anchor; wire `zoneId` via ValueFromRef so the dependency is explicit in the graph
-- [**Cloudflare Ruleset**](/cloud-catalog/cloudflare-ruleset) — per-URL TTLs, cache keys, and bypass rules layered on top of the zone-wide posture set here
-- [**Cloudflare Zone Settings**](/cloud-catalog/cloudflare-zone-settings) — the sibling settings kind for general zone toggles (SSL mode, minification, security level)
-- [**Cloudflare Zone TLS Settings**](/cloud-catalog/cloudflare-zone-tls-settings) — the sibling settings kind for the zone's TLS posture
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — the anchor; wire `zoneId` via ValueFromRef so the dependency is explicit in the graph
+- [**Cloudflare Ruleset**](/infra-catalog/cloudflare-ruleset) — per-URL TTLs, cache keys, and bypass rules layered on top of the zone-wide posture set here
+- [**Cloudflare Zone Settings**](/infra-catalog/cloudflare-zone-settings) — the sibling settings kind for general zone toggles (SSL mode, minification, security level)
+- [**Cloudflare Zone TLS Settings**](/infra-catalog/cloudflare-zone-tls-settings) — the sibling settings kind for the zone's TLS posture

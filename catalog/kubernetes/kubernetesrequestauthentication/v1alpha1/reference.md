@@ -114,7 +114,7 @@ MUST express the dependency via metadata.relationships, e.g.:
       - kind: KubernetesDeployment
         name: "{{ values.app }}"
         type: depends_on
-See the component's "Composing in Infra Charts" docs for the full pattern.
+See the kind's "Composing in Infra Charts" docs for the full pattern.
 
 ### spec.selector.matchLabels
 
@@ -148,7 +148,7 @@ valueFrom orders this policy after the gateway it protects. A literal `value:`
 covers a Service, a ServiceEntry, or anything created outside Planton; istiod
 resolves group/kind/name at runtime, so order this policy after such a target
 with metadata.relationships (`uses` -> KubernetesService / KubernetesServiceEntry).
-See the component's "Composing in Infra Charts" docs.
+See the kind's "Composing in Infra Charts" docs.
 
 - rule: {"repeated":{"maxItems":"16"}}
 

@@ -1,10 +1,10 @@
 # GCP Cloud Run Domain Mapping
 
-Maps a custom domain (like `app.example.com`) directly onto a Cloud Run service — Cloud Run serves the domain itself and provisions/renews the TLS certificate, no load balancer required. The mapping emits the DNS records your domain's zone must publish as stack outputs, ready to wire into [GcpDnsRecord](/docs/catalog/gcp/gcpdnsrecord) or your external DNS host. This is the scale-appropriate path for "one service, one domain"; the production-grade path for high-traffic or multi-service domains remains the load-balancer composition (serverless NEG → backend service → URL map → HTTPS proxy → forwarding rule).
+Maps a custom domain (like `app.example.com`) directly onto a Cloud Run service — Cloud Run serves the domain itself and provisions/renews the TLS certificate, no load balancer required. The mapping emits the DNS records your domain's zone must publish as outputs, ready to wire into [GcpDnsRecord](/docs/catalog/gcp/gcpdnsrecord) or your external DNS host. This is the scale-appropriate path for "one service, one domain"; the production-grade path for high-traffic or multi-service domains remains the load-balancer composition (serverless NEG → backend service → URL map → HTTPS proxy → forwarding rule).
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Domain Mapping** -- a `google_cloud_run_domain_mapping` pointing the verified domain at the Cloud Run service, with a managed TLS certificate in the default `AUTOMATIC` mode
 - **Cloud Run API enablement** -- `run.googleapis.com` enabled in the target project (never disabled on destroy)
@@ -76,7 +76,7 @@ planton apply -f mapping.yaml
 - **Certificate mode is a closed set**: `AUTOMATIC` or `NONE`.
 - **The domain must be a lowercase FQDN** with at least two labels (`app.example.com`, not `localhost`).
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -106,7 +106,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpCloudRun](/docs/catalog/gcp/gcpcloudrun) — the service being mapped; its `service_name` output feeds `route`
 - [GcpDnsRecord](/docs/catalog/gcp/gcpdnsrecord) — publishes the `resource_records` output in a Cloud DNS zone

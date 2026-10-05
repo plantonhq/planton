@@ -57,7 +57,7 @@ var _ = ginkgo.Describe("GcpRedisClusterEndpointSetSpec", func() {
 		return &GcpRedisClusterEndpointSet{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpRedisClusterEndpointSet",
-			Metadata:   &shared.CloudResourceMetadata{Name: "orders-cache-endpoints"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "orders-cache-endpoints"},
 			Spec: &GcpRedisClusterEndpointSetSpec{
 				Cluster: nameRef("orders-cache"),
 				Region:  "us-central1",

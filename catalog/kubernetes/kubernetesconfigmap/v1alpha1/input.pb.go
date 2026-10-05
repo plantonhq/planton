@@ -23,10 +23,10 @@ const (
 )
 
 // *
-// **KubernetesConfigMapStackInput** defines the input structure for deploying a Kubernetes
+// **KubernetesConfigMapIacInput** defines the input structure for deploying a Kubernetes
 // ConfigMap. It carries the target ConfigMap specification and the Kubernetes cluster
 // configuration the IaC modules (Pulumi and Terraform) need to reach the cluster.
-type KubernetesConfigMapStackInput struct {
+type KubernetesConfigMapIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// The target ConfigMap resource to be created.
@@ -41,20 +41,20 @@ type KubernetesConfigMapStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesConfigMapStackInput) Reset() {
-	*x = KubernetesConfigMapStackInput{}
+func (x *KubernetesConfigMapIacInput) Reset() {
+	*x = KubernetesConfigMapIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesConfigMapStackInput) String() string {
+func (x *KubernetesConfigMapIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesConfigMapStackInput) ProtoMessage() {}
+func (*KubernetesConfigMapIacInput) ProtoMessage() {}
 
-func (x *KubernetesConfigMapStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesConfigMapIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,19 +66,19 @@ func (x *KubernetesConfigMapStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesConfigMapStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesConfigMapStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesConfigMapIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesConfigMapIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesConfigMapStackInput) GetTarget() *KubernetesConfigMap {
+func (x *KubernetesConfigMapIacInput) GetTarget() *KubernetesConfigMap {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesConfigMapStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesConfigMapIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -89,8 +89,8 @@ var File_catalog_kubernetes_kubernetesconfigmap_v1alpha1_input_proto protoreflec
 
 const file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesconfigmap/v1alpha1/input.proto\x123dev.planton.kubernetes.kubernetesconfigmap.v1alpha1\x1a9catalog/kubernetes/kubernetesconfigmap/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xdc\x01\n" +
-	"\x1dKubernetesConfigMapStackInput\x12`\n" +
+	";catalog/kubernetes/kubernetesconfigmap/v1alpha1/input.proto\x123dev.planton.kubernetes.kubernetesconfigmap.v1alpha1\x1a9catalog/kubernetes/kubernetesconfigmap/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xda\x01\n" +
+	"\x1bKubernetesConfigMapIacInput\x12`\n" +
 	"\x06target\x18\x01 \x01(\v2H.dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xa0\x03\n" +
 	"7com.dev.planton.kubernetes.kubernetesconfigmap.v1alpha1B\n" +
@@ -110,13 +110,13 @@ func file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesConfigMapStackInput)(nil),       // 0: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapStackInput
+	(*KubernetesConfigMapIacInput)(nil),         // 0: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapIacInput
 	(*KubernetesConfigMap)(nil),                 // 1: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMap
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesconfigmap_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapStackInput.target:type_name -> dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMap
-	2, // 1: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapIacInput.target:type_name -> dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMap
+	2, // 1: dev.planton.kubernetes.kubernetesconfigmap.v1alpha1.KubernetesConfigMapIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -6,13 +6,13 @@
 
 ## Summary
 
-`AwsEc2Instance` and `AwsEcsCluster` — the two compute primitives real users touch first — are rebuilt to their full provider surfaces. The EC2 instance grows from a 17-field 80/20 spec to the complete `aws_instance` surface (launch-template composition, IMDSv2 posture, Spot, placement, capacity reservations, full block-device control), retiring a synthetic connection-method abstraction, module-side SSH key generation that leaked private-key PEMs into stack outputs, and a per-kind `tags` map that diverged from the platform convention. The ECS cluster gains EC2 capacity: folded per-name capacity providers that wrap referenced auto-scaling groups, enhanced Container Insights, honest ECS Exec auditing, Fargate storage encryption, and Service Connect defaults. The E2E framework gains scenario-declared prerequisites — the mechanism that lets optional-composition scenarios run live without polluting the honest kind registry — and both kinds passed live dual-engine E2E (six lanes) with a zero-orphan sweep.
+`AwsEc2Instance` and `AwsEcsCluster` — the two compute primitives real users touch first — are rebuilt to their full provider surfaces. The EC2 instance grows from a 17-field 80/20 spec to the complete `aws_instance` surface (launch-template composition, IMDSv2 posture, Spot, placement, capacity reservations, full block-device control), retiring a synthetic connection-method abstraction, module-side SSH key generation that leaked private-key PEMs into outputs, and a per-kind `tags` map that diverged from the platform convention. The ECS cluster gains EC2 capacity: folded per-name capacity providers that wrap referenced auto-scaling groups, enhanced Container Insights, honest ECS Exec auditing, Fargate storage encryption, and Service Connect defaults. The E2E framework gains scenario-declared prerequisites — the mechanism that lets optional-composition scenarios run live without polluting the honest kind registry — and both kinds passed live dual-engine E2E (six lanes) with a zero-orphan sweep.
 
 ## Problem Statement / Motivation
 
 ### Pain Points
 
-- **The EC2 instance module invented behavior AWS does not have.** A `connection_method` enum (SSM/BASTION/INSTANCE_CONNECT) gated field requirements that the EC2 API does not impose, and when `key_name` was empty the Pulumi module silently generated an RSA-4096 key pair and exported the private-key PEM as a stack output — while the Terraform module exported `null` for the same fields. A live cross-engine divergence AND secret material in state, in a module that must never create side resources.
+- **The EC2 instance module invented behavior AWS does not have.** A `connection_method` enum (SSM/BASTION/INSTANCE_CONNECT) gated field requirements that the EC2 API does not impose, and when `key_name` was empty the Pulumi module silently generated an RSA-4096 key pair and exported the private-key PEM as an output — while the Terraform module exported `null` for the same fields. A live cross-engine divergence AND secret material in state, in a module that must never create side resources.
 - **A live parity defect on the instance profile**: the provider's `iam_instance_profile` argument takes the profile NAME (the API's `AssociateIamInstanceProfile` passes `Name`), but the Pulumi module passed the ARN while the Terraform module extracted the name from it.
 - **The EC2 TF variable contract was the legacy hand-written shape** (`{key, value}` label objects) that the tfvars pipeline can never satisfy — the kind had never been deployable on Terraform.
 - **The instance spec carried a per-kind `tags` map** (identity tags derive from metadata everywhere else) and a redundant `instance_name` duplicating `metadata.name`.
@@ -23,7 +23,7 @@
 
 ### E2E framework: scenario-declared prerequisites
 
-A scenario manifest can now declare the dependencies it composes via the `planton.dev/e2e-prerequisites` metadata annotation (comma-separated kind names). Declared kinds expand through their own registry graphs, merge and dedupe with the component's registry prerequisites, and deploy in topological order; unknown kinds and self-references fail loudly. The registry stays the honest statement of what a kind REQUIRES to deploy; the annotation carries what one scenario additionally composes.
+A scenario manifest can now declare the dependencies it composes via the `planton.dev/e2e-prerequisites` metadata annotation (comma-separated kind names). Declared kinds expand through their own registry graphs, merge and dedupe with the kind's registry prerequisites, and deploy in topological order; unknown kinds and self-references fail loudly. The registry stays the honest statement of what a kind REQUIRES to deploy; the annotation carries what one scenario additionally composes.
 
 ```mermaid
 flowchart LR
@@ -52,7 +52,7 @@ flowchart LR
 
 ### Both kinds, one contract
 
-Generator-owned `variables.tf` under the drift guard (the EC2 legacy hand-written contract is gone); per-resource TF layouts (`instance.tf`; `cluster.tf` + `capacity_providers.tf`); provider floors verified against resolved v6.53 (EC2 `>= 6.33.0`, ECS `>= 6.0.0`); naming basis `metadata.name` with the cloud name argument set explicitly; Pulumi entrypoint anatomy completed (EC2 gained its stack-input template); presets, catalog pages, READMEs, and deep docs rewritten to the new shapes (the SSH-accessible preset is replaced by launch-template-composed and Spot-worker presets); zero PARITY-EXCEPTIONs (every field verified on pulumi-aws v7.35.0).
+Generator-owned `variables.tf` under the drift guard (the EC2 legacy hand-written contract is gone); per-resource TF layouts (`instance.tf`; `cluster.tf` + `capacity_providers.tf`); provider floors verified against resolved v6.53 (EC2 `>= 6.33.0`, ECS `>= 6.0.0`); naming basis `metadata.name` with the cloud name argument set explicitly; Pulumi entrypoint anatomy completed (EC2 gained its iac-input template); presets, catalog pages, READMEs, and deep docs rewritten to the new shapes (the SSH-accessible preset is replaced by launch-template-composed and Spot-worker presets); zero PARITY-EXCEPTIONs (every field verified on pulumi-aws v7.35.0).
 
 ### E2E (first-class for both kinds)
 
@@ -61,7 +61,7 @@ Generator-owned `variables.tf` under the drift guard (the EC2 legacy hand-writte
 
 ## Validation
 
-- **Offline gate green**: spec/CEL tests for both kinds (fresh runs), outputs conformance (2 new cases incl. list outputs), TF drift guard (EC2 newly enrolled), refcheck + crkreflect + E2E-runner suites, `validate-refs` (all foreign keys resolve), `secret-coverage` (gate passed), `tofu init`+`validate` on both modules (resolved aws v6.53.0), release-equivalent Pulumi builds, `go vet` on the e2e-tagged package, `make build-go`, Bazel build of all touched targets (after `bazel mod tidy` swept the dropped `pulumi-tls/v5` from MODULE.bazel), `make protos` regen proof, all 12 touched manifests CLI-validated (including each document of the multi-doc SG fixture), mechanical field-parity sweep clean on both kinds and both engines, and a scaffolding-leakage grep on the full diff.
+- **Offline gate green**: spec/CEL tests for both kinds (fresh runs), outputs conformance (2 new cases incl. list outputs), TF drift guard (EC2 newly enrolled), refcheck + catalogkindreflect + E2E-runner suites, `validate-refs` (all foreign keys resolve), `secret-coverage` (gate passed), `tofu init`+`validate` on both modules (resolved aws v6.53.0), release-equivalent Pulumi builds, `go vet` on the e2e-tagged package, `make build-go`, Bazel build of all touched targets (after `bazel mod tidy` swept the dropped `pulumi-tls/v5` from MODULE.bazel), `make protos` regen proof, all 12 touched manifests CLI-validated (including each document of the multi-doc SG fixture), mechanical field-parity sweep clean on both kinds and both engines, and a scaffolding-leakage grep on the full diff.
 - **Live dual-engine E2E: 6/6 lanes green** — EC2 instance minimal 4m20s (Pulumi) / 4m06s (Terraform); ECS EC2-capacity chain 3m33s (Pulumi) / 6m41s (Terraform); ECS Fargate leaf 56s (Pulumi) / 2m31s (Terraform). Serial lanes with a private TMPDIR/PULUMI_HOME and `-count=1`.
 - **Zero-orphan sweep clean**: no instances, ECS clusters, custom capacity providers, auto-scaling groups, launch templates, or e2e-tagged security groups/VPCs/subnets remain in the account.
 

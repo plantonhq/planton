@@ -5,7 +5,7 @@ import (
 
 	azurebastionhostv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurebastionhost/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -36,11 +36,11 @@ var skuWire = map[azurebastionhostv1alpha1.AzureBastionHostSku]string{
 	azurebastionhostv1alpha1.AzureBastionHostSku_PREMIUM:   "Premium",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurebastionhostv1alpha1.AzureBastionHostStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurebastionhostv1alpha1.AzureBastionHostIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureBastionHost = stackInput.Target
-	target := stackInput.Target
+	locals.AzureBastionHost = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -56,7 +56,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurebastionhostv1alpha1.
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureBastionHost.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureBastionHost.String()),
 	}
 
 	if target.Metadata.Id != "" {

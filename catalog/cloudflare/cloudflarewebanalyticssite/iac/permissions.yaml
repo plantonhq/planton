@@ -3,7 +3,7 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # HONEST UNKNOWN: the module also manages the site's include/exclude rules
 # via POST/PUT/DELETE /accounts/{account_id}/rum/v2/{ruleset_id}/rule --
@@ -12,7 +12,7 @@
 # API family as the site endpoints, but we do not assert a group we cannot
 # cite.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflarewebanalyticssite
 spec:

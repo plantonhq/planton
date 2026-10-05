@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package dev.planton.azure.azurewebapplicationfirewallpolicy.v1alpha1;
 
-// **AzureWebApplicationFirewallPolicyStackOutputs** captures the outputs of
+// **AzureWebApplicationFirewallPolicyOutputs** captures the outputs of
 // provisioning a regional Web Application Firewall policy.
 //
 // `policy_id` is the join key everything attaches through: an Application
 // Gateway's `firewall_policy_id`, a listener's per-listener policy
 // override, and a URL path rule's per-route policy override all reference
 // it.
-message AzureWebApplicationFirewallPolicyStackOutputs {
+message AzureWebApplicationFirewallPolicyOutputs {
   // The Azure Resource Manager ID of the WAF policy.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies/{name}
   // Referenced by AzureApplicationGateway (firewall_policy_id, per-listener

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awscodepipeline.v1alpha1;
 
-// AwsCodePipelineStackOutputs captures observable identifiers from the
+// AwsCodePipelineOutputs captures observable identifiers from the
 // AWS CodePipeline deployment.
-message AwsCodePipelineStackOutputs {
+message AwsCodePipelineOutputs {
   // The Amazon Resource Name (ARN) of the pipeline.
   // Use this for IAM policies, EventBridge targets, and cross-resource references.
   string pipeline_arn = 1;

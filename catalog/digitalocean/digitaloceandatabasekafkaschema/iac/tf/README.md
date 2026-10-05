@@ -14,7 +14,7 @@ Generated `variables.tf` mirrors the `DigitalOceanDatabaseKafkaSchemaSpec` proto
 
 ## Outputs
 
-Exactly the `DigitalOceanDatabaseKafkaSchemaStackOutputs` contract: `cluster_id`, `subject_name`.
+Exactly the `DigitalOceanDatabaseKafkaSchemaOutputs` contract: `cluster_id`, `subject_name`.
 
 ## Behavior notes
 

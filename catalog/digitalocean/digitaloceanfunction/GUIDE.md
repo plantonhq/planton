@@ -4,7 +4,7 @@ Judgment calls that matter when you run Functions on App Platform.
 
 ## There is no Functions Terraform resource
 
-Both engines create `digitalocean_app` with one functions component. `function_id` is that app's UUID. Import uses the same `digitalocean_app` id format as DigitalOceanApp (`{app_id}`), derived from the `function_id` stack output.
+Both engines create `digitalocean_app` with one functions component. `function_id` is that app's UUID. Import uses the same `digitalocean_app` id format as DigitalOceanApp (`{app_id}`), derived from the `function_id` output.
 
 ## Runtime does not belong on the spec
 

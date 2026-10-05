@@ -4,7 +4,7 @@ One topic on a Managed Service for Apache Kafka cluster -- its partitions, repli
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kafka topic** -- a `managed_kafka_topic` on the referenced cluster
 
@@ -68,7 +68,7 @@ planton apply -f managed-kafka-topic.yaml
 - `replicationFactor` is at least 1; `partitionCount`, when set, at least 1.
 - `topicId` follows Kafka's topic-name rule.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -95,7 +95,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpManagedKafkaCluster** -- the cluster the topic lives on
 - **GcpManagedKafkaAcl** -- who may read and write the topic

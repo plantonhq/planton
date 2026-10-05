@@ -2,11 +2,11 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_ssh_key` resource at the pinned provider version.
 
-## What this component models
+## What this kind models
 
 An SSH public key registered on the DigitalOcean account, ready to be injected into droplets (and droplet autoscale pools) at create time. The account stores only the PUBLIC half; the private key never leaves your machine.
 
-The component covers the provider's full argument surface:
+The kind covers the provider's full argument surface:
 
 - `key_name` -- the display name (renames apply in place)
 - `public_key` -- the OpenSSH single-line public key material (create-only: any in-line change REPLACES the key)

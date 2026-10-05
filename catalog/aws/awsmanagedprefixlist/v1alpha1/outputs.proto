@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsmanagedprefixlist.v1alpha1;
 
-// AwsManagedPrefixListStackOutputs captures the observable state of
+// AwsManagedPrefixListOutputs captures the observable state of
 // the prefix list after apply.
-message AwsManagedPrefixListStackOutputs {
+message AwsManagedPrefixListOutputs {
   // The prefix list's id (pl-...) - what security-group rules, NACL
   // rules, and route tables reference, and the provider's import ID.
   string prefix_list_id = 1;

@@ -14,7 +14,7 @@ Generated `variables.tf` mirrors the `DigitalOceanCdnSpec` proto: the flattened 
 
 ## Outputs
 
-Exactly the `DigitalOceanCdnStackOutputs` contract: `cdn_id`, `endpoint`.
+Exactly the `DigitalOceanCdnOutputs` contract: `cdn_id`, `endpoint`.
 
 ## Behavior notes
 

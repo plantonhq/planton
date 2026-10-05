@@ -99,7 +99,7 @@ func (KubernetesOpenBaoAudit_Sink) EnumDescriptor() ([]byte, []int) {
 // (`bao operator init` — generates the unseal key shares and the
 // initial root token) and unsealing are RUNTIME operations performed
 // against the API after deploy; no Kubernetes deployment tool can do
-// them declaratively, and this component deliberately does not try.
+// them declaratively, and this kind deliberately does not try.
 // Until a server is initialized and unsealed, its pod reports
 // NotReady BY DESIGN (the readiness probe is `bao status`, which
 // exits non-zero for sealed servers) — the chart keeps sealed pods
@@ -260,7 +260,7 @@ type KubernetesOpenBaoSpec struct {
 	// pointing at the same key, a restore is a single call and the
 	// restored cluster unseals itself. A Shamir cluster restores only by
 	// hand (the snapshot's key shares must be present) — that runbook is
-	// in the component guide, not here.
+	// in the kind's guide, not here.
 	//
 	// ONE STEP THE MODULE CANNOT TAKE: the Job authenticates with the
 	// TARGET's initial root token — run `bao operator init` on the fresh
@@ -3060,7 +3060,7 @@ var File_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetesopenbao/v1alpha1/spec.proto\x121dev.planton.kubernetes.kubernetesopenbao.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a catalog/kubernetes/options.proto\x1a*catalog/kubernetes/workload_identity.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xc4\x15\n" +
+	"8catalog/kubernetes/kubernetesopenbao/v1alpha1/spec.proto\x121dev.planton.kubernetes.kubernetesopenbao.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a catalog/kubernetes/options.proto\x1a*catalog/kubernetes/workload_identity.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xc1\x15\n" +
 	"\x15KubernetesOpenBaoSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x124\n" +
@@ -3080,12 +3080,12 @@ const file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDesc = ""
 	"\vhelm_values\x18\r \x01(\tR\n" +
 	"helmValues\x12b\n" +
 	"\x06backup\x18\x0e \x01(\v2J.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupR\x06backup\x12e\n" +
-	"\arestore\x18\x0f \x01(\v2K.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoRestoreR\arestore:\xd8\v\xbaH\xd4\v\x1a\x9c\x02\n" +
+	"\arestore\x18\x0f \x01(\v2K.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoRestoreR\arestore:\xd5\v\xbaH\xd1\v\x1a\x9c\x02\n" +
 	"\x16spec.backup.not_on_dev\x12\xc0\x01Backups snapshot Raft storage and dev mode has no snapshot API (it is in-memory) — remove backup, or remove server.dev and run a storage engine (leave server.raft unset for one Raft server).\x1a?!has(this.backup) || !has(this.server) || !has(this.server.dev)\x1a\x80\x02\n" +
 	"\x1dspec.backup.not_on_postgresql\x12\x96\x01Snapshots exist only for Raft storage; a vault stored in PostgreSQL is backed up by its database — remove backup, or store the vault on server.raft.\x1aF!has(this.backup) || !has(this.server) || !has(this.server.postgresql)\x1a\x85\x03\n" +
 	"#spec.backup.requires_auth_delegator\x12\xc7\x01The backup job logs in through OpenBao's Kubernetes auth method, which verifies its token with a TokenReview — leave service_account.auth_delegator_enabled on (the default) when backup is declared.\x1a\x93\x01!has(this.backup) || !has(this.service_account) || !has(this.service_account.auth_delegator_enabled) || this.service_account.auth_delegator_enabled\x1a\xe6\x01\n" +
-	"\x1cspec.restore.requires_backup\x12\x9d\x01A restore reads from the store declared on backup (bucket, prefix, credentials, identity) — declare backup with the same store the snapshot was written to.\x1a&!has(this.restore) || has(this.backup)\x1a\xbe\x02\n" +
-	"!spec.restore.requires_auto_unseal\x12\xeb\x01A declared restore needs auto_unseal with the same seal key the snapshot was taken under — declare the same aws_kms, gcp_kms, azure_key_vault, or transit seal as the source. A Shamir cluster restores by hand; see the component guide.\x1a+!has(this.restore) || has(this.auto_unseal)B\x10\n" +
+	"\x1cspec.restore.requires_backup\x12\x9d\x01A restore reads from the store declared on backup (bucket, prefix, credentials, identity) — declare backup with the same store the snapshot was written to.\x1a&!has(this.restore) || has(this.backup)\x1a\xbb\x02\n" +
+	"!spec.restore.requires_auto_unseal\x12\xe8\x01A declared restore needs auto_unseal with the same seal key the snapshot was taken under — declare the same aws_kms, gcp_kms, azure_key_vault, or transit seal as the source. A Shamir cluster restores by hand; see the kind's guide.\x1a+!has(this.restore) || has(this.auto_unseal)B\x10\n" +
 	"\x0e_chart_versionB\r\n" +
 	"\v_ui_enabledJ\x04\b\v\x10\fR\x0esnapshot_agent\"\x99\x12\n" +
 	"\x17KubernetesOpenBaoServer\x12]\n" +

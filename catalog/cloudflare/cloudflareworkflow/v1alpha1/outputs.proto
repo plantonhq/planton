@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflareworkflow.v1alpha1;
 
-// CloudflareWorkflowStackOutputs captures the observable outputs after
+// CloudflareWorkflowOutputs captures the observable outputs after
 // registering a workflow.
-message CloudflareWorkflowStackOutputs {
+message CloudflareWorkflowOutputs {
   // The workflow's name -- its identity within the account, and what Worker
   // workflow bindings reference.
   string workflow_name = 1;

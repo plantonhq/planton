@@ -4,7 +4,7 @@ Registers a Dapr component on a Container App Environment -- the pluggable backe
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Dapr Component** -- on the referenced Container App Environment, with its type and version, the metadata configuration entries, the component-scoped secrets those entries may reference, and the app-ID scopes
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -64,7 +64,7 @@ spec:
 planton apply -f component.yaml
 ```
 
-This registers a blob-storage state store named `orders-state`, scoped to the `orders-api` app, with the account key delivered as a managed secret. A Stack Job tracks the provisioning in real time.
+This registers a blob-storage state store named `orders-state`, scoped to the `orders-api` app, with the account key delivered as a managed secret. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,16 +102,16 @@ These are the most important decisions when configuring a component. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureContainerAppEnvironment** | `containerAppEnvironmentId` | `status.outputs.environment_id` |
 | **AzureUserAssignedIdentity** | `metadata[].value` (keyless auth) | `status.outputs.client_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -130,9 +130,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Container App Environment**](/cloud-catalog/azure-container-app-environment) -- where the component registers
-- [**Azure Container App**](/cloud-catalog/azure-container-app) -- Dapr-enabled apps consume the component by name, scoped via their `dapr.app_id`
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the classic state-store backend
-- [**Azure Service Bus Namespace**](/cloud-catalog/azure-service-bus-namespace) -- the classic pub/sub backend
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- the secret-store backend
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- keyless component authentication via the azureClientId metadata entry
+- [**Azure Container App Environment**](/infra-catalog/azure-container-app-environment) -- where the component registers
+- [**Azure Container App**](/infra-catalog/azure-container-app) -- Dapr-enabled apps consume the component by name, scoped via their `dapr.app_id`
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the classic state-store backend
+- [**Azure Service Bus Namespace**](/infra-catalog/azure-service-bus-namespace) -- the classic pub/sub backend
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- the secret-store backend
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- keyless component authentication via the azureClientId metadata entry

@@ -107,7 +107,7 @@ boot sources, and `instanceEncryptionKey` for instance-level state.
 Customer-supplied raw keys (CSEK) are deliberately NOT modeled — the
 provider keeps those arguments in state as ordinary values, and key material
 flowing through manifests contradicts the platform's secret posture; the
-recorded exclusions live in this component's parity manifest. Before the
+recorded exclusions live in this kind's parity manifest. Before the
 first CMEK apply, the Compute Engine service agent needs
 `roles/cloudkms.cryptoKeyEncrypterDecrypter` on every referenced key —
 missing it fails at apply, not at plan.

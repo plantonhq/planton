@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpdeploycustomtargettype.v1alpha1;
 import "catalog/gcp/gcpdeploycustomtargettype/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-deploy-custom-target-type stack-input
-message GcpDeployCustomTargetTypeStackInput {
-  //target cloud-resource
+//gcp-deploy-custom-target-type iac-input
+message GcpDeployCustomTargetTypeIacInput {
+  // the catalog object to deploy
   GcpDeployCustomTargetType target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

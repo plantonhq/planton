@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsiamgroup
 spec:
@@ -15,7 +15,7 @@ spec:
     - name: group_name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: group_name
+        - from_output: group_name
       where_to_find: >-
         IAM console -> User groups (the group name), or `aws iam
         list-groups` (GroupName). The name only -- not the path or

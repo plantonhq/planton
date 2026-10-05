@@ -8,10 +8,10 @@ release, and each tier scales through its own `replicas` field on this
 one resource. You grow a store by sizing its tiers, never by
 installing more resources.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a managed object store** — use a cloud bucket service;
-  this component is for serving the S3 API from ON the Kubernetes
+  this kind is for serving the S3 API from ON the Kubernetes
   cluster itself.
 - **You expect a public S3 endpoint out of the box** — everything
   stays ClusterIP by design. Exposure composes from first-class kinds
@@ -43,7 +43,7 @@ ON — the chart materializes an admin and a read-only credential pair
 in the `<name>-s3-secret` Secret (keys `admin_access_key_id` /
 `admin_secret_access_key` / `read_access_key_id` /
 `read_secret_access_key`; generated once, stable across upgrades, kept
-on uninstall). The stack outputs point at it — credentials ride the
+on uninstall). The outputs point at it — credentials ride the
 Secret, never the manifest. To own every identity yourself, reference
 a Secret carrying the chart's `seaweedfs_s3_config` contract via
 `s3.existing_config_secret`; the chart then generates nothing.
@@ -56,7 +56,7 @@ a Secret carrying the chart's `seaweedfs_s3_config` contract via
   Deployment scales the API independently of metadata); both shapes
   expose the same `<name>-s3` Service on port 8333.
 - **PVCs, not hostPath.** The chart's out-of-the-box storage is
-  hostPath (bare-metal grain); this component deliberately maps every
+  hostPath (bare-metal grain); this kind deliberately maps every
   data volume to a PersistentVolumeClaim and every logs volume to
   emptyDir — portable across every managed cloud and kind cluster.
   Declare sizes and (optionally) a StorageClass per tier.
@@ -118,7 +118,7 @@ a Secret carrying the chart's `seaweedfs_s3_config` contract via
 - **`spec.image` / `spec.helm_values`**: the air-gap image path and
   the escape hatch
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

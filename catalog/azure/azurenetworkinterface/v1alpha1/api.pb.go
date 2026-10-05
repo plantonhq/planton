@@ -31,7 +31,7 @@ type AzureNetworkInterface struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureNetworkInterfaceSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AzureNetworkInterface) GetKind() string {
 	return ""
 }
 
-func (x *AzureNetworkInterface) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureNetworkInterface) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *AzureNetworkInterface) GetStatus() *AzureNetworkInterfaceStatus {
 // azure-network-interface status
 type AzureNetworkInterfaceStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-network-interface stack-outputs
-	Outputs       *AzureNetworkInterfaceStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-network-interface outputs
+	Outputs       *AzureNetworkInterfaceOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureNetworkInterfaceStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurenetworkinterface_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureNetworkInterfaceStatus) GetOutputs() *AzureNetworkInterfaceStackOutputs {
+func (x *AzureNetworkInterfaceStatus) GetOutputs() *AzureNetworkInterfaceOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azurenetworkinterface_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15AzureNetworkInterfaceR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
 	"\x04spec\x18\x04 \x01(\v2K.dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12e\n" +
-	"\x06status\x18\x05 \x01(\v2M.dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceStatusR\x06status\"\x8c\x01\n" +
-	"\x1bAzureNetworkInterfaceStatus\x12m\n" +
-	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceStackOutputsR\aoutputsB\x8e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2M.dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceStatusR\x06status\"\x87\x01\n" +
+	"\x1bAzureNetworkInterfaceStatus\x12h\n" +
+	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceOutputsR\aoutputsB\x8e\x03\n" +
 	"4com.dev.planton.azure.azurenetworkinterface.v1alpha1B\bApiProtoP\x01Zggithub.com/plantonhq/planton/catalog/azure/azurenetworkinterface/v1alpha1;azurenetworkinterfacev1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Azure.Azurenetworkinterface.V1alpha1\xca\x020Dev\\Planton\\Azure\\Azurenetworkinterface\\V1alpha1\xe2\x02<Dev\\Planton\\Azure\\Azurenetworkinterface\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Azure::Azurenetworkinterface::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_azure_azurenetworkinterface_v1alpha1_api_proto_rawDescGZIP() [
 
 var file_catalog_azure_azurenetworkinterface_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurenetworkinterface_v1alpha1_api_proto_goTypes = []any{
-	(*AzureNetworkInterface)(nil),             // 0: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterface
-	(*AzureNetworkInterfaceStatus)(nil),       // 1: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureNetworkInterfaceSpec)(nil),         // 3: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceSpec
-	(*AzureNetworkInterfaceStackOutputs)(nil), // 4: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceStackOutputs
+	(*AzureNetworkInterface)(nil),        // 0: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterface
+	(*AzureNetworkInterfaceStatus)(nil),  // 1: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureNetworkInterfaceSpec)(nil),    // 3: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceSpec
+	(*AzureNetworkInterfaceOutputs)(nil), // 4: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceOutputs
 }
 var file_catalog_azure_azurenetworkinterface_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterface.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterface.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterface.spec:type_name -> dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceSpec
 	1, // 2: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterface.status:type_name -> dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceStatus
-	4, // 3: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceStatus.outputs:type_name -> dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceStackOutputs
+	4, // 3: dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceStatus.outputs:type_name -> dev.planton.azure.azurenetworkinterface.v1alpha1.AzureNetworkInterfaceOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (AzurePlantonRunnerStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (AzurePlantonRunnerOutputs).
 
 output "container_app_id" {
   description = "The Azure resource ID of the Container App keeping the runner running."

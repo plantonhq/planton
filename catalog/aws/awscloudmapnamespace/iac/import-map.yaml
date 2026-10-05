@@ -1,7 +1,7 @@
-# Where each placeholder in this component's import-ID formats comes
+# Where each placeholder in this kind's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml).
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awscloudmapnamespace
 spec:
@@ -14,7 +14,7 @@ spec:
   values:
     - name: namespace_id
       derivations:
-        - from_stack_output: namespace_id
+        - from_output: namespace_id
       where_to_find: >-
         Cloud Map console -> Namespaces (the ID column), or
         `aws servicediscovery list-namespaces` (Id, "ns-...").
@@ -28,13 +28,13 @@ spec:
         the spec's own vpc_id.
     - name: service_id
       derivations:
-        - from_stack_output_keyed_by_address: service_ids
+        - from_output_keyed_by_address: service_ids
       where_to_find: >-
         `aws servicediscovery list-services` lists services with Id
         ("srv-..."); match each to its spec.services entry by Name.
     - name: instance_service_id
       derivations:
-        - from_stack_output_keyed_by_address: instance_service_ids
+        - from_output_keyed_by_address: instance_service_ids
       where_to_find: >-
         The owning service's Id ("srv-...") from
         `aws servicediscovery list-services`; instances key

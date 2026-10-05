@@ -4,7 +4,7 @@ Deploys an availability set -- the classic placement grouping that spreads VMs a
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Availability set** -- the placement grouping with its fault-domain count (independent power/network/rack groups, default 3), update-domain count (planned-maintenance batches, default 5), managed-disk alignment (default on), and optional proximity placement group association
 - **Azure Tags** -- your governance tags merged over the Planton-derived resource tags (organization, environment, resource kind, resource ID); a user tag with the same key wins
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -49,7 +49,7 @@ spec:
 planton apply -f availability-set.yaml
 ```
 
-This creates an availability set with the provider defaults -- 5 update domains, 3 fault domains, managed-disk alignment on -- ready for VMs to join at their creation. A Stack Job tracks the provisioning in real time.
+This creates an availability set with the provider defaults -- 5 update domains, 3 fault domains, managed-disk alignment on -- ready for VMs to join at their creation. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -86,15 +86,15 @@ These are the most important decisions when configuring an availability set. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,5 +112,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the set lives in; VMs joining the set must live in the same group and region
-- [**Azure Virtual Machine**](/cloud-catalog/azure-virtual-machine) -- joins the set at creation through `availability.availabilitySetId`, which defaults to this component's `availability_set_id` output
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the set lives in; VMs joining the set must live in the same group and region
+- [**Azure Virtual Machine**](/infra-catalog/azure-virtual-machine) -- joins the set at creation through `availability.availabilitySetId`, which defaults to this component's `availability_set_id` output

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Deep content pass on the 6 remaining Infra Hub legacy pages. Rewrote 3 pages from scratch (stack-jobs, flow-control, getting-started), deleted 3 redundant pages (what-is-a-stack-job, deployment-components, credentials-and-mappings), and updated cross-references across 4 files. Infra Hub section consolidated from 13 pages to 10, with all pages now at quality bar.
+Deep content pass on the 6 remaining Infra Hub legacy pages. Rewrote 3 pages from scratch (infra-jobs, flow-control, getting-started), deleted 3 redundant pages (what-is-an-infra-job, a second catalog page, credentials-and-mappings), and updated cross-references across 4 files. Infra Hub section consolidated from 13 pages to 10, with all pages now at quality bar.
 
 ## Problem Statement / Motivation
 
@@ -14,8 +14,8 @@ Six Infra Hub pages remained untouched from the original documentation — the o
 
 ### Pain Points
 
-- `what-is-a-stack-job.md` and `stack-jobs.md` were two separate pages covering the same concept (620 combined lines), with the Information Architecture explicitly calling for a merge
-- `deployment-components.md` (665 lines) duplicated the already-rewritten `cloud-resource-kinds.md` — both covered the catalog taxonomy and browsing experience
+- `what-is-an-infra-job.md` and `infra-jobs.md` were two separate pages covering the same concept (620 combined lines), with the Information Architecture explicitly calling for a merge
+- A second catalog page (665 lines) duplicated the already-rewritten `catalog-kinds.md` — both covered the catalog taxonomy and browsing experience
 - `credentials-and-mappings.md` (633 lines) duplicated the Connect section (8 pages) — credential management, environment mappings, and default connections were already documented
 - `getting-started.md` (463 lines) contained fabricated YAML manifests with invented `apiVersion`/`kind` values, fake CLI commands, and fake resource outputs
 - `flow-control.md` (617 lines) contained fabricated YAML examples and unverified policy hierarchy claims
@@ -24,7 +24,7 @@ Six Infra Hub pages remained untouched from the original documentation — the o
 
 ### Pages Rewritten (3 clean-slate)
 
-**`stack-jobs.md`** — Merged two pages into one comprehensive reference. Covers: what a Stack Job is, execution sequence (init/refresh/preview/apply), the four essentials that get resolved before execution (IaC module, provider credentials, state backend, flow control), two deployment paths (direct vs orchestrated), monitoring, controlling execution (pause/cancel/rerun), preflight checks, and full CLI reference with verified flags.
+**`infra-jobs.md`** — Merged two pages into one comprehensive reference. Covers: what an Infra Job is, execution sequence (init/refresh/preview/apply), the four essentials that get resolved before execution (IaC module, provider credentials, state backend, flow control), two deployment paths (direct vs orchestrated), monitoring, controlling execution (pause/cancel/rerun), preflight checks, and full CLI reference with verified flags.
 
 **`flow-control.md`** — Documented the five boolean controls using exact labels from the web console component (`flow-control-display.tsx`): Manual Approval Required, Lifecycle Events Disabled, Skip Refresh, Preview Before Apply, Pause After Preview. Documented the four-level resolution hierarchy (resource > environment > organization > platform, first match wins, no merging). Added three practical patterns (development, production, shared infrastructure).
 
@@ -32,36 +32,36 @@ Six Infra Hub pages remained untouched from the original documentation — the o
 
 ### Pages Deleted (3 redundant)
 
-- `what-is-a-stack-job.md` — Content merged into the new `stack-jobs.md`
-- `deployment-components.md` — Content covered by `cloud-resource-kinds.md`
+- `what-is-an-infra-job.md` — Content merged into the new `infra-jobs.md`
+- The second catalog page — Content covered by `catalog-kinds.md`
 - `credentials-and-mappings.md` — Content covered by the Connect section
 
 ### Cross-References Fixed (4 files)
 
-- `infra-hub/index.md` — Removed Deployment Components and Credentials and Mappings entries, updated Mermaid diagram, updated Getting Started links
-- `infra-hub/cloud-resource-kinds.md` — Removed deployment-components link from Related Documentation
-- `infra-hub/cloud-resources.md` — Updated deployment-components link to cloud-resource-kinds
-- `infra-hub/openmcf.md` — Updated deployment-components link to cloud-resource-kinds
+- `infra-hub/index.md` — Removed the second catalog page's and Credentials and Mappings entries, updated Mermaid diagram, updated Getting Started links
+- `infra-hub/catalog-kinds.md` — Removed the second catalog page's link from Related Documentation
+- `infra-hub/infra-components.md` — Pointed its catalog link at catalog-kinds
+- `infra-hub/openmcf.md` — Pointed its catalog link at catalog-kinds
 
 ## Implementation Details
 
 ### Source Verification
 
-**Stack Jobs page** verified against:
-- `apis/ai/planton/infrahub/stackjob/v1/` — `StackJobOperationType` enum, `StackJobSpec`, `StackJobEssentials`, preflight checks
-- ADR `2026-01-18-085121-redesign-stackjob-essentials-resolution.md` — Essentials resolution simplification
-- CLI: 11 subcommands from Go source (`create-stack-job`, `cancel`, `resume`, `rerun`, `list`, `preflight-checks`, `stream-progress-events`, `stream-status`, `stack-input`, `stack-execute-input`, `execute`) with verified flags
-- Web console: Stack Job detail page, log streaming component, flow control display
-- Backend README: `backend/services/infra-hub/_module/src/main/java/ai/planton/infrahub/domain/stackjob/README.md`
+**Infra Jobs page** verified against:
+- `apis/ai/planton/infrahub/infrajob/v1/` — `InfraJobOperationType` enum, `InfraJobSpec`, `InfraJobEssentials`, preflight checks
+- ADR `2026-01-18-085121-redesign-infrajob-essentials-resolution.md` — Essentials resolution simplification
+- CLI: 11 subcommands from Go source (`create-infra-job`, `cancel`, `resume`, `rerun`, `list`, `preflight-checks`, `stream-progress-events`, `stream-status`, `iac-input`, `iac-execute-input`, `execute`) with verified flags
+- Web console: Infra Job detail page, log streaming component, flow control display
+- Backend README: `backend/services/infra-hub/_module/src/main/java/ai/planton/infrahub/domain/infrajob/README.md`
 
 **Flow Control page** verified against:
-- `apis/ai/planton/infrahub/flowcontrolpolicy/v1/` — `StackJobFlowControl` (5 booleans), `FlowControlPolicySpec` (selector pattern), `FlowControlPolicyQueryController` (getBySelector RPC)
+- `apis/ai/planton/infrahub/flowcontrolpolicy/v1/` — `InfraJobFlowControl` (5 booleans), `FlowControlPolicySpec` (selector pattern), `FlowControlPolicyQueryController` (getBySelector RPC)
 - `flowcontrolpolicy/v1/README.md` — Policy hierarchy, first-match-wins semantics
 - Web console: `flow-control-display.tsx` — exact labels and descriptions for each control
 
 ### Key Decisions
 
-- **Merged two pages into one**: `what-is-a-stack-job.md` (introductory) and `stack-jobs.md` (deep dive) had significant overlap; IA explicitly called for merge
+- **Merged two pages into one**: `what-is-an-infra-job.md` (introductory) and `infra-jobs.md` (deep dive) had significant overlap; IA explicitly called for merge
 - **Deleted rather than redirected**: Three redundant pages deleted entirely rather than converted to thin redirect pages — reduces maintenance burden
 - **Getting Started as navigation page**: Concise orientation rather than tutorial — each step links to deep-content pages, avoiding duplication and staleness
 - **Flow control labels from web console**: Used exact labels from `FlowControlDisplay` component for user-facing consistency
@@ -72,15 +72,15 @@ Six Infra Hub pages remained untouched from the original documentation — the o
 - **~2,400 lines of fabricated/marketing content removed** across 6 legacy pages
 - **~340 lines of verified, source-backed content** across 3 rewritten pages
 - **0 broken cross-references** verified across all docs
-- **0 duplicate content** between Infra Hub and other sections (Connect, Cloud Resource Kinds)
+- **0 duplicate content** between Infra Hub and other sections (Connect, Catalog Kinds)
 
 ## Impact
 
 - All Infra Hub pages now at the quality bar established by the Connect section exemplar
-- Stack Jobs documentation matches actual CLI commands and web console behavior
+- Infra Jobs documentation matches actual CLI commands and web console behavior
 - Flow Control documentation uses exact web console labels for consistency
 - Getting Started page links to deep-content pages rather than duplicating with fabricated examples
-- Readers no longer encounter two pages about the same concept (stack jobs) or three locations for credential documentation
+- Readers no longer encounter two pages about the same concept (Infra Jobs) or three locations for credential documentation
 
 ## Related Work
 

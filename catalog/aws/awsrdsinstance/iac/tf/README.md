@@ -11,7 +11,7 @@ planton tofu apply --manifest ../../e2e/manifest.yaml --auto-approve
 planton tofu destroy --manifest ../../e2e/manifest.yaml --auto-approve
 ```
 
-Credentials are passed via the stack input through the CLI, not in `spec`.
+Credentials are passed via the IaC input through the CLI, not in `spec`.
 
 ## Files
 - `variables.tf` (generated; do not edit)
@@ -19,7 +19,7 @@ Credentials are passed via the stack input through the CLI, not in `spec`.
 - `locals.tf` — computed locals and flags
 - `subnet_group.tf` — DB subnet group when subnet IDs provided
 - `instance.tf` — main DB instance resource
-- `outputs.tf` — outputs matching `AwsRdsInstanceStackOutputs`
+- `outputs.tf` — outputs matching `AwsRdsInstanceOutputs`
 
 ## Examples
 See `../../e2e/manifest.yaml` for example manifests.

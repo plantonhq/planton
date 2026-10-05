@@ -4,7 +4,7 @@ Deploys an S3 table bucket (S3 Tables) with its full contents — namespaces, Ap
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **S3 Table Bucket** — named after the resource, carrying the bucket-level encryption default, the unreferenced-file-removal dials, and the force-destroy posture
 - **Table Bucket Policy** — created only when `resourcePolicy` is set; who can create and query tables in the bucket
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, including S3 Tables permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, including S3 Tables permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -73,7 +73,7 @@ spec:
 planton apply -f table-bucket.yaml
 ```
 
-This creates a table bucket holding one `analytics` namespace with a four-column `events` table, compacted toward 256 MiB files and keeping a week of time travel. A Stack Job tracks the provisioning in real time.
+This creates a table bucket holding one `analytics` namespace with a four-column `events` table, compacted toward 256 MiB files and keeping a week of time travel. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -115,7 +115,7 @@ These are the most important decisions when configuring a table bucket. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -124,9 +124,9 @@ These are the most important decisions when configuring a table bucket. Explore 
 | **AwsIamRole** (with replication) | `replication.role` | `status.outputs.role_arn` |
 | **AwsIamRole** (per-table replication) | `namespaces[].tables[].replication.role` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -146,5 +146,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — the customer-managed key for at-rest encryption, wired via `encryption.kmsKeyArn` at the bucket or per table
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the role the replication service assumes, wired via `replication.role`
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — the customer-managed key for at-rest encryption, wired via `encryption.kmsKeyArn` at the bucket or per table
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the role the replication service assumes, wired via `replication.role`

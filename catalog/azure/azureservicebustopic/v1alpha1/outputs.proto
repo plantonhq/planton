@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package dev.planton.azure.azureservicebustopic.v1alpha1;
 
-// **AzureServiceBusTopicStackOutputs** captures the outputs of provisioning
+// **AzureServiceBusTopicOutputs** captures the outputs of provisioning
 // a Service Bus topic.
 //
 // No connection string here on purpose: credentials are minted by
 // AzureServiceBusAuthorizationRule (namespace- or topic-scoped) or granted
 // keyless via Entra data-plane roles on topic_id. Subscriptions reference
 // the topic by topic_id.
-message AzureServiceBusTopicStackOutputs {
+message AzureServiceBusTopicOutputs {
   // The Azure Resource Manager ID of the topic. The parent reference for
   // AzureServiceBusSubscription and topic-scoped SAS rules, and the scope
   // for topic-level data-plane role assignments (Azure Service Bus Data

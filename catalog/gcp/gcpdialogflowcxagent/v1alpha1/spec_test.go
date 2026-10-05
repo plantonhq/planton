@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("GcpDialogflowCxAgentSpec", func() {
 		return &GcpDialogflowCxAgent{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpDialogflowCxAgent",
-			Metadata:   &shared.CloudResourceMetadata{Name: "support-agent"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "support-agent"},
 			Spec: &GcpDialogflowCxAgentSpec{
 				Location:            "global",
 				DefaultLanguageCode: "en",
@@ -69,9 +69,9 @@ var _ = ginkgo.Describe("GcpDialogflowCxAgentSpec", func() {
 		}
 		msg.Spec.Tools = []*GcpDialogflowCxAgentTool{
 			{
-				DisplayName:  "orders-api",
-				Description:  "Looks up orders by id.",
-				OpenApiSpec:  &GcpDialogflowCxAgentToolOpenApiSpec{TextSchema: "openapi: 3.0.0"},
+				DisplayName: "orders-api",
+				Description: "Looks up orders by id.",
+				OpenApiSpec: &GcpDialogflowCxAgentToolOpenApiSpec{TextSchema: "openapi: 3.0.0"},
 				Versions: []*GcpDialogflowCxAgentToolVersion{{
 					DisplayName: "v1",
 					Tool: &GcpDialogflowCxAgentToolSnapshot{

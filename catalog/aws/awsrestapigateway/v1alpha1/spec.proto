@@ -16,7 +16,7 @@ import "shared/options/options.proto";
 // caching and throttling, WAF integration, canary-capable stages, EDGE/
 // REGIONAL/PRIVATE endpoints, and gateway-level response customization.
 // (HTTP APIs - API Gateway v2 - are the leaner, cheaper alternative and
-// are the AwsHttpApiGateway component.)
+// are the AwsHttpApiGateway kind.)
 //
 // This component bundles the API, its resource/method tree, a single
 // stage with an explicit deployment, and the API-scoped satellites
@@ -31,16 +31,16 @@ import "shared/options/options.proto";
 // - REST APIs deploy by EXPLICIT snapshot, not auto-deploy: the modules
 //   create one deployment whose trigger hashes the full API definition,
 //   so every spec change redeploys automatically - the declarative
-//   behavior a Planton component owes its users.
+//   behavior a Planton catalog kind owes its users.
 // - A single stage, since Planton resources are already
 //   environment-scoped. Canary traffic shifting is a deploy-workflow
 //   surface (it needs two live deployments) and is not modeled.
 // - Authorizers, models, and validators are named and referenced by
 //   routes for clean separation.
-// - Custom domains are the AwsRestApiDomain component (a domain outlives
+// - Custom domains are the AwsRestApiDomain kind (a domain outlives
 //   any one API and maps many APIs); VPC links are the AwsRestApiVpcLink
-//   component (one link is shared by many APIs); usage plans and API
-//   keys are the AwsRestApiUsagePlan component (a plan spans APIs and
+//   kind (one link is shared by many APIs); usage plans and API
+//   keys are the AwsRestApiUsagePlan kind (a plan spans APIs and
 //   stages).
 // - The account-level CloudWatch-logging role is a region singleton and
 //   deliberately not modeled here - stage access logs (`stage.access_log`)
@@ -49,7 +49,7 @@ import "shared/options/options.proto";
 //   role to be configured once per region.
 //
 // Credentials, region, and deployment workflow live outside this spec
-// in stack inputs.
+// in IaC inputs.
 message AwsRestApiGatewaySpec {
   // The AWS region where the API will be created.
   // Example: "us-west-2", "eu-west-1"

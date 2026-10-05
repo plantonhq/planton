@@ -4,7 +4,7 @@ Deploys an AWS Batch fair-share scheduling policy: the rules that divide a job q
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Batch Scheduling Policy** -- a fair-share policy with the configured compute reservation, share decay window, and per-share weight distributions
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
@@ -15,7 +15,7 @@ One policy is a standalone, shareable object: many job queues can reference the 
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -54,7 +54,7 @@ spec:
 planton apply -f batch-scheduling-policy.yaml
 ```
 
-This creates a policy that reserves headroom for quiet teams, remembers one hour of usage history, and gives ML training twice the capacity of the analytics share family. A Stack Job tracks the provisioning in real time.
+This creates a policy that reserves headroom for quiet teams, remembers one hour of usage history, and gives ML training twice the capacity of the analytics share family. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -70,13 +70,13 @@ These are the most important decisions when configuring a scheduling policy. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — the policy is self-contained, and the relationship runs the other way: job queues reference it through their `schedulingPolicy` field.
+This kind has no foreign key dependencies — the policy is self-contained, and the relationship runs the other way: job queues reference it through their `schedulingPolicy` field.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -93,6 +93,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Batch Job Queue**](/cloud-catalog/aws-batch-job-queue) -- references this policy to order jobs by share instead of first-in-first-out; note AWS's quirk that a queue's policy can be replaced but never removed
-- [**AWS Batch Compute Environment**](/cloud-catalog/aws-batch-compute-environment) -- provides the capacity the policy divides
-- [**AWS Batch Job Definition**](/cloud-catalog/aws-batch-job-definition) -- its `schedulingPriority` orders jobs WITHIN a share on fair-share queues
+- [**AWS Batch Job Queue**](/infra-catalog/aws-batch-job-queue) -- references this policy to order jobs by share instead of first-in-first-out; note AWS's quirk that a queue's policy can be replaced but never removed
+- [**AWS Batch Compute Environment**](/infra-catalog/aws-batch-compute-environment) -- provides the capacity the policy divides
+- [**AWS Batch Job Definition**](/infra-catalog/aws-batch-job-definition) -- its `schedulingPriority` orders jobs WITHIN a share on fair-share queues

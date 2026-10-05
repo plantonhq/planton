@@ -5,17 +5,17 @@ Pulumi (Go) IaC module for an Authenticated Origin Pulls client-certificate uplo
 ## Architecture
 
 ```
-main.go                   — Entrypoint loading the stack input
+main.go                   — Entrypoint loading the IaC input
 module/main.go            — Resources(): provider setup, resource, outputs
 module/locals.go          — Locals initialization
 module/certificate.go     — cloudflare.AuthenticatedOriginPullsCertificate
                             XOR cloudflare.AuthenticatedOriginPullsHostnameCertificate
-module/outputs.go         — Stack output keys
+module/outputs.go         — output keys
 ```
 
 ## Behavior
 
-Mirrors the Terraform module's contract exactly: the `scope` selects which resource is created (exactly one), rotation is replacement (never key-only -- the zone surface silently ignores it at v5.23.0), and the `certificate_id` / `zone_id` / `expires_on` stack outputs.
+Mirrors the Terraform module's contract exactly: the `scope` selects which resource is created (exactly one), rotation is replacement (never key-only -- the zone surface silently ignores it at v5.23.0), and the `certificate_id` / `zone_id` / `expires_on` outputs.
 
 ## Outputs
 

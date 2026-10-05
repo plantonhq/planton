@@ -4,7 +4,7 @@ Declares a Cloud Build repository connection: Cloud Build's authorized link to o
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `cloudbuild.googleapis.com` on the connection's project (never disabled on destroy)
 - **Connection** -- one `cloudbuildv2_connection`
@@ -85,7 +85,7 @@ Every `*SecretVersion` field takes a `GcpSecretManagerSecret` reference (its `la
 - At most one code-host block.
 - Literal secret versions are full version names; a Service Directory service is a full service name.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -115,7 +115,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpCloudBuildRepository** -- repositories linked through this connection
 - **GcpCloudBuildTrigger** -- builds started by those repositories' events

@@ -4,7 +4,7 @@ Deploys an Azure Event Grid system topic -- the subscription surface for events 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Event Grid system topic** -- the source binding that makes an Azure service's built-in event stream subscribable: the `(sourceResourceId, topicType)` pair is the topic's identity, with an optional managed identity for secured delivery
 - **Azure Tags** -- Planton-derived metadata tags merged with the manifest's `tags` (user values win on key conflicts)
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Azure Subscription
 
@@ -58,7 +58,7 @@ spec:
 planton apply -f system-topic.yaml
 ```
 
-This binds a storage account's built-in event stream (blob and queue events) to a subscribable topic; until a subscription is attached, the source's events are evaluated and dropped. A Stack Job tracks the provisioning in real time.
+This binds a storage account's built-in event stream (blob and queue events) to a subscribable topic; until a subscription is attached, the source's events are evaluated and dropped. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -99,7 +99,7 @@ These are the most important decisions when configuring a system topic. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -109,9 +109,9 @@ These are the most important decisions when configuring a system topic. Explore 
 
 Sources span dozens of kinds, so `sourceResourceId` carries no default -- reference the owning kind's ID output explicitly or pass a literal ARM ID.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -131,10 +131,10 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the group the topic resource sits in
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the most common event source (blob and queue events)
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- a source for secret and certificate lifecycle events
-- [**Azure Event Grid Event Subscription**](/cloud-catalog/azure-eventgrid-event-subscription) -- routes the topic's events to handlers via `systemTopicId`
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- identities attached for identity-based delivery
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- grants the topic's principal data-plane access on delivery targets
-- [**Azure Monitor Metric Alert**](/cloud-catalog/azure-monitor-metric-alert) -- alerts on the topic's delivery and drop counters
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the group the topic resource sits in
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the most common event source (blob and queue events)
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- a source for secret and certificate lifecycle events
+- [**Azure Event Grid Event Subscription**](/infra-catalog/azure-eventgrid-event-subscription) -- routes the topic's events to handlers via `systemTopicId`
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- identities attached for identity-based delivery
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- grants the topic's principal data-plane access on delivery targets
+- [**Azure Monitor Metric Alert**](/infra-catalog/azure-monitor-metric-alert) -- alerts on the topic's delivery and drop counters

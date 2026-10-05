@@ -61,7 +61,7 @@ The certificates are public material — never put a private key here.
 3. **Rotate by overlap** — add the new root beside the old one, move clients, then remove the old root. Each step is an in-place update.
 4. **Set `deletionPolicy: PREVENT`** on a trust config serving live mTLS traffic; Google also refuses deletion while a TLS policy still references it.
 
-## Related Components
+## Related Kinds
 
 - **GcpCertManagerCert** — the server certificate the load balancer presents (a trust config validates the client side)
 - **GcpPrivateCaPool** — a private CA whose root can be this config's trust anchor

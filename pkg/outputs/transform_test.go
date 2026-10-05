@@ -11,7 +11,7 @@ import (
 	gcpdnsv1 "github.com/plantonhq/planton/catalog/gcp/gcpdnszone/v1alpha1"
 	gcpsubnetworkv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsubnetwork/v1alpha1"
 	k8spgv1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetespostgres/v1alpha1"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 func TestTransform_Auth0ResourceServer(t *testing.T) {
@@ -27,14 +27,14 @@ func TestTransform_Auth0ResourceServer(t *testing.T) {
 		"client_id":        "abc123xyz",
 	}
 
-	msg, err := Transform(cloudresourcekind.CloudResourceKind_Auth0ResourceServer, outputs)
+	msg, err := Transform(catalogkind.CatalogKind_Auth0ResourceServer, outputs)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	typed, ok := msg.(*auth0v1.Auth0ResourceServerStackOutputs)
+	typed, ok := msg.(*auth0v1.Auth0ResourceServerOutputs)
 	if !ok {
-		t.Fatalf("expected *Auth0ResourceServerStackOutputs, got %T", msg)
+		t.Fatalf("expected *Auth0ResourceServerOutputs, got %T", msg)
 	}
 
 	if typed.GetId() != "6832a1b0c4e5f7d9e0a1b2c3" {
@@ -70,14 +70,14 @@ func TestTransform_GcpDnsZone(t *testing.T) {
 		"nameservers.3": "ns-cloud-a4.googledomains.com",
 	}
 
-	msg, err := Transform(cloudresourcekind.CloudResourceKind_GcpDnsZone, outputs)
+	msg, err := Transform(catalogkind.CatalogKind_GcpDnsZone, outputs)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	typed, ok := msg.(*gcpdnsv1.GcpDnsZoneStackOutputs)
+	typed, ok := msg.(*gcpdnsv1.GcpDnsZoneOutputs)
 	if !ok {
-		t.Fatalf("expected *GcpDnsZoneStackOutputs, got %T", msg)
+		t.Fatalf("expected *GcpDnsZoneOutputs, got %T", msg)
 	}
 
 	if typed.GetZoneId() != "123456789" {
@@ -109,14 +109,14 @@ func TestTransform_AwsVpc(t *testing.T) {
 		"region":                    "us-west-2",
 	}
 
-	msg, err := Transform(cloudresourcekind.CloudResourceKind_AwsVpc, outputs)
+	msg, err := Transform(catalogkind.CatalogKind_AwsVpc, outputs)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	typed, ok := msg.(*awsvpcv1alpha1.AwsVpcStackOutputs)
+	typed, ok := msg.(*awsvpcv1alpha1.AwsVpcOutputs)
 	if !ok {
-		t.Fatalf("expected *AwsVpcStackOutputs, got %T", msg)
+		t.Fatalf("expected *AwsVpcOutputs, got %T", msg)
 	}
 
 	if typed.GetVpcId() != "vpc-0abc123" {
@@ -151,14 +151,14 @@ func TestTransform_KubernetesPostgres(t *testing.T) {
 		"password_secret.key":  "password",
 	}
 
-	msg, err := Transform(cloudresourcekind.CloudResourceKind_KubernetesPostgres, outputs)
+	msg, err := Transform(catalogkind.CatalogKind_KubernetesPostgres, outputs)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	typed, ok := msg.(*k8spgv1.KubernetesPostgresStackOutputs)
+	typed, ok := msg.(*k8spgv1.KubernetesPostgresOutputs)
 	if !ok {
-		t.Fatalf("expected *KubernetesPostgresStackOutputs, got %T", msg)
+		t.Fatalf("expected *KubernetesPostgresOutputs, got %T", msg)
 	}
 
 	if typed.GetNamespace() != "db-prod" {
@@ -182,13 +182,13 @@ func TestTransform_KubernetesPostgres(t *testing.T) {
 }
 
 func TestTransform_EmptyOutputs(t *testing.T) {
-	msg, err := Transform(cloudresourcekind.CloudResourceKind_Auth0ResourceServer, map[string]string{})
+	msg, err := Transform(catalogkind.CatalogKind_Auth0ResourceServer, map[string]string{})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	typed, ok := msg.(*auth0v1.Auth0ResourceServerStackOutputs)
+	typed, ok := msg.(*auth0v1.Auth0ResourceServerOutputs)
 	if !ok {
-		t.Fatalf("expected *Auth0ResourceServerStackOutputs, got %T", msg)
+		t.Fatalf("expected *Auth0ResourceServerOutputs, got %T", msg)
 	}
 	if typed.GetId() != "" {
 		t.Errorf("expected empty id, got %q", typed.GetId())
@@ -196,7 +196,7 @@ func TestTransform_EmptyOutputs(t *testing.T) {
 }
 
 func TestTransform_UnknownKind(t *testing.T) {
-	_, err := Transform(cloudresourcekind.CloudResourceKind_unspecified, map[string]string{"id": "test"})
+	_, err := Transform(catalogkind.CatalogKind_unspecified, map[string]string{"id": "test"})
 	if err == nil {
 		t.Fatal("expected error for unspecified kind, got nil")
 	}
@@ -211,12 +211,12 @@ func TestTransform_KeyPreprocessing(t *testing.T) {
 		"subnetwork_name":                 "my-subnet",
 	}
 
-	msg, err := Transform(cloudresourcekind.CloudResourceKind_GcpSubnetwork, outputs)
+	msg, err := Transform(catalogkind.CatalogKind_GcpSubnetwork, outputs)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	typed := msg.(*gcpsubnetworkv1alpha1.GcpSubnetworkStackOutputs)
+	typed := msg.(*gcpsubnetworkv1alpha1.GcpSubnetworkOutputs)
 	if len(typed.GetSecondaryRanges()) != 1 {
 		t.Fatalf("secondary_ranges: expected 1, got %d", len(typed.GetSecondaryRanges()))
 	}

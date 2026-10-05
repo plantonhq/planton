@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremonitorscheduledqueryalert.v1alpha1;
 
-// **AzureMonitorScheduledQueryAlertStackOutputs** captures the outputs of
+// **AzureMonitorScheduledQueryAlertOutputs** captures the outputs of
 // provisioning an Azure Monitor scheduled query alert rule.
-message AzureMonitorScheduledQueryAlertStackOutputs {
+message AzureMonitorScheduledQueryAlertOutputs {
   // The Azure Resource Manager ID of the scheduled query alert rule.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Insights/scheduledQueryRules/{name}
   string scheduled_query_alert_id = 1;

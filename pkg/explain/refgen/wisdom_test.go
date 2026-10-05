@@ -58,11 +58,11 @@ func wisdomFiles(t *testing.T, root string) []wisdomFile {
 	return files
 }
 
-// registryComponentDirs derives every registered kind's component root the
+// registryKindDirs derives every registered kind's root the
 // same way the generator does (the parent of the proto descriptor's source
 // directory) -- the single source of truth for where a kind-level GUIDE.md
 // may live.
-func registryComponentDirs(t *testing.T) map[string]bool {
+func registryKindDirs(t *testing.T) map[string]bool {
 	t.Helper()
 	dirs := map[string]bool{}
 	for _, name := range explain.KindNames() {
@@ -79,12 +79,12 @@ func registryComponentDirs(t *testing.T) map[string]bool {
 }
 
 // TestWisdomGuidePlacement pins where authored guides may live: at a
-// registered kind's component root (where the generated page links them) or
+// registered kind's root (where the generated page links them) or
 // at the catalog root. A guide anywhere else is invisible to every reader --
 // a misplaced file, usually a typo'd directory or a kind that was renamed.
 func TestWisdomGuidePlacement(t *testing.T) {
 	root := repoRoot(t)
-	componentDirs := registryComponentDirs(t)
+	kindEntries := registryKindDirs(t)
 	catalogRootGuide := filepath.Join(catalogPathPrefix, "_docs", "GUIDE.md")
 
 	for _, file := range wisdomFiles(t, root) {
@@ -94,8 +94,8 @@ func TestWisdomGuidePlacement(t *testing.T) {
 		if file.relPath == catalogRootGuide {
 			continue
 		}
-		if !componentDirs[filepath.Dir(file.relPath)] {
-			t.Errorf("%s is not at a registered kind's component root (and not the catalog-root guide) -- no generated page will ever link it", file.relPath)
+		if !kindEntries[filepath.Dir(file.relPath)] {
+			t.Errorf("%s is not at a registered kind's root (and not the catalog-root guide) -- no generated page will ever link it", file.relPath)
 		}
 	}
 }

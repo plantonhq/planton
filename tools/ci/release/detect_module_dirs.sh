@@ -8,7 +8,7 @@
 #   --pulumi     catalog/{p}/{k}/iac/pulumi
 #   --terraform  catalog/{p}/{k}/iac/tf
 #
-# Modules live at the component root -- exactly two path segments between
+# Modules live at the kind root -- exactly two path segments between
 # catalog/ and iac/ (provider, kind). The anchor is strict on BOTH sides: a
 # looser pattern would match provider-infrastructure Go under aa_e2e/ or
 # nested non-module iac dirs, and a stale pattern makes module auto-tagging
@@ -42,7 +42,7 @@ self_test() {
       fail=1
     fi
   }
-  # Component-root modules fire.
+  # Kind-root modules fire.
   check tf "catalog/aws/awsvpc/iac/tf/main.tf" \
            "catalog/aws/awsvpc/iac/tf"
   check tf "catalog/aws/awsvpc/iac/tf/variables.tf" \
@@ -68,7 +68,7 @@ self_test() {
     fail=1
   fi
   if [ $fail -eq 0 ]; then
-    echo "self-test: module change detection fires for component-root modules only"
+    echo "self-test: module change detection fires for kind-root modules only"
   fi
   return $fail
 }

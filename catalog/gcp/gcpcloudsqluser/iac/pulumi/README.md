@@ -28,7 +28,7 @@ iac/pulumi/
     ├── main.go       # Module coordinator
     ├── user.go       # User resource creation
     ├── locals.go     # Local values
-    └── outputs.go    # Stack output constants
+    └── outputs.go    # Output constants
 ```
 
 ## Quick Start
@@ -42,7 +42,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the user specification:
+Provide a `iac-input.yaml` with the user specification:
 
 ```yaml
 target:
@@ -73,7 +73,7 @@ make destroy
 
 - `password` flows from a `(sensitive)`-annotated spec field and is wrapped with `pulumi.ToSecret` — encrypted in Pulumi state, never exported in outputs.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

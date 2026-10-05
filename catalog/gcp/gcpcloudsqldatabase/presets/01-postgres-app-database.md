@@ -24,7 +24,7 @@ This preset creates one application database on an existing PostgreSQL instance,
 
 - **02-mysql-utf8mb4-database** — the MySQL form with an explicit modern charset
 
-## Related Components
+## Related Kinds
 
 - [GcpCloudSql](/docs/catalog/gcp/gcpcloudsql) — the instance this database lives on
 - [GcpCloudSqlUser](/docs/catalog/gcp/gcpcloudsqluser) — pair each application database with its own user

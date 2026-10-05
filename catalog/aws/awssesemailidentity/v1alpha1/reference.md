@@ -11,7 +11,7 @@ the verified domain or email address an application is allowed to send
 mail FROM.
 
 An identity is the trust anchor of the SES graph. A DOMAIN identity is
-the production shape -- it verifies through DNS (the dkim_tokens stack
+the production shape -- it verifies through DNS (the dkim_tokens
 output composes directly into AwsRoute53DnsRecord CNAMEs), signs mail
 with DKIM, covers every address at the domain, and unlocks a custom
 MAIL FROM domain for aligned SPF. An EMAIL_ADDRESS identity verifies

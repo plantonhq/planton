@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureTrafficManagerEndpointStackOutputs** captures the outputs from
+// **AzureTrafficManagerEndpointOutputs** captures the outputs from
 // provisioning a Traffic Manager endpoint.
-type AzureTrafficManagerEndpointStackOutputs struct {
+type AzureTrafficManagerEndpointOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The endpoint's ARM resource ID. Format:
 	// {profile_id}/{TYPE}/{name} where {TYPE} is AzureEndpoints,
@@ -35,20 +35,20 @@ type AzureTrafficManagerEndpointStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureTrafficManagerEndpointStackOutputs) Reset() {
-	*x = AzureTrafficManagerEndpointStackOutputs{}
+func (x *AzureTrafficManagerEndpointOutputs) Reset() {
+	*x = AzureTrafficManagerEndpointOutputs{}
 	mi := &file_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureTrafficManagerEndpointStackOutputs) String() string {
+func (x *AzureTrafficManagerEndpointOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureTrafficManagerEndpointStackOutputs) ProtoMessage() {}
+func (*AzureTrafficManagerEndpointOutputs) ProtoMessage() {}
 
-func (x *AzureTrafficManagerEndpointStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureTrafficManagerEndpointOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureTrafficManagerEndpointStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureTrafficManagerEndpointStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureTrafficManagerEndpointStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureTrafficManagerEndpointOutputs.ProtoReflect.Descriptor instead.
+func (*AzureTrafficManagerEndpointOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureTrafficManagerEndpointStackOutputs) GetEndpointId() string {
+func (x *AzureTrafficManagerEndpointOutputs) GetEndpointId() string {
 	if x != nil {
 		return x.EndpointId
 	}
 	return ""
 }
 
-func (x *AzureTrafficManagerEndpointStackOutputs) GetEndpointName() string {
+func (x *AzureTrafficManagerEndpointOutputs) GetEndpointName() string {
 	if x != nil {
 		return x.EndpointName
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_outputs_proto protor
 
 const file_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/azure/azuretrafficmanagerendpoint/v1alpha1/outputs.proto\x126dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1\"o\n" +
-	"'AzureTrafficManagerEndpointStackOutputs\x12\x1f\n" +
+	"@catalog/azure/azuretrafficmanagerendpoint/v1alpha1/outputs.proto\x126dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1\"j\n" +
+	"\"AzureTrafficManagerEndpointOutputs\x12\x1f\n" +
 	"\vendpoint_id\x18\x01 \x01(\tR\n" +
 	"endpointId\x12#\n" +
 	"\rendpoint_name\x18\x02 \x01(\tR\fendpointNameB\xbc\x03\n" +
@@ -104,7 +104,7 @@ func file_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureTrafficManagerEndpointStackOutputs)(nil), // 0: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointStackOutputs
+	(*AzureTrafficManagerEndpointOutputs)(nil), // 0: dev.planton.azure.azuretrafficmanagerendpoint.v1alpha1.AzureTrafficManagerEndpointOutputs
 }
 var file_catalog_azure_azuretrafficmanagerendpoint_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

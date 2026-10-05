@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpdeliverypipeline
+    e2e-catalog-kind: gcpdeliverypipeline
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpdeliverypipeline/e2e/prerequisites/target-dev.yaml,catalog/gcp/gcpdeliverypipeline/e2e/prerequisites/target-prod.yaml,catalog/gcp/gcpdeliverypipeline/e2e/prerequisites/service-account.yaml"

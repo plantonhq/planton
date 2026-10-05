@@ -4,7 +4,7 @@ Defines an Istio Telemetry resource: a namespaced configuration of *how the mesh
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A Telemetry resource** -- a namespaced Istio policy that shapes traces, metrics, and access logs for the workloads it selects.
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
@@ -15,7 +15,7 @@ istiod merges the resource with parent-scope configuration at runtime and progra
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -66,7 +66,7 @@ spec:
 planton apply -f telemetry.yaml
 ```
 
-This samples 10% of traces and tags every span with the cluster ID, drops the high-cardinality `request_path` dimension from request counts, and logs only server 5xx responses -- a sane, cost-aware observability baseline for a whole namespace. A Stack Job tracks the provisioning in real time.
+This samples 10% of traces and tags every span with the cluster ID, drops the high-cardinality `request_path` dimension from request counts, and logs only server 5xx responses -- a sane, cost-aware observability baseline for a whole namespace. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -112,7 +112,7 @@ These are the most important decisions when configuring a Telemetry resource. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
@@ -121,9 +121,9 @@ These are the most important decisions when configuring a Telemetry resource. Ex
 
 The workload `selector` is a plain runtime label match and carries no dependency edge -- order the configuration after the workloads it observes with `metadata.relationships`.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -142,8 +142,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Istio Base CRDs**](/cloud-catalog/kubernetes-istio-base-crds) -- installs the Telemetry CRD; a prerequisite together with a running istiod.
-- [**Istio**](/cloud-catalog/kubernetes-istio) -- the control plane that merges Telemetry resources and programs the data plane; its `MeshConfig` declares the providers referenced here.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the namespace (`spec.namespace`) the configuration is created in and scopes to.
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- a natural target reference: observe a gateway's traffic with its own sampling and logging rules.
-- [**Istio Service Entry**](/cloud-catalog/kubernetes-service-entry) -- another target-reference kind, for observing traffic to mesh-external services.
+- [**Istio Base CRDs**](/infra-catalog/kubernetes-istio-base-crds) -- installs the Telemetry CRD; a prerequisite together with a running istiod.
+- [**Istio**](/infra-catalog/kubernetes-istio) -- the control plane that merges Telemetry resources and programs the data plane; its `MeshConfig` declares the providers referenced here.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the namespace (`spec.namespace`) the configuration is created in and scopes to.
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- a natural target reference: observe a gateway's traffic with its own sampling and logging rules.
+- [**Istio Service Entry**](/infra-catalog/kubernetes-service-entry) -- another target-reference kind, for observing traffic to mesh-external services.

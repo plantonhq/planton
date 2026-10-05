@@ -1,10 +1,10 @@
 # DigitalOcean Database User
 
-Creates an additional user on a DigitalOcean managed database cluster, with the MySQL authentication plugin choice and per-topic Kafka / per-index OpenSearch access-control lists. DigitalOcean generates the password (and Kafka mTLS certificate pair) server-side; they surface as secret stack outputs for application wiring and never appear in the manifest. One user per service is the shape that keeps credential rotation and revocation independent -- the built-in `doadmin` user working everywhere is exactly why production should not use it.
+Creates an additional user on a DigitalOcean managed database cluster, with the MySQL authentication plugin choice and per-topic Kafka / per-index OpenSearch access-control lists. DigitalOcean generates the password (and Kafka mTLS certificate pair) server-side; they surface as secret outputs for application wiring and never appear in the manifest. One user per service is the shape that keeps credential rotation and revocation independent -- the built-in `doadmin` user working everywhere is exactly why production should not use it.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Database User** -- a named user on the referenced cluster, with a server-generated password
 - **MySQL Auth Plugin** -- configured only when `mysqlAuthPlugin` is set; chooses between DigitalOcean's modern default (`caching_sha2_password`) and the legacy plugin for old clients
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **A DigitalOceanDatabaseCluster** -- the owning cluster, referenced by name (or an existing cluster's UUID as a literal).
 
 ### DigitalOcean Account
@@ -51,7 +51,7 @@ spec:
 planton apply -f do-database-user.yaml
 ```
 
-This creates a user named `orders-service` on the referenced cluster with a server-generated password exported as a secret output. A Stack Job tracks the provisioning in real time.
+This creates a user named `orders-service` on the referenced cluster with a server-generated password exported as a secret output. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,15 +87,15 @@ These are the most important decisions when configuring a database user. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **DigitalOceanDatabaseCluster** | `cluster` | `status.outputs.cluster_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,6 +115,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Database Cluster**](/cloud-catalog/digital-ocean-database-cluster) -- the owning cluster, wired via the `cluster` reference
-- [**DigitalOcean Logical Database**](/cloud-catalog/digital-ocean-database-db) -- the per-service database this user's credentials typically connect to
-- [**DigitalOcean Database Connection Pool**](/cloud-catalog/digital-ocean-database-connection-pool) -- a dedicated pool authenticates as this user via its `user` field
+- [**DigitalOcean Database Cluster**](/infra-catalog/digital-ocean-database-cluster) -- the owning cluster, wired via the `cluster` reference
+- [**DigitalOcean Logical Database**](/infra-catalog/digital-ocean-database-db) -- the per-service database this user's credentials typically connect to
+- [**DigitalOcean Database Connection Pool**](/infra-catalog/digital-ocean-database-connection-pool) -- a dedicated pool authenticates as this user via its `user` field

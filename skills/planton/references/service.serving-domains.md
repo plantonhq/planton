@@ -14,7 +14,7 @@ An environment declares `spec.servingDomain.domain` — either a literal domain 
 1. **The declared value is the suffix, verbatim.** The platform never inserts the environment's name into a hostname and there is no prefixing convention to configure. Staging serves env-prefixed names because its declared domain SAYS `staging.…`; production serves clean names because its domain says so. When someone asks "how do I make prod URLs not say prod" — the answer is what they type on prod's declaration.
 2. **The label defaults to the service's slug.** `checkout-api` in an environment declaring `acme.dev` serves at `checkout-api.acme.dev`, automatically. `spec.deploy.hostname` on the service overrides the label (`api` → `api.acme.dev`) — one label for ALL environments, deliberately. Slugs are unique per organization, so defaults never collide; two services resolving to one hostname in a shared environment refuse at apply, naming both.
 
-What is deliberately NOT a service field: per-environment naming divergence, apex serving (`acmecorp.com` with no label), multiple hostnames, and CDN fronting. Those are edge infrastructure composed from the cloud catalog — real resources the user owns, not switches on the service.
+What is deliberately NOT a service field: per-environment naming divergence, apex serving (`acmecorp.com` with no label), multiple hostnames, and CDN fronting. Those are edge infrastructure composed from the infra catalog — real resources the user owns, not switches on the service.
 
 ## How the hostname reaches the infrastructure
 

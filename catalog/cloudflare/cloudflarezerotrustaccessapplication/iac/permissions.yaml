@@ -3,7 +3,7 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # The spec's account_id/zone_id oneof decides where the application lives,
 # and Cloudflare defines the "Access: Apps and Policies" groups at BOTH
@@ -12,7 +12,7 @@
 # scope, each conditional on the oneof arm the spec uses. A token built for
 # one deployment needs only the pair matching its spec's arm.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflarezerotrustaccessapplication
 spec:

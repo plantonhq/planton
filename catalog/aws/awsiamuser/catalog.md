@@ -1,10 +1,10 @@
 # AWS IAM User
 
-Deploys an IAM user with managed policy attachments, inline policies, an optional permissions boundary, and explicit access-key control. IAM users carry permanent credentials, so this component targets the narrow cases temporary role credentials cannot cover -- external CI systems without OIDC federation, legacy tooling, break-glass access; prefer an IAM role wherever federation is possible. One active access key is created by default and exported as sensitive outputs, and `accessKeyStatus` flips it between Active and Inactive in place -- the rotation lever.
+Deploys an IAM user with managed policy attachments, inline policies, an optional permissions boundary, and explicit access-key control. IAM users carry permanent credentials, so this kind targets the narrow cases temporary role credentials cannot cover -- external CI systems without OIDC federation, legacy tooling, break-glass access; prefer an IAM role wherever federation is possible. One active access key is created by default and exported as sensitive outputs, and `accessKeyStatus` flips it between Active and Inactive in place -- the rotation lever.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **IAM User** -- created with the specified username matching the pattern `[a-zA-Z0-9+=,.@_-]{1,64}`, at the optional IAM `path` (defaults to `/`), with an optional `permissionsBoundary` capping its maximum permissions
 - **Managed Policy Attachments** -- one attachment per entry in `managedPolicyArns`, linking AWS-managed or customer-managed policies to the user. Each entry is a literal ARN or a reference to an AwsIamPolicy's `policy_arn` output.
@@ -16,7 +16,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -53,7 +53,7 @@ spec:
 planton apply -f iam-user.yaml
 ```
 
-This creates an IAM user with ECR push access and S3 read-only access, plus an active access key pair (literal ARNs take the `value:` form; references to an AwsIamPolicy take `valueFrom:`). No inline policies are configured. A Stack Job tracks the provisioning in real time.
+This creates an IAM user with ECR push access and S3 read-only access, plus an active access key pair (literal ARNs take the `value:` form; references to an AwsIamPolicy take `valueFrom:`). No inline policies are configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,7 +92,7 @@ These are the most important decisions when configuring an IAM user. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -101,9 +101,9 @@ These are the most important decisions when configuring an IAM user. Explore the
 
 Both fields also accept literal ARNs -- literals are how AWS-managed policies like `arn:aws:iam::aws:policy/ReadOnlyAccess` attach.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,4 +124,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Policy**](/cloud-catalog/aws-iam-policy) -- provides customer-managed policies for attachment via `managedPolicyArns` and the permissions boundary via `permissionsBoundary`
+- [**AWS IAM Policy**](/infra-catalog/aws-iam-policy) -- provides customer-managed policies for attachment via `managedPolicyArns` and the permissions boundary via `permissionsBoundary`

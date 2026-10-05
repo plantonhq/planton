@@ -27,7 +27,7 @@ vaults. Deleting a vault requires it to be EMPTY: the standard arm's
 points cannot be manually deleted (they age out by retention).
 
 The backup plan that fills the vault is deliberately NOT part of this
-component — see [AwsBackupPlan](../awsbackupplan).
+kind — see [AwsBackupPlan](../awsbackupplan).
 
 See [v1alpha1/reference.md](v1alpha1/reference.md) for the full field
 reference generated from the spec proto.

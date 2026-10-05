@@ -31,7 +31,7 @@ type GcpCloudBuildTrigger struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpCloudBuildTriggerSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpCloudBuildTrigger) GetKind() string {
 	return ""
 }
 
-func (x *GcpCloudBuildTrigger) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpCloudBuildTrigger) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpCloudBuildTrigger) GetStatus() *GcpCloudBuildTriggerStatus {
 // gcp-cloud-build-trigger status
 type GcpCloudBuildTriggerStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpCloudBuildTriggerStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpCloudBuildTriggerOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpCloudBuildTriggerStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpCloudBuildTriggerStatus) GetOutputs() *GcpCloudBuildTriggerStackOutputs {
+func (x *GcpCloudBuildTriggerStatus) GetOutputs() *GcpCloudBuildTriggerOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14GcpCloudBuildTriggerR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12c\n" +
 	"\x04spec\x18\x04 \x01(\v2G.dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12a\n" +
-	"\x06status\x18\x05 \x01(\v2I.dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerStatusR\x06status\"\x87\x01\n" +
-	"\x1aGcpCloudBuildTriggerStatus\x12i\n" +
-	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerStackOutputsR\aoutputsB\xfb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2I.dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerStatusR\x06status\"\x82\x01\n" +
+	"\x1aGcpCloudBuildTriggerStatus\x12d\n" +
+	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerOutputsR\aoutputsB\xfb\x02\n" +
 	"1com.dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1B\bApiProtoP\x01Zcgithub.com/plantonhq/planton/catalog/gcp/gcpcloudbuildtrigger/v1alpha1;gcpcloudbuildtriggerv1alpha1\xa2\x02\x04DPGG\xaa\x02-Dev.Planton.Gcp.Gcpcloudbuildtrigger.V1alpha1\xca\x02-Dev\\Planton\\Gcp\\Gcpcloudbuildtrigger\\V1alpha1\xe2\x029Dev\\Planton\\Gcp\\Gcpcloudbuildtrigger\\V1alpha1\\GPBMetadata\xea\x021Dev::Planton::Gcp::Gcpcloudbuildtrigger::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_api_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_api_proto_goTypes = []any{
-	(*GcpCloudBuildTrigger)(nil),             // 0: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTrigger
-	(*GcpCloudBuildTriggerStatus)(nil),       // 1: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpCloudBuildTriggerSpec)(nil),         // 3: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerSpec
-	(*GcpCloudBuildTriggerStackOutputs)(nil), // 4: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerStackOutputs
+	(*GcpCloudBuildTrigger)(nil),         // 0: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTrigger
+	(*GcpCloudBuildTriggerStatus)(nil),   // 1: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpCloudBuildTriggerSpec)(nil),     // 3: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerSpec
+	(*GcpCloudBuildTriggerOutputs)(nil),  // 4: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerOutputs
 }
 var file_catalog_gcp_gcpcloudbuildtrigger_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTrigger.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTrigger.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTrigger.spec:type_name -> dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerSpec
 	1, // 2: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTrigger.status:type_name -> dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerStatus
-	4, // 3: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerStatus.outputs:type_name -> dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerStackOutputs
+	4, // 3: dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerStatus.outputs:type_name -> dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1.GcpCloudBuildTriggerOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

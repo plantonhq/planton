@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-cloud-run-worker-pool stack-input
-type GcpCloudRunWorkerPoolStackInput struct {
+// gcp-cloud-run-worker-pool iac-input
+type GcpCloudRunWorkerPoolIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpCloudRunWorkerPool `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpCloudRunWorkerPoolStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpCloudRunWorkerPoolStackInput) Reset() {
-	*x = GcpCloudRunWorkerPoolStackInput{}
+func (x *GcpCloudRunWorkerPoolIacInput) Reset() {
+	*x = GcpCloudRunWorkerPoolIacInput{}
 	mi := &file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpCloudRunWorkerPoolStackInput) String() string {
+func (x *GcpCloudRunWorkerPoolIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpCloudRunWorkerPoolStackInput) ProtoMessage() {}
+func (*GcpCloudRunWorkerPoolIacInput) ProtoMessage() {}
 
-func (x *GcpCloudRunWorkerPoolStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpCloudRunWorkerPoolIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpCloudRunWorkerPoolStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpCloudRunWorkerPoolStackInput.ProtoReflect.Descriptor instead.
-func (*GcpCloudRunWorkerPoolStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpCloudRunWorkerPoolIacInput.ProtoReflect.Descriptor instead.
+func (*GcpCloudRunWorkerPoolIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpCloudRunWorkerPoolStackInput) GetTarget() *GcpCloudRunWorkerPool {
+func (x *GcpCloudRunWorkerPoolIacInput) GetTarget() *GcpCloudRunWorkerPool {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpCloudRunWorkerPoolStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpCloudRunWorkerPoolIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_input_proto protoreflect.Fil
 
 const file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcpcloudrunworkerpool/v1alpha1/input.proto\x12.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1\x1a4catalog/gcp/gcpcloudrunworkerpool/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xcd\x01\n" +
-	"\x1fGcpCloudRunWorkerPoolStackInput\x12]\n" +
+	"6catalog/gcp/gcpcloudrunworkerpool/v1alpha1/input.proto\x12.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1\x1a4catalog/gcp/gcpcloudrunworkerpool/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xcb\x01\n" +
+	"\x1dGcpCloudRunWorkerPoolIacInput\x12]\n" +
 	"\x06target\x18\x01 \x01(\v2E.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\x84\x03\n" +
 	"2com.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_input_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_input_proto_goTypes = []any{
-	(*GcpCloudRunWorkerPoolStackInput)(nil), // 0: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolStackInput
-	(*GcpCloudRunWorkerPool)(nil),           // 1: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPool
-	(*gcp.GcpProviderConfig)(nil),           // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpCloudRunWorkerPoolIacInput)(nil), // 0: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolIacInput
+	(*GcpCloudRunWorkerPool)(nil),         // 1: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPool
+	(*gcp.GcpProviderConfig)(nil),         // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolStackInput.target:type_name -> dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPool
-	2, // 1: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolIacInput.target:type_name -> dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPool
+	2, // 1: dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

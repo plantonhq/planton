@@ -9,7 +9,7 @@ headless and monitoring Services, and the rendered config ConfigMap
 are all operator-created from it. The CR applies through
 `kubectl_manifest` (alekc/kubectl provider, server-side apply), which
 needs no cluster connection at plan time — a collector can be planned
-before the operator's CRDs exist, so an infra chart can deploy the
+before the operator's CRDs exist, so an Infra Chart can deploy the
 operator and its collectors in one run.
 
 Prerequisite at apply time: a KubernetesOtelOperator on the cluster
@@ -85,7 +85,7 @@ resolved to a literal string before Terraform runs.
 
 Existing deployments can be adopted into state. `kubectl_manifest`
 uses the composed import ID `apiVersion//kind//name//namespace`; the
-CR's name is `metadata.name`, so the component's `iac/import-map.yaml`
+CR's name is `metadata.name`, so the kind's `iac/import-map.yaml`
 can derive the address blind.
 
 ## Outputs

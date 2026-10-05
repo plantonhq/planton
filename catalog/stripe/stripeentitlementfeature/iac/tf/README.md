@@ -15,7 +15,7 @@ OpenTofu module that declares one Stripe Entitlements feature. Stripe kinds run 
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `lookup_key` (required, replaces), `name` (required); `metadata` (optional) |
 
 ## Outputs

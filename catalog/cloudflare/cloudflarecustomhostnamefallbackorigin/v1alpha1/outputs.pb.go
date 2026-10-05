@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareCustomHostnameFallbackOriginStackOutputs captures the outputs after
+// CloudflareCustomHostnameFallbackOriginOutputs captures the outputs after
 // setting a zone's fallback origin.
-type CloudflareCustomHostnameFallbackOriginStackOutputs struct {
+type CloudflareCustomHostnameFallbackOriginOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// RFC3339 timestamp of when the fallback origin was created.
 	CreatedAt string `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
@@ -38,20 +38,20 @@ type CloudflareCustomHostnameFallbackOriginStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareCustomHostnameFallbackOriginStackOutputs) Reset() {
-	*x = CloudflareCustomHostnameFallbackOriginStackOutputs{}
+func (x *CloudflareCustomHostnameFallbackOriginOutputs) Reset() {
+	*x = CloudflareCustomHostnameFallbackOriginOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarecustomhostnamefallbackorigin_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareCustomHostnameFallbackOriginStackOutputs) String() string {
+func (x *CloudflareCustomHostnameFallbackOriginOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareCustomHostnameFallbackOriginStackOutputs) ProtoMessage() {}
+func (*CloudflareCustomHostnameFallbackOriginOutputs) ProtoMessage() {}
 
-func (x *CloudflareCustomHostnameFallbackOriginStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareCustomHostnameFallbackOriginOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarecustomhostnamefallbackorigin_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *CloudflareCustomHostnameFallbackOriginStackOutputs) ProtoReflect() prot
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareCustomHostnameFallbackOriginStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareCustomHostnameFallbackOriginStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareCustomHostnameFallbackOriginOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareCustomHostnameFallbackOriginOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarecustomhostnamefallbackorigin_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareCustomHostnameFallbackOriginStackOutputs) GetCreatedAt() string {
+func (x *CloudflareCustomHostnameFallbackOriginOutputs) GetCreatedAt() string {
 	if x != nil {
 		return x.CreatedAt
 	}
 	return ""
 }
 
-func (x *CloudflareCustomHostnameFallbackOriginStackOutputs) GetUpdatedAt() string {
+func (x *CloudflareCustomHostnameFallbackOriginOutputs) GetUpdatedAt() string {
 	if x != nil {
 		return x.UpdatedAt
 	}
 	return ""
 }
 
-func (x *CloudflareCustomHostnameFallbackOriginStackOutputs) GetZoneId() string {
+func (x *CloudflareCustomHostnameFallbackOriginOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
@@ -93,8 +93,8 @@ var File_catalog_cloudflare_cloudflarecustomhostnamefallbackorigin_v1alpha1_outp
 
 const file_catalog_cloudflare_cloudflarecustomhostnamefallbackorigin_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Pcatalog/cloudflare/cloudflarecustomhostnamefallbackorigin/v1alpha1/outputs.proto\x12Fdev.planton.cloudflare.cloudflarecustomhostnamefallbackorigin.v1alpha1\"\xa7\x01\n" +
-	"2CloudflareCustomHostnameFallbackOriginStackOutputs\x12\x1d\n" +
+	"Pcatalog/cloudflare/cloudflarecustomhostnamefallbackorigin/v1alpha1/outputs.proto\x12Fdev.planton.cloudflare.cloudflarecustomhostnamefallbackorigin.v1alpha1\"\xa2\x01\n" +
+	"-CloudflareCustomHostnameFallbackOriginOutputs\x12\x1d\n" +
 	"\n" +
 	"created_at\x18\x02 \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
@@ -116,7 +116,7 @@ func file_catalog_cloudflare_cloudflarecustomhostnamefallbackorigin_v1alpha1_out
 
 var file_catalog_cloudflare_cloudflarecustomhostnamefallbackorigin_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarecustomhostnamefallbackorigin_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareCustomHostnameFallbackOriginStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarecustomhostnamefallbackorigin.v1alpha1.CloudflareCustomHostnameFallbackOriginStackOutputs
+	(*CloudflareCustomHostnameFallbackOriginOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarecustomhostnamefallbackorigin.v1alpha1.CloudflareCustomHostnameFallbackOriginOutputs
 }
 var file_catalog_cloudflare_cloudflarecustomhostnamefallbackorigin_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

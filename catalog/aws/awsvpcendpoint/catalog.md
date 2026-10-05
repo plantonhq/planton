@@ -1,10 +1,10 @@
 # AWS VPC Endpoint
 
-Deploys an Amazon VPC endpoint — a private connection from a VPC to an AWS service, a third-party PrivateLink service, or a VPC Lattice target, so traffic stays on the AWS network instead of crossing the internet through a NAT or internet gateway. Two endpoint types carry nearly all real-world use: **Gateway** (S3 and DynamoDB only — attaches by injecting a prefix-list route into your route tables, and takes that traffic off the NAT data-processing meter) and **Interface** (everything else — an ENI in each subnet you attach, with cost driven per AZ-hour and per gigabyte, and private DNS that keeps client code unchanged). The endpoint composes onto its neighbors by reference — the [AWS VPC](/cloud-catalog/aws-vpc), route tables from [AWS Subnet](/cloud-catalog/aws-subnet) or the VPC's own outputs, subnets, and [AWS Security Group](/cloud-catalog/aws-security-group) nodes — and never modifies a resource it merely references.
+Deploys an Amazon VPC endpoint — a private connection from a VPC to an AWS service, a third-party PrivateLink service, or a VPC Lattice target, so traffic stays on the AWS network instead of crossing the internet through a NAT or internet gateway. Two endpoint types carry nearly all real-world use: **Gateway** (S3 and DynamoDB only — attaches by injecting a prefix-list route into your route tables, and takes that traffic off the NAT data-processing meter) and **Interface** (everything else — an ENI in each subnet you attach, with cost driven per AZ-hour and per gigabyte, and private DNS that keeps client code unchanged). The endpoint composes onto its neighbors by reference — the [AWS VPC](/infra-catalog/aws-vpc), route tables from [AWS Subnet](/infra-catalog/aws-subnet) or the VPC's own outputs, subnets, and [AWS Security Group](/infra-catalog/aws-security-group) nodes — and never modifies a resource it merely references.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **VPC Endpoint** -- gateway, interface, Gateway Load Balancer, or VPC Lattice (Resource / ServiceNetwork) type, connected to exactly one service target
 - **Route Injection (gateway)** -- the service's prefix-list route in every route table you attach; traffic from subnets on those tables flows privately from that moment
@@ -17,13 +17,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **The VPC first** -- deploy the [AWS VPC](/cloud-catalog/aws-vpc) this endpoint lives in; the endpoint references its `vpc_id` output. For private DNS, the VPC needs BOTH DNS support and DNS hostnames enabled.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **The VPC first** -- deploy the [AWS VPC](/infra-catalog/aws-vpc) this endpoint lives in; the endpoint references its `vpc_id` output. For private DNS, the VPC needs BOTH DNS support and DNS hostnames enabled.
 
 ### AWS Account
 
-- **Route tables ready (gateway)** -- know which tables carry the subnets whose traffic should go private: an [AWS Subnet](/cloud-catalog/aws-subnet) with inline routes owns its table (`route_table_id` output); subnets without one ride the VPC main table (`main_route_table_id` output).
-- **Security-group ingress (interface)** -- the groups you attach must allow inbound from your clients on the service's port (443 for AWS APIs); the rules live on the referenced [AWS Security Group](/cloud-catalog/aws-security-group) nodes.
+- **Route tables ready (gateway)** -- know which tables carry the subnets whose traffic should go private: an [AWS Subnet](/infra-catalog/aws-subnet) with inline routes owns its table (`route_table_id` output); subnets without one ride the VPC main table (`main_route_table_id` output).
+- **Security-group ingress (interface)** -- the groups you attach must allow inbound from your clients on the service's port (443 for AWS APIs); the rules live on the referenced [AWS Security Group](/infra-catalog/aws-security-group) nodes.
 
 ## Deploy
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f vpc-endpoint.yaml
 ```
 
-This gives the private subnet's workloads a private path to S3, off the NAT data-processing meter. A Stack Job tracks the provisioning in real time.
+This gives the private subnet's workloads a private path to S3, off the NAT data-processing meter. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -101,7 +101,7 @@ These are the most important decisions when configuring a VPC endpoint. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -110,9 +110,9 @@ These are the most important decisions when configuring a VPC endpoint. Explore 
 | **AwsSubnet** | `subnetIds[]` (ENI placement for interface/GWLB/Lattice) | `status.outputs.subnet_id` |
 | **AwsSecurityGroup** | `securityGroupIds[]` (interface endpoints) | `status.outputs.security_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -136,7 +136,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- the network that gets the private path (references `vpc_id`; its main/default route tables are gateway attachment points)
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- route tables for gateway endpoints, ENI placement for interface endpoints — and its route rows can target this endpoint's id (GWLB middlebox routing)
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- guards an interface endpoint's ENIs; its egress rules can reference a gateway endpoint's `prefix_list_id`
-- [**AWS MWAA Environment**](/cloud-catalog/aws-mwaa-environment) -- in CUSTOMER endpoint-management mode, you create the VPC endpoints MWAA needs — with exactly this kind
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- the network that gets the private path (references `vpc_id`; its main/default route tables are gateway attachment points)
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- route tables for gateway endpoints, ENI placement for interface endpoints — and its route rows can target this endpoint's id (GWLB middlebox routing)
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- guards an interface endpoint's ENIs; its egress rules can reference a gateway endpoint's `prefix_list_id`
+- [**AWS MWAA Environment**](/infra-catalog/aws-mwaa-environment) -- in CUSTOMER endpoint-management mode, you create the VPC endpoints MWAA needs — with exactly this kind

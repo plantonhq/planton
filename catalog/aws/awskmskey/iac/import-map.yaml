@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awskmskey
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: kms_key_id
       derivations:
-        - from_stack_output: key_id
+        - from_output: key_id
         - from_arn_part: resource_id
       where_to_find: >-
         KMS console -> Customer managed keys (the Key ID column), or
@@ -27,7 +27,7 @@ spec:
         # Grant IDs are AWS-generated (the position key on the module's
         # for_each is config-time identity, never the ID), so the module
         # exports them as the grant_ids map keyed by the same position.
-        - from_stack_output_keyed_by_address: grant_ids
+        - from_output_keyed_by_address: grant_ids
       where_to_find: >-
         `aws kms list-grants --key-id <key-id>` (each grant's GrantId; the
         optional Name column carries the spec entry's friendly name).

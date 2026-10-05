@@ -1,10 +1,10 @@
 # Azure Event Hub Cluster
 
-Provisions a dedicated Event Hubs cluster -- single-tenant capacity units (CUs) of guaranteed, isolated throughput that namespaces are placed on via their `dedicatedClusterId` reference. The cluster is the top of the Event Hubs capacity ladder, above PREMIUM's shared infrastructure: sitting on one unlocks up to 1024 partitions per hub, 90-day retention, and namespace-level customer-managed-key encryption. Many namespaces share one cluster, which is why the cluster is a first-class Cloud Resource rather than a namespace property. Dedicated clusters bill per capacity unit per hour at enterprise rates whether traffic flows or not -- the most expensive resource in the Event Hubs family.
+Provisions a dedicated Event Hubs cluster -- single-tenant capacity units (CUs) of guaranteed, isolated throughput that namespaces are placed on via their `dedicatedClusterId` reference. The cluster is the top of the Event Hubs capacity ladder, above PREMIUM's shared infrastructure: sitting on one unlocks up to 1024 partitions per hub, 90-day retention, and namespace-level customer-managed-key encryption. Many namespaces share one cluster, which is why the cluster is a first-class Infra Component rather than a namespace property. Dedicated clusters bill per capacity unit per hour at enterprise rates whether traffic flows or not -- the most expensive resource in the Event Hubs family.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Event Hubs Cluster** -- in the referenced resource group, with the ARM sku composed as `Dedicated_{n}` from your capacity-unit count (Dedicated is the ONLY sku family Azure sells for clusters -- the tier is a constant, the count is the choice)
 - **Governance tags** -- your tags merged over the Planton-derived resource tags (user values win on key conflicts)
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -53,7 +53,7 @@ spec:
 planton apply -f cluster.yaml
 ```
 
-This creates a one-capacity-unit dedicated cluster named `myorg-streaming-dedicated` in `eastus`, ready for namespaces to be placed on it. A Stack Job tracks the provisioning in real time.
+This creates a one-capacity-unit dedicated cluster named `myorg-streaming-dedicated` in `eastus`, ready for namespaces to be placed on it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,15 +84,15 @@ These are the most important decisions when configuring a cluster. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,7 +109,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- where the cluster lives
-- [**Azure Event Hub Namespace**](/cloud-catalog/azure-event-hub-namespace) -- placed on the cluster via `dedicatedClusterId` at creation
-- [**Azure Event Hub Namespace Customer Managed Key**](/cloud-catalog/azure-event-hub-namespace-customer-managed-key) -- BYOK encryption, which requires the single-tenant capacity this cluster provides
-- [**Azure Event Hub**](/cloud-catalog/azure-event-hub) -- hubs on clustered namespaces may use up to 1024 partitions and 90-day retention
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- where the cluster lives
+- [**Azure Event Hub Namespace**](/infra-catalog/azure-event-hub-namespace) -- placed on the cluster via `dedicatedClusterId` at creation
+- [**Azure Event Hub Namespace Customer Managed Key**](/infra-catalog/azure-event-hub-namespace-customer-managed-key) -- BYOK encryption, which requires the single-tenant capacity this cluster provides
+- [**Azure Event Hub**](/infra-catalog/azure-event-hub) -- hubs on clustered namespaces may use up to 1024 partitions and 90-day retention

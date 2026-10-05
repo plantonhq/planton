@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kube-prometheus-stack-kubernetes stack outputs
-type KubernetesKubePrometheusStackStackOutputs struct {
+// kube-prometheus-stack-kubernetes outputs
+type KubernetesKubePrometheusStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// namespace the stack runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -66,20 +66,20 @@ type KubernetesKubePrometheusStackStackOutputs struct {
 	sizeCache                 protoimpl.SizeCache
 }
 
-func (x *KubernetesKubePrometheusStackStackOutputs) Reset() {
-	*x = KubernetesKubePrometheusStackStackOutputs{}
+func (x *KubernetesKubePrometheusStackOutputs) Reset() {
+	*x = KubernetesKubePrometheusStackOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKubePrometheusStackStackOutputs) String() string {
+func (x *KubernetesKubePrometheusStackOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKubePrometheusStackStackOutputs) ProtoMessage() {}
+func (*KubernetesKubePrometheusStackOutputs) ProtoMessage() {}
 
-func (x *KubernetesKubePrometheusStackStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKubePrometheusStackOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -91,82 +91,82 @@ func (x *KubernetesKubePrometheusStackStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKubePrometheusStackStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKubePrometheusStackStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKubePrometheusStackOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKubePrometheusStackOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKubePrometheusStackStackOutputs) GetNamespace() string {
+func (x *KubernetesKubePrometheusStackOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesKubePrometheusStackStackOutputs) GetReleaseName() string {
+func (x *KubernetesKubePrometheusStackOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesKubePrometheusStackStackOutputs) GetPrometheusService() string {
+func (x *KubernetesKubePrometheusStackOutputs) GetPrometheusService() string {
 	if x != nil {
 		return x.PrometheusService
 	}
 	return ""
 }
 
-func (x *KubernetesKubePrometheusStackStackOutputs) GetPrometheusEndpoint() string {
+func (x *KubernetesKubePrometheusStackOutputs) GetPrometheusEndpoint() string {
 	if x != nil {
 		return x.PrometheusEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesKubePrometheusStackStackOutputs) GetAlertmanagerService() string {
+func (x *KubernetesKubePrometheusStackOutputs) GetAlertmanagerService() string {
 	if x != nil {
 		return x.AlertmanagerService
 	}
 	return ""
 }
 
-func (x *KubernetesKubePrometheusStackStackOutputs) GetAlertmanagerEndpoint() string {
+func (x *KubernetesKubePrometheusStackOutputs) GetAlertmanagerEndpoint() string {
 	if x != nil {
 		return x.AlertmanagerEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesKubePrometheusStackStackOutputs) GetGrafanaService() string {
+func (x *KubernetesKubePrometheusStackOutputs) GetGrafanaService() string {
 	if x != nil {
 		return x.GrafanaService
 	}
 	return ""
 }
 
-func (x *KubernetesKubePrometheusStackStackOutputs) GetGrafanaEndpoint() string {
+func (x *KubernetesKubePrometheusStackOutputs) GetGrafanaEndpoint() string {
 	if x != nil {
 		return x.GrafanaEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesKubePrometheusStackStackOutputs) GetGrafanaAdminSecretName() string {
+func (x *KubernetesKubePrometheusStackOutputs) GetGrafanaAdminSecretName() string {
 	if x != nil {
 		return x.GrafanaAdminSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesKubePrometheusStackStackOutputs) GetPrometheusPortForwardCommand() string {
+func (x *KubernetesKubePrometheusStackOutputs) GetPrometheusPortForwardCommand() string {
 	if x != nil {
 		return x.PrometheusPortForwardCommand
 	}
 	return ""
 }
 
-func (x *KubernetesKubePrometheusStackStackOutputs) GetGrafanaPortForwardCommand() string {
+func (x *KubernetesKubePrometheusStackOutputs) GetGrafanaPortForwardCommand() string {
 	if x != nil {
 		return x.GrafanaPortForwardCommand
 	}
@@ -177,8 +177,8 @@ var File_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_outputs_proto
 
 const file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/kubernetes/kuberneteskubeprometheusstack/v1alpha1/outputs.proto\x12=dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1\"\xcb\x04\n" +
-	")KubernetesKubePrometheusStackStackOutputs\x12\x1c\n" +
+	"Gcatalog/kubernetes/kuberneteskubeprometheusstack/v1alpha1/outputs.proto\x12=dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1\"\xc6\x04\n" +
+	"$KubernetesKubePrometheusStackOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x12-\n" +
 	"\x12prometheus_service\x18\x03 \x01(\tR\x11prometheusService\x12/\n" +
@@ -207,7 +207,7 @@ func file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_outputs_prot
 
 var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKubePrometheusStackStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackStackOutputs
+	(*KubernetesKubePrometheusStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOutputs
 }
 var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

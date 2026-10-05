@@ -21,7 +21,7 @@ and small-scale DAG workloads within a VPC.
 
 ## Cost Estimate
 
-The cost drivers are the mw1.small base environment (billed hourly around the clock, the dominant line) plus worker scaling — each additional Celery worker adds its own hourly charge while running. The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awsmwaaenvironment.yaml` — computed from the pinned price book, never hand-typed here.
+The cost drivers are the mw1.small base environment (billed hourly around the clock, the dominant line) plus worker scaling — each additional Celery worker adds its own hourly charge while running. The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awsmwaaenvironment.yaml` — computed from the pinned price book, never hand-typed here.
 
 ## Customization
 

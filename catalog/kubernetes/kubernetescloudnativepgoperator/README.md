@@ -8,7 +8,7 @@ chart (`cnpg-webhook-service` — baked into the webhook certificate), so
 a second installation would fight over both. The Helm release name is
 therefore fixed to `cnpg` and never derives from `metadata.name`.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a database** — this component installs and configures the
   ENGINE. The databases themselves are declared with KubernetesPostgres
@@ -128,7 +128,7 @@ The operator itself carries NO cloud identity: backups authenticate as
 the DATABASE pods, so the keyless posture (EKS IRSA / GKE Workload
 Identity / AKS Workload Identity) is declared per KubernetesPostgres —
 its `workload_identity` field annotates each cluster's own
-ServiceAccount. This component is identical on every environment
+ServiceAccount. This kind is identical on every environment
 Kubernetes runs in.
 
 | Environment | This component | Where backups live |
@@ -136,7 +136,7 @@ Kubernetes runs in.
 | Any cluster, no backups | operator release only | — |
 | Any cluster, object-store backups | operator release + a KubernetesCnpgBarmanCloudPlugin in its namespace (cert-manager required by the plugin) | `KubernetesPostgres.spec.backup` + `workload_identity`, per database |
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|
@@ -150,7 +150,7 @@ Kubernetes runs in.
 - **KubernetesPostgres resources need no reference to this component** —
   they compose against the CRDs it installs; deploy the operator first,
   the databases after.
-- **Backups are a chain of three**: an infra chart deploying
+- **Backups are a chain of three**: an Infra Chart deploying
   KubernetesCertManager → this component → KubernetesCnpgBarmanCloudPlugin
   (its `namespace` referencing this resource) → KubernetesPostgres (with
   a backup block) lands the whole story in dependency order; the

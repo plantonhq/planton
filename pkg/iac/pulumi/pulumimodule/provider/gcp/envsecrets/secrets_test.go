@@ -1,7 +1,7 @@
 package envsecrets
 
 // Store run against mocks. What it pins: the exact Pulumi resource every
-// Cloud Run kind's stack already holds -- type, logical name, and parent --
+// Cloud Run component's stack already holds -- type, logical name, and parent --
 // because a renamed resource makes the engine replace the secret, and a
 // replacement under the same secret id fails; the grant naming the fallback
 // identity the placement asks for; and the value reaching only the version,

@@ -152,7 +152,7 @@ func resolveFromClipboard(cmd *cobra.Command) (manifestPath string, isTemp bool,
 flowchart TB
     A[Start] --> B{--clipboard?}
     B -->|Yes| C[Read from clipboard]
-    B -->|No| D{--stack-input?}
+    B -->|No| D{--iac-input?}
     D -->|Yes| E[Extract from target field]
     D -->|No| F{--manifest?}
     F -->|Yes| G[Use file directly]

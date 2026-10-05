@@ -2,19 +2,19 @@ package mappingeval
 
 import (
 	"github.com/pkg/errors"
-	componentv1 "github.com/plantonhq/planton/iac/componentimportmap/v1"
+	kindv1 "github.com/plantonhq/planton/iac/catalogkindimportmap/v1"
 	providerv1 "github.com/plantonhq/planton/iac/providerimportcatalog/v1"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/importmap"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // ScoreOptionsFromCatalog derives the scorer's declared knowledge from the
 // artifacts the import subsystem already maintains -- the provider import
-// catalog and the components' import maps. Nothing is authored per suite:
-// when a catalog entry gains a config-only attribute or a component's
+// catalog and the kinds' import maps. Nothing is authored per suite:
+// when a catalog entry gains a config-only attribute or a kind's
 // recipe changes, the scorer's expectations follow automatically.
-func ScoreOptionsFromCatalog(repoRoot, provider string, components []string) (ScoreOptions, error) {
+func ScoreOptionsFromCatalog(repoRoot, provider string, kindDirs []string) (ScoreOptions, error) {
 	catalog, err := importmap.LoadProviderCatalog(repoRoot, provider)
 	if err != nil {
 		return ScoreOptions{}, err
@@ -32,7 +32,7 @@ func ScoreOptionsFromCatalog(repoRoot, provider string, components []string) (Sc
 		}
 	}
 
-	nameDerived, err := nameDerivedIdentity(repoRoot, provider, components, catalog)
+	nameDerived, err := nameDerivedIdentity(repoRoot, provider, kindDirs, catalog)
 	if err != nil {
 		return ScoreOptions{}, err
 	}
@@ -43,24 +43,24 @@ func ScoreOptionsFromCatalog(repoRoot, provider string, components []string) (Sc
 	}, nil
 }
 
-// nameDerivedIdentity finds, per component kind, the Cloud Control type
-// whose claimed identifier must equal metadata.name: the component's import
+// nameDerivedIdentity finds, per kind, the Cloud Control type
+// whose claimed identifier must equal metadata.name: the kind's import
 // map derives a placeholder from_metadata_name, and a catalog resource type
 // with a declared scan-side name imports by exactly that placeholder.
-func nameDerivedIdentity(repoRoot, provider string, components []string, catalog *providerv1.ProviderImportCatalog) (map[cloudresourcekind.CloudResourceKind]string, error) {
-	result := map[cloudresourcekind.CloudResourceKind]string{}
-	for _, component := range components {
-		if !importmap.HasComponentImportMap(repoRoot, provider, component) {
+func nameDerivedIdentity(repoRoot, provider string, kindDirs []string, catalog *providerv1.ProviderImportCatalog) (map[catalogkind.CatalogKind]string, error) {
+	result := map[catalogkind.CatalogKind]string{}
+	for _, kindDir := range kindDirs {
+		if !importmap.HasCatalogKindImportMap(repoRoot, provider, kindDir) {
 			continue
 		}
-		m, err := importmap.LoadComponentImportMap(repoRoot, provider, component)
+		m, err := importmap.LoadCatalogKindImportMap(repoRoot, provider, kindDir)
 		if err != nil {
-			return nil, errors.Wrapf(err, "import map for %s", component)
+			return nil, errors.Wrapf(err, "import map for %s", kindDir)
 		}
 		nameDerivedValues := map[string]bool{}
 		for _, v := range m.GetSpec().GetValues() {
 			for _, d := range v.GetDerivations() {
-				if _, ok := d.GetSource().(*componentv1.ImportValueDerivation_FromMetadataName); ok {
+				if _, ok := d.GetSource().(*kindv1.ImportValueDerivation_FromMetadataName); ok {
 					nameDerivedValues[v.GetName()] = true
 				}
 			}
@@ -68,7 +68,7 @@ func nameDerivedIdentity(repoRoot, provider string, components []string, catalog
 		if len(nameDerivedValues) == 0 {
 			continue
 		}
-		kind := crkreflect.KindFromString(component)
+		kind := catalogkindreflect.KindFromString(kindDir)
 		for _, rt := range catalog.GetSpec().GetResourceTypes() {
 			if rt.GetCloudControlTypeName() == "" {
 				continue

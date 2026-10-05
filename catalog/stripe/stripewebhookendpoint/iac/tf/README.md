@@ -15,7 +15,7 @@ OpenTofu module that declares where a Stripe account delivers its events. Stripe
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `url`, `enabled_events` (required); `description`, `metadata`, `api_version` (replaces), `connect` (replaces) (optional) |
 
 ## Outputs

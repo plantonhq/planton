@@ -15,7 +15,7 @@ Pulumi Go module that verifies an Auth0 custom domain and waits until it is read
 
 ## Environment Variables
 
-When `provider_config` is not set in the stack input, the module falls back to environment variables:
+When `provider_config` is not set in the IaC input, the module falls back to environment variables:
 
 | Variable | Description |
 |---|---|

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Stack jobs driven through the Planton runner intermittently failed with
+Infra Jobs driven through the Planton runner intermittently failed with
 `error reading tofu output: read |0: file already closed` on different operations
 (refresh, plan, apply, destroy, init) — even when the underlying tofu/terraform run
 had actually succeeded. The cause was a classic `os/exec` ordering bug in the two
@@ -142,7 +142,7 @@ go test -race -count=20 ./pkg/iac/tofu/tofumodule/...   # ok
 
 ## Benefits
 
-- Eliminates the spurious stack-job failures for the tofu/terraform provisioner.
+- Eliminates the spurious infra-job failures for the tofu/terraform provisioner.
 - One canonical, documented implementation of stream-then-wait instead of two
   drifting copies.
 - Removes a second latent failure mode (oversized `-json` lines).
@@ -150,7 +150,7 @@ go test -race -count=20 ./pkg/iac/tofu/tofumodule/...   # ok
 
 ## Impact
 
-Affects every tofu/terraform stack-job operation executed via the Planton runner
+Affects every tofu/terraform infra-job operation executed via the Planton runner
 (`product/services/runner` consumes these functions). No API or CLI surface
 changes; callers are unaffected beyond the bug no longer occurring.
 

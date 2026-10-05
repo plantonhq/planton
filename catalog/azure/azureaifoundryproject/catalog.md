@@ -4,7 +4,7 @@ Creates an Azure AI Foundry project -- the workspace one AI team works in, creat
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **AI Foundry Project** -- ARM-wise an ML workspace of kind "Project" (`Microsoft.MachineLearningServices/workspaces`), linked to its hub and placed in the hub's resource group
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f azure-ai-foundry-project.yaml
 ```
 
-This creates a project with its own system-assigned identity inside the referenced hub, in the hub's resource group. A Stack Job tracks the provisioning in real time.
+This creates a project with its own system-assigned identity inside the referenced hub, in the hub's resource group. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -80,7 +80,7 @@ These are the most important decisions when configuring the project. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -88,9 +88,9 @@ These are the most important decisions when configuring the project. Explore the
 | **AzureUserAssignedIdentity** | `identity.identityIds[]` | `status.outputs.identity_id` |
 | **AzureUserAssignedIdentity** | `primaryUserAssignedIdentity` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,7 +109,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure AI Foundry Hub**](/cloud-catalog/azure-ai-foundry) -- the hub this project lives in
-- [**Azure Cognitive Account**](/cloud-catalog/azure-cognitive-account) -- the Azure OpenAI models the team's agents call
-- [**Azure AI Search Service**](/cloud-catalog/azure-search-service) -- retrieval for the team's RAG applications
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- bring-your-own identity for pre-composed grants
+- [**Azure AI Foundry Hub**](/infra-catalog/azure-ai-foundry) -- the hub this project lives in
+- [**Azure Cognitive Account**](/infra-catalog/azure-cognitive-account) -- the Azure OpenAI models the team's agents call
+- [**Azure AI Search Service**](/infra-catalog/azure-search-service) -- retrieval for the team's RAG applications
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- bring-your-own identity for pre-composed grants

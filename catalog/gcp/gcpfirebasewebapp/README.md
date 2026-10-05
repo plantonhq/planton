@@ -4,7 +4,7 @@ Registers a web app in a Firebase-enabled Google Cloud project and composes the 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **The app registration** -- one `firebase_web_app` (`projects.webApps`), identified only by its display name
 - **reCAPTCHA v3 attestation** -- the app's `firebase_app_check_recaptcha_v3_config` when `appCheck.recaptchaV3` is configured
@@ -80,7 +80,7 @@ planton apply -f web-app.yaml
 - **Debug tokens**: `displayName` and `token` required; display names unique within the app.
 - **`deletionPolicy`**: `DELETE`, `PREVENT`, or `ABANDON`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -118,7 +118,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpFirebaseProject](/docs/catalog/gcp/gcpfirebaseproject) — the Firebase enablement this app is registered in
 - [GcpApiKey](/docs/catalog/gcp/gcpapikey) — the referrer-restricted key the app references

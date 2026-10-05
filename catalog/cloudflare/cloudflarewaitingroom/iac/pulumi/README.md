@@ -5,16 +5,16 @@ Pulumi (Go) IaC module for a waiting room -- a virtual queue on a host+path -- p
 ## Architecture
 
 ```
-main.go                    — Entrypoint loading the stack input
+main.go                    — Entrypoint loading the IaC input
 module/main.go             — Resources(): provider setup, resource, outputs
 module/locals.go           — Locals initialization
 module/waiting_room.go     — cloudflare.WaitingRoom + cloudflare.WaitingRoomRules
-module/outputs.go          — Stack output keys
+module/outputs.go          — output keys
 ```
 
 ## Behavior
 
-Mirrors the Terraform module's contract exactly: 200 floors, Advanced fields fail at the API, folded bypass rules with fixed `bypass_waiting_room` action, `waiting_room_id` / `zone_id` stack outputs.
+Mirrors the Terraform module's contract exactly: 200 floors, Advanced fields fail at the API, folded bypass rules with fixed `bypass_waiting_room` action, `waiting_room_id` / `zone_id` outputs.
 
 ## Outputs
 

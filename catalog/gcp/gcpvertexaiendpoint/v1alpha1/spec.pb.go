@@ -193,7 +193,7 @@ type GcpVertexAiEndpointRequestResponseLoggingConfig struct {
 	//     dataset must exist and the table must not.
 	//
 	// A plain string (not a reference) because the bq:// URI scheme has no
-	// matching stack output on the BigQuery kinds; compose by writing the
+	// matching output on the BigQuery kinds; compose by writing the
 	// dataset's project and ID into the URI.
 	BigqueryDestinationUri string `protobuf:"bytes,3,opt,name=bigquery_destination_uri,json=bigqueryDestinationUri,proto3" json:"bigquery_destination_uri,omitempty"`
 	unknownFields          protoimpl.UnknownFields

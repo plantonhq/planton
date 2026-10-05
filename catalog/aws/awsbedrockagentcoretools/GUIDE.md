@@ -1,6 +1,6 @@
-# AwsBedrockAgentCoreTools — Component Guide
+# AwsBedrockAgentCoreTools — Kind Guide
 
-Authored operational judgment for the AgentCore tools component: the
+Authored operational judgment for the AgentCore tools kind: the
 design decisions behind the spec's shape, and what to know before
 handing agents browsers and code sandboxes in production.
 

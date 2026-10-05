@@ -6,7 +6,7 @@ go_library(
     importpath = "github.com/plantonhq/planton/pkg/finops/estimatemodel",
     visibility = ["//visibility:public"],
     deps = [
-        "//finops/componentcostestimatemodel/v1:componentcostestimatemodel",
+        "//finops/catalogkindcostestimatemodel/v1:catalogkindcostestimatemodel",
         "//pkg/protobufyaml",
         "@com_github_pkg_errors//:errors",
     ],
@@ -17,8 +17,8 @@ go_test(
     srcs = ["conformance_test.go"],
     embed = [":estimatemodel"],
     deps = [
-        "//finops/componentcostestimatemodel/v1:componentcostestimatemodel",
-        "//finops/componentcostprofile/v1:componentcostprofile",
+        "//finops/catalogkindcostestimatemodel/v1:catalogkindcostestimatemodel",
+        "//finops/catalogkindcostprofile/v1:catalogkindcostprofile",
         "//pkg/finops/costprofile",
     ],
 )

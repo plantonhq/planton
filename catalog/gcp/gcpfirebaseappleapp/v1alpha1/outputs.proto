@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpfirebaseappleapp.v1alpha1;
 
-// GcpFirebaseAppleAppStackOutputs captures the app registration's identity
+// GcpFirebaseAppleAppOutputs captures the app registration's identity
 // and the configuration file the Apple build consumes.
 //
 // None of these values is a secret. The app id and the API key are CLIENT
@@ -10,7 +10,7 @@ package dev.planton.gcp.gcpfirebaseappleapp.v1alpha1;
 // GoogleService-Info.plist is the file that carries them into the build.
 // Access to the project's backends is governed by IAM, Firebase Security
 // Rules, and App Check -- never by keeping these values hidden.
-message GcpFirebaseAppleAppStackOutputs {
+message GcpFirebaseAppleAppOutputs {
   // The Firebase-assigned app id (GOOGLE_APP_ID in
   // GoogleService-Info.plist), e.g. 1:123456789012:ios:0123456789abcdef.
   // Globally unique and immutable.

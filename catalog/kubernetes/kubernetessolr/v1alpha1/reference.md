@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesSolrSpec** declares an Apache SolrCloud cluster as a
 `SolrCloud` custom resource reconciled by the Apache Solr Operator
@@ -29,9 +29,9 @@ beyond throwaway experiments.
 
 SECURITY: `security.authentication_type: basic` bootstraps
 basic-auth with operator-generated credentials in a Secret (see
-stack outputs); no credential ever appears in this spec.
+outputs); no credential ever appears in this spec.
 
-EXPOSURE: in-cluster access rides the common Service (see stack
+EXPOSURE: in-cluster access rides the common Service (see
 outputs). The `external` block models the operator's own
 Ingress/ExternalDNS exposure; composing a KubernetesIngress or
 Gateway API route over the common service handle is equally valid
@@ -581,7 +581,7 @@ Existing kubernetes.io/basic-auth Secret with the credentials
 the OPERATOR uses against secured pods. Empty = the operator
 bootstraps security.json plus admin/solr/k8s-oper users and
 writes their credentials to `<name>-solrcloud-basic-auth`
-(see stack outputs). If you later rotate that password through
+(see outputs). If you later rotate that password through
 Solr's security API, update the Secret too — the operator locks
 itself out otherwise (upstream contract).
 

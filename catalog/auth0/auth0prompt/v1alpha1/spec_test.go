@@ -19,7 +19,7 @@ func prompt(spec *Auth0PromptSpec) *Auth0Prompt {
 	return &Auth0Prompt{
 		ApiVersion: "auth0.planton.dev/v1alpha1",
 		Kind:       "Auth0Prompt",
-		Metadata:   &shared.CloudResourceMetadata{Name: "prompt"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "prompt"},
 		Spec:       spec,
 	}
 }

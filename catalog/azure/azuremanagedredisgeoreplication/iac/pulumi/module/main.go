@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azuremanagedredisgeoreplicationv1alpha1.AzureManagedRedisGeoReplicationStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuremanagedredisgeoreplicationv1alpha1.AzureManagedRedisGeoReplicationIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -47,7 +47,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuremanagedredisgeoreplicationv
 		return errors.Wrapf(err, "failed to create managed redis geo-replication group for %s", locals.ManagedRedisId)
 	}
 
-	// Export stack outputs. The group's resource ID is the managing
+	// Export outputs. The group's resource ID is the managing
 	// cluster's ARM ID (the group has no ARM object of its own).
 	ctx.Export(OpGeoReplicationId, createdGeoReplication.ID())
 

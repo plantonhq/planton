@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpDatastreamStreamStackOutputs captures the stream's identity.
-type GcpDatastreamStreamStackOutputs struct {
+// GcpDatastreamStreamOutputs captures the stream's identity.
+type GcpDatastreamStreamOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name --
 	// projects/{project}/locations/{location}/streams/{stream_id}.
@@ -33,20 +33,20 @@ type GcpDatastreamStreamStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpDatastreamStreamStackOutputs) Reset() {
-	*x = GcpDatastreamStreamStackOutputs{}
+func (x *GcpDatastreamStreamOutputs) Reset() {
+	*x = GcpDatastreamStreamOutputs{}
 	mi := &file_catalog_gcp_gcpdatastreamstream_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpDatastreamStreamStackOutputs) String() string {
+func (x *GcpDatastreamStreamOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpDatastreamStreamStackOutputs) ProtoMessage() {}
+func (*GcpDatastreamStreamOutputs) ProtoMessage() {}
 
-func (x *GcpDatastreamStreamStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpDatastreamStreamOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpdatastreamstream_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpDatastreamStreamStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpDatastreamStreamStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpDatastreamStreamStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpDatastreamStreamOutputs.ProtoReflect.Descriptor instead.
+func (*GcpDatastreamStreamOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpdatastreamstream_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpDatastreamStreamStackOutputs) GetName() string {
+func (x *GcpDatastreamStreamOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpDatastreamStreamStackOutputs) GetStreamId() string {
+func (x *GcpDatastreamStreamOutputs) GetStreamId() string {
 	if x != nil {
 		return x.StreamId
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpdatastreamstream_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_gcp_gcpdatastreamstream_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcpdatastreamstream/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcpdatastreamstream.v1alpha1\"R\n" +
-	"\x1fGcpDatastreamStreamStackOutputs\x12\x12\n" +
+	"6catalog/gcp/gcpdatastreamstream/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcpdatastreamstream.v1alpha1\"M\n" +
+	"\x1aGcpDatastreamStreamOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
 	"\tstream_id\x18\x02 \x01(\tR\bstreamIdB\xf8\x02\n" +
 	"0com.dev.planton.gcp.gcpdatastreamstream.v1alpha1B\fOutputsProtoP\x01Zagithub.com/plantonhq/planton/catalog/gcp/gcpdatastreamstream/v1alpha1;gcpdatastreamstreamv1alpha1\xa2\x02\x04DPGG\xaa\x02,Dev.Planton.Gcp.Gcpdatastreamstream.V1alpha1\xca\x02,Dev\\Planton\\Gcp\\Gcpdatastreamstream\\V1alpha1\xe2\x028Dev\\Planton\\Gcp\\Gcpdatastreamstream\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Gcp::Gcpdatastreamstream::V1alpha1b\x06proto3"
@@ -101,7 +101,7 @@ func file_catalog_gcp_gcpdatastreamstream_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_gcp_gcpdatastreamstream_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpdatastreamstream_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpDatastreamStreamStackOutputs)(nil), // 0: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamStackOutputs
+	(*GcpDatastreamStreamOutputs)(nil), // 0: dev.planton.gcp.gcpdatastreamstream.v1alpha1.GcpDatastreamStreamOutputs
 }
 var file_catalog_gcp_gcpdatastreamstream_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

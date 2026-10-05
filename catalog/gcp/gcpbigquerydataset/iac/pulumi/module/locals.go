@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpbigquerydatasetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigquerydataset/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -16,9 +16,9 @@ type Locals struct {
 	GcpLabels          map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpbigquerydatasetv1alpha1.GcpBigQueryDatasetStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpbigquerydatasetv1alpha1.GcpBigQueryDatasetIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpBigQueryDataset = stackInput.Target
+	locals.GcpBigQueryDataset = iacInput.Target
 
 	// User labels first so platform attribution labels win on key
 	// conflicts — identical merge order to the Terraform module.
@@ -28,7 +28,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpbigquerydatasetv1alpha1.
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.GcpBigQueryDataset.Spec.DatasetId
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpBigQueryDataset.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpBigQueryDataset.String())
 
 	if locals.GcpBigQueryDataset.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = locals.GcpBigQueryDataset.Metadata.Org
@@ -40,6 +40,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpbigquerydatasetv1alpha1.
 		locals.GcpLabels[gcplabelkeys.ResourceId] = locals.GcpBigQueryDataset.Metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

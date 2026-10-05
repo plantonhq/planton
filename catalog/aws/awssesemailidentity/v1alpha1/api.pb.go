@@ -34,7 +34,7 @@ type AwsSesEmailIdentity struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, environment,
 	// labels) and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration of the email identity.
 	Spec *AwsSesEmailIdentitySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds post-deployment information.
@@ -87,7 +87,7 @@ func (x *AwsSesEmailIdentity) GetKind() string {
 	return ""
 }
 
-func (x *AwsSesEmailIdentity) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsSesEmailIdentity) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,7 +113,7 @@ type AwsSesEmailIdentityStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the observable values returned by Pulumi/Terraform
 	// after provisioning.
-	Outputs       *AwsSesEmailIdentityStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsSesEmailIdentityOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AwsSesEmailIdentityStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssesemailidentity_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsSesEmailIdentityStatus) GetOutputs() *AwsSesEmailIdentityStackOutputs {
+func (x *AwsSesEmailIdentityStatus) GetOutputs() *AwsSesEmailIdentityOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_aws_awssesemailidentity_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13AwsSesEmailIdentityR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
 	"\x04spec\x18\x04 \x01(\v2E.dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentitySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityStatusR\x06status\"\x84\x01\n" +
-	"\x19AwsSesEmailIdentityStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityStackOutputsR\aoutputsB\xf4\x02\n" +
+	"\x06status\x18\x05 \x01(\v2G.dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityStatusR\x06status\"\x7f\n" +
+	"\x19AwsSesEmailIdentityStatus\x12b\n" +
+	"\aoutputs\x18\x01 \x01(\v2H.dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityOutputsR\aoutputsB\xf4\x02\n" +
 	"0com.dev.planton.aws.awssesemailidentity.v1alpha1B\bApiProtoP\x01Zagithub.com/plantonhq/planton/catalog/aws/awssesemailidentity/v1alpha1;awssesemailidentityv1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Aws.Awssesemailidentity.V1alpha1\xca\x02,Dev\\Planton\\Aws\\Awssesemailidentity\\V1alpha1\xe2\x028Dev\\Planton\\Aws\\Awssesemailidentity\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Aws::Awssesemailidentity::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_aws_awssesemailidentity_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awssesemailidentity_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awssesemailidentity_v1alpha1_api_proto_goTypes = []any{
-	(*AwsSesEmailIdentity)(nil),             // 0: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentity
-	(*AwsSesEmailIdentityStatus)(nil),       // 1: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsSesEmailIdentitySpec)(nil),         // 3: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentitySpec
-	(*AwsSesEmailIdentityStackOutputs)(nil), // 4: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityStackOutputs
+	(*AwsSesEmailIdentity)(nil),          // 0: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentity
+	(*AwsSesEmailIdentityStatus)(nil),    // 1: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsSesEmailIdentitySpec)(nil),      // 3: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentitySpec
+	(*AwsSesEmailIdentityOutputs)(nil),   // 4: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityOutputs
 }
 var file_catalog_aws_awssesemailidentity_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentity.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentity.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentity.spec:type_name -> dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentitySpec
 	1, // 2: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentity.status:type_name -> dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityStatus
-	4, // 3: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityStatus.outputs:type_name -> dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityStackOutputs
+	4, // 3: dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityStatus.outputs:type_name -> dev.planton.aws.awssesemailidentity.v1alpha1.AwsSesEmailIdentityOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

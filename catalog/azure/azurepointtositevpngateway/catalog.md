@@ -4,7 +4,7 @@ Deploys a Point-to-Site VPN Gateway -- the managed receiver inside a Virtual WAN
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Point-to-Site VPN Gateway** -- the managed instance pair in the hub, with its scale units, client address pools, and optional per-pool hub routing
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -66,7 +66,7 @@ spec:
 planton apply -f azure-point-to-site-vpn-gateway.yaml
 ```
 
-This creates a one-scale-unit gateway in the referenced hub, handing connected clients addresses from 172.16.201.0/24 with split tunneling. The gateway creates in 30-45 minutes and bills from creation. A Stack Job tracks the provisioning in real time.
+This creates a one-scale-unit gateway in the referenced hub, handing connected clients addresses from 172.16.201.0/24 with split tunneling. The gateway creates in 30-45 minutes and bills from creation. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,7 +102,7 @@ These are the most important decisions when configuring the gateway. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -111,9 +111,9 @@ These are the most important decisions when configuring the gateway. Explore the
 | **AzureVpnServerConfiguration** | `vpnServerConfigurationId` | `status.outputs.vpn_server_configuration_id` |
 | **AzureVirtualHub** (route block) | `route.associatedRouteTableId` | `status.outputs.default_route_table_id` or `status.outputs.route_table_ids.<table-name>` |
 
-### What This Component Provides
+### What This Kind Provides
 
-`status.outputs` carries `point_to_site_vpn_gateway_id` and `point_to_site_vpn_gateway_name`, but no downstream Cloud Resource consumes the gateway by reference — the gateway is a leaf in the composition graph. Users connect through VPN client profiles downloaded from the gateway, not through ValueFromRef wiring.
+`status.outputs` carries `point_to_site_vpn_gateway_id` and `point_to_site_vpn_gateway_name`, but no downstream Infra Component consumes the gateway by reference — the gateway is a leaf in the composition graph. Users connect through VPN client profiles downloaded from the gateway, not through ValueFromRef wiring.
 
 ## Common Patterns
 
@@ -125,7 +125,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure VPN Server Configuration**](/cloud-catalog/azure-vpn-server-configuration) -- the authentication policy the gateway attaches
-- [**Azure Virtual Hub**](/cloud-catalog/azure-virtual-hub) -- where the gateway lives
-- [**Azure Virtual WAN**](/cloud-catalog/azure-virtual-wan) -- the managed network umbrella
-- [**Azure VPN Gateway**](/cloud-catalog/azure-vpn-gateway) -- the hub's site-to-site sibling (branches, not people)
+- [**Azure VPN Server Configuration**](/infra-catalog/azure-vpn-server-configuration) -- the authentication policy the gateway attaches
+- [**Azure Virtual Hub**](/infra-catalog/azure-virtual-hub) -- where the gateway lives
+- [**Azure Virtual WAN**](/infra-catalog/azure-virtual-wan) -- the managed network umbrella
+- [**Azure VPN Gateway**](/infra-catalog/azure-vpn-gateway) -- the hub's site-to-site sibling (branches, not people)

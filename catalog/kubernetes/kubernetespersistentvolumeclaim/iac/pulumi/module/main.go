@@ -10,14 +10,14 @@ import (
 // Resources is the main entry point for the Pulumi module.
 // It orchestrates the creation of a Kubernetes PersistentVolumeClaim with its
 // storage request, access modes, and provisioning class.
-func Resources(ctx *pulumi.Context, stackInput *kubernetespersistentvolumeclaimv1alpha1.KubernetesPersistentVolumeClaimStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetespersistentvolumeclaimv1alpha1.KubernetesPersistentVolumeClaimIacInput) error {
 	// Initialize locals with derived values
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// Create Kubernetes provider from credentials
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 		"kubernetes",
 	)
 	if err != nil {

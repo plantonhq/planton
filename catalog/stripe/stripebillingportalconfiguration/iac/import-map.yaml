@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: stripebillingportalconfiguration
 spec:
@@ -7,6 +7,6 @@ spec:
   values:
     - name: billing_portal_configuration_id
       derivations:
-        - from_stack_output: id
+        - from_output: id
       where_to_find: >-
         `GET /v1/billing_portal/configurations` (the id field of the configuration, bpc_...); the Dashboard's portal settings page edits the default configuration only.

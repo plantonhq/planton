@@ -1,12 +1,12 @@
 # GENERATED -- DO NOT EDIT. Regenerate with `make generate-cost-estimates`.
-# This file joins the component's estimate model (../models/, the authored
+# This file joins the kind's estimate model (../models/, the authored
 # quantities with their derivations) with the provider's price book
 # (../pricebook/, pinned unit prices with source URL and retrieval date):
 # every line cost and preset total is computed exactly, lines are ordered
 # largest cost first, and the catalog-data conformance gate re-verifies all
-# arithmetic. Schema: finops/componentcostestimate/v1.
+# arithmetic. Schema: finops/catalogkindcostestimate/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimate
+kind: CatalogKindCostEstimate
 metadata:
   name: awscloudwatchlogdelivery
 spec:
@@ -28,6 +28,6 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - the cross-account destination object and its access policy are free at any volume -- no CloudWatch Logs meter exists for the endpoint itself
-        - forwarded log events bill on the referenced AwsKinesisStream's own meters (shard hours or on-demand throughput, per that component's profile) at a volume controlled by the two allowed SENDER accounts' subscription filters, invisible to this manifest
+        - forwarded log events bill on the referenced AwsKinesisStream's own meters (shard hours or on-demand throughput, per that kind's profile) at a volume controlled by the two allowed SENDER accounts' subscription filters, invisible to this manifest
         - the delivery role is an AwsIamRole, which never bills
       notes: Zero committed cost -- and the zero here is structural as well as commitment-shaped; the endpoint carries no meter, so this component's line stays $0 while the real spend rides the Kinesis stream behind it.

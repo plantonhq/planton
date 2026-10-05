@@ -1,10 +1,10 @@
 # AWS REST API Domain
 
-Deploys an API Gateway custom domain for REST APIs — callers hit `https://api.example.com/orders` instead of the execute-api endpoint, TLS terminates on your certificate, and base-path mappings fan the hostname's paths out across APIs and stages. A domain outlives any one API and maps many, which is why it is its own component rather than a field on the REST API. The bundle covers the domain, its base-path mappings, and — for PRIVATE domains — the VPC-endpoint access associations; DNS stays outside, composed through the alias-target outputs.
+Deploys an API Gateway custom domain for REST APIs — callers hit `https://api.example.com/orders` instead of the execute-api endpoint, TLS terminates on your certificate, and base-path mappings fan the hostname's paths out across APIs and stages. A domain outlives any one API and maps many, which is why it is its own kind rather than a field on the REST API. The bundle covers the domain, its base-path mappings, and — for PRIVATE domains — the VPC-endpoint access associations; DNS stays outside, composed through the alias-target outputs.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Custom Domain** — the hostname bound to its TLS certificate (ACM, or directly uploaded material on the legacy path), with the chosen endpoint type (REGIONAL, EDGE, or PRIVATE), security policy, optional mutual TLS truststore, and — on PRIVATE domains — the resource policy
 - **Base-Path Mapping** — one per `basePathMappings` entry, routing a path segment under the domain to a REST API and stage; the empty base path maps the domain root
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with API Gateway domain permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with API Gateway domain permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -65,7 +65,7 @@ spec:
 planton apply -f rest-api-domain.yaml
 ```
 
-This creates a REGIONAL custom domain on your ACM certificate with `https://api.acme-corp.com/orders` routed to the orders API's `prod` stage. A Stack Job tracks the provisioning in real time.
+This creates a REGIONAL custom domain on your ACM certificate with `https://api.acme-corp.com/orders` routed to the orders API's `prod` stage. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -116,7 +116,7 @@ These are the most important decisions when configuring a custom domain. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -125,9 +125,9 @@ These are the most important decisions when configuring a custom domain. Explore
 | **AwsRestApiGateway** | `basePathMappings[].stageName` | `status.outputs.stage_name` |
 | **AwsVpcEndpoint** | `accessAssociations[].vpcEndpointId` | `status.outputs.vpc_endpoint_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -149,7 +149,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS REST API Gateway**](/cloud-catalog/aws-rest-api-gateway) — the APIs and stages the base-path mappings route to
-- [**AWS ACM Certificate**](/cloud-catalog/aws-cert-manager-cert) — the ACM certificate TLS terminates on
-- [**AWS Route 53 DNS Record**](/cloud-catalog/aws-route53-dns-record) — the alias record pointing the hostname at the regional or CloudFront target
-- [**AWS VPC Endpoint**](/cloud-catalog/aws-vpc-endpoint) — the interface endpoints PRIVATE domains admit through access associations
+- [**AWS REST API Gateway**](/infra-catalog/aws-rest-api-gateway) — the APIs and stages the base-path mappings route to
+- [**AWS ACM Certificate**](/infra-catalog/aws-cert-manager-cert) — the ACM certificate TLS terminates on
+- [**AWS Route 53 DNS Record**](/infra-catalog/aws-route53-dns-record) — the alias record pointing the hostname at the regional or CloudFront target
+- [**AWS VPC Endpoint**](/infra-catalog/aws-vpc-endpoint) — the interface endpoints PRIVATE domains admit through access associations

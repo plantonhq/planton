@@ -4,7 +4,7 @@ Creates the managed poller that reads records from an event source — an SQS qu
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Event Source Mapping** -- the AWS-managed poller (a server-assigned UUID) connecting the source to the function, with the batching, filtering, error-handling, and scaling settings in the spec
 
@@ -14,12 +14,12 @@ Everything else is referenced, never modified: the Lambda function, the queue/st
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A Lambda function** -- reference an AwsLambda Cloud Resource or pass a literal function ARN. No invoke permission is needed: the poller invokes through the function's execution role.
+- **A Lambda function** -- reference an AwsLambda Infra Component or pass a literal function ARN. No invoke permission is needed: the poller invokes through the function's execution role.
 - **The execution role can READ the source** -- the function's execution role needs the source-side permissions (`sqs:ReceiveMessage`/`DeleteMessage`/`GetQueueAttributes` for SQS, the Kinesis/DynamoDB stream read actions, or the MSK/Kafka cluster access) — the mapping never grants them.
 - **The event source** -- the queue, stream, cluster, broker, or DocumentDB cluster to consume. Create-time immutable: a different source is a different mapping.
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f mapping.yaml
 ```
 
-This wires the queue into the function with partial-batch failure reporting. A Stack Job tracks the provisioning and streams progress in real time.
+This wires the queue into the function with partial-batch failure reporting. An Infra Job tracks the provisioning and streams progress in real time.
 
 ### InfraChart
 
@@ -103,7 +103,7 @@ These are the most important decisions when configuring an event source mapping.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -115,9 +115,9 @@ These are the most important decisions when configuring an event source mapping.
 | **AwsKmsKey** (optional) | `kmsKeyArn` | `status.outputs.key_arn` |
 | **AwsSqsQueue** (optional) | `onFailureDestinationArn` | `status.outputs.queue_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -138,9 +138,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) -- the function every mapping invokes
-- [**AWS SQS Queue**](/cloud-catalog/aws-sqs-queue) -- the most common source, and the usual failure destination
-- [**AWS Kinesis Data Stream**](/cloud-catalog/aws-kinesis-stream) -- ordered, replayable stream consumption
-- [**AWS DynamoDB**](/cloud-catalog/aws-dynamodb) -- change-data capture from table streams
-- [**AWS MSK Cluster**](/cloud-catalog/aws-msk-cluster) -- managed Kafka topic consumption
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- customer-managed encryption for filter criteria
+- [**AWS Lambda**](/infra-catalog/aws-lambda) -- the function every mapping invokes
+- [**AWS SQS Queue**](/infra-catalog/aws-sqs-queue) -- the most common source, and the usual failure destination
+- [**AWS Kinesis Data Stream**](/infra-catalog/aws-kinesis-stream) -- ordered, replayable stream consumption
+- [**AWS DynamoDB**](/infra-catalog/aws-dynamodb) -- change-data capture from table streams
+- [**AWS MSK Cluster**](/infra-catalog/aws-msk-cluster) -- managed Kafka topic consumption
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- customer-managed encryption for filter criteria

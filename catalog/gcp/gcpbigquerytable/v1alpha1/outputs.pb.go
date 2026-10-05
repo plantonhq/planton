@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP BigQuery table.
-type GcpBigQueryTableStackOutputs struct {
+type GcpBigQueryTableOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The short table ID (same as the spec's table_id input) — the value SQL
 	// queries and foreign keys reference.
@@ -51,20 +51,20 @@ type GcpBigQueryTableStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpBigQueryTableStackOutputs) Reset() {
-	*x = GcpBigQueryTableStackOutputs{}
+func (x *GcpBigQueryTableOutputs) Reset() {
+	*x = GcpBigQueryTableOutputs{}
 	mi := &file_catalog_gcp_gcpbigquerytable_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpBigQueryTableStackOutputs) String() string {
+func (x *GcpBigQueryTableOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpBigQueryTableStackOutputs) ProtoMessage() {}
+func (*GcpBigQueryTableOutputs) ProtoMessage() {}
 
-func (x *GcpBigQueryTableStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpBigQueryTableOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpbigquerytable_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -76,61 +76,61 @@ func (x *GcpBigQueryTableStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpBigQueryTableStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpBigQueryTableStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpBigQueryTableOutputs.ProtoReflect.Descriptor instead.
+func (*GcpBigQueryTableOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbigquerytable_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpBigQueryTableStackOutputs) GetTableId() string {
+func (x *GcpBigQueryTableOutputs) GetTableId() string {
 	if x != nil {
 		return x.TableId
 	}
 	return ""
 }
 
-func (x *GcpBigQueryTableStackOutputs) GetSelfLink() string {
+func (x *GcpBigQueryTableOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpBigQueryTableStackOutputs) GetProject() string {
+func (x *GcpBigQueryTableOutputs) GetProject() string {
 	if x != nil {
 		return x.Project
 	}
 	return ""
 }
 
-func (x *GcpBigQueryTableStackOutputs) GetDatasetId() string {
+func (x *GcpBigQueryTableOutputs) GetDatasetId() string {
 	if x != nil {
 		return x.DatasetId
 	}
 	return ""
 }
 
-func (x *GcpBigQueryTableStackOutputs) GetType() string {
+func (x *GcpBigQueryTableOutputs) GetType() string {
 	if x != nil {
 		return x.Type
 	}
 	return ""
 }
 
-func (x *GcpBigQueryTableStackOutputs) GetLocation() string {
+func (x *GcpBigQueryTableOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
 	return ""
 }
 
-func (x *GcpBigQueryTableStackOutputs) GetCreationTime() int64 {
+func (x *GcpBigQueryTableOutputs) GetCreationTime() int64 {
 	if x != nil {
 		return x.CreationTime
 	}
 	return 0
 }
 
-func (x *GcpBigQueryTableStackOutputs) GetQualifiedName() string {
+func (x *GcpBigQueryTableOutputs) GetQualifiedName() string {
 	if x != nil {
 		return x.QualifiedName
 	}
@@ -141,8 +141,8 @@ var File_catalog_gcp_gcpbigquerytable_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpbigquerytable_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpbigquerytable/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpbigquerytable.v1alpha1\"\x8b\x02\n" +
-	"\x1cGcpBigQueryTableStackOutputs\x12\x19\n" +
+	"3catalog/gcp/gcpbigquerytable/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpbigquerytable.v1alpha1\"\x86\x02\n" +
+	"\x17GcpBigQueryTableOutputs\x12\x19\n" +
 	"\btable_id\x18\x01 \x01(\tR\atableId\x12\x1b\n" +
 	"\tself_link\x18\x02 \x01(\tR\bselfLink\x12\x18\n" +
 	"\aproject\x18\x03 \x01(\tR\aproject\x12\x1d\n" +
@@ -168,7 +168,7 @@ func file_catalog_gcp_gcpbigquerytable_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpbigquerytable_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpbigquerytable_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpBigQueryTableStackOutputs)(nil), // 0: dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableStackOutputs
+	(*GcpBigQueryTableOutputs)(nil), // 0: dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableOutputs
 }
 var file_catalog_gcp_gcpbigquerytable_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

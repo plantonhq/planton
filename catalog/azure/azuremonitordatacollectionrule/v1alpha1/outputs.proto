@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremonitordatacollectionrule.v1alpha1;
 
-// **AzureMonitorDataCollectionRuleStackOutputs** captures the outputs
+// **AzureMonitorDataCollectionRuleOutputs** captures the outputs
 // from provisioning an Azure Monitor data collection rule.
-message AzureMonitorDataCollectionRuleStackOutputs {
+message AzureMonitorDataCollectionRuleOutputs {
   // The rule's ARM resource ID
   // (.../providers/Microsoft.Insights/dataCollectionRules/{name}) --
   // the value associations and Log Analytics workspaces reference.

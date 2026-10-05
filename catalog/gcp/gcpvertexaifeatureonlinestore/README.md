@@ -4,7 +4,7 @@ A Vertex AI Feature Store online store -- the low-latency serving layer that ans
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project (never disabled on destroy)
 - **Online store** -- a `vertex_ai_feature_online_store` with Bigtable or Optimized storage, an optional Private Service Connect endpoint, and optional CMEK
@@ -92,7 +92,7 @@ planton apply -f vertex-ai-feature-online-store.yaml
 - Store and view ids follow Google's rule (`[a-z0-9_]`, first character not a digit, up to 60); view ids are unique.
 - A view has exactly one source; a registry selection names at least one feature; a sync is cron or continuous, not both.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -123,7 +123,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpVertexAiFeatureGroup** -- the registered features a view serves
 - **GcpBigQueryTable** -- a view's direct BigQuery source

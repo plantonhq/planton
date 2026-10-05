@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -21,7 +21,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: value}}
 }
 
-func reference(kind cloudresourcekind.CloudResourceKind, name string) *foreignkeyv1.StringValueOrRef {
+func reference(kind catalogkind.CatalogKind, name string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Kind: kind, Name: name}}}
 }
 
@@ -38,14 +38,14 @@ var _ = ginkgo.Describe("GcpDeployCustomTargetTypeSpec", func() {
 		return &GcpDeployCustomTargetType{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpDeployCustomTargetType",
-			Metadata:   &shared.CloudResourceMetadata{Name: "vendor-deployer"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "vendor-deployer"},
 			Spec:       &GcpDeployCustomTargetTypeSpec{Location: "us-central1"},
 		}
 	}
 
 	withTasks := func() *GcpDeployCustomTargetType {
 		msg := minimal()
-		msg.Spec.ProjectId = reference(cloudresourcekind.CloudResourceKind_GcpProject, "delivery")
+		msg.Spec.ProjectId = reference(catalogkind.CatalogKind_GcpProject, "delivery")
 		msg.Spec.CustomTargetTypeId = "vendor-deployer"
 		msg.Spec.Description = "Deploys releases through the vendor's API"
 		msg.Spec.Labels = map[string]string{"team": "platform"}
@@ -70,7 +70,7 @@ var _ = ginkgo.Describe("GcpDeployCustomTargetTypeSpec", func() {
 			RenderAction: "vendor-render",
 			IncludeSkaffoldModules: []*GcpDeployCustomTargetTypeSkaffoldModule{
 				{Configs: []string{"vendor"}, Git: &GcpDeployCustomTargetTypeGitSource{Repo: "https://github.com/acme/deploy-actions.git", Path: "vendor/skaffold.yaml", Ref: "main"}},
-				{GoogleCloudBuildRepo: &GcpDeployCustomTargetTypeCloudBuildRepoSource{Repository: reference(cloudresourcekind.CloudResourceKind_GcpCloudBuildRepository, "deploy-actions")}},
+				{GoogleCloudBuildRepo: &GcpDeployCustomTargetTypeCloudBuildRepoSource{Repository: reference(catalogkind.CatalogKind_GcpCloudBuildRepository, "deploy-actions")}},
 				{GoogleCloudBuildRepo: &GcpDeployCustomTargetTypeCloudBuildRepoSource{Repository: literal("projects/p/locations/us-central1/connections/github/repositories/deploy-actions"), Ref: "v2"}},
 				{GoogleCloudStorage: &GcpDeployCustomTargetTypeCloudStorageSource{Source: "gs://acme-deploy/actions/*", Path: "skaffold.yaml"}},
 			},

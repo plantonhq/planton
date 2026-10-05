@@ -1,5 +1,5 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: digitaloceandnsrecord
 spec:
@@ -13,7 +13,7 @@ spec:
   # priority/weight/port presence trio and a custom TTL), and `caa`
   # (flags/tag with the explicit-zero flags quirk -- the provider drops the
   # 0 on create, the API defaults it to 0, and the round-trip agreed). The
-  # two-part {domain},{record_id} import derived both halves from stack
+  # two-part {domain},{record_id} import derived both halves from
   # outputs and planned no change on all three. Records are free API objects
   # that create in seconds.
   #

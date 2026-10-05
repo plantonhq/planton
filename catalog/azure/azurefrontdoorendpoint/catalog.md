@@ -4,7 +4,7 @@ Deploys a public Front Door endpoint -- the `*.azurefd.net` hostname clients hit
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Front Door Endpoint** -- a named child of the profile with a generated, globally unique public hostname (`{endpointName}-{hash}.z01.azurefd.net`)
 - **Enabled state** -- whether the endpoint accepts traffic (default on; disable for maintenance without deleting the hostname)
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Azure Subscription
 
-- **An Azure Front Door Profile** the endpoint nests under. Reference an AzureFrontDoorProfile Cloud Resource via ValueFromRef, or provide the profile ARM ID directly.
+- **An Azure Front Door Profile** the endpoint nests under. Reference an AzureFrontDoorProfile Infra Component via ValueFromRef, or provide the profile ARM ID directly.
 
 ## Deploy
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f front-door-endpoint.yaml
 ```
 
-This creates an enabled endpoint under the profile with a generated `my-web-{hash}.z01.azurefd.net` hostname, ready for routes to attach. A Stack Job tracks the provisioning in real time.
+This creates an enabled endpoint under the profile with a generated `my-web-{hash}.z01.azurefd.net` hostname, ready for routes to attach. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,15 +83,15 @@ These are the most important decisions when configuring a Front Door endpoint. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureFrontDoorProfile** | `profileId` | `status.outputs.profile_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,8 +109,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Front Door Profile**](/cloud-catalog/azure-front-door-profile) -- the parent container referenced by `profileId`; its SKU tier and identity govern every child
-- [**Azure Front Door Route**](/cloud-catalog/azure-front-door-route) -- attaches URL patterns to this endpoint and forwards them to an origin group
-- [**Azure Front Door Custom Domain**](/cloud-catalog/azure-front-door-custom-domain) -- serves a branded hostname that CNAMEs onto this endpoint's `host_name` output
-- [**Azure Front Door Security Policy**](/cloud-catalog/azure-front-door-security-policy) -- associates a WAF policy with this endpoint through its `endpoint_id`
-- [**Azure DNS Record**](/cloud-catalog/azure-dns-record) -- CNAMEs or aliases a custom hostname at the generated `host_name`
+- [**Azure Front Door Profile**](/infra-catalog/azure-front-door-profile) -- the parent container referenced by `profileId`; its SKU tier and identity govern every child
+- [**Azure Front Door Route**](/infra-catalog/azure-front-door-route) -- attaches URL patterns to this endpoint and forwards them to an origin group
+- [**Azure Front Door Custom Domain**](/infra-catalog/azure-front-door-custom-domain) -- serves a branded hostname that CNAMEs onto this endpoint's `host_name` output
+- [**Azure Front Door Security Policy**](/infra-catalog/azure-front-door-security-policy) -- associates a WAF policy with this endpoint through its `endpoint_id`
+- [**Azure DNS Record**](/infra-catalog/azure-dns-record) -- CNAMEs or aliases a custom hostname at the generated `host_name`

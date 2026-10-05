@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// OpenFgaAuthorizationModel is a component that creates an authorization model in OpenFGA.
+// OpenFgaAuthorizationModel is a kind that creates an authorization model in OpenFGA.
 //
 // An authorization model defines the types, relations, and access rules for fine-grained
 // authorization. It is the schema that determines what relationship tuples mean and how
@@ -38,7 +38,7 @@ const (
 // IMPORTANT: Authorization models are immutable. Each model_json change creates a new model ID.
 //
 // IMPORTANT: OpenFGA only has a Terraform provider - there is no Pulumi provider available.
-// This component runs on OpenTofu or Terraform (kind_meta.provisioners), and Planton refuses
+// This kind runs on OpenTofu or Terraform (kind_meta.provisioners), and Planton refuses
 // Pulumi for it before anything runs.
 //
 // Use cases:
@@ -78,12 +78,12 @@ type OpenFgaAuthorizationModel struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "OpenFgaAuthorizationModel" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the model within Planton
 	// - org: Organization that owns this model
 	// - env: Environment (development, staging, production)
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the desired configuration for the OpenFGA authorization model.
 	// Includes the target store ID and the model definition in JSON format.
 	Spec *OpenFgaAuthorizationModelSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
@@ -139,7 +139,7 @@ func (x *OpenFgaAuthorizationModel) GetKind() string {
 	return ""
 }
 
-func (x *OpenFgaAuthorizationModel) GetMetadata() *shared.CloudResourceMetadata {
+func (x *OpenFgaAuthorizationModel) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -164,10 +164,10 @@ func (x *OpenFgaAuthorizationModel) GetStatus() *OpenFgaAuthorizationModelStatus
 // This is populated by the deployment system and contains read-only outputs.
 type OpenFgaAuthorizationModelStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs from the OpenFGA authorization model deployment.
+	// outputs contains the outputs from the OpenFGA authorization model deployment.
 	// These values are populated after successful deployment and include
 	// the model identifier.
-	Outputs       *OpenFgaAuthorizationModelStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *OpenFgaAuthorizationModelOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -202,7 +202,7 @@ func (*OpenFgaAuthorizationModelStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_openfga_openfgaauthorizationmodel_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *OpenFgaAuthorizationModelStatus) GetOutputs() *OpenFgaAuthorizationModelStackOutputs {
+func (x *OpenFgaAuthorizationModelStatus) GetOutputs() *OpenFgaAuthorizationModelOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -220,11 +220,11 @@ const file_catalog_openfga_openfgaauthorizationmodel_v1alpha1_api_proto_rawDesc 
 	"apiVersion\x124\n" +
 	"\x04kind\x18\x02 \x01(\tB \xbaH\x1dr\x1b\n" +
 	"\x19OpenFgaAuthorizationModelR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
 	"\x04spec\x18\x04 \x01(\v2U.dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
-	"\x06status\x18\x05 \x01(\v2W.dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelStatusR\x06status\"\x9a\x01\n" +
-	"\x1fOpenFgaAuthorizationModelStatus\x12w\n" +
-	"\aoutputs\x18\x01 \x01(\v2].dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelStackOutputsR\aoutputsB\xb6\x03\n" +
+	"\x06status\x18\x05 \x01(\v2W.dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelStatusR\x06status\"\x95\x01\n" +
+	"\x1fOpenFgaAuthorizationModelStatus\x12r\n" +
+	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelOutputsR\aoutputsB\xb6\x03\n" +
 	":com.dev.planton.openfga.openfgaauthorizationmodel.v1alpha1B\bApiProtoP\x01Zqgithub.com/plantonhq/planton/catalog/openfga/openfgaauthorizationmodel/v1alpha1;openfgaauthorizationmodelv1alpha1\xa2\x02\x04DPOO\xaa\x026Dev.Planton.Openfga.Openfgaauthorizationmodel.V1alpha1\xca\x026Dev\\Planton\\Openfga\\Openfgaauthorizationmodel\\V1alpha1\xe2\x02BDev\\Planton\\Openfga\\Openfgaauthorizationmodel\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Openfga::Openfgaauthorizationmodel::V1alpha1b\x06proto3"
 
 var (
@@ -241,17 +241,17 @@ func file_catalog_openfga_openfgaauthorizationmodel_v1alpha1_api_proto_rawDescGZ
 
 var file_catalog_openfga_openfgaauthorizationmodel_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_openfga_openfgaauthorizationmodel_v1alpha1_api_proto_goTypes = []any{
-	(*OpenFgaAuthorizationModel)(nil),             // 0: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModel
-	(*OpenFgaAuthorizationModelStatus)(nil),       // 1: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelStatus
-	(*shared.CloudResourceMetadata)(nil),          // 2: dev.planton.shared.CloudResourceMetadata
-	(*OpenFgaAuthorizationModelSpec)(nil),         // 3: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelSpec
-	(*OpenFgaAuthorizationModelStackOutputs)(nil), // 4: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelStackOutputs
+	(*OpenFgaAuthorizationModel)(nil),        // 0: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModel
+	(*OpenFgaAuthorizationModelStatus)(nil),  // 1: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelStatus
+	(*shared.CatalogObjectMetadata)(nil),     // 2: dev.planton.shared.CatalogObjectMetadata
+	(*OpenFgaAuthorizationModelSpec)(nil),    // 3: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelSpec
+	(*OpenFgaAuthorizationModelOutputs)(nil), // 4: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelOutputs
 }
 var file_catalog_openfga_openfgaauthorizationmodel_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModel.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModel.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModel.spec:type_name -> dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelSpec
 	1, // 2: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModel.status:type_name -> dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelStatus
-	4, // 3: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelStatus.outputs:type_name -> dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelStackOutputs
+	4, // 3: dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelStatus.outputs:type_name -> dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

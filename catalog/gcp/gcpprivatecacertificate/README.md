@@ -4,7 +4,7 @@ One X.509 certificate issued from a Certificate Authority Service CA pool, for a
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Certificate** -- a `privateca_certificate` signed by the pool (or the named authority in it), optionally through a template
 
@@ -76,7 +76,7 @@ planton apply -f certificate.yaml
 - `config` needs a subject with a `commonName`, the X.509 fields, and a public key; a `subjectAltName` block lists at least one name.
 - `publicKey.format` is `PEM` (the only value Google accepts).
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -107,7 +107,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpPrivateCaPool** -- the pool that issues it
 - **GcpPrivateCaCertificateAuthority** -- the authority that signs it

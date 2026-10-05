@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpSharedVpcHostSpec", func() {
 		return &GcpSharedVpcHost{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpSharedVpcHost",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "network-host",
 			},
 			Spec: &GcpSharedVpcHostSpec{},

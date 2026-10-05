@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsLambdaEventSourceMappingStackOutputs captures the observable
+// AwsLambdaEventSourceMappingOutputs captures the observable
 // identifiers of a deployed event source mapping.
-type AwsLambdaEventSourceMappingStackOutputs struct {
+type AwsLambdaEventSourceMappingOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The server-assigned mapping UUID -- the identity AWS APIs
 	// (GetEventSourceMapping, UpdateEventSourceMapping) key on.
@@ -39,20 +39,20 @@ type AwsLambdaEventSourceMappingStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsLambdaEventSourceMappingStackOutputs) Reset() {
-	*x = AwsLambdaEventSourceMappingStackOutputs{}
+func (x *AwsLambdaEventSourceMappingOutputs) Reset() {
+	*x = AwsLambdaEventSourceMappingOutputs{}
 	mi := &file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsLambdaEventSourceMappingStackOutputs) String() string {
+func (x *AwsLambdaEventSourceMappingOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsLambdaEventSourceMappingStackOutputs) ProtoMessage() {}
+func (*AwsLambdaEventSourceMappingOutputs) ProtoMessage() {}
 
-func (x *AwsLambdaEventSourceMappingStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsLambdaEventSourceMappingOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,33 +64,33 @@ func (x *AwsLambdaEventSourceMappingStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsLambdaEventSourceMappingStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsLambdaEventSourceMappingStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsLambdaEventSourceMappingOutputs.ProtoReflect.Descriptor instead.
+func (*AwsLambdaEventSourceMappingOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsLambdaEventSourceMappingStackOutputs) GetUuid() string {
+func (x *AwsLambdaEventSourceMappingOutputs) GetUuid() string {
 	if x != nil {
 		return x.Uuid
 	}
 	return ""
 }
 
-func (x *AwsLambdaEventSourceMappingStackOutputs) GetMappingArn() string {
+func (x *AwsLambdaEventSourceMappingOutputs) GetMappingArn() string {
 	if x != nil {
 		return x.MappingArn
 	}
 	return ""
 }
 
-func (x *AwsLambdaEventSourceMappingStackOutputs) GetFunctionArn() string {
+func (x *AwsLambdaEventSourceMappingOutputs) GetFunctionArn() string {
 	if x != nil {
 		return x.FunctionArn
 	}
 	return ""
 }
 
-func (x *AwsLambdaEventSourceMappingStackOutputs) GetState() string {
+func (x *AwsLambdaEventSourceMappingOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
@@ -101,8 +101,8 @@ var File_catalog_aws_awslambdaeventsourcemapping_v1alpha1_outputs_proto protoref
 
 const file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/aws/awslambdaeventsourcemapping/v1alpha1/outputs.proto\x124dev.planton.aws.awslambdaeventsourcemapping.v1alpha1\"\x97\x01\n" +
-	"'AwsLambdaEventSourceMappingStackOutputs\x12\x12\n" +
+	">catalog/aws/awslambdaeventsourcemapping/v1alpha1/outputs.proto\x124dev.planton.aws.awslambdaeventsourcemapping.v1alpha1\"\x92\x01\n" +
+	"\"AwsLambdaEventSourceMappingOutputs\x12\x12\n" +
 	"\x04uuid\x18\x01 \x01(\tR\x04uuid\x12\x1f\n" +
 	"\vmapping_arn\x18\x02 \x01(\tR\n" +
 	"mappingArn\x12!\n" +
@@ -124,7 +124,7 @@ func file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsLambdaEventSourceMappingStackOutputs)(nil), // 0: dev.planton.aws.awslambdaeventsourcemapping.v1alpha1.AwsLambdaEventSourceMappingStackOutputs
+	(*AwsLambdaEventSourceMappingOutputs)(nil), // 0: dev.planton.aws.awslambdaeventsourcemapping.v1alpha1.AwsLambdaEventSourceMappingOutputs
 }
 var file_catalog_aws_awslambdaeventsourcemapping_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

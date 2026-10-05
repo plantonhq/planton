@@ -34,7 +34,7 @@ with ServiceMonitors.
   cert-manager issues and renews the internal certificates; the issuer
   name flows from the `KubernetesClusterIssuer` resource's
   `status.outputs.cluster_issuer_name`, so the whole chain deploys in one
-  infra chart in dependency order.
+  Infra Chart in dependency order.
 - **`prometheus.enabled` + `serviceMonitor: true`** — scaler loop
   latencies, trigger errors, and HPA interactions land in Prometheus
   automatically. The Prometheus operator CRDs MUST exist or the release
@@ -51,7 +51,7 @@ with ServiceMonitors.
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `platform-ca` | Name of the `KubernetesClusterIssuer` resource whose issuer signs KEDA's internal certificates (inside `valueFrom.name`) | Your infra chart / `planton` resource listing |
+| `platform-ca` | Name of the `KubernetesClusterIssuer` resource whose issuer signs KEDA's internal certificates (inside `valueFrom.name`) | Your Infra Chart / `planton` resource listing |
 
 ## Related Presets
 

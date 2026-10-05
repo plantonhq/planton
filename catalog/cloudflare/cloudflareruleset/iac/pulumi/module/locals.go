@@ -11,9 +11,9 @@ type Locals struct {
 	CloudflareRuleset        *cloudflarerulesetv1alpha1.CloudflareRuleset
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarerulesetv1alpha1.CloudflareRulesetStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarerulesetv1alpha1.CloudflareRulesetIacInput) *Locals {
 	return &Locals{
-		CloudflareRuleset:        stackInput.Target,
-		CloudflareProviderConfig: stackInput.ProviderConfig,
+		CloudflareRuleset:        iacInput.Target,
+		CloudflareProviderConfig: iacInput.ProviderConfig,
 	}
 }

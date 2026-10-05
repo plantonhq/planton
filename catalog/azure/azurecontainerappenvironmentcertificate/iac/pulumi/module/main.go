@@ -22,12 +22,12 @@ import (
 //   - The Key Vault path requires the environment's managed identity (the
 //     one named in certificate_key_vault.identity) to already hold read
 //     access to the vault's secrets; Azure checks it at deploy time.
-func Resources(ctx *pulumi.Context, stackInput *azurecontainerappenvironmentcertificatev1alpha1.AzureContainerAppEnvironmentCertificateStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurecontainerappenvironmentcertificatev1alpha1.AzureContainerAppEnvironmentCertificateIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -56,7 +56,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerappenvironmentcert
 		}
 		// Unset deploys "System" -- Azure's own default identity for the
 		// vault read; the explicit fallback keeps both engines identical
-		// on stack-input paths.
+		// on iac-input paths.
 		if spec.CertificateKeyVault.Identity != nil {
 			keyVaultArgs.Identity = pulumi.String(spec.CertificateKeyVault.Identity.GetValue())
 		} else {

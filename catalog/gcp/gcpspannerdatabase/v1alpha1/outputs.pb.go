@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpSpannerDatabaseStackOutputs captures observable values produced after
+// GcpSpannerDatabaseOutputs captures observable values produced after
 // provisioning a Cloud Spanner database.
-type GcpSpannerDatabaseStackOutputs struct {
+type GcpSpannerDatabaseOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Fully qualified database ID.
 	// Format: projects/{project}/instances/{instance}/databases/{database}
@@ -41,20 +41,20 @@ type GcpSpannerDatabaseStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpSpannerDatabaseStackOutputs) Reset() {
-	*x = GcpSpannerDatabaseStackOutputs{}
+func (x *GcpSpannerDatabaseOutputs) Reset() {
+	*x = GcpSpannerDatabaseOutputs{}
 	mi := &file_catalog_gcp_gcpspannerdatabase_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSpannerDatabaseStackOutputs) String() string {
+func (x *GcpSpannerDatabaseOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSpannerDatabaseStackOutputs) ProtoMessage() {}
+func (*GcpSpannerDatabaseOutputs) ProtoMessage() {}
 
-func (x *GcpSpannerDatabaseStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpSpannerDatabaseOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpspannerdatabase_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *GcpSpannerDatabaseStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSpannerDatabaseStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpSpannerDatabaseStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSpannerDatabaseOutputs.ProtoReflect.Descriptor instead.
+func (*GcpSpannerDatabaseOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpspannerdatabase_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSpannerDatabaseStackOutputs) GetDatabaseId() string {
+func (x *GcpSpannerDatabaseOutputs) GetDatabaseId() string {
 	if x != nil {
 		return x.DatabaseId
 	}
 	return ""
 }
 
-func (x *GcpSpannerDatabaseStackOutputs) GetDatabaseName() string {
+func (x *GcpSpannerDatabaseOutputs) GetDatabaseName() string {
 	if x != nil {
 		return x.DatabaseName
 	}
 	return ""
 }
 
-func (x *GcpSpannerDatabaseStackOutputs) GetState() string {
+func (x *GcpSpannerDatabaseOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
@@ -96,8 +96,8 @@ var File_catalog_gcp_gcpspannerdatabase_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_gcp_gcpspannerdatabase_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/gcp/gcpspannerdatabase/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpspannerdatabase.v1alpha1\"|\n" +
-	"\x1eGcpSpannerDatabaseStackOutputs\x12\x1f\n" +
+	"5catalog/gcp/gcpspannerdatabase/v1alpha1/outputs.proto\x12+dev.planton.gcp.gcpspannerdatabase.v1alpha1\"w\n" +
+	"\x19GcpSpannerDatabaseOutputs\x12\x1f\n" +
 	"\vdatabase_id\x18\x01 \x01(\tR\n" +
 	"databaseId\x12#\n" +
 	"\rdatabase_name\x18\x02 \x01(\tR\fdatabaseName\x12\x14\n" +
@@ -118,7 +118,7 @@ func file_catalog_gcp_gcpspannerdatabase_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_gcp_gcpspannerdatabase_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpspannerdatabase_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpSpannerDatabaseStackOutputs)(nil), // 0: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseStackOutputs
+	(*GcpSpannerDatabaseOutputs)(nil), // 0: dev.planton.gcp.gcpspannerdatabase.v1alpha1.GcpSpannerDatabaseOutputs
 }
 var file_catalog_gcp_gcpspannerdatabase_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

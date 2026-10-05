@@ -3,7 +3,7 @@ package module
 import (
 	"strconv"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 
 	awsiamoidcproviderv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsiamoidcprovider/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
@@ -15,9 +15,9 @@ type Locals struct {
 	AwsTags            map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *awsiamoidcproviderv1alpha1.AwsIamOidcProviderStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awsiamoidcproviderv1alpha1.AwsIamOidcProviderIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsIamOidcProvider = stackInput.Target
+	locals.AwsIamOidcProvider = iacInput.Target
 
 	// Resource-identity tags match the Terraform module key-for-key
 	// (Name plus the planton.ai identity keys).
@@ -26,7 +26,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *awsiamoidcproviderv1alpha
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsIamOidcProvider.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsIamOidcProvider.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsIamOidcProvider.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsIamOidcProvider.String(),
 		awstagkeys.ResourceId:   locals.AwsIamOidcProvider.Metadata.Id,
 	}
 

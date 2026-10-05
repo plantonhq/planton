@@ -114,7 +114,7 @@ func stream(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error {
 		}
 	}
 
-	// Export outputs matching AwsKinesisStreamStackOutputs.
+	// Export outputs matching AwsKinesisStreamOutputs.
 	ctx.Export(OpStreamArn, s.Arn)
 	ctx.Export(OpStreamName, s.Name)
 

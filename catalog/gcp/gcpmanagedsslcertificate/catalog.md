@@ -4,7 +4,7 @@ Deploys a Google-managed classic Compute Engine SSL certificate — Google issue
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Google-managed Compute Engine SSL Certificate** -- global scope, covering every FQDN in `domains` (1-100 entries)
 - **Compute Engine API enablement** -- `compute.googleapis.com` enabled in the target project (never disabled on destroy)
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the certificate will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef. The module enables the Compute Engine API itself.
+- **A GCP project** where the certificate will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef. The module enables the Compute Engine API itself.
 - **Control of each domain's DNS** -- issuance completes only once every listed FQDN resolves to the load balancer's IP.
 
 ## Deploy
@@ -51,7 +51,7 @@ spec:
 planton apply -f managed-ssl-certificate.yaml
 ```
 
-This creates the certificate in PROVISIONING state. Attach it to a target HTTPS proxy, point `app.example.com` at the load balancer's IP, and Google issues within minutes to hours. A Stack Job tracks the provisioning in real time.
+This creates the certificate in PROVISIONING state. Attach it to a target HTTPS proxy, point `app.example.com` at the load balancer's IP, and Google issues within minutes to hours. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -80,15 +80,15 @@ These are the most important decisions when configuring a managed SSL certificat
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,7 +109,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the certificate is created
-- [**GCP Target HTTPS Proxy**](/cloud-catalog/gcp-target-https-proxy) -- consumes the certificate's `self_link` in its certificate list
-- [**GCP SSL Certificate**](/cloud-catalog/gcp-ssl-certificate) -- the bring-your-own alternative for wildcards, private CAs, and internal load balancers
-- [**GCP DNS Record**](/cloud-catalog/gcp-dns-record) -- points each domain at the load balancer to unlock issuance
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the certificate is created
+- [**GCP Target HTTPS Proxy**](/infra-catalog/gcp-target-https-proxy) -- consumes the certificate's `self_link` in its certificate list
+- [**GCP SSL Certificate**](/infra-catalog/gcp-ssl-certificate) -- the bring-your-own alternative for wildcards, private CAs, and internal load balancers
+- [**GCP DNS Record**](/infra-catalog/gcp-dns-record) -- points each domain at the load balancer to unlock issuance

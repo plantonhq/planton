@@ -5,7 +5,7 @@ import (
 
 	awsapprunnerservicev1alpha1 "github.com/plantonhq/planton/catalog/aws/awsapprunnerservice/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -16,16 +16,16 @@ type Locals struct {
 	AwsTags             map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *awsapprunnerservicev1alpha1.AwsAppRunnerServiceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awsapprunnerservicev1alpha1.AwsAppRunnerServiceIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsAppRunnerService = stackInput.Target
+	locals.AwsAppRunnerService = iacInput.Target
 
 	locals.AwsTags = map[string]string{
 		awstagkeys.Name:         locals.AwsAppRunnerService.Metadata.Name,
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsAppRunnerService.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsAppRunnerService.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsAppRunnerService.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsAppRunnerService.String(),
 		awstagkeys.ResourceId:   locals.AwsAppRunnerService.Metadata.Id,
 	}
 

@@ -1,12 +1,12 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awscloudtrail
 spec:
   values:
     - name: trail_arn
       derivations:
-        - from_stack_output: trail_arn
+        - from_output: trail_arn
       where_to_find: >-
         CloudTrail console -> Trails (the trail's ARN), or
         `aws cloudtrail describe-trails` (TrailARN).

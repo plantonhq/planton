@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareOriginCaCertificateStackOutputs captures the outputs after issuing an
+// CloudflareOriginCaCertificateOutputs captures the outputs after issuing an
 // Origin CA certificate.
-type CloudflareOriginCaCertificateStackOutputs struct {
+type CloudflareOriginCaCertificateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Origin CA certificate identifier.
 	CertificateId string `protobuf:"bytes,1,opt,name=certificate_id,json=certificateId,proto3" json:"certificate_id,omitempty"`
@@ -42,20 +42,20 @@ type CloudflareOriginCaCertificateStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareOriginCaCertificateStackOutputs) Reset() {
-	*x = CloudflareOriginCaCertificateStackOutputs{}
+func (x *CloudflareOriginCaCertificateOutputs) Reset() {
+	*x = CloudflareOriginCaCertificateOutputs{}
 	mi := &file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareOriginCaCertificateStackOutputs) String() string {
+func (x *CloudflareOriginCaCertificateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareOriginCaCertificateStackOutputs) ProtoMessage() {}
+func (*CloudflareOriginCaCertificateOutputs) ProtoMessage() {}
 
-func (x *CloudflareOriginCaCertificateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareOriginCaCertificateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -67,33 +67,33 @@ func (x *CloudflareOriginCaCertificateStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareOriginCaCertificateStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareOriginCaCertificateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareOriginCaCertificateOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareOriginCaCertificateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareOriginCaCertificateStackOutputs) GetCertificateId() string {
+func (x *CloudflareOriginCaCertificateOutputs) GetCertificateId() string {
 	if x != nil {
 		return x.CertificateId
 	}
 	return ""
 }
 
-func (x *CloudflareOriginCaCertificateStackOutputs) GetCertificate() string {
+func (x *CloudflareOriginCaCertificateOutputs) GetCertificate() string {
 	if x != nil {
 		return x.Certificate
 	}
 	return ""
 }
 
-func (x *CloudflareOriginCaCertificateStackOutputs) GetPrivateKey() string {
+func (x *CloudflareOriginCaCertificateOutputs) GetPrivateKey() string {
 	if x != nil {
 		return x.PrivateKey
 	}
 	return ""
 }
 
-func (x *CloudflareOriginCaCertificateStackOutputs) GetExpiresOn() string {
+func (x *CloudflareOriginCaCertificateOutputs) GetExpiresOn() string {
 	if x != nil {
 		return x.ExpiresOn
 	}
@@ -104,8 +104,8 @@ var File_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_outputs_proto
 
 const file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/cloudflare/cloudflareorigincacertificate/v1alpha1/outputs.proto\x12=dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1\x1a\x1cshared/options/options.proto\"\xba\x01\n" +
-	")CloudflareOriginCaCertificateStackOutputs\x12%\n" +
+	"Gcatalog/cloudflare/cloudflareorigincacertificate/v1alpha1/outputs.proto\x12=dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1\x1a\x1cshared/options/options.proto\"\xb5\x01\n" +
+	"$CloudflareOriginCaCertificateOutputs\x12%\n" +
 	"\x0ecertificate_id\x18\x01 \x01(\tR\rcertificateId\x12 \n" +
 	"\vcertificate\x18\x02 \x01(\tR\vcertificate\x12%\n" +
 	"\vprivate_key\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
@@ -128,7 +128,7 @@ func file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_outputs_prot
 
 var file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareOriginCaCertificateStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateStackOutputs
+	(*CloudflareOriginCaCertificateOutputs)(nil), // 0: dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1.CloudflareOriginCaCertificateOutputs
 }
 var file_catalog_cloudflare_cloudflareorigincacertificate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

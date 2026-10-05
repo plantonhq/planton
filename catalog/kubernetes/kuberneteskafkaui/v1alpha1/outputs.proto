@@ -3,11 +3,11 @@ syntax = "proto3";
 package dev.planton.kubernetes.kuberneteskafkaui.v1alpha1;
 
 /**
- * **KubernetesKafkaUiStackOutputs** — the handles the console exports
+ * **KubernetesKafkaUiOutputs** — the handles the console exports
  * for composition (exposure kinds attach Ingress/Gateway routes to
  * the service).
  */
-message KubernetesKafkaUiStackOutputs {
+message KubernetesKafkaUiOutputs {
   // Namespace the console runs in.
   string namespace = 1;
 

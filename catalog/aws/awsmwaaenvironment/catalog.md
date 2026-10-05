@@ -4,7 +4,7 @@ Deploys a managed Apache Airflow environment on Amazon MWAA with auto-scaling wo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **MWAA Environment** -- a managed Airflow environment running the specified version with configurable environment class, worker auto-scaling, scheduler count, and webserver access mode, placed in two private subnets across different Availability Zones with the referenced security groups attached to its VPC endpoints
 - **CloudWatch Log Groups** -- created automatically by MWAA when logging modules are enabled; one log group per module (DAG processing, scheduler, task, webserver, worker)
@@ -14,14 +14,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An S3 bucket** with versioning enabled containing DAG files, optional plugins.zip, and optional requirements.txt. The execution role must have read access to this bucket. Provide the bucket ARN directly or reference an AwsS3Bucket Cloud Resource via ValueFromRef.
-- **An IAM execution role** with permissions for S3 (DAGs bucket), CloudWatch Logs, SQS (Celery backend), and any AWS services your DAGs interact with. Provide the ARN directly or reference an AwsIamRole Cloud Resource via ValueFromRef.
-- **Exactly two private subnets** in distinct Availability Zones with no direct route to an internet gateway. Provide subnet IDs directly or reference AwsSubnet Cloud Resources via ValueFromRef. Subnets are create-time only -- changing them replaces the environment.
+- **An S3 bucket** with versioning enabled containing DAG files, optional plugins.zip, and optional requirements.txt. The execution role must have read access to this bucket. Provide the bucket ARN directly or reference an AwsS3Bucket Infra Component via ValueFromRef.
+- **An IAM execution role** with permissions for S3 (DAGs bucket), CloudWatch Logs, SQS (Celery backend), and any AWS services your DAGs interact with. Provide the ARN directly or reference an AwsIamRole Infra Component via ValueFromRef.
+- **Exactly two private subnets** in distinct Availability Zones with no direct route to an internet gateway. Provide subnet IDs directly or reference AwsSubnet Infra Components via ValueFromRef. Subnets are create-time only -- changing them replaces the environment.
 - **At least one security group** to attach to the MWAA VPC endpoints. Network ingress is composed, never embedded: the referenced AwsSecurityGroup must carry a self-referencing all-traffic ingress rule (MWAA's components communicate with each other through it), HTTPS (443) ingress from whatever should reach the Airflow UI, and outbound egress. Author those rules on the security group resource, where they stay shareable and auditable. Unlike subnets, the attached groups can be changed in place.
 - **A KMS key** (optional) for encrypting environment data at rest. If omitted, MWAA uses the default `aws/airflow` service key.
 
@@ -61,7 +61,7 @@ spec:
 planton apply -f mwaa-environment.yaml
 ```
 
-This creates a private-access Airflow environment with mw1.small capacity, auto-scaling workers (1-10), and the default AWS-managed encryption key. No CloudWatch logging is enabled. A Stack Job tracks the provisioning and streams progress in real time.
+This creates a private-access Airflow environment with mw1.small capacity, auto-scaling workers (1-10), and the default AWS-managed encryption key. No CloudWatch logging is enabled. An Infra Job tracks the provisioning and streams progress in real time.
 
 ### InfraChart
 
@@ -124,7 +124,7 @@ These are the most important decisions when configuring an MWAA environment. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -134,9 +134,9 @@ These are the most important decisions when configuring an MWAA environment. Exp
 | **AwsSecurityGroup** | `securityGroupIds` | `status.outputs.security_group_id` |
 | **AwsKmsKey** (optional) | `kmsKeyArn` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -163,9 +163,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- provides the source bucket for DAG files, plugins, and requirements
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides the execution role for accessing AWS services from DAGs
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides the two private subnets for MWAA network interfaces
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- carries the self-referencing ingress and HTTPS rules attached to the MWAA VPC endpoints
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for environment data encryption
-- [**AWS VPC Endpoint**](/cloud-catalog/aws-vpc-endpoint) -- consumes the endpoint-service outputs under customer-managed endpoint management
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- provides the source bucket for DAG files, plugins, and requirements
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides the execution role for accessing AWS services from DAGs
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides the two private subnets for MWAA network interfaces
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- carries the self-referencing ingress and HTTPS rules attached to the MWAA VPC endpoints
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for environment data encryption
+- [**AWS VPC Endpoint**](/infra-catalog/aws-vpc-endpoint) -- consumes the endpoint-service outputs under customer-managed endpoint management

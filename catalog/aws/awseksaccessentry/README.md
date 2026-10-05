@@ -59,7 +59,7 @@ so adding, re-scoping, or removing one diffs in place.
   cluster, with what scope.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `access_entry_arn`: the entry's ARN
 - `principal_arn`: the IAM principal granted access, as resolved at

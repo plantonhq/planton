@@ -4,11 +4,11 @@ Provisions an alert policy on DigitalOcean's built-in metrics -- the complete `d
 
 ## Layout
 
-- `main.go` -- entrypoint (`package main`), loads the stack input and calls the module
+- `main.go` -- entrypoint (`package main`), loads the IaC input and calls the module
 - `module/main.go` -- orchestration: locals, provider, resource
 - `module/monitor_alert.go` -- the `MonitorAlert` resource and output exports
 - `module/locals.go` -- target handle (the policy's tags are alert targeting, not resource labels, so no label set applies)
-- `module/outputs.go` -- output key constants (the `DigitalOceanMonitorAlertStackOutputs` contract)
+- `module/outputs.go` -- output key constants (the `DigitalOceanMonitorAlertOutputs` contract)
 
 ## Behavior notes
 

@@ -2,13 +2,13 @@
 
 ## Overview
 
-The `AwsRoute53DnsRecord` component enables declarative management of individual DNS records in AWS Route53 hosted zones. This component is designed for users who need fine-grained control over DNS records, including support for advanced Route53 features like alias records and routing policies.
+The `AwsRoute53DnsRecord` kind enables declarative management of individual DNS records in AWS Route53 hosted zones. This kind is designed for users who need fine-grained control over DNS records, including support for advanced Route53 features like alias records and routing policies.
 
 Route53's alias records are a powerful AWS-specific feature that allows pointing zone apex domains (like `example.com`) directly to AWS resources without the restrictions of CNAME records, and without incurring Route53 query charges for alias queries to AWS resources.
 
 ## Purpose
 
-This component simplifies DNS record management by:
+This kind simplifies DNS record management by:
 
 - **Declarative Record Management**: Define DNS records as code with full validation
 - **Resource References**: Wire records to zones and alias targets using `value_from` references
@@ -134,7 +134,7 @@ planton pulumi up --manifest dns-record.yaml
 4. **Use Health Checks with Failover**: Combine failover routing with health checks for automatic recovery
 5. **Document Records**: Use meaningful resource names that describe the record's purpose
 
-## Related Components
+## Related Kinds
 
 - **AwsRoute53Zone**: Create and manage Route53 hosted zones
 - **AwsAlb**: Application Load Balancers (common alias targets with value_from support)

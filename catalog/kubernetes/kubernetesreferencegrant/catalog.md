@@ -1,10 +1,10 @@
 # Kubernetes ReferenceGrant
 
-Creates a namespaced Kubernetes Gateway API `ReferenceGrant` -- a runtime authorization that permits resources in *other* namespaces to reference specified kinds of resources in *this* grant's namespace. In the Gateway API, every cross-namespace reference (a Gateway's TLS `certificateRefs`, a Route's `backendRefs`, and similar) is denied by default; a ReferenceGrant placed in the *referenced* ("to") namespace is what explicitly authorizes it. This component mirrors the upstream Gateway API v1 `ReferenceGrant` spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
+Creates a namespaced Kubernetes Gateway API `ReferenceGrant` -- a runtime authorization that permits resources in *other* namespaces to reference specified kinds of resources in *this* grant's namespace. In the Gateway API, every cross-namespace reference (a Gateway's TLS `certificateRefs`, a Route's `backendRefs`, and similar) is denied by default; a ReferenceGrant placed in the *referenced* ("to") namespace is what explicitly authorizes it. This kind mirrors the upstream Gateway API v1 `ReferenceGrant` spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A namespaced ReferenceGrant** named after `metadata.name` in `spec.namespace`, declaring the trusted sources (`from`) that may reference the permitted targets (`to`) in that namespace.
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
@@ -15,7 +15,7 @@ ReferenceGrant has no controller-managed status upstream (the Gateway API projec
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -56,7 +56,7 @@ spec:
 planton apply -f reference-grant.yaml
 ```
 
-This creates a ReferenceGrant in `cert-manager` that authorizes Gateways in `istio-ingress` to reference Secrets there. A Stack Job tracks the provisioning in real time.
+This creates a ReferenceGrant in `cert-manager` that authorizes Gateways in `istio-ingress` to reference Secrets there. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,7 +92,7 @@ These are the most important decisions when configuring a ReferenceGrant. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -100,9 +100,9 @@ These are the most important decisions when configuring a ReferenceGrant. Explor
 
 The `from`/`to` entries are kind-level trust assertions (not pointers to specific resource instances), so they create no deploy-ordering dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -119,7 +119,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Gateway API CRDs**](/cloud-catalog/kubernetes-gateway-api-crds) -- installs the Gateway API CRDs (prerequisite, install first).
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the "to" namespace (`spec.namespace`) and the source namespaces named in `from`.
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- a common `from` source when referencing cross-namespace TLS Secrets.
-- [**Kubernetes HTTPRoute**](/cloud-catalog/kubernetes-http-route), [**Kubernetes GRPCRoute**](/cloud-catalog/kubernetes-grpc-route), [**Kubernetes TLSRoute**](/cloud-catalog/kubernetes-tls-route), and [**Kubernetes TCPRoute**](/cloud-catalog/kubernetes-tcp-route) -- common `from` sources when referencing cross-namespace backend Services.
+- [**Kubernetes Gateway API CRDs**](/infra-catalog/kubernetes-gateway-api-crds) -- installs the Gateway API CRDs (prerequisite, install first).
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the "to" namespace (`spec.namespace`) and the source namespaces named in `from`.
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- a common `from` source when referencing cross-namespace TLS Secrets.
+- [**Kubernetes HTTPRoute**](/infra-catalog/kubernetes-http-route), [**Kubernetes GRPCRoute**](/infra-catalog/kubernetes-grpc-route), [**Kubernetes TLSRoute**](/infra-catalog/kubernetes-tls-route), and [**Kubernetes TCPRoute**](/infra-catalog/kubernetes-tcp-route) -- common `from` sources when referencing cross-namespace backend Services.

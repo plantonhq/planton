@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceanvolume.v1alpha1;
 
-// DigitalOceanVolumeStackOutputs captures the resulting volume info after provisioning.
-message DigitalOceanVolumeStackOutputs {
+// DigitalOceanVolumeOutputs captures the resulting volume info after provisioning.
+message DigitalOceanVolumeOutputs {
   // The unique identifier (UUID) of the created DigitalOcean volume. The Droplet kind's
   // volume_ids list consumes this output to attach the volume.
   string volume_id = 1;

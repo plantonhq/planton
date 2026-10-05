@@ -9,10 +9,10 @@ import (
 
 // Resources is the Pulumi program entry point invoked by the Planton CLI.
 // It wires provider credentials, initializes locals, and creates the firewall rule.
-func Resources(ctx *pulumi.Context, stackInput *gcpfirewallrulev1alpha1.GcpFirewallRuleStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcpfirewallrulev1alpha1.GcpFirewallRuleIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

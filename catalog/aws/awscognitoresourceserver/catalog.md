@@ -4,7 +4,7 @@ Deploys a Cognito Resource Server — an OAuth 2.0 scope namespace attached to a
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cognito Resource Server** — registered on the target user pool with a permanent identifier, a display name, and the configured OAuth scopes. Resource servers are not taggable in AWS, so this is the single resource the module manages.
 
@@ -12,11 +12,11 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
-- **A Cognito User Pool** — the directory whose access tokens will carry these scopes. Reference an AwsCognitoUserPool Cloud Resource or provide the pool ID (`{region}_{poolId}`) directly.
+- **A Cognito User Pool** — the directory whose access tokens will carry these scopes. Reference an AwsCognitoUserPool Infra Component or provide the pool ID (`{region}_{poolId}`) directly.
 
 ## Deploy
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f cognito-resource-server.yaml
 ```
 
-This registers a resource server on the referenced pool minting two requestable scopes — `https://api.acme-corp.com/orders.read` and `https://api.acme-corp.com/orders.write`. A Stack Job tracks the provisioning in real time.
+This registers a resource server on the referenced pool minting two requestable scopes — `https://api.acme-corp.com/orders.read` and `https://api.acme-corp.com/orders.write`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,15 +94,15 @@ These are the most important decisions when configuring a resource server. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsCognitoUserPool** | `userPoolId` | `status.outputs.user_pool_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,6 +120,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Cognito User Pool**](/cloud-catalog/aws-cognito-user-pool) — the user directory this resource server attaches to, wired via the `userPoolId` reference
-- [**AWS Cognito User Pool Client**](/cloud-catalog/aws-cognito-user-pool-client) — the app clients that request these scopes in their allowed OAuth scopes
-- [**AWS Cognito Identity Provider**](/cloud-catalog/aws-cognito-identity-provider) — federated sign-in providers on the same pool
+- [**AWS Cognito User Pool**](/infra-catalog/aws-cognito-user-pool) — the user directory this resource server attaches to, wired via the `userPoolId` reference
+- [**AWS Cognito User Pool Client**](/infra-catalog/aws-cognito-user-pool-client) — the app clients that request these scopes in their allowed OAuth scopes
+- [**AWS Cognito Identity Provider**](/infra-catalog/aws-cognito-identity-provider) — federated sign-in providers on the same pool

@@ -1,7 +1,7 @@
 # GcpBigQueryDataset -- Terraform Module
 
 This directory contains the Terraform/OpenTofu implementation for the
-GcpBigQueryDataset component.
+GcpBigQueryDataset kind.
 
 ## Module Structure
 
@@ -10,7 +10,7 @@ provider.tf    -- Google provider on the ~> 8.3 line
 variables.tf   -- Input variables matching GcpBigQueryDatasetSpec
 locals.tf      -- Ambient-project fallback, null-mapping, label merge
 main.tf        -- BigQuery API enablement + google_bigquery_dataset resource
-outputs.tf     -- Outputs matching GcpBigQueryDatasetStackOutputs
+outputs.tf     -- Outputs matching GcpBigQueryDatasetOutputs
 ```
 
 ## What It Creates

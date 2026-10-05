@@ -4,7 +4,7 @@ Creates an Eventarc trigger — the routing rule "when THIS event happens, call 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Eventarc trigger** -- an `eventarc.Trigger` with the configured criteria, destination, identity, and transport
 - **Partner channel** (when `partnerChannel` is set) -- an `eventarc.Channel` the trigger is wired to, with its one-time activation token exported

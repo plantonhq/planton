@@ -45,7 +45,7 @@ The portal's id is user-supplied and IMMUTABLE; hostname and name update in plac
 | `on_behalf` | bool | Cloudflare authenticates upstream for the user (default true). |
 | `updated_prompts` / `updated_tools` | list | Per-portal overrides on top of the server's own. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

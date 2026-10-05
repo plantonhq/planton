@@ -1,4 +1,4 @@
-# AwsLbListener install profile used as a prerequisite by composed components
+# AwsLbListener install profile used as a prerequisite by composed kinds
 # (a listener rule attaches to it by ARN). An HTTP listener with a
 # fixed-response default action: no certificate dependency, and no forward
 # target needed just to give a rule something to attach to. The harness
@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awslblistener
+    e2e-catalog-kind: awslblistener
   annotations:
     planton.dev/e2e: "true"
   tags:

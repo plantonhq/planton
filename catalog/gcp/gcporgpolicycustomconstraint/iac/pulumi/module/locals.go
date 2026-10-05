@@ -25,8 +25,8 @@ type Locals struct {
 	Parent string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcporgpolicycustomconstraintv1alpha1.GcpOrgPolicyCustomConstraintStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcporgpolicycustomconstraintv1alpha1.GcpOrgPolicyCustomConstraintIacInput) *Locals {
+	target := iacInput.Target
 
 	name := target.Spec.ConstraintName
 	if name == "" {

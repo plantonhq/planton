@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpbigtabletable.v1alpha1;
 
 // Outputs produced after provisioning a Cloud Bigtable table.
-message GcpBigtableTableStackOutputs {
+message GcpBigtableTableOutputs {
   // Fully qualified table resource path
   // (projects/{project}/instances/{instance}/tables/{table}).
   // The canonical identifier for Admin API calls and IAM bindings.

@@ -4,7 +4,7 @@ Deploys a Pub/Sub subscription attached to a topic with configurable delivery me
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Pub/Sub API enablement** -- the module enables `pubsub.googleapis.com` in the target project before creating the subscription (never disabled on destroy)
 - **Pub/Sub Subscription** -- a named subscription resource in the specified GCP project, attached to the referenced topic, with the configured delivery method and message handling policies
@@ -19,13 +19,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the subscription will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
-- **An existing Pub/Sub topic** to subscribe to. Provide the fully qualified topic ID or reference a GcpPubSubTopic Cloud Resource via ValueFromRef. The module enables the Pub/Sub API itself — no manual API setup is needed.
+- **A GCP project** where the subscription will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
+- **An existing Pub/Sub topic** to subscribe to. Provide the fully qualified topic ID or reference a GcpPubSubTopic Infra Component via ValueFromRef. The module enables the Pub/Sub API itself — no manual API setup is needed.
 - **BigQuery Data Editor role** on the target table for the writing identity (only for BigQuery delivery) — the Pub/Sub service agent by default, or the `serviceAccountEmail` you set.
 - **Storage Object Creator role** on the target bucket for the writing identity (only for Cloud Storage delivery).
 - **Dead-letter grants** (only for `deadLetterPolicy`) — the Pub/Sub service agent needs Subscriber on this subscription and Publisher on the dead-letter topic.
@@ -59,7 +59,7 @@ spec:
 planton apply -f pubsub-subscription.yaml
 ```
 
-This creates a pull subscription with a 10-second ack deadline, 7-day message retention, no dead-letter handling, and no message ordering. A Stack Job tracks the provisioning in real time.
+This creates a pull subscription with a 10-second ack deadline, 7-day message retention, no dead-letter handling, and no message ordering. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -103,7 +103,7 @@ These are the most important decisions when configuring a Pub/Sub subscription. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -117,9 +117,9 @@ These are the most important decisions when configuring a Pub/Sub subscription. 
 | **GcpGcsBucket** (optional) | `cloudStorageConfig.bucket` | `status.outputs.bucket_id` |
 | **GcpVertexAiEndpoint** (optional, per transform) | `messageTransforms[].aiInference.endpoint` | `status.outputs.endpoint_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -139,10 +139,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the subscription is created
-- [**GCP Pub/Sub Topic**](/cloud-catalog/gcp-pub-sub-topic) -- provides the topic that the subscription receives messages from, and optionally the dead-letter topic
-- [**GCP Cloud Run**](/cloud-catalog/gcp-cloud-run) -- the canonical push target; its `url` output feeds `pushConfig.pushEndpoint`
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the OIDC identity for authenticated push, or the writing identity for BigQuery/Cloud Storage delivery
-- [**GCP BigQuery Table**](/cloud-catalog/gcp-big-query-table) -- the destination table for BigQuery delivery
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- provides the destination bucket for Cloud Storage delivery
-- [**GCP Vertex AI Endpoint**](/cloud-catalog/gcp-vertex-ai-endpoint) -- the model endpoint behind AI-inference message transforms
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the subscription is created
+- [**GCP Pub/Sub Topic**](/infra-catalog/gcp-pub-sub-topic) -- provides the topic that the subscription receives messages from, and optionally the dead-letter topic
+- [**GCP Cloud Run**](/infra-catalog/gcp-cloud-run) -- the canonical push target; its `url` output feeds `pushConfig.pushEndpoint`
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the OIDC identity for authenticated push, or the writing identity for BigQuery/Cloud Storage delivery
+- [**GCP BigQuery Table**](/infra-catalog/gcp-big-query-table) -- the destination table for BigQuery delivery
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- provides the destination bucket for Cloud Storage delivery
+- [**GCP Vertex AI Endpoint**](/infra-catalog/gcp-vertex-ai-endpoint) -- the model endpoint behind AI-inference message transforms

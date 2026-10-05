@@ -173,8 +173,8 @@ message CloudflareWorkerScriptBundleR2Object {
 **Entry Point**: `module/main.go`
 
 ```go
-func Resources(ctx *pulumi.Context, stackInput *cloudflareworkerv1.CloudflareWorkerStackInput) error {
-    // 1. Initialize locals from stack input
+func Resources(ctx *pulumi.Context, iacInput *cloudflareworkerv1.CloudflareWorkerIacInput) error {
+    // 1. Initialize locals from IaC input
     // 2. Create Cloudflare provider from credentials
     // 3. Create AWS provider for R2 access
     // 4. Create WorkersScript with bundle from R2
@@ -315,7 +315,7 @@ cloudfl.WorkersScriptBindingArgs{
 cloudfl.WorkersScriptBindingArgs{
     Name:        pulumi.String("CACHE"),
     Type:        pulumi.String("kv_namespace"),
-    NamespaceId: pulumi.String("namespace-id-from-stack-output"),
+    NamespaceId: pulumi.String("namespace-id-from-output"),
 }
 ```
 
@@ -371,7 +371,7 @@ spec:
 ### Phase 3: Deploy Infrastructure
 
 ```bash
-cd ops/organizations/planton/infra-hub/cloud-resources/app-prod/cloudflare
+cd ops/organizations/planton/infra-hub/infra-components/app-prod/cloudflare
 
 # Export R2 credentials (from rclone config)
 export AWS_ACCESS_KEY_ID=<r2-access-key-id>
@@ -788,7 +788,7 @@ planton/
 │  └─ websocket-relay/
 │     └─ Makefile (make publish)
 │
-└─ ops/organizations/planton/infra-hub/cloud-resources/app-prod/cloudflare/
+└─ ops/organizations/planton/infra-hub/infra-components/app-prod/cloudflare/
    ├─ worker.git-webhooks-receiver.yaml
    ├─ worker.api-gateway.yaml
    └─ worker.websocket-relay.yaml
@@ -1352,7 +1352,7 @@ curl https://git-webhooks.planton.live/health
 ### Pulumi State Verification
 
 ```bash
-# Check stack outputs
+# Check outputs
 planton pulumi stack output --manifest worker.git-webhooks-receiver.yaml
 
 # Expected outputs:

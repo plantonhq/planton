@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareBotManagementStackInput is the input to the IaC module.
+// CloudflareBotManagementIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-type CloudflareBotManagementStackInput struct {
+type CloudflareBotManagementIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// the catalog object to deploy to be deployed
 	Target *CloudflareBotManagement `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Cloudflare authentication
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type CloudflareBotManagementStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareBotManagementStackInput) Reset() {
-	*x = CloudflareBotManagementStackInput{}
+func (x *CloudflareBotManagementIacInput) Reset() {
+	*x = CloudflareBotManagementIacInput{}
 	mi := &file_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareBotManagementStackInput) String() string {
+func (x *CloudflareBotManagementIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareBotManagementStackInput) ProtoMessage() {}
+func (*CloudflareBotManagementIacInput) ProtoMessage() {}
 
-func (x *CloudflareBotManagementStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareBotManagementIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareBotManagementStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareBotManagementStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareBotManagementStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareBotManagementIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareBotManagementIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareBotManagementStackInput) GetTarget() *CloudflareBotManagement {
+func (x *CloudflareBotManagementIacInput) GetTarget() *CloudflareBotManagement {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareBotManagementStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareBotManagementIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_input_proto protore
 
 const file_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/cloudflare/cloudflarebotmanagement/v1alpha1/input.proto\x127dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1\x1a=catalog/cloudflare/cloudflarebotmanagement/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xe8\x01\n" +
-	"!CloudflareBotManagementStackInput\x12h\n" +
+	"?catalog/cloudflare/cloudflarebotmanagement/v1alpha1/input.proto\x127dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1\x1a=catalog/cloudflare/cloudflarebotmanagement/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\xe6\x01\n" +
+	"\x1fCloudflareBotManagementIacInput\x12h\n" +
 	"\x06target\x18\x01 \x01(\v2P.dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xbc\x03\n" +
 	";com.dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_input_proto_rawDes
 
 var file_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareBotManagementStackInput)(nil),   // 0: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementStackInput
+	(*CloudflareBotManagementIacInput)(nil),     // 0: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementIacInput
 	(*CloudflareBotManagement)(nil),             // 1: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagement
 	(*cloudflare.CloudflareProviderConfig)(nil), // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflarebotmanagement_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementStackInput.target:type_name -> dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagement
-	2, // 1: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementIacInput.target:type_name -> dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagement
+	2, // 1: dev.planton.cloudflare.cloudflarebotmanagement.v1alpha1.CloudflareBotManagementIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

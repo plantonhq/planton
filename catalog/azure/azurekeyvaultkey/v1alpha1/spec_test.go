@@ -32,7 +32,7 @@ func key(spec *AzureKeyVaultKeySpec) *AzureKeyVaultKey {
 	return &AzureKeyVaultKey{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureKeyVaultKey",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-key",
 		},
 		Spec: spec,

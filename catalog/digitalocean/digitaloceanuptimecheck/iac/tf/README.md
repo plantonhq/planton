@@ -15,7 +15,7 @@ Generated `variables.tf` mirrors the `DigitalOceanUptimeCheckSpec` proto: `check
 
 ## Outputs
 
-Exactly the `DigitalOceanUptimeCheckStackOutputs` contract: `check_id` and `alert_ids` (each row's UUID keyed by the `for_each` key `<index>-<alert_name>` -- the second half of the row's `{check_id},{alert_id}` import id, so a blind import derives it from state).
+Exactly the `DigitalOceanUptimeCheckOutputs` contract: `check_id` and `alert_ids` (each row's UUID keyed by the `for_each` key `<index>-<alert_name>` -- the second half of the row's `{check_id},{alert_id}` import id, so a blind import derives it from state).
 
 ## Behavior notes
 

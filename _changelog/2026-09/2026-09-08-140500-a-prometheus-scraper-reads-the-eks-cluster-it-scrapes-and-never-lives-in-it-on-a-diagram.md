@@ -3,7 +3,7 @@
 ## What changed
 
 - **The Managed Prometheus scraper's EKS cluster reference is containment-exempt.** `AwsManagedPrometheusScraperEksSource.cluster_arn` names the cluster the scraper reads metrics from. The scraper's collectors run on AWS-managed network interfaces in the subnets the same source block names; they are never workloads inside the cluster. Until now the reference was placement by omission, so a scraper pointed at an EKS cluster would have been drawn inside the cluster it merely reads -- or, because it also names two subnets, inside whichever of the three candidates happened to sort last.
-- The containment-decision registry (`shared/cloudresourcekind/testdata/containment_decisions.txt`) moves exactly that one line from `contained` to `exempt`; nothing else in the registry moved.
+- The containment-decision registry (`shared/catalogkind/testdata/containment_decisions.txt`) moves exactly that one line from `contained` to `exempt`; nothing else in the registry moved.
 
 ## Why
 
@@ -12,6 +12,6 @@
 ## How to check
 
 ```bash
-go test ./shared/cloudresourcekind/... -run TestContainmentDecisions   # green; the golden carries the exempt line
+go test ./shared/catalogkind/... -run TestContainmentDecisions   # green; the golden carries the exempt line
 grep -n containment_exempt catalog/aws/awsmanagedprometheusscraper/v1alpha1/spec.proto
 ```

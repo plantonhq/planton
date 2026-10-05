@@ -4,12 +4,12 @@ package dev.planton.aws.awscognitouserpoolclient.v1alpha1;
 
 import "shared/options/options.proto";
 
-// AwsCognitoUserPoolClientStackOutputs captures observable identifiers from a
+// AwsCognitoUserPoolClientOutputs captures observable identifiers from a
 // provisioned Cognito User Pool app client. Downstream systems reference the
 // client ID: API Gateway JWT authorizers list it as an audience, ALB
 // authenticate-cognito actions take it as their user_pool_client_id, and
 // application configs embed it for SDK sign-in.
-message AwsCognitoUserPoolClientStackOutputs {
+message AwsCognitoUserPoolClientOutputs {
   // The app client ID (e.g. "1a2b3c4d5e6f7g8h9i0j"). The public identifier
   // applications present at sign-in and token endpoints -- and the "aud"
   // claim JWT authorizers validate.

@@ -22,7 +22,7 @@ document on these machines, this often".
 
 The document reference is deliberately a value-or-reference: an
 association binds ANY document — AWS-managed documents are first-class
-— which is why this is its own component rather than a document
+— which is why this is its own kind rather than a document
 satellite.
 
 See [v1alpha1/reference.md](v1alpha1/reference.md) for the full field

@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awseventbridgebus.v1alpha1;
 
-// AwsEventBridgeBusStackOutputs captures observable identifiers from a
+// AwsEventBridgeBusOutputs captures observable identifiers from a
 // provisioned EventBridge custom event bus. These outputs are used by
 // downstream resources — primarily AwsEventBridgeRule — to wire
 // dependencies via StringValueOrRef.
-message AwsEventBridgeBusStackOutputs {
+message AwsEventBridgeBusOutputs {
   // The name of the event bus. This is the primary identifier used in
   // EventBridge API calls and in rule configurations that target this bus.
   string bus_name = 1;

@@ -22,7 +22,7 @@ with no links answers nobody.
 
 ## Inputs
 
-The module receives an `AzurePrivateDnsZoneStackInput` containing:
+The module receives an `AzurePrivateDnsZoneIacInput` containing:
 
 - `target.spec.resource_group` -- the zone's resource group (references resolved to a literal by the platform)
 - `target.spec.name` -- the zone's DNS domain name (privatelink zone name or custom domain)

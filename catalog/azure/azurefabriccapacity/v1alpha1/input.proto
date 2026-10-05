@@ -5,10 +5,10 @@ package dev.planton.azure.azurefabriccapacity.v1alpha1;
 import "catalog/azure/azurefabriccapacity/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureFabricCapacityStackInput is the input to the IaC modules
+// AzureFabricCapacityIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureFabricCapacityStackInput {
+message AzureFabricCapacityIacInput {
   // The Fabric capacity resource to deploy.
   AzureFabricCapacity target = 1;
 

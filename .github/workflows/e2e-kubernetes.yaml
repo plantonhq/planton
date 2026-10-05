@@ -1,9 +1,9 @@
 # =============================================================================
 # Kubernetes E2E Tests
 # =============================================================================
-# Runs E2E tests for all Kubernetes components on kind clusters at zero cloud
+# Runs E2E tests for all Kubernetes kinds on kind clusters at zero cloud
 # cost. Uses the E2E profile framework to dynamically discover testable
-# components and generate a parallel test matrix.
+# kinds and generate a parallel test matrix.
 #
 # Architecture:
 #   1. build-check: compile E2E code + go vet (fast gate, every trigger)

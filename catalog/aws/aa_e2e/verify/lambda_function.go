@@ -11,7 +11,7 @@ import (
 )
 
 // lambdaFunctionVerifier verifies an AwsLambda function via GetFunction,
-// keyed on the function_name output. When the stack outputs report satellite
+// keyed on the function_name output. When the outputs report satellite
 // resources -- a published version, aliases, a function URL -- existence is
 // asserted for each of them from the resource's own state (GetFunction with
 // a qualifier, GetAlias, ListFunctionUrlConfigs): the satellites are where

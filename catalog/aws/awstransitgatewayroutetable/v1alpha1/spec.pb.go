@@ -61,7 +61,7 @@ const (
 // routing domain must be able to include.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsTransitGatewayRouteTableSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the route table will be created. Must match the

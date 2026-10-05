@@ -34,7 +34,7 @@ spec:
 | `comment` | no | Remark describing the segment's purpose |
 | `isDefaultNetwork` | no | Make this the account default (exactly one at a time); defaults to `false` |
 
-## Stack outputs
+## Outputs
 
 | Output | Description |
 |---|---|

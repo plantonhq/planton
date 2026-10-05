@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsNetworkLoadBalancer (R09) as a new deployment component to Planton, providing Layer 4 load balancing with bundled listeners and target groups, static IP support via Elastic IP subnet mappings, TLS termination, and Route53 DNS management. This is the eleventh new AWS resource kind in the cloud provider expansion project.
+Added AwsNetworkLoadBalancer (R09) as a new catalog kind to Planton, providing Layer 4 load balancing with bundled listeners and target groups, static IP support via Elastic IP subnet mappings, TLS termination, and Route53 DNS management. This is the eleventh new AWS resource kind in the cloud provider expansion project.
 
 ## Problem Statement / Motivation
 
@@ -20,16 +20,16 @@ Planton's AWS load balancing coverage was limited to the Application Load Balanc
 
 ### Pain Points
 
-- No Layer 4 load balancer component in Planton
-- Users needing static IPs had no standardized component
+- No Layer 4 load balancer kind in Planton
+- Users needing static IPs had no standardized kind
 - TCP/UDP workloads could not be load balanced through Planton
 - No way to compose NLB with other Planton resources via StringValueOrRef
 
 ## Solution / What's New
 
-### AwsNetworkLoadBalancer Component
+### AwsNetworkLoadBalancer Kind
 
-A complete deployment component at `apis/dev/planton/provider/aws/awsnetworkloadbalancer/v1/` with:
+A complete catalog kind at `apis/dev/planton/provider/aws/awsnetworkloadbalancer/v1/` with:
 
 ```mermaid
 flowchart TB
@@ -105,7 +105,7 @@ flowchart TB
 
 ### Enum Registration
 
-- `AwsNetworkLoadBalancer = 280` in `cloud_resource_kind.proto`
+- `AwsNetworkLoadBalancer = 280` in `catalog_kind.proto`
 - id_prefix: `awsnlb`
 
 ## Benefits
@@ -121,7 +121,7 @@ flowchart TB
 - Adds the 36th AWS resource kind to Planton (26th total, 11th new in the expansion project)
 - Completes Layer 4 load balancing coverage alongside existing ALB (Layer 7)
 - Enables NLB-in-front-of-ALB pattern via `alb` target type
-- Unblocks infra charts requiring static IPs or TCP load balancing
+- Unblocks Infra Charts requiring static IPs or TCP load balancing
 
 ## Related Work
 

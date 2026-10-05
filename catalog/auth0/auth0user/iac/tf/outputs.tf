@@ -1,5 +1,5 @@
 # Auth0User Outputs
-# Maps to the Auth0UserStackOutputs protobuf message
+# Maps to the Auth0UserOutputs protobuf message
 
 output "user_id" {
   description = "The user's full identity-provider subject, connection prefix included (e.g. auth0|66f1c2d3...) -- the sub claim in every token issued for the user"

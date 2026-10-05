@@ -8,11 +8,11 @@ import (
 )
 
 // Resources is the Pulumi entry‑point invoked by the runtime.
-func Resources(ctx *pulumi.Context, stackInput *gcpgkenodepoolv1alpha1.GcpGkeNodePoolStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcpgkenodepoolv1alpha1.GcpGkeNodePoolIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// Set up the Google provider from the supplied GCP credential.
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to configure google provider")
 	}

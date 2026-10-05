@@ -34,7 +34,7 @@ type AzureContainerAppEnvironmentDaprComponent struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureContainerAppEnvironmentDaprComponentSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureContainerAppEnvironmentDaprComponent) GetKind() string {
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentDaprComponent) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureContainerAppEnvironmentDaprComponent) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzureContainerAppEnvironmentDaprComponent) GetStatus() *AzureContainerA
 // AzureContainerAppEnvironmentDaprComponentStatus holds the deployment status and outputs.
 type AzureContainerAppEnvironmentDaprComponentStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureContainerAppEnvironmentDaprComponentStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureContainerAppEnvironmentDaprComponentOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzureContainerAppEnvironmentDaprComponentStatus) Descriptor() ([]byte, []
 	return file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureContainerAppEnvironmentDaprComponentStatus) GetOutputs() *AzureContainerAppEnvironmentDaprComponentStackOutputs {
+func (x *AzureContainerAppEnvironmentDaprComponentStatus) GetOutputs() *AzureContainerAppEnvironmentDaprComponentOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_api_
 	"apiVersion\x12D\n" +
 	"\x04kind\x18\x02 \x01(\tB0\xbaH-r+\n" +
 	")AzureContainerAppEnvironmentDaprComponentR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8f\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x8f\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2s.dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x8d\x01\n" +
-	"\x06status\x18\x05 \x01(\v2u.dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentStatusR\x06status\"\xc9\x01\n" +
-	"/AzureContainerAppEnvironmentDaprComponentStatus\x12\x95\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2{.dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentStackOutputsR\aoutputsB\x9b\x04\n" +
+	"\x06status\x18\x05 \x01(\v2u.dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentStatusR\x06status\"\xc4\x01\n" +
+	"/AzureContainerAppEnvironmentDaprComponentStatus\x12\x90\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2v.dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentOutputsR\aoutputsB\x9b\x04\n" +
 	"Hcom.dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1B\bApiProtoP\x01Z\x8f\x01github.com/plantonhq/planton/catalog/azure/azurecontainerappenvironmentdaprcomponent/v1alpha1;azurecontainerappenvironmentdaprcomponentv1alpha1\xa2\x02\x04DPAA\xaa\x02DDev.Planton.Azure.Azurecontainerappenvironmentdaprcomponent.V1alpha1\xca\x02DDev\\Planton\\Azure\\Azurecontainerappenvironmentdaprcomponent\\V1alpha1\xe2\x02PDev\\Planton\\Azure\\Azurecontainerappenvironmentdaprcomponent\\V1alpha1\\GPBMetadata\xea\x02HDev::Planton::Azure::Azurecontainerappenvironmentdaprcomponent::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_api_p
 
 var file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_api_proto_goTypes = []any{
-	(*AzureContainerAppEnvironmentDaprComponent)(nil),             // 0: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponent
-	(*AzureContainerAppEnvironmentDaprComponentStatus)(nil),       // 1: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentStatus
-	(*shared.CloudResourceMetadata)(nil),                          // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureContainerAppEnvironmentDaprComponentSpec)(nil),         // 3: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentSpec
-	(*AzureContainerAppEnvironmentDaprComponentStackOutputs)(nil), // 4: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentStackOutputs
+	(*AzureContainerAppEnvironmentDaprComponent)(nil),        // 0: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponent
+	(*AzureContainerAppEnvironmentDaprComponentStatus)(nil),  // 1: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentStatus
+	(*shared.CatalogObjectMetadata)(nil),                     // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureContainerAppEnvironmentDaprComponentSpec)(nil),    // 3: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentSpec
+	(*AzureContainerAppEnvironmentDaprComponentOutputs)(nil), // 4: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentOutputs
 }
 var file_catalog_azure_azurecontainerappenvironmentdaprcomponent_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponent.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponent.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponent.spec:type_name -> dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentSpec
 	1, // 2: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponent.status:type_name -> dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentStatus
-	4, // 3: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentStatus.outputs:type_name -> dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentStackOutputs
+	4, // 3: dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentStatus.outputs:type_name -> dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1.AzureContainerAppEnvironmentDaprComponentOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

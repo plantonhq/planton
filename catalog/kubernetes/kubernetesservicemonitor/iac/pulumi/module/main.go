@@ -21,14 +21,14 @@ import (
 // reload, which is not part of applying the object. The E2E verifier asserts
 // the targets are discovered and scraped. Terraform equivalent: kubectl_manifest
 // without a wait.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesservicemonitorv1alpha1.KubernetesServiceMonitorStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetesservicemonitorv1alpha1.KubernetesServiceMonitorIacInput) error {
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
-	obj, err := manifestcr.Apply(ctx, stackInput.Target, pulumi.Provider(kubernetesProvider))
+	obj, err := manifestcr.Apply(ctx, iacInput.Target, pulumi.Provider(kubernetesProvider))
 	if err != nil {
 		return errors.Wrap(err, "failed to create service monitor")
 	}

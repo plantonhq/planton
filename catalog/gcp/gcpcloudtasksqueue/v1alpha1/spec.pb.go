@@ -495,7 +495,7 @@ func (x *GcpCloudTasksQueueAppEngineRoutingOverride) GetInstance() string {
 // (429/503 responses, high error rates, traffic smoothing).
 //
 // Note: max_burst_size is computed by GCP from max_dispatches_per_second
-// and is NOT configurable. It is reported in stack outputs instead.
+// and is NOT configurable. It is reported in outputs instead.
 type GcpCloudTasksQueueRateLimits struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Maximum rate at which tasks are dispatched from this queue (tasks/second).
@@ -705,7 +705,7 @@ func (x *GcpCloudTasksQueueLoggingConfig) GetSamplingRatio() float64 {
 //   - HTTP tasks (modern): Tasks dispatched to any HTTP endpoint. Configure
 //     queue-level authentication and routing via http_target.
 //   - App Engine tasks (legacy): Tasks dispatched to App Engine handlers.
-//     Not supported by this component (use application-level configuration).
+//     Not supported by this kind (use application-level configuration).
 //
 // Important behavioral notes:
 //

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsLbListenerRuleStackOutputs captures the observable outputs of a
+// AwsLbListenerRuleOutputs captures the observable outputs of a
 // provisioned listener rule.
-type AwsLbListenerRuleStackOutputs struct {
+type AwsLbListenerRuleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The ARN of the rule (e.g. "arn:aws:elasticloadbalancing:us-west-2:
 	// 123456789012:listener-rule/app/api/50dc.../f2f7.../9683b2d02a6cabee").
@@ -36,20 +36,20 @@ type AwsLbListenerRuleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsLbListenerRuleStackOutputs) Reset() {
-	*x = AwsLbListenerRuleStackOutputs{}
+func (x *AwsLbListenerRuleOutputs) Reset() {
+	*x = AwsLbListenerRuleOutputs{}
 	mi := &file_catalog_aws_awslblistenerrule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsLbListenerRuleStackOutputs) String() string {
+func (x *AwsLbListenerRuleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsLbListenerRuleStackOutputs) ProtoMessage() {}
+func (*AwsLbListenerRuleOutputs) ProtoMessage() {}
 
-func (x *AwsLbListenerRuleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsLbListenerRuleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awslblistenerrule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AwsLbListenerRuleStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsLbListenerRuleStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsLbListenerRuleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsLbListenerRuleOutputs.ProtoReflect.Descriptor instead.
+func (*AwsLbListenerRuleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awslblistenerrule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsLbListenerRuleStackOutputs) GetRuleArn() string {
+func (x *AwsLbListenerRuleOutputs) GetRuleArn() string {
 	if x != nil {
 		return x.RuleArn
 	}
 	return ""
 }
 
-func (x *AwsLbListenerRuleStackOutputs) GetPriority() string {
+func (x *AwsLbListenerRuleOutputs) GetPriority() string {
 	if x != nil {
 		return x.Priority
 	}
@@ -84,8 +84,8 @@ var File_catalog_aws_awslblistenerrule_v1alpha1_outputs_proto protoreflect.FileD
 
 const file_catalog_aws_awslblistenerrule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awslblistenerrule/v1alpha1/outputs.proto\x12*dev.planton.aws.awslblistenerrule.v1alpha1\"V\n" +
-	"\x1dAwsLbListenerRuleStackOutputs\x12\x19\n" +
+	"4catalog/aws/awslblistenerrule/v1alpha1/outputs.proto\x12*dev.planton.aws.awslblistenerrule.v1alpha1\"Q\n" +
+	"\x18AwsLbListenerRuleOutputs\x12\x19\n" +
 	"\brule_arn\x18\x01 \x01(\tR\aruleArn\x12\x1a\n" +
 	"\bpriority\x18\x02 \x01(\tR\bpriorityB\xea\x02\n" +
 	".com.dev.planton.aws.awslblistenerrule.v1alpha1B\fOutputsProtoP\x01Z]github.com/plantonhq/planton/catalog/aws/awslblistenerrule/v1alpha1;awslblistenerrulev1alpha1\xa2\x02\x04DPAA\xaa\x02*Dev.Planton.Aws.Awslblistenerrule.V1alpha1\xca\x02*Dev\\Planton\\Aws\\Awslblistenerrule\\V1alpha1\xe2\x026Dev\\Planton\\Aws\\Awslblistenerrule\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Aws::Awslblistenerrule::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_aws_awslblistenerrule_v1alpha1_outputs_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awslblistenerrule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awslblistenerrule_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsLbListenerRuleStackOutputs)(nil), // 0: dev.planton.aws.awslblistenerrule.v1alpha1.AwsLbListenerRuleStackOutputs
+	(*AwsLbListenerRuleOutputs)(nil), // 0: dev.planton.aws.awslblistenerrule.v1alpha1.AwsLbListenerRuleOutputs
 }
 var file_catalog_aws_awslblistenerrule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -31,7 +31,7 @@ type KubernetesLoki struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesLokiSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *KubernetesLoki) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesLoki) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesLoki) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *KubernetesLoki) GetStatus() *KubernetesLokiStatus {
 // loki-kubernetes status.
 type KubernetesLokiStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesLokiStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesLokiOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*KubernetesLokiStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesloki_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesLokiStatus) GetOutputs() *KubernetesLokiStackOutputs {
+func (x *KubernetesLokiStatus) GetOutputs() *KubernetesLokiOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_kubernetes_kubernetesloki_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12)\n" +
 	"\x04kind\x18\x02 \x01(\tB\x15\xbaH\x12r\x10\n" +
 	"\x0eKubernetesLokiR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12^\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12^\n" +
 	"\x04spec\x18\x04 \x01(\v2B.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\\\n" +
-	"\x06status\x18\x05 \x01(\v2D.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStatusR\x06status\"|\n" +
-	"\x14KubernetesLokiStatus\x12d\n" +
-	"\aoutputs\x18\x01 \x01(\v2J.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStackOutputsR\aoutputsB\xfb\x02\n" +
+	"\x06status\x18\x05 \x01(\v2D.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStatusR\x06status\"w\n" +
+	"\x14KubernetesLokiStatus\x12_\n" +
+	"\aoutputs\x18\x01 \x01(\v2E.dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiOutputsR\aoutputsB\xfb\x02\n" +
 	"2com.dev.planton.kubernetes.kubernetesloki.v1alpha1B\bApiProtoP\x01Z^github.com/plantonhq/planton/catalog/kubernetes/kubernetesloki/v1alpha1;kuberneteslokiv1alpha1\xa2\x02\x04DPKK\xaa\x02.Dev.Planton.Kubernetes.Kubernetesloki.V1alpha1\xca\x02.Dev\\Planton\\Kubernetes\\Kubernetesloki\\V1alpha1\xe2\x02:Dev\\Planton\\Kubernetes\\Kubernetesloki\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Kubernetes::Kubernetesloki::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_kubernetes_kubernetesloki_v1alpha1_api_proto_msgTypes = make([]
 var file_catalog_kubernetes_kubernetesloki_v1alpha1_api_proto_goTypes = []any{
 	(*KubernetesLoki)(nil),               // 0: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLoki
 	(*KubernetesLokiStatus)(nil),         // 1: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*KubernetesLokiSpec)(nil),           // 3: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec
-	(*KubernetesLokiStackOutputs)(nil),   // 4: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStackOutputs
+	(*KubernetesLokiOutputs)(nil),        // 4: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiOutputs
 }
 var file_catalog_kubernetes_kubernetesloki_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLoki.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLoki.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLoki.spec:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiSpec
 	1, // 2: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLoki.status:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStatus
-	4, // 3: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesloki.v1alpha1.KubernetesLokiOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -6,7 +6,7 @@
 
 **apiVersion**: `cloudflare.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 CloudflareZeroTrustAccessIdentityProviderSpec defines how users sign in to
 Access-protected applications: the connection between Cloudflare Zero Trust
@@ -362,7 +362,7 @@ Required when config.enable_encryption is true.
 SCIM provisioning: let the identity provider push user create/update/
 deprovision events to Cloudflare so Zero Trust identities stay in sync
 without waiting for re-authentication. Not available for onetimepin.
-Enabling SCIM mints a bearer secret exposed once in the scim_secret stack
+Enabling SCIM mints a bearer secret exposed once in the scim_secret
 output.
 
 - rule: seat_deprovision requires user_deprovision
@@ -372,7 +372,7 @@ output.
 `bool`
 
 Turn SCIM on. Enabling it for the first time mints the SCIM bearer secret
-(exposed once in the scim_secret stack output; refresh it later via the
+(exposed once in the scim_secret output; refresh it later via the
 Access API's refresh_scim_secret endpoint if lost).
 
 ### spec.scimConfig.identityUpdateBehavior

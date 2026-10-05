@@ -11,18 +11,18 @@ the tunnel).
 
 ```
 iac/pulumi/
-├── main.go            # entrypoint (loads stack-input, calls module.Resources)
+├── main.go            # entrypoint (loads iac-input, calls module.Resources)
 ├── Pulumi.yaml
 └── module/
     ├── main.go            # Resources(): provider setup + tunnel()
-    ├── locals.go          # stack-input references
+    ├── locals.go          # iac-input references
     ├── tunnel.go          # the tunnel + conditional config + mappers
     └── outputs.go         # output constant names
 ```
 
 ## Inputs
 
-A `CloudflareZeroTrustTunnelStackInput` (target + provider config). Required:
+A `CloudflareZeroTrustTunnelIacInput` (target + provider config). Required:
 `account_id` and `name`. `config_src` selects remote (`cloudflare`, the
 default) vs `local` management; ingress and origin-request settings apply only
 to a remotely-managed tunnel.

@@ -4,9 +4,9 @@ The concrete command moves for catalog research. Every recipe runs from
 `<pack-root>` (see `references/pack-layout.md`). They work because the pack
 renders a fixed heading vocabulary on every page -- documented in
 `reference-commons.md` and pinned by the catalog's own contract tests, so
-these patterns hold across every component.
+these patterns hold across every kind.
 
-## Find components by name or capability
+## Find kinds by name or capability
 
 ```
 rg -il "kafka" -g 'reference*.md' -g 'GUIDE.md' -g '_patterns/*.md' .
@@ -15,19 +15,19 @@ rg -il "kafka" -g 'reference*.md' -g 'GUIDE.md' -g '_patterns/*.md' .
 The `-g` globs scope the search to pack files -- in a repo checkout the same
 directories also hold protos, generated code, and IaC modules, and an
 unscoped search drowns the answer in those (inside a skill mount's
-`components/` the globs cost nothing and keep the recipe portable). Then
+`kinds/` the globs cost nothing and keep the recipe portable). Then
 shortlist through the provider's `reference-index.md` -- each row is
 `[Kind](path) | purpose | example? | guide?`. Full-text search matters more
 than it looks: compatible alternatives document the well-known names they
 substitute for in their own pages, so searching the name the user said finds
-the alternative even when no component carries that name. When that happens,
+the alternative even when no kind carries that name. When that happens,
 follow the substitution workflow in `_docs/GUIDE.md` beside the root index --
 propose openly, never silently.
 
-## One component's required fields
+## One kind's required fields
 
 Read `## Example` first -- it is a validated manifest, the fastest picture
-of the component's real shape. Then the spec table:
+of the kind's real shape. Then the spec table:
 
 ```
 rg "^## Spec Fields" -A 40 <page>
@@ -64,7 +64,7 @@ why the FIELD decides whether a secret stays secret. When a row carries
 neither mark, read the field's detail before putting a secret there, and
 say what you found.
 
-## What a component exports
+## What a kind exports
 
 ```
 rg "^## Outputs" -A 20 <page>
@@ -73,7 +73,7 @@ rg "^## Outputs" -A 20 <page>
 Output paths are spelled snake_case (`status.outputs.vpc_id`) -- that is the
 canonical `fieldPath` spelling, while spec YAML keys are camelCase; the
 asymmetry is explained once in `reference-commons.md`. An output row marked
-`(sensitive)` is a secret the component generates (a client secret, an
+`(sensitive)` is a secret the kind generates (a client secret, an
 access key): on Planton the output holds a `$secret/` reference, so a
 `valueFrom` of it belongs only in a `(sensitive)` field of the reader.
 
@@ -89,9 +89,9 @@ rg 'to: "KubernetesValkey"' _docs/reference-graph.yaml      # every field that c
 rg -A 3 'from: "AwsEcsService"' _docs/reference-graph.yaml  # everything it can reference
 ```
 
-## What a component costs, enforces, and needs (the fact-sheets)
+## What a kind costs, enforces, and needs (the fact-sheets)
 
-Covered components carry three sidecars plus a generated estimate document;
+Covered kinds carry three sidecars plus a generated estimate document;
 all are small YAML files meant to be read whole:
 
 ```
@@ -113,12 +113,12 @@ cat aws/awsalb/iac/permissions.yaml         # least-privilege runner manifest
   (names + statements); framework questions read
   `_compliance/frameworks/<framework>.yaml` on top -- check the crosswalk's
   `spec.providers` first, and never apply a provider-scoped framework to
-  another provider's component. Posture is never "compliant" -- see the
+  another provider's kind. Posture is never "compliant" -- see the
   honesty grammar in SKILL.md.
 - Which kinds are covered at a glance:
 
 ```
-rg -l 'kind: ComponentCostProfile' -g 'cost.yaml' .
+rg -l 'kind: CatalogKindCostProfile' -g 'cost.yaml' .
 ```
 
 ## "Can I back this up, and get it back?" (stateful kinds)
@@ -237,7 +237,7 @@ rg -l '^\*\*Guide\*\*:' kubernetes/            # every guided kind in a provider
 ```
 
 The per-provider index carries the same signal as its Guide column, and
-`_patterns/` (its `README.md` is the list) holds the multi-component recipes
+`_patterns/` (its `README.md` is the list) holds the multi-kind recipes
 -- each pattern declares the kinds it composes and embeds validated
 manifests.
 

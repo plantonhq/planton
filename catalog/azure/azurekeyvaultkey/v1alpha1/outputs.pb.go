@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureKeyVaultKeyStackOutputs** captures the outputs of provisioning a
+// **AzureKeyVaultKeyOutputs** captures the outputs of provisioning a
 // Key Vault key -- the identifiers downstream resources reference to encrypt
 // with it.
-type AzureKeyVaultKeyStackOutputs struct {
+type AzureKeyVaultKeyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The key's versioned data-plane ID:
 	// https://{vault}.vault.azure.net/keys/{name}/{version}. Pins consumers
@@ -56,20 +56,20 @@ type AzureKeyVaultKeyStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AzureKeyVaultKeyStackOutputs) Reset() {
-	*x = AzureKeyVaultKeyStackOutputs{}
+func (x *AzureKeyVaultKeyOutputs) Reset() {
+	*x = AzureKeyVaultKeyOutputs{}
 	mi := &file_catalog_azure_azurekeyvaultkey_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureKeyVaultKeyStackOutputs) String() string {
+func (x *AzureKeyVaultKeyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureKeyVaultKeyStackOutputs) ProtoMessage() {}
+func (*AzureKeyVaultKeyOutputs) ProtoMessage() {}
 
-func (x *AzureKeyVaultKeyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureKeyVaultKeyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurekeyvaultkey_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -81,61 +81,61 @@ func (x *AzureKeyVaultKeyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureKeyVaultKeyStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureKeyVaultKeyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureKeyVaultKeyOutputs.ProtoReflect.Descriptor instead.
+func (*AzureKeyVaultKeyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurekeyvaultkey_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureKeyVaultKeyStackOutputs) GetKeyId() string {
+func (x *AzureKeyVaultKeyOutputs) GetKeyId() string {
 	if x != nil {
 		return x.KeyId
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultKeyStackOutputs) GetVersionlessId() string {
+func (x *AzureKeyVaultKeyOutputs) GetVersionlessId() string {
 	if x != nil {
 		return x.VersionlessId
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultKeyStackOutputs) GetKeyName() string {
+func (x *AzureKeyVaultKeyOutputs) GetKeyName() string {
 	if x != nil {
 		return x.KeyName
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultKeyStackOutputs) GetVersion() string {
+func (x *AzureKeyVaultKeyOutputs) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultKeyStackOutputs) GetResourceId() string {
+func (x *AzureKeyVaultKeyOutputs) GetResourceId() string {
 	if x != nil {
 		return x.ResourceId
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultKeyStackOutputs) GetResourceVersionlessId() string {
+func (x *AzureKeyVaultKeyOutputs) GetResourceVersionlessId() string {
 	if x != nil {
 		return x.ResourceVersionlessId
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultKeyStackOutputs) GetPublicKeyPem() string {
+func (x *AzureKeyVaultKeyOutputs) GetPublicKeyPem() string {
 	if x != nil {
 		return x.PublicKeyPem
 	}
 	return ""
 }
 
-func (x *AzureKeyVaultKeyStackOutputs) GetPublicKeyOpenssh() string {
+func (x *AzureKeyVaultKeyOutputs) GetPublicKeyOpenssh() string {
 	if x != nil {
 		return x.PublicKeyOpenssh
 	}
@@ -146,8 +146,8 @@ var File_catalog_azure_azurekeyvaultkey_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_azure_azurekeyvaultkey_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/azure/azurekeyvaultkey/v1alpha1/outputs.proto\x12+dev.planton.azure.azurekeyvaultkey.v1alpha1\"\xbe\x02\n" +
-	"\x1cAzureKeyVaultKeyStackOutputs\x12\x15\n" +
+	"5catalog/azure/azurekeyvaultkey/v1alpha1/outputs.proto\x12+dev.planton.azure.azurekeyvaultkey.v1alpha1\"\xb9\x02\n" +
+	"\x17AzureKeyVaultKeyOutputs\x12\x15\n" +
 	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x12%\n" +
 	"\x0eversionless_id\x18\x02 \x01(\tR\rversionlessId\x12\x19\n" +
 	"\bkey_name\x18\x03 \x01(\tR\akeyName\x12\x18\n" +
@@ -173,7 +173,7 @@ func file_catalog_azure_azurekeyvaultkey_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_azure_azurekeyvaultkey_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurekeyvaultkey_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureKeyVaultKeyStackOutputs)(nil), // 0: dev.planton.azure.azurekeyvaultkey.v1alpha1.AzureKeyVaultKeyStackOutputs
+	(*AzureKeyVaultKeyOutputs)(nil), // 0: dev.planton.azure.azurekeyvaultkey.v1alpha1.AzureKeyVaultKeyOutputs
 }
 var file_catalog_azure_azurekeyvaultkey_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-fsx-openzfs-file-system stack-input
-type AwsFsxOpenzfsFileSystemStackInput struct {
+// aws-fsx-openzfs-file-system iac-input
+type AwsFsxOpenzfsFileSystemIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsFsxOpenzfsFileSystem `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-credential
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsFsxOpenzfsFileSystemStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsFsxOpenzfsFileSystemStackInput) Reset() {
-	*x = AwsFsxOpenzfsFileSystemStackInput{}
+func (x *AwsFsxOpenzfsFileSystemIacInput) Reset() {
+	*x = AwsFsxOpenzfsFileSystemIacInput{}
 	mi := &file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsFsxOpenzfsFileSystemStackInput) String() string {
+func (x *AwsFsxOpenzfsFileSystemIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsFsxOpenzfsFileSystemStackInput) ProtoMessage() {}
+func (*AwsFsxOpenzfsFileSystemIacInput) ProtoMessage() {}
 
-func (x *AwsFsxOpenzfsFileSystemStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsFsxOpenzfsFileSystemIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsFsxOpenzfsFileSystemStackInput) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsFsxOpenzfsFileSystemStackInput.ProtoReflect.Descriptor instead.
-func (*AwsFsxOpenzfsFileSystemStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsFsxOpenzfsFileSystemIacInput.ProtoReflect.Descriptor instead.
+func (*AwsFsxOpenzfsFileSystemIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsFsxOpenzfsFileSystemStackInput) GetTarget() *AwsFsxOpenzfsFileSystem {
+func (x *AwsFsxOpenzfsFileSystemIacInput) GetTarget() *AwsFsxOpenzfsFileSystem {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsFsxOpenzfsFileSystemStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsFsxOpenzfsFileSystemIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_input_proto protoreflect.F
 
 const file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/aws/awsfsxopenzfsfilesystem/v1alpha1/input.proto\x120dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1\x1a6catalog/aws/awsfsxopenzfsfilesystem/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd3\x01\n" +
-	"!AwsFsxOpenzfsFileSystemStackInput\x12a\n" +
+	"8catalog/aws/awsfsxopenzfsfilesystem/v1alpha1/input.proto\x120dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1\x1a6catalog/aws/awsfsxopenzfsfilesystem/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xd1\x01\n" +
+	"\x1fAwsFsxOpenzfsFileSystemIacInput\x12a\n" +
 	"\x06target\x18\x01 \x01(\v2I.dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1.AwsFsxOpenzfsFileSystemR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\x92\x03\n" +
 	"4com.dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_input_proto_rawDescGZIP()
 
 var file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_input_proto_goTypes = []any{
-	(*AwsFsxOpenzfsFileSystemStackInput)(nil), // 0: dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1.AwsFsxOpenzfsFileSystemStackInput
-	(*AwsFsxOpenzfsFileSystem)(nil),           // 1: dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1.AwsFsxOpenzfsFileSystem
-	(*aws.AwsProviderConfig)(nil),             // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsFsxOpenzfsFileSystemIacInput)(nil), // 0: dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1.AwsFsxOpenzfsFileSystemIacInput
+	(*AwsFsxOpenzfsFileSystem)(nil),         // 1: dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1.AwsFsxOpenzfsFileSystem
+	(*aws.AwsProviderConfig)(nil),           // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awsfsxopenzfsfilesystem_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1.AwsFsxOpenzfsFileSystemStackInput.target:type_name -> dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1.AwsFsxOpenzfsFileSystem
-	2, // 1: dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1.AwsFsxOpenzfsFileSystemStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1.AwsFsxOpenzfsFileSystemIacInput.target:type_name -> dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1.AwsFsxOpenzfsFileSystem
+	2, // 1: dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1.AwsFsxOpenzfsFileSystemIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

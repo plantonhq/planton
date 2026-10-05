@@ -7,7 +7,7 @@ import "catalog/stripe/stripebillingmeter/v1alpha1/outputs.proto";
 import "catalog/stripe/stripebillingmeter/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// StripeBillingMeter is a component that declares a usage meter -- the event the application
+// StripeBillingMeter is a kind that declares a usage meter -- the event the application
 // sends for each unit of use and how those events add up -- with alerts on usage thresholds.
 //
 // Only the display name changes in place; anything else replaces the meter, and every metered
@@ -41,12 +41,12 @@ message StripeBillingMeter {
   // Must be "StripeBillingMeter" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'StripeBillingMeter'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the resource within Planton
   // - org: Organization that owns it
   // - env: Environment it is deployed from
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the event name, how events add up, and the alerts.
   StripeBillingMeterSpec spec = 4 [(buf.validate.field).required = true];
@@ -58,6 +58,6 @@ message StripeBillingMeter {
 // StripeBillingMeterStatus represents the current state of a StripeBillingMeter resource.
 // Populated by the deployment system.
 message StripeBillingMeterStatus {
-  // outputs contains the stack outputs: the meter's id, event name, status and alert ids.
-  StripeBillingMeterStackOutputs outputs = 1;
+  // outputs contains the outputs: the meter's id, event name, status and alert ids.
+  StripeBillingMeterOutputs outputs = 1;
 }

@@ -1,6 +1,6 @@
 # AzureStorageTable - Pulumi Module
 
-Pulumi implementation for the AzureStorageTable component.
+Pulumi implementation for the AzureStorageTable kind.
 
 ## Architecture
 
@@ -15,7 +15,7 @@ storage.Table (single resource)
   pulumi-azure v6 (verified at v6.38, the latest) has not bridged the
   table's `storageAccountId` input, so this module parses the account
   NAME from the resolved ARM id and passes `storageAccountName`. The
-  created table is identical and all stack outputs match the Terraform
+  created table is identical and all outputs match the Terraform
   module byte-for-byte (`table_id` carries `resource_manager_id` on
   both engines). Re-align to `StorageAccountId` when a bridge release
   carries it.
@@ -37,6 +37,6 @@ PLANE with shared-key authorization -- the parent account must keep
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless web-identity (OIDC), and
 ambient credential chains. Never construct a provider inline.

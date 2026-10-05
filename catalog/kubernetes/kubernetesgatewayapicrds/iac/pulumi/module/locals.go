@@ -26,10 +26,10 @@ type Locals struct {
 	Labels map[string]string
 }
 
-// initializeLocals computes values from the stack input
-func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesgatewayapicrdsv1alpha1.KubernetesGatewayApiCrdsStackInput) *Locals {
-	spec := stackInput.Target.Spec
-	metadata := stackInput.Target.Metadata
+// initializeLocals computes values from the IaC input
+func initializeLocals(ctx *pulumi.Context, iacInput *kubernetesgatewayapicrdsv1alpha1.KubernetesGatewayApiCrdsIacInput) *Locals {
+	spec := iacInput.Target.Spec
+	metadata := iacInput.Target.Metadata
 
 	// Determine version
 	version := DefaultVersion

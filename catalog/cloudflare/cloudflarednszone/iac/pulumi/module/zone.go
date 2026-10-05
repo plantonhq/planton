@@ -69,7 +69,7 @@ func zone(
 	}
 
 	// Inline DNS records. The keyed id map is always exported (empty when the
-	// spec declares no records) so the stack output contract matches tofu.
+	// spec declares no records) so the output contract matches tofu.
 	recordIds := pulumi.StringMap{}
 	if len(spec.Records) > 0 {
 		recordIds, err = records(ctx, createdZone, spec.Records, cloudflareProvider)
@@ -103,7 +103,7 @@ func zone(
 }
 
 // exportDnssecOutputs publishes the DS material when DNSSEC is enabled, or empty
-// strings otherwise, so the stack output contract is always satisfied.
+// strings otherwise, so the output contract is always satisfied.
 func exportDnssecOutputs(ctx *pulumi.Context, d *cloudflare.ZoneDnssec) {
 	if d == nil {
 		empty := pulumi.String("")

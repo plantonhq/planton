@@ -27,7 +27,7 @@ type AwsRoute53ResolverEndpoint struct {
 	state         protoimpl.MessageState            `protogen:"open.v1"`
 	ApiVersion    string                            `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                            `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata     `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata     `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsRoute53ResolverEndpointSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsRoute53ResolverEndpointStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsRoute53ResolverEndpoint) GetKind() string {
 	return ""
 }
 
-func (x *AwsRoute53ResolverEndpoint) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsRoute53ResolverEndpoint) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsRoute53ResolverEndpoint) GetStatus() *AwsRoute53ResolverEndpointStat
 }
 
 type AwsRoute53ResolverEndpointStatus struct {
-	state         protoimpl.MessageState                  `protogen:"open.v1"`
-	Outputs       *AwsRoute53ResolverEndpointStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState             `protogen:"open.v1"`
+	Outputs       *AwsRoute53ResolverEndpointOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsRoute53ResolverEndpointStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsroute53resolverendpoint_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsRoute53ResolverEndpointStatus) GetOutputs() *AwsRoute53ResolverEndpointStackOutputs {
+func (x *AwsRoute53ResolverEndpointStatus) GetOutputs() *AwsRoute53ResolverEndpointOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsroute53resolverendpoint_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x125\n" +
 	"\x04kind\x18\x02 \x01(\tB!\xbaH\x1er\x1c\n" +
 	"\x1aAwsRoute53ResolverEndpointR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
 	"\x04spec\x18\x04 \x01(\v2S.dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12m\n" +
-	"\x06status\x18\x05 \x01(\v2U.dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStatusR\x06status\"\x99\x01\n" +
-	" AwsRoute53ResolverEndpointStatus\x12u\n" +
-	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2U.dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStatusR\x06status\"\x94\x01\n" +
+	" AwsRoute53ResolverEndpointStatus\x12p\n" +
+	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointOutputsR\aoutputsB\xa5\x03\n" +
 	"7com.dev.planton.aws.awsroute53resolverendpoint.v1alpha1B\bApiProtoP\x01Zogithub.com/plantonhq/planton/catalog/aws/awsroute53resolverendpoint/v1alpha1;awsroute53resolverendpointv1alpha1\xa2\x02\x04DPAA\xaa\x023Dev.Planton.Aws.Awsroute53resolverendpoint.V1alpha1\xca\x023Dev\\Planton\\Aws\\Awsroute53resolverendpoint\\V1alpha1\xe2\x02?Dev\\Planton\\Aws\\Awsroute53resolverendpoint\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Aws::Awsroute53resolverendpoint::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awsroute53resolverendpoint_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_aws_awsroute53resolverendpoint_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsroute53resolverendpoint_v1alpha1_api_proto_goTypes = []any{
-	(*AwsRoute53ResolverEndpoint)(nil),             // 0: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpoint
-	(*AwsRoute53ResolverEndpointStatus)(nil),       // 1: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStatus
-	(*shared.CloudResourceMetadata)(nil),           // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsRoute53ResolverEndpointSpec)(nil),         // 3: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointSpec
-	(*AwsRoute53ResolverEndpointStackOutputs)(nil), // 4: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackOutputs
+	(*AwsRoute53ResolverEndpoint)(nil),        // 0: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpoint
+	(*AwsRoute53ResolverEndpointStatus)(nil),  // 1: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStatus
+	(*shared.CatalogObjectMetadata)(nil),      // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsRoute53ResolverEndpointSpec)(nil),    // 3: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointSpec
+	(*AwsRoute53ResolverEndpointOutputs)(nil), // 4: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointOutputs
 }
 var file_catalog_aws_awsroute53resolverendpoint_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpoint.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpoint.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpoint.spec:type_name -> dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointSpec
 	1, // 2: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpoint.status:type_name -> dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStatus
-	4, // 3: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStatus.outputs:type_name -> dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStackOutputs
+	4, // 3: dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointStatus.outputs:type_name -> dev.planton.aws.awsroute53resolverendpoint.v1alpha1.AwsRoute53ResolverEndpointOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

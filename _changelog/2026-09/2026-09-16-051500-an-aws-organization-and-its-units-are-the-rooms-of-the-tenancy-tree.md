@@ -13,6 +13,6 @@ The doctrine on `container_kind` asks two questions: is the kind a place or scop
 ## How to check
 
 ```bash
-go test ./shared/cloudresourcekind/ -run TestContainmentDecisions   # green; the golden carries the two contained lines and the exempt attachment
-grep -n -B1 'container_kind: true' shared/cloudresourcekind/cloud_resource_kind.proto | grep -A1 'awsorg\|awsou'
+go test ./shared/catalogkind/ -run TestContainmentDecisions   # green; the golden carries the two contained lines and the exempt attachment
+grep -n -B1 'container_kind: true' shared/catalogkind/catalog_kind.proto | grep -A1 'awsorg\|awsou'
 ```

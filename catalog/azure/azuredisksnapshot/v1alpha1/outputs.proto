@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuredisksnapshot.v1alpha1;
 
-// **AzureDiskSnapshotStackOutputs** captures the outputs from
+// **AzureDiskSnapshotOutputs** captures the outputs from
 // provisioning a managed disk snapshot.
-message AzureDiskSnapshotStackOutputs {
+message AzureDiskSnapshotOutputs {
   // The snapshot's Azure Resource Manager ID -- what disks restore
   // from and gallery image versions build from.
   string snapshot_id = 1;

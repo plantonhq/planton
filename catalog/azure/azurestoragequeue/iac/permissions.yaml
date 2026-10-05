@@ -2,9 +2,9 @@
 # provision, update, and destroy this component with the official modules.
 # Every entry is `derived` (static analysis of the module sources, cited in
 # notes) until the live capture lane upgrades it to `proven`. Schema:
-# iac/componentpermissions/v1.
+# iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: azurestoragequeue
 spec:
@@ -16,4 +16,4 @@ spec:
           - Microsoft.Storage/storageAccounts/queueServices/queues/write
           - Microsoft.Storage/storageAccounts/queueServices/queues/delete
         provenance: derived
-        notes: "Covers azurerm_storage_queue / storage.NewQueue -- both modules address the queue by the parent account's ARM ID (the control-plane path; the account-name form is the provider's legacy data-plane path, removed in azurerm v5), so create, refresh, in-place metadata updates, and destroy all ride the account's queueServices/queues child endpoint. The account name in the stack outputs is parsed client-side from the resolved ARM ID -- neither module reads the account, and no data-plane call (and therefore no listkeys grant) is involved."
+        notes: "Covers azurerm_storage_queue / storage.NewQueue -- both modules address the queue by the parent account's ARM ID (the control-plane path; the account-name form is the provider's legacy data-plane path, removed in azurerm v5), so create, refresh, in-place metadata updates, and destroy all ride the account's queueServices/queues child endpoint. The account name in the outputs is parsed client-side from the resolved ARM ID -- neither module reads the account, and no data-plane call (and therefore no listkeys grant) is involved."

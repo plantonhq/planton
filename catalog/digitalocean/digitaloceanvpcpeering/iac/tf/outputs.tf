@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanVpcPeeringStackOutputs contract,
+# Outputs — exactly the DigitalOceanVpcPeeringOutputs contract,
 # identical across both provisioners.
 #
 # The lifecycle status is deliberately not exported: the provider waits for

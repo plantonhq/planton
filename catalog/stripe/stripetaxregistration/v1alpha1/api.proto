@@ -7,7 +7,7 @@ import "catalog/stripe/stripetaxregistration/v1alpha1/outputs.proto";
 import "catalog/stripe/stripetaxregistration/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// StripeTaxRegistration is a component that declares one place the account is registered to
+// StripeTaxRegistration is a kind that declares one place the account is registered to
 // collect tax with Stripe Tax.
 //
 // From its start date, Stripe Tax collects tax there on every payment that uses automatic tax.
@@ -40,12 +40,12 @@ message StripeTaxRegistration {
   // Must be "StripeTaxRegistration" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'StripeTaxRegistration'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the resource within Planton
   // - org: Organization that owns it
   // - env: Environment it is deployed from
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains where the account is registered, the kind of registration, and its dates.
   StripeTaxRegistrationSpec spec = 4 [(buf.validate.field).required = true];
@@ -57,6 +57,6 @@ message StripeTaxRegistration {
 // StripeTaxRegistrationStatus represents the current state of a StripeTaxRegistration resource.
 // Populated by the deployment system.
 message StripeTaxRegistrationStatus {
-  // outputs contains the stack outputs: the registration's id and its status.
-  StripeTaxRegistrationStackOutputs outputs = 1;
+  // outputs contains the outputs: the registration's id and its status.
+  StripeTaxRegistrationOutputs outputs = 1;
 }

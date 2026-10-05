@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpProjectSpec creates one Google Cloud project — the Layer-0 container
 every other GCP resource lives in. It attaches the project to the
@@ -142,7 +142,7 @@ quota available even when false (the network exists momentarily).
 `[]string`
 
 List of Cloud APIs to enable at project creation
-(e.g. "compute.googleapis.com"). Individual component kinds also
+(e.g. "compute.googleapis.com"). Individual kinds also
 enable the APIs they need, so this is a convenience for pre-warming a
 known set. Each entry must end with ".googleapis.com".
 

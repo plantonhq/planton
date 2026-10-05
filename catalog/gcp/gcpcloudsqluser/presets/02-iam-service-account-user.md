@@ -29,7 +29,7 @@ This preset creates a passwordless database user for a workload's service accoun
 
 - **01-application-user** — the classic password credential when IAM auth is not available
 
-## Related Components
+## Related Kinds
 
 - [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — the identity this user maps to
 - [GcpCloudSql](/docs/catalog/gcp/gcpcloudsql) — the instance (remember the PostgreSQL IAM flag)

@@ -11,10 +11,10 @@ import (
 	"github.com/plantonhq/planton/internal/cli/staging"
 	"github.com/plantonhq/planton/internal/cli/version"
 	"github.com/plantonhq/planton/internal/cli/workspace"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/fileutil"
 	"github.com/plantonhq/planton/pkg/iac/tofu/tofuzip"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // GetModulePathResult contains the module path and a cleanup function
@@ -254,13 +254,13 @@ func isTerraformModuleDirectory(moduleDir string) (bool, error) {
 }
 
 func getTerraformModulePath(moduleRepoDir, kindName string) (string, error) {
-	kind := crkreflect.KindFromString(kindName)
-	kindProvider := crkreflect.GetProvider(kind)
-	if kindProvider == cloudresourcekind.CloudResourceProvider_cloud_resource_provider_unspecified {
+	kind := catalogkindreflect.KindFromString(kindName)
+	kindProvider := catalogkindreflect.GetProvider(kind)
+	if kindProvider == catalogkind.CatalogProvider_catalog_provider_unspecified {
 		return "", errors.New("failed to get kind provider")
 	}
 
-	// One live module set per component: modules live at the component root
+	// One live module set per kind: modules live at the kind root
 	// (catalog/{provider}/{kind}/iac/tf), fully derivable from the registry.
 	kindDirPath := filepath.Join(
 		moduleRepoDir,

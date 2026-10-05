@@ -32,7 +32,7 @@ func managedCert() *GcpCertManagerCert {
 	return &GcpCertManagerCert{
 		ApiVersion: "gcp.planton.dev/v1alpha1",
 		Kind:       "GcpCertManagerCert",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-certificate",
 		},
 		Spec: &GcpCertManagerCertSpec{
@@ -52,7 +52,7 @@ func selfManagedCert() *GcpCertManagerCert {
 	return &GcpCertManagerCert{
 		ApiVersion: "gcp.planton.dev/v1alpha1",
 		Kind:       "GcpCertManagerCert",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-uploaded-certificate",
 		},
 		Spec: &GcpCertManagerCertSpec{

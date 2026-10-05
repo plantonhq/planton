@@ -1,5 +1,5 @@
 apiVersion: _test.planton.dev/v1alpha2
-kind: TestCloudResourceGeneric
+kind: TestCatalogKindGeneric
 metadata:
   name: consumer
   env: dev
@@ -8,6 +8,6 @@ spec:
     value: literal
   optionalRef:
     valueFrom:
-      kind: TestCloudResourceGeneric
+      kind: TestCatalogKindGeneric
       name: lives-elsewhere
       fieldPath: status.outputs.id

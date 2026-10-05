@@ -23,12 +23,12 @@ const (
 )
 
 // *
-// **KubernetesLocustStackOutputs** — the composition handles a
+// **KubernetesLocustOutputs** — the composition handles a
 // deployed Locust exports. Operators open the web UI through the
 // master endpoint (or the port-forward command); external workers
 // and automation dial the master bind endpoint; the web-UI
 // credential is exported as a Secret handle.
-type KubernetesLocustStackOutputs struct {
+type KubernetesLocustOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace Locust runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -61,20 +61,20 @@ type KubernetesLocustStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesLocustStackOutputs) Reset() {
-	*x = KubernetesLocustStackOutputs{}
+func (x *KubernetesLocustOutputs) Reset() {
+	*x = KubernetesLocustOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteslocust_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesLocustStackOutputs) String() string {
+func (x *KubernetesLocustOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesLocustStackOutputs) ProtoMessage() {}
+func (*KubernetesLocustOutputs) ProtoMessage() {}
 
-func (x *KubernetesLocustStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesLocustOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteslocust_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -86,54 +86,54 @@ func (x *KubernetesLocustStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesLocustStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesLocustStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesLocustOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesLocustOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteslocust_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesLocustStackOutputs) GetNamespace() string {
+func (x *KubernetesLocustOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesLocustStackOutputs) GetMasterService() string {
+func (x *KubernetesLocustOutputs) GetMasterService() string {
 	if x != nil {
 		return x.MasterService
 	}
 	return ""
 }
 
-func (x *KubernetesLocustStackOutputs) GetWebEndpoint() string {
+func (x *KubernetesLocustOutputs) GetWebEndpoint() string {
 	if x != nil {
 		return x.WebEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesLocustStackOutputs) GetMasterBindEndpoint() string {
+func (x *KubernetesLocustOutputs) GetMasterBindEndpoint() string {
 	if x != nil {
 		return x.MasterBindEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesLocustStackOutputs) GetWebUiUsername() string {
+func (x *KubernetesLocustOutputs) GetWebUiUsername() string {
 	if x != nil {
 		return x.WebUiUsername
 	}
 	return ""
 }
 
-func (x *KubernetesLocustStackOutputs) GetWebUiPasswordSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesLocustOutputs) GetWebUiPasswordSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.WebUiPasswordSecret
 	}
 	return nil
 }
 
-func (x *KubernetesLocustStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesLocustOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
@@ -144,8 +144,8 @@ var File_catalog_kubernetes_kuberneteslocust_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_kubernetes_kuberneteslocust_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/kubernetes/kuberneteslocust/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kuberneteslocust.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xf4\x02\n" +
-	"\x1cKubernetesLocustStackOutputs\x12\x1c\n" +
+	":catalog/kubernetes/kuberneteslocust/v1alpha1/outputs.proto\x120dev.planton.kubernetes.kuberneteslocust.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xef\x02\n" +
+	"\x17KubernetesLocustOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12%\n" +
 	"\x0emaster_service\x18\x02 \x01(\tR\rmasterService\x12!\n" +
 	"\fweb_endpoint\x18\x03 \x01(\tR\vwebEndpoint\x120\n" +
@@ -169,11 +169,11 @@ func file_catalog_kubernetes_kuberneteslocust_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_kubernetes_kuberneteslocust_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteslocust_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesLocustStackOutputs)(nil),   // 0: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustStackOutputs
+	(*KubernetesLocustOutputs)(nil),        // 0: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustOutputs
 	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kuberneteslocust_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustStackOutputs.web_ui_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kuberneteslocust.v1alpha1.KubernetesLocustOutputs.web_ui_password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

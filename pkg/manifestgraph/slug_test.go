@@ -72,10 +72,10 @@ func TestIsLawfulSlug(t *testing.T) {
 }
 
 func TestResolveSlug_ExplicitSlugPassesThrough(t *testing.T) {
-	meta := &shared.CloudResourceMetadata{Name: "My Shared Producer", Slug: "authored-slug"}
+	meta := &shared.CatalogObjectMetadata{Name: "My Shared Producer", Slug: "authored-slug"}
 	assert.Equal(t, "authored-slug", ResolveSlug(meta))
 
-	meta = &shared.CloudResourceMetadata{Name: "My Shared Producer"}
+	meta = &shared.CatalogObjectMetadata{Name: "My Shared Producer"}
 	assert.Equal(t, "my-shared-producer", ResolveSlug(meta))
 
 	assert.Equal(t, "", ResolveSlug(nil))

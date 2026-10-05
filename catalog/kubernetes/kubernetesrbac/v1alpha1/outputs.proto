@@ -3,11 +3,11 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesrbac.v1alpha1;
 
 /**
- * **KubernetesRbacStackOutputs** captures observable outputs from a Kubernetes RBAC grant
+ * **KubernetesRbacOutputs** captures observable outputs from a Kubernetes RBAC grant
  * deployment — the names and kinds of the objects actually created, so downstream grants
  * and audits can compose on them without re-deriving naming rules.
  */
-message KubernetesRbacStackOutputs {
+message KubernetesRbacOutputs {
   /**
    * The name of the role in the grant: the created Role/ClusterRole, or the existing role
    * that was bound to.

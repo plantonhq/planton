@@ -12,14 +12,14 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 
 	"github.com/plantonhq/planton/pkg/catalogbundle"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 
 	// This test assembles its descriptor set from the LINKED registry, and
 	// only the served version reaches a binary through the kind registry --
 	// the conversion-source version must be linked explicitly. (The real
 	// bundle is buf-built from the proto tree and carries every version
 	// regardless of linkage.)
-	_ "github.com/plantonhq/planton/catalog/_test/testcloudresourcegeneric/v1alpha1"
+	_ "github.com/plantonhq/planton/catalog/_test/testcatalogkindgeneric/v1alpha1"
 )
 
 // The catalog-as-data certification case: a built bundle must carry BOTH of
@@ -31,13 +31,13 @@ func TestCertify_BundleCarriesBothTortureVersions(t *testing.T) {
 
 	for _, version := range []string{"v1alpha1", "v1alpha2"} {
 		name := protoreflect.FullName(
-			"dev.planton._test.testcloudresourcegeneric." + version + ".TestCloudResourceGeneric")
+			"dev.planton._test.testcatalogkindgeneric." + version + ".TestCatalogKindGeneric")
 		if _, err := bundle.Files.FindDescriptorByName(name); err != nil {
 			t.Errorf("the bundle must carry %s (the %s schema) -- stored documents at that version cannot be served without it", name, version)
 		}
 	}
 
-	if _, ok := bundle.ConversionSpecs()["conversions/_test/testcloudresourcegeneric/v1alpha1_to_v1alpha2.yaml"]; !ok {
+	if _, ok := bundle.ConversionSpecs()["conversions/_test/testcatalogkindgeneric/v1alpha1_to_v1alpha2.yaml"]; !ok {
 		t.Error("the bundle must carry the bridge between the versions it serves")
 	}
 }
@@ -51,7 +51,7 @@ func TestCertify_BundleCarriesBothTortureVersions(t *testing.T) {
 func TestCertify_BundleAnnouncesTortureDeprecation(t *testing.T) {
 	bundle := buildRealBundle(t)
 
-	desc, err := bundle.Files.FindDescriptorByName("dev.planton.shared.cloudresourcekind.CloudResourceKind")
+	desc, err := bundle.Files.FindDescriptorByName("dev.planton.shared.catalogkind.CatalogKind")
 	if err != nil {
 		t.Fatalf("the bundle carries no kind registry enum: %v", err)
 	}
@@ -59,11 +59,11 @@ func TestCertify_BundleAnnouncesTortureDeprecation(t *testing.T) {
 	if !ok {
 		t.Fatal("the bundle's kind registry is not an enum")
 	}
-	value := enum.Values().ByName("TestCloudResourceGeneric")
+	value := enum.Values().ByName("TestCatalogKindGeneric")
 	if value == nil {
 		t.Fatal("the bundle's kind registry does not name the torture kind")
 	}
-	meta, ok := proto.GetExtension(value.Options(), cloudresourcekind.E_KindMeta).(*cloudresourcekind.CloudResourceKindMeta)
+	meta, ok := proto.GetExtension(value.Options(), catalogkind.E_KindMeta).(*catalogkind.CatalogKindMeta)
 	if !ok || meta == nil {
 		t.Fatal("the torture kind's registry entry carries no kind_meta")
 	}

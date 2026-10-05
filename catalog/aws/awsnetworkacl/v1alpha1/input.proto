@@ -5,9 +5,9 @@ package dev.planton.aws.awsnetworkacl.v1alpha1;
 import "catalog/aws/awsnetworkacl/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsNetworkAclStackInput is the input for the IaC modules that manage
+// AwsNetworkAclIacInput is the input for the IaC modules that manage
 // a network ACL.
-message AwsNetworkAclStackInput {
+message AwsNetworkAclIacInput {
   // target is the AwsNetworkAcl resource to deploy.
   AwsNetworkAcl target = 1;
   // provider_config contains the AWS provider credentials and configuration.

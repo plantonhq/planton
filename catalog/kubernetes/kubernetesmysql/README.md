@@ -8,7 +8,7 @@ the ENGINE that reconciles it. The default operator posture watches its
 OWN namespace — install the operator in the database's namespace, or
 widen its watch. Deploy the operator first, databases after.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want the operator itself** — installing and configuring the
   Percona Operator for MySQL is KubernetesPerconaMysqlOperator; this
@@ -21,7 +21,7 @@ Also not the right component when:
   If you want classic async primary/replica with lag-tolerant read
   scaling, this component's replication model is the wrong one.
 - **You want a managed cloud database** — use the host cloud
-  provider's managed-database kinds; this component is for running
+  provider's managed-database kinds; this kind is for running
   MySQL ON the Kubernetes cluster itself.
 - **You want external exposure baked in** — this component never
   creates a LoadBalancer or a route. The cluster is in-cluster
@@ -142,7 +142,7 @@ node, detects failures, and re-routes without client changes.
 - **`spec.log_collector`**: the fluent-bit sidecar shipping mysqld
   logs (default enabled)
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

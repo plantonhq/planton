@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflareemailroutingrule.v1alpha1;
 
-// CloudflareEmailRoutingRuleStackOutputs captures the outputs after creating a
+// CloudflareEmailRoutingRuleOutputs captures the outputs after creating a
 // routing rule.
-message CloudflareEmailRoutingRuleStackOutputs {
+message CloudflareEmailRoutingRuleOutputs {
   // The Cloudflare-assigned identifier of the routing rule.
   string rule_id = 1;
 

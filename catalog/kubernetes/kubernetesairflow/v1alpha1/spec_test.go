@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -63,7 +63,7 @@ var _ = ginkgo.Describe("KubernetesAirflow Validation Tests", func() {
 		input = &KubernetesAirflow{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesAirflow",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "pipelines",
 			},
 			Spec: &KubernetesAirflowSpec{
@@ -81,14 +81,14 @@ var _ = ginkgo.Describe("KubernetesAirflow Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "airflow", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "airflow", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
 		ginkgo.It("postgres host and password composed from a KubernetesPostgres should be valid", func() {
 			pg := testPostgres()
-			pg.Host = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "airflow-pg", "status.outputs.rw_service")
-			pg.PasswordSecret.SecretName = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "airflow-pg", "status.outputs.password_secret.name")
+			pg.Host = valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "airflow-pg", "status.outputs.rw_service")
+			pg.PasswordSecret.SecretName = valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "airflow-pg", "status.outputs.password_secret.name")
 			input.Spec.Database.Backend = &KubernetesAirflowDatabase_Postgres{Postgres: pg}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
@@ -125,10 +125,10 @@ var _ = ginkgo.Describe("KubernetesAirflow Validation Tests", func() {
 			input.Spec.Executor = strPtr("CeleryExecutor")
 			input.Spec.Broker = &KubernetesAirflowBroker{
 				Backend: &KubernetesAirflowBroker_Valkey{Valkey: &KubernetesAirflowValkeyBroker{
-					Host:     valueFrom(cloudresourcekind.CloudResourceKind_KubernetesValkey, "airflow-broker", "status.outputs.service"),
+					Host:     valueFrom(catalogkind.CatalogKind_KubernetesValkey, "airflow-broker", "status.outputs.service"),
 					Username: "airflow",
 					PasswordSecret: &KubernetesAirflowBrokerPasswordSecret{
-						SecretName: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesValkey, "airflow-broker", "status.outputs.password_secret.name"),
+						SecretName: valueFrom(catalogkind.CatalogKind_KubernetesValkey, "airflow-broker", "status.outputs.password_secret.name"),
 						SecretKey:  strPtr("airflow"),
 					},
 				}},
@@ -233,10 +233,10 @@ var _ = ginkgo.Describe("KubernetesAirflow Validation Tests", func() {
 		ginkgo.It("opensearch log read path composed from a KubernetesOpenSearch should be valid", func() {
 			input.Spec.Logging = &KubernetesAirflowLogging{
 				RemoteRead: &KubernetesAirflowLogging_Opensearch{Opensearch: &KubernetesAirflowLogSearchBackend{
-					Host:     valueFrom(cloudresourcekind.CloudResourceKind_KubernetesOpenSearch, "logs", "status.outputs.service_name"),
+					Host:     valueFrom(catalogkind.CatalogKind_KubernetesOpenSearch, "logs", "status.outputs.service_name"),
 					Username: "airflow",
 					PasswordSecret: &KubernetesAirflowLogBackendPasswordSecret{
-						SecretName: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesOpenSearch, "logs", "status.outputs.admin_credentials_secret_name"),
+						SecretName: valueFrom(catalogkind.CatalogKind_KubernetesOpenSearch, "logs", "status.outputs.admin_credentials_secret_name"),
 					},
 				}},
 			}

@@ -36,7 +36,7 @@ func validUser(spec *Auth0UserSpec) *Auth0User {
 	return &Auth0User{
 		ApiVersion: "auth0.planton.dev/v1alpha1",
 		Kind:       "Auth0User",
-		Metadata:   &shared.CloudResourceMetadata{Name: "staff-root"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "staff-root"},
 		Spec:       spec,
 	}
 }
@@ -154,7 +154,7 @@ var _ = ginkgo.Describe("Auth0User Validation Tests", func() {
 				input := &Auth0User{
 					ApiVersion: "auth0.planton.dev/v1alpha1",
 					Kind:       "Auth0User",
-					Metadata:   &shared.CloudResourceMetadata{Name: "staff-root"},
+					Metadata:   &shared.CatalogObjectMetadata{Name: "staff-root"},
 				}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})

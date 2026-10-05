@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurevpnsite
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: vpn_site_id
       derivations:
-        - from_stack_output: vpn_site_id
+        - from_output: vpn_site_id
       where_to_find: >-
         Portal -> Virtual WAN -> VPN sites -> the site -> Properties ->
         Resource ID, or `az network vpn-site show -g <rg> -n <name>

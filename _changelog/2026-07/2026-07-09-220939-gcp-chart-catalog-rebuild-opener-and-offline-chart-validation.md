@@ -22,18 +22,18 @@ every provider's charts.
 
 ### Pain Points
 
-- The GCP charts were authored against long-gone component schemas: every one
+- The GCP charts were authored against long-gone kind schemas: every one
   of them failed validation against the current specs (renamed fields,
   restructured messages, retired kinds). Reworking them file-by-file would
   have preserved compositions that no longer represent how the rebuilt
-  components are meant to compose.
+  kinds are meant to compose.
 - Chart validation previously required the platform's server-side
   `chart build` — which validates against the control plane's compiled
   protos, not the working tree's. During a schema-rebuild cycle the two
   diverge, leaving chart authors with no gate at all until a release ships.
 - The most dangerous chart defect class was invisible offline: a `valueFrom`
   whose `fieldPath` names a real output in the wrong format (self-link vs
-  name vs id). Component modules encode the proven composition key in their
+  name vs id). Kind modules encode the proven composition key in their
   foreign-key annotations, but nothing checked chart references against them.
 - There was no written standard for what makes a chart worth shipping or what
   its files must contain — each chart re-invented its own bar.
@@ -115,7 +115,7 @@ validate offline first" section; `charts/Makefile` gained `make validate`.
 ### The GCP catalog rebuild — first wave
 
 All nine legacy GCP charts are deleted (their compositions predate the
-rebuilt component schemas). The redesigned catalog lands wave by wave; this
+rebuilt kind schemas). The redesigned catalog lands wave by wave; this
 change ships the state backends — the charts platform adopters use to
 bootstrap the bucket their IaC state lives in:
 
@@ -151,22 +151,22 @@ Validation is green on every toggle arm of both charts.
 - **`cmd/planton/root/chart/validate.go` + `cmd/planton/root/chart.go`** —
   the cobra wiring, `--set`/`--org`/`--env` flags, colored per-file report,
   non-zero exit on errors.
-- **`apis/dev/planton/provider/_test/testcloudresourcegeneric/v1/spec.proto`**
+- **`apis/dev/planton/provider/_test/testcatalogkindgeneric/v1/spec.proto`**
   — the permanent generic test kind gained `annotated_ref` carrying the full
   foreign-key annotation pair (self-referential, resolving against its own
-  stack outputs), giving FK-reading machinery a hermetic fixture that never
+  outputs), giving FK-reading machinery a hermetic fixture that never
   moves with production resource shapes.
 - **Two AWS chart READMEs** lost one sentence each: they hyperlinked deleted
   GCP charts (dead links after the deletion; the sentences were also
   cross-provider design references the chart standard now rules out).
-- **Site stats** regenerated from the tree (42 charts, 444 components).
+- **Site stats** regenerated from the tree (42 charts, 444 kinds).
 
 ## Benefits
 
 - Chart schema drift is now caught at authoring time, offline, against the
   exact working-tree protos — previously impossible before a release.
 - The id/name/self-link reference class — repeatedly found only in live runs
-  during component work — is now a static, offline error for charts.
+  during kind work — is now a static, offline error for charts.
 - Every future chart, on every provider, inherits one written standard and
   one gate; community chart authors get the same `chart validate` command.
 - The state-backend bootstrap path for adopters is a first-class, taught
@@ -187,7 +187,7 @@ Validation is green on every toggle arm of both charts.
 
 ## Related Work
 
-- The GCP component catalog rebuild (this branch line) — the frozen component
+- The GCP kind catalog rebuild (this branch line) — the frozen kind
   schemas these charts compose.
 - The reference-integrity analyzer (`pkg/refcheck`) and `validate-refs` — the
   annotation contract the new FK-agreement check enforces on charts.

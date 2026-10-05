@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.azure.azurestorageobjectreplication.v1alpha1;
 
-// **AzureStorageObjectReplicationStackOutputs** captures the outputs of
+// **AzureStorageObjectReplicationOutputs** captures the outputs of
 // provisioning an object replication policy. Azure materializes the
 // policy on BOTH accounts under one server-assigned policy GUID, so
 // there are two ARM IDs for the one logical policy.
-message AzureStorageObjectReplicationStackOutputs {
+message AzureStorageObjectReplicationOutputs {
   // The policy's ARM ID on the SOURCE account.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Storage/storageAccounts/{src}/objectReplicationPolicies/{policyId}
   string source_object_replication_id = 1;

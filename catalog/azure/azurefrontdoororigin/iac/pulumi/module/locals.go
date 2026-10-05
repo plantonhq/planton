@@ -25,11 +25,11 @@ var privateLinkTargetTypeStrings = map[azurefrontdoororiginv1alpha1.AzureFrontDo
 	azurefrontdoororiginv1alpha1.AzureFrontDoorOriginPrivateLinkTargetType_GATEWAY:              "Gateway",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefrontdoororiginv1alpha1.AzureFrontDoorOriginStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefrontdoororiginv1alpha1.AzureFrontDoorOriginIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFrontDoorOrigin = stackInput.Target
-	locals.OriginGroupId = stackInput.Target.Spec.OriginGroupId.GetValue()
+	locals.AzureFrontDoorOrigin = iacInput.Target
+	locals.OriginGroupId = iacInput.Target.Spec.OriginGroupId.GetValue()
 
 	// No Azure tags: ARM does not support tags on Front Door origins,
 	// so the platform's identity tags live on the profile.

@@ -23,7 +23,7 @@ var _ = ginkgo.Describe("AzureResourceGroupSpec Validation Tests", func() {
 				input := &AzureResourceGroup{
 					ApiVersion: "azure.planton.dev/v1alpha1",
 					Kind:       "AzureResourceGroup",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-resource-group",
 					},
 					Spec: &AzureResourceGroupSpec{
@@ -39,7 +39,7 @@ var _ = ginkgo.Describe("AzureResourceGroupSpec Validation Tests", func() {
 				input := &AzureResourceGroup{
 					ApiVersion: "azure.planton.dev/v1alpha1",
 					Kind:       "AzureResourceGroup",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "prod-rg",
 						Org:  "mycompany",
 						Env:  "production",
@@ -62,7 +62,7 @@ var _ = ginkgo.Describe("AzureResourceGroupSpec Validation Tests", func() {
 				input := &AzureResourceGroup{
 					ApiVersion: "azure.planton.dev/v1alpha1",
 					Kind:       "AzureResourceGroup",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "long-name-rg",
 					},
 					Spec: &AzureResourceGroupSpec{
@@ -83,7 +83,7 @@ var _ = ginkgo.Describe("AzureResourceGroupSpec Validation Tests", func() {
 				input := &AzureResourceGroup{
 					ApiVersion: "azure.planton.dev/v1alpha1",
 					Kind:       "AzureResourceGroup",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-rg",
 					},
 					Spec: &AzureResourceGroupSpec{
@@ -98,7 +98,7 @@ var _ = ginkgo.Describe("AzureResourceGroupSpec Validation Tests", func() {
 				input := &AzureResourceGroup{
 					ApiVersion: "azure.planton.dev/v1alpha1",
 					Kind:       "AzureResourceGroup",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-rg",
 					},
 					Spec: &AzureResourceGroupSpec{
@@ -114,7 +114,7 @@ var _ = ginkgo.Describe("AzureResourceGroupSpec Validation Tests", func() {
 				input := &AzureResourceGroup{
 					ApiVersion: "azure.planton.dev/v1alpha1",
 					Kind:       "AzureResourceGroup",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-rg",
 					},
 					Spec: &AzureResourceGroupSpec{
@@ -129,7 +129,7 @@ var _ = ginkgo.Describe("AzureResourceGroupSpec Validation Tests", func() {
 				input := &AzureResourceGroup{
 					ApiVersion: "azure.planton.dev/v1alpha1",
 					Kind:       "AzureResourceGroup",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-rg",
 					},
 					Spec: &AzureResourceGroupSpec{
@@ -150,7 +150,7 @@ var _ = ginkgo.Describe("AzureResourceGroupSpec Validation Tests", func() {
 				input := &AzureResourceGroup{
 					ApiVersion: "azure.planton.dev/v1alpha1",
 					Kind:       "AzureResourceGroup",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-rg",
 					},
 					Spec: &AzureResourceGroupSpec{
@@ -166,7 +166,7 @@ var _ = ginkgo.Describe("AzureResourceGroupSpec Validation Tests", func() {
 				input := &AzureResourceGroup{
 					ApiVersion: "wrong.version/v1",
 					Kind:       "AzureResourceGroup",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-rg",
 					},
 					Spec: &AzureResourceGroupSpec{
@@ -182,7 +182,7 @@ var _ = ginkgo.Describe("AzureResourceGroupSpec Validation Tests", func() {
 				input := &AzureResourceGroup{
 					ApiVersion: "azure.planton.dev/v1alpha1",
 					Kind:       "WrongKind",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-rg",
 					},
 					Spec: &AzureResourceGroupSpec{
@@ -211,7 +211,7 @@ var _ = ginkgo.Describe("AzureResourceGroupSpec Validation Tests", func() {
 				input := &AzureResourceGroup{
 					ApiVersion: "azure.planton.dev/v1alpha1",
 					Kind:       "AzureResourceGroup",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-rg",
 					},
 				}

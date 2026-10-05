@@ -6,7 +6,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output name constants — one per KubernetesOpenBaoStackOutputs field.
+// Output name constants — one per KubernetesOpenBaoOutputs field.
 const (
 	OpNamespace          = "namespace"
 	OpService            = "service"

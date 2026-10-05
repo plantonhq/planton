@@ -10,11 +10,11 @@ Registers one schema subject in a DigitalOcean managed Kafka cluster's schema re
 
 ## Inputs
 
-`DigitalOceanDatabaseKafkaSchemaStackInput`: the target `DigitalOceanDatabaseKafkaSchema` resource and the DigitalOcean provider config (API token).
+`DigitalOceanDatabaseKafkaSchemaIacInput`: the target `DigitalOceanDatabaseKafkaSchema` resource and the DigitalOcean provider config (API token).
 
 ## Outputs
 
-Exactly the `DigitalOceanDatabaseKafkaSchemaStackOutputs` contract: `cluster_id`, `subject_name`.
+Exactly the `DigitalOceanDatabaseKafkaSchemaOutputs` contract: `cluster_id`, `subject_name`.
 
 ## Behavior notes
 

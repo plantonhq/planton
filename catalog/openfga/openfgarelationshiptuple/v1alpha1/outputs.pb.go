@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// OpenFgaRelationshipTupleStackOutputs contains the outputs from an OpenFGA Relationship Tuple deployment.
+// OpenFgaRelationshipTupleOutputs contains the outputs from an OpenFGA Relationship Tuple deployment.
 //
 // Unlike other OpenFGA resources, relationship tuples don't have a unique ID returned by the API.
 // The tuple is uniquely identified by the combination of (store_id, user, relation, object).
@@ -30,7 +30,7 @@ const (
 //
 // Reference:
 // - Terraform: https://registry.terraform.io/providers/openfga/openfga/latest/docs/resources/relationship_tuple
-type OpenFgaRelationshipTupleStackOutputs struct {
+type OpenFgaRelationshipTupleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// user is the subject of the relationship tuple that was created.
 	// This echoes back the user field from the spec.
@@ -45,20 +45,20 @@ type OpenFgaRelationshipTupleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *OpenFgaRelationshipTupleStackOutputs) Reset() {
-	*x = OpenFgaRelationshipTupleStackOutputs{}
+func (x *OpenFgaRelationshipTupleOutputs) Reset() {
+	*x = OpenFgaRelationshipTupleOutputs{}
 	mi := &file_catalog_openfga_openfgarelationshiptuple_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *OpenFgaRelationshipTupleStackOutputs) String() string {
+func (x *OpenFgaRelationshipTupleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*OpenFgaRelationshipTupleStackOutputs) ProtoMessage() {}
+func (*OpenFgaRelationshipTupleOutputs) ProtoMessage() {}
 
-func (x *OpenFgaRelationshipTupleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *OpenFgaRelationshipTupleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_openfga_openfgarelationshiptuple_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,26 +70,26 @@ func (x *OpenFgaRelationshipTupleStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use OpenFgaRelationshipTupleStackOutputs.ProtoReflect.Descriptor instead.
-func (*OpenFgaRelationshipTupleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use OpenFgaRelationshipTupleOutputs.ProtoReflect.Descriptor instead.
+func (*OpenFgaRelationshipTupleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_openfga_openfgarelationshiptuple_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *OpenFgaRelationshipTupleStackOutputs) GetUser() string {
+func (x *OpenFgaRelationshipTupleOutputs) GetUser() string {
 	if x != nil {
 		return x.User
 	}
 	return ""
 }
 
-func (x *OpenFgaRelationshipTupleStackOutputs) GetRelation() string {
+func (x *OpenFgaRelationshipTupleOutputs) GetRelation() string {
 	if x != nil {
 		return x.Relation
 	}
 	return ""
 }
 
-func (x *OpenFgaRelationshipTupleStackOutputs) GetObject() string {
+func (x *OpenFgaRelationshipTupleOutputs) GetObject() string {
 	if x != nil {
 		return x.Object
 	}
@@ -100,8 +100,8 @@ var File_catalog_openfga_openfgarelationshiptuple_v1alpha1_outputs_proto protore
 
 const file_catalog_openfga_openfgarelationshiptuple_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/openfga/openfgarelationshiptuple/v1alpha1/outputs.proto\x125dev.planton.openfga.openfgarelationshiptuple.v1alpha1\"n\n" +
-	"$OpenFgaRelationshipTupleStackOutputs\x12\x12\n" +
+	"?catalog/openfga/openfgarelationshiptuple/v1alpha1/outputs.proto\x125dev.planton.openfga.openfgarelationshiptuple.v1alpha1\"i\n" +
+	"\x1fOpenFgaRelationshipTupleOutputs\x12\x12\n" +
 	"\x04user\x18\x01 \x01(\tR\x04user\x12\x1a\n" +
 	"\brelation\x18\x02 \x01(\tR\brelation\x12\x16\n" +
 	"\x06object\x18\x03 \x01(\tR\x06objectB\xb3\x03\n" +
@@ -121,7 +121,7 @@ func file_catalog_openfga_openfgarelationshiptuple_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_openfga_openfgarelationshiptuple_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_openfga_openfgarelationshiptuple_v1alpha1_outputs_proto_goTypes = []any{
-	(*OpenFgaRelationshipTupleStackOutputs)(nil), // 0: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleStackOutputs
+	(*OpenFgaRelationshipTupleOutputs)(nil), // 0: dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleOutputs
 }
 var file_catalog_openfga_openfgarelationshiptuple_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

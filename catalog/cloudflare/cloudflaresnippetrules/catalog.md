@@ -4,7 +4,7 @@ Deploys the zone's snippet routing table: the ordered list of expressions decidi
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Snippet Rules** -- one `cloudflare_snippet_rules` on the zone, whose `rules` list is the whole routing table, evaluated in order against Cloudflare's Rules language (the same wirefilter expressions rulesets use)
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Snippets Edit on the target zone. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Snippets Edit on the target zone. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -52,7 +52,7 @@ spec:
 planton apply -f snippet-rules.yaml
 ```
 
-This installs a one-row routing table that invokes the `redirect_legacy` snippet on every request under `/legacy` — the rule runs immediately because this spec defaults `enabled` to true. A Stack Job tracks the provisioning in real time.
+This installs a one-row routing table that invokes the `redirect_legacy` snippet on every request under `/legacy` — the rule runs immediately because this spec defaults `enabled` to true. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,16 +92,16 @@ These are the most important decisions when configuring snippet rules. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 | **CloudflareSnippet** | `rules[].snippetName` | `status.outputs.snippet_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no consumable outputs: `status.outputs` only echoes the zone ID back, because the routing table is a zone singleton whose identity is the zone itself — there is no separate table ID for downstream resources to reference.
+This kind has no consumable outputs: `status.outputs` only echoes the zone ID back, because the routing table is a zone singleton whose identity is the zone itself — there is no separate table ID for downstream resources to reference.
 
 ## Common Patterns
 
@@ -115,6 +115,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Snippet**](/cloud-catalog/cloudflare-snippet) -- the code this table invokes by name; create the snippet first.
-- [**Cloudflare Ruleset**](/cloud-catalog/cloudflare-ruleset) -- the other expression table on the zone (WAF, cache, redirects), same Rules language, different engine.
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- the zone scope; wire `zoneId` via ValueFromRef.
+- [**Cloudflare Snippet**](/infra-catalog/cloudflare-snippet) -- the code this table invokes by name; create the snippet first.
+- [**Cloudflare Ruleset**](/infra-catalog/cloudflare-ruleset) -- the other expression table on the zone (WAF, cache, redirects), same Rules language, different engine.
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- the zone scope; wire `zoneId` via ValueFromRef.

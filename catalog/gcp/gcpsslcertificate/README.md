@@ -58,7 +58,7 @@ Reference the certificate's `self_link` from a target HTTPS proxy's `sslCertific
 | `privateKey` | `string` (sensitive) | — (required) | Matching unencrypted PEM key. Write-only in GCP; never in outputs. Immutable. |
 | `deletionPolicy` | `string` | `DELETE` | What happens on destroy: `DELETE`, `PREVENT`, or `ABANDON` (leave in GCP — useful mid-rotation handoff). |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -90,7 +90,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 - **`private_key_wo` / `private_key_wo_version`** (Terraform write-only argument flow) — the same key material as `privateKey` with Terraform-state-only plumbing; adopting it would raise this module's toolchain floor to Terraform/OpenTofu ≥ 1.11, a divergence from the catalog-wide assumption. Re-evaluate when the catalog declares a ≥ 1.11 floor.
 - **`name_prefix`** — a Terraform-side create-before-destroy naming trick; Planton's metadata-driven naming owns resource names, and the rotation pattern it serves is expressed as a new Planton resource with a versioned `certificateName` instead (see the rotation preset).
 
-## Related Components
+## Related Kinds
 
 - [GcpTargetHttpsProxy](/docs/catalog/gcp/gcptargethttpsproxy) — presents this certificate to clients
 - [GcpManagedSslCertificate](/docs/catalog/gcp/gcpmanagedsslcertificate) — the Google-managed alternative when hands-off issuance fits

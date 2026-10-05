@@ -51,7 +51,7 @@ const (
 
 // EnsureS3VectorsKnowledgeBaseFixture idempotently creates the standing
 // S3 Vectors bucket+index and exports S3VectorsIndexArnEnvVar for
-// scenario token expansion. Call it from a component's test entrypoint
+// scenario token expansion. Call it from a kind's test entrypoint
 // BEFORE running scenarios that reference the token.
 func EnsureS3VectorsKnowledgeBaseFixture(ctx context.Context) error {
 	if os.Getenv(S3VectorsIndexArnEnvVar) != "" {
@@ -131,7 +131,7 @@ const (
 
 // EnsureAgentCoreCodeBundleFixture idempotently creates the standing
 // code-bundle bucket and object and exports AgentCoreCodeBucketEnvVar for
-// scenario token expansion. Call it from a component's test entrypoint
+// scenario token expansion. Call it from a kind's test entrypoint
 // BEFORE running scenarios that reference the token.
 func EnsureAgentCoreCodeBundleFixture(ctx context.Context) error {
 	if os.Getenv(AgentCoreCodeBucketEnvVar) != "" {

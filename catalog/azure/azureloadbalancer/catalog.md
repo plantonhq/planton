@@ -4,7 +4,7 @@ Deploys an Azure Load Balancer -- the Layer 4 (TCP/UDP) traffic distributor, com
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Load Balancer** -- a Standard SKU (the default -- Basic was retired in September 2025) or Gateway SKU resource, Regional or Global tier, with optional edge-zone placement
 - **Frontend IP Configurations** -- the addresses that receive traffic: public (a referenced AzurePublicIp or AzurePublicIpPrefix) or internal (a subnet with an optional pinned static address, address family, and availability zones), at least one, mixable on one load balancer
@@ -21,13 +21,13 @@ Pool membership is NOT created here -- each AzureNetworkInterface or scale set r
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the load balancer will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
-- **A Standard SKU public IP** (for public frontends) -- reference an AzurePublicIp Cloud Resource; the IP resource carries the zone posture. A public IP PREFIX (AzurePublicIpPrefix) serves egress-heavy estates that allowlist one CIDR.
+- **An Azure Resource Group** where the load balancer will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
+- **A Standard SKU public IP** (for public frontends) -- reference an AzurePublicIp Infra Component; the IP resource carries the zone posture. A public IP PREFIX (AzurePublicIpPrefix) serves egress-heavy estates that allowlist one CIDR.
 - **A subnet** (for internal frontends) within a VNet -- the frontend takes a private address there. All internal frontends of one load balancer live in the same virtual network.
 - **Region alignment** -- the load balancer only serves backends in its own region (the Global tier fronts REGIONAL load balancers instead).
 - **Gateway SKU only** -- the subscription needs the Microsoft.Network/AllowGatewayLoadBalancer feature registered (via an Azure support ticket), and every backend pool must declare tunnel interfaces.
@@ -82,7 +82,7 @@ spec:
 planton apply -f azure-load-balancer.yaml
 ```
 
-This creates a public Standard load balancer with one pool, an HTTP probe, and a TCP 80-to-8080 rule. A Stack Job tracks the provisioning in real time.
+This creates a public Standard load balancer with one pool, an HTTP probe, and a TCP 80-to-8080 rule. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -132,7 +132,7 @@ These are the most important decisions when configuring a load balancer. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -142,9 +142,9 @@ These are the most important decisions when configuring a load balancer. Explore
 | **AzurePublicIpPrefix** (per prefix frontend) | `frontendIpConfigurations[].publicIpPrefixId` | `status.outputs.public_ip_prefix_id` |
 | **AzureVirtualNetwork** (per IP-member pool) | `backendPools[].virtualNetworkId` | `status.outputs.virtual_network_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef. The name-keyed maps are the composition seams:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef. The name-keyed maps are the composition seams:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -168,10 +168,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the load balancer is created in
-- [**Azure Public IP**](/cloud-catalog/azure-public-ip) -- the addresses public frontends receive traffic on
-- [**Azure Public IP Prefix**](/cloud-catalog/azure-public-ip-prefix) -- reserved ranges for prefix frontends and scalable SNAT
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- hosts internal frontends' private addresses
-- [**Azure Virtual Network**](/cloud-catalog/azure-virtual-network) -- scopes pools with IP-based members
-- [**Azure Network Interface**](/cloud-catalog/azure-network-interface) -- joins pools and completes single-target NAT attachments from the member side
-- [**Azure Virtual Machine**](/cloud-catalog/azure-virtual-machine) -- the workload the pools front (via its network interfaces)
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the load balancer is created in
+- [**Azure Public IP**](/infra-catalog/azure-public-ip) -- the addresses public frontends receive traffic on
+- [**Azure Public IP Prefix**](/infra-catalog/azure-public-ip-prefix) -- reserved ranges for prefix frontends and scalable SNAT
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- hosts internal frontends' private addresses
+- [**Azure Virtual Network**](/infra-catalog/azure-virtual-network) -- scopes pools with IP-based members
+- [**Azure Network Interface**](/infra-catalog/azure-network-interface) -- joins pools and completes single-target NAT attachments from the member side
+- [**Azure Virtual Machine**](/infra-catalog/azure-virtual-machine) -- the workload the pools front (via its network interfaces)

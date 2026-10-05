@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1;
 
-// GcpVertexAiPersistentResourceStackOutputs captures the resource's
+// GcpVertexAiPersistentResourceOutputs captures the resource's
 // identity -- what a training job's persistent_resource_id names -- and
 // its state.
-message GcpVertexAiPersistentResourceStackOutputs {
+message GcpVertexAiPersistentResourceOutputs {
   // Full resource name:
   // projects/{project}/locations/{location}/persistentResources/{persistent_resource_id}.
   string name = 1;

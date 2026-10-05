@@ -12,15 +12,15 @@ Updated the Pulumi binary download logic to detect the current platform (OS and 
 
 After implementing multi-platform binary releases in the GitHub Actions workflows, the CLI was still downloading binaries without platform suffixes (e.g., `pulumi-awsecsservice.gz`), which no longer exist. The release automation now uploads platform-specific binaries:
 
-- `pulumi-{component}_linux_amd64.gz`
-- `pulumi-{component}_darwin_arm64.gz`
-- `pulumi-{component}_darwin_amd64.gz`
-- `pulumi-{component}_windows_amd64.exe.gz`
+- `pulumi-{kind}_linux_amd64.gz`
+- `pulumi-{kind}_darwin_arm64.gz`
+- `pulumi-{kind}_darwin_amd64.gz`
+- `pulumi-{kind}_windows_amd64.exe.gz`
 
 ### Pain Points
 
 - **exec format error**: Users on macOS received "fork/exec: exec format error" when the CLI downloaded a Linux binary
-- **Download failures**: The old URL pattern (`pulumi-component.gz`) no longer exists in new releases
+- **Download failures**: The old URL pattern (`pulumi-kind.gz`) no longer exists in new releases
 - **Platform mismatch**: No mechanism to detect and request the correct platform binary
 
 ## Solution / What's New
@@ -65,8 +65,8 @@ func GetPlatformSuffix() string {
 **Updated function - Binary name construction:**
 
 ```go
-func BuildBinaryName(componentName string) string {
-    baseName := BinaryPrefix + strings.ToLower(componentName)
+func BuildBinaryName(kindName string) string {
+    baseName := BinaryPrefix + strings.ToLower(kindName)
     suffix := GetPlatformSuffix()
 
     if runtime.GOOS == "windows" {
@@ -83,7 +83,7 @@ The `BuildDownloadURL()` and `GetBinaryPath()` functions automatically inherit t
 | Aspect | Before | After |
 |--------|--------|-------|
 | Platform support | Linux only | Linux, macOS (Intel & ARM), Windows |
-| Download URL | `pulumi-{component}.gz` | `pulumi-{component}_{os}_{arch}.gz` |
+| Download URL | `pulumi-{kind}.gz` | `pulumi-{kind}_{os}_{arch}.gz` |
 | Binary naming | Platform-agnostic | Platform-specific with correct extension |
 | User experience | exec format errors on macOS/Windows | Works on all supported platforms |
 
@@ -109,7 +109,7 @@ Binaries now cached with platform-specific names:
 ~/.planton/pulumi/binaries/v0.3.2/
 ├── pulumi-kubernetesdeployment_darwin_arm64
 ├── pulumi-awsecsservice_darwin_arm64
-└── ... (other components)
+└── ... (other kinds)
 ```
 
 ## Related Work

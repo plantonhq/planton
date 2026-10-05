@@ -4,7 +4,7 @@ Configures the account's Cloudflare Secure Web Gateway: the settings panel behin
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Gateway Configuration** — created only when `settings` is declared, a `cloudflare_zero_trust_gateway_settings` PUT against the account singleton. An unset sub-object is never sent, so dashboard-set values survive
 - **Gateway Logging** — created only when `logging` is declared, a `cloudflare_zero_trust_gateway_logging` that always sends the complete logging tree (Cloudflare reports drift on partial sends)
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -59,7 +59,7 @@ spec:
 planton apply -f gateway-settings.yaml
 ```
 
-This turns on activity logging, redacts PII, and logs blocked requests per firewall type — while every undeclared settings surface (TLS inspection, antivirus, isolation) stays exactly as the dashboard has it. A Stack Job tracks the provisioning in real time.
+This turns on activity logging, redacts PII, and logs blocked requests per firewall type — while every undeclared settings surface (TLS inspection, antivirus, isolation) stays exactly as the dashboard has it. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -79,11 +79,11 @@ These are the most important decisions when configuring Gateway settings. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. The TLS-inspection certificate (`settings.certificate.id`) takes a literal certificate UUID because no catalog kind manages Gateway certificates yet; the nil UUID selects the Cloudflare Root CA.
+This kind has no foreign key dependencies. The TLS-inspection certificate (`settings.certificate.id`) takes a literal certificate UUID because no catalog kind manages Gateway certificates yet; the nil UUID selects the Cloudflare Root CA.
 
-### What This Component Provides
+### What This Kind Provides
 
 This component's `status.outputs` carries only `account_id` — the account the configuration was applied to, echoed back as the singleton's identity for the harness and import recipes. There is nothing here for downstream resources to consume: Gateway policies and DNS locations attach to the same account by ID, not by referencing this resource.
 
@@ -99,6 +99,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust Gateway Policy**](/cloud-catalog/cloudflare-zero-trust-gateway-policy) — the filtering rules this panel sets the behavior for; block-page branding and TLS inspection change what those policies can see and show.
-- [**Cloudflare Zero Trust DNS Location**](/cloud-catalog/cloudflare-zero-trust-dns-location) — the entry points DNS filtering runs against.
-- [**Cloudflare Zero Trust Organization**](/cloud-catalog/cloudflare-zero-trust-organization) — the login half of Zero Trust; this component is the traffic half.
+- [**Cloudflare Zero Trust Gateway Policy**](/infra-catalog/cloudflare-zero-trust-gateway-policy) — the filtering rules this panel sets the behavior for; block-page branding and TLS inspection change what those policies can see and show.
+- [**Cloudflare Zero Trust DNS Location**](/infra-catalog/cloudflare-zero-trust-dns-location) — the entry points DNS filtering runs against.
+- [**Cloudflare Zero Trust Organization**](/infra-catalog/cloudflare-zero-trust-organization) — the login half of Zero Trust; this kind is the traffic half.

@@ -17,7 +17,7 @@ Reach for a dedicated KubernetesNamespace the moment either is true:
   touches. The full failure story and the wiring:
   [namespace-ownership pattern](../../_patterns/namespace-ownership.md).
 - **The namespace itself needs configuration.** The flag creates a bare
-  namespace (governance labels only). This component's spec opens the
+  namespace (governance labels only). This kind's spec opens the
   namespace's real surface: resource quotas (T-shirt presets or custom),
   default-deny network policies with explicit allows, pod security
   standards, and service-mesh sidecar injection — see

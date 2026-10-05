@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureIpGroupStackInput is the input to the IaC modules
+// AzureIpGroupIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and Azure
 // provider credentials.
-type AzureIpGroupStackInput struct {
+type AzureIpGroupIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The IP Group resource to deploy.
 	Target *AzureIpGroup `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureIpGroupStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureIpGroupStackInput) Reset() {
-	*x = AzureIpGroupStackInput{}
+func (x *AzureIpGroupIacInput) Reset() {
+	*x = AzureIpGroupIacInput{}
 	mi := &file_catalog_azure_azureipgroup_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureIpGroupStackInput) String() string {
+func (x *AzureIpGroupIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureIpGroupStackInput) ProtoMessage() {}
+func (*AzureIpGroupIacInput) ProtoMessage() {}
 
-func (x *AzureIpGroupStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureIpGroupIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureipgroup_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureIpGroupStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureIpGroupStackInput.ProtoReflect.Descriptor instead.
-func (*AzureIpGroupStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureIpGroupIacInput.ProtoReflect.Descriptor instead.
+func (*AzureIpGroupIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureipgroup_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureIpGroupStackInput) GetTarget() *AzureIpGroup {
+func (x *AzureIpGroupIacInput) GetTarget() *AzureIpGroup {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureIpGroupStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureIpGroupIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azureipgroup_v1alpha1_input_proto protoreflect.FileDescri
 
 const file_catalog_azure_azureipgroup_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/azure/azureipgroup/v1alpha1/input.proto\x12'dev.planton.azure.azureipgroup.v1alpha1\x1a-catalog/azure/azureipgroup/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xb8\x01\n" +
-	"\x16AzureIpGroupStackInput\x12M\n" +
+	"/catalog/azure/azureipgroup/v1alpha1/input.proto\x12'dev.planton.azure.azureipgroup.v1alpha1\x1a-catalog/azure/azureipgroup/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xb6\x01\n" +
+	"\x14AzureIpGroupIacInput\x12M\n" +
 	"\x06target\x18\x01 \x01(\v25.dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xd1\x02\n" +
 	"+com.dev.planton.azure.azureipgroup.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azureipgroup_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_azure_azureipgroup_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureipgroup_v1alpha1_input_proto_goTypes = []any{
-	(*AzureIpGroupStackInput)(nil),    // 0: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupStackInput
+	(*AzureIpGroupIacInput)(nil),      // 0: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupIacInput
 	(*AzureIpGroup)(nil),              // 1: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroup
 	(*azure.AzureProviderConfig)(nil), // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azureipgroup_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupStackInput.target:type_name -> dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroup
-	2, // 1: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupIacInput.target:type_name -> dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroup
+	2, // 1: dev.planton.azure.azureipgroup.v1alpha1.AzureIpGroupIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

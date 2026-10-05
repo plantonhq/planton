@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureavailabilityset.v1alpha1;
 
-// **AzureAvailabilitySetStackOutputs** captures the outputs from
+// **AzureAvailabilitySetOutputs** captures the outputs from
 // provisioning an availability set.
-message AzureAvailabilitySetStackOutputs {
+message AzureAvailabilitySetOutputs {
   // The availability set's Azure Resource Manager ID -- what VMs
   // reference to join the set.
   string availability_set_id = 1;

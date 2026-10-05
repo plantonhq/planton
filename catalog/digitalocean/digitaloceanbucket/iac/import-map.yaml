@@ -1,24 +1,24 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceanbucket
 spec:
   # A Spaces bucket has no UUID: the provider's resource id is the bucket
   # name, and its importer takes the "<region>,<name>" composite. Both
-  # halves come from stack outputs (the bucket_id output IS the name), so
+  # halves come from outputs (the bucket_id output IS the name), so
   # imports need zero user input when state is present. The satellites
   # (CORS configuration, policy, logging) share the same importer format.
   values:
     - name: region
       derivations:
-        - from_stack_output: region
+        - from_output: region
       where_to_find: >-
         DigitalOcean control panel -> Spaces -> the bucket -> Settings (the
         region slug, e.g. nyc3), or the subdomain in the bucket's endpoint
         URL.
     - name: bucket_name
       derivations:
-        - from_stack_output: bucket_id
+        - from_output: bucket_id
       where_to_find: >-
         DigitalOcean control panel -> Spaces -> the bucket's name, or
         `doctl spaces list`.

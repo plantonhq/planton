@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implemented a complete database-driven credential management system with unified API architecture and CLI commands, then resolved seven critical Docker deployment blockers to enable end-to-end cloud resource deployments. This work transforms credential management from a conceptual design into a fully operational system that automatically resolves and applies credentials during Pulumi stack deployments in the backend service. Additionally, the logo was updated to use a single variant that works across all themes.
+Implemented a complete database-driven credential management system with unified API architecture and CLI commands, then resolved seven critical Docker deployment blockers to enable end-to-end Infra Component deployments. This work transforms credential management from a conceptual design into a fully operational system that automatically resolves and applies credentials during Pulumi stack deployments in the backend service. Additionally, the logo was updated to use a single variant that works across all themes.
 
 ## Problem Statement
 
@@ -229,8 +229,8 @@ func (r *CredentialResolver) ResolveProviderConfig(
 ) (*backendv1.ProviderConfig, error) {
 
     // Determine provider from kind (e.g., GcpCloudSql -> gcp)
-    kindEnum, err := crkreflect.KindByKindName(kindName)
-    provider := crkreflect.GetProvider(kindEnum)
+    kindEnum, err := catalogkindreflect.KindByKindName(kindName)
+    provider := catalogkindreflect.GetProvider(kindEnum)
 
     // Query database for credential
     credInterface, err := r.credentialRepo.FindFirstByProvider(ctx,
@@ -238,7 +238,7 @@ func (r *CredentialResolver) ResolveProviderConfig(
 
     // Convert to provider config
     switch provider {
-    case cloudresourcekind.CloudResourceProvider_gcp:
+    case catalogkind.CatalogProvider_gcp:
         gcpCred := credInterface.(*models.GcpCredential)
         return buildGcpProviderConfig(gcpCred)
     // ... similar for AWS, Azure
@@ -301,12 +301,12 @@ func credentialCreateHandler(cmd *cobra.Command, args []string) {
 
 ### 6. Streaming API Integration
 
-**File**: `app/backend/internal/service/stack_job_service.go`
+**File**: `app/backend/internal/service/infra_job_service.go`
 
 Deployment flow with credential resolution:
 
 ```go
-func (s *StackUpdateService) deployWithPulumi(ctx context.Context, jobID, cloudResourceID, manifestYaml string) error {
+func (s *StackUpdateService) deployWithPulumi(ctx context.Context, jobID, infraComponentID, manifestYaml string) error {
 
     // Step 1-9: Load manifest, get Pulumi module, initialize stack
 
@@ -317,7 +317,7 @@ func (s *StackUpdateService) deployWithPulumi(ctx context.Context, jobID, cloudR
             fmt.Errorf("failed to resolve provider credentials: %w", err))
     }
 
-    // Step 11-12: Build stack input with credentials, execute pulumi up
+    // Step 11-12: Build IaC input with credentials, execute pulumi up
     // Step 13: Stream output to database for real-time display
 }
 ```
@@ -487,8 +487,8 @@ Also removed Pulumi plugin pre-installation from Dockerfile to prevent future bl
 Added comprehensive debug logging to trace deployment execution:
 
 ```go
-func (s *StackUpdateService) deployWithPulumi(ctx context.Context, jobID string, cloudResourceID string, manifestYaml string) error {
-    fmt.Printf("DEBUG: deployWithPulumi started for jobID=%s, cloudResourceID=%s\n", jobID, cloudResourceID)
+func (s *StackUpdateService) deployWithPulumi(ctx context.Context, jobID string, infraComponentID string, manifestYaml string) error {
+    fmt.Printf("DEBUG: deployWithPulumi started for jobID=%s, infraComponentID=%s\n", jobID, infraComponentID)
 
     fmt.Printf("DEBUG: Getting Pulumi module path for kind=%s, stackFqdn=%s\n", kindName, stackFqdn)
     pulumiModulePath, err := pulumimodule.GetPath(moduleDir, stackFqdn, kindName)
@@ -498,7 +498,7 @@ func (s *StackUpdateService) deployWithPulumi(ctx context.Context, jobID string,
 }
 
 func (s *StackUpdateService) updateJobWithError(ctx context.Context, jobID string, err error) error {
-    fmt.Printf("ERROR: Stack job %s failed: %v\n", jobID, err)
+    fmt.Printf("ERROR: Infra job %s failed: %v\n", jobID, err)
     // ... error handling
 }
 ```
@@ -559,7 +559,7 @@ After completing the backend credential management and Docker deployment fixes, 
    planton deploy --manifest gcp-postgres.yaml
    ```
 
-5. **Backend creates stack-update**: Stored in `stack_jobs` collection
+5. **Backend creates stack-update**: Stored in `infra_jobs` collection
 
 6. **Deployment goroutine starts**:
 
@@ -590,7 +590,7 @@ After completing the backend credential management and Docker deployment fixes, 
 Complete successful deployment:
 
 ```
-DEBUG: deployWithPulumi started for jobID=69371f5df0252a928b927d9b, cloudResourceID=69370655e39947738c53cd73
+DEBUG: deployWithPulumi started for jobID=69371f5df0252a928b927d9b, infraComponentID=69370655e39947738c53cd73
 
 DEBUG: Getting Pulumi module path for kind=GcpCloudSql, stackFqdn=organization/planton-examples/example-env.GcpCloudSql.gcp-postgres-example-3, moduleDir=.
 
@@ -717,7 +717,7 @@ Total freed: ~27GB
 - `app/backend/internal/database/credential_repo.go` - Unified repository with MongoDB DateTime fix
 - `app/backend/internal/service/credential_service.go` - Unified service with provider routing
 - `app/backend/internal/service/credential_resolver.go` - Automatic credential resolution
-- `app/backend/internal/service/stack_job_service.go` - Added debug logging
+- `app/backend/internal/service/infra_job_service.go` - Added debug logging
 - `app/backend/internal/server/server.go` - Simplified initialization (1 repo vs 3)
 - `app/backend/Dockerfile` - Added Git, Go 1.24.7, environment variables, directories
 - `docker-compose.yml` - Added passphrase, volumes, local build configuration
@@ -909,7 +909,7 @@ Look for:
 - `DEBUG: deployWithPulumi started` - Deployment initiated
 - `DEBUG: Getting Pulumi module path` - Module resolution
 - `DEBUG: Pulumi module path resolved` - Module found
-- `ERROR: Stack job ... failed` - Deployment errors
+- `ERROR: Infra job ... failed` - Deployment errors
 
 ---
 
@@ -965,7 +965,7 @@ Each requires:
 - **Metrics collection**: Track deployment times, success rates, cache hit rates
 - **Alerts**: Disk space thresholds, failed deployment rates
 - **Dashboards**: Real-time deployment status, credential usage
-- **Cost tracking**: Track cloud resource costs per deployment
+- **Cost tracking**: Track Infra Component costs per deployment
 
 ### Reliability
 
@@ -989,9 +989,9 @@ This work supersedes and combines:
 ## Related Features
 
 - **Pulumi CLI Integration**: Execution engine that uses these credentials
-- **Stack Job System**: Job queue and streaming response architecture
+- **Infra Job System**: Job queue and streaming response architecture
 - **Manifest Processing**: YAML parsing and validation
-- **Provider Framework**: Cloud resource kind to provider mapping
+- **Provider Framework**: Catalog kind to provider mapping
 
 ---
 

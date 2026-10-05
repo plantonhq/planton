@@ -13,7 +13,7 @@ Nothing is created at AWS — the settings objects already exist as part of the 
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with AWS Backup permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with AWS Backup permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -65,7 +65,7 @@ spec:
 planton apply -f backup-settings.yaml
 ```
 
-This adopts the region's Backup preferences and opts the common workload types (EBS, EC2, RDS, Aurora, DynamoDB, EFS, FSx, S3) into AWS Backup protection while explicitly opting the rest out. A Stack Job tracks the provisioning in real time.
+This adopts the region's Backup preferences and opts the common workload types (EBS, EC2, RDS, Aurora, DynamoDB, EFS, FSx, S3) into AWS Backup protection while explicitly opting the rest out. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -85,13 +85,13 @@ These are the most important decisions when configuring Backup settings. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — it configures account- and region-scoped settings objects that exist independently of any other catalog resource.
+This kind has no foreign key dependencies — it configures account- and region-scoped settings objects that exist independently of any other catalog resource.
 
-### What This Component Provides
+### What This Kind Provides
 
-The outputs, `account_id` and `region`, echo the identities of the two settings objects (the account the global arm manages, the region the region arm manages). They are audit echoes, not composition inputs — no catalog component consumes them via ValueFromRef.
+The outputs, `account_id` and `region`, echo the identities of the two settings objects (the account the global arm manages, the region the region arm manages). They are audit echoes, not composition inputs — no catalog kind consumes them via ValueFromRef.
 
 ## Common Patterns
 
@@ -105,5 +105,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Backup Plan**](/cloud-catalog/aws-backup-plan) — plans only protect resource types the region has opted in through this component
-- [**AWS Backup Vault**](/cloud-catalog/aws-backup-vault) — cross-account copy destinations become usable once the global arm enables cross-account backup
+- [**AWS Backup Plan**](/infra-catalog/aws-backup-plan) — plans only protect resource types the region has opted in through this component
+- [**AWS Backup Vault**](/infra-catalog/aws-backup-vault) — cross-account copy destinations become usable once the global arm enables cross-account backup

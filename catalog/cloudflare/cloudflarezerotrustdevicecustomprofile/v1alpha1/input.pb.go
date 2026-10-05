@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustDeviceCustomProfileStackInput is the input to the IaC
+// CloudflareZeroTrustDeviceCustomProfileIacInput is the input to the IaC
 // module. It contains the target resource and provider configuration.
-type CloudflareZeroTrustDeviceCustomProfileStackInput struct {
+type CloudflareZeroTrustDeviceCustomProfileIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource to be deployed
+	// the catalog object to deploy to be deployed
 	Target *CloudflareZeroTrustDeviceCustomProfile `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Cloudflare authentication
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type CloudflareZeroTrustDeviceCustomProfileStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustDeviceCustomProfileStackInput) Reset() {
-	*x = CloudflareZeroTrustDeviceCustomProfileStackInput{}
+func (x *CloudflareZeroTrustDeviceCustomProfileIacInput) Reset() {
+	*x = CloudflareZeroTrustDeviceCustomProfileIacInput{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustDeviceCustomProfileStackInput) String() string {
+func (x *CloudflareZeroTrustDeviceCustomProfileIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustDeviceCustomProfileStackInput) ProtoMessage() {}
+func (*CloudflareZeroTrustDeviceCustomProfileIacInput) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustDeviceCustomProfileStackInput) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustDeviceCustomProfileIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *CloudflareZeroTrustDeviceCustomProfileStackInput) ProtoReflect() protor
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustDeviceCustomProfileStackInput.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustDeviceCustomProfileStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustDeviceCustomProfileIacInput.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustDeviceCustomProfileIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustDeviceCustomProfileStackInput) GetTarget() *CloudflareZeroTrustDeviceCustomProfile {
+func (x *CloudflareZeroTrustDeviceCustomProfileIacInput) GetTarget() *CloudflareZeroTrustDeviceCustomProfile {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *CloudflareZeroTrustDeviceCustomProfileStackInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
+func (x *CloudflareZeroTrustDeviceCustomProfileIacInput) GetProviderConfig() *cloudflare.CloudflareProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_inpu
 
 const file_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Ncatalog/cloudflare/cloudflarezerotrustdevicecustomprofile/v1alpha1/input.proto\x12Fdev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1\x1aLcatalog/cloudflare/cloudflarezerotrustdevicecustomprofile/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\x96\x02\n" +
-	"0CloudflareZeroTrustDeviceCustomProfileStackInput\x12\x86\x01\n" +
+	"Ncatalog/cloudflare/cloudflarezerotrustdevicecustomprofile/v1alpha1/input.proto\x12Fdev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1\x1aLcatalog/cloudflare/cloudflarezerotrustdevicecustomprofile/v1alpha1/api.proto\x1a!catalog/cloudflare/provider.proto\"\x94\x02\n" +
+	".CloudflareZeroTrustDeviceCustomProfileIacInput\x12\x86\x01\n" +
 	"\x06target\x18\x01 \x01(\v2n.dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.cloudflare.CloudflareProviderConfigR\x0eproviderConfigB\xa6\x04\n" +
 	"Jcom.dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_inp
 
 var file_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_input_proto_goTypes = []any{
-	(*CloudflareZeroTrustDeviceCustomProfileStackInput)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileStackInput
-	(*CloudflareZeroTrustDeviceCustomProfile)(nil),           // 1: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfile
-	(*cloudflare.CloudflareProviderConfig)(nil),              // 2: dev.planton.cloudflare.CloudflareProviderConfig
+	(*CloudflareZeroTrustDeviceCustomProfileIacInput)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileIacInput
+	(*CloudflareZeroTrustDeviceCustomProfile)(nil),         // 1: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfile
+	(*cloudflare.CloudflareProviderConfig)(nil),            // 2: dev.planton.cloudflare.CloudflareProviderConfig
 }
 var file_catalog_cloudflare_cloudflarezerotrustdevicecustomprofile_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileStackInput.target:type_name -> dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfile
-	2, // 1: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileStackInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
+	1, // 0: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileIacInput.target:type_name -> dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfile
+	2, // 1: dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1.CloudflareZeroTrustDeviceCustomProfileIacInput.provider_config:type_name -> dev.planton.cloudflare.CloudflareProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

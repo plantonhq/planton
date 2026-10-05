@@ -4,7 +4,7 @@ Deploys a production-grade PostgreSQL cluster reconciled by CloudNativePG — th
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CloudNativePG Cluster** — a `postgresql.cnpg.io/v1` Cluster custom resource. The operator derives every object from `metadata.name`: instance pods (`{name}-1`, `{name}-2`, ...), the traffic Services (`{name}-rw` primary read-write, `{name}-ro` replicas only, `{name}-r` any instance), one PVC per instance (plus a WAL PVC when declared), and the credential Secrets (`{name}-app`, and `{name}-superuser` when superuser access is enabled)
 - **Barman Cloud ObjectStore** (when backups are declared) — the object-store descriptor WAL archiving and base backups land in; recovery bootstraps render a second one (`{name}-recovery-source`) to read from
@@ -17,7 +17,7 @@ Applications connect through the SERVICES, never a pod: after a failover the `-r
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** — an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** — an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -71,11 +71,11 @@ spec:
 planton apply -f postgres.yaml
 ```
 
-This creates a three-instance cluster (one primary, two streaming replicas) with quorum synchronous replication, continuous WAL archiving to S3, and a nightly base backup pruned after 30 days. A Stack Job tracks the provisioning in real time.
+This creates a three-instance cluster (one primary, two streaming replicas) with quorum synchronous replication, continuous WAL archiving to S3, and a nightly base backup pruned after 30 days. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire placement, storage, and TLS to resources managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, wire placement, storage, and TLS to resources managed by other Infra Components:
 
 ```yaml
 spec:
@@ -119,7 +119,7 @@ These are the most important decisions when configuring a PostgreSQL cluster. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Field | References | Purpose |
 |-------|-----------|---------|
@@ -127,7 +127,7 @@ These are the most important decisions when configuring a PostgreSQL cluster. Ex
 | `spec.storage.storageClass` / `spec.walStorage.storageClass` | KubernetesStorageClass (`status.outputs.storage_class_name`) | The storage class backing the data / WAL PVCs |
 | `spec.certificates.serverTlsSecret` | KubernetesCertificate (`status.outputs.secret_name`) | A cert-manager-issued server certificate |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains values that applications and downstream resources can consume:
 

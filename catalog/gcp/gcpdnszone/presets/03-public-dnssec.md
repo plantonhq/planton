@@ -29,7 +29,7 @@ After deploy, add the DS record from Cloud DNS to your domain registrar to compl
 - **01-public-zone** — minimal public zone without DNSSEC
 - **02-private-vpc** — internal VPC-only zone
 
-## Related Components
+## Related Kinds
 
 - [GcpDnsRecord](/docs/catalog/gcp/gcpdnsrecord) — records within the signed zone
 - [GcpCertManagerCert](/docs/catalog/gcp/gcpcertmanagercert) — TLS certs that may use DNS-01 against this zone

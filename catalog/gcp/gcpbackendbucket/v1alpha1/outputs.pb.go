@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Compute Engine backend bucket.
-type GcpBackendBucketStackOutputs struct {
+type GcpBackendBucketOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Self-link URI of the backend bucket. This is the value URL maps
 	// reference as a default service or path-rule target — the composition
@@ -38,20 +38,20 @@ type GcpBackendBucketStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpBackendBucketStackOutputs) Reset() {
-	*x = GcpBackendBucketStackOutputs{}
+func (x *GcpBackendBucketOutputs) Reset() {
+	*x = GcpBackendBucketOutputs{}
 	mi := &file_catalog_gcp_gcpbackendbucket_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpBackendBucketStackOutputs) String() string {
+func (x *GcpBackendBucketOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpBackendBucketStackOutputs) ProtoMessage() {}
+func (*GcpBackendBucketOutputs) ProtoMessage() {}
 
-func (x *GcpBackendBucketStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpBackendBucketOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpbackendbucket_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *GcpBackendBucketStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpBackendBucketStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpBackendBucketStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpBackendBucketOutputs.ProtoReflect.Descriptor instead.
+func (*GcpBackendBucketOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbackendbucket_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpBackendBucketStackOutputs) GetSelfLink() string {
+func (x *GcpBackendBucketOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpBackendBucketStackOutputs) GetBackendBucketName() string {
+func (x *GcpBackendBucketOutputs) GetBackendBucketName() string {
 	if x != nil {
 		return x.BackendBucketName
 	}
 	return ""
 }
 
-func (x *GcpBackendBucketStackOutputs) GetBucketName() string {
+func (x *GcpBackendBucketOutputs) GetBucketName() string {
 	if x != nil {
 		return x.BucketName
 	}
@@ -93,8 +93,8 @@ var File_catalog_gcp_gcpbackendbucket_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpbackendbucket_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpbackendbucket/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpbackendbucket.v1alpha1\"\x8c\x01\n" +
-	"\x1cGcpBackendBucketStackOutputs\x12\x1b\n" +
+	"3catalog/gcp/gcpbackendbucket/v1alpha1/outputs.proto\x12)dev.planton.gcp.gcpbackendbucket.v1alpha1\"\x87\x01\n" +
+	"\x17GcpBackendBucketOutputs\x12\x1b\n" +
 	"\tself_link\x18\x01 \x01(\tR\bselfLink\x12.\n" +
 	"\x13backend_bucket_name\x18\x02 \x01(\tR\x11backendBucketName\x12\x1f\n" +
 	"\vbucket_name\x18\x03 \x01(\tR\n" +
@@ -115,7 +115,7 @@ func file_catalog_gcp_gcpbackendbucket_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_gcp_gcpbackendbucket_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpbackendbucket_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpBackendBucketStackOutputs)(nil), // 0: dev.planton.gcp.gcpbackendbucket.v1alpha1.GcpBackendBucketStackOutputs
+	(*GcpBackendBucketOutputs)(nil), // 0: dev.planton.gcp.gcpbackendbucket.v1alpha1.GcpBackendBucketOutputs
 }
 var file_catalog_gcp_gcpbackendbucket_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

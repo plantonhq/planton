@@ -42,7 +42,7 @@
 | `schedule` | string | Polling frequency (e.g. `5m`; min `1m`). |
 | `expiration` | string | How long a result stays valid (e.g. `1h`). |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

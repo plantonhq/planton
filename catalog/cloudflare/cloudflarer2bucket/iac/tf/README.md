@@ -521,20 +521,20 @@ Enabling `public_access` provisions the managed r2.dev domain directly. For prod
 
 ### Versioning
 
-R2 does not support object versioning, so it is not modeled by this component.
+R2 does not support object versioning, so it is not modeled by this kind.
 
 ## Additional Resources
 
 - [Cloudflare Terraform Provider Docs](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs)
 - [Cloudflare R2 API Docs](https://developers.cloudflare.com/api/operations/r2-create-bucket)
-- [Component README](../../README.md) - User-facing documentation
+- [Kind README](../../README.md) - User-facing documentation
 - [Presets](../../presets/) - Complete usage examples
 
 ## Support
 
 For issues or questions:
 1. Check [Common Issues](#common-issues) above
-2. Review [Component README](../../README.md)
+2. Review [Kind README](../../README.md)
 3. Consult Cloudflare and Terraform official documentation
 
 ---

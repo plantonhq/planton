@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 //
 // No AwsTags map here: every registry-level ECR resource this module
 // manages is untaggable at AWS (resource_tags on creation templates
@@ -16,7 +16,7 @@ type Locals struct {
 	Spec   *awsecrregistrysettingsv1alpha1.AwsEcrRegistrySettingsSpec
 }
 
-func initializeLocals(_ *pulumi.Context, in *awsecrregistrysettingsv1alpha1.AwsEcrRegistrySettingsStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awsecrregistrysettingsv1alpha1.AwsEcrRegistrySettingsIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec

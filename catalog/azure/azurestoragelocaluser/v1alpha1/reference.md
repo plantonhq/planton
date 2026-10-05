@@ -128,7 +128,7 @@ At least one of ssh_key_enabled / ssh_password_enabled must be on.
 
 Whether the user authenticates with an AZURE-GENERATED password.
 Azure mints the password at creation and returns it exactly once --
-it lands in the password stack output; there is no way to choose or
+it lands in the password output; there is no way to choose or
 retrieve it later (flipping this off and on regenerates it). At
 least one of ssh_key_enabled / ssh_password_enabled must be on.
 

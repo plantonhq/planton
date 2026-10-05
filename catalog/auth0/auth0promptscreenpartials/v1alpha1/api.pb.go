@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0PromptScreenPartials is a component that manages the HTML fragments one
+// Auth0PromptScreenPartials is a kind that manages the HTML fragments one
 // Universal Login prompt inserts at its named insertion points: extra form
 // fields, consent checkboxes, a note above the buttons, on each of the
 // prompt's screens.
@@ -63,12 +63,12 @@ type Auth0PromptScreenPartials struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "Auth0PromptScreenPartials" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the prompt and the partials of its screens.
 	Spec *Auth0PromptScreenPartialsSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the resource as applied, populated after deployment.
@@ -121,7 +121,7 @@ func (x *Auth0PromptScreenPartials) GetKind() string {
 	return ""
 }
 
-func (x *Auth0PromptScreenPartials) GetMetadata() *shared.CloudResourceMetadata {
+func (x *Auth0PromptScreenPartials) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -146,8 +146,8 @@ func (x *Auth0PromptScreenPartials) GetStatus() *Auth0PromptScreenPartialsStatus
 // Populated by the deployment system.
 type Auth0PromptScreenPartialsStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the prompt managed.
-	Outputs       *Auth0PromptScreenPartialsStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the prompt managed.
+	Outputs       *Auth0PromptScreenPartialsOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -182,7 +182,7 @@ func (*Auth0PromptScreenPartialsStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_auth0_auth0promptscreenpartials_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Auth0PromptScreenPartialsStatus) GetOutputs() *Auth0PromptScreenPartialsStackOutputs {
+func (x *Auth0PromptScreenPartialsStatus) GetOutputs() *Auth0PromptScreenPartialsOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -200,11 +200,11 @@ const file_catalog_auth0_auth0promptscreenpartials_v1alpha1_api_proto_rawDesc = 
 	"apiVersion\x124\n" +
 	"\x04kind\x18\x02 \x01(\tB \xbaH\x1dr\x1b\n" +
 	"\x19Auth0PromptScreenPartialsR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12o\n" +
 	"\x04spec\x18\x04 \x01(\v2S.dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12m\n" +
-	"\x06status\x18\x05 \x01(\v2U.dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsStatusR\x06status\"\x98\x01\n" +
-	"\x1fAuth0PromptScreenPartialsStatus\x12u\n" +
-	"\aoutputs\x18\x01 \x01(\v2[.dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsStackOutputsR\aoutputsB\xaa\x03\n" +
+	"\x06status\x18\x05 \x01(\v2U.dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsStatusR\x06status\"\x93\x01\n" +
+	"\x1fAuth0PromptScreenPartialsStatus\x12p\n" +
+	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsOutputsR\aoutputsB\xaa\x03\n" +
 	"8com.dev.planton.auth0.auth0promptscreenpartials.v1alpha1B\bApiProtoP\x01Zogithub.com/plantonhq/planton/catalog/auth0/auth0promptscreenpartials/v1alpha1;auth0promptscreenpartialsv1alpha1\xa2\x02\x04DPAA\xaa\x024Dev.Planton.Auth0.Auth0promptscreenpartials.V1alpha1\xca\x024Dev\\Planton\\Auth0\\Auth0promptscreenpartials\\V1alpha1\xe2\x02@Dev\\Planton\\Auth0\\Auth0promptscreenpartials\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Auth0::Auth0promptscreenpartials::V1alpha1b\x06proto3"
 
 var (
@@ -221,17 +221,17 @@ func file_catalog_auth0_auth0promptscreenpartials_v1alpha1_api_proto_rawDescGZIP
 
 var file_catalog_auth0_auth0promptscreenpartials_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_auth0_auth0promptscreenpartials_v1alpha1_api_proto_goTypes = []any{
-	(*Auth0PromptScreenPartials)(nil),             // 0: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartials
-	(*Auth0PromptScreenPartialsStatus)(nil),       // 1: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsStatus
-	(*shared.CloudResourceMetadata)(nil),          // 2: dev.planton.shared.CloudResourceMetadata
-	(*Auth0PromptScreenPartialsSpec)(nil),         // 3: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsSpec
-	(*Auth0PromptScreenPartialsStackOutputs)(nil), // 4: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsStackOutputs
+	(*Auth0PromptScreenPartials)(nil),        // 0: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartials
+	(*Auth0PromptScreenPartialsStatus)(nil),  // 1: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsStatus
+	(*shared.CatalogObjectMetadata)(nil),     // 2: dev.planton.shared.CatalogObjectMetadata
+	(*Auth0PromptScreenPartialsSpec)(nil),    // 3: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsSpec
+	(*Auth0PromptScreenPartialsOutputs)(nil), // 4: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsOutputs
 }
 var file_catalog_auth0_auth0promptscreenpartials_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartials.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartials.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartials.spec:type_name -> dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsSpec
 	1, // 2: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartials.status:type_name -> dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsStatus
-	4, // 3: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsStatus.outputs:type_name -> dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsStackOutputs
+	4, // 3: dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsStatus.outputs:type_name -> dev.planton.auth0.auth0promptscreenpartials.v1alpha1.Auth0PromptScreenPartialsOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

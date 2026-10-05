@@ -4,7 +4,7 @@ Declares one Locust load-testing cluster -- the open-source tool that simulates 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **Script ConfigMaps** (inline scripts) -- `<name>-locustfile` holding your locustfile as `main.py`, and `<name>-lib` holding supporting modules mounted at `lib/`; a content-hash annotation on the pod template rolls the pods when scripts change
@@ -75,7 +75,7 @@ spec:
 planton apply -f load-test.yaml
 ```
 
-This creates a one-master, two-worker Locust cluster in the `load-test` namespace with the inline script rendered as a ConfigMap and the web-UI login ON with a module-generated credential. A Stack Job tracks the provisioning in real time.
+This creates a one-master, two-worker Locust cluster in the `load-test` namespace with the inline script rendered as a ConfigMap and the web-UI login ON with a module-generated credential. An Infra Job tracks the provisioning in real time.
 
 Read the generated password with:
 
@@ -86,7 +86,7 @@ kubectl get secret load-test-auth -n load-test \
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the swarm to a namespace managed by another Cloud Resource -- and point `targetHost` at an endpoint another resource exports:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the swarm to a namespace managed by another Infra Component -- and point `targetHost` at an endpoint another resource exports:
 
 ```yaml
 spec:
@@ -124,7 +124,7 @@ These are the most important decisions when configuring a Locust cluster. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -132,9 +132,9 @@ These are the most important decisions when configuring a Locust cluster. Explor
 
 `loadTest.targetHost` also accepts a ValueFromRef against ANY resource's exported endpoint -- load-test the services you already declare -- and same-namespace Secrets/ConfigMaps named by `envFromSecrets`, `envFromSecretKeys`, and existing script ConfigMaps are read by the pods at runtime.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -160,8 +160,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the placement unit this kind installs into
-- [**KEDA**](/cloud-catalog/kubernetes-keda) -- the operator the KEDA autoscaling arm requires
-- [**Kubernetes NetworkPolicy**](/cloud-catalog/kubernetes-network-policy) -- fence who can reach the master Service (defense in depth beside the login)
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- compose real exposure over `master_service` when engineers need the UI beyond the cluster
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) -- the Ingress-based alternative for exposing the web UI
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the placement unit this kind installs into
+- [**KEDA**](/infra-catalog/kubernetes-keda) -- the operator the KEDA autoscaling arm requires
+- [**Kubernetes NetworkPolicy**](/infra-catalog/kubernetes-network-policy) -- fence who can reach the master Service (defense in depth beside the login)
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- compose real exposure over `master_service` when engineers need the UI beyond the cluster
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) -- the Ingress-based alternative for exposing the web UI

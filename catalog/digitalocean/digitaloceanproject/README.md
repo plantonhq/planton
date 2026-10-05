@@ -2,11 +2,11 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_project` resource at the pinned provider version.
 
-## What this component models
+## What this kind models
 
 A DigitalOcean project -- the account-level container that organizes droplets, load balancers, domains, buckets, and most other resources into named groups with a purpose and an environment. Membership is carried here on the project itself as resource URNs; DigitalOcean's standalone partial-ownership membership resource is deliberately not modeled (one project object owns its full membership list, which is also how the API reports it back).
 
-The component covers the provider's full argument surface:
+The kind covers the provider's full argument surface:
 
 - `project_name` -- the display name (1-175 characters)
 - `description` -- optional free text (up to 255 characters)

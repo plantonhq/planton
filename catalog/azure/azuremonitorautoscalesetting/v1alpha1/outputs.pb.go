@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMonitorAutoscaleSettingStackOutputs** captures the outputs from
+// **AzureMonitorAutoscaleSettingOutputs** captures the outputs from
 // provisioning an Azure Monitor autoscale setting.
-type AzureMonitorAutoscaleSettingStackOutputs struct {
+type AzureMonitorAutoscaleSettingOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The autoscale setting's ARM resource ID
 	// (.../providers/Microsoft.Insights/autoScaleSettings/{name}).
@@ -34,20 +34,20 @@ type AzureMonitorAutoscaleSettingStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *AzureMonitorAutoscaleSettingStackOutputs) Reset() {
-	*x = AzureMonitorAutoscaleSettingStackOutputs{}
+func (x *AzureMonitorAutoscaleSettingOutputs) Reset() {
+	*x = AzureMonitorAutoscaleSettingOutputs{}
 	mi := &file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMonitorAutoscaleSettingStackOutputs) String() string {
+func (x *AzureMonitorAutoscaleSettingOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMonitorAutoscaleSettingStackOutputs) ProtoMessage() {}
+func (*AzureMonitorAutoscaleSettingOutputs) ProtoMessage() {}
 
-func (x *AzureMonitorAutoscaleSettingStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMonitorAutoscaleSettingOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AzureMonitorAutoscaleSettingStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMonitorAutoscaleSettingStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMonitorAutoscaleSettingStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMonitorAutoscaleSettingOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMonitorAutoscaleSettingOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMonitorAutoscaleSettingStackOutputs) GetAutoscaleSettingId() string {
+func (x *AzureMonitorAutoscaleSettingOutputs) GetAutoscaleSettingId() string {
 	if x != nil {
 		return x.AutoscaleSettingId
 	}
 	return ""
 }
 
-func (x *AzureMonitorAutoscaleSettingStackOutputs) GetAutoscaleSettingName() string {
+func (x *AzureMonitorAutoscaleSettingOutputs) GetAutoscaleSettingName() string {
 	if x != nil {
 		return x.AutoscaleSettingName
 	}
@@ -82,8 +82,8 @@ var File_catalog_azure_azuremonitorautoscalesetting_v1alpha1_outputs_proto proto
 
 const file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/azure/azuremonitorautoscalesetting/v1alpha1/outputs.proto\x127dev.planton.azure.azuremonitorautoscalesetting.v1alpha1\"\x92\x01\n" +
-	"(AzureMonitorAutoscaleSettingStackOutputs\x120\n" +
+	"Acatalog/azure/azuremonitorautoscalesetting/v1alpha1/outputs.proto\x127dev.planton.azure.azuremonitorautoscalesetting.v1alpha1\"\x8d\x01\n" +
+	"#AzureMonitorAutoscaleSettingOutputs\x120\n" +
 	"\x14autoscale_setting_id\x18\x01 \x01(\tR\x12autoscaleSettingId\x124\n" +
 	"\x16autoscale_setting_name\x18\x02 \x01(\tR\x14autoscaleSettingNameB\xc3\x03\n" +
 	";com.dev.planton.azure.azuremonitorautoscalesetting.v1alpha1B\fOutputsProtoP\x01Zugithub.com/plantonhq/planton/catalog/azure/azuremonitorautoscalesetting/v1alpha1;azuremonitorautoscalesettingv1alpha1\xa2\x02\x04DPAA\xaa\x027Dev.Planton.Azure.Azuremonitorautoscalesetting.V1alpha1\xca\x027Dev\\Planton\\Azure\\Azuremonitorautoscalesetting\\V1alpha1\xe2\x02CDev\\Planton\\Azure\\Azuremonitorautoscalesetting\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Azure::Azuremonitorautoscalesetting::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_outputs_proto_rawD
 
 var file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMonitorAutoscaleSettingStackOutputs)(nil), // 0: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingStackOutputs
+	(*AzureMonitorAutoscaleSettingOutputs)(nil), // 0: dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingOutputs
 }
 var file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

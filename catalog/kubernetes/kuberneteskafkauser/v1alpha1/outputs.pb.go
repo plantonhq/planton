@@ -22,11 +22,11 @@ const (
 )
 
 // *
-// **KubernetesKafkaUserStackOutputs** — the handles a declared Kafka
+// **KubernetesKafkaUserOutputs** — the handles a declared Kafka
 // user exports for composition. Workloads mount or env-reference the
 // credentials Secret; the bootstrap endpoint comes from the
 // KubernetesKafka resource's own outputs.
-type KubernetesKafkaUserStackOutputs struct {
+type KubernetesKafkaUserOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the KafkaUser resource lives in (the Kafka cluster's
 	// namespace).
@@ -45,20 +45,20 @@ type KubernetesKafkaUserStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesKafkaUserStackOutputs) Reset() {
-	*x = KubernetesKafkaUserStackOutputs{}
+func (x *KubernetesKafkaUserOutputs) Reset() {
+	*x = KubernetesKafkaUserOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteskafkauser_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKafkaUserStackOutputs) String() string {
+func (x *KubernetesKafkaUserOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKafkaUserStackOutputs) ProtoMessage() {}
+func (*KubernetesKafkaUserOutputs) ProtoMessage() {}
 
-func (x *KubernetesKafkaUserStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKafkaUserOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskafkauser_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,26 +70,26 @@ func (x *KubernetesKafkaUserStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKafkaUserStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKafkaUserStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKafkaUserOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKafkaUserOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskafkauser_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKafkaUserStackOutputs) GetNamespace() string {
+func (x *KubernetesKafkaUserOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesKafkaUserStackOutputs) GetUsername() string {
+func (x *KubernetesKafkaUserOutputs) GetUsername() string {
 	if x != nil {
 		return x.Username
 	}
 	return ""
 }
 
-func (x *KubernetesKafkaUserStackOutputs) GetSecretName() string {
+func (x *KubernetesKafkaUserOutputs) GetSecretName() string {
 	if x != nil {
 		return x.SecretName
 	}
@@ -100,8 +100,8 @@ var File_catalog_kubernetes_kuberneteskafkauser_v1alpha1_outputs_proto protorefl
 
 const file_catalog_kubernetes_kuberneteskafkauser_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/kubernetes/kuberneteskafkauser/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kuberneteskafkauser.v1alpha1\"|\n" +
-	"\x1fKubernetesKafkaUserStackOutputs\x12\x1c\n" +
+	"=catalog/kubernetes/kuberneteskafkauser/v1alpha1/outputs.proto\x123dev.planton.kubernetes.kuberneteskafkauser.v1alpha1\"w\n" +
+	"\x1aKubernetesKafkaUserOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x1a\n" +
 	"\busername\x18\x02 \x01(\tR\busername\x12\x1f\n" +
 	"\vsecret_name\x18\x03 \x01(\tR\n" +
@@ -122,7 +122,7 @@ func file_catalog_kubernetes_kuberneteskafkauser_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_kubernetes_kuberneteskafkauser_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskafkauser_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKafkaUserStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskafkauser.v1alpha1.KubernetesKafkaUserStackOutputs
+	(*KubernetesKafkaUserOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskafkauser.v1alpha1.KubernetesKafkaUserOutputs
 }
 var file_catalog_kubernetes_kuberneteskafkauser_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

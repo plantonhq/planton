@@ -35,7 +35,7 @@ home; each kind's `GUIDE.md` carries only its own judgment.
 
 | Choose | When |
 |---|---|
-| Assembled | The cluster already runs kube-prometheus-stack (most do); teams want Grafana; pieces must scale or be swapped independently; monitoring CRDs (ServiceMonitor et al.) are expected by other components |
+| Assembled | The cluster already runs kube-prometheus-stack (most do); teams want Grafana; pieces must scale or be swapped independently; monitoring CRDs (ServiceMonitor et al.) are expected by other kinds |
 | Signoz | One team wants one tool for all three signals; ClickHouse expertise exists (or the ClickHouse pair is composed anyway); minimizing the number of moving products outweighs per-piece flexibility |
 
 Neither is a workaround — both are first-class. What is NOT first-class:
@@ -420,7 +420,7 @@ for a workload whose Service names its metrics port, a
 [KubernetesPodMonitor](../kubernetes/kubernetespodmonitor/GUIDE.md) for
 pods no Service exposes (a database operator's instances, a DaemonSet's
 exporters). Never a raw scrape config in the stack's `helm_values`, and
-never a component's own monitor toggle where the monitor needs settings the
+never a kind's own monitor toggle where the monitor needs settings the
 toggle doesn't carry.
 
 - **Put the monitor where it can install: beside the workload, or as a
@@ -1127,7 +1127,7 @@ spec:
   same holds in alert rules, where a refused evaluation is a silent blind
   spot.
 - **Provisioned dashboards are read-only**, even for an Admin, and the
-  rest of the rules (delimiters in an infra chart, `schemaVersion`,
+  rest of the rules (delimiters in an Infra Chart, `schemaVersion`,
   catching a hand-made copy) are in the `KubernetesGrafana` guide,
   "Dashboards as code".
 

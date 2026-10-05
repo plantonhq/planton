@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1;
 import "catalog/gcp/gcpbigquerycapacitycommitment/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-bigquery-capacity-commitment stack-input
-message GcpBigQueryCapacityCommitmentStackInput {
-  //target cloud-resource
+//gcp-bigquery-capacity-commitment iac-input
+message GcpBigQueryCapacityCommitmentIacInput {
+  // the catalog object to deploy
   GcpBigQueryCapacityCommitment target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

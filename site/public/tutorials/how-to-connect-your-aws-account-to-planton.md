@@ -290,7 +290,7 @@ planton connection default list
 
 Your AWS account is now connected to Planton. From here, you can:
 
-- **Deploy AWS infrastructure** through the Cloud Catalog -- ECS clusters, RDS databases, VPCs, and more
+- **Deploy AWS infrastructure** through the Infra Catalog -- ECS clusters, RDS databases, VPCs, and more
 - **Connect additional AWS accounts** by repeating this process (organizations commonly have separate connections for production and non-production accounts)
 - **Scope connection access** by creating provider connection authorizations that control which connections are allowed in which environments
 

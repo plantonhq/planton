@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsKinesisStreamConsumerStackOutputs captures observable identifiers from a
+// AwsKinesisStreamConsumerOutputs captures observable identifiers from a
 // registered Kinesis enhanced fan-out consumer. These outputs are used by
 // downstream configurations (e.g., Lambda event source mappings with enhanced
 // fan-out) to wire dependencies via StringValueOrRef.
-type AwsKinesisStreamConsumerStackOutputs struct {
+type AwsKinesisStreamConsumerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Amazon Resource Name (ARN) of the registered stream consumer. This is
 	// the primary identifier used for Lambda event source mappings configured
@@ -49,20 +49,20 @@ type AwsKinesisStreamConsumerStackOutputs struct {
 	sizeCache         protoimpl.SizeCache
 }
 
-func (x *AwsKinesisStreamConsumerStackOutputs) Reset() {
-	*x = AwsKinesisStreamConsumerStackOutputs{}
+func (x *AwsKinesisStreamConsumerOutputs) Reset() {
+	*x = AwsKinesisStreamConsumerOutputs{}
 	mi := &file_catalog_aws_awskinesisstreamconsumer_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsKinesisStreamConsumerStackOutputs) String() string {
+func (x *AwsKinesisStreamConsumerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsKinesisStreamConsumerStackOutputs) ProtoMessage() {}
+func (*AwsKinesisStreamConsumerOutputs) ProtoMessage() {}
 
-func (x *AwsKinesisStreamConsumerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsKinesisStreamConsumerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awskinesisstreamconsumer_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -74,33 +74,33 @@ func (x *AwsKinesisStreamConsumerStackOutputs) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsKinesisStreamConsumerStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsKinesisStreamConsumerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsKinesisStreamConsumerOutputs.ProtoReflect.Descriptor instead.
+func (*AwsKinesisStreamConsumerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awskinesisstreamconsumer_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsKinesisStreamConsumerStackOutputs) GetConsumerArn() string {
+func (x *AwsKinesisStreamConsumerOutputs) GetConsumerArn() string {
 	if x != nil {
 		return x.ConsumerArn
 	}
 	return ""
 }
 
-func (x *AwsKinesisStreamConsumerStackOutputs) GetConsumerName() string {
+func (x *AwsKinesisStreamConsumerOutputs) GetConsumerName() string {
 	if x != nil {
 		return x.ConsumerName
 	}
 	return ""
 }
 
-func (x *AwsKinesisStreamConsumerStackOutputs) GetStreamArn() string {
+func (x *AwsKinesisStreamConsumerOutputs) GetStreamArn() string {
 	if x != nil {
 		return x.StreamArn
 	}
 	return ""
 }
 
-func (x *AwsKinesisStreamConsumerStackOutputs) GetCreationTimestamp() string {
+func (x *AwsKinesisStreamConsumerOutputs) GetCreationTimestamp() string {
 	if x != nil {
 		return x.CreationTimestamp
 	}
@@ -111,8 +111,8 @@ var File_catalog_aws_awskinesisstreamconsumer_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_aws_awskinesisstreamconsumer_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/aws/awskinesisstreamconsumer/v1alpha1/outputs.proto\x121dev.planton.aws.awskinesisstreamconsumer.v1alpha1\"\xbc\x01\n" +
-	"$AwsKinesisStreamConsumerStackOutputs\x12!\n" +
+	";catalog/aws/awskinesisstreamconsumer/v1alpha1/outputs.proto\x121dev.planton.aws.awskinesisstreamconsumer.v1alpha1\"\xb7\x01\n" +
+	"\x1fAwsKinesisStreamConsumerOutputs\x12!\n" +
 	"\fconsumer_arn\x18\x01 \x01(\tR\vconsumerArn\x12#\n" +
 	"\rconsumer_name\x18\x02 \x01(\tR\fconsumerName\x12\x1d\n" +
 	"\n" +
@@ -134,7 +134,7 @@ func file_catalog_aws_awskinesisstreamconsumer_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_aws_awskinesisstreamconsumer_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awskinesisstreamconsumer_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsKinesisStreamConsumerStackOutputs)(nil), // 0: dev.planton.aws.awskinesisstreamconsumer.v1alpha1.AwsKinesisStreamConsumerStackOutputs
+	(*AwsKinesisStreamConsumerOutputs)(nil), // 0: dev.planton.aws.awskinesisstreamconsumer.v1alpha1.AwsKinesisStreamConsumerOutputs
 }
 var file_catalog_aws_awskinesisstreamconsumer_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

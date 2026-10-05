@@ -44,7 +44,7 @@ A PodMonitor endpoint reads its TLS material only from Secrets and ConfigMaps. U
 
 ## Credentials are references
 
-Every Secret and ConfigMap an endpoint reads is a selector whose `name` defaults to a reference to a KubernetesSecret or KubernetesConfigMap. In an infra chart, reference the Secret resource: the graph shows the dependency and creates the Secret before the monitor. Prefer `authorization` or `oauth2` over `basic_auth`, and over the deprecated `bearer_token_secret`.
+Every Secret and ConfigMap an endpoint reads is a selector whose `name` defaults to a reference to a KubernetesSecret or KubernetesConfigMap. In an Infra Chart, reference the Secret resource: the graph shows the dependency and creates the Secret before the monitor. Prefer `authorization` or `oauth2` over `basic_auth`, and over the deprecated `bearer_token_secret`.
 
 ## Bound what one target can cost
 

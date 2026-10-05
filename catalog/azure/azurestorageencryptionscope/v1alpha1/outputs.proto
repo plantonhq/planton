@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurestorageencryptionscope.v1alpha1;
 
-// **AzureStorageEncryptionScopeStackOutputs** captures the outputs of
+// **AzureStorageEncryptionScopeOutputs** captures the outputs of
 // provisioning an encryption scope.
-message AzureStorageEncryptionScopeStackOutputs {
+message AzureStorageEncryptionScopeOutputs {
   // The Azure Resource Manager ID of the encryption scope.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Storage/storageAccounts/{account}/encryptionScopes/{name}
   string encryption_scope_id = 1;

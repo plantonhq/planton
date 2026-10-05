@@ -3,7 +3,7 @@ package module
 import (
 	"strconv"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 
 	awsecsservicev1alpha1 "github.com/plantonhq/planton/catalog/aws/awsecsservice/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
@@ -18,11 +18,11 @@ type Locals struct {
 	AwsTags       map[string]string
 }
 
-// initializeLocals pulls values from the stack input (AwsEcsServiceStackInput)
+// initializeLocals pulls values from the IaC input (AwsEcsServiceIacInput)
 // and populates the Locals struct. Similar to Terraform "locals" concept.
-func initializeLocals(ctx *pulumi.Context, stackInput *awsecsservicev1alpha1.AwsEcsServiceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awsecsservicev1alpha1.AwsEcsServiceIacInput) *Locals {
 	locals := &Locals{
-		AwsEcsService: stackInput.Target,
+		AwsEcsService: iacInput.Target,
 	}
 
 	locals.AwsTags = map[string]string{
@@ -30,7 +30,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *awsecsservicev1alpha1.Aws
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsEcsService.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsEcsService.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsEcsService.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsEcsService.String(),
 		awstagkeys.ResourceId:   locals.AwsEcsService.Metadata.Id,
 	}
 

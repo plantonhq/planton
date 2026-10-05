@@ -5,10 +5,10 @@ package dev.planton.kubernetes.kubernetesgatewayapicrds.v1alpha1;
 import "catalog/kubernetes/kubernetesgatewayapicrds/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesGatewayApiCrdsStackInput provides the inputs for deploying
+// KubernetesGatewayApiCrdsIacInput provides the inputs for deploying
 // Gateway API CRDs to a Kubernetes cluster.
-message KubernetesGatewayApiCrdsStackInput {
-  // target cloud-resource
+message KubernetesGatewayApiCrdsIacInput {
+  // the catalog object to deploy
   KubernetesGatewayApiCrds target = 1;
   // provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

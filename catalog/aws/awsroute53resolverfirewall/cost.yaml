@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsroute53resolverfirewall
 spec:
@@ -38,4 +38,4 @@ spec:
     - queries inspected by domain-list rules bill $0.60 per million for the first billion each month and $0.40 per million beyond (us-east-1) -- query volume is the associated VPCs' workload DNS behavior, unknowable to this manifest
     - AWS-managed domain lists referenced by domain_list_id bill no storage on this account -- only domains in OWNED lists meter here
     - ALERT and BLOCK visibility rides Resolver Query Logging, a separate VPC-level resource whose log destinations bill their own components
-  notes: "The price structure pivots on WHAT rules match by, not what they do: ALLOW, ALERT, and BLOCK all cost the same, but list-based matching bills per stored domain plus per inspected query while threat-class matching (Advanced) bills a flat hourly fee per associated VPC. The committed quantities live inside nested repeated fields -- total domains across domain_lists, and whether any rules entry carries dns_threat_protection -- which the derivation grammar cannot traverse, so this component is hand-modeled per preset."
+  notes: "The price structure pivots on WHAT rules match by, not what they do: ALLOW, ALERT, and BLOCK all cost the same, but list-based matching bills per stored domain plus per inspected query while threat-class matching (Advanced) bills a flat hourly fee per associated VPC. The committed quantities live inside nested repeated fields -- total domains across domain_lists, and whether any rules entry carries dns_threat_protection -- which the derivation grammar cannot traverse, so this kind is hand-modeled per preset."

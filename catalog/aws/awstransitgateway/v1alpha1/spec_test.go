@@ -19,7 +19,7 @@ func validEnvelope(spec *AwsTransitGatewaySpec) *AwsTransitGateway {
 	return &AwsTransitGateway{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsTransitGateway",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-tgw"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-tgw"},
 		Spec:       spec,
 	}
 }

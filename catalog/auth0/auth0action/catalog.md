@@ -1,10 +1,10 @@
 # Auth0 Action
 
-Deploys an Auth0 Action — a versioned Node.js function that executes at a chosen point in the Auth0 pipeline — with its trigger, source code, runtime, npm dependencies, and encrypted secrets managed as one Cloud Resource. Supports all ten trigger types, from post-login token enrichment to custom email and phone providers, and can optionally bind the deployed action into its trigger flow so it starts executing immediately.
+Deploys an Auth0 Action — a versioned Node.js function that executes at a chosen point in the Auth0 pipeline — with its trigger, source code, runtime, npm dependencies, and encrypted secrets managed as one Infra Component. Supports all ten trigger types, from post-login token enrichment to custom email and phone providers, and can optionally bind the deployed action into its trigger flow so it starts executing immediately.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Auth0 Action** — a versioned Node.js function registered in Auth0 with the specified trigger, source code, runtime, npm dependencies, and encrypted secrets
 - **Auth0 Trigger Binding** — created only when `triggerBinding` is set; attaches the deployed action to its trigger flow so it executes during the corresponding pipeline stage
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Auth0 Provider Connection** — an active connection in the Connect module with Auth0 domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Auth0 Provider Connection** — an active connection in the Connect module with Auth0 domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Auth0 Account
@@ -54,7 +54,7 @@ spec:
 planton apply -f auth0-action.yaml
 ```
 
-This creates a post-login action, deploys it as an immutable version, and binds it to the post-login trigger flow — no dependencies or secrets configured. A Stack Job tracks the provisioning in real time.
+This creates a post-login action, deploys it as an immutable version, and binds it to the post-login trigger flow — no dependencies or secrets configured. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -74,13 +74,13 @@ These are the most important decisions when configuring an Auth0 Action. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -99,5 +99,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Auth0 Role**](/cloud-catalog/auth0-role) — role assignments populate the `event.authorization.roles` that post-login actions read when enriching tokens
-- [**Auth0 Resource Server (API)**](/cloud-catalog/auth0-resource-server) — the APIs whose access tokens post-login and credentials-exchange actions enrich and gate
+- [**Auth0 Role**](/infra-catalog/auth0-role) — role assignments populate the `event.authorization.roles` that post-login actions read when enriching tokens
+- [**Auth0 Resource Server (API)**](/infra-catalog/auth0-resource-server) — the APIs whose access tokens post-login and credentials-exchange actions enrich and gate

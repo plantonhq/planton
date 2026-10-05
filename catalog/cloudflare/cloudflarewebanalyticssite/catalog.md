@@ -4,7 +4,7 @@ Deploys a Cloudflare Web Analytics (RUM) site: privacy-first real-user monitorin
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Web Analytics Site** — one RUM site on the account, identified by `host` or `zoneTag`
 - **Measurement Rules** — created only when `rules` is non-empty; one include/exclude rule object per declared row, in order, under the site's ruleset
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Account → Account Settings → Write. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Account → Account Settings → Write. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
@@ -47,7 +47,7 @@ spec:
 planton apply -f web-analytics-site.yaml
 ```
 
-This creates a hostname-identified site measuring `www.acme.com` with the full beacon and no rules — embed the `snippet` output in your pages to start collecting. A Stack Job tracks the provisioning in real time.
+This creates a hostname-identified site measuring `www.acme.com` with the full beacon and no rules — embed the `snippet` output in your pages to start collecting. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,15 +84,15 @@ These are the most important decisions when configuring a Web Analytics site. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** (zone-measured sites) | `zoneTag` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -113,6 +113,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — the zone a zone-measured site references via `zoneTag`
-- [**Cloudflare Logpush Job**](/cloud-catalog/cloudflare-logpush-job) — the server-side view of the same traffic, including non-browser requests
-- [**Cloudflare Notification Policy**](/cloud-catalog/cloudflare-notification-policy) — alerting on the web-analytics metrics family
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — the zone a zone-measured site references via `zoneTag`
+- [**Cloudflare Logpush Job**](/infra-catalog/cloudflare-logpush-job) — the server-side view of the same traffic, including non-browser requests
+- [**Cloudflare Notification Policy**](/infra-catalog/cloudflare-notification-policy) — alerting on the web-analytics metrics family

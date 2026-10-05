@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpvertexaiagentengine.v1alpha1;
 
-// GcpVertexAiAgentEngineStackOutputs captures what the Agent Engine
+// GcpVertexAiAgentEngineOutputs captures what the Agent Engine
 // instance resolved to.
-message GcpVertexAiAgentEngineStackOutputs {
+message GcpVertexAiAgentEngineOutputs {
   // Full resource name of the agent:
   // projects/{project}/locations/{location}/reasoningEngines/{id} -- what
   // the Vertex AI SDK's `agent_engines.get()` and a `:query` call take.

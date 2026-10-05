@@ -30,7 +30,7 @@ running VM, not at creation.
 
 ## Inputs
 
-The module receives an `AzureNetworkInterfaceStackInput` containing:
+The module receives an `AzureNetworkInterfaceIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the NIC's ARM identity (references resolved to literals by the platform)
 - `target.spec.ip_configurations` -- at least one; each places a private address in a subnet (DYNAMIC or STATIC allocation, IPv4 or IPv6) and may front a public IP. With multiple, the first must be primary (ARM's contract, spec-enforced)

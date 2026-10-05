@@ -4,7 +4,7 @@ Accepts the marketplace agreement that entitles an AWS account, in one region, t
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Foundation Model Agreement** — acceptance of the model's public offer, with the short-lived offer token resolved fresh at deploy time; create waits until the agreement reaches AVAILABLE (commonly seconds to a few minutes)
 - **Use-Case Form** — created only when `useCaseForm` is set: the account's use-case-for-model-access record. This is an account-global, write-once object — the module puts it (a re-put of identical content is a no-op; differing content fails loudly), and deleting the component never removes it because AWS provides no delete.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Bedrock marketplace permissions (`bedrock:CreateFoundationModelAgreement`, `bedrock:ListFoundationModelAgreementOffers`, `bedrock:PutUseCaseForModelAccess` and their read/delete siblings, plus the `aws-marketplace:Subscribe` family). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Bedrock marketplace permissions (`bedrock:CreateFoundationModelAgreement`, `bedrock:ListFoundationModelAgreementOffers`, `bedrock:PutUseCaseForModelAccess` and their read/delete siblings, plus the `aws-marketplace:Subscribe` family). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -46,13 +46,13 @@ spec:
 planton apply -f model-access.yaml
 ```
 
-This accepts Cohere Command R's public offer in us-west-2 — the account can invoke the model there once the agreement reaches AVAILABLE. A Stack Job tracks the provisioning in real time.
+This accepts Cohere Command R's public offer in us-west-2 — the account can invoke the model there once the agreement reaches AVAILABLE. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
 These are the most important decisions when configuring model access. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Many models need no agreement at all** — auto-enabled models (Amazon first-party, Mistral, Meta) reject the offers API with "Agreement not supported for this model"; deploying this component for one fails. Probe with `aws bedrock list-foundation-model-agreement-offers --model-id <id>` before adding an instance: this component is for the models that DO carry marketplace offers (Cohere, Anthropic, and other third-party vendors).
+**Many models need no agreement at all** — auto-enabled models (Amazon first-party, Mistral, Meta) reject the offers API with "Agreement not supported for this model"; deploying this component for one fails. Probe with `aws bedrock list-foundation-model-agreement-offers --model-id <id>` before adding an instance: this kind is for the models that DO carry marketplace offers (Cohere, Anthropic, and other third-party vendors).
 
 **The use-case form has exactly one owner** — AWS keeps ONE form per account, write-once: a re-put of different content errors loudly and there is no delete. Keep the form in exactly one instance (the Anthropic-access one) and omit it everywhere else; two instances with differing forms will fight.
 
@@ -64,13 +64,13 @@ These are the most important decisions when configuring model access. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — `modelId` names an AWS-catalog foundation model, not a platform-managed resource, and the offer token is resolved by the modules at deploy time.
+This kind has no foreign key dependencies — `modelId` names an AWS-catalog foundation model, not a platform-managed resource, and the offer token is resolved by the modules at deploy time.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -88,7 +88,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Bedrock Agent**](/cloud-catalog/aws-bedrock-agent) — agents on marketplace models need this agreement in place before they can prepare
-- [**AWS Bedrock Provisioned Throughput**](/cloud-catalog/aws-bedrock-provisioned-throughput) — capacity purchases for a model require the account to have access first
-- [**AWS Bedrock Inference Profile**](/cloud-catalog/aws-bedrock-inference-profile) — application profiles over a marketplace model presume the agreement exists
-- [**AWS Bedrock Custom Model**](/cloud-catalog/aws-bedrock-custom-model) — customization jobs on a marketplace base model require access to it
+- [**AWS Bedrock Agent**](/infra-catalog/aws-bedrock-agent) — agents on marketplace models need this agreement in place before they can prepare
+- [**AWS Bedrock Provisioned Throughput**](/infra-catalog/aws-bedrock-provisioned-throughput) — capacity purchases for a model require the account to have access first
+- [**AWS Bedrock Inference Profile**](/infra-catalog/aws-bedrock-inference-profile) — application profiles over a marketplace model presume the agreement exists
+- [**AWS Bedrock Custom Model**](/infra-catalog/aws-bedrock-custom-model) — customization jobs on a marketplace base model require access to it

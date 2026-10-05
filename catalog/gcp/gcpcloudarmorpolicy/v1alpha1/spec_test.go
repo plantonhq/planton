@@ -29,7 +29,7 @@ var _ = ginkgo.Describe("GcpCloudArmorPolicySpec", func() {
 		return &GcpCloudArmorPolicy{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudArmorPolicy",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-policy",
 			},
 			Spec: &GcpCloudArmorPolicySpec{

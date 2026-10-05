@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurefrontdoororigin
 spec:
   billing_model: free
   free_tier: The origin itself -- the backend address, ports, priority, weight, certificate check, and Private Link wiring -- never bills. Azure charges for the traffic Front Door moves and for the backend the origin points at, never for the origin resource.
-  notes: "No field of this spec buys anything directly: the origin is configuration inside a Front Door origin group, and Front Door billing lives on the PROFILE at the top of the graph -- a base fee per its own SKU plus requests and egress, a separate catalog kind. private_link adds no meter of its own, but it is a PREMIUM-profile capability, so the premium SKU's higher rates bill on the profile. The backend the origin addresses (a web app, storage account, load balancer) bills as its own catalog kind."
+  notes: "No field of this spec buys anything directly: the origin is configuration inside a Front Door origin group, and Front Door billing lives on the PROFILE at the top of the graph -- a base fee per its own SKU plus requests and egress, a separate catalog kind. private_link adds no meter of its own, but it is a PREMIUM-profile capability, so the premium SKU's higher rates bill on the profile. The backend the origin addresses (a web app, storage account, load balancer) bills as its own component."

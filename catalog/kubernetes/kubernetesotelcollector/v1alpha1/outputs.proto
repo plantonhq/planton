@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesotelcollector.v1alpha1;
 
-//otel-collector-kubernetes stack outputs
-message KubernetesOtelCollectorStackOutputs {
+//otel-collector-kubernetes outputs
+message KubernetesOtelCollectorOutputs {
   //namespace the collector runs in.
   string namespace = 1;
 

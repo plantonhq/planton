@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsbedrockprompt
 spec:
@@ -7,7 +7,7 @@ spec:
   values:
     - name: prompt_id
       derivations:
-        - from_stack_output: prompt_id
+        - from_output: prompt_id
       where_to_find: >-
         Bedrock console -> Prompt management -> <prompt> (the ID), or
         `aws bedrock-agent list-prompts` (id).

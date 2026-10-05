@@ -38,7 +38,7 @@ func validResource() *AzureMachineLearningWorkspace {
 	return &AzureMachineLearningWorkspace{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMachineLearningWorkspace",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ml-workspace",
 		},
 		Spec: &AzureMachineLearningWorkspaceSpec{

@@ -4,9 +4,9 @@ Provision and manage individual DNS records in Cloudflare zones using Planton's 
 
 ## Overview
 
-Cloudflare DNS provides authoritative DNS served from a global anycast network, with built-in DDoS protection, zero per-query charges, and optional integrated CDN/WAF/proxy capabilities. This component manages a single DNS record within a Cloudflare-managed zone and covers the full Cloudflare record surface — every record type, structured record data, tags, and record-level settings.
+Cloudflare DNS provides authoritative DNS served from a global anycast network, with built-in DDoS protection, zero per-query charges, and optional integrated CDN/WAF/proxy capabilities. This kind manages a single DNS record within a Cloudflare-managed zone and covers the full Cloudflare record surface — every record type, structured record data, tags, and record-level settings.
 
-A record is either **simple** (its value is a presentation-format string in `content`, written as a literal or read from another resource's output) or **structured** (its components are supplied through a typed `data` block). The component validates which representation a given type requires.
+A record is either **simple** (its value is a presentation-format string in `content`, written as a literal or read from another resource's output) or **structured** (its components are supplied through a typed `data` block). The kind validates which representation a given type requires.
 
 ## Key Features
 
@@ -19,7 +19,7 @@ A record is either **simple** (its value is a presentation-format string in `con
 
 ## Prerequisites
 
-1. **Cloudflare DNS Zone**: an existing zone where records will be created (use the CloudflareDnsZone component)
+1. **Cloudflare DNS Zone**: an existing zone where records will be created (use the CloudflareDnsZone kind)
 2. **Zone ID**: the Cloudflare Zone ID (from CloudflareDnsZone outputs or the dashboard)
 3. **API Token**: a Cloudflare API token with `DNS:Edit`
 4. **Planton CLI**: install from [planton.dev](https://planton.dev)
@@ -152,9 +152,10 @@ Structured types use the matching top-level typed block: CAA, CERT, DNSKEY, DS, 
 | `record_type` | The DNS record type that was created |
 | `proxied` | Whether the record is proxied through Cloudflare |
 
+Read them from the deployed resource, under `status.outputs` (`recordId`, `recordName`, and so on):
+
 ```bash
-planton output record_id
-planton output record_name
+planton get CloudflareDnsRecord www-a-record -o yaml
 ```
 
 ## Orange Cloud vs Grey Cloud
@@ -168,7 +169,7 @@ Only A, AAAA, and CNAME records can be proxied.
 
 ## Terraform and Pulumi
 
-This component supports both Pulumi (default) and Terraform, producing identical infrastructure:
+This kind supports both Pulumi (default) and Terraform, producing identical infrastructure:
 
 - **Pulumi**: `iac/pulumi/` — Go-based implementation
 - **Terraform**: `iac/tf/` — HCL-based implementation
@@ -180,7 +181,7 @@ This component supports both Pulumi (default) and Terraform, producing identical
 
 ## License
 
-This component is part of Planton and follows the same license.
+This kind is part of Planton and follows the same license.
 
 ---
 

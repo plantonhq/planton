@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsautoscalinggroup.v1alpha1;
 
-// AwsAutoScalingGroupStackOutputs captures the observable outputs of a
+// AwsAutoScalingGroupOutputs captures the observable outputs of a
 // provisioned auto-scaling group.
-message AwsAutoScalingGroupStackOutputs {
+message AwsAutoScalingGroupOutputs {
   // The name of the auto-scaling group (metadata.name). The handle the
   // AWS CLI, CloudWatch dimensions (AutoScalingGroupName), and ECS
   // capacity providers reference.

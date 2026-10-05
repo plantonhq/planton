@@ -5,10 +5,10 @@ package dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1;
 import "catalog/kubernetes/kubernetesauthorizationpolicy/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesAuthorizationPolicyStackInput provides the inputs for creating the
+// KubernetesAuthorizationPolicyIacInput provides the inputs for creating the
 // AuthorizationPolicy on a Kubernetes cluster.
-message KubernetesAuthorizationPolicyStackInput {
-  // target cloud-resource
+message KubernetesAuthorizationPolicyIacInput {
+  // the catalog object to deploy
   KubernetesAuthorizationPolicy target = 1;
   // provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

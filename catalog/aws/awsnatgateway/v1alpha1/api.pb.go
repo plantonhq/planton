@@ -32,7 +32,7 @@ type AwsNatGateway struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsNatGatewaySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -85,7 +85,7 @@ func (x *AwsNatGateway) GetKind() string {
 	return ""
 }
 
-func (x *AwsNatGateway) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsNatGateway) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -109,8 +109,8 @@ func (x *AwsNatGateway) GetStatus() *AwsNatGatewayStatus {
 // AwsNatGatewayStatus holds the outputs produced by deploying an AwsNatGateway.
 type AwsNatGatewayStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsNatGatewayStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsNatGatewayOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -145,7 +145,7 @@ func (*AwsNatGatewayStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsnatgateway_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsNatGatewayStatus) GetOutputs() *AwsNatGatewayStackOutputs {
+func (x *AwsNatGatewayStatus) GetOutputs() *AwsNatGatewayOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -163,11 +163,11 @@ const file_catalog_aws_awsnatgateway_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12(\n" +
 	"\x04kind\x18\x02 \x01(\tB\x14\xbaH\x11r\x0f\n" +
 	"\rAwsNatGatewayR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12U\n" +
 	"\x04spec\x18\x04 \x01(\v29.dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewaySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12S\n" +
-	"\x06status\x18\x05 \x01(\v2;.dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewayStatusR\x06status\"r\n" +
-	"\x13AwsNatGatewayStatus\x12[\n" +
-	"\aoutputs\x18\x01 \x01(\v2A.dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewayStackOutputsR\aoutputsB\xca\x02\n" +
+	"\x06status\x18\x05 \x01(\v2;.dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewayStatusR\x06status\"m\n" +
+	"\x13AwsNatGatewayStatus\x12V\n" +
+	"\aoutputs\x18\x01 \x01(\v2<.dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewayOutputsR\aoutputsB\xca\x02\n" +
 	"*com.dev.planton.aws.awsnatgateway.v1alpha1B\bApiProtoP\x01ZUgithub.com/plantonhq/planton/catalog/aws/awsnatgateway/v1alpha1;awsnatgatewayv1alpha1\xa2\x02\x04DPAA\xaa\x02&Dev.Planton.Aws.Awsnatgateway.V1alpha1\xca\x02&Dev\\Planton\\Aws\\Awsnatgateway\\V1alpha1\xe2\x022Dev\\Planton\\Aws\\Awsnatgateway\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Aws::Awsnatgateway::V1alpha1b\x06proto3"
 
 var (
@@ -186,15 +186,15 @@ var file_catalog_aws_awsnatgateway_v1alpha1_api_proto_msgTypes = make([]protoimp
 var file_catalog_aws_awsnatgateway_v1alpha1_api_proto_goTypes = []any{
 	(*AwsNatGateway)(nil),                // 0: dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGateway
 	(*AwsNatGatewayStatus)(nil),          // 1: dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewayStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsNatGatewaySpec)(nil),            // 3: dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewaySpec
-	(*AwsNatGatewayStackOutputs)(nil),    // 4: dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewayStackOutputs
+	(*AwsNatGatewayOutputs)(nil),         // 4: dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewayOutputs
 }
 var file_catalog_aws_awsnatgateway_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGateway.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGateway.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGateway.spec:type_name -> dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewaySpec
 	1, // 2: dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGateway.status:type_name -> dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewayStatus
-	4, // 3: dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewayStatus.outputs:type_name -> dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewayStackOutputs
+	4, // 3: dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewayStatus.outputs:type_name -> dev.planton.aws.awsnatgateway.v1alpha1.AwsNatGatewayOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

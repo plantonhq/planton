@@ -4,7 +4,7 @@ The **Azure Virtual Machine Scale Set API Resource** provides a consistent and s
 
 ## Purpose
 
-We developed this API resource to make fleet compute a first-class, composable building block. ARM has exactly one scale-set resource type with an orchestration-mode property, and this component models it that way — one kind, an explicit mode, and validation that tells the truth about what each mode supports:
+We developed this API resource to make fleet compute a first-class, composable building block. ARM has exactly one scale-set resource type with an orchestration-mode property, and this kind models it that way — one kind, an explicit mode, and validation that tells the truth about what each mode supports:
 
 - **FLEXIBLE** (the default, and Azure's recommendation for new workloads) spreads instances like a resilient VM group: per-OS patch orchestration, mixed-SKU profiles, spot/on-demand priority mixing, and standalone VMs can attach to the set
 - **UNIFORM** is the classic mode behind large stateless fleets: identical instances, overprovisioning, automatic OS image upgrades, spot restore, scale-in policy, gallery applications, and trusted launch

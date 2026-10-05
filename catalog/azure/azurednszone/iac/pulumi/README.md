@@ -1,8 +1,8 @@
 # AzureDnsZone -- Pulumi Module
 
-Creates an Azure public DNS zone (`dns.Zone`, pulumi-azure classic v6) in the referenced resource group, with optional Start of Authority customization and merged governance tags. Behaviorally identical to the Terraform module for the same stack input.
+Creates an Azure public DNS zone (`dns.Zone`, pulumi-azure classic v6) in the referenced resource group, with optional Start of Authority customization and merged governance tags. Behaviorally identical to the Terraform module for the same IaC input.
 
-The entrypoint (`main.go`) loads the stack input and delegates to `module.Resources`, which builds the Azure provider through the shared credential builder (static client secret, keyless web identity, or ambient chain). Records are separate `AzureDnsRecord` resources -- this module deliberately creates only the zone.
+The entrypoint (`main.go`) loads the IaC input and delegates to `module.Resources`, which builds the Azure provider through the shared credential builder (static client secret, keyless web identity, or ambient chain). Records are separate `AzureDnsRecord` resources -- this module deliberately creates only the zone.
 
 Key behaviors, documented inline in `module/main.go`:
 

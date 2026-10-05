@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesmanifest.v1alpha1;
 import "catalog/kubernetes/kubernetesmanifest/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesManifestStackInput is the input for the Kubernetes manifest IaC module.
-message KubernetesManifestStackInput {
-  // target cloud-resource
+// KubernetesManifestIacInput is the input for the Kubernetes manifest IaC module.
+message KubernetesManifestIacInput {
+  // the catalog object to deploy
   KubernetesManifest target = 1;
   // provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

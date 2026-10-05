@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azurestoragetable.v1alpha1;
 
-// **AzureStorageTableStackOutputs** captures the outputs of provisioning
+// **AzureStorageTableOutputs** captures the outputs of provisioning
 // a Storage table.
 //
 // No URL output on purpose: the table's data-plane URL is the ACCOUNT's
@@ -10,7 +10,7 @@ package dev.planton.azure.azurestoragetable.v1alpha1;
 // real endpoint (partitioned-DNS accounts use a different hostname than
 // the classic shared DNS). Compose client URLs from
 // AzureStorageAccount's primary_table_endpoint output + table_name.
-message AzureStorageTableStackOutputs {
+message AzureStorageTableOutputs {
   // The Azure Resource Manager ID of the table. Role assignments
   // (Storage Table Data Reader/Contributor) scope to it for table-level
   // data access.

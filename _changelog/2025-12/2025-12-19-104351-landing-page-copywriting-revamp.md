@@ -16,7 +16,7 @@ The existing landing page at `src/app/(root)/page.tsx` was organized around thes
 
 1. **Hero**: "Effortless Cloud Management—All Through One Chat" with "Introducing Planton Copilot" badge
 2. **Features**: Self-Service DevOps (generic)
-3. **IaC Workflows**: Stack Jobs and versioning
+3. **IaC Workflows**: Infra Jobs and versioning
 4. **Auditable Intelligence**: Change tracking
 5. **CTA**: Generic "future of DevOps" messaging
 
@@ -84,7 +84,7 @@ The existing landing page at `src/app/(root)/page.tsx` was organized around thes
 #### Section 3: Infra Hub
 - **Zero-Config CI/CD**: Live Terraform visualization, 5-10 min deployments
 - **Infra Charts**: Complete environments in one form (VPC, Route53, ECR, ALB, certs, security groups)
-- **Deployment Component Store**: 20% of services used 80% of the time, all open source
+- **Catalog Kind Store**: 20% of services used 80% of the time, all open source
 - **Customer Proof**: iorta TechNext deployed complete AWS ECS environment in <1 hour
 
 #### Section 4: Service Hub (NEW - Was Completely Missing)
@@ -95,7 +95,7 @@ The existing landing page at `src/app/(root)/page.tsx` was organized around thes
 
 #### Section 5: Built on Open Standards (NEW)
 - **GitHub/GitLab Native**: Works with existing Git workflows, no migration needed
-- **Terraform & Pulumi First-Class**: All components available in both formats
+- **Terraform & Pulumi First-Class**: All kinds available in both formats
 - **Tekton-Powered CI/CD**: Open-source Kubernetes-native pipelines, full customization
 - **Comparison**: "w/ Vendor Lock-In Risk" vs "w/ Planton" (neutral, not roasting)
 - **Transparency**: Publish Tekton pipeline definitions, customers can write custom Tasks
@@ -103,7 +103,7 @@ The existing landing page at `src/app/(root)/page.tsx` was organized around thes
 #### Section 6: Open Source Foundation
 - **Transparent Infrastructure**: Audit every Terraform/Pulumi module in public OpenMCF repo
 - **Built-In Exit Strategy**: Export configs, use independent CLI, transition to GitHub Actions
-- **Community Contributions**: Open issues, submit PRs, contribute deployment components
+- **Community Contributions**: Open issues, submit PRs, contribute catalog kinds
 - **Build-Operate-Transfer**: Customers can outgrow platform and take infrastructure with them
 
 #### Section 7: Agent Fleet
@@ -333,7 +333,7 @@ Following `@general-writing-guidelines.mdc`:
 **After**:
 - Feature 1: Zero-Config CI/CD (live Terraform visualization, weeks → <1 hour)
 - Feature 2: Infra Charts (DAG orchestration, complete environments in one form)
-- Feature 3: Deployment Component Store (20% services, 80% usage, all open source)
+- Feature 3: Catalog Kind Store (20% services, 80% usage, all open source)
 - Customer Proof: iorta TechNext deployed AWS ECS environment in <1 hour (vs couple weeks)
 
 **Why**: Explains WHAT Infra Hub does with concrete examples and customer validation
@@ -355,7 +355,7 @@ Following `@general-writing-guidelines.mdc`:
 #### Built on Open Standards (Section 5) - NEW
 **Content**:
 - Standard 1: GitHub & GitLab Native (OAuth, existing workflows, no migration)
-- Standard 2: Terraform & Pulumi First-Class (all components in both formats)
+- Standard 2: Terraform & Pulumi First-Class (all kinds in both formats)
 - Standard 3: Tekton-Powered CI/CD (CNCF project, portable, extensible, transparent)
 - Comparison: "w/ Vendor Lock-In Risk" vs "w/ Planton" (neutral tone)
 - Promise: "Use Planton because it accelerates your team—not because you're locked in"
@@ -370,7 +370,7 @@ Following `@general-writing-guidelines.mdc`:
 **After**:
 - Pillar 1: Transparent Infrastructure (audit all Terraform/Pulumi code)
 - Pillar 2: Built-In Exit Strategy (export configs, independent CLI, BOT model)
-- Pillar 3: Community & Contributions (submit PRs, contribute components)
+- Pillar 3: Community & Contributions (submit PRs, contribute kinds)
 - Vendor Lock-In Problem: Neutral comparison (removed "you can't" roasting language)
 
 **Why**: Open source is a unique differentiator. Moved after "Built on Open Standards" for logical flow.
@@ -590,7 +590,7 @@ Softened all competitor comparisons to neutral statements:
 **Visual Assets Needed**:
 - Infra Hub deployment flow (DAG visualization)
 - Service Hub pipeline flow (Git → Tekton → deploy)
-- Deployment Component Store browser screenshot
+- Catalog Kind Store browser screenshot
 - Agent Fleet interface mockup
 - Open Standards integration diagram (GitHub ↔ Planton ↔ Terraform/Pulumi ↔ Tekton)
 - Three deployment runner topologies diagram
@@ -599,7 +599,7 @@ Softened all competitor comparisons to neutral statements:
 ### Content Strategy Decisions
 
 **What We Kept**:
-- IaC Workflows section (Stack Jobs, version history, auditable intelligence)
+- IaC Workflows section (Infra Jobs, version history, auditable intelligence)
 - Existing design system and visual aesthetic
 - Current navigation structure
 
@@ -700,7 +700,7 @@ Once landing page is live with new copy:
 
 **Open Source Foundation** (Section 6):
 - Focus: Transparency and exit strategy
-- Message: "All deployment components public, full audit capability, built-in exit"
+- Message: "All catalog kinds public, full audit capability, built-in exit"
 - Audience: Security-conscious buyers, compliance teams
 - Value: Trust through transparency, no vendor lock-in
 

@@ -5,23 +5,23 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/plantonhq/planton/pkg/iac/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/iacinput"
 	"gopkg.in/yaml.v3"
 )
 
 // ClipboardContent holds parsed clipboard data and validation results.
 type ClipboardContent struct {
-	Raw          []byte
-	IsFilePath   bool
-	FilePath     string
-	FileExists   bool
-	IsValidYAML  bool
-	ParseError   error
-	IsStackInput bool
+	Raw         []byte
+	IsFilePath  bool
+	FilePath    string
+	FileExists  bool
+	IsValidYAML bool
+	ParseError  error
+	IsIacInput  bool
 }
 
 // ParseClipboardContent analyzes clipboard content and determines its type.
-// It checks if the content is a file path, valid YAML, or stack input.
+// It checks if the content is a file path, valid YAML, or IaC input.
 func ParseClipboardContent(raw []byte) *ClipboardContent {
 	content := &ClipboardContent{
 		Raw: raw,
@@ -48,8 +48,8 @@ func ParseClipboardContent(raw []byte) *ClipboardContent {
 
 	content.IsValidYAML = true
 
-	// Check if it's a stack input (has "target" key)
-	content.IsStackInput = stackinput.IsStackInput(raw)
+	// Check if it's an IaC input (has "target" key)
+	content.IsIacInput = iacinput.IsIacInput(raw)
 
 	return content
 }

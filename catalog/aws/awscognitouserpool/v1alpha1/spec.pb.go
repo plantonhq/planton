@@ -57,7 +57,7 @@ const (
 //     PLUS feature tier (`user_pool_tier`).
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsCognitoUserPoolSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

@@ -1,7 +1,7 @@
 # KubernetesSeaweedFs Guide
 
 The judgment this guide carries: this is the catalog's in-cluster answer
-whenever another component says "requires object storage" — Loki's
+whenever another kind says "requires object storage" — Loki's
 scalable mode, Tempo beyond one replica, Flink's stateful upgrades,
 MLflow's multi-replica artifacts, Velero's backup target. When one of
 those guides sends you here, this kind plus one credentials hop
@@ -11,7 +11,7 @@ completes the composition.
 
 The S3 gateway is ON by default with auth ON — the chart materializes
 admin and read-only credential pairs in the `<name>-s3-secret` Secret
-(stable across upgrades, kept on uninstall), and the stack outputs point
+(stable across upgrades, kept on uninstall), and the outputs point
 at it. Consumers wire the endpoint from the exported outputs and read
 credentials from that Secret by reference — never copy values. Declare
 the consumers' buckets in `s3.buckets` so they exist from first boot.

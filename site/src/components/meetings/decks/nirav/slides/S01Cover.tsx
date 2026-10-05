@@ -23,7 +23,7 @@ export default function S01Cover(_props: SlideComponentProps) {
         <div className="flex flex-wrap justify-center gap-3 sm:gap-6 mb-8 sm:mb-10">
           <Metric value="3+" label="Years Building" />
           <Metric value="$500K+" label="Self-Funded" />
-          <Metric value="370+" label="Cloud Resources" />
+          <Metric value="370+" label="Catalog Kinds" />
           <Metric value="0%" label="Churn" />
         </div>
 

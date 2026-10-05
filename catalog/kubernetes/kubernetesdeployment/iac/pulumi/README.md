@@ -38,7 +38,7 @@ See [example](example.md) for usage details and step-by-step examples. In genera
 1. Define a YAML resource describing your microservice using the **KubernetesDeployment** API.
 2. Run:
    ```bash
-   planton pulumi up --stack-input <your-microservice-file.yaml>
+   planton pulumi up --iac-input <your-microservice-file.yaml>
    ```
 
 to apply the resource on your cluster.
@@ -50,7 +50,7 @@ to apply the resource on your cluster.
    sidecars, list them alongside your main container.
 
 2. **Apply via CLI**  
-   Execute `planton pulumi up --stack-input <microservice-spec.yaml>` (or your organization’s standard CLI command). The
+   Execute `planton pulumi up --iac-input <microservice-spec.yaml>` (or your organization’s standard CLI command). The
    Pulumi module automatically compiles your specification into Kubernetes resources.
 
 3. **Validate & Observe**  
@@ -60,7 +60,7 @@ to apply the resource on your cluster.
 ## Module Structure
 
 1. **Initialization**  
-   Reads your `KubernetesDeploymentStackInput` (containing cluster creds and the resource definition), sets
+   Reads your `KubernetesDeploymentIacInput` (containing cluster creds and the resource definition), sets
    up local variables, and merges labels.
 
 2. **Provider Setup**  

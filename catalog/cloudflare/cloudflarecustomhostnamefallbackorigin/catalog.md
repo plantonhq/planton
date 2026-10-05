@@ -4,7 +4,7 @@ Sets the default origin for a Cloudflare-for-SaaS zone: the backend that all of 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Fallback Origin** -- the zone's default backend for custom-hostname traffic. The write is asynchronous: status moves through `pending_deployment` before `active`, so a just-applied origin is not yet serving.
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f cloudflare-custom-hostname-fallback-origin.yaml
 ```
 
-This points every custom hostname in the SaaS zone at `origin.helpdesk.io` by default. A Stack Job tracks the provisioning in real time.
+This points every custom hostname in the SaaS zone at `origin.helpdesk.io` by default. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,7 +82,7 @@ These are the most important decisions when configuring a fallback origin. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -90,9 +90,9 @@ These are the most important decisions when configuring a fallback origin. Explo
 
 `origin` is also a value-or-reference field and may point at another resource's output that resolves to a backend hostname.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -110,6 +110,6 @@ Deployment status and the deployment-errors list are deliberately not outputs â€
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- the SaaS zone this origin serves; `zoneId` references its output
-- [**Cloudflare DNS Record**](/cloud-catalog/cloudflare-dns-record) -- creates the in-zone record the origin hostname must resolve to
-- [**Cloudflare Custom Hostname**](/cloud-catalog/cloudflare-custom-hostname) -- the per-customer hostnames that route to this fallback origin
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- the SaaS zone this origin serves; `zoneId` references its output
+- [**Cloudflare DNS Record**](/infra-catalog/cloudflare-dns-record) -- creates the in-zone record the origin hostname must resolve to
+- [**Cloudflare Custom Hostname**](/infra-catalog/cloudflare-custom-hostname) -- the per-customer hostnames that route to this fallback origin

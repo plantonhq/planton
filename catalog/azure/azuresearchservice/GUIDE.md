@@ -1,6 +1,6 @@
 # AzureSearchService Guide
 
-Judgment and internal conventions for the AI Search component -- what
+Judgment and internal conventions for the AI Search kind -- what
 the schema alone cannot carry.
 
 ## Parity accounting

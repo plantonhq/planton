@@ -206,7 +206,7 @@ func (x *AzureComputeGallerySharing) GetCommunityGallery() *AzureComputeGalleryC
 // Community-gallery publishing details: the public identity a
 // Community-shared gallery is published under. Azure generates the
 // final public name from the prefix (exposed as the
-// community_gallery_name stack output).
+// community_gallery_name output).
 type AzureComputeGalleryCommunitySharing struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The end-user license agreement URL or text shown to community

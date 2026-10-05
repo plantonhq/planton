@@ -4,7 +4,7 @@ Manages a Cloudflare zone's edge TLS posture as one resource: Universal SSL issu
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Universal SSL Setting** — created only when `universalSslEnabled` is set; controls Universal SSL certificate issuance for the zone (no delete at Cloudflare — destroy abandons the last-applied value)
 - **Total TLS Configuration** — created only when `totalTls` is set; issues individual certificates for every proxied hostname, including deep subdomains Universal SSL's wildcard does not cover (no delete at Cloudflare)
@@ -17,15 +17,15 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Zone → SSL and Certificates → Edit on the target zone. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Zone → SSL and Certificates → Edit on the target zone. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
 
-- **A zone on the account** — `zoneId` names the zone; reference a CloudflareDnsZone Cloud Resource or pass the zone ID from the dashboard.
+- **A zone on the account** — `zoneId` names the zone; reference a CloudflareDnsZone Infra Component or pass the zone ID from the dashboard.
 - **Advanced Certificate Manager** (required for Total TLS and per-hostname overrides) — without the zone's ACM subscription the API refuses these surfaces with 401 code 1450 (measured live).
 - **An ACTIVE zone for `autoOriginTlsKex`** — the automatic key-exchange setting is refused on zones still pending activation.
-- **An mTLS certificate** (only for per-certificate CA associations) — `caHostnameAssociations[].mtlsCertificateId` references a CloudflareMtlsCertificate Cloud Resource or a literal certificate ID.
+- **An mTLS certificate** (only for per-certificate CA associations) — `caHostnameAssociations[].mtlsCertificateId` references a CloudflareMtlsCertificate Infra Component or a literal certificate ID.
 
 ## Deploy
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f zone-tls.yaml
 ```
 
-This enables Total TLS — every proxied hostname in the zone gets its own certificate — while Universal SSL, origin settings, and per-hostname overrides remain untouched. At least one TLS surface must be configured; a resource that manages nothing is rejected. A Stack Job tracks the provisioning in real time.
+This enables Total TLS — every proxied hostname in the zone gets its own certificate — while Universal SSL, origin settings, and per-hostname overrides remain untouched. At least one TLS surface must be configured; a resource that manages nothing is rejected. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -101,16 +101,16 @@ These are the most important decisions when configuring a zone's TLS settings. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 | **CloudflareMtlsCertificate** (optional, per row) | `caHostnameAssociations[].mtlsCertificateId` | `status.outputs.certificate_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no consumable outputs of its own: TLS settings are a zone-scoped singleton with no resource ID, so `status.outputs` only echoes the input `zone_id` back for reference. Downstream resources that need the zone should reference the CloudflareDnsZone directly.
+This kind has no consumable outputs of its own: TLS settings are a zone-scoped singleton with no resource ID, so `status.outputs` only echoes the input `zone_id` back for reference. Downstream resources that need the zone should reference the CloudflareDnsZone directly.
 
 ## Common Patterns
 
@@ -124,8 +124,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — the zone whose TLS posture this resource manages; `zoneId` references its `zone_id` output
-- [**Cloudflare Certificate Pack**](/cloud-catalog/cloudflare-certificate-pack) — advanced edge certificates, often the coverage that makes disabling Universal SSL safe
-- [**Cloudflare mTLS Certificate**](/cloud-catalog/cloudflare-mtls-certificate) — the certificate whose CA hostname associations a row can manage
-- [**Cloudflare Zone Settings**](/cloud-catalog/cloudflare-zone-settings) — zone-wide TLS knobs (minimum TLS version, Always Use HTTPS) live there
-- [**Cloudflare Custom Hostname**](/cloud-catalog/cloudflare-custom-hostname) — TLS for SaaS vanity hostnames outside this zone
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — the zone whose TLS posture this resource manages; `zoneId` references its `zone_id` output
+- [**Cloudflare Certificate Pack**](/infra-catalog/cloudflare-certificate-pack) — advanced edge certificates, often the coverage that makes disabling Universal SSL safe
+- [**Cloudflare mTLS Certificate**](/infra-catalog/cloudflare-mtls-certificate) — the certificate whose CA hostname associations a row can manage
+- [**Cloudflare Zone Settings**](/infra-catalog/cloudflare-zone-settings) — zone-wide TLS knobs (minimum TLS version, Always Use HTTPS) live there
+- [**Cloudflare Custom Hostname**](/infra-catalog/cloudflare-custom-hostname) — TLS for SaaS vanity hostnames outside this zone

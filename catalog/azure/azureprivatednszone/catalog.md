@@ -4,7 +4,7 @@ Deploys an Azure Private DNS Zone: name resolution inside virtual networks witho
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Private DNS Zone** -- a global Azure DNS zone (no region) for private name resolution, named for the domain it answers
 - **SOA Record customization** (optional) -- when the spec carries an `soaRecord` block, the zone's Start of Authority record is created with your contact email and timers instead of Azure's defaults; this is a create-time-only decision
@@ -16,12 +16,12 @@ A zone with no network links answers nobody: pair every deployment with at least
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the Private DNS Zone will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef. Zones are global resources, but ARM still homes them in a group -- usually the shared network one.
+- **An Azure Resource Group** where the Private DNS Zone will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef. Zones are global resources, but ARM still homes them in a group -- usually the shared network one.
 - **The correct zone name** for your use case. For Private Link scenarios, use the exact Azure-defined zone name for the target service (e.g., `privatelink.postgres.database.azure.com`) -- the FQDN must match precisely or private endpoints cannot register where clients look. For custom internal DNS, use any valid lowercase domain name (e.g., `corp.internal`).
 
 ## Deploy
@@ -51,7 +51,7 @@ spec:
 planton apply -f private-dns-zone.yaml
 ```
 
-This creates a Private DNS Zone for PostgreSQL Private Link resolution with Azure's standard SOA record. A Stack Job tracks the provisioning in real time. To make the zone resolvable, follow with an AzurePrivateDnsZoneVirtualNetworkLink per network.
+This creates a Private DNS Zone for PostgreSQL Private Link resolution with Azure's standard SOA record. An Infra Job tracks the provisioning in real time. To make the zone resolvable, follow with an AzurePrivateDnsZoneVirtualNetworkLink per network.
 
 ### InfraChart
 
@@ -80,15 +80,15 @@ These are the most important decisions when configuring a Private DNS Zone. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -106,7 +106,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the Private DNS Zone is created
-- [**Azure Private DNS Zone Virtual Network Link**](/cloud-catalog/azure-private-dns-zone-virtual-network-link) -- gives the zone reach: one link per network that should resolve it
-- [**Azure Private Endpoint**](/cloud-catalog/azure-private-endpoint) -- registers its private IP into this zone via `privateDnsZoneIds` so service FQDNs resolve privately
-- [**Azure PostgreSQL Flexible Server**](/cloud-catalog/azure-postgresql-flexible-server) / [**Azure MySQL Flexible Server**](/cloud-catalog/azure-mysql-flexible-server) -- reference this zone for VNet-integrated deployment
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the Private DNS Zone is created
+- [**Azure Private DNS Zone Virtual Network Link**](/infra-catalog/azure-private-dns-zone-virtual-network-link) -- gives the zone reach: one link per network that should resolve it
+- [**Azure Private Endpoint**](/infra-catalog/azure-private-endpoint) -- registers its private IP into this zone via `privateDnsZoneIds` so service FQDNs resolve privately
+- [**Azure PostgreSQL Flexible Server**](/infra-catalog/azure-postgresql-flexible-server) / [**Azure MySQL Flexible Server**](/infra-catalog/azure-mysql-flexible-server) -- reference this zone for VNet-integrated deployment

@@ -5,13 +5,13 @@ package dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1;
 import "catalog/kubernetes/kubernetes.proto";
 
 /**
- * **KubernetesJupyterHubStackOutputs** — the composition handles a
+ * **KubernetesJupyterHubOutputs** — the composition handles a
  * deployed JupyterHub exports. Users reach the hub through the
  * proxy-public Service (compose exposure kinds over it); the
  * shared-password credential (when that sign-in method is active) is
  * exported as a Secret handle.
  */
-message KubernetesJupyterHubStackOutputs {
+message KubernetesJupyterHubOutputs {
   // Namespace JupyterHub runs in.
   string namespace = 1;
 

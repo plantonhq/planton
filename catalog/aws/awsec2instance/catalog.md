@@ -1,10 +1,10 @@
 # AWS EC2 Instance
 
-Deploys a single EC2 virtual machine -- the pet of EC2 compute: a bastion, a license server, a singleton stateful workload. The component covers the full instance surface: the launch source (an AMI + instance type, or a launch template with inline overrides), network placement, IAM identity, storage reshaping, IMDS hardening, purchase options (On-Demand or Spot), capacity reservations, placement, and lifecycle protections. For fleets, compose AwsLaunchTemplate + AwsAutoScalingGroup instead -- this kind deliberately shares the launch template's vocabulary so a pet can graduate into a templated fleet without relearning field names.
+Deploys a single EC2 virtual machine -- the pet of EC2 compute: a bastion, a license server, a singleton stateful workload. The kind covers the full instance surface: the launch source (an AMI + instance type, or a launch template with inline overrides), network placement, IAM identity, storage reshaping, IMDS hardening, purchase options (On-Demand or Spot), capacity reservations, placement, and lifecycle protections. For fleets, compose AwsLaunchTemplate + AwsAutoScalingGroup instead -- this kind deliberately shares the launch template's vocabulary so a pet can graduate into a templated fleet without relearning field names.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EC2 Instance** -- launched from the inline AMI + instance type or the referenced launch template, with the configured network identity, storage, posture, and protections
 - **Block Device Mappings** -- the root volume reshaped from the AMI's mapping plus any launch-time EBS data volumes and instance-store mappings
@@ -16,15 +16,15 @@ The instance ATTACHES referenced first-class nodes -- a subnet, security groups,
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A VPC with at least one private subnet** where the instance will be placed. Provide the subnet ID directly or reference an AwsSubnet Cloud Resource via ValueFromRef. (Unset launches into the account's default VPC -- fine for experiments, not a production posture.)
-- **At least one security group** controlling inbound/outbound traffic. Provide group IDs directly or reference AwsSecurityGroup Cloud Resources.
+- **A VPC with at least one private subnet** where the instance will be placed. Provide the subnet ID directly or reference an AwsSubnet Infra Component via ValueFromRef. (Unset launches into the account's default VPC -- fine for experiments, not a production posture.)
+- **At least one security group** controlling inbound/outbound traffic. Provide group IDs directly or reference AwsSecurityGroup Infra Components.
 - **An AMI ID** for the desired operating system (e.g., Amazon Linux 2023, Ubuntu) -- unless a launch template supplies one.
-- **An IAM instance profile** whose role carries `AmazonSSMManagedInstanceCore` for keyless SSM Session Manager access (the modern posture). Provide the profile NAME (the instance API takes the name, not the ARN) or reference an AwsIamInstanceProfile Cloud Resource.
+- **An IAM instance profile** whose role carries `AmazonSSMManagedInstanceCore` for keyless SSM Session Manager access (the modern posture). Provide the profile NAME (the instance API takes the name, not the ARN) or reference an AwsIamInstanceProfile Infra Component.
 - **An existing EC2 key pair** only if you want SSH access -- leave `keyName` unset for keyless instances.
 
 ## Deploy
@@ -66,7 +66,7 @@ spec:
 planton apply -f ec2-instance.yaml
 ```
 
-This creates a hardened instance in a private subnet with keyless SSM access, IMDSv2 enforced, an encrypted gp3 root volume, and termination protection. A Stack Job tracks the provisioning in real time.
+This creates a hardened instance in a private subnet with keyless SSM access, IMDSv2 enforced, an encrypted gp3 root volume, and termination protection. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -113,7 +113,7 @@ These are the most important decisions when configuring an EC2 instance. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -123,9 +123,9 @@ These are the most important decisions when configuring an EC2 instance. Explore
 | **AwsLaunchTemplate** | `launchTemplate.id` | `status.outputs.launch_template_id` |
 | **AwsKmsKey** | `rootBlockDevice.kmsKeyId`, per-row `ebsBlockDevices[].kmsKeyId` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -155,10 +155,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides the subnet where the instance (and any secondary interfaces) are placed
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- controls inbound and outbound traffic for the instance
-- [**AWS IAM Instance Profile**](/cloud-catalog/aws-iam-instance-profile) -- the instance's IAM identity for SSM access and AWS API calls
-- [**AWS Launch Template**](/cloud-catalog/aws-launch-template) -- the golden baseline the instance can launch from
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- customer-managed encryption for the root and data volumes
-- [**AWS Elastic IP**](/cloud-catalog/aws-elastic-ip) -- a stable public address associated with the instance's primary interface
-- [**AWS LB Target Group**](/cloud-catalog/aws-lb-target-group) -- registers the instance (by `instance_id`) behind a load balancer
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides the subnet where the instance (and any secondary interfaces) are placed
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- controls inbound and outbound traffic for the instance
+- [**AWS IAM Instance Profile**](/infra-catalog/aws-iam-instance-profile) -- the instance's IAM identity for SSM access and AWS API calls
+- [**AWS Launch Template**](/infra-catalog/aws-launch-template) -- the golden baseline the instance can launch from
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- customer-managed encryption for the root and data volumes
+- [**AWS Elastic IP**](/infra-catalog/aws-elastic-ip) -- a stable public address associated with the instance's primary interface
+- [**AWS LB Target Group**](/infra-catalog/aws-lb-target-group) -- registers the instance (by `instance_id`) behind a load balancer

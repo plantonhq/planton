@@ -1,4 +1,4 @@
-# KubernetesSolrOperator: Component Completion to Production-Ready Status
+# KubernetesSolrOperator: Kind Completion to Production-Ready Status
 
 **Date**: November 16, 2025  
 **Type**: Feature  
@@ -7,18 +7,18 @@
 
 ## Summary
 
-Completed the KubernetesSolrOperator component from 63.42% (partially complete) to 95%+ (production-ready) by addressing all critical gaps: creating comprehensive validation tests, user-facing documentation, Pulumi module enhancements, and documenting Terraform status. No spec changes were required as the protobuf definitions were already well-designed.
+Completed the KubernetesSolrOperator kind from 63.42% (partially complete) to 95%+ (production-ready) by addressing all critical gaps: creating comprehensive validation tests, user-facing documentation, Pulumi module enhancements, and documenting Terraform status. No spec changes were required as the protobuf definitions were already well-designed.
 
 ## Problem Statement
 
-The KubernetesSolrOperator component audit (2025-11-14) revealed a functional but incomplete component:
+The KubernetesSolrOperator kind audit (2025-11-14) revealed a functional but incomplete kind:
 
 ### Strengths (What Existed)
 
 - ✅ Exceptional research documentation (18.3 KB)
 - ✅ Complete protobuf API definitions with proper validation rules
 - ✅ Working Pulumi implementation (operator deployment via Helm)
-- ✅ Correct cloud resource registry entry
+- ✅ Correct catalog kind registry entry
 
 ### Critical Gaps (Blocking Production)
 
@@ -28,7 +28,7 @@ The KubernetesSolrOperator component audit (2025-11-14) revealed a functional bu
 - ❌ **Missing Pulumi enhancements** - No locals.go for computed values
 - ❌ **No supporting files** - Missing manifest examples and module documentation
 
-The component was **functional for Pulumi deployments** but fell short of production-ready status.
+The kind was **functional for Pulumi deployments** but fell short of production-ready status.
 
 ## Solution
 
@@ -72,7 +72,7 @@ SUCCESS! -- 9 Passed | 0 Failed
 #### README.md (12 KB)
 
 Comprehensive user guide including:
-- Component overview and purpose (Apache Solr Operator deployment)
+- Kind overview and purpose (Apache Solr Operator deployment)
 - Key features list (automated lifecycle, ZooKeeper integration, backup/restore)
 - Prerequisites and requirements
 - Complete API reference with field descriptions
@@ -114,15 +114,15 @@ type locals struct {
     chartVersion string
 }
 
-func newLocals(stackInput *kubernetessolroperatorv1.KubernetesStrimziKafkaOperatorStackInput) *locals {
-    // Computed values from stack input
+func newLocals(iacInput *kubernetessolroperatorv1.KubernetesStrimziKafkaOperatorIacInput) *locals {
+    // Computed values from IaC input
     // Label generation with metadata integration
     // Operator naming logic
 }
 ```
 
 **Features**:
-- Computed values from stack input (namespace, operator name, chart version)
+- Computed values from IaC input (namespace, operator name, chart version)
 - Common label generation (app.kubernetes.io/*, planton.ai/*)
 - Metadata integration (organization, environment labels)
 
@@ -167,8 +167,8 @@ spec:
 
 - `api.proto` - **No changes** - Already had proper validation constraints
 - `spec.proto` - **No changes** - Container resources spec was complete with defaults
-- `stack_input.proto` - **No changes**
-- `stack_outputs.proto` - **No changes**
+- `iac_input.proto` - **No changes**
+- `outputs.proto` - **No changes**
 
 The spec.proto already defined proper defaults:
 
@@ -279,7 +279,7 @@ ginkgo.Describe("When invalid input is passed", func() {
 
 - **Maintainability**: locals.go improves Pulumi module structure
 - **Testability**: Validation tests catch spec regressions
-- **Onboarding**: New developers can understand component quickly
+- **Onboarding**: New developers can understand kind quickly
 
 ## Testing Strategy
 
@@ -302,7 +302,7 @@ SUCCESS! -- 9 Passed | 0 Failed
 
 ### Integration Verification
 
-While this completion focused on component infrastructure, actual operator deployment can be verified with:
+While this completion focused on kind infrastructure, actual operator deployment can be verified with:
 
 ```bash
 # Deploy operator
@@ -354,7 +354,7 @@ This completion addresses all audit "Quick Wins" and "Critical Gaps":
 
 - **Apache Solr Operator**: Official Kubernetes operator donated by Bloomberg
 - **Strimzi Kafka Operator Completion**: Similar completion pattern (58.37% → 85%)
-- **KubernetesSolr Component**: Workload resource that this operator manages
+- **KubernetesSolr Kind**: Workload resource that this operator manages
 - **Research Documentation**: Existing 18.3 KB research doc remains (exceptional quality)
 
 ## Known Limitations
@@ -377,7 +377,7 @@ These could be added in future polish iterations.
 
 ## Migration Guide
 
-**No migration required** - This is a completion of existing component, not a breaking change.
+**No migration required** - This is a completion of existing kind, not a breaking change.
 
 Existing deployments are unaffected as no spec changes were made.
 
@@ -398,7 +398,7 @@ Existing deployments are unaffected as no spec changes were made.
 
 ## Conclusion
 
-The KubernetesSolrOperator component transitioned from 63.42% (functional but undocumented) to 95%+ (production-ready) through systematic completion of critical gaps. The component now has:
+The KubernetesSolrOperator kind transitioned from 63.42% (functional but undocumented) to 95%+ (production-ready) through systematic completion of critical gaps. The kind now has:
 
 - ✅ Verified correctness (9 validation tests passing)
 - ✅ Clear documentation (README + examples)
@@ -407,5 +407,5 @@ The KubernetesSolrOperator component transitioned from 63.42% (functional but un
 
 No spec changes were required, demonstrating the original API design was sound. All improvements were in testing, documentation, and supporting infrastructure.
 
-**Key achievement**: Brought a partially complete component to production-ready status while preserving backward compatibility and existing deployments.
+**Key achievement**: Brought a partially complete kind to production-ready status while preserving backward compatibility and existing deployments.
 

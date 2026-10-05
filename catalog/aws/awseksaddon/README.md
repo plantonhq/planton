@@ -64,7 +64,7 @@ exactly the shape that deserves a first-class, composable node:
   version format are CEL-enforced at validation time.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `addon_arn`: the add-on's ARN
 - `addon_name`: the EKS catalog name it was installed under

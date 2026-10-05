@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpfirebasewebapp.v1alpha1;
 
-// GcpFirebaseWebAppStackOutputs captures the app registration's identity
+// GcpFirebaseWebAppOutputs captures the app registration's identity
 // and the firebaseConfig object a browser client is initialised with.
 //
 // None of these values is a secret. Every firebaseConfig value -- the API
@@ -10,7 +10,7 @@ package dev.planton.gcp.gcpfirebasewebapp.v1alpha1;
 // design; that is how the Firebase web SDK works. Access to the project's
 // backends is governed by IAM, Firebase Security Rules, and App Check --
 // never by keeping these values hidden.
-message GcpFirebaseWebAppStackOutputs {
+message GcpFirebaseWebAppOutputs {
   // The Firebase-assigned app id (firebaseConfig.appId), e.g.
   // 1:123456789012:web:0123456789abcdef. Globally unique and immutable.
   string app_id = 1;

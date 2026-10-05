@@ -4,7 +4,7 @@ Creates a Certificate Manager certificate map — the hostname-to-certificate ro
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Certificate map** -- a `certificatemanager.CertificateMapResource` (global — no location by API design)
 - **Map entries** -- one `certificatemanager.CertificateMapEntry` per spec entry (hostname or PRIMARY matcher, 1–15 certificates each)

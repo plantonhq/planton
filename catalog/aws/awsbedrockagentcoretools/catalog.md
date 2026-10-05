@@ -4,7 +4,7 @@ Deploys a bundle of Amazon Bedrock AgentCore built-in tools — managed, sandbox
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions, per named entry:
+When you deploy this Infra Component, the IaC module provisions, per named entry:
 
 - **Browser** — one per `browsers` entry: a managed cloud browser with PUBLIC or VPC egress, optional traffic signing, S3 session recording, Chrome enterprise policy files, and mTLS client certificates from Secrets Manager
 - **Browser Profile** — one per `browserProfiles` entry: reusable saved browser state (cookies, logins) sessions can start from
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions, per named entry:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with AgentCore tool permissions (`bedrock-agentcore:CreateBrowser`, `CreateBrowserProfile`, `CreateCodeInterpreter` and their siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with AgentCore tool permissions (`bedrock-agentcore:CreateBrowser`, `CreateBrowserProfile`, `CreateCodeInterpreter` and their siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f agentcore-tools.yaml
 ```
 
-This creates one code interpreter whose sandbox has no network access and no AWS credentials — model-written code can compute but cannot reach anything. A Stack Job tracks the provisioning in real time.
+This creates one code interpreter whose sandbox has no network access and no AWS credentials — model-written code can compute but cannot reach anything. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,7 +102,7 @@ These are the most important decisions when configuring a tools bundle. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -112,9 +112,9 @@ These are the most important decisions when configuring a tools bundle. Explore 
 | **AwsSubnet** | `network.vpcConfig.subnets` (browsers and interpreters) | `status.outputs.subnet_id` |
 | **AwsSecurityGroup** | `network.vpcConfig.securityGroups` (browsers and interpreters) | `status.outputs.security_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -135,10 +135,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Bedrock AgentCore Evaluation**](/cloud-catalog/aws-bedrock-agent-core-evaluation) — harnesses drive these browsers and interpreters as tools via the ARN output maps
-- [**AWS Bedrock AgentCore Runtime**](/cloud-catalog/aws-bedrock-agent-core-runtime) — hosted agents start tool sessions against this bundle at runtime
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the execution role for recordings, policies, certificates, and code-called AWS APIs
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — session recordings and enterprise policy files
-- [**AWS Secrets Manager Secret**](/cloud-catalog/aws-secrets-manager-secret) — mTLS client certificates the tools present
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) — session network placement in VPC mode
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) — session network rules in VPC mode
+- [**AWS Bedrock AgentCore Evaluation**](/infra-catalog/aws-bedrock-agent-core-evaluation) — harnesses drive these browsers and interpreters as tools via the ARN output maps
+- [**AWS Bedrock AgentCore Runtime**](/infra-catalog/aws-bedrock-agent-core-runtime) — hosted agents start tool sessions against this bundle at runtime
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the execution role for recordings, policies, certificates, and code-called AWS APIs
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — session recordings and enterprise policy files
+- [**AWS Secrets Manager Secret**](/infra-catalog/aws-secrets-manager-secret) — mTLS client certificates the tools present
+- [**AWS Subnet**](/infra-catalog/aws-subnet) — session network placement in VPC mode
+- [**AWS Security Group**](/infra-catalog/aws-security-group) — session network rules in VPC mode

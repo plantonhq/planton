@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implemented a comprehensive issue management system for Planton with four cursor rules that enable structured issue tracking, image handling, GitHub issue creation, and automated issue archival. The system adapts the proven planton issue management workflow to Planton's repository structure, with deployment-component-aware area detection and CLI-focused labeling.
+Implemented a comprehensive issue management system for Planton with four cursor rules that enable structured issue tracking, image handling, GitHub issue creation, and automated issue archival. The system adapts the proven planton issue management workflow to Planton's repository structure, with catalog-kind-aware area detection and CLI-focused labeling.
 
 ## Problem Statement
 
@@ -57,7 +57,7 @@ planton/
 
 **2. Issue Info Generation** (`@generate-planton-issue-info`)
 - Generates GitHub issue title and description as copyable code blocks
-- Deployment-component-aware label inference
+- Catalog-kind-aware label inference
 - Comprehensive templates for bugs, features, and tasks
 - Visual enhancements (emojis, checkboxes, status indicators)
 
@@ -80,10 +80,10 @@ planton/
 Adapted from planton to match Planton's structure:
 
 **Planton Areas**:
-- `deployment-component` - Deployment component changes
+- `catalog-kind` - Catalog kind changes
 - `cli` - CLI command and flag changes
 - `pkg` - Package and library changes
-- `forge` - Deployment component forge system
+- `forge` - Catalog kind forge system
 - `apis` - API and protobuf changes
 - `site` - Planton website
 - `tooling` - Build tools and scripts
@@ -91,17 +91,17 @@ Adapted from planton to match Planton's structure:
 
 **File Path Mapping**:
 ```
-apis/dev/planton/provider/**  → deployment-component
+apis/dev/planton/provider/**  → catalog-kind
 cmd/planton/**                → cli
 pkg/**                                → pkg
-_rules/deployment-component/forge/** → forge
+_rules/catalog-kind/forge/** → forge
 site/**                               → site
 tools/**, hack/**                     → tooling
 ```
 
 **Keyword Detection**:
 ```
-"deployment component", "IaC", "Pulumi" → deployment-component
+"catalog kind", "IaC", "Pulumi" → catalog-kind
 "CLI", "command line"                   → cli
 "forge", "code generation"              → forge
 "package", "library", "pkg/"            → pkg
@@ -115,13 +115,13 @@ YYYY-MM-DD-HHMMSS.{area}.{type}.{slug}.md
 
 **Components**:
 - **Timestamp**: Actual timestamp from `date +"%Y-%m-%d-%H%M%S"`
-- **Area**: Simple identifier (deployment-component, cli, pkg, forge, etc.)
+- **Area**: Simple identifier (catalog-kind, cli, pkg, forge, etc.)
 - **Type**: Issue category (feat, bug, refactor, docs, test, perf, chore)
 - **Slug**: Descriptive identifier (30-50 chars, kebab-case)
 
 **Examples**:
 ```
-2025-12-26-143022.deployment-component.bug.postgres-spec-validation.md
+2025-12-26-143022.catalog-kind.bug.postgres-spec-validation.md
 2025-12-26-150815.cli.feat.manifest-validation-command.md
 2025-12-26-162430.forge.bug.pulumi-code-generation.md
 2025-12-26-091205.pkg.refactor.kubernetes-client-helpers.md
@@ -144,21 +144,21 @@ YYYY-MM-DD-HHMMSS.{area}.{type}.{slug}.md
 **Image Naming Example**:
 ```
 Original: screenshot-1.png
-Renamed:  2025-12-26-143022.deployment-component.bug.postgres-spec-validation.error-output.png
+Renamed:  2025-12-26-143022.catalog-kind.bug.postgres-spec-validation.error-output.png
 ```
 
 **Markdown Reference**:
 ```markdown
-![Pulumi error output](images/2025-12-26-143022.deployment-component.bug.postgres-spec-validation.error-output.png)
+![Pulumi error output](images/2025-12-26-143022.catalog-kind.bug.postgres-spec-validation.error-output.png)
 ```
 
 ### GitHub Label Inference
 
-Deployment-component and provider-aware labeling:
+Catalog-kind and provider-aware labeling:
 
 **Area Labels**:
 ```
-apis/dev/planton/provider/** → area/deployment-component,area/<provider>
+apis/dev/planton/provider/** → area/catalog-kind,area/<provider>
 cmd/planton/**              → area/cli
 pkg/**                              → area/pkg
 .cursor/rules/.../forge/**          → area/forge
@@ -175,7 +175,7 @@ terraform-related     → terraform
 
 **Example Label Combination**:
 ```
-bug,area/deployment-component,area/kubernetes,priority/critical,P0
+bug,area/catalog-kind,area/kubernetes,priority/critical,P0
 ```
 
 ### Issue Closure Workflow
@@ -232,9 +232,9 @@ Non-interactive Python script that wraps gh CLI:
 **Example Usage**:
 ```bash
 python3 tools/local-dev/create_github_issue.py \
-  --title "Postgres deployment component spec validation broken" \
+  --title "Postgres catalog kind spec validation broken" \
   --body-file .cursor/workspace/issue-description.md \
-  --labels "bug,area/deployment-component,priority/high,kubernetes" \
+  --labels "bug,area/catalog-kind,priority/high,kubernetes" \
   --web
 ```
 
@@ -294,16 +294,16 @@ python3 tools/local-dev/create_github_issue.py \
 ### Issue Discovery During Development
 
 ```
-User: "I noticed the Postgres component validation is broken. @create-planton-issue"
+User: "I noticed the Postgres kind validation is broken. @create-planton-issue"
 
 Agent:
 - Gets timestamp: 2025-12-26-143022
-- Detects area: deployment-component (Postgres component)
+- Detects area: catalog-kind (Postgres kind)
 - Determines type: bug
 - Creates slug: postgres-spec-validation
 - Asks about images
 - Analyzes, renames, copies, references images
-- Creates: _issues/2025-12-26-143022.deployment-component.bug.postgres-spec-validation.md
+- Creates: _issues/2025-12-26-143022.catalog-kind.bug.postgres-spec-validation.md
 ```
 
 ### Closing Issue After Fix
@@ -329,8 +329,8 @@ User: "@create-planton-github-issue"
 
 Agent:
 - Generates via @generate-planton-issue-info
-- Title: "Postgres deployment component spec validation broken for port conflicts"
-- Infers labels: bug,area/deployment-component,area/kubernetes,priority/critical,P0
+- Title: "Postgres catalog kind spec validation broken for port conflicts"
+- Infers labels: bug,area/catalog-kind,area/kubernetes,priority/critical,P0
 - Writes body to .cursor/workspace/issue-description.md
 - Executes Python script
 - Returns GitHub issue URL
@@ -366,7 +366,7 @@ Key adaptations from planton to planton:
 planton              → planton
 -----------------          → -------------------
 console                    → cli (primary interface)
-backend                    → deployment-component (core artifacts)
+backend                    → catalog-kind (core artifacts)
 infra-hub                  → forge (code generation system)
 planton (area)     → pkg (libraries)
 ```
@@ -438,7 +438,7 @@ This implementation builds on:
 ## Testing and Validation
 
 Created test issue to validate the system:
-- Successfully created deployment-component issue
+- Successfully created catalog-kind issue
 - Area detection worked correctly
 - File naming convention applied
 - Quality checklist verified

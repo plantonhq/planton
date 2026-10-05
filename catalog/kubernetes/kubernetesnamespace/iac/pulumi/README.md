@@ -21,14 +21,14 @@ This Pulumi module provides automated deployment and management of Kubernetes na
 ```bash
 cd catalog/kubernetes/kubernetesnamespace/iac/pulumi
 
-# Preview changes
-make preview manifest=../../e2e/manifest.yaml
+# Preview changes (this directory holds Pulumi.yaml, so the CLI runs this module)
+planton pulumi preview --manifest ../../e2e/manifest.yaml --stack myorg/myproject/dev
 
 # Deploy
-make up manifest=../../e2e/manifest.yaml
+planton pulumi update --manifest ../../e2e/manifest.yaml --stack myorg/myproject/dev
 
 # Destroy
-make down manifest=../../e2e/manifest.yaml
+planton pulumi destroy --manifest ../../e2e/manifest.yaml --stack myorg/myproject/dev
 ```
 
 ### Using Planton CLI
@@ -41,7 +41,7 @@ planton validate --manifest namespace.yaml
 planton pulumi up --manifest namespace.yaml --stack myorg/myproject/dev
 
 # Check outputs
-planton pulumi stack output --manifest namespace.yaml --stack myorg/myproject/dev
+pulumi stack output --stack myorg/myproject/dev
 ```
 
 ## Module Architecture
@@ -54,7 +54,7 @@ planton pulumi stack output --manifest namespace.yaml --stack myorg/myproject/de
 4. **NetworkPolicies**: Creates ingress and egress isolation policies
 5. **Outputs**: Exports observable identifiers and configuration status
 
-### Component Structure
+### Module Structure
 
 ```
 module/
@@ -64,7 +64,7 @@ module/
 ├── resource_quota.go    # ResourceQuota implementation
 ├── limit_range.go       # LimitRange implementation
 ├── network_policies.go  # NetworkPolicy creation
-└── outputs.go           # Stack outputs
+└── outputs.go           # Outputs
 ```
 
 ## Configuration Patterns

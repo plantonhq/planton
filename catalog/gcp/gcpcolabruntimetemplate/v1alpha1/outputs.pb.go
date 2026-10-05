@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpColabRuntimeTemplateStackOutputs carries the identity runtimes and
+// GcpColabRuntimeTemplateOutputs carries the identity runtimes and
 // schedules name the template by.
-type GcpColabRuntimeTemplateStackOutputs struct {
+type GcpColabRuntimeTemplateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Full resource name:
 	// projects/{project}/locations/{location}/notebookRuntimeTemplates/{runtime_template_id}
@@ -38,20 +38,20 @@ type GcpColabRuntimeTemplateStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpColabRuntimeTemplateStackOutputs) Reset() {
-	*x = GcpColabRuntimeTemplateStackOutputs{}
+func (x *GcpColabRuntimeTemplateOutputs) Reset() {
+	*x = GcpColabRuntimeTemplateOutputs{}
 	mi := &file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpColabRuntimeTemplateStackOutputs) String() string {
+func (x *GcpColabRuntimeTemplateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpColabRuntimeTemplateStackOutputs) ProtoMessage() {}
+func (*GcpColabRuntimeTemplateOutputs) ProtoMessage() {}
 
-func (x *GcpColabRuntimeTemplateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpColabRuntimeTemplateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -63,26 +63,26 @@ func (x *GcpColabRuntimeTemplateStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpColabRuntimeTemplateStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpColabRuntimeTemplateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpColabRuntimeTemplateOutputs.ProtoReflect.Descriptor instead.
+func (*GcpColabRuntimeTemplateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpColabRuntimeTemplateStackOutputs) GetName() string {
+func (x *GcpColabRuntimeTemplateOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpColabRuntimeTemplateStackOutputs) GetRuntimeTemplateId() string {
+func (x *GcpColabRuntimeTemplateOutputs) GetRuntimeTemplateId() string {
 	if x != nil {
 		return x.RuntimeTemplateId
 	}
 	return ""
 }
 
-func (x *GcpColabRuntimeTemplateStackOutputs) GetLocation() string {
+func (x *GcpColabRuntimeTemplateOutputs) GetLocation() string {
 	if x != nil {
 		return x.Location
 	}
@@ -93,8 +93,8 @@ var File_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_outputs_proto protoreflect
 
 const file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpcolabruntimetemplate/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1\"\x85\x01\n" +
-	"#GcpColabRuntimeTemplateStackOutputs\x12\x12\n" +
+	":catalog/gcp/gcpcolabruntimetemplate/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1\"\x80\x01\n" +
+	"\x1eGcpColabRuntimeTemplateOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12.\n" +
 	"\x13runtime_template_id\x18\x02 \x01(\tR\x11runtimeTemplateId\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocationB\x94\x03\n" +
@@ -114,7 +114,7 @@ func file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_outputs_proto_rawDescGZIP
 
 var file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpColabRuntimeTemplateStackOutputs)(nil), // 0: dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateStackOutputs
+	(*GcpColabRuntimeTemplateOutputs)(nil), // 0: dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateOutputs
 }
 var file_catalog_gcp_gcpcolabruntimetemplate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

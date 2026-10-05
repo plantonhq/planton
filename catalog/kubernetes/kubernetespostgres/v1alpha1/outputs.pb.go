@@ -23,11 +23,11 @@ const (
 )
 
 // *
-// **KubernetesPostgresStackOutputs** — the composition handles a deployed
+// **KubernetesPostgresOutputs** — the composition handles a deployed
 // PostgreSQL cluster exports. Applications join through the SERVICES
 // (CloudNativePG re-points them across failovers) and authenticate with
 // the credential Secrets the operator maintains.
-type KubernetesPostgresStackOutputs struct {
+type KubernetesPostgresOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the cluster runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -71,20 +71,20 @@ type KubernetesPostgresStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *KubernetesPostgresStackOutputs) Reset() {
-	*x = KubernetesPostgresStackOutputs{}
+func (x *KubernetesPostgresOutputs) Reset() {
+	*x = KubernetesPostgresOutputs{}
 	mi := &file_catalog_kubernetes_kubernetespostgres_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPostgresStackOutputs) String() string {
+func (x *KubernetesPostgresOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPostgresStackOutputs) ProtoMessage() {}
+func (*KubernetesPostgresOutputs) ProtoMessage() {}
 
-func (x *KubernetesPostgresStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPostgresOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetespostgres_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -96,82 +96,82 @@ func (x *KubernetesPostgresStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPostgresStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesPostgresStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPostgresOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesPostgresOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetespostgres_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPostgresStackOutputs) GetNamespace() string {
+func (x *KubernetesPostgresOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesPostgresStackOutputs) GetClusterName() string {
+func (x *KubernetesPostgresOutputs) GetClusterName() string {
 	if x != nil {
 		return x.ClusterName
 	}
 	return ""
 }
 
-func (x *KubernetesPostgresStackOutputs) GetRwService() string {
+func (x *KubernetesPostgresOutputs) GetRwService() string {
 	if x != nil {
 		return x.RwService
 	}
 	return ""
 }
 
-func (x *KubernetesPostgresStackOutputs) GetRoService() string {
+func (x *KubernetesPostgresOutputs) GetRoService() string {
 	if x != nil {
 		return x.RoService
 	}
 	return ""
 }
 
-func (x *KubernetesPostgresStackOutputs) GetRService() string {
+func (x *KubernetesPostgresOutputs) GetRService() string {
 	if x != nil {
 		return x.RService
 	}
 	return ""
 }
 
-func (x *KubernetesPostgresStackOutputs) GetKubeEndpoint() string {
+func (x *KubernetesPostgresOutputs) GetKubeEndpoint() string {
 	if x != nil {
 		return x.KubeEndpoint
 	}
 	return ""
 }
 
-func (x *KubernetesPostgresStackOutputs) GetPortForwardCommand() string {
+func (x *KubernetesPostgresOutputs) GetPortForwardCommand() string {
 	if x != nil {
 		return x.PortForwardCommand
 	}
 	return ""
 }
 
-func (x *KubernetesPostgresStackOutputs) GetUsernameSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesPostgresOutputs) GetUsernameSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.UsernameSecret
 	}
 	return nil
 }
 
-func (x *KubernetesPostgresStackOutputs) GetPasswordSecret() *kubernetes.KubernetesSecretKey {
+func (x *KubernetesPostgresOutputs) GetPasswordSecret() *kubernetes.KubernetesSecretKey {
 	if x != nil {
 		return x.PasswordSecret
 	}
 	return nil
 }
 
-func (x *KubernetesPostgresStackOutputs) GetSuperuserSecretName() string {
+func (x *KubernetesPostgresOutputs) GetSuperuserSecretName() string {
 	if x != nil {
 		return x.SuperuserSecretName
 	}
 	return ""
 }
 
-func (x *KubernetesPostgresStackOutputs) GetBackupServerName() string {
+func (x *KubernetesPostgresOutputs) GetBackupServerName() string {
 	if x != nil {
 		return x.BackupServerName
 	}
@@ -182,8 +182,8 @@ var File_catalog_kubernetes_kubernetespostgres_v1alpha1_outputs_proto protorefle
 
 const file_catalog_kubernetes_kubernetespostgres_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/kubernetes/kubernetespostgres/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kubernetespostgres.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\xa1\x04\n" +
-	"\x1eKubernetesPostgresStackOutputs\x12\x1c\n" +
+	"<catalog/kubernetes/kubernetespostgres/v1alpha1/outputs.proto\x122dev.planton.kubernetes.kubernetespostgres.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\"\x9c\x04\n" +
+	"\x19KubernetesPostgresOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12\x1d\n" +
 	"\n" +
@@ -214,12 +214,12 @@ func file_catalog_kubernetes_kubernetespostgres_v1alpha1_outputs_proto_rawDescGZ
 
 var file_catalog_kubernetes_kubernetespostgres_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetespostgres_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesPostgresStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetespostgres.v1alpha1.KubernetesPostgresStackOutputs
+	(*KubernetesPostgresOutputs)(nil),      // 0: dev.planton.kubernetes.kubernetespostgres.v1alpha1.KubernetesPostgresOutputs
 	(*kubernetes.KubernetesSecretKey)(nil), // 1: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetespostgres_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetespostgres.v1alpha1.KubernetesPostgresStackOutputs.username_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
-	1, // 1: dev.planton.kubernetes.kubernetespostgres.v1alpha1.KubernetesPostgresStackOutputs.password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 0: dev.planton.kubernetes.kubernetespostgres.v1alpha1.KubernetesPostgresOutputs.username_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	1, // 1: dev.planton.kubernetes.kubernetespostgres.v1alpha1.KubernetesPostgresOutputs.password_secret:type_name -> dev.planton.kubernetes.KubernetesSecretKey
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

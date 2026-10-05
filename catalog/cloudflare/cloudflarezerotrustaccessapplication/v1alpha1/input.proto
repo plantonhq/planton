@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1;
 import "catalog/cloudflare/cloudflarezerotrustaccessapplication/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-zero-trust-access-application stack-input
-message CloudflareZeroTrustAccessApplicationStackInput {
-  //target cloud-resource
+//cloudflare-zero-trust-access-application iac-input
+message CloudflareZeroTrustAccessApplicationIacInput {
+  // the catalog object to deploy
   CloudflareZeroTrustAccessApplication target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

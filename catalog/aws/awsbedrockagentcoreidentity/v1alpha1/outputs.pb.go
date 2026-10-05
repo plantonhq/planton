@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBedrockAgentCoreIdentityStackOutputs captures observable
+// AwsBedrockAgentCoreIdentityOutputs captures observable
 // identifiers from a provisioned AgentCore identity bundle. Downstream
 // resources (gateway targets' credential providers, gateways' policy
 // engines, JWT authorizers' workload allow-lists) wire dependencies via
 // StringValueOrRef.
-type AwsBedrockAgentCoreIdentityStackOutputs struct {
+type AwsBedrockAgentCoreIdentityOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Workload identity ARNs keyed by each `workload_identities` entry's
 	// name.
@@ -58,20 +58,20 @@ type AwsBedrockAgentCoreIdentityStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBedrockAgentCoreIdentityStackOutputs) Reset() {
-	*x = AwsBedrockAgentCoreIdentityStackOutputs{}
+func (x *AwsBedrockAgentCoreIdentityOutputs) Reset() {
+	*x = AwsBedrockAgentCoreIdentityOutputs{}
 	mi := &file_catalog_aws_awsbedrockagentcoreidentity_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBedrockAgentCoreIdentityStackOutputs) String() string {
+func (x *AwsBedrockAgentCoreIdentityOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBedrockAgentCoreIdentityStackOutputs) ProtoMessage() {}
+func (*AwsBedrockAgentCoreIdentityOutputs) ProtoMessage() {}
 
-func (x *AwsBedrockAgentCoreIdentityStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBedrockAgentCoreIdentityOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbedrockagentcoreidentity_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -83,61 +83,61 @@ func (x *AwsBedrockAgentCoreIdentityStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBedrockAgentCoreIdentityStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBedrockAgentCoreIdentityStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBedrockAgentCoreIdentityOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBedrockAgentCoreIdentityOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockagentcoreidentity_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBedrockAgentCoreIdentityStackOutputs) GetWorkloadIdentityArns() map[string]string {
+func (x *AwsBedrockAgentCoreIdentityOutputs) GetWorkloadIdentityArns() map[string]string {
 	if x != nil {
 		return x.WorkloadIdentityArns
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreIdentityStackOutputs) GetApiKeyProviderArns() map[string]string {
+func (x *AwsBedrockAgentCoreIdentityOutputs) GetApiKeyProviderArns() map[string]string {
 	if x != nil {
 		return x.ApiKeyProviderArns
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreIdentityStackOutputs) GetApiKeySecretArns() map[string]string {
+func (x *AwsBedrockAgentCoreIdentityOutputs) GetApiKeySecretArns() map[string]string {
 	if x != nil {
 		return x.ApiKeySecretArns
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreIdentityStackOutputs) GetOauth2ProviderArns() map[string]string {
+func (x *AwsBedrockAgentCoreIdentityOutputs) GetOauth2ProviderArns() map[string]string {
 	if x != nil {
 		return x.Oauth2ProviderArns
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreIdentityStackOutputs) GetOauth2ClientSecretArns() map[string]string {
+func (x *AwsBedrockAgentCoreIdentityOutputs) GetOauth2ClientSecretArns() map[string]string {
 	if x != nil {
 		return x.Oauth2ClientSecretArns
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreIdentityStackOutputs) GetPolicyEngineId() string {
+func (x *AwsBedrockAgentCoreIdentityOutputs) GetPolicyEngineId() string {
 	if x != nil {
 		return x.PolicyEngineId
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentCoreIdentityStackOutputs) GetPolicyEngineArn() string {
+func (x *AwsBedrockAgentCoreIdentityOutputs) GetPolicyEngineArn() string {
 	if x != nil {
 		return x.PolicyEngineArn
 	}
 	return ""
 }
 
-func (x *AwsBedrockAgentCoreIdentityStackOutputs) GetPolicyIds() map[string]string {
+func (x *AwsBedrockAgentCoreIdentityOutputs) GetPolicyIds() map[string]string {
 	if x != nil {
 		return x.PolicyIds
 	}
@@ -148,17 +148,17 @@ var File_catalog_aws_awsbedrockagentcoreidentity_v1alpha1_outputs_proto protoref
 
 const file_catalog_aws_awsbedrockagentcoreidentity_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/aws/awsbedrockagentcoreidentity/v1alpha1/outputs.proto\x124dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1\"\x93\f\n" +
-	"'AwsBedrockAgentCoreIdentityStackOutputs\x12\xad\x01\n" +
-	"\x16workload_identity_arns\x18\x01 \x03(\v2w.dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.WorkloadIdentityArnsEntryR\x14workloadIdentityArns\x12\xa8\x01\n" +
-	"\x15api_key_provider_arns\x18\x02 \x03(\v2u.dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.ApiKeyProviderArnsEntryR\x12apiKeyProviderArns\x12\xa2\x01\n" +
-	"\x13api_key_secret_arns\x18\x03 \x03(\v2s.dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.ApiKeySecretArnsEntryR\x10apiKeySecretArns\x12\xa7\x01\n" +
-	"\x14oauth2_provider_arns\x18\x04 \x03(\v2u.dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.Oauth2ProviderArnsEntryR\x12oauth2ProviderArns\x12\xb4\x01\n" +
-	"\x19oauth2_client_secret_arns\x18\x05 \x03(\v2y.dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.Oauth2ClientSecretArnsEntryR\x16oauth2ClientSecretArns\x12(\n" +
+	">catalog/aws/awsbedrockagentcoreidentity/v1alpha1/outputs.proto\x124dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1\"\xf0\v\n" +
+	"\"AwsBedrockAgentCoreIdentityOutputs\x12\xa8\x01\n" +
+	"\x16workload_identity_arns\x18\x01 \x03(\v2r.dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.WorkloadIdentityArnsEntryR\x14workloadIdentityArns\x12\xa3\x01\n" +
+	"\x15api_key_provider_arns\x18\x02 \x03(\v2p.dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.ApiKeyProviderArnsEntryR\x12apiKeyProviderArns\x12\x9d\x01\n" +
+	"\x13api_key_secret_arns\x18\x03 \x03(\v2n.dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.ApiKeySecretArnsEntryR\x10apiKeySecretArns\x12\xa2\x01\n" +
+	"\x14oauth2_provider_arns\x18\x04 \x03(\v2p.dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.Oauth2ProviderArnsEntryR\x12oauth2ProviderArns\x12\xaf\x01\n" +
+	"\x19oauth2_client_secret_arns\x18\x05 \x03(\v2t.dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.Oauth2ClientSecretArnsEntryR\x16oauth2ClientSecretArns\x12(\n" +
 	"\x10policy_engine_id\x18\x06 \x01(\tR\x0epolicyEngineId\x12*\n" +
-	"\x11policy_engine_arn\x18\a \x01(\tR\x0fpolicyEngineArn\x12\x8b\x01\n" +
+	"\x11policy_engine_arn\x18\a \x01(\tR\x0fpolicyEngineArn\x12\x86\x01\n" +
 	"\n" +
-	"policy_ids\x18\b \x03(\v2l.dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.PolicyIdsEntryR\tpolicyIds\x1aG\n" +
+	"policy_ids\x18\b \x03(\v2g.dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.PolicyIdsEntryR\tpolicyIds\x1aG\n" +
 	"\x19WorkloadIdentityArnsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aE\n" +
@@ -193,21 +193,21 @@ func file_catalog_aws_awsbedrockagentcoreidentity_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_aws_awsbedrockagentcoreidentity_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_catalog_aws_awsbedrockagentcoreidentity_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBedrockAgentCoreIdentityStackOutputs)(nil), // 0: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs
-	nil, // 1: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.WorkloadIdentityArnsEntry
-	nil, // 2: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.ApiKeyProviderArnsEntry
-	nil, // 3: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.ApiKeySecretArnsEntry
-	nil, // 4: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.Oauth2ProviderArnsEntry
-	nil, // 5: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.Oauth2ClientSecretArnsEntry
-	nil, // 6: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.PolicyIdsEntry
+	(*AwsBedrockAgentCoreIdentityOutputs)(nil), // 0: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs
+	nil, // 1: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.WorkloadIdentityArnsEntry
+	nil, // 2: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.ApiKeyProviderArnsEntry
+	nil, // 3: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.ApiKeySecretArnsEntry
+	nil, // 4: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.Oauth2ProviderArnsEntry
+	nil, // 5: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.Oauth2ClientSecretArnsEntry
+	nil, // 6: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.PolicyIdsEntry
 }
 var file_catalog_aws_awsbedrockagentcoreidentity_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.workload_identity_arns:type_name -> dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.WorkloadIdentityArnsEntry
-	2, // 1: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.api_key_provider_arns:type_name -> dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.ApiKeyProviderArnsEntry
-	3, // 2: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.api_key_secret_arns:type_name -> dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.ApiKeySecretArnsEntry
-	4, // 3: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.oauth2_provider_arns:type_name -> dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.Oauth2ProviderArnsEntry
-	5, // 4: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.oauth2_client_secret_arns:type_name -> dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.Oauth2ClientSecretArnsEntry
-	6, // 5: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.policy_ids:type_name -> dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityStackOutputs.PolicyIdsEntry
+	1, // 0: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.workload_identity_arns:type_name -> dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.WorkloadIdentityArnsEntry
+	2, // 1: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.api_key_provider_arns:type_name -> dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.ApiKeyProviderArnsEntry
+	3, // 2: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.api_key_secret_arns:type_name -> dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.ApiKeySecretArnsEntry
+	4, // 3: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.oauth2_provider_arns:type_name -> dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.Oauth2ProviderArnsEntry
+	5, // 4: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.oauth2_client_secret_arns:type_name -> dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.Oauth2ClientSecretArnsEntry
+	6, // 5: dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.policy_ids:type_name -> dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1.AwsBedrockAgentCoreIdentityOutputs.PolicyIdsEntry
 	6, // [6:6] is the sub-list for method output_type
 	6, // [6:6] is the sub-list for method input_type
 	6, // [6:6] is the sub-list for extension type_name

@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1;
 import "catalog/kubernetes/kuberneteskafkatopic/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//kubernetes-kafka-topic stack-input
-message KubernetesKafkaTopicStackInput {
-  //target cloud-resource
+//kubernetes-kafka-topic iac-input
+message KubernetesKafkaTopicIacInput {
+  // the catalog object to deploy
   KubernetesKafkaTopic target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

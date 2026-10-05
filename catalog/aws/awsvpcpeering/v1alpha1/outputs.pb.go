@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsVpcPeeringStackOutputs captures the observable state of the
+// AwsVpcPeeringOutputs captures the observable state of the
 // peering connection after apply.
-type AwsVpcPeeringStackOutputs struct {
+type AwsVpcPeeringOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The peering connection's id (pcx-...) - what route tables and
 	// accept-arm instances reference, and the provider's import ID.
@@ -37,20 +37,20 @@ type AwsVpcPeeringStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsVpcPeeringStackOutputs) Reset() {
-	*x = AwsVpcPeeringStackOutputs{}
+func (x *AwsVpcPeeringOutputs) Reset() {
+	*x = AwsVpcPeeringOutputs{}
 	mi := &file_catalog_aws_awsvpcpeering_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsVpcPeeringStackOutputs) String() string {
+func (x *AwsVpcPeeringOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsVpcPeeringStackOutputs) ProtoMessage() {}
+func (*AwsVpcPeeringOutputs) ProtoMessage() {}
 
-func (x *AwsVpcPeeringStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsVpcPeeringOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsvpcpeering_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *AwsVpcPeeringStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsVpcPeeringStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsVpcPeeringStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsVpcPeeringOutputs.ProtoReflect.Descriptor instead.
+func (*AwsVpcPeeringOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsvpcpeering_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsVpcPeeringStackOutputs) GetPeeringConnectionId() string {
+func (x *AwsVpcPeeringOutputs) GetPeeringConnectionId() string {
 	if x != nil {
 		return x.PeeringConnectionId
 	}
 	return ""
 }
 
-func (x *AwsVpcPeeringStackOutputs) GetAcceptStatus() string {
+func (x *AwsVpcPeeringOutputs) GetAcceptStatus() string {
 	if x != nil {
 		return x.AcceptStatus
 	}
@@ -85,8 +85,8 @@ var File_catalog_aws_awsvpcpeering_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_aws_awsvpcpeering_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/aws/awsvpcpeering/v1alpha1/outputs.proto\x12&dev.planton.aws.awsvpcpeering.v1alpha1\"t\n" +
-	"\x19AwsVpcPeeringStackOutputs\x122\n" +
+	"0catalog/aws/awsvpcpeering/v1alpha1/outputs.proto\x12&dev.planton.aws.awsvpcpeering.v1alpha1\"o\n" +
+	"\x14AwsVpcPeeringOutputs\x122\n" +
 	"\x15peering_connection_id\x18\x01 \x01(\tR\x13peeringConnectionId\x12#\n" +
 	"\raccept_status\x18\x02 \x01(\tR\facceptStatusB\xce\x02\n" +
 	"*com.dev.planton.aws.awsvpcpeering.v1alpha1B\fOutputsProtoP\x01ZUgithub.com/plantonhq/planton/catalog/aws/awsvpcpeering/v1alpha1;awsvpcpeeringv1alpha1\xa2\x02\x04DPAA\xaa\x02&Dev.Planton.Aws.Awsvpcpeering.V1alpha1\xca\x02&Dev\\Planton\\Aws\\Awsvpcpeering\\V1alpha1\xe2\x022Dev\\Planton\\Aws\\Awsvpcpeering\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Aws::Awsvpcpeering::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_aws_awsvpcpeering_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_aws_awsvpcpeering_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsvpcpeering_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsVpcPeeringStackOutputs)(nil), // 0: dev.planton.aws.awsvpcpeering.v1alpha1.AwsVpcPeeringStackOutputs
+	(*AwsVpcPeeringOutputs)(nil), // 0: dev.planton.aws.awsvpcpeering.v1alpha1.AwsVpcPeeringOutputs
 }
 var file_catalog_aws_awsvpcpeering_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

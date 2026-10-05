@@ -1,10 +1,10 @@
 # AWS App Runner Observability Configuration
 
-Deploys an App Runner observability configuration — the reusable tracing policy that [App Runner services](/cloud-catalog/aws-app-runner-service) reference to enable distributed request tracing. It is deliberately its own resource: one configuration is shared by any number of services, and attaching the reference IS the tracing on-switch — there is no separate toggle to keep in sync per service. With tracing configured, each instance of a referencing service runs an OpenTelemetry collector sidecar that forwards request spans to AWS X-Ray. Treat the configuration as immutable once created: to change tracing posture, register a new configuration name and repoint services (see the configuration notes).
+Deploys an App Runner observability configuration — the reusable tracing policy that [App Runner services](/infra-catalog/aws-app-runner-service) reference to enable distributed request tracing. It is deliberately its own resource: one configuration is shared by any number of services, and attaching the reference IS the tracing on-switch — there is no separate toggle to keep in sync per service. With tracing configured, each instance of a referencing service runs an OpenTelemetry collector sidecar that forwards request spans to AWS X-Ray. Treat the configuration as immutable once created: to change tracing posture, register a new configuration name and repoint services (see the configuration notes).
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **App Runner Observability Configuration** -- a named, versioned tracing policy; the trace settings are fixed at creation (see the change-workflow note below)
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -47,7 +47,7 @@ spec:
 planton apply -f app-runner-observability.yaml
 ```
 
-This registers an X-Ray tracing policy. A Stack Job tracks the provisioning in real time.
+This registers an X-Ray tracing policy. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -63,13 +63,13 @@ These are the most important decisions when configuring an observability configu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — it is a leaf resource: App Runner services reference its ARN, never the other way around.
+This kind has no foreign key dependencies — it is a leaf resource: App Runner services reference its ARN, never the other way around.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -87,4 +87,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS App Runner Service**](/cloud-catalog/aws-app-runner-service) -- adopts this tracing policy via `observabilityConfigurationArn` (consumes `configuration_arn`)
+- [**AWS App Runner Service**](/infra-catalog/aws-app-runner-service) -- adopts this tracing policy via `observabilityConfigurationArn` (consumes `configuration_arn`)

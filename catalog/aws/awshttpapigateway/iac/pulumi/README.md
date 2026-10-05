@@ -18,13 +18,13 @@ module/
   outputs.go      — Output key constants
 ```
 
-## Stack Inputs
+## IaC Inputs
 
-The module reads `AwsHttpApiGatewayStackInput` which contains:
+The module reads `AwsHttpApiGatewayIacInput` which contains:
 - `target` — The fully-specified `AwsHttpApiGateway` resource
 - `provider_config` — AWS credentials/region resolution
 
-## Stack Outputs
+## Outputs
 
 | Key | Description |
 |-----|-------------|

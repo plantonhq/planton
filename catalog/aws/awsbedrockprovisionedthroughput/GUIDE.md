@@ -1,7 +1,7 @@
-# AwsBedrockProvisionedThroughput — Component Guide
+# AwsBedrockProvisionedThroughput — Kind Guide
 
 Authored operational judgment for the Bedrock Provisioned Throughput
-component.
+kind.
 
 ## Design decisions
 

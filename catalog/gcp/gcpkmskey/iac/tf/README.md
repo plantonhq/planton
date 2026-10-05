@@ -17,7 +17,7 @@ planton tofu apply --manifest ../../e2e/manifest.yaml --module-dir . --auto-appr
 planton tofu destroy --manifest ../../e2e/manifest.yaml --module-dir . --auto-approve
 ```
 
-Credentials are provided via stack input (by the CLI), not in the manifest `spec`. Manifest file: `../../e2e/manifest.yaml`.
+Credentials are provided via IaC input (by the CLI), not in the manifest `spec`. Manifest file: `../../e2e/manifest.yaml`.
 
 ## Module Layout
 
@@ -25,7 +25,7 @@ Credentials are provided via stack input (by the CLI), not in the manifest `spec
 - `variables.tf` — the converter-contract `metadata`/`spec` variables
 - `locals.tf` — optional-field null-folding + the label merge
 - `main.tf` — API enablement + the crypto key resource
-- `outputs.tf` — stack outputs (must match `outputs.proto`)
+- `outputs.tf` — outputs (must match `outputs.proto`)
 
 ## Inputs
 

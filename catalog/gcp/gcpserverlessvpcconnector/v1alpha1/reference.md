@@ -6,7 +6,7 @@
 
 **apiVersion**: `gcp.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 GcpServerlessVpcConnectorSpec defines a Serverless VPC Access connector
 (`google_vpc_access_connector`) — the managed bridge that lets serverless
@@ -27,7 +27,7 @@ A connector is regional and attaches to exactly ONE placement:
 Exactly one of the two modes must be set.
 
 Consumers attach by full resource name (projects/*/locations/*/
-connectors/*) — the `self_link` stack output. One connector serves many
+connectors/*) — the `self_link` output. One connector serves many
 functions/services in its region; it is shared infrastructure, not
 per-workload.
 

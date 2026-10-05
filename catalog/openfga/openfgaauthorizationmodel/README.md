@@ -13,7 +13,7 @@ An **authorization model** in OpenFGA defines the types, relations, and access r
 
 ## Important Notes
 
-**OpenTofu or Terraform**: OpenFGA only has a Terraform provider, so this component runs on OpenTofu or Terraform. Set `planton.dev/provisioner: tofu` (or `terraform`) on the manifest, or leave it unset and the CLI asks between the two; Pulumi is refused before anything runs.
+**OpenTofu or Terraform**: OpenFGA only has a Terraform provider, so this kind runs on OpenTofu or Terraform. Set `planton.dev/provisioner: tofu` (or `terraform`) on the manifest, or leave it unset and the CLI asks between the two; Pulumi is refused before anything runs.
 
 **Immutable Models**: Authorization models in OpenFGA are immutable. Each change to `modelJson` creates a new model version with a new ID. The previous model version is retained.
 
@@ -91,7 +91,7 @@ planton apply --manifest authorization-model.yaml \
 | `storeId` | string | Yes | The ID of the OpenFGA store where this model will be created |
 | `modelJson` | string | Yes | The authorization model definition in JSON format |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package dev.planton.finops.catalogkindcostprofile.v1;
+
+import "finops/catalogkindcostprofile/v1/spec.proto";
+import "shared/metadata.proto";
+
+// CatalogKindCostProfile declares a single kind's cost anatomy: how its
+// cloud cost accrues, which spec fields move the bill, and what a truthful
+// estimate must include and exclude. It carries the STABLE half of cost
+// knowledge -- the shape of the bill, which changes only when the module
+// changes. Unit prices are volatile and live in the central price book,
+// never here. Follows the KRM pattern (apiVersion + kind + metadata + spec).
+// Lives at catalog/{provider}/{kind}/cost.yaml.
+//
+// Vocabulary: charge-identity fields (service_name, sku_meter, pricing_unit)
+// follow the FinOps FOCUS specification's column semantics (ServiceName,
+// SkuMeter, PricingUnit), so estimates built from this profile and actual
+// billing data speak one language and can be joined per resource.
+//
+// Example:
+//   apiVersion: finops.planton.dev/v1
+//   kind: CatalogKindCostProfile
+//   metadata:
+//     name: awsdynamodb
+//   spec:
+//     billing_model: hybrid
+//     cost_drivers:
+//       - field_path: billing_mode
+//         sku_meter: capacity mode selection
+//         impact: PAY_PER_REQUEST bills per call; PROVISIONED bills reserved capacity hourly
+message CatalogKindCostProfile {
+  string api_version = 1;
+  string kind = 2;
+  dev.planton.shared.CatalogObjectMetadata metadata = 3;
+  CatalogKindCostProfileSpec spec = 4;
+}

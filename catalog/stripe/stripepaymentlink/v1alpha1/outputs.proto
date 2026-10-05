@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.stripe.stripepaymentlink.v1alpha1;
 
-// StripePaymentLinkStackOutputs identifies the payment link.
+// StripePaymentLinkOutputs identifies the payment link.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/payment_link
-message StripePaymentLinkStackOutputs {
+message StripePaymentLinkOutputs {
   // id is the payment link's Stripe id (plink_...). It changes when the link is replaced.
   string id = 1;
 

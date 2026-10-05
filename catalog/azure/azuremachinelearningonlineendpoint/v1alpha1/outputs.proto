@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1;
 
-// **AzureMachineLearningOnlineEndpointStackOutputs** captures the
+// **AzureMachineLearningOnlineEndpointOutputs** captures the
 // outputs of provisioning a Machine Learning online endpoint.
 //
 // Scoring keys are deliberately NOT outputs: ARM never returns key
@@ -11,7 +11,7 @@ package dev.planton.azure.azuremachinelearningonlineendpoint.v1alpha1;
 // initial_auth_keys block already lets a deployment bring its own
 // keys from a secret store. Read service-minted keys with
 // `az ml online-endpoint get-credentials`.
-message AzureMachineLearningOnlineEndpointStackOutputs {
+message AzureMachineLearningOnlineEndpointOutputs {
   // The Azure Resource Manager ID of the online endpoint.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.MachineLearningServices/workspaces/{ws}/onlineEndpoints/{name}
   string online_endpoint_id = 1;

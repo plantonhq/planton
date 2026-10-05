@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareNotificationWebhookStackOutputs captures the observable outputs
+// CloudflareNotificationWebhookOutputs captures the observable outputs
 // after registering the webhook destination.
-type CloudflareNotificationWebhookStackOutputs struct {
+type CloudflareNotificationWebhookOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned UUID of the webhook destination (what
 	// notification policies reference).
@@ -35,20 +35,20 @@ type CloudflareNotificationWebhookStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareNotificationWebhookStackOutputs) Reset() {
-	*x = CloudflareNotificationWebhookStackOutputs{}
+func (x *CloudflareNotificationWebhookOutputs) Reset() {
+	*x = CloudflareNotificationWebhookOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarenotificationwebhook_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareNotificationWebhookStackOutputs) String() string {
+func (x *CloudflareNotificationWebhookOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareNotificationWebhookStackOutputs) ProtoMessage() {}
+func (*CloudflareNotificationWebhookOutputs) ProtoMessage() {}
 
-func (x *CloudflareNotificationWebhookStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareNotificationWebhookOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarenotificationwebhook_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *CloudflareNotificationWebhookStackOutputs) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareNotificationWebhookStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareNotificationWebhookStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareNotificationWebhookOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareNotificationWebhookOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarenotificationwebhook_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareNotificationWebhookStackOutputs) GetWebhookId() string {
+func (x *CloudflareNotificationWebhookOutputs) GetWebhookId() string {
 	if x != nil {
 		return x.WebhookId
 	}
 	return ""
 }
 
-func (x *CloudflareNotificationWebhookStackOutputs) GetType() string {
+func (x *CloudflareNotificationWebhookOutputs) GetType() string {
 	if x != nil {
 		return x.Type
 	}
@@ -83,8 +83,8 @@ var File_catalog_cloudflare_cloudflarenotificationwebhook_v1alpha1_outputs_proto
 
 const file_catalog_cloudflare_cloudflarenotificationwebhook_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/cloudflare/cloudflarenotificationwebhook/v1alpha1/outputs.proto\x12=dev.planton.cloudflare.cloudflarenotificationwebhook.v1alpha1\"^\n" +
-	")CloudflareNotificationWebhookStackOutputs\x12\x1d\n" +
+	"Gcatalog/cloudflare/cloudflarenotificationwebhook/v1alpha1/outputs.proto\x12=dev.planton.cloudflare.cloudflarenotificationwebhook.v1alpha1\"Y\n" +
+	"$CloudflareNotificationWebhookOutputs\x12\x1d\n" +
 	"\n" +
 	"webhook_id\x18\x01 \x01(\tR\twebhookId\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04typeB\xe8\x03\n" +
@@ -104,7 +104,7 @@ func file_catalog_cloudflare_cloudflarenotificationwebhook_v1alpha1_outputs_prot
 
 var file_catalog_cloudflare_cloudflarenotificationwebhook_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarenotificationwebhook_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareNotificationWebhookStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarenotificationwebhook.v1alpha1.CloudflareNotificationWebhookStackOutputs
+	(*CloudflareNotificationWebhookOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarenotificationwebhook.v1alpha1.CloudflareNotificationWebhookOutputs
 }
 var file_catalog_cloudflare_cloudflarenotificationwebhook_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

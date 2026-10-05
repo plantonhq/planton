@@ -52,7 +52,7 @@ const (
 //     (e.g., for DFS namespace integration or migration from on-premises filers).
 //   - Audit logging tracks file access and file share access events to CloudWatch
 //     Logs for compliance and security monitoring.
-//   - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+//   - Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 type AwsFsxWindowsFileSystemSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

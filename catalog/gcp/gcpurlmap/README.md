@@ -84,7 +84,7 @@ A route action is a valid routing *target* only through `weightedBackendServices
 | `region` | Empty for a global URL map; a region name (`us-central1`) for a regional one, referenced only by regional proxies and routing only to regional backend services in that region. Immutable |
 | `deletionPolicy` | What a destroy may do: `DELETE` (default), `PREVENT` (fail the destroy), or `ABANDON` (drop from state, keep serving) |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -111,7 +111,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 - **Evaluation order**: host rules → route rules (by priority) → path rules (longest prefix) → path matcher default → URL map default.
 - **Scope is chain-wide**: a regional map routes only to regional backend services in its region (never to a backend bucket) and is referenced only by regional target proxies; the spec rejects `cachePolicy`, custom error response policies, `maxStreamDuration` (outside a path matcher's default action), and header-driven tests when `region` is set, because the regional resource has none of them.
 
-## Related Components
+## Related Kinds
 
 - [GcpBackendService](/docs/catalog/gcp/gcpbackendservice) — the backends this map routes to
 - [GcpBackendBucket](/docs/catalog/gcp/gcpbackendbucket) — static assets and custom error pages

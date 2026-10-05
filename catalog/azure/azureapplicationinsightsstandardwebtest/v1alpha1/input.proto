@@ -5,10 +5,10 @@ package dev.planton.azure.azureapplicationinsightsstandardwebtest.v1alpha1;
 import "catalog/azure/azureapplicationinsightsstandardwebtest/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureApplicationInsightsStandardWebTestStackInput is the input to the IaC
+// AzureApplicationInsightsStandardWebTestIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureApplicationInsightsStandardWebTestStackInput {
+message AzureApplicationInsightsStandardWebTestIacInput {
   // The standard web test resource to deploy.
   AzureApplicationInsightsStandardWebTest target = 1;
 

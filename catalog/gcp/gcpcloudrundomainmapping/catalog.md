@@ -1,12 +1,12 @@
 # GCP Cloud Run Domain Mapping
 
-Maps a custom domain directly onto a Cloud Run service — Cloud Run serves the domain itself and provisions/renews the TLS certificate, no load balancer required. The mapping emits the DNS records the domain's zone must publish as stack outputs, ready to wire into GcpDnsRecord or an external DNS host. It is the scale-appropriate path for "one service, one domain"; high-traffic and multi-service domains graduate to the load-balancer composition (serverless NEG → backend service → URL map → HTTPS proxy → forwarding rule).
+Maps a custom domain directly onto a Cloud Run service — Cloud Run serves the domain itself and provisions/renews the TLS certificate, no load balancer required. The mapping emits the DNS records the domain's zone must publish as outputs, ready to wire into GcpDnsRecord or an external DNS host. It is the scale-appropriate path for "one service, one domain"; high-traffic and multi-service domains graduate to the load-balancer composition (serverless NEG → backend service → URL map → HTTPS proxy → forwarding rule).
 
 The one prerequisite GCP enforces out-of-band: the deploying identity must have VERIFIED ownership of the domain (Search Console / `gcloud domains verify`) before the mapping can be created. Verification is one-time per domain; subdomains inherit it.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Domain Mapping** -- a `google_cloud_run_domain_mapping` pointing the verified domain at the Cloud Run service, with a managed TLS certificate in the default `AUTOMATIC` mode
 - **Cloud Run API enablement** -- `run.googleapis.com` enabled in the target project (never disabled on destroy)
@@ -55,7 +55,7 @@ spec:
 planton apply -f mapping.yaml
 ```
 
-The mapping exists immediately; the domain starts serving once the `resource_records` output is published in the domain's DNS zone and the managed certificate issues (minutes after DNS propagates). A Stack Job tracks the provisioning in real time.
+The mapping exists immediately; the domain starts serving once the `resource_records` output is published in the domain's DNS zone and the managed certificate issues (minutes after DNS propagates). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,14 +95,14 @@ These are the most important decisions when configuring a domain mapping. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpCloudRun** | `route` | `status.outputs.service_name` |
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,7 +120,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cloud Run**](/cloud-catalog/gcp-cloud-run) — the service being mapped
-- [**GCP DNS Record**](/cloud-catalog/gcp-dns-record) — publishes the emitted records in a Cloud DNS zone
-- [**GCP DNS Zone**](/cloud-catalog/gcp-dns-zone) — the managed zone those records live in
-- [**GCP Project**](/cloud-catalog/gcp-project) — provides the project and API enablement
+- [**GCP Cloud Run**](/infra-catalog/gcp-cloud-run) — the service being mapped
+- [**GCP DNS Record**](/infra-catalog/gcp-dns-record) — publishes the emitted records in a Cloud DNS zone
+- [**GCP DNS Zone**](/infra-catalog/gcp-dns-zone) — the managed zone those records live in
+- [**GCP Project**](/infra-catalog/gcp-project) — provides the project and API enablement

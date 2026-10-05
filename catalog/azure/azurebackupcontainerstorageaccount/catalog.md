@@ -4,7 +4,7 @@ Registers a storage account with a Recovery Services vault as a backup container
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Backup container registration** -- an ARM child of the vault (`.../vaults/{vault}/backupFabrics/Azure/protectionContainers/StorageContainer;storage;{sa-rg};{sa-name}`); ARM derives the registration's own name from the storage account's group and name
 - **A DoNotDelete resource lock on the storage account** -- placed by Azure Backup for as long as the account is registered, protecting the backups' source; removed at unregister, never by hand
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -51,7 +51,7 @@ spec:
 planton apply -f registration.yaml
 ```
 
-This registers the storage account with the vault as a backup container -- no data moves, no cost accrues, and the account's file shares become protectable. A Stack Job tracks the provisioning in real time.
+This registers the storage account with the vault as a backup container -- no data moves, no cost accrues, and the account's file shares become protectable. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,7 +94,7 @@ These are the most important decisions when configuring a backup container regis
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -102,9 +102,9 @@ These are the most important decisions when configuring a backup container regis
 | **AzureRecoveryServicesVault** | `recoveryVaultName` | `status.outputs.recovery_services_vault_name` |
 | **AzureStorageAccount** | `storageAccountId` | `status.outputs.storage_account_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,8 +122,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the vault's resource group, where the registration lives
-- [**Azure Recovery Services Vault**](/cloud-catalog/azure-recovery-services-vault) -- the vault the account registers with
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the account being registered for backup
-- [**Azure Backup Protected File Share**](/cloud-catalog/azure-backup-protected-file-share) -- per-share protection bindings that wire through this registration's `storage_account_id` output
-- [**Azure Backup Policy (File Share)**](/cloud-catalog/azure-backup-policy-file-share) -- the schedule-and-retention policy those protections attach to
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the vault's resource group, where the registration lives
+- [**Azure Recovery Services Vault**](/infra-catalog/azure-recovery-services-vault) -- the vault the account registers with
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the account being registered for backup
+- [**Azure Backup Protected File Share**](/infra-catalog/azure-backup-protected-file-share) -- per-share protection bindings that wire through this registration's `storage_account_id` output
+- [**Azure Backup Policy (File Share)**](/infra-catalog/azure-backup-policy-file-share) -- the schedule-and-retention policy those protections attach to

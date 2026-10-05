@@ -4,14 +4,14 @@ package dev.planton.auth0.auth0user.v1alpha1;
 
 import "shared/options/options.proto";
 
-// Auth0UserStackOutputs contains the outputs from an Auth0 User deployment.
+// Auth0UserOutputs contains the outputs from an Auth0 User deployment.
 // These outputs identify the user to every system that must recognize it: the
 // subject other declarations grant standing to, the profile fields as Auth0
 // stored them, and the module-minted password when no password was declared.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/user#read-only
 // https://www.pulumi.com/registry/packages/auth0/api-docs/user/#outputs
-message Auth0UserStackOutputs {
+message Auth0UserOutputs {
   // user_id is the user's full identity-provider subject, connection prefix
   // included (e.g. "auth0|66f1c2d3e4a5b6c7d8e9f0a1" for a database user,
   // "email|..." or "sms|..." for a passwordless one). This is exactly the "sub"

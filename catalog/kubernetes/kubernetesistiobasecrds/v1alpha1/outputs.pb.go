@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesIstioBaseCrdsStackOutputs captures observable outputs from the Istio CRDs
+// KubernetesIstioBaseCrdsOutputs captures observable outputs from the Istio CRDs
 // installation.
-type KubernetesIstioBaseCrdsStackOutputs struct {
+type KubernetesIstioBaseCrdsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Istio release the CRDs were installed from (the pinned SDK tag, e.g. "1.30.3").
 	InstalledRelease string `protobuf:"bytes,1,opt,name=installed_release,json=installedRelease,proto3" json:"installed_release,omitempty"`
@@ -34,20 +34,20 @@ type KubernetesIstioBaseCrdsStackOutputs struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *KubernetesIstioBaseCrdsStackOutputs) Reset() {
-	*x = KubernetesIstioBaseCrdsStackOutputs{}
+func (x *KubernetesIstioBaseCrdsOutputs) Reset() {
+	*x = KubernetesIstioBaseCrdsOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesistiobasecrds_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesIstioBaseCrdsStackOutputs) String() string {
+func (x *KubernetesIstioBaseCrdsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesIstioBaseCrdsStackOutputs) ProtoMessage() {}
+func (*KubernetesIstioBaseCrdsOutputs) ProtoMessage() {}
 
-func (x *KubernetesIstioBaseCrdsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesIstioBaseCrdsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesistiobasecrds_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *KubernetesIstioBaseCrdsStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesIstioBaseCrdsStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesIstioBaseCrdsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesIstioBaseCrdsOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesIstioBaseCrdsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesistiobasecrds_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesIstioBaseCrdsStackOutputs) GetInstalledRelease() string {
+func (x *KubernetesIstioBaseCrdsOutputs) GetInstalledRelease() string {
 	if x != nil {
 		return x.InstalledRelease
 	}
 	return ""
 }
 
-func (x *KubernetesIstioBaseCrdsStackOutputs) GetInstalledManifestUrl() string {
+func (x *KubernetesIstioBaseCrdsOutputs) GetInstalledManifestUrl() string {
 	if x != nil {
 		return x.InstalledManifestUrl
 	}
@@ -82,8 +82,8 @@ var File_catalog_kubernetes_kubernetesistiobasecrds_v1alpha1_outputs_proto proto
 
 const file_catalog_kubernetes_kubernetesistiobasecrds_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/kubernetes/kubernetesistiobasecrds/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesistiobasecrds.v1alpha1\"\x88\x01\n" +
-	"#KubernetesIstioBaseCrdsStackOutputs\x12+\n" +
+	"Acatalog/kubernetes/kubernetesistiobasecrds/v1alpha1/outputs.proto\x127dev.planton.kubernetes.kubernetesistiobasecrds.v1alpha1\"\x83\x01\n" +
+	"\x1eKubernetesIstioBaseCrdsOutputs\x12+\n" +
 	"\x11installed_release\x18\x01 \x01(\tR\x10installedRelease\x124\n" +
 	"\x16installed_manifest_url\x18\x02 \x01(\tR\x14installedManifestUrlB\xbe\x03\n" +
 	";com.dev.planton.kubernetes.kubernetesistiobasecrds.v1alpha1B\fOutputsProtoP\x01Zpgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesistiobasecrds/v1alpha1;kubernetesistiobasecrdsv1alpha1\xa2\x02\x04DPKK\xaa\x027Dev.Planton.Kubernetes.Kubernetesistiobasecrds.V1alpha1\xca\x027Dev\\Planton\\Kubernetes\\Kubernetesistiobasecrds\\V1alpha1\xe2\x02CDev\\Planton\\Kubernetes\\Kubernetesistiobasecrds\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Kubernetes::Kubernetesistiobasecrds::V1alpha1b\x06proto3"
@@ -102,7 +102,7 @@ func file_catalog_kubernetes_kubernetesistiobasecrds_v1alpha1_outputs_proto_rawD
 
 var file_catalog_kubernetes_kubernetesistiobasecrds_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesistiobasecrds_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesIstioBaseCrdsStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesistiobasecrds.v1alpha1.KubernetesIstioBaseCrdsStackOutputs
+	(*KubernetesIstioBaseCrdsOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesistiobasecrds.v1alpha1.KubernetesIstioBaseCrdsOutputs
 }
 var file_catalog_kubernetes_kubernetesistiobasecrds_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

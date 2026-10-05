@@ -31,7 +31,7 @@ type CloudflareD1Database struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareD1DatabaseSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *CloudflareD1Database) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareD1Database) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareD1Database) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *CloudflareD1Database) GetStatus() *CloudflareD1DatabaseStatus {
 // cloudflare-d1-database status
 type CloudflareD1DatabaseStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	cloudflare-d1-database stack-outputs
-	Outputs       *CloudflareD1DatabaseStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	cloudflare-d1-database outputs
+	Outputs       *CloudflareD1DatabaseOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*CloudflareD1DatabaseStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflared1database_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareD1DatabaseStatus) GetOutputs() *CloudflareD1DatabaseStackOutputs {
+func (x *CloudflareD1DatabaseStatus) GetOutputs() *CloudflareD1DatabaseOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_cloudflare_cloudflared1database_v1alpha1_api_proto_rawDesc = 
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14CloudflareD1DatabaseR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12j\n" +
 	"\x04spec\x18\x04 \x01(\v2N.dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12h\n" +
-	"\x06status\x18\x05 \x01(\v2P.dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseStatusR\x06status\"\x8e\x01\n" +
-	"\x1aCloudflareD1DatabaseStatus\x12p\n" +
-	"\aoutputs\x18\x01 \x01(\v2V.dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseStackOutputsR\aoutputsB\xa5\x03\n" +
+	"\x06status\x18\x05 \x01(\v2P.dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseStatusR\x06status\"\x89\x01\n" +
+	"\x1aCloudflareD1DatabaseStatus\x12k\n" +
+	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseOutputsR\aoutputsB\xa5\x03\n" +
 	"8com.dev.planton.cloudflare.cloudflared1database.v1alpha1B\bApiProtoP\x01Zjgithub.com/plantonhq/planton/catalog/cloudflare/cloudflared1database/v1alpha1;cloudflared1databasev1alpha1\xa2\x02\x04DPCC\xaa\x024Dev.Planton.Cloudflare.Cloudflared1database.V1alpha1\xca\x024Dev\\Planton\\Cloudflare\\Cloudflared1database\\V1alpha1\xe2\x02@Dev\\Planton\\Cloudflare\\Cloudflared1database\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Cloudflare::Cloudflared1database::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_cloudflare_cloudflared1database_v1alpha1_api_proto_rawDescGZIP
 
 var file_catalog_cloudflare_cloudflared1database_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflared1database_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareD1Database)(nil),             // 0: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1Database
-	(*CloudflareD1DatabaseStatus)(nil),       // 1: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareD1DatabaseSpec)(nil),         // 3: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseSpec
-	(*CloudflareD1DatabaseStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseStackOutputs
+	(*CloudflareD1Database)(nil),         // 0: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1Database
+	(*CloudflareD1DatabaseStatus)(nil),   // 1: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareD1DatabaseSpec)(nil),     // 3: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseSpec
+	(*CloudflareD1DatabaseOutputs)(nil),  // 4: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseOutputs
 }
 var file_catalog_cloudflare_cloudflared1database_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1Database.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1Database.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1Database.spec:type_name -> dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseSpec
 	1, // 2: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1Database.status:type_name -> dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseStatus
-	4, // 3: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseStatus.outputs:type_name -> dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseStatus.outputs:type_name -> dev.planton.cloudflare.cloudflared1database.v1alpha1.CloudflareD1DatabaseOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

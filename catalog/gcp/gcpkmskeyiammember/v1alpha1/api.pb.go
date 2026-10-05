@@ -28,7 +28,7 @@ type GcpKmsKeyIamMember struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpKmsKeyIamMemberSpec       `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpKmsKeyIamMemberStatus     `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpKmsKeyIamMember) GetKind() string {
 	return ""
 }
 
-func (x *GcpKmsKeyIamMember) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpKmsKeyIamMember) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpKmsKeyIamMember) GetStatus() *GcpKmsKeyIamMemberStatus {
 }
 
 type GcpKmsKeyIamMemberStatus struct {
-	state         protoimpl.MessageState          `protogen:"open.v1"`
-	Outputs       *GcpKmsKeyIamMemberStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState     `protogen:"open.v1"`
+	Outputs       *GcpKmsKeyIamMemberOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpKmsKeyIamMemberStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpkmskeyiammember_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpKmsKeyIamMemberStatus) GetOutputs() *GcpKmsKeyIamMemberStackOutputs {
+func (x *GcpKmsKeyIamMemberStatus) GetOutputs() *GcpKmsKeyIamMemberOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpkmskeyiammember_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12-\n" +
 	"\x04kind\x18\x02 \x01(\tB\x19\xbaH\x16r\x14\n" +
 	"\x12GcpKmsKeyIamMemberR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12_\n" +
 	"\x04spec\x18\x04 \x01(\v2C.dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12]\n" +
-	"\x06status\x18\x05 \x01(\v2E.dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberStatusR\x06status\"\x81\x01\n" +
-	"\x18GcpKmsKeyIamMemberStatus\x12e\n" +
-	"\aoutputs\x18\x01 \x01(\v2K.dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberStackOutputsR\aoutputsB\xed\x02\n" +
+	"\x06status\x18\x05 \x01(\v2E.dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberStatusR\x06status\"|\n" +
+	"\x18GcpKmsKeyIamMemberStatus\x12`\n" +
+	"\aoutputs\x18\x01 \x01(\v2F.dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberOutputsR\aoutputsB\xed\x02\n" +
 	"/com.dev.planton.gcp.gcpkmskeyiammember.v1alpha1B\bApiProtoP\x01Z_github.com/plantonhq/planton/catalog/gcp/gcpkmskeyiammember/v1alpha1;gcpkmskeyiammemberv1alpha1\xa2\x02\x04DPGG\xaa\x02+Dev.Planton.Gcp.Gcpkmskeyiammember.V1alpha1\xca\x02+Dev\\Planton\\Gcp\\Gcpkmskeyiammember\\V1alpha1\xe2\x027Dev\\Planton\\Gcp\\Gcpkmskeyiammember\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Gcp::Gcpkmskeyiammember::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpkmskeyiammember_v1alpha1_api_proto_rawDescGZIP() []byte
 
 var file_catalog_gcp_gcpkmskeyiammember_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpkmskeyiammember_v1alpha1_api_proto_goTypes = []any{
-	(*GcpKmsKeyIamMember)(nil),             // 0: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMember
-	(*GcpKmsKeyIamMemberStatus)(nil),       // 1: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberStatus
-	(*shared.CloudResourceMetadata)(nil),   // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpKmsKeyIamMemberSpec)(nil),         // 3: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberSpec
-	(*GcpKmsKeyIamMemberStackOutputs)(nil), // 4: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberStackOutputs
+	(*GcpKmsKeyIamMember)(nil),           // 0: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMember
+	(*GcpKmsKeyIamMemberStatus)(nil),     // 1: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpKmsKeyIamMemberSpec)(nil),       // 3: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberSpec
+	(*GcpKmsKeyIamMemberOutputs)(nil),    // 4: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberOutputs
 }
 var file_catalog_gcp_gcpkmskeyiammember_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMember.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMember.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMember.spec:type_name -> dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberSpec
 	1, // 2: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMember.status:type_name -> dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberStatus
-	4, // 3: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberStatus.outputs:type_name -> dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberStackOutputs
+	4, // 3: dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberStatus.outputs:type_name -> dev.planton.gcp.gcpkmskeyiammember.v1alpha1.GcpKmsKeyIamMemberOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

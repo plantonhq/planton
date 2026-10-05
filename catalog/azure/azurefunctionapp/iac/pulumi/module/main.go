@@ -9,12 +9,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurefunctionappv1alpha1.AzureFunctionAppStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurefunctionappv1alpha1.AzureFunctionAppIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -83,7 +83,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefunctionappv1alpha1.AzureFu
 		functionAppArgs.StickySettings = stickyArgs
 	}
 
-	// Presence-guarded proto defaults: stack inputs never materialize
+	// Presence-guarded proto defaults: IaC inputs never materialize
 	// them, so an unset field must deploy the spec's documented default,
 	// not the Go zero value.
 
@@ -200,7 +200,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefunctionappv1alpha1.AzureFu
 		return errors.Wrapf(err, "failed to create Linux Function App %s", spec.FunctionAppName)
 	}
 
-	// Export stack outputs. The outbound IP sets are exported as real
+	// Export outputs. The outbound IP sets are exported as real
 	// lists so they flatten onto the repeated proto outputs identically
 	// on both engines.
 	ctx.Export(OpFunctionAppId, functionApp.ID())

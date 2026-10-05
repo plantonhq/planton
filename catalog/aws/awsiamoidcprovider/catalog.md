@@ -4,7 +4,7 @@ Registers an OpenID Connect (OIDC) identity provider in AWS IAM -- the trust anc
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **IAM OIDC Provider** -- an `aws_iam_openid_connect_provider` (Pulumi: `iam.OpenIdConnectProvider`) registered under the issuer `url`, scoped to the supplied `clientIdList`, and optionally pinned to `thumbprintList`
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied to the provider
@@ -15,7 +15,7 @@ That single resource is the trust anchor. Access itself is granted by a separate
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **An OIDC issuer** -- for EKS IRSA, an `AwsEksCluster` you can reference (its `status.outputs.oidc_issuer_url` flows in automatically); for CI/CD, the platform issuer URL (e.g. `https://token.actions.githubusercontent.com`).
 
 ### AWS Account
@@ -52,7 +52,7 @@ spec:
 planton apply -f oidc-provider.yaml
 ```
 
-This registers GitHub Actions as a trusted OIDC issuer. Next, create an **AWS IAM Role** whose trust policy references the exported `provider_arn`. A Stack Job tracks the provisioning in real time.
+This registers GitHub Actions as a trusted OIDC issuer. Next, create an **AWS IAM Role** whose trust policy references the exported `provider_arn`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,7 +84,7 @@ These are the most important decisions when configuring an OIDC provider. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -92,9 +92,9 @@ These are the most important decisions when configuring an OIDC provider. Explor
 
 Referencing the cluster resolves its OIDC issuer at deploy time, so IRSA setup is composable rather than copy-paste; CI issuers pass a literal URL instead.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -113,5 +113,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the role whose trust policy references this provider's `provider_arn` to grant web-identity (IRSA / CI federation) access
-- [**AWS EKS Cluster**](/cloud-catalog/aws-eks-cluster) -- exports the `oidc_issuer_url` this provider consumes for IRSA; reference it from the `url` field
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the role whose trust policy references this provider's `provider_arn` to grant web-identity (IRSA / CI federation) access
+- [**AWS EKS Cluster**](/infra-catalog/aws-eks-cluster) -- exports the `oidc_issuer_url` this provider consumes for IRSA; reference it from the `url` field

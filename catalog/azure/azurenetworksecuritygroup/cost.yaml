@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurenetworksecuritygroup
 spec:
   billing_model: free
   free_tier: A network security group and its security rules are stateful packet-filtering configuration on Azure's software-defined network fabric. Creating groups, authoring any number of rules, and guarding any number of subnets and NICs never bills -- filtering is a built-in property of the fabric, not a metered service.
-  notes: "No field of this spec buys anything: security_rules, their application-security-group addressing, and tags are all free configuration. The adjacent spend to know about is NSG flow logs -- a SEPARATE Network Watcher resource, not a field of this spec -- which bill per gigabyte collected plus the storage account (and optional Traffic Analytics processing) they land in, each its own meter. The workloads the group guards bill as their own catalog kinds."
+  notes: "No field of this spec buys anything: security_rules, their application-security-group addressing, and tags are all free configuration. The adjacent spend to know about is NSG flow logs -- a SEPARATE Network Watcher resource, not a field of this spec -- which bill per gigabyte collected plus the storage account (and optional Traffic Analytics processing) they land in, each its own meter. The workloads the group guards bill as their own components."

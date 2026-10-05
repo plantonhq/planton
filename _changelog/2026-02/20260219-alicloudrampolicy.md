@@ -1,4 +1,4 @@
-# AliCloudRamPolicy Component Added
+# AliCloudRamPolicy Kind Added
 
 **Date**: 2026-02-19
 **Component**: AliCloudRamPolicy
@@ -7,15 +7,15 @@
 
 ## Summary
 
-Added the AliCloudRamPolicy component for managing Alibaba Cloud RAM custom IAM policies.
+Added the AliCloudRamPolicy kind for managing Alibaba Cloud RAM custom IAM policies.
 
-Custom policies fill the gap when Alibaba Cloud's system-managed policies don't provide the exact permission boundaries you need. Once created, a custom policy can be attached to RAM roles, users, or groups via their respective components.
+Custom policies fill the gap when Alibaba Cloud's system-managed policies don't provide the exact permission boundaries you need. Once created, a custom policy can be attached to RAM roles, users, or groups via their respective kinds.
 
 ## What Was Created
 
 ### API Definition
-- `apis/dev/planton/provider/alicloud/alicloudrampolicy/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AliCloudRamPolicy = 3011` in `CloudResourceKind` enum
+- `apis/dev/planton/provider/alicloud/alicloudrampolicy/v1/` -- Full proto API (spec, api, iac_input, outputs)
+- Registered `AliCloudRamPolicy = 3011` in `CatalogKind` enum
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and RAM policy resource, exports policy_name and policy_type
@@ -27,14 +27,14 @@ Custom policies fill the gap when Alibaba Cloud's system-managed policies don't 
   - Invalid: missing required fields (region, policy_name, policy_document), policy_name exceeding 128 chars, description exceeding 1024 chars, invalid rotate_strategy, wrong api_version/kind, missing metadata
 
 ### Documentation
-- README.md with configuration reference, policy document structure, and related components
+- README.md with configuration reference, policy document structure, and related kinds
 - examples.md with minimal, scoped-bucket, and multi-service CI/CD YAML examples
 
 ## Corrections from T02 Spec
 
 - **`name` -> `policy_name`**: Follows provider-authentic naming consistent with AliCloudRamRole's `role_name` pattern
 - **Added `rotate_strategy`**: Not in T02 but important for production policies hitting the 5-version limit
-- **Added `tags`**: Consistent with all other components in the catalog
+- **Added `tags`**: Consistent with all other kinds in the catalog
 - **Output `policy_type`**: Closes the contract with AliCloudRamRole's policy_attachments (needs both name and type)
 
 ## Verification

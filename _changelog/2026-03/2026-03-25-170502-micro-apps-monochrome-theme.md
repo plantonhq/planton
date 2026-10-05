@@ -62,7 +62,7 @@ MeetsDeck, primitives, navigation, presenter-notes, and all 21 SEP slide files s
 
 ### Phase 7: Demo (58 files)
 
-Fully monochrome including interactive console simulation panels: `#110D1F` dark-purple backgrounds → `#0a0a0a`; StackJobLogger dark-blue panels (`#242F5E`, `#242C4B`) → neutral darks; SVG strokes in LegoCatalog and InfraVisualization from blue/violet/cyan to white/gray; all form, deployment, infrastructure, and log viewer components neutralized.
+Fully monochrome including interactive console simulation panels: `#110D1F` dark-purple backgrounds → `#0a0a0a`; InfraJobLogger dark-blue panels (`#242F5E`, `#242C4B`) → neutral darks; SVG strokes in LegoCatalog and InfraVisualization from blue/violet/cyan to white/gray; all form, deployment, infrastructure, and log viewer components neutralized.
 
 ### Phase 8: Common Components (3 files)
 

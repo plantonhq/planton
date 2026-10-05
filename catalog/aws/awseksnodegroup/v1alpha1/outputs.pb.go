@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsEksNodeGroupStackOutputs describes the values returned after
+// AwsEksNodeGroupOutputs describes the values returned after
 // provisioning a managed EKS node group.
-type AwsEksNodeGroupStackOutputs struct {
+type AwsEksNodeGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// nodegroup_name is the name of the managed node group.
 	NodegroupName string `protobuf:"bytes,1,opt,name=nodegroup_name,json=nodegroupName,proto3" json:"nodegroup_name,omitempty"`
@@ -43,20 +43,20 @@ type AwsEksNodeGroupStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AwsEksNodeGroupStackOutputs) Reset() {
-	*x = AwsEksNodeGroupStackOutputs{}
+func (x *AwsEksNodeGroupOutputs) Reset() {
+	*x = AwsEksNodeGroupOutputs{}
 	mi := &file_catalog_aws_awseksnodegroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsEksNodeGroupStackOutputs) String() string {
+func (x *AwsEksNodeGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsEksNodeGroupStackOutputs) ProtoMessage() {}
+func (*AwsEksNodeGroupOutputs) ProtoMessage() {}
 
-func (x *AwsEksNodeGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsEksNodeGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awseksnodegroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,33 +68,33 @@ func (x *AwsEksNodeGroupStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsEksNodeGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsEksNodeGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsEksNodeGroupOutputs.ProtoReflect.Descriptor instead.
+func (*AwsEksNodeGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awseksnodegroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsEksNodeGroupStackOutputs) GetNodegroupName() string {
+func (x *AwsEksNodeGroupOutputs) GetNodegroupName() string {
 	if x != nil {
 		return x.NodegroupName
 	}
 	return ""
 }
 
-func (x *AwsEksNodeGroupStackOutputs) GetNodegroupArn() string {
+func (x *AwsEksNodeGroupOutputs) GetNodegroupArn() string {
 	if x != nil {
 		return x.NodegroupArn
 	}
 	return ""
 }
 
-func (x *AwsEksNodeGroupStackOutputs) GetAsgName() string {
+func (x *AwsEksNodeGroupOutputs) GetAsgName() string {
 	if x != nil {
 		return x.AsgName
 	}
 	return ""
 }
 
-func (x *AwsEksNodeGroupStackOutputs) GetRemoteAccessSgId() string {
+func (x *AwsEksNodeGroupOutputs) GetRemoteAccessSgId() string {
 	if x != nil {
 		return x.RemoteAccessSgId
 	}
@@ -105,8 +105,8 @@ var File_catalog_aws_awseksnodegroup_v1alpha1_outputs_proto protoreflect.FileDes
 
 const file_catalog_aws_awseksnodegroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awseksnodegroup/v1alpha1/outputs.proto\x12(dev.planton.aws.awseksnodegroup.v1alpha1\"\xb3\x01\n" +
-	"\x1bAwsEksNodeGroupStackOutputs\x12%\n" +
+	"2catalog/aws/awseksnodegroup/v1alpha1/outputs.proto\x12(dev.planton.aws.awseksnodegroup.v1alpha1\"\xae\x01\n" +
+	"\x16AwsEksNodeGroupOutputs\x12%\n" +
 	"\x0enodegroup_name\x18\x01 \x01(\tR\rnodegroupName\x12#\n" +
 	"\rnodegroup_arn\x18\x02 \x01(\tR\fnodegroupArn\x12\x19\n" +
 	"\basg_name\x18\x03 \x01(\tR\aasgName\x12-\n" +
@@ -127,7 +127,7 @@ func file_catalog_aws_awseksnodegroup_v1alpha1_outputs_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awseksnodegroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awseksnodegroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsEksNodeGroupStackOutputs)(nil), // 0: dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupStackOutputs
+	(*AwsEksNodeGroupOutputs)(nil), // 0: dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupOutputs
 }
 var file_catalog_aws_awseksnodegroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

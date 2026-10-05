@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("GcpVpcPeeringSpec", func() {
 		return &GcpVpcPeering{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVpcPeering",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "hub-to-spoke",
 			},
 			Spec: &GcpVpcPeeringSpec{

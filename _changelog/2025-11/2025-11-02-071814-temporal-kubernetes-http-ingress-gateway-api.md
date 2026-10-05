@@ -313,7 +313,7 @@ _, err = gatewayv1.NewHTTPRoute(ctx,
 Updated to provision HTTP ingress after gRPC ingress:
 
 ```go
-func Resources(ctx *pulumi.Context, stackInput *temporalkubernetesv1.TemporalKubernetesStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *temporalkubernetesv1.TemporalKubernetesIacInput) error {
     // ... namespace, secrets, helm chart ...
 
     // gRPC LoadBalancer (existing, refined)

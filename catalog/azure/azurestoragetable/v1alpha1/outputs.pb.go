@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureStorageTableStackOutputs** captures the outputs of provisioning
+// **AzureStorageTableOutputs** captures the outputs of provisioning
 // a Storage table.
 //
 // No URL output on purpose: the table's data-plane URL is the ACCOUNT's
@@ -29,7 +29,7 @@ const (
 // real endpoint (partitioned-DNS accounts use a different hostname than
 // the classic shared DNS). Compose client URLs from
 // AzureStorageAccount's primary_table_endpoint output + table_name.
-type AzureStorageTableStackOutputs struct {
+type AzureStorageTableOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the table. Role assignments
 	// (Storage Table Data Reader/Contributor) scope to it for table-level
@@ -47,20 +47,20 @@ type AzureStorageTableStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *AzureStorageTableStackOutputs) Reset() {
-	*x = AzureStorageTableStackOutputs{}
+func (x *AzureStorageTableOutputs) Reset() {
+	*x = AzureStorageTableOutputs{}
 	mi := &file_catalog_azure_azurestoragetable_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureStorageTableStackOutputs) String() string {
+func (x *AzureStorageTableOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureStorageTableStackOutputs) ProtoMessage() {}
+func (*AzureStorageTableOutputs) ProtoMessage() {}
 
-func (x *AzureStorageTableStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureStorageTableOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurestoragetable_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,26 +72,26 @@ func (x *AzureStorageTableStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureStorageTableStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureStorageTableStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureStorageTableOutputs.ProtoReflect.Descriptor instead.
+func (*AzureStorageTableOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurestoragetable_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureStorageTableStackOutputs) GetTableId() string {
+func (x *AzureStorageTableOutputs) GetTableId() string {
 	if x != nil {
 		return x.TableId
 	}
 	return ""
 }
 
-func (x *AzureStorageTableStackOutputs) GetTableName() string {
+func (x *AzureStorageTableOutputs) GetTableName() string {
 	if x != nil {
 		return x.TableName
 	}
 	return ""
 }
 
-func (x *AzureStorageTableStackOutputs) GetStorageAccountName() string {
+func (x *AzureStorageTableOutputs) GetStorageAccountName() string {
 	if x != nil {
 		return x.StorageAccountName
 	}
@@ -102,8 +102,8 @@ var File_catalog_azure_azurestoragetable_v1alpha1_outputs_proto protoreflect.Fil
 
 const file_catalog_azure_azurestoragetable_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/azure/azurestoragetable/v1alpha1/outputs.proto\x12,dev.planton.azure.azurestoragetable.v1alpha1\"\x8b\x01\n" +
-	"\x1dAzureStorageTableStackOutputs\x12\x19\n" +
+	"6catalog/azure/azurestoragetable/v1alpha1/outputs.proto\x12,dev.planton.azure.azurestoragetable.v1alpha1\"\x86\x01\n" +
+	"\x18AzureStorageTableOutputs\x12\x19\n" +
 	"\btable_id\x18\x01 \x01(\tR\atableId\x12\x1d\n" +
 	"\n" +
 	"table_name\x18\x02 \x01(\tR\ttableName\x120\n" +
@@ -124,7 +124,7 @@ func file_catalog_azure_azurestoragetable_v1alpha1_outputs_proto_rawDescGZIP() [
 
 var file_catalog_azure_azurestoragetable_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurestoragetable_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureStorageTableStackOutputs)(nil), // 0: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableStackOutputs
+	(*AzureStorageTableOutputs)(nil), // 0: dev.planton.azure.azurestoragetable.v1alpha1.AzureStorageTableOutputs
 }
 var file_catalog_azure_azurestoragetable_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

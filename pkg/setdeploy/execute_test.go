@@ -74,8 +74,8 @@ func TestExecute_OutputsFeedDownstreamReferences(t *testing.T) {
 	plan := passingTwoNodePlan(t)
 	deployer := &fakeDeployer{
 		outputs: map[string]*outputs.CaptureResult{
-			"TestCloudResourceGeneric/producer@dev": {
-				Flat: map[string]string{"id": "tcrg-producer"},
+			"TestCatalogKindGeneric/producer@dev": {
+				Flat: map[string]string{"id": "tckg-producer"},
 			},
 		},
 	}
@@ -87,13 +87,13 @@ func TestExecute_OutputsFeedDownstreamReferences(t *testing.T) {
 	if !result.Succeeded() {
 		t.Fatalf("expected success; %+v", result)
 	}
-	if len(deployer.deployed) != 2 || deployer.deployed[0] != "TestCloudResourceGeneric/producer@dev" {
+	if len(deployer.deployed) != 2 || deployer.deployed[0] != "TestCatalogKindGeneric/producer@dev" {
 		t.Fatalf("expected producer first, got %v", deployer.deployed)
 	}
 	// The consumer's annotated reference must have become the producer's
 	// literal id output by handoff time.
-	consumerManifest := deployer.manifests["TestCloudResourceGeneric/consumer@dev"]
-	if !strings.Contains(consumerManifest, "tcrg-producer") {
+	consumerManifest := deployer.manifests["TestCatalogKindGeneric/consumer@dev"]
+	if !strings.Contains(consumerManifest, "tckg-producer") {
 		t.Fatalf("the consumer's handoff manifest must carry the resolved literal; got:\n%s", consumerManifest)
 	}
 	if strings.Contains(consumerManifest, "valueFrom") {
@@ -107,7 +107,7 @@ func TestExecute_MissingOutputFailsNamingTheField(t *testing.T) {
 		outputs: map[string]*outputs.CaptureResult{
 			// The producer deploys but exports nothing — the consumer's
 			// reference names an output that does not exist.
-			"TestCloudResourceGeneric/producer@dev": {Flat: map[string]string{"name": "producer"}},
+			"TestCatalogKindGeneric/producer@dev": {Flat: map[string]string{"name": "producer"}},
 		},
 	}
 	events := &recordingEvents{}
@@ -125,7 +125,7 @@ func TestExecute_MissingOutputFailsNamingTheField(t *testing.T) {
 
 func TestExecute_FailureStopsAndStatusesTellTheTruth(t *testing.T) {
 	plan := passingTwoNodePlan(t)
-	deployer := &fakeDeployer{failOn: "TestCloudResourceGeneric/producer@dev"}
+	deployer := &fakeDeployer{failOn: "TestCatalogKindGeneric/producer@dev"}
 	events := &recordingEvents{}
 	result, err := Execute(plan, deployer, events)
 	if err != nil {
@@ -159,7 +159,7 @@ func TestExecute_SensitiveResolutionWarns(t *testing.T) {
 	plan := passingTwoNodePlan(t)
 	deployer := &fakeDeployer{
 		outputs: map[string]*outputs.CaptureResult{
-			"TestCloudResourceGeneric/producer@dev": {
+			"TestCatalogKindGeneric/producer@dev": {
 				Flat:    map[string]string{"id": "super-secret-value"},
 				Secrets: map[string]bool{"id": true},
 			},

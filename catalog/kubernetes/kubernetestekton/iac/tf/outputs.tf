@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (KubernetesTektonStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (KubernetesTektonOutputs).
 
 output "namespace" {
   description = "Namespace the Tekton components run in (the TektonConfig targetNamespace)"

@@ -1,7 +1,7 @@
 # AzureCosmosdbSqlContainer - Terraform Module
 
-Terraform implementation for the AzureCosmosdbSqlContainer deployment
-component.
+Terraform implementation for the AzureCosmosdbSqlContainer
+kind.
 
 ## Resources Created
 

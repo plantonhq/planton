@@ -21,11 +21,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsRestApiDomainStackOutputs captures observable identifiers from a
+// AwsRestApiDomainOutputs captures observable identifiers from a
 // provisioned API Gateway custom domain. DNS records alias to the
 // regional or CloudFront target; access associations key off the
 // domain ARN.
-type AwsRestApiDomainStackOutputs struct {
+type AwsRestApiDomainOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The custom domain name.
 	DomainName string `protobuf:"bytes,1,opt,name=domain_name,json=domainName,proto3" json:"domain_name,omitempty"`
@@ -56,20 +56,20 @@ type AwsRestApiDomainStackOutputs struct {
 	sizeCache             protoimpl.SizeCache
 }
 
-func (x *AwsRestApiDomainStackOutputs) Reset() {
-	*x = AwsRestApiDomainStackOutputs{}
+func (x *AwsRestApiDomainOutputs) Reset() {
+	*x = AwsRestApiDomainOutputs{}
 	mi := &file_catalog_aws_awsrestapidomain_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsRestApiDomainStackOutputs) String() string {
+func (x *AwsRestApiDomainOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsRestApiDomainStackOutputs) ProtoMessage() {}
+func (*AwsRestApiDomainOutputs) ProtoMessage() {}
 
-func (x *AwsRestApiDomainStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsRestApiDomainOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsrestapidomain_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -81,68 +81,68 @@ func (x *AwsRestApiDomainStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsRestApiDomainStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsRestApiDomainStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsRestApiDomainOutputs.ProtoReflect.Descriptor instead.
+func (*AwsRestApiDomainOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsrestapidomain_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsRestApiDomainStackOutputs) GetDomainName() string {
+func (x *AwsRestApiDomainOutputs) GetDomainName() string {
 	if x != nil {
 		return x.DomainName
 	}
 	return ""
 }
 
-func (x *AwsRestApiDomainStackOutputs) GetDomainNameArn() string {
+func (x *AwsRestApiDomainOutputs) GetDomainNameArn() string {
 	if x != nil {
 		return x.DomainNameArn
 	}
 	return ""
 }
 
-func (x *AwsRestApiDomainStackOutputs) GetDomainNameId() string {
+func (x *AwsRestApiDomainOutputs) GetDomainNameId() string {
 	if x != nil {
 		return x.DomainNameId
 	}
 	return ""
 }
 
-func (x *AwsRestApiDomainStackOutputs) GetRegionalDomainName() string {
+func (x *AwsRestApiDomainOutputs) GetRegionalDomainName() string {
 	if x != nil {
 		return x.RegionalDomainName
 	}
 	return ""
 }
 
-func (x *AwsRestApiDomainStackOutputs) GetRegionalZoneId() string {
+func (x *AwsRestApiDomainOutputs) GetRegionalZoneId() string {
 	if x != nil {
 		return x.RegionalZoneId
 	}
 	return ""
 }
 
-func (x *AwsRestApiDomainStackOutputs) GetCloudfrontDomainName() string {
+func (x *AwsRestApiDomainOutputs) GetCloudfrontDomainName() string {
 	if x != nil {
 		return x.CloudfrontDomainName
 	}
 	return ""
 }
 
-func (x *AwsRestApiDomainStackOutputs) GetCloudfrontZoneId() string {
+func (x *AwsRestApiDomainOutputs) GetCloudfrontZoneId() string {
 	if x != nil {
 		return x.CloudfrontZoneId
 	}
 	return ""
 }
 
-func (x *AwsRestApiDomainStackOutputs) GetBasePathMappingIds() map[string]string {
+func (x *AwsRestApiDomainOutputs) GetBasePathMappingIds() map[string]string {
 	if x != nil {
 		return x.BasePathMappingIds
 	}
 	return nil
 }
 
-func (x *AwsRestApiDomainStackOutputs) GetAccessAssociationArns() map[string]string {
+func (x *AwsRestApiDomainOutputs) GetAccessAssociationArns() map[string]string {
 	if x != nil {
 		return x.AccessAssociationArns
 	}
@@ -153,8 +153,8 @@ var File_catalog_aws_awsrestapidomain_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_aws_awsrestapidomain_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awsrestapidomain/v1alpha1/outputs.proto\x12)dev.planton.aws.awsrestapidomain.v1alpha1\"\x90\x06\n" +
-	"\x1cAwsRestApiDomainStackOutputs\x12\x1f\n" +
+	"3catalog/aws/awsrestapidomain/v1alpha1/outputs.proto\x12)dev.planton.aws.awsrestapidomain.v1alpha1\"\x81\x06\n" +
+	"\x17AwsRestApiDomainOutputs\x12\x1f\n" +
 	"\vdomain_name\x18\x01 \x01(\tR\n" +
 	"domainName\x12&\n" +
 	"\x0fdomain_name_arn\x18\x02 \x01(\tR\rdomainNameArn\x12$\n" +
@@ -162,9 +162,9 @@ const file_catalog_aws_awsrestapidomain_v1alpha1_outputs_proto_rawDesc = "" +
 	"\x14regional_domain_name\x18\x04 \x01(\tR\x12regionalDomainName\x12(\n" +
 	"\x10regional_zone_id\x18\x05 \x01(\tR\x0eregionalZoneId\x124\n" +
 	"\x16cloudfront_domain_name\x18\x06 \x01(\tR\x14cloudfrontDomainName\x12,\n" +
-	"\x12cloudfront_zone_id\x18\a \x01(\tR\x10cloudfrontZoneId\x12\x92\x01\n" +
-	"\x15base_path_mapping_ids\x18\b \x03(\v2_.dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackOutputs.BasePathMappingIdsEntryR\x12basePathMappingIds\x12\x9a\x01\n" +
-	"\x17access_association_arns\x18\t \x03(\v2b.dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackOutputs.AccessAssociationArnsEntryR\x15accessAssociationArns\x1aE\n" +
+	"\x12cloudfront_zone_id\x18\a \x01(\tR\x10cloudfrontZoneId\x12\x8d\x01\n" +
+	"\x15base_path_mapping_ids\x18\b \x03(\v2Z.dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainOutputs.BasePathMappingIdsEntryR\x12basePathMappingIds\x12\x95\x01\n" +
+	"\x17access_association_arns\x18\t \x03(\v2].dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainOutputs.AccessAssociationArnsEntryR\x15accessAssociationArns\x1aE\n" +
 	"\x17BasePathMappingIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aH\n" +
@@ -187,13 +187,13 @@ func file_catalog_aws_awsrestapidomain_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_aws_awsrestapidomain_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_aws_awsrestapidomain_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsRestApiDomainStackOutputs)(nil), // 0: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackOutputs
-	nil,                                  // 1: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackOutputs.BasePathMappingIdsEntry
-	nil,                                  // 2: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackOutputs.AccessAssociationArnsEntry
+	(*AwsRestApiDomainOutputs)(nil), // 0: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainOutputs
+	nil,                             // 1: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainOutputs.BasePathMappingIdsEntry
+	nil,                             // 2: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainOutputs.AccessAssociationArnsEntry
 }
 var file_catalog_aws_awsrestapidomain_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackOutputs.base_path_mapping_ids:type_name -> dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackOutputs.BasePathMappingIdsEntry
-	2, // 1: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackOutputs.access_association_arns:type_name -> dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainStackOutputs.AccessAssociationArnsEntry
+	1, // 0: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainOutputs.base_path_mapping_ids:type_name -> dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainOutputs.BasePathMappingIdsEntry
+	2, // 1: dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainOutputs.access_association_arns:type_name -> dev.planton.aws.awsrestapidomain.v1alpha1.AwsRestApiDomainOutputs.AccessAssociationArnsEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

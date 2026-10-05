@@ -48,7 +48,7 @@ func vpc(
 		return nil, errors.Wrap(err, "failed to create digitalocean vpc")
 	}
 
-	// Stack outputs -- exactly the DigitalOceanVpcStackOutputs contract,
+	// Outputs -- exactly the DigitalOceanVpcOutputs contract,
 	// from the SDK's real field names (the urn output is VpcUrn).
 	ctx.Export(OpVpcId, createdVpc.ID())
 	ctx.Export(OpIpRange, createdVpc.IpRange)

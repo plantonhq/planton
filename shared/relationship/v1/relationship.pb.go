@@ -8,7 +8,7 @@ package relationshipv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
-	cloudresourcekind "github.com/plantonhq/planton/shared/cloudresourcekind"
+	catalogkind "github.com/plantonhq/planton/shared/catalogkind"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -24,30 +24,30 @@ const (
 )
 
 // Type of relationship between the resources.
-type CloudResourceRelationship_RelationshipType int32
+type InfraComponentRelationship_RelationshipType int32
 
 const (
-	CloudResourceRelationship_unspecified CloudResourceRelationship_RelationshipType = 0
+	InfraComponentRelationship_unspecified InfraComponentRelationship_RelationshipType = 0
 	// The resource depends on the related resource.
-	CloudResourceRelationship_depends_on CloudResourceRelationship_RelationshipType = 1
+	InfraComponentRelationship_depends_on InfraComponentRelationship_RelationshipType = 1
 	// The resource runs on the related resource.
-	CloudResourceRelationship_runs_on CloudResourceRelationship_RelationshipType = 2
+	InfraComponentRelationship_runs_on InfraComponentRelationship_RelationshipType = 2
 	// The resource is managed by an operator/controller.
-	CloudResourceRelationship_managed_by CloudResourceRelationship_RelationshipType = 3
+	InfraComponentRelationship_managed_by InfraComponentRelationship_RelationshipType = 3
 	// The resource consumes another resource.
-	CloudResourceRelationship_uses CloudResourceRelationship_RelationshipType = 4
+	InfraComponentRelationship_uses InfraComponentRelationship_RelationshipType = 4
 )
 
-// Enum value maps for CloudResourceRelationship_RelationshipType.
+// Enum value maps for InfraComponentRelationship_RelationshipType.
 var (
-	CloudResourceRelationship_RelationshipType_name = map[int32]string{
+	InfraComponentRelationship_RelationshipType_name = map[int32]string{
 		0: "unspecified",
 		1: "depends_on",
 		2: "runs_on",
 		3: "managed_by",
 		4: "uses",
 	}
-	CloudResourceRelationship_RelationshipType_value = map[string]int32{
+	InfraComponentRelationship_RelationshipType_value = map[string]int32{
 		"unspecified": 0,
 		"depends_on":  1,
 		"runs_on":     2,
@@ -56,62 +56,62 @@ var (
 	}
 )
 
-func (x CloudResourceRelationship_RelationshipType) Enum() *CloudResourceRelationship_RelationshipType {
-	p := new(CloudResourceRelationship_RelationshipType)
+func (x InfraComponentRelationship_RelationshipType) Enum() *InfraComponentRelationship_RelationshipType {
+	p := new(InfraComponentRelationship_RelationshipType)
 	*p = x
 	return p
 }
 
-func (x CloudResourceRelationship_RelationshipType) String() string {
+func (x InfraComponentRelationship_RelationshipType) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (CloudResourceRelationship_RelationshipType) Descriptor() protoreflect.EnumDescriptor {
+func (InfraComponentRelationship_RelationshipType) Descriptor() protoreflect.EnumDescriptor {
 	return file_shared_relationship_v1_relationship_proto_enumTypes[0].Descriptor()
 }
 
-func (CloudResourceRelationship_RelationshipType) Type() protoreflect.EnumType {
+func (InfraComponentRelationship_RelationshipType) Type() protoreflect.EnumType {
 	return &file_shared_relationship_v1_relationship_proto_enumTypes[0]
 }
 
-func (x CloudResourceRelationship_RelationshipType) Number() protoreflect.EnumNumber {
+func (x InfraComponentRelationship_RelationshipType) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use CloudResourceRelationship_RelationshipType.Descriptor instead.
-func (CloudResourceRelationship_RelationshipType) EnumDescriptor() ([]byte, []int) {
+// Deprecated: Use InfraComponentRelationship_RelationshipType.Descriptor instead.
+func (InfraComponentRelationship_RelationshipType) EnumDescriptor() ([]byte, []int) {
 	return file_shared_relationship_v1_relationship_proto_rawDescGZIP(), []int{0, 0}
 }
 
-// CloudResourceRelationship defines a relationship between two cloud resources.
-type CloudResourceRelationship struct {
+// InfraComponentRelationship defines a relationship between two InfraComponents.
+type InfraComponentRelationship struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Kind of the related resource.
-	Kind cloudresourcekind.CloudResourceKind `protobuf:"varint,1,opt,name=kind,proto3,enum=dev.planton.shared.cloudresourcekind.CloudResourceKind" json:"kind,omitempty"`
+	Kind catalogkind.CatalogKind `protobuf:"varint,1,opt,name=kind,proto3,enum=dev.planton.shared.catalogkind.CatalogKind" json:"kind,omitempty"`
 	// Environment of the related resource.
 	Env string `protobuf:"bytes,2,opt,name=env,proto3" json:"env,omitempty"`
 	// Name of the related resource.
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	// Type of relationship between the resources.
-	Type          CloudResourceRelationship_RelationshipType `protobuf:"varint,4,opt,name=type,proto3,enum=dev.planton.shared.relationship.v1.CloudResourceRelationship_RelationshipType" json:"type,omitempty"`
+	Type          InfraComponentRelationship_RelationshipType `protobuf:"varint,4,opt,name=type,proto3,enum=dev.planton.shared.relationship.v1.InfraComponentRelationship_RelationshipType" json:"type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudResourceRelationship) Reset() {
-	*x = CloudResourceRelationship{}
+func (x *InfraComponentRelationship) Reset() {
+	*x = InfraComponentRelationship{}
 	mi := &file_shared_relationship_v1_relationship_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudResourceRelationship) String() string {
+func (x *InfraComponentRelationship) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudResourceRelationship) ProtoMessage() {}
+func (*InfraComponentRelationship) ProtoMessage() {}
 
-func (x *CloudResourceRelationship) ProtoReflect() protoreflect.Message {
+func (x *InfraComponentRelationship) ProtoReflect() protoreflect.Message {
 	mi := &file_shared_relationship_v1_relationship_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -123,49 +123,49 @@ func (x *CloudResourceRelationship) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudResourceRelationship.ProtoReflect.Descriptor instead.
-func (*CloudResourceRelationship) Descriptor() ([]byte, []int) {
+// Deprecated: Use InfraComponentRelationship.ProtoReflect.Descriptor instead.
+func (*InfraComponentRelationship) Descriptor() ([]byte, []int) {
 	return file_shared_relationship_v1_relationship_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudResourceRelationship) GetKind() cloudresourcekind.CloudResourceKind {
+func (x *InfraComponentRelationship) GetKind() catalogkind.CatalogKind {
 	if x != nil {
 		return x.Kind
 	}
-	return cloudresourcekind.CloudResourceKind(0)
+	return catalogkind.CatalogKind(0)
 }
 
-func (x *CloudResourceRelationship) GetEnv() string {
+func (x *InfraComponentRelationship) GetEnv() string {
 	if x != nil {
 		return x.Env
 	}
 	return ""
 }
 
-func (x *CloudResourceRelationship) GetName() string {
+func (x *InfraComponentRelationship) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *CloudResourceRelationship) GetType() CloudResourceRelationship_RelationshipType {
+func (x *InfraComponentRelationship) GetType() InfraComponentRelationship_RelationshipType {
 	if x != nil {
 		return x.Type
 	}
-	return CloudResourceRelationship_unspecified
+	return InfraComponentRelationship_unspecified
 }
 
 var File_shared_relationship_v1_relationship_proto protoreflect.FileDescriptor
 
 const file_shared_relationship_v1_relationship_proto_rawDesc = "" +
 	"\n" +
-	")shared/relationship/v1/relationship.proto\x12\"dev.planton.shared.relationship.v1\x1a\x1bbuf/validate/validate.proto\x1a2shared/cloudresourcekind/cloud_resource_kind.proto\"\xe6\x02\n" +
-	"\x19CloudResourceRelationship\x12S\n" +
-	"\x04kind\x18\x01 \x01(\x0e27.dev.planton.shared.cloudresourcekind.CloudResourceKindB\x06\xbaH\x03\xc8\x01\x01R\x04kind\x12\x10\n" +
+	")shared/relationship/v1/relationship.proto\x12\"dev.planton.shared.relationship.v1\x1a\x1bbuf/validate/validate.proto\x1a%shared/catalogkind/catalog_kind.proto\"\xdc\x02\n" +
+	"\x1aInfraComponentRelationship\x12G\n" +
+	"\x04kind\x18\x01 \x01(\x0e2+.dev.planton.shared.catalogkind.CatalogKindB\x06\xbaH\x03\xc8\x01\x01R\x04kind\x12\x10\n" +
 	"\x03env\x18\x02 \x01(\tR\x03env\x12\x1a\n" +
-	"\x04name\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12j\n" +
-	"\x04type\x18\x04 \x01(\x0e2N.dev.planton.shared.relationship.v1.CloudResourceRelationship.RelationshipTypeB\x06\xbaH\x03\xc8\x01\x01R\x04type\"Z\n" +
+	"\x04name\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12k\n" +
+	"\x04type\x18\x04 \x01(\x0e2O.dev.planton.shared.relationship.v1.InfraComponentRelationship.RelationshipTypeB\x06\xbaH\x03\xc8\x01\x01R\x04type\"Z\n" +
 	"\x10RelationshipType\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12\x0e\n" +
 	"\n" +
@@ -191,13 +191,13 @@ func file_shared_relationship_v1_relationship_proto_rawDescGZIP() []byte {
 var file_shared_relationship_v1_relationship_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_shared_relationship_v1_relationship_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_shared_relationship_v1_relationship_proto_goTypes = []any{
-	(CloudResourceRelationship_RelationshipType)(0), // 0: dev.planton.shared.relationship.v1.CloudResourceRelationship.RelationshipType
-	(*CloudResourceRelationship)(nil),               // 1: dev.planton.shared.relationship.v1.CloudResourceRelationship
-	(cloudresourcekind.CloudResourceKind)(0),        // 2: dev.planton.shared.cloudresourcekind.CloudResourceKind
+	(InfraComponentRelationship_RelationshipType)(0), // 0: dev.planton.shared.relationship.v1.InfraComponentRelationship.RelationshipType
+	(*InfraComponentRelationship)(nil),               // 1: dev.planton.shared.relationship.v1.InfraComponentRelationship
+	(catalogkind.CatalogKind)(0),                     // 2: dev.planton.shared.catalogkind.CatalogKind
 }
 var file_shared_relationship_v1_relationship_proto_depIdxs = []int32{
-	2, // 0: dev.planton.shared.relationship.v1.CloudResourceRelationship.kind:type_name -> dev.planton.shared.cloudresourcekind.CloudResourceKind
-	0, // 1: dev.planton.shared.relationship.v1.CloudResourceRelationship.type:type_name -> dev.planton.shared.relationship.v1.CloudResourceRelationship.RelationshipType
+	2, // 0: dev.planton.shared.relationship.v1.InfraComponentRelationship.kind:type_name -> dev.planton.shared.catalogkind.CatalogKind
+	0, // 1: dev.planton.shared.relationship.v1.InfraComponentRelationship.type:type_name -> dev.planton.shared.relationship.v1.InfraComponentRelationship.RelationshipType
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

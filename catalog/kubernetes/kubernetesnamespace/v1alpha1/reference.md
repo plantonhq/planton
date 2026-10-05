@@ -6,7 +6,7 @@
 
 **apiVersion**: `kubernetes.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 **KubernetesNamespaceSpec** defines the configuration for creating and managing a Kubernetes namespace.
 This spec implements a "Namespace-as-a-Service" pattern, abstracting the complexity of namespace
@@ -414,7 +414,7 @@ Reference an output from another manifest as `valueFrom: {kind: KubernetesNamesp
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.namespace` | `string` | The name of the created Kubernetes namespace. This is the primary identifier for referencing the namespace in other resources. |
-| `status.outputs.namespace_id` | `string` | The fully qualified namespace identifier. Format: <namespace> This is the same as namespace but provided for consistency with other components. |
+| `status.outputs.namespace_id` | `string` | The fully qualified namespace identifier. Format: <namespace> This is the same as namespace but provided for consistency with other kinds. |
 | `status.outputs.resource_quotas_applied` | `string` | Indicates whether resource quotas were applied to the namespace. "true" if ResourceQuota objects were created, "false" otherwise. |
 | `status.outputs.limit_ranges_applied` | `string` | Indicates whether LimitRanges were applied to the namespace. "true" if LimitRange objects were created, "false" otherwise. |
 | `status.outputs.network_policies_applied` | `string` | Indicates whether network policies were applied to the namespace. "true" if NetworkPolicy objects were created, "false" otherwise. |

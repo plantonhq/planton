@@ -4,7 +4,7 @@ Deploys one named CloudEvents stream inside an Azure Event Grid namespace, with 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Event Grid namespace topic** -- one CloudEvents stream inside the referenced namespace, with its delivery retention window; the schema (CloudEvents v1.0) and publisher type (Custom) are fixed by Azure and sent by both engines
 
@@ -12,11 +12,11 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Azure Subscription
 
-- **An Event Grid namespace** -- reference an AzureEventgridNamespace Cloud Resource's ID output or pass an existing namespace's ARM ID. The topic shares the namespace's throughput units and adds no cost of its own.
+- **An Event Grid namespace** -- reference an AzureEventgridNamespace Infra Component's ID output or pass an existing namespace's ARM ID. The topic shares the namespace's throughput units and adds no cost of its own.
 
 ## Deploy
 
@@ -49,7 +49,7 @@ spec:
 planton apply -f namespace-topic.yaml
 ```
 
-This creates one CloudEvents stream named `orders` inside the referenced namespace, holding published events for delivery for up to 7 days. A Stack Job tracks the provisioning in real time.
+This creates one CloudEvents stream named `orders` inside the referenced namespace, holding published events for delivery for up to 7 days. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,15 +82,15 @@ These are the most important decisions when configuring a namespace topic. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureEventgridNamespace** | `namespaceId` | `status.outputs.namespace_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-`status.outputs` records identifiers only: `namespace_topic_id` (the ARM ID, `{namespace_id}/topics/{name}`) and `namespace_topic_name`, which echoes the manifest's `name`. No catalog component consumes them via ValueFromRef today -- namespace-topic subscriptions are not yet a catalog kind, so the ID's consumers are CLI tooling and scripts addressing the stream.
+`status.outputs` records identifiers only: `namespace_topic_id` (the ARM ID, `{namespace_id}/topics/{name}`) and `namespace_topic_name`, which echoes the manifest's `name`. No catalog kind consumes them via ValueFromRef today -- namespace-topic subscriptions are not yet a catalog kind, so the ID's consumers are CLI tooling and scripts addressing the stream.
 
 ## Common Patterns
 
@@ -102,5 +102,5 @@ These are the most important decisions when configuring a namespace topic. Explo
 
 ## Works With
 
-- [**Azure Event Grid Namespace**](/cloud-catalog/azure-eventgrid-namespace) -- the capacity-scaled hub the topic lives in and whose throughput units it shares
-- [**Azure Event Grid Topic**](/cloud-catalog/azure-eventgrid-topic) -- the classic custom topic that bridges namespace MQTT traffic into the classic delivery machinery when subscriptions are needed today
+- [**Azure Event Grid Namespace**](/infra-catalog/azure-eventgrid-namespace) -- the capacity-scaled hub the topic lives in and whose throughput units it shares
+- [**Azure Event Grid Topic**](/infra-catalog/azure-eventgrid-topic) -- the classic custom topic that bridges namespace MQTT traffic into the classic delivery machinery when subscriptions are needed today

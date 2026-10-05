@@ -4,7 +4,7 @@ Deploys an AWS Systems Manager State Manager association that binds an SSM docum
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **State Manager Association** — the document-to-target binding with its schedule, rate controls, and compliance posture. AWS identifies it by a generated UUID, not by name; `associationName` is display metadata for the State Manager console.
 - **S3 Output Delivery** — configured only when `outputLocation` is set; without it, command output from association runs is not stored anywhere.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with permissions to manage SSM associations. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with permissions to manage SSM associations. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -60,7 +60,7 @@ spec:
 planton apply -f ssm-association.yaml
 ```
 
-This binds AWS's own `AWS-RunPatchBaseline` document to every instance tagged `env=prod`, scanning for missing patches nightly at 02:00 — installing nothing — with failures reported as HIGH-severity compliance findings. A Stack Job tracks the provisioning in real time.
+This binds AWS's own `AWS-RunPatchBaseline` document to every instance tagged `env=prod`, scanning for missing patches nightly at 02:00 — installing nothing — with failures reported as HIGH-severity compliance findings. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -103,16 +103,16 @@ These are the most important decisions when configuring an association. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsSsmDocument** | `documentName` | `status.outputs.document_name` |
 | **AwsS3Bucket** | `outputLocation.s3BucketName` | `status.outputs.bucket_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -133,7 +133,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS SSM Document**](/cloud-catalog/aws-ssm-document) — the customer-owned document the association runs, wired via the `documentName` reference
-- [**AWS SSM Patch Baseline**](/cloud-catalog/aws-ssm-patch-baseline) — governs what `AWS-RunPatchBaseline` approves when the association runs patch operations
-- [**AWS SSM Maintenance Window**](/cloud-catalog/aws-ssm-maintenance-window) — the alternative scheduling vehicle for disruptive operations like patch installs, with tighter cutoff control
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — receives command output when `outputLocation` is set
+- [**AWS SSM Document**](/infra-catalog/aws-ssm-document) — the customer-owned document the association runs, wired via the `documentName` reference
+- [**AWS SSM Patch Baseline**](/infra-catalog/aws-ssm-patch-baseline) — governs what `AWS-RunPatchBaseline` approves when the association runs patch operations
+- [**AWS SSM Maintenance Window**](/infra-catalog/aws-ssm-maintenance-window) — the alternative scheduling vehicle for disruptive operations like patch installs, with tighter cutoff control
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — receives command output when `outputLocation` is set

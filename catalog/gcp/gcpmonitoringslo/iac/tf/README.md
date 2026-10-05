@@ -21,7 +21,7 @@ This directory contains the Terraform/OpenTofu implementation for deploying a Cl
 | `variables.tf` | GENERATED from the proto spec (`planton tofu generate-variables GcpMonitoringSlo`) — never hand-edited |
 | `locals.tf` | Service-arm gating, naming, and label-merge derivations |
 | `main.tf` | API enablement + count-gated services + the SLO with the full SLI tree |
-| `outputs.tf` | Stack outputs (both derived from the SLO's resource name) |
+| `outputs.tf` | Outputs (both derived from the SLO's resource name) |
 | `provider.tf` | google provider pin (`~> 8.3`) |
 | `backend.tf` | Local state backend (the runner injects the real backend) |
 

@@ -103,7 +103,7 @@ This creates a cluster with 1 master, 2 workers, Spark 3.5, Component Gateway en
 | Everything else on the GCE arm | Recreates the cluster |
 | The entire virtual arm | Immutable — any change replaces the virtual cluster (the underlying GKE cluster and pools are untouched) |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -130,7 +130,7 @@ Everything else on `google_dataproc_cluster` at the pinned provider is represent
 - **`google_dataproc_job` / `batch` / `workflow_template` / `session_template`** — workloads, not infrastructure; Serverless Batches is a future kind candidate.
 - **Dataproc Metastore service** — future kind candidate; `metastoreConfig` accepts literal resource names today.
 
-## Related Components
+## Related Kinds
 
 - **GcpDataprocAutoscalingPolicy** — the shared autoscaling policy `autoscalingPolicyUri` references
 - **GcpGcsBucket** — staging and temp buckets for job artifacts

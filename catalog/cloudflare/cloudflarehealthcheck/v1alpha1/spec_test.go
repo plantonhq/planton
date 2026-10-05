@@ -26,7 +26,7 @@ func validHealthcheck(spec *CloudflareHealthcheckSpec) *CloudflareHealthcheck {
 	return &CloudflareHealthcheck{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareHealthcheck",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-healthcheck",
 		},
 		Spec: spec,

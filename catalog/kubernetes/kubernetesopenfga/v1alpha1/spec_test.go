@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -27,7 +27,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -57,7 +57,7 @@ var _ = ginkgo.Describe("KubernetesOpenFga Validation Tests", func() {
 		input = &KubernetesOpenFga{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesOpenFga",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "authz",
 			},
 			Spec: &KubernetesOpenFgaSpec{
@@ -75,15 +75,15 @@ var _ = ginkgo.Describe("KubernetesOpenFga Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "openfga", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "openfga", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
 		ginkgo.It("a maximal spec (every block populated) should be valid", func() {
 			pg := testPostgres()
-			pg.Host = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "openfga-pg", "status.outputs.rw_service")
+			pg.Host = valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "openfga-pg", "status.outputs.rw_service")
 			pg.Port = int32Ptr(5432)
-			pg.PasswordSecret.SecretName = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "openfga-pg", "status.outputs.password_secret.name")
+			pg.PasswordSecret.SecretName = valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "openfga-pg", "status.outputs.password_secret.name")
 			pg.PasswordSecret.SecretKey = strPtr("password")
 			pg.SslMode = strPtr("verify-full")
 			input.Spec.CreateNamespace = true

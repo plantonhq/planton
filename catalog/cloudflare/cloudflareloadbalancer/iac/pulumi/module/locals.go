@@ -12,10 +12,10 @@ type Locals struct {
 	CloudflareLoadBalancer   *cloudflareloadbalancerv1alpha1.CloudflareLoadBalancer
 }
 
-// initializeLocals copies relevant stack‑input fields into Locals.
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflareloadbalancerv1alpha1.CloudflareLoadBalancerStackInput) *Locals {
+// initializeLocals copies relevant IaC input fields into Locals.
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflareloadbalancerv1alpha1.CloudflareLoadBalancerIacInput) *Locals {
 	return &Locals{
-		CloudflareProviderConfig: stackInput.ProviderConfig,
-		CloudflareLoadBalancer:   stackInput.Target,
+		CloudflareProviderConfig: iacInput.ProviderConfig,
+		CloudflareLoadBalancer:   iacInput.Target,
 	}
 }

@@ -3,7 +3,7 @@ package manifestprojection_test
 import (
 	"testing"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/specprojection"
 	"github.com/plantonhq/planton/pkg/kubernetes/manifestprojection"
 	"github.com/plantonhq/planton/shared/options"
@@ -25,8 +25,8 @@ import (
 // that carries a marker may be used by projection kinds alone.
 func TestProjectionMarkers_SitWhereTheyAreHonored(t *testing.T) {
 	marked := 0
-	for _, kind := range crkreflect.KindsList() {
-		msg, err := crkreflect.NewInstance(kind)
+	for _, kind := range catalogkindreflect.KindsList() {
+		msg, err := catalogkindreflect.NewInstance(kind)
 		if err != nil {
 			continue
 		}

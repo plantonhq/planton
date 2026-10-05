@@ -21,14 +21,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// OpenFgaStoreStackOutputs contains the outputs from an OpenFGA Store deployment.
+// OpenFgaStoreOutputs contains the outputs from an OpenFGA Store deployment.
 //
 // These outputs provide essential identifiers for referencing the store
 // in subsequent operations (e.g., creating authorization models or relationship tuples).
 //
 // Reference:
 // - Terraform: https://registry.terraform.io/providers/openfga/openfga/latest/docs/resources/store#attributes-reference
-type OpenFgaStoreStackOutputs struct {
+type OpenFgaStoreOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// id is the unique identifier of the OpenFGA store.
 	// This is the primary identifier used in OpenFGA APIs to reference the store.
@@ -46,20 +46,20 @@ type OpenFgaStoreStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *OpenFgaStoreStackOutputs) Reset() {
-	*x = OpenFgaStoreStackOutputs{}
+func (x *OpenFgaStoreOutputs) Reset() {
+	*x = OpenFgaStoreOutputs{}
 	mi := &file_catalog_openfga_openfgastore_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *OpenFgaStoreStackOutputs) String() string {
+func (x *OpenFgaStoreOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*OpenFgaStoreStackOutputs) ProtoMessage() {}
+func (*OpenFgaStoreOutputs) ProtoMessage() {}
 
-func (x *OpenFgaStoreStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *OpenFgaStoreOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_openfga_openfgastore_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -71,19 +71,19 @@ func (x *OpenFgaStoreStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use OpenFgaStoreStackOutputs.ProtoReflect.Descriptor instead.
-func (*OpenFgaStoreStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use OpenFgaStoreOutputs.ProtoReflect.Descriptor instead.
+func (*OpenFgaStoreOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_openfga_openfgastore_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *OpenFgaStoreStackOutputs) GetId() string {
+func (x *OpenFgaStoreOutputs) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *OpenFgaStoreStackOutputs) GetName() string {
+func (x *OpenFgaStoreOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
@@ -94,8 +94,8 @@ var File_catalog_openfga_openfgastore_v1alpha1_outputs_proto protoreflect.FileDe
 
 const file_catalog_openfga_openfgastore_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/openfga/openfgastore/v1alpha1/outputs.proto\x12)dev.planton.openfga.openfgastore.v1alpha1\">\n" +
-	"\x18OpenFgaStoreStackOutputs\x12\x0e\n" +
+	"3catalog/openfga/openfgastore/v1alpha1/outputs.proto\x12)dev.planton.openfga.openfgastore.v1alpha1\"9\n" +
+	"\x13OpenFgaStoreOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04nameB\xdf\x02\n" +
 	"-com.dev.planton.openfga.openfgastore.v1alpha1B\fOutputsProtoP\x01ZWgithub.com/plantonhq/planton/catalog/openfga/openfgastore/v1alpha1;openfgastorev1alpha1\xa2\x02\x04DPOO\xaa\x02)Dev.Planton.Openfga.Openfgastore.V1alpha1\xca\x02)Dev\\Planton\\Openfga\\Openfgastore\\V1alpha1\xe2\x025Dev\\Planton\\Openfga\\Openfgastore\\V1alpha1\\GPBMetadata\xea\x02-Dev::Planton::Openfga::Openfgastore::V1alpha1b\x06proto3"
@@ -114,7 +114,7 @@ func file_catalog_openfga_openfgastore_v1alpha1_outputs_proto_rawDescGZIP() []by
 
 var file_catalog_openfga_openfgastore_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_openfga_openfgastore_v1alpha1_outputs_proto_goTypes = []any{
-	(*OpenFgaStoreStackOutputs)(nil), // 0: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreStackOutputs
+	(*OpenFgaStoreOutputs)(nil), // 0: dev.planton.openfga.openfgastore.v1alpha1.OpenFgaStoreOutputs
 }
 var file_catalog_openfga_openfgastore_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

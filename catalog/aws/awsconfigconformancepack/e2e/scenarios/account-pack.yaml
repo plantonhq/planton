@@ -15,7 +15,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsconfigconformancepack
+    e2e-catalog-kind: awsconfigconformancepack
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsConfigRecorder,AwsIamRole,AwsS3Bucket"

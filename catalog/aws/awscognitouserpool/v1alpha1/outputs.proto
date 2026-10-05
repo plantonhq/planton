@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awscognitouserpool.v1alpha1;
 
-// AwsCognitoUserPoolStackOutputs captures observable identifiers and endpoints
+// AwsCognitoUserPoolOutputs captures observable identifiers and endpoints
 // from a provisioned Cognito User Pool. Downstream resources (app clients,
 // identity providers, resource servers, JWT authorizers, ALB authentication
 // actions) wire their dependencies from these values via StringValueOrRef.
-message AwsCognitoUserPoolStackOutputs {
+message AwsCognitoUserPoolOutputs {
   // The user pool identifier. Primary reference used in SDK calls, IAM policies,
   // and as the user_pool_id input for app clients, identity providers, and
   // resource servers. Format: "{region}_{poolId}" (e.g., "us-east-1_Ab1Cd2EfG").

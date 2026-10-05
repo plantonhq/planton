@@ -99,7 +99,7 @@ func runHcl(ctx *Context, cmd *cobra.Command, operation terraform.TerraformOpera
 	}
 
 	printHclSuccess(binary)
-	ui.StackOutputsSummary(captured)
+	ui.OutputsSummary(captured)
 	return nil
 }
 

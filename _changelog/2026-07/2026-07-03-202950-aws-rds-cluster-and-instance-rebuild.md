@@ -9,7 +9,7 @@
 `AwsRdsCluster` and `AwsRdsInstance` are rebuilt from the ground up against the
 full Terraform AWS provider surface (`aws_rds_cluster`, `aws_rds_cluster_instance`,
 `aws_db_instance`), with dual-engine parity, generator-owned Terraform contracts,
-modern stack outputs, refreshed presets and docs, and first-time live E2E coverage
+modern outputs, refreshed presets and docs, and first-time live E2E coverage
 on both engines.
 
 ## AwsRdsCluster
@@ -67,7 +67,7 @@ contract as the cluster.
   the cluster TF module was rewritten from scratch (the previous module had
   drifted beyond repair from the spec), and the instance TF module was
   conformed with its dead duplicate `resources/*.tf` copies removed.
-- Stack outputs renamed to the catalog's semantic convention (`endpoint`,
+- Outputs renamed to the catalog's semantic convention (`endpoint`,
   `reader_endpoint`, `arn`, `cluster_resource_id`, `master_user_secret_arn`,
   `instance_identifier`, `resource_id`, ...) with `pkg/outputs` conformance
   cases; zero PARITY-EXCEPTIONs across both engines.

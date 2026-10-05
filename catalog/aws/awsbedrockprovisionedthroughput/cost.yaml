@@ -1,15 +1,15 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate model: a provisioned-throughput purchase commits real spend
 # (model units billed every hour from creation), but the model-unit RATE
 # is keyed per underlying base model -- the offer file quotes a separate
 # rate dimension per model (Titan, Nova, and so on) -- and this manifest
 # only names a reference to the model, never its identity, so a dollar
 # figure here would be a guess wearing a dollar sign.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsbedrockprovisionedthroughput
 spec:
@@ -33,6 +33,6 @@ spec:
       pricing_unit: model-unit-hours
       impact: The rate lever -- which base model the referenced custom model was tuned from decides the per-model-unit hourly price, and the price list quotes a distinct rate per model. This manifest names the reference, never the base model behind it.
   estimate_exclusions:
-    - the model-unit rate is keyed per underlying base model in AWS's own price list (each model gets its own no-commit, 1-month, and 6-month rate dimensions), and this manifest references the model without seeing which base model it is -- which is why no estimate document exists for this component
+    - the model-unit rate is keyed per underlying base model in AWS's own price list (each model gets its own no-commit, 1-month, and 6-month rate dimensions), and this manifest references the model without seeing which base model it is -- which is why no estimate document exists for this kind
     - a committed purchase bills the entire term regardless of use or intent to stop -- the term, not the calendar month, is the real spend floor
   notes: "The honest estimate lives at composition time: model units and commitment term from this manifest, the base model identity from the referenced AwsBedrockCustomModel, and the model-keyed rate from the price book. Each piece is verified data -- only their join is deferred, to the surface that sees both components together. Inference against the provisioned capacity carries no separate per-token charge; the model units ARE the bill."

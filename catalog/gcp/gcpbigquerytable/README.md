@@ -68,7 +68,7 @@ spec:
 See presets under `presets/` for partitioned analytics, authorized views,
 and external GCS tables.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
@@ -81,7 +81,7 @@ and external GCS tables.
 | `creation_time` | Creation time in milliseconds since epoch |
 | `qualified_name` | Dotted `{project}.{dataset}.{table}` handle (what Pub/Sub BigQuery delivery and query tooling consume) |
 
-## Related Components
+## Related Kinds
 
 - [GcpBigQueryDataset](../gcpbigquerydataset/) — parent container (location, ACL, defaults)
 - [GcpKmsKey](../gcpkmskey/) — CMEK encryption key reference

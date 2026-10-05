@@ -5,10 +5,10 @@ import (
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 )
 
-// requireLaneEngine refuses a lane whose engine the component's kind does not run on. The
+// requireLaneEngine refuses a lane whose engine the kind does not run on. The
 // framework's "terraform" engine runs TerraformBinary (tofu by default), so the check is made
 // against the binary that would actually run, not the engine's name.
-func requireLaneEngine(component, engine string) error {
+func requireLaneEngine(kindDir, engine string) error {
 	var p provisioner.ProvisionerType
 	switch engine {
 	case "pulumi":
@@ -22,5 +22,5 @@ func requireLaneEngine(component, engine string) error {
 	default:
 		return errors.Errorf("unknown E2E engine %q: lanes run pulumi or terraform", engine)
 	}
-	return provisioner.RequireForKindName(component, p)
+	return provisioner.RequireForKindName(kindDir, p)
 }

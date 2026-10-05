@@ -6,8 +6,8 @@ package secretcoverage
 import (
 	"testing"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // TestSecretCoverageGate is the CI guardrail. The live scan over all production kinds
@@ -72,12 +72,12 @@ func TestClassify(t *testing.T) {
 }
 
 // TestCollectFindings_HermeticFixture proves the descriptor walk against the permanent
-// testcloudresourcegeneric fixture: a sensitive raw string AND a sensitive
+// testcatalogkindgeneric fixture: a sensitive raw string AND a sensitive
 // StringValueOrRef are both COVERED leaves (the StringValueOrRef is a single leaf, not
 // recursed into), while non-sensitive strings, maps, repeated, and nested messages
 // produce no findings.
 func TestCollectFindings_HermeticFixture(t *testing.T) {
-	msg, err := crkreflect.NewInstance(cloudresourcekind.CloudResourceKind_TestCloudResourceGeneric)
+	msg, err := catalogkindreflect.NewInstance(catalogkind.CatalogKind_TestCatalogKindGeneric)
 	if err != nil {
 		t.Fatalf("new instance: %v", err)
 	}
@@ -87,7 +87,7 @@ func TestCollectFindings_HermeticFixture(t *testing.T) {
 	}
 
 	got := map[string]Classification{}
-	for _, f := range CollectFindings(specField.Message(), "TestCloudResourceGeneric", "_test") {
+	for _, f := range CollectFindings(specField.Message(), "TestCatalogKindGeneric", "_test") {
 		got[f.Path] = f.Class
 	}
 

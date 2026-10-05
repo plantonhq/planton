@@ -4,7 +4,7 @@ Lets Cloud Deploy ship to anything. Out of the box Cloud Deploy deploys to GKE, 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- the Cloud Deploy API on the type's project
 - **Custom target type** -- the render and deploy definition targets point at
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Deploy custom target types in the target project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Deploy custom target types in the target project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -47,7 +47,7 @@ spec:
 planton apply -f custom-target-type.yaml
 ```
 
-This defines a target type whose deploy step runs your deployer image. A Stack Job tracks the provisioning in real time.
+This defines a target type whose deploy step runs your deployer image. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -65,16 +65,16 @@ These are the most important decisions when configuring a custom target type. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpCloudBuildRepository** | `customActions.includeSkaffoldModules[].googleCloudBuildRepo.repository` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -92,6 +92,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Deploy Target**](/cloud-catalog/gcp-deploy-target) -- targets that deploy through the type
-- [**GCP Delivery Pipeline**](/cloud-catalog/gcp-delivery-pipeline) -- pipelines that promote across those targets
-- [**GCP Cloud Build Repository**](/cloud-catalog/gcp-cloud-build-repository) -- shared Skaffold modules
+- [**GCP Deploy Target**](/infra-catalog/gcp-deploy-target) -- targets that deploy through the type
+- [**GCP Delivery Pipeline**](/infra-catalog/gcp-delivery-pipeline) -- pipelines that promote across those targets
+- [**GCP Cloud Build Repository**](/infra-catalog/gcp-cloud-build-repository) -- shared Skaffold modules

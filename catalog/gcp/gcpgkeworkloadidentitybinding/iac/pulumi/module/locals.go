@@ -24,11 +24,11 @@ type Locals struct {
 	ServiceAccountId string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpgkeworkloadidentitybindingv1alpha1.GcpGkeWorkloadIdentityBindingStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpgkeworkloadidentitybindingv1alpha1.GcpGkeWorkloadIdentityBindingIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.GcpGkeWorkloadIdentityBinding = stackInput.Target
-	spec := stackInput.Target.Spec
+	locals.GcpGkeWorkloadIdentityBinding = iacInput.Target
+	spec := iacInput.Target.Spec
 
 	locals.PoolProject = spec.ProjectId.GetValue()
 

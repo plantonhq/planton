@@ -10,11 +10,11 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *kubernetesgrpcroutev1alpha1.KubernetesGrpcRouteStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesgrpcroutev1alpha1.KubernetesGrpcRouteIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubeProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
@@ -31,7 +31,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesgrpcroutev1alpha1.Kube
 
 // createGrpcRoute creates the namespaced Gateway API GRPCRoute using the typed
 // crd2pulumi SDK (gatewayv1.NewGRPCRoute), consistent with every other Planton
-// ingress component. The typed approach catches field-name and structure errors
+// ingress kind. The typed approach catches field-name and structure errors
 // at compile time rather than at deployment time. The GRPCRouteSpec mapping is
 // split across parent_refs.go, rules.go, matches.go, filters.go, and
 // backend_refs.go.

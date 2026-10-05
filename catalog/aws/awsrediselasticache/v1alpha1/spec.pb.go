@@ -56,7 +56,7 @@ const (
 //   - `auth_token` and `user_group_ids` are mutually exclusive authentication
 //     methods; user groups (RBAC) are AWS's recommended production model.
 //   - Credentials, region, and deployment workflow live outside this spec in
-//     stack inputs.
+//     IaC inputs.
 type AwsRedisElasticacheSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the resource will be created.

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsBackupFrameworkStackOutputs captures the observable state of the
+// AwsBackupFrameworkOutputs captures the observable state of the
 // framework after apply.
-type AwsBackupFrameworkStackOutputs struct {
+type AwsBackupFrameworkOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The framework's ARN - what report plans reference.
 	FrameworkArn string `protobuf:"bytes,1,opt,name=framework_arn,json=frameworkArn,proto3" json:"framework_arn,omitempty"`
@@ -36,20 +36,20 @@ type AwsBackupFrameworkStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AwsBackupFrameworkStackOutputs) Reset() {
-	*x = AwsBackupFrameworkStackOutputs{}
+func (x *AwsBackupFrameworkOutputs) Reset() {
+	*x = AwsBackupFrameworkOutputs{}
 	mi := &file_catalog_aws_awsbackupframework_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsBackupFrameworkStackOutputs) String() string {
+func (x *AwsBackupFrameworkOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsBackupFrameworkStackOutputs) ProtoMessage() {}
+func (*AwsBackupFrameworkOutputs) ProtoMessage() {}
 
-func (x *AwsBackupFrameworkStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsBackupFrameworkOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsbackupframework_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *AwsBackupFrameworkStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsBackupFrameworkStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsBackupFrameworkStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsBackupFrameworkOutputs.ProtoReflect.Descriptor instead.
+func (*AwsBackupFrameworkOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbackupframework_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsBackupFrameworkStackOutputs) GetFrameworkArn() string {
+func (x *AwsBackupFrameworkOutputs) GetFrameworkArn() string {
 	if x != nil {
 		return x.FrameworkArn
 	}
 	return ""
 }
 
-func (x *AwsBackupFrameworkStackOutputs) GetRegion() string {
+func (x *AwsBackupFrameworkOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -84,8 +84,8 @@ var File_catalog_aws_awsbackupframework_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_aws_awsbackupframework_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awsbackupframework/v1alpha1/outputs.proto\x12+dev.planton.aws.awsbackupframework.v1alpha1\"]\n" +
-	"\x1eAwsBackupFrameworkStackOutputs\x12#\n" +
+	"5catalog/aws/awsbackupframework/v1alpha1/outputs.proto\x12+dev.planton.aws.awsbackupframework.v1alpha1\"X\n" +
+	"\x19AwsBackupFrameworkOutputs\x12#\n" +
 	"\rframework_arn\x18\x01 \x01(\tR\fframeworkArn\x12\x16\n" +
 	"\x06region\x18\x02 \x01(\tR\x06regionB\xf1\x02\n" +
 	"/com.dev.planton.aws.awsbackupframework.v1alpha1B\fOutputsProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awsbackupframework/v1alpha1;awsbackupframeworkv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awsbackupframework.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awsbackupframework\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awsbackupframework\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awsbackupframework::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_aws_awsbackupframework_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_aws_awsbackupframework_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsbackupframework_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsBackupFrameworkStackOutputs)(nil), // 0: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkStackOutputs
+	(*AwsBackupFrameworkOutputs)(nil), // 0: dev.planton.aws.awsbackupframework.v1alpha1.AwsBackupFrameworkOutputs
 }
 var file_catalog_aws_awsbackupframework_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

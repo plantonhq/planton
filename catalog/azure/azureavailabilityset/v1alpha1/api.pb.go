@@ -34,7 +34,7 @@ type AzureAvailabilitySet struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureAvailabilitySetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -87,7 +87,7 @@ func (x *AzureAvailabilitySet) GetKind() string {
 	return ""
 }
 
-func (x *AzureAvailabilitySet) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureAvailabilitySet) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,10 +112,10 @@ func (x *AzureAvailabilitySet) GetStatus() *AzureAvailabilitySetStatus {
 // set deployment.
 type AzureAvailabilitySetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-availability-set stack-outputs
-	Outputs       *AzureAvailabilitySetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-availability-set outputs
+	Outputs       *AzureAvailabilitySetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,7 +150,7 @@ func (*AzureAvailabilitySetStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureavailabilityset_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureAvailabilitySetStatus) GetOutputs() *AzureAvailabilitySetStackOutputs {
+func (x *AzureAvailabilitySetStatus) GetOutputs() *AzureAvailabilitySetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -168,11 +168,11 @@ const file_catalog_azure_azureavailabilityset_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12/\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1b\xbaH\x18r\x16\n" +
 	"\x14AzureAvailabilitySetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
 	"\x04spec\x18\x04 \x01(\v2I.dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetStatusR\x06status\"\x89\x01\n" +
-	"\x1aAzureAvailabilitySetStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetStackOutputsR\aoutputsB\x87\x03\n" +
+	"\x06status\x18\x05 \x01(\v2K.dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetStatusR\x06status\"\x84\x01\n" +
+	"\x1aAzureAvailabilitySetStatus\x12f\n" +
+	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetOutputsR\aoutputsB\x87\x03\n" +
 	"3com.dev.planton.azure.azureavailabilityset.v1alpha1B\bApiProtoP\x01Zegithub.com/plantonhq/planton/catalog/azure/azureavailabilityset/v1alpha1;azureavailabilitysetv1alpha1\xa2\x02\x04DPAA\xaa\x02/Dev.Planton.Azure.Azureavailabilityset.V1alpha1\xca\x02/Dev\\Planton\\Azure\\Azureavailabilityset\\V1alpha1\xe2\x02;Dev\\Planton\\Azure\\Azureavailabilityset\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Azure::Azureavailabilityset::V1alpha1b\x06proto3"
 
 var (
@@ -189,17 +189,17 @@ func file_catalog_azure_azureavailabilityset_v1alpha1_api_proto_rawDescGZIP() []
 
 var file_catalog_azure_azureavailabilityset_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureavailabilityset_v1alpha1_api_proto_goTypes = []any{
-	(*AzureAvailabilitySet)(nil),             // 0: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySet
-	(*AzureAvailabilitySetStatus)(nil),       // 1: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetStatus
-	(*shared.CloudResourceMetadata)(nil),     // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureAvailabilitySetSpec)(nil),         // 3: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetSpec
-	(*AzureAvailabilitySetStackOutputs)(nil), // 4: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetStackOutputs
+	(*AzureAvailabilitySet)(nil),         // 0: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySet
+	(*AzureAvailabilitySetStatus)(nil),   // 1: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureAvailabilitySetSpec)(nil),     // 3: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetSpec
+	(*AzureAvailabilitySetOutputs)(nil),  // 4: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetOutputs
 }
 var file_catalog_azure_azureavailabilityset_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySet.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySet.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySet.spec:type_name -> dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetSpec
 	1, // 2: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySet.status:type_name -> dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetStatus
-	4, // 3: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetStatus.outputs:type_name -> dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetStackOutputs
+	4, // 3: dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetStatus.outputs:type_name -> dev.planton.azure.azureavailabilityset.v1alpha1.AzureAvailabilitySetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

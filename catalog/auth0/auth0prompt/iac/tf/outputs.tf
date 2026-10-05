@@ -1,5 +1,5 @@
 # Auth0Prompt Outputs
-# Maps to the Auth0PromptStackOutputs protobuf message: the login-flow settings
+# Maps to the Auth0PromptOutputs protobuf message: the login-flow settings
 # as the tenant carries them after the apply, managed or not.
 
 output "universal_login_experience" {

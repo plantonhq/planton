@@ -11,10 +11,10 @@ type Locals struct {
 
 // A linked service carries no tags (ARM sub-resources of a factory
 // expose none), so there is no tag map to derive.
-func initializeLocals(ctx *pulumi.Context, stackInput *azuredatafactorylinkedservicev1alpha1.AzureDataFactoryLinkedServiceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuredatafactorylinkedservicev1alpha1.AzureDataFactoryLinkedServiceIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureDataFactoryLinkedService = stackInput.Target
+	locals.AzureDataFactoryLinkedService = iacInput.Target
 
 	return locals
 }

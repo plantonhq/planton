@@ -23,7 +23,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeWebhookEndpoint is a component that declares where a Stripe account delivers its events:
+// StripeWebhookEndpoint is a kind that declares where a Stripe account delivers its events:
 // the URL, the event types, and the signing secret the receiving service verifies deliveries
 // with.
 //
@@ -61,12 +61,12 @@ type StripeWebhookEndpoint struct {
 	// kind is the Kubernetes Resource Model (KRM) kind.
 	// Must be "StripeWebhookEndpoint" for this resource type.
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	// metadata contains standard cloud resource metadata.
+	// metadata contains standard catalog object metadata.
 	// - name: Unique identifier for the resource within Planton
 	// - org: Organization that owns it
 	// - env: Environment it is deployed from
 	// - labels: Key-value pairs for filtering and organization
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec contains the endpoint's address and the events it receives.
 	Spec *StripeWebhookEndpointSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status contains the endpoint as created, populated after deployment.
@@ -119,7 +119,7 @@ func (x *StripeWebhookEndpoint) GetKind() string {
 	return ""
 }
 
-func (x *StripeWebhookEndpoint) GetMetadata() *shared.CloudResourceMetadata {
+func (x *StripeWebhookEndpoint) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -144,8 +144,8 @@ func (x *StripeWebhookEndpoint) GetStatus() *StripeWebhookEndpointStatus {
 // Populated by the deployment system.
 type StripeWebhookEndpointStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// outputs contains the stack outputs: the endpoint's id and signing secret.
-	Outputs       *StripeWebhookEndpointStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs contains the outputs: the endpoint's id and signing secret.
+	Outputs       *StripeWebhookEndpointOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -180,7 +180,7 @@ func (*StripeWebhookEndpointStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripewebhookendpoint_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *StripeWebhookEndpointStatus) GetOutputs() *StripeWebhookEndpointStackOutputs {
+func (x *StripeWebhookEndpointStatus) GetOutputs() *StripeWebhookEndpointOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -198,11 +198,11 @@ const file_catalog_stripe_stripewebhookendpoint_v1alpha1_api_proto_rawDesc = "" 
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15StripeWebhookEndpointR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12h\n" +
 	"\x04spec\x18\x04 \x01(\v2L.dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12f\n" +
-	"\x06status\x18\x05 \x01(\v2N.dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointStatusR\x06status\"\x8d\x01\n" +
-	"\x1bStripeWebhookEndpointStatus\x12n\n" +
-	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointStackOutputsR\aoutputsB\x94\x03\n" +
+	"\x06status\x18\x05 \x01(\v2N.dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointStatusR\x06status\"\x88\x01\n" +
+	"\x1bStripeWebhookEndpointStatus\x12i\n" +
+	"\aoutputs\x18\x01 \x01(\v2O.dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointOutputsR\aoutputsB\x94\x03\n" +
 	"5com.dev.planton.stripe.stripewebhookendpoint.v1alpha1B\bApiProtoP\x01Zhgithub.com/plantonhq/planton/catalog/stripe/stripewebhookendpoint/v1alpha1;stripewebhookendpointv1alpha1\xa2\x02\x04DPSS\xaa\x021Dev.Planton.Stripe.Stripewebhookendpoint.V1alpha1\xca\x021Dev\\Planton\\Stripe\\Stripewebhookendpoint\\V1alpha1\xe2\x02=Dev\\Planton\\Stripe\\Stripewebhookendpoint\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Stripe::Stripewebhookendpoint::V1alpha1b\x06proto3"
 
 var (
@@ -219,17 +219,17 @@ func file_catalog_stripe_stripewebhookendpoint_v1alpha1_api_proto_rawDescGZIP() 
 
 var file_catalog_stripe_stripewebhookendpoint_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_stripe_stripewebhookendpoint_v1alpha1_api_proto_goTypes = []any{
-	(*StripeWebhookEndpoint)(nil),             // 0: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpoint
-	(*StripeWebhookEndpointStatus)(nil),       // 1: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*StripeWebhookEndpointSpec)(nil),         // 3: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointSpec
-	(*StripeWebhookEndpointStackOutputs)(nil), // 4: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointStackOutputs
+	(*StripeWebhookEndpoint)(nil),        // 0: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpoint
+	(*StripeWebhookEndpointStatus)(nil),  // 1: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*StripeWebhookEndpointSpec)(nil),    // 3: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointSpec
+	(*StripeWebhookEndpointOutputs)(nil), // 4: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointOutputs
 }
 var file_catalog_stripe_stripewebhookendpoint_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpoint.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpoint.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpoint.spec:type_name -> dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointSpec
 	1, // 2: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpoint.status:type_name -> dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointStatus
-	4, // 3: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointStatus.outputs:type_name -> dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointStackOutputs
+	4, // 3: dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointStatus.outputs:type_name -> dev.planton.stripe.stripewebhookendpoint.v1alpha1.StripeWebhookEndpointOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

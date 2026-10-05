@@ -26,11 +26,11 @@ import (
 // applying the resource. The E2E verifier (not the module) asserts the
 // synced state. Terraform equivalent: kubectl_manifest without a wait_for
 // block.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesexternalsecretv1alpha1.KubernetesExternalSecretStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesexternalsecretv1alpha1.KubernetesExternalSecretIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}

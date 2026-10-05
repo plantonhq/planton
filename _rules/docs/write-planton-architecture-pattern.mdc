@@ -6,11 +6,11 @@ alwaysApply: false
 
 # Rule: Write Architecture Pattern
 
-**Purpose**: Guide an AI agent through writing a pattern file for the catalog's patterns library. A pattern is authored wisdom about how catalog kinds COMPOSE -- the knowledge that spans components, which no single kind's guide or reference page can carry.
+**Purpose**: Guide an AI agent through writing a pattern file for the catalog's patterns library. A pattern is authored wisdom about how catalog kinds COMPOSE -- the knowledge that spans kinds, which no single kind's guide or reference page can carry.
 
 **Trigger**: User references this rule or asks to write/create an architecture pattern.
 
-**Output**: A single file at `catalog/patterns/{slug}.md`. The slug names the composition plainly (e.g., `namespace-ownership.md`), never a marketing phrase.
+**Output**: A single file at `catalog/_patterns/{slug}.md`. The slug names the composition plainly (e.g., `namespace-ownership.md`), never a marketing phrase.
 
 ---
 
@@ -63,7 +63,7 @@ ordering, and wiring (valueFrom references) explicit.]
 
 [The judgment table of this pattern: each structural choice, what it costs
 and buys -- including what each choice renders as on the architecture
-diagram (a dedicated component is a visible, customizable node; an inline
+diagram (a dedicated kind is a visible, customizable node; an inline
 flag is invisible) and what stays customizable.]
 
 ## When not to use this

@@ -28,7 +28,7 @@ func validJob(spec *CloudflareLogpushJobSpec) *CloudflareLogpushJob {
 	return &CloudflareLogpushJob{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareLogpushJob",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-logpush-job",
 		},
 		Spec: spec,

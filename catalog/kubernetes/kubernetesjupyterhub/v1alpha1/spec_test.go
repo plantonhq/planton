@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -54,7 +54,7 @@ var _ = ginkgo.Describe("KubernetesJupyterHub Validation Tests", func() {
 		input = &KubernetesJupyterHub{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesJupyterHub",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "notebooks",
 			},
 			Spec: &KubernetesJupyterHubSpec{
@@ -69,7 +69,7 @@ var _ = ginkgo.Describe("KubernetesJupyterHub Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "jupyterhub", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "jupyterhub", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -87,8 +87,8 @@ var _ = ginkgo.Describe("KubernetesJupyterHub Validation Tests", func() {
 
 		ginkgo.It("postgres hub database composed from a KubernetesPostgres should be valid", func() {
 			pg := testHubPostgres()
-			pg.Host = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "hub-pg", "status.outputs.rw_service")
-			pg.PasswordSecret.SecretName = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "hub-pg", "status.outputs.password_secret.name")
+			pg.Host = valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "hub-pg", "status.outputs.rw_service")
+			pg.PasswordSecret.SecretName = valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "hub-pg", "status.outputs.password_secret.name")
 			input.Spec.Hub = &KubernetesJupyterHubHub{
 				Database: &KubernetesJupyterHubDatabase{
 					Backend: &KubernetesJupyterHubDatabase_Postgres{Postgres: pg},

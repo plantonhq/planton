@@ -27,7 +27,7 @@ type AwsOrganizationAccount struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsOrganizationAccountSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsOrganizationAccountStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsOrganizationAccount) GetKind() string {
 	return ""
 }
 
-func (x *AwsOrganizationAccount) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsOrganizationAccount) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsOrganizationAccount) GetStatus() *AwsOrganizationAccountStatus {
 }
 
 type AwsOrganizationAccountStatus struct {
-	state         protoimpl.MessageState              `protogen:"open.v1"`
-	Outputs       *AwsOrganizationAccountStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState         `protogen:"open.v1"`
+	Outputs       *AwsOrganizationAccountOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsOrganizationAccountStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsorganizationaccount_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsOrganizationAccountStatus) GetOutputs() *AwsOrganizationAccountStackOutputs {
+func (x *AwsOrganizationAccountStatus) GetOutputs() *AwsOrganizationAccountOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awsorganizationaccount_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x121\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1d\xbaH\x1ar\x18\n" +
 	"\x16AwsOrganizationAccountR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
 	"\x04spec\x18\x04 \x01(\v2K.dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12e\n" +
-	"\x06status\x18\x05 \x01(\v2M.dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountStatusR\x06status\"\x8d\x01\n" +
-	"\x1cAwsOrganizationAccountStatus\x12m\n" +
-	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountStackOutputsR\aoutputsB\x89\x03\n" +
+	"\x06status\x18\x05 \x01(\v2M.dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountStatusR\x06status\"\x88\x01\n" +
+	"\x1cAwsOrganizationAccountStatus\x12h\n" +
+	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountOutputsR\aoutputsB\x89\x03\n" +
 	"3com.dev.planton.aws.awsorganizationaccount.v1alpha1B\bApiProtoP\x01Zggithub.com/plantonhq/planton/catalog/aws/awsorganizationaccount/v1alpha1;awsorganizationaccountv1alpha1\xa2\x02\x04DPAA\xaa\x02/Dev.Planton.Aws.Awsorganizationaccount.V1alpha1\xca\x02/Dev\\Planton\\Aws\\Awsorganizationaccount\\V1alpha1\xe2\x02;Dev\\Planton\\Aws\\Awsorganizationaccount\\V1alpha1\\GPBMetadata\xea\x023Dev::Planton::Aws::Awsorganizationaccount::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awsorganizationaccount_v1alpha1_api_proto_rawDescGZIP() []
 
 var file_catalog_aws_awsorganizationaccount_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsorganizationaccount_v1alpha1_api_proto_goTypes = []any{
-	(*AwsOrganizationAccount)(nil),             // 0: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccount
-	(*AwsOrganizationAccountStatus)(nil),       // 1: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountStatus
-	(*shared.CloudResourceMetadata)(nil),       // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsOrganizationAccountSpec)(nil),         // 3: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountSpec
-	(*AwsOrganizationAccountStackOutputs)(nil), // 4: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountStackOutputs
+	(*AwsOrganizationAccount)(nil),        // 0: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccount
+	(*AwsOrganizationAccountStatus)(nil),  // 1: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountStatus
+	(*shared.CatalogObjectMetadata)(nil),  // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsOrganizationAccountSpec)(nil),    // 3: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountSpec
+	(*AwsOrganizationAccountOutputs)(nil), // 4: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountOutputs
 }
 var file_catalog_aws_awsorganizationaccount_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccount.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccount.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccount.spec:type_name -> dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountSpec
 	1, // 2: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccount.status:type_name -> dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountStatus
-	4, // 3: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountStatus.outputs:type_name -> dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountStackOutputs
+	4, // 3: dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountStatus.outputs:type_name -> dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

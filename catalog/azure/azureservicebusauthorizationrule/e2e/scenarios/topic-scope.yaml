@@ -10,7 +10,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureservicebusauthorizationrule
+    e2e-catalog-kind: azureservicebusauthorizationrule
   annotations:
     planton.dev/e2e: "true"
     # Namespace then topic, in deploy order.

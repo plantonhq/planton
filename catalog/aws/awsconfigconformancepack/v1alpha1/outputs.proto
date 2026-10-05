@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsconfigconformancepack.v1alpha1;
 
-// AwsConfigConformancePackStackOutputs captures the observable state
+// AwsConfigConformancePackOutputs captures the observable state
 // of the conformance pack after apply.
-message AwsConfigConformancePackStackOutputs {
+message AwsConfigConformancePackOutputs {
   // The pack's name (also the provider's import ID, at either scope).
   string pack_name = 1;
 

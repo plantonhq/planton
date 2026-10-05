@@ -5,10 +5,10 @@ package dev.planton.aws.awsnlb.v1alpha1;
 import "catalog/aws/awsnlb/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsNlbStackInput provides the inputs to the IaC modules
+// AwsNlbIacInput provides the inputs to the IaC modules
 // (Pulumi or Terraform) that provision the Network Load Balancer.
-message AwsNlbStackInput {
-  // target cloud-resource
+message AwsNlbIacInput {
+  // the catalog object to deploy
   AwsNlb target = 1;
   // provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

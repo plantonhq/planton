@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesKafkaConnectStackOutputs by the
+# Outputs — flattened onto KubernetesKafkaConnectOutputs by the
 # platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

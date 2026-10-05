@@ -5,10 +5,10 @@ package dev.planton.azure.azurebastionhost.v1alpha1;
 import "catalog/azure/azurebastionhost/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureBastionHostStackInput is the input to the IaC modules
+// AzureBastionHostIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureBastionHostStackInput {
+message AzureBastionHostIacInput {
   // The Bastion host resource to deploy.
   AzureBastionHost target = 1;
 

@@ -40,7 +40,7 @@
   client service template rendered without ports (a port-less ClusterIP
   Service is rejected, so the cluster's client Service never appeared).
   Both converged on the Pulumi modules' correct-by-construction shapes,
-  with the lesson in both engines' module comments and the component
+  with the lesson in both engines' module comments and the kind
   update workflow.
 
 - **The import framework learned secret-material import IDs** — a new
@@ -63,7 +63,7 @@
   succeeds on headers can still die mid-stream while the serving pod
   goes down — the body read now retries with the request.
 
-- **Stack-output conformance cases** added for the Altinity operator,
+- **Output conformance cases** added for the Altinity operator,
   ClickHouse, SeaweedFS and Qdrant naming contracts.
 
 ## Validation

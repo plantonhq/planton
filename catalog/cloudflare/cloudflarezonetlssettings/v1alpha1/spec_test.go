@@ -27,7 +27,7 @@ func validTlsSettings(spec *CloudflareZoneTlsSettingsSpec) *CloudflareZoneTlsSet
 	return &CloudflareZoneTlsSettings{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZoneTlsSettings",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-zone-tls-settings",
 		},
 		Spec: spec,

@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1;
 import "catalog/gcp/gcpmanagedkafkatopic/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-managed-kafka-topic stack-input
-message GcpManagedKafkaTopicStackInput {
-  //target cloud-resource
+//gcp-managed-kafka-topic iac-input
+message GcpManagedKafkaTopicIacInput {
+  // the catalog object to deploy
   GcpManagedKafkaTopic target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

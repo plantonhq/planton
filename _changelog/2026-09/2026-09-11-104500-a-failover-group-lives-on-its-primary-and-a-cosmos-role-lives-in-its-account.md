@@ -4,7 +4,7 @@
 
 - **A SQL failover group's partner server is containment-exempt.** `AzureMssqlFailoverGroupPartnerServer.server_id` names the secondary server the group replicates databases TO. The group is created ON its primary (`AzureMssqlFailoverGroupSpec.server_id`, which stays placement) and points at the partner, so on a diagram the partner reference is access, not placement. Before this change both references were placement, and a group naming two servers of the same kind was promoted to the room they share -- the resource group beside both servers, or nothing at all when the partner lives in another group -- instead of standing on its primary.
 - **A Cosmos DB SQL role definition's assignable scopes are containment-exempt.** `AzureCosmosdbSqlRoleDefinitionSpec.assignable_scopes` lists WHERE a custom data-plane role may be granted; WHERE the definition itself lives is its `cosmosdb_account_id`, which stays placement. The same rule the subscription-level `AzureRoleDefinitionSpec.assignable_scopes` already carries.
-- The containment-decision registry (`shared/cloudresourcekind/testdata/containment_decisions.txt`) moves exactly two lines from `contained` to `exempt`. Nothing else moved.
+- The containment-decision registry (`shared/catalogkind/testdata/containment_decisions.txt`) moves exactly two lines from `contained` to `exempt`. Nothing else moved.
 
 ## Why
 
@@ -13,6 +13,6 @@
 ## How to check
 
 ```bash
-go test ./shared/cloudresourcekind/... -run TestContainmentDecisions   # green; the golden carries the two exemptions
+go test ./shared/catalogkind/... -run TestContainmentDecisions   # green; the golden carries the two exemptions
 grep -n containment_exempt catalog/azure/azuremssqlfailovergroup/v1alpha1/spec.proto catalog/azure/azurecosmosdbsqlroledefinition/v1alpha1/spec.proto
 ```

@@ -11,11 +11,11 @@ import "shared/metadata.proto";
 message GcpComputeDisk {
   string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
   string kind = 2 [(buf.validate.field).string.const = 'GcpComputeDisk'];
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
   GcpComputeDiskSpec spec = 4 [(buf.validate.field).required = true];
   GcpComputeDiskStatus status = 5;
 }
 
 message GcpComputeDiskStatus {
-  GcpComputeDiskStackOutputs outputs = 1;
+  GcpComputeDiskOutputs outputs = 1;
 }

@@ -8,7 +8,7 @@ Creates an Azure Bastion host -- the managed jump service that opens RDP/SSH ses
 
 - `compute.BastionHost` -- the Bastion host. The classic SDK's bridge parks this resource in the COMPUTE package (token `azure:compute/bastionHost:BastionHost`), not network where the ARM resource lives -- the import path is correct as written.
 
-## Stack Outputs
+## Outputs
 
 - `bastion_host_id` -- the host's ARM resource ID
 - `bastion_host_name` -- the host's name

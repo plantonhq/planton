@@ -1,4 +1,4 @@
-# KubernetesPerconaMongoOperator Component Completion to 100%
+# KubernetesPerconaMongoOperator Kind Completion to 100%
 
 **Date**: November 16, 2025
 **Type**: Enhancement
@@ -6,16 +6,16 @@
 
 ## Summary
 
-Completed the KubernetesPerconaMongoOperator deployment component from 90.40% to 100% by addressing critical gaps in testing, standardizing Pulumi and Terraform module structures, and adding missing documentation. This work ensures the component follows all Planton conventions and is production-ready for managing Percona Server for MongoDB Operator (PSMDB) deployments on Kubernetes with comprehensive validation coverage.
+Completed the KubernetesPerconaMongoOperator catalog kind from 90.40% to 100% by addressing critical gaps in testing, standardizing Pulumi and Terraform module structures, and adding missing documentation. This work ensures the kind follows all Planton conventions and is production-ready for managing Percona Server for MongoDB Operator (PSMDB) deployments on Kubernetes with comprehensive validation coverage.
 
 ## Problem Statement / Motivation
 
-The KubernetesPerconaMongoOperator component was at 90.40% completion with several blocking issues preventing production readiness:
+The KubernetesPerconaMongoOperator kind was at 90.40% completion with several blocking issues preventing production readiness:
 
 ### Critical Gaps
 
 1. **Missing Unit Tests (5.55% impact)**: No `spec_test.go` file existed to validate buf.validate rules, making it impossible to verify that validation logic works correctly
-2. **Non-Standard Pulumi Module (4.44% impact)**: Module used custom file names (`percona_operator.go`, `vars.go`) instead of standard names (`main.go`, `locals.go`), breaking consistency with other components
+2. **Non-Standard Pulumi Module (4.44% impact)**: Module used custom file names (`percona_operator.go`, `vars.go`) instead of standard names (`main.go`, `locals.go`), breaking consistency with other kinds
 3. **Incomplete Terraform Module (1.78% impact)**: Missing standard files (`locals.tf`, `outputs.tf`) with logic inline in `main.tf`, deviating from Planton's module structure conventions
 4. **Missing Pulumi Documentation (3.34% impact)**: No `overview.md` file to explain module architecture and design decisions
 
@@ -131,7 +131,7 @@ output "helm_status" {
 
 Created `overview.md` (6 lines, comprehensive single-paragraph format):
 
-> The Percona Operator for MongoDB Kubernetes Pulumi module streamlines deployment of the Percona Server for MongoDB (PSMDB) operator within Kubernetes environments. By accepting a `KubernetesPerconaMongoOperatorStackInput` specification with target cluster credentials, namespace settings, and container resource allocations, the module establishes a Kubernetes provider, creates a dedicated namespace, and leverages the official Percona Helm chart repository to install the PSMDB operator (`psmdb-operator`) with cluster-wide namespace watching capabilities, atomic deployments for reliability, and automatic cleanup on failure to maintain cluster hygiene.
+> The Percona Operator for MongoDB Kubernetes Pulumi module streamlines deployment of the Percona Server for MongoDB (PSMDB) operator within Kubernetes environments. By accepting a `KubernetesPerconaMongoOperatorIacInput` specification with target cluster credentials, namespace settings, and container resource allocations, the module establishes a Kubernetes provider, creates a dedicated namespace, and leverages the official Percona Helm chart repository to install the PSMDB operator (`psmdb-operator`) with cluster-wide namespace watching capabilities, atomic deployments for reliability, and automatic cleanup on failure to maintain cluster hygiene.
 
 ## Implementation Details
 
@@ -207,7 +207,7 @@ ok   0.776s
 ```
 
 ### Code Organization
-- **Standardized Naming**: Pulumi modules now use `main.go`/`locals.go` like all other components
+- **Standardized Naming**: Pulumi modules now use `main.go`/`locals.go` like all other kinds
 - **Terraform Best Practices**: Locals and outputs separated for maintainability
 - **Reduced Inline Code**: Main files focus on resources, not variable computations
 
@@ -266,7 +266,7 @@ The Percona Server for MongoDB Operator manages MongoDB deployments with:
 ```
 User → planton CLI
   ↓
-Stack Input (spec.proto)
+IaC Input (spec.proto)
   ↓
 Pulumi/Terraform Module
   ↓
@@ -288,7 +288,7 @@ The operator deployment includes:
 
 ## Related Work
 
-### Component Completion Series
+### Kind Completion Series
 This is part of a coordinated effort to complete all Percona database operator components:
 - ✅ **KubernetesPerconaMongoOperator**: 90.40% → 100% (this changelog)
 - ✅ **KubernetesPerconaMysqlOperator**: 82.21% → 100%
@@ -298,10 +298,10 @@ This is part of a coordinated effort to complete all Percona database operator c
 The standardization patterns applied here (test creation, file renaming, module structure) were replicated across all three Percona operator components for consistency.
 
 ### Audit Framework
-Component completion tracked via:
+Kind completion tracked via:
 - `docs/audit/2025-11-14-062629.md`: Initial audit identifying gaps
-- Automated scoring system measuring component completeness
-- `architecture/deployment-component.md`: Ideal state specification
+- Automated scoring system measuring kind completeness
+- `architecture/catalog-kind.md`: Ideal state specification
 
 ## Testing Strategy
 
@@ -359,7 +359,7 @@ The refactoring maintains backward compatibility:
 - Performance benchmarks for operator resource utilization
 - Additional Helm values customization options
 
-### Component Evolution
+### Kind Evolution
 As the PSMDB operator evolves:
 - Chart version updates tracked in `locals.go`/`locals.tf`
 - New features documented in overview.md
@@ -367,7 +367,7 @@ As the PSMDB operator evolves:
 
 ## File Locations
 
-**Component Root**:
+**Kind Root**:
 - `apis/dev/planton/provider/kubernetes/kubernetesperconamongooperator/v1/`
 
 **Key Files**:
@@ -383,6 +383,6 @@ As the PSMDB operator evolves:
 
 **Status**: ✅ Production Ready
 **Timeline**: Completed in single iteration (November 16, 2025)
-**Component Score**: 100.00% (previously 90.40%)
+**Kind Score**: 100.00% (previously 90.40%)
 **Spec Changes**: None - No protobuf API modifications
 

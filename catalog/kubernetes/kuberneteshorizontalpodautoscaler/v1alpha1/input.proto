@@ -6,12 +6,12 @@ import "catalog/kubernetes/kuberneteshorizontalpodautoscaler/v1alpha1/api.proto"
 import "catalog/kubernetes/provider.proto";
 
 /**
- * **KubernetesHorizontalPodAutoscalerStackInput** defines the input structure
+ * **KubernetesHorizontalPodAutoscalerIacInput** defines the input structure
  * for deploying a Kubernetes HorizontalPodAutoscaler. It carries the target
  * autoscaler specification and the Kubernetes cluster configuration the IaC
  * modules (Pulumi and Terraform) need to reach the cluster.
  */
-message KubernetesHorizontalPodAutoscalerStackInput {
+message KubernetesHorizontalPodAutoscalerIacInput {
   /**
    * The target HorizontalPodAutoscaler resource to be created.
    * Contains the complete specification including metadata, scale target,

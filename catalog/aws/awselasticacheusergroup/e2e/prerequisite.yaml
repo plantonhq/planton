@@ -1,5 +1,5 @@
 # AwsElasticacheUserGroup install profile used as a prerequisite by composed
-# components (RBAC-enabled replication groups and serverless caches). A Redis
+# kinds (RBAC-enabled replication groups and serverless caches). A Redis
 # group whose membership references the AwsElasticacheUser prerequisite pair
 # by output — the standard production shape with a locked-down default user
 # plus one application user. Full metadata is supplied for tagging/orphan
@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awselasticacheusergroup
+    e2e-catalog-kind: awselasticacheusergroup
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -11,8 +11,8 @@ type Locals struct {
 	GcpFirestoreBackupSchedule *gcpfirestorebackupschedulev1alpha1.GcpFirestoreBackupSchedule
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpfirestorebackupschedulev1alpha1.GcpFirestoreBackupScheduleStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpfirestorebackupschedulev1alpha1.GcpFirestoreBackupScheduleIacInput) *Locals {
 	return &Locals{
-		GcpFirestoreBackupSchedule: stackInput.Target,
+		GcpFirestoreBackupSchedule: iacInput.Target,
 	}
 }

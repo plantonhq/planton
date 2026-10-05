@@ -5,9 +5,9 @@ package dev.planton.aws.awsredshiftcluster.v1alpha1;
 import "catalog/aws/awsredshiftcluster/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// aws-redshift-cluster stack-input
-message AwsRedshiftClusterStackInput {
-  // target cloud-resource
+// aws-redshift-cluster iac-input
+message AwsRedshiftClusterIacInput {
+  // the catalog object to deploy
   AwsRedshiftCluster target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

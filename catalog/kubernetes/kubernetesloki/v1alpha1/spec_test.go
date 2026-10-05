@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -24,7 +24,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -58,8 +58,8 @@ func testR2() *KubernetesLokiStorage {
 	return &KubernetesLokiStorage{
 		Backend: &KubernetesLokiStorage_R2{
 			R2: &KubernetesLokiR2Storage{
-				AccountId: valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "logs-bucket", "status.outputs.account_id"),
-				Bucket:    valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "logs-bucket", "status.outputs.bucket_name"),
+				AccountId: valueFrom(catalogkind.CatalogKind_CloudflareR2Bucket, "logs-bucket", "status.outputs.account_id"),
+				Bucket:    valueFrom(catalogkind.CatalogKind_CloudflareR2Bucket, "logs-bucket", "status.outputs.bucket_name"),
 				Credentials: &KubernetesLokiR2Credentials{
 					AccessKeyId:     literal("$secret/logs-writer-access-key-id"),
 					SecretAccessKey: literal("$secret/logs-writer-secret-access-key"),
@@ -80,7 +80,7 @@ var _ = ginkgo.Describe("KubernetesLoki Validation Tests", func() {
 		input = &KubernetesLoki{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesLoki",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "logs",
 			},
 			Spec: &KubernetesLokiSpec{
@@ -95,7 +95,7 @@ var _ = ginkgo.Describe("KubernetesLoki Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "observability", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "observability", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -244,7 +244,7 @@ var _ = ginkgo.Describe("KubernetesLoki Validation Tests", func() {
 		ginkgo.It("a ruler with an alertmanager reference should be valid", func() {
 			input.Spec.Ruler = &KubernetesLokiRuler{
 				Enabled:         true,
-				AlertmanagerUrl: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesKubePrometheusStack, "monitoring", "status.outputs.alertmanager_endpoint"),
+				AlertmanagerUrl: valueFrom(catalogkind.CatalogKind_KubernetesKubePrometheusStack, "monitoring", "status.outputs.alertmanager_endpoint"),
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})

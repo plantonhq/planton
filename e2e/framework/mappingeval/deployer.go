@@ -9,7 +9,7 @@
 // framework already trusts -- in the suite's listed order, with value_from
 // references resolved against earlier members' outputs exactly as the E2E
 // prerequisite machinery resolves them. One arm, deliberately: the ground
-// truth's cloud-resource identities come from each member's IaC state, and
+// truth's infra-component identities come from each member's IaC state, and
 // a single state format keeps the answer key uniform. (The E2E harness's
 // own prerequisite machinery deploys each dependency on its kind's engine,
 // Pulumi for most; it is NOT reused here for exactly that reason -- and
@@ -30,7 +30,7 @@ import (
 	tt "github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/e2e/framework/runner"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/importmap"
 	"github.com/plantonhq/planton/pkg/iac/mappingeval"
 )
@@ -66,29 +66,29 @@ func DeploySuite(t testing.TB, repoRoot, provider string, suite *mappingeval.Loa
 	accumulated := runner.DependencyOutputs{}
 
 	for _, member := range suite.Members {
-		fmt.Printf("  [eval-seed] deploying %s %q\n", member.Component, member.Name)
+		fmt.Printf("  [eval-seed] deploying %s %q\n", member.KindDir, member.Name)
 		start := time.Now()
 
-		if _, err := crkreflect.ComponentVersionDir(member.Component); err != nil {
+		if _, err := catalogkindreflect.KindVersionDir(member.KindDir); err != nil {
 			return deployed, nil, err
 		}
-		moduleDir := filepath.Join(repoRoot, "catalog", provider, member.Component, "iac", "tf")
+		moduleDir := filepath.Join(repoRoot, "catalog", provider, member.KindDir, "iac", "tf")
 		workDir, cleanup, err := runner.PrepareWorkDir(moduleDir)
 		if err != nil {
-			return deployed, nil, errors.Wrapf(err, "preparing workdir for %s", member.Component)
+			return deployed, nil, errors.Wrapf(err, "preparing workdir for %s", member.KindDir)
 		}
 
 		resolvedPath, err := runner.ResolveManifestRefs(member.ManifestPath, accumulated)
 		if err != nil {
 			cleanup()
-			return deployed, nil, errors.Wrapf(err, "resolving references for %s %q", member.Component, member.Name)
+			return deployed, nil, errors.Wrapf(err, "resolving references for %s %q", member.KindDir, member.Name)
 		}
 		// Mapping-eval members deploy with the harness's default posture; the
-		// provider-config fixture belongs to the component E2E lane only.
+		// provider-config fixture belongs to the kind E2E lane only.
 		input, err := runner.BuildTerraformInput(resolvedPath, workDir, nil)
 		if err != nil {
 			cleanup()
-			return deployed, nil, errors.Wrapf(err, "building terraform input for %s %q", member.Component, member.Name)
+			return deployed, nil, errors.Wrapf(err, "building terraform input for %s %q", member.KindDir, member.Name)
 		}
 		// One shared provider plugin cache for the whole suite: every member
 		// gets an isolated workdir, and without the cache each init
@@ -109,13 +109,13 @@ func DeploySuite(t testing.TB, repoRoot, provider string, suite *mappingeval.Loa
 			// The failed apply may have created resources; track the member
 			// so teardown destroys them.
 			deployed = append(deployed, state)
-			return deployed, nil, errors.Wrapf(err, "deploying %s %q", member.Component, member.Name)
+			return deployed, nil, errors.Wrapf(err, "deploying %s %q", member.KindDir, member.Name)
 		}
 		deployed = append(deployed, state)
 
 		rawOutputs, err := runner.TerraformOutputs(t, opts)
 		if err != nil {
-			return deployed, nil, errors.Wrapf(err, "reading outputs of %s %q", member.Component, member.Name)
+			return deployed, nil, errors.Wrapf(err, "reading outputs of %s %q", member.KindDir, member.Name)
 		}
 		if accumulated[member.Kind] == nil {
 			accumulated[member.Kind] = map[string]map[string]interface{}{}
@@ -124,10 +124,10 @@ func DeploySuite(t testing.TB, repoRoot, provider string, suite *mappingeval.Loa
 
 		claims, invisible, err := stateResourceIdentities(workDir, ccTypeByTerraformType)
 		if err != nil {
-			return deployed, nil, errors.Wrapf(err, "reading state identities of %s %q", member.Component, member.Name)
+			return deployed, nil, errors.Wrapf(err, "reading state identities of %s %q", member.KindDir, member.Name)
 		}
 		groundTruth.Instances = append(groundTruth.Instances, mappingeval.GroundTruthInstance{
-			Component:              member.Component,
+			KindDir:                member.KindDir,
 			Kind:                   member.Kind,
 			Name:                   member.Name,
 			Manifest:               member.Manifest,
@@ -135,7 +135,7 @@ func DeploySuite(t testing.TB, repoRoot, provider string, suite *mappingeval.Loa
 			InvisibleResourceTypes: invisible,
 		})
 		fmt.Printf("  [eval-seed] %s %q deployed in %s (%d scan-visible resources, %d invisible types)\n",
-			member.Component, member.Name, time.Since(start).Round(time.Second), len(claims), len(invisible))
+			member.KindDir, member.Name, time.Since(start).Round(time.Second), len(claims), len(invisible))
 	}
 	return deployed, groundTruth, nil
 }
@@ -143,15 +143,15 @@ func DeploySuite(t testing.TB, repoRoot, provider string, suite *mappingeval.Loa
 // TeardownSuite destroys deployed members in reverse order. One member's
 // destroy failure never stops the rest (stopping early would leak
 // everything deployed before it), but every failure is returned so the
-// caller FAILS the run -- a destroy that could not run means real cloud
+// caller FAILS the run -- a destroy that could not run means real provider
 // resources may still exist.
 func TeardownSuite(t testing.TB, deployed []DeployedMember) error {
 	var failures []error
 	for i := len(deployed) - 1; i >= 0; i-- {
 		member := deployed[i]
-		fmt.Printf("  [eval-seed] destroying %s %q\n", member.Member.Component, member.Member.Name)
+		fmt.Printf("  [eval-seed] destroying %s %q\n", member.Member.KindDir, member.Member.Name)
 		if _, err := runner.TerraformDestroy(t, member.Opts); err != nil {
-			failures = append(failures, errors.Wrapf(err, "destroying %s %q", member.Member.Component, member.Member.Name))
+			failures = append(failures, errors.Wrapf(err, "destroying %s %q", member.Member.KindDir, member.Member.Name))
 		}
 		member.Cleanup()
 	}
@@ -211,7 +211,7 @@ func stateResourceIdentities(workDir string, ccTypeByTerraformType map[string]st
 }
 
 // ScanTypeNames derives the scan's type allowlist: the catalog's declared
-// Cloud Control type names restricted to what the suite's member components
+// Cloud Control type names restricted to what the suite's member kinds
 // can actually create (their modules' resource types). This is the v1 scan
 // guardrail -- a single region plus an explicit type allowlist -- derived
 // from declared artifacts, never authored per suite.
@@ -230,13 +230,13 @@ func ScanTypeNames(repoRoot, provider string, suite *mappingeval.LoadedSuite) ([
 	seen := map[string]bool{}
 	var typeNames []string
 	for _, member := range suite.Members {
-		if _, err := crkreflect.ComponentVersionDir(member.Component); err != nil {
+		if _, err := catalogkindreflect.KindVersionDir(member.KindDir); err != nil {
 			return nil, err
 		}
-		moduleDir := filepath.Join(repoRoot, "catalog", provider, member.Component, "iac", "tf")
+		moduleDir := filepath.Join(repoRoot, "catalog", provider, member.KindDir, "iac", "tf")
 		moduleTypes, err := moduleResourceTypes(moduleDir)
 		if err != nil {
-			return nil, errors.Wrapf(err, "module resource types of %s", member.Component)
+			return nil, errors.Wrapf(err, "module resource types of %s", member.KindDir)
 		}
 		for _, terraformType := range moduleTypes {
 			if ccType, visible := ccTypeByTerraformType[terraformType]; visible && !seen[ccType] {

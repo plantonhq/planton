@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.azure.azureroledefinition.v1alpha1;
 
-// **AzureRoleDefinitionStackOutputs** captures the outputs of provisioning a
+// **AzureRoleDefinitionOutputs** captures the outputs of provisioning a
 // custom Azure RBAC role definition. The fully-scoped ARM resource ID is the
 // definition's identity for composition -- it is exactly what a role
 // assignment binds -- and the GUID/name/scope coordinates are exported so
 // downstream automation can reason about the role without re-reading the spec.
-message AzureRoleDefinitionStackOutputs {
+message AzureRoleDefinitionOutputs {
   // The fully-scoped Azure Resource Manager ID of the role definition.
   // Format: {scope}/providers/Microsoft.Authorization/roleDefinitions/{guid}
   // This is the value an AzureRoleAssignment's role_definition_id field

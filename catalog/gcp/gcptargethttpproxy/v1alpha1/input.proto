@@ -5,7 +5,7 @@ package dev.planton.gcp.gcptargethttpproxy.v1alpha1;
 import "catalog/gcp/gcptargethttpproxy/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-message GcpTargetHttpProxyStackInput {
+message GcpTargetHttpProxyIacInput {
   GcpTargetHttpProxy target = 1;
   dev.planton.gcp.GcpProviderConfig provider_config = 2;
 }

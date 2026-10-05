@@ -20,7 +20,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsbedrockmodelaccess
+    e2e-catalog-kind: awsbedrockmodelaccess
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -31,7 +31,7 @@ type GcpBigQueryReservationGroup struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *GcpBigQueryReservationGroupSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *GcpBigQueryReservationGroup) GetKind() string {
 	return ""
 }
 
-func (x *GcpBigQueryReservationGroup) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpBigQueryReservationGroup) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *GcpBigQueryReservationGroup) GetStatus() *GcpBigQueryReservationGroupSt
 // gcp-bigquery-reservation-group status
 type GcpBigQueryReservationGroupStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *GcpBigQueryReservationGroupStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *GcpBigQueryReservationGroupOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*GcpBigQueryReservationGroupStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpBigQueryReservationGroupStatus) GetOutputs() *GcpBigQueryReservationGroupStackOutputs {
+func (x *GcpBigQueryReservationGroupStatus) GetOutputs() *GcpBigQueryReservationGroupOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_api_proto_rawDesc = 
 	"apiVersion\x126\n" +
 	"\x04kind\x18\x02 \x01(\tB\"\xbaH\x1fr\x1d\n" +
 	"\x1bGcpBigQueryReservationGroupR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12q\n" +
 	"\x04spec\x18\x04 \x01(\v2U.dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12o\n" +
-	"\x06status\x18\x05 \x01(\v2W.dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupStatusR\x06status\"\x9c\x01\n" +
-	"!GcpBigQueryReservationGroupStatus\x12w\n" +
-	"\aoutputs\x18\x01 \x01(\v2].dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupStackOutputsR\aoutputsB\xac\x03\n" +
+	"\x06status\x18\x05 \x01(\v2W.dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupStatusR\x06status\"\x97\x01\n" +
+	"!GcpBigQueryReservationGroupStatus\x12r\n" +
+	"\aoutputs\x18\x01 \x01(\v2X.dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupOutputsR\aoutputsB\xac\x03\n" +
 	"8com.dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1B\bApiProtoP\x01Zqgithub.com/plantonhq/planton/catalog/gcp/gcpbigqueryreservationgroup/v1alpha1;gcpbigqueryreservationgroupv1alpha1\xa2\x02\x04DPGG\xaa\x024Dev.Planton.Gcp.Gcpbigqueryreservationgroup.V1alpha1\xca\x024Dev\\Planton\\Gcp\\Gcpbigqueryreservationgroup\\V1alpha1\xe2\x02@Dev\\Planton\\Gcp\\Gcpbigqueryreservationgroup\\V1alpha1\\GPBMetadata\xea\x028Dev::Planton::Gcp::Gcpbigqueryreservationgroup::V1alpha1b\x06proto3"
 
 var (
@@ -183,17 +183,17 @@ func file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_api_proto_rawDescGZIP
 
 var file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_api_proto_goTypes = []any{
-	(*GcpBigQueryReservationGroup)(nil),             // 0: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroup
-	(*GcpBigQueryReservationGroupStatus)(nil),       // 1: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupStatus
-	(*shared.CloudResourceMetadata)(nil),            // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpBigQueryReservationGroupSpec)(nil),         // 3: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupSpec
-	(*GcpBigQueryReservationGroupStackOutputs)(nil), // 4: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupStackOutputs
+	(*GcpBigQueryReservationGroup)(nil),        // 0: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroup
+	(*GcpBigQueryReservationGroupStatus)(nil),  // 1: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupStatus
+	(*shared.CatalogObjectMetadata)(nil),       // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpBigQueryReservationGroupSpec)(nil),    // 3: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupSpec
+	(*GcpBigQueryReservationGroupOutputs)(nil), // 4: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupOutputs
 }
 var file_catalog_gcp_gcpbigqueryreservationgroup_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroup.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroup.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroup.spec:type_name -> dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupSpec
 	1, // 2: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroup.status:type_name -> dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupStatus
-	4, // 3: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupStatus.outputs:type_name -> dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupStackOutputs
+	4, // 3: dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupStatus.outputs:type_name -> dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

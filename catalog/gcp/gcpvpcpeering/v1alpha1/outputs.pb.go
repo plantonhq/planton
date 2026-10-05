@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpVpcPeeringStackOutputs captures this side of the peering after
+// GcpVpcPeeringOutputs captures this side of the peering after
 // provisioning.
-type GcpVpcPeeringStackOutputs struct {
+type GcpVpcPeeringOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The peering entry's name on this side's network -- the resolved value
 	// (metadata.name when the spec left peering_name empty).
@@ -44,20 +44,20 @@ type GcpVpcPeeringStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpVpcPeeringStackOutputs) Reset() {
-	*x = GcpVpcPeeringStackOutputs{}
+func (x *GcpVpcPeeringOutputs) Reset() {
+	*x = GcpVpcPeeringOutputs{}
 	mi := &file_catalog_gcp_gcpvpcpeering_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVpcPeeringStackOutputs) String() string {
+func (x *GcpVpcPeeringOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVpcPeeringStackOutputs) ProtoMessage() {}
+func (*GcpVpcPeeringOutputs) ProtoMessage() {}
 
-func (x *GcpVpcPeeringStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpVpcPeeringOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvpcpeering_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,33 +69,33 @@ func (x *GcpVpcPeeringStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVpcPeeringStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpVpcPeeringStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVpcPeeringOutputs.ProtoReflect.Descriptor instead.
+func (*GcpVpcPeeringOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvpcpeering_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVpcPeeringStackOutputs) GetPeeringName() string {
+func (x *GcpVpcPeeringOutputs) GetPeeringName() string {
 	if x != nil {
 		return x.PeeringName
 	}
 	return ""
 }
 
-func (x *GcpVpcPeeringStackOutputs) GetNetwork() string {
+func (x *GcpVpcPeeringOutputs) GetNetwork() string {
 	if x != nil {
 		return x.Network
 	}
 	return ""
 }
 
-func (x *GcpVpcPeeringStackOutputs) GetState() string {
+func (x *GcpVpcPeeringOutputs) GetState() string {
 	if x != nil {
 		return x.State
 	}
 	return ""
 }
 
-func (x *GcpVpcPeeringStackOutputs) GetStateDetails() string {
+func (x *GcpVpcPeeringOutputs) GetStateDetails() string {
 	if x != nil {
 		return x.StateDetails
 	}
@@ -106,8 +106,8 @@ var File_catalog_gcp_gcpvpcpeering_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_gcp_gcpvpcpeering_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/gcp/gcpvpcpeering/v1alpha1/outputs.proto\x12&dev.planton.gcp.gcpvpcpeering.v1alpha1\"\x93\x01\n" +
-	"\x19GcpVpcPeeringStackOutputs\x12!\n" +
+	"0catalog/gcp/gcpvpcpeering/v1alpha1/outputs.proto\x12&dev.planton.gcp.gcpvpcpeering.v1alpha1\"\x8e\x01\n" +
+	"\x14GcpVpcPeeringOutputs\x12!\n" +
 	"\fpeering_name\x18\x01 \x01(\tR\vpeeringName\x12\x18\n" +
 	"\anetwork\x18\x02 \x01(\tR\anetwork\x12\x14\n" +
 	"\x05state\x18\x03 \x01(\tR\x05state\x12#\n" +
@@ -128,7 +128,7 @@ func file_catalog_gcp_gcpvpcpeering_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_gcp_gcpvpcpeering_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvpcpeering_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpVpcPeeringStackOutputs)(nil), // 0: dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeeringStackOutputs
+	(*GcpVpcPeeringOutputs)(nil), // 0: dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeeringOutputs
 }
 var file_catalog_gcp_gcpvpcpeering_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

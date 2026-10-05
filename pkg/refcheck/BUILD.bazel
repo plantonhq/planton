@@ -9,9 +9,9 @@ go_library(
     importpath = "github.com/plantonhq/planton/pkg/refcheck",
     visibility = ["//visibility:public"],
     deps = [
-        "//pkg/crkreflect",
+        "//pkg/catalogkindreflect",
         "//pkg/refannotations",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@org_golang_google_protobuf//reflect/protoreflect",
     ],
 )
@@ -23,5 +23,5 @@ go_test(
         "resolve_test.go",
     ],
     embed = [":refcheck"],
-    deps = ["//shared/cloudresourcekind"],
+    deps = ["//shared/catalogkind"],
 )

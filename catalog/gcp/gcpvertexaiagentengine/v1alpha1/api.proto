@@ -16,7 +16,7 @@ message GcpVertexAiAgentEngine {
   string kind = 2 [(buf.validate.field).string.const = 'GcpVertexAiAgentEngine'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   GcpVertexAiAgentEngineSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message GcpVertexAiAgentEngine {
 
 //gcp-vertex-ai-agent-engine status
 message GcpVertexAiAgentEngineStatus {
-  //stack-outputs
-  GcpVertexAiAgentEngineStackOutputs outputs = 1;
+  //outputs
+  GcpVertexAiAgentEngineOutputs outputs = 1;
 }

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceanmonitoralert.v1alpha1;
 
-// DigitalOceanMonitorAlertStackOutputs captures the key outputs after
+// DigitalOceanMonitorAlertOutputs captures the key outputs after
 // provisioning a DigitalOcean monitor alert policy.
-message DigitalOceanMonitorAlertStackOutputs {
+message DigitalOceanMonitorAlertOutputs {
   // UUID of the alert policy (the API identity, and the import id). Both
   // provisioners read it from the resource id -- the provider's own uuid
   // attribute is declared but never populated at the pinned version.

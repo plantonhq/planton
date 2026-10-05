@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awssqsqueue.v1alpha1;
 
-// AwsSqsQueueStackOutputs captures observable identifiers from a provisioned SQS queue.
+// AwsSqsQueueOutputs captures observable identifiers from a provisioned SQS queue.
 // These outputs are used by downstream resources (e.g., Lambda event source mappings,
 // SNS subscriptions, EventBridge targets) to wire dependencies via StringValueOrRef.
-message AwsSqsQueueStackOutputs {
+message AwsSqsQueueOutputs {
   // The URL of the SQS queue. This is the primary identifier used in the SQS
   // API for sending, receiving, and deleting messages.
   string queue_url = 1;

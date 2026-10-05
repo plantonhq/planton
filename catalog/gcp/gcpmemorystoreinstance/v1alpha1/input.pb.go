@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-memorystore-instance stack-input
-type GcpMemorystoreInstanceStackInput struct {
+// gcp-memorystore-instance iac-input
+type GcpMemorystoreInstanceIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpMemorystoreInstance `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpMemorystoreInstanceStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpMemorystoreInstanceStackInput) Reset() {
-	*x = GcpMemorystoreInstanceStackInput{}
+func (x *GcpMemorystoreInstanceIacInput) Reset() {
+	*x = GcpMemorystoreInstanceIacInput{}
 	mi := &file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpMemorystoreInstanceStackInput) String() string {
+func (x *GcpMemorystoreInstanceIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpMemorystoreInstanceStackInput) ProtoMessage() {}
+func (*GcpMemorystoreInstanceIacInput) ProtoMessage() {}
 
-func (x *GcpMemorystoreInstanceStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpMemorystoreInstanceIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpMemorystoreInstanceStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpMemorystoreInstanceStackInput.ProtoReflect.Descriptor instead.
-func (*GcpMemorystoreInstanceStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpMemorystoreInstanceIacInput.ProtoReflect.Descriptor instead.
+func (*GcpMemorystoreInstanceIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpMemorystoreInstanceStackInput) GetTarget() *GcpMemorystoreInstance {
+func (x *GcpMemorystoreInstanceIacInput) GetTarget() *GcpMemorystoreInstance {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpMemorystoreInstanceStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpMemorystoreInstanceIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpmemorystoreinstance_v1alpha1_input_proto protoreflect.Fi
 
 const file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpmemorystoreinstance/v1alpha1/input.proto\x12/dev.planton.gcp.gcpmemorystoreinstance.v1alpha1\x1a5catalog/gcp/gcpmemorystoreinstance/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xd0\x01\n" +
-	" GcpMemorystoreInstanceStackInput\x12_\n" +
+	"7catalog/gcp/gcpmemorystoreinstance/v1alpha1/input.proto\x12/dev.planton.gcp.gcpmemorystoreinstance.v1alpha1\x1a5catalog/gcp/gcpmemorystoreinstance/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xce\x01\n" +
+	"\x1eGcpMemorystoreInstanceIacInput\x12_\n" +
 	"\x06target\x18\x01 \x01(\v2G.dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\x8b\x03\n" +
 	"3com.dev.planton.gcp.gcpmemorystoreinstance.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_input_proto_rawDescGZIP() 
 
 var file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_input_proto_goTypes = []any{
-	(*GcpMemorystoreInstanceStackInput)(nil), // 0: dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceStackInput
-	(*GcpMemorystoreInstance)(nil),           // 1: dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstance
-	(*gcp.GcpProviderConfig)(nil),            // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpMemorystoreInstanceIacInput)(nil), // 0: dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceIacInput
+	(*GcpMemorystoreInstance)(nil),         // 1: dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstance
+	(*gcp.GcpProviderConfig)(nil),          // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceStackInput.target:type_name -> dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstance
-	2, // 1: dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceIacInput.target:type_name -> dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstance
+	2, // 1: dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

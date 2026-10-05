@@ -37,7 +37,7 @@ const (
 	Reconfigure     Flag = "reconfigure"
 	Set             Flag = "set"
 	Stack           Flag = "stack"
-	StackInput      Flag = "stack-input"
+	IacInput        Flag = "iac-input"
 	Yes             Flag = "yes"
 )
 

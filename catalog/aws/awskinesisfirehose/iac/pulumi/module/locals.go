@@ -5,11 +5,11 @@ import (
 
 	awskinesisfirehose "github.com/plantonhq/planton/catalog/aws/awskinesisfirehose/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 type Locals struct {
 	Target             *awskinesisfirehose.AwsKinesisFirehose
 	Spec               *awskinesisfirehose.AwsKinesisFirehoseSpec
@@ -17,7 +17,7 @@ type Locals struct {
 	DeliveryStreamName string
 }
 
-func initializeLocals(ctx *pulumi.Context, in *awskinesisfirehose.AwsKinesisFirehoseStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, in *awskinesisfirehose.AwsKinesisFirehoseIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec
@@ -28,7 +28,7 @@ func initializeLocals(ctx *pulumi.Context, in *awskinesisfirehose.AwsKinesisFire
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.Target.Metadata.Org,
 		awstagkeys.Environment:  locals.Target.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsKinesisFirehose.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsKinesisFirehose.String(),
 		awstagkeys.ResourceId:   locals.Target.Metadata.Id,
 	}
 

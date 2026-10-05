@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azuremssqldatabasev1alpha1.AzureMssqlDatabaseStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuremssqldatabasev1alpha1.AzureMssqlDatabaseIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -42,7 +42,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuremssqldatabasev1alpha1.Azure
 		databaseArgs.MaxSizeGb = pulumi.Float64(spec.GetMaxSizeGb())
 	}
 
-	// Collation is presence-guarded to the spec default -- stack inputs
+	// Collation is presence-guarded to the spec default -- IaC inputs
 	// built from a manifest do NOT materialize proto defaults.
 	if spec.Collation != nil {
 		databaseArgs.Collation = pulumi.String(spec.GetCollation())
@@ -244,7 +244,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuremssqldatabasev1alpha1.Azure
 		return errors.Wrapf(err, "failed to create mssql database %s", spec.DatabaseName)
 	}
 
-	// Export stack outputs from the created resource.
+	// Export outputs from the created resource.
 	ctx.Export(OpDatabaseId, database.ID())
 	ctx.Export(OpDatabaseName, database.Name)
 

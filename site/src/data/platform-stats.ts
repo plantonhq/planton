@@ -5,7 +5,7 @@
  * next reconciliation repeats the method instead of guessing.
  *
  * Counted 2026-09-17 against plantonhq/planton:
- *   component kinds   = folders under catalog/<provider>/ carrying a spec.proto (719)
+ *   catalog kinds   = folders under catalog/<provider>/ carrying a spec.proto (719)
  *   providers         = the provider folders under catalog/ (aws, azure, gcp, kubernetes, cloudflare, digitalocean, auth0, openfga)
  *   Infra Charts      = Chart.yaml files under charts/ (18; the earlier "50+" was wrong)
  *   control profiles  = kinds carrying a controls.yaml (718)
@@ -16,7 +16,7 @@
  * record. A change to the catalog changes this file first.
  */
 export const PLATFORM_STATS = {
-  /** Printed. Component kinds in the catalog, rounded down to the hundred. */
+  /** Printed. Catalog kinds in the catalog, rounded down to the hundred. */
   DEPLOYMENT_MODULE_COUNT: '700+',
   CLOUD_PROVIDER_COUNT: '8',
   /** Printed exactly; the number is small enough to be honest about. */
@@ -47,7 +47,7 @@ export const CLOUD_PROVIDERS = [
 
 /** Exact counts behind the printed figures, for the record and for llms.txt. */
 export const PLATFORM_COUNTS = {
-  componentKinds: 719,
+  catalogKinds: 719,
   providers: 8,
   infraCharts: 18,
   controlProfiles: 718,

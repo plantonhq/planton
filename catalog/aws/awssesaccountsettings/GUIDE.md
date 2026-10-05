@@ -1,4 +1,4 @@
-# AwsSesAccountSettings — Component Guide
+# AwsSesAccountSettings — Kind Guide
 
 Authored operational judgment for the SES account-settings singleton:
 the design decisions behind the spec's shape, and what to know before

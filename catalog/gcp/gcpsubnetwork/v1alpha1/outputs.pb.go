@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP subnetwork.
-type GcpSubnetworkStackOutputs struct {
+type GcpSubnetworkOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Self-link URI of the subnetwork — the value GKE clusters, compute
 	// instances, and other subnet consumers reference.
@@ -33,7 +33,7 @@ type GcpSubnetworkStackOutputs struct {
 	IpCidrRange string `protobuf:"bytes,3,opt,name=ip_cidr_range,json=ipCidrRange,proto3" json:"ip_cidr_range,omitempty"`
 	// Secondary (alias) ranges on this subnet, with their names and CIDRs.
 	// GKE clusters select their pod/service ranges by range_name.
-	SecondaryRanges []*GcpSubnetworkSecondaryRangeStackOutput `protobuf:"bytes,4,rep,name=secondary_ranges,json=secondaryRanges,proto3" json:"secondary_ranges,omitempty"`
+	SecondaryRanges []*GcpSubnetworkSecondaryRangeOutput `protobuf:"bytes,4,rep,name=secondary_ranges,json=secondaryRanges,proto3" json:"secondary_ranges,omitempty"`
 	// Name of the subnetwork as it exists in GCP. Referenced by consumers
 	// that address subnets by name (e.g. Cloud Run Direct VPC egress).
 	SubnetworkName string `protobuf:"bytes,5,opt,name=subnetwork_name,json=subnetworkName,proto3" json:"subnetwork_name,omitempty"`
@@ -51,20 +51,20 @@ type GcpSubnetworkStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *GcpSubnetworkStackOutputs) Reset() {
-	*x = GcpSubnetworkStackOutputs{}
+func (x *GcpSubnetworkOutputs) Reset() {
+	*x = GcpSubnetworkOutputs{}
 	mi := &file_catalog_gcp_gcpsubnetwork_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSubnetworkStackOutputs) String() string {
+func (x *GcpSubnetworkOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSubnetworkStackOutputs) ProtoMessage() {}
+func (*GcpSubnetworkOutputs) ProtoMessage() {}
 
-func (x *GcpSubnetworkStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpSubnetworkOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpsubnetwork_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -76,68 +76,68 @@ func (x *GcpSubnetworkStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSubnetworkStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpSubnetworkStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSubnetworkOutputs.ProtoReflect.Descriptor instead.
+func (*GcpSubnetworkOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsubnetwork_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSubnetworkStackOutputs) GetSubnetworkSelfLink() string {
+func (x *GcpSubnetworkOutputs) GetSubnetworkSelfLink() string {
 	if x != nil {
 		return x.SubnetworkSelfLink
 	}
 	return ""
 }
 
-func (x *GcpSubnetworkStackOutputs) GetRegion() string {
+func (x *GcpSubnetworkOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *GcpSubnetworkStackOutputs) GetIpCidrRange() string {
+func (x *GcpSubnetworkOutputs) GetIpCidrRange() string {
 	if x != nil {
 		return x.IpCidrRange
 	}
 	return ""
 }
 
-func (x *GcpSubnetworkStackOutputs) GetSecondaryRanges() []*GcpSubnetworkSecondaryRangeStackOutput {
+func (x *GcpSubnetworkOutputs) GetSecondaryRanges() []*GcpSubnetworkSecondaryRangeOutput {
 	if x != nil {
 		return x.SecondaryRanges
 	}
 	return nil
 }
 
-func (x *GcpSubnetworkStackOutputs) GetSubnetworkName() string {
+func (x *GcpSubnetworkOutputs) GetSubnetworkName() string {
 	if x != nil {
 		return x.SubnetworkName
 	}
 	return ""
 }
 
-func (x *GcpSubnetworkStackOutputs) GetGatewayAddress() string {
+func (x *GcpSubnetworkOutputs) GetGatewayAddress() string {
 	if x != nil {
 		return x.GatewayAddress
 	}
 	return ""
 }
 
-func (x *GcpSubnetworkStackOutputs) GetSubnetworkId() string {
+func (x *GcpSubnetworkOutputs) GetSubnetworkId() string {
 	if x != nil {
 		return x.SubnetworkId
 	}
 	return ""
 }
 
-func (x *GcpSubnetworkStackOutputs) GetInternalIpv6Prefix() string {
+func (x *GcpSubnetworkOutputs) GetInternalIpv6Prefix() string {
 	if x != nil {
 		return x.InternalIpv6Prefix
 	}
 	return ""
 }
 
-func (x *GcpSubnetworkStackOutputs) GetExternalIpv6Prefix() string {
+func (x *GcpSubnetworkOutputs) GetExternalIpv6Prefix() string {
 	if x != nil {
 		return x.ExternalIpv6Prefix
 	}
@@ -145,7 +145,7 @@ func (x *GcpSubnetworkStackOutputs) GetExternalIpv6Prefix() string {
 }
 
 // One secondary range as provisioned.
-type GcpSubnetworkSecondaryRangeStackOutput struct {
+type GcpSubnetworkSecondaryRangeOutput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the secondary range (unique within the subnet).
 	RangeName string `protobuf:"bytes,1,opt,name=range_name,json=rangeName,proto3" json:"range_name,omitempty"`
@@ -155,20 +155,20 @@ type GcpSubnetworkSecondaryRangeStackOutput struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpSubnetworkSecondaryRangeStackOutput) Reset() {
-	*x = GcpSubnetworkSecondaryRangeStackOutput{}
+func (x *GcpSubnetworkSecondaryRangeOutput) Reset() {
+	*x = GcpSubnetworkSecondaryRangeOutput{}
 	mi := &file_catalog_gcp_gcpsubnetwork_v1alpha1_outputs_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSubnetworkSecondaryRangeStackOutput) String() string {
+func (x *GcpSubnetworkSecondaryRangeOutput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSubnetworkSecondaryRangeStackOutput) ProtoMessage() {}
+func (*GcpSubnetworkSecondaryRangeOutput) ProtoMessage() {}
 
-func (x *GcpSubnetworkSecondaryRangeStackOutput) ProtoReflect() protoreflect.Message {
+func (x *GcpSubnetworkSecondaryRangeOutput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpsubnetwork_v1alpha1_outputs_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -180,19 +180,19 @@ func (x *GcpSubnetworkSecondaryRangeStackOutput) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSubnetworkSecondaryRangeStackOutput.ProtoReflect.Descriptor instead.
-func (*GcpSubnetworkSecondaryRangeStackOutput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSubnetworkSecondaryRangeOutput.ProtoReflect.Descriptor instead.
+func (*GcpSubnetworkSecondaryRangeOutput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsubnetwork_v1alpha1_outputs_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpSubnetworkSecondaryRangeStackOutput) GetRangeName() string {
+func (x *GcpSubnetworkSecondaryRangeOutput) GetRangeName() string {
 	if x != nil {
 		return x.RangeName
 	}
 	return ""
 }
 
-func (x *GcpSubnetworkSecondaryRangeStackOutput) GetIpCidrRange() string {
+func (x *GcpSubnetworkSecondaryRangeOutput) GetIpCidrRange() string {
 	if x != nil {
 		return x.IpCidrRange
 	}
@@ -203,18 +203,18 @@ var File_catalog_gcp_gcpsubnetwork_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_gcp_gcpsubnetwork_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/gcp/gcpsubnetwork/v1alpha1/outputs.proto\x12&dev.planton.gcp.gcpsubnetwork.v1alpha1\"\xdf\x03\n" +
-	"\x19GcpSubnetworkStackOutputs\x120\n" +
+	"0catalog/gcp/gcpsubnetwork/v1alpha1/outputs.proto\x12&dev.planton.gcp.gcpsubnetwork.v1alpha1\"\xd5\x03\n" +
+	"\x14GcpSubnetworkOutputs\x120\n" +
 	"\x14subnetwork_self_link\x18\x01 \x01(\tR\x12subnetworkSelfLink\x12\x16\n" +
 	"\x06region\x18\x02 \x01(\tR\x06region\x12\"\n" +
-	"\rip_cidr_range\x18\x03 \x01(\tR\vipCidrRange\x12y\n" +
-	"\x10secondary_ranges\x18\x04 \x03(\v2N.dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkSecondaryRangeStackOutputR\x0fsecondaryRanges\x12'\n" +
+	"\rip_cidr_range\x18\x03 \x01(\tR\vipCidrRange\x12t\n" +
+	"\x10secondary_ranges\x18\x04 \x03(\v2I.dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkSecondaryRangeOutputR\x0fsecondaryRanges\x12'\n" +
 	"\x0fsubnetwork_name\x18\x05 \x01(\tR\x0esubnetworkName\x12'\n" +
 	"\x0fgateway_address\x18\x06 \x01(\tR\x0egatewayAddress\x12#\n" +
 	"\rsubnetwork_id\x18\a \x01(\tR\fsubnetworkId\x120\n" +
 	"\x14internal_ipv6_prefix\x18\b \x01(\tR\x12internalIpv6Prefix\x120\n" +
-	"\x14external_ipv6_prefix\x18\t \x01(\tR\x12externalIpv6Prefix\"k\n" +
-	"&GcpSubnetworkSecondaryRangeStackOutput\x12\x1d\n" +
+	"\x14external_ipv6_prefix\x18\t \x01(\tR\x12externalIpv6Prefix\"f\n" +
+	"!GcpSubnetworkSecondaryRangeOutput\x12\x1d\n" +
 	"\n" +
 	"range_name\x18\x01 \x01(\tR\trangeName\x12\"\n" +
 	"\rip_cidr_range\x18\x02 \x01(\tR\vipCidrRangeB\xce\x02\n" +
@@ -234,11 +234,11 @@ func file_catalog_gcp_gcpsubnetwork_v1alpha1_outputs_proto_rawDescGZIP() []byte 
 
 var file_catalog_gcp_gcpsubnetwork_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpsubnetwork_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpSubnetworkStackOutputs)(nil),              // 0: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkStackOutputs
-	(*GcpSubnetworkSecondaryRangeStackOutput)(nil), // 1: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkSecondaryRangeStackOutput
+	(*GcpSubnetworkOutputs)(nil),              // 0: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkOutputs
+	(*GcpSubnetworkSecondaryRangeOutput)(nil), // 1: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkSecondaryRangeOutput
 }
 var file_catalog_gcp_gcpsubnetwork_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkStackOutputs.secondary_ranges:type_name -> dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkSecondaryRangeStackOutput
+	1, // 0: dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkOutputs.secondary_ranges:type_name -> dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkSecondaryRangeOutput
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

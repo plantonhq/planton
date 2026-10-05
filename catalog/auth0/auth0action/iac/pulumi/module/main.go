@@ -7,12 +7,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *auth0actionv1alpha1.Auth0ActionStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *auth0actionv1alpha1.Auth0ActionIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	var provider *auth0.Provider
 	var err error
-	providerConfig := stackInput.ProviderConfig
+	providerConfig := iacInput.ProviderConfig
 
 	if providerConfig == nil {
 		provider, err = auth0.NewProvider(ctx, "auth0-provider", &auth0.ProviderArgs{})

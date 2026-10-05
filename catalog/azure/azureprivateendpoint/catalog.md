@@ -4,7 +4,7 @@ Deploys an Azure Private Endpoint: a network interface that gives a Private Link
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Private Endpoint** -- a network interface in the specified subnet with a private IP (dynamic from the subnet, or pinned via `ipConfigurations`), connected to the target through its private service connection
 - **Private Service Connection** -- the connection block from the spec: either a Private Link-enabled Azure resource plus its sub-resource (group ID), or a partner's Private Link Service alias; auto-approved by default, or a manual request carrying your message to the target's owner
@@ -16,14 +16,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the Private Endpoint will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
-- **A subnet** in the same region as the private endpoint, permitting private endpoints (its private-endpoint network policies configured accordingly). Reference an AzureSubnet Cloud Resource or provide the ARM ID.
-- **A target**: a Private Link-enabled Azure resource (reference its Cloud Resource or provide its ARM ID) with the correct sub-resource name for the facet you need -- or a partner's Private Link Service ALIAS (always ends in `.azure.privatelinkservice`) for cross-tenant connections, typically with manual approval.
+- **An Azure Resource Group** where the Private Endpoint will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
+- **A subnet** in the same region as the private endpoint, permitting private endpoints (its private-endpoint network policies configured accordingly). Reference an AzureSubnet Infra Component or provide the ARM ID.
+- **A target**: a Private Link-enabled Azure resource (reference its Infra Component or provide its ARM ID) with the correct sub-resource name for the facet you need -- or a partner's Private Link Service ALIAS (always ends in `.azure.privatelinkservice`) for cross-tenant connections, typically with manual approval.
 - **A Private DNS Zone** (strongly recommended) named for the target service's privatelink domain (e.g., `privatelink.postgres.database.azure.com`), already linked to the client networks. Without registration, the service FQDN resolves to its PUBLIC IP inside the VNet and clients silently bypass the endpoint.
 
 ## Deploy
@@ -72,7 +72,7 @@ spec:
 planton apply -f private-endpoint.yaml
 ```
 
-This creates a Private Endpoint connected to a PostgreSQL Flexible Server with a dynamically allocated private IP, registered into the PostgreSQL privatelink zone so the server's FQDN resolves privately. A Stack Job tracks the provisioning in real time.
+This creates a Private Endpoint connected to a PostgreSQL Flexible Server with a dynamically allocated private IP, registered into the PostgreSQL privatelink zone so the server's FQDN resolves privately. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -121,7 +121,7 @@ These are the most important decisions when configuring a Private Endpoint. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -131,16 +131,16 @@ These are the most important decisions when configuring a Private Endpoint. Expl
 | **AzurePrivateDnsZone** (recommended) | `privateDnsZoneIds` | `status.outputs.zone_id` |
 | **AzureApplicationSecurityGroup** (optional) | `applicationSecurityGroupIds` | `status.outputs.application_security_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `private_ip_address` | The private IP allocated from the subnet -- what the service FQDN resolves to inside linked networks | Network troubleshooting, firewall rules, externally-managed DNS |
 | `network_interface_id` | ARM ID of the network interface Azure created for the endpoint | Effective-routes and NSG flow-log diagnostics |
 
-`status.outputs` also carries `private_endpoint_id` and `private_endpoint_name`, but no catalog component consumes the endpoint by reference — clients reach the target through DNS, not through the endpoint's own ID.
+`status.outputs` also carries `private_endpoint_id` and `private_endpoint_name`, but no catalog kind consumes the endpoint by reference — clients reach the target through DNS, not through the endpoint's own ID.
 
 ## Common Patterns
 
@@ -154,8 +154,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the Private Endpoint is created
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- provides the subnet lending the private IP
-- [**Azure Private DNS Zone**](/cloud-catalog/azure-private-dns-zone) -- receives the endpoint's A-record so the service FQDN resolves privately
-- [**Azure Application Security Group**](/cloud-catalog/azure-application-security-group) -- lets NSG rules govern endpoint traffic by workload group
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) / [**Azure Event Hub Namespace**](/cloud-catalog/azure-event-hub-namespace) / [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- typical locked-down targets whose public access is disabled once the endpoint carries the traffic
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the Private Endpoint is created
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- provides the subnet lending the private IP
+- [**Azure Private DNS Zone**](/infra-catalog/azure-private-dns-zone) -- receives the endpoint's A-record so the service FQDN resolves privately
+- [**Azure Application Security Group**](/infra-catalog/azure-application-security-group) -- lets NSG rules govern endpoint traffic by workload group
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) / [**Azure Event Hub Namespace**](/infra-catalog/azure-event-hub-namespace) / [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- typical locked-down targets whose public access is disabled once the endpoint carries the traffic

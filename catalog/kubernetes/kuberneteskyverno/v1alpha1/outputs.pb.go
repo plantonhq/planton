@@ -23,7 +23,7 @@ const (
 
 // *
 // Outputs exported after installing the Kyverno policy engine.
-type KubernetesKyvernoStackOutputs struct {
+type KubernetesKyvernoOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Namespace the engine runs in.
@@ -45,20 +45,20 @@ type KubernetesKyvernoStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesKyvernoStackOutputs) Reset() {
-	*x = KubernetesKyvernoStackOutputs{}
+func (x *KubernetesKyvernoOutputs) Reset() {
+	*x = KubernetesKyvernoOutputs{}
 	mi := &file_catalog_kubernetes_kuberneteskyverno_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKyvernoStackOutputs) String() string {
+func (x *KubernetesKyvernoOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKyvernoStackOutputs) ProtoMessage() {}
+func (*KubernetesKyvernoOutputs) ProtoMessage() {}
 
-func (x *KubernetesKyvernoStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKyvernoOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskyverno_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -70,33 +70,33 @@ func (x *KubernetesKyvernoStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKyvernoStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesKyvernoStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKyvernoOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesKyvernoOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskyverno_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKyvernoStackOutputs) GetNamespace() string {
+func (x *KubernetesKyvernoOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesKyvernoStackOutputs) GetReleaseName() string {
+func (x *KubernetesKyvernoOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesKyvernoStackOutputs) GetAdmissionServiceName() string {
+func (x *KubernetesKyvernoOutputs) GetAdmissionServiceName() string {
 	if x != nil {
 		return x.AdmissionServiceName
 	}
 	return ""
 }
 
-func (x *KubernetesKyvernoStackOutputs) GetConfigMapName() string {
+func (x *KubernetesKyvernoOutputs) GetConfigMapName() string {
 	if x != nil {
 		return x.ConfigMapName
 	}
@@ -107,8 +107,8 @@ var File_catalog_kubernetes_kuberneteskyverno_v1alpha1_outputs_proto protoreflec
 
 const file_catalog_kubernetes_kuberneteskyverno_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kuberneteskyverno/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kuberneteskyverno.v1alpha1\"\xbe\x01\n" +
-	"\x1dKubernetesKyvernoStackOutputs\x12\x1c\n" +
+	";catalog/kubernetes/kuberneteskyverno/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kuberneteskyverno.v1alpha1\"\xb9\x01\n" +
+	"\x18KubernetesKyvernoOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x124\n" +
 	"\x16admission_service_name\x18\x03 \x01(\tR\x14admissionServiceName\x12&\n" +
@@ -129,7 +129,7 @@ func file_catalog_kubernetes_kuberneteskyverno_v1alpha1_outputs_proto_rawDescGZI
 
 var file_catalog_kubernetes_kuberneteskyverno_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskyverno_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesKyvernoStackOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoStackOutputs
+	(*KubernetesKyvernoOutputs)(nil), // 0: dev.planton.kubernetes.kuberneteskyverno.v1alpha1.KubernetesKyvernoOutputs
 }
 var file_catalog_kubernetes_kuberneteskyverno_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

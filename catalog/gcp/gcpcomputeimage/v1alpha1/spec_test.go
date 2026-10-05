@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -21,7 +21,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: value}}
 }
 
-func reference(kind cloudresourcekind.CloudResourceKind, name string) *foreignkeyv1.StringValueOrRef {
+func reference(kind catalogkind.CatalogKind, name string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Kind: kind, Name: name}}}
 }
 
@@ -38,9 +38,9 @@ var _ = ginkgo.Describe("GcpComputeImageSpec", func() {
 		return &GcpComputeImage{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpComputeImage",
-			Metadata:   &shared.CloudResourceMetadata{Name: "web-base-20261001"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "web-base-20261001"},
 			Spec: &GcpComputeImageSpec{
-				SourceDisk: reference(cloudresourcekind.CloudResourceKind_GcpComputeDisk, "web-build-disk"),
+				SourceDisk: reference(catalogkind.CatalogKind_GcpComputeDisk, "web-build-disk"),
 			},
 		}
 	}
@@ -70,7 +70,7 @@ var _ = ginkgo.Describe("GcpComputeImageSpec", func() {
 		msg.Spec.ImageName = "web-base-20261001"
 		msg.Spec.Description = "Hardened web base"
 		msg.Spec.Family = "web-base"
-		msg.Spec.KmsKey = reference(cloudresourcekind.CloudResourceKind_GcpKmsKeyHandle, "images-key")
+		msg.Spec.KmsKey = reference(catalogkind.CatalogKind_GcpKmsKeyHandle, "images-key")
 		msg.Spec.KmsKeyServiceAccount = "builder@images-prod.iam.gserviceaccount.com"
 		msg.Spec.SourceDiskEncryption = &GcpComputeImageSourceEncryption{KmsKey: literal("projects/p/locations/us/keyRings/r/cryptoKeys/k")}
 		msg.Spec.DiskSizeGb = proto.Int64(20)

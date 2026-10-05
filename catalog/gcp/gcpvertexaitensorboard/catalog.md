@@ -4,7 +4,7 @@ Gives a team one managed TensorBoard that every Vertex AI training job, pipeline
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project
 - **TensorBoard** -- a `vertex.AiTensorboard` with optional CMEK
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -51,7 +51,7 @@ spec:
 planton apply -f vertex-ai-tensorboard.yaml
 ```
 
-This creates a TensorBoard in `us-central1` with one experiment and a baseline run ready for training jobs to log into. A Stack Job tracks the provisioning in real time.
+This creates a TensorBoard in `us-central1` with one experiment and a baseline run ready for training jobs to log into. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -69,16 +69,16 @@ These are the most important decisions when configuring a TensorBoard. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpKmsKey** | `kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -99,7 +99,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption
-- [**GCP Vertex AI Persistent Resource**](/cloud-catalog/gcp-vertex-ai-persistent-resource) -- warm training capacity for the jobs that log here
-- [**GCP Vertex AI Dataset**](/cloud-catalog/gcp-vertex-ai-dataset) -- the training data those jobs read
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- the staging bucket training jobs use beside the TensorBoard
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed encryption
+- [**GCP Vertex AI Persistent Resource**](/infra-catalog/gcp-vertex-ai-persistent-resource) -- warm training capacity for the jobs that log here
+- [**GCP Vertex AI Dataset**](/infra-catalog/gcp-vertex-ai-dataset) -- the training data those jobs read
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- the staging bucket training jobs use beside the TensorBoard

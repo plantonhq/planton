@@ -10,14 +10,14 @@ with KubernetesRabbitMq — one resource per cluster. Install the
 operator once per Kubernetes cluster, then declare RabbitMQ clusters
 against it.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a RabbitMQ cluster** — that is KubernetesRabbitMq; this
   component is the controller that reconciles it.
 - **You want declarative queues, exchanges, users, vhosts, or
   policies** — those are served by RabbitMQ's
   messaging-topology-operator, a separate upstream product this
-  component deliberately does NOT install. This is the CLUSTER
+  kind deliberately does NOT install. This is the CLUSTER
   operator only.
 - **You want a single-container dev broker** — a throwaway
   RabbitMQ-in-a-pod does not need an operator; use
@@ -107,7 +107,7 @@ version field (pinned by design).
   `rabbitmq-system` namespace) for pulling the operator image from a
   private mirror
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

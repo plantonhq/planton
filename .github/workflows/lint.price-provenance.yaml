@@ -2,7 +2,7 @@
 # Price Provenance Guard
 # =============================================================================
 # Fails the PR when a hand-typed dollar figure ships in catalog or chart
-# PROSE (component READMEs, guides, catalog pages, preset docs, generated
+# PROSE (kind READMEs, guides, catalog pages, preset docs, generated
 # reference pages, chart READMEs) outside the accepted baseline. Verified
 # prices have exactly one home -- the pinned, source-dated price books and
 # generated estimates in catalog/_pricing/ -- and prose teaches cost DRIVERS,

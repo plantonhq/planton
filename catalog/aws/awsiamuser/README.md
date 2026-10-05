@@ -12,7 +12,7 @@ AWS IAM users provide long-lived programmatic credentials for CI/CD pipelines, t
 - access_key_status: "Active" (default) or "Inactive" -- the rotation lever: an Inactive key keeps its id and secret but AWS rejects requests signed with it; flips in place without recreating the key
 - force_destroy: Delete out-of-band credentials (login profile, extra keys, MFA devices) on teardown instead of failing
 
-## Stack outputs
+## Outputs
 - user_arn: Amazon Resource Name (ARN) of the created IAM user
 - user_name: Name of the IAM user in AWS
 - user_id: Stable unique ID of the IAM user
@@ -21,7 +21,7 @@ AWS IAM users provide long-lived programmatic credentials for CI/CD pipelines, t
 - console_url: AWS console sign-in URL
 
 ## How it works
-This resource is orchestrated by the Planton CLI as part of a stack-update. The CLI validates your manifest, generates stack inputs, and invokes IaC backends in this repo:
+This resource is orchestrated by the Planton CLI as part of a stack-update. The CLI validates your manifest, generates IaC inputs, and invokes IaC backends in this repo:
 - Pulumi (Go modules under iac/pulumi)
 - Terraform (modules under iac/tf)
 

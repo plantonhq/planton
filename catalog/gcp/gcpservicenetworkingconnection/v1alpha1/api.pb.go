@@ -28,7 +28,7 @@ type GcpServiceNetworkingConnection struct {
 	state         protoimpl.MessageState                `protogen:"open.v1"`
 	ApiVersion    string                                `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                                `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata         `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata         `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *GcpServiceNetworkingConnectionSpec   `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *GcpServiceNetworkingConnectionStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -79,7 +79,7 @@ func (x *GcpServiceNetworkingConnection) GetKind() string {
 	return ""
 }
 
-func (x *GcpServiceNetworkingConnection) GetMetadata() *shared.CloudResourceMetadata {
+func (x *GcpServiceNetworkingConnection) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -101,8 +101,8 @@ func (x *GcpServiceNetworkingConnection) GetStatus() *GcpServiceNetworkingConnec
 }
 
 type GcpServiceNetworkingConnectionStatus struct {
-	state         protoimpl.MessageState                      `protogen:"open.v1"`
-	Outputs       *GcpServiceNetworkingConnectionStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState                 `protogen:"open.v1"`
+	Outputs       *GcpServiceNetworkingConnectionOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,7 +137,7 @@ func (*GcpServiceNetworkingConnectionStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GcpServiceNetworkingConnectionStatus) GetOutputs() *GcpServiceNetworkingConnectionStackOutputs {
+func (x *GcpServiceNetworkingConnectionStatus) GetOutputs() *GcpServiceNetworkingConnectionOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -155,11 +155,11 @@ const file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_api_proto_rawDesc
 	"apiVersion\x129\n" +
 	"\x04kind\x18\x02 \x01(\tB%\xbaH\"r \n" +
 	"\x1eGcpServiceNetworkingConnectionR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12w\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12w\n" +
 	"\x04spec\x18\x04 \x01(\v2[.dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12u\n" +
-	"\x06status\x18\x05 \x01(\v2].dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionStatusR\x06status\"\xa5\x01\n" +
-	"$GcpServiceNetworkingConnectionStatus\x12}\n" +
-	"\aoutputs\x18\x01 \x01(\v2c.dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionStackOutputsR\aoutputsB\xc1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2].dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionStatusR\x06status\"\xa0\x01\n" +
+	"$GcpServiceNetworkingConnectionStatus\x12x\n" +
+	"\aoutputs\x18\x01 \x01(\v2^.dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionOutputsR\aoutputsB\xc1\x03\n" +
 	";com.dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1B\bApiProtoP\x01Zwgithub.com/plantonhq/planton/catalog/gcp/gcpservicenetworkingconnection/v1alpha1;gcpservicenetworkingconnectionv1alpha1\xa2\x02\x04DPGG\xaa\x027Dev.Planton.Gcp.Gcpservicenetworkingconnection.V1alpha1\xca\x027Dev\\Planton\\Gcp\\Gcpservicenetworkingconnection\\V1alpha1\xe2\x02CDev\\Planton\\Gcp\\Gcpservicenetworkingconnection\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Gcp::Gcpservicenetworkingconnection::V1alpha1b\x06proto3"
 
 var (
@@ -176,17 +176,17 @@ func file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_api_proto_rawDescG
 
 var file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_api_proto_goTypes = []any{
-	(*GcpServiceNetworkingConnection)(nil),             // 0: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnection
-	(*GcpServiceNetworkingConnectionStatus)(nil),       // 1: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionStatus
-	(*shared.CloudResourceMetadata)(nil),               // 2: dev.planton.shared.CloudResourceMetadata
-	(*GcpServiceNetworkingConnectionSpec)(nil),         // 3: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionSpec
-	(*GcpServiceNetworkingConnectionStackOutputs)(nil), // 4: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionStackOutputs
+	(*GcpServiceNetworkingConnection)(nil),        // 0: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnection
+	(*GcpServiceNetworkingConnectionStatus)(nil),  // 1: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionStatus
+	(*shared.CatalogObjectMetadata)(nil),          // 2: dev.planton.shared.CatalogObjectMetadata
+	(*GcpServiceNetworkingConnectionSpec)(nil),    // 3: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionSpec
+	(*GcpServiceNetworkingConnectionOutputs)(nil), // 4: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionOutputs
 }
 var file_catalog_gcp_gcpservicenetworkingconnection_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnection.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnection.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnection.spec:type_name -> dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionSpec
 	1, // 2: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnection.status:type_name -> dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionStatus
-	4, // 3: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionStatus.outputs:type_name -> dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionStackOutputs
+	4, // 3: dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionStatus.outputs:type_name -> dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

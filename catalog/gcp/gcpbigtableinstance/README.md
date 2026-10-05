@@ -1,12 +1,12 @@
 # GcpBigtableInstance
 
-Planton component for provisioning Google Cloud Bigtable instances with one or more clusters.
+Catalog kind for provisioning Google Cloud Bigtable instances with one or more clusters.
 
 ## Overview
 
 Cloud Bigtable is Google Cloud's fully managed, wide-column NoSQL database designed for large analytical and operational workloads. It provides consistent sub-10ms latency, scales to billions of rows and thousands of columns, and is ideal for time-series data, IoT, ad-tech, fintech, and machine-learning feature stores.
 
-This component bundles a Bigtable instance (the logical container for data) with one or more clusters (the physical replicas serving the data). An instance without at least one cluster cannot store or serve data, so they are provisioned together as a single unit.
+This kind bundles a Bigtable instance (the logical container for data) with one or more clusters (the physical replicas serving the data). An instance without at least one cluster cannot store or serve data, so they are provisioned together as a single unit.
 
 ## Key Features
 
@@ -78,7 +78,7 @@ The following cannot be changed after creation; changing them requires recreatin
 
 `deletionProtection` defaults to `true`. Set to `false` before destroying an instance that contains data.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

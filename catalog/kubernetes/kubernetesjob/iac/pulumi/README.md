@@ -17,8 +17,8 @@ The module creates the following Kubernetes resources:
 ### Standalone Usage
 
 ```bash
-# Set the stack input (base64 encoded manifest)
-export STACK_INPUT=$(cat manifest.yaml | base64)
+# Set the IaC input: a KubernetesJobIacInput YAML file with the manifest under `target`
+export IAC_INPUT_YAML_FILE=iac-input.yaml
 
 # Initialize and deploy
 pulumi stack init dev
@@ -35,13 +35,16 @@ planton pulumi preview --manifest job.yaml
 planton pulumi up --manifest job.yaml
 ```
 
-## Required Environment Variables
+## IaC Input
+
+The module reads a `KubernetesJobIacInput` from the Pulumi config key `planton:iac-input`, or else from one of these environment variables (the planton CLI sets `IAC_INPUT_YAML_FILE` for you):
 
 | Variable | Description |
 |----------|-------------|
-| `STACK_INPUT` | Base64-encoded KubernetesJobStackInput |
+| `IAC_INPUT_YAML` | `KubernetesJobIacInput` as YAML content |
+| `IAC_INPUT_YAML_FILE` | Path to a YAML file holding the `KubernetesJobIacInput` |
 
-The stack input includes:
+The IaC input includes:
 - `target` - The KubernetesJob resource definition
 - `provider_config` - Kubernetes provider configuration (kubeconfig, context)
 - `kubernetes_namespace` - Resolved namespace name
@@ -54,7 +57,7 @@ This module requires the following Pulumi plugins:
 
 Install with:
 ```bash
-make install-pulumi-plugins
+pulumi plugin install resource kubernetes
 ```
 
 ## Module Structure
@@ -63,19 +66,15 @@ make install-pulumi-plugins
 pulumi/
 ├── main.go          # Entry point
 ├── Pulumi.yaml      # Project configuration
-├── Makefile         # Build and test automation
+├── BUILD.bazel      # Bazel build target
 ├── README.md        # This file
-├── overview.md      # Architecture overview
 └── module/
     ├── main.go           # Resource orchestrator
     ├── locals.go         # Local variables and configuration
-    ├── outputs.go        # Stack output exports
-    ├── vars.go           # Output variable names
+    ├── outputs.go        # Output exports
     ├── namespace.go      # Namespace creation
     ├── secret.go         # Secret management
     ├── image_pull_secret.go # Image pull secret
-    ├── configmap.go      # ConfigMap creation
-    ├── volumes.go        # Volume helper functions
     └── job.go            # Job resource creation
 ```
 
@@ -110,14 +109,14 @@ pulumi/
 
 ```bash
 # Build the module
-make build
+go build .
 
-# Run tests with hack manifest
-make test
+# Preview against the test manifest
+planton pulumi preview --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack>
 
 # Format code
-make fmt
+gofmt -w .
 
-# Run linter
-make lint
+# Vet
+go vet ./...
 ```

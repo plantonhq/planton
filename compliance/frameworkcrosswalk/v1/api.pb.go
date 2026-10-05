@@ -24,15 +24,15 @@ const (
 
 // FrameworkCrosswalk maps one external compliance framework's requirements
 // onto the central control catalog. This is the ONLY place framework
-// vocabulary (HIPAA, CIS, SOC 2, ...) appears in catalog data: components
+// vocabulary (HIPAA, CIS, SOC 2, ...) appears in catalog data: kinds
 // declare technical controls, crosswalks translate them into framework
 // terms, and a framework revision touches one crosswalk file instead of
-// hundreds of components. Follows the KRM pattern (apiVersion + kind +
+// hundreds of kinds. Follows the KRM pattern (apiVersion + kind +
 // metadata + spec). Lives at catalog/_compliance/frameworks/{framework}.yaml
 // where {framework} equals metadata.name.
 //
 // Language discipline: a crosswalk says a control MAPS TO a requirement --
-// it never says a component or deployment IS COMPLIANT. Compliance is a
+// it never says a kind or deployment IS COMPLIANT. Compliance is a
 // property of a whole program (people, process, and technology); this data
 // covers the technology half of specific requirements, and every consumer
 // surface must present it that way.
@@ -53,7 +53,7 @@ type FrameworkCrosswalk struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *FrameworkCrosswalkSpec       `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -103,7 +103,7 @@ func (x *FrameworkCrosswalk) GetKind() string {
 	return ""
 }
 
-func (x *FrameworkCrosswalk) GetMetadata() *shared.CloudResourceMetadata {
+func (x *FrameworkCrosswalk) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -126,7 +126,7 @@ const file_compliance_frameworkcrosswalk_v1_api_proto_rawDesc = "" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
 	"\x04kind\x18\x02 \x01(\tR\x04kind\x12E\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataR\bmetadata\x12X\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataR\bmetadata\x12X\n" +
 	"\x04spec\x18\x04 \x01(\v2D.dev.planton.compliance.frameworkcrosswalk.v1.FrameworkCrosswalkSpecR\x04specB\xe5\x02\n" +
 	"0com.dev.planton.compliance.frameworkcrosswalk.v1B\bApiProtoP\x01ZRgithub.com/plantonhq/planton/compliance/frameworkcrosswalk/v1;frameworkcrosswalkv1\xa2\x02\x04DPCF\xaa\x02,Dev.Planton.Compliance.Frameworkcrosswalk.V1\xca\x02,Dev\\Planton\\Compliance\\Frameworkcrosswalk\\V1\xe2\x028Dev\\Planton\\Compliance\\Frameworkcrosswalk\\V1\\GPBMetadata\xea\x020Dev::Planton::Compliance::Frameworkcrosswalk::V1b\x06proto3"
 
@@ -145,11 +145,11 @@ func file_compliance_frameworkcrosswalk_v1_api_proto_rawDescGZIP() []byte {
 var file_compliance_frameworkcrosswalk_v1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_compliance_frameworkcrosswalk_v1_api_proto_goTypes = []any{
 	(*FrameworkCrosswalk)(nil),           // 0: dev.planton.compliance.frameworkcrosswalk.v1.FrameworkCrosswalk
-	(*shared.CloudResourceMetadata)(nil), // 1: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 1: dev.planton.shared.CatalogObjectMetadata
 	(*FrameworkCrosswalkSpec)(nil),       // 2: dev.planton.compliance.frameworkcrosswalk.v1.FrameworkCrosswalkSpec
 }
 var file_compliance_frameworkcrosswalk_v1_api_proto_depIdxs = []int32{
-	1, // 0: dev.planton.compliance.frameworkcrosswalk.v1.FrameworkCrosswalk.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	1, // 0: dev.planton.compliance.frameworkcrosswalk.v1.FrameworkCrosswalk.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	2, // 1: dev.planton.compliance.frameworkcrosswalk.v1.FrameworkCrosswalk.spec:type_name -> dev.planton.compliance.frameworkcrosswalk.v1.FrameworkCrosswalkSpec
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type

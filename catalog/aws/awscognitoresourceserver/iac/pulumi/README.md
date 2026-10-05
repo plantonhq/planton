@@ -7,7 +7,7 @@ This Pulumi (Go) module provisions a Cognito resource server. It is behaviorally
 ## Module Structure
 
 ```
-main.go                    — entrypoint (loads stack input, runs module.Resources)
+main.go                    — entrypoint (loads IaC input, runs module.Resources)
 module/main.go             — orchestration: provider → resource server
 module/resource_server.go  — cognito.ResourceServer + computed scope identifiers
 module/locals.go           — naming basis (the resource is not taggable)
@@ -17,7 +17,7 @@ module/outputs.go          — output name constants
 ## Deploy
 
 ```bash
-# from iac/pulumi/ with a stack-input.yaml present
+# from iac/pulumi/ with an iac-input.yaml present
 make preview
 make up
 make destroy

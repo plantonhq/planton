@@ -33,7 +33,7 @@ type KubernetesPrometheusRule struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *KubernetesPrometheusRuleSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *KubernetesPrometheusRule) GetKind() string {
 	return ""
 }
 
-func (x *KubernetesPrometheusRule) GetMetadata() *shared.CloudResourceMetadata {
+func (x *KubernetesPrometheusRule) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -110,8 +110,8 @@ func (x *KubernetesPrometheusRule) GetStatus() *KubernetesPrometheusRuleStatus {
 // KubernetesPrometheusRuleStatus holds the deployment status and outputs.
 type KubernetesPrometheusRuleStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *KubernetesPrometheusRuleStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *KubernetesPrometheusRuleOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*KubernetesPrometheusRuleStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesPrometheusRuleStatus) GetOutputs() *KubernetesPrometheusRuleStackOutputs {
+func (x *KubernetesPrometheusRuleStatus) GetOutputs() *KubernetesPrometheusRuleOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_api_proto_rawDes
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18KubernetesPrometheusRuleR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12r\n" +
 	"\x04spec\x18\x04 \x01(\v2V.dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12p\n" +
-	"\x06status\x18\x05 \x01(\v2X.dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleStatusR\x06status\"\x9a\x01\n" +
-	"\x1eKubernetesPrometheusRuleStatus\x12x\n" +
-	"\aoutputs\x18\x01 \x01(\v2^.dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleStackOutputsR\aoutputsB\xc1\x03\n" +
+	"\x06status\x18\x05 \x01(\v2X.dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleStatusR\x06status\"\x95\x01\n" +
+	"\x1eKubernetesPrometheusRuleStatus\x12s\n" +
+	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleOutputsR\aoutputsB\xc1\x03\n" +
 	"<com.dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1B\bApiProtoP\x01Zrgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesprometheusrule/v1alpha1;kubernetesprometheusrulev1alpha1\xa2\x02\x04DPKK\xaa\x028Dev.Planton.Kubernetes.Kubernetesprometheusrule.V1alpha1\xca\x028Dev\\Planton\\Kubernetes\\Kubernetesprometheusrule\\V1alpha1\xe2\x02DDev\\Planton\\Kubernetes\\Kubernetesprometheusrule\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Kubernetes::Kubernetesprometheusrule::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_api_proto_rawDesc
 
 var file_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_api_proto_goTypes = []any{
-	(*KubernetesPrometheusRule)(nil),             // 0: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRule
-	(*KubernetesPrometheusRuleStatus)(nil),       // 1: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*KubernetesPrometheusRuleSpec)(nil),         // 3: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleSpec
-	(*KubernetesPrometheusRuleStackOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleStackOutputs
+	(*KubernetesPrometheusRule)(nil),        // 0: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRule
+	(*KubernetesPrometheusRuleStatus)(nil),  // 1: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*KubernetesPrometheusRuleSpec)(nil),    // 3: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleSpec
+	(*KubernetesPrometheusRuleOutputs)(nil), // 4: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleOutputs
 }
 var file_catalog_kubernetes_kubernetesprometheusrule_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRule.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRule.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRule.spec:type_name -> dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleSpec
 	1, // 2: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRule.status:type_name -> dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleStatus
-	4, // 3: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleStackOutputs
+	4, // 3: dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleStatus.outputs:type_name -> dev.planton.kubernetes.kubernetesprometheusrule.v1alpha1.KubernetesPrometheusRuleOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

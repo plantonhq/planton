@@ -31,7 +31,7 @@ type AwsSqsQueue struct {
 	// resource-kind for this SQS queue resource, must be "AwsSqsQueue".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, env, id, labels, relationships).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the desired configuration for the SQS queue.
 	Spec *AwsSqsQueueSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -84,7 +84,7 @@ func (x *AwsSqsQueue) GetKind() string {
 	return ""
 }
 
-func (x *AwsSqsQueue) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsSqsQueue) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,8 +108,8 @@ func (x *AwsSqsQueue) GetStatus() *AwsSqsQueueStatus {
 // AwsSqsQueueStatus captures lifecycle, audit, job linkage, and observable outputs.
 type AwsSqsQueueStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsSqsQueueStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsSqsQueueOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,7 +144,7 @@ func (*AwsSqsQueueStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssqsqueue_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsSqsQueueStatus) GetOutputs() *AwsSqsQueueStackOutputs {
+func (x *AwsSqsQueueStatus) GetOutputs() *AwsSqsQueueOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -162,11 +162,11 @@ const file_catalog_aws_awssqsqueue_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12&\n" +
 	"\x04kind\x18\x02 \x01(\tB\x12\xbaH\x0fr\r\n" +
 	"\vAwsSqsQueueR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Q\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12Q\n" +
 	"\x04spec\x18\x04 \x01(\v25.dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12O\n" +
-	"\x06status\x18\x05 \x01(\v27.dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueStatusR\x06status\"l\n" +
-	"\x11AwsSqsQueueStatus\x12W\n" +
-	"\aoutputs\x18\x01 \x01(\v2=.dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueStackOutputsR\aoutputsB\xbc\x02\n" +
+	"\x06status\x18\x05 \x01(\v27.dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueStatusR\x06status\"g\n" +
+	"\x11AwsSqsQueueStatus\x12R\n" +
+	"\aoutputs\x18\x01 \x01(\v28.dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueOutputsR\aoutputsB\xbc\x02\n" +
 	"(com.dev.planton.aws.awssqsqueue.v1alpha1B\bApiProtoP\x01ZQgithub.com/plantonhq/planton/catalog/aws/awssqsqueue/v1alpha1;awssqsqueuev1alpha1\xa2\x02\x04DPAA\xaa\x02$Dev.Planton.Aws.Awssqsqueue.V1alpha1\xca\x02$Dev\\Planton\\Aws\\Awssqsqueue\\V1alpha1\xe2\x020Dev\\Planton\\Aws\\Awssqsqueue\\V1alpha1\\GPBMetadata\xea\x02(Dev::Planton::Aws::Awssqsqueue::V1alpha1b\x06proto3"
 
 var (
@@ -185,15 +185,15 @@ var file_catalog_aws_awssqsqueue_v1alpha1_api_proto_msgTypes = make([]protoimpl.
 var file_catalog_aws_awssqsqueue_v1alpha1_api_proto_goTypes = []any{
 	(*AwsSqsQueue)(nil),                  // 0: dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueue
 	(*AwsSqsQueueStatus)(nil),            // 1: dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsSqsQueueSpec)(nil),              // 3: dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueSpec
-	(*AwsSqsQueueStackOutputs)(nil),      // 4: dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueStackOutputs
+	(*AwsSqsQueueOutputs)(nil),           // 4: dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueOutputs
 }
 var file_catalog_aws_awssqsqueue_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueue.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueue.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueue.spec:type_name -> dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueSpec
 	1, // 2: dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueue.status:type_name -> dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueStatus
-	4, // 3: dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueStatus.outputs:type_name -> dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueStackOutputs
+	4, // 3: dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueStatus.outputs:type_name -> dev.planton.aws.awssqsqueue.v1alpha1.AwsSqsQueueOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -43,7 +43,7 @@ Destroying this resource deletes ALL snippet rules in the zone -- including any 
 | `description` | string | Shown in the dashboard. |
 | `enabled` | bool | Defaults to **true** in this spec. Cloudflare's provider default is false -- omit it here and the rule still runs. Set `false` explicitly to stage a rule. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -30,7 +30,7 @@ func minimalRule() *AzureServiceBusAuthorizationRule {
 	return &AzureServiceBusAuthorizationRule{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureServiceBusAuthorizationRule",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-auth-rule",
 		},
 		Spec: &AzureServiceBusAuthorizationRuleSpec{
@@ -69,7 +69,7 @@ var _ = ginkgo.Describe("AzureServiceBusAuthorizationRuleSpec Validation Tests",
 				input.Spec.TopicId = &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AzureServiceBusTopic,
+							Kind:      catalogkind.CatalogKind_AzureServiceBusTopic,
 							Name:      "events-topic",
 							FieldPath: "status.outputs.topic_id",
 						},

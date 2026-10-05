@@ -14,7 +14,7 @@ Generated `variables.tf` mirrors the `DigitalOceanDropletAutoscalePoolSpec` prot
 
 ## Outputs
 
-Exactly the `DigitalOceanDropletAutoscalePoolStackOutputs` contract: `pool_id`. The pool's health is deliberately not exported (an apply-time status goes stale; live health is read from the API).
+Exactly the `DigitalOceanDropletAutoscalePoolOutputs` contract: `pool_id`. The pool's health is deliberately not exported (an apply-time status goes stale; live health is read from the API).
 
 ## Behavior notes
 

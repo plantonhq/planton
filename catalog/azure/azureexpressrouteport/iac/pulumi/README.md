@@ -11,7 +11,7 @@ build circuits on this port's capacity.
 
 The Azure provider is built through the shared provider builder, which
 resolves the right credential mechanism (static client secret, keyless
-web identity, or ambient chain) from the stack input.
+web identity, or ambient chain) from the IaC input.
 
 ## Design Decisions
 
@@ -32,7 +32,7 @@ web identity, or ambient chain) from the stack input.
 
 ## Inputs
 
-The module receives an `AzureExpressRoutePortStackInput` containing:
+The module receives an `AzureExpressRoutePortIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the port's ARM identity (references resolved to literals by the platform)
 - `target.spec.peering_location` + `bandwidth_in_gbps` + `encapsulation` -- the physical facts (all ForceNew)

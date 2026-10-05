@@ -141,7 +141,7 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	}
 
 	loki := map[string]interface{}{
-		// ALWAYS rendered: the component's single-tenant default
+		// ALWAYS rendered: the kind's single-tenant default
 		// deliberately diverges from the chart's multi-tenant-on default
 		// (auth_enabled: true), so relying on the chart default would
 		// invert the spec's contract.

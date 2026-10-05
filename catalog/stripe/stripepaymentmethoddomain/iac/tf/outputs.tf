@@ -1,5 +1,5 @@
 # StripePaymentMethodDomain Outputs
-# Maps to the StripePaymentMethodDomainStackOutputs protobuf message: the registration's id and,
+# Maps to the StripePaymentMethodDomainOutputs protobuf message: the registration's id and,
 # wallet by wallet, its status and Stripe's reason when it is inactive.
 
 output "id" {

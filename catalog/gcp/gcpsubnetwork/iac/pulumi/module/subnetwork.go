@@ -203,7 +203,7 @@ func subnetwork(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 	// resolved array — never inside an ApplyT callback. Apply callbacks run
 	// on output-resolution goroutines, and a ctx.Export there writes the
 	// SDK's shared exports map while the engine's end-of-program
-	// stack-output marshaling reads it: a data race that crashes the whole
+	// output marshaling reads it: a data race that crashes the whole
 	// program with `fatal error: concurrent map read and map write`,
 	// timing-dependent and therefore flaky. The index space is known up
 	// front from the spec (the same filtered list sent to the API), so

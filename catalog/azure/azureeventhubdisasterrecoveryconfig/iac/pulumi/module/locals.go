@@ -23,11 +23,11 @@ type Locals struct {
 var primaryNamespaceIdPattern = regexp.MustCompile(
 	`/resourceGroups/(?P<rg>[^/]+)/providers/Microsoft.EventHub/namespaces/(?P<ns>[^/]+)$`)
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureeventhubdisasterrecoveryconfigv1alpha1.AzureEventHubDisasterRecoveryConfigStackInput) (*Locals, error) {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureeventhubdisasterrecoveryconfigv1alpha1.AzureEventHubDisasterRecoveryConfigIacInput) (*Locals, error) {
 	locals := &Locals{}
 
-	locals.AzureEventHubDisasterRecoveryConfig = stackInput.Target
-	spec := stackInput.Target.Spec
+	locals.AzureEventHubDisasterRecoveryConfig = iacInput.Target
+	spec := iacInput.Target.Spec
 
 	locals.PrimaryNamespaceId = spec.PrimaryNamespaceId.GetValue()
 	locals.PartnerNamespaceId = spec.PartnerNamespaceId.GetValue()

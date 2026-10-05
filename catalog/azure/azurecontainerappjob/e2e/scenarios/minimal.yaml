@@ -15,7 +15,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurecontainerappjob
+    e2e-catalog-kind: azurecontainerappjob
   annotations:
     planton.dev/e2e: "true"
   tags:

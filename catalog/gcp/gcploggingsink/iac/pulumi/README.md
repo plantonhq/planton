@@ -25,7 +25,7 @@ iac/pulumi/
     ├── main.go                # Module coordinator
     ├── logging_sink.go        # Scope dispatch + per-scope sink creation
     ├── locals.go              # Resolved resource + destination URI rendering
-    └── outputs.go             # Stack output constants
+    └── outputs.go             # Output constants
 ```
 
 ## Quick Start
@@ -35,7 +35,7 @@ cd iac/pulumi
 pulumi stack init dev
 ```
 
-Provide a `stack-input.yaml`:
+Provide a `iac-input.yaml`:
 
 ```yaml
 target:
@@ -57,7 +57,7 @@ pulumi up
 
 ## Inputs
 
-The module consumes `GcpLoggingSinkStackInput`:
+The module consumes `GcpLoggingSinkIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|

@@ -4,7 +4,7 @@ Creates a Cloud Workflows workflow — a serverless orchestrator that executes a
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Workflows API enablement** -- the module enables `workflows.googleapis.com` on the target project (never disabled on destroy), so a fresh project works without manual API setup
 - **Workflow** -- a Cloud Workflows workflow with the configured source, service account, CMEK, call-log and execution-history levels, environment variables, and deletion guards
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** to host the workflow. Provide the project ID directly, reference a GcpProject Cloud Resource via ValueFromRef, or omit `projectId` to use the provider connection's default project. The module enables the Workflows API itself.
+- **A GCP project** to host the workflow. Provide the project ID directly, reference a GcpProject Infra Component via ValueFromRef, or omit `projectId` to use the provider connection's default project. The module enables the Workflows API itself.
 - **IAM** -- the deploying identity needs `roles/workflows.editor` or broader, plus `iam.serviceAccounts.actAs` on the workflow's service account when one is set.
 - **CMEK grant** (only for `cryptoKey`) -- grant the Workflows service agent `roles/cloudkms.cryptoKeyEncrypterDecrypter` on the key BEFORE deploying, or the deploy fails.
 
@@ -63,7 +63,7 @@ spec:
 planton apply -f workflow.yaml
 ```
 
-This deploys a two-step HTTP orchestration in `us-central1` running as a dedicated service account, with deletion protection on by default. A Stack Job tracks the provisioning in real time.
+This deploys a two-step HTTP orchestration in `us-central1` running as a dedicated service account, with deletion protection on by default. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -103,7 +103,7 @@ These are the most important decisions when configuring a workflow. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -111,9 +111,9 @@ These are the most important decisions when configuring a workflow. Explore the 
 | **GcpServiceAccount** (optional) | `serviceAccount` | `status.outputs.email` |
 | **GcpKmsKey** (optional) | `cryptoKey` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,8 +132,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Eventarc Trigger**](/cloud-catalog/gcp-eventarc-trigger) -- starts an execution per matching event
-- [**GCP Eventarc Message Bus**](/cloud-catalog/gcp-eventarc-message-bus) -- pipelines deliver messages into executions
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the identity the steps run as
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- CMEK for workflow and execution data
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the workflow is created
+- [**GCP Eventarc Trigger**](/infra-catalog/gcp-eventarc-trigger) -- starts an execution per matching event
+- [**GCP Eventarc Message Bus**](/infra-catalog/gcp-eventarc-message-bus) -- pipelines deliver messages into executions
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the identity the steps run as
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- CMEK for workflow and execution data
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the workflow is created

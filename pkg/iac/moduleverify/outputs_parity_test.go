@@ -3,7 +3,7 @@
 
 package moduleverify
 
-// A kind's stack-outputs schema is the contract every deployment of it keeps: the platform reads
+// A kind's outputs schema is the contract every deployment of it keeps: the platform reads
 // those fields to find, judge and wire what was deployed (a Cloud Run service's project and
 // region, an ECS service's cluster). A module that never emits a field leaves it empty on every
 // resource it deploys, and whatever reads it fails far from the cause -- a Cloud Run service that
@@ -17,7 +17,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 )
 
@@ -31,12 +31,12 @@ var outputsPending = map[string]string{
 	"KubernetesJenkins/tf":    "the module declares none of the kind's service coordinates yet",
 }
 
-// unpopulatedOutputWarnings are the verifier's findings that a stack-outputs field is never emitted.
+// unpopulatedOutputWarnings are the verifier's findings that an outputs field is never emitted.
 func unpopulatedOutputWarnings(result *Result) []string {
 	var found []string
 	for _, v := range result.Violations {
-		if strings.Contains(v.Summary, "stack-outputs fields, so they stay empty") ||
-			strings.Contains(v.Summary, "stack-outputs field will stay empty") {
+		if strings.Contains(v.Summary, "outputs fields, so they stay empty") ||
+			strings.Contains(v.Summary, "outputs field will stay empty") {
 			found = append(found, v.Summary)
 		}
 	}
@@ -46,9 +46,9 @@ func unpopulatedOutputWarnings(result *Result) []string {
 func TestVerify_Outputs_EveryOfficialModulePopulatesItsKindsContract(t *testing.T) {
 	root := repoRoot(t)
 	modules := 0
-	for _, kind := range crkreflect.KindsList() {
-		kindName := crkreflect.ExtractKindNameByKind(kind)
-		iacDir := filepath.Join(root, "catalog", crkreflect.ProviderDirName(crkreflect.GetProvider(kind)),
+	for _, kind := range catalogkindreflect.KindsList() {
+		kindName := catalogkindreflect.ExtractKindNameByKind(kind)
+		iacDir := filepath.Join(root, "catalog", catalogkindreflect.ProviderDirName(catalogkindreflect.GetProvider(kind)),
 			strings.ToLower(kind.String()), "iac")
 		for _, engine := range []struct {
 			dir         string

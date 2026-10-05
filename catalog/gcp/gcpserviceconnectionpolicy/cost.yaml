@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpserviceconnectionpolicy
 spec:
   billing_model: free
   free_tier: A service connection policy carries no meter -- it is the per-network authorization that PERMITS Google's service connectivity automation to create Private Service Connect endpoints, and GCP's Private Service Connect pricing bills endpoints and data, never the policy. Google's pricing for service-connectivity deployments is explicit that the consumer pays for the resources deployed through the automation, not for the authorization objects.
-  notes: "No field of this spec bills directly, but the policy is the gate in front of two real meters. Every PSC endpoint the automation creates under it is a forwarding rule billed to the consumer project at $0.01 per hour, and traffic through those endpoints bills consumer data processing at $0.01 per GiB (stepping to $0.006 past 1 PiB and $0.004 past 5 PiB per month). psc_config.limit is therefore a spend guardrail as much as a connection guardrail -- it caps how many billed endpoints can exist under the policy before an operator deliberately raises it. The dominant spend is the managed-service instances the policy enables (Memorystore for Valkey, Redis Cluster, and other PSC-first producers), each billing as its own catalog kind; the endpoints and data processing are the connectivity surcharge on top."
+  notes: "No field of this spec bills directly, but the policy is the gate in front of two real meters. Every PSC endpoint the automation creates under it is a forwarding rule billed to the consumer project at $0.01 per hour, and traffic through those endpoints bills consumer data processing at $0.01 per GiB (stepping to $0.006 past 1 PiB and $0.004 past 5 PiB per month). psc_config.limit is therefore a spend guardrail as much as a connection guardrail -- it caps how many billed endpoints can exist under the policy before an operator deliberately raises it. The dominant spend is the managed-service instances the policy enables (Memorystore for Valkey, Redis Cluster, and other PSC-first producers), each billing as its own component; the endpoints and data processing are the connectivity surcharge on top."

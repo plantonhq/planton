@@ -4,7 +4,7 @@ Defines a single Cloudflare Email Routing rule for a zone: match inbound mail --
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Routing Rule** -- a matcher set plus an ordered action list, evaluated at the configured priority against the zone's inbound mail
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Email Routing edit access (and Workers Scripts access when routing to an Email Worker). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Email Routing edit access (and Workers Scripts access when routing to an Email Worker). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -58,7 +58,7 @@ spec:
 planton apply -f cloudflare-email-routing-rule.yaml
 ```
 
-This forwards mail addressed to `support@example.com` to `ops@example.com`. A Stack Job tracks the provisioning in real time.
+This forwards mail addressed to `support@example.com` to `ops@example.com`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,7 +100,7 @@ These are the most important decisions when configuring a routing rule. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -108,9 +108,9 @@ These are the most important decisions when configuring a routing rule. Explore 
 | **CloudflareEmailRoutingAddress** (per forward action) | `actions[].forwardTo[]` | `status.outputs.email` |
 | **CloudflareWorker** (worker actions) | `actions[].worker` | `status.outputs.script_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -127,7 +127,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Cloudflare Email Routing Zone**](/cloud-catalog/cloudflare-email-routing-zone) -- enables Email Routing on the zone this rule belongs to
-- [**Cloudflare Email Routing Address**](/cloud-catalog/cloudflare-email-routing-address) -- the verified mailboxes a forwarding rule delivers to
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) -- the Email Worker a worker rule hands matched mail to
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- the zone whose inbound mail is filtered; `zoneId` references its output
+- [**Cloudflare Email Routing Zone**](/infra-catalog/cloudflare-email-routing-zone) -- enables Email Routing on the zone this rule belongs to
+- [**Cloudflare Email Routing Address**](/infra-catalog/cloudflare-email-routing-address) -- the verified mailboxes a forwarding rule delivers to
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) -- the Email Worker a worker rule hands matched mail to
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- the zone whose inbound mail is filtered; `zoneId` references its output

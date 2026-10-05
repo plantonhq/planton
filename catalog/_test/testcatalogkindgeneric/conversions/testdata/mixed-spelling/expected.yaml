@@ -1,0 +1,13 @@
+# The mixed-spelling document at v1alpha2, canonical.
+apiVersion: _test.planton.dev/v1alpha2
+kind: TestCatalogKindGeneric
+metadata:
+  name: torture-mixed
+spec:
+  displayName: renamed-on-upgrade
+  requiredRef:
+    value: literal-required-value
+  steps:
+    - command: first
+    - command: second
+  replicas: 1

@@ -9,7 +9,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -22,7 +22,7 @@ func promotionCode(spec *StripePromotionCodeSpec) *StripePromotionCode {
 	return &StripePromotionCode{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripePromotionCode",
-		Metadata:   &shared.CloudResourceMetadata{Name: "launch25"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "launch25"},
 		Spec:       spec,
 	}
 }
@@ -32,7 +32,7 @@ func boolPtr(v bool) *bool    { return &v }
 
 func couponRef() *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
-		ValueFrom: &foreignkeyv1.ValueFromRef{Kind: cloudresourcekind.CloudResourceKind_StripeCoupon, Name: "launch-25"},
+		ValueFrom: &foreignkeyv1.ValueFromRef{Kind: catalogkind.CatalogKind_StripeCoupon, Name: "launch-25"},
 	}}
 }
 

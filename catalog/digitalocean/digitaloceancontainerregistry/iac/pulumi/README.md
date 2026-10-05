@@ -1,13 +1,13 @@
 # DigitalOcean Container Registry -- Pulumi Module
 
-Deploys a `digitalocean:index/containerRegistry:ContainerRegistry` from a `DigitalOceanContainerRegistry` stack input, plus a `digitalocean:index/containerRegistryDockerCredentials:ContainerRegistryDockerCredentials` when (and only when) the spec's `docker_credentials` block is set. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete provider argument surface for both resources -- no PARITY-EXCEPTION guards. (The SDK does NOT flag the credential token as secret, so the module wraps the export in `pulumi.ToSecret`.)
+Deploys a `digitalocean:index/containerRegistry:ContainerRegistry` from a `DigitalOceanContainerRegistry` IaC input, plus a `digitalocean:index/containerRegistryDockerCredentials:ContainerRegistryDockerCredentials` when (and only when) the spec's `docker_credentials` block is set. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete provider argument surface for both resources -- no PARITY-EXCEPTION guards. (The SDK does NOT flag the credential token as secret, so the module wraps the export in `pulumi.ToSecret`.)
 
 ## Module structure
 
-- `main.go` -- Pulumi program entry point reading the stack input
+- `main.go` -- Pulumi program entry point reading the IaC input
 - `module/main.go` -- `Resources()`: locals, provider, registry
-- `module/locals.go` -- stack-input references and the standard Planton label map
-- `module/registry.go` -- the registry resource, the conditional credentials resource, and stack-output exports
+- `module/locals.go` -- iac-input references and the standard Planton label map
+- `module/registry.go` -- the registry resource, the conditional credentials resource, and output exports
 - `module/outputs.go` -- output key constants (the kind's outputs.proto contract)
 
 ## Behavior notes
@@ -18,4 +18,4 @@ Deploys a `digitalocean:index/containerRegistry:ContainerRegistry` from a `Digit
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Terraform module: `registry_name`, `server_url`, `endpoint`, `region`, `docker_credentials` (secret), `credential_expiration_time`.
+Exactly the kind's output contract, identical to the Terraform module: `registry_name`, `server_url`, `endpoint`, `region`, `docker_credentials` (secret), `credential_expiration_time`.

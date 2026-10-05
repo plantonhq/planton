@@ -150,7 +150,7 @@ kubectl port-forward svc/<env>-ray-head-svc -n ml-platform 8265:8265
   GitHub/Google/OIDC on the deployed hub (a Keycloak composes
   naturally); admin users and allow-lists ride the same block.
 - **Scaling MLflow** past one replica is a values change — both external
-  seams (PostgreSQL + S3) are already in place, and the component
+  seams (PostgreSQL + S3) are already in place, and the kind
   enforces exactly that pairing.
 - **Backups:** enable the CNPG operator's Barman Cloud plugin and
   declare a `backup` block on the database once cert-manager runs on the

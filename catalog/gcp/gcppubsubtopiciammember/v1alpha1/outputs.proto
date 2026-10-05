@@ -6,7 +6,7 @@ package dev.planton.gcp.gcppubsubtopiciammember.v1alpha1;
 // has no server-generated identity beyond its inputs; the outputs echo the
 // resolved grant so audits see exactly what was applied without re-resolving
 // references.
-message GcpPubSubTopicIamMemberStackOutputs {
+message GcpPubSubTopicIamMemberOutputs {
   // The topic whose IAM policy received the grant, as configured
   // (projects/<project>/topics/<topic>), after reference resolution.
   string topic = 1;

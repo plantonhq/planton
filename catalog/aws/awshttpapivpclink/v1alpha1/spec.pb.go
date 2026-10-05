@@ -44,7 +44,7 @@ const (
 //     allow egress to the target ALB/NLB listener ports.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 type AwsHttpApiVpcLinkSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The AWS region where the VPC link will be created.

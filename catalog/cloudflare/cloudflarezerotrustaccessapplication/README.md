@@ -10,7 +10,7 @@ configures how users reach and authenticate to it.
 ## Composable by design
 
 In Cloudflare's v5 model, an application references reusable policies; each policy
-references reusable groups. This component mirrors that: `policies[]` are foreign-key
+references reusable groups. This kind mirrors that: `policies[]` are foreign-key
 references to `CloudflareZeroTrustAccessPolicy` resources, so the same policy can
 guard many applications and authorization logic lives in one place.
 
@@ -80,7 +80,7 @@ spec:
 | `saas_client_id` / `saas_client_secret` | OIDC client credentials (SaaS) |
 | `saas_public_key` / `saas_sso_endpoint` / `saas_idp_entity_id` | SAML SSO material |
 
-## Related components
+## Related kinds
 
 - `CloudflareZeroTrustAccessPolicy` — the decisions attached here.
 - `CloudflareZeroTrustAccessGroup` — reusable rule bundles referenced by policies.

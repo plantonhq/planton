@@ -16,7 +16,7 @@ exceptions, page views, and custom telemetry. It is the standard APM layer in
 Azure, consumed by Function Apps, Web Apps, Container Apps, and any
 application instrumented with the Application Insights SDK or OpenTelemetry.
 
-This component models workspace-based Application Insights only: telemetry is
+This kind models workspace-based Application Insights only: telemetry is
 stored in a Log Analytics Workspace the component references. Classic
 (non-workspace) Application Insights was retired by Azure in February 2024,
 so the workspace binding is required here even though the underlying API

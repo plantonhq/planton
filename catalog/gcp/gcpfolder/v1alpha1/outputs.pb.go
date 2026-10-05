@@ -21,8 +21,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpFolderStackOutputs captures the folder's identity after provisioning.
-type GcpFolderStackOutputs struct {
+// GcpFolderOutputs captures the folder's identity after provisioning.
+type GcpFolderOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The folder's numeric ID -- the value every child needs: a nested
 	// GcpFolder's parent.folder_id, a GcpProject's folder_id, a
@@ -40,20 +40,20 @@ type GcpFolderStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpFolderStackOutputs) Reset() {
-	*x = GcpFolderStackOutputs{}
+func (x *GcpFolderOutputs) Reset() {
+	*x = GcpFolderOutputs{}
 	mi := &file_catalog_gcp_gcpfolder_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpFolderStackOutputs) String() string {
+func (x *GcpFolderOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpFolderStackOutputs) ProtoMessage() {}
+func (*GcpFolderOutputs) ProtoMessage() {}
 
-func (x *GcpFolderStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpFolderOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpfolder_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,33 +65,33 @@ func (x *GcpFolderStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpFolderStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpFolderStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpFolderOutputs.ProtoReflect.Descriptor instead.
+func (*GcpFolderOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfolder_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpFolderStackOutputs) GetFolderId() string {
+func (x *GcpFolderOutputs) GetFolderId() string {
 	if x != nil {
 		return x.FolderId
 	}
 	return ""
 }
 
-func (x *GcpFolderStackOutputs) GetName() string {
+func (x *GcpFolderOutputs) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GcpFolderStackOutputs) GetLifecycleState() string {
+func (x *GcpFolderOutputs) GetLifecycleState() string {
 	if x != nil {
 		return x.LifecycleState
 	}
 	return ""
 }
 
-func (x *GcpFolderStackOutputs) GetCreateTime() string {
+func (x *GcpFolderOutputs) GetCreateTime() string {
 	if x != nil {
 		return x.CreateTime
 	}
@@ -102,8 +102,8 @@ var File_catalog_gcp_gcpfolder_v1alpha1_outputs_proto protoreflect.FileDescripto
 
 const file_catalog_gcp_gcpfolder_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	",catalog/gcp/gcpfolder/v1alpha1/outputs.proto\x12\"dev.planton.gcp.gcpfolder.v1alpha1\"\x92\x01\n" +
-	"\x15GcpFolderStackOutputs\x12\x1b\n" +
+	",catalog/gcp/gcpfolder/v1alpha1/outputs.proto\x12\"dev.planton.gcp.gcpfolder.v1alpha1\"\x8d\x01\n" +
+	"\x10GcpFolderOutputs\x12\x1b\n" +
 	"\tfolder_id\x18\x01 \x01(\tR\bfolderId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12'\n" +
 	"\x0flifecycle_state\x18\x03 \x01(\tR\x0elifecycleState\x12\x1f\n" +
@@ -125,7 +125,7 @@ func file_catalog_gcp_gcpfolder_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpfolder_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpfolder_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpFolderStackOutputs)(nil), // 0: dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderStackOutputs
+	(*GcpFolderOutputs)(nil), // 0: dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderOutputs
 }
 var file_catalog_gcp_gcpfolder_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

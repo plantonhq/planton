@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// StripeTaxRegistrationStackInput is the input to the StripeTaxRegistration IaC module.
+// StripeTaxRegistrationIacInput is the input to the StripeTaxRegistration IaC module.
 // It contains the target resource and the Stripe provider configuration.
-type StripeTaxRegistrationStackInput struct {
+type StripeTaxRegistrationIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the StripeTaxRegistration resource to be deployed.
 	Target *StripeTaxRegistration `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type StripeTaxRegistrationStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *StripeTaxRegistrationStackInput) Reset() {
-	*x = StripeTaxRegistrationStackInput{}
+func (x *StripeTaxRegistrationIacInput) Reset() {
+	*x = StripeTaxRegistrationIacInput{}
 	mi := &file_catalog_stripe_stripetaxregistration_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StripeTaxRegistrationStackInput) String() string {
+func (x *StripeTaxRegistrationIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StripeTaxRegistrationStackInput) ProtoMessage() {}
+func (*StripeTaxRegistrationIacInput) ProtoMessage() {}
 
-func (x *StripeTaxRegistrationStackInput) ProtoReflect() protoreflect.Message {
+func (x *StripeTaxRegistrationIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_stripe_stripetaxregistration_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *StripeTaxRegistrationStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StripeTaxRegistrationStackInput.ProtoReflect.Descriptor instead.
-func (*StripeTaxRegistrationStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use StripeTaxRegistrationIacInput.ProtoReflect.Descriptor instead.
+func (*StripeTaxRegistrationIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_stripe_stripetaxregistration_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *StripeTaxRegistrationStackInput) GetTarget() *StripeTaxRegistration {
+func (x *StripeTaxRegistrationIacInput) GetTarget() *StripeTaxRegistration {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *StripeTaxRegistrationStackInput) GetProviderConfig() *stripe.StripeProviderConfig {
+func (x *StripeTaxRegistrationIacInput) GetProviderConfig() *stripe.StripeProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_stripe_stripetaxregistration_v1alpha1_input_proto protoreflect.
 
 const file_catalog_stripe_stripetaxregistration_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/stripe/stripetaxregistration/v1alpha1/input.proto\x121dev.planton.stripe.stripetaxregistration.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a7catalog/stripe/stripetaxregistration/v1alpha1/api.proto\"\xd6\x01\n" +
-	"\x1fStripeTaxRegistrationStackInput\x12`\n" +
+	"9catalog/stripe/stripetaxregistration/v1alpha1/input.proto\x121dev.planton.stripe.stripetaxregistration.v1alpha1\x1a\x1dcatalog/stripe/provider.proto\x1a7catalog/stripe/stripetaxregistration/v1alpha1/api.proto\"\xd4\x01\n" +
+	"\x1dStripeTaxRegistrationIacInput\x12`\n" +
 	"\x06target\x18\x01 \x01(\v2H.dev.planton.stripe.stripetaxregistration.v1alpha1.StripeTaxRegistrationR\x06target\x12Q\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2(.dev.planton.stripe.StripeProviderConfigR\x0eproviderConfigB\x96\x03\n" +
 	"5com.dev.planton.stripe.stripetaxregistration.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_stripe_stripetaxregistration_v1alpha1_input_proto_rawDescGZIP(
 
 var file_catalog_stripe_stripetaxregistration_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_stripe_stripetaxregistration_v1alpha1_input_proto_goTypes = []any{
-	(*StripeTaxRegistrationStackInput)(nil), // 0: dev.planton.stripe.stripetaxregistration.v1alpha1.StripeTaxRegistrationStackInput
-	(*StripeTaxRegistration)(nil),           // 1: dev.planton.stripe.stripetaxregistration.v1alpha1.StripeTaxRegistration
-	(*stripe.StripeProviderConfig)(nil),     // 2: dev.planton.stripe.StripeProviderConfig
+	(*StripeTaxRegistrationIacInput)(nil), // 0: dev.planton.stripe.stripetaxregistration.v1alpha1.StripeTaxRegistrationIacInput
+	(*StripeTaxRegistration)(nil),         // 1: dev.planton.stripe.stripetaxregistration.v1alpha1.StripeTaxRegistration
+	(*stripe.StripeProviderConfig)(nil),   // 2: dev.planton.stripe.StripeProviderConfig
 }
 var file_catalog_stripe_stripetaxregistration_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.stripe.stripetaxregistration.v1alpha1.StripeTaxRegistrationStackInput.target:type_name -> dev.planton.stripe.stripetaxregistration.v1alpha1.StripeTaxRegistration
-	2, // 1: dev.planton.stripe.stripetaxregistration.v1alpha1.StripeTaxRegistrationStackInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
+	1, // 0: dev.planton.stripe.stripetaxregistration.v1alpha1.StripeTaxRegistrationIacInput.target:type_name -> dev.planton.stripe.stripetaxregistration.v1alpha1.StripeTaxRegistration
+	2, // 1: dev.planton.stripe.stripetaxregistration.v1alpha1.StripeTaxRegistrationIacInput.provider_config:type_name -> dev.planton.stripe.StripeProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

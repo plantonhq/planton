@@ -4,7 +4,7 @@ Deploys a containerized service on Google Cloud Run v2: one or more containers p
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloud Run v2 Service** -- a managed container service in the specified GCP project and region, configured with the provided containers (images, env vars, probes, resources), scaling bounds, concurrency, and timeout
 - **Ingress Configuration** -- controls whether the service accepts traffic from all sources, internal sources only, or internal sources plus Cloud Load Balancing
@@ -20,12 +20,12 @@ Custom domains are deliberately not part of this resource -- the production-grad
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the Cloud Run service will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the Cloud Run service will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **Artifact Registry or container registry** with the container image pushed and accessible to the Cloud Run service agent.
 - **Cloud Run Admin API** enabled in the target project.
 - **VPC network and subnetwork** (if using Direct VPC Egress) -- the subnetwork must be in the service's region with free address space for the instance fleet.
@@ -70,7 +70,7 @@ spec:
 planton apply -f cloud-run.yaml
 ```
 
-This creates a publicly accessible Cloud Run service with scale-to-zero, 1 vCPU, 512Mi memory, and the Gen 2 execution environment; VPC access, volumes, and traffic splitting are not configured. A Stack Job tracks the provisioning in real time.
+This creates a publicly accessible Cloud Run service with scale-to-zero, 1 vCPU, 512Mi memory, and the Gen 2 execution environment; VPC access, volumes, and traffic splitting are not configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -131,7 +131,7 @@ These are the most important decisions when configuring a Cloud Run service. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -144,9 +144,9 @@ These are the most important decisions when configuring a Cloud Run service. Exp
 | **GcpVpcNetwork** (optional) | `vpcAccess.networkInterfaces[].network` | `status.outputs.network_name` |
 | **GcpSubnetwork** (optional) | `vpcAccess.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -169,11 +169,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the Cloud Run service is created
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- provides the least-privilege runtime identity
-- [**GCP Cloud SQL**](/cloud-catalog/gcp-cloud-sql) -- exposes databases as managed Unix sockets via the Cloud SQL volume
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- mounts object storage via Cloud Storage FUSE
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- provides the VPC for Direct VPC Egress connectivity
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- provides the subnetwork instances draw IPs from
-- [**GCP Region Network Endpoint Group**](/cloud-catalog/gcp-region-network-endpoint-group) -- bridges the service into the HTTPS load-balancer chain for custom domains
-- [**GCP Cloud Run Job**](/cloud-catalog/gcp-cloud-run-job) -- the run-to-completion sibling for batch and scheduled work
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the Cloud Run service is created
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- provides the least-privilege runtime identity
+- [**GCP Cloud SQL**](/infra-catalog/gcp-cloud-sql) -- exposes databases as managed Unix sockets via the Cloud SQL volume
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- mounts object storage via Cloud Storage FUSE
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC for Direct VPC Egress connectivity
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- provides the subnetwork instances draw IPs from
+- [**GCP Region Network Endpoint Group**](/infra-catalog/gcp-region-network-endpoint-group) -- bridges the service into the HTTPS load-balancer chain for custom domains
+- [**GCP Cloud Run Job**](/infra-catalog/gcp-cloud-run-job) -- the run-to-completion sibling for batch and scheduled work

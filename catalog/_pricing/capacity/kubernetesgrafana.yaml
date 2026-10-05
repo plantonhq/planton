@@ -2,9 +2,9 @@
 # KubernetesGrafana manifest's spec values into the cluster capacity the
 # deployment reserves. Field paths are spec-relative proto field names,
 # held to the served contract by the conformance gate.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesgrafana
 spec:

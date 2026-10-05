@@ -4,7 +4,7 @@ Deploys a Network Load Balancer — the Layer-4 entry point for TCP, UDP, and TL
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Network Load Balancer** -- one node per subnet mapping, optionally pinned to an Elastic IP (internet-facing) or a specific private IPv4 address (internal), with the configured cross-zone, DNS routing, zonal-shift, and PrivateLink-enforcement attributes
 - **S3 access-log configuration** -- set on the load balancer when the access-logs bucket is configured; captures TLS-listener traffic only (an AWS limitation)
@@ -17,7 +17,7 @@ Listeners and target groups are **not** created here — attach AwsLbListener re
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Subnets** -- one AwsSubnet per zone the NLB serves, referenced by their `subnet_id` outputs (public subnets for internet-facing, private for internal).
 - **Elastic IPs** -- optional AwsElasticIp resources referenced by their `allocation_id` outputs, for static public addresses (internet-facing only).
 - **Security Groups / S3 Bucket / Route53 Zone** -- optional AwsSecurityGroup, AwsS3Bucket, and AwsRoute53Zone resources for filtering, access logs, and alias DNS.
@@ -75,7 +75,7 @@ spec:
 planton apply -f nlb.yaml
 ```
 
-This creates an internet-facing NLB with a static public IP in each of two zones. A Stack Job tracks the provisioning in real time.
+This creates an internet-facing NLB with a static public IP in each of two zones. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -119,7 +119,7 @@ These are the most important decisions when configuring an NLB. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -129,9 +129,9 @@ These are the most important decisions when configuring an NLB. Explore the full
 | **AwsS3Bucket** | `accessLogs.bucket` | `status.outputs.bucket_id` |
 | **AwsRoute53Zone** | `dns.route53ZoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -152,10 +152,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS LB Listener**](/cloud-catalog/aws-lb-listener) -- attaches to this NLB's `load_balancer_arn` output and owns ports, protocols (TCP/UDP/TCP_UDP/TLS), and TLS certificates.
-- [**AWS LB Target Group**](/cloud-catalog/aws-lb-target-group) -- receives the connections the listeners forward.
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- the zone placement, referenced per subnet mapping.
-- [**AWS Elastic IP**](/cloud-catalog/aws-elastic-ip) -- static public addresses, referenced per internet-facing mapping.
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- optional inbound filtering, referenced by `securityGroups`.
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- the access-log destination, referenced by `accessLogs.bucket`.
-- [**AWS Route 53 Zone**](/cloud-catalog/aws-route53-zone) -- the hosted zone for alias records, referenced by `dns.route53ZoneId`.
+- [**AWS LB Listener**](/infra-catalog/aws-lb-listener) -- attaches to this NLB's `load_balancer_arn` output and owns ports, protocols (TCP/UDP/TCP_UDP/TLS), and TLS certificates.
+- [**AWS LB Target Group**](/infra-catalog/aws-lb-target-group) -- receives the connections the listeners forward.
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- the zone placement, referenced per subnet mapping.
+- [**AWS Elastic IP**](/infra-catalog/aws-elastic-ip) -- static public addresses, referenced per internet-facing mapping.
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- optional inbound filtering, referenced by `securityGroups`.
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- the access-log destination, referenced by `accessLogs.bucket`.
+- [**AWS Route 53 Zone**](/infra-catalog/aws-route53-zone) -- the hosted zone for alias records, referenced by `dns.route53ZoneId`.

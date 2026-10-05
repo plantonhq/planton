@@ -5,10 +5,10 @@ package dev.planton.aws.awssesemailidentity.v1alpha1;
 import "catalog/aws/awssesemailidentity/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSesEmailIdentityStackInput is the input for the
+// AwsSesEmailIdentityIacInput is the input for the
 // aws-ses-email-identity IaC modules.
-message AwsSesEmailIdentityStackInput {
-  // target cloud-resource
+message AwsSesEmailIdentityIacInput {
+  // the catalog object to deploy
   AwsSesEmailIdentity target = 1;
 
   // provider-config

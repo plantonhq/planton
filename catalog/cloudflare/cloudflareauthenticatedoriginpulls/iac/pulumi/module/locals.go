@@ -12,10 +12,10 @@ type Locals struct {
 	CloudflareAuthenticatedOriginPulls *cloudflareauthenticatedoriginpullsv1alpha1.CloudflareAuthenticatedOriginPulls
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflareauthenticatedoriginpullsv1alpha1.CloudflareAuthenticatedOriginPullsStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflareauthenticatedoriginpullsv1alpha1.CloudflareAuthenticatedOriginPullsIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareAuthenticatedOriginPulls = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareAuthenticatedOriginPulls = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

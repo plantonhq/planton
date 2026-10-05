@@ -1,5 +1,5 @@
 # AwsCloudwatchAlarm install profile used as a prerequisite by composed
-# components (the composite alarm's registry prerequisite). A simple-metric
+# kinds (the composite alarm's registry prerequisite). A simple-metric
 # CPU alarm with actions disabled: a true leaf that creates in seconds, costs
 # ~$0.10/month prorated for the minutes it lives, and never acts. Its
 # CloudWatch name doubles as the join key composite rules reference, so the
@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awscloudwatchalarm
+    e2e-catalog-kind: awscloudwatchalarm
   annotations:
     planton.dev/e2e: "true"
   tags:

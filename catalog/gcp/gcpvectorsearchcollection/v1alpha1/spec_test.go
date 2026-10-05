@@ -56,7 +56,7 @@ var _ = ginkgo.Describe("GcpVectorSearchCollectionSpec", func() {
 		return &GcpVectorSearchCollection{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVectorSearchCollection",
-			Metadata:   &shared.CloudResourceMetadata{Name: "product-docs"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "product-docs"},
 			Spec: &GcpVectorSearchCollectionSpec{
 				Location:      "us-central1",
 				DataSchema:    `{"type":"object","properties":{"title":{"type":"string"},"body":{"type":"string"}}}`,

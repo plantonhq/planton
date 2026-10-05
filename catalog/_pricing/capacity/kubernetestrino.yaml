@@ -7,9 +7,9 @@
 # the singleton coordinator and the worker fleet; it is diskless by
 # design (no volumes -- it queries data where it lives), so the footprint
 # is purely compute reservations.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetestrino
 spec:

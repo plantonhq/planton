@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurenetworkwatcherflowlog
 spec:
@@ -9,8 +9,8 @@ spec:
   values:
     - name: flow_log_id
       derivations:
-        - from_stack_output: flow_log_id
+        - from_output: flow_log_id
       where_to_find: >-
         `az network watcher flow-log show --location <region> --name
         <name> --query id` (the watcher resolves from the location), or
-        the component's own flow_log_id stack output.
+        the component's own flow_log_id output.

@@ -27,7 +27,7 @@ func vault(spec *AzureKeyVaultSpec) *AzureKeyVault {
 	return &AzureKeyVault{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureKeyVault",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-key-vault",
 		},
 		Spec: spec,

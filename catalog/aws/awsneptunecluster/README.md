@@ -17,13 +17,13 @@ Neptune has no master username or password -- access is network reachability plu
 - **Parameters** -- inline `parameters` (a module-managed cluster parameter group with the family derived from the pinned engine version) or an existing `neptuneClusterParameterGroupName`; inline `instanceParameters` manage the instance-level twin, adopted by every folded instance without its own group. `neptuneInstanceParameterGroupName` accompanies major version upgrades. Empty `applyMethod` on a parameter defers to the provider default (pending-reboot) -- set `immediate` explicitly for dynamic parameters that should land right away.
 - **Apply timing** -- `applyImmediately` governs cluster-scope AND instance-scope changes alike (both engines forward it to every folded instance).
 
-## Stack outputs
+## Outputs
 
 `cluster_identifier`, `arn`, `cluster_resource_id`, `endpoint` (writer), `reader_endpoint`, `port`, `hosted_zone_id`, `engine_version_actual`, `neptune_subnet_group_name`, `neptune_cluster_parameter_group_name`, `instance_endpoints`, `custom_endpoint_addresses`, `neptune_instance_parameter_group_name`.
 
 ## How it works
 
-Planton provisions via the Pulumi or Terraform module in `iac/`, both implementing the same contract at full parity. The API contract is protobuf-based (`spec.proto`); stack execution is orchestrated using `AwsNeptuneClusterStackInput` (provider credentials + IaC info).
+Planton provisions via the Pulumi or Terraform module in `iac/`, both implementing the same contract at full parity. The API contract is protobuf-based (`spec.proto`); stack execution is orchestrated using `AwsNeptuneClusterIacInput` (provider credentials + IaC info).
 
 ## References
 

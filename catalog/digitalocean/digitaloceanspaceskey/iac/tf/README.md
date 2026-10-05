@@ -14,7 +14,7 @@ Generated `variables.tf` mirrors the `DigitalOceanSpacesKeySpec` proto: `key_nam
 
 ## Outputs
 
-Exactly the `DigitalOceanSpacesKeyStackOutputs` contract: `access_key`, `secret_key` (sensitive).
+Exactly the `DigitalOceanSpacesKeyOutputs` contract: `access_key`, `secret_key` (sensitive).
 
 ## Behavior notes
 

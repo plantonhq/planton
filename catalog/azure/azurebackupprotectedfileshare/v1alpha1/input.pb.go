@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AzureBackupProtectedFileShareStackInput is the input to the IaC
+// AzureBackupProtectedFileShareIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-type AzureBackupProtectedFileShareStackInput struct {
+type AzureBackupProtectedFileShareIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The protected file share resource to deploy.
 	Target *AzureBackupProtectedFileShare `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -35,20 +35,20 @@ type AzureBackupProtectedFileShareStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AzureBackupProtectedFileShareStackInput) Reset() {
-	*x = AzureBackupProtectedFileShareStackInput{}
+func (x *AzureBackupProtectedFileShareIacInput) Reset() {
+	*x = AzureBackupProtectedFileShareIacInput{}
 	mi := &file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureBackupProtectedFileShareStackInput) String() string {
+func (x *AzureBackupProtectedFileShareIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureBackupProtectedFileShareStackInput) ProtoMessage() {}
+func (*AzureBackupProtectedFileShareIacInput) ProtoMessage() {}
 
-func (x *AzureBackupProtectedFileShareStackInput) ProtoReflect() protoreflect.Message {
+func (x *AzureBackupProtectedFileShareIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *AzureBackupProtectedFileShareStackInput) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureBackupProtectedFileShareStackInput.ProtoReflect.Descriptor instead.
-func (*AzureBackupProtectedFileShareStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureBackupProtectedFileShareIacInput.ProtoReflect.Descriptor instead.
+func (*AzureBackupProtectedFileShareIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureBackupProtectedFileShareStackInput) GetTarget() *AzureBackupProtectedFileShare {
+func (x *AzureBackupProtectedFileShareIacInput) GetTarget() *AzureBackupProtectedFileShare {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AzureBackupProtectedFileShareStackInput) GetProviderConfig() *azure.AzureProviderConfig {
+func (x *AzureBackupProtectedFileShareIacInput) GetProviderConfig() *azure.AzureProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_azure_azurebackupprotectedfileshare_v1alpha1_input_proto protor
 
 const file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/azure/azurebackupprotectedfileshare/v1alpha1/input.proto\x128dev.planton.azure.azurebackupprotectedfileshare.v1alpha1\x1a>catalog/azure/azurebackupprotectedfileshare/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xeb\x01\n" +
-	"'AzureBackupProtectedFileShareStackInput\x12o\n" +
+	"@catalog/azure/azurebackupprotectedfileshare/v1alpha1/input.proto\x128dev.planton.azure.azurebackupprotectedfileshare.v1alpha1\x1a>catalog/azure/azurebackupprotectedfileshare/v1alpha1/api.proto\x1a\x1ccatalog/azure/provider.proto\"\xe9\x01\n" +
+	"%AzureBackupProtectedFileShareIacInput\x12o\n" +
 	"\x06target\x18\x01 \x01(\v2W.dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareR\x06target\x12O\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2&.dev.planton.azure.AzureProviderConfigR\x0eproviderConfigB\xc8\x03\n" +
 	"<com.dev.planton.azure.azurebackupprotectedfileshare.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_input_proto_rawDe
 
 var file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_input_proto_goTypes = []any{
-	(*AzureBackupProtectedFileShareStackInput)(nil), // 0: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareStackInput
-	(*AzureBackupProtectedFileShare)(nil),           // 1: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShare
-	(*azure.AzureProviderConfig)(nil),               // 2: dev.planton.azure.AzureProviderConfig
+	(*AzureBackupProtectedFileShareIacInput)(nil), // 0: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareIacInput
+	(*AzureBackupProtectedFileShare)(nil),         // 1: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShare
+	(*azure.AzureProviderConfig)(nil),             // 2: dev.planton.azure.AzureProviderConfig
 }
 var file_catalog_azure_azurebackupprotectedfileshare_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareStackInput.target:type_name -> dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShare
-	2, // 1: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareStackInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
+	1, // 0: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareIacInput.target:type_name -> dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShare
+	2, // 1: dev.planton.azure.azurebackupprotectedfileshare.v1alpha1.AzureBackupProtectedFileShareIacInput.provider_config:type_name -> dev.planton.azure.AzureProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

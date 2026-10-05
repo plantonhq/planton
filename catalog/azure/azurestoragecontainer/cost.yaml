@@ -4,9 +4,9 @@
 # Azure's Blob Storage price list has no meter for the container object;
 # every charge it shapes (capacity, operations, retrieval) bills on the
 # parent storage account's meters, keyed by the ACCOUNT's access tier and
-# redundancy. Schema: finops/componentcostprofile/v1.
+# redundancy. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurestoragecontainer
 spec:

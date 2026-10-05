@@ -239,7 +239,7 @@ locals {
   } : k => v if v != null }
 
   # ---- typed chart values (twin of the Pulumi module's buildHelmValues) -----
-  # `clickhouse.enabled: false` is a CONSTANT of this component's design:
+  # `clickhouse.enabled: false` is a CONSTANT of this kind's design:
   # nothing ClickHouse-related ever installs — the telemetry store is the
   # composed KubernetesClickHouse the connection points at.
   helm_values = { for k, v in {

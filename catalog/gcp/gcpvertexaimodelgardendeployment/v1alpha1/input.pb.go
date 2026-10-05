@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// gcp-vertex-ai-model-garden-deployment stack-input
-type GcpVertexAiModelGardenDeploymentStackInput struct {
+// gcp-vertex-ai-model-garden-deployment iac-input
+type GcpVertexAiModelGardenDeploymentIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *GcpVertexAiModelGardenDeployment `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type GcpVertexAiModelGardenDeploymentStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *GcpVertexAiModelGardenDeploymentStackInput) Reset() {
-	*x = GcpVertexAiModelGardenDeploymentStackInput{}
+func (x *GcpVertexAiModelGardenDeploymentIacInput) Reset() {
+	*x = GcpVertexAiModelGardenDeploymentIacInput{}
 	mi := &file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpVertexAiModelGardenDeploymentStackInput) String() string {
+func (x *GcpVertexAiModelGardenDeploymentIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpVertexAiModelGardenDeploymentStackInput) ProtoMessage() {}
+func (*GcpVertexAiModelGardenDeploymentIacInput) ProtoMessage() {}
 
-func (x *GcpVertexAiModelGardenDeploymentStackInput) ProtoReflect() protoreflect.Message {
+func (x *GcpVertexAiModelGardenDeploymentIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *GcpVertexAiModelGardenDeploymentStackInput) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpVertexAiModelGardenDeploymentStackInput.ProtoReflect.Descriptor instead.
-func (*GcpVertexAiModelGardenDeploymentStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpVertexAiModelGardenDeploymentIacInput.ProtoReflect.Descriptor instead.
+func (*GcpVertexAiModelGardenDeploymentIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpVertexAiModelGardenDeploymentStackInput) GetTarget() *GcpVertexAiModelGardenDeployment {
+func (x *GcpVertexAiModelGardenDeploymentIacInput) GetTarget() *GcpVertexAiModelGardenDeployment {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *GcpVertexAiModelGardenDeploymentStackInput) GetProviderConfig() *gcp.GcpProviderConfig {
+func (x *GcpVertexAiModelGardenDeploymentIacInput) GetProviderConfig() *gcp.GcpProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_input_proto proto
 
 const file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/gcp/gcpvertexaimodelgardendeployment/v1alpha1/input.proto\x129dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1\x1a?catalog/gcp/gcpvertexaimodelgardendeployment/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xee\x01\n" +
-	"*GcpVertexAiModelGardenDeploymentStackInput\x12s\n" +
+	"Acatalog/gcp/gcpvertexaimodelgardendeployment/v1alpha1/input.proto\x129dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1\x1a?catalog/gcp/gcpvertexaimodelgardendeployment/v1alpha1/api.proto\x1a\x1acatalog/gcp/provider.proto\"\xec\x01\n" +
+	"(GcpVertexAiModelGardenDeploymentIacInput\x12s\n" +
 	"\x06target\x18\x01 \x01(\v2[.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.gcp.GcpProviderConfigR\x0eproviderConfigB\xd1\x03\n" +
 	"=com.dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_input_proto_rawD
 
 var file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_input_proto_goTypes = []any{
-	(*GcpVertexAiModelGardenDeploymentStackInput)(nil), // 0: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentStackInput
-	(*GcpVertexAiModelGardenDeployment)(nil),           // 1: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeployment
-	(*gcp.GcpProviderConfig)(nil),                      // 2: dev.planton.gcp.GcpProviderConfig
+	(*GcpVertexAiModelGardenDeploymentIacInput)(nil), // 0: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentIacInput
+	(*GcpVertexAiModelGardenDeployment)(nil),         // 1: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeployment
+	(*gcp.GcpProviderConfig)(nil),                    // 2: dev.planton.gcp.GcpProviderConfig
 }
 var file_catalog_gcp_gcpvertexaimodelgardendeployment_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentStackInput.target:type_name -> dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeployment
-	2, // 1: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentStackInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
+	1, // 0: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentIacInput.target:type_name -> dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeployment
+	2, // 1: dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1.GcpVertexAiModelGardenDeploymentIacInput.provider_config:type_name -> dev.planton.gcp.GcpProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

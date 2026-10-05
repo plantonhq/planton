@@ -14,9 +14,9 @@ import (
 // default. The OpenTofu twin renders the same key from the same field.
 
 func listenerSetLocals(on bool) *Locals {
-	return initializeLocals(nil, &kubernetesexternaldnsv1alpha1.KubernetesExternalDnsStackInput{
+	return initializeLocals(nil, &kubernetesexternaldnsv1alpha1.KubernetesExternalDnsIacInput{
 		Target: &kubernetesexternaldnsv1alpha1.KubernetesExternalDns{
-			Metadata: &shared.CloudResourceMetadata{Name: "external-dns"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "external-dns"},
 			Spec: &kubernetesexternaldnsv1alpha1.KubernetesExternalDnsSpec{
 				Namespace: &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "external-dns"},

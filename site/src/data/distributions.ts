@@ -42,7 +42,7 @@ export const DISTRIBUTION_PAGES: readonly DistributionPage[] = [
     lede: `The control plane runs at planton.ai and holds your records; everything it deploys runs in your cloud account under your own connections. Free for up to ${FREE_TIER_SEATS} seats with no card.`,
     forWhom: 'For the team that wants nothing to run and nothing to upgrade, and still wants every deploy in its own account under its own keys.',
     points: [
-      { label: 'What Lives at planton.ai', text: 'The control plane: your organization\u2019s records (the manifests you declared, every stack job with its cost fact and verdicts), the console, and the identity server. Secrets are held as references and resolved on the runner at the moment of use; they can live in your own secrets manager.' },
+      { label: 'What Lives at planton.ai', text: 'The control plane: your organization\u2019s records (the manifests you declared, every Infra Job with its cost fact and verdicts), the console, and the identity server. Secrets are held as references and resolved on the runner at the moment of use; they can live in your own secrets manager.' },
       { label: 'What Lives in Your Account', text: 'Everything Planton deploys, under connections you own, tagged with its organization, environment, kind, and id. The bill is your cloud invoice.' },
       { label: 'Keyless Connections', text: runs.proof[0] },
       { label: 'Where the Work Runs', text: 'A deploy executes on a runner: one Planton operates, your own laptop with the cloud sign-in already on it, or a standing appliance inside your network. Credentials are resolved at the moment of use: keyless where the cloud supports it, otherwise from the secrets manager just in time.' },

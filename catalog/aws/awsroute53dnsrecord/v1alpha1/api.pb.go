@@ -54,7 +54,7 @@ type AwsRoute53DnsRecord struct {
 	// Must be "AwsRoute53DnsRecord".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard metadata including name and labels.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Specification for the DNS record configuration.
 	Spec *AwsRoute53DnsRecordSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// Status of the DNS record (populated after deployment).
@@ -107,7 +107,7 @@ func (x *AwsRoute53DnsRecord) GetKind() string {
 	return ""
 }
 
-func (x *AwsRoute53DnsRecord) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsRoute53DnsRecord) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -132,8 +132,8 @@ func (x *AwsRoute53DnsRecord) GetStatus() *AwsRoute53DnsRecordStatus {
 // Populated by the system after the record is provisioned.
 type AwsRoute53DnsRecordStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AwsRoute53DnsRecordStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AwsRoute53DnsRecordOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -168,7 +168,7 @@ func (*AwsRoute53DnsRecordStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsroute53dnsrecord_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsRoute53DnsRecordStatus) GetOutputs() *AwsRoute53DnsRecordStackOutputs {
+func (x *AwsRoute53DnsRecordStatus) GetOutputs() *AwsRoute53DnsRecordOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -186,11 +186,11 @@ const file_catalog_aws_awsroute53dnsrecord_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x12.\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1a\xbaH\x17r\x15\n" +
 	"\x13AwsRoute53DnsRecordR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12a\n" +
 	"\x04spec\x18\x04 \x01(\v2E.dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12_\n" +
-	"\x06status\x18\x05 \x01(\v2G.dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordStatusR\x06status\"\x84\x01\n" +
-	"\x19AwsRoute53DnsRecordStatus\x12g\n" +
-	"\aoutputs\x18\x01 \x01(\v2M.dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordStackOutputsR\aoutputsB\xf4\x02\n" +
+	"\x06status\x18\x05 \x01(\v2G.dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordStatusR\x06status\"\x7f\n" +
+	"\x19AwsRoute53DnsRecordStatus\x12b\n" +
+	"\aoutputs\x18\x01 \x01(\v2H.dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordOutputsR\aoutputsB\xf4\x02\n" +
 	"0com.dev.planton.aws.awsroute53dnsrecord.v1alpha1B\bApiProtoP\x01Zagithub.com/plantonhq/planton/catalog/aws/awsroute53dnsrecord/v1alpha1;awsroute53dnsrecordv1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Aws.Awsroute53dnsrecord.V1alpha1\xca\x02,Dev\\Planton\\Aws\\Awsroute53dnsrecord\\V1alpha1\xe2\x028Dev\\Planton\\Aws\\Awsroute53dnsrecord\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Aws::Awsroute53dnsrecord::V1alpha1b\x06proto3"
 
 var (
@@ -207,17 +207,17 @@ func file_catalog_aws_awsroute53dnsrecord_v1alpha1_api_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awsroute53dnsrecord_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsroute53dnsrecord_v1alpha1_api_proto_goTypes = []any{
-	(*AwsRoute53DnsRecord)(nil),             // 0: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecord
-	(*AwsRoute53DnsRecordStatus)(nil),       // 1: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordStatus
-	(*shared.CloudResourceMetadata)(nil),    // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsRoute53DnsRecordSpec)(nil),         // 3: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordSpec
-	(*AwsRoute53DnsRecordStackOutputs)(nil), // 4: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordStackOutputs
+	(*AwsRoute53DnsRecord)(nil),          // 0: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecord
+	(*AwsRoute53DnsRecordStatus)(nil),    // 1: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsRoute53DnsRecordSpec)(nil),      // 3: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordSpec
+	(*AwsRoute53DnsRecordOutputs)(nil),   // 4: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordOutputs
 }
 var file_catalog_aws_awsroute53dnsrecord_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecord.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecord.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecord.spec:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordSpec
 	1, // 2: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecord.status:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordStatus
-	4, // 3: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordStatus.outputs:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordStackOutputs
+	4, // 3: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordStatus.outputs:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

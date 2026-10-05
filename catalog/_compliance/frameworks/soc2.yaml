@@ -1,20 +1,20 @@
 # Crosswalk: SOC 2 Trust Services Criteria (TSP section 100, 2017, with
 # revised points of focus, 2022) onto the Planton Control Catalog. SOC 2
-# reports on an organization's controls, not a product's -- no component is
+# reports on an organization's controls, not a product's -- no kind is
 # ever "SOC 2 compliant" by itself. This crosswalk covers the Trust Services
 # Criteria that TECHNICAL controls can serve (the logical-access,
 # system-operations, and change-management common criteria plus the
 # availability and confidentiality categories); organizational and process
 # criteria (governance, risk assessment, vendor management) are deliberately
 # absent, not blurred. A mapping says catalog controls SERVE a criterion --
-# it never declares a component or deployment "SOC 2 compliant". Criterion
+# it never declares a kind or deployment "SOC 2 compliant". Criterion
 # text is quoted verbatim from the published AICPA document. Schema:
 # compliance/frameworkcrosswalk/v1.
 #
 # SOC 2 is provider-neutral: the Trust Services Criteria apply to any system
 # regardless of the cloud it runs on, so this crosswalk declares NO provider
 # scope (spec.providers stays absent) and applies to every provider's
-# components.
+# kinds.
 apiVersion: compliance.planton.dev/v1
 kind: FrameworkCrosswalk
 metadata:
@@ -26,11 +26,11 @@ spec:
     - requirement_id: "CC6.1"
       requirement_name: The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity's objectives.
       control_ids: [rbac, workload-identity, no-legacy-auth, strong-user-auth, enc-at-rest]
-      notes: The criterion's points of focus include restricting logical access to data at rest, identifying and authenticating persons, infrastructure, and software, and using encryption to protect data. For components that enforce end-user sign-in, credential strength is the identifying-and-authenticating-persons posture.
+      notes: The criterion's points of focus include restricting logical access to data at rest, identifying and authenticating persons, infrastructure, and software, and using encryption to protect data. For kinds that enforce end-user sign-in, credential strength is the identifying-and-authenticating-persons posture.
     - requirement_id: "CC6.3"
       requirement_name: The entity authorizes, modifies, or removes access to data, software, functions, and other protected information assets based on roles, responsibilities, or the system design and changes, giving consideration to the concepts of least privilege and segregation of duties, to meet the entity's objectives.
       control_ids: [rbac]
-      notes: Role-based access with least-privilege grants is the component-level expression of this criterion; the entity's own role definitions and review cadence remain organizational.
+      notes: Role-based access with least-privilege grants is the kind-level expression of this criterion; the entity's own role definitions and review cadence remain organizational.
     - requirement_id: "CC6.6"
       requirement_name: The entity implements logical access security measures to protect against threats from sources outside its system boundaries.
       control_ids: [no-public-access, restricted-ingress, edge-protection]
@@ -62,7 +62,7 @@ spec:
     - requirement_id: "A1.2"
       requirement_name: The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data backup processes, and recovery infrastructure to meet its objectives.
       control_ids: [backup-recovery, backup-retention-policy, multi-zone-ha]
-      notes: Automated backup with policy-driven retention and multi-zone replication are the component-level data backup and recovery infrastructure this criterion names; environmental protections are the provider's physical domain.
+      notes: Automated backup with policy-driven retention and multi-zone replication are the kind-level data backup and recovery infrastructure this criterion names; environmental protections are the provider's physical domain.
     - requirement_id: "C1.1"
       requirement_name: The entity identifies and maintains confidential information to meet the entity's objectives related to confidentiality.
       control_ids: [enc-at-rest, enc-at-rest-cmk]

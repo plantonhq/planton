@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awscertmanagercert.v1alpha1;
 
-// AwsCertManagerCertStackOutputs captures the observable identifiers
+// AwsCertManagerCertOutputs captures the observable identifiers
 // of a deployed ACM certificate -- the join keys TLS-fronting
 // resources reference, plus the validation records external DNS needs
 // when the module does not manage them.
-message AwsCertManagerCertStackOutputs {
+message AwsCertManagerCertOutputs {
   // The certificate ARN -- the join key every TLS consumer references
   // (load-balancer listeners, CloudFront, Cognito custom domains,
   // OpenSearch custom endpoints, Client VPN, ...).

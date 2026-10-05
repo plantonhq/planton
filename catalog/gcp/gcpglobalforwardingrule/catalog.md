@@ -4,7 +4,7 @@ Deploys a Compute Engine forwarding rule — the VIP node of a load balancer, gl
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine Forwarding Rule** -- global, or regional when `region` is set; bound to the configured target (or backend service), IP address, protocol, ports, and load-balancing scheme
 - **Compute Engine API enablement** -- `compute.googleapis.com` enabled in the target project (never disabled on destroy)
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
@@ -54,7 +54,7 @@ spec:
 planton apply -f global-forwarding-rule.yaml
 ```
 
-This creates the serving half of a production frontend: a reserved static IP on port 443 pointing at the HTTPS proxy. A Stack Job tracks the provisioning in real time.
+This creates the serving half of a production frontend: a reserved static IP on port 443 pointing at the HTTPS proxy. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,7 +92,7 @@ These are the most important decisions when configuring a global forwarding rule
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -103,9 +103,9 @@ These are the most important decisions when configuring a global forwarding rule
 | **GcpVpcNetwork** | `network` | `status.outputs.network_self_link` |
 | **GcpSubnetwork** | `subnetwork` | `status.outputs.subnetwork_self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -133,8 +133,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the rule is created
-- [**GCP Target HTTPS Proxy**](/cloud-catalog/gcp-target-https-proxy) -- the default target kind for port-443 rules
-- [**GCP Target HTTP Proxy**](/cloud-catalog/gcp-target-http-proxy) -- the port-80 redirect half
-- [**GCP Global Address**](/cloud-catalog/gcp-global-address) -- the reserved static IP this VIP binds
-- [**GCP URL Map**](/cloud-catalog/gcp-url-map) -- sits behind the target proxy in the serving chain
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the rule is created
+- [**GCP Target HTTPS Proxy**](/infra-catalog/gcp-target-https-proxy) -- the default target kind for port-443 rules
+- [**GCP Target HTTP Proxy**](/infra-catalog/gcp-target-http-proxy) -- the port-80 redirect half
+- [**GCP Global Address**](/infra-catalog/gcp-global-address) -- the reserved static IP this VIP binds
+- [**GCP URL Map**](/infra-catalog/gcp-url-map) -- sits behind the target proxy in the serving chain

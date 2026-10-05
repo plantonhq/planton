@@ -11,12 +11,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurestorageobjectreplicationv1alpha1.AzureStorageObjectReplicationStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurestorageobjectreplicationv1alpha1.AzureStorageObjectReplicationIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -48,7 +48,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurestorageobjectreplicationv1a
 		// Unset lets the provider default (OnlyNewObjects -- no backfill)
 		// apply; Everything backfills the whole container; an RFC 3339
 		// instant backfills blobs created after that moment. Presence-
-		// guarded because stack inputs do not materialize proto defaults.
+		// guarded because IaC inputs do not materialize proto defaults.
 		if rule.GetCopyBlobsCreatedAfter() != "" {
 			ruleArgs.CopyBlobsCreatedAfter = pulumi.String(rule.GetCopyBlobsCreatedAfter())
 		}
@@ -80,7 +80,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurestorageobjectreplicationv1a
 			sourceIdParts[1], destinationIdParts[1])
 	}
 
-	// Export stack outputs. Azure materializes the one logical policy on
+	// Export outputs. Azure materializes the one logical policy on
 	// BOTH accounts under one server-assigned GUID -- the GUID (parsed
 	// from the destination-side id, the authoritative copy, identically
 	// to the Terraform module) is what `az storage account or-policy`

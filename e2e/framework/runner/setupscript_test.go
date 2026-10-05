@@ -35,7 +35,7 @@ func TestRunSetupScript_PassesEnvAndSucceeds(t *testing.T) {
 	rel := writeSetupScript(t, repoRoot, `echo "$E2E_RUN_ID $E2E_SCENARIO $PWD" > captured.txt`)
 	manifest := writeSetupManifest(t, repoRoot, "minimal.yaml", "kind: X\n")
 
-	tc := &provider.ComponentTestContext{
+	tc := &provider.KindTestContext{
 		RepoRoot:     repoRoot,
 		ManifestPath: manifest,
 	}
@@ -68,14 +68,14 @@ func TestRunSetupScript_FailureIsAnError(t *testing.T) {
 	repoRoot := t.TempDir()
 	rel := writeSetupScript(t, repoRoot, `echo "seeding failed" >&2; exit 3`)
 
-	tc := &provider.ComponentTestContext{RepoRoot: repoRoot, ManifestPath: "minimal.yaml"}
+	tc := &provider.KindTestContext{RepoRoot: repoRoot, ManifestPath: "minimal.yaml"}
 	if _, err := runSetupScript(tc, rel, "run42-t"); err == nil {
 		t.Fatal("expected a non-zero script exit to error the phase")
 	}
 }
 
 func TestRunSetupScript_MissingScriptIsAnError(t *testing.T) {
-	tc := &provider.ComponentTestContext{RepoRoot: t.TempDir(), ManifestPath: "minimal.yaml"}
+	tc := &provider.KindTestContext{RepoRoot: t.TempDir(), ManifestPath: "minimal.yaml"}
 	if _, err := runSetupScript(tc, "does/not/exist.sh", "run42-p"); err == nil {
 		t.Fatal("expected a missing script to error the phase")
 	}
@@ -94,7 +94,7 @@ echo "BACKUP_NAME = seed-backup" >> "$E2E_SETUP_OUTPUT"`)
 	manifest := writeSetupManifest(t, repoRoot, "gke-gcs-restore.yaml",
 		"kind: X\nspec:\n  destination: ${E2E_SETUP:BACKUP_DESTINATION}\n  name: ${E2E_SETUP:BACKUP_NAME}\n")
 
-	tc := &provider.ComponentTestContext{RepoRoot: repoRoot, ManifestPath: manifest}
+	tc := &provider.KindTestContext{RepoRoot: repoRoot, ManifestPath: manifest}
 	got, err := runSetupScript(tc, rel, "run42-p")
 	if err != nil {
 		t.Fatalf("expected success, got %v", err)
@@ -116,7 +116,7 @@ func TestRunSetupScript_UnpublishedTokenIsAnError(t *testing.T) {
 	rel := writeSetupScript(t, repoRoot, `echo "OTHER=x" >> "$E2E_SETUP_OUTPUT"`)
 	manifest := writeSetupManifest(t, repoRoot, "s.yaml", "spec:\n  destination: ${E2E_SETUP:BACKUP_DESTINATION}\n")
 
-	tc := &provider.ComponentTestContext{RepoRoot: repoRoot, ManifestPath: manifest}
+	tc := &provider.KindTestContext{RepoRoot: repoRoot, ManifestPath: manifest}
 	if _, err := runSetupScript(tc, rel, "run42-p"); err == nil || !strings.Contains(err.Error(), "BACKUP_DESTINATION") {
 		t.Fatalf("expected the unpublished-token error naming the token, got %v", err)
 	}
@@ -129,7 +129,7 @@ func TestRunSetupScript_MalformedOutputLineIsAnError(t *testing.T) {
 	rel := writeSetupScript(t, repoRoot, `echo "backup-destination=gs://x/y" >> "$E2E_SETUP_OUTPUT"`)
 	manifest := writeSetupManifest(t, repoRoot, "s.yaml", "spec:\n  destination: ${E2E_SETUP:BACKUP_DESTINATION}\n")
 
-	tc := &provider.ComponentTestContext{RepoRoot: repoRoot, ManifestPath: manifest}
+	tc := &provider.KindTestContext{RepoRoot: repoRoot, ManifestPath: manifest}
 	if _, err := runSetupScript(tc, rel, "run42-p"); err == nil || !strings.Contains(err.Error(), "malformed setup output line") {
 		t.Fatalf("expected the malformed-line error, got %v", err)
 	}

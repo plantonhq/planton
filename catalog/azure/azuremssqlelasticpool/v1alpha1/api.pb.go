@@ -35,7 +35,7 @@ type AzureMssqlElasticPool struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureMssqlElasticPoolSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -88,7 +88,7 @@ func (x *AzureMssqlElasticPool) GetKind() string {
 	return ""
 }
 
-func (x *AzureMssqlElasticPool) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureMssqlElasticPool) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureMssqlElasticPool) GetStatus() *AzureMssqlElasticPoolStatus {
 // AzureMssqlElasticPoolStatus holds the deployment status and outputs.
 type AzureMssqlElasticPoolStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AzureMssqlElasticPoolStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AzureMssqlElasticPoolOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureMssqlElasticPoolStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremssqlelasticpool_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureMssqlElasticPoolStatus) GetOutputs() *AzureMssqlElasticPoolStackOutputs {
+func (x *AzureMssqlElasticPoolStatus) GetOutputs() *AzureMssqlElasticPoolOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azuremssqlelasticpool_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15AzureMssqlElasticPoolR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
 	"\x04spec\x18\x04 \x01(\v2K.dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12e\n" +
-	"\x06status\x18\x05 \x01(\v2M.dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolStatusR\x06status\"\x8c\x01\n" +
-	"\x1bAzureMssqlElasticPoolStatus\x12m\n" +
-	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolStackOutputsR\aoutputsB\x8e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2M.dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolStatusR\x06status\"\x87\x01\n" +
+	"\x1bAzureMssqlElasticPoolStatus\x12h\n" +
+	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolOutputsR\aoutputsB\x8e\x03\n" +
 	"4com.dev.planton.azure.azuremssqlelasticpool.v1alpha1B\bApiProtoP\x01Zggithub.com/plantonhq/planton/catalog/azure/azuremssqlelasticpool/v1alpha1;azuremssqlelasticpoolv1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Azure.Azuremssqlelasticpool.V1alpha1\xca\x020Dev\\Planton\\Azure\\Azuremssqlelasticpool\\V1alpha1\xe2\x02<Dev\\Planton\\Azure\\Azuremssqlelasticpool\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Azure::Azuremssqlelasticpool::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azuremssqlelasticpool_v1alpha1_api_proto_rawDescGZIP() [
 
 var file_catalog_azure_azuremssqlelasticpool_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremssqlelasticpool_v1alpha1_api_proto_goTypes = []any{
-	(*AzureMssqlElasticPool)(nil),             // 0: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPool
-	(*AzureMssqlElasticPoolStatus)(nil),       // 1: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureMssqlElasticPoolSpec)(nil),         // 3: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolSpec
-	(*AzureMssqlElasticPoolStackOutputs)(nil), // 4: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolStackOutputs
+	(*AzureMssqlElasticPool)(nil),        // 0: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPool
+	(*AzureMssqlElasticPoolStatus)(nil),  // 1: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureMssqlElasticPoolSpec)(nil),    // 3: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolSpec
+	(*AzureMssqlElasticPoolOutputs)(nil), // 4: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolOutputs
 }
 var file_catalog_azure_azuremssqlelasticpool_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPool.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPool.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPool.spec:type_name -> dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolSpec
 	1, // 2: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPool.status:type_name -> dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolStatus
-	4, // 3: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolStatus.outputs:type_name -> dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolStackOutputs
+	4, // 3: dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolStatus.outputs:type_name -> dev.planton.azure.azuremssqlelasticpool.v1alpha1.AzureMssqlElasticPoolOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

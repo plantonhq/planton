@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurenetworkinterface.v1alpha1;
 
-// **AzureNetworkInterfaceStackOutputs** captures the outputs of
+// **AzureNetworkInterfaceOutputs** captures the outputs of
 // provisioning an Azure Network Interface.
-message AzureNetworkInterfaceStackOutputs {
+message AzureNetworkInterfaceOutputs {
   // The Azure Resource Manager ID of the NIC. This is the primary output:
   // AzureVirtualMachine's network_interface_ids references it to attach
   // the NIC to a VM.

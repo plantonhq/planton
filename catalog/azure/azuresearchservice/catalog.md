@@ -4,7 +4,7 @@ Creates an Azure AI Search service -- the managed search-and-retrieval engine AI
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Search Service** -- the service itself (`Microsoft.Search/searchServices`) with its SKU, capacity, auth posture, network controls, and identity
 - **Shared Private Links** (optional) -- one ARM child per `sharedPrivateLinkServices` entry (`.../sharedPrivateLinkResources/{name}`), giving indexers private reach to data sources behind private endpoints
@@ -55,7 +55,7 @@ spec:
 planton apply -f azure-search-service.yaml
 ```
 
-This creates a standard-tier search service named `acme-search-prod` with three replicas (the 99.9% read-write SLA threshold) and a system-assigned identity for keyless indexer access to data sources. A Stack Job tracks the provisioning in real time.
+This creates a standard-tier search service named `acme-search-prod` with three replicas (the 99.9% read-write SLA threshold) and a system-assigned identity for keyless indexer access to data sources. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,7 +95,7 @@ These are the most important decisions when configuring the service. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -103,9 +103,9 @@ These are the most important decisions when configuring the service. Explore the
 | **AzureUserAssignedIdentity** | `identity.identityIds[]` | `status.outputs.identity_id` |
 | *(any private-linkable kind)* | `sharedPrivateLinkServices[].targetResourceId` | named explicitly in `valueFrom` (storage, SQL, Key Vault, ...) |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,7 +115,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `default_query_key` | The built-in read-only query key (sensitive) | Client-side query access |
 | `system_assigned_identity_principal_id` | The system identity's principal ID | Azure Role Assignment `principalId` -- data-source grants for indexers |
 
-The `search_service_name`, `customer_managed_key_encryption_compliance_status`, and name-keyed `shared_private_link_service_ids` outputs are readbacks for operational and governance tooling rather than values other Cloud Resources typically wire in.
+The `search_service_name`, `customer_managed_key_encryption_compliance_status`, and name-keyed `shared_private_link_service_ids` outputs are readbacks for operational and governance tooling rather than values other Infra Components typically wire in.
 
 ## Common Patterns
 
@@ -129,7 +129,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Cognitive Account**](/cloud-catalog/azure-cognitive-account) -- the Azure OpenAI models RAG applications pair with this service
-- [**Azure AI Foundry Hub**](/cloud-catalog/azure-ai-foundry) -- Foundry projects consume search for agent retrieval
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the classic indexer data source (and shared-private-link target)
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- where the service lives
+- [**Azure Cognitive Account**](/infra-catalog/azure-cognitive-account) -- the Azure OpenAI models RAG applications pair with this service
+- [**Azure AI Foundry Hub**](/infra-catalog/azure-ai-foundry) -- Foundry projects consume search for agent retrieval
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the classic indexer data source (and shared-private-link target)
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- where the service lives

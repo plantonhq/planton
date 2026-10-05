@@ -16,4 +16,4 @@ This preset creates a production-labeled project as the organizational home for 
 
 ## What You Get
 
-A project visible in the DigitalOcean control panel with its `project_id`, `owner_uuid`, and `owner_id` exported as stack outputs.
+A project visible in the DigitalOcean control panel with its `project_id`, `owner_uuid`, and `owner_id` exported as outputs.

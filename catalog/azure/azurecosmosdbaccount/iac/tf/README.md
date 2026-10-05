@@ -1,7 +1,7 @@
 # AzureCosmosdbAccount - Terraform Module
 
-Terraform implementation for the AzureCosmosdbAccount deployment
-component.
+Terraform implementation for the AzureCosmosdbAccount
+kind.
 
 ## Resources Created
 

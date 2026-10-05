@@ -7,11 +7,11 @@
 
 ## Summary
 
-Enhanced the KubernetesSolr component's Terraform module with comprehensive inline documentation and created Terraform-specific examples, bringing an already production-ready component to 100% completion. No spec changes were required as the component was already functionally complete.
+Enhanced the KubernetesSolr kind's Terraform module with comprehensive inline documentation and created Terraform-specific examples, bringing an already production-ready kind to 100% completion. No spec changes were required as the kind was already functionally complete.
 
 ## Problem Statement
 
-The KubernetesSolr component audit (99.15% completion) identified two minor gaps:
+The KubernetesSolr kind audit (99.15% completion) identified two minor gaps:
 
 1. **Terraform main.tf too small**: At 131 bytes, the file lacked meaningful documentation explaining the module's architecture and resource organization
 2. **Missing Terraform examples**: While Pulumi examples existed, Terraform users had no dedicated examples.md file
@@ -77,12 +77,12 @@ Comprehensive Terraform examples including:
 
 ### No Spec Changes
 
-**Important**: No protobuf spec changes were made. The component's API definition remains unchanged:
+**Important**: No protobuf spec changes were made. The kind's API definition remains unchanged:
 
 - `api.proto` - No changes
 - `spec.proto` - No changes  
-- `stack_input.proto` - No changes
-- `stack_outputs.proto` - No changes
+- `iac_input.proto` - No changes
+- `outputs.proto` - No changes
 
 All enhancements were documentation-only.
 
@@ -95,14 +95,14 @@ The enhanced main.tf documents the **modular Terraform architecture**:
 - **ingress.tf**: Gateway API resources (182 lines) - Certificate, Gateway, HTTPRoutes
 - **locals.tf**: Computed values (namespace, labels, hostnames)
 - **variables.tf**: Input variables from spec.proto
-- **outputs.tf**: Stack outputs for consumers
+- **outputs.tf**: Outputs for consumers
 
 This separation allows focused files while main.tf provides navigation.
 
 ### Validation
 
 - **Terraform validation**: `terraform validate` - PASSED ✅
-- **Component tests**: All 1 test passed (0.007 seconds) ✅
+- **Kind tests**: All 1 test passed (0.007 seconds) ✅
 - **File sizes verified**: main.tf >1KB requirement met
 
 ## Benefits
@@ -152,8 +152,8 @@ This addresses the two "Quick Wins" identified in the KubernetesSolr audit (2025
 
 ## Related Work
 
-- **KubernetesSolr Component**: Already at 99.15% with exceptional 25KB research doc, complete Pulumi implementation, comprehensive protobuf definitions, and passing tests
-- **Pulumi Examples**: Component has iac/pulumi/examples.md (3,956 bytes) which Terraform examples now mirror
+- **KubernetesSolr Kind**: Already at 99.15% with exceptional 25KB research doc, complete Pulumi implementation, comprehensive protobuf definitions, and passing tests
+- **Pulumi Examples**: Kind has iac/pulumi/examples.md (3,956 bytes) which Terraform examples now mirror
 
 ## Testing Evidence
 
@@ -164,7 +164,7 @@ terraform fmt - PASSED
 # Terraform validation
 terraform validate - SUCCESS
 
-# Component tests
+# Kind tests
 go test -v - 1 Passed | 0 Failed
 ```
 
@@ -178,5 +178,5 @@ go test -v - 1 Passed | 0 Failed
 
 ## Summary
 
-The KubernetesSolr component was already production-ready at 99.15%. These documentation enhancements bring it to 100% completion by providing Terraform users with the same quality of examples and inline documentation that Pulumi users already had. The modular Terraform architecture (main.tf, solr_cloud.tf, ingress.tf) is now clearly documented, making it easier for developers to understand and maintain the module.
+The KubernetesSolr kind was already production-ready at 99.15%. These documentation enhancements bring it to 100% completion by providing Terraform users with the same quality of examples and inline documentation that Pulumi users already had. The modular Terraform architecture (main.tf, solr_cloud.tf, ingress.tf) is now clearly documented, making it easier for developers to understand and maintain the module.
 

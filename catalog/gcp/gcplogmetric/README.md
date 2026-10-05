@@ -4,7 +4,7 @@ Creates a Cloud Logging log-based metric — the bridge from logs to monitoring:
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Log-based metric** -- a `logging.Metric` with the configured filter, descriptor, extractors, and histogram layout
 - **Logging API enablement** -- `logging.googleapis.com` enabled in the target project (never disabled on destroy)

@@ -5,7 +5,7 @@
 # recovery), then sign in AGAIN with the same credentials and retrieve
 # the same trace by ID — users and dashboards survive on the server's
 # SQLite PersistentVolume, telemetry survives in the composed
-# ClickHouse (the storage-separation proof). The component defaults
+# ClickHouse (the storage-separation proof). The kind defaults
 # against the fixture are the honest shape for this.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesSignoz

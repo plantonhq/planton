@@ -69,7 +69,7 @@ const ALTERNATIVES: Alternative[] = [
     fundingSource: 'https://www.porter.run/blog/effortless-app-infrastructure-in-any-cloud-porters-20m-series-a',
     founded: '2020',
     ycBatch: 'S20',
-    positioning: 'Deploy applications on your own cloud with Kubernetes abstraction. Markets as "multi-cloud" but only deploys Kubernetes clusters—no other cloud resources.',
+    positioning: 'Deploy applications on your own cloud with Kubernetes abstraction. Markets as "multi-cloud" but only deploys Kubernetes clusters—no other cloud infrastructure.',
     whatWeRespect: 'YC-backed, strong Kubernetes abstraction, excellent for teams transitioning from Heroku to K8s. Recent $20M raise validates market demand.',
     wherePlantonDiffers: 'Truly multi-cloud: deploy any infrastructure (storage, queues, databases), not just K8s. Full transparency with open-source Pulumi modules. Porter shows no deployment visibility.',
   },
@@ -94,7 +94,7 @@ const ALTERNATIVES: Alternative[] = [
     funding: '~$12M raised',
     fundingSource: 'https://www.crunchbase.com/organization/massdriver',
     founded: '2021',
-    positioning: 'Visual infrastructure platform for deploying cloud resources. Drag-and-drop interface for infrastructure.',
+    positioning: 'Visual infrastructure platform for deploying cloud infrastructure. Drag-and-drop interface for infrastructure.',
     whatWeRespect: 'Visual approach to infrastructure makes it accessible. Strong focus on developer experience.',
     wherePlantonDiffers: 'Service Hub: Vercel-like experience for backend in the customer\'s own cloud. Self-host ready from day one. 100% open-source Pulumi modules.',
   },
@@ -200,7 +200,7 @@ export const OpportunityPage: FC = () => {
               </CardTitle>
               <BodyText className="text-lg mb-6">
                 Planton is the <strong>only platform</strong> that provides truly multi-cloud
-                deployments—not just Kubernetes, but <em>any</em> cloud resource across AWS,
+                deployments—not just Kubernetes, but <em>any</em> cloud infrastructure across AWS,
                 GCP, and Azure—backed by 100% open-source infrastructure as code.
               </BodyText>
               <List

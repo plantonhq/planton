@@ -4,7 +4,7 @@ Deploys an Elastic Container Registry repository — the private Docker/OCI imag
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ECR Repository** -- a Docker image registry with the specified name, tag mutability setting (and exclusion filters), encryption configuration, and scan-on-push behavior
 - **Lifecycle Policy** -- created only when `lifecycleRules` are configured; each rule selects images by tag state (untagged, tagged by prefix or pattern, or every image) and either expires them (keep-last-N count, age since push, or days since last pull) or transitions them to the cheaper archive storage class; archived images get their own retention clock (`sinceImageTransitioned`)
@@ -15,12 +15,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A KMS key** (optional) -- required only when using KMS encryption (`encryptionType: KMS`). Provide the key ARN directly or reference an AwsKmsKey Cloud Resource via ValueFromRef. If omitted, ECR uses AWS-managed AES-256 encryption.
+- **A KMS key** (optional) -- required only when using KMS encryption (`encryptionType: KMS`). Provide the key ARN directly or reference an AwsKmsKey Infra Component via ValueFromRef. If omitted, ECR uses AWS-managed AES-256 encryption.
 
 ## Deploy
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f ecr-repo.yaml
 ```
 
-This creates an ECR repository with immutable tags, scan-on-push enabled, AWS-default AES-256 encryption, and lifecycle rules that expire untagged images after 7 days and retain the 100 most recent images. A Stack Job tracks the provisioning in real time.
+This creates an ECR repository with immutable tags, scan-on-push enabled, AWS-default AES-256 encryption, and lifecycle rules that expire untagged images after 7 days and retain the 100 most recent images. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -98,15 +98,15 @@ These are the most important decisions when configuring an ECR repository. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsKmsKey** (optional) | `kmsKeyId` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -127,7 +127,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for KMS encryption of stored images
-- [**AWS ECS Task Definition**](/cloud-catalog/aws-ecs-task-definition) -- container images reference the repository URL textually (`<repository_url>:<tag>`)
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) -- container-image functions pull from ECR (grant `lambda.amazonaws.com` in the repository policy)
-- [**AWS App Runner Service**](/cloud-catalog/aws-app-runner-service) -- ECR-sourced services deploy images pushed here
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for KMS encryption of stored images
+- [**AWS ECS Task Definition**](/infra-catalog/aws-ecs-task-definition) -- container images reference the repository URL textually (`<repository_url>:<tag>`)
+- [**AWS Lambda**](/infra-catalog/aws-lambda) -- container-image functions pull from ECR (grant `lambda.amazonaws.com` in the repository policy)
+- [**AWS App Runner Service**](/infra-catalog/aws-app-runner-service) -- ECR-sourced services deploy images pushed here

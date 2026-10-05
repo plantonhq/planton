@@ -121,7 +121,7 @@ func syntheticsGroupExists(ctx context.Context, cfg aws.Config, groupName string
 	return true, nil
 }
 
-// stringOutput reads a string-valued stack output, tolerating absence.
+// stringOutput reads a string-valued output, tolerating absence.
 func stringOutput(outputs map[string]interface{}, key string) string {
 	if value, ok := outputs[key].(string); ok {
 		return value
@@ -129,7 +129,7 @@ func stringOutput(outputs map[string]interface{}, key string) string {
 	return ""
 }
 
-// mapOutputKeys reads the keys of a map-valued stack output, tolerating
+// mapOutputKeys reads the keys of a map-valued output, tolerating
 // absence.
 func mapOutputKeys(outputs map[string]interface{}, key string) []string {
 	raw, ok := outputs[key].(map[string]interface{})
@@ -143,7 +143,7 @@ func mapOutputKeys(outputs map[string]interface{}, key string) []string {
 	return keys
 }
 
-// mapOutputValues reads the string values of a map-valued stack output
+// mapOutputValues reads the string values of a map-valued output
 // keyed by entry name, tolerating absence.
 func mapOutputValues(outputs map[string]interface{}, key string) map[string]string {
 	raw, ok := outputs[key].(map[string]interface{})

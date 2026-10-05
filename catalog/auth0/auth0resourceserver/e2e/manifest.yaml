@@ -1,5 +1,5 @@
 # Auth0 Resource Server Test Manifest
-# The component's full surface, for the offline plan and preview proofs: it
+# The kind's full surface, for the offline plan and preview proofs: it
 # declares settings that need the Enterprise plan with the Highly Regulated
 # Identity add-on (token encryption, consent_policy) and Early Access
 # features (anonymous sessions, Online Refresh Tokens, authorization

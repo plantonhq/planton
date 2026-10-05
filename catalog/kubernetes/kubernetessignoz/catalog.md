@@ -6,7 +6,7 @@ The telemetry store is COMPOSED, never bundled: this component installs nothing 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions (via the official `signoz` Helm chart — the chart version tracks the SigNoz application version in lockstep):
+When you deploy this Infra Component, the IaC module provisions (via the official `signoz` Helm chart — the chart version tracks the SigNoz application version in lockstep):
 
 - **SigNoz server** — UI, API, rule evaluation and alerting in one consolidated binary, with a small PVC (default 1Gi) holding users, dashboards and alert rules in embedded SQLite. Telemetry lives in ClickHouse, not here. Deliberately single-instance: SQLite is single-writer, so there is no replica knob (the Postgres-backed HA store is an enterprise-edition feature).
 - **SigNoz OpenTelemetry Collector** — the ingestion gateway every application sends telemetry to. Stateless; scales horizontally by replica count or an optional HorizontalPodAutoscaler.
@@ -74,7 +74,7 @@ spec:
 planton apply -f signoz.yaml
 ```
 
-This creates the smallest honest SigNoz: the whole platform (UI, API, alerting, the ingestion collector) against a composed ClickHouse named `telemetry` in the same namespace, wired through three references — no password anywhere in the manifest. A Stack Job tracks the provisioning in real time.
+This creates the smallest honest SigNoz: the whole platform (UI, API, alerting, the ingestion collector) against a composed ClickHouse named `telemetry` in the same namespace, wired through three references — no password anywhere in the manifest. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -115,7 +115,7 @@ These are the most important decisions when configuring a SigNoz deployment. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -125,9 +125,9 @@ These are the most important decisions when configuring a SigNoz deployment. Exp
 | **KubernetesClickHouse** | `clickhouse.passwordSecret.secretName` | `status.outputs.auth_secret_name` |
 | **KubernetesStorageClass** | `server.storageClass` | `metadata.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -146,16 +146,16 @@ The outputs also mirror the declared ClickHouse connection back (`clickhouse_use
 
 Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
-**Development** — the smallest honest SigNoz: the component's defaults against a composed ClickHouse named `telemetry` in the same namespace, wired through three references. Start from the **SigNoz for development** preset.
+**Development** — the smallest honest SigNoz: the kind's defaults against a composed ClickHouse named `telemetry` in the same namespace, wired through three references. Start from the **SigNoz for development** preset.
 
 **Production** — verified TLS to ClickHouse, alert email over secret-safe SMTP, the external URL that makes alert links resolve, sized server resources, and an autoscaling ingestion collector. Start from the **SigNoz for production** preset.
 
 ## Works With
 
-- [**ClickHouse**](/cloud-catalog/kubernetes-click-house) — the composed telemetry store; deploy it first and wire it by reference.
-- [**Altinity ClickHouse Operator**](/cloud-catalog/kubernetes-altinity-operator) — the operator that reconciles that ClickHouse; the first link of the composition chain.
-- [**OpenTelemetry Collector**](/cloud-catalog/kubernetes-otel-collector) — daemonset-mode cluster telemetry (node logs, kubelet metrics, Kubernetes events) pointed at the exported OTLP endpoints.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first.
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) — explicit class for the server's state volume.
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) and [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) — external exposure for the UI and the collector over the exported Service handles (everything stays ClusterIP by design).
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack), [**Grafana**](/cloud-catalog/kubernetes-grafana), [**Grafana Loki**](/cloud-catalog/kubernetes-loki), [**Grafana Tempo**](/cloud-catalog/kubernetes-tempo) — the composed-stack alternative; run one path or the other per team taste.
+- [**ClickHouse**](/infra-catalog/kubernetes-click-house) — the composed telemetry store; deploy it first and wire it by reference.
+- [**Altinity ClickHouse Operator**](/infra-catalog/kubernetes-altinity-operator) — the operator that reconciles that ClickHouse; the first link of the composition chain.
+- [**OpenTelemetry Collector**](/infra-catalog/kubernetes-otel-collector) — daemonset-mode cluster telemetry (node logs, kubelet metrics, Kubernetes events) pointed at the exported OTLP endpoints.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first.
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) — explicit class for the server's state volume.
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) and [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) — external exposure for the UI and the collector over the exported Service handles (everything stays ClusterIP by design).
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack), [**Grafana**](/infra-catalog/kubernetes-grafana), [**Grafana Loki**](/infra-catalog/kubernetes-loki), [**Grafana Tempo**](/infra-catalog/kubernetes-tempo) — the composed-stack alternative; run one path or the other per team taste.

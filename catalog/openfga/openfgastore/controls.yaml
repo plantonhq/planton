@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: openfgastore
 spec:
@@ -29,7 +29,7 @@ spec:
       notes: A store receives no HTTP requests directly -- request filtering would attach to the OpenFGA server deployment or the proxy in front of it, neither of which this spec configures.
     - control_id: rbac
       status: not_applicable
-      notes: "The spec carries a single field (name) and no access-control surface. WHO may call the store's API is the OpenFGA server's authentication configuration (pre-shared keys or OIDC, server-level and unscoped per store); WHAT access the store's contents govern is authored by the OpenFgaAuthorizationModel and OpenFgaRelationshipTuple kinds deployed into it."
+      notes: "The spec carries a single field (name) and no access-control surface. WHO may call the store's API is the OpenFGA server's authentication configuration (pre-shared keys or OIDC, server-level and unscoped per store); WHAT access the store's contents govern is authored by the OpenFgaAuthorizationModel and OpenFgaRelationshipTuple components deployed into it."
     - control_id: workload-identity
       status: not_applicable
       notes: "The store holds no credentials and authenticates to nothing. The credential the IaC runner presents to the OpenFGA server is the provider connection's concern, documented in iac/permissions.yaml -- no spec field selects between static and federated auth."

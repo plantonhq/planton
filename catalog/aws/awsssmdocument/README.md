@@ -21,7 +21,7 @@ session, and the other document types AWS accepts on the same API.
   it to the default.
 
 State Manager associations (binding a document to targets on a
-schedule) are deliberately NOT part of this component — an association
+schedule) are deliberately NOT part of this kind — an association
 binds ANY document, AWS-managed included; see
 [AwsSsmAssociation](../awsssmassociation).
 

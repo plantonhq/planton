@@ -34,7 +34,7 @@ type AwsIamUser struct {
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata captures identifying information (name, org, version, etc.)
 	// and must pass standard validations for resource naming.
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec holds the core configuration data defining the IAM user's permissions and access keys.
 	Spec *AwsIamUserSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status holds runtime or post-deployment information.
@@ -87,7 +87,7 @@ func (x *AwsIamUser) GetKind() string {
 	return ""
 }
 
-func (x *AwsIamUser) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsIamUser) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,7 +112,7 @@ func (x *AwsIamUser) GetStatus() *AwsIamUserStatus {
 type AwsIamUserStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// outputs captures the outputs returned by Pulumi/Terraform after provisioning.
-	Outputs       *AwsIamUserStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	Outputs       *AwsIamUserOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AwsIamUserStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsiamuser_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsIamUserStatus) GetOutputs() *AwsIamUserStackOutputs {
+func (x *AwsIamUserStatus) GetOutputs() *AwsIamUserOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_aws_awsiamuser_v1alpha1_api_proto_rawDesc = "" +
 	"\x04kind\x18\x02 \x01(\tB\x11\xbaH\x0er\f\n" +
 	"\n" +
 	"AwsIamUserR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12O\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12O\n" +
 	"\x04spec\x18\x04 \x01(\v23.dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12M\n" +
-	"\x06status\x18\x05 \x01(\v25.dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserStatusR\x06status\"i\n" +
-	"\x10AwsIamUserStatus\x12U\n" +
-	"\aoutputs\x18\x01 \x01(\v2;.dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserStackOutputsR\aoutputsB\xb5\x02\n" +
+	"\x06status\x18\x05 \x01(\v25.dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserStatusR\x06status\"d\n" +
+	"\x10AwsIamUserStatus\x12P\n" +
+	"\aoutputs\x18\x01 \x01(\v26.dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserOutputsR\aoutputsB\xb5\x02\n" +
 	"'com.dev.planton.aws.awsiamuser.v1alpha1B\bApiProtoP\x01ZOgithub.com/plantonhq/planton/catalog/aws/awsiamuser/v1alpha1;awsiamuserv1alpha1\xa2\x02\x04DPAA\xaa\x02#Dev.Planton.Aws.Awsiamuser.V1alpha1\xca\x02#Dev\\Planton\\Aws\\Awsiamuser\\V1alpha1\xe2\x02/Dev\\Planton\\Aws\\Awsiamuser\\V1alpha1\\GPBMetadata\xea\x02'Dev::Planton::Aws::Awsiamuser::V1alpha1b\x06proto3"
 
 var (
@@ -190,15 +190,15 @@ var file_catalog_aws_awsiamuser_v1alpha1_api_proto_msgTypes = make([]protoimpl.M
 var file_catalog_aws_awsiamuser_v1alpha1_api_proto_goTypes = []any{
 	(*AwsIamUser)(nil),                   // 0: dev.planton.aws.awsiamuser.v1alpha1.AwsIamUser
 	(*AwsIamUserStatus)(nil),             // 1: dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserStatus
-	(*shared.CloudResourceMetadata)(nil), // 2: dev.planton.shared.CloudResourceMetadata
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
 	(*AwsIamUserSpec)(nil),               // 3: dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserSpec
-	(*AwsIamUserStackOutputs)(nil),       // 4: dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserStackOutputs
+	(*AwsIamUserOutputs)(nil),            // 4: dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserOutputs
 }
 var file_catalog_aws_awsiamuser_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsiamuser.v1alpha1.AwsIamUser.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsiamuser.v1alpha1.AwsIamUser.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsiamuser.v1alpha1.AwsIamUser.spec:type_name -> dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserSpec
 	1, // 2: dev.planton.aws.awsiamuser.v1alpha1.AwsIamUser.status:type_name -> dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserStatus
-	4, // 3: dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserStatus.outputs:type_name -> dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserStackOutputs
+	4, // 3: dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserStatus.outputs:type_name -> dev.planton.aws.awsiamuser.v1alpha1.AwsIamUserOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

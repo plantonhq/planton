@@ -15,7 +15,7 @@ secret, keyless web identity, or ambient chain).
   on the route-configuration override -- both maps live in `locals.go`
   with the reason.
 - **Address-condition operators default to `IPMatch`** when
-  unspecified, and optional enums are sent only when chosen (stack
+  unspecified, and optional enums are sent only when chosen (IaC
   inputs never materialize proto defaults).
 - **Header DELETE actions omit the value** -- the provider rejects an
   empty value on Append/Overwrite and any value on Delete; the spec's

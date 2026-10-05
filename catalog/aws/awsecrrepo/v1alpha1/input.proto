@@ -5,9 +5,9 @@ package dev.planton.aws.awsecrrepo.v1alpha1;
 import "catalog/aws/awsecrrepo/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-ecr-repo stack-input
-message AwsEcrRepoStackInput {
-  //target cloud-resource
+//aws-ecr-repo iac-input
+message AwsEcrRepoIacInput {
+  // the catalog object to deploy
   AwsEcrRepo target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

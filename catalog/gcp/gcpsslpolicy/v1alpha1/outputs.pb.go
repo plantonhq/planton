@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a GCP Compute Engine SSL policy.
-type GcpSslPolicyStackOutputs struct {
+type GcpSslPolicyOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Self-link URI of the SSL policy. This is the value a target HTTPS (or
 	// SSL) proxy references in its ssl_policy field — the composition handle
@@ -44,20 +44,20 @@ type GcpSslPolicyStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpSslPolicyStackOutputs) Reset() {
-	*x = GcpSslPolicyStackOutputs{}
+func (x *GcpSslPolicyOutputs) Reset() {
+	*x = GcpSslPolicyOutputs{}
 	mi := &file_catalog_gcp_gcpsslpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpSslPolicyStackOutputs) String() string {
+func (x *GcpSslPolicyOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpSslPolicyStackOutputs) ProtoMessage() {}
+func (*GcpSslPolicyOutputs) ProtoMessage() {}
 
-func (x *GcpSslPolicyStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpSslPolicyOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpsslpolicy_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,33 +69,33 @@ func (x *GcpSslPolicyStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpSslPolicyStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpSslPolicyStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpSslPolicyOutputs.ProtoReflect.Descriptor instead.
+func (*GcpSslPolicyOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpsslpolicy_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpSslPolicyStackOutputs) GetSelfLink() string {
+func (x *GcpSslPolicyOutputs) GetSelfLink() string {
 	if x != nil {
 		return x.SelfLink
 	}
 	return ""
 }
 
-func (x *GcpSslPolicyStackOutputs) GetSslPolicyName() string {
+func (x *GcpSslPolicyOutputs) GetSslPolicyName() string {
 	if x != nil {
 		return x.SslPolicyName
 	}
 	return ""
 }
 
-func (x *GcpSslPolicyStackOutputs) GetEnabledFeatures() []string {
+func (x *GcpSslPolicyOutputs) GetEnabledFeatures() []string {
 	if x != nil {
 		return x.EnabledFeatures
 	}
 	return nil
 }
 
-func (x *GcpSslPolicyStackOutputs) GetRegion() string {
+func (x *GcpSslPolicyOutputs) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
@@ -106,8 +106,8 @@ var File_catalog_gcp_gcpsslpolicy_v1alpha1_outputs_proto protoreflect.FileDescri
 
 const file_catalog_gcp_gcpsslpolicy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/gcp/gcpsslpolicy/v1alpha1/outputs.proto\x12%dev.planton.gcp.gcpsslpolicy.v1alpha1\"\xa2\x01\n" +
-	"\x18GcpSslPolicyStackOutputs\x12\x1b\n" +
+	"/catalog/gcp/gcpsslpolicy/v1alpha1/outputs.proto\x12%dev.planton.gcp.gcpsslpolicy.v1alpha1\"\x9d\x01\n" +
+	"\x13GcpSslPolicyOutputs\x12\x1b\n" +
 	"\tself_link\x18\x01 \x01(\tR\bselfLink\x12&\n" +
 	"\x0fssl_policy_name\x18\x02 \x01(\tR\rsslPolicyName\x12)\n" +
 	"\x10enabled_features\x18\x03 \x03(\tR\x0fenabledFeatures\x12\x16\n" +
@@ -128,7 +128,7 @@ func file_catalog_gcp_gcpsslpolicy_v1alpha1_outputs_proto_rawDescGZIP() []byte {
 
 var file_catalog_gcp_gcpsslpolicy_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpsslpolicy_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpSslPolicyStackOutputs)(nil), // 0: dev.planton.gcp.gcpsslpolicy.v1alpha1.GcpSslPolicyStackOutputs
+	(*GcpSslPolicyOutputs)(nil), // 0: dev.planton.gcp.gcpsslpolicy.v1alpha1.GcpSslPolicyOutputs
 }
 var file_catalog_gcp_gcpsslpolicy_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

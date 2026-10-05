@@ -16,7 +16,7 @@ message DigitalOceanCdn {
   string kind = 2 [(buf.validate.field).string.const = 'DigitalOceanCdn'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   DigitalOceanCdnSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,7 +27,7 @@ message DigitalOceanCdn {
 
 // digital-ocean-cdn status
 message DigitalOceanCdnStatus {
-  //stack-outputs
-  //  digital-ocean-cdn stack-outputs
-  DigitalOceanCdnStackOutputs outputs = 1;
+  //outputs
+  //  digital-ocean-cdn outputs
+  DigitalOceanCdnOutputs outputs = 1;
 }

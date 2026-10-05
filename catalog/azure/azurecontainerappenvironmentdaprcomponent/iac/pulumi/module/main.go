@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurecontainerappenvironmentdaprcomponentv1alpha1.AzureContainerAppEnvironmentDaprComponentStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurecontainerappenvironmentdaprcomponentv1alpha1.AzureContainerAppEnvironmentDaprComponentIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -93,7 +93,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerappenvironmentdapr
 		return errors.Wrapf(err, "failed to create Dapr component %s", spec.ComponentName)
 	}
 
-	// Export stack outputs. Apps consume the component through Dapr's
+	// Export outputs. Apps consume the component through Dapr's
 	// runtime by its name.
 	ctx.Export(OpDaprComponentId, createdComponent.ID())
 	ctx.Export(OpComponentName, createdComponent.Name)

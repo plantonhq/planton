@@ -90,7 +90,7 @@ func volume(
 		return nil, errors.Wrap(err, "failed to create digitalocean volume")
 	}
 
-	// Stack outputs -- exactly the DigitalOceanVolumeStackOutputs contract,
+	// Outputs -- exactly the DigitalOceanVolumeOutputs contract,
 	// from the SDK's real field names (the urn output is VolumeUrn).
 	ctx.Export(OpVolumeId, createdVolume.ID())
 	ctx.Export(OpUrn, createdVolume.VolumeUrn)

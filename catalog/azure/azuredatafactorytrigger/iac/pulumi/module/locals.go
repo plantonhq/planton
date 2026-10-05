@@ -11,10 +11,10 @@ type Locals struct {
 
 // A trigger carries no tags (ARM sub-resources of a factory expose
 // none), so there is no tag map to derive.
-func initializeLocals(ctx *pulumi.Context, stackInput *azuredatafactorytriggerv1alpha1.AzureDataFactoryTriggerStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuredatafactorytriggerv1alpha1.AzureDataFactoryTriggerIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureDataFactoryTrigger = stackInput.Target
+	locals.AzureDataFactoryTrigger = iacInput.Target
 
 	return locals
 }

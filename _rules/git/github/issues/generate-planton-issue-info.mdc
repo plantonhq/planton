@@ -41,7 +41,7 @@ Usage: In Ask mode, invoke explicitly as `@generate-planton-issue-info`.
 ## Title format (examples)
 
 ```text
-Postgres component spec validation broken for port conflicts
+Postgres kind spec validation broken for port conflicts
 ```
 
 ```text
@@ -53,9 +53,9 @@ Forge system generates incorrect Pulumi import paths for nested packages
 ```
 
 ## Title guidelines
-- **For Bugs**: Start with the symptom or component: "Postgres component validation broken...", "CLI fails when..."
+- **For Bugs**: Start with the symptom or component: "Postgres kind validation broken...", "CLI fails when..."
 - **For Features**: Start with action verb: "Add manifest validation command...", "Enable users to..."
-- **For Improvements**: Start with area: "Improve Pulumi code generation...", "Enhance component validation..."
+- **For Improvements**: Start with area: "Improve Pulumi code generation...", "Enhance kind validation..."
 - **For Tasks**: Be specific: "Migrate to Pulumi 4.x", "Update protobuf dependencies"
 
 ## Description structure
@@ -131,7 +131,7 @@ Use this template:
 **Reporter**: <Name/Team>  
 **Priority**: P0-P3  
 **Severity**: Critical/High/Medium/Low  
-**Labels**: `bug`, `area/component`, `priority/high`
+**Labels**: `bug`, `area/kind`, `priority/high`
 ```
 
 ### For Feature Requests
@@ -244,13 +244,13 @@ Use this template:
 Infer appropriate labels based on affected files:
 
 ### Area Labels
-- `catalog/**` → `area/component`, `area/<provider>`
+- `catalog/**` → `area/kind`, `area/<provider>`
 - `cmd/planton/**` → `area/cli`
 - `pkg/**` → `area/pkg`, `area/<package-name>`
 - `internal/**` → `area/cli`, `area/internal`
 - `shared/**`, `qa/**`, `iac/**` (proto surfaces) → `area/apis`
 - `tools/**` → `area/tooling`
-- `_rules/component/forge/**` → `area/forge`
+- `_rules/catalog-kind/forge/**` → `area/forge`
 - `docs/**` → `area/docs`
 
 ### Type Labels
@@ -304,7 +304,7 @@ If context is insufficient to infer details, choose the best effort labels and s
 ## Best Practices
 
 ### Title Crafting
-- Be specific: "Postgres component validation broken for port conflicts" not "Validation broken"
+- Be specific: "Postgres kind validation broken for port conflicts" not "Validation broken"
 - Include component: "CLI manifest validate command missing" not "Command missing"
 - State symptom clearly: "Forge generates incorrect import paths" not "Import issue"
 

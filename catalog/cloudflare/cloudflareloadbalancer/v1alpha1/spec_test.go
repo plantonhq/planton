@@ -18,7 +18,7 @@ func validLoadBalancer() *CloudflareLoadBalancer {
 	return &CloudflareLoadBalancer{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareLoadBalancer",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-load-balancer"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-load-balancer"},
 		Spec: &CloudflareLoadBalancerSpec{
 			Hostname:     "lb.example.com",
 			ZoneId:       ref("023e105f4ecef8ad9ca31a8372d0c353"),

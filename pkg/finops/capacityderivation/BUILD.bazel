@@ -6,7 +6,7 @@ go_library(
     importpath = "github.com/plantonhq/planton/pkg/finops/capacityderivation",
     visibility = ["//visibility:public"],
     deps = [
-        "//finops/componentcapacityderivation/v1:componentcapacityderivation",
+        "//finops/catalogkindcapacityderivation/v1:catalogkindcapacityderivation",
         "//pkg/protobufyaml",
         "@com_github_pkg_errors//:errors",
     ],
@@ -17,10 +17,10 @@ go_test(
     srcs = ["conformance_test.go"],
     embed = [":capacityderivation"],
     deps = [
-        "//finops/componentcapacityderivation/v1:componentcapacityderivation",
-        "//finops/componentcostderivation/v1:componentcostderivation",
-        "//finops/componentcostprofile/v1:componentcostprofile",
-        "//pkg/crkreflect",
+        "//finops/catalogkindcapacityderivation/v1:catalogkindcapacityderivation",
+        "//finops/catalogkindcostderivation/v1:catalogkindcostderivation",
+        "//finops/catalogkindcostprofile/v1:catalogkindcostprofile",
+        "//pkg/catalogkindreflect",
         "//pkg/finops/capacityestimator",
         "//pkg/finops/costderivation",
         "//pkg/finops/costprofile",

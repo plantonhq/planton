@@ -4,7 +4,7 @@
 # surviving pod replacement proves it lives in the composed PostgreSQL,
 # exactly what the dev-file/dev-mem sandbox vendors cannot do (and why
 # the spec forces them to a single instance). The verifier sweeps its
-# realm afterwards. Component defaults against the fixture are the
+# realm afterwards. Kind defaults against the fixture are the
 # honest shape for this.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesKeycloak

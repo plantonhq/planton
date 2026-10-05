@@ -33,7 +33,7 @@ export default function S14WhyNow(_props: SlideComponentProps) {
             {
               icon: '🏁',
               title: 'First Mover in AI Teammates for Infrastructure',
-              description: 'We are the first to ship named, skilled AI teammates backed by a validated 370+ component cloud catalog.',
+              description: 'We are the first to ship named, skilled AI teammates backed by a validated infra catalog of 370+ kinds.',
             },
             {
               icon: '🎯',

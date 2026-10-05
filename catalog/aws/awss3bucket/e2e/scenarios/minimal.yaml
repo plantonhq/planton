@@ -19,7 +19,7 @@ metadata:
   # the managed-by label also tags the bucket for orphan cleanup.
   labels:
     managed-by: planton-e2e
-    e2e-component: awss3bucket
+    e2e-catalog-kind: awss3bucket
   annotations:
     planton.dev/e2e: "true"
   tags:

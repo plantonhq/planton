@@ -21,9 +21,9 @@ import (
 )
 
 // Dir is the price books' home, relative to the repo root. Prices live
-// centrally rather than beside components because one SKU's price serves
-// many components and churns on the provider's cadence -- one tree to
-// refresh, no touch on the components.
+// centrally rather than beside kinds because one SKU's price serves
+// many kinds and churns on the provider's cadence -- one tree to
+// refresh, no touch on the kinds.
 const Dir = "catalog/_pricing/pricebook"
 
 // GlobalRegion is the region value of entries the provider prices

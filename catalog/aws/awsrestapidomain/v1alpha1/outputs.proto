@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsrestapidomain.v1alpha1;
 
-// AwsRestApiDomainStackOutputs captures observable identifiers from a
+// AwsRestApiDomainOutputs captures observable identifiers from a
 // provisioned API Gateway custom domain. DNS records alias to the
 // regional or CloudFront target; access associations key off the
 // domain ARN.
-message AwsRestApiDomainStackOutputs {
+message AwsRestApiDomainOutputs {
   // The custom domain name.
   string domain_name = 1;
 

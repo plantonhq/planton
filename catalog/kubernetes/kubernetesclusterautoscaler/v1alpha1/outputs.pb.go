@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesClusterAutoscalerStackOutputs captures observable outputs after
+// KubernetesClusterAutoscalerOutputs captures observable outputs after
 // the Cluster Autoscaler is installed on the target cluster.
-type KubernetesClusterAutoscalerStackOutputs struct {
+type KubernetesClusterAutoscalerOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the autoscaler was installed into (the resolved
 	// spec.namespace).
@@ -40,20 +40,20 @@ type KubernetesClusterAutoscalerStackOutputs struct {
 	sizeCache          protoimpl.SizeCache
 }
 
-func (x *KubernetesClusterAutoscalerStackOutputs) Reset() {
-	*x = KubernetesClusterAutoscalerStackOutputs{}
+func (x *KubernetesClusterAutoscalerOutputs) Reset() {
+	*x = KubernetesClusterAutoscalerOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesClusterAutoscalerStackOutputs) String() string {
+func (x *KubernetesClusterAutoscalerOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesClusterAutoscalerStackOutputs) ProtoMessage() {}
+func (*KubernetesClusterAutoscalerOutputs) ProtoMessage() {}
 
-func (x *KubernetesClusterAutoscalerStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesClusterAutoscalerOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -65,26 +65,26 @@ func (x *KubernetesClusterAutoscalerStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesClusterAutoscalerStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesClusterAutoscalerStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesClusterAutoscalerOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesClusterAutoscalerOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesClusterAutoscalerStackOutputs) GetNamespace() string {
+func (x *KubernetesClusterAutoscalerOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesClusterAutoscalerStackOutputs) GetReleaseName() string {
+func (x *KubernetesClusterAutoscalerOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
 	return ""
 }
 
-func (x *KubernetesClusterAutoscalerStackOutputs) GetServiceAccountName() string {
+func (x *KubernetesClusterAutoscalerOutputs) GetServiceAccountName() string {
 	if x != nil {
 		return x.ServiceAccountName
 	}
@@ -95,8 +95,8 @@ var File_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_outputs_proto p
 
 const file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/kubernetes/kubernetesclusterautoscaler/v1alpha1/outputs.proto\x12;dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1\"\x9c\x01\n" +
-	"'KubernetesClusterAutoscalerStackOutputs\x12\x1c\n" +
+	"Ecatalog/kubernetes/kubernetesclusterautoscaler/v1alpha1/outputs.proto\x12;dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1\"\x97\x01\n" +
+	"\"KubernetesClusterAutoscalerOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseName\x120\n" +
 	"\x14service_account_name\x18\x03 \x01(\tR\x12serviceAccountNameB\xda\x03\n" +
@@ -116,7 +116,7 @@ func file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_outputs_proto_
 
 var file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesClusterAutoscalerStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerStackOutputs
+	(*KubernetesClusterAutoscalerOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1.KubernetesClusterAutoscalerOutputs
 }
 var file_catalog_kubernetes_kubernetesclusterautoscaler_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

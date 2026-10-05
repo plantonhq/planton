@@ -21,10 +21,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareCacheSettingsStackOutputs captures the observable outputs after applying
+// CloudflareCacheSettingsOutputs captures the observable outputs after applying
 // a zone's cache settings. Cache settings are a zone-scoped singleton with no
 // resource id of their own -- the zone is the identity.
-type CloudflareCacheSettingsStackOutputs struct {
+type CloudflareCacheSettingsOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The zone ID the cache settings belong to (the singleton's identity, and the
 	// pass-through for downstream resource references).
@@ -33,20 +33,20 @@ type CloudflareCacheSettingsStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareCacheSettingsStackOutputs) Reset() {
-	*x = CloudflareCacheSettingsStackOutputs{}
+func (x *CloudflareCacheSettingsOutputs) Reset() {
+	*x = CloudflareCacheSettingsOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarecachesettings_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareCacheSettingsStackOutputs) String() string {
+func (x *CloudflareCacheSettingsOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareCacheSettingsStackOutputs) ProtoMessage() {}
+func (*CloudflareCacheSettingsOutputs) ProtoMessage() {}
 
-func (x *CloudflareCacheSettingsStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareCacheSettingsOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarecachesettings_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,12 +58,12 @@ func (x *CloudflareCacheSettingsStackOutputs) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareCacheSettingsStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareCacheSettingsStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareCacheSettingsOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareCacheSettingsOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarecachesettings_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareCacheSettingsStackOutputs) GetZoneId() string {
+func (x *CloudflareCacheSettingsOutputs) GetZoneId() string {
 	if x != nil {
 		return x.ZoneId
 	}
@@ -74,8 +74,8 @@ var File_catalog_cloudflare_cloudflarecachesettings_v1alpha1_outputs_proto proto
 
 const file_catalog_cloudflare_cloudflarecachesettings_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/cloudflare/cloudflarecachesettings/v1alpha1/outputs.proto\x127dev.planton.cloudflare.cloudflarecachesettings.v1alpha1\">\n" +
-	"#CloudflareCacheSettingsStackOutputs\x12\x17\n" +
+	"Acatalog/cloudflare/cloudflarecachesettings/v1alpha1/outputs.proto\x127dev.planton.cloudflare.cloudflarecachesettings.v1alpha1\"9\n" +
+	"\x1eCloudflareCacheSettingsOutputs\x12\x17\n" +
 	"\azone_id\x18\x01 \x01(\tR\x06zoneIdB\xbe\x03\n" +
 	";com.dev.planton.cloudflare.cloudflarecachesettings.v1alpha1B\fOutputsProtoP\x01Zpgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarecachesettings/v1alpha1;cloudflarecachesettingsv1alpha1\xa2\x02\x04DPCC\xaa\x027Dev.Planton.Cloudflare.Cloudflarecachesettings.V1alpha1\xca\x027Dev\\Planton\\Cloudflare\\Cloudflarecachesettings\\V1alpha1\xe2\x02CDev\\Planton\\Cloudflare\\Cloudflarecachesettings\\V1alpha1\\GPBMetadata\xea\x02;Dev::Planton::Cloudflare::Cloudflarecachesettings::V1alpha1b\x06proto3"
 
@@ -93,7 +93,7 @@ func file_catalog_cloudflare_cloudflarecachesettings_v1alpha1_outputs_proto_rawD
 
 var file_catalog_cloudflare_cloudflarecachesettings_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarecachesettings_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareCacheSettingsStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsStackOutputs
+	(*CloudflareCacheSettingsOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarecachesettings.v1alpha1.CloudflareCacheSettingsOutputs
 }
 var file_catalog_cloudflare_cloudflarecachesettings_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

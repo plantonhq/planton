@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMachineLearningComputeClusterStackOutputs** captures the
+// **AzureMachineLearningComputeClusterOutputs** captures the
 // outputs of provisioning a Machine Learning compute cluster.
-type AzureMachineLearningComputeClusterStackOutputs struct {
+type AzureMachineLearningComputeClusterOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the compute cluster.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.MachineLearningServices/workspaces/{ws}/computes/{name}
@@ -39,20 +39,20 @@ type AzureMachineLearningComputeClusterStackOutputs struct {
 	sizeCache                         protoimpl.SizeCache
 }
 
-func (x *AzureMachineLearningComputeClusterStackOutputs) Reset() {
-	*x = AzureMachineLearningComputeClusterStackOutputs{}
+func (x *AzureMachineLearningComputeClusterOutputs) Reset() {
+	*x = AzureMachineLearningComputeClusterOutputs{}
 	mi := &file_catalog_azure_azuremachinelearningcomputecluster_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMachineLearningComputeClusterStackOutputs) String() string {
+func (x *AzureMachineLearningComputeClusterOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMachineLearningComputeClusterStackOutputs) ProtoMessage() {}
+func (*AzureMachineLearningComputeClusterOutputs) ProtoMessage() {}
 
-func (x *AzureMachineLearningComputeClusterStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMachineLearningComputeClusterOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremachinelearningcomputecluster_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,26 +64,26 @@ func (x *AzureMachineLearningComputeClusterStackOutputs) ProtoReflect() protoref
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMachineLearningComputeClusterStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMachineLearningComputeClusterStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMachineLearningComputeClusterOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMachineLearningComputeClusterOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremachinelearningcomputecluster_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMachineLearningComputeClusterStackOutputs) GetMachineLearningComputeClusterId() string {
+func (x *AzureMachineLearningComputeClusterOutputs) GetMachineLearningComputeClusterId() string {
 	if x != nil {
 		return x.MachineLearningComputeClusterId
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningComputeClusterStackOutputs) GetMachineLearningComputeClusterName() string {
+func (x *AzureMachineLearningComputeClusterOutputs) GetMachineLearningComputeClusterName() string {
 	if x != nil {
 		return x.MachineLearningComputeClusterName
 	}
 	return ""
 }
 
-func (x *AzureMachineLearningComputeClusterStackOutputs) GetSystemAssignedIdentityPrincipalId() string {
+func (x *AzureMachineLearningComputeClusterOutputs) GetSystemAssignedIdentityPrincipalId() string {
 	if x != nil {
 		return x.SystemAssignedIdentityPrincipalId
 	}
@@ -94,8 +94,8 @@ var File_catalog_azure_azuremachinelearningcomputecluster_v1alpha1_outputs_proto
 
 const file_catalog_azure_azuremachinelearningcomputecluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/azure/azuremachinelearningcomputecluster/v1alpha1/outputs.proto\x12=dev.planton.azure.azuremachinelearningcomputecluster.v1alpha1\"\xa2\x02\n" +
-	".AzureMachineLearningComputeClusterStackOutputs\x12L\n" +
+	"Gcatalog/azure/azuremachinelearningcomputecluster/v1alpha1/outputs.proto\x12=dev.planton.azure.azuremachinelearningcomputecluster.v1alpha1\"\x9d\x02\n" +
+	")AzureMachineLearningComputeClusterOutputs\x12L\n" +
 	"#machine_learning_compute_cluster_id\x18\x01 \x01(\tR\x1fmachineLearningComputeClusterId\x12P\n" +
 	"%machine_learning_compute_cluster_name\x18\x02 \x01(\tR!machineLearningComputeClusterName\x12P\n" +
 	"%system_assigned_identity_principal_id\x18\x03 \x01(\tR!systemAssignedIdentityPrincipalIdB\xee\x03\n" +
@@ -115,7 +115,7 @@ func file_catalog_azure_azuremachinelearningcomputecluster_v1alpha1_outputs_prot
 
 var file_catalog_azure_azuremachinelearningcomputecluster_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremachinelearningcomputecluster_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMachineLearningComputeClusterStackOutputs)(nil), // 0: dev.planton.azure.azuremachinelearningcomputecluster.v1alpha1.AzureMachineLearningComputeClusterStackOutputs
+	(*AzureMachineLearningComputeClusterOutputs)(nil), // 0: dev.planton.azure.azuremachinelearningcomputecluster.v1alpha1.AzureMachineLearningComputeClusterOutputs
 }
 var file_catalog_azure_azuremachinelearningcomputecluster_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

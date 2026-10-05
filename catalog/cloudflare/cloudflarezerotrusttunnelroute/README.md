@@ -38,7 +38,7 @@ spec:
 | `virtualNetworkId` | no | Virtual network UUID (literal or `CloudflareZeroTrustTunnelVirtualNetwork` ref); omit for the account default |
 | `comment` | no | Remark describing the route |
 
-## Stack outputs
+## Outputs
 
 | Output | Description |
 |---|---|

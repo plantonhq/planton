@@ -7,11 +7,11 @@ import "catalog/auth0/auth0connection/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0connection/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0Connection is a component that configures an identity connection in Auth0.
+// Auth0Connection is a kind that configures an identity connection in Auth0.
 // Connections are the bridge between Auth0 and identity sources, enabling users to authenticate
 // using various methods including databases, social providers, and enterprise identity providers.
 //
-// This component supports:
+// This kind supports:
 // - Database connections (Auth0's hosted user database)
 // - Social connections (Google, Facebook, GitHub, LinkedIn, etc.)
 // - Enterprise connections (SAML, OIDC, Azure AD/Entra ID)
@@ -46,12 +46,12 @@ message Auth0Connection {
   // Must be "Auth0Connection" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'Auth0Connection'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the connection within Planton
   // - org: Organization that owns this connection
   // - env: Environment (development, staging, production)
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the desired configuration for the Auth0 connection.
   // This includes the connection strategy, authentication options, and provider-specific settings.
@@ -66,8 +66,8 @@ message Auth0Connection {
 // Auth0ConnectionStatus represents the current state of an Auth0 Connection resource.
 // This is populated by the deployment system and contains read-only outputs.
 message Auth0ConnectionStatus {
-  // outputs contains the stack outputs from the Auth0 connection deployment.
+  // outputs contains the outputs from the Auth0 connection deployment.
   // These values are populated after successful deployment and include
   // resource identifiers, callback URLs, and other important reference information.
-  Auth0ConnectionStackOutputs outputs = 1;
+  Auth0ConnectionOutputs outputs = 1;
 }

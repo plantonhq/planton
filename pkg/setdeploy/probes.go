@@ -20,7 +20,7 @@ import (
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumibinary"
 	"github.com/plantonhq/planton/pkg/iac/tofu/backendconfig"
 	"github.com/plantonhq/planton/pkg/iac/tofu/tofuzip"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"golang.org/x/oauth2/google"
 	goyaml "gopkg.in/yaml.v3"
 )
@@ -82,7 +82,7 @@ type Probes interface {
 	// ProviderCredentials verifies the ambient credentials for one provider
 	// actually authenticate (a live identity call, not a file check).
 	// Providers without a probe degrade to stated assumptions.
-	ProviderCredentials(provider cloudresourcekind.CloudResourceProvider) ProbeResult
+	ProviderCredentials(provider catalogkind.CatalogProvider) ProbeResult
 
 	// KubeContext verifies a named kubectl context exists in the local
 	// kubeconfig.
@@ -269,12 +269,12 @@ func expandHome(path string) string {
 	return path
 }
 
-func (LiveProbes) ProviderCredentials(provider cloudresourcekind.CloudResourceProvider) ProbeResult {
+func (LiveProbes) ProviderCredentials(provider catalogkind.CatalogProvider) ProbeResult {
 	ctx, cancel := context.WithTimeout(context.Background(), probeTimeout)
 	defer cancel()
 
 	switch provider {
-	case cloudresourcekind.CloudResourceProvider_aws:
+	case catalogkind.CatalogProvider_aws:
 		awsCfg, err := awsconfig.LoadDefaultConfig(ctx)
 		if err != nil {
 			return refused("aws credentials: none usable in the environment (%v) — configure credentials (or the runner's OIDC step)", err)
@@ -284,7 +284,7 @@ func (LiveProbes) ProviderCredentials(provider cloudresourcekind.CloudResourcePr
 			return refused("aws credentials do not authenticate (%v) — fix the credentials (or the runner's OIDC step)", err)
 		}
 		return verified("aws credentials authenticate (account %s)", safeDeref(out.Account))
-	case cloudresourcekind.CloudResourceProvider_gcp:
+	case catalogkind.CatalogProvider_gcp:
 		creds, err := google.FindDefaultCredentials(ctx, "https://www.googleapis.com/auth/cloud-platform")
 		if err != nil {
 			return refused("gcp credentials: no application default credentials found (%v) — run `gcloud auth application-default login` (or the runner's OIDC step)", err)
@@ -293,7 +293,7 @@ func (LiveProbes) ProviderCredentials(provider cloudresourcekind.CloudResourcePr
 			return refused("gcp credentials do not authenticate (%v)", err)
 		}
 		return verified("gcp credentials authenticate")
-	case cloudresourcekind.CloudResourceProvider_azure:
+	case catalogkind.CatalogProvider_azure:
 		cred, err := azidentity.NewDefaultAzureCredential(nil)
 		if err != nil {
 			return refused("azure credentials: no usable credential chain (%v) — run `az login` (or the runner's OIDC step)", err)
@@ -302,7 +302,7 @@ func (LiveProbes) ProviderCredentials(provider cloudresourcekind.CloudResourcePr
 			return refused("azure credentials do not authenticate (%v) — run `az login` (or the runner's OIDC step)", err)
 		}
 		return verified("azure credentials authenticate")
-	case cloudresourcekind.CloudResourceProvider_kubernetes:
+	case catalogkind.CatalogProvider_kubernetes:
 		// Cluster reachability is per kube context, verified by KubeContext;
 		// there is no provider-level ambient identity to probe.
 		return assumed("kubernetes access is verified per kube context")

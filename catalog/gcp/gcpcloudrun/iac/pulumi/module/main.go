@@ -7,12 +7,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Resources is the Pulumi program entry-point for the GcpCloudRun component.
-func Resources(ctx *pulumi.Context, stackInput *gcpcloudrunv1alpha1.GcpCloudRunStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+// Resources is the Pulumi program entry-point for the GcpCloudRun kind.
+func Resources(ctx *pulumi.Context, iacInput *gcpcloudrunv1alpha1.GcpCloudRunIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// Set up the GCP provider from the supplied credential.
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

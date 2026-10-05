@@ -29,7 +29,7 @@ func validResource() *AzureComputeGallery {
 	return &AzureComputeGallery{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureComputeGallery",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-gallery",
 		},
 		Spec: &AzureComputeGallerySpec{

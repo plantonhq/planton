@@ -8,9 +8,9 @@
 # are leader-elected hot standbys, each reserving the declared resources.
 # The listener and runner pods the controller CREATES ride the
 # KubernetesGhaRunnerScaleSet resources that declare the fleets.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesgharunnerscalesetcontroller
 spec:

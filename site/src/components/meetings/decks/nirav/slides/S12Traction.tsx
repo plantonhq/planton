@@ -15,7 +15,7 @@ export default function S12Traction(_props: SlideComponentProps) {
         stats={[
           { icon: '📅', value: '3+', label: 'Years Building' },
           { icon: '💰', value: '$500K+', label: 'Self-Funded' },
-          { icon: '📦', value: '370+', label: 'Cloud Resources' },
+          { icon: '📦', value: '370+', label: 'Catalog Kinds' },
           { icon: '👥', value: '3', label: 'Active Customers' },
           { icon: '🖥️', value: '4', label: 'App Surfaces' },
         ]}
@@ -28,7 +28,7 @@ export default function S12Traction(_props: SlideComponentProps) {
             '3 customers actively using the platform — Pro, Plus, and Free tiers',
             '100% retention — zero churn since first paying customer 8 months ago',
             'Both Planton and Stigmer run on Planton — 100% dogfooding',
-            '370+ cloud resource kinds across 14 cloud providers',
+            '370+ catalog kinds across 14 cloud providers',
             'Complete platform: Web + Desktop + Mobile + CLI',
             'Open-source IaC foundation (Planton) — zero lock-in',
           ]}

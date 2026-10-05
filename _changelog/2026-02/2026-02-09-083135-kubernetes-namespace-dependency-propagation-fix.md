@@ -6,20 +6,20 @@
 
 ## Summary
 
-Fixed a race condition across all 48 Kubernetes components where child resources (Deployments, Services, Secrets, Helm Releases, etc.) could be created before the namespace existed when `create_namespace: true`. The fix adds explicit `pulumi.DependsOn` dependencies from all child resources to the conditionally-created namespace resource.
+Fixed a race condition across all 48 Kubernetes kinds where child resources (Deployments, Services, Secrets, Helm Releases, etc.) could be created before the namespace existed when `create_namespace: true`. The fix adds explicit `pulumi.DependsOn` dependencies from all child resources to the conditionally-created namespace resource.
 
-Additionally, standardized all components on a separate `namespace.go` file pattern for namespace creation, replacing the inconsistent mix of inline creation in `main.go` (~42 components) and helper function patterns (~6 components).
+Additionally, standardized all kinds on a separate `namespace.go` file pattern for namespace creation, replacing the inconsistent mix of inline creation in `main.go` (~42 kinds) and helper function patterns (~6 kinds).
 
 ## Problem
 
-When `spec.create_namespace = true`, the namespace resource was created but its return value was **discarded** in every Kubernetes component's Pulumi module:
+When `spec.create_namespace = true`, the namespace resource was created but its return value was **discarded** in every Kubernetes kind's Pulumi module:
 
 ```go
-// Pattern A (~42 components): inline in main.go
+// Pattern A (~42 kinds): inline in main.go
 _, err = kubernetescorev1.NewNamespace(ctx, locals.Namespace, ...)
 
-// Pattern B (~6 components): namespace() helper
-_, err = namespace(ctx, stackInput, locals, kubernetesProvider)
+// Pattern B (~6 kinds): namespace() helper
+_, err = namespace(ctx, iacInput, locals, kubernetesProvider)
 ```
 
 Child resources referenced the namespace as a raw string (`pulumi.String(locals.Namespace)`), not as an output of the namespace resource. Pulumi cannot infer dependencies from string literals, so resources could be created in parallel with (or before) the namespace, causing deployment failures.
@@ -28,17 +28,17 @@ Child resources referenced the namespace as a raw string (`pulumi.String(locals.
 
 ### Pulumi: `pulumi.DependsOn` (Terraform `depends_on` equivalent)
 
-Every component now follows this standardized pattern:
+Every kind now follows this standardized pattern:
 
 **1. `namespace.go`** -- Dedicated file for conditional namespace creation:
 
 ```go
 func namespace(ctx *pulumi.Context,
-    stackInput *componentv1.ComponentStackInput,
+    iacInput *kindv1.KindIacInput,
     locals *Locals,
     kubernetesProvider pulumi.ProviderResource,
 ) (*kubernetescorev1.Namespace, error) {
-    if !stackInput.Target.Spec.CreateNamespace {
+    if !iacInput.Target.Spec.CreateNamespace {
         return nil, nil
     }
     createdNamespace, err := kubernetescorev1.NewNamespace(ctx, ...)
@@ -49,7 +49,7 @@ func namespace(ctx *pulumi.Context,
 **2. `main.go`** -- Captures namespace and builds conditional dependency:
 
 ```go
-createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 
 var namespaceDeps []pulumi.ResourceOption
 if createdNamespace != nil {
@@ -80,7 +80,7 @@ Audited all `.tf` files and added `depends_on = [kubernetes_namespace.this]` to 
 - No URN changes -- `pulumi.Parent` would change resource URNs, forcing replacement of existing resources in live stacks
 - Safe for existing deployments -- only affects ordering, not resource identity
 
-## Components Updated (48)
+## Kinds Updated (48)
 
 kubernetesaltinityoperator, kubernetesargocd, kubernetescertmanager, kubernetesclickhouse, kubernetescronjob, kubernetesdaemonset, kubernetesdeployment, kuberneteselasticoperator, kuberneteselasticsearch, kubernetesexternaldns, kubernetesexternalsecrets, kubernetesgharunnerscaleset, kubernetesgharunnerscalesetcontroller, kubernetesgitlab, kubernetesgrafana, kubernetesharbor, kuberneteshelmrelease, kubernetesingressnginx, kubernetesistio, kubernetesjenkins, kubernetesjob, kuberneteskafka, kuberneteskeycloak, kuberneteslocust, kubernetesmanifest, kubernetesmongodb, kubernetesnats, kubernetesneo4j, kubernetesopenbao, kubernetesopenfga, kubernetesperconamongooperator, kubernetesperconamysqloperator, kubernetesperconapostgresoperator, kubernetespostgres, kubernetesprometheus, kubernetesredis, kubernetesrookcephcluster, kubernetesrookcephoperator, kubernetessignoz, kubernetessolr, kubernetessolroperator, kubernetesstatefulset, kubernetesstrimzikafkaoperator, kubernetestekton, kubernetestektonoperator, kubernetestemporal, kuberneteszalandopostgresoperator
 
@@ -88,18 +88,18 @@ kubernetesaltinityoperator, kubernetesargocd, kubernetescertmanager, kubernetesc
 
 ## Files Changed
 
-Per component (typical):
-- **New**: `iac/pulumi/module/namespace.go` (for ~42 components that had inline creation)
-- **Modified**: `iac/pulumi/module/main.go` (all 48 components)
-- **Modified**: `iac/pulumi/module/<resource>.go` (child resource files, varies per component)
+Per kind (typical):
+- **New**: `iac/pulumi/module/namespace.go` (for ~42 kinds that had inline creation)
+- **Modified**: `iac/pulumi/module/main.go` (all 48 kinds)
+- **Modified**: `iac/pulumi/module/<resource>.go` (child resource files, varies per kind)
 - **Modified**: `iac/tf/*.tf` (Terraform files missing `depends_on`)
 
-**Estimated total**: ~200+ files across 48 components
+**Estimated total**: ~200+ files across 48 kinds
 
 ## Validation
 
-- All 49 Kubernetes component packages build: `go build ./apis/dev/planton/provider/kubernetes/...`
-- All 49 Kubernetes component packages pass tests: `go test ./apis/dev/planton/provider/kubernetes/...`
+- All 49 Kubernetes kind packages build: `go build ./apis/dev/planton/provider/kubernetes/...`
+- All 49 Kubernetes kind packages pass tests: `go test ./apis/dev/planton/provider/kubernetes/...`
 - Zero compilation errors, zero test failures
 
 ## Breaking Changes
@@ -109,4 +109,4 @@ None. Adding `pulumi.DependsOn` only affects resource creation ordering, not res
 ## Related Work
 
 - [Namespace Creation Control (Dec 16, 2025)](../2025-12/2025-12-16-184915-kubernetes-components-namespace-creation-control.md) -- introduced `create_namespace` field
-- [Namespace Standardization (Nov 23, 2025)](../2025-11/2025-11-23-220641-standardize-kubernetes-components-target-cluster-namespace.md) -- standardized namespace field across components
+- [Namespace Standardization (Nov 23, 2025)](../2025-11/2025-11-23-220641-standardize-kubernetes-kinds-target-cluster-namespace.md) -- standardized namespace field across kinds

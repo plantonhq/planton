@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -31,7 +31,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -50,7 +50,7 @@ var _ = ginkgo.Describe("KubernetesKarpenter Validation Tests", func() {
 		input = &KubernetesKarpenter{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesKarpenter",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-karpenter",
 			},
 			Spec: &KubernetesKarpenterSpec{
@@ -68,7 +68,7 @@ var _ = ginkgo.Describe("KubernetesKarpenter Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "kube-system", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "kube-system", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -118,7 +118,7 @@ var _ = ginkgo.Describe("KubernetesKarpenter Validation Tests", func() {
 			// The one-run composition shape: the controller's role deploys in
 			// the same run and its ARN flows in by reference.
 			input.Spec.Cloud = awsArm(&KubernetesKarpenterAws{
-				IrsaRoleArn: valueFrom(cloudresourcekind.CloudResourceKind_AwsIamRole,
+				IrsaRoleArn: valueFrom(catalogkind.CatalogKind_AwsIamRole,
 					"karpenter-controller", "status.outputs.role_arn"),
 			})
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())

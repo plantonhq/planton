@@ -15,7 +15,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurepublicip
+    e2e-catalog-kind: azurepublicip
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -52,7 +52,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurepublicip
+    e2e-catalog-kind: azurepublicip
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -89,7 +89,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurepublicip
+    e2e-catalog-kind: azurepublicip
   annotations:
     planton.dev/e2e: "true"
   tags:

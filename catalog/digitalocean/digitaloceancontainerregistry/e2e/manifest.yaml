@@ -7,7 +7,7 @@
 #
 # Document 2 -- a production-shaped registry: basic tier, pinned region, and
 # minted docker credentials (push access, 30-day expiry) exported through the
-# docker_credentials stack output.
+# docker_credentials output.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanContainerRegistry
 metadata:

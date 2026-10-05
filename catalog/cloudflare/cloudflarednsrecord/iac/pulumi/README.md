@@ -8,14 +8,6 @@ This Pulumi module provisions a Cloudflare DNS record.
 - Pulumi CLI
 - Cloudflare API token with DNS:Edit permissions
 
-## Installation
-
-Install required Pulumi plugins:
-
-```bash
-make install-pulumi-plugins
-```
-
 ## Usage
 
 ### As Part of Planton
@@ -28,36 +20,27 @@ planton apply -f manifest.yaml
 
 ### Standalone Usage
 
-1. Set up the stack input as a base64-encoded environment variable:
+Run this module directly with the planton CLI's Pulumi commands. From this directory (it holds `Pulumi.yaml`, so the CLI runs this module):
 
 ```bash
-export STACK_INPUT=$(cat manifest.yaml | base64)
+planton pulumi init --manifest manifest.yaml --stack <org>/<project>/<stack>
+planton pulumi preview --manifest manifest.yaml --stack <org>/<project>/<stack> -p cloudflare-provider-config.yaml
+planton pulumi update --manifest manifest.yaml --stack <org>/<project>/<stack> -p cloudflare-provider-config.yaml
 ```
 
-2. Run Pulumi:
-
-```bash
-pulumi up
-```
+The CLI builds a `CloudflareDnsRecordIacInput` (the manifest as `target`, the provider config file as `provider_config`) and hands it to the module through `IAC_INPUT_YAML_FILE`.
 
 ## Environment Variables
 
+The module reads its `CloudflareDnsRecordIacInput` from the Pulumi config key `planton:iac-input`, or else from one of these:
+
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `STACK_INPUT` | Base64-encoded CloudflareDnsRecordStackInput | Yes |
-| `CLOUDFLARE_API_TOKEN` | Cloudflare API token (alternative to stack input credentials) | No |
+| `IAC_INPUT_YAML` | `CloudflareDnsRecordIacInput` as YAML content (`target` plus optional `provider_config`) | One of these two, when `planton:iac-input` is not set |
+| `IAC_INPUT_YAML_FILE` | Path to a YAML file holding the `CloudflareDnsRecordIacInput` | One of these two, when `planton:iac-input` is not set |
+| `CLOUDFLARE_API_TOKEN` | Cloudflare API token (used when the IaC input carries no `provider_config`) | No |
 
-## Build
-
-```bash
-make build
-```
-
-## Test
-
-```bash
-make test
-```
+A bare manifest is not an IaC input: wrap it under `target`.
 
 ## Module Structure
 
@@ -65,9 +48,8 @@ make test
 .
 ├── main.go           # Pulumi entry point
 ├── Pulumi.yaml       # Pulumi project configuration
-├── Makefile          # Build and test targets
+├── BUILD.bazel       # Bazel build target
 ├── README.md         # This file
-├── overview.md       # Architecture overview
 └── module/
     ├── main.go       # Resource orchestration
     ├── locals.go     # Data transformations
@@ -87,17 +69,17 @@ make test
 
 ## Debugging
 
-Use the debug script for local testing:
+Preview against the test manifest from this directory:
 
 ```bash
-./debug.sh ../../e2e/manifest.yaml
+planton pulumi preview --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack> -p cloudflare-provider-config.yaml
 ```
 
 ## Troubleshooting
 
-### "missing required configuration"
+### "iac-input not found"
 
-Ensure `STACK_INPUT` environment variable is set with base64-encoded manifest.
+The module found no input. Run it through `planton pulumi`, or set `IAC_INPUT_YAML_FILE` (or `IAC_INPUT_YAML`) to a `CloudflareDnsRecordIacInput` with the manifest under `target`.
 
 ### "authentication failed"
 

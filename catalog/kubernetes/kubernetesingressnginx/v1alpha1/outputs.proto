@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesingressnginx.v1alpha1;
 
-// KubernetesIngressNginxStackOutputs captures observable outputs after the
+// KubernetesIngressNginxOutputs captures observable outputs after the
 // ingress-nginx controller installation.
-message KubernetesIngressNginxStackOutputs {
+message KubernetesIngressNginxOutputs {
   // Kubernetes namespace the controller was installed into.
   string namespace = 1;
 

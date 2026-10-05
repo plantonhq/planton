@@ -59,7 +59,7 @@ spec:
 | `subnetIds` | StringValueOrRef[] | Yes (min 1) | Subnets for the link's ENIs. Immutable -- changing the set replaces the link. Spread across at least two AZs for high availability. |
 | `securityGroupIds` | StringValueOrRef[] | No | Security groups on the link's ENIs. Immutable. When omitted, AWS applies no filtering on the link side. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

@@ -4,11 +4,11 @@ Provisions the inbound trusted-sources rule set of a DigitalOcean managed databa
 
 ## Layout
 
-- `main.go` -- entrypoint (`package main`), loads the stack input and calls the module
+- `main.go` -- entrypoint (`package main`), loads the IaC input and calls the module
 - `module/main.go` -- orchestration: locals, provider, resource
 - `module/database_firewall.go` -- the typed-list fan-out and the `DatabaseFirewall` resource
 - `module/locals.go` -- target handle (the firewall's tag rules TARGET tags, they don't apply them -- no label set)
-- `module/outputs.go` -- output key constants (the `DigitalOceanDatabaseFirewallStackOutputs` contract)
+- `module/outputs.go` -- output key constants (the `DigitalOceanDatabaseFirewallOutputs` contract)
 
 ## Behavior notes
 

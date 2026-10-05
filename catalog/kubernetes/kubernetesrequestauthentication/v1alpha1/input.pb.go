@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesRequestAuthenticationStackInput provides the inputs for creating the
+// KubernetesRequestAuthenticationIacInput provides the inputs for creating the
 // RequestAuthentication on a Kubernetes cluster.
-type KubernetesRequestAuthenticationStackInput struct {
+type KubernetesRequestAuthenticationIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *KubernetesRequestAuthentication `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type KubernetesRequestAuthenticationStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesRequestAuthenticationStackInput) Reset() {
-	*x = KubernetesRequestAuthenticationStackInput{}
+func (x *KubernetesRequestAuthenticationIacInput) Reset() {
+	*x = KubernetesRequestAuthenticationIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesRequestAuthenticationStackInput) String() string {
+func (x *KubernetesRequestAuthenticationIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesRequestAuthenticationStackInput) ProtoMessage() {}
+func (*KubernetesRequestAuthenticationIacInput) ProtoMessage() {}
 
-func (x *KubernetesRequestAuthenticationStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesRequestAuthenticationIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *KubernetesRequestAuthenticationStackInput) ProtoReflect() protoreflect.
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesRequestAuthenticationStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesRequestAuthenticationStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesRequestAuthenticationIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesRequestAuthenticationIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesRequestAuthenticationStackInput) GetTarget() *KubernetesRequestAuthentication {
+func (x *KubernetesRequestAuthenticationIacInput) GetTarget() *KubernetesRequestAuthentication {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesRequestAuthenticationStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesRequestAuthenticationIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_input_proto
 
 const file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Gcatalog/kubernetes/kubernetesrequestauthentication/v1alpha1/input.proto\x12?dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1\x1aEcatalog/kubernetes/kubernetesrequestauthentication/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\x80\x02\n" +
-	")KubernetesRequestAuthenticationStackInput\x12x\n" +
+	"Gcatalog/kubernetes/kubernetesrequestauthentication/v1alpha1/input.proto\x12?dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1\x1aEcatalog/kubernetes/kubernetesrequestauthentication/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xfe\x01\n" +
+	"'KubernetesRequestAuthenticationIacInput\x12x\n" +
 	"\x06target\x18\x01 \x01(\v2`.dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1.KubernetesRequestAuthenticationR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xf5\x03\n" +
 	"Ccom.dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_input_prot
 
 var file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesRequestAuthenticationStackInput)(nil), // 0: dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1.KubernetesRequestAuthenticationStackInput
-	(*KubernetesRequestAuthentication)(nil),           // 1: dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1.KubernetesRequestAuthentication
-	(*kubernetes.KubernetesProviderConfig)(nil),       // 2: dev.planton.kubernetes.KubernetesProviderConfig
+	(*KubernetesRequestAuthenticationIacInput)(nil), // 0: dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1.KubernetesRequestAuthenticationIacInput
+	(*KubernetesRequestAuthentication)(nil),         // 1: dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1.KubernetesRequestAuthentication
+	(*kubernetes.KubernetesProviderConfig)(nil),     // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesrequestauthentication_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1.KubernetesRequestAuthenticationStackInput.target:type_name -> dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1.KubernetesRequestAuthentication
-	2, // 1: dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1.KubernetesRequestAuthenticationStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1.KubernetesRequestAuthenticationIacInput.target:type_name -> dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1.KubernetesRequestAuthentication
+	2, // 1: dev.planton.kubernetes.kubernetesrequestauthentication.v1alpha1.KubernetesRequestAuthenticationIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

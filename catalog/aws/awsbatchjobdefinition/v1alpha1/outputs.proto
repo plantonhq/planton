@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbatchjobdefinition.v1alpha1;
 
-// AwsBatchJobDefinitionStackOutputs captures the observable outputs of the
+// AwsBatchJobDefinitionOutputs captures the observable outputs of the
 // registered job definition revision, for EventBridge Batch targets and
 // SubmitJob callers to reference.
-message AwsBatchJobDefinitionStackOutputs {
+message AwsBatchJobDefinitionOutputs {
   // The full ARN of the registered revision, including the revision number
   // (e.g. "arn:aws:batch:us-west-2:123456789012:job-definition/etl:7").
   // The primary handle consumers reference -- because it carries the

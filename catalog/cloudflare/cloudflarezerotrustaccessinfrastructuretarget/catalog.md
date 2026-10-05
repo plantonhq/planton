@@ -4,7 +4,7 @@ Registers an infrastructure target: a server, identified by hostname and private
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Infrastructure Target** — one target on the account binding `hostname` to its IPv4 and/or IPv6 address, each inside a virtual network
 
@@ -12,12 +12,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
 
-- **Zero Trust enabled on the account** — the organization (team name) onboarding step must be done (a CloudflareZeroTrustOrganization Cloud Resource).
+- **Zero Trust enabled on the account** — the organization (team name) onboarding step must be done (a CloudflareZeroTrustOrganization Infra Component).
 - **A tunnel path to the server** (for live SSH brokering) — a CloudflareZeroTrustTunnel whose CloudflareZeroTrustTunnelRoute covers the target's address, in the same virtual network. Registration alone does not make the target reachable.
 - **A virtual network** (only for overlapping CIDRs) — a CloudflareZeroTrustTunnelVirtualNetwork per network segment when two sites reuse the same private ranges.
 
@@ -50,7 +50,7 @@ spec:
 planton apply -f target.yaml
 ```
 
-This registers `prod-db-1` at `10.0.10.5` in the account's default virtual network — inventory only; SSH reachability still needs a tunnel route covering the address. A Stack Job tracks the provisioning in real time.
+This registers `prod-db-1` at `10.0.10.5` in the account's default virtual network — inventory only; SSH reachability still needs a tunnel route covering the address. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -86,15 +86,15 @@ These are the most important decisions when configuring an infrastructure target
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareZeroTrustTunnelVirtualNetwork** (optional, per family) | `ip.ipv4.virtualNetworkId` / `ip.ipv6.virtualNetworkId` | `status.outputs.virtual_network_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,7 +112,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust Tunnel Virtual Network**](/cloud-catalog/cloudflare-zero-trust-tunnel-virtual-network) — the segment the address lives in; disambiguates overlapping CIDRs
-- [**Cloudflare Zero Trust Tunnel Route**](/cloud-catalog/cloudflare-zero-trust-tunnel-route) — the route that makes the target reachable
-- [**Cloudflare Zero Trust Tunnel**](/cloud-catalog/cloudflare-zero-trust-tunnel) — the data path SSH sessions ride
-- [**Cloudflare Zero Trust Access Application**](/cloud-catalog/cloudflare-zero-trust-access-application) — the infrastructure application that selects targets and grants SSH
+- [**Cloudflare Zero Trust Tunnel Virtual Network**](/infra-catalog/cloudflare-zero-trust-tunnel-virtual-network) — the segment the address lives in; disambiguates overlapping CIDRs
+- [**Cloudflare Zero Trust Tunnel Route**](/infra-catalog/cloudflare-zero-trust-tunnel-route) — the route that makes the target reachable
+- [**Cloudflare Zero Trust Tunnel**](/infra-catalog/cloudflare-zero-trust-tunnel) — the data path SSH sessions ride
+- [**Cloudflare Zero Trust Access Application**](/infra-catalog/cloudflare-zero-trust-access-application) — the infrastructure application that selects targets and grants SSH

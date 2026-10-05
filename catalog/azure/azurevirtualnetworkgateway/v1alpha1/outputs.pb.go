@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureVirtualNetworkGatewayStackOutputs** captures the outputs of
+// **AzureVirtualNetworkGatewayOutputs** captures the outputs of
 // provisioning a virtual network gateway.
-type AzureVirtualNetworkGatewayStackOutputs struct {
+type AzureVirtualNetworkGatewayOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the gateway -- what connections
 	// reference as virtual_network_gateway_id.
@@ -41,20 +41,20 @@ type AzureVirtualNetworkGatewayStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureVirtualNetworkGatewayStackOutputs) Reset() {
-	*x = AzureVirtualNetworkGatewayStackOutputs{}
+func (x *AzureVirtualNetworkGatewayOutputs) Reset() {
+	*x = AzureVirtualNetworkGatewayOutputs{}
 	mi := &file_catalog_azure_azurevirtualnetworkgateway_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVirtualNetworkGatewayStackOutputs) String() string {
+func (x *AzureVirtualNetworkGatewayOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVirtualNetworkGatewayStackOutputs) ProtoMessage() {}
+func (*AzureVirtualNetworkGatewayOutputs) ProtoMessage() {}
 
-func (x *AzureVirtualNetworkGatewayStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureVirtualNetworkGatewayOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevirtualnetworkgateway_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -66,26 +66,26 @@ func (x *AzureVirtualNetworkGatewayStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVirtualNetworkGatewayStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureVirtualNetworkGatewayStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVirtualNetworkGatewayOutputs.ProtoReflect.Descriptor instead.
+func (*AzureVirtualNetworkGatewayOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualnetworkgateway_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVirtualNetworkGatewayStackOutputs) GetVirtualNetworkGatewayId() string {
+func (x *AzureVirtualNetworkGatewayOutputs) GetVirtualNetworkGatewayId() string {
 	if x != nil {
 		return x.VirtualNetworkGatewayId
 	}
 	return ""
 }
 
-func (x *AzureVirtualNetworkGatewayStackOutputs) GetVirtualNetworkGatewayName() string {
+func (x *AzureVirtualNetworkGatewayOutputs) GetVirtualNetworkGatewayName() string {
 	if x != nil {
 		return x.VirtualNetworkGatewayName
 	}
 	return ""
 }
 
-func (x *AzureVirtualNetworkGatewayStackOutputs) GetNatRuleIds() map[string]string {
+func (x *AzureVirtualNetworkGatewayOutputs) GetNatRuleIds() map[string]string {
 	if x != nil {
 		return x.NatRuleIds
 	}
@@ -96,11 +96,11 @@ var File_catalog_azure_azurevirtualnetworkgateway_v1alpha1_outputs_proto protore
 
 const file_catalog_azure_azurevirtualnetworkgateway_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azurevirtualnetworkgateway/v1alpha1/outputs.proto\x125dev.planton.azure.azurevirtualnetworkgateway.v1alpha1\"\xf7\x02\n" +
-	"&AzureVirtualNetworkGatewayStackOutputs\x12;\n" +
+	"?catalog/azure/azurevirtualnetworkgateway/v1alpha1/outputs.proto\x125dev.planton.azure.azurevirtualnetworkgateway.v1alpha1\"\xed\x02\n" +
+	"!AzureVirtualNetworkGatewayOutputs\x12;\n" +
 	"\x1avirtual_network_gateway_id\x18\x01 \x01(\tR\x17virtualNetworkGatewayId\x12?\n" +
-	"\x1cvirtual_network_gateway_name\x18\x02 \x01(\tR\x19virtualNetworkGatewayName\x12\x8f\x01\n" +
-	"\fnat_rule_ids\x18\x03 \x03(\v2m.dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStackOutputs.NatRuleIdsEntryR\n" +
+	"\x1cvirtual_network_gateway_name\x18\x02 \x01(\tR\x19virtualNetworkGatewayName\x12\x8a\x01\n" +
+	"\fnat_rule_ids\x18\x03 \x03(\v2h.dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayOutputs.NatRuleIdsEntryR\n" +
 	"natRuleIds\x1a=\n" +
 	"\x0fNatRuleIdsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -121,11 +121,11 @@ func file_catalog_azure_azurevirtualnetworkgateway_v1alpha1_outputs_proto_rawDes
 
 var file_catalog_azure_azurevirtualnetworkgateway_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurevirtualnetworkgateway_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureVirtualNetworkGatewayStackOutputs)(nil), // 0: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStackOutputs
-	nil, // 1: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStackOutputs.NatRuleIdsEntry
+	(*AzureVirtualNetworkGatewayOutputs)(nil), // 0: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayOutputs
+	nil, // 1: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayOutputs.NatRuleIdsEntry
 }
 var file_catalog_azure_azurevirtualnetworkgateway_v1alpha1_outputs_proto_depIdxs = []int32{
-	1, // 0: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStackOutputs.nat_rule_ids:type_name -> dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayStackOutputs.NatRuleIdsEntry
+	1, // 0: dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayOutputs.nat_rule_ids:type_name -> dev.planton.azure.azurevirtualnetworkgateway.v1alpha1.AzureVirtualNetworkGatewayOutputs.NatRuleIdsEntry
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

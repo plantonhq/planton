@@ -48,7 +48,7 @@ relationship edges wherever ordering matters but no output flows.
 
 ### Observability Stack
 
-- A first-class namespace resource owns `observability`; every component
+- A first-class namespace resource owns `observability`; every kind
   joins it — shared-namespace ownership is structural, not conventional.
 - Grafana ships wired to Prometheus, Loki, AND Tempo by reference; team
   dashboards arrive by labeled ConfigMap, never by editing the chart.
@@ -71,7 +71,7 @@ Two chart CI guards were aligned with the loaders they front:
   fails instead of passing silently.
 - The structure guard's non-empty-templates check now walks `templates/`
   recursively and accepts `.yml`, matching the offline validator and the
-  platform project loader — charts may organize templates in subdirectories.
+  platform's Infra Stack loader — charts may organize templates in subdirectories.
 
 ## Validation
 

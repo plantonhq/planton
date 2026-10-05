@@ -12,7 +12,7 @@ This module creates:
 
 ### As a Pulumi program
 
-The module is designed to be invoked from the entry point in `main.go`, which loads an `AwsSagemakerDomainStackInput` and calls `module.Resources()`:
+The module is designed to be invoked from the entry point in `main.go`, which loads an `AwsSagemakerDomainIacInput` and calls `module.Resources()`:
 
 ```go
 package main
@@ -20,30 +20,30 @@ package main
 import (
     awssagemakerdomainv1 "github.com/plantonhq/planton/catalog/aws/awssagemakerdomain/v1alpha1"
     "github.com/plantonhq/planton/catalog/aws/awssagemakerdomain/iac/pulumi/module"
-    "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+    "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
     "github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
     pulumi.Run(func(ctx *pulumi.Context) error {
-        stackInput := &awssagemakerdomainv1.AwsSagemakerDomainStackInput{}
-        if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
+        iacInput := &awssagemakerdomainv1.AwsSagemakerDomainIacInput{}
+        if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
             return err
         }
-        return module.Resources(ctx, stackInput)
+        return module.Resources(ctx, iacInput)
     })
 }
 ```
 
-### Stack Input
+### IaC Input
 
-The stack input is an `AwsSagemakerDomainStackInput` protobuf message containing:
+The IaC input is an `AwsSagemakerDomainIacInput` protobuf message containing:
 - `target` — the `AwsSagemakerDomain` resource (metadata + spec).
 - `provider_config` — optional AWS credentials (region, access key, secret key, session token).
 
 ### Outputs
 
-The module exports 6 stack outputs (see `module/outputs.go` for keys). Access them via `pulumi stack output`:
+The module exports 6 outputs (see `module/outputs.go` for keys). Access them via `pulumi stack output`:
 
 ```bash
 pulumi stack output domain_id
@@ -58,7 +58,7 @@ pulumi stack output single_sign_on_application_arn
 
 | File | Purpose |
 |------|---------|
-| `main.go` | Entry point — loads stack input, runs Pulumi program |
+| `main.go` | Entry point — loads IaC input, runs Pulumi program |
 | `module/main.go` | Orchestrator — resource creation flow + output exports |
 | `module/locals.go` | Locals initialization (labels, resolved target) |
 | `module/domain.go` | SageMaker Domain resource creation |
@@ -68,7 +68,7 @@ pulumi stack output single_sign_on_application_arn
 
 - Go 1.21+
 - Pulumi CLI v3+
-- AWS credentials (ambient or via stack input)
+- AWS credentials (ambient or via IaC input)
 - `pulumi-aws` plugin v7
 
 ## Build

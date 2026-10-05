@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package dev.planton.shared.catalogkind;
+
+import "google/protobuf/descriptor.proto";
+
+//enum value options for catalog-provider
+extend google.protobuf.EnumValueOptions {
+  CatalogProviderMeta provider_meta = 81101;
+}
+
+//metadata for catalog-provider
+message CatalogProviderMeta {
+  //name of the catalog-provider group
+  string group = 1;
+  //display name of the catalog-provider group
+  string display_name = 2;
+}
+
+//catalog provider
+enum CatalogProvider {
+  catalog_provider_unspecified = 0;
+  _test = 1 [(provider_meta) = {
+    group: "_test.planton.dev"
+    display_name: "Test Catalog Kinds"
+  }];
+
+  aws = 12 [(provider_meta) = {
+    group: "aws.planton.dev"
+    display_name: "AWS"
+  }];
+  azure = 13 [(provider_meta) = {
+    group: "azure.planton.dev"
+    display_name: "Azure"
+  }];
+  cloudflare = 15 [(provider_meta) = {
+    group: "cloudflare.planton.dev"
+    display_name: "Cloudflare"
+  }];
+  digital_ocean = 17 [(provider_meta) = {
+    group: "digital-ocean.planton.dev"
+    display_name: "DigitalOcean"
+  }];
+  gcp = 18 [(provider_meta) = {
+    group: "gcp.planton.dev"
+    display_name: "GCP"
+  }];
+  kubernetes = 19 [(provider_meta) = {
+    group: "kubernetes.planton.dev"
+    display_name: "Kubernetes"
+  }];
+  auth0 = 21 [(provider_meta) = {
+    group: "auth0.planton.dev"
+    display_name: "Auth0"
+  }];
+  openfga = 22 [(provider_meta) = {
+    group: "openfga.planton.dev"
+    display_name: "OpenFGA"
+  }];
+  // Credential broker family: one provider serves both HashiCorp Vault and
+  // OpenBAO (the API-compatible fork) -- one wire protocol, one client.
+  vault = 28 [(provider_meta) = {
+    group: "vault.planton.dev"
+    display_name: "Vault"
+  }];
+  stripe = 29 [(provider_meta) = {
+    group: "stripe.planton.dev"
+    display_name: "Stripe"
+  }];
+}

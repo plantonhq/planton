@@ -7,7 +7,7 @@ import "catalog/auth0/auth0promptcustomtext/v1alpha1/outputs.proto";
 import "catalog/auth0/auth0promptcustomtext/v1alpha1/spec.proto";
 import "shared/metadata.proto";
 
-// Auth0PromptCustomText is a component that manages the words one Universal
+// Auth0PromptCustomText is a kind that manages the words one Universal
 // Login prompt shows in one language: every title, description, button and
 // error message on that prompt's screens, in place of Auth0's defaults.
 //
@@ -44,12 +44,12 @@ message Auth0PromptCustomText {
   // Must be "Auth0PromptCustomText" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'Auth0PromptCustomText'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the resource within Planton
   // - org: Organization that owns it
   // - env: Environment it is deployed from
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the prompt, the language, and the words to show.
   Auth0PromptCustomTextSpec spec = 4 [(buf.validate.field).required = true];
@@ -61,6 +61,6 @@ message Auth0PromptCustomText {
 // Auth0PromptCustomTextStatus represents the current state of a Auth0PromptCustomText resource.
 // Populated by the deployment system.
 message Auth0PromptCustomTextStatus {
-  // outputs contains the stack outputs: the prompt and language managed.
-  Auth0PromptCustomTextStackOutputs outputs = 1;
+  // outputs contains the outputs: the prompt and language managed.
+  Auth0PromptCustomTextOutputs outputs = 1;
 }

@@ -36,10 +36,10 @@ type AzureCognitiveAccount struct {
 	// Resource kind. Must be "AzureCognitiveAccount".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Azure AI services account specification.
 	Spec *AzureCognitiveAccountSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureCognitiveAccountStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -89,7 +89,7 @@ func (x *AzureCognitiveAccount) GetKind() string {
 	return ""
 }
 
-func (x *AzureCognitiveAccount) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureCognitiveAccount) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -113,8 +113,8 @@ func (x *AzureCognitiveAccount) GetStatus() *AzureCognitiveAccountStatus {
 // AzureCognitiveAccountStatus holds the deployment outputs.
 type AzureCognitiveAccountStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureCognitiveAccountStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureCognitiveAccountOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,7 +149,7 @@ func (*AzureCognitiveAccountStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecognitiveaccount_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureCognitiveAccountStatus) GetOutputs() *AzureCognitiveAccountStackOutputs {
+func (x *AzureCognitiveAccountStatus) GetOutputs() *AzureCognitiveAccountOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -167,11 +167,11 @@ const file_catalog_azure_azurecognitiveaccount_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15AzureCognitiveAccountR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12g\n" +
 	"\x04spec\x18\x04 \x01(\v2K.dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12e\n" +
-	"\x06status\x18\x05 \x01(\v2M.dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStatusR\x06status\"\x8c\x01\n" +
-	"\x1bAzureCognitiveAccountStatus\x12m\n" +
-	"\aoutputs\x18\x01 \x01(\v2S.dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStackOutputsR\aoutputsB\x8e\x03\n" +
+	"\x06status\x18\x05 \x01(\v2M.dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStatusR\x06status\"\x87\x01\n" +
+	"\x1bAzureCognitiveAccountStatus\x12h\n" +
+	"\aoutputs\x18\x01 \x01(\v2N.dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountOutputsR\aoutputsB\x8e\x03\n" +
 	"4com.dev.planton.azure.azurecognitiveaccount.v1alpha1B\bApiProtoP\x01Zggithub.com/plantonhq/planton/catalog/azure/azurecognitiveaccount/v1alpha1;azurecognitiveaccountv1alpha1\xa2\x02\x04DPAA\xaa\x020Dev.Planton.Azure.Azurecognitiveaccount.V1alpha1\xca\x020Dev\\Planton\\Azure\\Azurecognitiveaccount\\V1alpha1\xe2\x02<Dev\\Planton\\Azure\\Azurecognitiveaccount\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Azure::Azurecognitiveaccount::V1alpha1b\x06proto3"
 
 var (
@@ -188,17 +188,17 @@ func file_catalog_azure_azurecognitiveaccount_v1alpha1_api_proto_rawDescGZIP() [
 
 var file_catalog_azure_azurecognitiveaccount_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurecognitiveaccount_v1alpha1_api_proto_goTypes = []any{
-	(*AzureCognitiveAccount)(nil),             // 0: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccount
-	(*AzureCognitiveAccountStatus)(nil),       // 1: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureCognitiveAccountSpec)(nil),         // 3: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountSpec
-	(*AzureCognitiveAccountStackOutputs)(nil), // 4: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStackOutputs
+	(*AzureCognitiveAccount)(nil),        // 0: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccount
+	(*AzureCognitiveAccountStatus)(nil),  // 1: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureCognitiveAccountSpec)(nil),    // 3: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountSpec
+	(*AzureCognitiveAccountOutputs)(nil), // 4: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountOutputs
 }
 var file_catalog_azure_azurecognitiveaccount_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccount.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccount.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccount.spec:type_name -> dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountSpec
 	1, // 2: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccount.status:type_name -> dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStatus
-	4, // 3: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStatus.outputs:type_name -> dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStackOutputs
+	4, // 3: dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountStatus.outputs:type_name -> dev.planton.azure.azurecognitiveaccount.v1alpha1.AzureCognitiveAccountOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

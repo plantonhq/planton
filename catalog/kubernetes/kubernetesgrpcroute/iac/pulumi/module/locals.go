@@ -7,7 +7,7 @@ import (
 
 // Locals holds the resolved inputs the module operates on: the full target
 // resource plus the scalar identifiers used for the resource name, namespace,
-// labels, and stack outputs.
+// labels, and outputs.
 type Locals struct {
 	KubernetesGrpcRoute *kubernetesgrpcroutev1alpha1.KubernetesGrpcRoute
 	RouteName           string
@@ -15,8 +15,8 @@ type Locals struct {
 	Labels              map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *kubernetesgrpcroutev1alpha1.KubernetesGrpcRouteStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *kubernetesgrpcroutev1alpha1.KubernetesGrpcRouteIacInput) *Locals {
+	target := iacInput.Target
 	metadata := target.Metadata
 	spec := target.Spec
 

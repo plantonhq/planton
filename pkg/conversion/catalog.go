@@ -7,8 +7,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // Conversion specs live beside the kind's protos:
@@ -32,7 +32,7 @@ func SpecFiles(fsys fs.FS) ([]string, error) {
 // SpecsForKind loads every conversion spec authored for the kind. The kind's
 // directory is located by resolving directory names through the registry --
 // never by recomposing names -- so lookup follows whatever the registry says.
-func SpecsForKind(fsys fs.FS, kind cloudresourcekind.CloudResourceKind) ([]*Spec, error) {
+func SpecsForKind(fsys fs.FS, kind catalogkind.CatalogKind) ([]*Spec, error) {
 	files, err := SpecFiles(fsys)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func SpecsForKind(fsys fs.FS, kind cloudresourcekind.CloudResourceKind) ([]*Spec
 	var specs []*Spec
 	for _, file := range files {
 		kindDir := path.Base(path.Dir(path.Dir(file)))
-		if crkreflect.KindFromString(kindDir) != kind {
+		if catalogkindreflect.KindFromString(kindDir) != kind {
 			continue
 		}
 		spec, err := loadSpecFS(fsys, file)

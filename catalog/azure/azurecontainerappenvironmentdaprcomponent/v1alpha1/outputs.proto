@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecontainerappenvironmentdaprcomponent.v1alpha1;
 
-// **AzureContainerAppEnvironmentDaprComponentStackOutputs** captures the
+// **AzureContainerAppEnvironmentDaprComponentOutputs** captures the
 // outputs of registering a Dapr component on a Container App Environment.
 //
 // Apps consume the component through Dapr's runtime by its name (scoped
 // via their dapr.app_id), so the name output is the practical handle.
-message AzureContainerAppEnvironmentDaprComponentStackOutputs {
+message AzureContainerAppEnvironmentDaprComponentOutputs {
   // The Azure Resource Manager ID of the Dapr component.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/managedEnvironments/{env}/daprComponents/{name}
   string dapr_component_id = 1;

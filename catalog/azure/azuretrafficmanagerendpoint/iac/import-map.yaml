@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuretrafficmanagerendpoint
 spec:
@@ -11,7 +11,7 @@ spec:
   values:
     - name: endpoint_id
       derivations:
-        - from_stack_output: endpoint_id
+        - from_output: endpoint_id
       where_to_find: >-
         Compose {profile-id}/{TYPE}/{endpoint-name} (TYPE is
         AzureEndpoints, ExternalEndpoints, or NestedEndpoints), or `az

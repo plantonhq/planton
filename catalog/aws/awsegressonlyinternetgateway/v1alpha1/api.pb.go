@@ -33,7 +33,7 @@ type AwsEgressOnlyInternetGateway struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AwsEgressOnlyInternetGatewaySpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *AwsEgressOnlyInternetGateway) GetKind() string {
 	return ""
 }
 
-func (x *AwsEgressOnlyInternetGateway) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsEgressOnlyInternetGateway) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AwsEgressOnlyInternetGateway) GetStatus() *AwsEgressOnlyInternetGateway
 // AwsEgressOnlyInternetGateway.
 type AwsEgressOnlyInternetGatewayStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
-	Outputs       *AwsEgressOnlyInternetGatewayStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs
+	Outputs       *AwsEgressOnlyInternetGatewayOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AwsEgressOnlyInternetGatewayStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsegressonlyinternetgateway_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsEgressOnlyInternetGatewayStatus) GetOutputs() *AwsEgressOnlyInternetGatewayStackOutputs {
+func (x *AwsEgressOnlyInternetGatewayStatus) GetOutputs() *AwsEgressOnlyInternetGatewayOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_aws_awsegressonlyinternetgateway_v1alpha1_api_proto_rawDesc =
 	"apiVersion\x127\n" +
 	"\x04kind\x18\x02 \x01(\tB#\xbaH r\x1e\n" +
 	"\x1cAwsEgressOnlyInternetGatewayR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12s\n" +
 	"\x04spec\x18\x04 \x01(\v2W.dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewaySpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12q\n" +
-	"\x06status\x18\x05 \x01(\v2Y.dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayStatusR\x06status\"\x9f\x01\n" +
-	"\"AwsEgressOnlyInternetGatewayStatus\x12y\n" +
-	"\aoutputs\x18\x01 \x01(\v2_.dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayStackOutputsR\aoutputsB\xb3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Y.dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayStatusR\x06status\"\x9a\x01\n" +
+	"\"AwsEgressOnlyInternetGatewayStatus\x12t\n" +
+	"\aoutputs\x18\x01 \x01(\v2Z.dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayOutputsR\aoutputsB\xb3\x03\n" +
 	"9com.dev.planton.aws.awsegressonlyinternetgateway.v1alpha1B\bApiProtoP\x01Zsgithub.com/plantonhq/planton/catalog/aws/awsegressonlyinternetgateway/v1alpha1;awsegressonlyinternetgatewayv1alpha1\xa2\x02\x04DPAA\xaa\x025Dev.Planton.Aws.Awsegressonlyinternetgateway.V1alpha1\xca\x025Dev\\Planton\\Aws\\Awsegressonlyinternetgateway\\V1alpha1\xe2\x02ADev\\Planton\\Aws\\Awsegressonlyinternetgateway\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Aws::Awsegressonlyinternetgateway::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_aws_awsegressonlyinternetgateway_v1alpha1_api_proto_rawDescGZI
 
 var file_catalog_aws_awsegressonlyinternetgateway_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awsegressonlyinternetgateway_v1alpha1_api_proto_goTypes = []any{
-	(*AwsEgressOnlyInternetGateway)(nil),             // 0: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGateway
-	(*AwsEgressOnlyInternetGatewayStatus)(nil),       // 1: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayStatus
-	(*shared.CloudResourceMetadata)(nil),             // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsEgressOnlyInternetGatewaySpec)(nil),         // 3: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewaySpec
-	(*AwsEgressOnlyInternetGatewayStackOutputs)(nil), // 4: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayStackOutputs
+	(*AwsEgressOnlyInternetGateway)(nil),        // 0: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGateway
+	(*AwsEgressOnlyInternetGatewayStatus)(nil),  // 1: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayStatus
+	(*shared.CatalogObjectMetadata)(nil),        // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsEgressOnlyInternetGatewaySpec)(nil),    // 3: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewaySpec
+	(*AwsEgressOnlyInternetGatewayOutputs)(nil), // 4: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayOutputs
 }
 var file_catalog_aws_awsegressonlyinternetgateway_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGateway.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGateway.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGateway.spec:type_name -> dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewaySpec
 	1, // 2: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGateway.status:type_name -> dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayStatus
-	4, // 3: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayStatus.outputs:type_name -> dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayStackOutputs
+	4, // 3: dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayStatus.outputs:type_name -> dev.planton.aws.awsegressonlyinternetgateway.v1alpha1.AwsEgressOnlyInternetGatewayOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

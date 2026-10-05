@@ -1,4 +1,4 @@
-# AzureMysqlFlexibleServer Deployment Component (R12)
+# AzureMysqlFlexibleServer Catalog Kind (R12)
 
 **Date**: February 13, 2026
 **Type**: Feature
@@ -10,17 +10,17 @@ Forged AzureMysqlFlexibleServer (enum 434, id_prefix `azmysql`) as the second da
 
 ## Problem Statement / Motivation
 
-The Azure resource expansion project requires 24 resource kinds to cover enterprise Azure workloads. AzureMysqlFlexibleServer is critical for the database-stack infra chart, serving organizations that use MySQL as their primary relational database.
+The Azure resource expansion project requires 24 resource kinds to cover enterprise Azure workloads. AzureMysqlFlexibleServer is critical for the database-stack Infra Chart, serving organizations that use MySQL as their primary relational database.
 
 ### Pain Points
 
 - T02 spec design had 13 inaccuracies that would have produced broken or suboptimal IaC modules
 - MySQL Flexible Server has significant structural differences from PostgreSQL (storage, database/firewall API, auth) that required careful provider research
-- Without MySQL support, the database-stack infra chart cannot serve MySQL-based workloads
+- Without MySQL support, the database-stack Infra Chart cannot serve MySQL-based workloads
 
 ## Solution / What's New
 
-Complete AzureMysqlFlexibleServer deployment component with dual IaC (Pulumi + Terraform), following the composite bundling pattern (server + databases + firewall rules per DD03).
+Complete AzureMysqlFlexibleServer catalog kind with dual IaC (Pulumi + Terraform), following the composite bundling pattern (server + databases + firewall rules per DD03).
 
 ### 13 Corrections from T02 Spec
 
@@ -55,13 +55,13 @@ Complete AzureMysqlFlexibleServer deployment component with dual IaC (Pulumi + T
 
 ### Files Created
 
-- **Proto API**: 4 proto files (spec, stack_outputs, api, stack_input) + generated .pb.go + .ts stubs
+- **Proto API**: 4 proto files (spec, outputs, api, iac_input) + generated .pb.go + .ts stubs
 - **Spec tests**: 41 validation tests covering all fields, edge cases, MySQL-specific validations
 - **Pulumi module**: main.go + module/ (main.go, locals.go, outputs.go) using `mysql` package
 - **Terraform module**: main.tf, variables.tf, locals.tf, outputs.tf, provider.tf
 - **Documentation**: README.md, examples.md (6 YAML examples), docs/README.md (research)
 - **Supporting**: hack/manifest.yaml test manifest
-- **Registry**: cloud_resource_kind.proto enum 434
+- **Registry**: catalog_kind.proto enum 434
 
 ## Benefits
 

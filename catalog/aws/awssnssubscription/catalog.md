@@ -4,7 +4,7 @@ Deploys the delivery edge that wires an SNS topic to a target endpoint — an SQ
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SNS Subscription** -- attaches the chosen endpoint to the topic using the configured protocol. SQS, Lambda, Firehose, and mobile push endpoints confirm automatically; HTTP/S endpoints go through a confirmation handshake and email recipients confirm with a manual click
 - **Message Filter** -- attached only when `filterPolicy` is provided; SNS evaluates it against message attributes (default) or the message body and delivers only matching messages
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An SNS topic** -- the topic this subscription delivers from. Reference an AwsSnsTopic Cloud Resource, or paste a literal topic ARN — including a cross-account topic that has granted this account `sns:Subscribe`.
+- **An SNS topic** -- the topic this subscription delivers from. Reference an AwsSnsTopic Infra Component, or paste a literal topic ARN — including a cross-account topic that has granted this account `sns:Subscribe`.
 - **The endpoint's own permission grant** -- SNS delivery is a two-sided contract. For `sqs`, the QUEUE's resource policy must grant `sqs:SendMessage` to `sns.amazonaws.com` (scoped by `aws:SourceArn` to the topic) — creating the subscription succeeds without it, but every delivery is silently dropped. For `lambda`, the function needs an invoke permission for `sns.amazonaws.com` (the AwsLambda `invokePermissions` fold).
 - **A Firehose delivery role** (firehose only) -- an IAM role granting SNS permission to write to the delivery stream.
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f sns-subscription.yaml
 ```
 
-This subscribes the referenced queue to the referenced topic with raw delivery — the consumer reads message bodies directly, without the SNS JSON envelope. To subscribe to a topic owned by another account, replace the `valueFrom` block with `value: <literal topic ARN>`. A Stack Job tracks the provisioning in real time.
+This subscribes the referenced queue to the referenced topic with raw delivery — the consumer reads message bodies directly, without the SNS JSON envelope. To subscribe to a topic owned by another account, replace the `valueFrom` block with `value: <literal topic ARN>`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,7 +102,7 @@ These are the most important decisions when configuring an SNS subscription. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -113,9 +113,9 @@ These are the most important decisions when configuring an SNS subscription. Exp
 | **AwsSqsQueue** (optional) | `deadLetterConfig.deadLetterTargetArn` | `status.outputs.queue_arn` |
 | **AwsIamRole** (firehose protocol) | `subscriptionRoleArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -134,7 +134,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) -- the topic this subscription delivers from; its FIFO archive powers `replayPolicy` backfill
-- [**AWS SQS Queue**](/cloud-catalog/aws-sqs-queue) -- the most common delivery target, and the dead-letter queue for failed deliveries
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) -- invoke a function per message; pair with the function's `invokePermissions` for the SNS grant
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the delivery role SNS assumes for Firehose subscriptions
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) -- the topic this subscription delivers from; its FIFO archive powers `replayPolicy` backfill
+- [**AWS SQS Queue**](/infra-catalog/aws-sqs-queue) -- the most common delivery target, and the dead-letter queue for failed deliveries
+- [**AWS Lambda**](/infra-catalog/aws-lambda) -- invoke a function per message; pair with the function's `invokePermissions` for the SNS grant
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the delivery role SNS assumes for Firehose subscriptions

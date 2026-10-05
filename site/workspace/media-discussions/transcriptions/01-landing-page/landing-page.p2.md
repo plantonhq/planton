@@ -80,7 +80,7 @@ Swarup Donepudi  12:01
 is self service, yeah, and then service hub, service, that is where, like you can see all the services, etc. So, okay, are we telling it in that story is discover, is what I think it's hard for us to probably put it in
 
 Speaker 1  12:26  
-integrated ISC workflows. Well, when you say integrated IAC workflows, are those stack jobs,
+integrated ISC workflows. Well, when you say integrated IAC workflows, are those infra jobs,
 
 Swarup Donepudi  12:31  
 right? Yeah, like meaning you make a configuration change or you want to deploy something, something you workflow automatically kicks kicks off. So, yeah. So

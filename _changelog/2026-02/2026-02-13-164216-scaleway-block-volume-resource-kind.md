@@ -59,10 +59,10 @@ The IaC modules (both Pulumi and Terraform) contain a mapping table that resolve
 ```
 apis/dev/planton/provider/scaleway/scalewayblockvolume/v1/
 ├── spec.proto                    # Spec with performance tier enum
-├── stack_outputs.proto           # volume_id, volume_name, zone
+├── outputs.proto           # volume_id, volume_name, zone
 ├── api.proto                     # Resource definition
-├── stack_input.proto             # Stack input (target + provider config)
-├── README.md                     # Component documentation
+├── iac_input.proto             # IaC input (target + provider config)
+├── README.md                     # Kind documentation
 ├── examples.md                   # 5 usage examples + advanced patterns
 ├── iac/
 │   ├── pulumi/

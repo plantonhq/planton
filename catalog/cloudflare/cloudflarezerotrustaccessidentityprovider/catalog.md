@@ -4,7 +4,7 @@ Connects Cloudflare Access to an identity source — Google, Okta, Azure AD, Git
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Access Identity Provider** — one identity provider at the account (or zone) with the chosen `type` and its per-type connection config
 - **SCIM Endpoint and Secret** — created only when `scimConfig.enabled` is true; the bearer secret is returned once in the `scim_secret` output and redacted on every later read
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Account → Access: Organizations, Identity Providers, and Groups → Edit. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Account → Access: Organizations, Identity Providers, and Groups → Edit. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
 
-- **Zero Trust enabled on the account** — the organization (team name) must already exist (a CloudflareZeroTrustOrganization Cloud Resource) or every Access create fails at the API.
+- **Zero Trust enabled on the account** — the organization (team name) must already exist (a CloudflareZeroTrustOrganization Infra Component) or every Access create fails at the API.
 - **IdP application credentials** (only for OAuth/OIDC/SAML types) — a client ID and secret from the external provider, or SAML metadata. `onetimepin` needs none.
 - **A SAML certificate set** (only for `config.enableEncryption`) — created out-of-band via the Access SAML-certificate API; `samlCertificateSetId` names it.
 
@@ -49,7 +49,7 @@ spec:
 planton apply -f identity-provider.yaml
 ```
 
-This creates Cloudflare's own one-time PIN provider — users see a PIN option on the Access login page, and no IdP application is required. One caveat: Cloudflare allows exactly one `onetimepin` provider per account — if yours already has one, a second create is refused with 409 "a onetimepin connection already exists"; adopt the existing provider by import instead (see the GUIDE). A Stack Job tracks the provisioning in real time.
+This creates Cloudflare's own one-time PIN provider — users see a PIN option on the Access login page, and no IdP application is required. One caveat: Cloudflare allows exactly one `onetimepin` provider per account — if yours already has one, a second create is refused with 409 "a onetimepin connection already exists"; adopt the existing provider by import instead (see the GUIDE). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,15 +90,15 @@ These are the most important decisions when configuring an Access identity provi
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** (zone-scoped providers) | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -118,8 +118,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust Organization**](/cloud-catalog/cloudflare-zero-trust-organization) — the team-name prerequisite every Access resource needs
-- [**Cloudflare Zero Trust Access Application**](/cloud-catalog/cloudflare-zero-trust-access-application) — the door users reach after signing in through this provider
-- [**Cloudflare Zero Trust Access Policy**](/cloud-catalog/cloudflare-zero-trust-access-policy) — the guards whose rules match this provider's identities
-- [**Cloudflare Zero Trust Access Service Token**](/cloud-catalog/cloudflare-zero-trust-access-service-token) — machine credentials, the non-human counterpart to this kind
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — the `zoneId` foreign key for a zone-scoped provider
+- [**Cloudflare Zero Trust Organization**](/infra-catalog/cloudflare-zero-trust-organization) — the team-name prerequisite every Access resource needs
+- [**Cloudflare Zero Trust Access Application**](/infra-catalog/cloudflare-zero-trust-access-application) — the door users reach after signing in through this provider
+- [**Cloudflare Zero Trust Access Policy**](/infra-catalog/cloudflare-zero-trust-access-policy) — the guards whose rules match this provider's identities
+- [**Cloudflare Zero Trust Access Service Token**](/infra-catalog/cloudflare-zero-trust-access-service-token) — machine credentials, the non-human counterpart to this kind
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — the `zoneId` foreign key for a zone-scoped provider

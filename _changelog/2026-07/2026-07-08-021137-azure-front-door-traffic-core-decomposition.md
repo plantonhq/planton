@@ -7,7 +7,7 @@
 ## Summary
 
 The Azure Front Door (Standard/Premium) surface decomposes from one bundled
-component into its honest resource graph: `AzureFrontDoorProfile` (480) is
+kind into its honest resource graph: `AzureFrontDoorProfile` (480) is
 reworked breaking into the container kind (gaining the managed identity,
 access-log scrubbing, and tags surface it was missing), and four new
 first-class kinds carry the delivery surface -- `AzureFrontDoorEndpoint`
@@ -135,7 +135,7 @@ runs ~18 minutes, dominating every scenario's wall time.
 - `AzureFrontDoorProfileSpec` drops `endpoints`, `origin_groups`, and
   `routes` (now first-class kinds), renames `name` -> `profile_name`,
   converts `sku` from string to a closed enum, and renumbers fields.
-- `AzureFrontDoorProfileStackOutputs` drops the `endpoint_ids`/
+- `AzureFrontDoorProfileOutputs` drops the `endpoint_ids`/
   `endpoint_hostnames` maps (now per-endpoint outputs) and adds
   `identity_principal_id`.
 - No FK consumers or charts referenced the old shape; blast radius is the

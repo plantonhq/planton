@@ -4,7 +4,7 @@ Deploys an Azure Event Grid custom topic -- the HTTPS endpoint an application pu
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Event Grid topic** -- the publish endpoint with its pair of access keys, the input schema (with envelope mappings for custom-schema topics), network posture (public access plus Allow-only inbound IP rules), key-auth switch, and optional managed identity for secured delivery
 - **Azure Tags** -- Planton-derived metadata tags merged with the manifest's `tags` (user values win on key conflicts)
@@ -13,11 +13,11 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Azure Subscription
 
-- **A resource group** -- reference an AzureResourceGroup Cloud Resource or pass an existing group's name.
+- **A resource group** -- reference an AzureResourceGroup Infra Component or pass an existing group's name.
 - **A region-wide-unique name** -- the name becomes the topic's public DNS hostname, unique across ALL Azure customers in the region; a taken name fails the deploy with a conflict.
 - **EventGrid Data Sender grants** (only before disabling key auth) -- every publisher needs the role on the topic BEFORE `localAuthEnabled: false` deploys, or publishing breaks at cutover.
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f eventgrid-topic.yaml
 ```
 
-This creates a CloudEvents-input custom topic with public access and key auth on (Azure's defaults) -- publishers POST to the endpoint output with the `aeg-sas-key` header. A Stack Job tracks the provisioning in real time.
+This creates a CloudEvents-input custom topic with public access and key auth on (Azure's defaults) -- publishers POST to the endpoint output with the `aeg-sas-key` header. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,16 +94,16 @@ These are the most important decisions when configuring a custom topic. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzureUserAssignedIdentity** (optional, per identity) | `identity.identityIds` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -125,9 +125,9 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the group the topic lives in
-- [**Azure Event Grid Event Subscription**](/cloud-catalog/azure-eventgrid-event-subscription) -- fans the topic's events out to queues, Functions, webhooks, and hubs
-- [**Azure Event Grid Domain**](/cloud-catalog/azure-eventgrid-domain) -- the multi-tenant alternative: many streams behind one endpoint
-- [**Azure Event Grid Namespace**](/cloud-catalog/azure-eventgrid-namespace) -- routes its MQTT broker's messages into this topic via `routeTopicId`
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the user-assigned delivery identity option
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- EventGrid Data Sender grants for Entra publishers and delivery-target grants for the topic's identity
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the group the topic lives in
+- [**Azure Event Grid Event Subscription**](/infra-catalog/azure-eventgrid-event-subscription) -- fans the topic's events out to queues, Functions, webhooks, and hubs
+- [**Azure Event Grid Domain**](/infra-catalog/azure-eventgrid-domain) -- the multi-tenant alternative: many streams behind one endpoint
+- [**Azure Event Grid Namespace**](/infra-catalog/azure-eventgrid-namespace) -- routes its MQTT broker's messages into this topic via `routeTopicId`
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the user-assigned delivery identity option
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- EventGrid Data Sender grants for Entra publishers and delivery-target grants for the topic's identity

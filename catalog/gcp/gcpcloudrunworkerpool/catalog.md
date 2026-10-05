@@ -4,7 +4,7 @@ Cloud Run's shape for work that is not a request: a pool of always-running conta
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Worker pool** -- a `cloudrunv2.WorkerPool` in the chosen region with the container template, scaling posture, instance split across revisions, binary authorization, and encryption settings
 - **API enablement** -- the Cloud Run Admin API on the project, never disabled on destroy
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with `roles/run.admin` and `roles/iam.serviceAccountUser` on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with `roles/run.admin` and `roles/iam.serviceAccountUser` on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Resources
@@ -71,7 +71,7 @@ spec:
 planton apply -f worker-pool.yaml
 ```
 
-This runs two instances of the orders worker, pulling from a Pub/Sub subscription and reaching private resources through direct VPC egress. A Stack Job tracks the provisioning in real time.
+This runs two instances of the orders worker, pulling from a Pub/Sub subscription and reaching private resources through direct VPC egress. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -93,7 +93,7 @@ These are the most important decisions when configuring a worker pool. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -105,9 +105,9 @@ These are the most important decisions when configuring a worker pool. Explore t
 | **GcpCloudSql** | `volumes[].cloudSqlInstance.instances[]` | `status.outputs.connection_name` |
 | **GcpGcsBucket** | `volumes[].gcs.bucket` | `status.outputs.bucket_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -128,9 +128,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cloud Run**](/cloud-catalog/gcp-cloud-run) -- the request-serving sibling
-- [**GCP Cloud Run Job**](/cloud-catalog/gcp-cloud-run-job) -- run-to-completion work
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the runtime identity
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- direct VPC egress
-- [**GCP Redis Cluster**](/cloud-catalog/gcp-redis-cluster) -- a cache a worker reaches privately
-- [**GCP Pub/Sub Subscription**](/cloud-catalog/gcp-pub-sub-subscription) -- the queue a worker pulls from
+- [**GCP Cloud Run**](/infra-catalog/gcp-cloud-run) -- the request-serving sibling
+- [**GCP Cloud Run Job**](/infra-catalog/gcp-cloud-run-job) -- run-to-completion work
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the runtime identity
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- direct VPC egress
+- [**GCP Redis Cluster**](/infra-catalog/gcp-redis-cluster) -- a cache a worker reaches privately
+- [**GCP Pub/Sub Subscription**](/infra-catalog/gcp-pub-sub-subscription) -- the queue a worker pulls from

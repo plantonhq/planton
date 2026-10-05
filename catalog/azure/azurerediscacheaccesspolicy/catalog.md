@@ -4,7 +4,7 @@ Defines a CUSTOM data-plane access policy on an Azure Cache for Redis -- a named
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Access Policy** -- a named permission set on the referenced cache, expressed in Redis ACL syntax and updatable in place
 
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Azure Subscription
 
-- **An Azure Cache for Redis** with Microsoft Entra token authentication enabled (`redisConfiguration.activeDirectoryAuthenticationEnabled: true`) -- policies gate token-authenticated clients, not access-key clients. Reference the AzureRedisCache Cloud Resource via ValueFromRef.
+- **An Azure Cache for Redis** with Microsoft Entra token authentication enabled (`redisConfiguration.activeDirectoryAuthenticationEnabled: true`) -- policies gate token-authenticated clients, not access-key clients. Reference the AzureRedisCache Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -50,7 +50,7 @@ spec:
 planton apply -f access-policy.yaml
 ```
 
-This creates a custom policy named `session-worker` on the referenced cache, allowing exactly three commands (`GET`, `SET`, `DEL`) on keys under the `session:` prefix. A Stack Job tracks the provisioning in real time.
+This creates a custom policy named `session-worker` on the referenced cache, allowing exactly three commands (`GET`, `SET`, `DEL`) on keys under the `session:` prefix. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,15 +83,15 @@ These are the most important decisions when configuring an access policy. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureRedisCache** | `redisCacheId` | `status.outputs.redis_cache_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -111,5 +111,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Redis Cache**](/cloud-catalog/azure-redis-cache) -- the cache the policy is defined on
-- [**Azure Redis Cache Access Policy Assignment**](/cloud-catalog/azure-redis-cache-access-policy-assignment) -- grants this policy (by name) to a Microsoft Entra identity
+- [**Azure Redis Cache**](/infra-catalog/azure-redis-cache) -- the cache the policy is defined on
+- [**Azure Redis Cache Access Policy Assignment**](/infra-catalog/azure-redis-cache-access-policy-assignment) -- grants this policy (by name) to a Microsoft Entra identity

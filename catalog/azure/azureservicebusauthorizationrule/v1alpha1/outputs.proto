@@ -4,7 +4,7 @@ package dev.planton.azure.azureservicebusauthorizationrule.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureServiceBusAuthorizationRuleStackOutputs** captures the outputs of
+// **AzureServiceBusAuthorizationRuleOutputs** captures the outputs of
 // provisioning a SAS authorization rule: the credential surface
 // applications actually consume.
 //
@@ -14,7 +14,7 @@ import "shared/options/options.proto";
 // paired for geo-disaster recovery (AzureServiceBusDisasterRecoveryConfig)
 // -- they address the failover-stable alias DNS name instead of the
 // namespace, so clients survive a failover without reconfiguration.
-message AzureServiceBusAuthorizationRuleStackOutputs {
+message AzureServiceBusAuthorizationRuleOutputs {
   // The Azure Resource Manager ID of the rule (under its namespace,
   // queue, or topic parent). AzureServiceBusDisasterRecoveryConfig's
   // alias_authorization_rule_id consumes it with zero translation.

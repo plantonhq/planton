@@ -23,9 +23,9 @@ const (
 )
 
 // input for kubernetes-secret-store stack
-type KubernetesSecretStoreStackInput struct {
+type KubernetesSecretStoreIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *KubernetesSecretStore `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesSecretStoreStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesSecretStoreStackInput) Reset() {
-	*x = KubernetesSecretStoreStackInput{}
+func (x *KubernetesSecretStoreIacInput) Reset() {
+	*x = KubernetesSecretStoreIacInput{}
 	mi := &file_catalog_kubernetes_kubernetessecretstore_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesSecretStoreStackInput) String() string {
+func (x *KubernetesSecretStoreIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesSecretStoreStackInput) ProtoMessage() {}
+func (*KubernetesSecretStoreIacInput) ProtoMessage() {}
 
-func (x *KubernetesSecretStoreStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesSecretStoreIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetessecretstore_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesSecretStoreStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesSecretStoreStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesSecretStoreStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesSecretStoreIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesSecretStoreIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetessecretstore_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesSecretStoreStackInput) GetTarget() *KubernetesSecretStore {
+func (x *KubernetesSecretStoreIacInput) GetTarget() *KubernetesSecretStore {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesSecretStoreStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesSecretStoreIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kubernetessecretstore_v1alpha1_input_proto protorefl
 
 const file_catalog_kubernetes_kubernetessecretstore_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/kubernetes/kubernetessecretstore/v1alpha1/input.proto\x125dev.planton.kubernetes.kubernetessecretstore.v1alpha1\x1a;catalog/kubernetes/kubernetessecretstore/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe2\x01\n" +
-	"\x1fKubernetesSecretStoreStackInput\x12d\n" +
+	"=catalog/kubernetes/kubernetessecretstore/v1alpha1/input.proto\x125dev.planton.kubernetes.kubernetessecretstore.v1alpha1\x1a;catalog/kubernetes/kubernetessecretstore/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xe0\x01\n" +
+	"\x1dKubernetesSecretStoreIacInput\x12d\n" +
 	"\x06target\x18\x01 \x01(\v2L.dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xae\x03\n" +
 	"9com.dev.planton.kubernetes.kubernetessecretstore.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kubernetessecretstore_v1alpha1_input_proto_rawDescG
 
 var file_catalog_kubernetes_kubernetessecretstore_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetessecretstore_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesSecretStoreStackInput)(nil),     // 0: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreStackInput
+	(*KubernetesSecretStoreIacInput)(nil),       // 0: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreIacInput
 	(*KubernetesSecretStore)(nil),               // 1: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStore
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetessecretstore_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreStackInput.target:type_name -> dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStore
-	2, // 1: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreIacInput.target:type_name -> dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStore
+	2, // 1: dev.planton.kubernetes.kubernetessecretstore.v1alpha1.KubernetesSecretStoreIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

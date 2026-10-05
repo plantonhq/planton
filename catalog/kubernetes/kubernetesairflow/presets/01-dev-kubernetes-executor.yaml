@@ -25,7 +25,7 @@ spec:
         secret_name:
           valueFrom:
             name: airflow-db
-  # Everything else is the component's defaults: the KubernetesExecutor
+  # Everything else is the kind's defaults: the KubernetesExecutor
   # (every task runs as its own ephemeral pod — no broker, no idle
   # workers), the pinned chart, one replica of each component, StatsD
   # metrics on, and module-generated credentials (Fernet key, API/JWT

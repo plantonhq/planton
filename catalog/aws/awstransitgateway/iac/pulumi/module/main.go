@@ -11,12 +11,12 @@ import (
 // module. It creates the Transit Gateway hub and exports its outputs for
 // downstream consumption; VPC attachments and route tables are their own
 // resource kinds composing onto the exported gateway ID.
-func Resources(ctx *pulumi.Context, stackInput *awstgwv1.AwsTransitGatewayStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awstgwv1.AwsTransitGatewayIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.TransitGateway.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.TransitGateway.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

@@ -13,7 +13,7 @@ Founder direction, 2026-09-04: **module tags are cut on dispatch only; skill tag
 - **Skill lanes tag on push.** The skills under `skills/` are definitions that a consumer (Stigmer) reads the same day they change, so a merge to `main` is the publish decision for them. A push produces at most two skill tags however many files it touched.
 - **Module lanes tag on dispatch only.** A merge to `main` is not a release decision for a Pulumi or Terraform module; the full release ships every module. When a module release is wanted between full releases, someone runs `auto-tag` with `force_pulumi_all` / `force_terraform_all`, which tags every module of that flavor.
 
-Until 2026-09-04 the module lanes also tagged on push, filtered by `catalog/**/iac/pulumi/**` and `catalog/**/iac/tf/**`, with change-based detection (`tools/ci/release/detect_module_dirs.sh`) and a mass-change guard (`MODULE_AUTO_TAG_THRESHOLD`, default 5: a push touching that many unique components skipped module tags, because a sweep signals a full release is coming). All of that is retired from the workflow. The detector script stays in `tools/ci/release/` with its own self-test, so re-enabling push module tags is a restore (the two paths, the detector call and its self-test step, the guard) rather than a rewrite.
+Until 2026-09-04 the module lanes also tagged on push, filtered by `catalog/**/iac/pulumi/**` and `catalog/**/iac/tf/**`, with change-based detection (`tools/ci/release/detect_module_dirs.sh`) and a mass-change guard (`MODULE_AUTO_TAG_THRESHOLD`, default 5: a push touching that many unique kinds skipped module tags, because a sweep signals a full release is coming). All of that is retired from the workflow. The detector script stays in `tools/ci/release/` with its own self-test, so re-enabling push module tags is a restore (the two paths, the detector call and its self-test step, the guard) rather than a rewrite.
 
 ## How it works
 
@@ -41,7 +41,7 @@ The `auto-tag.yaml` workflow triggers component-specific release workflows direc
 Tags use semver pre-release format based on the _next_ patch version:
 
 ```
-v{next_patch}-{engine}.{component}.{YYYYMMDD}.{sequence}
+v{next_patch}-{engine}.{kind}.{YYYYMMDD}.{sequence}
 ```
 
 | Component     | Example Tag                                    | Sorted Position |
@@ -131,8 +131,8 @@ Each engine has its own release workflow triggered directly by `auto-tag.yaml`:
 
 | Workflow                              | Trigger Inputs                         |
 | ------------------------------------- | -------------------------------------- |
-| `auto-release.pulumi-modules.yaml`    | `tag`, `component`, `provider`, `path` |
-| `auto-release.terraform-modules.yaml` | `tag`, `component`, `provider`, `path` |
+| `auto-release.pulumi-modules.yaml`    | `tag`, `kind`, `provider`, `path` |
+| `auto-release.terraform-modules.yaml` | `tag`, `kind`, `provider`, `path` |
 | `auto-release.stigmer-skills.yaml`    | `tag`, `skill`                         |
 
 ## Why workflow_dispatch instead of tag push?
@@ -168,7 +168,7 @@ If a release fails, run the specific engine workflow manually:
 ```bash
 gh workflow run auto-release.pulumi-modules.yaml \
   -f tag=v0.3.5-pulumi.awsecsservice.20260108.0 \
-  -f component=awsecsservice \
+  -f kind=awsecsservice \
   -f provider=aws \
   -f path=catalog/aws/awsecsservice/iac/pulumi
 ```

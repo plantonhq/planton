@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awssecretsmanagersecret.v1alpha1;
 
-// AwsSecretsManagerSecretStackOutputs captures observable identifiers from a
+// AwsSecretsManagerSecretOutputs captures observable identifiers from a
 // provisioned Secrets Manager secret. These outputs are used by downstream
 // resources to wire dependencies via StringValueOrRef.
-message AwsSecretsManagerSecretStackOutputs {
+message AwsSecretsManagerSecretOutputs {
   // The Amazon Resource Name of the secret - the canonical join key for IAM
   // policies, ECS/Lambda secret injection, and cross-service references.
   // Note AWS appends a random 6-character suffix to secret ARNs

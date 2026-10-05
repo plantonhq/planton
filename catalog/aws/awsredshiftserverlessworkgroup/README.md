@@ -15,13 +15,13 @@ A workgroup computes; the data it serves lives on the `AwsRedshiftServerlessName
 - **Cross-VPC access** -- `endpointAccesses` create VPC endpoints into other subnets (or reuse the workgroup's own); per-endpoint private addresses are exported.
 - **Custom domain** -- one per workgroup (AWS's model): a branded DNS name fronted by an ACM certificate (`AwsCertManagerCert` by reference); the CNAME pointing the domain at the workgroup endpoint stays yours to manage.
 
-## Stack outputs
+## Outputs
 
 `workgroup_name`, `workgroup_id`, `arn`, `endpoint_address`, `port`, `endpoint_access_addresses` (keyed by endpoint name), `usage_limit_ids` (AWS-generated, keyed by usage-type/period), `custom_domain_certificate_expiry_time`.
 
 ## How it works
 
-Planton provisions via the Pulumi or Terraform module in `iac/`, both implementing the same contract at full parity. The API contract is protobuf-based (`spec.proto`); stack execution is orchestrated using `AwsRedshiftServerlessWorkgroupStackInput` (provider credentials + IaC info).
+Planton provisions via the Pulumi or Terraform module in `iac/`, both implementing the same contract at full parity. The API contract is protobuf-based (`spec.proto`); stack execution is orchestrated using `AwsRedshiftServerlessWorkgroupIacInput` (provider credentials + IaC info).
 
 ## References
 

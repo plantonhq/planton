@@ -10,7 +10,7 @@ metadata:
   env: ops
   labels:
     managed-by: planton-e2e
-    e2e-component: awssubnet
+    e2e-catalog-kind: awssubnet
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -6,7 +6,7 @@ package dev.planton.gcp.gcpprojectiammember.v1alpha1;
 // The grant itself has no server-generated identity beyond its inputs; the
 // outputs echo the fully-resolved grant tuple so downstream tooling and audits
 // can see exactly what was applied without re-resolving references.
-message GcpProjectIamMemberStackOutputs {
+message GcpProjectIamMemberOutputs {
   // The project ID whose IAM policy received the grant (after reference
   // resolution and any provider-default fallback).
   string project_id = 1;

@@ -1,5 +1,5 @@
 # Auth0 Tenant Settings Test Manifest
-# This file is used for testing the Auth0TenantSettings component. It exercises
+# This file is used for testing the Auth0TenantSettings kind. It exercises
 # the whole spec, so the offline plan and preview proofs cover every argument
 # and block the modules can send, including settings a live lane's tenant may
 # not be entitled to (mtls and pushed authorization requests need the

@@ -8,12 +8,12 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/internal/cli/cliprint"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/gitrepo"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule"
 	"github.com/plantonhq/planton/pkg/iac/tofu/tofumodule"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/spf13/cobra"
 )
 
@@ -43,7 +43,7 @@ func GetModuleDir(targetManifestPath string, cmd *cobra.Command, prov shared.Iac
 	}
 
 	// Extract kind from YAML (no proto loading needed)
-	cloudResourceKind, err := crkreflect.ExtractKindFromYaml(manifestBytes)
+	catalogKind, err := catalogkindreflect.ExtractKindFromYaml(manifestBytes)
 	if err != nil {
 		return "", &Error{
 			Stage:   "detecting resource kind",
@@ -52,7 +52,7 @@ func GetModuleDir(targetManifestPath string, cmd *cobra.Command, prov shared.Iac
 			Hint:    "Ensure the manifest has valid 'apiVersion' and 'kind' fields.",
 		}
 	}
-	kindName := crkreflect.ExtractKindNameByKind(cloudResourceKind)
+	kindName := catalogkindreflect.ExtractKindNameByKind(catalogKind)
 
 	cliprint.PrintStep(fmt.Sprintf("Using local module from: %s", repoPath))
 
@@ -115,12 +115,12 @@ func GetModuleDir(targetManifestPath string, cmd *cobra.Command, prov shared.Iac
 // derivation the real resolvers use, so the hint can never name a path the
 // resolvers would not have tried.
 func buildExpectedModulePath(repoPath, kindName, provName string) string {
-	kind := crkreflect.KindFromString(kindName)
+	kind := catalogkindreflect.KindFromString(kindName)
 
 	// Error path: an unresolvable kind falls back to a plausible segment purely
 	// to render the hint; the real resolution has already failed with the cause.
 	provider := strings.ToLower(kindName)
-	if p := crkreflect.GetProvider(kind); p != cloudresourcekind.CloudResourceProvider_cloud_resource_provider_unspecified {
+	if p := catalogkindreflect.GetProvider(kind); p != catalogkind.CatalogProvider_catalog_provider_unspecified {
 		provider = strings.ReplaceAll(p.String(), "_", "")
 	}
 

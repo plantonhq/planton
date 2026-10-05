@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesmongodb
 spec:
@@ -23,12 +23,12 @@ spec:
       tofu_resource_name: mongodb
       derivations:
         - from_metadata_name: true
-        - from_stack_output: cluster_name
+        - from_output: cluster_name
       where_to_find: >-
         The CR's metadata.name (equals the Planton resource name) —
         `kubectl get psmdb -A` (NAME column).
     # ── the PerconaServerMongoDBRestore run (when spec.restore is declared) ─
-    # Its name hashes the declaration, so it rides in as a stack output
+    # Its name hashes the declaration, so it rides in as an output
     # rather than a derivation the recipe could recompute.
     - name: api_version
       tofu_resource_name: restore
@@ -43,14 +43,14 @@ spec:
     - name: name
       tofu_resource_name: restore
       derivations:
-        - from_stack_output: restore_name
+        - from_output: restore_name
       where_to_find: >-
         The Restore object's metadata.name (`<name>-restore-<8 hex>`) —
         the `restore_name` output, or `kubectl get psmdb-restore -n <namespace>`.
     # ── shared namespace segment for every namespaced object ───────────
     - name: namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         The cluster's namespace — `kubectl get psmdb -A` (NAMESPACE column).
@@ -66,7 +66,7 @@ spec:
         `kubectl get secrets -n <namespace>`.
     - name: secret_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the cluster — every satellite the module renders
@@ -74,7 +74,7 @@ spec:
     # ── the optional anchor namespace ───────────────────────────────────
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the cluster's

@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// CloudflareZeroTrustAccessGroupStackOutputs captures the outputs after deploying
+// CloudflareZeroTrustAccessGroupOutputs captures the outputs after deploying
 // a Cloudflare Zero Trust Access group.
-type CloudflareZeroTrustAccessGroupStackOutputs struct {
+type CloudflareZeroTrustAccessGroupOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Cloudflare-assigned identifier of the group. Reference this from an Access
 	// policy's `group` rule (or another group) to compose membership criteria.
@@ -32,20 +32,20 @@ type CloudflareZeroTrustAccessGroupStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CloudflareZeroTrustAccessGroupStackOutputs) Reset() {
-	*x = CloudflareZeroTrustAccessGroupStackOutputs{}
+func (x *CloudflareZeroTrustAccessGroupOutputs) Reset() {
+	*x = CloudflareZeroTrustAccessGroupOutputs{}
 	mi := &file_catalog_cloudflare_cloudflarezerotrustaccessgroup_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CloudflareZeroTrustAccessGroupStackOutputs) String() string {
+func (x *CloudflareZeroTrustAccessGroupOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CloudflareZeroTrustAccessGroupStackOutputs) ProtoMessage() {}
+func (*CloudflareZeroTrustAccessGroupOutputs) ProtoMessage() {}
 
-func (x *CloudflareZeroTrustAccessGroupStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *CloudflareZeroTrustAccessGroupOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_cloudflare_cloudflarezerotrustaccessgroup_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,12 +57,12 @@ func (x *CloudflareZeroTrustAccessGroupStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CloudflareZeroTrustAccessGroupStackOutputs.ProtoReflect.Descriptor instead.
-func (*CloudflareZeroTrustAccessGroupStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use CloudflareZeroTrustAccessGroupOutputs.ProtoReflect.Descriptor instead.
+func (*CloudflareZeroTrustAccessGroupOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_cloudflare_cloudflarezerotrustaccessgroup_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CloudflareZeroTrustAccessGroupStackOutputs) GetGroupId() string {
+func (x *CloudflareZeroTrustAccessGroupOutputs) GetGroupId() string {
 	if x != nil {
 		return x.GroupId
 	}
@@ -73,8 +73,8 @@ var File_catalog_cloudflare_cloudflarezerotrustaccessgroup_v1alpha1_outputs_prot
 
 const file_catalog_cloudflare_cloudflarezerotrustaccessgroup_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Hcatalog/cloudflare/cloudflarezerotrustaccessgroup/v1alpha1/outputs.proto\x12>dev.planton.cloudflare.cloudflarezerotrustaccessgroup.v1alpha1\"G\n" +
-	"*CloudflareZeroTrustAccessGroupStackOutputs\x12\x19\n" +
+	"Hcatalog/cloudflare/cloudflarezerotrustaccessgroup/v1alpha1/outputs.proto\x12>dev.planton.cloudflare.cloudflarezerotrustaccessgroup.v1alpha1\"B\n" +
+	"%CloudflareZeroTrustAccessGroupOutputs\x12\x19\n" +
 	"\bgroup_id\x18\x01 \x01(\tR\agroupIdB\xef\x03\n" +
 	"Bcom.dev.planton.cloudflare.cloudflarezerotrustaccessgroup.v1alpha1B\fOutputsProtoP\x01Z~github.com/plantonhq/planton/catalog/cloudflare/cloudflarezerotrustaccessgroup/v1alpha1;cloudflarezerotrustaccessgroupv1alpha1\xa2\x02\x04DPCC\xaa\x02>Dev.Planton.Cloudflare.Cloudflarezerotrustaccessgroup.V1alpha1\xca\x02>Dev\\Planton\\Cloudflare\\Cloudflarezerotrustaccessgroup\\V1alpha1\xe2\x02JDev\\Planton\\Cloudflare\\Cloudflarezerotrustaccessgroup\\V1alpha1\\GPBMetadata\xea\x02BDev::Planton::Cloudflare::Cloudflarezerotrustaccessgroup::V1alpha1b\x06proto3"
 
@@ -92,7 +92,7 @@ func file_catalog_cloudflare_cloudflarezerotrustaccessgroup_v1alpha1_outputs_pro
 
 var file_catalog_cloudflare_cloudflarezerotrustaccessgroup_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_cloudflare_cloudflarezerotrustaccessgroup_v1alpha1_outputs_proto_goTypes = []any{
-	(*CloudflareZeroTrustAccessGroupStackOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustaccessgroup.v1alpha1.CloudflareZeroTrustAccessGroupStackOutputs
+	(*CloudflareZeroTrustAccessGroupOutputs)(nil), // 0: dev.planton.cloudflare.cloudflarezerotrustaccessgroup.v1alpha1.CloudflareZeroTrustAccessGroupOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustaccessgroup_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

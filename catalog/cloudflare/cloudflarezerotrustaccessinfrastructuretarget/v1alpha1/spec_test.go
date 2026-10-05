@@ -28,7 +28,7 @@ func validTarget(spec *CloudflareZeroTrustAccessInfrastructureTargetSpec) *Cloud
 	return &CloudflareZeroTrustAccessInfrastructureTarget{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustAccessInfrastructureTarget",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-target",
 		},
 		Spec: spec,

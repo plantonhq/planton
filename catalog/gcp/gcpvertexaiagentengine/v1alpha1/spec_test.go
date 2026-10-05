@@ -52,7 +52,7 @@ var _ = ginkgo.Describe("GcpVertexAiAgentEngineSpec", func() {
 		return &GcpVertexAiAgentEngine{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVertexAiAgentEngine",
-			Metadata:   &shared.CloudResourceMetadata{Name: "support-agent"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "support-agent"},
 			Spec: &GcpVertexAiAgentEngineSpec{
 				Location: "us-central1",
 				Agent: &GcpVertexAiAgentEngineAgent{

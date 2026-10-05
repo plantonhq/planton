@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureMssqlDatabaseStackOutputs** captures the outputs of provisioning
+// **AzureMssqlDatabaseOutputs** captures the outputs of provisioning
 // an Azure SQL Database.
 //
 // `database_id` is the join key for everything that references the
@@ -30,7 +30,7 @@ const (
 // Applications connect to the SERVER's fqdn with this database's name:
 //
 //	Server={server fqdn},1433;Database={database_name};...
-type AzureMssqlDatabaseStackOutputs struct {
+type AzureMssqlDatabaseOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the database.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Sql/servers/{server}/databases/{name}
@@ -44,20 +44,20 @@ type AzureMssqlDatabaseStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureMssqlDatabaseStackOutputs) Reset() {
-	*x = AzureMssqlDatabaseStackOutputs{}
+func (x *AzureMssqlDatabaseOutputs) Reset() {
+	*x = AzureMssqlDatabaseOutputs{}
 	mi := &file_catalog_azure_azuremssqldatabase_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureMssqlDatabaseStackOutputs) String() string {
+func (x *AzureMssqlDatabaseOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureMssqlDatabaseStackOutputs) ProtoMessage() {}
+func (*AzureMssqlDatabaseOutputs) ProtoMessage() {}
 
-func (x *AzureMssqlDatabaseStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureMssqlDatabaseOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azuremssqldatabase_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -69,19 +69,19 @@ func (x *AzureMssqlDatabaseStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureMssqlDatabaseStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureMssqlDatabaseStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureMssqlDatabaseOutputs.ProtoReflect.Descriptor instead.
+func (*AzureMssqlDatabaseOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azuremssqldatabase_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureMssqlDatabaseStackOutputs) GetDatabaseId() string {
+func (x *AzureMssqlDatabaseOutputs) GetDatabaseId() string {
 	if x != nil {
 		return x.DatabaseId
 	}
 	return ""
 }
 
-func (x *AzureMssqlDatabaseStackOutputs) GetDatabaseName() string {
+func (x *AzureMssqlDatabaseOutputs) GetDatabaseName() string {
 	if x != nil {
 		return x.DatabaseName
 	}
@@ -92,8 +92,8 @@ var File_catalog_azure_azuremssqldatabase_v1alpha1_outputs_proto protoreflect.Fi
 
 const file_catalog_azure_azuremssqldatabase_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/azure/azuremssqldatabase/v1alpha1/outputs.proto\x12-dev.planton.azure.azuremssqldatabase.v1alpha1\"f\n" +
-	"\x1eAzureMssqlDatabaseStackOutputs\x12\x1f\n" +
+	"7catalog/azure/azuremssqldatabase/v1alpha1/outputs.proto\x12-dev.planton.azure.azuremssqldatabase.v1alpha1\"a\n" +
+	"\x19AzureMssqlDatabaseOutputs\x12\x1f\n" +
 	"\vdatabase_id\x18\x01 \x01(\tR\n" +
 	"databaseId\x12#\n" +
 	"\rdatabase_name\x18\x02 \x01(\tR\fdatabaseNameB\xfd\x02\n" +
@@ -113,7 +113,7 @@ func file_catalog_azure_azuremssqldatabase_v1alpha1_outputs_proto_rawDescGZIP() 
 
 var file_catalog_azure_azuremssqldatabase_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azuremssqldatabase_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureMssqlDatabaseStackOutputs)(nil), // 0: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseStackOutputs
+	(*AzureMssqlDatabaseOutputs)(nil), // 0: dev.planton.azure.azuremssqldatabase.v1alpha1.AzureMssqlDatabaseOutputs
 }
 var file_catalog_azure_azuremssqldatabase_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

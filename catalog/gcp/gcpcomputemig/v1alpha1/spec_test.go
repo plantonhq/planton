@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpComputeMigSpec", func() {
 		return &GcpComputeMig{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpComputeMig",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-mig",
 			},
 			Spec: &GcpComputeMigSpec{

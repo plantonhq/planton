@@ -87,8 +87,7 @@ export interface DesktopPlatform {
  * sits under the landing (one prefix at the edge, one reserved handle, and
  * the download read as the desktop's own page). Every site component reads
  * these two constants; the shell package's navigation keeps literal hrefs
- * like every other entry because it cannot import from src/. The pages'
- * earlier address under /features is a retired route.
+ * like every other entry because it cannot import from src/.
  */
 export const DESKTOP_LANDING_PATH = '/desktop';
 export const DESKTOP_DOWNLOAD_PATH = '/desktop/download';

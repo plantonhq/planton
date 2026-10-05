@@ -35,10 +35,10 @@ type AzureMachineLearningOnlineDeployment struct {
 	// Resource kind. Must be "AzureMachineLearningOnlineDeployment".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// Online deployment specification.
 	Spec *AzureMachineLearningOnlineDeploymentSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzureMachineLearningOnlineDeploymentStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -88,7 +88,7 @@ func (x *AzureMachineLearningOnlineDeployment) GetKind() string {
 	return ""
 }
 
-func (x *AzureMachineLearningOnlineDeployment) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureMachineLearningOnlineDeployment) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -112,8 +112,8 @@ func (x *AzureMachineLearningOnlineDeployment) GetStatus() *AzureMachineLearning
 // AzureMachineLearningOnlineDeploymentStatus holds the deployment outputs.
 type AzureMachineLearningOnlineDeploymentStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzureMachineLearningOnlineDeploymentStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzureMachineLearningOnlineDeploymentOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -148,7 +148,7 @@ func (*AzureMachineLearningOnlineDeploymentStatus) Descriptor() ([]byte, []int) 
 	return file_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureMachineLearningOnlineDeploymentStatus) GetOutputs() *AzureMachineLearningOnlineDeploymentStackOutputs {
+func (x *AzureMachineLearningOnlineDeploymentStatus) GetOutputs() *AzureMachineLearningOnlineDeploymentOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -166,11 +166,11 @@ const file_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_api_proto
 	"apiVersion\x12?\n" +
 	"\x04kind\x18\x02 \x01(\tB+\xbaH(r&\n" +
 	"$AzureMachineLearningOnlineDeploymentR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x85\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x85\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2i.dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x83\x01\n" +
-	"\x06status\x18\x05 \x01(\v2k.dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentStatusR\x06status\"\xba\x01\n" +
-	"*AzureMachineLearningOnlineDeploymentStatus\x12\x8b\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2q.dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentStackOutputsR\aoutputsB\xf8\x03\n" +
+	"\x06status\x18\x05 \x01(\v2k.dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentStatusR\x06status\"\xb5\x01\n" +
+	"*AzureMachineLearningOnlineDeploymentStatus\x12\x86\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2l.dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentOutputsR\aoutputsB\xf8\x03\n" +
 	"Ccom.dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1B\bApiProtoP\x01Z\x85\x01github.com/plantonhq/planton/catalog/azure/azuremachinelearningonlinedeployment/v1alpha1;azuremachinelearningonlinedeploymentv1alpha1\xa2\x02\x04DPAA\xaa\x02?Dev.Planton.Azure.Azuremachinelearningonlinedeployment.V1alpha1\xca\x02?Dev\\Planton\\Azure\\Azuremachinelearningonlinedeployment\\V1alpha1\xe2\x02KDev\\Planton\\Azure\\Azuremachinelearningonlinedeployment\\V1alpha1\\GPBMetadata\xea\x02CDev::Planton::Azure::Azuremachinelearningonlinedeployment::V1alpha1b\x06proto3"
 
 var (
@@ -187,17 +187,17 @@ func file_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_api_proto_
 
 var file_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_api_proto_goTypes = []any{
-	(*AzureMachineLearningOnlineDeployment)(nil),             // 0: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeployment
-	(*AzureMachineLearningOnlineDeploymentStatus)(nil),       // 1: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentStatus
-	(*shared.CloudResourceMetadata)(nil),                     // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureMachineLearningOnlineDeploymentSpec)(nil),         // 3: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentSpec
-	(*AzureMachineLearningOnlineDeploymentStackOutputs)(nil), // 4: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentStackOutputs
+	(*AzureMachineLearningOnlineDeployment)(nil),        // 0: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeployment
+	(*AzureMachineLearningOnlineDeploymentStatus)(nil),  // 1: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentStatus
+	(*shared.CatalogObjectMetadata)(nil),                // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureMachineLearningOnlineDeploymentSpec)(nil),    // 3: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentSpec
+	(*AzureMachineLearningOnlineDeploymentOutputs)(nil), // 4: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentOutputs
 }
 var file_catalog_azure_azuremachinelearningonlinedeployment_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeployment.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeployment.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeployment.spec:type_name -> dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentSpec
 	1, // 2: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeployment.status:type_name -> dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentStatus
-	4, // 3: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentStatus.outputs:type_name -> dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentStackOutputs
+	4, // 3: dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentStatus.outputs:type_name -> dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1.AzureMachineLearningOnlineDeploymentOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

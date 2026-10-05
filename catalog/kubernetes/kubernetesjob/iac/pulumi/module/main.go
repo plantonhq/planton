@@ -15,19 +15,19 @@ import (
 // mounted from ConfigMaps owned by the first-class KubernetesConfigMap kind.
 // This module never creates ServiceAccounts, RBAC objects, ConfigMaps,
 // certificates, gateways, or routes — Jobs front no traffic.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesjobv1alpha1.KubernetesJobStackInput) error {
-	locals, err := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesjobv1alpha1.KubernetesJobIacInput) error {
+	locals, err := initializeLocals(ctx, iacInput)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize locals")
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

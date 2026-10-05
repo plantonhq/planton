@@ -1,10 +1,10 @@
 # AWS ElastiCache User Group
 
-Deploys an ElastiCache user group — the unit of RBAC attachment for Redis and Valkey. Access control composes through a graph: users ([AwsElasticacheUser](/cloud-catalog/aws-elasticache-user)) define WHO and WHAT (identity + ACL access string), and the group defines WHERE — which caches those identities apply to. The group attaches as one object to a replication group or serverless cache; granting or revoking an application's cache access is a membership edit on the group, and the cache itself never changes.
+Deploys an ElastiCache user group — the unit of RBAC attachment for Redis and Valkey. Access control composes through a graph: users ([AwsElasticacheUser](/infra-catalog/aws-elasticache-user)) define WHO and WHAT (identity + ACL access string), and the group defines WHERE — which caches those identities apply to. The group attaches as one object to a replication group or serverless cache; granting or revoking an application's cache access is a membership edit on the group, and the cache itself never changes.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ElastiCache User Group** -- the RBAC attachment unit whose AWS user group id is the resource name (create-time immutable), carrying the set of member user ids; membership updates apply in place for the group's whole life
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
@@ -13,8 +13,8 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **Member users** -- create the [AwsElasticacheUser](/cloud-catalog/aws-elasticache-user) resources first (declaration before reference); the group references their `user_id` outputs.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **Member users** -- create the [AwsElasticacheUser](/infra-catalog/aws-elasticache-user) resources first (declaration before reference); the group references their `user_id` outputs.
 
 ### AWS Account
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f elasticache-user-group.yaml
 ```
 
-This creates a Redis user group wiring the mandatory default user plus one application user. A Stack Job tracks the provisioning in real time.
+This creates a Redis user group wiring the mandatory default user plus one application user. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -93,15 +93,15 @@ These are the most important decisions when configuring an ElastiCache user grou
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsElasticacheUser** | `userIds` | `status.outputs.user_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,5 +120,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS ElastiCache User**](/cloud-catalog/aws-elasticache-user) -- the identities this group collects (consumes `user_id`)
-- [**AWS ElastiCache Serverless**](/cloud-catalog/aws-serverless-elasticache) -- attaches this group via its user group field (`user_group_id`)
+- [**AWS ElastiCache User**](/infra-catalog/aws-elasticache-user) -- the identities this group collects (consumes `user_id`)
+- [**AWS ElastiCache Serverless**](/infra-catalog/aws-serverless-elasticache) -- attaches this group via its user group field (`user_group_id`)

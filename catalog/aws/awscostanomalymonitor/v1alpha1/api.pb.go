@@ -27,7 +27,7 @@ type AwsCostAnomalyMonitor struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`
 	ApiVersion    string                        `protobuf:"bytes,1,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
 	Kind          string                        `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
-	Metadata      *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata      *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	Spec          *AwsCostAnomalyMonitorSpec    `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	Status        *AwsCostAnomalyMonitorStatus  `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -78,7 +78,7 @@ func (x *AwsCostAnomalyMonitor) GetKind() string {
 	return ""
 }
 
-func (x *AwsCostAnomalyMonitor) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AwsCostAnomalyMonitor) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -100,8 +100,8 @@ func (x *AwsCostAnomalyMonitor) GetStatus() *AwsCostAnomalyMonitorStatus {
 }
 
 type AwsCostAnomalyMonitorStatus struct {
-	state         protoimpl.MessageState             `protogen:"open.v1"`
-	Outputs       *AwsCostAnomalyMonitorStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	state         protoimpl.MessageState        `protogen:"open.v1"`
+	Outputs       *AwsCostAnomalyMonitorOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -136,7 +136,7 @@ func (*AwsCostAnomalyMonitorStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awscostanomalymonitor_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AwsCostAnomalyMonitorStatus) GetOutputs() *AwsCostAnomalyMonitorStackOutputs {
+func (x *AwsCostAnomalyMonitorStatus) GetOutputs() *AwsCostAnomalyMonitorOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -154,11 +154,11 @@ const file_catalog_aws_awscostanomalymonitor_v1alpha1_api_proto_rawDesc = "" +
 	"apiVersion\x120\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1c\xbaH\x19r\x17\n" +
 	"\x15AwsCostAnomalyMonitorR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12e\n" +
 	"\x04spec\x18\x04 \x01(\v2I.dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12c\n" +
-	"\x06status\x18\x05 \x01(\v2K.dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStatusR\x06status\"\x8a\x01\n" +
-	"\x1bAwsCostAnomalyMonitorStatus\x12k\n" +
-	"\aoutputs\x18\x01 \x01(\v2Q.dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStackOutputsR\aoutputsB\x82\x03\n" +
+	"\x06status\x18\x05 \x01(\v2K.dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStatusR\x06status\"\x85\x01\n" +
+	"\x1bAwsCostAnomalyMonitorStatus\x12f\n" +
+	"\aoutputs\x18\x01 \x01(\v2L.dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorOutputsR\aoutputsB\x82\x03\n" +
 	"2com.dev.planton.aws.awscostanomalymonitor.v1alpha1B\bApiProtoP\x01Zegithub.com/plantonhq/planton/catalog/aws/awscostanomalymonitor/v1alpha1;awscostanomalymonitorv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Aws.Awscostanomalymonitor.V1alpha1\xca\x02.Dev\\Planton\\Aws\\Awscostanomalymonitor\\V1alpha1\xe2\x02:Dev\\Planton\\Aws\\Awscostanomalymonitor\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Aws::Awscostanomalymonitor::V1alpha1b\x06proto3"
 
 var (
@@ -175,17 +175,17 @@ func file_catalog_aws_awscostanomalymonitor_v1alpha1_api_proto_rawDescGZIP() []b
 
 var file_catalog_aws_awscostanomalymonitor_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_aws_awscostanomalymonitor_v1alpha1_api_proto_goTypes = []any{
-	(*AwsCostAnomalyMonitor)(nil),             // 0: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitor
-	(*AwsCostAnomalyMonitorStatus)(nil),       // 1: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStatus
-	(*shared.CloudResourceMetadata)(nil),      // 2: dev.planton.shared.CloudResourceMetadata
-	(*AwsCostAnomalyMonitorSpec)(nil),         // 3: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorSpec
-	(*AwsCostAnomalyMonitorStackOutputs)(nil), // 4: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStackOutputs
+	(*AwsCostAnomalyMonitor)(nil),        // 0: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitor
+	(*AwsCostAnomalyMonitorStatus)(nil),  // 1: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStatus
+	(*shared.CatalogObjectMetadata)(nil), // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AwsCostAnomalyMonitorSpec)(nil),    // 3: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorSpec
+	(*AwsCostAnomalyMonitorOutputs)(nil), // 4: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorOutputs
 }
 var file_catalog_aws_awscostanomalymonitor_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitor.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitor.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitor.spec:type_name -> dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorSpec
 	1, // 2: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitor.status:type_name -> dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStatus
-	4, // 3: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStatus.outputs:type_name -> dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStackOutputs
+	4, // 3: dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorStatus.outputs:type_name -> dev.planton.aws.awscostanomalymonitor.v1alpha1.AwsCostAnomalyMonitorOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

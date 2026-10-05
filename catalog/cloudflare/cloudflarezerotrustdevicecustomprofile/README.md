@@ -45,7 +45,7 @@
 | `fallback_domains` | list | The folded FULL-REPLACEMENT per-profile fallback list. |
 | `lan_allow_minutes`, `lan_allow_subnet_size` | int | The LAN access window. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

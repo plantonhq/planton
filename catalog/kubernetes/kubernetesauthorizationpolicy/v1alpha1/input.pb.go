@@ -22,11 +22,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesAuthorizationPolicyStackInput provides the inputs for creating the
+// KubernetesAuthorizationPolicyIacInput provides the inputs for creating the
 // AuthorizationPolicy on a Kubernetes cluster.
-type KubernetesAuthorizationPolicyStackInput struct {
+type KubernetesAuthorizationPolicyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *KubernetesAuthorizationPolicy `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -34,20 +34,20 @@ type KubernetesAuthorizationPolicyStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesAuthorizationPolicyStackInput) Reset() {
-	*x = KubernetesAuthorizationPolicyStackInput{}
+func (x *KubernetesAuthorizationPolicyIacInput) Reset() {
+	*x = KubernetesAuthorizationPolicyIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesAuthorizationPolicyStackInput) String() string {
+func (x *KubernetesAuthorizationPolicyIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesAuthorizationPolicyStackInput) ProtoMessage() {}
+func (*KubernetesAuthorizationPolicyIacInput) ProtoMessage() {}
 
-func (x *KubernetesAuthorizationPolicyStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesAuthorizationPolicyIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *KubernetesAuthorizationPolicyStackInput) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesAuthorizationPolicyStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesAuthorizationPolicyStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesAuthorizationPolicyIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesAuthorizationPolicyIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesAuthorizationPolicyStackInput) GetTarget() *KubernetesAuthorizationPolicy {
+func (x *KubernetesAuthorizationPolicyIacInput) GetTarget() *KubernetesAuthorizationPolicy {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesAuthorizationPolicyStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesAuthorizationPolicyIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_input_proto p
 
 const file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/kubernetes/kubernetesauthorizationpolicy/v1alpha1/input.proto\x12=dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1\x1aCcatalog/kubernetes/kubernetesauthorizationpolicy/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xfa\x01\n" +
-	"'KubernetesAuthorizationPolicyStackInput\x12t\n" +
+	"Ecatalog/kubernetes/kubernetesauthorizationpolicy/v1alpha1/input.proto\x12=dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1\x1aCcatalog/kubernetes/kubernetesauthorizationpolicy/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xf8\x01\n" +
+	"%KubernetesAuthorizationPolicyIacInput\x12t\n" +
 	"\x06target\x18\x01 \x01(\v2\\.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xe6\x03\n" +
 	"Acom.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_input_proto_
 
 var file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesAuthorizationPolicyStackInput)(nil), // 0: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyStackInput
-	(*KubernetesAuthorizationPolicy)(nil),           // 1: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicy
-	(*kubernetes.KubernetesProviderConfig)(nil),     // 2: dev.planton.kubernetes.KubernetesProviderConfig
+	(*KubernetesAuthorizationPolicyIacInput)(nil), // 0: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyIacInput
+	(*KubernetesAuthorizationPolicy)(nil),         // 1: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicy
+	(*kubernetes.KubernetesProviderConfig)(nil),   // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyStackInput.target:type_name -> dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicy
-	2, // 1: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyIacInput.target:type_name -> dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicy
+	2, // 1: dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

@@ -69,7 +69,7 @@ flowchart LR
 ## Workflow Uplift
 
 - `e2e/README.md`: documents nested/repeated `valueFrom` resolution.
-- `forge-planton-component.mdc`: regional outputs must emit plain spec region names, not provider self-links.
+- `forge-catalog-kind.mdc`: regional outputs must emit plain spec region names, not provider self-links.
 
 ---
 

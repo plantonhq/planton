@@ -4,17 +4,17 @@ Deploys a zone-scoped Cloudflare Load Balancer that attaches a DNS hostname to a
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Load Balancer** -- the zone-scoped load balancer bound to the specified hostname, referencing your pools (default, fallback, and optional geo maps), with the configured proxy, steering policy, session affinity, adaptive routing, and traffic rules
 
-Pools and health monitors are separate, reusable Cloud Resources (`CloudflareLoadBalancerPool`, `CloudflareLoadBalancerMonitor`) with account scope and independent lifecycles -- one pool can back many load balancers. Reference them by ID or ValueFromRef.
+Pools and health monitors are separate, reusable Infra Components (`CloudflareLoadBalancerPool`, `CloudflareLoadBalancerMonitor`) with account scope and independent lifecycles -- one pool can back many load balancers. Reference them by ID or ValueFromRef.
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has **Zone -> Load Balancers -> Edit** (zone-scoped) plus **Account -> Load Balancing: Monitors and Pools -> Edit** access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has **Zone -> Load Balancers -> Edit** (zone-scoped) plus **Account -> Load Balancing: Monitors and Pools -> Edit** access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -55,7 +55,7 @@ spec:
 planton apply -f cloudflare-load-balancer.yaml
 ```
 
-This creates a proxied load balancer for `api.example.com` over one pool with static failover. A Stack Job tracks the provisioning in real time.
+This creates a proxied load balancer for `api.example.com` over one pool with static failover. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,16 +91,16 @@ These are the most important decisions when configuring a load balancer. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 | **CloudflareLoadBalancerPool** | `defaultPools[]`, `fallbackPool`, geo pool maps, rule override pools | `status.outputs.pool_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -123,6 +123,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- provides the zone ID that determines which domain the load balancer hostname belongs to
-- [**Cloudflare Load Balancer Pool**](/cloud-catalog/cloudflare-load-balancer-pool) -- the account-scoped origin pools the load balancer steers across
-- [**Cloudflare Load Balancer Monitor**](/cloud-catalog/cloudflare-load-balancer-monitor) -- health-checks the pools' origins
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- provides the zone ID that determines which domain the load balancer hostname belongs to
+- [**Cloudflare Load Balancer Pool**](/infra-catalog/cloudflare-load-balancer-pool) -- the account-scoped origin pools the load balancer steers across
+- [**Cloudflare Load Balancer Monitor**](/infra-catalog/cloudflare-load-balancer-monitor) -- health-checks the pools' origins

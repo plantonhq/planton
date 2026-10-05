@@ -69,7 +69,7 @@ type DigitalOceanProjectSpec struct {
 	// contains. Every DigitalOcean resource exposes a URN of the form
 	// "do:<type>:<id>" -- for example "do:droplet:123456",
 	// "do:dbaas:6ec9c684-...", "do:space:my-bucket", "do:domain:example.com".
-	// Use a literal URN, or reference the producing resource's urn stack
+	// Use a literal URN, or reference the producing resource's urn
 	// output with an explicit valueFrom.kind -- the list is polymorphic
 	// across kinds (droplets, load balancers, buckets, domains, ...), so no
 	// single default kind applies and each reference names its own. The

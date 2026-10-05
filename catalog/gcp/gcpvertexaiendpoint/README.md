@@ -12,9 +12,9 @@ Use `GcpVertexAiEndpoint` when you need:
 - Dedicated DNS for isolated, higher-performance prediction traffic
 - Infrastructure-as-code management of the endpoint lifecycle
 
-## What This Component Creates
+## What This Kind Creates
 
-This component provisions a single Vertex AI Endpoint. Model deployment to the endpoint is an operational step performed separately via the Vertex AI API, SDK, or console -- it is not managed by this infrastructure component.
+This kind provisions a single Vertex AI Endpoint. Model deployment to the endpoint is an operational step performed separately via the Vertex AI API, SDK, or console -- it is not managed by this infrastructure component.
 
 ## Key Configuration Options
 

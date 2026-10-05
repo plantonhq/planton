@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsvpc
 spec:
@@ -31,5 +31,5 @@ spec:
     - dedicated-tenancy instance surcharges depend on what is later launched into the VPC
     - IPAM per-address charges depend on the account's IPAM tier and managed-address footprint
     - CloudWatch charges for network address usage metrics depend on address count
-    - the billable network primitives -- NAT gateways, VPC endpoints, public IPv4 addresses, flow logs -- are separate catalog components with their own cost profiles
+    - the billable network primitives -- NAT gateways, VPC endpoints, public IPv4 addresses, flow logs -- are separate catalog kinds with their own cost profiles
   notes: "A VPC has zero idle cost: the container itself bills nothing at any scale, so the model is usage_based with every charge behind an optional lever -- tenancy raises future instance prices, IPAM sourcing moves address management onto a billed service, and NAU metrics buy CloudWatch visibility. The network's real spend lives in the components deployed into it."

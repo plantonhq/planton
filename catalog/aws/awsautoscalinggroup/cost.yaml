@@ -1,13 +1,13 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate model: the group commits real spend (the instances it keeps
 # running, billed per instance-hour), but the instance type that sets the
 # hourly rate lives on the referenced AwsLaunchTemplate -- invisible in
 # this manifest, so a dollar figure here would be a guess wearing a
-# dollar sign. Schema: finops/componentcostprofile/v1.
+# dollar sign. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsautoscalinggroup
 spec:
@@ -63,7 +63,7 @@ spec:
       pricing_unit: instance-hours
       impact: Bounded instance lifetime forces rolling replacements -- during each replacement the group briefly runs old and new instances side by side within the maintenance policy's surge bounds, a small recurring overlap on the baseline.
   estimate_exclusions:
-    - the instance-hour rate is set by the referenced AwsLaunchTemplate's instance type (and OS pricing) -- this manifest holds every quantity dial but never the rate, which is why no estimate document exists for this component
+    - the instance-hour rate is set by the referenced AwsLaunchTemplate's instance type (and OS pricing) -- this manifest holds every quantity dial but never the rate, which is why no estimate document exists for this kind
     - Spot rates fluctuate per pool and interruptions reshape which pools a mixed fleet actually bills
     - EBS volumes, public IPv4 addresses, and anything else the launch template attaches to each instance bill per that template's configuration
     - CloudWatch alarms created by scaling policies, and any detailed instance monitoring, bill on CloudWatch

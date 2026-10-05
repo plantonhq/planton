@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// kubernetes-kafka-mirror-maker2 stack-input
-type KubernetesKafkaMirrorMaker2StackInput struct {
+// kubernetes-kafka-mirror-maker2 iac-input
+type KubernetesKafkaMirrorMaker2IacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *KubernetesKafkaMirrorMaker2 `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type KubernetesKafkaMirrorMaker2StackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesKafkaMirrorMaker2StackInput) Reset() {
-	*x = KubernetesKafkaMirrorMaker2StackInput{}
+func (x *KubernetesKafkaMirrorMaker2IacInput) Reset() {
+	*x = KubernetesKafkaMirrorMaker2IacInput{}
 	mi := &file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesKafkaMirrorMaker2StackInput) String() string {
+func (x *KubernetesKafkaMirrorMaker2IacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesKafkaMirrorMaker2StackInput) ProtoMessage() {}
+func (*KubernetesKafkaMirrorMaker2IacInput) ProtoMessage() {}
 
-func (x *KubernetesKafkaMirrorMaker2StackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesKafkaMirrorMaker2IacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *KubernetesKafkaMirrorMaker2StackInput) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesKafkaMirrorMaker2StackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesKafkaMirrorMaker2StackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesKafkaMirrorMaker2IacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesKafkaMirrorMaker2IacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesKafkaMirrorMaker2StackInput) GetTarget() *KubernetesKafkaMirrorMaker2 {
+func (x *KubernetesKafkaMirrorMaker2IacInput) GetTarget() *KubernetesKafkaMirrorMaker2 {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesKafkaMirrorMaker2StackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesKafkaMirrorMaker2IacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_input_proto pro
 
 const file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/kubernetes/kuberneteskafkamirrormaker2/v1alpha1/input.proto\x12;dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1\x1aAcatalog/kubernetes/kuberneteskafkamirrormaker2/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xf4\x01\n" +
-	"%KubernetesKafkaMirrorMaker2StackInput\x12p\n" +
+	"Ccatalog/kubernetes/kuberneteskafkamirrormaker2/v1alpha1/input.proto\x12;dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1\x1aAcatalog/kubernetes/kuberneteskafkamirrormaker2/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xf2\x01\n" +
+	"#KubernetesKafkaMirrorMaker2IacInput\x12p\n" +
 	"\x06target\x18\x01 \x01(\v2X.dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2R\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xd8\x03\n" +
 	"?com.dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_input_proto_ra
 
 var file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesKafkaMirrorMaker2StackInput)(nil), // 0: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2StackInput
-	(*KubernetesKafkaMirrorMaker2)(nil),           // 1: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2
-	(*kubernetes.KubernetesProviderConfig)(nil),   // 2: dev.planton.kubernetes.KubernetesProviderConfig
+	(*KubernetesKafkaMirrorMaker2IacInput)(nil), // 0: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2IacInput
+	(*KubernetesKafkaMirrorMaker2)(nil),         // 1: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2
+	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kuberneteskafkamirrormaker2_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2StackInput.target:type_name -> dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2
-	2, // 1: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2StackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2IacInput.target:type_name -> dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2
+	2, // 1: dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1.KubernetesKafkaMirrorMaker2IacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

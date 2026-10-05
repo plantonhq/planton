@@ -1,16 +1,16 @@
-# Import map: where each {placeholder} in this component's import IDs comes
+# Import map: where each {placeholder} in this kind's import IDs comes
 # from (formats live in catalog/cloudflare/aa_import/catalog.yaml). Zone
-# settings are a zone singleton -- the zone id derives from the stack output;
+# settings are a zone singleton -- the zone id derives from the output;
 # the setting id is per-managed-setting knowledge.
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezonesettings
 spec:
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the

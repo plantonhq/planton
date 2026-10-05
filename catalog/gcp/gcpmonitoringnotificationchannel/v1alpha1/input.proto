@@ -5,7 +5,7 @@ package dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1;
 import "catalog/gcp/gcpmonitoringnotificationchannel/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-message GcpMonitoringNotificationChannelStackInput {
+message GcpMonitoringNotificationChannelIacInput {
   GcpMonitoringNotificationChannel target = 1;
   dev.planton.gcp.GcpProviderConfig provider_config = 2;
 }

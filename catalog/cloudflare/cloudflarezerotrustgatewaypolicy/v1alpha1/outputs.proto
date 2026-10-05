@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarezerotrustgatewaypolicy.v1alpha1;
 
-// CloudflareZeroTrustGatewayPolicyStackOutputs captures the observable outputs
+// CloudflareZeroTrustGatewayPolicyOutputs captures the observable outputs
 // after creating a Gateway policy.
-message CloudflareZeroTrustGatewayPolicyStackOutputs {
+message CloudflareZeroTrustGatewayPolicyOutputs {
   // The UUID of the created policy.
   string policy_id = 1;
 

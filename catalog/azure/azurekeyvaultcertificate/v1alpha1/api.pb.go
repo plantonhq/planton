@@ -31,7 +31,7 @@ type AzureKeyVaultCertificate struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *AzureKeyVaultCertificateSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -84,7 +84,7 @@ func (x *AzureKeyVaultCertificate) GetKind() string {
 	return ""
 }
 
-func (x *AzureKeyVaultCertificate) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzureKeyVaultCertificate) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -108,10 +108,10 @@ func (x *AzureKeyVaultCertificate) GetStatus() *AzureKeyVaultCertificateStatus {
 // azure-key-vault-certificate status
 type AzureKeyVaultCertificateStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs
+	// outputs
 	//
-	//	azure-key-vault-certificate stack-outputs
-	Outputs       *AzureKeyVaultCertificateStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	//	azure-key-vault-certificate outputs
+	Outputs       *AzureKeyVaultCertificateOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -146,7 +146,7 @@ func (*AzureKeyVaultCertificateStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurekeyvaultcertificate_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzureKeyVaultCertificateStatus) GetOutputs() *AzureKeyVaultCertificateStackOutputs {
+func (x *AzureKeyVaultCertificateStatus) GetOutputs() *AzureKeyVaultCertificateOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -164,11 +164,11 @@ const file_catalog_azure_azurekeyvaultcertificate_v1alpha1_api_proto_rawDesc = "
 	"apiVersion\x123\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1f\xbaH\x1cr\x1a\n" +
 	"\x18AzureKeyVaultCertificateR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12m\n" +
 	"\x04spec\x18\x04 \x01(\v2Q.dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12k\n" +
-	"\x06status\x18\x05 \x01(\v2S.dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateStatusR\x06status\"\x95\x01\n" +
-	"\x1eAzureKeyVaultCertificateStatus\x12s\n" +
-	"\aoutputs\x18\x01 \x01(\v2Y.dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateStackOutputsR\aoutputsB\xa3\x03\n" +
+	"\x06status\x18\x05 \x01(\v2S.dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateStatusR\x06status\"\x90\x01\n" +
+	"\x1eAzureKeyVaultCertificateStatus\x12n\n" +
+	"\aoutputs\x18\x01 \x01(\v2T.dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateOutputsR\aoutputsB\xa3\x03\n" +
 	"7com.dev.planton.azure.azurekeyvaultcertificate.v1alpha1B\bApiProtoP\x01Zmgithub.com/plantonhq/planton/catalog/azure/azurekeyvaultcertificate/v1alpha1;azurekeyvaultcertificatev1alpha1\xa2\x02\x04DPAA\xaa\x023Dev.Planton.Azure.Azurekeyvaultcertificate.V1alpha1\xca\x023Dev\\Planton\\Azure\\Azurekeyvaultcertificate\\V1alpha1\xe2\x02?Dev\\Planton\\Azure\\Azurekeyvaultcertificate\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Azure::Azurekeyvaultcertificate::V1alpha1b\x06proto3"
 
 var (
@@ -185,17 +185,17 @@ func file_catalog_azure_azurekeyvaultcertificate_v1alpha1_api_proto_rawDescGZIP(
 
 var file_catalog_azure_azurekeyvaultcertificate_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azurekeyvaultcertificate_v1alpha1_api_proto_goTypes = []any{
-	(*AzureKeyVaultCertificate)(nil),             // 0: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificate
-	(*AzureKeyVaultCertificateStatus)(nil),       // 1: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateStatus
-	(*shared.CloudResourceMetadata)(nil),         // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzureKeyVaultCertificateSpec)(nil),         // 3: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateSpec
-	(*AzureKeyVaultCertificateStackOutputs)(nil), // 4: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateStackOutputs
+	(*AzureKeyVaultCertificate)(nil),        // 0: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificate
+	(*AzureKeyVaultCertificateStatus)(nil),  // 1: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateStatus
+	(*shared.CatalogObjectMetadata)(nil),    // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzureKeyVaultCertificateSpec)(nil),    // 3: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateSpec
+	(*AzureKeyVaultCertificateOutputs)(nil), // 4: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateOutputs
 }
 var file_catalog_azure_azurekeyvaultcertificate_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificate.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificate.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificate.spec:type_name -> dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateSpec
 	1, // 2: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificate.status:type_name -> dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateStatus
-	4, // 3: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateStatus.outputs:type_name -> dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateStackOutputs
+	4, // 3: dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateStatus.outputs:type_name -> dev.planton.azure.azurekeyvaultcertificate.v1alpha1.AzureKeyVaultCertificateOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

@@ -1,4 +1,4 @@
-# Stack outputs — must flatten onto KubernetesPersistentVolumeClaimStackOutputs
+# Outputs — must flatten onto KubernetesPersistentVolumeClaimOutputs
 # (outputs.proto) identically to the Pulumi module's exports.
 
 output "pvc_name" {

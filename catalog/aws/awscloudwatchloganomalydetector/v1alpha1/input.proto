@@ -5,9 +5,9 @@ package dev.planton.aws.awscloudwatchloganomalydetector.v1alpha1;
 import "catalog/aws/awscloudwatchloganomalydetector/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsCloudwatchLogAnomalyDetectorStackInput is the input for the IaC
+// AwsCloudwatchLogAnomalyDetectorIacInput is the input for the IaC
 // modules that manage a CloudWatch Logs anomaly detector.
-message AwsCloudwatchLogAnomalyDetectorStackInput {
+message AwsCloudwatchLogAnomalyDetectorIacInput {
   // target is the AwsCloudwatchLogAnomalyDetector resource to deploy.
   AwsCloudwatchLogAnomalyDetector target = 1;
   // provider_config contains the AWS provider credentials and configuration.

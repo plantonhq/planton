@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureVirtualMachineScaleSetStackOutputs** captures the outputs of
+// **AzureVirtualMachineScaleSetOutputs** captures the outputs of
 // provisioning an Azure Virtual Machine Scale Set.
 //
 // The scale set's ARM id is the seam a standalone AzureVirtualMachine's
@@ -30,7 +30,7 @@ const (
 // autoscale resources scope to. The system-assigned principal is the
 // AzureRoleAssignment seam for granting the fleet access without stored
 // credentials.
-type AzureVirtualMachineScaleSetStackOutputs struct {
+type AzureVirtualMachineScaleSetOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the scale set.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Compute/virtualMachineScaleSets/{name}
@@ -47,20 +47,20 @@ type AzureVirtualMachineScaleSetStackOutputs struct {
 	sizeCache                         protoimpl.SizeCache
 }
 
-func (x *AzureVirtualMachineScaleSetStackOutputs) Reset() {
-	*x = AzureVirtualMachineScaleSetStackOutputs{}
+func (x *AzureVirtualMachineScaleSetOutputs) Reset() {
+	*x = AzureVirtualMachineScaleSetOutputs{}
 	mi := &file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureVirtualMachineScaleSetStackOutputs) String() string {
+func (x *AzureVirtualMachineScaleSetOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureVirtualMachineScaleSetStackOutputs) ProtoMessage() {}
+func (*AzureVirtualMachineScaleSetOutputs) ProtoMessage() {}
 
-func (x *AzureVirtualMachineScaleSetStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureVirtualMachineScaleSetOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -72,33 +72,33 @@ func (x *AzureVirtualMachineScaleSetStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureVirtualMachineScaleSetStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureVirtualMachineScaleSetStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureVirtualMachineScaleSetOutputs.ProtoReflect.Descriptor instead.
+func (*AzureVirtualMachineScaleSetOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureVirtualMachineScaleSetStackOutputs) GetScaleSetId() string {
+func (x *AzureVirtualMachineScaleSetOutputs) GetScaleSetId() string {
 	if x != nil {
 		return x.ScaleSetId
 	}
 	return ""
 }
 
-func (x *AzureVirtualMachineScaleSetStackOutputs) GetScaleSetName() string {
+func (x *AzureVirtualMachineScaleSetOutputs) GetScaleSetName() string {
 	if x != nil {
 		return x.ScaleSetName
 	}
 	return ""
 }
 
-func (x *AzureVirtualMachineScaleSetStackOutputs) GetUniqueId() string {
+func (x *AzureVirtualMachineScaleSetOutputs) GetUniqueId() string {
 	if x != nil {
 		return x.UniqueId
 	}
 	return ""
 }
 
-func (x *AzureVirtualMachineScaleSetStackOutputs) GetSystemAssignedIdentityPrincipalId() string {
+func (x *AzureVirtualMachineScaleSetOutputs) GetSystemAssignedIdentityPrincipalId() string {
 	if x != nil {
 		return x.SystemAssignedIdentityPrincipalId
 	}
@@ -109,8 +109,8 @@ var File_catalog_azure_azurevirtualmachinescaleset_v1alpha1_outputs_proto protor
 
 const file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/azure/azurevirtualmachinescaleset/v1alpha1/outputs.proto\x126dev.planton.azure.azurevirtualmachinescaleset.v1alpha1\"\xe0\x01\n" +
-	"'AzureVirtualMachineScaleSetStackOutputs\x12 \n" +
+	"@catalog/azure/azurevirtualmachinescaleset/v1alpha1/outputs.proto\x126dev.planton.azure.azurevirtualmachinescaleset.v1alpha1\"\xdb\x01\n" +
+	"\"AzureVirtualMachineScaleSetOutputs\x12 \n" +
 	"\fscale_set_id\x18\x01 \x01(\tR\n" +
 	"scaleSetId\x12$\n" +
 	"\x0escale_set_name\x18\x02 \x01(\tR\fscaleSetName\x12\x1b\n" +
@@ -132,7 +132,7 @@ func file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_outputs_proto_rawDe
 
 var file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureVirtualMachineScaleSetStackOutputs)(nil), // 0: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetStackOutputs
+	(*AzureVirtualMachineScaleSetOutputs)(nil), // 0: dev.planton.azure.azurevirtualmachinescaleset.v1alpha1.AzureVirtualMachineScaleSetOutputs
 }
 var file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

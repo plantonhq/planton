@@ -21,7 +21,7 @@
 
 ### Developer-Friendly CLI
 - **Unified Deployment Command**: Utilize the `planton pulumi up --manifest <api-resource.yaml>` command to deploy the operator effortlessly.
-- **Default Module Configuration**: Automatically configure stack inputs using default Pulumi modules, reducing setup complexity.
+- **Default Module Configuration**: Automatically configure IaC inputs using default Pulumi modules, reducing setup complexity.
 - **Git Integration**: Specify custom Pulumi modules via Git repository details for customized deployments.
 
 ### Production-Grade Deployment
@@ -45,16 +45,16 @@ Refer to the examples section for detailed usage instructions.
 
 ### Components
 
-1. **Namespace Creation**: Creates the `kubernetes-altinity-operator` namespace with proper labels
+1. **Namespace Creation**: Creates the namespace named in `spec.namespace`, with proper labels, when `spec.create_namespace` is true
 2. **Helm Release**: Deploys the operator using the official Altinity Helm chart
 3. **Resource Configuration**: Applies resource limits and requests from the spec
-4. **Output Capture**: Exports the namespace to stack outputs for reference
+4. **Output Capture**: Exports the namespace to outputs for reference
 
 ### Helm Chart Details
 
 - **Chart Name**: `altinity-clickhouse-operator`
 - **Repository**: `https://docs.altinity.com/clickhouse-operator/`
-- **Version**: `0.23.6` (configurable in vars.go)
+- **Version**: `spec.chart_version` (default `0.27.2`)
 - **Key Values**:
   - `operator.createCRD: true` - Automatically installs CRDs
   - `operator.resources` - Resource limits from spec
@@ -64,44 +64,45 @@ Refer to the examples section for detailed usage instructions.
 ### KubernetesAltinityOperatorSpec
 Defines the desired state of the operator deployment.
 
-- **container**: Container resource specifications for the operator pod
+- **namespace**: Namespace to install the operator into (a literal name or a reference to a `KubernetesNamespace`)
+- **create_namespace**: Create the namespace before installing, and delete it with the resource
+- **chart_version**: Helm chart version (default `0.27.2`)
+- **watch_namespaces**: Namespaces the operator watches (empty = its own namespace only)
+- **namespace_scoped_rbac**: Namespace-scoped Roles/RoleBindings instead of cluster-wide RBAC
+- **operator_credentials**: Credentials the operator uses to connect to every managed ClickHouse instance
+- **metrics**: The metrics-exporter sidecar
+- **crd_hook**: The hook job that applies the CRDs on install and upgrade
+- **resources**: Operator container CPU and memory (empty = the chart defaults, no requests or limits)
+- **service_monitor_enabled**, **node_selector**, **tolerations**, **image_pull_secrets**, **image**, **helm_values**: scheduling, image, and raw Helm value overrides
 
-### KubernetesAltinityOperatorSpecContainer
-Specifies the container-level configurations for the operator.
-
-- **resources**: CPU and memory resource allocations
-  - **requests**: Guaranteed resources (default: 100m CPU, 256Mi memory)
-  - **limits**: Maximum resources (default: 1000m CPU, 1Gi memory)
-
-### KubernetesAltinityOperatorStackOutputs
+### KubernetesAltinityOperatorOutputs
 Provides outputs from the deployed operator infrastructure.
 
-- **namespace**: Kubernetes namespace where the operator is deployed (always `kubernetes-altinity-operator`)
+- **namespace**: Kubernetes namespace where the operator is deployed
+- **release_name**, **deployment_name**, **credentials_secret_name**, **metrics_endpoint**: the Helm release, the operator Deployment, the operator credentials Secret, and the metrics endpoint
 
 ## Development
 
 ### Building the Module
 
 ```bash
-cd apis/project/planton/provider/kubernetes/kubernetesaltinityoperator/v1/iac/pulumi
-make build
+cd catalog/kubernetes/kubernetesaltinityoperator/iac/pulumi
+go build .
 ```
 
 ### Local Testing
 
-```bash
-# Set up stack input
-export PULUMI_STACK_INPUT=/path/to/manifest.yaml
+From this directory (it holds `Pulumi.yaml`, so the planton CLI runs this module):
 
-# Run locally
-./debug.sh
+```bash
+planton pulumi preview --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack> --kube-context <context>
 ```
+
+The CLI wraps the manifest into a `KubernetesAltinityOperatorIacInput` (under `target`) and hands it to the module through `IAC_INPUT_YAML_FILE`. The module also reads that input from the Pulumi config key `planton:iac-input` or from `IAC_INPUT_YAML` (YAML content).
 
 ### Updating Dependencies
 
-```bash
-make update-deps
-```
+The module's dependencies, including `github.com/pulumi/pulumi-kubernetes/sdk/v4`, are pinned in the repository's root `go.mod`.
 
 ## Troubleshooting
 

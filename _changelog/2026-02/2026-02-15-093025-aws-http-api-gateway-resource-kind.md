@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsHttpApiGateway as a new cloud resource kind (R05, enum 240) in the AWS provider expansion project. This component creates AWS API Gateway HTTP APIs (v2) with bundled stage, routes with inline integrations, and optional JWT/Lambda authorizers -- the most complex AWS resource in the expansion queue to date.
+Added AwsHttpApiGateway as a new catalog kind (R05, enum 240) in the AWS provider expansion project. This kind creates AWS API Gateway HTTP APIs (v2) with bundled stage, routes with inline integrations, and optional JWT/Lambda authorizers -- the most complex AWS resource in the expansion queue to date.
 
 ## Problem Statement / Motivation
 
@@ -14,17 +14,17 @@ AWS API Gateway HTTP APIs are the front door for modern serverless and microserv
 
 ### Pain Points
 
-- No API Gateway component forced users to manage HTTP APIs outside Planton
-- Lambda functions deployed via Planton couldn't be wired to HTTP endpoints in infra charts
-- The serverless-api infra chart pattern was blocked without this component
+- No API Gateway kind forced users to manage HTTP APIs outside Planton
+- Lambda functions deployed via Planton couldn't be wired to HTTP endpoints in Infra Charts
+- The serverless-api Infra Chart pattern was blocked without this kind
 
 ## Solution / What's New
 
-A clean, declarative AwsHttpApiGateway component that bundles the API, stage, routes, integrations, and authorizers into one resource with automatic integration deduplication.
+A clean, declarative AwsHttpApiGateway kind that bundles the API, stage, routes, integrations, and authorizers into one resource with automatic integration deduplication.
 
 ### Key Design Decisions
 
-1. **HTTP-only scope** -- WebSocket APIs are a fundamentally different paradigm (different routing, authorization, and integration models). A separate AwsWebSocketApiGateway component will be created later.
+1. **HTTP-only scope** -- WebSocket APIs are a fundamentally different paradigm (different routing, authorization, and integration models). A separate AwsWebSocketApiGateway kind will be created later.
 
 2. **Routes with inline integrations** -- Each route carries its own integration config. The IaC module automatically deduplicates: when multiple routes share the same backend (same type + URI + payload version), only one Integration resource is created.
 
@@ -91,7 +91,7 @@ Uses `for_each` on deduplicated integration maps, authorizer maps, and route map
 - 16 happy path scenarios (minimal, multi-route, CORS, JWT, REQUEST, production-ready)
 - 25 failure scenarios (missing routes, invalid types, broken cross-references, range violations)
 
-### Stack Outputs
+### Outputs
 
 - `api_id` -- API Gateway ID
 - `api_endpoint` -- Default execute endpoint URL
@@ -103,22 +103,22 @@ Uses `for_each` on deduplicated integration maps, authorizer maps, and route map
 ## Benefits
 
 - **Serverless API pattern unlocked** -- Users can now build complete serverless APIs (API Gateway + Lambda + DynamoDB) entirely in Planton
-- **Infra chart composability** -- `execution_arn` and `api_endpoint` outputs enable downstream wiring in infra charts
+- **Infra Chart composability** -- `execution_arn` and `api_endpoint` outputs enable downstream wiring in Infra Charts
 - **Clean UX** -- Routes with inline integrations hide the API Gateway resource complexity (12 TF resources) behind a simple declarative spec
 - **Integration deduplication** -- Multiple routes to the same Lambda don't create redundant Integration resources
 
 ## Impact
 
 - **Users**: Can now deploy production-grade HTTP APIs with JWT authorization, CORS, access logging, and throttling
-- **Infra charts**: Enables the planned serverless-api and serverless-event-api infra chart patterns
+- **Infra Charts**: Enables the planned serverless-api and serverless-event-api Infra Chart patterns
 - **AWS coverage**: 5th new resource kind in the expansion (R05 of 32), completing the serverless tier (SQS, SNS, EventBridge Bus, EventBridge Rule, HTTP API Gateway)
 
 ## Related Work
 
 - R01 AwsSqsQueue, R02 AwsSnsTopic, R03 AwsEventBridgeBus, R04 AwsEventBridgeRule (same expansion project)
-- Future: AwsWebSocketApiGateway (separate component for WebSocket APIs)
+- Future: AwsWebSocketApiGateway (separate kind for WebSocket APIs)
 - Future: AwsCognitoUserPool (R12, JWT issuer for API Gateway)
-- Future: serverless-api infra chart (T03, depends on this component)
+- Future: serverless-api Infra Chart (T03, depends on this kind)
 
 ---
 

@@ -8,10 +8,10 @@ import (
 	"github.com/plantonhq/planton/shared"
 )
 
-func stackInput(spec *auth0emailproviderv1alpha1.Auth0EmailProviderSpec) *auth0emailproviderv1alpha1.Auth0EmailProviderStackInput {
-	return &auth0emailproviderv1alpha1.Auth0EmailProviderStackInput{
+func iacInput(spec *auth0emailproviderv1alpha1.Auth0EmailProviderSpec) *auth0emailproviderv1alpha1.Auth0EmailProviderIacInput {
+	return &auth0emailproviderv1alpha1.Auth0EmailProviderIacInput{
 		Target: &auth0emailproviderv1alpha1.Auth0EmailProvider{
-			Metadata: &shared.CloudResourceMetadata{Name: "email-provider"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "email-provider"},
 			Spec:     spec,
 		},
 	}
@@ -141,7 +141,7 @@ func TestServiceArm(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			tc.spec.DefaultFromAddress = "Acme <no-reply@acme.com>"
-			locals := initializeLocals(stackInput(tc.spec))
+			locals := initializeLocals(iacInput(tc.spec))
 			if locals.Name != tc.wantName {
 				t.Errorf("name: got %q, want %q", locals.Name, tc.wantName)
 			}
@@ -171,7 +171,7 @@ func TestEnabled(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			locals := initializeLocals(stackInput(&auth0emailproviderv1alpha1.Auth0EmailProviderSpec{
+			locals := initializeLocals(iacInput(&auth0emailproviderv1alpha1.Auth0EmailProviderSpec{
 				DefaultFromAddress: "Acme <no-reply@acme.com>",
 				Enabled:            tc.enabled,
 				Service:            sendgrid,

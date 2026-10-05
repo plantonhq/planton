@@ -4,7 +4,7 @@ Deploys a Front Door origin -- one backend inside an origin group, with hostname
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Front Door Origin** -- a named child of an origin group pointing at a backend hostname, IPv4, or IPv6 address
 - **Traffic role** -- HTTP/HTTPS ports (Azure defaults 80/443), priority (1-5, lower serves first), weight (1-1000 within a priority tier), and the enabled drain switch
@@ -58,7 +58,7 @@ spec:
 planton apply -f front-door-origin.yaml
 ```
 
-This creates a public origin at Azure's defaults -- ports 80/443, priority 1, weight 500, certificate name check on -- and leaving `originHostHeader` unset sends the origin's own hostname as the Host header, the correct pairing for multi-tenant Azure backends like App Service. A Stack Job tracks the provisioning in real time.
+This creates a public origin at Azure's defaults -- ports 80/443, priority 1, weight 500, certificate name check on -- and leaving `originHostHeader` unset sends the origin's own hostname as the Host header, the correct pairing for multi-tenant Azure backends like App Service. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,7 +87,7 @@ The InfraPipeline resolves the dependency graph, deploys the origin group and th
 
 These are the most important decisions when configuring an origin. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Hostname** -- `hostName` is required: a DNS hostname, IPv4, or IPv6 address. Reference a Cloud Resource's hostname output (an AzureLinuxWebApp's `default_hostname`, an AzureStorageAccount's `primary_web_host`) when the backend is part of the same deployment, or pass a literal for anything outside it. No kind dominates origin backends, so references declare their kind explicitly.
+**Hostname** -- `hostName` is required: a DNS hostname, IPv4, or IPv6 address. Reference an Infra Component's hostname output (an AzureLinuxWebApp's `default_hostname`, an AzureStorageAccount's `primary_web_host`) when the backend is part of the same deployment, or pass a literal for anything outside it. No kind dominates origin backends, so references declare their kind explicitly.
 
 **Host header** -- leaving `originHostHeader` unset sends the origin's own `hostName` -- exactly right for multi-tenant Azure services (App Service, Container Apps, Functions, Storage static sites), which route BY Host header. Override only when the backend expects the client-facing domain instead, and then make sure it can actually serve it.
 
@@ -103,16 +103,16 @@ These are the most important decisions when configuring an origin. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureFrontDoorOriginGroup** | `originGroupId` | `status.outputs.origin_group_id` |
 | **AzureLinuxWebApp** (or any backend kind) | `hostName` / `originHostHeader` | `status.outputs.default_hostname` (kind-specific hostname outputs) |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -133,9 +133,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Front Door Origin Group**](/cloud-catalog/azure-front-door-origin-group) -- the parent pool that owns load-balancing and health-probe policy
-- [**Azure Front Door Route**](/cloud-catalog/azure-front-door-route) -- lists this origin's `origin_id` so route deployment sequences after the backends exist
-- [**Azure Linux Web App**](/cloud-catalog/azure-linux-web-app) -- the most common backend; its `default_hostname` feeds `hostName`
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- static-website backends via `primary_web_host`
-- [**Azure Container App Environment**](/cloud-catalog/azure-container-app-environment) -- a Private Link target (`targetType: MANAGED_ENVIRONMENTS`)
-- [**Azure Private Link Service**](/cloud-catalog/azure-private-link-service) -- fronts internal load balancers as a Private Link target with no `targetType`
+- [**Azure Front Door Origin Group**](/infra-catalog/azure-front-door-origin-group) -- the parent pool that owns load-balancing and health-probe policy
+- [**Azure Front Door Route**](/infra-catalog/azure-front-door-route) -- lists this origin's `origin_id` so route deployment sequences after the backends exist
+- [**Azure Linux Web App**](/infra-catalog/azure-linux-web-app) -- the most common backend; its `default_hostname` feeds `hostName`
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- static-website backends via `primary_web_host`
+- [**Azure Container App Environment**](/infra-catalog/azure-container-app-environment) -- a Private Link target (`targetType: MANAGED_ENVIRONMENTS`)
+- [**Azure Private Link Service**](/infra-catalog/azure-private-link-service) -- fronts internal load balancers as a Private Link target with no `targetType`

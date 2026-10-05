@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -21,7 +21,7 @@ func validMinimalSpec() *AwsMwaaEnvironment {
 	return &AwsMwaaEnvironment{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsMwaaEnvironment",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-mwaa-env",
 		},
 		Spec: &AwsMwaaEnvironmentSpec{
@@ -223,7 +223,7 @@ var _ = ginkgo.Describe("AwsMwaaEnvironmentSpec Validation Tests", func() {
 			input.Spec.SourceBucketArn = &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind: cloudresourcekind.CloudResourceKind_AwsS3Bucket,
+						Kind: catalogkind.CatalogKind_AwsS3Bucket,
 						Name: "my-s3-bucket",
 					},
 				},
@@ -439,7 +439,7 @@ var _ = ginkgo.Describe("AwsMwaaEnvironmentSpec Validation Tests", func() {
 				input := &AwsMwaaEnvironment{
 					ApiVersion: "aws.planton.dev/v1alpha1",
 					Kind:       "AwsMwaaEnvironment",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-mwaa-env",
 					},
 				}

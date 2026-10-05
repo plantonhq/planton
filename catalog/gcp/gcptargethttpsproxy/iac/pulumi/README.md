@@ -30,7 +30,7 @@ iac/pulumi/
     ├── main.go                 # Module coordinator
     ├── target_https_proxy.go   # Proxy creation and mapping
     ├── locals.go               # Resolved resource + derived values
-    └── outputs.go              # Stack output constants
+    └── outputs.go              # Output constants
 ```
 
 ## Quick Start
@@ -44,7 +44,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the proxy specification:
+Provide a `iac-input.yaml` with the proxy specification:
 
 ```yaml
 target:
@@ -78,7 +78,7 @@ pulumi stack output proxy_name
 
 ## Inputs
 
-The module consumes `GcpTargetHttpsProxyStackInput`:
+The module consumes `GcpTargetHttpsProxyIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|

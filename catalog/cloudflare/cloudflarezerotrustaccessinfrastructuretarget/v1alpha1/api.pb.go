@@ -33,7 +33,7 @@ type CloudflareZeroTrustAccessInfrastructureTarget struct {
 	// resource-kind
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// metadata
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// spec
 	Spec *CloudflareZeroTrustAccessInfrastructureTargetSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
 	// status
@@ -86,7 +86,7 @@ func (x *CloudflareZeroTrustAccessInfrastructureTarget) GetKind() string {
 	return ""
 }
 
-func (x *CloudflareZeroTrustAccessInfrastructureTarget) GetMetadata() *shared.CloudResourceMetadata {
+func (x *CloudflareZeroTrustAccessInfrastructureTarget) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *CloudflareZeroTrustAccessInfrastructureTarget) GetStatus() *CloudflareZ
 // state of the target.
 type CloudflareZeroTrustAccessInfrastructureTargetStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// stack-outputs from the IaC deployment
-	Outputs       *CloudflareZeroTrustAccessInfrastructureTargetStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// outputs from the IaC deployment
+	Outputs       *CloudflareZeroTrustAccessInfrastructureTargetOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*CloudflareZeroTrustAccessInfrastructureTargetStatus) Descriptor() ([]byte
 	return file_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CloudflareZeroTrustAccessInfrastructureTargetStatus) GetOutputs() *CloudflareZeroTrustAccessInfrastructureTargetStackOutputs {
+func (x *CloudflareZeroTrustAccessInfrastructureTargetStatus) GetOutputs() *CloudflareZeroTrustAccessInfrastructureTargetOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1al
 	"apiVersion\x12H\n" +
 	"\x04kind\x18\x02 \x01(\tB4\xbaH1r/\n" +
 	"-CloudflareZeroTrustAccessInfrastructureTargetR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x9d\x01\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12\x9d\x01\n" +
 	"\x04spec\x18\x04 \x01(\v2\x80\x01.dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12\x9b\x01\n" +
-	"\x06status\x18\x05 \x01(\v2\x82\x01.dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetStatusR\x06status\"\xdb\x01\n" +
-	"3CloudflareZeroTrustAccessInfrastructureTargetStatus\x12\xa3\x01\n" +
-	"\aoutputs\x18\x01 \x01(\v2\x88\x01.dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetStackOutputsR\aoutputsB\xd5\x04\n" +
+	"\x06status\x18\x05 \x01(\v2\x82\x01.dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetStatusR\x06status\"\xd6\x01\n" +
+	"3CloudflareZeroTrustAccessInfrastructureTargetStatus\x12\x9e\x01\n" +
+	"\aoutputs\x18\x01 \x01(\v2\x83\x01.dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetOutputsR\aoutputsB\xd5\x04\n" +
 	"Qcom.dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1B\bApiProtoP\x01Z\x9c\x01github.com/plantonhq/planton/catalog/cloudflare/cloudflarezerotrustaccessinfrastructuretarget/v1alpha1;cloudflarezerotrustaccessinfrastructuretargetv1alpha1\xa2\x02\x04DPCC\xaa\x02MDev.Planton.Cloudflare.Cloudflarezerotrustaccessinfrastructuretarget.V1alpha1\xca\x02MDev\\Planton\\Cloudflare\\Cloudflarezerotrustaccessinfrastructuretarget\\V1alpha1\xe2\x02YDev\\Planton\\Cloudflare\\Cloudflarezerotrustaccessinfrastructuretarget\\V1alpha1\\GPBMetadata\xea\x02QDev::Planton::Cloudflare::Cloudflarezerotrustaccessinfrastructuretarget::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1alp
 
 var file_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1alpha1_api_proto_goTypes = []any{
-	(*CloudflareZeroTrustAccessInfrastructureTarget)(nil),             // 0: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTarget
-	(*CloudflareZeroTrustAccessInfrastructureTargetStatus)(nil),       // 1: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetStatus
-	(*shared.CloudResourceMetadata)(nil),                              // 2: dev.planton.shared.CloudResourceMetadata
-	(*CloudflareZeroTrustAccessInfrastructureTargetSpec)(nil),         // 3: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetSpec
-	(*CloudflareZeroTrustAccessInfrastructureTargetStackOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetStackOutputs
+	(*CloudflareZeroTrustAccessInfrastructureTarget)(nil),        // 0: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTarget
+	(*CloudflareZeroTrustAccessInfrastructureTargetStatus)(nil),  // 1: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetStatus
+	(*shared.CatalogObjectMetadata)(nil),                         // 2: dev.planton.shared.CatalogObjectMetadata
+	(*CloudflareZeroTrustAccessInfrastructureTargetSpec)(nil),    // 3: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetSpec
+	(*CloudflareZeroTrustAccessInfrastructureTargetOutputs)(nil), // 4: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetOutputs
 }
 var file_catalog_cloudflare_cloudflarezerotrustaccessinfrastructuretarget_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTarget.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTarget.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTarget.spec:type_name -> dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetSpec
 	1, // 2: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTarget.status:type_name -> dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetStatus
-	4, // 3: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetStackOutputs
+	4, // 3: dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetStatus.outputs:type_name -> dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1.CloudflareZeroTrustAccessInfrastructureTargetOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

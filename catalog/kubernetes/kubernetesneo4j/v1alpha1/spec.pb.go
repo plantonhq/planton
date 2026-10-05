@@ -130,7 +130,7 @@ type KubernetesNeo4JSpec struct {
 	// deliberate override of the chart's LoadBalancer default; exposure
 	// composes from first-class kinds instead. In-cluster clients use
 	// the always-created default Service (= the resource name — the
-	// endpoints in the stack outputs), so this block matters only when
+	// endpoints in the outputs), so this block matters only when
 	// exposing the server directly.
 	Service *KubernetesNeo4JService `protobuf:"bytes,15,opt,name=service,proto3" json:"service,omitempty"`
 	// *
@@ -566,7 +566,7 @@ func (x *KubernetesNeo4JMemory) GetPageCache() string {
 type KubernetesNeo4JService struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
-	// Service type: ClusterIP (the component default — NOT the chart's
+	// Service type: ClusterIP (the kind's default — NOT the chart's
 	// LoadBalancer default), NodePort, or LoadBalancer.
 	Type *string `protobuf:"bytes,1,opt,name=type,proto3,oneof" json:"type,omitempty"`
 	// *
@@ -686,7 +686,7 @@ type KubernetesNeo4JSslScope struct {
 	// Existing TLS Secret (private.key + public.crt). Accepts a
 	// literal name or a KubernetesCertificate reference — the
 	// cert-manager seam (cert-manager Secrets carry tls.key/tls.crt;
-	// see the component docs for the key-name bridge).
+	// see the kind's docs for the key-name bridge).
 	Secret        *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=secret,proto3" json:"secret,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

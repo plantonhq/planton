@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
 import "shared/options/options.proto";
 
-// Shared Gateway API types used across multiple Planton Gateway API components.
+// Shared Gateway API types used across multiple Planton Gateway API kinds.
 // Translated from kubernetes-sigs/gateway-api v1.6.1:
 //   - apis/v1/shared_types.go
 //   - apis/v1/object_reference_types.go
@@ -28,7 +28,7 @@ import "shared/options/options.proto";
 // message self-contained and faithful to its upstream type.
 //
 // Note on `name` fields: where a reference's default target is a resource kind
-// Planton models as a first-class component (Gateway, Service, Secret,
+// Planton models as a first-class kind (Gateway, Service, Secret,
 // ConfigMap), the name is a StringValueOrRef foreign key so infra charts can
 // wire it with valueFrom and the resource graph gets a real dependency edge.
 // The upstream length/format constraints on those names are enforced by the
@@ -697,8 +697,8 @@ message KubernetesGatewayApiFraction {
 // because:
 //   1. Proto enums change CEL expression semantics (string comparison breaks)
 //   2. Upstream defaults are controller-specific and should not be baked in
-//   3. Component-specific enums (ProtocolType, HTTPMethod, etc.) are defined
-//      nested inside each component's spec.proto per forge convention
+//   3. Kind-specific enums (ProtocolType, HTTPMethod, etc.) are defined
+//      nested inside each kind's spec.proto per forge convention
 //
 // Valid values are documented in field comments. Where a value set matches an
 // external standard's constants (HTTP methods, Gateway API mode names), the

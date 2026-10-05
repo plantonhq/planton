@@ -6,7 +6,7 @@
 
 **apiVersion**: `auth0.planton.dev/v1alpha1`
 
-**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.
 
 Auth0PromptScreenPartialsSpec manages the HTML fragments one Universal Login
 prompt inserts on its screens, on the tenant the provider connection's
@@ -36,7 +36,7 @@ https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/prompt
 
 ```yaml
 # Auth0 Prompt Screen Partials Test Manifest
-# This file is used for testing the Auth0PromptScreenPartials component.
+# This file is used for testing the Auth0PromptScreenPartials kind.
 #
 # Applying it REPLACES every partial of the tenant's signup prompt: run it
 # only against a test tenant nobody signs up through.

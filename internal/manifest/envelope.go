@@ -36,7 +36,7 @@ func EnvelopeMismatches(manifest proto.Message) []string {
 
 // envelopeConst reads the buf.validate string const declared on a top-level
 // manifest field (api_version or kind). The constants are authored in each
-// kind's api.proto and gated against the kind registry by crkreflect's
+// kind's api.proto and gated against the kind registry by catalogkindreflect's
 // registry tests, so the descriptor is the authoritative source of the
 // expected value.
 func envelopeConst(manifest proto.Message, fieldName protoreflect.Name) string {

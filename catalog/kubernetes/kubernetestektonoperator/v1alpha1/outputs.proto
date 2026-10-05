@@ -5,7 +5,7 @@ package dev.planton.kubernetes.kubernetestektonoperator.v1alpha1;
 /**
  * Outputs exported after installing the Tekton Operator.
  */
-message KubernetesTektonOperatorStackOutputs {
+message KubernetesTektonOperatorOutputs {
   /**
    * Namespace the operator runs in — always `tekton-operator` (fixed
    * by the release manifest).

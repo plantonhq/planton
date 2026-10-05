@@ -715,7 +715,7 @@ var _ = ginkgo.Describe("AwsFsxOntapVolumeSpec validations", func() {
 		vol := &AwsFsxOntapVolume{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsFsxOntapVolume",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "my-ontap-volume",
 				Id:   "awsfxov-abc123",
 				Org:  "my-org",
@@ -731,7 +731,7 @@ var _ = ginkgo.Describe("AwsFsxOntapVolumeSpec validations", func() {
 		vol := &AwsFsxOntapVolume{
 			ApiVersion: "invalid/v1",
 			Kind:       "AwsFsxOntapVolume",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "my-ontap-volume",
 				Id:   "awsfxov-abc123",
 				Org:  "my-org",
@@ -747,7 +747,7 @@ var _ = ginkgo.Describe("AwsFsxOntapVolumeSpec validations", func() {
 		vol := &AwsFsxOntapVolume{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "InvalidKind",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "my-ontap-volume",
 				Id:   "awsfxov-abc123",
 				Org:  "my-org",

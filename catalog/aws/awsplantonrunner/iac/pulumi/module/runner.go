@@ -30,7 +30,7 @@ const (
 
 // runnerCompute provisions the compute stack of the appliance -- log
 // group, dedicated cluster, task definition, and the Fargate service that
-// keeps exactly one runner running -- and exports the component's stack
+// keeps exactly one runner running -- and exports the component's
 // outputs.
 func runnerCompute(
 	ctx *pulumi.Context,

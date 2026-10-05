@@ -7,7 +7,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output key constants aligned with KubernetesServiceStackOutputs field names.
+// Output key constants aligned with KubernetesServiceOutputs field names.
 const (
 	OutputServiceName          = "service_name"
 	OutputNamespace            = "namespace"
@@ -19,7 +19,7 @@ const (
 	OutputPortForwardCommand   = "port_forward_command"
 )
 
-// exportOutputs exports the stack outputs from the created Kubernetes Service.
+// exportOutputs exports the outputs from the created Kubernetes Service.
 // Every output key is exported unconditionally (empty when not applicable) so
 // both engines flatten the identical field set onto the outputs proto.
 func exportOutputs(ctx *pulumi.Context, locals *Locals, service *kubernetescorev1.Service) error {

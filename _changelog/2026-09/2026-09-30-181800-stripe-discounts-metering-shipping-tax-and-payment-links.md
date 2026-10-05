@@ -2,7 +2,7 @@
 
 **Date**: September 30, 2026
 **Type**: Feature
-**Components**: StripeCoupon, StripePromotionCode, StripeShippingRate, StripeTaxRate, StripeBillingMeter, StripePaymentLink, StripePrice; `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `pkg/providerparity`, `pkg/crkreflect`, `pkg/explain/refgen`, `pkg/iac/importmap`; the component forge rule and flow rules 012 and 014
+**Components**: StripeCoupon, StripePromotionCode, StripeShippingRate, StripeTaxRate, StripeBillingMeter, StripePaymentLink, StripePrice; `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `pkg/providerparity`, `pkg/catalogkindreflect`, `pkg/explain/refgen`, `pkg/iac/importmap`; the catalog-kind forge rule and flow rules 012 and 014
 
 ## Summary
 
@@ -28,7 +28,7 @@
 - **Catalog wiring:** seven resources leave the dispositions ledger; the registry snapshot, kind map, references and the Stripe parity page are regenerated.
 - **Teaching:**
   - flow 014's Stripe id-prefix line: when two Stripe objects share initials, each takes Stripe's own id prefix;
-  - flow 012, the component forge rule and the import-map README: a change the provider accepts but can't send (an update with no API field, a write-only value) forces a replacement through a `terraform_data` tracker, judged internal and never imported;
+  - flow 012, the kind forge rule and the import-map README: a change the provider accepts but can't send (an update with no API field, a write-only value) forces a replacement through a `terraform_data` tracker, judged internal and never imported;
   - the forge rule's verifier section: inactive read the vendor's way, and folded children proven like their parent;
   - two questions join the skill's eval bank: changing the price a payment link sells, and how an application learns its meter's event name.
 
@@ -41,7 +41,7 @@
   - `tofu fmt`, `init` and `validate` for each module, and offline plans for every manifest and scenario shape;
   - for the payment link, offline plans against a seeded state: an unchanged manifest plans nothing, a changed price or quantity plans a replacement (create before destroy), a changed adjustable quantity or metadata plans an in-place update, and a state without the tracker (the shape after an import) plans only the tracker's creation;
   - `module verify --provisioner tofu` with engine validation for seven kinds; `secret-coverage --check`, `validate-refs --check`, `provider-parity --kind` for each kind and `--check`;
-  - `go test` for the harness and its verifiers, the runner (including the catalog-wide fixture-integrity check), crkreflect, providerparity, cataloglogo, catalogpage, presetvalidity, refcheck, secretcoverage, importmap, permissions, e2e/profile, outputs, cost and control profiles, protodocs, explain and refgen;
+  - `go test` for the harness and its verifiers, the runner (including the catalog-wide fixture-integrity check), catalogkindreflect, providerparity, cataloglogo, catalogpage, presetvalidity, refcheck, secretcoverage, importmap, permissions, e2e/profile, outputs, cost and control profiles, protodocs, explain and refgen;
   - the E2E package compiles and vets under the `e2e` tag; `defspack`.
 - **Red-proofed:** the payment link's replace trigger (without it, a price change plans an impossible in-place update and a quantity change never reaches the link), the child verifiers (a forgotten alert, a surviving feature link), the meter's status-form check, the harness's child wiring, and the new reference format and metered-price rules.
 - **Not run live:** no Stripe lane has run; the profiles stay `pending_proof`. Whether Stripe accepts dashes in a meter's event name, and the restricted-key label for alerts, are confirmed on the first live run.

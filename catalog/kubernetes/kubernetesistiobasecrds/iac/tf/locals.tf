@@ -10,7 +10,7 @@ locals {
   #
   # MUST stay in sync with `istio_release` in pkg/kubernetes/kubernetestypes/Makefile and
   # the Pulumi module's IstioRelease constant, so the installed CRD schema matches the
-  # crd2pulumi-generated typed SDK that the Istio components are built against.
+  # crd2pulumi-generated typed SDK that the Istio kinds are built against.
   # Always an exact release TAG (e.g. "1.30.3"), never a release BRANCH: a branch ref
   # moves as patches land, so the same deployed resource would install different CRD
   # schemas at different times — tag pinning keeps installs reproducible.

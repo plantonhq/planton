@@ -6,7 +6,7 @@
 
 KubernetesGatewayClass creates a cluster-scoped Gateway API [GatewayClass](https://gateway-api.sigs.k8s.io/api-types/gatewayclass/) that identifies the controller (Istio, Envoy Gateway, NGINX Gateway Fabric, etc.) responsible for managing Gateways of that class. It is the infrastructure-provider layer of the Gateway API role model: a GatewayClass is to a Gateway what a StorageClass is to a PersistentVolume.
 
-This component mirrors the upstream Gateway API v1 `GatewayClass` spec with 100% fidelity, so any value you can express in raw Gateway API YAML, you can express here -- with proto validation, typed SDKs, and InfraChart composability on top.
+This kind mirrors the upstream Gateway API v1 `GatewayClass` spec with 100% fidelity, so any value you can express in raw Gateway API YAML, you can express here -- with proto validation, typed SDKs, and InfraChart composability on top.
 
 ## Prerequisites
 
@@ -49,14 +49,14 @@ planton pulumi up --manifest gateway-class.yaml --stack org/project/env
 | `parametersRef.namespace` | string | No | Namespace of the referent; set only for namespace-scoped resources |
 | `description` | string | No | Human-friendly description (max 64 characters) |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `gateway_class_name` | Name of the created GatewayClass (equals `metadata.name`). Reference this from `KubernetesGateway.spec.gateway_class_name`. |
 | `controller_name` | The controller managing this GatewayClass |
 
-## Related Components
+## Related Kinds
 
 - **KubernetesGatewayApiCrds** -- installs the Gateway API CRDs (prerequisite)
 - **KubernetesGateway** -- references this class via `gatewayClassName` to define listeners and entry points

@@ -3,9 +3,9 @@
 # derivation derives the honest zero, with configuration-scoped
 # exclusions naming where the network's real spend lives. The estimate
 # generator replays the catalog presets through these rules to emit
-# ../estimates/awsvpc.yaml. Schema: finops/componentcostderivation/v1.
+# ../estimates/awsvpc.yaml. Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsvpc
 spec:

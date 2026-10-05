@@ -16,7 +16,7 @@ message DigitalOceanFirewall {
   string kind = 2 [(buf.validate.field).string.const = 'DigitalOceanFirewall'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   DigitalOceanFirewallSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,7 +27,7 @@ message DigitalOceanFirewall {
 
 // digital-ocean-firewall status
 message DigitalOceanFirewallStatus {
-  //stack-outputs
-  //  digital-ocean-firewall stack-outputs
-  DigitalOceanFirewallStackOutputs outputs = 1;
+  //outputs
+  //  digital-ocean-firewall outputs
+  DigitalOceanFirewallOutputs outputs = 1;
 }

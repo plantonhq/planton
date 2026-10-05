@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added a new **Fix** operation for targeted component improvements with automatic cascading updates, and integrated test execution as an explicit requirement in completeness scoring. This ensures that when fixing bugs in source code (proto, IaC), all related artifacts (documentation, examples, tests) are automatically updated to maintain consistency, and that components are only considered complete when their validation tests actually execute and pass.
+Added a new **Fix** operation for targeted kind improvements with automatic cascading updates, and integrated test execution as an explicit requirement in completeness scoring. This ensures that when fixing bugs in source code (proto, IaC), all related artifacts (documentation, examples, tests) are automatically updated to maintain consistency, and that kinds are only considered complete when their validation tests actually execute and pass.
 
 ## Problem Statement / Motivation
 
@@ -39,7 +39,7 @@ Current options:
 **Problem:** Audit checked if spec_test.go exists but didn't verify tests actually pass.
 
 **Pain Points:**
-- Component scored 95% but tests were failing
+- Kind scored 95% but tests were failing
 - Validation rules could be syntactically invalid (tests fail to compile)
 - Validation rules could be semantically wrong (tests fail to run)
 - No enforcement that buf.validate rules actually work correctly
@@ -47,7 +47,7 @@ Current options:
 
 **Example:**
 ```
-Component: MongodbAtlas
+Kind: MongodbAtlas
 Audit: 95% complete
 
 Reality:
@@ -55,7 +55,7 @@ Reality:
   ❌ Tests fail to compile (not checked)
   ❌ Validation rules untested (not enforced)
   
-User experience: Component appears complete but validation doesn't work!
+User experience: Kind appears complete but validation doesn't work!
 ```
 
 **3. No Source Code Truth Principle**
@@ -83,17 +83,17 @@ Reality: Supports 11-15, docs are wrong!
 
 **For Developers:**
 - Can't make targeted fixes without manual propagation
-- Tests might fail but component still scores high
+- Tests might fail but kind still scores high
 - Documentation might lie about capabilities
 - No automated consistency enforcement
 
 **For Users:**
 - Examples that don't work (claim to be valid but fail validation)
 - Documentation that misleads (describes non-existent behavior)
-- Components that appear complete but have broken validation
+- Kinds that appear complete but have broken validation
 
 **For the Project:**
-- False confidence in component quality
+- False confidence in kind quality
 - Technical debt from documentation drift
 - Maintenance burden from inconsistency
 - Trust issues when examples fail
@@ -102,7 +102,7 @@ Reality: Supports 11-15, docs are wrong!
 
 ### 1. New Fix Operation
 
-**Created:** `fix/fix-planton-component.mdc` and comprehensive README
+**Created:** `fix/fix-catalog-kind.mdc` and comprehensive README
 
 **Purpose:** Targeted fixes with intelligent cascading updates to all related artifacts.
 
@@ -115,7 +115,7 @@ Reality: Supports 11-15, docs are wrong!
 2. Fix Source Code → Proto, IaC modules, tests (CODE FIRST)
 3. Propagate to Docs → Update all docs to match new code
 4. Validate Consistency → 5 automated checks
-5. Execute Tests → Component tests, build, full suite
+5. Execute Tests → Kind tests, build, full suite
 6. Report → Show what was fixed and propagated
 ```
 
@@ -131,22 +131,22 @@ Reality: Supports 11-15, docs are wrong!
 
 **Usage:**
 ```bash
-@fix-planton-component <ComponentName> --explain "<detailed fix description>"
+@fix-catalog-kind <KindName> --explain "<detailed fix description>"
 ```
 
 **Examples:**
 ```bash
 # Fix validation logic
-@fix-planton-component GcpCertManagerCert --explain "primaryDomainName should allow wildcards *.example.com"
+@fix-catalog-kind GcpCertManagerCert --explain "primaryDomainName should allow wildcards *.example.com"
 
 # Fix IaC hardcoded value
-@fix-planton-component AwsRdsInstance --explain "backup_retention_period hardcoded to 7, should use spec field"
+@fix-catalog-kind AwsRdsInstance --explain "backup_retention_period hardcoded to 7, should use spec field"
 
 # Fix documentation drift
-@fix-planton-component PostgresKubernetes --explain "examples use deprecated 'database_name', should be 'db_identifier'"
+@fix-catalog-kind PostgresKubernetes --explain "examples use deprecated 'database_name', should be 'db_identifier'"
 
 # Fix test failures
-@fix-planton-component MongodbAtlas --explain "test expects validation on cluster_tier but spec.proto has no validation rule"
+@fix-catalog-kind MongodbAtlas --explain "test expects validation on cluster_tier but spec.proto has no validation rule"
 ```
 
 ### 2. Test Execution as Explicit Requirement
@@ -165,7 +165,7 @@ Reality: Supports 11-15, docs are wrong!
 **Test Execution Requirements:**
 ```bash
 # Must execute successfully
-go test ./apis/dev/planton/provider/<provider>/<component>/v1/
+go test ./apis/dev/planton/provider/<provider>/<kind>/v1/
 
 # All tests must pass
 # Validates buf.validate rules are syntactically and semantically correct
@@ -173,20 +173,20 @@ go test ./apis/dev/planton/provider/<provider>/<component>/v1/
 ```
 
 **Scoring Impact:**
-- Components with failing tests now score 2.78% lower
+- Kinds with failing tests now score 2.78% lower
 - Test compilation errors prevent full score
 - Test execution is mandatory for production-ready status
 - Can't achieve 95%+ without passing tests
 
 **Where Updated:**
-- `architecture/deployment-component.md` - Ideal state definition
-- `audit/audit-planton-component.mdc` - Scoring logic
+- `architecture/catalog-kind.md` - Ideal state definition
+- `audit/audit-catalog-kind.mdc` - Scoring logic
 - `audit/README.md` - Category explanations
-- `complete/complete-planton-component.mdc` - Validation workflow
+- `complete/complete-catalog-kind.mdc` - Validation workflow
 - `complete/README.md` - Success criteria
-- `update/update-planton-component.mdc` - Validation checkpoints
+- `update/update-catalog-kind.mdc` - Validation checkpoints
 - `update/README.md` - Checkpoint explanations
-- `forge/forge-planton-component.mdc` - Success criteria
+- `forge/forge-catalog-kind.mdc` - Success criteria
 - `forge/README.md` - What forge creates
 
 ### 3. Source Code Truth Principle
@@ -247,7 +247,7 @@ After every fix, validates:
 
 **Decision Tree Enhanced:**
 ```
-Component exists and has issue?
+Kind exists and has issue?
 ├─ General improvement needed? → update (scenario-based)
 ├─ Specific bug to fix? → fix (targeted with propagation)
 └─ Want it production-ready fast? → complete (automated)
@@ -257,7 +257,7 @@ Component exists and has issue?
 
 ### Fix Operation Implementation
 
-**File:** `fix/fix-planton-component.mdc` (685 lines)
+**File:** `fix/fix-catalog-kind.mdc` (685 lines)
 
 **Key Features:**
 
@@ -282,7 +282,7 @@ Phase 2: Documentation (AFTER)
   - Update IaC READMEs
 
 Phase 3: Validation (ALWAYS)
-  - Component tests
+  - Kind tests
   - Build
   - Full test suite
   - Example validation
@@ -333,8 +333,8 @@ Phase 3: Validation (ALWAYS)
 
 **4. Comprehensive Validation**
 ```bash
-# Component-specific tests (validates buf.validate rules work)
-go test ./apis/dev/planton/provider/<provider>/<component>/v1/
+# Kind-specific tests (validates buf.validate rules work)
+go test ./apis/dev/planton/provider/<provider>/<kind>/v1/
 
 # Build validation (all Go code compiles)
 make build
@@ -373,19 +373,19 @@ Category 3: Protobuf API Definitions (22.20%)
 - [ ] Tests validate all buf.validate rules are correct
 
 **Impact on Audit:**
-- Components with failing tests now score 2.78% lower
+- Kinds with failing tests now score 2.78% lower
 - Test execution explicitly tracked and reported
 - Failing tests prevent achieving 95%+ score
 - Production-ready requires tests pass, not just exist
 
 **Impact on Complete:**
-- Complete now validates component tests before finishing
-- Shows: Component tests → Build → Full test suite
+- Complete now validates kind tests before finishing
+- Shows: Kind tests → Build → Full test suite
 - Won't complete if tests fail
 - Reports test execution in summary
 
 **Impact on Update:**
-- Update runs component tests after changes
+- Update runs kind tests after changes
 - Validates validation rules work correctly
 - Ensures no test regressions
 - Reports test pass/fail status
@@ -399,12 +399,12 @@ Category 3: Protobuf API Definitions (22.20%)
 
 **Files Updated (9 total):**
 
-1. `architecture/deployment-component.md`
+1. `architecture/catalog-kind.md`
    - Enhanced section 3.6 with test execution requirements
    - Updated scoring weights (Critical: 48.64%, Important: 36.36%, Nice: 15%)
    - Added explicit requirement: Tests must execute and pass
 
-2. `audit/audit-planton-component.mdc`
+2. `audit/audit-catalog-kind.mdc`
    - Split Category 3 into sub-categories with test execution
    - Updated scoring formula with new weights
    - Added validation steps for test execution
@@ -421,7 +421,7 @@ Category 3: Protobuf API Definitions (22.20%)
 
 ### Master README Enhancement
 
-**Updated:** `deployment-component/README.md`
+**Updated:** `catalog-kind/README.md`
 
 **Changes:**
 - Six operations (was five)
@@ -441,7 +441,7 @@ Category 3: Protobuf API Definitions (22.20%)
 - **Time Savings:** 70-80% reduction (20-30 min manual → 5-10 min automated)
 
 **Test Reliability:**
-- **Before:** Component could score 95% with failing tests
+- **Before:** Kind could score 95% with failing tests
 - **After:** Tests must pass to achieve high scores
 - **Confidence:** High score now guarantees tests work
 
@@ -450,7 +450,7 @@ Category 3: Protobuf API Definitions (22.20%)
 - **After:** Automated 5-check validation after every fix
 - **Result:** Guaranteed consistency across all artifacts
 
-### For Component Quality
+### For Kind Quality
 
 **Validation Rigor:**
 - **Before:** Test file existence checked (yes/no)
@@ -495,7 +495,7 @@ Category 3: Protobuf API Definitions (22.20%)
 2. Fix source code (proto, IaC, tests)
 3. Propagate to docs (examples, READMEs, research docs)
 4. Validate consistency (5 automated checks)
-5. Execute tests (component + build + full suite)
+5. Execute tests (kind + build + full suite)
 6. Report (detailed summary of fix and propagation)
 
 **Common Scenarios:**
@@ -538,7 +538,7 @@ Category 3: Protobuf API Definitions
 **Complete Operation Enhanced:**
 ```
 Phase 4: Final Validation
-  [11/12] ✅ Component tests passed (go test)
+  [11/12] ✅ Kind tests passed (go test)
   [12/13] ✅ Build passed (make build)
   [13/13] ✅ Full test suite passed (make test)
 ```
@@ -546,17 +546,17 @@ Phase 4: Final Validation
 **Update Operation Enhanced:**
 ```
 Validation Checkpoints:
-  - After test changes → Component tests pass
+  - After test changes → Kind tests pass
   - After IaC updates → Full test suite passes
   
-Command: go test ./apis/.../provider/<provider>/<component>/v1/
+Command: go test ./apis/.../provider/<provider>/<kind>/v1/
 ```
 
 **Forge Operation Enhanced:**
 ```
 Success Criteria:
   ✅ spec_test.go with validation tests
-  ✅ Component tests execute and pass
+  ✅ Kind tests execute and pass
   ✅ Validates buf.validate rules work correctly
 ```
 
@@ -606,7 +606,7 @@ Success Criteria:
 ### Example 1: Fix Validation Bug
 
 ```bash
-@fix-planton-component GcpCertManagerCert --explain "primaryDomainName validation rejects *.example.com wildcards, should accept them"
+@fix-catalog-kind GcpCertManagerCert --explain "primaryDomainName validation rejects *.example.com wildcards, should accept them"
 ```
 
 **Execution:**
@@ -620,7 +620,7 @@ Source Code Fix (2 min):
   ✅ spec.proto: Pattern ^(\*\.)?[a-z0-9-]+\.[a-z]{2,}$
   ✅ Stubs: Regenerated
   ✅ spec_test.go: Added wildcard tests (2 new)
-  ✅ Component tests: 18/18 pass
+  ✅ Kind tests: 18/18 pass
 
 Documentation Propagation (3 min):
   ✅ examples.md: Added 2 wildcard examples
@@ -636,7 +636,7 @@ Consistency Validation (1 min):
   ✅ Docs ↔ Code: Synchronized
 
 Final Validation (2 min):
-  ✅ Component tests: 18/18 pass (+2 new)
+  ✅ Kind tests: 18/18 pass (+2 new)
   ✅ Build: Success
   ✅ Full suite: 156/156 pass
 
@@ -646,7 +646,7 @@ Result: Fixed in 8 minutes, all artifacts consistent
 ### Example 2: Fix Documentation Drift
 
 ```bash
-@fix-planton-component PostgresKubernetes --explain "examples.md uses deprecated 'database_name' field, should be 'db_identifier' from current spec"
+@fix-catalog-kind PostgresKubernetes --explain "examples.md uses deprecated 'database_name' field, should be 'db_identifier' from current spec"
 ```
 
 **Execution:**
@@ -676,7 +676,7 @@ Result: Fixed in 3 minutes, docs now accurate
 ### Example 3: Fix IaC Hardcoded Value
 
 ```bash
-@fix-planton-component AwsRdsInstance --explain "backup_retention_period hardcoded to 7 days, should use spec.backupRetentionDays field"
+@fix-catalog-kind AwsRdsInstance --explain "backup_retention_period hardcoded to 7 days, should use spec.backupRetentionDays field"
 ```
 
 **Execution:**
@@ -691,7 +691,7 @@ Source Code Fix:
   ✅ Pulumi: Use spec.BackupRetentionDays
   ✅ Terraform: Use var.backup_retention_days
   ✅ Tests: Added retention validation tests
-  ✅ Component tests: Pass
+  ✅ Kind tests: Pass
 
 Documentation:
   ✅ examples.md: Added retention examples (7, 14, 30 days)
@@ -717,7 +717,7 @@ Result: Fixed in 12 minutes, feature parity restored
 **Rationale:**
 - **Surgical precision** - Fix is targeted, update is broad
 - **Different mental model** - Fix specific issue vs improve generally
-- **Clearer intent** - "Fix this bug" vs "Update component"
+- **Clearer intent** - "Fix this bug" vs "Update kind"
 - **Consistency focus** - Fix actively enforces, update trusts
 
 **Alternative Considered:** Add "fix-issue" scenario to update
@@ -736,7 +736,7 @@ Result: Fixed in 12 minutes, feature parity restored
 - **Production-ready** - Must ensure validation logic actually works
 
 **Alternative Considered:** Keep test as single item (file existence only)
-- **Rejected** because it allowed components to score high with broken tests
+- **Rejected** because it allowed kinds to score high with broken tests
 - Test execution is critical for validation correctness
 
 ### Why Source Code Truth Principle?
@@ -778,7 +778,7 @@ Result: Fixed in 12 minutes, feature parity restored
 - Source code truth principle established
 
 **Test Execution:**
-- Components can't score 95%+ with failing tests
+- Kinds can't score 95%+ with failing tests
 - Validation rules must actually work
 - Quality measurement more rigorous
 - Production-ready has higher bar
@@ -791,13 +791,13 @@ Result: Fixed in 12 minutes, feature parity restored
 
 ### Long-Term Impact
 
-**For Existing Components:**
+**For Existing Kinds:**
 - Can use fix to correct specific issues
 - Test execution will reveal validation issues
 - Systematic path to correct inconsistencies
-- Higher quality bar for all components
+- Higher quality bar for all kinds
 
-**For New Components:**
+**For New Kinds:**
 - Forge ensures tests pass before completion
 - Fix available for any post-creation issues
 - Consistency enforced from day 1
@@ -868,10 +868,10 @@ Result: Fixed in 12 minutes, feature parity restored
 ### Validation of Test Execution
 
 **Manual Testing Needed:**
-- [ ] Audit component with passing tests (should score 2.78% for execution)
-- [ ] Audit component with failing tests (should score 0% for execution)
-- [ ] Complete component with test failures (should fix tests)
-- [ ] Update component (should validate tests pass)
+- [ ] Audit kind with passing tests (should score 2.78% for execution)
+- [ ] Audit kind with failing tests (should score 0% for execution)
+- [ ] Complete kind with test failures (should fix tests)
+- [ ] Update kind (should validate tests pass)
 
 ## Known Limitations
 
@@ -900,7 +900,7 @@ Result: Fixed in 12 minutes, feature parity restored
 
 2. **Slow for Large Codebases**
    - Running all tests can take time
-   - Workaround: Component-specific tests are fast (1-5 sec)
+   - Workaround: Kind-specific tests are fast (1-5 sec)
 
 ## Breaking Changes
 
@@ -908,7 +908,7 @@ None. All changes are additive:
 - Fix is new operation (doesn't replace anything)
 - Test execution adds to scoring (doesn't remove anything)
 - Source code truth principle is guideline (doesn't break existing)
-- Backward compatible with all existing components
+- Backward compatible with all existing kinds
 
 ## Migration Guide
 
@@ -917,7 +917,7 @@ None. All changes are additive:
 **Immediate Use:**
 ```bash
 # No migration needed, start using immediately
-@fix-planton-component <Component> --explain "<fix description>"
+@fix-catalog-kind <Kind> --explain "<fix description>"
 ```
 
 **When to Use Fix vs Update:**
@@ -927,17 +927,17 @@ None. All changes are additive:
 
 ### For Test Execution
 
-**Components Already Passing:**
+**Kinds Already Passing:**
 - No action needed
 - Audit will show full score including test execution
 
-**Components With Failing Tests:**
+**Kinds With Failing Tests:**
 - Audit will score 2.78% lower
-- Fix tests with: `@fix-planton-component <Component> --explain "fix failing tests"`
+- Fix tests with: `@fix-catalog-kind <Kind> --explain "fix failing tests"`
 - Or manual fix, then re-audit
 
-**Components Without Tests:**
-- Use: `@update-planton-component <Component> --scenario fill-gaps`
+**Kinds Without Tests:**
+- Use: `@update-catalog-kind <Kind> --scenario fill-gaps`
 - Creates spec_test.go with validation tests
 - Validates tests pass
 
@@ -945,7 +945,7 @@ None. All changes are additive:
 
 **Builds On:**
 - Previous lifecycle system (forge, audit, update, complete, delete)
-- Ideal state definition (architecture/deployment-component.md)
+- Ideal state definition (architecture/catalog-kind.md)
 - Test validation framework (forge rule 003, 019)
 
 **Extends:**
@@ -954,7 +954,7 @@ None. All changes are additive:
 - Quality measurement (more rigorous)
 
 **Influences:**
-- All future component fixes (use fix operation)
+- All future kind fixes (use fix operation)
 - All audit reports (include test execution)
 - All complete operations (validate tests)
 
@@ -981,12 +981,12 @@ The result is a more robust, rigorous system where:
 **Status**: ✅ Production Ready
 
 **Locations**:
-- Rules: `_rules/deployment-component/fix/`
+- Rules: `_rules/catalog-kind/fix/`
 - Updated: All lifecycle operation documentation
-- Ideal State: `architecture/deployment-component.md`
+- Ideal State: `architecture/catalog-kind.md`
 
 **Next Steps**:
-1. Use fix for targeted component improvements
+1. Use fix for targeted kind improvements
 2. Audit will now include test execution scoring
 3. Complete validates tests pass before finishing
 4. Trust that docs match code (enforced by fix)

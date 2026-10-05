@@ -22,7 +22,7 @@ const (
 )
 
 // Outputs produced after provisioning a Firestore backup schedule.
-type GcpFirestoreBackupScheduleStackOutputs struct {
+type GcpFirestoreBackupScheduleOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Server-assigned schedule ID (the last path segment of the schedule's
 	// resource name) — what Admin API calls address the schedule by.
@@ -34,20 +34,20 @@ type GcpFirestoreBackupScheduleStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GcpFirestoreBackupScheduleStackOutputs) Reset() {
-	*x = GcpFirestoreBackupScheduleStackOutputs{}
+func (x *GcpFirestoreBackupScheduleOutputs) Reset() {
+	*x = GcpFirestoreBackupScheduleOutputs{}
 	mi := &file_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GcpFirestoreBackupScheduleStackOutputs) String() string {
+func (x *GcpFirestoreBackupScheduleOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GcpFirestoreBackupScheduleStackOutputs) ProtoMessage() {}
+func (*GcpFirestoreBackupScheduleOutputs) ProtoMessage() {}
 
-func (x *GcpFirestoreBackupScheduleStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *GcpFirestoreBackupScheduleOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *GcpFirestoreBackupScheduleStackOutputs) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GcpFirestoreBackupScheduleStackOutputs.ProtoReflect.Descriptor instead.
-func (*GcpFirestoreBackupScheduleStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use GcpFirestoreBackupScheduleOutputs.ProtoReflect.Descriptor instead.
+func (*GcpFirestoreBackupScheduleOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GcpFirestoreBackupScheduleStackOutputs) GetScheduleId() string {
+func (x *GcpFirestoreBackupScheduleOutputs) GetScheduleId() string {
 	if x != nil {
 		return x.ScheduleId
 	}
 	return ""
 }
 
-func (x *GcpFirestoreBackupScheduleStackOutputs) GetDatabase() string {
+func (x *GcpFirestoreBackupScheduleOutputs) GetDatabase() string {
 	if x != nil {
 		return x.Database
 	}
@@ -82,8 +82,8 @@ var File_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_outputs_proto protorefl
 
 const file_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/gcp/gcpfirestorebackupschedule/v1alpha1/outputs.proto\x123dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1\"e\n" +
-	"&GcpFirestoreBackupScheduleStackOutputs\x12\x1f\n" +
+	"=catalog/gcp/gcpfirestorebackupschedule/v1alpha1/outputs.proto\x123dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1\"`\n" +
+	"!GcpFirestoreBackupScheduleOutputs\x12\x1f\n" +
 	"\vschedule_id\x18\x01 \x01(\tR\n" +
 	"scheduleId\x12\x1a\n" +
 	"\bdatabase\x18\x02 \x01(\tR\bdatabaseB\xa9\x03\n" +
@@ -103,7 +103,7 @@ func file_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_outputs_proto_rawDescG
 
 var file_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_outputs_proto_goTypes = []any{
-	(*GcpFirestoreBackupScheduleStackOutputs)(nil), // 0: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleStackOutputs
+	(*GcpFirestoreBackupScheduleOutputs)(nil), // 0: dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleOutputs
 }
 var file_catalog_gcp_gcpfirestorebackupschedule_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -10,15 +10,15 @@ import (
 // Resources orchestrates creation of the REST API: the API itself with
 // its resource/method tree (or imported OpenAPI document), the named
 // satellites, the hash-triggered deployment, and the stage.
-func Resources(ctx *pulumi.Context, stackInput *awsrestapigatewayv1alpha1.AwsRestApiGatewayStackInput) error {
-	locals, err := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsrestapigatewayv1alpha1.AwsRestApiGatewayIacInput) error {
+	locals, err := initializeLocals(ctx, iacInput)
 	if err != nil {
 		return errors.Wrap(err, "initialize locals")
 	}
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.Target.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.Target.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

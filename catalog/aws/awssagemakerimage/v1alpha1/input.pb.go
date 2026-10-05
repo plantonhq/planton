@@ -22,9 +22,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsSagemakerImageStackInput is the input for the IaC modules that
+// AwsSagemakerImageIacInput is the input for the IaC modules that
 // deploy the image and its versions.
-type AwsSagemakerImageStackInput struct {
+type AwsSagemakerImageIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// target is the AwsSagemakerImage resource to deploy.
 	Target *AwsSagemakerImage `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -34,20 +34,20 @@ type AwsSagemakerImageStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsSagemakerImageStackInput) Reset() {
-	*x = AwsSagemakerImageStackInput{}
+func (x *AwsSagemakerImageIacInput) Reset() {
+	*x = AwsSagemakerImageIacInput{}
 	mi := &file_catalog_aws_awssagemakerimage_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsSagemakerImageStackInput) String() string {
+func (x *AwsSagemakerImageIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsSagemakerImageStackInput) ProtoMessage() {}
+func (*AwsSagemakerImageIacInput) ProtoMessage() {}
 
-func (x *AwsSagemakerImageStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsSagemakerImageIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awssagemakerimage_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,19 +59,19 @@ func (x *AwsSagemakerImageStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsSagemakerImageStackInput.ProtoReflect.Descriptor instead.
-func (*AwsSagemakerImageStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsSagemakerImageIacInput.ProtoReflect.Descriptor instead.
+func (*AwsSagemakerImageIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awssagemakerimage_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsSagemakerImageStackInput) GetTarget() *AwsSagemakerImage {
+func (x *AwsSagemakerImageIacInput) GetTarget() *AwsSagemakerImage {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsSagemakerImageStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsSagemakerImageIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -82,8 +82,8 @@ var File_catalog_aws_awssagemakerimage_v1alpha1_input_proto protoreflect.FileDes
 
 const file_catalog_aws_awssagemakerimage_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awssagemakerimage/v1alpha1/input.proto\x12*dev.planton.aws.awssagemakerimage.v1alpha1\x1a0catalog/aws/awssagemakerimage/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xc1\x01\n" +
-	"\x1bAwsSagemakerImageStackInput\x12U\n" +
+	"2catalog/aws/awssagemakerimage/v1alpha1/input.proto\x12*dev.planton.aws.awssagemakerimage.v1alpha1\x1a0catalog/aws/awssagemakerimage/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xbf\x01\n" +
+	"\x19AwsSagemakerImageIacInput\x12U\n" +
 	"\x06target\x18\x01 \x01(\v2=.dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xe8\x02\n" +
 	".com.dev.planton.aws.awssagemakerimage.v1alpha1B\n" +
@@ -103,13 +103,13 @@ func file_catalog_aws_awssagemakerimage_v1alpha1_input_proto_rawDescGZIP() []byt
 
 var file_catalog_aws_awssagemakerimage_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awssagemakerimage_v1alpha1_input_proto_goTypes = []any{
-	(*AwsSagemakerImageStackInput)(nil), // 0: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStackInput
-	(*AwsSagemakerImage)(nil),           // 1: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImage
-	(*aws.AwsProviderConfig)(nil),       // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsSagemakerImageIacInput)(nil), // 0: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageIacInput
+	(*AwsSagemakerImage)(nil),         // 1: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImage
+	(*aws.AwsProviderConfig)(nil),     // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awssagemakerimage_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStackInput.target:type_name -> dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImage
-	2, // 1: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageIacInput.target:type_name -> dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImage
+	2, // 1: dev.planton.aws.awssagemakerimage.v1alpha1.AwsSagemakerImageIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

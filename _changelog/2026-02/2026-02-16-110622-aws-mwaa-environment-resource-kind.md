@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the AwsMwaaEnvironment resource kind (R24) to Planton, enabling declarative deployment of Amazon Managed Workflows for Apache Airflow environments. The component includes managed security group creation, 5-module CloudWatch logging, S3 artifact management (DAGs, plugins, requirements, startup scripts), auto-scaling workers and webservers, KMS encryption, and endpoint management -- delivering the twenty-eighth new AWS resource kind in the expansion project.
+Added the AwsMwaaEnvironment resource kind (R24) to Planton, enabling declarative deployment of Amazon Managed Workflows for Apache Airflow environments. The kind includes managed security group creation, 5-module CloudWatch logging, S3 artifact management (DAGs, plugins, requirements, startup scripts), auto-scaling workers and webservers, KMS encryption, and endpoint management -- delivering the twenty-eighth new AWS resource kind in the expansion project.
 
 ## Problem Statement / Motivation
 
@@ -20,9 +20,9 @@ Data engineering teams need a declarative, version-controlled way to provision A
 
 ## Solution / What's New
 
-A complete AwsMwaaEnvironment deployment component with 28 spec fields, 3 proto messages, 5 CEL cross-field validations, managed security group pattern, and full Pulumi + Terraform IaC implementations.
+A complete AwsMwaaEnvironment catalog kind with 28 spec fields, 3 proto messages, 5 CEL cross-field validations, managed security group pattern, and full Pulumi + Terraform IaC implementations.
 
-### Component Architecture
+### Kind Architecture
 
 ```mermaid
 flowchart TB
@@ -82,13 +82,13 @@ flowchart TB
 
 - **Declarative MWAA**: Data engineers can version-control their Airflow infrastructure alongside DAG code
 - **Correct Security by Default**: Managed SG pattern eliminates the #1 MWAA networking misconfiguration
-- **Infra Chart Composability**: Rich StringValueOrRef outputs enable MWAA to be composed with VPC, IAM, S3, and KMS components in infra charts
+- **Infra Chart Composability**: Rich StringValueOrRef outputs enable MWAA to be composed with VPC, IAM, S3, and KMS kinds in Infra Charts
 - **Production-Ready Presets**: 3 presets covering development, production, and extensible configurations
 
 ## Impact
 
 - **Users**: Can now deploy MWAA environments through Planton CLI with 41 validated spec fields
-- **Infra Charts**: Enables new data pipeline infra charts combining MWAA with S3, Glue, Athena, and Redshift components
+- **Infra Charts**: Enables new data pipeline Infra Charts combining MWAA with S3, Glue, Athena, and Redshift kinds
 - **AWS Coverage**: Brings AWS to 28 new resource kinds (of ~32 target), completing Phase 2 item R24
 
 ## Related Work

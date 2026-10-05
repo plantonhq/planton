@@ -31,7 +31,7 @@ import "shared/foreignkey/v1/foreign_key.proto";
 // - Only Lustre file systems WITHOUT the legacy in-spec import_path arm can
 //   carry associations (AWS forbids mixing the two S3-link generations).
 // - Credentials, region, and deployment workflow live outside this spec in
-//   stack inputs.
+//   IaC inputs.
 message AwsFsxDataRepositoryAssociationSpec {
   // The AWS region where the association will be created — the file system's
   // region. Example: "us-west-2", "eu-west-1"

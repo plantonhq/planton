@@ -8,7 +8,7 @@
 - **`kubectl_manifest` apply**: the CR applies through the alekc/kubectl
   provider, which needs no cluster connection at plan time — a SecretStore
   can be PLANNED before the External Secrets Operator's CRDs exist, which
-  is what lets an infra chart deploy the operator and its stores in one
+  is what lets an Infra Chart deploy the operator and its stores in one
   run.
 - **Credential Secret materialization**: static credentials declared in the
   spec land in a `<resource-name>-credentials` Secret in the store's own

@@ -1,4 +1,4 @@
-# AliCloudSecurityGroup Component Added
+# AliCloudSecurityGroup Kind Added
 
 **Date**: 2026-02-19
 **Component**: AliCloudSecurityGroup
@@ -7,16 +7,16 @@
 
 ## Summary
 
-Added the AliCloudSecurityGroup deployment component -- a stateful virtual firewall that controls inbound and outbound traffic for VPC-based resources.
+Added the AliCloudSecurityGroup catalog kind -- a stateful virtual firewall that controls inbound and outbound traffic for VPC-based resources.
 
-This component bundles an `alicloud_security_group` with `alicloud_security_group_rule` resources (per DD07 composite bundling), ensuring the security group is always provisioned with its intended access policy.
+This kind bundles an `alicloud_security_group` with `alicloud_security_group_rule` resources (per DD07 composite bundling), ensuring the security group is always provisioned with its intended access policy.
 
 ## What Was Created
 
 ### API Definition
-- `apis/dev/planton/provider/alicloud/alicloudsecuritygroup/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
+- `apis/dev/planton/provider/alicloud/alicloudsecuritygroup/v1/` -- Full proto API (spec, api, iac_input, outputs)
 - `AliCloudSecurityGroupSpec` with `repeated AliCloudSecurityGroupRule rules` for composite bundling
-- Registered `AliCloudSecurityGroup = 3022` in `CloudResourceKind` enum under the Networking category
+- Registered `AliCloudSecurityGroup = 3022` in `CatalogKind` enum under the Networking category
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider, `ecs.SecurityGroup`, and `ecs.SecurityGroupRule` per rule entry with `nic_type=intranet` hardcoded and `pulumi.Parent(sg)` dependency chain
@@ -26,7 +26,7 @@ This component bundles an `alicloud_security_group` with `alicloud_security_grou
 - Ginkgo/Gomega spec validation tests: 25 specs covering valid inputs (minimal, full config, rules with all fields, mixed ingress/egress, SG-to-SG references, drop policy, priority boundaries, StringValueOrRef), invalid inputs (missing required fields, wrong api_version/kind, invalid CEL values for type/ip_protocol/policy/inner_access_policy, priority out of range)
 
 ### Documentation
-- README.md with configuration reference, port range format guide, output reference, and related components
+- README.md with configuration reference, port range format guide, output reference, and related kinds
 - examples.md with 3 YAML examples (web tier, database tier, SG-to-SG application tier)
 - catalog-page.md with full configuration reference and deployment examples
 - docs/README.md with comprehensive research documentation covering normal vs enterprise SGs, rule evaluation, immutability constraints, and provider resource mapping

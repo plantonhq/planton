@@ -21,13 +21,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureAksNodePoolStackOutputs** captures the outputs of provisioning an
+// **AzureAksNodePoolOutputs** captures the outputs of provisioning an
 // AKS node pool.
 //
 // Nothing downstream deploys INTO a node pool (workloads target pools via
 // Kubernetes labels and taints, not ARM references), so the outputs are
 // the pool's own identifiers plus the node image actually rolled out.
-type AzureAksNodePoolStackOutputs struct {
+type AzureAksNodePoolOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the agent pool.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ContainerService/managedClusters/{cluster}/agentPools/{name}
@@ -43,20 +43,20 @@ type AzureAksNodePoolStackOutputs struct {
 	sizeCache        protoimpl.SizeCache
 }
 
-func (x *AzureAksNodePoolStackOutputs) Reset() {
-	*x = AzureAksNodePoolStackOutputs{}
+func (x *AzureAksNodePoolOutputs) Reset() {
+	*x = AzureAksNodePoolOutputs{}
 	mi := &file_catalog_azure_azureaksnodepool_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureAksNodePoolStackOutputs) String() string {
+func (x *AzureAksNodePoolOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureAksNodePoolStackOutputs) ProtoMessage() {}
+func (*AzureAksNodePoolOutputs) ProtoMessage() {}
 
-func (x *AzureAksNodePoolStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureAksNodePoolOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azureaksnodepool_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -68,26 +68,26 @@ func (x *AzureAksNodePoolStackOutputs) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureAksNodePoolStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureAksNodePoolStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureAksNodePoolOutputs.ProtoReflect.Descriptor instead.
+func (*AzureAksNodePoolOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureaksnodepool_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureAksNodePoolStackOutputs) GetNodePoolId() string {
+func (x *AzureAksNodePoolOutputs) GetNodePoolId() string {
 	if x != nil {
 		return x.NodePoolId
 	}
 	return ""
 }
 
-func (x *AzureAksNodePoolStackOutputs) GetNodePoolName() string {
+func (x *AzureAksNodePoolOutputs) GetNodePoolName() string {
 	if x != nil {
 		return x.NodePoolName
 	}
 	return ""
 }
 
-func (x *AzureAksNodePoolStackOutputs) GetNodeImageVersion() string {
+func (x *AzureAksNodePoolOutputs) GetNodeImageVersion() string {
 	if x != nil {
 		return x.NodeImageVersion
 	}
@@ -98,8 +98,8 @@ var File_catalog_azure_azureaksnodepool_v1alpha1_outputs_proto protoreflect.File
 
 const file_catalog_azure_azureaksnodepool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/azure/azureaksnodepool/v1alpha1/outputs.proto\x12+dev.planton.azure.azureaksnodepool.v1alpha1\"\x94\x01\n" +
-	"\x1cAzureAksNodePoolStackOutputs\x12 \n" +
+	"5catalog/azure/azureaksnodepool/v1alpha1/outputs.proto\x12+dev.planton.azure.azureaksnodepool.v1alpha1\"\x8f\x01\n" +
+	"\x17AzureAksNodePoolOutputs\x12 \n" +
 	"\fnode_pool_id\x18\x01 \x01(\tR\n" +
 	"nodePoolId\x12$\n" +
 	"\x0enode_pool_name\x18\x02 \x01(\tR\fnodePoolName\x12,\n" +
@@ -120,7 +120,7 @@ func file_catalog_azure_azureaksnodepool_v1alpha1_outputs_proto_rawDescGZIP() []
 
 var file_catalog_azure_azureaksnodepool_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azureaksnodepool_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureAksNodePoolStackOutputs)(nil), // 0: dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolStackOutputs
+	(*AzureAksNodePoolOutputs)(nil), // 0: dev.planton.azure.azureaksnodepool.v1alpha1.AzureAksNodePoolOutputs
 }
 var file_catalog_azure_azureaksnodepool_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

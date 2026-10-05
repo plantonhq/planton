@@ -1,5 +1,5 @@
 apiVersion: _test.planton.dev/v1alpha1
-kind: TestCloudResourceKubernetes
+kind: TestCatalogKindKubernetes
 metadata:
   name: consumer
   env: dev
@@ -9,6 +9,6 @@ spec:
   refMap:
     primary:
       valueFrom:
-        kind: TestCloudResourceGeneric
+        kind: TestCatalogKindGeneric
         name: producer
         fieldPath: status.outputs.id

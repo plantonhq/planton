@@ -21,9 +21,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsManagedPrometheusScraperStackOutputs captures the observable
+// AwsManagedPrometheusScraperOutputs captures the observable
 // state of the scraper after apply.
-type AwsManagedPrometheusScraperStackOutputs struct {
+type AwsManagedPrometheusScraperOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The scraper's AWS-generated ID (the provider's import ID).
 	ScraperId string `protobuf:"bytes,1,opt,name=scraper_id,json=scraperId,proto3" json:"scraper_id,omitempty"`
@@ -36,20 +36,20 @@ type AwsManagedPrometheusScraperStackOutputs struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsManagedPrometheusScraperStackOutputs) Reset() {
-	*x = AwsManagedPrometheusScraperStackOutputs{}
+func (x *AwsManagedPrometheusScraperOutputs) Reset() {
+	*x = AwsManagedPrometheusScraperOutputs{}
 	mi := &file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsManagedPrometheusScraperStackOutputs) String() string {
+func (x *AwsManagedPrometheusScraperOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsManagedPrometheusScraperStackOutputs) ProtoMessage() {}
+func (*AwsManagedPrometheusScraperOutputs) ProtoMessage() {}
 
-func (x *AwsManagedPrometheusScraperStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AwsManagedPrometheusScraperOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,26 +61,26 @@ func (x *AwsManagedPrometheusScraperStackOutputs) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsManagedPrometheusScraperStackOutputs.ProtoReflect.Descriptor instead.
-func (*AwsManagedPrometheusScraperStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsManagedPrometheusScraperOutputs.ProtoReflect.Descriptor instead.
+func (*AwsManagedPrometheusScraperOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsManagedPrometheusScraperStackOutputs) GetScraperId() string {
+func (x *AwsManagedPrometheusScraperOutputs) GetScraperId() string {
 	if x != nil {
 		return x.ScraperId
 	}
 	return ""
 }
 
-func (x *AwsManagedPrometheusScraperStackOutputs) GetScraperArn() string {
+func (x *AwsManagedPrometheusScraperOutputs) GetScraperArn() string {
 	if x != nil {
 		return x.ScraperArn
 	}
 	return ""
 }
 
-func (x *AwsManagedPrometheusScraperStackOutputs) GetScraperRoleArn() string {
+func (x *AwsManagedPrometheusScraperOutputs) GetScraperRoleArn() string {
 	if x != nil {
 		return x.ScraperRoleArn
 	}
@@ -91,8 +91,8 @@ var File_catalog_aws_awsmanagedprometheusscraper_v1alpha1_outputs_proto protoref
 
 const file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	">catalog/aws/awsmanagedprometheusscraper/v1alpha1/outputs.proto\x124dev.planton.aws.awsmanagedprometheusscraper.v1alpha1\"\x93\x01\n" +
-	"'AwsManagedPrometheusScraperStackOutputs\x12\x1d\n" +
+	">catalog/aws/awsmanagedprometheusscraper/v1alpha1/outputs.proto\x124dev.planton.aws.awsmanagedprometheusscraper.v1alpha1\"\x8e\x01\n" +
+	"\"AwsManagedPrometheusScraperOutputs\x12\x1d\n" +
 	"\n" +
 	"scraper_id\x18\x01 \x01(\tR\tscraperId\x12\x1f\n" +
 	"\vscraper_arn\x18\x02 \x01(\tR\n" +
@@ -114,7 +114,7 @@ func file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_outputs_proto_rawDesc
 
 var file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_outputs_proto_goTypes = []any{
-	(*AwsManagedPrometheusScraperStackOutputs)(nil), // 0: dev.planton.aws.awsmanagedprometheusscraper.v1alpha1.AwsManagedPrometheusScraperStackOutputs
+	(*AwsManagedPrometheusScraperOutputs)(nil), // 0: dev.planton.aws.awsmanagedprometheusscraper.v1alpha1.AwsManagedPrometheusScraperOutputs
 }
 var file_catalog_aws_awsmanagedprometheusscraper_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -44,7 +44,7 @@ Key design notes:
   `bypass_snaplock_enterprise_retention`, `final_backup_tags`) take effect
   at delete time and must be applied to the volume BEFORE it is destroyed —
   set them early, not in the same change that deletes the volume.
-- Credentials, region, and deployment workflow live outside this spec in stack
+- Credentials, region, and deployment workflow live outside this spec in IaC
   inputs.
 
 ## Example

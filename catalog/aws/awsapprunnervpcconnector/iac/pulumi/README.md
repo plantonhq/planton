@@ -14,13 +14,13 @@ module/
   outputs.go        — Output key constants
 ```
 
-## Stack Inputs
+## IaC Inputs
 
-The module reads `AwsAppRunnerVpcConnectorStackInput` which contains:
+The module reads `AwsAppRunnerVpcConnectorIacInput` which contains:
 - `target` — The fully-specified `AwsAppRunnerVpcConnector` resource
 - `provider_config` — AWS credentials/region resolution
 
-## Stack Outputs
+## Outputs
 
 | Key | Description |
 |-----|-------------|

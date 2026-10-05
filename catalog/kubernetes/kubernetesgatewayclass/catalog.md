@@ -1,10 +1,10 @@
 # Kubernetes GatewayClass
 
-Creates a cluster-scoped Kubernetes Gateway API `GatewayClass` that identifies the controller (Istio, Envoy Gateway, NGINX Gateway Fabric, and others) responsible for managing Gateways of that class. GatewayClass is the infrastructure-provider layer of the Gateway API role model -- the root resource a `KubernetesGateway` references by name. This component mirrors the upstream Gateway API v1 `GatewayClass` spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
+Creates a cluster-scoped Kubernetes Gateway API `GatewayClass` that identifies the controller (Istio, Envoy Gateway, NGINX Gateway Fabric, and others) responsible for managing Gateways of that class. GatewayClass is the infrastructure-provider layer of the Gateway API role model -- the root resource a `KubernetesGateway` references by name. This kind mirrors the upstream Gateway API v1 `GatewayClass` spec with full fidelity while adding proto validation, typed SDKs, and InfraChart composability.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A cluster-scoped GatewayClass** named after `metadata.name`, with the specified `controllerName` and optional `parametersRef` and `description`. The matching Gateway API controller observes the GatewayClass and sets its `Accepted` status condition.
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
@@ -15,7 +15,7 @@ No namespaced workloads are created -- GatewayClass is cluster-scoped.
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -49,7 +49,7 @@ spec:
 planton apply -f gateway-class.yaml
 ```
 
-This creates a GatewayClass named `istio` bound to the Istio Gateway controller. The name becomes the value Gateways reference via `spec.gatewayClassName`. A Stack Job tracks the provisioning in real time.
+This creates a GatewayClass named `istio` bound to the Istio Gateway controller. The name becomes the value Gateways reference via `spec.gatewayClassName`. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -63,13 +63,13 @@ These are the most important decisions when configuring a GatewayClass. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. It does require the Gateway API CRDs and a matching controller to be present on the cluster (operational prerequisites, not Cloud Resource references).
+This kind has no foreign key dependencies. It does require the Gateway API CRDs and a matching controller to be present on the cluster (operational prerequisites, not Infra Component references).
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -86,9 +86,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Gateway API CRDs**](/cloud-catalog/kubernetes-gateway-api-crds) -- installs the Gateway API CRDs (prerequisite, install first)
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- references this class via `gatewayClassName` to define listeners and entry points
-- [**Kubernetes HTTPRoute**](/cloud-catalog/kubernetes-http-route) -- routes HTTP traffic through a Gateway of this class
-- [**Kubernetes GRPCRoute**](/cloud-catalog/kubernetes-grpc-route) -- routes gRPC traffic through a Gateway of this class
-- [**Kubernetes TLSRoute**](/cloud-catalog/kubernetes-tls-route) -- routes passthrough TLS through a Gateway of this class
-- [**Kubernetes TCPRoute**](/cloud-catalog/kubernetes-tcp-route) -- routes raw TCP through a Gateway of this class
+- [**Kubernetes Gateway API CRDs**](/infra-catalog/kubernetes-gateway-api-crds) -- installs the Gateway API CRDs (prerequisite, install first)
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- references this class via `gatewayClassName` to define listeners and entry points
+- [**Kubernetes HTTPRoute**](/infra-catalog/kubernetes-http-route) -- routes HTTP traffic through a Gateway of this class
+- [**Kubernetes GRPCRoute**](/infra-catalog/kubernetes-grpc-route) -- routes gRPC traffic through a Gateway of this class
+- [**Kubernetes TLSRoute**](/infra-catalog/kubernetes-tls-route) -- routes passthrough TLS through a Gateway of this class
+- [**Kubernetes TCPRoute**](/infra-catalog/kubernetes-tcp-route) -- routes raw TCP through a Gateway of this class

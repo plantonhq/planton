@@ -13,12 +13,12 @@ import (
 	"github.com/plantonhq/planton/internal/cli/ui"
 	"github.com/plantonhq/planton/internal/cli/workspace"
 	"github.com/plantonhq/planton/internal/manifest"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/pkg/iac/iacinput"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/iacinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/iac/localmodule"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumistack"
-	"github.com/plantonhq/planton/pkg/iac/stackinput"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/iac/tofu/tfbackend"
 	"github.com/plantonhq/planton/pkg/iac/tofu/tofumodule"
 	"github.com/plantonhq/planton/pkg/kubernetes/kubecontext"
@@ -42,8 +42,8 @@ If the provisioner annotation is not present, you will be prompted to select one
 	planton init -f manifest.yaml
 	planton init --manifest manifest.yaml
 
-	# Initialize with stack input file (extracts manifest from target field)
-	planton init -i stack-input.yaml
+	# Initialize with IaC input file (extracts manifest from target field)
+	planton init -i iac-input.yaml
 
 	# Initialize with kustomize
 	planton init --kustomize-dir _kustomize --overlay prod
@@ -174,7 +174,7 @@ func initHandler(cmd *cobra.Command, args []string) {
 
 	// Prepare provider config
 	cliprint.PrintStep("Preparing execution...")
-	providerConfig, err := stackinputproviderconfig.GetFromFlagsSimple(cmd.Flags())
+	providerConfig, err := iacinputproviderconfig.GetFromFlagsSimple(cmd.Flags())
 	if err != nil {
 		cliprint.PrintError(fmt.Sprintf("Failed to get provider config: %v", err))
 		os.Exit(1)
@@ -212,7 +212,7 @@ func initWithPulumi(cmd *cobra.Command, moduleDir, targetManifestPath string, va
 }
 
 func initWithTofu(cmd *cobra.Command, moduleDir, targetManifestPath string, valueOverrides map[string]string,
-	kubeContext string, manifestObject proto.Message, providerConfig *stackinputproviderconfig.ProviderConfig) {
+	kubeContext string, manifestObject proto.Message, providerConfig *iacinputproviderconfig.ProviderConfig) {
 
 	backendTypeString, err := cmd.Flags().GetString(string(flag.BackendType))
 	flag.HandleFlagErr(err, flag.BackendType)
@@ -225,7 +225,7 @@ func initWithTofu(cmd *cobra.Command, moduleDir, targetManifestPath string, valu
 	backendType := tfbackend.BackendTypeFromString(backendTypeString)
 
 	// Extract kind name for module path resolution
-	kindName, err := crkreflect.ExtractKindFromProto(manifestObject)
+	kindName, err := catalogkindreflect.ExtractKindFromProto(manifestObject)
 	if err != nil {
 		cliprint.PrintError(fmt.Sprintf("Failed to extract kind name from manifest proto: %v", err))
 		os.Exit(1)
@@ -251,10 +251,10 @@ func initWithTofu(cmd *cobra.Command, moduleDir, targetManifestPath string, valu
 
 	tofuModulePath := pathResult.ModulePath
 
-	// Build stack input YAML
-	stackInputYaml, err := stackinput.BuildStackInputYaml(manifestObject, providerConfig)
+	// Build IaC input YAML
+	iacInputYaml, err := iacinput.BuildIacInputYaml(manifestObject, providerConfig)
 	if err != nil {
-		cliprint.PrintError(fmt.Sprintf("Failed to build stack input yaml: %v", err))
+		cliprint.PrintError(fmt.Sprintf("Failed to build IaC input yaml: %v", err))
 		os.Exit(1)
 	}
 
@@ -264,7 +264,7 @@ func initWithTofu(cmd *cobra.Command, moduleDir, targetManifestPath string, valu
 		os.Exit(1)
 	}
 
-	providerConfigEnvVars, err := tofumodule.GetProviderConfigEnvVars(stackInputYaml, workspaceDir, kubeContext)
+	providerConfigEnvVars, err := tofumodule.GetProviderConfigEnvVars(iacInputYaml, workspaceDir, kubeContext)
 	if err != nil {
 		ui.EngineFailure("Provider credentials could not be prepared", err,
 			"check the provider configuration's fields against `planton explain <provider connection kind>`")
@@ -301,7 +301,7 @@ func initWithTofu(cmd *cobra.Command, moduleDir, targetManifestPath string, valu
 }
 
 func initWithTerraform(cmd *cobra.Command, moduleDir, targetManifestPath string, valueOverrides map[string]string,
-	kubeContext string, manifestObject proto.Message, providerConfig *stackinputproviderconfig.ProviderConfig) {
+	kubeContext string, manifestObject proto.Message, providerConfig *iacinputproviderconfig.ProviderConfig) {
 
 	backendTypeString, err := cmd.Flags().GetString(string(flag.BackendType))
 	flag.HandleFlagErr(err, flag.BackendType)
@@ -313,7 +313,7 @@ func initWithTerraform(cmd *cobra.Command, moduleDir, targetManifestPath string,
 
 	backendType := tfbackend.BackendTypeFromString(backendTypeString)
 
-	kindName, err := crkreflect.ExtractKindFromProto(manifestObject)
+	kindName, err := catalogkindreflect.ExtractKindFromProto(manifestObject)
 	if err != nil {
 		cliprint.PrintError(fmt.Sprintf("Failed to extract kind name from manifest proto: %v", err))
 		os.Exit(1)
@@ -338,9 +338,9 @@ func initWithTerraform(cmd *cobra.Command, moduleDir, targetManifestPath string,
 
 	modulePath := pathResult.ModulePath
 
-	stackInputYaml, err := stackinput.BuildStackInputYaml(manifestObject, providerConfig)
+	iacInputYaml, err := iacinput.BuildIacInputYaml(manifestObject, providerConfig)
 	if err != nil {
-		cliprint.PrintError(fmt.Sprintf("Failed to build stack input yaml: %v", err))
+		cliprint.PrintError(fmt.Sprintf("Failed to build IaC input yaml: %v", err))
 		os.Exit(1)
 	}
 
@@ -350,7 +350,7 @@ func initWithTerraform(cmd *cobra.Command, moduleDir, targetManifestPath string,
 		os.Exit(1)
 	}
 
-	providerConfigEnvVars, err := tofumodule.GetProviderConfigEnvVars(stackInputYaml, workspaceDir, kubeContext)
+	providerConfigEnvVars, err := tofumodule.GetProviderConfigEnvVars(iacInputYaml, workspaceDir, kubeContext)
 	if err != nil {
 		ui.EngineFailure("Provider credentials could not be prepared", err,
 			"check the provider configuration's fields against `planton explain <provider connection kind>`")

@@ -137,7 +137,7 @@ type Locals struct {
     // ... other fields
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *neo4jkubernetesv1.Neo4JKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *neo4jkubernetesv1.Neo4JKubernetesIacInput) *Locals {
     // ... other initialization
 
     if target.Spec.Ingress != nil &&
@@ -163,7 +163,7 @@ type Locals struct {
     // ... other fields
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *neo4jkubernetesv1.Neo4JKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *neo4jkubernetesv1.Neo4JKubernetesIacInput) *Locals {
     // ... other initialization
 
     if target.Spec.Ingress != nil &&

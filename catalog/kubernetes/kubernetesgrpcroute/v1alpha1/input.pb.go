@@ -25,9 +25,9 @@ const (
 // Input for the KubernetesGrpcRoute IaC stack. The platform resolves all
 // StringValueOrRef references (namespace) to literal strings before passing this
 // to the IaC engine.
-type KubernetesGrpcRouteStackInput struct {
+type KubernetesGrpcRouteIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Target cloud-resource.
+	// the catalog object to deploy.
 	Target *KubernetesGrpcRoute `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// Kubernetes provider configuration (cluster credentials).
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -35,20 +35,20 @@ type KubernetesGrpcRouteStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *KubernetesGrpcRouteStackInput) Reset() {
-	*x = KubernetesGrpcRouteStackInput{}
+func (x *KubernetesGrpcRouteIacInput) Reset() {
+	*x = KubernetesGrpcRouteIacInput{}
 	mi := &file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesGrpcRouteStackInput) String() string {
+func (x *KubernetesGrpcRouteIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesGrpcRouteStackInput) ProtoMessage() {}
+func (*KubernetesGrpcRouteIacInput) ProtoMessage() {}
 
-func (x *KubernetesGrpcRouteStackInput) ProtoReflect() protoreflect.Message {
+func (x *KubernetesGrpcRouteIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -60,19 +60,19 @@ func (x *KubernetesGrpcRouteStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesGrpcRouteStackInput.ProtoReflect.Descriptor instead.
-func (*KubernetesGrpcRouteStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesGrpcRouteIacInput.ProtoReflect.Descriptor instead.
+func (*KubernetesGrpcRouteIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesGrpcRouteStackInput) GetTarget() *KubernetesGrpcRoute {
+func (x *KubernetesGrpcRouteIacInput) GetTarget() *KubernetesGrpcRoute {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *KubernetesGrpcRouteStackInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
+func (x *KubernetesGrpcRouteIacInput) GetProviderConfig() *kubernetes.KubernetesProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -83,8 +83,8 @@ var File_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_input_proto protoreflec
 
 const file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesgrpcroute/v1alpha1/input.proto\x123dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1\x1a9catalog/kubernetes/kubernetesgrpcroute/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xdc\x01\n" +
-	"\x1dKubernetesGrpcRouteStackInput\x12`\n" +
+	";catalog/kubernetes/kubernetesgrpcroute/v1alpha1/input.proto\x123dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1\x1a9catalog/kubernetes/kubernetesgrpcroute/v1alpha1/api.proto\x1a!catalog/kubernetes/provider.proto\"\xda\x01\n" +
+	"\x1bKubernetesGrpcRouteIacInput\x12`\n" +
 	"\x06target\x18\x01 \x01(\v2H.dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1.KubernetesGrpcRouteR\x06target\x12Y\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v20.dev.planton.kubernetes.KubernetesProviderConfigR\x0eproviderConfigB\xa0\x03\n" +
 	"7com.dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1B\n" +
@@ -104,13 +104,13 @@ func file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_input_proto_rawDescGZI
 
 var file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_input_proto_goTypes = []any{
-	(*KubernetesGrpcRouteStackInput)(nil),       // 0: dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1.KubernetesGrpcRouteStackInput
+	(*KubernetesGrpcRouteIacInput)(nil),         // 0: dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1.KubernetesGrpcRouteIacInput
 	(*KubernetesGrpcRoute)(nil),                 // 1: dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1.KubernetesGrpcRoute
 	(*kubernetes.KubernetesProviderConfig)(nil), // 2: dev.planton.kubernetes.KubernetesProviderConfig
 }
 var file_catalog_kubernetes_kubernetesgrpcroute_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1.KubernetesGrpcRouteStackInput.target:type_name -> dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1.KubernetesGrpcRoute
-	2, // 1: dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1.KubernetesGrpcRouteStackInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
+	1, // 0: dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1.KubernetesGrpcRouteIacInput.target:type_name -> dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1.KubernetesGrpcRoute
+	2, // 1: dev.planton.kubernetes.kubernetesgrpcroute.v1alpha1.KubernetesGrpcRouteIacInput.provider_config:type_name -> dev.planton.kubernetes.KubernetesProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

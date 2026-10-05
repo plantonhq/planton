@@ -63,7 +63,7 @@ func autoScalingConfiguration(ctx *pulumi.Context, locals *Locals, provider *aws
 		isDefault = true
 	}
 
-	// Export outputs matching AwsAppRunnerAutoScalingConfigurationStackOutputs.
+	// Export outputs matching AwsAppRunnerAutoScalingConfigurationOutputs.
 	ctx.Export(OpConfigurationArn, createdConfiguration.Arn)
 	ctx.Export(OpConfigurationRevision, createdConfiguration.AutoScalingConfigurationRevision)
 	ctx.Export(OpLatest, createdConfiguration.Latest)

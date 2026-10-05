@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// **AzureContainerAppEnvironmentCertificateStackOutputs** captures the
+// **AzureContainerAppEnvironmentCertificateOutputs** captures the
 // outputs of storing a certificate on a Container App Environment.
 //
 // `certificate_id` is the binding seam: AzureContainerAppCustomDomain's
@@ -29,7 +29,7 @@ const (
 // certificate facts Azure reads back from the uploaded material --
 // useful for expiry monitoring and for confirming the right certificate
 // landed.
-type AzureContainerAppEnvironmentCertificateStackOutputs struct {
+type AzureContainerAppEnvironmentCertificateOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Azure Resource Manager ID of the certificate.
 	// Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/managedEnvironments/{env}/certificates/{name}
@@ -53,20 +53,20 @@ type AzureContainerAppEnvironmentCertificateStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AzureContainerAppEnvironmentCertificateStackOutputs) Reset() {
-	*x = AzureContainerAppEnvironmentCertificateStackOutputs{}
+func (x *AzureContainerAppEnvironmentCertificateOutputs) Reset() {
+	*x = AzureContainerAppEnvironmentCertificateOutputs{}
 	mi := &file_catalog_azure_azurecontainerappenvironmentcertificate_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AzureContainerAppEnvironmentCertificateStackOutputs) String() string {
+func (x *AzureContainerAppEnvironmentCertificateOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AzureContainerAppEnvironmentCertificateStackOutputs) ProtoMessage() {}
+func (*AzureContainerAppEnvironmentCertificateOutputs) ProtoMessage() {}
 
-func (x *AzureContainerAppEnvironmentCertificateStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *AzureContainerAppEnvironmentCertificateOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_azure_azurecontainerappenvironmentcertificate_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -78,47 +78,47 @@ func (x *AzureContainerAppEnvironmentCertificateStackOutputs) ProtoReflect() pro
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AzureContainerAppEnvironmentCertificateStackOutputs.ProtoReflect.Descriptor instead.
-func (*AzureContainerAppEnvironmentCertificateStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use AzureContainerAppEnvironmentCertificateOutputs.ProtoReflect.Descriptor instead.
+func (*AzureContainerAppEnvironmentCertificateOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerappenvironmentcertificate_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AzureContainerAppEnvironmentCertificateStackOutputs) GetCertificateId() string {
+func (x *AzureContainerAppEnvironmentCertificateOutputs) GetCertificateId() string {
 	if x != nil {
 		return x.CertificateId
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentCertificateStackOutputs) GetSubjectName() string {
+func (x *AzureContainerAppEnvironmentCertificateOutputs) GetSubjectName() string {
 	if x != nil {
 		return x.SubjectName
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentCertificateStackOutputs) GetIssuer() string {
+func (x *AzureContainerAppEnvironmentCertificateOutputs) GetIssuer() string {
 	if x != nil {
 		return x.Issuer
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentCertificateStackOutputs) GetIssueDate() string {
+func (x *AzureContainerAppEnvironmentCertificateOutputs) GetIssueDate() string {
 	if x != nil {
 		return x.IssueDate
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentCertificateStackOutputs) GetExpirationDate() string {
+func (x *AzureContainerAppEnvironmentCertificateOutputs) GetExpirationDate() string {
 	if x != nil {
 		return x.ExpirationDate
 	}
 	return ""
 }
 
-func (x *AzureContainerAppEnvironmentCertificateStackOutputs) GetThumbprint() string {
+func (x *AzureContainerAppEnvironmentCertificateOutputs) GetThumbprint() string {
 	if x != nil {
 		return x.Thumbprint
 	}
@@ -129,8 +129,8 @@ var File_catalog_azure_azurecontainerappenvironmentcertificate_v1alpha1_outputs_
 
 const file_catalog_azure_azurecontainerappenvironmentcertificate_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Lcatalog/azure/azurecontainerappenvironmentcertificate/v1alpha1/outputs.proto\x12Bdev.planton.azure.azurecontainerappenvironmentcertificate.v1alpha1\"\xff\x01\n" +
-	"3AzureContainerAppEnvironmentCertificateStackOutputs\x12%\n" +
+	"Lcatalog/azure/azurecontainerappenvironmentcertificate/v1alpha1/outputs.proto\x12Bdev.planton.azure.azurecontainerappenvironmentcertificate.v1alpha1\"\xfa\x01\n" +
+	".AzureContainerAppEnvironmentCertificateOutputs\x12%\n" +
 	"\x0ecertificate_id\x18\x01 \x01(\tR\rcertificateId\x12!\n" +
 	"\fsubject_name\x18\x02 \x01(\tR\vsubjectName\x12\x16\n" +
 	"\x06issuer\x18\x03 \x01(\tR\x06issuer\x12\x1d\n" +
@@ -156,7 +156,7 @@ func file_catalog_azure_azurecontainerappenvironmentcertificate_v1alpha1_outputs
 
 var file_catalog_azure_azurecontainerappenvironmentcertificate_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_azure_azurecontainerappenvironmentcertificate_v1alpha1_outputs_proto_goTypes = []any{
-	(*AzureContainerAppEnvironmentCertificateStackOutputs)(nil), // 0: dev.planton.azure.azurecontainerappenvironmentcertificate.v1alpha1.AzureContainerAppEnvironmentCertificateStackOutputs
+	(*AzureContainerAppEnvironmentCertificateOutputs)(nil), // 0: dev.planton.azure.azurecontainerappenvironmentcertificate.v1alpha1.AzureContainerAppEnvironmentCertificateOutputs
 }
 var file_catalog_azure_azurecontainerappenvironmentcertificate_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

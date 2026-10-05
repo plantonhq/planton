@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesopenbao
 spec:
@@ -12,7 +12,7 @@ spec:
   # named `<name>-backup`/`<name>-backup-scripts`, the
   # `<name>-backup-credentials` Secret (only when the store arm declares
   # keys), and — when `restore` is declared — the one-shot Job whose name
-  # hashes the declaration and so rides in as a stack output. Chart-created
+  # hashes the declaration and so rides in as an output. Chart-created
   # objects (the StatefulSet, Services, injector, config ConfigMap) travel
   # with the release import.
   values:
@@ -24,14 +24,14 @@ spec:
         the resource's name.
     - name: release_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `helm list -A` (NAMESPACE column); conventionally "openbao".
     # ── the optional anchor namespace ──────────────────────────────────
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the installation
@@ -52,7 +52,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: seal_credentials
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -60,7 +60,7 @@ spec:
     - name: service_account_name
       tofu_resource_name: backup
       derivations:
-        - from_stack_output: backup_service_account_name
+        - from_output: backup_service_account_name
         - from_metadata_name_suffix: "-backup"
       where_to_find: >-
         Always "<resource-name>-backup" when backup is declared — the
@@ -69,7 +69,7 @@ spec:
     - name: service_account_namespace
       tofu_resource_name: backup
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -83,7 +83,7 @@ spec:
     - name: config_map_namespace
       tofu_resource_name: backup_scripts
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -100,14 +100,14 @@ spec:
     - name: secret_namespace
       tofu_resource_name: backup_credentials
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
     - name: cron_job_name
       tofu_resource_name: backup
       derivations:
-        - from_stack_output: backup_cron_job_name
+        - from_output: backup_cron_job_name
         - from_metadata_name_suffix: "-backup"
       where_to_find: >-
         Always "<resource-name>-backup" when backup is declared — the
@@ -116,24 +116,24 @@ spec:
     - name: cron_job_namespace
       tofu_resource_name: backup
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
     # ── the restore Job (when spec.restore is declared) ─────────────────
-    # Its name hashes the declaration, so it rides in as a stack output
+    # Its name hashes the declaration, so it rides in as an output
     # rather than a derivation the recipe could recompute.
     - name: job_name
       tofu_resource_name: restore
       derivations:
-        - from_stack_output: restore_job_name
+        - from_output: restore_job_name
       where_to_find: >-
         The Job's metadata.name (`<resource-name>-restore-<8 hex>`) — the
         `restore_job_name` output, or `kubectl get jobs -n <namespace>`.
     - name: job_namespace
       tofu_resource_name: restore
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.

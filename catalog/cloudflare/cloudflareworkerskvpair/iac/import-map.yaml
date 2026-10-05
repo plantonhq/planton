@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflareworkerskvpair
 spec:
@@ -17,14 +17,14 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: namespace_id
       derivations:
-        - from_stack_output: namespace_id
+        - from_output: namespace_id
       where_to_find: >-
         Cloudflare dashboard -> Storage & Databases -> KV (the namespace ID
         column), or `GET /accounts/<account_id>/storage/kv/namespaces` on the
         Cloudflare v4 API (the id field).
     - name: key_name
       derivations:
-        - from_stack_output: key_name
+        - from_output: key_name
       where_to_find: >-
         Cloudflare dashboard -> Storage & Databases -> KV -> the namespace ->
         KV Pairs (the key column), or

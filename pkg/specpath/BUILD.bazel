@@ -12,5 +12,5 @@ go_test(
     name = "specpath_test",
     srcs = ["specpath_test.go"],
     embed = [":specpath"],
-    deps = ["//iac/componentpermissions/v1:componentpermissions"],
+    deps = ["//iac/catalogkindpermissions/v1:catalogkindpermissions"],
 )

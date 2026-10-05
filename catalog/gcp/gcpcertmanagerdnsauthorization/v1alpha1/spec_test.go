@@ -27,7 +27,7 @@ func baseAuthorization() *GcpCertManagerDnsAuthorization {
 	return &GcpCertManagerDnsAuthorization{
 		ApiVersion: "gcp.planton.dev/v1alpha1",
 		Kind:       "GcpCertManagerDnsAuthorization",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-dns-authorization",
 		},
 		Spec: &GcpCertManagerDnsAuthorizationSpec{

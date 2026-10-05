@@ -34,10 +34,10 @@ type AzurePrivateDnsResolver struct {
 	// Resource kind. Must be "AzurePrivateDnsResolver".
 	Kind string `protobuf:"bytes,2,opt,name=kind,proto3" json:"kind,omitempty"`
 	// Standard Planton metadata (name, org, env, labels, tags).
-	Metadata *shared.CloudResourceMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Metadata *shared.CatalogObjectMetadata `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
 	// DNS Private Resolver specification.
 	Spec *AzurePrivateDnsResolverSpec `protobuf:"bytes,4,opt,name=spec,proto3" json:"spec,omitempty"`
-	// Deployment status containing stack outputs. Populated after deployment.
+	// Deployment status containing outputs. Populated after deployment.
 	Status        *AzurePrivateDnsResolverStatus `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -87,7 +87,7 @@ func (x *AzurePrivateDnsResolver) GetKind() string {
 	return ""
 }
 
-func (x *AzurePrivateDnsResolver) GetMetadata() *shared.CloudResourceMetadata {
+func (x *AzurePrivateDnsResolver) GetMetadata() *shared.CatalogObjectMetadata {
 	if x != nil {
 		return x.Metadata
 	}
@@ -111,8 +111,8 @@ func (x *AzurePrivateDnsResolver) GetStatus() *AzurePrivateDnsResolverStatus {
 // AzurePrivateDnsResolverStatus holds the deployment outputs.
 type AzurePrivateDnsResolverStatus struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Stack outputs from the IaC deployment.
-	Outputs       *AzurePrivateDnsResolverStackOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
+	// Outputs from the IaC deployment.
+	Outputs       *AzurePrivateDnsResolverOutputs `protobuf:"bytes,1,opt,name=outputs,proto3" json:"outputs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -147,7 +147,7 @@ func (*AzurePrivateDnsResolverStatus) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azureprivatednsresolver_v1alpha1_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AzurePrivateDnsResolverStatus) GetOutputs() *AzurePrivateDnsResolverStackOutputs {
+func (x *AzurePrivateDnsResolverStatus) GetOutputs() *AzurePrivateDnsResolverOutputs {
 	if x != nil {
 		return x.Outputs
 	}
@@ -165,11 +165,11 @@ const file_catalog_azure_azureprivatednsresolver_v1alpha1_api_proto_rawDesc = ""
 	"apiVersion\x122\n" +
 	"\x04kind\x18\x02 \x01(\tB\x1e\xbaH\x1br\x19\n" +
 	"\x17AzurePrivateDnsResolverR\x04kind\x12M\n" +
-	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CloudResourceMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
+	"\bmetadata\x18\x03 \x01(\v2).dev.planton.shared.CatalogObjectMetadataB\x06\xbaH\x03\xc8\x01\x01R\bmetadata\x12k\n" +
 	"\x04spec\x18\x04 \x01(\v2O.dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverSpecB\x06\xbaH\x03\xc8\x01\x01R\x04spec\x12i\n" +
-	"\x06status\x18\x05 \x01(\v2Q.dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStatusR\x06status\"\x92\x01\n" +
-	"\x1dAzurePrivateDnsResolverStatus\x12q\n" +
-	"\aoutputs\x18\x01 \x01(\v2W.dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStackOutputsR\aoutputsB\x9c\x03\n" +
+	"\x06status\x18\x05 \x01(\v2Q.dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStatusR\x06status\"\x8d\x01\n" +
+	"\x1dAzurePrivateDnsResolverStatus\x12l\n" +
+	"\aoutputs\x18\x01 \x01(\v2R.dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverOutputsR\aoutputsB\x9c\x03\n" +
 	"6com.dev.planton.azure.azureprivatednsresolver.v1alpha1B\bApiProtoP\x01Zkgithub.com/plantonhq/planton/catalog/azure/azureprivatednsresolver/v1alpha1;azureprivatednsresolverv1alpha1\xa2\x02\x04DPAA\xaa\x022Dev.Planton.Azure.Azureprivatednsresolver.V1alpha1\xca\x022Dev\\Planton\\Azure\\Azureprivatednsresolver\\V1alpha1\xe2\x02>Dev\\Planton\\Azure\\Azureprivatednsresolver\\V1alpha1\\GPBMetadata\xea\x026Dev::Planton::Azure::Azureprivatednsresolver::V1alpha1b\x06proto3"
 
 var (
@@ -186,17 +186,17 @@ func file_catalog_azure_azureprivatednsresolver_v1alpha1_api_proto_rawDescGZIP()
 
 var file_catalog_azure_azureprivatednsresolver_v1alpha1_api_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_azure_azureprivatednsresolver_v1alpha1_api_proto_goTypes = []any{
-	(*AzurePrivateDnsResolver)(nil),             // 0: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolver
-	(*AzurePrivateDnsResolverStatus)(nil),       // 1: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStatus
-	(*shared.CloudResourceMetadata)(nil),        // 2: dev.planton.shared.CloudResourceMetadata
-	(*AzurePrivateDnsResolverSpec)(nil),         // 3: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverSpec
-	(*AzurePrivateDnsResolverStackOutputs)(nil), // 4: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStackOutputs
+	(*AzurePrivateDnsResolver)(nil),        // 0: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolver
+	(*AzurePrivateDnsResolverStatus)(nil),  // 1: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStatus
+	(*shared.CatalogObjectMetadata)(nil),   // 2: dev.planton.shared.CatalogObjectMetadata
+	(*AzurePrivateDnsResolverSpec)(nil),    // 3: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverSpec
+	(*AzurePrivateDnsResolverOutputs)(nil), // 4: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverOutputs
 }
 var file_catalog_azure_azureprivatednsresolver_v1alpha1_api_proto_depIdxs = []int32{
-	2, // 0: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolver.metadata:type_name -> dev.planton.shared.CloudResourceMetadata
+	2, // 0: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolver.metadata:type_name -> dev.planton.shared.CatalogObjectMetadata
 	3, // 1: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolver.spec:type_name -> dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverSpec
 	1, // 2: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolver.status:type_name -> dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStatus
-	4, // 3: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStatus.outputs:type_name -> dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStackOutputs
+	4, // 3: dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverStatus.outputs:type_name -> dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverOutputs
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

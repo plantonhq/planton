@@ -35,7 +35,7 @@ func auditSink(s kubernetesopenbaov1alpha1.KubernetesOpenBaoAudit_Sink) *kuberne
 }
 func strPtr(s string) *string { return &s }
 
-// localsFor builds the module's locals the way Resources does, from a stack
+// localsFor builds the module's locals the way Resources does, from an IaC
 // input carrying the given spec. References arrive at the module already
 // resolved to values, so the fixtures use literals throughout. The manifest
 // loader fills a present block's declared scalar defaults before either
@@ -61,9 +61,9 @@ func localsFor(spec *kubernetesopenbaov1alpha1.KubernetesOpenBaoSpec) *Locals {
 			s.Audit.Sink = &stdout
 		}
 	}
-	return initializeLocals(nil, &kubernetesopenbaov1alpha1.KubernetesOpenBaoStackInput{
+	return initializeLocals(nil, &kubernetesopenbaov1alpha1.KubernetesOpenBaoIacInput{
 		Target: &kubernetesopenbaov1alpha1.KubernetesOpenBao{
-			Metadata: &shared.CloudResourceMetadata{Name: "vault"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "vault"},
 			Spec:     spec,
 		},
 	})
@@ -417,9 +417,9 @@ func TestRender_WriteFixturesForCrossEngineDiff(t *testing.T) {
 func TestRender_EveryServerPodNamesItsOrganizationAndEnvironment(t *testing.T) {
 	spec := fixtures()["raft-1"]
 	spec.Namespace = literal("openbao")
-	locals := initializeLocals(nil, &kubernetesopenbaov1alpha1.KubernetesOpenBaoStackInput{
+	locals := initializeLocals(nil, &kubernetesopenbaov1alpha1.KubernetesOpenBaoIacInput{
 		Target: &kubernetesopenbaov1alpha1.KubernetesOpenBao{
-			Metadata: &shared.CloudResourceMetadata{Name: "vault", Org: "acme", Env: "dev"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "vault", Org: "acme", Env: "dev"},
 			Spec:     spec,
 		},
 	})

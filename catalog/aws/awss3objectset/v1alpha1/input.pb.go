@@ -22,10 +22,10 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// aws-s3-object-set stack-input
-type AwsS3ObjectSetStackInput struct {
+// aws-s3-object-set iac-input
+type AwsS3ObjectSetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target cloud-resource
+	// the catalog object to deploy
 	Target *AwsS3ObjectSet `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`
@@ -33,20 +33,20 @@ type AwsS3ObjectSetStackInput struct {
 	sizeCache      protoimpl.SizeCache
 }
 
-func (x *AwsS3ObjectSetStackInput) Reset() {
-	*x = AwsS3ObjectSetStackInput{}
+func (x *AwsS3ObjectSetIacInput) Reset() {
+	*x = AwsS3ObjectSetIacInput{}
 	mi := &file_catalog_aws_awss3objectset_v1alpha1_input_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AwsS3ObjectSetStackInput) String() string {
+func (x *AwsS3ObjectSetIacInput) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AwsS3ObjectSetStackInput) ProtoMessage() {}
+func (*AwsS3ObjectSetIacInput) ProtoMessage() {}
 
-func (x *AwsS3ObjectSetStackInput) ProtoReflect() protoreflect.Message {
+func (x *AwsS3ObjectSetIacInput) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_aws_awss3objectset_v1alpha1_input_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,19 +58,19 @@ func (x *AwsS3ObjectSetStackInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AwsS3ObjectSetStackInput.ProtoReflect.Descriptor instead.
-func (*AwsS3ObjectSetStackInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use AwsS3ObjectSetIacInput.ProtoReflect.Descriptor instead.
+func (*AwsS3ObjectSetIacInput) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awss3objectset_v1alpha1_input_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AwsS3ObjectSetStackInput) GetTarget() *AwsS3ObjectSet {
+func (x *AwsS3ObjectSetIacInput) GetTarget() *AwsS3ObjectSet {
 	if x != nil {
 		return x.Target
 	}
 	return nil
 }
 
-func (x *AwsS3ObjectSetStackInput) GetProviderConfig() *aws.AwsProviderConfig {
+func (x *AwsS3ObjectSetIacInput) GetProviderConfig() *aws.AwsProviderConfig {
 	if x != nil {
 		return x.ProviderConfig
 	}
@@ -81,8 +81,8 @@ var File_catalog_aws_awss3objectset_v1alpha1_input_proto protoreflect.FileDescri
 
 const file_catalog_aws_awss3objectset_v1alpha1_input_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/aws/awss3objectset/v1alpha1/input.proto\x12'dev.planton.aws.awss3objectset.v1alpha1\x1a-catalog/aws/awss3objectset/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb8\x01\n" +
-	"\x18AwsS3ObjectSetStackInput\x12O\n" +
+	"/catalog/aws/awss3objectset/v1alpha1/input.proto\x12'dev.planton.aws.awss3objectset.v1alpha1\x1a-catalog/aws/awss3objectset/v1alpha1/api.proto\x1a\x1acatalog/aws/provider.proto\"\xb6\x01\n" +
+	"\x16AwsS3ObjectSetIacInput\x12O\n" +
 	"\x06target\x18\x01 \x01(\v27.dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetR\x06target\x12K\n" +
 	"\x0fprovider_config\x18\x02 \x01(\v2\".dev.planton.aws.AwsProviderConfigR\x0eproviderConfigB\xd3\x02\n" +
 	"+com.dev.planton.aws.awss3objectset.v1alpha1B\n" +
@@ -102,13 +102,13 @@ func file_catalog_aws_awss3objectset_v1alpha1_input_proto_rawDescGZIP() []byte {
 
 var file_catalog_aws_awss3objectset_v1alpha1_input_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_aws_awss3objectset_v1alpha1_input_proto_goTypes = []any{
-	(*AwsS3ObjectSetStackInput)(nil), // 0: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackInput
-	(*AwsS3ObjectSet)(nil),           // 1: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSet
-	(*aws.AwsProviderConfig)(nil),    // 2: dev.planton.aws.AwsProviderConfig
+	(*AwsS3ObjectSetIacInput)(nil), // 0: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetIacInput
+	(*AwsS3ObjectSet)(nil),         // 1: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSet
+	(*aws.AwsProviderConfig)(nil),  // 2: dev.planton.aws.AwsProviderConfig
 }
 var file_catalog_aws_awss3objectset_v1alpha1_input_proto_depIdxs = []int32{
-	1, // 0: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackInput.target:type_name -> dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSet
-	2, // 1: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetStackInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
+	1, // 0: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetIacInput.target:type_name -> dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSet
+	2, // 1: dev.planton.aws.awss3objectset.v1alpha1.AwsS3ObjectSetIacInput.provider_config:type_name -> dev.planton.aws.AwsProviderConfig
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

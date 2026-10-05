@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpgkeworkloadidentitybinding.v1alpha1;
 
-// GcpGkeWorkloadIdentityBindingStackOutputs surfaces useful attributes
+// GcpGkeWorkloadIdentityBindingOutputs surfaces useful attributes
 // after the binding is created.
-message GcpGkeWorkloadIdentityBindingStackOutputs {
+message GcpGkeWorkloadIdentityBindingOutputs {
   // The IAM member string added to the policy, e.g.
   // "serviceAccount:my-project.svc.id.goog[cert-manager/cert-manager]".
   string member = 1;

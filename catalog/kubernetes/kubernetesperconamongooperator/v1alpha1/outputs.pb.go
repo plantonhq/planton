@@ -22,12 +22,12 @@ const (
 )
 
 // *
-// **KubernetesPerconaMongoOperatorStackOutputs** — the composition
+// **KubernetesPerconaMongoOperatorOutputs** — the composition
 // handles a deployed Percona Operator for MongoDB exports. The operator
 // has no per-database surface of its own; KubernetesMongodb resources
 // compose against the CRDs it installs, so the handles here identify
 // the installation rather than any workload.
-type KubernetesPerconaMongoOperatorStackOutputs struct {
+type KubernetesPerconaMongoOperatorOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Namespace the operator runs in.
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -37,20 +37,20 @@ type KubernetesPerconaMongoOperatorStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesPerconaMongoOperatorStackOutputs) Reset() {
-	*x = KubernetesPerconaMongoOperatorStackOutputs{}
+func (x *KubernetesPerconaMongoOperatorOutputs) Reset() {
+	*x = KubernetesPerconaMongoOperatorOutputs{}
 	mi := &file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPerconaMongoOperatorStackOutputs) String() string {
+func (x *KubernetesPerconaMongoOperatorOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPerconaMongoOperatorStackOutputs) ProtoMessage() {}
+func (*KubernetesPerconaMongoOperatorOutputs) ProtoMessage() {}
 
-func (x *KubernetesPerconaMongoOperatorStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPerconaMongoOperatorOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -62,19 +62,19 @@ func (x *KubernetesPerconaMongoOperatorStackOutputs) ProtoReflect() protoreflect
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPerconaMongoOperatorStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesPerconaMongoOperatorStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPerconaMongoOperatorOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesPerconaMongoOperatorOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPerconaMongoOperatorStackOutputs) GetNamespace() string {
+func (x *KubernetesPerconaMongoOperatorOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
 	return ""
 }
 
-func (x *KubernetesPerconaMongoOperatorStackOutputs) GetReleaseName() string {
+func (x *KubernetesPerconaMongoOperatorOutputs) GetReleaseName() string {
 	if x != nil {
 		return x.ReleaseName
 	}
@@ -85,8 +85,8 @@ var File_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_outputs_prot
 
 const file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Hcatalog/kubernetes/kubernetesperconamongooperator/v1alpha1/outputs.proto\x12>dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1\"m\n" +
-	"*KubernetesPerconaMongoOperatorStackOutputs\x12\x1c\n" +
+	"Hcatalog/kubernetes/kubernetesperconamongooperator/v1alpha1/outputs.proto\x12>dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1\"h\n" +
+	"%KubernetesPerconaMongoOperatorOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12!\n" +
 	"\frelease_name\x18\x02 \x01(\tR\vreleaseNameB\xef\x03\n" +
 	"Bcom.dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1B\fOutputsProtoP\x01Z~github.com/plantonhq/planton/catalog/kubernetes/kubernetesperconamongooperator/v1alpha1;kubernetesperconamongooperatorv1alpha1\xa2\x02\x04DPKK\xaa\x02>Dev.Planton.Kubernetes.Kubernetesperconamongooperator.V1alpha1\xca\x02>Dev\\Planton\\Kubernetes\\Kubernetesperconamongooperator\\V1alpha1\xe2\x02JDev\\Planton\\Kubernetes\\Kubernetesperconamongooperator\\V1alpha1\\GPBMetadata\xea\x02BDev::Planton::Kubernetes::Kubernetesperconamongooperator::V1alpha1b\x06proto3"
@@ -105,7 +105,7 @@ func file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_outputs_pro
 
 var file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesPerconaMongoOperatorStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1.KubernetesPerconaMongoOperatorStackOutputs
+	(*KubernetesPerconaMongoOperatorOutputs)(nil), // 0: dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1.KubernetesPerconaMongoOperatorOutputs
 }
 var file_catalog_kubernetes_kubernetesperconamongooperator_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

@@ -5,7 +5,7 @@ import (
 
 	azureprivatednsresolverforwardingrulesetv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureprivatednsresolverforwardingruleset/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -30,11 +30,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureprivatednsresolverforwardingrulesetv1alpha1.AzurePrivateDnsResolverForwardingRulesetStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureprivatednsresolverforwardingrulesetv1alpha1.AzurePrivateDnsResolverForwardingRulesetIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzurePrivateDnsResolverForwardingRuleset = stackInput.Target
-	target := stackInput.Target
+	locals.AzurePrivateDnsResolverForwardingRuleset = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -49,7 +49,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureprivatednsresolverfo
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzurePrivateDnsResolverForwardingRuleset.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzurePrivateDnsResolverForwardingRuleset.String()),
 	}
 
 	if target.Metadata.Id != "" {

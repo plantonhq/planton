@@ -5,7 +5,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func ExtractMetadata(msg proto.Message) *shared.CloudResourceMetadata {
+func ExtractMetadata(msg proto.Message) *shared.CatalogObjectMetadata {
 	msgReflect := msg.ProtoReflect()
 
 	// Check if the "status" field exists
@@ -23,7 +23,7 @@ func ExtractMetadata(msg proto.Message) *shared.CloudResourceMetadata {
 	}
 
 	// Unmarshal the bytes into a ResourceAudit
-	var metadata shared.CloudResourceMetadata
+	var metadata shared.CatalogObjectMetadata
 	err = proto.Unmarshal(bytes, &metadata)
 	if err != nil {
 		return nil
@@ -52,7 +52,7 @@ func ExtractLabels(msg proto.Message) map[string]string {
 // Annotations carry platform-behavior signals (planton.dev/provisioner, backend
 // location keys, kube context, ...). Unlike labels, they are never derived into
 // cloud-provider tags, so platform-internal detail cannot leak onto the user's
-// real cloud resources.
+// real provider resources.
 func ExtractAnnotations(msg proto.Message) map[string]string {
 	metadata := ExtractMetadata(msg)
 	if metadata == nil {

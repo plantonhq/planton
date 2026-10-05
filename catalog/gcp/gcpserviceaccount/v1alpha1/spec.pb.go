@@ -71,7 +71,7 @@ type GcpServiceAccountSpec struct {
 	// federation wherever the workload supports it). When present, a key is
 	// created with the configured algorithm and formats, and the private key
 	// (unless public_key_data supplies your own public key) is exported in
-	// stack outputs as `key_base64` — treat that output as a live credential.
+	// outputs as `key_base64` — treat that output as a live credential.
 	UserManagedKey *GcpServiceAccountUserManagedKey `protobuf:"bytes,6,opt,name=user_managed_key,json=userManagedKey,proto3" json:"user_managed_key,omitempty"`
 	// IAM roles granted to this service account at the PROJECT scope, e.g.
 	// ["roles/logging.logWriter", "roles/storage.admin"]. Grants are additive
@@ -247,7 +247,7 @@ type GcpServiceAccountUserManagedKey struct {
 	PublicKeyType string `protobuf:"bytes,3,opt,name=public_key_type,json=publicKeyType,proto3" json:"public_key_type,omitempty"`
 	// Your own public key (base64-encoded X.509 PEM) — the UPLOAD flow: the
 	// matching private key never leaves your custody and GCP returns no
-	// private key material (the key_base64 stack output stays empty).
+	// private key material (the key_base64 output stays empty).
 	// The strongest key posture when a user-managed key is unavoidable.
 	PublicKeyData string `protobuf:"bytes,4,opt,name=public_key_data,json=publicKeyData,proto3" json:"public_key_data,omitempty"`
 	// Arbitrary key/value pairs whose CHANGE forces a new key to be

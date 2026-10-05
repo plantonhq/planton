@@ -4,7 +4,7 @@ Creates a Certificate Manager certificate map — the hostname-to-certificate ro
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Certificate map** -- a `certificatemanager.CertificateMapResource` (global — no location by API design)
 - **Map entries** -- one `certificatemanager.CertificateMapEntry` per spec entry (hostname or PRIMARY matcher, 1–15 certificates each)
@@ -56,7 +56,7 @@ spec:
 planton apply -f certificate-map.yaml
 ```
 
-This creates a map that serves `www.example.com` with its dedicated certificate and every other SNI with the wildcard fallback. A Stack Job tracks the provisioning in real time.
+This creates a map that serves `www.example.com` with its dedicated certificate and every other SNI with the wildcard fallback. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,16 +88,16 @@ These are the most important decisions when configuring a certificate map. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 | **GcpCertManagerCert** | `entries[].certificates[]` | `status.outputs.certificate_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,7 +115,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Target HTTPS Proxy**](/cloud-catalog/gcp-target-https-proxy) -- consumes `map_uri` as its `certificate_map`
-- [**GCP Cert Manager Cert**](/cloud-catalog/gcp-cert-manager-cert) -- the certificates entries bind
-- [**GCP Cert Manager DNS Authorization**](/cloud-catalog/gcp-cert-manager-dns-authorization) -- domain-ownership proof for managed certificates
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project
+- [**GCP Target HTTPS Proxy**](/infra-catalog/gcp-target-https-proxy) -- consumes `map_uri` as its `certificate_map`
+- [**GCP Cert Manager Cert**](/infra-catalog/gcp-cert-manager-cert) -- the certificates entries bind
+- [**GCP Cert Manager DNS Authorization**](/infra-catalog/gcp-cert-manager-dns-authorization) -- domain-ownership proof for managed certificates
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project

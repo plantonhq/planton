@@ -21,12 +21,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// KubernetesPeerAuthenticationStackOutputs captures observable outputs after the
+// KubernetesPeerAuthenticationOutputs captures observable outputs after the
 // PeerAuthentication is created on the target cluster. PeerAuthentication has no
 // controller-reconciled status subresource that is useful to surface here (istiod
 // enforces the policy in the data plane), so only the resource identity is
 // exported.
-type KubernetesPeerAuthenticationStackOutputs struct {
+type KubernetesPeerAuthenticationOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the created PeerAuthentication (equals metadata.name).
 	PeerAuthenticationName string `protobuf:"bytes,1,opt,name=peer_authentication_name,json=peerAuthenticationName,proto3" json:"peer_authentication_name,omitempty"`
@@ -36,20 +36,20 @@ type KubernetesPeerAuthenticationStackOutputs struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesPeerAuthenticationStackOutputs) Reset() {
-	*x = KubernetesPeerAuthenticationStackOutputs{}
+func (x *KubernetesPeerAuthenticationOutputs) Reset() {
+	*x = KubernetesPeerAuthenticationOutputs{}
 	mi := &file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_outputs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesPeerAuthenticationStackOutputs) String() string {
+func (x *KubernetesPeerAuthenticationOutputs) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesPeerAuthenticationStackOutputs) ProtoMessage() {}
+func (*KubernetesPeerAuthenticationOutputs) ProtoMessage() {}
 
-func (x *KubernetesPeerAuthenticationStackOutputs) ProtoReflect() protoreflect.Message {
+func (x *KubernetesPeerAuthenticationOutputs) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_outputs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -61,19 +61,19 @@ func (x *KubernetesPeerAuthenticationStackOutputs) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesPeerAuthenticationStackOutputs.ProtoReflect.Descriptor instead.
-func (*KubernetesPeerAuthenticationStackOutputs) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesPeerAuthenticationOutputs.ProtoReflect.Descriptor instead.
+func (*KubernetesPeerAuthenticationOutputs) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_outputs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *KubernetesPeerAuthenticationStackOutputs) GetPeerAuthenticationName() string {
+func (x *KubernetesPeerAuthenticationOutputs) GetPeerAuthenticationName() string {
 	if x != nil {
 		return x.PeerAuthenticationName
 	}
 	return ""
 }
 
-func (x *KubernetesPeerAuthenticationStackOutputs) GetNamespace() string {
+func (x *KubernetesPeerAuthenticationOutputs) GetNamespace() string {
 	if x != nil {
 		return x.Namespace
 	}
@@ -84,8 +84,8 @@ var File_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_outputs_proto 
 
 const file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Fcatalog/kubernetes/kubernetespeerauthentication/v1alpha1/outputs.proto\x12<dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1\"\x82\x01\n" +
-	"(KubernetesPeerAuthenticationStackOutputs\x128\n" +
+	"Fcatalog/kubernetes/kubernetespeerauthentication/v1alpha1/outputs.proto\x12<dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1\"}\n" +
+	"#KubernetesPeerAuthenticationOutputs\x128\n" +
 	"\x18peer_authentication_name\x18\x01 \x01(\tR\x16peerAuthenticationName\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespaceB\xe1\x03\n" +
 	"@com.dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1B\fOutputsProtoP\x01Zzgithub.com/plantonhq/planton/catalog/kubernetes/kubernetespeerauthentication/v1alpha1;kubernetespeerauthenticationv1alpha1\xa2\x02\x04DPKK\xaa\x02<Dev.Planton.Kubernetes.Kubernetespeerauthentication.V1alpha1\xca\x02<Dev\\Planton\\Kubernetes\\Kubernetespeerauthentication\\V1alpha1\xe2\x02HDev\\Planton\\Kubernetes\\Kubernetespeerauthentication\\V1alpha1\\GPBMetadata\xea\x02@Dev::Planton::Kubernetes::Kubernetespeerauthentication::V1alpha1b\x06proto3"
@@ -104,7 +104,7 @@ func file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_outputs_proto
 
 var file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_outputs_proto_goTypes = []any{
-	(*KubernetesPeerAuthenticationStackOutputs)(nil), // 0: dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1.KubernetesPeerAuthenticationStackOutputs
+	(*KubernetesPeerAuthenticationOutputs)(nil), // 0: dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1.KubernetesPeerAuthenticationOutputs
 }
 var file_catalog_kubernetes_kubernetespeerauthentication_v1alpha1_outputs_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

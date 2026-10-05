@@ -68,7 +68,7 @@ node lets you:
   update-config exactly-one rule are CEL-enforced at validation time.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `nodegroup_name`: the pool's name
 - `nodegroup_arn`: the pool's ARN (access entries, IAM policies)

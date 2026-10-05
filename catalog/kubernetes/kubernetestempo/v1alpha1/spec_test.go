@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -25,7 +25,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -46,8 +46,8 @@ func testR2() *KubernetesTempoStorage {
 	return &KubernetesTempoStorage{
 		Backend: &KubernetesTempoStorage_R2{
 			R2: &KubernetesTempoR2Storage{
-				AccountId: valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "traces-bucket", "status.outputs.account_id"),
-				Bucket:    valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "traces-bucket", "status.outputs.bucket_name"),
+				AccountId: valueFrom(catalogkind.CatalogKind_CloudflareR2Bucket, "traces-bucket", "status.outputs.account_id"),
+				Bucket:    valueFrom(catalogkind.CatalogKind_CloudflareR2Bucket, "traces-bucket", "status.outputs.bucket_name"),
 				Credentials: &KubernetesTempoR2Credentials{
 					AccessKeyId:     literal("$secret/traces-writer-access-key-id"),
 					SecretAccessKey: literal("$secret/traces-writer-secret-access-key"),
@@ -77,7 +77,7 @@ var _ = ginkgo.Describe("KubernetesTempo Validation Tests", func() {
 		input = &KubernetesTempo{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesTempo",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "traces",
 			},
 			Spec: &KubernetesTempoSpec{
@@ -92,7 +92,7 @@ var _ = ginkgo.Describe("KubernetesTempo Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "observability", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "observability", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -175,7 +175,7 @@ var _ = ginkgo.Describe("KubernetesTempo Validation Tests", func() {
 		ginkgo.It("a metrics generator with a stack reference should be valid", func() {
 			input.Spec.MetricsGenerator = &KubernetesTempoMetricsGenerator{
 				Enabled:        true,
-				RemoteWriteUrl: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesKubePrometheusStack, "monitoring", "status.outputs.prometheus_endpoint"),
+				RemoteWriteUrl: valueFrom(catalogkind.CatalogKind_KubernetesKubePrometheusStack, "monitoring", "status.outputs.prometheus_endpoint"),
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
